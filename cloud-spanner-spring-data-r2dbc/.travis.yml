@@ -1,0 +1,11 @@
+languages: java
+
+jdk:
+  - oraclejdk8
+
+branches:
+  only:
+    - master
+
+script:
+  - mvn clean verify -B -V -q
