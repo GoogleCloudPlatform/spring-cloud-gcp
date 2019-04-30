@@ -16,7 +16,7 @@
 
 package com.google.cloud.spanner.r2dbc.util;
 
-import javax.annotation.Nullable;
+import reactor.util.annotation.Nullable;
 
 /**
  * Lightweight assertion support.
