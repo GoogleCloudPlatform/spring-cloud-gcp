@@ -16,6 +16,9 @@
 
 package com.google.cloud.spanner.r2dbc;
 
+import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
+
+import com.google.cloud.spanner.r2dbc.util.Assert;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.ConnectionFactoryProvider;
@@ -28,6 +31,9 @@ import io.r2dbc.spi.ConnectionFactoryProvider;
  */
 public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvider {
 
+  /** R2DBC driver name for Google Cloud Spanner. */
+  public static final String DRIVER_NAME = "spanner";
+
   @Override
   public ConnectionFactory create(ConnectionFactoryOptions connectionFactoryOptions) {
     return new SpannerConnectionFactory();
@@ -35,6 +41,9 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
 
   @Override
   public boolean supports(ConnectionFactoryOptions connectionFactoryOptions) {
-    return false;
+    Assert.requireNonNull(connectionFactoryOptions, "connectionFactoryOptions must not be null");
+    String driver = connectionFactoryOptions.getValue(DRIVER);
+
+    return DRIVER_NAME.equals(driver);
   }
 }
