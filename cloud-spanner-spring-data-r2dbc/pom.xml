@@ -15,6 +15,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <r2dbc.version>1.0.0.M7</r2dbc.version>
+    <reactor.version>Californium-SR6</reactor.version>
   </properties>
 
 
@@ -23,6 +24,11 @@
       <groupId>io.r2dbc</groupId>
       <artifactId>r2dbc-spi</artifactId>
       <version>${r2dbc.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-core</artifactId>
     </dependency>
 
     <!-- test dependencies -->
@@ -40,6 +46,18 @@
     </dependency>
 
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.projectreactor</groupId>
+        <artifactId>reactor-bom</artifactId>
+        <version>${reactor.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <plugins>
