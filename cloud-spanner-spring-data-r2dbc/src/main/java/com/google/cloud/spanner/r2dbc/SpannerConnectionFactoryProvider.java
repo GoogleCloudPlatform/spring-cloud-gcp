@@ -36,7 +36,7 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
 
   @Override
   public ConnectionFactory create(ConnectionFactoryOptions connectionFactoryOptions) {
-    return new SpannerConnectionFactory();
+    return new SpannerConnectionFactory(null);
   }
 
   @Override
