@@ -16,33 +16,25 @@
 
 package com.google.cloud.spanner.r2dbc;
 
-import io.r2dbc.spi.Connection;
-import io.r2dbc.spi.ConnectionFactory;
-import io.r2dbc.spi.ConnectionFactoryMetadata;
+import io.r2dbc.spi.Result;
+import io.r2dbc.spi.Row;
+import io.r2dbc.spi.RowMetadata;
+import java.util.function.BiFunction;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 /**
- * An implementation of {@link ConnectionFactory} for creating connections to Cloud Spanner
- * database.
+ * {@link Result} implementation for Cloud Spanner.
  */
-public class SpannerConnectionFactory implements ConnectionFactory {
+public class SpannerResult implements Result {
 
-  private SpannerConnectionConfiguration config;
-
-  public SpannerConnectionFactory(SpannerConnectionConfiguration config) {
-    this.config = config;
+  @Override
+  public Publisher<Integer> getRowsUpdated() {
+    return null;
   }
 
   @Override
-  public Publisher<? extends Connection> create() {
-
-    return Mono.just(new SpannerConnection());
+  public <T> Flux<T> map(BiFunction<Row, RowMetadata, ? extends T> f) {
+    return Flux.just(f.apply(null, null));
   }
-
-  @Override
-  public ConnectionFactoryMetadata getMetadata() {
-    return SpannerConnectionFactoryMetadata.INSTANCE;
-  }
-
 }

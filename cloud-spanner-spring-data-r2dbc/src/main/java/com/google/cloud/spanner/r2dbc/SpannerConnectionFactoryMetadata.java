@@ -16,33 +16,27 @@
 
 package com.google.cloud.spanner.r2dbc;
 
-import io.r2dbc.spi.Connection;
-import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryMetadata;
-import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
 
 /**
- * An implementation of {@link ConnectionFactory} for creating connections to Cloud Spanner
- * database.
+ * {@link ConnectionFactoryMetadata} for Cloud Spanner.
  */
-public class SpannerConnectionFactory implements ConnectionFactory {
+public class SpannerConnectionFactoryMetadata implements ConnectionFactoryMetadata {
 
-  private SpannerConnectionConfiguration config;
+  /**
+   * The name of Cloud Spanner database product.
+   */
+  public static final String NAME = "Cloud Spanner";
 
-  public SpannerConnectionFactory(SpannerConnectionConfiguration config) {
-    this.config = config;
+  public static final SpannerConnectionFactoryMetadata INSTANCE
+      = new SpannerConnectionFactoryMetadata();
+
+  private SpannerConnectionFactoryMetadata() {
   }
 
   @Override
-  public Publisher<? extends Connection> create() {
-
-    return Mono.just(new SpannerConnection());
-  }
-
-  @Override
-  public ConnectionFactoryMetadata getMetadata() {
-    return SpannerConnectionFactoryMetadata.INSTANCE;
+  public String getName() {
+    return NAME;
   }
 
 }

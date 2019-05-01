@@ -16,10 +16,12 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <r2dbc.version>1.0.0.M7</r2dbc.version>
     <reactor.version>Californium-SR6</reactor.version>
+    <spanner-client.version>1.11.0</spanner-client.version>
   </properties>
 
 
   <dependencies>
+
     <dependency>
       <groupId>io.r2dbc</groupId>
       <artifactId>r2dbc-spi</artifactId>
@@ -29,6 +31,12 @@
     <dependency>
       <groupId>io.projectreactor</groupId>
       <artifactId>reactor-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-spanner</artifactId>
+      <version>${spanner-client.version}</version>
     </dependency>
 
     <!-- test dependencies -->
