@@ -16,6 +16,7 @@
 
 package com.google.cloud.spanner.r2dbc.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.Test;
@@ -35,7 +36,8 @@ public class AssertTest {
 
   @Test
   public void assertNotNullNoopWhenNotNull() {
-    Assert.requireNonNull("definitely not null", "oh no");
+    String value = Assert.requireNonNull("definitely not null", "oh no");
+    assertThat(value).isEqualTo("definitely not null");
   }
 
 }
