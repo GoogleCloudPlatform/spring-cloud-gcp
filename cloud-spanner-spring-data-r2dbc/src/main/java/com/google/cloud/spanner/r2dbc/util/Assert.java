@@ -30,15 +30,19 @@ public class Assert {
    * Checks that a specified object reference is not {@code null} and throws a customized
    * {@link IllegalArgumentException} if it is.
    *
-   * @param o       the object reference to check for nullity
+   * @param t the object reference to check for nullity
    * @param message informative message to be used in the event that an
    * {@link IllegalArgumentException} is thrown
+   * @param <T> the type of object reference
+   * @return the original object {@code t}
    * @throws IllegalArgumentException if {@code o} is {@code null}
    */
-  public static void requireNonNull(@Nullable Object o, String message) {
-    if (o == null) {
+  public static <T> T requireNonNull(@Nullable T t, String message) {
+    if (t == null) {
       throw new IllegalArgumentException(message);
     }
+
+    return t;
   }
 
 }
