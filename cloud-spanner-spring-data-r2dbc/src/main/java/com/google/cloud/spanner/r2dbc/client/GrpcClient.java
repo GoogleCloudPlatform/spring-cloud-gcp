@@ -37,6 +37,7 @@ import reactor.core.publisher.Mono;
  */
 public class GrpcClient implements Client {
 
+  public static final String HOST = "spanner.googleapis.com";
   public static final int PORT = 443;
 
   private final SpannerStub spanner;
@@ -47,7 +48,7 @@ public class GrpcClient implements Client {
   public GrpcClient() throws IOException {
     // Create a channel
     ManagedChannel channel = ManagedChannelBuilder
-        .forAddress("spanner.googleapis.com", PORT)
+        .forAddress(HOST, PORT)
         .build();
 
     // Create blocking and async stubs using the channel
