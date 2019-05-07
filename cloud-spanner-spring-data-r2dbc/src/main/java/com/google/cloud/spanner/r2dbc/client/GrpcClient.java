@@ -29,7 +29,7 @@ import io.grpc.stub.ClientCallStreamObserver;
 import io.grpc.stub.ClientResponseObserver;
 import java.io.IOException;
 import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscription;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -67,42 +67,32 @@ public class GrpcClient implements Client {
 
   @Override
   public Publisher<PartialResultSet> executeStreamingSql(ExecuteSqlRequest request) {
-    return subscriber -> spanner.executeStreamingSql(request,
-        new ClientResponseObserver<ExecuteSqlRequest, PartialResultSet>() {
-          @Override
-          public void beforeStart(
-              ClientCallStreamObserver<ExecuteSqlRequest> clientCallStreamObserver) {
+    return Flux.create(sink -> {
+      ClientResponseObserver<ExecuteSqlRequest, PartialResultSet> clientResponseObserver =
+          new ClientResponseObserver<ExecuteSqlRequest, PartialResultSet>() {
+            @Override
+            public void onNext(PartialResultSet value) {
+              sink.next(value);
+            }
 
-            clientCallStreamObserver.disableAutoInboundFlowControl();
+            @Override
+            public void onError(Throwable t) {
+              sink.error(t);
+            }
 
-            subscriber.onSubscribe(new Subscription() {
-              @Override
-              public void request(long l) {
-                clientCallStreamObserver.request((int) l);
-              }
+            @Override
+            public void onCompleted() {
+              sink.complete();
+            }
 
-              @Override
-              public void cancel() {
-                clientCallStreamObserver.cancel(null, null);
-              }
-            });
-          }
-
-          @Override
-          public void onNext(PartialResultSet partialResultSet) {
-            subscriber.onNext(partialResultSet);
-          }
-
-          @Override
-          public void onError(Throwable throwable) {
-            subscriber.onError(throwable);
-          }
-
-          @Override
-          public void onCompleted() {
-            subscriber.onComplete();
-          }
-        });
-
+            @Override
+            public void beforeStart(ClientCallStreamObserver<ExecuteSqlRequest> requestStream) {
+              requestStream.disableAutoInboundFlowControl();
+              sink.onRequest(demand -> requestStream.request((int) demand));
+              sink.onCancel(() -> requestStream.cancel(null, null));
+            }
+          };
+      this.spanner.executeStreamingSql(request, clientResponseObserver);
+    });
   }
 }
