@@ -16,11 +16,11 @@
 
 package com.google.cloud.spanner.r2dbc;
 
-import io.r2dbc.spi.Connection;
+import com.google.cloud.spanner.r2dbc.client.Client;
+import com.google.cloud.spanner.r2dbc.util.Assert;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryMetadata;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
 
 /**
  * An implementation of {@link ConnectionFactory} for creating connections to Cloud Spanner
@@ -30,14 +30,18 @@ public class SpannerConnectionFactory implements ConnectionFactory {
 
   private SpannerConnectionConfiguration config;
 
-  public SpannerConnectionFactory(SpannerConnectionConfiguration config) {
-    this.config = config;
+  private Client client;
+
+  public SpannerConnectionFactory(Client client, SpannerConnectionConfiguration config) {
+    this.client = Assert.requireNonNull(client, "Spanner client must not be null");
+    this.config = Assert.requireNonNull(config, "Spanner configuration must not be null");
   }
 
   @Override
-  public Publisher<? extends Connection> create() {
+  public Publisher<SpannerConnection> create() {
 
-    return Mono.just(new SpannerConnection());
+    return this.client.createSession(config.getFullyQualifiedDatabaseName())
+      .map(session -> new SpannerConnection(this.client, session));
   }
 
   @Override

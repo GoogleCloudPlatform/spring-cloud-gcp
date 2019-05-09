@@ -27,30 +27,54 @@ import org.junit.Test;
 public class SpannerConnectionConfigurationTest {
 
   @Test
-  public void nullInstanceNameTriggersException() {
+  public void missingInstanceNameTriggersException() {
     assertThatThrownBy(
         () -> {
-          new SpannerConnectionConfiguration(null, "db");
+          new SpannerConnectionConfiguration.Builder()
+              .setProjectId("project1")
+              .setDatabaseName("db")
+              .build();
         })
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("instanceName must not be null");
   }
 
   @Test
-  public void nullDatabaseNameTriggersException() {
+  public void missingDatabaseNameTriggersException() {
     assertThatThrownBy(
         () -> {
-          new SpannerConnectionConfiguration("an-instance", null);
+          new SpannerConnectionConfiguration.Builder()
+              .setProjectId("project1")
+              .setInstanceName("an-instance")
+              .build();
         })
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("databaseName must not be null");
   }
 
   @Test
+  public void missingProjectIdTriggersException() {
+    assertThatThrownBy(
+        () -> {
+          new SpannerConnectionConfiguration.Builder()
+              .setInstanceName("an-instance")
+              .setDatabaseName("db")
+              .build();
+        })
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("projectId must not be null");
+  }
+
+  @Test
   public void nonNullConstructorParametersPassPreconditions() {
-    SpannerConnectionConfiguration config = new SpannerConnectionConfiguration("an-instance", "db");
-    assertThat(config.getInstanceName()).isEqualTo("an-instance");
-    assertThat(config.getDatabaseName()).isEqualTo("db");
+    SpannerConnectionConfiguration config
+        = new SpannerConnectionConfiguration.Builder()
+        .setProjectId("project1")
+        .setInstanceName("an-instance")
+        .setDatabaseName("db")
+        .build();
+    assertThat(config.getFullyQualifiedDatabaseName())
+        .isEqualTo("projects/project1/instances/an-instance/databases/db");
   }
 
 }

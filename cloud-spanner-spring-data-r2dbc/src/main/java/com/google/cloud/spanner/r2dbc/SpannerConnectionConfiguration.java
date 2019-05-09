@@ -23,30 +23,65 @@ import com.google.cloud.spanner.r2dbc.util.Assert;
  */
 public class SpannerConnectionConfiguration {
 
-  private String instanceName;
+  private static final String FULLY_QUALIFIED_DB_NAME_PATTERN
+      = "projects/%s/instances/%s/databases/%s";
 
-  private String databaseName;
+  private final String fullyQualifiedDbName;
 
   /**
    * Basic property initializing constructor.
    *
+   * @param projectId GCP project that contains the database.
    * @param instanceName instance to connect to
    * @param databaseName database to connect to.
    */
-  public SpannerConnectionConfiguration(String instanceName, String databaseName) {
+  private SpannerConnectionConfiguration(
+      String projectId, String instanceName, String databaseName) {
+
+    Assert.requireNonNull(projectId, "projectId must not be null");
     Assert.requireNonNull(instanceName, "instanceName must not be null");
     Assert.requireNonNull(databaseName, "databaseName must not be null");
 
-    this.instanceName = instanceName;
-    this.databaseName = databaseName;
+    this.fullyQualifiedDbName = String.format(
+        FULLY_QUALIFIED_DB_NAME_PATTERN, projectId, instanceName, databaseName);
   }
 
-  public String getInstanceName() {
-    return instanceName;
+  /**
+   * Turns configuration properties into a fully qualified database name.
+   * @return fully qualified database name
+   */
+  public String getFullyQualifiedDatabaseName() {
+    return this.fullyQualifiedDbName;
   }
 
-  public String getDatabaseName() {
-    return databaseName;
+  public static class Builder {
+
+    private String projectId;
+
+    private String instanceName;
+
+    private String databaseName;
+
+    public Builder setProjectId(String projectId) {
+      this.projectId = projectId;
+      return this;
+    }
+
+    public Builder setInstanceName(String instanceName) {
+      this.instanceName = instanceName;
+      return this;
+    }
+
+    public Builder setDatabaseName(String databaseName) {
+      this.databaseName = databaseName;
+      return this;
+    }
+
+    public SpannerConnectionConfiguration build() {
+      return new SpannerConnectionConfiguration(
+          this.projectId, this.instanceName, this.databaseName);
+    }
+
   }
 
 }

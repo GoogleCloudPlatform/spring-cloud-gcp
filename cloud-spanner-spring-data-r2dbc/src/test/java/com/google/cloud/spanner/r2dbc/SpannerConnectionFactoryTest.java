@@ -17,19 +17,45 @@
 package com.google.cloud.spanner.r2dbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
+import com.google.cloud.spanner.r2dbc.client.Client;
+import com.google.spanner.v1.Session;
 import org.junit.Test;
+import org.mockito.Mockito;
+import reactor.core.publisher.Mono;
 
 /**
  * Test for {@link SpannerConnectionFactory}.
  */
 public class SpannerConnectionFactoryTest {
 
+  SpannerConnectionConfiguration config = new SpannerConnectionConfiguration.Builder()
+      .setProjectId("a-project")
+      .setInstanceName("an-instance")
+      .setDatabaseName("db")
+      .build();
+
   @Test
   public void getMetadataReturnsSingleton() {
-    SpannerConnectionFactory factory = new SpannerConnectionFactory(null);
+    Client mockClient = Mockito.mock(Client.class);
+    SpannerConnectionFactory factory = new SpannerConnectionFactory(mockClient, config);
 
     assertThat(factory.getMetadata()).isSameAs(SpannerConnectionFactoryMetadata.INSTANCE);
   }
 
+  @Test
+  public void createReturnsNewSpannerConnection() {
+
+    Client mockClient = Mockito.mock(Client.class);
+    Session session = Session.newBuilder().setName("jam session").build();
+    when(mockClient.createSession("projects/a-project/instances/an-instance/databases/db"))
+        .thenReturn(Mono.just(session));
+
+    SpannerConnectionFactory factory = new SpannerConnectionFactory(mockClient, this.config);
+    SpannerConnection connection = Mono.from(factory.create()).block();
+
+    assertThat(connection.getSession().getName()).isEqualTo("jam session");
+
+  }
 }

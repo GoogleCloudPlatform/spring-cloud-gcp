@@ -16,12 +16,18 @@
 
 package com.google.cloud.spanner.r2dbc;
 
+import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 
+import com.google.cloud.spanner.r2dbc.client.Client;
+import com.google.cloud.spanner.r2dbc.client.GrpcClient;
 import com.google.cloud.spanner.r2dbc.util.Assert;
+import com.google.common.annotations.VisibleForTesting;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.ConnectionFactoryProvider;
+import io.r2dbc.spi.Option;
+import java.io.IOException;
 
 /**
  * An implementation of {@link ConnectionFactoryProvider} for creating {@link
@@ -34,9 +40,30 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   /** R2DBC driver name for Google Cloud Spanner. */
   public static final String DRIVER_NAME = "spanner";
 
+  /** Option name for GCP Project. */
+  public static final Option<String> PROJECT = Option.valueOf("project");
+
+  /** Option name for GCP Spanner instance. */
+  public static final Option<String> INSTANCE = Option.valueOf("instance");
+
+  private Client client;
+
   @Override
   public ConnectionFactory create(ConnectionFactoryOptions connectionFactoryOptions) {
-    return new SpannerConnectionFactory(null);
+    SpannerConnectionConfiguration config = new SpannerConnectionConfiguration.Builder()
+        .setProjectId(connectionFactoryOptions.getRequiredValue(PROJECT))
+        .setInstanceName(connectionFactoryOptions.getRequiredValue(INSTANCE))
+        .setDatabaseName(connectionFactoryOptions.getRequiredValue(DATABASE))
+        .build();
+    try {
+      if (this.client == null) {
+        // GrpcClient should only be instantiated if/when a SpannerConnectionFactory is needed.
+        this.client = new GrpcClient();
+      }
+      return new SpannerConnectionFactory(client, config);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
@@ -46,4 +73,10 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
 
     return DRIVER_NAME.equals(driver);
   }
+
+  @VisibleForTesting
+  void setClient(Client client) {
+    this.client = client;
+  }
+
 }

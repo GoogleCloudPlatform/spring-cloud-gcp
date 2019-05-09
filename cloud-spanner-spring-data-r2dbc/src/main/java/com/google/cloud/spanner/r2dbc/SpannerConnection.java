@@ -16,6 +16,8 @@
 
 package com.google.cloud.spanner.r2dbc;
 
+import com.google.cloud.spanner.r2dbc.client.Client;
+import com.google.spanner.v1.Session;
 import io.r2dbc.spi.Batch;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.IsolationLevel;
@@ -26,6 +28,22 @@ import org.reactivestreams.Publisher;
  * {@link Connection} implementation for Cloud Spanner.
  */
 public class SpannerConnection implements Connection {
+
+  private Session session;
+
+  private Client client;
+
+  /**
+   * Instantiates a Spanner session with given configuration.
+   * @param client client controlling low-level Spanner operations
+   * @param session Spanner session to use for all interactions on this connection.
+   */
+  public SpannerConnection(Client client, Session session) {
+
+    this.client = client;
+
+    this.session = session;
+  }
 
   public Publisher<Void> beginTransaction() {
     return null;
@@ -66,4 +84,13 @@ public class SpannerConnection implements Connection {
   public Publisher<Void> setTransactionIsolationLevel(IsolationLevel isolationLevel) {
     return null;
   }
+
+  /**
+   * Returns the Spanner session associated with the current {@link Connection}.
+   * @return spanner session proto
+   */
+  public Session getSession() {
+    return this.session;
+  }
+
 }

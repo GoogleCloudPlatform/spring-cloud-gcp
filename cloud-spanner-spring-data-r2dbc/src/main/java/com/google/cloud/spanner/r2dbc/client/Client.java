@@ -18,6 +18,7 @@ package com.google.cloud.spanner.r2dbc.client;
 
 import com.google.spanner.v1.ExecuteSqlRequest;
 import com.google.spanner.v1.PartialResultSet;
+import com.google.spanner.v1.Session;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
@@ -37,5 +38,13 @@ public interface Client {
    * Execute a streaming query and get partial results.
    */
   Publisher<PartialResultSet> executeStreamingSql(ExecuteSqlRequest request);
+
+  /**
+   * Create a Spanner session to be used in subsequent interactions with the database.
+   * @param databaseName Fully qualified Spanner database name in the format
+   * {@code projects/[PROJECT_ID]/instances/[INSTANCE]/databases/[DATABASE]}
+   * @returns {@link Mono} of the generated session.
+   */
+  Mono<Session> createSession(String databaseName);
 
 }

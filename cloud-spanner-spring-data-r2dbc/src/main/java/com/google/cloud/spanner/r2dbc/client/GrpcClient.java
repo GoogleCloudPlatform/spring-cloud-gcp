@@ -17,8 +17,11 @@
 package com.google.cloud.spanner.r2dbc.client;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.spanner.r2dbc.util.ObservableReactiveUtil;
+import com.google.spanner.v1.CreateSessionRequest;
 import com.google.spanner.v1.ExecuteSqlRequest;
 import com.google.spanner.v1.PartialResultSet;
+import com.google.spanner.v1.Session;
 import com.google.spanner.v1.SpannerGrpc;
 import com.google.spanner.v1.SpannerGrpc.SpannerStub;
 import io.grpc.CallCredentials;
@@ -58,6 +61,14 @@ public class GrpcClient implements Client {
     // Create the asynchronous stub for Cloud Spanner
     this.spanner = SpannerGrpc.newStub(channel)
         .withCallCredentials(callCredentials);
+  }
+
+  @Override
+  public Mono<Session> createSession(String databaseName) {
+    CreateSessionRequest request = CreateSessionRequest.newBuilder()
+        .setDatabase(databaseName)
+        .build();
+    return ObservableReactiveUtil.unaryCall((obs) -> this.spanner.createSession(request, obs));
   }
 
   @Override

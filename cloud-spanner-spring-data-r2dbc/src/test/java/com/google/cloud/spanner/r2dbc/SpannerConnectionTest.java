@@ -18,8 +18,11 @@ package com.google.cloud.spanner.r2dbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.cloud.spanner.r2dbc.client.Client;
+import com.google.spanner.v1.Session;
 import io.r2dbc.spi.Statement;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Test for {@link SpannerConnection}.
@@ -28,7 +31,15 @@ public class SpannerConnectionTest {
 
   @Test
   public void createStatementDummyImplementation() {
-    SpannerConnection connection = new SpannerConnection();
+    Client mockClient = Mockito.mock(Client.class);
+    SpannerConnectionConfiguration config
+        = new SpannerConnectionConfiguration.Builder()
+        .setProjectId("a-project")
+        .setInstanceName("an-instance")
+        .setDatabaseName("db")
+        .build();
+    Session session = Session.newBuilder().setName("project/session/1234").build();
+    SpannerConnection connection = new SpannerConnection(mockClient, session);
     Statement statement = connection.createStatement("not actual sql");
     assertThat(statement).isInstanceOf(SpannerStatement.class);
   }

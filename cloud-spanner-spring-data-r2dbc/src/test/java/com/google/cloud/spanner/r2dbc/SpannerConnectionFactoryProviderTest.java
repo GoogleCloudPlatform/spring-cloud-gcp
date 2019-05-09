@@ -16,72 +16,82 @@
 
 package com.google.cloud.spanner.r2dbc;
 
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.DRIVER_NAME;
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.INSTANCE;
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PROJECT;
+import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import io.r2dbc.spi.ConnectionFactories;
+import com.google.cloud.spanner.r2dbc.client.Client;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Unit test for {@link SpannerConnectionFactoryProvider}.
  */
 public class SpannerConnectionFactoryProviderTest {
 
+  public static final ConnectionFactoryOptions SPANNER_OPTIONS = ConnectionFactoryOptions.builder()
+      .option(DRIVER, DRIVER_NAME)
+      .option(PROJECT, "project-id")
+      .option(INSTANCE, "an-instance")
+      .option(DATABASE, "db")
+      .build();
+
+  SpannerConnectionFactoryProvider spannerConnectionFactoryProvider;
+
+  /**
+   * Initializes unit under test with a mock {@link Client}.
+   */
+  @Before
+  public void setUp() {
+    this.spannerConnectionFactoryProvider = new SpannerConnectionFactoryProvider();
+    Client mockClient = Mockito.mock(Client.class);
+    spannerConnectionFactoryProvider.setClient(mockClient);
+  }
+
   @Test
   public void testCreate() {
-    SpannerConnectionFactoryProvider spannerConnectionFactoryProvider =
-        new SpannerConnectionFactoryProvider();
-    ConnectionFactory spannerConnectionFactory = spannerConnectionFactoryProvider
-        .create(null);
+    ConnectionFactory spannerConnectionFactory
+        = this.spannerConnectionFactoryProvider.create(SPANNER_OPTIONS);
 
     assertThat(spannerConnectionFactory).isNotNull();
+    assertThat(spannerConnectionFactory).isInstanceOf(SpannerConnectionFactory.class);
   }
 
   @Test
   public void testSupportsThrowsExceptionOnNullOptions() {
-    SpannerConnectionFactoryProvider spannerConnectionFactoryProvider =
-        new SpannerConnectionFactoryProvider();
+
     assertThatThrownBy(() -> {
-      spannerConnectionFactoryProvider.supports(null);
+      this.spannerConnectionFactoryProvider.supports(null);
     }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("connectionFactoryOptions must not be null");
   }
 
   @Test
   public void testSupportsReturnsFalseWhenNoDriverInOptions() {
-    SpannerConnectionFactoryProvider spannerConnectionFactoryProvider =
-        new SpannerConnectionFactoryProvider();
-    assertFalse(spannerConnectionFactoryProvider.supports(
+
+    assertFalse(this.spannerConnectionFactoryProvider.supports(
         ConnectionFactoryOptions.builder().build()));
   }
 
   @Test
   public void testSupportsReturnsFalseWhenWrongDriverInOptions() {
-    SpannerConnectionFactoryProvider spannerConnectionFactoryProvider =
-        new SpannerConnectionFactoryProvider();
-    assertFalse(spannerConnectionFactoryProvider.supports(buildOptions("not spanner")));
+
+    assertFalse(this.spannerConnectionFactoryProvider.supports(buildOptions("not spanner")));
   }
 
   @Test
   public void testSupportsReturnsTrueWhenCorrectDriverInOptions() {
-    SpannerConnectionFactoryProvider spannerConnectionFactoryProvider =
-        new SpannerConnectionFactoryProvider();
-    assertTrue(spannerConnectionFactoryProvider.supports(buildOptions("spanner")));
-  }
 
-  @Test
-  public void testR2dbcFindsSpannerConnectionFactoryProvider() {
-    ConnectionFactory connectionFactory =
-        ConnectionFactories.get(ConnectionFactoryOptions.builder()
-            .option(DRIVER, "spanner")
-            .build());
-
-    assertThat(connectionFactory).isInstanceOf(SpannerConnectionFactory.class);
+    assertTrue(this.spannerConnectionFactoryProvider.supports(buildOptions("spanner")));
   }
 
   private static ConnectionFactoryOptions buildOptions(String driverName) {
