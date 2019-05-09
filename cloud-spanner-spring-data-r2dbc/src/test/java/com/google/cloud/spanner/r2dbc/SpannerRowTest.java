@@ -27,7 +27,7 @@ public class SpannerRowTest {
 
   @Test
   public void getDummyImplementation() {
-    SpannerRow row = new SpannerRow();
+    SpannerRow row = new SpannerRow(null, null);
     assertThat(row.get("columnName", String.class)).isNull();
   }
 }

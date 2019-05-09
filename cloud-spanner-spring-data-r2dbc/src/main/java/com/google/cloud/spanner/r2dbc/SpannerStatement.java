@@ -60,6 +60,6 @@ public class SpannerStatement implements Statement {
 
   @Override
   public Publisher<? extends Result> execute() {
-    return Mono.just(new SpannerResult());
+    return Mono.just(new SpannerResult(Mono.fromSupplier(() -> 0)));
   }
 }

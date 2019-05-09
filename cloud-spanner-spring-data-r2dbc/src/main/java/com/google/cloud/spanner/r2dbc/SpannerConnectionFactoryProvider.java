@@ -33,7 +33,6 @@ import java.io.IOException;
  * An implementation of {@link ConnectionFactoryProvider} for creating {@link
  * SpannerConnectionFactory}s.
  *
- * @author Mike Eltsufin
  */
 public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvider {
 
