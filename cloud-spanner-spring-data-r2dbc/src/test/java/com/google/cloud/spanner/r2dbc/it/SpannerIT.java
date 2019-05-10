@@ -14,35 +14,28 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spanner.r2dbc;
+package com.google.cloud.spanner.r2dbc.it;
 
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.INSTANCE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assume.assumeThat;
 
 import com.google.cloud.ServiceOptions;
+import com.google.cloud.spanner.r2dbc.SpannerConnection;
+import com.google.cloud.spanner.r2dbc.SpannerConnectionFactory;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
-import org.junit.Before;
 import org.junit.Test;
 import reactor.core.publisher.Mono;
 
 /**
  * Integration test for connecting to a real Spanner instance.
  */
-public class SpannerIntegrationTest {
-
-  @Before
-  public void enableIntegrationTest() {
-    assumeThat("Enable integration tests with -Dit.spanner=true.",
-        System.getProperty("it.spanner"), is("true"));
-  }
+public class SpannerIT {
 
   @Test
   public void testCreatingSession() {

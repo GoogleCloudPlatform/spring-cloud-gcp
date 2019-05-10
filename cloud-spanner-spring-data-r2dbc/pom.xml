@@ -91,7 +91,6 @@
 
   <dependencyManagement>
     <dependencies>
-
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-bom</artifactId>
@@ -149,6 +148,28 @@
               <headerLocation>checkstyle/java.header</headerLocation>
               <configLocation>checkstyle/custom-checks.xml</configLocation>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.0.0-M1</version>
+        <executions>
+          <execution>
+            <id>failsafe-integration-tests</id>
+            <phase>test</phase>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>failsafe-verify</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>verify</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
