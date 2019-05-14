@@ -26,6 +26,7 @@ import com.google.spanner.v1.CreateSessionRequest;
 import com.google.spanner.v1.DeleteSessionRequest;
 import com.google.spanner.v1.ExecuteSqlRequest;
 import com.google.spanner.v1.PartialResultSet;
+import com.google.spanner.v1.RollbackRequest;
 import com.google.spanner.v1.Session;
 import com.google.spanner.v1.SpannerGrpc;
 import com.google.spanner.v1.SpannerGrpc.SpannerStub;
@@ -100,6 +101,21 @@ public class GrpcClient implements Client {
 
       return ObservableReactiveUtil.unaryCall(
           (obs) -> this.spanner.commit(commitRequest, obs));
+    });
+  }
+
+  @Override
+  public Mono<Void> rollbackTransaction(Session session, Transaction transaction) {
+    return Mono.defer(() -> {
+      RollbackRequest rollbackRequest =
+          RollbackRequest.newBuilder()
+              .setSession(session.getName())
+              .setTransactionId(transaction.getId())
+              .build();
+
+      return ObservableReactiveUtil.<Empty>unaryCall(
+          (obs) -> this.spanner.rollback(rollbackRequest, obs))
+          .then();
     });
   }
 

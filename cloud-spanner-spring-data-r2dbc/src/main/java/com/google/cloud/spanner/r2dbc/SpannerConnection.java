@@ -70,6 +70,15 @@ public class SpannerConnection implements Connection {
   }
 
   @Override
+  public Publisher<Void> rollbackTransaction() {
+    return currentTransaction
+        .flatMap(transaction -> client.rollbackTransaction(session, transaction))
+        .switchIfEmpty(Mono.fromRunnable(() ->
+            logger.warn("rollbackTransaction() is a no-op; called with no transaction active.")))
+        .then();
+  }
+
+  @Override
   public Publisher<Void> close() {
     return client.deleteSession(session);
   }
@@ -91,11 +100,6 @@ public class SpannerConnection implements Connection {
 
   @Override
   public Publisher<Void> releaseSavepoint(String s) {
-    return null;
-  }
-
-  @Override
-  public Publisher<Void> rollbackTransaction() {
     return null;
   }
 

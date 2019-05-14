@@ -58,6 +58,15 @@ public interface Client {
    */
   Mono<CommitResponse> commitTransaction(Session session, Transaction transaction);
 
+
+  /**
+   * Performs a rollback on a Spanner {@link Transaction} within the provided {@link Session}.
+   * @param session The session object with which requests are made to the Spanner API.
+   * @param transaction The transaction that you want to rollback.
+   * @return {@link Mono} indicating completion of the rollback.
+   */
+  Mono<Void> rollbackTransaction(Session session, Transaction transaction);
+
   /**
    * Execute a streaming query and get partial results.
    */
