@@ -36,7 +36,10 @@ public final class DefaultCodecs implements Codecs {
 
   private final List<Codec<?>> codecs;
 
-  DefaultCodecs() {
+  /**
+   * Constructs the {@link DefaultCodecs} used for type conversions.
+   */
+  public DefaultCodecs() {
     this.codecs = Arrays.asList(
         new ArrayCodec(this, Boolean[].class),
         new ArrayCodec(this, byte[][].class),
