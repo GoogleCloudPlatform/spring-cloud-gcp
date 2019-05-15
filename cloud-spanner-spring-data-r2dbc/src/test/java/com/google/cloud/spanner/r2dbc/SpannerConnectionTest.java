@@ -59,13 +59,6 @@ public class SpannerConnectionTest {
 
   @Test
   public void createStatementDummyImplementation() {
-    SpannerConnectionConfiguration config
-        = new SpannerConnectionConfiguration.Builder()
-        .setProjectId("a-project")
-        .setInstanceName("an-instance")
-        .setDatabaseName("db")
-        .build();
-
     SpannerConnection connection = new SpannerConnection(mockClient, TEST_SESSION);
     Statement statement = connection.createStatement("not actual sql");
     assertThat(statement).isInstanceOf(SpannerStatement.class);

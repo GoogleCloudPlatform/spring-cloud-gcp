@@ -19,7 +19,10 @@ package com.google.cloud.spanner.r2dbc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import java.io.IOException;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Test for {@link SpannerConnectionConfiguration}.
@@ -66,7 +69,22 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void nonNullConstructorParametersPassPreconditions() {
+  public void passingCustomGoogleCredentials() throws IOException {
+    GoogleCredentials fakeCredentials = Mockito.mock(GoogleCredentials.class);
+
+    SpannerConnectionConfiguration configuration =
+        new SpannerConnectionConfiguration.Builder()
+            .setProjectId("project")
+            .setInstanceName("an-instance")
+            .setDatabaseName("db")
+            .setCredentials(fakeCredentials)
+            .build();
+
+    assertThat(configuration.getCredentials()).isSameAs(fakeCredentials);
+  }
+
+  @Test
+  public void nonNullConstructorParametersPassPreconditions() throws IOException {
     SpannerConnectionConfiguration config
         = new SpannerConnectionConfiguration.Builder()
         .setProjectId("project1")

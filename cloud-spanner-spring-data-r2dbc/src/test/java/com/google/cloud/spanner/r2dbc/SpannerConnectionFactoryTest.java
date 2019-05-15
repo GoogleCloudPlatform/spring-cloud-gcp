@@ -21,6 +21,8 @@ import static org.mockito.Mockito.when;
 
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.spanner.v1.Session;
+import java.io.IOException;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import reactor.core.publisher.Mono;
@@ -30,11 +32,19 @@ import reactor.core.publisher.Mono;
  */
 public class SpannerConnectionFactoryTest {
 
-  SpannerConnectionConfiguration config = new SpannerConnectionConfiguration.Builder()
-      .setProjectId("a-project")
-      .setInstanceName("an-instance")
-      .setDatabaseName("db")
-      .build();
+  private SpannerConnectionConfiguration config;
+
+  /**
+   * Sets up {@link SpannerConnectionConfiguration} for test.
+   */
+  @Before
+  public void setupConnectionConfiguration() throws IOException {
+    this.config = new SpannerConnectionConfiguration.Builder()
+        .setProjectId("a-project")
+        .setInstanceName("an-instance")
+        .setDatabaseName("db")
+        .build();
+  }
 
   @Test
   public void getMetadataReturnsSingleton() {

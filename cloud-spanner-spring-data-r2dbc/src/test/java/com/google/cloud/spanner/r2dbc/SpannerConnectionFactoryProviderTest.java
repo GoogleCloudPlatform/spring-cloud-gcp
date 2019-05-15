@@ -38,12 +38,13 @@ import org.mockito.Mockito;
  */
 public class SpannerConnectionFactoryProviderTest {
 
-  public static final ConnectionFactoryOptions SPANNER_OPTIONS = ConnectionFactoryOptions.builder()
-      .option(DRIVER, DRIVER_NAME)
-      .option(PROJECT, "project-id")
-      .option(INSTANCE, "an-instance")
-      .option(DATABASE, "db")
-      .build();
+  public static final ConnectionFactoryOptions SPANNER_OPTIONS =
+      ConnectionFactoryOptions.builder()
+          .option(DRIVER, DRIVER_NAME)
+          .option(PROJECT, "project-id")
+          .option(INSTANCE, "an-instance")
+          .option(DATABASE, "db")
+          .build();
 
   SpannerConnectionFactoryProvider spannerConnectionFactoryProvider;
 
@@ -59,16 +60,14 @@ public class SpannerConnectionFactoryProviderTest {
 
   @Test
   public void testCreate() {
-    ConnectionFactory spannerConnectionFactory
-        = this.spannerConnectionFactoryProvider.create(SPANNER_OPTIONS);
-
+    ConnectionFactory spannerConnectionFactory =
+        this.spannerConnectionFactoryProvider.create(SPANNER_OPTIONS);
     assertThat(spannerConnectionFactory).isNotNull();
     assertThat(spannerConnectionFactory).isInstanceOf(SpannerConnectionFactory.class);
   }
 
   @Test
   public void testSupportsThrowsExceptionOnNullOptions() {
-
     assertThatThrownBy(() -> {
       this.spannerConnectionFactoryProvider.supports(null);
     }).isInstanceOf(IllegalArgumentException.class)
@@ -77,20 +76,17 @@ public class SpannerConnectionFactoryProviderTest {
 
   @Test
   public void testSupportsReturnsFalseWhenNoDriverInOptions() {
-
     assertFalse(this.spannerConnectionFactoryProvider.supports(
         ConnectionFactoryOptions.builder().build()));
   }
 
   @Test
   public void testSupportsReturnsFalseWhenWrongDriverInOptions() {
-
     assertFalse(this.spannerConnectionFactoryProvider.supports(buildOptions("not spanner")));
   }
 
   @Test
   public void testSupportsReturnsTrueWhenCorrectDriverInOptions() {
-
     assertTrue(this.spannerConnectionFactoryProvider.supports(buildOptions("spanner")));
   }
 

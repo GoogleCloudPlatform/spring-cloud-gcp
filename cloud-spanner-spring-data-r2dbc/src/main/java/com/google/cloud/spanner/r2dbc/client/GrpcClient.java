@@ -39,7 +39,6 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
 import io.grpc.stub.ClientCallStreamObserver;
 import io.grpc.stub.ClientResponseObserver;
-import java.io.IOException;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -58,15 +57,14 @@ public class GrpcClient implements Client {
   /**
    * Initializes the Cloud Spanner gRPC async stub.
    */
-  public GrpcClient() throws IOException {
+  public GrpcClient(GoogleCredentials credentials) {
+    // Create blocking and async stubs using the channel
+    CallCredentials callCredentials = MoreCallCredentials.from(credentials);
+
     // Create a channel
     this.channel = ManagedChannelBuilder
         .forAddress(HOST, PORT)
         .build();
-
-    // Create blocking and async stubs using the channel
-    CallCredentials callCredentials = MoreCallCredentials
-        .from(GoogleCredentials.getApplicationDefault());
 
     // Create the asynchronous stub for Cloud Spanner
     this.spanner = SpannerGrpc.newStub(this.channel)

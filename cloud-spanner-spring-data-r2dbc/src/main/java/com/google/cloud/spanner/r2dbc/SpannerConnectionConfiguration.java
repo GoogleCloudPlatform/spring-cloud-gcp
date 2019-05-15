@@ -16,7 +16,9 @@
 
 package com.google.cloud.spanner.r2dbc;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.r2dbc.util.Assert;
+import java.io.IOException;
 
 /**
  * Configurable properties for Cloud Spanner.
@@ -28,15 +30,21 @@ public class SpannerConnectionConfiguration {
 
   private final String fullyQualifiedDbName;
 
+  private final GoogleCredentials credentials;
+
   /**
    * Basic property initializing constructor.
    *
    * @param projectId GCP project that contains the database.
    * @param instanceName instance to connect to
    * @param databaseName database to connect to.
+   * @param credentials GCP credentials to authenticate service calls with.
    */
   private SpannerConnectionConfiguration(
-      String projectId, String instanceName, String databaseName) {
+      String projectId,
+      String instanceName,
+      String databaseName,
+      GoogleCredentials credentials) {
 
     Assert.requireNonNull(projectId, "projectId must not be null");
     Assert.requireNonNull(instanceName, "instanceName must not be null");
@@ -44,6 +52,7 @@ public class SpannerConnectionConfiguration {
 
     this.fullyQualifiedDbName = String.format(
         FULLY_QUALIFIED_DB_NAME_PATTERN, projectId, instanceName, databaseName);
+    this.credentials = credentials;
   }
 
   /**
@@ -54,6 +63,10 @@ public class SpannerConnectionConfiguration {
     return this.fullyQualifiedDbName;
   }
 
+  public GoogleCredentials getCredentials() {
+    return credentials;
+  }
+
   public static class Builder {
 
     private String projectId;
@@ -61,6 +74,8 @@ public class SpannerConnectionConfiguration {
     private String instanceName;
 
     private String databaseName;
+
+    private GoogleCredentials credentials;
 
     public Builder setProjectId(String projectId) {
       this.projectId = projectId;
@@ -77,9 +92,24 @@ public class SpannerConnectionConfiguration {
       return this;
     }
 
-    public SpannerConnectionConfiguration build() {
+    public Builder setCredentials(GoogleCredentials credentials) {
+      this.credentials = credentials;
+      return this;
+    }
+
+    /**
+     * Constructs an instance of the {@link SpannerConnectionConfiguration}.
+     */
+    public SpannerConnectionConfiguration build() throws IOException {
+      if (credentials == null) {
+        this.credentials = GoogleCredentials.getApplicationDefault();
+      }
+
       return new SpannerConnectionConfiguration(
-          this.projectId, this.instanceName, this.databaseName);
+          this.projectId,
+          this.instanceName,
+          this.databaseName,
+          this.credentials);
     }
 
   }

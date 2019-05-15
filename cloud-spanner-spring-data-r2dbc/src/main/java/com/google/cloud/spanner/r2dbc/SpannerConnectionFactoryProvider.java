@@ -19,6 +19,7 @@ package com.google.cloud.spanner.r2dbc;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.cloud.spanner.r2dbc.client.GrpcClient;
 import com.google.cloud.spanner.r2dbc.util.Assert;
@@ -45,19 +46,27 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   /** Option name for GCP Spanner instance. */
   public static final Option<String> INSTANCE = Option.valueOf("instance");
 
+  /**
+   * Option specifying the location of the GCP credentials file.
+   */
+  public static final Option<GoogleCredentials> GOOGLE_CREDENTIALS =
+      Option.valueOf("google_credentials");
+
   private Client client;
 
   @Override
   public ConnectionFactory create(ConnectionFactoryOptions connectionFactoryOptions) {
-    SpannerConnectionConfiguration config = new SpannerConnectionConfiguration.Builder()
-        .setProjectId(connectionFactoryOptions.getRequiredValue(PROJECT))
-        .setInstanceName(connectionFactoryOptions.getRequiredValue(INSTANCE))
-        .setDatabaseName(connectionFactoryOptions.getRequiredValue(DATABASE))
-        .build();
     try {
+      SpannerConnectionConfiguration config = new SpannerConnectionConfiguration.Builder()
+          .setProjectId(connectionFactoryOptions.getRequiredValue(PROJECT))
+          .setInstanceName(connectionFactoryOptions.getRequiredValue(INSTANCE))
+          .setDatabaseName(connectionFactoryOptions.getRequiredValue(DATABASE))
+          .setCredentials(connectionFactoryOptions.getValue(GOOGLE_CREDENTIALS))
+          .build();
+
       if (this.client == null) {
         // GrpcClient should only be instantiated if/when a SpannerConnectionFactory is needed.
-        this.client = new GrpcClient();
+        this.client = new GrpcClient(config.getCredentials());
       }
       return new SpannerConnectionFactory(client, config);
     } catch (IOException e) {
