@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.google.cloud.spanner.r2dbc.codecs.Codecs;
 import com.google.cloud.spanner.r2dbc.codecs.DefaultCodecs;
 import com.google.protobuf.Value;
+import com.google.spanner.v1.ResultSetMetadata;
 import com.google.spanner.v1.StructType;
 import com.google.spanner.v1.StructType.Field;
 import com.google.spanner.v1.Type;
@@ -39,7 +40,10 @@ public class SpannerRowTest {
 
   @Test
   public void testInvalidIdentifier() {
-    SpannerRow row = new SpannerRow(new ArrayList<>(), StructType.getDefaultInstance());
+    SpannerRow row = new SpannerRow(
+        new ArrayList<>(),
+        new SpannerRowMetadata(ResultSetMetadata.getDefaultInstance()));
+
     assertThatThrownBy(() -> row.get(true, String.class))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("Identifier 'true' is not a valid identifier.");
@@ -47,14 +51,20 @@ public class SpannerRowTest {
 
   @Test
   public void testOutOfBoundsIndex() {
-    SpannerRow row = new SpannerRow(new ArrayList<>(), StructType.getDefaultInstance());
+    SpannerRow row = new SpannerRow(
+        new ArrayList<>(),
+        new SpannerRowMetadata(ResultSetMetadata.getDefaultInstance()));
+
     assertThatThrownBy(() -> row.get(4, String.class))
         .isInstanceOf(IndexOutOfBoundsException.class);
   }
 
   @Test
   public void testInvalidColumnLabel() {
-    SpannerRow row = new SpannerRow(new ArrayList<>(), StructType.getDefaultInstance());
+    SpannerRow row = new SpannerRow(
+        new ArrayList<>(),
+        new SpannerRowMetadata(ResultSetMetadata.getDefaultInstance()));
+
     assertThatThrownBy(() -> row.get("foobar", String.class))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("The column name foobar does not exist for the Spanner row.");
@@ -62,7 +72,8 @@ public class SpannerRowTest {
 
   @Test
   public void testIndexingIntoColumns() {
-    StructType rowMetadata = createRowMetadata(TypeCode.STRING, TypeCode.INT64, TypeCode.BOOL);
+    SpannerRowMetadata rowMetadata =
+        createRowMetadata(TypeCode.STRING, TypeCode.INT64, TypeCode.BOOL);
     List<Value> rawSpannerRow = createRawSpannerRow("Hello", 25L, true);
     SpannerRow row = new SpannerRow(rawSpannerRow, rowMetadata);
 
@@ -80,7 +91,7 @@ public class SpannerRowTest {
     return listValues;
   }
 
-  private static StructType createRowMetadata(TypeCode... types) {
+  private static SpannerRowMetadata createRowMetadata(TypeCode... types) {
     StructType.Builder structType = StructType.newBuilder();
 
     for (int i = 0; i < types.length; i++) {
@@ -92,6 +103,11 @@ public class SpannerRowTest {
       structType.addFields(field);
     }
 
-    return structType.build();
+    ResultSetMetadata resultSetMetadata =
+        ResultSetMetadata.newBuilder()
+            .setRowType(structType)
+            .build();
+
+    return new SpannerRowMetadata(resultSetMetadata);
   }
 }

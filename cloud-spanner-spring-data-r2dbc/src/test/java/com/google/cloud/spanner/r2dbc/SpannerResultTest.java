@@ -21,6 +21,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.protobuf.Value;
 import com.google.spanner.v1.ResultSetMetadata;
+import com.google.spanner.v1.StructType;
+import com.google.spanner.v1.StructType.Field;
+import com.google.spanner.v1.Type;
+import com.google.spanner.v1.TypeCode;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
@@ -35,18 +39,27 @@ public class SpannerResultTest {
 
   private Flux<List<Value>> resultSet;
 
-  private Mono<ResultSetMetadata> resultSetMetadata = Mono
-      .just(ResultSetMetadata.newBuilder().build());
+  private Mono<ResultSetMetadata> resultSetMetadata;
 
   /**
    * Setup.
    */
   @Before
   public void setup() {
-    this.resultSet = Flux
-        .just(Collections.singletonList(Value.newBuilder().setStringValue("key1").build()),
+    this.resultSet =
+        Flux.just(Collections.singletonList(Value.newBuilder().setStringValue("key1").build()),
             Collections.singletonList(Value.newBuilder().setStringValue("key2").build()));
+
+    this.resultSetMetadata = Mono.just(
+        ResultSetMetadata.newBuilder()
+            .setRowType(
+                StructType.newBuilder().addFields(
+                    Field.newBuilder()
+                        .setName("first_column")
+                        .setType(Type.newBuilder().setCode(TypeCode.STRING))))
+            .build());
   }
+
 
   @Test
   public void getRowsUpdatedTest() {
@@ -71,11 +84,22 @@ public class SpannerResultTest {
 
   @Test
   public void mapTest() {
-    String metadataString = this.resultSetMetadata.block().toString();
-    assertThat(new SpannerResult(this.resultSet, this.resultSetMetadata).map((row, metadata) ->
-        ((SpannerRow) row).getValues().get(0).getStringValue() + "-"
-            + ((SpannerRowMetadata) metadata).getRowMetadata().toString()).collectList().block())
-        .containsExactly("key1-" + metadataString, "key2-" + metadataString);
+    String columnName = this.resultSetMetadata.block()
+        .getRowType()
+        .getFields(0)
+        .getName();
+
+    List<String> result =
+        new SpannerResult(this.resultSet, this.resultSetMetadata)
+            .map((row, metadata) ->
+                row.get(0, String.class)
+                    + "-"
+                    + metadata.getColumnMetadata(0).getName())
+            .collectList()
+            .block();
+
+    assertThat(result)
+        .containsExactly("key1-" + columnName, "key2-" + columnName);
   }
 
   @Test

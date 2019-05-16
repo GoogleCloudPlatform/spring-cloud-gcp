@@ -20,10 +20,8 @@ import com.google.cloud.spanner.r2dbc.codecs.Codecs;
 import com.google.cloud.spanner.r2dbc.codecs.DefaultCodecs;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Value;
-import com.google.spanner.v1.StructType;
-import com.google.spanner.v1.StructType.Field;
+import com.google.spanner.v1.Type;
 import io.r2dbc.spi.Row;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -36,10 +34,7 @@ public class SpannerRow implements Row {
 
   private final List<Value> values;
 
-  private final StructType rowMetadata;
-
-  /** Mapping of column names to its integer index position in the row. */
-  private final HashMap<String, Integer> columnNameIndex;
+  private final SpannerRowMetadata rowMetadata;
 
   /**
    * Builds a new Spanner row.
@@ -47,53 +42,24 @@ public class SpannerRow implements Row {
    * @param values the list of values in each column.
    * @param rowMetadata the type information for each column.
    */
-  public SpannerRow(List<Value> values, StructType rowMetadata) {
+  public SpannerRow(List<Value> values, SpannerRowMetadata rowMetadata) {
     this.values = values;
     this.rowMetadata = rowMetadata;
+  }
 
-    this.columnNameIndex = new HashMap<>();
-    for (int i = 0; i < rowMetadata.getFieldsCount(); i++) {
-      Field currField = rowMetadata.getFields(i);
-      this.columnNameIndex.put(currField.getName(), i);
-    }
+  @Override
+  public <T> T get(Object identifier, Class<T> returnType) {
+    int columnIndex = rowMetadata.getColumnIndex(identifier);
+
+    Value spannerValue = values.get(columnIndex);
+    Type spannerType = (Type) rowMetadata.getColumnMetadata(identifier).getNativeTypeMetadata();
+
+    T decodedValue = codecs.decode(spannerValue, spannerType, returnType);
+    return decodedValue;
   }
 
   @VisibleForTesting
   List<Value> getValues() {
     return this.values;
-  }
-
-  @Override
-  public <T> T get(Object identifier, Class<T> type) {
-
-    int columnIndex = getColumnIndex(identifier);
-
-    Value spannerValue = values.get(columnIndex);
-    Field spannerValueMetadata = rowMetadata.getFields(columnIndex);
-
-    T decodedValue = this.codecs.decode(spannerValue, spannerValueMetadata.getType(), type);
-    return decodedValue;
-  }
-
-  private int getColumnIndex(Object identifier) {
-    if (identifier instanceof Integer) {
-      return (Integer) identifier;
-    } else if (identifier instanceof String) {
-      return getColumnIndexByName((String) identifier);
-    } else {
-      throw new IllegalArgumentException(
-          String.format("Identifier '%s' is not a valid identifier. "
-              + "Should either be an Integer index or a String column name.", identifier));
-    }
-  }
-
-  private int getColumnIndexByName(String name) {
-    if (!columnNameIndex.containsKey(name)) {
-      throw new IllegalArgumentException(
-          "The column name " + name + " does not exist for the Spanner row. "
-              + "Available columns: " + columnNameIndex.keySet());
-    }
-
-    return columnNameIndex.get(name);
   }
 }

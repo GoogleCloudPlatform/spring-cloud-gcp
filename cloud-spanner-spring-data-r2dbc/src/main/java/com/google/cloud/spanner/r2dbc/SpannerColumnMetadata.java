@@ -16,6 +16,8 @@
 
 package com.google.cloud.spanner.r2dbc;
 
+import com.google.spanner.v1.StructType.Field;
+import com.google.spanner.v1.Type;
 import io.r2dbc.spi.ColumnMetadata;
 
 /**
@@ -23,9 +25,19 @@ import io.r2dbc.spi.ColumnMetadata;
  */
 public class SpannerColumnMetadata implements ColumnMetadata {
 
-  @Override
-  public String getName() {
-    return null;
+  private final Field columnField;
+
+  public SpannerColumnMetadata(Field columnField) {
+    this.columnField = columnField;
   }
 
+  @Override
+  public String getName() {
+    return columnField.getName();
+  }
+
+  @Override
+  public Type getNativeTypeMetadata() {
+    return columnField.getType();
+  }
 }

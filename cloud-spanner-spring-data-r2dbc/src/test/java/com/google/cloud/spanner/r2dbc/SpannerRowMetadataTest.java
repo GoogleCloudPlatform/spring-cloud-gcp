@@ -17,8 +17,14 @@
 package com.google.cloud.spanner.r2dbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.spanner.v1.ResultSetMetadata;
+import com.google.spanner.v1.StructType;
+import com.google.spanner.v1.StructType.Field;
+import com.google.spanner.v1.Type;
+import com.google.spanner.v1.TypeCode;
+import io.r2dbc.spi.ColumnMetadata;
 import org.junit.Test;
 
 /**
@@ -27,16 +33,59 @@ import org.junit.Test;
 public class SpannerRowMetadataTest {
 
   @Test
-  public void getColumnMetadataDummyImplementation() {
+  public void testHandleMissingColumn() {
     SpannerRowMetadata metadata = new SpannerRowMetadata(ResultSetMetadata.newBuilder().build());
-    assertThat(metadata.getColumnMetadata("columnName"))
-        .isInstanceOf(SpannerColumnMetadata.class);
+    assertThatThrownBy(() -> metadata.getColumnMetadata("columnName"))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("The column name columnName does not exist for the Spanner row.");
   }
 
   @Test
-  public void getColumnMetadatasDummyImplementation() {
-    SpannerRowMetadata metadata = new SpannerRowMetadata(null);
-    assertThat(metadata.getColumnMetadatas()).isNull();
+  public void testHandleOutOfBoundsIndex() {
+    SpannerRowMetadata metadata = new SpannerRowMetadata(ResultSetMetadata.newBuilder().build());
+    assertThatThrownBy(() -> metadata.getColumnMetadata(4))
+        .isInstanceOf(IndexOutOfBoundsException.class);
   }
 
+  @Test
+  public void testEmptyResultSetMetadata() {
+    SpannerRowMetadata metadata = new SpannerRowMetadata(ResultSetMetadata.newBuilder().build());
+    assertThat(metadata.getColumnMetadatas()).isEmpty();
+  }
+
+  @Test
+  public void testSpannerRowMetadataRetrieval() {
+    ResultSetMetadata resultSetMetadata = buildResultSetMetadata(
+        TypeCode.INT64,
+        TypeCode.STRING,
+        TypeCode.BOOL);
+
+    SpannerRowMetadata metadata = new SpannerRowMetadata(resultSetMetadata);
+
+    ColumnMetadata column1 = metadata.getColumnMetadata("column_1");
+    assertThat(column1.getNativeTypeMetadata())
+        .isEqualTo(Type.newBuilder().setCode(TypeCode.STRING).build());
+
+    ColumnMetadata column0 = metadata.getColumnMetadata(0);
+    assertThat(column0.getName()).isEqualTo("column_0");
+    assertThat(column0.getNativeTypeMetadata()).isEqualTo(
+        Type.newBuilder().setCode(TypeCode.INT64).build());
+  }
+
+  private static ResultSetMetadata buildResultSetMetadata(TypeCode... types) {
+    StructType.Builder structType = StructType.newBuilder();
+
+    for (int i = 0; i < types.length; i++) {
+      Field field =
+          Field.newBuilder()
+              .setName("column_" + i)
+              .setType(Type.newBuilder().setCode(types[i]).build())
+              .build();
+      structType.addFields(field);
+    }
+
+    return ResultSetMetadata.newBuilder()
+        .setRowType(structType)
+        .build();
+  }
 }
