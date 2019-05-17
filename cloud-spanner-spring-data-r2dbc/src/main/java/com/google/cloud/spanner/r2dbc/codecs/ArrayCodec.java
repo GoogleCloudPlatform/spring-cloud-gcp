@@ -22,18 +22,13 @@ import com.google.protobuf.Value;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 
-final class ArrayCodec<A> extends AbstractCodec<A[]> {
+final class ArrayCodec<A> extends SpannerCodec<A[]> {
 
-  Codecs codecs;
+  private Codecs codecs;
 
   ArrayCodec(Codecs codecs, Class<A[]> klass) {
-    super(klass);
+    super(klass, TypeCode.ARRAY, null);
     this.codecs = codecs;
-  }
-
-  @Override
-  boolean doCanDecode(Type dataType) {
-    return dataType.getCode() == TypeCode.ARRAY;
   }
 
   @Override

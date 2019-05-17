@@ -20,8 +20,10 @@ import com.google.cloud.spanner.r2dbc.util.Assert;
 import com.google.protobuf.NullValue;
 import com.google.protobuf.Value;
 import com.google.spanner.v1.Type;
+import com.google.spanner.v1.TypeCode;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import reactor.util.annotation.Nullable;
@@ -31,7 +33,7 @@ import reactor.util.annotation.Nullable;
  */
 public final class DefaultCodecs implements Codecs {
 
-  static final com.google.protobuf.Value NULL_VALUE =
+  private static final com.google.protobuf.Value NULL_VALUE =
       com.google.protobuf.Value.newBuilder().setNullValue(NullValue.NULL_VALUE).build();
 
   private final List<Codec<?>> codecs;
@@ -48,13 +50,34 @@ public final class DefaultCodecs implements Codecs {
         new ArrayCodec(this, Long[].class),
         new ArrayCodec(this, String[].class),
         new ArrayCodec(this, Timestamp[].class),
-        new BooleanCodec(),
-        new BytesCodec(),
-        new DateCodec(),
-        new Float64Codec(),
-        new Int64Codec(),
-        new StringCodec(),
-        new TimestampCodec());
+        new SpannerCodec<>(Boolean.class, TypeCode.BOOL,
+            v -> Value.newBuilder().setBoolValue(v).build()),
+        new SpannerCodec<>(byte[].class, TypeCode.BYTES,
+            v -> Value.newBuilder().setStringValue(new String(v)).build()),
+        new SpannerCodec<>(LocalDate.class, TypeCode.DATE, v -> Value.newBuilder().setStringValue(
+            DateTimeFormatter.ISO_LOCAL_DATE.format(v))
+            .build()),
+        new SpannerCodec<>(Double.class, TypeCode.FLOAT64, v -> {
+          Value result;
+          if (v.isNaN()) {
+            result = Value.newBuilder().setStringValue("NaN").build();
+          } else if (v == Double.NEGATIVE_INFINITY) {
+            result = Value.newBuilder().setStringValue("-Infinity").build();
+          } else if (v == Double.POSITIVE_INFINITY) {
+            result = Value.newBuilder().setStringValue("Infinity").build();
+          } else {
+            result = Value.newBuilder().setNumberValue(v).build();
+          }
+          return result;
+        }),
+        new SpannerCodec<>(Long.class, TypeCode.INT64,
+            v -> Value.newBuilder().setStringValue(Long.toString(v)).build()),
+        new SpannerCodec<>(String.class, TypeCode.STRING,
+            v -> Value.newBuilder().setStringValue(v).build()),
+        new SpannerCodec<>(Timestamp.class, TypeCode.TIMESTAMP,
+            v -> Value.newBuilder()
+                .setStringValue(ValueUtils.TIMESTAMP_FORMATTER.format(v.toInstant())).build())
+    );
   }
 
   @Override
@@ -72,7 +95,7 @@ public final class DefaultCodecs implements Codecs {
     }
 
     throw new IllegalArgumentException(
-        String.format("Cannot decode value of type %s", type.getName()));
+        String.format("Cannot decode value of type %s to %s", spannerType, type.getName()));
   }
 
   @Override

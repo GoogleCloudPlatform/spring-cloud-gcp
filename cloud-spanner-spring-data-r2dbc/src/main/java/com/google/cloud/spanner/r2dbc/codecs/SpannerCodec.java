@@ -19,14 +19,20 @@ package com.google.cloud.spanner.r2dbc.codecs;
 import com.google.cloud.spanner.r2dbc.util.Assert;
 import com.google.protobuf.Value;
 import com.google.spanner.v1.Type;
+import com.google.spanner.v1.TypeCode;
+import java.util.function.Function;
 import reactor.util.annotation.Nullable;
 
-abstract class AbstractCodec<T> implements Codec<T> {
+class SpannerCodec<T> implements Codec<T> {
 
   private final Class<T> type;
+  private TypeCode typeCode;
+  private Function<T, Value> doEncode;
 
-  AbstractCodec(Class<T> type) {
+  SpannerCodec(Class<T> type, TypeCode typeCode, Function<T, Value> doEncode) {
     this.type = Assert.requireNonNull(type, "type must not be null");
+    this.typeCode = Assert.requireNonNull(typeCode, "typeCode must not be null");
+    this.doEncode = doEncode;
   }
 
   @Override
@@ -72,9 +78,15 @@ abstract class AbstractCodec<T> implements Codec<T> {
     return this.type;
   }
 
-  abstract boolean doCanDecode(Type dataType);
+  private boolean doCanDecode(Type dataType) {
+    return dataType.getCode() == this.typeCode;
+  }
 
-  abstract T doDecode(Value value, Type spannerType, Class<? extends T> type);
+  T doDecode(Value value, Type spannerType, Class<? extends T> type) {
+    return (T) ValueUtils.decodeValue(spannerType, value);
+  }
 
-  abstract Value doEncode(T value);
+  Value doEncode(T value) {
+    return this.doEncode.apply(value);
+  }
 }
