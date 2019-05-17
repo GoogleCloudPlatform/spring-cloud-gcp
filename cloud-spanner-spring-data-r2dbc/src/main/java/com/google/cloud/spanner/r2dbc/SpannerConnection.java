@@ -95,7 +95,7 @@ public class SpannerConnection implements Connection {
 
   @Override
   public Statement createStatement(String sql) {
-    return new SpannerStatement(sql);
+    return new SpannerStatement(this.client, this.session, this.currentTransaction, sql);
   }
 
   @Override

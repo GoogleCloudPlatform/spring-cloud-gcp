@@ -62,4 +62,9 @@ public class SpannerRow implements Row {
   List<Value> getValues() {
     return this.values;
   }
+
+  public SpannerRowMetadata getRowMetadata() {
+    return this.rowMetadata;
+  }
+
 }

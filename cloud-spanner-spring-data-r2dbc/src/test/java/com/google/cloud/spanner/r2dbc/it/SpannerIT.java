@@ -61,6 +61,15 @@ public class SpannerIT {
 
   private static final String TEST_DATABASE = "testdb";
 
+  private static final ConnectionFactory connectionFactory =
+      ConnectionFactories.get(ConnectionFactoryOptions.builder()
+          // TODO: consider whether to bring autodiscovery of project ID
+          .option(Option.valueOf("project"), ServiceOptions.getDefaultProjectId())
+          .option(DRIVER, DRIVER_NAME)
+          .option(INSTANCE, TEST_INSTANCE)
+          .option(DATABASE, TEST_DATABASE)
+          .build());
+
   private SpannerStub spanner;
 
   /**
@@ -84,18 +93,11 @@ public class SpannerIT {
 
   @Test
   public void testSessionManagement() {
-    ConnectionFactory connectionFactory =
-        ConnectionFactories.get(ConnectionFactoryOptions.builder()
-            // TODO: consider whether to bring autodiscovery of project ID
-            .option(Option.valueOf("project"), ServiceOptions.getDefaultProjectId())
-            .option(DRIVER, DRIVER_NAME)
-            .option(INSTANCE, TEST_INSTANCE)
-            .option(DATABASE, TEST_DATABASE)
-            .build());
 
-    assertThat(connectionFactory).isInstanceOf(SpannerConnectionFactory.class);
 
-    Mono<Connection> connection = (Mono<Connection>) connectionFactory.create();
+    assertThat(this.connectionFactory).isInstanceOf(SpannerConnectionFactory.class);
+
+    Mono<Connection> connection = (Mono<Connection>) this.connectionFactory.create();
     SpannerConnection spannerConnection = (SpannerConnection)connection.block();
     String activeSessionName = spannerConnection.getSession().getName();
 
@@ -106,6 +108,24 @@ public class SpannerIT {
 
     activeSessions = getSessionNames();
     assertThat(activeSessions).doesNotContain(activeSessionName);
+  }
+
+  @Test
+  public void testQuerying() {
+    List<String> result = Mono.from(this.connectionFactory.create())
+        .map(connection -> connection.createStatement("SELECT title, author FROM books"))
+        .flatMapMany(statement -> statement.execute())
+        .flatMap(spannerResult -> spannerResult.map(
+            (r, meta) -> r.get(0, String.class) + " by " + r.get(1, String.class)
+        ))
+        .doOnNext(s -> System.out.println("Book: " + s))
+        .collectList()
+        .block();
+
+    assertThat(result).containsExactlyInAnyOrder(
+        "JavaScript: The Good Parts by Douglas Crockford",
+        "Effective Java by Joshua Bloch");
+
   }
 
   private List<String> getSessionNames() {

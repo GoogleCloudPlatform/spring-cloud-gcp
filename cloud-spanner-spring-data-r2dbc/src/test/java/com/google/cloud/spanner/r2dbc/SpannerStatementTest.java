@@ -17,8 +17,21 @@
 package com.google.cloud.spanner.r2dbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.cloud.spanner.r2dbc.client.Client;
+import com.google.protobuf.Value;
+import com.google.spanner.v1.PartialResultSet;
+import com.google.spanner.v1.ResultSetMetadata;
+import com.google.spanner.v1.Session;
+import com.google.spanner.v1.StructType;
+import com.google.spanner.v1.StructType.Field;
+import com.google.spanner.v1.Type;
+import com.google.spanner.v1.TypeCode;
 import org.junit.Test;
+import org.mockito.Mockito;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -26,12 +39,34 @@ import reactor.core.publisher.Mono;
  */
 public class SpannerStatementTest {
 
+  private static final Session TEST_SESSION =
+      Session.newBuilder().setName("project/session/1234").build();
+
   @Test
   public void executeDummyImplementation() {
-    SpannerStatement statement = new SpannerStatement("not actual sql");
-    Mono result = Mono.from(statement.execute());
+
+    Client mockClient = Mockito.mock(Client.class);
+    String sql = "select book from library";
+    PartialResultSet partialResultSet = PartialResultSet.newBuilder()
+        .setMetadata(ResultSetMetadata.newBuilder().setRowType(StructType.newBuilder()
+            .addFields(
+                Field.newBuilder().setName("book")
+                    .setType(Type.newBuilder().setCode(TypeCode.STRING)))))
+        .addValues(Value.newBuilder().setStringValue("Odyssey"))
+        .build();
+    when(mockClient.executeStreamingSql(TEST_SESSION, Mono.empty(), sql))
+        .thenReturn(Flux.just(partialResultSet));
+
+    SpannerStatement statement
+        = new SpannerStatement(mockClient, TEST_SESSION, Mono.empty(),sql);
+
+    Mono<SpannerResult> result = (Mono<SpannerResult>)statement.execute();
+
     assertThat(result).isNotNull();
-    assertThat(result.block()).isInstanceOf(SpannerResult.class);
+
+    result.block().map((r, m) -> (String)r.get(0)).blockFirst().equals("Odyssey");
+
+    verify(mockClient).executeStreamingSql(TEST_SESSION, Mono.empty(), sql);
   }
 
 }

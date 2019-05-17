@@ -17,7 +17,7 @@
 package com.google.cloud.spanner.r2dbc.client;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.util.function.Consumer;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * Test for {@link GrpcClient}.
@@ -72,6 +72,9 @@ public class GrpcClientTest {
 
     ExecuteSqlRequest request = ExecuteSqlRequest.newBuilder().build();
 
+    String sessionName = "/session/1234";
+    Session session = Session.newBuilder().setName(sessionName).build();
+    String sql = "select book from library";
     SpannerImplBase spannerSpy = doTest(new SpannerImplBase() {
           @Override
           public void executeStreamingSql(ExecuteSqlRequest request,
@@ -81,14 +84,16 @@ public class GrpcClientTest {
           }
         },
         // call the method under test
-        grpcClient -> Flux.from(grpcClient.executeStreamingSql(request)).blockFirst()
+        grpcClient -> grpcClient.executeStreamingSql(session, Mono.empty(), sql).blockFirst()
     );
 
     // verify the service was called correctly
     ArgumentCaptor<ExecuteSqlRequest> requestCaptor = ArgumentCaptor
         .forClass(ExecuteSqlRequest.class);
     verify(spannerSpy).executeStreamingSql(requestCaptor.capture(), any());
-    assertSame(request, requestCaptor.getValue());
+    assertEquals(sql, requestCaptor.getValue().getSql());
+    assertEquals(sessionName, requestCaptor.getValue().getSession());
+    assertTrue(requestCaptor.getValue().getTransaction().getSingleUse().getReadOnly().getStrong());
   }
 
   /**

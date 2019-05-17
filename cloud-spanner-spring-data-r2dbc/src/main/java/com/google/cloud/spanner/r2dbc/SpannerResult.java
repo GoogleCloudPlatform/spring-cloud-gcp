@@ -17,12 +17,9 @@
 package com.google.cloud.spanner.r2dbc;
 
 import com.google.cloud.spanner.r2dbc.util.Assert;
-import com.google.protobuf.Value;
-import com.google.spanner.v1.ResultSetMetadata;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
-import java.util.List;
 import java.util.function.BiFunction;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
@@ -34,9 +31,7 @@ import reactor.core.publisher.Mono;
  */
 public class SpannerResult implements Result {
 
-  private final Flux<List<Value>> resultRows;
-
-  private final Mono<SpannerRowMetadata> spannerRowMetadata;
+  private final Flux<SpannerRow> resultRows;
 
   private final Mono<Integer> rowsUpdated;
 
@@ -45,12 +40,8 @@ public class SpannerResult implements Result {
    *
    * @param resultRows the underlying result from Cloud Spanner.
    */
-  public SpannerResult(Flux<List<Value>> resultRows, Mono<ResultSetMetadata> resultSetMetadata) {
-    Assert.requireNonNull(resultRows, "A non-null flux of rows is required.");
-    Assert.requireNonNull(resultSetMetadata, "Non-null row metadata is required.").cache();
-
-    this.resultRows = resultRows;
-    this.spannerRowMetadata = resultSetMetadata.map(SpannerRowMetadata::new);
+  public SpannerResult(Flux<SpannerRow> resultRows) {
+    this.resultRows = Assert.requireNonNull(resultRows, "A non-null flux of rows is required.");
     this.rowsUpdated = Mono.just(0);
   }
 
@@ -61,7 +52,6 @@ public class SpannerResult implements Result {
    */
   public SpannerResult(Mono<Integer> rowsUpdated) {
     this.resultRows = null;
-    this.spannerRowMetadata = null;
     this.rowsUpdated = Assert.requireNonNull(rowsUpdated, "Non-null number of rows is required.");
   }
 
@@ -77,9 +67,6 @@ public class SpannerResult implements Result {
       return Flux.empty();
     }
 
-    return Flux.combineLatest(
-        this.spannerRowMetadata,
-        this.resultRows,
-        (metadata, row) -> f.apply(new SpannerRow(row, metadata), metadata));
+    return this.resultRows.map(row -> f.apply(row, ((SpannerRow)row).getRowMetadata()));
   }
 }

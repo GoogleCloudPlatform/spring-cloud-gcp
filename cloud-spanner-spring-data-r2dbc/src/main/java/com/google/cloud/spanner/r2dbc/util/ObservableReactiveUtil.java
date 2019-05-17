@@ -16,8 +16,12 @@
 
 package com.google.cloud.spanner.r2dbc.util;
 
+import io.grpc.stub.ClientCallStreamObserver;
+import io.grpc.stub.ClientResponseObserver;
 import io.grpc.stub.StreamObserver;
 import java.util.function.Consumer;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.MonoSink;
 
@@ -39,6 +43,59 @@ public class ObservableReactiveUtil {
     return Mono.create(sink -> {
       remoteCall.accept(new UnaryStreamObserver(sink));
     });
+  }
+
+  /**
+   * This will go away in favor of Mike's implementation.
+   * @param remoteCall call to make
+   * @param <RequestT> request type
+   * @param <ResponseT> response type
+   * @return
+   */
+  public static <RequestT, ResponseT> Flux<ResponseT> streamingCall(
+      Consumer<StreamObserver<ResponseT>> remoteCall) {
+
+    return Flux.create(sink -> {
+      StreamingObserver observer = new StreamingObserver(sink);
+      remoteCall.accept(observer);
+      sink.onRequest(demand -> observer.request(demand));
+    });
+  }
+
+  static class StreamingObserver<RequestT, ResponseT>
+      implements ClientResponseObserver<RequestT, ResponseT>  {
+    ClientCallStreamObserver<RequestT> rsObserver;
+    FluxSink<ResponseT> sink;
+
+    public StreamingObserver(FluxSink<ResponseT> sink) {
+      this.sink = sink;
+    }
+
+    @Override
+    public void onNext(ResponseT value) {
+      sink.next(value);
+    }
+
+    @Override
+    public void onError(Throwable t) {
+      sink.error(t);
+    }
+
+    @Override
+    public void onCompleted() {
+      sink.complete();
+    }
+
+    @Override
+    public void beforeStart(ClientCallStreamObserver<RequestT> requestStream) {
+      this.rsObserver = requestStream;
+      requestStream.disableAutoInboundFlowControl();
+      sink.onCancel(() -> requestStream.cancel(null, null));
+    }
+
+    public void request(long n) {
+      this.rsObserver.request(n > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int)n);
+    }
   }
 
   /**
