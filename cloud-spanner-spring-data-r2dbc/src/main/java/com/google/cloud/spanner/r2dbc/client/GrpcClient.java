@@ -39,8 +39,10 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
 import io.grpc.stub.ClientCallStreamObserver;
 import io.grpc.stub.ClientResponseObserver;
+import java.io.IOException;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
 
 /**
@@ -69,6 +71,17 @@ public class GrpcClient implements Client {
     // Create the asynchronous stub for Cloud Spanner
     this.spanner = SpannerGrpc.newStub(this.channel)
         .withCallCredentials(callCredentials);
+  }
+
+
+  /**
+   * Constructor that builds the client from a user-specified {@code SpannerStub}.
+   *
+   * @param spanner The asynchronous gRPC Spanner client stub.
+   */
+  public GrpcClient(SpannerStub spanner) throws IOException {
+    this.spanner = spanner;
+    this.channel = null;
   }
 
   @Override
@@ -145,36 +158,60 @@ public class GrpcClient implements Client {
   @Override
   public Publisher<PartialResultSet> executeStreamingSql(ExecuteSqlRequest request) {
     return Flux.create(sink -> {
-      ClientResponseObserver<ExecuteSqlRequest, PartialResultSet> clientResponseObserver =
-          new ClientResponseObserver<ExecuteSqlRequest, PartialResultSet>() {
-            @Override
-            public void onNext(PartialResultSet value) {
-              sink.next(value);
-            }
+      SinkResponseObserver responseObserver = new SinkResponseObserver<>(sink);
 
-            @Override
-            public void onError(Throwable t) {
-              sink.error(t);
-            }
+      sink.onCancel(
+          () -> responseObserver.getRequestStream().cancel("Flux requested cancel.", null));
 
-            @Override
-            public void onCompleted() {
-              sink.complete();
-            }
+      this.spanner.executeStreamingSql(request, responseObserver);
 
-            @Override
-            public void beforeStart(ClientCallStreamObserver<ExecuteSqlRequest> requestStream) {
-              requestStream.disableAutoInboundFlowControl();
-              sink.onRequest(demand -> requestStream.request((int) demand));
-              sink.onCancel(() -> requestStream.cancel(null, null));
-            }
-          };
-      this.spanner.executeStreamingSql(request, clientResponseObserver);
+      // must be invoked after the actual method so that the stream is already started
+      sink.onRequest(demand -> responseObserver.getRequestStream().request((int) demand));
     });
+  }
+
+  private static final class SinkResponseObserver<ReqT, RespT> implements
+      ClientResponseObserver<ReqT, RespT> {
+
+    private FluxSink<RespT> sink;
+    private ClientCallStreamObserver<ReqT> requestStream;
+
+    public SinkResponseObserver(FluxSink<RespT> sink) {
+      this.sink = sink;
+    }
+
+    @Override
+    public void onNext(RespT value) {
+      sink.next(value);
+    }
+
+    @Override
+    public void onError(Throwable t) {
+      sink.error(t);
+    }
+
+    @Override
+    public void onCompleted() {
+      sink.complete();
+    }
+
+    @Override
+    public void beforeStart(ClientCallStreamObserver<ReqT> requestStream) {
+      this.requestStream = requestStream;
+      requestStream.disableAutoInboundFlowControl();
+    }
+
+    public ClientCallStreamObserver<ReqT> getRequestStream() {
+      return requestStream;
+    }
   }
 
   @Override
   public Mono<Void> close() {
-    return Mono.fromRunnable(() -> this.channel.shutdownNow());
+    return Mono.fromRunnable(() -> {
+      if (this.channel != null) {
+        this.channel.shutdownNow();
+      }
+    });
   }
 }
