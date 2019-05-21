@@ -20,69 +20,49 @@ import com.google.cloud.spanner.r2dbc.SpannerRow;
 import com.google.spanner.v1.PartialResultSet;
 import org.reactivestreams.Subscription;
 import reactor.core.CoreSubscriber;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 
 /**
  * Provides a stream of Cloud Spanner rows based on the input stream of {@link PartialResultSet}s.
  */
-public class PartialResultFluxConverter {
+public class PartialResultFluxConverter implements CoreSubscriber<PartialResultSet> {
 
-  private Flux<PartialResultSet> results;
-
-  private PartialResultRowExtractor rowExtractor = new PartialResultRowExtractor();
+  private final PartialResultRowExtractor rowExtractor = new PartialResultRowExtractor();
 
   private Subscription spannerSubscription;
 
+  private final FluxSink<SpannerRow> sink;
+
   /**
    * Creates a converter from a given {@link PartialResultSet} flux.
-   * @param results the flux to convert
+   * @param sink the flux sink
    */
-  public PartialResultFluxConverter(Flux<PartialResultSet> results) {
-    this.results = results;
+  public PartialResultFluxConverter(FluxSink<SpannerRow> sink) {
+    this.sink = sink;
   }
 
-  /**
-   * Returns a flux of proper rows based on the input flux of partial result sets.
-   * @return the flux of Spanner rows
-   */
-  public Flux<SpannerRow> toRows() {
-    // TODO: backpressure support will go here.
-
-    return Flux.create(sink -> {
-
-      results.subscribe(new CoreSubscriber<PartialResultSet>() {
-
-        @Override
-        public void onSubscribe(Subscription subscription) {
-          PartialResultFluxConverter.this.spannerSubscription = subscription;
-          // initial result
-          PartialResultFluxConverter.this.spannerSubscription.request(1);
-        }
-
-        @Override
-        public void onNext(PartialResultSet partialResultSet) {
-
-          PartialResultFluxConverter.this.rowExtractor
-              .extractCompleteRows(partialResultSet).forEach(sink::next);
-
-          // no demand management yet; just request one at a time
-          PartialResultFluxConverter.this.spannerSubscription.request(1);
-        }
-
-        @Override
-        public void onError(Throwable throwable) {
-          sink.error(throwable);
-        }
-
-        @Override
-        public void onComplete() {
-          sink.complete();
-        }
-      });
-
-
-    });
+  @Override
+  public void onSubscribe(Subscription s) {
+    spannerSubscription = s;
+    // initial result
+    spannerSubscription.request(1);
   }
 
+  @Override
+  public void onNext(PartialResultSet partialResultSet) {
+    PartialResultFluxConverter.this.rowExtractor.emitRows(partialResultSet).forEach(sink::next);
 
+    // no demand management yet; just request one at a time
+    spannerSubscription.request(1);
+  }
+
+  @Override
+  public void onError(Throwable t) {
+    sink.error(t);
+  }
+
+  @Override
+  public void onComplete() {
+    sink.complete();
+  }
 }

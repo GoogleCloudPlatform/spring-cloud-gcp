@@ -74,7 +74,6 @@ public class GrpcClient implements Client {
         .withCallCredentials(callCredentials);
   }
 
-
   /**
    * Constructor that builds the client from a user-specified {@code SpannerStub}.
    *

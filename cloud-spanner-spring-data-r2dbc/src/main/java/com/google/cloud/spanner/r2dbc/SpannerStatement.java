@@ -88,10 +88,11 @@ public class SpannerStatement implements Statement {
     Flux<PartialResultSet> result
         = client.executeStreamingSql(this.session, this.transaction, this.sql);
 
-    PartialResultFluxConverter rsTracker = new PartialResultFluxConverter(result);
     // Then use a different SpannerResult constructor (this might be more difficult because the
     // update row stats come as the last PartialResultSet, in which case SpannerResult might need
     // only a single constructor that takes a flux of rows and a mono of the # rows updated).
-    return Mono.just(new SpannerResult(rsTracker.toRows()));
+    return Mono
+        .just(new SpannerResult(
+            Flux.create(sink -> result.subscribe(new PartialResultFluxConverter(sink)))));
   }
 }
