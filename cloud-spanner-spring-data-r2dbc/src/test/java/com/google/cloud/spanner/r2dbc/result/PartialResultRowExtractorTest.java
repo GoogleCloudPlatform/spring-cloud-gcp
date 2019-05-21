@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.spanner.r2dbc.SpannerColumnMetadata;
 import com.google.cloud.spanner.r2dbc.SpannerRow;
+import com.google.cloud.spanner.r2dbc.util.ConvertingFluxAdapter;
 import com.google.protobuf.ListValue;
 import com.google.protobuf.Value;
 import com.google.spanner.v1.PartialResultSet;
@@ -38,7 +39,7 @@ import reactor.core.publisher.Flux;
 /**
  * Tests the partial result flux converter.
  */
-public class PartialResultFluxConverterTest {
+public class PartialResultRowExtractorTest {
 
   // These are the expected final rows' values
   final Value a1 = Value.newBuilder().setBoolValue(false).build();
@@ -185,7 +186,9 @@ public class PartialResultFluxConverterTest {
 
   private void verifyRows(Flux<PartialResultSet> inputs) {
     List<SpannerRow> results = Flux.<SpannerRow>create(
-        sink -> inputs.subscribe(new PartialResultFluxConverter(sink))).collectList()
+        sink -> inputs
+            .subscribe(new ConvertingFluxAdapter<>(sink, new PartialResultRowExtractor())))
+        .collectList()
         .block();
 
     List<ColumnMetadata> columnMetadata = this.resultSetMetadata.getRowType().getFieldsList()

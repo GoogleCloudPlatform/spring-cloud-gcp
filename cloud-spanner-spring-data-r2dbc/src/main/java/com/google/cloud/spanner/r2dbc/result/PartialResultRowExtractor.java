@@ -24,11 +24,12 @@ import com.google.protobuf.Value.KindCase;
 import com.google.spanner.v1.PartialResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
- * NOT thread-safe. But it likely does not need to be.
+ * Converts a stream of {@link PartialResultSet} to a stream of {@link SpannerRow}.
  */
-public class PartialResultRowExtractor {
+public class PartialResultRowExtractor implements Function<PartialResultSet, List<SpannerRow>> {
 
   private SpannerRowMetadata metadata = null;
   private int rowSize;
@@ -46,8 +47,9 @@ public class PartialResultRowExtractor {
   }
 
   /**
-   * Assembles as many complete rows as possible, given previous incomplete fields and a new
-   * {@link PartialResultSet}.
+   * Assembles as many complete rows as possible, given previous incomplete fields and a new {@link
+   * PartialResultSet}.
+   *
    * @param partialResultSet a not yet processed result set
    */
   public List<SpannerRow> emitRows(PartialResultSet partialResultSet) {
@@ -166,5 +168,10 @@ public class PartialResultRowExtractor {
         a.addAll(b);
       }
     }
+  }
+
+  @Override
+  public List<SpannerRow> apply(PartialResultSet partialResultSet) {
+    return emitRows(partialResultSet);
   }
 }
