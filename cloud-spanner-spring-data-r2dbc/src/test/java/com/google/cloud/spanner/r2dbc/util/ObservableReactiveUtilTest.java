@@ -19,6 +19,9 @@ package com.google.cloud.spanner.r2dbc.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
 import reactor.core.publisher.Mono;
 
@@ -56,4 +59,43 @@ public class ObservableReactiveUtilTest {
         .hasMessage("Unary gRPC call completed without yielding a value or an error");
   }
 
+  @Test
+  public void unaryCallRetries() {
+    StatusRuntimeException retryableError = new StatusRuntimeException(
+        Status.INTERNAL.withDescription("HTTP/2 error code: INTERNAL_ERROR"), null);
+
+    AtomicInteger timesRetried = new AtomicInteger(0);
+
+    Mono<Integer> resultMono = ObservableReactiveUtil.unaryCall(
+        obs -> {
+          // Test must retry twice before success.
+          if (timesRetried.get() < 3) {
+            obs.onError(retryableError);
+            timesRetried.addAndGet(1);
+          } else {
+            obs.onNext(100);
+          }
+        });
+
+    int result = resultMono.block();
+    assertThat(timesRetried.get()).isEqualTo(3);
+    assertThat(result).isEqualTo(100);
+  }
+
+  @Test
+  public void unaryCallUnretryableError() {
+    AtomicInteger timesTried = new AtomicInteger(0);
+    Mono<Integer> resultMono = ObservableReactiveUtil.unaryCall(
+        obs -> {
+          if (timesTried.get() < 3) {
+            obs.onError(new IllegalArgumentException());
+            timesTried.addAndGet(1);
+          } else {
+            obs.onNext(100);
+          }
+        });
+
+    assertThatThrownBy(() -> resultMono.block()).isInstanceOf(IllegalArgumentException.class);
+    assertThat(timesTried.get()).isEqualTo(1);
+  }
 }

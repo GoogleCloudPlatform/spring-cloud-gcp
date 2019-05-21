@@ -16,19 +16,30 @@
 
 package com.google.cloud.spanner.r2dbc.util;
 
+import static com.google.cloud.spanner.r2dbc.util.SpannerExceptionUtil.isRetryable;
+
 import io.grpc.stub.ClientCallStreamObserver;
 import io.grpc.stub.ClientResponseObserver;
 import io.grpc.stub.StreamObserver;
+import java.time.Duration;
 import java.util.function.Consumer;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.MonoSink;
+import reactor.retry.Retry;
 
 /**
  * Converter from a gRPC async calls to Reactor primitives ({@link Mono}).
  */
 public class ObservableReactiveUtil {
+
+  // Retry settings inspired from:
+  // https://github.com/googleapis/googleapis/blob/master/google/spanner/v1/spanner_gapic.yaml#L48
+  private static final Retry retryStrategy =
+      Retry.onlyIf(retryContext -> isRetryable(retryContext.exception()))
+          .exponentialBackoffWithJitter(Duration.ofSeconds(1), Duration.ofSeconds(32))
+          .timeout(Duration.ofSeconds(60));
 
   /**
    * Invokes a lambda that in turn issues a remote call, directing the response to a {@link Mono}
@@ -40,9 +51,8 @@ public class ObservableReactiveUtil {
    */
   public static <ResponseT> Mono<ResponseT> unaryCall(
       Consumer<StreamObserver<ResponseT>> remoteCall) {
-    return Mono.create(sink -> {
-      remoteCall.accept(new UnaryStreamObserver(sink));
-    });
+    return Mono.create(sink -> remoteCall.accept(new UnaryStreamObserver(sink)))
+        .retryWhen(retryStrategy);
   }
 
   /**
