@@ -17,17 +17,18 @@
 package com.google.cloud.spanner.r2dbc.client;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+import com.google.protobuf.ByteString;
 import com.google.spanner.v1.CreateSessionRequest;
 import com.google.spanner.v1.ExecuteSqlRequest;
 import com.google.spanner.v1.PartialResultSet;
 import com.google.spanner.v1.Session;
 import com.google.spanner.v1.SpannerGrpc;
 import com.google.spanner.v1.SpannerGrpc.SpannerImplBase;
+import com.google.spanner.v1.Transaction;
 import io.grpc.ManagedChannel;
 import io.grpc.Server;
 import io.grpc.inprocess.InProcessChannelBuilder;
@@ -73,6 +74,7 @@ public class GrpcClientTest {
     ExecuteSqlRequest request = ExecuteSqlRequest.newBuilder().build();
 
     String sessionName = "/session/1234";
+    ByteString transId = ByteString.copyFrom("trans_id".getBytes());
     Session session = Session.newBuilder().setName(sessionName).build();
     String sql = "select book from library";
     SpannerImplBase spannerSpy = doTest(new SpannerImplBase() {
@@ -84,8 +86,10 @@ public class GrpcClientTest {
           }
         },
         // call the method under test
-        grpcClient -> grpcClient.executeStreamingSql(session, Mono.empty(), sql).blockFirst()
-    );
+        grpcClient -> grpcClient.executeStreamingSql(session,
+            Mono.just(Transaction.newBuilder().setId(
+            transId).build()), sql).blockFirst()
+        );
 
     // verify the service was called correctly
     ArgumentCaptor<ExecuteSqlRequest> requestCaptor = ArgumentCaptor
@@ -93,7 +97,7 @@ public class GrpcClientTest {
     verify(spannerSpy).executeStreamingSql(requestCaptor.capture(), any());
     assertEquals(sql, requestCaptor.getValue().getSql());
     assertEquals(sessionName, requestCaptor.getValue().getSession());
-    assertTrue(requestCaptor.getValue().getTransaction().getSingleUse().getReadOnly().getStrong());
+    assertEquals(transId, requestCaptor.getValue().getTransaction().getId());
   }
 
   /**

@@ -69,16 +69,20 @@ public class SpannerResultTest {
   @Test
   public void getRowsUpdatedTest() {
     assertThat(
-        ((Mono) new SpannerResult(this.resultSet).getRowsUpdated()).block())
-        .isEqualTo(0);
-    assertThat(((Mono) new SpannerResult(Mono.just(2)).getRowsUpdated()).block())
+        ((Mono) new SpannerResult(this.resultSet,Mono.just(2)).getRowsUpdated()).block())
         .isEqualTo(2);
   }
 
   @Test
   public void nullResultSetTest() {
-    assertThatThrownBy(() -> new SpannerResult((Flux<SpannerRow>)null))
+    assertThatThrownBy(() -> new SpannerResult(null, Mono.empty()))
         .hasMessage("A non-null flux of rows is required.");
+  }
+
+  @Test
+  public void nullRowsTest() {
+    assertThatThrownBy(() -> new SpannerResult(Flux.empty(),null))
+        .hasMessage("A non-null mono of rows updated is required.");
   }
 
   @Test
@@ -90,7 +94,7 @@ public class SpannerResultTest {
         .getName();
 
     List<String> result =
-        new SpannerResult(this.resultSet)
+        new SpannerResult(this.resultSet, Mono.just(0))
             .map((row, metadata) ->
                 row.get(0, String.class)
                     + "-"
@@ -101,11 +105,5 @@ public class SpannerResultTest {
     assertThat(result)
         .containsExactly("key1-" + columnName, "key2-" + columnName);
 
-  }
-
-  @Test
-  public void noResultsMapTest() {
-    assertThat(new SpannerResult(Mono.just(2)).map((x, y) -> "unused"))
-        .isEqualTo(Flux.empty());
   }
 }

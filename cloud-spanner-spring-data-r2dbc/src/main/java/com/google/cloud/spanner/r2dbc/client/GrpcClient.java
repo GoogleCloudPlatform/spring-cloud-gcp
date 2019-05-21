@@ -177,7 +177,8 @@ public class GrpcClient implements Client {
               this.spanner.executeStreamingSql(request, responseObserver);
 
               // must be invoked after the actual method so that the stream is already started
-              sink.onRequest(demand -> responseObserver.getRequestStream().request((int) demand));
+              sink.onRequest(demand -> responseObserver.getRequestStream()
+                  .request((int) Math.min(demand, Integer.MAX_VALUE)));
           }));
   }
 

@@ -36,23 +36,15 @@ public class SpannerResult implements Result {
   private final Mono<Integer> rowsUpdated;
 
   /**
-   * Constructor for read-only query execution.
+   * Constructor for query execution.
    *
    * @param resultRows the underlying result from Cloud Spanner.
-   */
-  public SpannerResult(Flux<SpannerRow> resultRows) {
-    this.resultRows = Assert.requireNonNull(resultRows, "A non-null flux of rows is required.");
-    this.rowsUpdated = Mono.just(0);
-  }
-
-  /**
-   * Constructor for DML query execution.
-   *
    * @param rowsUpdated the number of rows affected by the operation.
    */
-  public SpannerResult(Mono<Integer> rowsUpdated) {
-    this.resultRows = null;
-    this.rowsUpdated = Assert.requireNonNull(rowsUpdated, "Non-null number of rows is required.");
+  public SpannerResult(Flux<SpannerRow> resultRows, Mono<Integer> rowsUpdated) {
+    this.resultRows = Assert.requireNonNull(resultRows, "A non-null flux of rows is required.");
+    this.rowsUpdated = Assert.requireNonNull(rowsUpdated,
+        "A non-null mono of rows updated is required.").cache();
   }
 
   @Override
@@ -67,6 +59,6 @@ public class SpannerResult implements Result {
       return Flux.empty();
     }
 
-    return this.resultRows.map(row -> f.apply(row, ((SpannerRow)row).getRowMetadata()));
+    return this.resultRows.map(row -> f.apply(row, row.getRowMetadata()));
   }
 }

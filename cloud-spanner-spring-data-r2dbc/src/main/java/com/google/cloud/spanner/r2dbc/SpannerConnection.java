@@ -55,7 +55,7 @@ public class SpannerConnection implements Connection {
   @Override
   public Publisher<Void> beginTransaction() {
     return Mono.defer(() -> {
-      currentTransaction = client.beginTransaction(session);
+      currentTransaction = client.beginTransaction(session).cache();
       return currentTransaction.then();
     });
   }
