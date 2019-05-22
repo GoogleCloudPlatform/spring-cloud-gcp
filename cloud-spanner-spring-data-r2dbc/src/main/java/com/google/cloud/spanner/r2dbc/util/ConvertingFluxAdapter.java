@@ -53,19 +53,19 @@ public class ConvertingFluxAdapter<T, R> implements CoreSubscriber<T> {
 
   @Override
   public void onNext(T input) {
-    converter.apply(input).forEach(sink::next);
+    this.converter.apply(input).forEach(this.sink::next);
 
     // no demand management yet; just request one at a time
-    subscription.request(1);
+    this.subscription.request(1);
   }
 
   @Override
   public void onError(Throwable t) {
-    sink.error(t);
+    this.sink.error(t);
   }
 
   @Override
   public void onComplete() {
-    sink.complete();
+    this.sink.complete();
   }
 }

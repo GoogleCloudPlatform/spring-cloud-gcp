@@ -88,7 +88,7 @@ public class SpannerStatement implements Statement {
   @Override
   public Publisher<? extends Result> execute() {
     Flux<PartialResultSet> result
-        = client.executeStreamingSql(this.session, this.transaction, this.sql);
+        = this.client.executeStreamingSql(this.session, this.transaction, this.sql);
 
     return Mono
         .just(new SpannerResult(

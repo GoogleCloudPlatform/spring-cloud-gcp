@@ -67,7 +67,7 @@ public class SpannerConnectionTest {
 
   @Test
   public void executeStatementReturnsWorkingStatementWithCorrectQuery() {
-    SpannerConnection connection = new SpannerConnection(mockClient, TEST_SESSION);
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
     String sql = "select book from library";
     PartialResultSet partialResultSet = PartialResultSet.newBuilder()
         .setMetadata(ResultSetMetadata.newBuilder().setRowType(StructType.newBuilder()
@@ -90,7 +90,7 @@ public class SpannerConnectionTest {
 
   @Test
   public void beginAndCommitTransactions() {
-    SpannerConnection connection = new SpannerConnection(mockClient, TEST_SESSION);
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
 
     Mono.from(connection.commitTransaction()).block();
     verify(this.mockClient, never()).commitTransaction(any(), any());
@@ -105,7 +105,7 @@ public class SpannerConnectionTest {
 
   @Test
   public void rollbackTransactions() {
-    SpannerConnection connection = new SpannerConnection(mockClient, TEST_SESSION);
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
 
     Mono.from(connection.rollbackTransaction()).block();
     verify(this.mockClient, never()).rollbackTransaction(any(), any());

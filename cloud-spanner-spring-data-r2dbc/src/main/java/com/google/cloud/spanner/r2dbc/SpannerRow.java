@@ -48,10 +48,11 @@ public class SpannerRow implements Row {
 
   @Override
   public <T> T get(Object identifier, Class<T> returnType) {
-    int columnIndex = rowMetadata.getColumnIndex(identifier);
+    int columnIndex = this.rowMetadata.getColumnIndex(identifier);
 
-    Value spannerValue = values.get(columnIndex);
-    Type spannerType = (Type) rowMetadata.getColumnMetadata(identifier).getNativeTypeMetadata();
+    Value spannerValue = this.values.get(columnIndex);
+    Type spannerType = (Type) this.rowMetadata.getColumnMetadata(identifier)
+            .getNativeTypeMetadata();
 
     T decodedValue = codecs.decode(spannerValue, spannerType, returnType);
     return decodedValue;

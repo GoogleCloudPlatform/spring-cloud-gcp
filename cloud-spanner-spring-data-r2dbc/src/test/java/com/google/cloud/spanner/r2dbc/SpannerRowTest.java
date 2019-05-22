@@ -43,8 +43,7 @@ public class SpannerRowTest {
   @Test
   public void testInvalidIdentifier() {
     SpannerRow row = new SpannerRow(
-        new ArrayList<>(),
-        rowMetadata);
+        new ArrayList<>(), this.rowMetadata);
 
     assertThatThrownBy(() -> row.get(true, String.class))
         .isInstanceOf(IllegalArgumentException.class)
@@ -54,8 +53,7 @@ public class SpannerRowTest {
   @Test
   public void testOutOfBoundsIndex() {
     SpannerRow row = new SpannerRow(
-        new ArrayList<>(),
-        rowMetadata);
+        new ArrayList<>(), this.rowMetadata);
 
     assertThatThrownBy(() -> row.get(4, String.class))
         .isInstanceOf(IndexOutOfBoundsException.class);
@@ -64,8 +62,7 @@ public class SpannerRowTest {
   @Test
   public void testInvalidColumnLabel() {
     SpannerRow row = new SpannerRow(
-        new ArrayList<>(),
-        rowMetadata);
+        new ArrayList<>(), this.rowMetadata);
 
     assertThatThrownBy(() -> row.get("foobar", String.class))
         .isInstanceOf(IllegalArgumentException.class)

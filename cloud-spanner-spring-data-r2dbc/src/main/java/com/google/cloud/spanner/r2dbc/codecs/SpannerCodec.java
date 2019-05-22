@@ -44,7 +44,7 @@ class SpannerCodec<T> implements Codec<T> {
 
   @Override
   public boolean canEncode(Object value) {
-    Assert.requireNonNull(type, "type must not be null");
+    Assert.requireNonNull(this.type, "type must not be null");
 
     return this.type.isInstance(value);
   }

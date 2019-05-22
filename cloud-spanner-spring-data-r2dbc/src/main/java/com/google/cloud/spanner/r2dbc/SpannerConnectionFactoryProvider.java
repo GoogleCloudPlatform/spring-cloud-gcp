@@ -68,7 +68,7 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
         // GrpcClient should only be instantiated if/when a SpannerConnectionFactory is needed.
         this.client = new GrpcClient(config.getCredentials());
       }
-      return new SpannerConnectionFactory(client, config);
+      return new SpannerConnectionFactory(this.client, config);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

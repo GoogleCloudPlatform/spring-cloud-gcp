@@ -33,11 +33,11 @@ public class SpannerColumnMetadata implements ColumnMetadata {
 
   @Override
   public String getName() {
-    return columnField.getName();
+    return this.columnField.getName();
   }
 
   @Override
   public Type getNativeTypeMetadata() {
-    return columnField.getType();
+    return this.columnField.getType();
   }
 }

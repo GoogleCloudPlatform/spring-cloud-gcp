@@ -55,7 +55,7 @@ public class SpannerConnectionFactoryProviderTest {
   public void setUp() {
     this.spannerConnectionFactoryProvider = new SpannerConnectionFactoryProvider();
     Client mockClient = Mockito.mock(Client.class);
-    spannerConnectionFactoryProvider.setClient(mockClient);
+    this.spannerConnectionFactoryProvider.setClient(mockClient);
   }
 
   @Test

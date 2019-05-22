@@ -64,7 +64,7 @@ public class SpannerConnectionConfiguration {
   }
 
   public GoogleCredentials getCredentials() {
-    return credentials;
+    return this.credentials;
   }
 
   public static class Builder {
@@ -101,7 +101,7 @@ public class SpannerConnectionConfiguration {
      * Constructs an instance of the {@link SpannerConnectionConfiguration}.
      */
     public SpannerConnectionConfiguration build() throws IOException {
-      if (credentials == null) {
+      if (this.credentials == null) {
         this.credentials = GoogleCredentials.getApplicationDefault();
       }
 

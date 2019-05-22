@@ -83,24 +83,24 @@ public class ObservableReactiveUtil {
 
     @Override
     public void onNext(ResponseT value) {
-      sink.next(value);
+      this.sink.next(value);
     }
 
     @Override
     public void onError(Throwable t) {
-      sink.error(t);
+      this.sink.error(t);
     }
 
     @Override
     public void onCompleted() {
-      sink.complete();
+      this.sink.complete();
     }
 
     @Override
     public void beforeStart(ClientCallStreamObserver<RequestT> requestStream) {
       this.rsObserver = requestStream;
       requestStream.disableAutoInboundFlowControl();
-      sink.onCancel(() -> requestStream.cancel(null, null));
+      this.sink.onCancel(() -> requestStream.cancel(null, null));
     }
 
     public void request(long n) {
@@ -140,7 +140,7 @@ public class ObservableReactiveUtil {
 
     @Override
     public void onCompleted() {
-      if (!terminalEventReceived) {
+      if (!this.terminalEventReceived) {
         this.sink.error(
             new RuntimeException("Unary gRPC call completed without yielding a value or an error"));
       }

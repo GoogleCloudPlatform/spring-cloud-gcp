@@ -39,7 +39,7 @@ public class SpannerConnectionFactory implements ConnectionFactory {
 
   @Override
   public Publisher<SpannerConnection> create() {
-    return this.client.createSession(config.getFullyQualifiedDatabaseName())
+    return this.client.createSession(this.config.getFullyQualifiedDatabaseName())
       .map(session -> new SpannerConnection(this.client, session));
   }
 

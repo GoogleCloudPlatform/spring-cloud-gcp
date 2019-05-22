@@ -58,12 +58,12 @@ public class SpannerRowMetadata implements RowMetadata {
   @Override
   public ColumnMetadata getColumnMetadata(Object identifier) {
     int columnIndex = getColumnIndex(identifier);
-    return columnMetadatas.get(columnIndex);
+    return this.columnMetadatas.get(columnIndex);
   }
 
   @Override
   public Iterable<? extends ColumnMetadata> getColumnMetadatas() {
-    return Collections.unmodifiableList(columnMetadatas);
+    return Collections.unmodifiableList(this.columnMetadatas);
   }
 
   /**
@@ -82,12 +82,12 @@ public class SpannerRowMetadata implements RowMetadata {
   }
 
   private int getColumnIndexByName(String name) {
-    if (!columnNameIndex.containsKey(name)) {
+    if (!this.columnNameIndex.containsKey(name)) {
       throw new IllegalArgumentException(
           "The column name " + name + " does not exist for the Spanner row. "
-              + "Available columns: " + columnNameIndex.keySet());
+              + "Available columns: " + this.columnNameIndex.keySet());
     }
 
-    return columnNameIndex.get(name);
+    return this.columnNameIndex.get(name);
   }
 }

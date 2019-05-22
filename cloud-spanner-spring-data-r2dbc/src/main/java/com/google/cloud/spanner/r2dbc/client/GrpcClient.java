@@ -194,17 +194,17 @@ public class GrpcClient implements Client {
 
     @Override
     public void onNext(RespT value) {
-      sink.next(value);
+      this.sink.next(value);
     }
 
     @Override
     public void onError(Throwable t) {
-      sink.error(t);
+      this.sink.error(t);
     }
 
     @Override
     public void onCompleted() {
-      sink.complete();
+      this.sink.complete();
     }
 
     @Override
@@ -214,7 +214,7 @@ public class GrpcClient implements Client {
     }
 
     public ClientCallStreamObserver<ReqT> getRequestStream() {
-      return requestStream;
+      return this.requestStream;
     }
   }
 

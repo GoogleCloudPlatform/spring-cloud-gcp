@@ -39,10 +39,10 @@ public class PartialResultRowExtractor implements Function<PartialResultSet, Lis
   private KindCase incompletePieceKind;
 
   private void appendToRow(Value val, List<SpannerRow> rows) {
-    currentRow.add(val);
-    if (currentRow.size() == rowSize) {
-      rows.add(new SpannerRow(currentRow, metadata));
-      currentRow = new ArrayList<>();
+    this.currentRow.add(val);
+    if (this.currentRow.size() == this.rowSize) {
+      rows.add(new SpannerRow(this.currentRow, this.metadata));
+      this.currentRow = new ArrayList<>();
     }
   }
 
@@ -57,7 +57,7 @@ public class PartialResultRowExtractor implements Function<PartialResultSet, Lis
     ensureMetadataAvailable(partialResultSet);
     int availableCount = partialResultSet.getValuesCount();
 
-    if (prevIsChunk) {
+    if (this.prevIsChunk) {
       concatFirstIncompletePiece(partialResultSet);
     }
 
@@ -70,34 +70,35 @@ public class PartialResultRowExtractor implements Function<PartialResultSet, Lis
     emitMiddleWholePieces(partialResultSet, rows, availableCount);
 
     Value lastVal = partialResultSet.getValues(availableCount - 1);
-    if (!prevIsChunk && partialResultSet.getChunkedValue()) {
+    if (!this.prevIsChunk && partialResultSet.getChunkedValue()) {
       initializeIncompletePiece(lastVal);
     } else if (availableCount > 1 && !partialResultSet.getChunkedValue()) {
       appendToRow(lastVal, rows);
     }
 
-    prevIsChunk = partialResultSet.getChunkedValue();
+    this.prevIsChunk = partialResultSet.getChunkedValue();
     return rows;
   }
 
   private void initializeIncompletePiece(Value lastVal) {
-    incompletePieceKind = lastVal.getKindCase();
-    incompletePiece = lastVal.getKindCase() == KindCase.STRING_VALUE ? lastVal.getStringValue() :
-        new ArrayList<>(lastVal.getListValue().getValuesList());
+    this.incompletePieceKind = lastVal.getKindCase();
+    this.incompletePiece =
+            lastVal.getKindCase() == KindCase.STRING_VALUE ? lastVal.getStringValue() :
+                    new ArrayList<>(lastVal.getListValue().getValuesList());
   }
 
   private void emitCompleteFirstValue(PartialResultSet partialResultSet, List<SpannerRow> rows) {
-    Value val = prevIsChunk ? incompletePieceKind == KindCase.STRING_VALUE
-        ? Value.newBuilder().setStringValue((String) incompletePiece)
+    Value val = this.prevIsChunk ? this.incompletePieceKind == KindCase.STRING_VALUE
+        ? Value.newBuilder().setStringValue((String) this.incompletePiece)
         .build()
         : Value.newBuilder()
             .setListValue(
                 ListValue.newBuilder()
-                    .addAllValues((List<Value>) incompletePiece))
+                    .addAllValues((List<Value>) this.incompletePiece))
             .build()
         : partialResultSet.getValues(0);
     appendToRow(val, rows);
-    prevIsChunk = false;
+    this.prevIsChunk = false;
   }
 
   private void emitMiddleWholePieces(PartialResultSet partialResultSet, List<SpannerRow> rows,
@@ -112,22 +113,22 @@ public class PartialResultRowExtractor implements Function<PartialResultSet, Lis
   private void concatFirstIncompletePiece(PartialResultSet partialResultSet) {
     Value firstPiece = partialResultSet.getValues(0);
     // Concat code from client lib
-    if (incompletePieceKind == KindCase.STRING_VALUE) {
-      incompletePiece = incompletePiece + firstPiece.getStringValue();
+    if (this.incompletePieceKind == KindCase.STRING_VALUE) {
+      this.incompletePiece = this.incompletePiece + firstPiece.getStringValue();
     } else {
-      concatLists((List<Value>) incompletePiece,
+      concatLists((List<Value>) this.incompletePiece,
           firstPiece.getListValue().getValuesList());
     }
   }
 
   private void ensureMetadataAvailable(PartialResultSet partialResultSet) {
-    if (metadata == null) {
+    if (this.metadata == null) {
       if (!partialResultSet.hasMetadata()) {
         throw new IllegalStateException("The first partial result set for a query must contain the "
             + "metadata but it was null.");
       }
-      metadata = new SpannerRowMetadata(partialResultSet.getMetadata());
-      rowSize = partialResultSet.getMetadata().getRowType().getFieldsCount();
+      this.metadata = new SpannerRowMetadata(partialResultSet.getMetadata());
+      this.rowSize = partialResultSet.getMetadata().getRowType().getFieldsCount();
     }
   }
 

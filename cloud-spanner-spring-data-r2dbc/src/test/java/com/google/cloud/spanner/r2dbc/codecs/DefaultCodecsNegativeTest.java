@@ -36,19 +36,19 @@ public class DefaultCodecsNegativeTest {
 
   @Test
   public void encodeException() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectMessage("Cannot encode parameter of type java.math.BigDecimal");
+    this.exception.expect(IllegalArgumentException.class);
+    this.exception.expectMessage("Cannot encode parameter of type java.math.BigDecimal");
 
-    codecs.encode(BigDecimal.valueOf(100));
+    this.codecs.encode(BigDecimal.valueOf(100));
   }
 
   @Test
   public void decodeException() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectMessage("Cannot decode value of type code: STRING\n"
+    this.exception.expect(IllegalArgumentException.class);
+    this.exception.expectMessage("Cannot decode value of type code: STRING\n"
         + " to java.lang.Integer");
 
-    Value value = codecs.encode("abc");
-    codecs.decode(value, Type.newBuilder().setCode(TypeCode.STRING).build(), Integer.class);
+    Value value = this.codecs.encode("abc");
+    this.codecs.decode(value, Type.newBuilder().setCode(TypeCode.STRING).build(), Integer.class);
   }
 }

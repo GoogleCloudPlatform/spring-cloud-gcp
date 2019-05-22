@@ -8,6 +8,10 @@
     <property name="headerFile" value="${checkstyle.header.file}"/>
   </module>
   <module name="TreeWalker">
+    <module name="RequireThis">
+      <property name="checkMethods" value="false"/>
+      <property name="validateOnlyOverlapping" value="false"/>
+    </module>
     <module name="UnusedImports"/>
   </module>
 </module>

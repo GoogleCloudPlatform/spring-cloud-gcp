@@ -40,7 +40,7 @@ final class ArrayCodec<A> extends SpannerCodec<A[]> {
   Value doEncode(A[] value) {
     Builder builder = ListValue.newBuilder();
     for (A val : value) {
-      builder.addValues(codecs.encode(val));
+      builder.addValues(this.codecs.encode(val));
     }
     return Value.newBuilder().setListValue(builder.build()).build();
   }

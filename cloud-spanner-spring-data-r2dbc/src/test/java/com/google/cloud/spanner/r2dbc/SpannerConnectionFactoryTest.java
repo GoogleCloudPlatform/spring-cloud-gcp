@@ -49,7 +49,7 @@ public class SpannerConnectionFactoryTest {
   @Test
   public void getMetadataReturnsSingleton() {
     Client mockClient = Mockito.mock(Client.class);
-    SpannerConnectionFactory factory = new SpannerConnectionFactory(mockClient, config);
+    SpannerConnectionFactory factory = new SpannerConnectionFactory(mockClient, this.config);
 
     assertThat(factory.getMetadata()).isSameAs(SpannerConnectionFactoryMetadata.INSTANCE);
   }

@@ -55,32 +55,32 @@ public class SpannerConnection implements Connection {
   @Override
   public Publisher<Void> beginTransaction() {
     return Mono.defer(() -> {
-      currentTransaction = client.beginTransaction(session).cache();
-      return currentTransaction.then();
+      this.currentTransaction = this.client.beginTransaction(this.session).cache();
+      return this.currentTransaction.then();
     });
   }
 
   @Override
   public Publisher<Void> commitTransaction() {
-    return currentTransaction
-        .flatMap(transaction -> client.commitTransaction(session, transaction))
+    return this.currentTransaction
+        .flatMap(transaction -> this.client.commitTransaction(this.session, transaction))
         .switchIfEmpty(Mono.fromRunnable(() ->
-            logger.warn("commitTransaction() is a no-op; called with no transaction active.")))
+          this.logger.warn("commitTransaction() is a no-op; called with no transaction active.")))
         .then();
   }
 
   @Override
   public Publisher<Void> rollbackTransaction() {
-    return currentTransaction
-        .flatMap(transaction -> client.rollbackTransaction(session, transaction))
+    return this.currentTransaction
+        .flatMap(transaction -> this.client.rollbackTransaction(this.session, transaction))
         .switchIfEmpty(Mono.fromRunnable(() ->
-            logger.warn("rollbackTransaction() is a no-op; called with no transaction active.")))
+          this.logger.warn("rollbackTransaction() is a no-op; called with no transaction active.")))
         .then();
   }
 
   @Override
   public Publisher<Void> close() {
-    return client.deleteSession(session);
+    return this.client.deleteSession(this.session);
   }
 
   @Override

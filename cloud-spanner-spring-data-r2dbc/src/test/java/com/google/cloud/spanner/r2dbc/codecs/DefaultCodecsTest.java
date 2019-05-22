@@ -97,12 +97,12 @@ public class DefaultCodecsTest {
 
   @Test
   public void codecsTest() {
-    Value value = codecs.encode(val);
-    Value nullValue = codecs.encode(null);
+    Value value = this.codecs.encode(this.val);
+    Value nullValue = this.codecs.encode(null);
 
-    assertThat(codecs.decode(value, valueType, type)).isEqualTo(val);
+    assertThat(this.codecs.decode(value, this.valueType, this.type)).isEqualTo(this.val);
 
-    assertThat(codecs.decode(nullValue, valueType, type)).isNull();
+    assertThat(this.codecs.decode(nullValue, this.valueType, this.type)).isNull();
   }
 
 }
