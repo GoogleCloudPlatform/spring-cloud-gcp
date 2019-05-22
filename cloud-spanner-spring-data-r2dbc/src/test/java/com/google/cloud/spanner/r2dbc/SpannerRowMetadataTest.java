@@ -51,6 +51,7 @@ public class SpannerRowMetadataTest {
   public void testEmptyResultSetMetadata() {
     SpannerRowMetadata metadata = new SpannerRowMetadata(ResultSetMetadata.newBuilder().build());
     assertThat(metadata.getColumnMetadatas()).isEmpty();
+    assertThat(metadata.getColumnNames()).isEmpty();
   }
 
   @Test
@@ -70,6 +71,22 @@ public class SpannerRowMetadataTest {
     assertThat(column0.getName()).isEqualTo("column_0");
     assertThat(column0.getNativeTypeMetadata()).isEqualTo(
         Type.newBuilder().setCode(TypeCode.INT64).build());
+  }
+
+  @Test
+  public void getColumnNamesReturnsCorrectNamesWhenColumnsPresent() {
+    ResultSetMetadata resultSetMetadata
+        = buildResultSetMetadata(TypeCode.INT64, TypeCode.STRING, TypeCode.BOOL);
+    SpannerRowMetadata metadata = new SpannerRowMetadata(resultSetMetadata);
+
+    assertThat(metadata.getColumnNames()).containsExactly("column_0", "column_1", "column_2");
+  }
+
+  @Test
+  public void getColumnNamesReturnsEmptyCollectionWhenNoColumns() {
+    SpannerRowMetadata metadata = new SpannerRowMetadata(ResultSetMetadata.getDefaultInstance());
+
+    assertThat(metadata.getColumnNames()).isEmpty();
   }
 
   private static ResultSetMetadata buildResultSetMetadata(TypeCode... types) {

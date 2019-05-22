@@ -90,6 +90,11 @@ public class SpannerConnectionFactoryProviderTest {
     assertTrue(this.spannerConnectionFactoryProvider.supports(buildOptions("spanner")));
   }
 
+  @Test
+  public void getDriverReturnsSpanner() {
+    assertThat(this.spannerConnectionFactoryProvider.getDriver()).isEqualTo(DRIVER_NAME);
+  }
+
   private static ConnectionFactoryOptions buildOptions(String driverName) {
     return ConnectionFactoryOptions.builder()
         .option(ConnectionFactoryOptions.DRIVER, driverName)

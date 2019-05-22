@@ -82,6 +82,11 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
     return DRIVER_NAME.equals(driver);
   }
 
+  @Override
+  public String getDriver() {
+    return DRIVER_NAME;
+  }
+
   @VisibleForTesting
   void setClient(Client client) {
     this.client = client;

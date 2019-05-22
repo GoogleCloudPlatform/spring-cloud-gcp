@@ -20,10 +20,11 @@ import com.google.spanner.v1.ResultSetMetadata;
 import com.google.spanner.v1.StructType.Field;
 import io.r2dbc.spi.ColumnMetadata;
 import io.r2dbc.spi.RowMetadata;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * {@link RowMetadata} implementation for Cloud Spanner.
@@ -32,27 +33,35 @@ public class SpannerRowMetadata implements RowMetadata {
 
   private final List<ColumnMetadata> columnMetadatas;
 
+  private final List<String> columnNames;
+
   /**
    * Mapping of column names to its integer index position in the row.
    */
   private final HashMap<String, Integer> columnNameIndex;
 
   /**
-   * Constructor.
+   * Extracts column metadata and initializes lookup data structures from the passed-in
+   * {@link ResultSetMetadata}.
    *
    * @param resultSetMetadata the row from Cloud Spanner.
    */
   public SpannerRowMetadata(ResultSetMetadata resultSetMetadata) {
-    this.columnMetadatas = resultSetMetadata.getRowType().getFieldsList()
-        .stream()
-        .map(SpannerColumnMetadata::new)
-        .collect(Collectors.toList());
 
     this.columnNameIndex = new HashMap<>();
+    List<ColumnMetadata> tmpColumnMetadata = new ArrayList<>();
+    List<String> tmpColumnNames = new ArrayList<>();
+
     for (int i = 0; i < resultSetMetadata.getRowType().getFieldsCount(); i++) {
-      Field currField = resultSetMetadata.getRowType().getFields(i);
-      this.columnNameIndex.put(currField.getName(), i);
+      Field field = resultSetMetadata.getRowType().getFields(i);
+      SpannerColumnMetadata metadata = new SpannerColumnMetadata(field);
+      tmpColumnMetadata.add(metadata);
+      tmpColumnNames.add(field.getName());
+      this.columnNameIndex.put(field.getName(), i);
     }
+
+    this.columnMetadatas = Collections.unmodifiableList(tmpColumnMetadata);
+    this.columnNames = Collections.unmodifiableList(tmpColumnNames);
   }
 
   @Override
@@ -64,6 +73,11 @@ public class SpannerRowMetadata implements RowMetadata {
   @Override
   public Iterable<? extends ColumnMetadata> getColumnMetadatas() {
     return Collections.unmodifiableList(this.columnMetadatas);
+  }
+
+  @Override
+  public Collection<String> getColumnNames() {
+    return this.columnNames;
   }
 
   /**
