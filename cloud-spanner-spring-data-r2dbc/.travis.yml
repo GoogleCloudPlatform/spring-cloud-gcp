@@ -1,4 +1,4 @@
-languages: java
+language: java
 
 jdk:
   - oraclejdk8
@@ -8,9 +8,18 @@ branches:
     - master
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_efeaa5860646_key -iv $encrypted_efeaa5860646_iv -in admin.json.enc -out admin.json -d
-  - export GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/admin.json
-  - export GOOGLE_CLOUD_PROJECT=cloud-spanner-r2dbc-ci
+  - if [ "$TRAVIS_SECURE_ENV_VARS" == "true" ]; then
+      openssl aes-256-cbc -K $encrypted_efeaa5860646_key -iv $encrypted_efeaa5860646_iv -in admin.json.enc -out admin.json -d;
+      export GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/admin.json;
+      export GOOGLE_CLOUD_PROJECT=cloud-spanner-r2dbc-ci;
+    fi;
+
+install:
+  - ./mvnw clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -q
 
 script:
-  - mvn clean verify -B -V -q
+  - if [ "$TRAVIS_SECURE_ENV_VARS" == "true" ]; then
+      ./mvnw verify -B -V -q;
+    else
+      ./mvnw verify -B -V -q -DskipITs;
+    fi;
