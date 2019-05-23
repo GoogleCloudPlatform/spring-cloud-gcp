@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.assertj.core.util.Objects;
+import java.util.stream.StreamSupport;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
 
@@ -196,10 +196,14 @@ public class PartialResultRowExtractorTest {
         .map(SpannerColumnMetadata::new)
         .collect(Collectors.toList());
 
-    assertThat(
-        Objects.areEqual(columnMetadata, results.get(0).getRowMetadata().getColumnMetadatas()));
-    assertThat(
-        Objects.areEqual(columnMetadata, results.get(1).getRowMetadata().getColumnMetadatas()));
+    List<String> expectedColNames = columnMetadata.stream().map(ColumnMetadata::getName)
+        .collect(Collectors.toList());
+
+    results.forEach(row -> assertThat(
+        StreamSupport.stream(row.getRowMetadata().getColumnMetadatas().spliterator(), false)
+            .map(
+                ColumnMetadata::getName).collect(Collectors.toList()))
+        .isEqualTo(expectedColNames));
 
     assertThat(results.get(0).getValues()).containsExactly(this.a1, this.a2, this.a3);
     assertThat(results.get(1).getValues()).containsExactly(this.b1, this.b2, this.b3);
