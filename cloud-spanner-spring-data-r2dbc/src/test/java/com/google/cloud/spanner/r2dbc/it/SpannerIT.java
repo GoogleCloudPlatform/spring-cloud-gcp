@@ -166,7 +166,7 @@ public class SpannerIT {
         .flatMap(c -> Mono.from(c.createStatement("DELETE FROM books WHERE true").execute()))
         .cast(SpannerResult.class);
 
-    assertThat(deleteResult.map(r -> Mono.from(r.getRowsUpdated()).block()).block()).isEqualTo(2);
+    assertThat(deleteResult.flatMap(r -> Mono.from(r.getRowsUpdated())).block()).isEqualTo(2);
   }
 
   @Test
@@ -184,6 +184,21 @@ public class SpannerIT {
 
     List<String> rowsReturned = result.map((row, metadata) -> row.toString()).collectList().block();
     assertThat(rowsReturned).isEmpty();
+  }
+
+  @Test
+  public void testEmptySelect() {
+    List<String> result = Mono.from(this.connectionFactory.create())
+        .map(connection -> connection.createStatement(
+            "SELECT title, author FROM books where author = 'Nobody P. Smith'"))
+        .flatMapMany(statement -> statement.execute())
+        .flatMap(spannerResult -> spannerResult.map(
+            (r, meta) -> r.get(0, String.class) + " by " + r.get(1, String.class)
+        ))
+        .collectList()
+        .block();
+
+    assertThat(result).isEmpty();
   }
 
   private List<String> getSessionNames() {

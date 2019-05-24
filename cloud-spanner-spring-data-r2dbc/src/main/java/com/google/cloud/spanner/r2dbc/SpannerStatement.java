@@ -19,7 +19,6 @@ package com.google.cloud.spanner.r2dbc;
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.cloud.spanner.r2dbc.result.PartialResultRowExtractor;
 import com.google.spanner.v1.PartialResultSet;
-import com.google.spanner.v1.ResultSetStats.RowCountCase;
 import com.google.spanner.v1.Session;
 import com.google.spanner.v1.Transaction;
 import io.r2dbc.spi.Result;
@@ -96,10 +95,12 @@ public class SpannerStatement implements Statement {
           }
 
           PartialResultSet firstPartialResultSet = signal.get();
-          if (hasUpdatedRowCount(firstPartialResultSet)) {
+          if (isDmlQuery(firstPartialResultSet)) {
             Mono<Integer> rowsChanged =
-                flux.next().map(partialResultSet ->
-                    Math.toIntExact(partialResultSet.getStats().getRowCountExact()));
+                flux.last()
+                    .map(partialResultSet ->
+                        Math.toIntExact(partialResultSet.getStats().getRowCountExact()));
+
             return Mono.just(new SpannerResult(Flux.empty(), rowsChanged));
           } else {
             return Mono.just(new SpannerResult(
@@ -110,8 +111,10 @@ public class SpannerStatement implements Statement {
         .next();
   }
 
-  private static boolean hasUpdatedRowCount(PartialResultSet firstPartialResultSet) {
-    return firstPartialResultSet.hasStats()
-        && firstPartialResultSet.getStats().getRowCountCase() != RowCountCase.ROWCOUNT_NOT_SET;
+  /**
+   * Returns whether we think the query is a DML query.
+   */
+  private static boolean isDmlQuery(PartialResultSet firstPartialResultSet) {
+    return firstPartialResultSet.getMetadata().getRowType().getFieldsList().isEmpty();
   }
 }
