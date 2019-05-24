@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.publisher.PublisherProbe;
 
 /**
  * Test for {@link SpannerConnection}.
@@ -89,11 +90,27 @@ public class SpannerConnectionTest {
   }
 
   @Test
+  public void noopCommitTransactionWhenTransactionNotStarted() {
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
+
+    // No-op commit when connection is not started.
+    Mono.from(connection.commitTransaction()).block();
+    verify(this.mockClient, never()).commitTransaction(any(), any());
+  }
+
+  @Test
   public void beginAndCommitTransactions() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
 
-    Mono.from(connection.commitTransaction()).block();
-    verify(this.mockClient, never()).commitTransaction(any(), any());
+    PublisherProbe<Transaction> beginTransactionProbe = PublisherProbe.of(
+        Mono.just(Transaction.getDefaultInstance()));
+    PublisherProbe<CommitResponse> commitTransactionProbe = PublisherProbe.of(
+        Mono.just(CommitResponse.getDefaultInstance()));
+
+    when(this.mockClient.beginTransaction(TEST_SESSION))
+        .thenReturn(beginTransactionProbe.mono());
+    when(this.mockClient.commitTransaction(TEST_SESSION,  Transaction.getDefaultInstance()))
+        .thenReturn(commitTransactionProbe.mono());
 
     Mono.from(connection.beginTransaction()).block();
     Mono.from(connection.commitTransaction()).block();
@@ -101,11 +118,23 @@ public class SpannerConnectionTest {
         .beginTransaction(TEST_SESSION);
     verify(this.mockClient, times(1))
         .commitTransaction(TEST_SESSION, Transaction.getDefaultInstance());
+
+    beginTransactionProbe.assertWasSubscribed();
+    commitTransactionProbe.assertWasSubscribed();
   }
 
   @Test
   public void rollbackTransactions() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
+
+    PublisherProbe<Transaction> beginTransactionProbe = PublisherProbe.of(
+        Mono.just(Transaction.getDefaultInstance()));
+    PublisherProbe<Void> rollbackProbe = PublisherProbe.empty();
+
+    when(this.mockClient.beginTransaction(TEST_SESSION))
+        .thenReturn(beginTransactionProbe.mono());
+    when(this.mockClient.rollbackTransaction(TEST_SESSION, Transaction.getDefaultInstance()))
+        .thenReturn(rollbackProbe.mono());
 
     Mono.from(connection.rollbackTransaction()).block();
     verify(this.mockClient, never()).rollbackTransaction(any(), any());
@@ -116,5 +145,9 @@ public class SpannerConnectionTest {
         .beginTransaction(TEST_SESSION);
     verify(this.mockClient, times(1))
         .rollbackTransaction(TEST_SESSION, Transaction.getDefaultInstance());
+
+    beginTransactionProbe.assertWasSubscribed();
+    rollbackProbe.assertWasSubscribed();
   }
+
 }
