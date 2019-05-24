@@ -23,6 +23,7 @@ import com.google.protobuf.Value;
 import com.google.protobuf.Value.KindCase;
 import com.google.spanner.v1.PartialResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -53,6 +54,10 @@ public class PartialResultRowExtractor implements Function<PartialResultSet, Lis
    * @param partialResultSet a not yet processed result set
    */
   public List<SpannerRow> emitRows(PartialResultSet partialResultSet) {
+    if (partialResultSet.getValuesList().isEmpty()) {
+      return Collections.emptyList();
+    }
+
     List<SpannerRow> rows = new ArrayList<>();
     ensureMetadataAvailable(partialResultSet);
     int availableCount = partialResultSet.getValuesCount();

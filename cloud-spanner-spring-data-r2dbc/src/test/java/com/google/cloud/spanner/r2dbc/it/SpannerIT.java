@@ -94,8 +94,6 @@ public class SpannerIT {
 
   @Test
   public void testSessionManagement() {
-
-
     assertThat(this.connectionFactory).isInstanceOf(SpannerConnectionFactory.class);
 
     Mono<Connection> connection = (Mono<Connection>) this.connectionFactory.create();
@@ -113,7 +111,6 @@ public class SpannerIT {
 
   @Test
   public void testQuerying() {
-
     Mono.from(this.connectionFactory.create())
         .delayUntil(c -> c.beginTransaction())
         .delayUntil(c -> Mono.from(c.createStatement("DELETE FROM books WHERE true").execute())
@@ -170,6 +167,23 @@ public class SpannerIT {
         .cast(SpannerResult.class);
 
     assertThat(deleteResult.map(r -> Mono.from(r.getRowsUpdated()).block()).block()).isEqualTo(2);
+  }
+
+  @Test
+  public void testNoopUpdate() {
+    Mono<SpannerResult> noopUpdateResult = Mono.from(this.connectionFactory.create())
+        .delayUntil(c -> c.beginTransaction())
+        .flatMap(c -> Mono.from(c.createStatement(
+            "UPDATE BOOKS set author = 'blah2' where title = 'asdasdf_dont_exist'").execute()))
+        .cast(SpannerResult.class);
+
+    SpannerResult result = noopUpdateResult.block();
+
+    int rowsUpdated = Mono.from(result.getRowsUpdated()).block();
+    assertThat(rowsUpdated).isEqualTo(0);
+
+    List<String> rowsReturned = result.map((row, metadata) -> row.toString()).collectList().block();
+    assertThat(rowsReturned).isEmpty();
   }
 
   private List<String> getSessionNames() {

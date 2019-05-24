@@ -18,8 +18,8 @@ package com.google.cloud.spanner.r2dbc;
 
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.cloud.spanner.r2dbc.result.PartialResultRowExtractor;
-import com.google.cloud.spanner.r2dbc.util.ConvertingFluxAdapter;
 import com.google.spanner.v1.PartialResultSet;
+import com.google.spanner.v1.ResultSetStats.RowCountCase;
 import com.google.spanner.v1.Session;
 import com.google.spanner.v1.Transaction;
 import io.r2dbc.spi.Result;
@@ -87,15 +87,31 @@ public class SpannerStatement implements Statement {
 
   @Override
   public Publisher<? extends Result> execute() {
-    Flux<PartialResultSet> result
-        = this.client.executeStreamingSql(this.session, this.transaction, this.sql);
+    PartialResultRowExtractor partialResultRowExtractor = new PartialResultRowExtractor();
 
-    return Mono
-        .just(new SpannerResult(
-            Flux.create(sink -> result
-                .subscribe(new ConvertingFluxAdapter(sink, new PartialResultRowExtractor()))),
-            result.next().map(partialResultSet -> partialResultSet.hasStats()
-                ? Math.toIntExact(partialResultSet.getStats().getRowCountExact())
-                : 0)));
+    return this.client.executeStreamingSql(this.session, this.transaction, this.sql)
+        .switchOnFirst((signal, flux) -> {
+          if (signal.hasError()) {
+            return Mono.error(signal.getThrowable());
+          }
+
+          PartialResultSet firstPartialResultSet = signal.get();
+          if (hasUpdatedRowCount(firstPartialResultSet)) {
+            Mono<Integer> rowsChanged =
+                flux.next().map(partialResultSet ->
+                    Math.toIntExact(partialResultSet.getStats().getRowCountExact()));
+            return Mono.just(new SpannerResult(Flux.empty(), rowsChanged));
+          } else {
+            return Mono.just(new SpannerResult(
+                flux.flatMapIterable(partialResultRowExtractor),
+                Mono.just(0)));
+          }
+        })
+        .next();
+  }
+
+  private static boolean hasUpdatedRowCount(PartialResultSet firstPartialResultSet) {
+    return firstPartialResultSet.hasStats()
+        && firstPartialResultSet.getStats().getRowCountCase() != RowCountCase.ROWCOUNT_NOT_SET;
   }
 }

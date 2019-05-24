@@ -19,6 +19,7 @@ package com.google.cloud.spanner.r2dbc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,6 +34,7 @@ import com.google.spanner.v1.StructType.Field;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 import io.r2dbc.spi.Result;
+import java.util.List;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -139,4 +141,28 @@ public class SpannerStatementTest {
         .flatMap(r -> Mono.from(r.getRowsUpdated())).block()).isEqualTo(555);
   }
 
+  @Test
+  public void noopMapOnUpdateQueriesWhenNoRowsAffected() {
+    Client mockClient = mock(Client.class);
+    String sql = "delete from Books where true";
+    PartialResultSet partialResultSet = PartialResultSet.newBuilder()
+        .setMetadata(ResultSetMetadata.getDefaultInstance())
+        .setStats(ResultSetStats.getDefaultInstance())
+        .build();
+    when(mockClient.executeStreamingSql(TEST_SESSION, Mono.empty(), sql))
+        .thenReturn(Flux.just(partialResultSet));
+
+    SpannerStatement statement
+        = new SpannerStatement(mockClient, TEST_SESSION, Mono.empty(),sql);
+
+    SpannerResult result = ((Mono<SpannerResult>) statement.execute()).block();
+
+    List<String> rowStrings = result.map((r, m) -> (String)r.get(0)).collectList().block();
+    assertThat(rowStrings).isEmpty();
+
+    int rowsUpdated = Mono.from(result.getRowsUpdated()).block();
+    assertThat(rowsUpdated).isEqualTo(0);
+
+    verify(mockClient, times(1)).executeStreamingSql(TEST_SESSION, Mono.empty(), sql);
+  }
 }
