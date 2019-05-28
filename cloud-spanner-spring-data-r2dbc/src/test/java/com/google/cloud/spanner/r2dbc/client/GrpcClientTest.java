@@ -17,10 +17,12 @@
 package com.google.cloud.spanner.r2dbc.client;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.protobuf.ByteString;
 import com.google.spanner.v1.CreateSessionRequest;
 import com.google.spanner.v1.ExecuteSqlRequest;
@@ -29,13 +31,16 @@ import com.google.spanner.v1.Session;
 import com.google.spanner.v1.SpannerGrpc;
 import com.google.spanner.v1.SpannerGrpc.SpannerImplBase;
 import com.google.spanner.v1.Transaction;
+import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.Server;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import reactor.core.publisher.Mono;
@@ -98,6 +103,31 @@ public class GrpcClientTest {
     assertEquals(sql, requestCaptor.getValue().getSql());
     assertEquals(sessionName, requestCaptor.getValue().getSession());
     assertEquals(transId, requestCaptor.getValue().getTransaction().getId());
+  }
+
+  @Test
+  public void testHostPortConfig()
+      throws IOException {
+    assertEquals("spanner.googleapis.com:443",
+        new GrpcClient(GoogleCredentials.getApplicationDefault()).getSpanner().getChannel()
+            .authority());
+  }
+
+  @Test
+  public void testUserAgentConfig()
+      throws IOException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+    GrpcClient grpcClient = new GrpcClient(GoogleCredentials.getApplicationDefault());
+    Channel channel = grpcClient.getSpanner().getChannel();
+    Class innerChannelWrapperClass = Class.forName("io.grpc.internal.ForwardingManagedChannel");
+    Class channelImplClass = Class.forName("io.grpc.internal.ManagedChannelImpl");
+
+    Field deletegateField = innerChannelWrapperClass.getDeclaredField("delegate");
+    deletegateField.setAccessible(true);
+    Field userAgentField = channelImplClass.getDeclaredField("userAgent");
+    userAgentField.setAccessible(true);
+
+    assertTrue(Pattern.matches("cloud-spanner-r2dbc/[0-9A-Za-z._-]+",
+        (String) userAgentField.get(deletegateField.get(channel))));
   }
 
   /**

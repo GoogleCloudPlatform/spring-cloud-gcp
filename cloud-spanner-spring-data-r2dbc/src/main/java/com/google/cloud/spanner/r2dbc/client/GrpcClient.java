@@ -18,6 +18,7 @@ package com.google.cloud.spanner.r2dbc.client;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.r2dbc.util.ObservableReactiveUtil;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Empty;
 import com.google.spanner.v1.BeginTransactionRequest;
 import com.google.spanner.v1.CommitRequest;
@@ -52,6 +53,12 @@ import reactor.core.publisher.Mono;
 public class GrpcClient implements Client {
 
   public static final String HOST = "spanner.googleapis.com";
+
+  public static final String PACKAGE_VERSION = GrpcClient.class.getPackage()
+      .getImplementationVersion();
+
+  public static final String USER_AGENT_LIBRARY_NAME = "cloud-spanner-r2dbc";
+
   public static final int PORT = 443;
 
   private final ManagedChannel channel;
@@ -67,6 +74,7 @@ public class GrpcClient implements Client {
     // Create a channel
     this.channel = ManagedChannelBuilder
         .forAddress(HOST, PORT)
+        .userAgent(USER_AGENT_LIBRARY_NAME + "/" + PACKAGE_VERSION)
         .build();
 
     // Create the asynchronous stub for Cloud Spanner
@@ -74,12 +82,8 @@ public class GrpcClient implements Client {
         .withCallCredentials(callCredentials);
   }
 
-  /**
-   * Constructor that builds the client from a user-specified {@code SpannerStub}.
-   *
-   * @param spanner The asynchronous gRPC Spanner client stub.
-   */
-  public GrpcClient(SpannerStub spanner) throws IOException {
+  @VisibleForTesting
+  GrpcClient(SpannerStub spanner) throws IOException {
     this.spanner = spanner;
     this.channel = null;
   }
@@ -180,6 +184,11 @@ public class GrpcClient implements Client {
               sink.onRequest(demand -> responseObserver.getRequestStream()
                   .request((int) Math.min(demand, Integer.MAX_VALUE)));
           }));
+  }
+
+  @VisibleForTesting
+  SpannerStub getSpanner() {
+    return this.spanner;
   }
 
   private static final class SinkResponseObserver<ReqT, RespT> implements
