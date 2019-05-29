@@ -43,7 +43,6 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import reactor.core.publisher.Mono;
 
 /**
  * Test for {@link GrpcClient}.
@@ -91,10 +90,9 @@ public class GrpcClientTest {
           }
         },
         // call the method under test
-        grpcClient -> grpcClient.executeStreamingSql(session,
-            Mono.just(Transaction.newBuilder().setId(
-            transId).build()), sql).blockFirst()
-        );
+        grpcClient ->
+            grpcClient.executeStreamingSql(
+                session, Transaction.newBuilder().setId(transId).build(), sql).blockFirst());
 
     // verify the service was called correctly
     ArgumentCaptor<ExecuteSqlRequest> requestCaptor = ArgumentCaptor

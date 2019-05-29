@@ -73,11 +73,11 @@ public class SpannerStatementTest {
                     .setType(Type.newBuilder().setCode(TypeCode.STRING)))))
         .addValues(Value.newBuilder().setStringValue("Odyssey"))
         .build();
-    when(mockClient.executeStreamingSql(TEST_SESSION, Mono.empty(), sql))
+    when(mockClient.executeStreamingSql(TEST_SESSION, null, sql))
         .thenReturn(Flux.just(partialResultSet));
 
     SpannerStatement statement
-        = new SpannerStatement(mockClient, TEST_SESSION, Mono.empty(),sql);
+        = new SpannerStatement(mockClient, TEST_SESSION, null,sql);
 
     Mono<SpannerResult> result = (Mono<SpannerResult>)statement.execute();
 
@@ -85,7 +85,7 @@ public class SpannerStatementTest {
 
     result.block().map((r, m) -> (String)r.get(0)).blockFirst().equals("Odyssey");
 
-    verify(mockClient).executeStreamingSql(TEST_SESSION, Mono.empty(), sql);
+    verify(mockClient).executeStreamingSql(TEST_SESSION, null, sql);
   }
 
   @Test
@@ -149,11 +149,11 @@ public class SpannerStatementTest {
         .setMetadata(ResultSetMetadata.getDefaultInstance())
         .setStats(ResultSetStats.getDefaultInstance())
         .build();
-    when(mockClient.executeStreamingSql(TEST_SESSION, Mono.empty(), sql))
+    when(mockClient.executeStreamingSql(TEST_SESSION, null, sql))
         .thenReturn(Flux.just(partialResultSet));
 
     SpannerStatement statement
-        = new SpannerStatement(mockClient, TEST_SESSION, Mono.empty(),sql);
+        = new SpannerStatement(mockClient, TEST_SESSION, null,sql);
 
     SpannerResult result = ((Mono<SpannerResult>) statement.execute()).block();
 
@@ -163,6 +163,6 @@ public class SpannerStatementTest {
     int rowsUpdated = Mono.from(result.getRowsUpdated()).block();
     assertThat(rowsUpdated).isEqualTo(0);
 
-    verify(mockClient, times(1)).executeStreamingSql(TEST_SESSION, Mono.empty(), sql);
+    verify(mockClient, times(1)).executeStreamingSql(TEST_SESSION, null, sql);
   }
 }

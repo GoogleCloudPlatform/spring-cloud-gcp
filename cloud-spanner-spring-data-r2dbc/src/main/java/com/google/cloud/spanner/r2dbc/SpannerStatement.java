@@ -23,6 +23,7 @@ import com.google.spanner.v1.Session;
 import com.google.spanner.v1.Transaction;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
+import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -36,7 +37,7 @@ public class SpannerStatement implements Statement {
 
   private Session session;
 
-  private Mono<Transaction> transaction;
+  private Transaction transaction;
 
   private String sql;
 
@@ -52,7 +53,11 @@ public class SpannerStatement implements Statement {
    * @param sql the query to execute
    */
   public SpannerStatement(
-      Client client, Session session, Mono<Transaction> transaction, String sql) {
+      Client client,
+      Session session,
+      @Nullable Transaction transaction,
+      String sql) {
+
     this.client = client;
     this.session = session;
     this.transaction = transaction;

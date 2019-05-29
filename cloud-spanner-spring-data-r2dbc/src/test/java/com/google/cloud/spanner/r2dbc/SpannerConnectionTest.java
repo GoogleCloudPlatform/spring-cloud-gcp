@@ -78,7 +78,7 @@ public class SpannerConnectionTest {
         .addValues(Value.newBuilder().setStringValue("Odyssey"))
         .build();
 
-    when(this.mockClient.executeStreamingSql(TEST_SESSION, Mono.empty(), sql))
+    when(this.mockClient.executeStreamingSql(TEST_SESSION, null, sql))
         .thenReturn(Flux.just(partialResultSet));
 
     Statement statement = connection.createStatement(sql);
@@ -86,7 +86,7 @@ public class SpannerConnectionTest {
     Mono<SpannerResult> result = (Mono<SpannerResult>)statement.execute();
     result.block().map((r, m) -> (String)r.get(0)).blockFirst().equals("Odyssey");
 
-    verify(this.mockClient).executeStreamingSql(TEST_SESSION, Mono.empty(), sql);
+    verify(this.mockClient).executeStreamingSql(TEST_SESSION, null, sql);
   }
 
   @Test

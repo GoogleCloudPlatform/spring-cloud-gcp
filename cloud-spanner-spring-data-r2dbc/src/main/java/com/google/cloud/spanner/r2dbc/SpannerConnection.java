@@ -39,7 +39,7 @@ public class SpannerConnection implements Connection {
 
   private final Session session;
 
-  private Mono<Transaction> currentTransaction;
+  private volatile Transaction currentTransaction;
 
   /**
    * Instantiates a Spanner session with given configuration.
@@ -49,33 +49,38 @@ public class SpannerConnection implements Connection {
   public SpannerConnection(Client client, Session session) {
     this.client = client;
     this.session = session;
-    this.currentTransaction = Mono.empty();
+    this.currentTransaction = null;
   }
 
   @Override
   public Publisher<Void> beginTransaction() {
-    return Mono.defer(() -> {
-      this.currentTransaction = this.client.beginTransaction(this.session).cache();
-      return this.currentTransaction.then();
-    });
+    return this.client.beginTransaction(this.session)
+        .doOnNext(transaction -> this.currentTransaction = transaction)
+        .then();
   }
 
   @Override
   public Publisher<Void> commitTransaction() {
-    return this.currentTransaction
-        .flatMap(transaction -> this.client.commitTransaction(this.session, transaction))
-        .switchIfEmpty(Mono.fromRunnable(() ->
-          this.logger.warn("commitTransaction() is a no-op; called with no transaction active.")))
-        .then();
+    return Mono.defer(() -> {
+      if (this.currentTransaction == null) {
+        this.logger.warn("commitTransaction() is a no-op; called with no transaction active.");
+        return Mono.empty();
+      } else {
+        return this.client.commitTransaction(this.session, this.currentTransaction).then();
+      }
+    });
   }
 
   @Override
   public Publisher<Void> rollbackTransaction() {
-    return this.currentTransaction
-        .flatMap(transaction -> this.client.rollbackTransaction(this.session, transaction))
-        .switchIfEmpty(Mono.fromRunnable(() ->
-          this.logger.warn("rollbackTransaction() is a no-op; called with no transaction active.")))
-        .then();
+    return Mono.defer(() -> {
+      if (this.currentTransaction == null) {
+        this.logger.warn("rollbackTransaction() is a no-op; called with no transaction active.");
+        return Mono.empty();
+      } else {
+        return this.client.rollbackTransaction(this.session, this.currentTransaction);
+      }
+    });
   }
 
   @Override
