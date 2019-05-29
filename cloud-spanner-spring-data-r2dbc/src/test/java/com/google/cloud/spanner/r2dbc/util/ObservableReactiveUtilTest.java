@@ -21,8 +21,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
-import java.util.concurrent.atomic.AtomicInteger;
+import io.r2dbc.spi.R2dbcNonTransientException;
+import io.r2dbc.spi.R2dbcTransientResourceException;
 import org.junit.Test;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -45,57 +47,55 @@ public class ObservableReactiveUtilTest {
       observer.onError(new IllegalArgumentException("oh no"));
     });
     assertThatThrownBy(() -> mono.block())
-        .isInstanceOf(IllegalArgumentException.class)
+        .hasCauseInstanceOf(IllegalArgumentException.class)
+        .isInstanceOf(R2dbcNonTransientException.class)
         .hasMessage("oh no");
   }
 
   @Test
   public void unaryCallThrowsExceptionIfCompletedWithNoValue() {
-    Mono<Integer> mono = ObservableReactiveUtil.unaryCall(observer -> {
-      observer.onCompleted();
-    });
+    Mono<Integer> mono = ObservableReactiveUtil.unaryCall(observer -> observer.onCompleted());
     assertThatThrownBy(() -> mono.block())
         .isInstanceOf(RuntimeException.class)
         .hasMessage("Unary gRPC call completed without yielding a value or an error");
   }
 
   @Test
-  public void unaryCallRetries() {
-    StatusRuntimeException retryableError = new StatusRuntimeException(
-        Status.INTERNAL.withDescription("HTTP/2 error code: INTERNAL_ERROR"), null);
+  public void propagateTransientErrorUnaryCall() {
+    StatusRuntimeException retryableException =
+        new StatusRuntimeException(
+            Status.INTERNAL.withDescription("HTTP/2 error code: INTERNAL_ERROR"));
 
-    AtomicInteger timesRetried = new AtomicInteger(0);
+    Mono<Void> result =
+        ObservableReactiveUtil.unaryCall(observer -> observer.onError(retryableException));
 
-    Mono<Integer> resultMono = ObservableReactiveUtil.unaryCall(
-        obs -> {
-          // Test must retry twice before success.
-          if (timesRetried.get() < 3) {
-            obs.onError(retryableError);
-            timesRetried.addAndGet(1);
-          } else {
-            obs.onNext(100);
-          }
-        });
-
-    int result = resultMono.block();
-    assertThat(timesRetried.get()).isEqualTo(3);
-    assertThat(result).isEqualTo(100);
+    assertThatThrownBy(() -> result.block())
+        .hasCauseInstanceOf(StatusRuntimeException.class)
+        .isInstanceOf(R2dbcTransientResourceException.class);
   }
 
   @Test
-  public void unaryCallUnretryableError() {
-    AtomicInteger timesTried = new AtomicInteger(0);
-    Mono<Integer> resultMono = ObservableReactiveUtil.unaryCall(
-        obs -> {
-          if (timesTried.get() < 3) {
-            obs.onError(new IllegalArgumentException());
-            timesTried.addAndGet(1);
-          } else {
-            obs.onNext(100);
-          }
-        });
+  public void propagateNonRetryableError() {
+    Mono<Void> result =
+        ObservableReactiveUtil.unaryCall(
+            observer -> observer.onError(new IllegalArgumentException()));
 
-    assertThatThrownBy(() -> resultMono.block()).isInstanceOf(IllegalArgumentException.class);
-    assertThat(timesTried.get()).isEqualTo(1);
+    assertThatThrownBy(() -> result.block())
+        .hasCauseInstanceOf(IllegalArgumentException.class)
+        .isInstanceOf(R2dbcNonTransientException.class);
+  }
+
+  @Test
+  public void propagateTransientErrorStreamingCall() {
+    StatusRuntimeException retryableException =
+        new StatusRuntimeException(
+            Status.INTERNAL.withDescription("HTTP/2 error code: INTERNAL_ERROR"));
+
+    Flux<Void> result =
+        ObservableReactiveUtil.streamingCall(observer -> observer.onError(retryableException));
+
+    assertThatThrownBy(() -> result.blockFirst())
+        .hasCauseInstanceOf(StatusRuntimeException.class)
+        .isInstanceOf(R2dbcTransientResourceException.class);
   }
 }
