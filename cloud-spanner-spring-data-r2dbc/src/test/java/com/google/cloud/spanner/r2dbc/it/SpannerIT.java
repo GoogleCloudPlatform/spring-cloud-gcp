@@ -27,7 +27,6 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.spanner.r2dbc.SpannerConnection;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionFactory;
-import com.google.cloud.spanner.r2dbc.SpannerResult;
 import com.google.cloud.spanner.r2dbc.util.ObservableReactiveUtil;
 import com.google.spanner.v1.DatabaseName;
 import com.google.spanner.v1.ListSessionsRequest;
@@ -44,11 +43,16 @@ import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
+import io.r2dbc.spi.Result;
+import io.r2dbc.spi.Row;
+import io.r2dbc.spi.RowMetadata;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -111,94 +115,90 @@ public class SpannerIT {
 
   @Test
   public void testQuerying() {
-    Mono.from(this.connectionFactory.create())
-        .delayUntil(c -> c.beginTransaction())
-        .delayUntil(c -> Mono.from(c.createStatement("DELETE FROM books WHERE true").execute())
-            .flatMap(r -> Mono.from(r.getRowsUpdated())))
-        .delayUntil(c -> c.commitTransaction())
-        .block();
+    executeDmlQuery("DELETE FROM books WHERE true");
 
-    assertThat(Mono.from(this.connectionFactory.create())
-        .map(connection -> connection.createStatement("Select count(1) FROM books"))
-        .flatMapMany(statement -> statement.execute())
-        .flatMap(spannerResult -> spannerResult.map(
-            (r, meta) -> r.get(0, Long.class)
-        ))
-        .collectList()
-        .block().get(0)).isZero();
+    long count = executeReadQuery(
+        "Select count(1) as count FROM books",
+        (row, rowMetadata) -> row.get("count", Long.class)).get(0);
+    assertThat(count).isEqualTo(0);
 
-    Mono.from(this.connectionFactory.create())
-        .delayUntil(c -> c.beginTransaction())
-        .delayUntil(c -> Mono.from(c.createStatement(
-            "INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY) VALUES"
-                + " ('df0e3d06-2743-4691-8e51-6d33d90c5cb9', 'Effective Java', "
-                + "'Joshua Bloch', 100)")
-            .execute()).flatMap(r -> Mono.from(r.getRowsUpdated())))
-        .delayUntil(c -> c.commitTransaction())
-        .block();
+    executeDmlQuery(
+        "INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY) VALUES"
+            + " ('df0e3d06-2743-4691-8e51-6d33d90c5cb9', 'Effective Java', "
+            + "'Joshua Bloch', 100)");
 
-    Mono.from(this.connectionFactory.create())
-        .delayUntil(c -> c.beginTransaction())
-        .delayUntil(c -> Mono.from(c.createStatement(
-            "INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY) VALUES"
-                + " ('2b2cbd78-ecd8-430e-b685-fa7910f8a4c7', 'JavaScript: "
-                + "The Good Parts', 'Douglas Crockford', 100);")
-            .execute()).flatMap(r -> Mono.from(r.getRowsUpdated())))
-        .delayUntil(c -> c.commitTransaction())
-        .block();
+    executeDmlQuery(
+        "INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY) VALUES"
+            + " ('2b2cbd78-ecd8-430e-b685-fa7910f8a4c7', 'JavaScript: "
+            + "The Good Parts', 'Douglas Crockford', 100);");
 
-    List<String> result = Mono.from(this.connectionFactory.create())
-        .map(connection -> connection.createStatement("SELECT title, author FROM books"))
-        .flatMapMany(statement -> statement.execute())
-        .flatMap(spannerResult -> spannerResult.map(
-            (r, meta) -> r.get(0, String.class) + " by " + r.get(1, String.class)
-        ))
-        .doOnNext(s -> System.out.println("Book: " + s))
-        .collectList()
-        .block();
+    List<String> authorStrings = executeReadQuery(
+        "SELECT title, author FROM books",
+        (r, meta) -> r.get(0, String.class) + " by " + r.get(1, String.class));
 
-    assertThat(result).containsExactlyInAnyOrder(
+    assertThat(authorStrings).containsExactlyInAnyOrder(
         "JavaScript: The Good Parts by Douglas Crockford",
         "Effective Java by Joshua Bloch");
 
-    Mono<SpannerResult> deleteResult = Mono.from(this.connectionFactory.create())
-        .delayUntil(c -> c.beginTransaction())
-        .flatMap(c -> Mono.from(c.createStatement("DELETE FROM books WHERE true").execute()))
-        .cast(SpannerResult.class);
-
-    assertThat(deleteResult.flatMap(r -> Mono.from(r.getRowsUpdated())).block()).isEqualTo(2);
+    int rowsUpdated = executeDmlQuery("DELETE FROM books WHERE true");
+    assertThat(rowsUpdated).isEqualTo(2);
   }
 
   @Test
   public void testNoopUpdate() {
-    Mono<SpannerResult> noopUpdateResult = Mono.from(this.connectionFactory.create())
+    Result result = Mono.from(connectionFactory.create())
         .delayUntil(c -> c.beginTransaction())
         .flatMap(c -> Mono.from(c.createStatement(
             "UPDATE BOOKS set author = 'blah2' where title = 'asdasdf_dont_exist'").execute()))
-        .cast(SpannerResult.class);
-
-    SpannerResult result = noopUpdateResult.block();
+        .block();
 
     int rowsUpdated = Mono.from(result.getRowsUpdated()).block();
     assertThat(rowsUpdated).isEqualTo(0);
 
-    List<String> rowsReturned = result.map((row, metadata) -> row.toString()).collectList().block();
+    List<String> rowsReturned =
+        Flux.from(result.map((row, metadata) -> row.toString()))
+            .collectList()
+            .block();
     assertThat(rowsReturned).isEmpty();
   }
 
   @Test
   public void testEmptySelect() {
-    List<String> result = Mono.from(this.connectionFactory.create())
-        .map(connection -> connection.createStatement(
-            "SELECT title, author FROM books where author = 'Nobody P. Smith'"))
+    List<String> results = executeReadQuery(
+        "SELECT title, author FROM books where author = 'Nobody P. Smith'",
+        (r, meta) -> r.get(0, String.class));
+
+    assertThat(results).isEmpty();
+  }
+
+  /**
+   * Executes a DML query and returns the rows updated.
+   */
+  private int executeDmlQuery(String sql) {
+    Connection connection = Mono.from(connectionFactory.create()).block();
+
+    Mono.from(connection.beginTransaction()).block();
+    int rowsUpdated = Mono.from(connection.createStatement(sql).execute())
+        .flatMap(result -> Mono.from(result.getRowsUpdated()))
+        .block();
+    Mono.from(connection.commitTransaction()).block();
+
+    return rowsUpdated;
+  }
+
+  /**
+   * Executes a read query and runs the provided {@code mappingFunction} on the elements returned.
+   */
+  private <T> List<T> executeReadQuery(
+      String sql,
+      BiFunction<Row, RowMetadata, T> mappingFunction) {
+
+    return Mono.from(connectionFactory.create())
+        .map(connection -> connection.createStatement(sql))
         .flatMapMany(statement -> statement.execute())
-        .flatMap(spannerResult -> spannerResult.map(
-            (r, meta) -> r.get(0, String.class) + " by " + r.get(1, String.class)
-        ))
+        .flatMap(spannerResult -> spannerResult.map(mappingFunction))
         .collectList()
         .block();
-
-    assertThat(result).isEmpty();
   }
 
   private List<String> getSessionNames() {
