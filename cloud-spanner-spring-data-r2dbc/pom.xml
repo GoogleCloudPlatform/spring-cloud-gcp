@@ -95,6 +95,13 @@
       <artifactId>reactor-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.25</version>
+      <scope>test</scope>
+    </dependency>
+
 
     <!-- TODO: this is a test dependency for now. Should project ID discovery be part of the driver itself? -->
     <dependency>
