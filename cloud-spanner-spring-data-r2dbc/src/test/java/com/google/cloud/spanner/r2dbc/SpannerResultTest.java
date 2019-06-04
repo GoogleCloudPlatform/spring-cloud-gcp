@@ -16,7 +16,6 @@
 
 package com.google.cloud.spanner.r2dbc;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.protobuf.Value;
@@ -26,11 +25,11 @@ import com.google.spanner.v1.StructType.Field;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 import java.util.Collections;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 /**
  * Test for {@link SpannerResult}.
@@ -68,9 +67,10 @@ public class SpannerResultTest {
 
   @Test
   public void getRowsUpdatedTest() {
-    assertThat(
-        ((Mono) new SpannerResult(this.resultSet,Mono.just(2)).getRowsUpdated()).block())
-        .isEqualTo(2);
+    StepVerifier.create(
+        ((Mono) new SpannerResult(this.resultSet,Mono.just(2)).getRowsUpdated()))
+        .expectNext(2)
+        .verifyComplete();
   }
 
   @Test
@@ -93,17 +93,15 @@ public class SpannerResultTest {
         .getFields(0)
         .getName();
 
-    List<String> result =
+    Flux<String> result =
         new SpannerResult(this.resultSet, Mono.just(0))
             .map((row, metadata) ->
                 row.get(0, String.class)
                     + "-"
-                    + metadata.getColumnMetadata(0).getName())
-            .collectList()
-            .block();
+                    + metadata.getColumnMetadata(0).getName());
 
-    assertThat(result)
-        .containsExactly("key1-" + columnName, "key2-" + columnName);
-
+    StepVerifier.create(result)
+        .expectNext("key1-" + columnName, "key2-" + columnName)
+        .verifyComplete();
   }
 }

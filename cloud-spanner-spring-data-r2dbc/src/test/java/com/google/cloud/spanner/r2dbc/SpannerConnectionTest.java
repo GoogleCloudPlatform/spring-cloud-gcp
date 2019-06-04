@@ -112,8 +112,9 @@ public class SpannerConnectionTest {
     when(this.mockClient.commitTransaction(TEST_SESSION,  Transaction.getDefaultInstance()))
         .thenReturn(commitTransactionProbe.mono());
 
-    Mono.from(connection.beginTransaction()).block();
-    Mono.from(connection.commitTransaction()).block();
+    Mono.from(connection.beginTransaction())
+            .then(Mono.from(connection.commitTransaction()))
+            .subscribe();
     verify(this.mockClient, times(1))
         .beginTransaction(TEST_SESSION);
     verify(this.mockClient, times(1))

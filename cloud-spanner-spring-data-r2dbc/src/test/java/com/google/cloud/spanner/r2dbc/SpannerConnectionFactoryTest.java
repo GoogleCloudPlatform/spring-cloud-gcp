@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 /**
  * Test for {@link SpannerConnectionFactory}.
@@ -63,9 +64,10 @@ public class SpannerConnectionFactoryTest {
         .thenReturn(Mono.just(session));
 
     SpannerConnectionFactory factory = new SpannerConnectionFactory(mockClient, this.config);
-    SpannerConnection connection = Mono.from(factory.create()).block();
+    Mono<SpannerConnection> connection = Mono.from(factory.create());
 
-    assertThat(connection.getSession().getName()).isEqualTo("jam session");
-
+    StepVerifier.create(connection.map(con -> con.getSession().getName()))
+            .expectNext("jam session")
+            .verifyComplete();
   }
 }

@@ -16,8 +16,6 @@
 
 package com.google.cloud.spanner.r2dbc.result;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.google.cloud.spanner.r2dbc.SpannerColumnMetadata;
 import com.google.cloud.spanner.r2dbc.SpannerRow;
 import com.google.protobuf.ListValue;
@@ -31,9 +29,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 /**
  * Tests the partial result flux converter.
@@ -190,34 +188,36 @@ public class PartialResultRowExtractorTest {
 
     Flux<PartialResultSet> inputs = Flux.just(emptyResultSet);
 
-    List<SpannerRow> results =
-        inputs.flatMapIterable(new PartialResultRowExtractor())
-            .collectList()
-            .block();
-    assertThat(results).isEmpty();
+    Flux<SpannerRow> results =
+        inputs.flatMapIterable(new PartialResultRowExtractor());
+
+    StepVerifier.create(results)
+        .verifyComplete();
   }
 
   private void verifyRows(Flux<PartialResultSet> inputs) {
-    List<SpannerRow> results =
-        inputs.flatMapIterable(new PartialResultRowExtractor())
-            .collectList()
-            .block();
+    Flux<SpannerRow> results =
+        inputs.flatMapIterable(new PartialResultRowExtractor());
 
-    List<ColumnMetadata> columnMetadata = this.resultSetMetadata.getRowType().getFieldsList()
+    List<String> expectedColNames = this.resultSetMetadata.getRowType().getFieldsList()
         .stream()
         .map(SpannerColumnMetadata::new)
+        .map(ColumnMetadata::getName)
         .collect(Collectors.toList());
 
-    List<String> expectedColNames = columnMetadata.stream().map(ColumnMetadata::getName)
-        .collect(Collectors.toList());
+    String[] expectedColumnNames = new String[expectedColNames.size()];
+    expectedColNames.toArray(expectedColumnNames);
 
-    results.forEach(row -> assertThat(
-        StreamSupport.stream(row.getRowMetadata().getColumnMetadatas().spliterator(), false)
-            .map(
-                ColumnMetadata::getName).collect(Collectors.toList()))
-        .isEqualTo(expectedColNames));
+    StepVerifier.create(results
+        .flatMap(row -> Flux.fromIterable(row.getRowMetadata().getColumnMetadatas())
+            .map(ColumnMetadata::getName)))
+        .expectNext(expectedColumnNames)
+        .expectNext(expectedColumnNames)
+        .verifyComplete();
 
-    assertThat(results.get(0).getValues()).containsExactly(this.a1, this.a2, this.a3);
-    assertThat(results.get(1).getValues()).containsExactly(this.b1, this.b2, this.b3);
+    StepVerifier.create(results.map(SpannerRow::getValues))
+        .expectNext(Arrays.asList(this.a1, this.a2, this.a3))
+        .expectNext(Arrays.asList(this.b1, this.b2, this.b3))
+        .verifyComplete();
   }
 }

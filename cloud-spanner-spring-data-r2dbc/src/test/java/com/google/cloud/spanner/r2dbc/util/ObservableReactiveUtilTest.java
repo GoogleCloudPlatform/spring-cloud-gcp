@@ -17,15 +17,16 @@
 package com.google.cloud.spanner.r2dbc.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.r2dbc.spi.R2dbcNonTransientException;
+import io.r2dbc.spi.R2dbcNonTransientResourceException;
 import io.r2dbc.spi.R2dbcTransientResourceException;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 /**
  * Test for {@link ObservableReactiveUtil}.
@@ -38,7 +39,9 @@ public class ObservableReactiveUtilTest {
       observer.onNext(42);
       observer.onCompleted();
     });
-    assertThat(mono.block()).isEqualTo(42);
+    StepVerifier.create(mono)
+        .expectNext(42)
+        .verifyComplete();
   }
 
   @Test
@@ -46,18 +49,22 @@ public class ObservableReactiveUtilTest {
     Mono<Integer> mono = ObservableReactiveUtil.unaryCall(observer -> {
       observer.onError(new IllegalArgumentException("oh no"));
     });
-    assertThatThrownBy(() -> mono.block())
-        .hasCauseInstanceOf(IllegalArgumentException.class)
-        .isInstanceOf(R2dbcNonTransientException.class)
-        .hasMessage("oh no");
+
+    StepVerifier.create(mono)
+        .expectErrorMatches(throwable -> throwable instanceof R2dbcNonTransientResourceException
+            && throwable.getMessage().equals("oh no"))
+        .verify();
   }
 
   @Test
   public void unaryCallThrowsExceptionIfCompletedWithNoValue() {
     Mono<Integer> mono = ObservableReactiveUtil.unaryCall(observer -> observer.onCompleted());
-    assertThatThrownBy(() -> mono.block())
-        .isInstanceOf(RuntimeException.class)
-        .hasMessage("Unary gRPC call completed without yielding a value or an error");
+
+    StepVerifier.create(mono)
+        .expectErrorMatches(throwable -> throwable instanceof RuntimeException
+            && throwable.getMessage().equals(
+                "Unary gRPC call completed without yielding a value or an error"))
+        .verify();
   }
 
   @Test
@@ -69,9 +76,11 @@ public class ObservableReactiveUtilTest {
     Mono<Void> result =
         ObservableReactiveUtil.unaryCall(observer -> observer.onError(retryableException));
 
-    assertThatThrownBy(() -> result.block())
-        .hasCauseInstanceOf(StatusRuntimeException.class)
-        .isInstanceOf(R2dbcTransientResourceException.class);
+    StepVerifier.create(result)
+            .expectErrorSatisfies(throwable ->
+                    assertThat(throwable).hasCauseInstanceOf(StatusRuntimeException.class)
+                            .isInstanceOf(R2dbcTransientResourceException.class))
+            .verify();
   }
 
   @Test
@@ -80,9 +89,11 @@ public class ObservableReactiveUtilTest {
         ObservableReactiveUtil.unaryCall(
             observer -> observer.onError(new IllegalArgumentException()));
 
-    assertThatThrownBy(() -> result.block())
-        .hasCauseInstanceOf(IllegalArgumentException.class)
-        .isInstanceOf(R2dbcNonTransientException.class);
+    StepVerifier.create(result)
+            .expectErrorSatisfies(throwable ->
+                    assertThat(throwable).hasCauseInstanceOf(IllegalArgumentException.class)
+                            .isInstanceOf(R2dbcNonTransientException.class))
+            .verify();
   }
 
   @Test
@@ -94,8 +105,11 @@ public class ObservableReactiveUtilTest {
     Flux<Void> result =
         ObservableReactiveUtil.streamingCall(observer -> observer.onError(retryableException));
 
-    assertThatThrownBy(() -> result.blockFirst())
-        .hasCauseInstanceOf(StatusRuntimeException.class)
-        .isInstanceOf(R2dbcTransientResourceException.class);
+    StepVerifier.create(result)
+            .expectErrorSatisfies(throwable ->
+                    assertThat(throwable)
+                        .hasCauseInstanceOf(StatusRuntimeException.class)
+                        .isInstanceOf(R2dbcTransientResourceException.class))
+            .verify();
   }
 }
