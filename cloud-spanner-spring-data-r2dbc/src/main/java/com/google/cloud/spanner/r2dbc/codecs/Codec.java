@@ -18,9 +18,10 @@ package com.google.cloud.spanner.r2dbc.codecs;
 
 import com.google.protobuf.Value;
 import com.google.spanner.v1.Type;
+import com.google.spanner.v1.TypeCode;
 import reactor.util.annotation.Nullable;
 
-interface Codec<T> {
+public interface Codec<T> {
 
   /**
    * Indicates if the codec can decode a value.
@@ -80,4 +81,5 @@ interface Codec<T> {
    */
   Class<?> type();
 
+  TypeCode getTypeCode();
 }

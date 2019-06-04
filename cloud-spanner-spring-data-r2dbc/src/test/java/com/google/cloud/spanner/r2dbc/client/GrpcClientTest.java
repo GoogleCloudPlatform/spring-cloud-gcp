@@ -23,6 +23,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.spanner.r2dbc.SpannerTransactionContext;
 import com.google.protobuf.ByteString;
 import com.google.spanner.v1.CreateSessionRequest;
 import com.google.spanner.v1.ExecuteSqlRequest;
@@ -92,7 +93,9 @@ public class GrpcClientTest {
         // call the method under test
         grpcClient ->
             grpcClient.executeStreamingSql(
-                session, Transaction.newBuilder().setId(transId).build(), sql).blockFirst());
+                session,
+                SpannerTransactionContext.from(
+                    Transaction.newBuilder().setId(transId).build()), sql).blockFirst());
 
     // verify the service was called correctly
     ArgumentCaptor<ExecuteSqlRequest> requestCaptor = ArgumentCaptor

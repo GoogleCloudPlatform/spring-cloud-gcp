@@ -46,4 +46,7 @@ public interface Codecs {
    * @throws NullPointerException if {@code value} is {@code null}
    */
   Value encode(Object value);
+
+  Codec getCodec(Object value);
+
 }

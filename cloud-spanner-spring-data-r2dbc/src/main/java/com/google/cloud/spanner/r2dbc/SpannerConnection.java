@@ -18,7 +18,6 @@ package com.google.cloud.spanner.r2dbc;
 
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.spanner.v1.Session;
-import com.google.spanner.v1.Transaction;
 import io.r2dbc.spi.Batch;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.IsolationLevel;
@@ -39,7 +38,7 @@ public class SpannerConnection implements Connection {
 
   private final Session session;
 
-  private volatile Transaction currentTransaction;
+  private volatile SpannerTransactionContext transactionContext;
 
   /**
    * Instantiates a Spanner session with given configuration.
@@ -49,24 +48,26 @@ public class SpannerConnection implements Connection {
   public SpannerConnection(Client client, Session session) {
     this.client = client;
     this.session = session;
-    this.currentTransaction = null;
+    this.transactionContext = null;
   }
 
   @Override
   public Publisher<Void> beginTransaction() {
     return this.client.beginTransaction(this.session)
-        .doOnNext(transaction -> this.currentTransaction = transaction)
+        .doOnNext(
+            transaction -> this.transactionContext = SpannerTransactionContext.from(transaction))
         .then();
   }
 
   @Override
   public Publisher<Void> commitTransaction() {
     return Mono.defer(() -> {
-      if (this.currentTransaction == null) {
+      if (this.transactionContext == null) {
         this.logger.warn("commitTransaction() is a no-op; called with no transaction active.");
         return Mono.empty();
       } else {
-        return this.client.commitTransaction(this.session, this.currentTransaction).then();
+        return this.client.commitTransaction(this.session, this.transactionContext.getTransaction())
+            .then();
       }
     });
   }
@@ -74,11 +75,12 @@ public class SpannerConnection implements Connection {
   @Override
   public Publisher<Void> rollbackTransaction() {
     return Mono.defer(() -> {
-      if (this.currentTransaction == null) {
+      if (this.transactionContext == null) {
         this.logger.warn("rollbackTransaction() is a no-op; called with no transaction active.");
         return Mono.empty();
       } else {
-        return this.client.rollbackTransaction(this.session, this.currentTransaction);
+        return this.client
+            .rollbackTransaction(this.session, this.transactionContext.getTransaction());
       }
     });
   }
@@ -100,7 +102,8 @@ public class SpannerConnection implements Connection {
 
   @Override
   public Statement createStatement(String sql) {
-    return new SpannerStatement(this.client, this.session, this.currentTransaction, sql);
+    return new SpannerStatement(this.client, this.session,
+        this.transactionContext, sql);
   }
 
   @Override

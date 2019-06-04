@@ -17,9 +17,11 @@
 package com.google.cloud.spanner.r2dbc.client;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.spanner.r2dbc.SpannerTransactionContext;
 import com.google.cloud.spanner.r2dbc.util.ObservableReactiveUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Empty;
+import com.google.protobuf.Struct;
 import com.google.spanner.v1.BeginTransactionRequest;
 import com.google.spanner.v1.CommitRequest;
 import com.google.spanner.v1.CommitResponse;
@@ -35,10 +37,12 @@ import com.google.spanner.v1.Transaction;
 import com.google.spanner.v1.TransactionOptions;
 import com.google.spanner.v1.TransactionOptions.ReadWrite;
 import com.google.spanner.v1.TransactionSelector;
+import com.google.spanner.v1.Type;
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
+import java.util.Map;
 import javax.annotation.Nullable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -155,20 +159,27 @@ public class GrpcClient implements Client {
     });
   }
 
-  // TODO: add information about parameters being added to signature
   @Override
   public Flux<PartialResultSet> executeStreamingSql(
-      Session session, @Nullable Transaction transaction, String sql) {
+      Session session, @Nullable SpannerTransactionContext transactionContext, String sql,
+      Struct params, Map<String, Type> types) {
 
     return Flux.defer(() -> {
       ExecuteSqlRequest.Builder executeSqlRequest =
           ExecuteSqlRequest.newBuilder()
               .setSql(sql)
               .setSession(session.getName());
+      if (params != null) {
+        executeSqlRequest
+            .setParams(params)
+            .putAllParamTypes(types);
+      }
 
-      if (transaction != null) {
+      if (transactionContext != null && transactionContext.getTransaction() != null) {
         executeSqlRequest.setTransaction(
-            TransactionSelector.newBuilder().setId(transaction.getId()).build());
+            TransactionSelector.newBuilder().setId(transactionContext.getTransaction().getId())
+                .build());
+        executeSqlRequest.setSeqno(transactionContext.nextSeqNum());
       }
 
       return ObservableReactiveUtil.streamingCall(
@@ -186,7 +197,7 @@ public class GrpcClient implements Client {
   }
 
   @VisibleForTesting
-  SpannerStub getSpanner() {
+  public SpannerStub getSpanner() {
     return this.spanner;
   }
 }

@@ -99,17 +99,22 @@ public final class DefaultCodecs implements Codecs {
   }
 
   @Override
+  public Codec getCodec(Object value) {
+    for (Codec<?> codec : this.codecs) {
+      if (codec.canEncode(value)) {
+        return codec;
+      }
+    }
+    throw new IllegalArgumentException(
+          String.format("Cannot encode parameter of type %s", value.getClass().getName()));
+  }
+
+  @Override
   public Value encode(Object value) {
     if (value == null) {
       return NULL_VALUE;
     }
-    for (Codec<?> codec : this.codecs) {
-      if (codec.canEncode(value)) {
-        return codec.encode(value);
-      }
-    }
-
-    throw new IllegalArgumentException(
-        String.format("Cannot encode parameter of type %s", value.getClass().getName()));
+    Codec codec = getCodec(value);
+    return codec.encode(value);
   }
 }
