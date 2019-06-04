@@ -15,11 +15,11 @@ before_install:
     fi;
 
 install:
-  - ./mvnw clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -q
+  - ./mvnw clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 script:
   - if [ "$TRAVIS_SECURE_ENV_VARS" == "true" ]; then
-      ./mvnw verify -B -V -q;
+      ./mvnw verify -B -V;
     else
-      ./mvnw verify -B -V -q -DskipITs;
+      ./mvnw verify -B -V -DskipITs;
     fi;
