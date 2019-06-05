@@ -20,7 +20,7 @@ import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.cloud.spanner.r2dbc.util.Assert;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryMetadata;
-import org.reactivestreams.Publisher;
+import reactor.core.publisher.Mono;
 
 /**
  * An implementation of {@link ConnectionFactory} for creating connections to Cloud Spanner
@@ -38,9 +38,13 @@ public class SpannerConnectionFactory implements ConnectionFactory {
   }
 
   @Override
-  public Publisher<SpannerConnection> create() {
+  public Mono<SpannerConnection> create() {
     return this.client.createSession(this.config.getFullyQualifiedDatabaseName())
-      .map(session -> new SpannerConnection(this.client, session));
+      .map(session -> {
+        SpannerConnection connection = new SpannerConnection(this.client, session);
+        connection.setPartialResultSetFetchSize(this.config.getPartialResultSetFetchSize());
+        return connection;
+      });
   }
 
   @Override

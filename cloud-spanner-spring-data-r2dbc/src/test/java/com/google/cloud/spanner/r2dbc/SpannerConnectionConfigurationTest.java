@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.auth.oauth2.GoogleCredentials;
-import java.io.IOException;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -28,6 +28,19 @@ import org.mockito.Mockito;
  * Test for {@link SpannerConnectionConfiguration}.
  */
 public class SpannerConnectionConfigurationTest {
+
+  GoogleCredentials mockCredentials = Mockito.mock(GoogleCredentials.class);
+
+  SpannerConnectionConfiguration.Builder configurationBuilder;
+
+  /**
+   * Sets up mock credentials to avoid accessing filesystem to get default credentials.
+   */
+  @Before
+  public void setUpMockCredentials() {
+    this.configurationBuilder = new SpannerConnectionConfiguration.Builder()
+        .setCredentials(this.mockCredentials);
+  }
 
   @Test
   public void missingInstanceNameTriggersException() {
@@ -69,30 +82,47 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void passingCustomGoogleCredentials() throws IOException {
-    GoogleCredentials fakeCredentials = Mockito.mock(GoogleCredentials.class);
+  public void passingCustomGoogleCredentials() {
 
-    SpannerConnectionConfiguration configuration =
-        new SpannerConnectionConfiguration.Builder()
+    SpannerConnectionConfiguration configuration = this.configurationBuilder
             .setProjectId("project")
             .setInstanceName("an-instance")
             .setDatabaseName("db")
-            .setCredentials(fakeCredentials)
             .build();
 
-    assertThat(configuration.getCredentials()).isSameAs(fakeCredentials);
+    assertThat(configuration.getCredentials()).isSameAs(this.mockCredentials);
   }
 
   @Test
-  public void nonNullConstructorParametersPassPreconditions() throws IOException {
-    SpannerConnectionConfiguration config
-        = new SpannerConnectionConfiguration.Builder()
+  public void nonNullConstructorParametersPassPreconditions() {
+    SpannerConnectionConfiguration config = this.configurationBuilder
         .setProjectId("project1")
         .setInstanceName("an-instance")
         .setDatabaseName("db")
         .build();
     assertThat(config.getFullyQualifiedDatabaseName())
         .isEqualTo("projects/project1/instances/an-instance/databases/db");
+  }
+
+  @Test
+  public void partialResultSetFetchSize() {
+    SpannerConnectionConfiguration config = this.configurationBuilder
+        .setPartialResultSetFetchSize(42)
+        .setProjectId("project1")
+        .setInstanceName("an-instance")
+        .setDatabaseName("db")
+        .build();
+    assertThat(config.getPartialResultSetFetchSize()).isEqualTo(42);
+  }
+
+  @Test
+  public void partialResultSetFetchSizeNullByDefault() {
+    SpannerConnectionConfiguration config = this.configurationBuilder
+        .setProjectId("project1")
+        .setInstanceName("an-instance")
+        .setDatabaseName("db")
+        .build();
+    assertThat(config.getPartialResultSetFetchSize()).isNull();
   }
 
 }

@@ -42,6 +42,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 import reactor.test.publisher.PublisherProbe;
 
 /**
@@ -70,7 +71,12 @@ public class SpannerConnectionTest {
 
   @Test
   public void executeStatementReturnsWorkingStatementWithCorrectQuery() {
-    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
+    SpannerConnectionConfiguration mockConfiguration
+        = Mockito.mock(SpannerConnectionConfiguration.class);
+
+    SpannerConnection connection
+        = new SpannerConnection(this.mockClient, TEST_SESSION);
+    connection.setPartialResultSetFetchSize(1);
     String sql = "select book from library";
     PartialResultSet partialResultSet = PartialResultSet.newBuilder()
         .setMetadata(ResultSetMetadata.newBuilder().setRowType(StructType.newBuilder()
@@ -86,8 +92,13 @@ public class SpannerConnectionTest {
 
     Statement statement = connection.createStatement(sql);
     assertThat(statement).isInstanceOf(SpannerStatement.class);
-    Flux<SpannerResult> result = (Flux<SpannerResult>)statement.execute();
-    result.next().block().map((r, m) -> (String)r.get(0)).blockFirst().equals("Odyssey");
+
+    StepVerifier.create(
+        ((Flux<SpannerResult>)statement.execute())
+            .flatMap(res -> res.map((r, m) -> (String) r.get(0))))
+        .expectNext("Odyssey")
+        .expectComplete()
+        .verify();
 
     verify(this.mockClient).executeStreamingSql(TEST_SESSION, null, sql,
         Struct.newBuilder().build(), Collections.EMPTY_MAP);
@@ -155,4 +166,18 @@ public class SpannerConnectionTest {
     rollbackProbe.assertWasSubscribed();
   }
 
+  @Test
+  public void setPartialResultSetFetchSizePropagatesToStatement() {
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
+    connection.setPartialResultSetFetchSize(42);
+    SpannerStatement statement = connection.createStatement("SELECT 1");
+    assertThat(statement.getPartialResultSetFetchSize()).isEqualTo(42);
+  }
+
+  @Test
+  public void nullPartialResultSetFetchSizeLeavesStatementDefault() {
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
+    SpannerStatement statement = connection.createStatement("SELECT 1");
+    assertThat(statement.getPartialResultSetFetchSize()).isEqualTo(1);
+  }
 }

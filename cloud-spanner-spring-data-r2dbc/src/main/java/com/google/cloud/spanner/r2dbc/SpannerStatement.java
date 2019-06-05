@@ -43,6 +43,8 @@ import reactor.core.publisher.Mono;
  */
 public class SpannerStatement implements Statement {
 
+  private static final int DEFAULT_PARTIAL_FETCH_SIZE = 1;
+
   private Client client;
 
   private Session session;
@@ -50,6 +52,8 @@ public class SpannerStatement implements Statement {
   private SpannerTransactionContext transaction;
 
   private String sql;
+
+  private Integer partialResultSetFetchSize;
 
   private List<Struct> bindingsStucts = new ArrayList<>();
 
@@ -156,6 +160,10 @@ public class SpannerStatement implements Statement {
           if (signal.hasError()) {
             return Mono.error(signal.getThrowable());
           }
+          if (signal.isOnComplete()) {
+            // Empty response returned from Cloud Spanner.
+            return flux.then(Mono.just(new SpannerResult(Flux.empty(), Mono.just(0))));
+          }
 
           PartialResultSet firstPartialResultSet = signal.get();
           if (isDmlQuery(firstPartialResultSet)) {
@@ -167,7 +175,7 @@ public class SpannerStatement implements Statement {
             return Mono.just(new SpannerResult(Flux.empty(), rowsChanged));
           } else {
             return Mono.just(new SpannerResult(
-                flux.flatMapIterable(partialResultRowExtractor),
+                flux.flatMapIterable(partialResultRowExtractor, getPartialResultSetFetchSize()),
                 Mono.just(0)));
           }
         })
@@ -180,4 +188,18 @@ public class SpannerStatement implements Statement {
   private static boolean isDmlQuery(PartialResultSet firstPartialResultSet) {
     return firstPartialResultSet.getMetadata().getRowType().getFieldsList().isEmpty();
   }
+
+  /**
+   * Allows customizing the number of {@link PartialResultSet} objects to request at a time.
+   * @param fetchSize prefetch size to request from Cloud Spanner
+   */
+  public void setPartialResultSetFetchSize(Integer fetchSize) {
+    this.partialResultSetFetchSize = fetchSize;
+  }
+
+  public int getPartialResultSetFetchSize() {
+    return this.partialResultSetFetchSize != null
+        ? this.partialResultSetFetchSize : DEFAULT_PARTIAL_FETCH_SIZE;
+  }
+
 }

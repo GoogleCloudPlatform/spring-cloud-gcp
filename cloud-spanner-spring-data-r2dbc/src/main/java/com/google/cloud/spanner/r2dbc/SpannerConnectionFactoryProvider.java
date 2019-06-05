@@ -28,7 +28,6 @@ import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.ConnectionFactoryProvider;
 import io.r2dbc.spi.Option;
-import java.io.IOException;
 
 /**
  * An implementation of {@link ConnectionFactoryProvider} for creating {@link
@@ -46,6 +45,9 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   /** Option name for GCP Spanner instance. */
   public static final Option<String> INSTANCE = Option.valueOf("instance");
 
+  public static final Option<Integer> PARTIAL_RESULT_SET_FETCH_SIZE
+      = Option.valueOf("partial_result_set_fetch_size");
+
   /**
    * Option specifying the location of the GCP credentials file.
    */
@@ -56,22 +58,14 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
 
   @Override
   public ConnectionFactory create(ConnectionFactoryOptions connectionFactoryOptions) {
-    try {
-      SpannerConnectionConfiguration config = new SpannerConnectionConfiguration.Builder()
-          .setProjectId(connectionFactoryOptions.getRequiredValue(PROJECT))
-          .setInstanceName(connectionFactoryOptions.getRequiredValue(INSTANCE))
-          .setDatabaseName(connectionFactoryOptions.getRequiredValue(DATABASE))
-          .setCredentials(connectionFactoryOptions.getValue(GOOGLE_CREDENTIALS))
-          .build();
 
-      if (this.client == null) {
-        // GrpcClient should only be instantiated if/when a SpannerConnectionFactory is needed.
-        this.client = new GrpcClient(config.getCredentials());
-      }
-      return new SpannerConnectionFactory(this.client, config);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    SpannerConnectionConfiguration config = createConfiguration(connectionFactoryOptions);
+
+    if (this.client == null) {
+      // GrpcClient should only be instantiated if/when a SpannerConnectionFactory is needed.
+      this.client = new GrpcClient(config.getCredentials());
     }
+    return new SpannerConnectionFactory(this.client, config);
   }
 
   @Override
@@ -90,6 +84,20 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   @VisibleForTesting
   void setClient(Client client) {
     this.client = client;
+  }
+
+  private static SpannerConnectionConfiguration createConfiguration(
+      ConnectionFactoryOptions options) {
+    SpannerConnectionConfiguration.Builder configBuilder
+        = new SpannerConnectionConfiguration.Builder()
+        .setProjectId(options.getRequiredValue(PROJECT))
+        .setInstanceName(options.getRequiredValue(INSTANCE))
+        .setDatabaseName(options.getRequiredValue(DATABASE))
+        .setCredentials(options.getValue(GOOGLE_CREDENTIALS));
+
+    configBuilder.setPartialResultSetFetchSize(options.getValue(PARTIAL_RESULT_SET_FETCH_SIZE));
+
+    return configBuilder.build();
   }
 
 }

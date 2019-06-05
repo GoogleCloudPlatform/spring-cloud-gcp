@@ -18,6 +18,7 @@ package com.google.cloud.spanner.r2dbc;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.r2dbc.util.Assert;
+import io.r2dbc.spi.R2dbcNonTransientResourceException;
 import java.io.IOException;
 
 /**
@@ -31,6 +32,8 @@ public class SpannerConnectionConfiguration {
   private final String fullyQualifiedDbName;
 
   private final GoogleCredentials credentials;
+
+  private Integer partialResultSetFetchSize;
 
   /**
    * Basic property initializing constructor.
@@ -67,6 +70,10 @@ public class SpannerConnectionConfiguration {
     return this.credentials;
   }
 
+  public Integer getPartialResultSetFetchSize() {
+    return this.partialResultSetFetchSize;
+  }
+
   public static class Builder {
 
     private String projectId;
@@ -76,6 +83,8 @@ public class SpannerConnectionConfiguration {
     private String databaseName;
 
     private GoogleCredentials credentials;
+
+    private Integer partialResultSetFetchSize;
 
     public Builder setProjectId(String projectId) {
       this.projectId = projectId;
@@ -97,19 +106,33 @@ public class SpannerConnectionConfiguration {
       return this;
     }
 
+    public Builder setPartialResultSetFetchSize(Integer fetchSize) {
+      this.partialResultSetFetchSize = fetchSize;
+      return this;
+    }
+
     /**
      * Constructs an instance of the {@link SpannerConnectionConfiguration}.
      */
-    public SpannerConnectionConfiguration build() throws IOException {
-      if (this.credentials == null) {
-        this.credentials = GoogleCredentials.getApplicationDefault();
+    public SpannerConnectionConfiguration build() {
+      try {
+        if (this.credentials == null) {
+          this.credentials = GoogleCredentials.getApplicationDefault();
+        }
+      } catch (IOException e) {
+        throw new R2dbcNonTransientResourceException(
+            "Could not acquire default application credentials", e);
       }
 
-      return new SpannerConnectionConfiguration(
+      SpannerConnectionConfiguration configuration = new SpannerConnectionConfiguration(
           this.projectId,
           this.instanceName,
           this.databaseName,
           this.credentials);
+
+      configuration.partialResultSetFetchSize = this.partialResultSetFetchSize;
+
+      return configuration;
     }
 
   }
