@@ -20,6 +20,7 @@ import com.google.cloud.spanner.r2dbc.util.Assert;
 import com.google.protobuf.Value;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import reactor.util.annotation.Nullable;
 
@@ -28,11 +29,19 @@ class SpannerCodec<T> implements Codec<T> {
   private final Class<T> type;
   private TypeCode typeCode;
   private Function<T, Value> doEncode;
+  private BiFunction<Value, Type, T> doDecode;
 
   SpannerCodec(Class<T> type, TypeCode typeCode, Function<T, Value> doEncode) {
+    this(type, typeCode, doEncode,
+        ((value, spannerType) -> (T) ValueUtils.decodeValue(spannerType, value)));
+  }
+
+  SpannerCodec(Class<T> type, TypeCode typeCode, Function<T, Value> doEncode,
+      BiFunction<Value, Type, T> doDecode) {
     this.type = Assert.requireNonNull(type, "type must not be null");
     this.typeCode = Assert.requireNonNull(typeCode, "typeCode must not be null");
     this.doEncode = doEncode;
+    this.doDecode = doDecode;
   }
 
   @Override
@@ -43,10 +52,10 @@ class SpannerCodec<T> implements Codec<T> {
   }
 
   @Override
-  public boolean canEncode(Object value) {
-    Assert.requireNonNull(this.type, "type must not be null");
+  public boolean canEncode(Class type) {
+    Assert.requireNonNull(type, "type to encode must not be null");
 
-    return this.type.isInstance(value);
+    return type.isAssignableFrom(this.type);
   }
 
   @Override
@@ -58,8 +67,8 @@ class SpannerCodec<T> implements Codec<T> {
 
   @Nullable
   @Override
-  public T decode(Value value, Type spannerType, Class<? extends T> type) {
-    return doDecode(value, spannerType, type);
+  public T decode(Value value, Type spannerType) {
+    return this.doDecode.apply(value, spannerType);
   }
 
   @Override
@@ -87,11 +96,10 @@ class SpannerCodec<T> implements Codec<T> {
     return this.typeCode;
   }
 
-  T doDecode(Value value, Type spannerType, Class<? extends T> type) {
-    return (T) ValueUtils.decodeValue(spannerType, value);
-  }
-
   Value doEncode(T value) {
+    if (value == null) {
+      return DefaultCodecs.NULL_VALUE;
+    }
     return this.doEncode.apply(value);
   }
 }

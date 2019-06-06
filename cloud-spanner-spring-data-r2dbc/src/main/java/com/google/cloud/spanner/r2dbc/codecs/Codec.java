@@ -35,10 +35,10 @@ public interface Codec<T> {
   /**
    * Indicates if the codec can encode a value.
    *
-   * @param value input data object
+   * @param type input data object type
    * @return true the codec can encode value, false otherwise
    */
-  boolean canEncode(Object value);
+  boolean canEncode(Class type);
 
   /**
    * Indicates if the codec can encode null.
@@ -52,11 +52,10 @@ public interface Codec<T> {
    *
    * @param value the {@link Value} object containing the value to decode
    * @param spannerType the type to decode to
-   * @param type the type to decode to
    * @return the decoded value
    */
   @Nullable
-  T decode(Value value, Type spannerType, Class<? extends T> type);
+  T decode(Value value, Type spannerType);
 
 
   /**

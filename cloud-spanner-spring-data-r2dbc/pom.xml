@@ -34,6 +34,13 @@
     </dependency>
 
     <dependency>
+      <groupId>io.r2dbc</groupId>
+      <artifactId>r2dbc-spi-test</artifactId>
+      <version>${r2dbc.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>io.projectreactor</groupId>
       <artifactId>reactor-core</artifactId>
     </dependency>

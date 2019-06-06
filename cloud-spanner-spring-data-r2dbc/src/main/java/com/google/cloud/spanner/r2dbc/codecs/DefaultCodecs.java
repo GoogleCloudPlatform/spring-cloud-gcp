@@ -17,6 +17,7 @@
 package com.google.cloud.spanner.r2dbc.codecs;
 
 import com.google.cloud.spanner.r2dbc.util.Assert;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.NullValue;
 import com.google.protobuf.Value;
 import com.google.spanner.v1.Type;
@@ -33,7 +34,7 @@ import reactor.util.annotation.Nullable;
  */
 public final class DefaultCodecs implements Codecs {
 
-  private static final com.google.protobuf.Value NULL_VALUE =
+  static final com.google.protobuf.Value NULL_VALUE =
       com.google.protobuf.Value.newBuilder().setNullValue(NullValue.NULL_VALUE).build();
 
   private final List<Codec<?>> codecs;
@@ -53,7 +54,7 @@ public final class DefaultCodecs implements Codecs {
         new SpannerCodec<>(Boolean.class, TypeCode.BOOL,
             v -> Value.newBuilder().setBoolValue(v).build()),
         new SpannerCodec<>(byte[].class, TypeCode.BYTES,
-            v -> Value.newBuilder().setStringValue(new String(v)).build()),
+            v -> Value.newBuilder().setStringValueBytes(ByteString.copyFrom(v)).build()),
         new SpannerCodec<>(LocalDate.class, TypeCode.DATE, v -> Value.newBuilder().setStringValue(
             DateTimeFormatter.ISO_LOCAL_DATE.format(v))
             .build()),
@@ -72,6 +73,11 @@ public final class DefaultCodecs implements Codecs {
         }),
         new SpannerCodec<>(Long.class, TypeCode.INT64,
             v -> Value.newBuilder().setStringValue(Long.toString(v)).build()),
+        new SpannerCodec<>(Integer.class, TypeCode.INT64,
+            v -> Value.newBuilder().setStringValue(Integer.toString(v)).build(),
+            (val, spannerType) ->
+            Math.toIntExact((Long) ValueUtils.decodeValue(spannerType, val))
+        ),
         new SpannerCodec<>(String.class, TypeCode.STRING,
             v -> Value.newBuilder().setStringValue(v).build()),
         new SpannerCodec<>(Timestamp.class, TypeCode.TIMESTAMP,
@@ -90,7 +96,7 @@ public final class DefaultCodecs implements Codecs {
 
     for (Codec<?> codec : this.codecs) {
       if (codec.canDecode(spannerType, type)) {
-        return ((Codec<T>) codec).decode(value, spannerType, type);
+        return ((Codec<T>) codec).decode(value, spannerType);
       }
     }
 
@@ -99,14 +105,14 @@ public final class DefaultCodecs implements Codecs {
   }
 
   @Override
-  public Codec getCodec(Object value) {
+  public Codec getCodec(Class type) {
     for (Codec<?> codec : this.codecs) {
-      if (codec.canEncode(value)) {
+      if (codec.canEncode(type)) {
         return codec;
       }
     }
     throw new IllegalArgumentException(
-          String.format("Cannot encode parameter of type %s", value.getClass().getName()));
+        String.format("Cannot encode parameter of type %s", type.getName()));
   }
 
   @Override
@@ -114,7 +120,7 @@ public final class DefaultCodecs implements Codecs {
     if (value == null) {
       return NULL_VALUE;
     }
-    Codec codec = getCodec(value);
+    Codec codec = getCodec(value.getClass());
     return codec.encode(value);
   }
 }

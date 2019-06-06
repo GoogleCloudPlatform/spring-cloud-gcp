@@ -16,13 +16,12 @@
 
 package com.google.cloud.spanner.r2dbc;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.cloud.spanner.r2dbc.codecs.Codec;
 import com.google.cloud.spanner.r2dbc.codecs.Codecs;
 import com.google.cloud.spanner.r2dbc.codecs.DefaultCodecs;
 import com.google.cloud.spanner.r2dbc.result.PartialResultRowExtractor;
+import com.google.cloud.spanner.r2dbc.util.Assert;
 import com.google.protobuf.Struct;
 import com.google.spanner.v1.PartialResultSet;
 import com.google.spanner.v1.Session;
@@ -84,7 +83,7 @@ public class SpannerStatement implements Statement {
     this.client = client;
     this.session = session;
     this.transaction = transaction;
-    this.sql = requireNonNull(sql, "SQL string can not be null");
+    this.sql = Assert.requireNonNull(sql, "SQL string can not be null");
   }
 
   @Override
@@ -98,16 +97,29 @@ public class SpannerStatement implements Statement {
 
   @Override
   public Statement bind(Object identifier, Object value) {
-    requireNonNull(identifier);
+    Assert.requireNonNull(identifier, "Identifier must not be null.");
+    Assert.requireNonNull(value, "Value bound must not be null.");
     if (identifier instanceof String) {
       String paramName = (String) identifier;
       // we assume all parameters with the same name have the same type
+
+      Object valToStore;
+      Class classToStore;
+
+      if (value.getClass().equals(TypedNull.class)) {
+        valToStore = null;
+        classToStore = ((TypedNull) value).getType();
+      } else {
+        valToStore = value;
+        classToStore = value.getClass();
+      }
+
       Codec codec = this.resolvedCodecs
-          .computeIfAbsent(paramName, n -> this.codecs.getCodec(value));
+          .computeIfAbsent(paramName, n -> this.codecs.getCodec(classToStore));
       if (this.currentBindingsBuilder == null) {
         this.currentBindingsBuilder = Struct.newBuilder();
       }
-      this.currentBindingsBuilder.putFields(paramName, codec.encode(value));
+      this.currentBindingsBuilder.putFields(paramName, codec.encode(valToStore));
       if (this.bindingsStucts.isEmpty()) {
         // first binding, fill types map
         this.types.put(paramName, Type.newBuilder().setCode(codec.getTypeCode()).build());
@@ -124,7 +136,7 @@ public class SpannerStatement implements Statement {
 
   @Override
   public Statement bindNull(Object identifier, Class<?> type) {
-    return bind(identifier, null);
+    return bind(identifier, new TypedNull(type));
   }
 
   @Override
@@ -202,4 +214,20 @@ public class SpannerStatement implements Statement {
         ? this.partialResultSetFetchSize : DEFAULT_PARTIAL_FETCH_SIZE;
   }
 
+
+  /**
+   * A helper class. Spanner queries require nulls to be bound with their column's actual type.
+   */
+  private static class TypedNull {
+
+    private final Class type;
+
+    private TypedNull(Class type) {
+      this.type = type;
+    }
+
+    public Class getType() {
+      return this.type;
+    }
+  }
 }

@@ -61,13 +61,20 @@ public class SpannerConnection implements Connection {
   }
 
   @Override
-  public Publisher<Void> commitTransaction() {
+  public Mono<Void> commitTransaction() {
+    return commitTransaction(true);
+  }
+
+  private Mono<Void> commitTransaction(boolean logWarning) {
     return Mono.defer(() -> {
       if (this.transactionContext == null) {
-        this.logger.warn("commitTransaction() is a no-op; called with no transaction active.");
+        if (logWarning) {
+          this.logger.warn("commitTransaction() is a no-op; called with no transaction active.");
+        }
         return Mono.empty();
       } else {
         return this.client.commitTransaction(this.session, this.transactionContext.getTransaction())
+            .doOnNext(response -> this.transactionContext = null)
             .then();
       }
     });
@@ -88,7 +95,7 @@ public class SpannerConnection implements Connection {
 
   @Override
   public Publisher<Void> close() {
-    return this.client.deleteSession(this.session);
+    return commitTransaction(false).then(this.client.deleteSession(this.session));
   }
 
   @Override

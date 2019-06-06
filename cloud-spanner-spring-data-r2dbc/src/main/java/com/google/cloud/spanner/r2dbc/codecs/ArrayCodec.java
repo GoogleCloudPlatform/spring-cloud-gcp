@@ -19,7 +19,6 @@ package com.google.cloud.spanner.r2dbc.codecs;
 import com.google.protobuf.ListValue;
 import com.google.protobuf.ListValue.Builder;
 import com.google.protobuf.Value;
-import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 
 final class ArrayCodec<A> extends SpannerCodec<A[]> {
@@ -27,13 +26,9 @@ final class ArrayCodec<A> extends SpannerCodec<A[]> {
   private Codecs codecs;
 
   ArrayCodec(Codecs codecs, Class<A[]> klass) {
-    super(klass, TypeCode.ARRAY, null);
+    super(klass, TypeCode.ARRAY, null,
+        (val, spannerType) -> (A[]) ValueUtils.decodeValue(spannerType, val));
     this.codecs = codecs;
-  }
-
-  @Override
-  A[] doDecode(Value value, Type spannerType, Class<? extends A[]> type) {
-    return (A[]) ValueUtils.decodeValue(spannerType, value);
   }
 
   @Override
