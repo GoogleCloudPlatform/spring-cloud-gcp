@@ -168,8 +168,9 @@ public class SpannerStatementTest {
 
     when(this.mockClient.executeStreamingSql(any(), any(), any(), any(), any())).thenReturn(inputs);
 
-    Mono<Result> resultMono = Mono
-        .from(new SpannerStatement(this.mockClient, null, null, "").execute());
+    Mono<Result> resultMono =
+        Mono.from(new SpannerStatement(
+            this.mockClient, null, null, "SELECT * FROM table").execute());
 
     StepVerifier.create(resultMono.flatMap(r -> Mono.from(r.getRowsUpdated())))
         .expectNext(0)
