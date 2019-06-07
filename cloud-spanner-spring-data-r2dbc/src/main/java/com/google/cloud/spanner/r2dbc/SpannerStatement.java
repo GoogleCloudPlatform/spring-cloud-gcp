@@ -17,23 +17,17 @@
 package com.google.cloud.spanner.r2dbc;
 
 import com.google.cloud.spanner.r2dbc.client.Client;
-import com.google.cloud.spanner.r2dbc.codecs.Codec;
-import com.google.cloud.spanner.r2dbc.codecs.Codecs;
-import com.google.cloud.spanner.r2dbc.codecs.DefaultCodecs;
 import com.google.cloud.spanner.r2dbc.result.PartialResultRowExtractor;
+import com.google.cloud.spanner.r2dbc.statement.StatementBindings;
 import com.google.cloud.spanner.r2dbc.statement.StatementParser;
 import com.google.cloud.spanner.r2dbc.statement.StatementType;
+import com.google.cloud.spanner.r2dbc.statement.TypedNull;
 import com.google.cloud.spanner.r2dbc.util.Assert;
 import com.google.protobuf.Struct;
 import com.google.spanner.v1.PartialResultSet;
 import com.google.spanner.v1.Session;
-import com.google.spanner.v1.Type;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
@@ -46,6 +40,8 @@ public class SpannerStatement implements Statement {
 
   private static final int DEFAULT_PARTIAL_FETCH_SIZE = 1;
 
+  private Integer partialResultSetFetchSize;
+
   private Client client;
 
   private Session session;
@@ -54,17 +50,7 @@ public class SpannerStatement implements Statement {
 
   private String sql;
 
-  private Integer partialResultSetFetchSize;
-
-  private List<Struct> bindingsStucts = new ArrayList<>();
-
-  private Codecs codecs = new DefaultCodecs();
-
-  private Map<String, Type> types = new HashMap<>();
-
-  private Struct.Builder currentBindingsBuilder;
-
-  private Map<String, Codec> resolvedCodecs = new HashMap<>();
+  private StatementBindings statementBindings;
 
   /**
    * Creates a Spanner statement for a given SQL statement.
@@ -86,49 +72,23 @@ public class SpannerStatement implements Statement {
     this.session = session;
     this.transaction = transaction;
     this.sql = Assert.requireNonNull(sql, "SQL string can not be null");
+    this.statementBindings = new StatementBindings();
   }
 
   @Override
   public Statement add() {
-    if (this.currentBindingsBuilder != null) {
-      this.bindingsStucts.add(this.currentBindingsBuilder.build());
-    }
-    this.currentBindingsBuilder = null;
+    this.statementBindings.completeBinding();
     return this;
   }
 
   @Override
   public Statement bind(Object identifier, Object value) {
-    Assert.requireNonNull(identifier, "Identifier must not be null.");
-    Assert.requireNonNull(value, "Value bound must not be null.");
-    if (identifier instanceof String) {
-      String paramName = (String) identifier;
-      // we assume all parameters with the same name have the same type
-
-      Object valToStore;
-      Class classToStore;
-
-      if (value.getClass().equals(TypedNull.class)) {
-        valToStore = null;
-        classToStore = ((TypedNull) value).getType();
-      } else {
-        valToStore = value;
-        classToStore = value.getClass();
-      }
-
-      Codec codec = this.resolvedCodecs
-          .computeIfAbsent(paramName, n -> this.codecs.getCodec(classToStore));
-      if (this.currentBindingsBuilder == null) {
-        this.currentBindingsBuilder = Struct.newBuilder();
-      }
-      this.currentBindingsBuilder.putFields(paramName, codec.encode(valToStore));
-      if (this.bindingsStucts.isEmpty()) {
-        // first binding, fill types map
-        this.types.put(paramName, Type.newBuilder().setCode(codec.getTypeCode()).build());
-      }
-      return this;
+    if (!(identifier instanceof String)) {
+      throw new IllegalArgumentException("Only String identifiers are supported");
     }
-    throw new IllegalArgumentException("Only String identifiers are supported");
+
+    this.statementBindings.createBind((String) identifier, value);
+    return this;
   }
 
   @Override
@@ -148,12 +108,7 @@ public class SpannerStatement implements Statement {
 
   @Override
   public Publisher<? extends Result> execute() {
-    add();
-    if (this.bindingsStucts.size() == 0) {
-      this.bindingsStucts.add(Struct.newBuilder().build());
-    }
-
-    Flux<Struct> structFlux = Flux.fromIterable(this.bindingsStucts);
+    Flux<Struct> structFlux = Flux.fromIterable(this.statementBindings.getBindings());
     StatementType statementType = StatementParser.getStatementType(this.sql);
 
     if (statementType == StatementType.SELECT) {
@@ -168,7 +123,7 @@ public class SpannerStatement implements Statement {
 
     Flux<PartialResultSet> resultSetFlux =
         this.client.executeStreamingSql(
-            this.session, this.transaction, this.sql, params, this.types);
+            this.session, this.transaction, this.sql, params, this.statementBindings.getTypes());
 
     if (statementType == StatementType.SELECT) {
       return resultSetFlux
@@ -194,22 +149,5 @@ public class SpannerStatement implements Statement {
   public int getPartialResultSetFetchSize() {
     return this.partialResultSetFetchSize != null
         ? this.partialResultSetFetchSize : DEFAULT_PARTIAL_FETCH_SIZE;
-  }
-
-
-  /**
-   * A helper class. Spanner queries require nulls to be bound with their column's actual type.
-   */
-  private static class TypedNull {
-
-    private final Class type;
-
-    private TypedNull(Class type) {
-      this.type = type;
-    }
-
-    public Class getType() {
-      return this.type;
-    }
   }
 }
