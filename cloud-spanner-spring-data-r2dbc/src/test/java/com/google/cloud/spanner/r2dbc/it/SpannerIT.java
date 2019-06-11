@@ -154,7 +154,7 @@ public class SpannerIT {
   @Test
   public void testLargeReadWrite() {
     // string size must be below 10 MB
-    int maxStringLength = 1000000;
+    int maxStringLength = 100000;
 
     int numberOfBooks = 20;
 
