@@ -65,6 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 /**
  * Integration test for connecting to a real Spanner instance.
@@ -252,25 +253,48 @@ public class SpannerIT {
 
     Mono.from(this.connectionFactory.create())
         .delayUntil(c -> c.beginTransaction())
-        .delayUntil(c -> Flux.from(c.createStatement(
-            "INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY, FICTION, PUBLISHED, WORDS_PER_SENTENCE)"
-                + " VALUES (@uuid, @title, @author, @category, @fiction, @published, @wps);")
-            .bind("uuid", "2b2cbd78-ecd8-430e-b685-fa7910f8a4c7")
-            .bind("author", "Douglas Crockford")
-            .bind("category", 100L)
-            .bind("title", "JavaScript: The Good Parts")
-            .bind("fiction", true)
-            .bind("published", LocalDate.of(2008, 5, 1))
-            .bind("wps", 20.8)
-            .add()
-            .bind("uuid", "df0e3d06-2743-4691-8e51-6d33d90c5cb9")
-            .bind("author", "Joshua Bloch")
-            .bind("category", 100L)
-            .bind("title", "Effective Java")
-            .bind("fiction", false)
-            .bind("published", LocalDate.of(2018, 1, 6))
-            .bind("wps", 15.1)
-            .execute()).flatMapSequential(r -> Mono.from(r.getRowsUpdated())))
+        .delayUntil(c ->
+            Mono.fromRunnable(() ->
+                StepVerifier.create(Flux.from(c.createStatement(
+                    "INSERT BOOKS "
+                        + "(UUID, TITLE, AUTHOR, CATEGORY, FICTION, PUBLISHED, WORDS_PER_SENTENCE)"
+                        + " VALUES "
+                        + "(@uuid, @title, @author, @category, @fiction, @published, @wps);")
+                    .bind("uuid", "2b2cbd78-ecd8-430e-b685-fa7910f8a4c7")
+                    .bind("author", "Douglas Crockford")
+                    .bind("category", 100L)
+                    .bind("title", "JavaScript: The Good Parts")
+                    .bind("fiction", true)
+                    .bind("published", LocalDate.of(2008, 5, 1))
+                    .bind("wps", 20.8)
+                    .add()
+                    .bind("uuid", "df0e3d06-2743-4691-8e51-6d33d90c5cb9")
+                    .bind("author", "Joshua Bloch")
+                    .bind("category", 100L)
+                    .bind("title", "Effective Java")
+                    .bind("fiction", false)
+                    .bind("published", LocalDate.of(2018, 1, 6))
+                    .bind("wps", 15.1)
+                    .execute())
+                    .flatMapSequential(r -> Mono.from(r.getRowsUpdated())))
+                    .expectNext(1).expectNext(1).verifyComplete())
+        )
+        .delayUntil(c -> c.commitTransaction())
+        .block();
+
+    Mono.from(this.connectionFactory.create())
+        .delayUntil(c -> c.beginTransaction())
+        .delayUntil(c ->
+            Mono.fromRunnable(() ->
+                StepVerifier
+                    .create(Flux.from(c.createStatement(
+                        "UPDATE BOOKS SET CATEGORY = @new_cat WHERE CATEGORY = @old_cat")
+                        .bind("new_cat", 101L)
+                        .bind("old_cat", 100L)
+                        .execute())
+                        .flatMap(r -> Mono.from(r.getRowsUpdated())))
+                    .expectNext(2).verifyComplete())
+        )
         .delayUntil(c -> c.commitTransaction())
         .block();
 
@@ -353,12 +377,13 @@ public class SpannerIT {
     Connection connection = Mono.from(connectionFactory.create()).block();
 
     Mono.from(connection.beginTransaction()).block();
-    int rowsUpdated = Mono.from(connection.createStatement(sql).execute())
+    List<Integer> rowsUpdatedPerStatement = Flux.from(connection.createStatement(sql).execute())
         .flatMap(result -> Mono.from(result.getRowsUpdated()))
+        .collectList()
         .block();
     Mono.from(connection.commitTransaction()).block();
 
-    return rowsUpdated;
+    return rowsUpdatedPerStatement.get(0);
   }
 
   /**

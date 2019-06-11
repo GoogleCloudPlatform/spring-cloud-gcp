@@ -28,7 +28,9 @@ import static org.mockito.Mockito.when;
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
+import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import com.google.spanner.v1.PartialResultSet;
+import com.google.spanner.v1.ResultSet;
 import com.google.spanner.v1.ResultSetMetadata;
 import com.google.spanner.v1.ResultSetStats;
 import com.google.spanner.v1.Session;
@@ -37,6 +39,7 @@ import com.google.spanner.v1.StructType.Field;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 import io.r2dbc.spi.Result;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -195,7 +198,8 @@ public class SpannerStatementTest {
 
     when(this.mockClient.executeStreamingSql(any(), any(), any(), any(), any())).thenReturn(inputs);
 
-    StepVerifier.create(Flux.from(new SpannerStatement(this.mockClient, null, null, "").execute())
+    StepVerifier
+        .create(Flux.from(new SpannerStatement(this.mockClient, null, null, "SELECT").execute())
         .flatMap(r -> Mono.from(r.getRowsUpdated())))
         .expectNext(0)
         .verifyComplete();
@@ -203,15 +207,19 @@ public class SpannerStatementTest {
 
   @Test
   public void readDmlQueryTest() {
-    PartialResultSet p1 = PartialResultSet.newBuilder().setStats(
-        ResultSetStats.newBuilder().setRowCountExact(555).build()
-    ).build();
+    ResultSet resultSet = ResultSet.newBuilder()
+        .setStats(ResultSetStats.newBuilder().setRowCountExact(555).build())
+        .build();
 
-    Flux<PartialResultSet> inputs = Flux.just(p1);
+    ExecuteBatchDmlResponse executeBatchDmlResponse = ExecuteBatchDmlResponse.newBuilder()
+        .addResultSets(resultSet)
+        .build();
 
-    when(this.mockClient.executeStreamingSql(any(), any(), any(), any(), any())).thenReturn(inputs);
+    when(this.mockClient.executeBatchDml(any(), any(), any(), any(), any()))
+        .thenReturn(Mono.just(executeBatchDmlResponse));
 
-    StepVerifier.create(Flux.from(new SpannerStatement(this.mockClient, null, null, "").execute())
+    StepVerifier.create(
+        Flux.from(new SpannerStatement(this.mockClient, null, null, "Insert into books").execute())
         .flatMap(r -> Mono.from(r.getRowsUpdated())))
         .expectNext(555)
         .verifyComplete();
@@ -221,13 +229,19 @@ public class SpannerStatementTest {
   public void noopMapOnUpdateQueriesWhenNoRowsAffected() {
     Client mockClient = mock(Client.class);
     String sql = "delete from Books where true";
-    PartialResultSet partialResultSet = PartialResultSet.newBuilder()
+
+    ResultSet resultSet = ResultSet.newBuilder()
         .setMetadata(ResultSetMetadata.getDefaultInstance())
         .setStats(ResultSetStats.getDefaultInstance())
         .build();
-    when(mockClient.executeStreamingSql(TEST_SESSION, null, sql,
-        Struct.newBuilder().build(), Collections.EMPTY_MAP))
-        .thenReturn(Flux.just(partialResultSet));
+
+    ExecuteBatchDmlResponse executeBatchDmlResponse = ExecuteBatchDmlResponse.newBuilder()
+        .addResultSets(resultSet)
+        .build();
+
+    when(mockClient.executeBatchDml(TEST_SESSION, null, sql,
+        Arrays.asList(Struct.newBuilder().build()), Collections.EMPTY_MAP))
+        .thenReturn(Mono.just(executeBatchDmlResponse));
 
     SpannerStatement statement
         = new SpannerStatement(mockClient, TEST_SESSION, null, sql);
@@ -244,7 +258,7 @@ public class SpannerStatementTest {
         .expectNext(0)
         .verifyComplete();
 
-    verify(mockClient, times(2)).executeStreamingSql(TEST_SESSION, null, sql,
-        Struct.newBuilder().build(), Collections.EMPTY_MAP);
+    verify(mockClient, times(1)).executeBatchDml(TEST_SESSION, null, sql,
+        Arrays.asList(Struct.newBuilder().build()), Collections.EMPTY_MAP);
   }
 }
