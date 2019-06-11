@@ -44,13 +44,13 @@ public final class DefaultCodecs implements Codecs {
    */
   public DefaultCodecs() {
     this.codecs = Arrays.asList(
-        new ArrayCodec(this, Boolean[].class),
-        new ArrayCodec(this, byte[][].class),
-        new ArrayCodec(this, LocalDate[].class),
-        new ArrayCodec(this, Double[].class),
-        new ArrayCodec(this, Long[].class),
-        new ArrayCodec(this, String[].class),
-        new ArrayCodec(this, Timestamp[].class),
+        new ArrayCodec(this, Boolean[].class, TypeCode.BOOL),
+        new ArrayCodec(this, byte[][].class, TypeCode.BYTES),
+        new ArrayCodec(this, LocalDate[].class, TypeCode.DATE),
+        new ArrayCodec(this, Double[].class, TypeCode.FLOAT64),
+        new ArrayCodec(this, Long[].class, TypeCode.INT64),
+        new ArrayCodec(this, String[].class, TypeCode.STRING),
+        new ArrayCodec(this, Timestamp[].class, TypeCode.TIMESTAMP),
         new SpannerCodec<>(Boolean.class, TypeCode.BOOL,
             v -> Value.newBuilder().setBoolValue(v).build()),
         new SpannerCodec<>(byte[].class, TypeCode.BYTES,

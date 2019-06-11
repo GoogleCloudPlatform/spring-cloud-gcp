@@ -90,7 +90,12 @@ public class StatementBindings {
 
     if (this.structList.isEmpty()) {
       // first binding, fill types map
-      this.typesMap.put(identifier, Type.newBuilder().setCode(codec.getTypeCode()).build());
+      Type.Builder typeBuilder = Type.newBuilder().setCode(codec.getTypeCode());
+      if (codec.getArrayElementTypeCode() != null) {
+        typeBuilder.setArrayElementType(
+            Type.newBuilder().setCode(codec.getArrayElementTypeCode()).build());
+      }
+      this.typesMap.put(identifier, typeBuilder.build());
     }
   }
 

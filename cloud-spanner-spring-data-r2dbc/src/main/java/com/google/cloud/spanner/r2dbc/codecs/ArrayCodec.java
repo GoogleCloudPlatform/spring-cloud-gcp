@@ -25,10 +25,13 @@ final class ArrayCodec<A> extends SpannerCodec<A[]> {
 
   private Codecs codecs;
 
-  ArrayCodec(Codecs codecs, Class<A[]> klass) {
+  private TypeCode elementTypeCode;
+
+  ArrayCodec(Codecs codecs, Class<A[]> klass, TypeCode elementTypeCode) {
     super(klass, TypeCode.ARRAY, null,
         (val, spannerType) -> (A[]) ValueUtils.decodeValue(spannerType, val));
     this.codecs = codecs;
+    this.elementTypeCode = elementTypeCode;
   }
 
   @Override
@@ -38,5 +41,10 @@ final class ArrayCodec<A> extends SpannerCodec<A[]> {
       builder.addValues(this.codecs.encode(val));
     }
     return Value.newBuilder().setListValue(builder.build()).build();
+  }
+
+  @Override
+  public TypeCode getArrayElementTypeCode() {
+    return this.elementTypeCode;
   }
 }

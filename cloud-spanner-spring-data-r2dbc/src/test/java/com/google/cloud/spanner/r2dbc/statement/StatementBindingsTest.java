@@ -19,6 +19,7 @@ package com.google.cloud.spanner.r2dbc.statement;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
+import com.google.protobuf.ListValue;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 import com.google.spanner.v1.Type;
@@ -32,18 +33,25 @@ public class StatementBindingsTest {
     StatementBindings statementBindings = new StatementBindings();
     statementBindings.createBind("name", "John");
     statementBindings.createBind("age", 50);
+    statementBindings.createBind("array", new String[]{"a", "b"});
     statementBindings.completeBinding();
 
     assertThat(statementBindings.getTypes())
         .containsExactly(
-            entry("name", Type.newBuilder().setCode(TypeCode.STRING).build()),
-            entry("age", Type.newBuilder().setCode(TypeCode.INT64).build()));
+          entry("array", Type.newBuilder().setCode(TypeCode.ARRAY)
+              .setArrayElementType(Type.newBuilder().setCode(TypeCode.STRING).build()).build()),
+          entry("name", Type.newBuilder().setCode(TypeCode.STRING).build()),
+          entry("age", Type.newBuilder().setCode(TypeCode.INT64).build())
+      );
 
     assertThat(statementBindings.getBindings())
         .containsExactly(
             Struct.newBuilder()
                 .putFields("name", Value.newBuilder().setStringValue("John").build())
                 .putFields("age", Value.newBuilder().setStringValue("50").build())
+                .putFields("array", Value.newBuilder().setListValue(
+                    ListValue.newBuilder().addValues(Value.newBuilder().setStringValue("a").build())
+                        .addValues(Value.newBuilder().setStringValue("b").build()).build()).build())
                 .build());
   }
 

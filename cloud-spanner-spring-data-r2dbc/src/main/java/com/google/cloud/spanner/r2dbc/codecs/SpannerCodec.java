@@ -96,6 +96,11 @@ class SpannerCodec<T> implements Codec<T> {
     return this.typeCode;
   }
 
+  @Override
+  public TypeCode getArrayElementTypeCode() {
+    return null;
+  }
+
   Value doEncode(T value) {
     if (value == null) {
       return DefaultCodecs.NULL_VALUE;
