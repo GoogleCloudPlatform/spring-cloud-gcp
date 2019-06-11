@@ -37,23 +37,24 @@ public class SpannerConnection implements Connection {
 
   private final Session session;
 
-  private volatile SpannerTransactionContext transactionContext;
+  private final SpannerConnectionConfiguration config;
 
-  private Integer partialResultSetFetchSize;
+  private volatile SpannerTransactionContext transactionContext;
 
   /**
    * Instantiates a Spanner session with given configuration.
    * @param client client controlling low-level Spanner operations
    * @param session Spanner session to use for all interactions on this connection.
    */
-  public SpannerConnection(Client client, Session session) {
+  public SpannerConnection(Client client, Session session, SpannerConnectionConfiguration config) {
     this.client = client;
     this.session = session;
+    this.config = config;
     this.transactionContext = null;
   }
 
   @Override
-  public Publisher<Void> beginTransaction() {
+  public Mono<Void> beginTransaction() {
     return this.client.beginTransaction(this.session)
         .doOnNext(
             transaction -> this.transactionContext = SpannerTransactionContext.from(transaction))
@@ -81,7 +82,7 @@ public class SpannerConnection implements Connection {
   }
 
   @Override
-  public Publisher<Void> rollbackTransaction() {
+  public Mono<Void> rollbackTransaction() {
     return Mono.defer(() -> {
       if (this.transactionContext == null) {
         this.logger.warn("rollbackTransaction() is a no-op; called with no transaction active.");
@@ -94,7 +95,7 @@ public class SpannerConnection implements Connection {
   }
 
   @Override
-  public Publisher<Void> close() {
+  public Mono<Void> close() {
     return commitTransaction(false).then(this.client.deleteSession(this.session));
   }
 
@@ -111,10 +112,13 @@ public class SpannerConnection implements Connection {
   @Override
   public SpannerStatement createStatement(String sql) {
     SpannerStatement statement
-        = new SpannerStatement(this.client, this.session, this.transactionContext, sql);
-
-    statement.setPartialResultSetFetchSize(this.partialResultSetFetchSize);
-
+        = new SpannerStatement(
+            this.client,
+            this.session,
+            this.transactionContext,
+            sql,
+            this.config);
+    
     return statement;
   }
 
@@ -140,9 +144,4 @@ public class SpannerConnection implements Connection {
   public Session getSession() {
     return this.session;
   }
-
-  public void setPartialResultSetFetchSize(Integer fetchSize) {
-    this.partialResultSetFetchSize = fetchSize;
-  }
-
 }

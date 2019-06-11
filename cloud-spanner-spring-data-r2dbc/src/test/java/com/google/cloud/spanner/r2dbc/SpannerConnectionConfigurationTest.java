@@ -114,15 +114,4 @@ public class SpannerConnectionConfigurationTest {
         .build();
     assertThat(config.getPartialResultSetFetchSize()).isEqualTo(42);
   }
-
-  @Test
-  public void partialResultSetFetchSizeNullByDefault() {
-    SpannerConnectionConfiguration config = this.configurationBuilder
-        .setProjectId("project1")
-        .setInstanceName("an-instance")
-        .setDatabaseName("db")
-        .build();
-    assertThat(config.getPartialResultSetFetchSize()).isNull();
-  }
-
 }

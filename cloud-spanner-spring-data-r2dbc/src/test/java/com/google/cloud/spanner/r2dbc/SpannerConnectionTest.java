@@ -53,6 +53,13 @@ public class SpannerConnectionTest {
   private static final Session TEST_SESSION =
       Session.newBuilder().setName("project/session/1234").build();
 
+  private static final SpannerConnectionConfiguration TEST_CONFIG =
+      new SpannerConnectionConfiguration.Builder()
+          .setInstanceName("test-instance")
+          .setProjectId("project")
+          .setDatabaseName("db")
+          .build();
+
   private Client mockClient;
 
   /**
@@ -75,8 +82,7 @@ public class SpannerConnectionTest {
         = Mockito.mock(SpannerConnectionConfiguration.class);
 
     SpannerConnection connection
-        = new SpannerConnection(this.mockClient, TEST_SESSION);
-    connection.setPartialResultSetFetchSize(1);
+        = new SpannerConnection(this.mockClient, TEST_SESSION, TEST_CONFIG);
     String sql = "select book from library";
     PartialResultSet partialResultSet = PartialResultSet.newBuilder()
         .setMetadata(ResultSetMetadata.newBuilder().setRowType(StructType.newBuilder()
@@ -106,7 +112,8 @@ public class SpannerConnectionTest {
 
   @Test
   public void noopCommitTransactionWhenTransactionNotStarted() {
-    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
+    SpannerConnection connection =
+        new SpannerConnection(this.mockClient, TEST_SESSION, TEST_CONFIG);
 
     // No-op commit when connection is not started.
     Mono.from(connection.commitTransaction()).block();
@@ -115,7 +122,8 @@ public class SpannerConnectionTest {
 
   @Test
   public void beginAndCommitTransactions() {
-    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
+    SpannerConnection connection =
+        new SpannerConnection(this.mockClient, TEST_SESSION, TEST_CONFIG);
 
     PublisherProbe<Transaction> beginTransactionProbe = PublisherProbe.of(
         Mono.just(Transaction.getDefaultInstance()));
@@ -141,7 +149,8 @@ public class SpannerConnectionTest {
 
   @Test
   public void rollbackTransactions() {
-    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
+    SpannerConnection connection =
+        new SpannerConnection(this.mockClient, TEST_SESSION, TEST_CONFIG);
 
     PublisherProbe<Transaction> beginTransactionProbe = PublisherProbe.of(
         Mono.just(Transaction.getDefaultInstance()));
@@ -164,20 +173,5 @@ public class SpannerConnectionTest {
 
     beginTransactionProbe.assertWasSubscribed();
     rollbackProbe.assertWasSubscribed();
-  }
-
-  @Test
-  public void setPartialResultSetFetchSizePropagatesToStatement() {
-    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
-    connection.setPartialResultSetFetchSize(42);
-    SpannerStatement statement = connection.createStatement("SELECT 1");
-    assertThat(statement.getPartialResultSetFetchSize()).isEqualTo(42);
-  }
-
-  @Test
-  public void nullPartialResultSetFetchSizeLeavesStatementDefault() {
-    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION);
-    SpannerStatement statement = connection.createStatement("SELECT 1");
-    assertThat(statement.getPartialResultSetFetchSize()).isEqualTo(1);
   }
 }

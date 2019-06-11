@@ -17,9 +17,10 @@
     <r2dbc.version>0.8.0.M8</r2dbc.version>
     <reactor.version>Californium-SR6</reactor.version>
     <google-auth.version>0.15.0</google-auth.version>
-    <grpc.version>1.20.0</grpc.version>
     <mockito.version>2.23.0</mockito.version>
+    <grpc.version>1.20.0</grpc.version>
     <grpc-spanner.version>1.17.0</grpc-spanner.version>
+    <grpc-common.version>1.16.0</grpc-common.version>
     <google-cloud-core.version>1.72.0</google-cloud-core.version>
     <slf4j.version>1.7.26</slf4j.version>
   </properties>
@@ -52,7 +53,19 @@
 
     <dependency>
       <groupId>com.google.api.grpc</groupId>
+      <artifactId>grpc-google-common-protos</artifactId>
+      <version>${grpc-common.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
       <artifactId>grpc-google-cloud-spanner-v1</artifactId>
+      <version>${grpc-spanner.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>grpc-google-cloud-spanner-admin-database-v1</artifactId>
       <version>${grpc-spanner.version}</version>
     </dependency>
 

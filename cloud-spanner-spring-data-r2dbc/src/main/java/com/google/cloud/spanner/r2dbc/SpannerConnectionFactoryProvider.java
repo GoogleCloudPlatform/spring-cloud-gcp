@@ -95,7 +95,9 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
         .setDatabaseName(options.getRequiredValue(DATABASE))
         .setCredentials(options.getValue(GOOGLE_CREDENTIALS));
 
-    configBuilder.setPartialResultSetFetchSize(options.getValue(PARTIAL_RESULT_SET_FETCH_SIZE));
+    if (options.hasOption(PARTIAL_RESULT_SET_FETCH_SIZE)) {
+      configBuilder.setPartialResultSetFetchSize(options.getValue(PARTIAL_RESULT_SET_FETCH_SIZE));
+    }
 
     return configBuilder.build();
   }

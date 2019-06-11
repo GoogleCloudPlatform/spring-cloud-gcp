@@ -153,7 +153,7 @@ public class GrpcClientTest {
     ManagedChannel channel =
         InProcessChannelBuilder.forName(serverName).directExecutor().build();
 
-    clientConsumer.accept(new GrpcClient(SpannerGrpc.newStub(channel)));
+    clientConsumer.accept(new GrpcClient(SpannerGrpc.newStub(channel), null, null));
 
     channel.shutdown();
     server.shutdown();

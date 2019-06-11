@@ -29,6 +29,7 @@ import com.google.spanner.v1.PartialResultSet;
 import com.google.spanner.v1.Session;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
+import java.util.Collections;
 import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
@@ -39,10 +40,6 @@ import reactor.core.publisher.Mono;
  */
 public class SpannerStatement implements Statement {
 
-  private static final int DEFAULT_PARTIAL_FETCH_SIZE = 1;
-
-  private Integer partialResultSetFetchSize;
-
   private Client client;
 
   private Session session;
@@ -50,6 +47,8 @@ public class SpannerStatement implements Statement {
   private SpannerTransactionContext transaction;
 
   private String sql;
+
+  private SpannerConnectionConfiguration config;
 
   private StatementBindings statementBindings;
 
@@ -69,12 +68,14 @@ public class SpannerStatement implements Statement {
       Client client,
       Session session,
       @Nullable SpannerTransactionContext transaction,
-      String sql) {
+      String sql,
+      SpannerConnectionConfiguration config) {
 
     this.client = client;
     this.session = session;
     this.transaction = transaction;
     this.sql = Assert.requireNonNull(sql, "SQL string can not be null");
+    this.config = config;
     this.statementBindings = new StatementBindings();
     this.statementType = StatementParser.getStatementType(this.sql);
   }
@@ -113,6 +114,14 @@ public class SpannerStatement implements Statement {
   @Override
   public Publisher<? extends Result> execute() {
     switch (this.statementType) {
+      case DDL:
+        return this.client
+            .executeDdl(
+                this.config.getFullyQualifiedDatabaseName(),
+                Collections.singletonList(this.sql),
+                this.config.getDdlOperationTimeout(),
+                this.config.getDdlOperationPollInterval())
+            .map(operation -> new SpannerResult(Flux.empty(), Mono.just(0)));
       case DML:
         return this.client
             .executeBatchDml(this.session, this.transaction, this.sql,
@@ -129,7 +138,7 @@ public class SpannerStatement implements Statement {
     }
   }
 
-  private Mono<? extends Result> runSelectStatement(Struct params) {
+  private Mono<SpannerResult> runSelectStatement(Struct params) {
     PartialResultRowExtractor partialResultRowExtractor = new PartialResultRowExtractor();
 
     Flux<PartialResultSet> resultSetFlux =
@@ -137,21 +146,8 @@ public class SpannerStatement implements Statement {
             this.session, this.transaction, this.sql, params, this.statementBindings.getTypes());
 
     return resultSetFlux
-        .flatMapIterable(partialResultRowExtractor, getPartialResultSetFetchSize())
+        .flatMapIterable(partialResultRowExtractor, this.config.getPartialResultSetFetchSize())
         .transform(result -> Mono.just(new SpannerResult(result, Mono.just(0))))
         .next();
-  }
-
-  /**
-   * Allows customizing the number of {@link PartialResultSet} objects to request at a time.
-   * @param fetchSize prefetch size to request from Cloud Spanner
-   */
-  public void setPartialResultSetFetchSize(Integer fetchSize) {
-    this.partialResultSetFetchSize = fetchSize;
-  }
-
-  public int getPartialResultSetFetchSize() {
-    return this.partialResultSetFetchSize != null
-        ? this.partialResultSetFetchSize : DEFAULT_PARTIAL_FETCH_SIZE;
   }
 }
