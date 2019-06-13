@@ -18,6 +18,8 @@ package com.google.cloud.spanner.r2dbc;
 
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.spanner.v1.Session;
+import com.google.spanner.v1.TransactionOptions;
+import com.google.spanner.v1.TransactionOptions.ReadWrite;
 import io.r2dbc.spi.Batch;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.IsolationLevel;
@@ -30,6 +32,11 @@ import reactor.core.publisher.Mono;
  * {@link Connection} implementation for Cloud Spanner.
  */
 public class SpannerConnection implements Connection {
+
+  private static final TransactionOptions READ_WRITE_TRANSACTION =
+      TransactionOptions.newBuilder()
+          .setReadWrite(ReadWrite.getDefaultInstance())
+          .build();
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -53,31 +60,45 @@ public class SpannerConnection implements Connection {
     this.transactionContext = null;
   }
 
-  @Override
   public Mono<Void> beginTransaction() {
-    return this.client.beginTransaction(this.session)
-        .doOnNext(
-            transaction -> this.transactionContext = SpannerTransactionContext.from(transaction))
+    return this.beginTransaction(READ_WRITE_TRANSACTION);
+  }
+
+  /**
+   * Begins a new transaction with the specified {@link TransactionOptions}.
+   */
+  public Mono<Void> beginTransaction(TransactionOptions transactionOptions) {
+    return this.client.beginTransaction(this.session, transactionOptions)
+        .doOnNext(transaction ->
+            this.transactionContext = SpannerTransactionContext.from(
+                transaction, transactionOptions))
         .then();
   }
+
+
 
   @Override
   public Mono<Void> commitTransaction() {
     return commitTransaction(true);
   }
 
-  private Mono<Void> commitTransaction(boolean logWarning) {
+  private Mono<Void> commitTransaction(boolean logMessage) {
     return Mono.defer(() -> {
-      if (this.transactionContext == null) {
-        if (logWarning) {
-          this.logger.warn("commitTransaction() is a no-op; called with no transaction active.");
-        }
-        return Mono.empty();
-      } else {
+      if (this.transactionContext != null && this.transactionContext.isReadWrite()) {
         return this.client.commitTransaction(this.session, this.transactionContext.getTransaction())
             .doOnNext(response -> this.transactionContext = null)
             .then();
       }
+
+      if (logMessage) {
+        if (this.transactionContext == null) {
+          this.logger.debug("commitTransaction() is a no-op; called with no transaction active.");
+        } else if (!this.transactionContext.isReadWrite()) {
+          this.logger.debug("commitTransaction() is a no-op; "
+              + "called outside of a read-write transaction.");
+        }
+      }
+      return Mono.empty();
     });
   }
 
@@ -118,7 +139,7 @@ public class SpannerConnection implements Connection {
             this.transactionContext,
             sql,
             this.config);
-    
+
     return statement;
   }
 

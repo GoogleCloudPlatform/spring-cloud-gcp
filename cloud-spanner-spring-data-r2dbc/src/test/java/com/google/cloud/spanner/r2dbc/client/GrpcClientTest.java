@@ -32,6 +32,8 @@ import com.google.spanner.v1.Session;
 import com.google.spanner.v1.SpannerGrpc;
 import com.google.spanner.v1.SpannerGrpc.SpannerImplBase;
 import com.google.spanner.v1.Transaction;
+import com.google.spanner.v1.TransactionOptions;
+import com.google.spanner.v1.TransactionOptions.ReadWrite;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.Server;
@@ -95,7 +97,10 @@ public class GrpcClientTest {
             grpcClient.executeStreamingSql(
                 session,
                 SpannerTransactionContext.from(
-                    Transaction.newBuilder().setId(transId).build()), sql).blockFirst());
+                    Transaction.newBuilder().setId(transId).build(),
+                    TransactionOptions.newBuilder()
+                        .setReadWrite(ReadWrite.getDefaultInstance()).build()),
+                sql).blockFirst());
 
     // verify the service was called correctly
     ArgumentCaptor<ExecuteSqlRequest> requestCaptor = ArgumentCaptor

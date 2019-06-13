@@ -17,6 +17,7 @@
 package com.google.cloud.spanner.r2dbc;
 
 import com.google.spanner.v1.Transaction;
+import com.google.spanner.v1.TransactionOptions;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.Nullable;
 
@@ -25,12 +26,17 @@ import javax.annotation.Nullable;
  */
 public class SpannerTransactionContext {
 
-  private Transaction transaction;
+  private final AtomicLong seqNum = new AtomicLong(0);
 
-  private AtomicLong seqNum = new AtomicLong(0);
+  private final Transaction transaction;
 
-  private SpannerTransactionContext(Transaction transaction) {
+  private final TransactionOptions transactionOptions;
+
+  private SpannerTransactionContext(
+      Transaction transaction, TransactionOptions transactionOptions) {
+
     this.transaction = transaction;
+    this.transactionOptions = transactionOptions;
   }
 
   public Transaction getTransaction() {
@@ -41,15 +47,25 @@ public class SpannerTransactionContext {
     return this.seqNum.getAndIncrement();
   }
 
+  public boolean isReadWrite() {
+    return this.transactionOptions.hasReadWrite();
+  }
+
+  public boolean isPartitionedDml() {
+    return this.transactionOptions.hasPartitionedDml();
+  }
+
   /**
    * Creates the SpannerTransactionContext.
    * @param transaction spanner transaction
    * @return spanner transaction context
    */
-  public static @Nullable SpannerTransactionContext from(Transaction transaction) {
+  public static @Nullable SpannerTransactionContext from(
+      Transaction transaction, TransactionOptions transactionOptions) {
+
     if (transaction == null) {
       return null;
     }
-    return new SpannerTransactionContext(transaction);
+    return new SpannerTransactionContext(transaction, transactionOptions);
   }
 }

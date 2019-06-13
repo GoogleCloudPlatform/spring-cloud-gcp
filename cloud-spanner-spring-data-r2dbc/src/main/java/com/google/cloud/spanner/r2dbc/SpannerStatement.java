@@ -113,41 +113,49 @@ public class SpannerStatement implements Statement {
 
   @Override
   public Publisher<? extends Result> execute() {
-    switch (this.statementType) {
-      case DDL:
-        return this.client
-            .executeDdl(
-                this.config.getFullyQualifiedDatabaseName(),
-                Collections.singletonList(this.sql),
-                this.config.getDdlOperationTimeout(),
-                this.config.getDdlOperationPollInterval())
-            .map(operation -> new SpannerResult(Flux.empty(), Mono.just(0)));
-      case DML:
-        return this.client
-            .executeBatchDml(this.session, this.transaction, this.sql,
-                this.statementBindings.getBindings(),
-                this.statementBindings.getTypes())
-            .flatMapIterable(ExecuteBatchDmlResponse::getResultSetsList)
-            .map(resultSet -> new SpannerResult(Flux.empty(),
-                Mono.just(Math.toIntExact(resultSet.getStats().getRowCountExact()))));
-      case SELECT:
-        Flux<Struct> structFlux = Flux.fromIterable(this.statementBindings.getBindings());
-        return structFlux.flatMap(this::runSelectStatement);
-      default:
-        throw new UnsupportedOperationException("Unsupported statement type " + this.statementType);
+    if (this.statementType == StatementType.DDL) {
+      return this.client
+          .executeDdl(
+              this.config.getFullyQualifiedDatabaseName(),
+              Collections.singletonList(this.sql),
+              this.config.getDdlOperationTimeout(),
+              this.config.getDdlOperationPollInterval())
+          .map(operation -> new SpannerResult(Flux.empty(), Mono.just(0)));
+    } else if (this.statementType == StatementType.DML && !this.transaction.isPartitionedDml()) {
+      return this.client
+          .executeBatchDml(this.session, this.transaction, this.sql,
+              this.statementBindings.getBindings(),
+              this.statementBindings.getTypes())
+          .flatMapIterable(ExecuteBatchDmlResponse::getResultSetsList)
+          .map(partialResultSet -> Math.toIntExact(partialResultSet.getStats().getRowCountExact()))
+          .map(rowCount -> new SpannerResult(Flux.empty(), Mono.just(rowCount)));
     }
+
+    Flux<Struct> structFlux = Flux.fromIterable(this.statementBindings.getBindings());
+    return structFlux.flatMap(this::runStreamingSql);
   }
 
-  private Mono<SpannerResult> runSelectStatement(Struct params) {
-    PartialResultRowExtractor partialResultRowExtractor = new PartialResultRowExtractor();
-
+  private Mono<SpannerResult> runStreamingSql(Struct params) {
     Flux<PartialResultSet> resultSetFlux =
         this.client.executeStreamingSql(
             this.session, this.transaction, this.sql, params, this.statementBindings.getTypes());
 
-    return resultSetFlux
-        .flatMapIterable(partialResultRowExtractor, this.config.getPartialResultSetFetchSize())
-        .transform(result -> Mono.just(new SpannerResult(result, Mono.just(0))))
-        .next();
+    if (this.statementType == StatementType.SELECT) {
+      PartialResultRowExtractor partialResultRowExtractor = new PartialResultRowExtractor();
+      return resultSetFlux
+          .flatMapIterable(partialResultRowExtractor, this.config.getPartialResultSetFetchSize())
+          .transform(result -> Mono.just(new SpannerResult(result, Mono.just(0))))
+          .next();
+    } else {
+      return resultSetFlux.last()
+          .map(partialResultSet -> {
+            long rowsUpdated =
+                Math.max(
+                    partialResultSet.getStats().getRowCountExact(),
+                    partialResultSet.getStats().getRowCountLowerBound());
+            return Math.toIntExact(rowsUpdated);
+          })
+          .map(rowCount -> new SpannerResult(Flux.empty(), Mono.just(rowCount)));
+    }
   }
 }

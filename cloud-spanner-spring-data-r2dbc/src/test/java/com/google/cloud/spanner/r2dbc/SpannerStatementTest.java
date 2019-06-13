@@ -37,6 +37,9 @@ import com.google.spanner.v1.ResultSetStats;
 import com.google.spanner.v1.Session;
 import com.google.spanner.v1.StructType;
 import com.google.spanner.v1.StructType.Field;
+import com.google.spanner.v1.Transaction;
+import com.google.spanner.v1.TransactionOptions;
+import com.google.spanner.v1.TransactionOptions.ReadWrite;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 import io.r2dbc.spi.Result;
@@ -65,6 +68,13 @@ public class SpannerStatementTest {
           .setProjectId("project")
           .setDatabaseName("db")
           .build();
+
+  private static final SpannerTransactionContext TEST_TRANSACTION =
+      SpannerTransactionContext.from(
+          Transaction.getDefaultInstance(),
+          TransactionOptions.newBuilder()
+              .setReadWrite(ReadWrite.getDefaultInstance())
+              .build());
 
   private final Value a1 = Value.newBuilder().setBoolValue(false).build();
   private final Value a2 = Value.newBuilder().setStringValue("abc").build();
@@ -216,7 +226,8 @@ public class SpannerStatementTest {
 
     StepVerifier
         .create(Flux.from(
-            new SpannerStatement(this.mockClient, null, null, "SELECT", TEST_CONFIG).execute())
+            new SpannerStatement(this.mockClient, null, TEST_TRANSACTION,
+                "SELECT", TEST_CONFIG).execute())
             .flatMap(r -> Mono.from(r.getRowsUpdated())))
         .expectNext(0)
         .verifyComplete();
@@ -237,7 +248,7 @@ public class SpannerStatementTest {
 
     StepVerifier.create(
         Flux.from(new SpannerStatement(
-            this.mockClient, null, null, "Insert into books", TEST_CONFIG).execute())
+            this.mockClient, null, TEST_TRANSACTION, "Insert into books", TEST_CONFIG).execute())
             .flatMap(r -> Mono.from(r.getRowsUpdated())))
         .expectNext(555)
         .verifyComplete();
@@ -250,7 +261,7 @@ public class SpannerStatementTest {
 
     String sql = "drop TABLE BOOKS";
     SpannerStatement statement =
-        new SpannerStatement(this.mockClient, TEST_SESSION, null, sql, TEST_CONFIG);
+        new SpannerStatement(this.mockClient, TEST_SESSION, TEST_TRANSACTION, sql, TEST_CONFIG);
 
     StepVerifier.create(Flux.from(statement.execute()).flatMap(result -> result.getRowsUpdated()))
         .expectNext(0)
@@ -277,12 +288,12 @@ public class SpannerStatementTest {
         .addResultSets(resultSet)
         .build();
 
-    when(this.mockClient.executeBatchDml(TEST_SESSION, null, sql,
+    when(this.mockClient.executeBatchDml(TEST_SESSION, TEST_TRANSACTION, sql,
         Arrays.asList(Struct.newBuilder().build()), Collections.EMPTY_MAP))
         .thenReturn(Mono.just(executeBatchDmlResponse));
 
     SpannerStatement statement =
-        new SpannerStatement(this.mockClient, TEST_SESSION, null, sql, TEST_CONFIG);
+        new SpannerStatement(this.mockClient, TEST_SESSION, TEST_TRANSACTION, sql, TEST_CONFIG);
 
     Flux<SpannerResult> result = (Flux<SpannerResult>) statement.execute();
 
@@ -299,7 +310,7 @@ public class SpannerStatementTest {
     verify(this.mockClient, times(1))
         .executeBatchDml(
             TEST_SESSION,
-            null,
+            TEST_TRANSACTION,
             sql,
             Arrays.asList(Struct.newBuilder().build()),
             Collections.EMPTY_MAP);

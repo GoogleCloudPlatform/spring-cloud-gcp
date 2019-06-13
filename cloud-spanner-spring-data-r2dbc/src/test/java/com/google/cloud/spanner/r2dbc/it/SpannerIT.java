@@ -37,6 +37,10 @@ import com.google.spanner.v1.ListSessionsRequest;
 import com.google.spanner.v1.ListSessionsResponse;
 import com.google.spanner.v1.Session;
 import com.google.spanner.v1.SpannerGrpc.SpannerStub;
+import com.google.spanner.v1.TransactionOptions;
+import com.google.spanner.v1.TransactionOptions.PartitionedDml;
+import com.google.spanner.v1.TransactionOptions.ReadOnly;
+import com.google.spanner.v1.TransactionOptions.ReadWrite;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
@@ -92,7 +96,9 @@ public class SpannerIT {
     this.grpcClient = new GrpcClient(GoogleCredentials.getApplicationDefault());
     this.spanner = this.grpcClient.getSpanner();
 
-    executeDmlQuery(connectionFactory, "DELETE FROM books WHERE true");
+    executeDmlQuery(
+        connectionFactory,
+        "DELETE FROM books WHERE true");
   }
 
   @After
@@ -350,6 +356,77 @@ public class SpannerIT {
         (r, meta) -> r.get(0, String.class));
 
     assertThat(results).isEmpty();
+  }
+
+  @Test
+  public void testMultiTransactionType() {
+    Mono.from(this.connectionFactory.create())
+        .delayUntil(c -> c.beginTransaction())
+        .delayUntil(c -> Flux.from(c.createStatement(
+            "INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY, FICTION, PUBLISHED, WORDS_PER_SENTENCE)"
+                + " VALUES (@uuid, @title, @author, @category, @fiction, @published, @wps);")
+            .bind("uuid", "2b2cbd78-ecd8-430e-b685-fa7910f8a4c7")
+            .bind("author", "Douglas Crockford")
+            .bind("category", 100L)
+            .bind("title", "JavaScript: The Good Parts")
+            .bind("fiction", true)
+            .bind("published", LocalDate.of(2008, 5, 1))
+            .bind("wps", 20.8)
+            .add()
+            .bind("uuid", "df0e3d06-2743-4691-8e51-6d33d90c5cb9")
+            .bind("author", "Joshua Bloch")
+            .bind("category", 100L)
+            .bind("title", "Effective Java")
+            .bind("fiction", false)
+            .bind("published", LocalDate.of(2018, 1, 6))
+            .bind("wps", 15.1)
+            .execute()).flatMapSequential(r -> Mono.from(r.getRowsUpdated())))
+        .delayUntil(c -> c.commitTransaction())
+        .block();
+
+    SpannerConnection connection =
+        Mono.from(this.connectionFactory.create())
+            .cast(SpannerConnection.class)
+            .block();
+
+    connection.beginTransaction(
+        TransactionOptions.newBuilder()
+            .setPartitionedDml(PartitionedDml.getDefaultInstance())
+            .build())
+        .block();
+    int rowsUpdated = Mono.from(
+        connection.createStatement("UPDATE BOOKS SET TITLE = 'bad-book' WHERE true")
+            .execute())
+        .flatMap(result -> Mono.from(result.getRowsUpdated()))
+        .block();
+    connection.commitTransaction().block();
+    assertThat(rowsUpdated).isEqualTo(2);
+
+    connection.beginTransaction(
+        TransactionOptions.newBuilder()
+            .setReadOnly(ReadOnly.getDefaultInstance())
+            .build())
+        .block();
+    List<String> titles =
+        Mono.from(connection.createStatement("SELECT title FROM BOOKS").execute())
+            .flatMapMany(result -> result.map((row, rowMetadata) -> row.get(0, String.class)))
+            .collectList()
+            .block();
+    assertThat(titles).containsExactlyInAnyOrder("bad-book", "bad-book");
+
+    connection.beginTransaction(
+        TransactionOptions.newBuilder()
+            .setReadWrite(ReadWrite.getDefaultInstance())
+            .build())
+        .block();
+    Mono.from(connection.createStatement("DELETE FROM BOOKS WHERE true").execute()).block();
+    connection.commitTransaction().block();
+    titles =
+        Mono.from(connection.createStatement("SELECT title FROM BOOKS").execute())
+            .flatMapMany(result -> result.map((row, rowMetadata) -> row.get(0, String.class)))
+            .collectList()
+            .block();
+    assertThat(titles).isEmpty();
   }
 
   private List<String> getSessionNames() {
