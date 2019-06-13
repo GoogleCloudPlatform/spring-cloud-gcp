@@ -23,3 +23,11 @@ Cloud Spanner R2DBC Driver supports the following types:
 Null values mapping is supported in both directions.
 
 See [Cloud Spanner documentation](https://cloud.google.com/spanner/docs/data-types) to learn more about Spanner types.
+
+## Back Pressure
+
+Table rows are transmitted from Cloud Spanner in fragments called `PartialResultset`.
+The number of fragments for each row cannot be determined beforehand. 
+While you can decide the number of rows you request from `SpannerResult`, the Cloud Spanner R2DBC driver will always request a fixed number of fragments from Cloud Spanner to fulfill your request and will do so repeatedly if necessary.
+
+The default number of fragments per request to Cloud Spanner is 1, but this can be configured with the `partial_result_set_fetch_size` config property for your situation.
