@@ -8,10 +8,10 @@ An implementation of the [R2DBC](https://r2dbc.io/) driver for [Cloud Spanner](h
 Cloud Spanner R2DBC Driver supports the following types:
 
 
-| Spanner Type | Java type         |
-|--------------|-------------------|
+| Spanner Type   | Java type           |
+|----------------|---------------------|
 |`BOOL`          |`java.lang.Bolean`   |
-|`BYTES`         |`byte[]`             |
+|`BYTES`         |`java.nio.ByteBuffer`|
 |`DATE`          |`java.time.LocalDate`|
 |`FLOAT64`       |`java.lang.Double`   |
 |`INT64`         |`java.lang.Long`     |

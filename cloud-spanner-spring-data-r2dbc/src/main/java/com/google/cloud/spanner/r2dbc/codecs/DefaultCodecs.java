@@ -22,6 +22,7 @@ import com.google.protobuf.NullValue;
 import com.google.protobuf.Value;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
+import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -45,7 +46,7 @@ public final class DefaultCodecs implements Codecs {
   public DefaultCodecs() {
     this.codecs = Arrays.asList(
         new ArrayCodec(this, Boolean[].class, TypeCode.BOOL),
-        new ArrayCodec(this, byte[][].class, TypeCode.BYTES),
+        new ArrayCodec(this, ByteBuffer[].class, TypeCode.BYTES),
         new ArrayCodec(this, LocalDate[].class, TypeCode.DATE),
         new ArrayCodec(this, Double[].class, TypeCode.FLOAT64),
         new ArrayCodec(this, Long[].class, TypeCode.INT64),
@@ -53,8 +54,8 @@ public final class DefaultCodecs implements Codecs {
         new ArrayCodec(this, Timestamp[].class, TypeCode.TIMESTAMP),
         new SpannerCodec<>(Boolean.class, TypeCode.BOOL,
             v -> Value.newBuilder().setBoolValue(v).build()),
-        new SpannerCodec<>(byte[].class, TypeCode.BYTES,
-            v -> Value.newBuilder().setStringValueBytes(ByteString.copyFrom(v)).build()),
+        new SpannerCodec<>(ByteBuffer.class, TypeCode.BYTES,
+            v -> Value.newBuilder().setStringValueBytes(ByteString.copyFrom(v.array())).build()),
         new SpannerCodec<>(LocalDate.class, TypeCode.DATE, v -> Value.newBuilder().setStringValue(
             DateTimeFormatter.ISO_LOCAL_DATE.format(v))
             .build()),

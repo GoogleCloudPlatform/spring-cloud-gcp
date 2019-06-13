@@ -20,6 +20,7 @@ import com.google.protobuf.ListValue;
 import com.google.protobuf.Value;
 import com.google.protobuf.Value.KindCase;
 import com.google.spanner.v1.Type;
+import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -93,7 +94,7 @@ class ValueUtils {
       case BYTES:
         return listValue.getValuesList().stream()
             .map(ValueUtils::parseBytes)
-            .toArray(byte[][]::new);
+            .toArray(ByteBuffer[]::new);
       case TIMESTAMP:
         return listValue.getValuesList().stream()
             .map(ValueUtils::parseTimestamp)
@@ -121,11 +122,11 @@ class ValueUtils {
     return input.getKindCase() == KindCase.NULL_VALUE ? null : input.getBoolValue();
   }
 
-  private static byte[] parseBytes(Value value) {
+  private static ByteBuffer parseBytes(Value value) {
     if (value.getKindCase() == KindCase.NULL_VALUE || value.getStringValue() == null) {
       return null;
     }
-    return value.getStringValue().getBytes();
+    return ByteBuffer.wrap(value.getStringValueBytes().toByteArray());
   }
 
   private static java.sql.Timestamp parseTimestamp(Value proto) {

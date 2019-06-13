@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.protobuf.Value;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
+import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -48,7 +49,8 @@ public class DefaultCodecsTest {
         {new Boolean[]{true, false, true, null}, Boolean[].class,
             Type.newBuilder().setCode(TypeCode.ARRAY)
                 .setArrayElementType(Type.newBuilder().setCode(TypeCode.BOOL).build()).build()},
-        {new byte[][]{"ab".getBytes(), "cd".getBytes(), null}, byte[][].class,
+        {new ByteBuffer[]{ByteBuffer.wrap("ab".getBytes()), ByteBuffer.wrap("cd".getBytes()), null},
+            ByteBuffer[].class,
             Type.newBuilder().setCode(TypeCode.ARRAY)
                 .setArrayElementType(Type.newBuilder().setCode(TypeCode.BYTES).build()).build()},
         {new LocalDate[]{LocalDate.of(800, 12, 31), LocalDate.of(2019, 1, 1), null},
@@ -74,7 +76,8 @@ public class DefaultCodecsTest {
 
         {true, Boolean.class, Type.newBuilder().setCode(TypeCode.BOOL).build()},
         {false, Boolean.class, Type.newBuilder().setCode(TypeCode.BOOL).build()},
-        {"ab".getBytes(), byte[].class, Type.newBuilder().setCode(TypeCode.BYTES).build()},
+        {ByteBuffer.wrap("ab".getBytes()), ByteBuffer.class,
+            Type.newBuilder().setCode(TypeCode.BYTES).build()},
         {LocalDate.of(1992, 12, 31), LocalDate.class,
             Type.newBuilder().setCode(TypeCode.DATE).build()},
         {2.0d, Double.class, Type.newBuilder().setCode(TypeCode.FLOAT64).build()},
