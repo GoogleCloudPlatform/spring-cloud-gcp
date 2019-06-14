@@ -128,6 +128,16 @@ public class SpannerConnectionConfiguration {
       return this;
     }
 
+    public Builder setDdlOperationTimeout(Duration duration) {
+      this.ddlOperationTimeout = duration;
+      return this;
+    }
+
+    public Builder setDdlOperationPollInterval(Duration duration) {
+      this.ddlOperationPollInterval = duration;
+      return this;
+    }
+
     /**
      * Constructs an instance of the {@link SpannerConnectionConfiguration}.
      */

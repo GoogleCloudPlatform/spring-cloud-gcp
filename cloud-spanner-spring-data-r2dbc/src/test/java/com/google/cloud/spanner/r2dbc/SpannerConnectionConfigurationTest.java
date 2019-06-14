@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import java.time.Duration;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -113,5 +114,19 @@ public class SpannerConnectionConfigurationTest {
         .setDatabaseName("db")
         .build();
     assertThat(config.getPartialResultSetFetchSize()).isEqualTo(42);
+  }
+
+  @Test
+  public void ddlOperationWaitSettings() {
+    SpannerConnectionConfiguration config = this.configurationBuilder
+        .setProjectId("project1")
+        .setInstanceName("an-instance")
+        .setDatabaseName("db")
+        .setDdlOperationTimeout(Duration.ofSeconds(23))
+        .setDdlOperationPollInterval(Duration.ofSeconds(45))
+        .build();
+
+    assertThat(config.getDdlOperationTimeout()).isEqualTo(Duration.ofSeconds(23));
+    assertThat(config.getDdlOperationPollInterval()).isEqualTo(Duration.ofSeconds(45));
   }
 }

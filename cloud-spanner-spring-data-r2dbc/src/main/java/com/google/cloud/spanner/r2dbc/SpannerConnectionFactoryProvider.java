@@ -28,6 +28,7 @@ import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.ConnectionFactoryProvider;
 import io.r2dbc.spi.Option;
+import java.time.Duration;
 
 /**
  * An implementation of {@link ConnectionFactoryProvider} for creating {@link
@@ -45,8 +46,17 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   /** Option name for GCP Spanner instance. */
   public static final Option<String> INSTANCE = Option.valueOf("instance");
 
-  public static final Option<Integer> PARTIAL_RESULT_SET_FETCH_SIZE
-      = Option.valueOf("partial_result_set_fetch_size");
+  /** Number of partial result sets to buffer during a read query operation. */
+  public static final Option<Integer> PARTIAL_RESULT_SET_FETCH_SIZE =
+      Option.valueOf("partial_result_set_fetch_size");
+
+  /** Duration to wait for a DDL operation before timing out. */
+  public static final Option<Duration> DDL_OPERATION_TIMEOUT =
+      Option.valueOf("ddl_operation_timeout");
+
+  /** Duration to wait between each poll checking for the completion of DDL operations. */
+  public static final Option<Duration> DDL_OPERATION_POLL_INTERVAL =
+      Option.valueOf("ddl_operation_poll_interval");
 
   /**
    * Option specifying the location of the GCP credentials file.
@@ -97,6 +107,14 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
 
     if (options.hasOption(PARTIAL_RESULT_SET_FETCH_SIZE)) {
       configBuilder.setPartialResultSetFetchSize(options.getValue(PARTIAL_RESULT_SET_FETCH_SIZE));
+    }
+
+    if (options.hasOption(DDL_OPERATION_TIMEOUT)) {
+      configBuilder.setDdlOperationTimeout(options.getValue(DDL_OPERATION_TIMEOUT));
+    }
+
+    if (options.hasOption(DDL_OPERATION_POLL_INTERVAL)) {
+      configBuilder.setDdlOperationPollInterval(options.getValue(DDL_OPERATION_POLL_INTERVAL));
     }
 
     return configBuilder.build();

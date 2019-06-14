@@ -51,12 +51,15 @@ The following options are available to be configured for the connection factory:
 
 | Option Name | Description                | Required | Default Value |
 |-------------|----------------------------|----------|---------------|
-| `DRIVER`    | Must be "spanner"          | True     |               |
-| `PROJECT`   | Your GCP Project ID        | True     |               |
-| `INSTANCE`  | Your Spanner Instance name | True     |               |
-| `DATABASE`  | Your Spanner Database name | True     |               |
-| `GOOGLE_CREDENTIALS` | Optional [Google credentials](https://cloud.google.com/docs/authentication/production) to specify for your Google Cloud account. | False | If not provided, credentials will be [inferred from your runtime environment](https://cloud.google.com/docs/authentication/production#finding_credentials_automatically).
-| `PARTIAL_RESULT_SET_FETCH_SIZE` | Number of intermediate result sets that are buffered in transit for a read query. | False | 1 |
+| `driver`    | Must be "spanner"          | True     |               |
+| `project`   | Your GCP Project ID        | True     |               |
+| `instance`  | Your Spanner Instance name | True     |               |
+| `database`  | Your Spanner Database name | True     |               |
+| `google_credentials` | Optional [Google credentials](https://cloud.google.com/docs/authentication/production) to specify for your Google Cloud account. | False | If not provided, credentials will be [inferred from your runtime environment](https://cloud.google.com/docs/authentication/production#finding_credentials_automatically).
+| `partial_result_set_fetch_size` | Number of intermediate result sets that are buffered in transit for a read query. | False | 1 |
+| `ddl_operation_timeout` | Duration in seconds to wait for a DDL operation to complete before timing out | False | 600 seconds |
+| `ddl_operation_poll_interval` | Duration in seconds to wait between each polling request for the completion of a DDL operation | False | 5 seconds |
+
 
 ## Mapping of Data Types
 
