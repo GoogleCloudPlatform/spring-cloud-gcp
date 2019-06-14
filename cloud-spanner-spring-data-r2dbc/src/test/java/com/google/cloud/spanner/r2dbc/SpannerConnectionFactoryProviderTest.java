@@ -17,6 +17,7 @@
 package com.google.cloud.spanner.r2dbc;
 
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.DRIVER_NAME;
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.GOOGLE_CREDENTIALS;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.INSTANCE;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PARTIAL_RESULT_SET_FETCH_SIZE;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PROJECT;
@@ -27,8 +28,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.protobuf.Value;
 import com.google.spanner.v1.PartialResultSet;
@@ -42,7 +45,6 @@ import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import reactor.test.publisher.TestPublisher;
@@ -58,17 +60,19 @@ public class SpannerConnectionFactoryProviderTest {
           .option(PROJECT, "project-id")
           .option(INSTANCE, "an-instance")
           .option(DATABASE, "db")
+          .option(GOOGLE_CREDENTIALS, mock(GoogleCredentials.class))
           .build();
 
   SpannerConnectionFactoryProvider spannerConnectionFactoryProvider;
 
-  Client mockClient = Mockito.mock(Client.class);
+  Client mockClient;
 
   /**
    * Initializes unit under test with a mock {@link Client}.
    */
   @Before
   public void setUp() {
+    this.mockClient =  mock(Client.class);
     this.spannerConnectionFactoryProvider = new SpannerConnectionFactoryProvider();
     this.spannerConnectionFactoryProvider.setClient(this.mockClient);
   }
@@ -119,13 +123,15 @@ public class SpannerConnectionFactoryProviderTest {
             .option(PROJECT, "project-id")
             .option(INSTANCE, "an-instance")
             .option(DATABASE, "db")
+            .option(GOOGLE_CREDENTIALS, mock(GoogleCredentials.class))
             .build();
 
     SpannerConnectionFactory connectionFactory
         = (SpannerConnectionFactory)this.spannerConnectionFactoryProvider.create(options);
 
     TestPublisher<PartialResultSet> partialResultSetPublisher = TestPublisher.create();
-    when(this.mockClient.executeStreamingSql(any(), any(), any(), any(), any()))
+    when(this.mockClient.executeStreamingSql(
+        any(StatementExecutionContext.class), any(), any(), any()))
         .thenReturn(partialResultSetPublisher.flux());
     Session session = Session.newBuilder().setName("session-name").build();
     when(this.mockClient.createSession(any()))

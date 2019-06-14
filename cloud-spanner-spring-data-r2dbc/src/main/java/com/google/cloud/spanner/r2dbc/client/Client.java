@@ -16,7 +16,7 @@
 
 package com.google.cloud.spanner.r2dbc.client;
 
-import com.google.cloud.spanner.r2dbc.SpannerTransactionContext;
+import com.google.cloud.spanner.r2dbc.StatementExecutionContext;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Struct;
 import com.google.spanner.v1.CommitResponse;
@@ -29,7 +29,6 @@ import com.google.spanner.v1.Type;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -50,59 +49,87 @@ public interface Client {
   /**
    * Deletes a Spanner session that is used to call Spanner APIs.
    *
-   * @param session The session you wish to close.
+   * @param sessionName name of existing Cloud Spanner session to be closed.
    * @return {@link Mono} indicating completion closing the session.
    */
-  Mono<Void> deleteSession(Session session);
+  Mono<Void> deleteSession(String sessionName);
 
   /**
    * Begins a new Spanner {@link Transaction} within the provided {@link Session}.
    *
-   * @param session The {@link Session} object with which requests are made to the Spanner API.
+   * @param sessionName name of existing Cloud Spanner session.
+   * @param transactionOptions properties determining the type of transaction to create
    * @returns {@link Mono} of the transaction that was started.
    */
-  Mono<Transaction> beginTransaction(Session session, TransactionOptions transactionOptions);
+  Mono<Transaction> beginTransaction(String sessionName, TransactionOptions transactionOptions);
 
   /**
    * Commits a Spanner {@link Transaction} within the provided {@link Session}.
    *
-   * @param session The session object with which requests are made to the Spanner API.
+   * @param sessionName name of existing Cloud Spanner session
    * @param transaction The transaction that you want to commit.
    * @returns {@link CommitResponse} describing the timestamp at which the transaction committed.
    */
-  Mono<CommitResponse> commitTransaction(Session session, Transaction transaction);
+  Mono<CommitResponse> commitTransaction(String sessionName, Transaction transaction);
 
 
   /**
    * Performs a rollback on a Spanner {@link Transaction} within the provided {@link Session}.
    *
-   * @param session The session object with which requests are made to the Spanner API.
+   * @param sessionName name of existing Cloud Spanner session.
    * @param transaction The transaction that you want to rollback.
    * @return {@link Mono} indicating completion of the rollback.
    */
-  Mono<Void> rollbackTransaction(Session session, Transaction transaction);
+  Mono<Void> rollbackTransaction(String sessionName, Transaction transaction);
 
   /**
    * Execute a streaming query and get partial results.
+   *
+   * @param ctx connection-specific state.
+   * @param sql select or DML query to execute
+   * @param params parameter values
+   * @param types parameter types
+   * @return
    */
   Flux<PartialResultSet> executeStreamingSql(
-      Session session, @Nullable SpannerTransactionContext transaction, String sql, Struct params,
+      StatementExecutionContext ctx,
+      String sql,
+      Struct params,
       Map<String, Type> types);
 
-  default Flux<PartialResultSet> executeStreamingSql(
-      Session session, @Nullable SpannerTransactionContext transaction, String sql) {
-    return executeStreamingSql(session, transaction, sql, null, null);
+  /**
+   * Execute a streaming query without any parameters.
+   *
+   * @param ctx connection-specific state.
+   * @param sql select or DML query to execute
+   * @return
+   */
+  default Flux<PartialResultSet> executeStreamingSql(StatementExecutionContext ctx, String sql) {
+    return executeStreamingSql(ctx, sql, null, null);
   }
 
   /**
    * Execute DML batch.
+   *
+   * @param ctx connection-specific state.
+   * @param sql select or DML query to execute
+   * @param params parameter values
+   * @param types parameter types
+   * @return
    */
-  Mono<ExecuteBatchDmlResponse> executeBatchDml(Session session,
-      @Nullable SpannerTransactionContext transactionContext, String sql,
+  Mono<ExecuteBatchDmlResponse> executeBatchDml(StatementExecutionContext ctx, String sql,
       List<Struct> params, Map<String, Type> types);
 
   /**
-   * Executes a DDL query.
+   * Execute a DDL query.
+   *
+   * <p>The underlying API is a long-running operation that has to be polled for status.
+   *
+   * @param fullyQualifiedDatabaseName database name, including project ID and instance name.
+   * @param ddlStatement statement to execute (CREATE/DROP etc.).
+   * @param ddlOperationTimeout how long to poll for the operation results until giving up.
+   * @param ddlPollInterval how frequently to poll for the operation results.
+   * @return
    */
   Mono<Operation> executeDdl(
       String fullyQualifiedDatabaseName,

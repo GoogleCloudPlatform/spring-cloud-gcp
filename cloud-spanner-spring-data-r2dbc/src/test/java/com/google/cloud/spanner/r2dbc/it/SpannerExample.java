@@ -368,20 +368,20 @@ public class SpannerExample implements Example<String> {
 
     Mono.from(getConnectionFactory().create())
         .flatMapMany(connection -> Mono.from(connection.beginTransaction())
-            .<Object>thenMany(Flux.defer(() -> connection.createStatement("SELECT value FROM test")
+            .<Object>thenMany(Flux.from(connection.createStatement("SELECT value FROM test")
                 .execute())
                 .flatMap(Example::extractColumns))
 
             // NOTE: this defer is a from() in the original. needs a follow up to resolve
-            .concatWith(Flux.defer(() -> connection.createStatement(
+            .concatWith(Flux.from(connection.createStatement(
                 String.format("INSERT INTO test (value) VALUES (%s)", getPlaceholder(0)))
                 .bind(getIdentifier(0), 200)
                 .execute())
                 .flatMap(Example::extractRowsUpdated))
-            .concatWith(Flux.defer(() -> connection.createStatement("SELECT value FROM test")
+            .concatWith(Flux.from(connection.createStatement("SELECT value FROM test")
                 .execute())
                 .flatMap(Example::extractColumns))
-            .concatWith(Flux.defer(() -> connection.createStatement("SELECT value FROM test")
+            .concatWith(Flux.from(connection.createStatement("SELECT value FROM test")
                 .execute())
                 .flatMap(Example::extractColumns))
             .concatWith(close(connection)))

@@ -26,11 +26,9 @@ import com.google.cloud.spanner.r2dbc.util.Assert;
 import com.google.protobuf.Struct;
 import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import com.google.spanner.v1.PartialResultSet;
-import com.google.spanner.v1.Session;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
 import java.util.Collections;
-import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -42,9 +40,7 @@ public class SpannerStatement implements Statement {
 
   private Client client;
 
-  private Session session;
-
-  private SpannerTransactionContext transaction;
+  private StatementExecutionContext ctx;
 
   private String sql;
 
@@ -57,23 +53,23 @@ public class SpannerStatement implements Statement {
   /**
    * Creates a Spanner statement for a given SQL statement.
    *
+   * <p>Session and transaction may not be present at the time this statement is created, therefore
+   * they will only be accessed lazily when statement begins execution.
+   *
    * <p>If no transaction is present, a temporary strongly consistent readonly transaction will be
    * used.
    * @param client cloud spanner client to use for performing the query operation
-   * @param session current cloud spanner session
-   * @param transaction current cloud spanner transaction, or empty if no transaction is started
+   * @param ctx Execution context containing the current session and optional transaction.
    * @param sql the query to execute
    */
   public SpannerStatement(
       Client client,
-      Session session,
-      @Nullable SpannerTransactionContext transaction,
+      StatementExecutionContext ctx,
       String sql,
       SpannerConnectionConfiguration config) {
 
     this.client = client;
-    this.session = session;
-    this.transaction = transaction;
+    this.ctx = ctx;
     this.sql = Assert.requireNonNull(sql, "SQL string can not be null");
     this.config = config;
     this.statementBindings = new StatementBindings();
@@ -121,9 +117,9 @@ public class SpannerStatement implements Statement {
               this.config.getDdlOperationTimeout(),
               this.config.getDdlOperationPollInterval())
           .map(operation -> new SpannerResult(Flux.empty(), Mono.just(0)));
-    } else if (this.statementType == StatementType.DML && !this.transaction.isPartitionedDml()) {
+    } else if (this.statementType == StatementType.DML && !this.ctx.isTransactionPartitionedDml()) {
       return this.client
-          .executeBatchDml(this.session, this.transaction, this.sql,
+          .executeBatchDml(this.ctx, this.sql,
               this.statementBindings.getBindings(),
               this.statementBindings.getTypes())
           .flatMapIterable(ExecuteBatchDmlResponse::getResultSetsList)
@@ -138,7 +134,7 @@ public class SpannerStatement implements Statement {
   private Mono<SpannerResult> runStreamingSql(Struct params) {
     Flux<PartialResultSet> resultSetFlux =
         this.client.executeStreamingSql(
-            this.session, this.transaction, this.sql, params, this.statementBindings.getTypes());
+            this.ctx, this.sql, params, this.statementBindings.getTypes());
 
     if (this.statementType == StatementType.SELECT) {
       PartialResultRowExtractor partialResultRowExtractor = new PartialResultRowExtractor();
@@ -158,4 +154,5 @@ public class SpannerStatement implements Statement {
           .map(rowCount -> new SpannerResult(Flux.empty(), Mono.just(rowCount)));
     }
   }
+
 }

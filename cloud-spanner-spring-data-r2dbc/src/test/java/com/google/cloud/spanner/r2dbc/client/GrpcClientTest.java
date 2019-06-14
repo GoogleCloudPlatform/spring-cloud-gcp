@@ -19,11 +19,13 @@ package com.google.cloud.spanner.r2dbc.client;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.spanner.r2dbc.SpannerTransactionContext;
+import com.google.cloud.spanner.r2dbc.StatementExecutionContext;
 import com.google.protobuf.ByteString;
 import com.google.spanner.v1.CreateSessionRequest;
 import com.google.spanner.v1.ExecuteSqlRequest;
@@ -31,9 +33,6 @@ import com.google.spanner.v1.PartialResultSet;
 import com.google.spanner.v1.Session;
 import com.google.spanner.v1.SpannerGrpc;
 import com.google.spanner.v1.SpannerGrpc.SpannerImplBase;
-import com.google.spanner.v1.Transaction;
-import com.google.spanner.v1.TransactionOptions;
-import com.google.spanner.v1.TransactionOptions.ReadWrite;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.Server;
@@ -44,6 +43,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -52,6 +52,21 @@ import org.mockito.ArgumentCaptor;
  */
 public class GrpcClientTest {
 
+  static String SESSION_NAME = "/session/1234";
+
+  static ByteString TRANSACTION_ID = ByteString.copyFrom("/transaction/abc".getBytes());
+
+  StatementExecutionContext mockContext;
+
+  /**
+   * Sets up execution context mock.
+   */
+  @Before
+  public void setUp() {
+    this.mockContext = mock(StatementExecutionContext.class);
+    when(this.mockContext.getSessionName()).thenReturn(SESSION_NAME);
+    when(this.mockContext.getTransactionId()).thenReturn(TRANSACTION_ID);
+  }
 
   @Test
   public void testCreateSession() throws IOException {
@@ -80,9 +95,6 @@ public class GrpcClientTest {
 
     ExecuteSqlRequest request = ExecuteSqlRequest.newBuilder().build();
 
-    String sessionName = "/session/1234";
-    ByteString transId = ByteString.copyFrom("trans_id".getBytes());
-    Session session = Session.newBuilder().setName(sessionName).build();
     String sql = "select book from library";
     SpannerImplBase spannerSpy = doTest(new SpannerImplBase() {
           @Override
@@ -93,22 +105,15 @@ public class GrpcClientTest {
           }
         },
         // call the method under test
-        grpcClient ->
-            grpcClient.executeStreamingSql(
-                session,
-                SpannerTransactionContext.from(
-                    Transaction.newBuilder().setId(transId).build(),
-                    TransactionOptions.newBuilder()
-                        .setReadWrite(ReadWrite.getDefaultInstance()).build()),
-                sql).blockFirst());
+        grpcClient -> grpcClient.executeStreamingSql(this.mockContext, sql).blockFirst());
 
     // verify the service was called correctly
     ArgumentCaptor<ExecuteSqlRequest> requestCaptor = ArgumentCaptor
         .forClass(ExecuteSqlRequest.class);
     verify(spannerSpy).executeStreamingSql(requestCaptor.capture(), any());
     assertEquals(sql, requestCaptor.getValue().getSql());
-    assertEquals(sessionName, requestCaptor.getValue().getSession());
-    assertEquals(transId, requestCaptor.getValue().getTransaction().getId());
+    assertEquals(SESSION_NAME, requestCaptor.getValue().getSession());
+    assertEquals(TRANSACTION_ID, requestCaptor.getValue().getTransaction().getId());
   }
 
   @Test

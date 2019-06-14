@@ -16,6 +16,7 @@
 
 package com.google.cloud.spanner.r2dbc.util;
 
+import com.google.protobuf.ByteString;
 import reactor.util.annotation.Nullable;
 
 /**
@@ -43,6 +44,42 @@ public class Assert {
     }
 
     return t;
+  }
+
+  /**
+   * Checks that a specified object reference is not {@code null} or an empty string, and throws a
+   * customized {@link IllegalArgumentException} if it is.
+   *
+   * @param s string to check
+   * @param message informative message to be used in the event that an
+   * {@link IllegalArgumentException} is thrown
+   * @return the original string {@code s}
+   * @throws IllegalArgumentException if {@code o} is {@code null}
+   */
+  public static ByteString requireNonEmpty(@Nullable ByteString s, String message) {
+    if (s == null || s.isEmpty()) {
+      throw new IllegalArgumentException(message);
+    }
+
+    return s;
+  }
+
+  /**
+   * Checks that a specified object reference is not {@code null} or an empty string, and throws a
+   * customized {@link IllegalArgumentException} if it is.
+   *
+   * @param s string to check
+   * @param message informative message to be used in the event that an
+   * {@link IllegalArgumentException} is thrown
+   * @return the original string {@code s}
+   * @throws IllegalArgumentException if {@code o} is {@code null}
+   */
+  public static String requireNonEmpty(@Nullable String s, String message) {
+    if (s == null || s.isEmpty()) {
+      throw new IllegalArgumentException(message);
+    }
+
+    return s;
   }
 
 }
