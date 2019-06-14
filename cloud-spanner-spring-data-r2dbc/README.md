@@ -68,7 +68,7 @@ Cloud Spanner R2DBC Driver supports the following types:
 
 | Spanner Type   | Java type           |
 |----------------|---------------------|
-|`BOOL`          |`java.lang.Bolean`   |
+|`BOOL`          |`java.lang.Boolean`  |
 |`BYTES`         |`java.nio.ByteBuffer`|
 |`DATE`          |`java.time.LocalDate`|
 |`FLOAT64`       |`java.lang.Double`   |
