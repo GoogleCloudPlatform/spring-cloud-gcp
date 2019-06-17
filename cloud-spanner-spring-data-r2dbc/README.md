@@ -6,10 +6,22 @@ An implementation of the [R2DBC](https://r2dbc.io/) driver for [Cloud Spanner](h
 
 ## Setup Instructions
 
-This section describes how to setup and begin using the Cloud Spanner R2DBC driver.
-Below are the dependencies to add to your build configuration.
+The sections below describe how to setup and begin using the Cloud Spanner R2DBC driver.
 
-### Maven Coordinates
+An overview of the setup is as follows:
+
+1. Add the Cloud Spanner R2DBC driver dependency to your build configuration.
+2. Configure the driver credentials/authentication for your Google Cloud Platform project to access
+    Cloud Spanner.
+3. Instantiate the R2DBC `ConnectionFactory` in Java code to build Connections and run queries.
+
+Details about each step is provided below.
+
+### Project Dependency Setup
+
+The easiest way to start using the driver is to add the driver dependency through Maven or Gradle.
+
+**Maven Coordinates**
 
 ```
 <dependency>
@@ -19,7 +31,7 @@ Below are the dependencies to add to your build configuration.
 </dependency>
 ```
 
-### Gradle Coordinates
+**Gradle Coordinates**
 
 ```
 dependencies {
@@ -27,7 +39,73 @@ dependencies {
 }
 ```
 
+### Authentication
+
+By default, the R2DBC driver will attempt to infer your account credentials from the environment
+in which the application is run. There are a number of different ways to conveniently provide
+account credentials to the driver.
+
+#### Using Google Cloud SDK
+
+Google Cloud SDK is a command line interface for Google Cloud Platform products and services.
+This is a convenient way of setting up authentication during local development.
+
+If you are using the SDK, the driver can automatically infer your account credentials from your
+SDK configuration.
+
+Instructions:
+
+1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/) for command line and
+    follow the [Cloud SDK quickstart](https://cloud.google.com/sdk/docs/quickstarts)
+    for your operating system.
+    
+2. Once setup, run `gcloud auth application-default login` and login with your Google account
+    credentials. 
+
+After completing the SDK configuration, the Spanner R2DBC driver will automatically pick up your
+credentials allowing you to access your Spanner database. 
+
+#### Using a Service Account
+
+A [Google Service Account](https://cloud.google.com/iam/docs/understanding-service-accounts) is a
+special type of Google Account intended to represent a non-human user that needs to authenticate
+and be authorized to access your Google Cloud resources. Each service account has an account key JSON file that you can use to provide credentials to your
+application.
+
+This is the recommended method of authentication for production use.
+
+You can learn how to create a service account and authenticate your application by following
+[these instructions](https://cloud.google.com/docs/authentication/production#obtaining_and_providing_service_account_credentials_manually).
+
+If you are unsatisfied with credentials inference methods, you may override this behavior
+by manually specifying a service account key JSON file using the `google_credentials`
+option to the `ConnectionFactory` builder.
+
+Example:
+
+```java
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.GOOGLE_CREDENTIALS;
+
+String pathToCredentialsKeyFile = ...;
+
+GoogleCredentials creds = GoogleCredentials.fromStream(new FileInputStream(credentialsLocation));
+ConnectionFactoryOptions options =
+    ConnectionFactoryOptions.builder()
+        .option(GOOGLE_CREDENTIALS, creds)
+        .option(..) // Other options here
+        .build();
+```
+
+#### Using Google Cloud Platform Environment
+
+If your application is running on Google Cloud Platform infrastructure including: Compute Engine,
+Kubernetes Engine, the App Engine flexible environment, or Cloud Functions, the credentials will
+be automatically inferred from the runtime environment in the Cloud. For more information, see
+the [Google Cloud Platform Authentication documentation](https://cloud.google.com/docs/authentication/production#obtaining_credentials_on_compute_engine_kubernetes_engine_app_engine_flexible_environment_and_cloud_functions).
+
 ### Usage
+
+After setting up the dependency and authentication, one can begin directly using the driver.
 
 The entry point to using the R2DBC driver is to first configure the R2DBC connection factory.
 
@@ -55,7 +133,7 @@ The following options are available to be configured for the connection factory:
 | `project`   | Your GCP Project ID        | True     |               |
 | `instance`  | Your Spanner Instance name | True     |               |
 | `database`  | Your Spanner Database name | True     |               |
-| `google_credentials` | Optional [Google credentials](https://cloud.google.com/docs/authentication/production) to specify for your Google Cloud account. | False | If not provided, credentials will be [inferred from your runtime environment](https://cloud.google.com/docs/authentication/production#finding_credentials_automatically).
+| `google_credentials` | Optional [Google credentials](https://cloud.google.com/docs/authentication/production) override to specify for your Google Cloud account. | False | If not provided, credentials will be [inferred from your runtime environment](https://cloud.google.com/docs/authentication/production#finding_credentials_automatically).
 | `partial_result_set_fetch_size` | Number of intermediate result sets that are buffered in transit for a read query. | False | 1 |
 | `ddl_operation_timeout` | Duration in seconds to wait for a DDL operation to complete before timing out | False | 600 seconds |
 | `ddl_operation_poll_interval` | Duration in seconds to wait between each polling request for the completion of a DDL operation | False | 5 seconds |
@@ -87,6 +165,7 @@ See [Cloud Spanner documentation](https://cloud.google.com/spanner/docs/data-typ
 The Cloud Spanner R2DBC driver supports named parameter binding using Cloud Spanner's [parameter syntax](https://cloud.google.com/spanner/docs/sql-best-practices).
 
 SQL and DML statements can be constructed with parameters:
+
 ```java
 mySpannerConnection.createStatement(
   "INSERT BOOKS (ID, TITLE) VALUES (@id, @title)")
