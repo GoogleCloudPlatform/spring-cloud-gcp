@@ -17,6 +17,8 @@
 package com.google.cloud.spanner.r2dbc;
 
 import com.google.cloud.spanner.r2dbc.client.Client;
+import com.google.cloud.spanner.r2dbc.statement.StatementParser;
+import com.google.cloud.spanner.r2dbc.statement.StatementType;
 import com.google.protobuf.ByteString;
 import com.google.spanner.v1.Session;
 import com.google.spanner.v1.Transaction;
@@ -68,7 +70,7 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
   }
 
   @Override
-  public Publisher<Void> beginTransaction() {
+  public Mono<Void> beginTransaction() {
     return this.beginTransaction(READ_WRITE_TRANSACTION);
   }
 
@@ -138,10 +140,10 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
 
   @Override
   public SpannerStatement createStatement(String sql) {
-    SpannerStatement statement
-        = new SpannerStatement(this.client, this, sql, this.config);
-
-    return statement;
+    return StatementParser.getStatementType(sql) == StatementType.DML
+        && !isTransactionPartitionedDml()
+        ? new AutoCommitSpannerStatement(this.client, sql, this.config, this)
+        : new SpannerStatement(this.client, this, sql, this.config);
   }
 
   @Override

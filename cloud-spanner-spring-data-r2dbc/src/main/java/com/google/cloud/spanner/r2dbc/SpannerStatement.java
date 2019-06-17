@@ -40,7 +40,7 @@ public class SpannerStatement implements Statement {
 
   private Client client;
 
-  private StatementExecutionContext ctx;
+  private StatementType statementType;
 
   private String sql;
 
@@ -48,7 +48,7 @@ public class SpannerStatement implements Statement {
 
   private StatementBindings statementBindings;
 
-  private StatementType statementType;
+  private StatementExecutionContext ctx;
 
   /**
    * Creates a Spanner statement for a given SQL statement.
@@ -61,6 +61,7 @@ public class SpannerStatement implements Statement {
    * @param client cloud spanner client to use for performing the query operation
    * @param ctx Execution context containing the current session and optional transaction.
    * @param sql the query to execute
+   * @param config config about the database and instance to use
    */
   public SpannerStatement(
       Client client,
