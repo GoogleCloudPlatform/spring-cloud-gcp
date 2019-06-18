@@ -138,7 +138,6 @@ The following options are available to be configured for the connection factory:
 | `ddl_operation_timeout` | Duration in seconds to wait for a DDL operation to complete before timing out | False | 600 seconds |
 | `ddl_operation_poll_interval` | Duration in seconds to wait between each polling request for the completion of a DDL operation | False | 5 seconds |
 
-
 ## Mapping of Data Types
 
 Cloud Spanner R2DBC Driver supports the following types:
@@ -160,9 +159,25 @@ Null values mapping is supported in both directions.
 
 See [Cloud Spanner documentation](https://cloud.google.com/spanner/docs/data-types) to learn more about Spanner types.
 
-## Binding Query Parameters
+## Statements 
 
-The Cloud Spanner R2DBC driver supports named parameter binding using Cloud Spanner's [parameter syntax](https://cloud.google.com/spanner/docs/sql-best-practices).
+R2DBC statement objects are used to run statements on your Cloud Spanner database. Based on the type
+of statement, the Cloud Spanner R2DBC handles the treatment and execution of the statement
+slightly differently.
+
+The table below describes whether parameter bindings are available for each statement type and
+the Spanner GRPC endpoint used to execute the query.
+
+| Statement Type | Allows Parameter Bindings | Cloud Spanner API Method   |
+|----------------|---------------------------|----------------------------|
+| SELECT Queries | Yes                       | [ExecuteStreamingSql](https://cloud.google.com/spanner/docs/reference/rpc/google.spanner.v1#google.spanner.v1.Spanner.ExecuteStreamingSql) |
+| DML Statements | Yes                       | [ExecuteBatchDml](https://cloud.google.com/spanner/docs/reference/rpc/google.spanner.v1#google.spanner.v1.Spanner.ExecuteBatchDml) |
+| DDL Statements | No                        | [UpdateDatabaseDdl](https://cloud.google.com/spanner/docs/reference/rpc/google.spanner.admin.database.v1#google.spanner.admin.database.v1.DatabaseAdmin.UpdateDatabaseDdl) |
+
+### Binding Query Parameters
+
+Cloud Spanner R2DBC statements support *named* parameter binding using Cloud Spanner's [parameter syntax](https://cloud.google.com/spanner/docs/sql-best-practices).
+Parameter bindings by numeric indices are not supported.
 
 SQL and DML statements can be constructed with parameters:
 
@@ -179,13 +194,30 @@ mySpannerConnection.createStatement(
 ``` 
 
 The parameter identifiers must be `String`. 
-Positional parameters are not supported.
 
 The example above binds two sets of parameters to a single DML template. 
 It will produce a `Publisher` (implemented by a `Flux`) containing two `SpannerResult` objects for the two instances of the statement that are executed. 
 
 Note that calling `execute` produces R2DBC `Result` objects, but this doesn't cause the query to be run on the database. 
 You must use the `map` or `getRowsUpdated` methods of the results to complete the underlying queries.
+
+### DDL Statements
+
+DDL statements in Spanner receive special treatment by Cloud Spanner. Creating and
+dropping tables can take a long time (on the order of minutes). As a result, Cloud Spanner 
+ordinarily requires that clients poll the service for the completion of these operations.
+
+The Cloud Spanner R2DBC driver automatically handles DDL statement status polling.
+
+The only two settings that users need to worry about are polling settings configurable
+through the Spanner connection factory:
+
+- `ddl_operation_timeout`: Duration in seconds to wait for a DDL operation to complete
+    before timing out.
+- `ddl_operation_poll_interval`: Duration in seconds to wait between each polling request
+    for the completion of a DDL operation.
+    
+See the above section regarding `ConnectionFactory` options for more information.
 
 ## Back Pressure
 
