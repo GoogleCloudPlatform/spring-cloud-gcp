@@ -146,7 +146,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void executeSingleUseDml() {
+  public void singleUseDmlStatementType() {
     SpannerConnection connection
         = new SpannerConnection(this.mockClient, TEST_SESSION, TEST_CONFIG);
     String sql = "insert into books values (title) @title";
@@ -156,7 +156,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void executeDmlInTransactionTest() {
+  public void dmlStatementCreateInTransaction() {
     SpannerConnection connection
         = new SpannerConnection(this.mockClient, TEST_SESSION, TEST_CONFIG);
     String sql = "insert into books values (title) @title";
@@ -166,7 +166,6 @@ public class SpannerConnectionTest {
           Statement statement = connection.createStatement(sql);
           assertThat(statement.getClass()).isEqualTo(AutoCommitSpannerStatement.class);
         })).verifyComplete();
-    verify(this.mockClient, times(1)).beginTransaction(eq(TEST_SESSION_NAME), any());
   }
 
   @Test
