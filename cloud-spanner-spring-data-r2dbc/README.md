@@ -159,6 +159,81 @@ Null values mapping is supported in both directions.
 
 See [Cloud Spanner documentation](https://cloud.google.com/spanner/docs/data-types) to learn more about Spanner types.
 
+## Transactions
+
+In Cloud Spanner, a transaction represents a set of read and write statements that execute
+atomically at a single logical point in time across columns, rows, and tables in a database.
+
+Note: Transactional save points are unsupported in Cloud Spanner and are unimplemented by
+this R2DBC driver.
+
+### Transaction Types
+
+Spanner offers [three transaction types](https://cloud.google.com/spanner/docs/transactions)
+in which to execute SQL statements:
+
+- Read-Write: Supports reading and writing data into Cloud Spanner.
+
+- Read-Only: Provides guaranteed consistency across multiple reads but does not allow writing data.
+
+- Partitioned DML: A transaction designed for bulk updates and deletes with certain restrictions.
+    See the [Partitioned DML documentation](https://cloud.google.com/spanner/docs/dml-partitioned)
+    for more information.
+
+When you begin a transaction in the `Connection` object using `connection.beginTransaction()`,
+a read-write transaction is started.
+
+If you would like to begin a transaction and leverage the custom transaction types, you will have
+to cast the `Connection` object into `SpannerConnection` and call 
+`spannerConnection.beginTransaction(TransactionOptions options)`. The overloaded `beginTransaction`
+allows you to pass in custom `TransactionOptions` to customize your transaction.
+
+The below example demonstrates how this might be done using Project Reactor:
+
+```java
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PROJECT;
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.INSTANCE;
+
+ConnectionFactory connectionFactory =
+    ConnectionFactories.get(ConnectionFactoryOptions.builder()
+        .option(DRIVER, "spanner")
+        .option(PROJECT, "your-gcp-project-id")
+        .option(INSTANCE, "your-spanner-instance")
+        .option(DATABASE, "your-database-name")
+        .build());
+
+// Your TransactionOptions to customize the transaction type.
+TransactionOptions transactionOptions =
+    TransactionOptions.newBuilder()
+        .setReadOnly(
+            ReadOnly.newBuilder().setStrong(true))
+        .build();
+        
+// Create and cast the Connection to SpannerConnection.
+Mono<SpannerConnection> spannerConnection =
+    Mono.from(this.connectionFactory.create())
+        .cast(SpannerConnection.class);
+
+// Call beginTransaction and pass in the transactionOptions.
+spannerConnection
+    .delayUntil(connection -> connection.beginTransaction(transactionOptions));
+    ... continued ...
+```
+
+See the [TransactionOptions documentation](https://cloud.google.com/spanner/docs/reference/rpc/google.spanner.v1#google.spanner.v1.TransactionOptions)
+for more information about all of the transaction type settings that are available.
+
+### Autocommit Mode
+
+The Spanner R2DBC driver can be used in autocommit mode in which statements are executed
+independently outside of a transaction.
+
+You may immediately call `connection.createStatement(sql)` and begin executing SQL statements.
+Each statement will be executed as an independent unit of work.
+
+- DML statements are executed in a stand-alone read-write transaction.
+- Read queries are executed in a strongly consistent, read-only temporary transaction.
+
 ## Statements 
 
 R2DBC statement objects are used to run statements on your Cloud Spanner database. Based on the type
