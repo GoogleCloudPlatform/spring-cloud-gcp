@@ -159,6 +159,26 @@ Null values mapping is supported in both directions.
 
 See [Cloud Spanner documentation](https://cloud.google.com/spanner/docs/data-types) to learn more about Spanner types.
 
+## Connections
+
+The R2DBC Cloud Spanner `Connection` object represents a persistent connection to a Spanner
+database.
+
+When you instantiate a `Connection` object using the `ConnectionFactory`, a [Spanner session](https://cloud.google.com/spanner/docs/sessions)
+is created and encapsulated within the connection. Creating a session is typically expensive, so
+it is preferable to reuse your `Connection` object to run multiple statements rather than create
+a new `Connection` for each statement you wish to run.
+
+Additionally, if a `Connection` is not used for more than 1 hour, the Cloud Spanner database service
+reserves the right to drop the connection. If this occurs, a `R2dbcNonTransientException` will be
+thrown when you attempt to run queries using the connection, and you will have to recreate the
+connection in order to reattempt the query.
+
+If you definitely need to keep an idle connection alive, for example, if a significant near-term
+increase in database use is expected, then you can prevent the connection from being dropped.
+Perform an inexpensive operation such as executing the SQL query `SELECT 1` to keep the
+connection alive.
+
 ## Transactions
 
 In Cloud Spanner, a transaction represents a set of read and write statements that execute
