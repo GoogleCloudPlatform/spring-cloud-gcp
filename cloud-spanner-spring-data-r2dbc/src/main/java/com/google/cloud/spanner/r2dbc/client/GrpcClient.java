@@ -194,15 +194,7 @@ public class GrpcClient implements Client {
   public Mono<ExecuteBatchDmlResponse> executeBatchDml(StatementExecutionContext ctx, String sql,
       List<Struct> params, Map<String, Type> types) {
     return Mono.defer(() -> {
-      ExecuteBatchDmlRequest.Builder request = ExecuteBatchDmlRequest.newBuilder()
-          .setSession(ctx.getSessionName());
-      if (ctx.getTransactionId() != null) {
-        request.setTransaction(
-            TransactionSelector.newBuilder().setId(ctx.getTransactionId())
-                .build())
-            .setSeqno(ctx.nextSeqNum());
-
-      }
+      ExecuteBatchDmlRequest.Builder request = createBatchDmlRequestBuilder(ctx);
       for (Struct paramsStruct : params) {
         ExecuteBatchDmlRequest.Statement statement = ExecuteBatchDmlRequest.Statement.newBuilder()
             .setSql(sql).setParams(paramsStruct).putAllParamTypes(types)
@@ -213,6 +205,37 @@ public class GrpcClient implements Client {
       return ObservableReactiveUtil
           .unaryCall(obs -> this.spanner.executeBatchDml(request.build(), obs));
     });
+  }
+
+  @Override
+  public Mono<ExecuteBatchDmlResponse> executeBatchDml(StatementExecutionContext ctx,
+      List<String> statements) {
+    return Mono.defer(() -> {
+      ExecuteBatchDmlRequest.Builder request = createBatchDmlRequestBuilder(ctx);
+      for (String sql : statements) {
+        ExecuteBatchDmlRequest.Statement statement = ExecuteBatchDmlRequest.Statement.newBuilder()
+            .setSql(sql)
+            .build();
+        request.addStatements(statement);
+      }
+
+      return ObservableReactiveUtil
+          .unaryCall(obs -> this.spanner.executeBatchDml(request.build(), obs));
+    });
+  }
+
+  private ExecuteBatchDmlRequest.Builder createBatchDmlRequestBuilder(
+      StatementExecutionContext ctx) {
+    ExecuteBatchDmlRequest.Builder request = ExecuteBatchDmlRequest.newBuilder()
+        .setSession(ctx.getSessionName());
+    if (ctx.getTransactionId() != null) {
+      request.setTransaction(
+          TransactionSelector.newBuilder().setId(ctx.getTransactionId())
+              .build())
+          .setSeqno(ctx.nextSeqNum());
+
+    }
+    return request;
   }
 
   @Override

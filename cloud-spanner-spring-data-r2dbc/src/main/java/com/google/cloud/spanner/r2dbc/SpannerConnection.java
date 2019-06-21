@@ -130,7 +130,7 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
 
   @Override
   public Batch createBatch() {
-    return null;
+    return new SpannerBatch(this.client, this, this);
   }
 
   @Override

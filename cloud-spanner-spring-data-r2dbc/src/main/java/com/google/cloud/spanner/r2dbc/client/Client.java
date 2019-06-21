@@ -120,6 +120,10 @@ public interface Client {
   Mono<ExecuteBatchDmlResponse> executeBatchDml(StatementExecutionContext ctx, String sql,
       List<Struct> params, Map<String, Type> types);
 
+
+  Mono<ExecuteBatchDmlResponse> executeBatchDml(StatementExecutionContext ctx,
+      List<String> statements);
+
   /**
    * Execute a DDL query.
    *

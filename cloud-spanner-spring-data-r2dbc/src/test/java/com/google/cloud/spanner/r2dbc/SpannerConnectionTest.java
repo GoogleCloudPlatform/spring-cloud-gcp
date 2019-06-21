@@ -51,7 +51,6 @@ import java.util.Collections;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -109,9 +108,6 @@ public class SpannerConnectionTest {
 
   @Test
   public void executeStatementReturnsWorkingStatementWithCorrectQuery() {
-    SpannerConnectionConfiguration mockConfiguration
-        = Mockito.mock(SpannerConnectionConfiguration.class);
-
     SpannerConnection connection
         = new SpannerConnection(this.mockClient, TEST_SESSION, TEST_CONFIG);
     String sql = "select book from library";

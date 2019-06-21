@@ -339,6 +339,25 @@ public class SpannerIT {
         .delayUntil(c -> c.commitTransaction())
         .block();
 
+    Mono.from(this.connectionFactory.create())
+        .delayUntil(c -> c.beginTransaction())
+        .delayUntil(c ->
+            Mono.fromRunnable(() ->
+                StepVerifier
+                    .create(Flux.from(c.createBatch()
+                        .add("UPDATE BOOKS SET CATEGORY = 102 WHERE CATEGORY = 101")
+                        .add("UPDATE BOOKS SET CATEGORY = 202 WHERE CATEGORY = 201")
+                        .add("UPDATE BOOKS SET CATEGORY = 302 WHERE CATEGORY = 301")
+                        .execute())
+                        .flatMap(r -> Mono.from(r.getRowsUpdated())))
+                    .expectNext(2)
+                    .expectNext(0)
+                    .expectNext(0)
+                    .verifyComplete())
+        )
+        .delayUntil(c -> c.commitTransaction())
+        .block();
+
     List<String> authorStrings = executeReadQuery(
         connectionFactory,
         "SELECT title, author FROM books",

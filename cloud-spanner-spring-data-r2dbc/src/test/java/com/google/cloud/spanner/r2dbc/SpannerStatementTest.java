@@ -17,6 +17,7 @@
 package com.google.cloud.spanner.r2dbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.longrunning.Operation;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 import com.google.spanner.v1.ExecuteBatchDmlResponse;
@@ -34,7 +36,6 @@ import com.google.spanner.v1.PartialResultSet;
 import com.google.spanner.v1.ResultSet;
 import com.google.spanner.v1.ResultSetMetadata;
 import com.google.spanner.v1.ResultSetStats;
-import com.google.spanner.v1.Session;
 import com.google.spanner.v1.StructType;
 import com.google.spanner.v1.StructType.Field;
 import com.google.spanner.v1.Type;
@@ -56,9 +57,6 @@ import reactor.test.StepVerifier;
  */
 public class SpannerStatementTest {
 
-  private static final Session TEST_SESSION =
-      Session.newBuilder().setName("project/session/1234").build();
-
   private static final SpannerConnectionConfiguration TEST_CONFIG =
       new SpannerConnectionConfiguration.Builder()
           .setInstanceName("test-instance")
@@ -78,20 +76,21 @@ public class SpannerStatementTest {
           .build()
   ).build();
 
-  private Client mockClient;
+  private Client mockClient = mock(Client.class);
 
-  private StatementExecutionContext mockContext;
+  private StatementExecutionContext mockContext = mock(StatementExecutionContext.class);
+
+  private SpannerConnection mockConnection = mock(SpannerConnection.class);
 
 
   @Before
   public void setupMocks() {
-    this.mockClient = mock(Client.class);
-    this.mockContext = mock(StatementExecutionContext.class);
+    when(this.mockConnection.beginTransaction()).thenReturn(Mono.empty());
+    when(this.mockConnection.commitTransaction()).thenReturn(Mono.empty());
   }
 
   @Test
   public void executeDummyImplementation() {
-
     String sql = "select book from library";
     PartialResultSet partialResultSet = PartialResultSet.newBuilder()
         .setMetadata(ResultSetMetadata.newBuilder().setRowType(StructType.newBuilder()
@@ -120,7 +119,6 @@ public class SpannerStatementTest {
 
   @Test
   public void executeDummyImplementationBind() {
-
     //set up mock results
     PartialResultSet partialResultSet1 = PartialResultSet.newBuilder()
         .setMetadata(ResultSetMetadata.newBuilder().setRowType(StructType.newBuilder()
@@ -241,6 +239,61 @@ public class SpannerStatementTest {
           .flatMap(r -> Mono.from(r.getRowsUpdated())))
           .expectNext(555)
           .verifyComplete();
+  }
+
+  @Test
+  public void batchDmlQueryAutoCommitTransactionTest() {
+    batchDmlQueryTest(null, 1, 1);
+  }
+
+  @Test
+  public void batchDmlQueryWithinTransactionTest() {
+    batchDmlQueryTest(ByteString.copyFromUtf8("abc"), 0, 0);
+  }
+
+  private void batchDmlQueryTest(ByteString transactionId,
+      int beginTransactionCount, int commitTransactionCount) {
+    ResultSet resultSet1 = ResultSet.newBuilder()
+        .setStats(ResultSetStats.newBuilder().setRowCountExact(555).build())
+        .build();
+
+    ResultSet resultSet2 = ResultSet.newBuilder()
+        .setStats(ResultSetStats.newBuilder().setRowCountExact(777).build())
+        .build();
+
+    ExecuteBatchDmlResponse executeBatchDmlResponse = ExecuteBatchDmlResponse.newBuilder()
+        .addResultSets(resultSet1)
+        .addResultSets(resultSet2)
+        .build();
+
+    when(this.mockClient.executeBatchDml(any(), any()))
+        .thenReturn(Mono.just(executeBatchDmlResponse));
+
+    when(this.mockContext.getTransactionId()).thenReturn(transactionId);
+
+    StepVerifier.create(
+        Flux.from(new SpannerBatch(
+            this.mockClient, this.mockContext, this.mockConnection)
+            .add("Insert into books")
+            .add("Insert into authors")
+            .execute())
+            .flatMap(r -> Mono.from(r.getRowsUpdated())))
+        .expectNext(555)
+        .expectNext(777)
+        .verifyComplete();
+
+    verify(this.mockConnection, times(beginTransactionCount)).beginTransaction();
+    verify(this.mockConnection, times(commitTransactionCount)).commitTransaction();
+  }
+
+  @Test
+  public void batchDmlExceptionTest() {
+    assertThatThrownBy(() ->
+        new SpannerBatch(this.mockClient, null, null)
+        .add("select * from books"))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Only DML statements are supported in batches");
+
   }
 
   @Test
