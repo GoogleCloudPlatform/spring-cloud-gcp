@@ -21,6 +21,7 @@ import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.GO
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.INSTANCE;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PARTIAL_RESULT_SET_FETCH_SIZE;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PROJECT;
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.URL;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,6 +82,21 @@ public class SpannerConnectionFactoryProviderTest {
   public void testCreate() {
     ConnectionFactory spannerConnectionFactory =
         this.spannerConnectionFactoryProvider.create(SPANNER_OPTIONS);
+    assertThat(spannerConnectionFactory).isNotNull();
+    assertThat(spannerConnectionFactory).isInstanceOf(SpannerConnectionFactory.class);
+  }
+
+  @Test
+  public void testCreateFactoryWithUrl() {
+    ConnectionFactoryOptions optionsWithUrl =
+        ConnectionFactoryOptions.builder()
+            .option(DRIVER, DRIVER_NAME)
+            .option(URL, "r2dbc:spanner://spanner.googleapis.com:443/projects/"
+                + "myproject/instances/reactivetest/databases/testdb")
+            .build();
+
+    ConnectionFactory spannerConnectionFactory =
+        this.spannerConnectionFactoryProvider.create(optionsWithUrl);
     assertThat(spannerConnectionFactory).isNotNull();
     assertThat(spannerConnectionFactory).isInstanceOf(SpannerConnectionFactory.class);
   }

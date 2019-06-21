@@ -18,17 +18,23 @@ package com.google.cloud.spanner.r2dbc;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.r2dbc.util.Assert;
+import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.R2dbcNonTransientResourceException;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Objects;
 
 /**
  * Configurable properties for Cloud Spanner.
  */
 public class SpannerConnectionConfiguration {
 
-  private static final String FULLY_QUALIFIED_DB_NAME_PATTERN
-      = "projects/%s/instances/%s/databases/%s";
+  private static final String FULLY_QUALIFIED_DB_NAME_PATTERN =
+      "projects/%s/instances/%s/databases/%s";
+
+  /** Pattern used to validate that the user input database string is in the right format. */
+  private static final String DB_NAME_VALIDATE_PATTERN =
+      "projects\\/[\\w\\-]+\\/instances\\/[\\w\\-]+\\/databases\\/[\\w\\-]+$";
 
   private final String fullyQualifiedDbName;
 
@@ -39,6 +45,25 @@ public class SpannerConnectionConfiguration {
   private Duration ddlOperationTimeout;
 
   private Duration ddlOperationPollInterval;
+
+  /**
+   * Constructor which initializes the configuration from an Cloud Spanner R2DBC url.
+   */
+  private SpannerConnectionConfiguration(String url, GoogleCredentials credentials) {
+    String databaseString =
+        ConnectionFactoryOptions.parse(url).getValue(ConnectionFactoryOptions.DATABASE);
+
+    if (!databaseString.matches(DB_NAME_VALIDATE_PATTERN)) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Malformed Cloud Spanner Database String: %s. The url must have the format: %s",
+              databaseString,
+              FULLY_QUALIFIED_DB_NAME_PATTERN));
+    }
+
+    this.fullyQualifiedDbName = databaseString;
+    this.credentials = credentials;
+  }
 
   /**
    * Basic property initializing constructor.
@@ -87,7 +112,35 @@ public class SpannerConnectionConfiguration {
     return this.ddlOperationPollInterval;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    SpannerConnectionConfiguration that = (SpannerConnectionConfiguration) o;
+    return this.partialResultSetFetchSize == that.partialResultSetFetchSize
+        && Objects.equals(this.fullyQualifiedDbName, that.fullyQualifiedDbName)
+        && Objects.equals(this.credentials, that.credentials)
+        && Objects.equals(this.ddlOperationTimeout, that.ddlOperationTimeout)
+        && Objects.equals(this.ddlOperationPollInterval, that.ddlOperationPollInterval);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects
+        .hash(this.fullyQualifiedDbName,
+            this.credentials,
+            this.partialResultSetFetchSize,
+            this.ddlOperationTimeout,
+            this.ddlOperationPollInterval);
+  }
+
   public static class Builder {
+
+    private String url;
 
     private String projectId;
 
@@ -102,6 +155,11 @@ public class SpannerConnectionConfiguration {
     private Duration ddlOperationTimeout = Duration.ofSeconds(600);
 
     private Duration ddlOperationPollInterval = Duration.ofSeconds(5);
+
+    public Builder setUrl(String url) {
+      this.url = url;
+      return this;
+    }
 
     public Builder setProjectId(String projectId) {
       this.projectId = projectId;
@@ -151,11 +209,13 @@ public class SpannerConnectionConfiguration {
             "Could not acquire default application credentials", e);
       }
 
-      SpannerConnectionConfiguration configuration = new SpannerConnectionConfiguration(
-          this.projectId,
-          this.instanceName,
-          this.databaseName,
-          this.credentials);
+      SpannerConnectionConfiguration configuration;
+      if (this.url != null) {
+        configuration = new SpannerConnectionConfiguration(this.url, this.credentials);
+      } else {
+        configuration = new SpannerConnectionConfiguration(
+            this.projectId, this.instanceName, this.databaseName, this.credentials);
+      }
 
       configuration.partialResultSetFetchSize = this.partialResultSetFetchSize;
       configuration.ddlOperationTimeout = this.ddlOperationTimeout;

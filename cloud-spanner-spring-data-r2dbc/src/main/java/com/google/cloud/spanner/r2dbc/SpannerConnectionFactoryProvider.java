@@ -46,6 +46,11 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   /** Option name for GCP Spanner instance. */
   public static final Option<String> INSTANCE = Option.valueOf("instance");
 
+  /**
+   * Option name for specifying the Cloud Spanner R2DBC URL.
+   */
+  public static final Option<String> URL = Option.valueOf("url");
+
   /** Number of partial result sets to buffer during a read query operation. */
   public static final Option<Integer> PARTIAL_RESULT_SET_FETCH_SIZE =
       Option.valueOf("partial_result_set_fetch_size");
@@ -98,26 +103,32 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
 
   private static SpannerConnectionConfiguration createConfiguration(
       ConnectionFactoryOptions options) {
-    SpannerConnectionConfiguration.Builder configBuilder
-        = new SpannerConnectionConfiguration.Builder()
-        .setProjectId(options.getRequiredValue(PROJECT))
-        .setInstanceName(options.getRequiredValue(INSTANCE))
-        .setDatabaseName(options.getRequiredValue(DATABASE))
-        .setCredentials(options.getValue(GOOGLE_CREDENTIALS));
+
+    SpannerConnectionConfiguration.Builder config = new SpannerConnectionConfiguration.Builder();
+
+    if (options.hasOption(URL)) {
+      config.setUrl(options.getValue(URL));
+    } else {
+      config.setProjectId(options.getRequiredValue(PROJECT))
+          .setInstanceName(options.getRequiredValue(INSTANCE))
+          .setDatabaseName(options.getRequiredValue(DATABASE));
+    }
+
+    config.setCredentials(options.getValue(GOOGLE_CREDENTIALS));
 
     if (options.hasOption(PARTIAL_RESULT_SET_FETCH_SIZE)) {
-      configBuilder.setPartialResultSetFetchSize(options.getValue(PARTIAL_RESULT_SET_FETCH_SIZE));
+      config.setPartialResultSetFetchSize(options.getValue(PARTIAL_RESULT_SET_FETCH_SIZE));
     }
 
     if (options.hasOption(DDL_OPERATION_TIMEOUT)) {
-      configBuilder.setDdlOperationTimeout(options.getValue(DDL_OPERATION_TIMEOUT));
+      config.setDdlOperationTimeout(options.getValue(DDL_OPERATION_TIMEOUT));
     }
 
     if (options.hasOption(DDL_OPERATION_POLL_INTERVAL)) {
-      configBuilder.setDdlOperationPollInterval(options.getValue(DDL_OPERATION_POLL_INTERVAL));
+      config.setDdlOperationPollInterval(options.getValue(DDL_OPERATION_POLL_INTERVAL));
     }
 
-    return configBuilder.build();
+    return config.build();
   }
 
 }

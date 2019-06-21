@@ -17,9 +17,8 @@
 package com.google.cloud.spanner.r2dbc.it;
 
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.DRIVER_NAME;
-import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.INSTANCE;
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.URL;
 import static com.google.cloud.spanner.r2dbc.it.SpannerQueryUtil.executeReadQuery;
-import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,7 +27,6 @@ import com.google.cloud.ServiceOptions;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
-import io.r2dbc.spi.Option;
 import io.r2dbc.spi.R2dbcNonTransientException;
 import java.util.List;
 import org.junit.Before;
@@ -41,17 +39,13 @@ public class SpannerDdlIT {
 
   private static final Logger logger = LoggerFactory.getLogger(SpannerDdlIT.class);
 
-  public static final String TEST_INSTANCE = "reactivetest";
-
-  public static final String TEST_DATABASE = "testdb";
-
   private static final ConnectionFactory connectionFactory =
       ConnectionFactories.get(ConnectionFactoryOptions.builder()
-          // TODO: consider whether to bring autodiscovery of project ID
-          .option(Option.valueOf("project"), ServiceOptions.getDefaultProjectId())
           .option(DRIVER, DRIVER_NAME)
-          .option(INSTANCE, TEST_INSTANCE)
-          .option(DATABASE, TEST_DATABASE)
+          .option(URL,
+              "r2dbc:spanner://spanner.googleapis.com:443/projects/"
+                  + ServiceOptions.getDefaultProjectId()
+                  + "/instances/reactivetest/databases/testdb")
           .build());
 
   /**
