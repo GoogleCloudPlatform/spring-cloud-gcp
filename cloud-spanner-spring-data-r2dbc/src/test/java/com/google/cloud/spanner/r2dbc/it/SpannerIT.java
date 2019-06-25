@@ -349,7 +349,7 @@ public class SpannerIT {
                         .add("UPDATE BOOKS SET CATEGORY = 202 WHERE CATEGORY = 201")
                         .add("UPDATE BOOKS SET CATEGORY = 302 WHERE CATEGORY = 301")
                         .execute())
-                        .flatMap(r -> Mono.from(r.getRowsUpdated())))
+                        .flatMap(r -> r.getRowsUpdated()))
                     .expectNext(2)
                     .expectNext(0)
                     .expectNext(0)

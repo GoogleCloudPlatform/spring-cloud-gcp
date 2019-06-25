@@ -367,3 +367,20 @@ Mono.from(connection
     .execute())
     .retryWhen(retry); // This retries the subscription using the retry strategy.
 ```
+
+## Batches
+A batch contains multiple statements that are executed in one remote call for performance reasons.
+Only DML statements are supported.
+
+The call to `execute()` produces a publisher that will publish results.
+The statements are executed in sequential order.
+For every successfully executed statement, there will be a result that contatins a number of updated rows.
+Execution stops after the first failed statement; the remaining statements are not executed. 
+ 
+```java
+Flux.from(connection.createBatch()
+    .add("INSERT INTO books VALUES('Mark Twain', 'The Adventures of Tom Sawyer'")
+    .add("INSERT INTO books VALUES('Mark Twain', 'Adventures of Huckleberry Finn'")
+    .execute())
+    .flatMap(r -> r.getRowsUpdated());
+```
