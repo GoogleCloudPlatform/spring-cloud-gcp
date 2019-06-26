@@ -21,7 +21,6 @@ import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.function.BiFunction;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -48,7 +47,7 @@ public class SpannerResult implements Result {
   }
 
   @Override
-  public Publisher<Integer> getRowsUpdated() {
+  public Mono<Integer> getRowsUpdated() {
     return this.rowsUpdated;
   }
 

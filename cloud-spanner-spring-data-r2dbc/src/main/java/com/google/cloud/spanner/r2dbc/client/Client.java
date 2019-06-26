@@ -20,6 +20,7 @@ import com.google.cloud.spanner.r2dbc.StatementExecutionContext;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Struct;
 import com.google.spanner.v1.CommitResponse;
+import com.google.spanner.v1.ExecuteBatchDmlRequest.Statement;
 import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import com.google.spanner.v1.PartialResultSet;
 import com.google.spanner.v1.Session;
@@ -112,17 +113,11 @@ public interface Client {
    * Execute DML batch.
    *
    * @param ctx connection-specific state.
-   * @param sql select or DML query to execute
-   * @param params parameter values
-   * @param types parameter types
+   * @param statements DML SQL statements to execute.
    * @return
    */
-  Mono<ExecuteBatchDmlResponse> executeBatchDml(StatementExecutionContext ctx, String sql,
-      List<Struct> params, Map<String, Type> types);
-
-
-  Mono<ExecuteBatchDmlResponse> executeBatchDml(StatementExecutionContext ctx,
-      List<String> statements);
+  Mono<ExecuteBatchDmlResponse> executeBatchDml(
+      StatementExecutionContext ctx, List<Statement> statements);
 
   /**
    * Execute a DDL query.

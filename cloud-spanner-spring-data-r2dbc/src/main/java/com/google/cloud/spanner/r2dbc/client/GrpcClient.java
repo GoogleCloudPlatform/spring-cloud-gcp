@@ -36,6 +36,7 @@ import com.google.spanner.v1.CommitResponse;
 import com.google.spanner.v1.CreateSessionRequest;
 import com.google.spanner.v1.DeleteSessionRequest;
 import com.google.spanner.v1.ExecuteBatchDmlRequest;
+import com.google.spanner.v1.ExecuteBatchDmlRequest.Statement;
 import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import com.google.spanner.v1.ExecuteSqlRequest;
 import com.google.spanner.v1.PartialResultSet;
@@ -45,6 +46,7 @@ import com.google.spanner.v1.SpannerGrpc;
 import com.google.spanner.v1.SpannerGrpc.SpannerStub;
 import com.google.spanner.v1.Transaction;
 import com.google.spanner.v1.TransactionOptions;
+import com.google.spanner.v1.TransactionOptions.ReadWrite;
 import com.google.spanner.v1.TransactionSelector;
 import com.google.spanner.v1.Type;
 import io.grpc.CallCredentials;
@@ -63,14 +65,19 @@ import reactor.core.publisher.Mono;
  */
 public class GrpcClient implements Client {
 
-  public static final String HOST = "spanner.googleapis.com";
+  private static final TransactionOptions READ_WRITE_TRANSACTION =
+      TransactionOptions.newBuilder()
+          .setReadWrite(ReadWrite.getDefaultInstance())
+          .build();
 
-  public static final String PACKAGE_VERSION = GrpcClient.class.getPackage()
-      .getImplementationVersion();
+  private static final String HOST = "spanner.googleapis.com";
 
-  public static final String USER_AGENT_LIBRARY_NAME = "cloud-spanner-r2dbc";
+  private static final String PACKAGE_VERSION =
+      GrpcClient.class.getPackage().getImplementationVersion();
 
-  public static final int PORT = 443;
+  private static final String USER_AGENT_LIBRARY_NAME = "cloud-spanner-r2dbc";
+
+  private static final int PORT = 443;
 
   private final ManagedChannel channel;
   private final SpannerStub spanner;
@@ -191,56 +198,47 @@ public class GrpcClient implements Client {
   }
 
   @Override
-  public Mono<ExecuteBatchDmlResponse> executeBatchDml(StatementExecutionContext ctx, String sql,
-      List<Struct> params, Map<String, Type> types) {
-    return Mono.defer(() -> {
-      ExecuteBatchDmlRequest.Builder request = createBatchDmlRequestBuilder(ctx);
-      for (Struct paramsStruct : params) {
-        ExecuteBatchDmlRequest.Statement statement = ExecuteBatchDmlRequest.Statement.newBuilder()
-            .setSql(sql).setParams(paramsStruct).putAllParamTypes(types)
-            .build();
-        request.addStatements(statement);
-      }
+  public Mono<ExecuteBatchDmlResponse> executeBatchDml(
+      StatementExecutionContext ctx,
+      List<Statement> statements) {
 
-      return ObservableReactiveUtil
-          .unaryCall(obs -> this.spanner.executeBatchDml(request.build(), obs));
+    return Mono.defer(() -> {
+      ExecuteBatchDmlRequest.Builder request =
+          ExecuteBatchDmlRequest.newBuilder()
+              .setSession(ctx.getSessionName())
+              .addAllStatements(statements)
+              .setSeqno(ctx.nextSeqNum());
+
+      if (ctx.getTransactionId() != null) {
+        request.setTransaction(TransactionSelector.newBuilder().setId(ctx.getTransactionId()));
+        return ObservableReactiveUtil.unaryCall(
+            obs -> this.spanner.executeBatchDml(request.build(), obs));
+      } else {
+        request.setTransaction(TransactionSelector.newBuilder().setBegin(READ_WRITE_TRANSACTION));
+        return ObservableReactiveUtil
+            .<ExecuteBatchDmlResponse>unaryCall(
+                obs -> this.spanner.executeBatchDml(request.build(), obs))
+            .delayUntil(response -> {
+              if (response.getResultSetsList().size() > 0) {
+                Transaction transaction =
+                    response.getResultSets(0)
+                        .getMetadata()
+                        .getTransaction();
+                return commitTransaction(ctx.getSessionName(), transaction);
+              } else {
+                return Mono.empty();
+              }
+            });
+      }
     });
   }
 
   @Override
-  public Mono<ExecuteBatchDmlResponse> executeBatchDml(StatementExecutionContext ctx,
-      List<String> statements) {
-    return Mono.defer(() -> {
-      ExecuteBatchDmlRequest.Builder request = createBatchDmlRequestBuilder(ctx);
-      for (String sql : statements) {
-        ExecuteBatchDmlRequest.Statement statement = ExecuteBatchDmlRequest.Statement.newBuilder()
-            .setSql(sql)
-            .build();
-        request.addStatements(statement);
-      }
-
-      return ObservableReactiveUtil
-          .unaryCall(obs -> this.spanner.executeBatchDml(request.build(), obs));
-    });
-  }
-
-  private ExecuteBatchDmlRequest.Builder createBatchDmlRequestBuilder(
-      StatementExecutionContext ctx) {
-    ExecuteBatchDmlRequest.Builder request = ExecuteBatchDmlRequest.newBuilder()
-        .setSession(ctx.getSessionName());
-    if (ctx.getTransactionId() != null) {
-      request.setTransaction(
-          TransactionSelector.newBuilder().setId(ctx.getTransactionId())
-              .build())
-          .setSeqno(ctx.nextSeqNum());
-
-    }
-    return request;
-  }
-
-  @Override
-  public Flux<PartialResultSet> executeStreamingSql(StatementExecutionContext ctx, String sql,
-      Struct params, Map<String, Type> types) {
+  public Flux<PartialResultSet> executeStreamingSql(
+      StatementExecutionContext ctx,
+      String sql,
+      Struct params,
+      Map<String, Type> types) {
 
     return Flux.defer(() -> {
       Assert.requireNonNull(ctx.getSessionName(), "Session name must not be null");
@@ -249,6 +247,7 @@ public class GrpcClient implements Client {
           ExecuteSqlRequest.newBuilder()
               .setSql(sql)
               .setSession(ctx.getSessionName());
+
       if (params != null) {
         executeSqlRequest
             .setParams(params)

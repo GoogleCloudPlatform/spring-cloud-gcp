@@ -31,6 +31,8 @@ import com.google.longrunning.Operation;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
+import com.google.spanner.v1.ExecuteBatchDmlRequest;
+import com.google.spanner.v1.ExecuteBatchDmlRequest.Statement;
 import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import com.google.spanner.v1.PartialResultSet;
 import com.google.spanner.v1.ResultSet;
@@ -42,9 +44,9 @@ import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 import io.r2dbc.spi.Result;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
@@ -230,7 +232,7 @@ public class SpannerStatementTest {
         .addResultSets(resultSet)
         .build();
 
-    when(this.mockClient.executeBatchDml(any(), any(), any(), any()))
+    when(this.mockClient.executeBatchDml(any(), any()))
         .thenReturn(Mono.just(executeBatchDmlResponse));
 
     StepVerifier.create(Flux.from(
@@ -239,11 +241,6 @@ public class SpannerStatementTest {
           .flatMap(r -> Mono.from(r.getRowsUpdated())))
           .expectNext(555)
           .verifyComplete();
-  }
-
-  @Test
-  public void batchDmlQueryAutoCommitTransactionTest() {
-    batchDmlQueryTest(null, 1, 1);
   }
 
   @Test
@@ -273,7 +270,7 @@ public class SpannerStatementTest {
 
     StepVerifier.create(
         Flux.from(new SpannerBatch(
-            this.mockClient, this.mockContext, this.mockConnection)
+            this.mockClient, this.mockContext)
             .add("Insert into books")
             .add("Insert into authors")
             .execute())
@@ -289,11 +286,10 @@ public class SpannerStatementTest {
   @Test
   public void batchDmlExceptionTest() {
     assertThatThrownBy(() ->
-        new SpannerBatch(this.mockClient, null, null)
+        new SpannerBatch(this.mockClient, null)
         .add("select * from books"))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("Only DML statements are supported in batches");
-
   }
 
   @Test
@@ -330,8 +326,13 @@ public class SpannerStatementTest {
         .addResultSets(resultSet)
         .build();
 
-    when(this.mockClient.executeBatchDml(this.mockContext, sql,
-        Arrays.asList(Struct.newBuilder().build()), Collections.EMPTY_MAP))
+    List<Statement> statementList = Collections.singletonList(
+        ExecuteBatchDmlRequest.Statement.newBuilder()
+            .setSql(sql)
+            .setParams(Struct.getDefaultInstance())
+            .build());
+
+    when(this.mockClient.executeBatchDml(this.mockContext, statementList))
         .thenReturn(Mono.just(executeBatchDmlResponse));
 
     SpannerStatement statement =
@@ -349,7 +350,7 @@ public class SpannerStatementTest {
         .expectNext(0)
         .verifyComplete();
 
-    verify(this.mockClient, times(1)).executeBatchDml(
-        this.mockContext, sql, Arrays.asList(Struct.newBuilder().build()), Collections.EMPTY_MAP);
+    verify(this.mockClient, times(1))
+        .executeBatchDml(this.mockContext, statementList);
   }
 }

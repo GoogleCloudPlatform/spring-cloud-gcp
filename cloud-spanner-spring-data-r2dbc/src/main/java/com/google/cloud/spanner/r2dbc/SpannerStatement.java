@@ -24,11 +24,14 @@ import com.google.cloud.spanner.r2dbc.statement.StatementType;
 import com.google.cloud.spanner.r2dbc.statement.TypedNull;
 import com.google.cloud.spanner.r2dbc.util.Assert;
 import com.google.protobuf.Struct;
+import com.google.spanner.v1.ExecuteBatchDmlRequest;
 import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import com.google.spanner.v1.PartialResultSet;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -119,10 +122,19 @@ public class SpannerStatement implements Statement {
               this.config.getDdlOperationPollInterval())
           .map(operation -> new SpannerResult(Flux.empty(), Mono.just(0)));
     } else if (this.statementType == StatementType.DML && !this.ctx.isTransactionPartitionedDml()) {
+
+      List<ExecuteBatchDmlRequest.Statement> dmlStatements =
+          this.statementBindings.getBindings().stream()
+              .map(struct ->
+                  ExecuteBatchDmlRequest.Statement.newBuilder()
+                      .setSql(this.sql)
+                      .setParams(struct)
+                      .putAllParamTypes(this.statementBindings.getTypes())
+                      .build())
+              .collect(Collectors.toList());
+
       return this.client
-          .executeBatchDml(this.ctx, this.sql,
-              this.statementBindings.getBindings(),
-              this.statementBindings.getTypes())
+          .executeBatchDml(this.ctx, dmlStatements)
           .flatMapIterable(ExecuteBatchDmlResponse::getResultSetsList)
           .map(partialResultSet -> Math.toIntExact(partialResultSet.getStats().getRowCountExact()))
           .map(rowCount -> new SpannerResult(Flux.empty(), Mono.just(rowCount)));

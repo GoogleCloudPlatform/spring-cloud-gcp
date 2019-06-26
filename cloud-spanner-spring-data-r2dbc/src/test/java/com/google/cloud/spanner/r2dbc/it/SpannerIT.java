@@ -29,6 +29,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.spanner.r2dbc.SpannerConnection;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionFactory;
+import com.google.cloud.spanner.r2dbc.SpannerResult;
 import com.google.cloud.spanner.r2dbc.client.GrpcClient;
 import com.google.cloud.spanner.r2dbc.util.ObservableReactiveUtil;
 import com.google.common.base.Strings;
@@ -228,6 +229,37 @@ public class SpannerIT {
     activeSessions = getSessionNames();
     assertThat(activeSessions).doesNotContain(activeSessionName);
   }
+
+  @Test
+  public void testRunDmlAfterTransaction() {
+    SpannerConnection connection =
+        Mono.from(this.connectionFactory.create())
+            .cast(SpannerConnection.class)
+            .block();
+
+    StepVerifier.create(
+        Mono.from(connection.beginTransaction())
+            .then(Mono.just(
+                connection.createStatement(
+                    "INSERT BOOKS "
+                        + "(UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
+                        + "PUBLISHED, WORDS_PER_SENTENCE)"
+                        + " VALUES "
+                        + "(@uuid, @title, @author, @category, @fiction, @published, @wps);")
+                    .bind("uuid", "1")
+                    .bind("author", "a")
+                    .bind("category", 100L)
+                    .bind("title", "b1")
+                    .bind("fiction", true)
+                    .bind("published", LocalDate.of(2008, 5, 1))
+                    .bind("wps", 20.8)))
+            .delayUntil(statement -> connection.commitTransaction())
+            .flatMapMany(statement -> statement.execute())
+            .cast(SpannerResult.class))
+        .assertNext(result -> assertThat(result.getRowsUpdated().block()).isEqualTo(1))
+        .verifyComplete();
+  }
+
 
   @Test
   public void testSingleUseDml() {

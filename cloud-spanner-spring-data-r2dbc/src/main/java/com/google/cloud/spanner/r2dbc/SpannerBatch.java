@@ -20,6 +20,7 @@ import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.cloud.spanner.r2dbc.statement.StatementParser;
 import com.google.cloud.spanner.r2dbc.statement.StatementType;
 import com.google.cloud.spanner.r2dbc.util.Assert;
+import com.google.spanner.v1.ExecuteBatchDmlRequest.Statement;
 import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import io.r2dbc.spi.Batch;
 import io.r2dbc.spi.Result;
@@ -34,16 +35,14 @@ import reactor.core.publisher.Mono;
  */
 public class SpannerBatch implements Batch {
 
-  private final SpannerConnection connection;
   private final StatementExecutionContext ctx;
   private final Client client;
 
-  private List<String> statements = new ArrayList<>();
+  private List<Statement> statements = new ArrayList<>();
 
-  SpannerBatch(Client client, StatementExecutionContext ctx, SpannerConnection connection) {
+  SpannerBatch(Client client, StatementExecutionContext ctx) {
     this.client = client;
     this.ctx = ctx;
-    this.connection = connection;
   }
 
   @Override
@@ -53,7 +52,7 @@ public class SpannerBatch implements Batch {
       throw new IllegalArgumentException("Only DML statements are supported in batches");
     }
 
-    this.statements.add(sql);
+    this.statements.add(Statement.newBuilder().setSql(sql).build());
     return this;
   }
 
@@ -67,12 +66,6 @@ public class SpannerBatch implements Batch {
   }
 
   private Mono<ExecuteBatchDmlResponse> executeInTransaction() {
-    return this.ctx.getTransactionId() == null
-        ? this.connection.beginTransaction()
-            .then(this.client
-                .executeBatchDml(this.ctx, this.statements))
-            .delayUntil(r -> this.connection.commitTransaction())
-        : this.client
-            .executeBatchDml(this.ctx, this.statements);
+    return this.client.executeBatchDml(this.ctx, this.statements);
   }
 }
