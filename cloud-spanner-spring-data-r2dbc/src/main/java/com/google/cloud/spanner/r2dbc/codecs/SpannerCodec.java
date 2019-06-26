@@ -58,13 +58,6 @@ class SpannerCodec<T> implements Codec<T> {
     return this.type.isAssignableFrom(type);
   }
 
-  @Override
-  public boolean canEncodeNull(Type type) {
-    Assert.requireNonNull(type, "type must not be null");
-
-    return doCanDecode(type);
-  }
-
   @Nullable
   @Override
   public T decode(Value value, Type spannerType) {

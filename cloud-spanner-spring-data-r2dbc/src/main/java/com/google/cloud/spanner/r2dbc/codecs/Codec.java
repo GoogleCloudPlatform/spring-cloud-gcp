@@ -41,13 +41,6 @@ public interface Codec<T> {
   boolean canEncode(Class type);
 
   /**
-   * Indicates if the codec can encode null.
-   *
-   * @return true if the codec can encode null, false otherwise
-   */
-  boolean canEncodeNull(Type type);
-
-  /**
    * Decode data to a value.
    *
    * @param value the {@link Value} object containing the value to decode

@@ -198,6 +198,8 @@ public class SpannerConnectionConfiguration {
 
     /**
      * Constructs an instance of the {@link SpannerConnectionConfiguration}.
+     *
+     * @return the built {@link SpannerConnectionConfiguration} object.
      */
     public SpannerConnectionConfiguration build() {
       try {

@@ -86,6 +86,8 @@ public class GrpcClient implements Client {
 
   /**
    * Initializes the Cloud Spanner gRPC async stub.
+   *
+   * @param credentials the Google Cloud Platform credentials used to authenticate with Spanner.
    */
   public GrpcClient(GoogleCredentials credentials) {
     // Create blocking and async stubs using the channel

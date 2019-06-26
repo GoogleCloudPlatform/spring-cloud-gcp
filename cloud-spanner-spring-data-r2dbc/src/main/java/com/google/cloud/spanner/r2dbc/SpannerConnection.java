@@ -58,8 +58,9 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
 
   /**
    * Instantiates a Spanner session with given configuration.
-   * @param client client controlling low-level Spanner operations
+   * @param client client controlling low-level Spanner operations.
    * @param session Spanner session to use for all interactions on this connection.
+   * @param config configuration to customize the Spanner Connection properties.
    */
   public SpannerConnection(Client client, Session session, SpannerConnectionConfiguration config) {
     this.client = client;
@@ -74,6 +75,9 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
 
   /**
    * Begins a new transaction with the specified {@link TransactionOptions}.
+   *
+   * @param transactionOptions custom options to modify the transaction to start.
+   * @return {@link Mono} indicating completion of the operation.
    */
   public Mono<Void> beginTransaction(TransactionOptions transactionOptions) {
     return this.client.beginTransaction(this.getSessionName(), transactionOptions)

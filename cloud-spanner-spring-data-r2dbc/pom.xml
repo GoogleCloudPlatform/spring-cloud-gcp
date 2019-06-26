@@ -335,8 +335,6 @@
                   <goal>jar</goal>
                 </goals>
                 <configuration>
-                  <!-- ignore javadoc errors -->
-                  <additionalparam>-Xdoclint:none</additionalparam>
                   <source>8</source>
                 </configuration>
               </execution>

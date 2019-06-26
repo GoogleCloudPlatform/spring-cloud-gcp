@@ -52,6 +52,8 @@ public class PartialResultRowExtractor implements Function<PartialResultSet, Lis
    * PartialResultSet}.
    *
    * @param partialResultSet a not yet processed result set
+   *
+   * @return the resulting rows from the input {@link PartialResultSet}.
    */
   public List<SpannerRow> emitRows(PartialResultSet partialResultSet) {
     if (partialResultSet.getValuesList().isEmpty()) {

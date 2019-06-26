@@ -67,6 +67,8 @@ public class StatementBindings {
 
   /**
    * Add an additional param-to-value binding pair to the current parameter binding.
+   * @param identifier the String name of the bind variable.
+   * @param value the value you wish to bind the parameter to.
    */
   public void createBind(String identifier, Object value) {
     Assert.requireNonNull(identifier, "Identifier must not be null.");
@@ -101,6 +103,7 @@ public class StatementBindings {
 
   /**
    * Returns the built binding for the statement.
+   * @return list of {@link Struct} representing all the parameter bindings for the statement.
    */
   public List<Struct> getBindings() {
     completeBinding();
