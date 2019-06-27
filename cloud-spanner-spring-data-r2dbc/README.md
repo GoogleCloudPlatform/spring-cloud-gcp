@@ -332,11 +332,23 @@ See the above section regarding `ConnectionFactory` options for more information
 
 ## Back Pressure
 
-Table rows are transmitted from Cloud Spanner in fragments called `PartialResultset`.
-The number of fragments for each row cannot be determined beforehand. 
-While you can decide the number of rows you request from `SpannerResult`, the Cloud Spanner R2DBC driver will always request a fixed number of fragments from Cloud Spanner to fulfill your request and will do so repeatedly if necessary.
+When you execute a **read** query in Cloud Spanner, the table rows of the result are transmitted
+back to the client in chunks called `PartialResultSets`. Every `PartialResultSet` object may
+contain any number of complete (or incomplete) table rows, and the number of rows cannot be
+determined beforehand. Consequently, the driver requests these `PartialResultSet` objects from
+upstream and holds a buffer of these objects from which the table rows of the results are extracted.
+As the buffer is depleted, more `PartialResultSets` will be streamed from Cloud Spanner and
+will replenish the buffer.
 
-The default number of fragments per request to Cloud Spanner is 1, but this can be configured with the `partial_result_set_fetch_size` config property for your situation.
+In order to support backpressure under these conditions, the driver provides a setting
+`partial_result_set_fetch_size` which specifies how many PartialResultSet objects the driver
+requests from Spanner in it's first request to store in the buffer. This number is an upper
+bound that affects how it is replenished; when the client has consumed 25% of the PartialResultSets,
+it will request 25% upstream from Spanner. See the [prefetch documentation](https://projectreactor.io/docs/core/release/reference/#_operators_changing_the_demand_from_downstream)
+for more info.
+
+The default buffer size of `PartialResultSets` is 1 and this may be increased by setting
+`partial_result_set_fetch_size`.
 
 ## Exception Handling
 
