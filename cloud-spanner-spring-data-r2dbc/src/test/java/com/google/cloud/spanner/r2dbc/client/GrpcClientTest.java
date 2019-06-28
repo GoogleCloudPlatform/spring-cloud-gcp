@@ -24,12 +24,18 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.r2dbc.StatementExecutionContext;
 import com.google.protobuf.ByteString;
+import com.google.rpc.Status;
 import com.google.spanner.v1.CreateSessionRequest;
+import com.google.spanner.v1.ExecuteBatchDmlRequest;
+import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import com.google.spanner.v1.ExecuteSqlRequest;
 import com.google.spanner.v1.PartialResultSet;
+import com.google.spanner.v1.ResultSet;
+import com.google.spanner.v1.ResultSetStats;
 import com.google.spanner.v1.Session;
 import com.google.spanner.v1.SpannerGrpc;
 import com.google.spanner.v1.SpannerGrpc.SpannerImplBase;
@@ -41,11 +47,13 @@ import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import reactor.test.StepVerifier;
 
 /**
  * Test for {@link GrpcClient}.
@@ -92,7 +100,6 @@ public class GrpcClientTest {
 
   @Test
   public void testExecuteStreamingSql() throws IOException {
-
     ExecuteSqlRequest request = ExecuteSqlRequest.newBuilder().build();
 
     String sql = "select book from library";
@@ -114,6 +121,40 @@ public class GrpcClientTest {
     assertEquals(sql, requestCaptor.getValue().getSql());
     assertEquals(SESSION_NAME, requestCaptor.getValue().getSession());
     assertEquals(TRANSACTION_ID, requestCaptor.getValue().getTransaction().getId());
+  }
+
+
+  @Test
+  public void testBatchDmlErrorPropagation() throws IOException {
+    ResultSet expectedResultSet =
+        ResultSet.newBuilder()
+            .setStats(ResultSetStats.newBuilder().setRowCountExact(20))
+            .build();
+
+    doTest(new SpannerImplBase() {
+          @Override
+          public void executeBatchDml(
+              ExecuteBatchDmlRequest request,
+              StreamObserver<ExecuteBatchDmlResponse> responseObserver) {
+            ExecuteBatchDmlResponse response =
+                ExecuteBatchDmlResponse.newBuilder()
+                    .setStatus(
+                        Status.newBuilder()
+                            .setCode(Code.ABORTED.getHttpStatusCode())
+                            .setMessage("error message"))
+                    .addResultSets(expectedResultSet)
+                    .build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+          }
+        },
+        grpcClient ->
+          StepVerifier
+              .create(grpcClient.executeBatchDml(this.mockContext, new ArrayList<>()))
+              .expectNext(expectedResultSet)
+              .expectErrorMessage("error message")
+              .verify()
+    );
   }
 
   @Test

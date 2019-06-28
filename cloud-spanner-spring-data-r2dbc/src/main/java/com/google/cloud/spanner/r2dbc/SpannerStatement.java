@@ -25,7 +25,6 @@ import com.google.cloud.spanner.r2dbc.statement.TypedNull;
 import com.google.cloud.spanner.r2dbc.util.Assert;
 import com.google.protobuf.Struct;
 import com.google.spanner.v1.ExecuteBatchDmlRequest;
-import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import com.google.spanner.v1.PartialResultSet;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
@@ -133,9 +132,7 @@ public class SpannerStatement implements Statement {
                       .build())
               .collect(Collectors.toList());
 
-      return this.client
-          .executeBatchDml(this.ctx, dmlStatements)
-          .flatMapIterable(ExecuteBatchDmlResponse::getResultSetsList)
+      return this.client.executeBatchDml(this.ctx, dmlStatements)
           .map(partialResultSet -> Math.toIntExact(partialResultSet.getStats().getRowCountExact()))
           .map(rowCount -> new SpannerResult(Flux.empty(), Mono.just(rowCount)));
     }

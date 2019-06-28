@@ -33,7 +33,6 @@ import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 import com.google.spanner.v1.ExecuteBatchDmlRequest;
 import com.google.spanner.v1.ExecuteBatchDmlRequest.Statement;
-import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import com.google.spanner.v1.PartialResultSet;
 import com.google.spanner.v1.ResultSet;
 import com.google.spanner.v1.ResultSetMetadata;
@@ -228,12 +227,8 @@ public class SpannerStatementTest {
         .setStats(ResultSetStats.newBuilder().setRowCountExact(555).build())
         .build();
 
-    ExecuteBatchDmlResponse executeBatchDmlResponse = ExecuteBatchDmlResponse.newBuilder()
-        .addResultSets(resultSet)
-        .build();
-
     when(this.mockClient.executeBatchDml(any(), any()))
-        .thenReturn(Mono.just(executeBatchDmlResponse));
+        .thenReturn(Flux.just(resultSet));
 
     StepVerifier.create(Flux.from(
         new SpannerStatement(this.mockClient, this.mockContext, "Insert into books", TEST_CONFIG)
@@ -258,13 +253,8 @@ public class SpannerStatementTest {
         .setStats(ResultSetStats.newBuilder().setRowCountExact(777).build())
         .build();
 
-    ExecuteBatchDmlResponse executeBatchDmlResponse = ExecuteBatchDmlResponse.newBuilder()
-        .addResultSets(resultSet1)
-        .addResultSets(resultSet2)
-        .build();
-
     when(this.mockClient.executeBatchDml(any(), any()))
-        .thenReturn(Mono.just(executeBatchDmlResponse));
+        .thenReturn(Flux.just(resultSet1, resultSet2));
 
     when(this.mockContext.getTransactionId()).thenReturn(transactionId);
 
@@ -322,10 +312,6 @@ public class SpannerStatementTest {
         .setStats(ResultSetStats.getDefaultInstance())
         .build();
 
-    ExecuteBatchDmlResponse executeBatchDmlResponse = ExecuteBatchDmlResponse.newBuilder()
-        .addResultSets(resultSet)
-        .build();
-
     List<Statement> statementList = Collections.singletonList(
         ExecuteBatchDmlRequest.Statement.newBuilder()
             .setSql(sql)
@@ -333,7 +319,7 @@ public class SpannerStatementTest {
             .build());
 
     when(this.mockClient.executeBatchDml(this.mockContext, statementList))
-        .thenReturn(Mono.just(executeBatchDmlResponse));
+        .thenReturn(Flux.just(resultSet));
 
     SpannerStatement statement =
         new SpannerStatement(this.mockClient, this.mockContext, sql, TEST_CONFIG);

@@ -144,7 +144,7 @@ public class SpannerConnectionTest {
         = new SpannerConnection(this.mockClient, TEST_SESSION, TEST_CONFIG);
     String sql = "insert into books values (title) @title";
 
-    when(this.mockClient.executeBatchDml(any(), any())).thenReturn(Mono.empty());
+    when(this.mockClient.executeBatchDml(any(), any())).thenReturn(Flux.empty());
 
     StepVerifier.create(
         Mono.fromSupplier(() -> connection.createStatement(sql))

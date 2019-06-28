@@ -21,7 +21,6 @@ import com.google.cloud.spanner.r2dbc.statement.StatementParser;
 import com.google.cloud.spanner.r2dbc.statement.StatementType;
 import com.google.cloud.spanner.r2dbc.util.Assert;
 import com.google.spanner.v1.ExecuteBatchDmlRequest.Statement;
-import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import io.r2dbc.spi.Batch;
 import io.r2dbc.spi.Result;
 import java.util.ArrayList;
@@ -58,14 +57,10 @@ public class SpannerBatch implements Batch {
 
   @Override
   public Publisher<? extends Result> execute() {
-    return executeInTransaction().flatMapIterable(ExecuteBatchDmlResponse::getResultSetsList)
+    return this.client.executeBatchDml(this.ctx, this.statements)
         .map(resultSet -> {
           int count = Math.toIntExact(resultSet.getStats().getRowCountExact());
           return new SpannerResult(Flux.empty(), Mono.just(count));
         });
-  }
-
-  private Mono<ExecuteBatchDmlResponse> executeInTransaction() {
-    return this.client.executeBatchDml(this.ctx, this.statements);
   }
 }

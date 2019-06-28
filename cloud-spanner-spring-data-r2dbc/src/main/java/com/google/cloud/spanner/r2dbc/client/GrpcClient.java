@@ -40,6 +40,7 @@ import com.google.spanner.v1.ExecuteBatchDmlRequest.Statement;
 import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import com.google.spanner.v1.ExecuteSqlRequest;
 import com.google.spanner.v1.PartialResultSet;
+import com.google.spanner.v1.ResultSet;
 import com.google.spanner.v1.RollbackRequest;
 import com.google.spanner.v1.Session;
 import com.google.spanner.v1.SpannerGrpc;
@@ -52,6 +53,7 @@ import com.google.spanner.v1.Type;
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Status;
 import io.grpc.auth.MoreCallCredentials;
 import io.r2dbc.spi.R2dbcNonTransientResourceException;
 import java.time.Duration;
@@ -200,7 +202,7 @@ public class GrpcClient implements Client {
   }
 
   @Override
-  public Mono<ExecuteBatchDmlResponse> executeBatchDml(
+  public Flux<ResultSet> executeBatchDml(
       StatementExecutionContext ctx,
       List<Statement> statements) {
 
@@ -232,6 +234,15 @@ public class GrpcClient implements Client {
               }
             });
       }
+    })
+    .flatMapMany(response -> {
+      Flux<ResultSet> results = Flux.fromIterable(response.getResultSetsList());
+      if (response.hasStatus() && response.getStatus().getCode() != Status.Code.OK.value()) {
+        results = results.concatWith(
+            Mono.error(
+                new R2dbcNonTransientResourceException(response.getStatus().getMessage())));
+      }
+      return results;
     });
   }
 
