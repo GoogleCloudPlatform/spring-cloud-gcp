@@ -31,6 +31,8 @@ import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
+import io.r2dbc.pool.ConnectionPool;
+import io.r2dbc.pool.ConnectionPoolConfiguration;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
@@ -39,6 +41,7 @@ import io.r2dbc.spi.Option;
 import io.r2dbc.spi.Statement;
 import io.r2dbc.spi.test.Example;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -67,6 +70,13 @@ public class SpannerExample implements Example<String> {
           .option(DRIVER, DRIVER_NAME)
           .option(INSTANCE, TEST_INSTANCE)
           .option(DATABASE, TEST_DATABASE)
+          .build());
+
+  private static final ConnectionPool pool =
+      new ConnectionPool(ConnectionPoolConfiguration.builder(connectionFactory)
+          .validationQuery("SELECT 1")
+          .maxIdleTime(Duration.ofSeconds(10))
+          .maxSize(5)
           .build());
 
   private static final Logger logger = LoggerFactory.getLogger(SpannerExample.class);
@@ -125,11 +135,12 @@ public class SpannerExample implements Example<String> {
   }
 
   private static void executeDml(Function<Connection, Statement> statementFunc) {
-    Mono.from(connectionFactory.create())
+    Mono.from(pool.create())
         .delayUntil(c -> c.beginTransaction())
-        .delayUntil(c -> Flux.from(statementFunc.apply(c)
-            .execute()).flatMapSequential(r -> Mono.from(r.getRowsUpdated())))
+        .delayUntil(c -> Flux.from(statementFunc.apply(c).execute())
+            .flatMapSequential(r -> Mono.from(r.getRowsUpdated())))
         .delayUntil(c -> c.commitTransaction())
+        .delayUntil(c -> c.close())
         .block();
   }
 
@@ -141,7 +152,7 @@ public class SpannerExample implements Example<String> {
 
   @Override
   public ConnectionFactory getConnectionFactory() {
-    return connectionFactory;
+    return pool;
   }
 
   // we don't need to create tables because it is slow. we do it upfront.

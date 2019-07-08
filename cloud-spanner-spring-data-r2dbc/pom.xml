@@ -206,6 +206,12 @@
       <version>2.5</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.r2dbc</groupId>
+      <artifactId>r2dbc-pool</artifactId>
+      <version>0.8.0.BUILD-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -302,6 +308,15 @@
       <url>https://repo.spring.io/milestone</url>
       <snapshots>
         <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <!-- Snapsot repo is needed for r2dbc-pool -->
+    <repository>
+      <id>spring-snapshots</id>
+      <name>Spring Snapshots</name>
+      <url>https://repo.spring.io/snapshot</url>
+      <snapshots>
+        <enabled>true</enabled>
       </snapshots>
     </repository>
   </repositories>
