@@ -23,8 +23,9 @@ import com.google.protobuf.Value;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 import java.nio.ByteBuffer;
-import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +52,7 @@ public final class DefaultCodecs implements Codecs {
         new ArrayCodec(this, Double[].class, TypeCode.FLOAT64),
         new ArrayCodec(this, Long[].class, TypeCode.INT64),
         new ArrayCodec(this, String[].class, TypeCode.STRING),
-        new ArrayCodec(this, Timestamp[].class, TypeCode.TIMESTAMP),
+        new ArrayCodec(this, LocalDateTime[].class, TypeCode.TIMESTAMP),
         new SpannerCodec<>(Boolean.class, TypeCode.BOOL,
             v -> Value.newBuilder().setBoolValue(v).build()),
         new SpannerCodec<>(ByteBuffer.class, TypeCode.BYTES,
@@ -81,9 +82,10 @@ public final class DefaultCodecs implements Codecs {
         ),
         new SpannerCodec<>(String.class, TypeCode.STRING,
             v -> Value.newBuilder().setStringValue(v).build()),
-        new SpannerCodec<>(Timestamp.class, TypeCode.TIMESTAMP,
+        new SpannerCodec<>(LocalDateTime.class, TypeCode.TIMESTAMP,
             v -> Value.newBuilder()
-                .setStringValue(ValueUtils.TIMESTAMP_FORMATTER.format(v.toInstant())).build())
+                .setStringValue(ValueUtils.TIMESTAMP_FORMATTER.format(v.toInstant(ZoneOffset.UTC)))
+                .build())
     );
   }
 

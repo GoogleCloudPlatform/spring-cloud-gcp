@@ -22,8 +22,8 @@ import com.google.protobuf.Value;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 import java.nio.ByteBuffer;
-import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Test;
@@ -67,9 +67,9 @@ public class DefaultCodecsTest {
         {new String[]{"abc", "def", null}, String[].class,
             Type.newBuilder().setCode(TypeCode.ARRAY)
                 .setArrayElementType(Type.newBuilder().setCode(TypeCode.STRING).build()).build()},
-        {new Timestamp[]{Timestamp.valueOf("2013-08-04 12:00:01.021126"),
-            Timestamp.valueOf("1013-07-02 22:03:05.026714"), null},
-            Timestamp[].class,
+        {new LocalDateTime[]{LocalDateTime.parse("2007-12-03T10:15:30"),
+            LocalDateTime.parse("1999-06-05T10:12:51"), null},
+            LocalDateTime[].class,
             Type.newBuilder().setCode(TypeCode.ARRAY)
                 .setArrayElementType(
                     Type.newBuilder().setCode(TypeCode.TIMESTAMP).build()).build()},
@@ -82,7 +82,7 @@ public class DefaultCodecsTest {
             Type.newBuilder().setCode(TypeCode.DATE).build()},
         {2.0d, Double.class, Type.newBuilder().setCode(TypeCode.FLOAT64).build()},
         {12345L, Long.class, Type.newBuilder().setCode(TypeCode.INT64).build()},
-        {Timestamp.valueOf("2013-08-04 12:00:01.029074"), Timestamp.class,
+        {LocalDateTime.parse("1999-06-05T10:12:51"), LocalDateTime.class,
             Type.newBuilder().setCode(TypeCode.TIMESTAMP).build()},
         {"abc", String.class, Type.newBuilder().setCode(TypeCode.STRING).build()},
     });
@@ -96,7 +96,6 @@ public class DefaultCodecsTest {
 
   @Parameter(2)
   public Type valueType;
-
 
   @Test
   public void codecsTest() {
