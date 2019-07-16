@@ -20,6 +20,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.r2dbc.StatementExecutionContext;
 import com.google.cloud.spanner.r2dbc.util.Assert;
 import com.google.cloud.spanner.r2dbc.util.ObservableReactiveUtil;
+import com.google.cloud.spanner.r2dbc.util.SpannerExceptionUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.longrunning.GetOperationRequest;
 import com.google.longrunning.Operation;
@@ -55,6 +56,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
 import io.grpc.auth.MoreCallCredentials;
+import io.r2dbc.spi.R2dbcException;
 import io.r2dbc.spi.R2dbcNonTransientResourceException;
 import java.time.Duration;
 import java.util.List;
@@ -238,9 +240,11 @@ public class GrpcClient implements Client {
     .flatMapMany(response -> {
       Flux<ResultSet> results = Flux.fromIterable(response.getResultSetsList());
       if (response.hasStatus() && response.getStatus().getCode() != Status.Code.OK.value()) {
-        results = results.concatWith(
-            Mono.error(
-                new R2dbcNonTransientResourceException(response.getStatus().getMessage())));
+        R2dbcException exception =
+            SpannerExceptionUtil.createR2dbcException(
+                response.getStatus().getCode(),
+                response.getStatus().getMessage());
+        results = results.concatWith(Mono.error(exception));
       }
       return results;
     });

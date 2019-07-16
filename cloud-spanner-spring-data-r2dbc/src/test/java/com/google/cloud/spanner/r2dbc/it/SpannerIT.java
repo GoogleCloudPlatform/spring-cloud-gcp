@@ -47,6 +47,7 @@ import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
+import io.r2dbc.spi.R2dbcDataIntegrityViolationException;
 import io.r2dbc.spi.Result;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -287,6 +288,24 @@ public class SpannerIT {
         .expectErrorMatches(err -> err.getMessage().contains("Syntax error:"))
         .verify();
   }
+
+  @Test
+  public void testDataIntegrityExceptions() {
+    StepVerifier.create(
+        Mono.from(connectionFactory.create())
+            .flatMapMany(conn ->
+                conn.createBatch()
+                    .add("INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
+                        + "PUBLISHED, WORDS_PER_SENTENCE) VALUES ('23', 'blarg', "
+                        + "'joe', 245, true, DATE '2013-12-25', 20)")
+                    .add("INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY, FICTION, PUBLISHED, "
+                        + "WORDS_PER_SENTENCE) VALUES ('23', 'blarg2', 'Bob', "
+                        + "245, true, DATE '2013-12-25', 20)")
+                    .execute()))
+        .expectErrorMatches(err -> err instanceof R2dbcDataIntegrityViolationException)
+        .verify();
+  }
+
 
   @Test
   public void testSingleUseDml() {

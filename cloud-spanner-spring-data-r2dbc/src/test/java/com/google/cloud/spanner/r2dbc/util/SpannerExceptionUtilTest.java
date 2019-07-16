@@ -16,26 +16,46 @@
 
 package com.google.cloud.spanner.r2dbc.util;
 
+import static com.google.cloud.spanner.r2dbc.util.SpannerExceptionUtil.createR2dbcException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.protobuf.Duration;
+import com.google.rpc.Code;
 import com.google.rpc.RetryInfo;
 import io.grpc.Metadata;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.protobuf.ProtoUtils;
+import io.r2dbc.spi.R2dbcDataIntegrityViolationException;
+import io.r2dbc.spi.R2dbcException;
+import io.r2dbc.spi.R2dbcNonTransientResourceException;
+import io.r2dbc.spi.R2dbcPermissionDeniedException;
+import io.r2dbc.spi.R2dbcTransientResourceException;
 import java.io.IOException;
 import org.junit.Test;
 
 public class SpannerExceptionUtilTest {
 
   @Test
-  public void testNonRetryableException() {
-    assertThat(SpannerExceptionUtil.isRetryable(new IllegalArgumentException())).isFalse();
-    assertThat(SpannerExceptionUtil.isRetryable(new IOException())).isFalse();
+  public void testCreateR2dbcException() {
+    R2dbcException exception = SpannerExceptionUtil.createR2dbcException(
+        Code.ALREADY_EXISTS_VALUE, "test");
 
-    StatusRuntimeException nonRetryableException = new StatusRuntimeException(Status.ABORTED);
-    assertThat(SpannerExceptionUtil.isRetryable(nonRetryableException)).isFalse();
+    assertThat(exception).isInstanceOf(R2dbcDataIntegrityViolationException.class);
+    assertThat(exception).hasMessage("test");
+  }
+
+  @Test
+  public void testNonRetryableException() {
+    assertThat(createR2dbcException(new IllegalArgumentException()))
+        .isInstanceOf(R2dbcNonTransientResourceException.class);
+    assertThat(createR2dbcException((new IOException())))
+        .isInstanceOf(R2dbcNonTransientResourceException.class);
+
+    StatusRuntimeException nonRetryableException =
+        new StatusRuntimeException(Status.PERMISSION_DENIED);
+    assertThat(createR2dbcException(nonRetryableException))
+        .isInstanceOf(R2dbcPermissionDeniedException.class);
   }
 
   @Test
@@ -44,7 +64,8 @@ public class SpannerExceptionUtilTest {
         new StatusRuntimeException(
             Status.INTERNAL.withDescription("HTTP/2 error code: INTERNAL_ERROR"), null);
 
-    assertThat(SpannerExceptionUtil.isRetryable(retryableException)).isTrue();
+    assertThat(createR2dbcException(retryableException))
+        .isInstanceOf(R2dbcTransientResourceException.class);
   }
 
   @Test
@@ -60,6 +81,7 @@ public class SpannerExceptionUtilTest {
     StatusRuntimeException retryableException =
         new StatusRuntimeException(Status.RESOURCE_EXHAUSTED, errorMetadata);
 
-    assertThat(SpannerExceptionUtil.isRetryable(retryableException)).isTrue();
+    assertThat(createR2dbcException(retryableException))
+        .isInstanceOf(R2dbcTransientResourceException.class);
   }
 }

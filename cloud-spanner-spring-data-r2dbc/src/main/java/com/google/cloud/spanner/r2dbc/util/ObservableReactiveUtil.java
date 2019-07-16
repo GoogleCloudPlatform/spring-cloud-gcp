@@ -16,13 +16,9 @@
 
 package com.google.cloud.spanner.r2dbc.util;
 
-import static com.google.cloud.spanner.r2dbc.util.SpannerExceptionUtil.isRetryable;
-
 import io.grpc.stub.ClientCallStreamObserver;
 import io.grpc.stub.ClientResponseObserver;
 import io.grpc.stub.StreamObserver;
-import io.r2dbc.spi.R2dbcNonTransientResourceException;
-import io.r2dbc.spi.R2dbcTransientResourceException;
 import java.util.function.Consumer;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
@@ -82,13 +78,7 @@ public class ObservableReactiveUtil {
 
     @Override
     public void onError(Throwable throwable) {
-      if (isRetryable(throwable)) {
-        throwable = new R2dbcTransientResourceException(throwable.getMessage(), throwable);
-      } else {
-        throwable = new R2dbcNonTransientResourceException(throwable.getMessage(), throwable);
-      }
-
-      this.sink.error(throwable);
+      this.sink.error(SpannerExceptionUtil.createR2dbcException(throwable));
     }
 
     @Override
@@ -135,14 +125,7 @@ public class ObservableReactiveUtil {
     @Override
     public void onError(Throwable throwable) {
       this.terminalEventReceived = true;
-
-      if (isRetryable(throwable)) {
-        throwable = new R2dbcTransientResourceException(throwable.getMessage(), throwable);
-      } else {
-        throwable = new R2dbcNonTransientResourceException(throwable.getMessage(), throwable);
-      }
-
-      this.sink.error(throwable);
+      this.sink.error(SpannerExceptionUtil.createR2dbcException(throwable));
     }
 
     @Override
