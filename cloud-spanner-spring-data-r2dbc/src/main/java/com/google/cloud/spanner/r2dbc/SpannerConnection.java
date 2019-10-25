@@ -139,7 +139,7 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
 
   @Override
   public Publisher<Void> createSavepoint(String s) {
-    return null;
+    throw new UnsupportedOperationException("Savepoints are not supported.");
   }
 
   @Override
@@ -149,7 +149,7 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
 
   @Override
   public Publisher<Void> releaseSavepoint(String s) {
-    return null;
+    throw new UnsupportedOperationException("Savepoints are not supported.");
   }
 
   @Override

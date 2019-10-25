@@ -356,6 +356,15 @@ public class SpannerExample implements TestKit<String> {
   @Override
   @Ignore
   @Test
+  public void savePointStartsTransaction() {
+    /*
+    Save points are not supported.
+     */
+  }
+
+  @Override
+  @Ignore
+  @Test
   public void prepareStatementWithIncompleteBindingFails() {
     /*
     We do not currently do client-side verification of bindings: https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/issues/74
