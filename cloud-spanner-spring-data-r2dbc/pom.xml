@@ -79,8 +79,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <r2dbc.version>0.8.0.M8</r2dbc.version>
-    <reactor.version>Californium-SR6</reactor.version>
+    <r2dbc.version>0.8.0.RC2</r2dbc.version>
+    <reactor.version>Dysprosium-RELEASE</reactor.version>
     <google-auth.version>0.15.0</google-auth.version>
     <mockito.version>2.23.0</mockito.version>
     <grpc.version>1.20.0</grpc.version>

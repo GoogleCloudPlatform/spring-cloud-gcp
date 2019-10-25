@@ -41,16 +41,6 @@ public class SpannerRowTest {
       = new SpannerRowMetadata(ResultSetMetadata.getDefaultInstance());
 
   @Test
-  public void testInvalidIdentifier() {
-    SpannerRow row = new SpannerRow(
-        new ArrayList<>(), this.rowMetadata);
-
-    assertThatThrownBy(() -> row.get(true, String.class))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessageContaining("Identifier 'true' is not a valid identifier.");
-  }
-
-  @Test
   public void testOutOfBoundsIndex() {
     SpannerRow row = new SpannerRow(
         new ArrayList<>(), this.rowMetadata);

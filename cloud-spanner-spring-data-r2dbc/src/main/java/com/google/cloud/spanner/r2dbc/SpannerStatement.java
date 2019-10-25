@@ -86,12 +86,8 @@ public class SpannerStatement implements Statement {
   }
 
   @Override
-  public Statement bind(Object identifier, Object value) {
-    if (!(identifier instanceof String)) {
-      throw new IllegalArgumentException("Only String identifiers are supported");
-    }
-
-    this.statementBindings.createBind((String) identifier, value);
+  public Statement bind(String identifier, Object value) {
+    this.statementBindings.createBind(identifier, value);
     return this;
   }
 
@@ -101,7 +97,7 @@ public class SpannerStatement implements Statement {
   }
 
   @Override
-  public Statement bindNull(Object identifier, Class<?> type) {
+  public Statement bindNull(String identifier, Class<?> type) {
     return bind(identifier, new TypedNull(type));
   }
 

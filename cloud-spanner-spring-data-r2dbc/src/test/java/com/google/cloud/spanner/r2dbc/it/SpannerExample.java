@@ -39,7 +39,7 @@ import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
 import io.r2dbc.spi.Statement;
-import io.r2dbc.spi.test.Example;
+import io.r2dbc.spi.test.TestKit;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Arrays;
@@ -62,7 +62,7 @@ import reactor.test.StepVerifier;
 /**
  * Tests bringing in "TCK" Example.java from r2dbc-spi-test.
  */
-public class SpannerExample implements Example<String> {
+public class SpannerExample implements TestKit<String> {
 
   private static final ConnectionFactory connectionFactory =
       ConnectionFactories.get(ConnectionFactoryOptions.builder()
@@ -76,7 +76,7 @@ public class SpannerExample implements Example<String> {
       new ConnectionPool(ConnectionPoolConfiguration.builder(connectionFactory)
           .validationQuery("SELECT 1")
           .maxIdleTime(Duration.ofSeconds(10))
-          .maxSize(5)
+          .maxSize(15)
           .build());
 
   private static final Logger logger = LoggerFactory.getLogger(SpannerExample.class);
@@ -381,20 +381,20 @@ public class SpannerExample implements Example<String> {
         .flatMapMany(connection -> Mono.from(connection.beginTransaction())
             .<Object>thenMany(Flux.from(connection.createStatement("SELECT value FROM test")
                 .execute())
-                .flatMap(Example::extractColumns))
+                .flatMap(TestKit::extractColumns))
 
             // NOTE: this defer is a from() in the original. needs a follow up to resolve
             .concatWith(Flux.from(connection.createStatement(
                 String.format("INSERT INTO test (value) VALUES (%s)", getPlaceholder(0)))
                 .bind(getIdentifier(0), 200)
                 .execute())
-                .flatMap(Example::extractRowsUpdated))
+                .flatMap(TestKit::extractRowsUpdated))
             .concatWith(Flux.from(connection.createStatement("SELECT value FROM test")
                 .execute())
-                .flatMap(Example::extractColumns))
+                .flatMap(TestKit::extractColumns))
             .concatWith(Flux.from(connection.createStatement("SELECT value FROM test")
                 .execute())
-                .flatMap(Example::extractColumns))
+                .flatMap(TestKit::extractColumns))
             .concatWith(close(connection)))
         .as(StepVerifier::create)
         .expectNext(Collections.singletonList(100)).as("value from select 1")

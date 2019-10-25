@@ -65,9 +65,15 @@ public class SpannerRowMetadata implements RowMetadata {
   }
 
   @Override
-  public ColumnMetadata getColumnMetadata(Object identifier) {
-    int columnIndex = getColumnIndex(identifier);
-    return this.columnMetadatas.get(columnIndex);
+  public ColumnMetadata getColumnMetadata(int index) {
+    return this.columnMetadatas.get(index);
+  }
+
+  @Override
+  public ColumnMetadata getColumnMetadata(String identifier) {
+    int index = getColumnIndexByName(identifier);
+    // TODO: index validation
+    return this.columnMetadatas.get(index);
   }
 
   @Override
@@ -80,22 +86,7 @@ public class SpannerRowMetadata implements RowMetadata {
     return this.columnNames;
   }
 
-  /**
-   * Returns the column index of the value in a row for the given {@code identifier}.
-   */
-  int getColumnIndex(Object identifier) {
-    if (identifier instanceof Integer) {
-      return (Integer) identifier;
-    } else if (identifier instanceof String) {
-      return getColumnIndexByName((String) identifier);
-    } else {
-      throw new IllegalArgumentException(
-          String.format("Identifier '%s' is not a valid identifier. "
-              + "Should either be an Integer index or a String column name.", identifier));
-    }
-  }
-
-  private int getColumnIndexByName(String name) {
+  protected int getColumnIndexByName(String name) {
     if (!this.columnNameIndex.containsKey(name)) {
       throw new IllegalArgumentException(
           "The column name " + name + " does not exist for the Spanner row. "

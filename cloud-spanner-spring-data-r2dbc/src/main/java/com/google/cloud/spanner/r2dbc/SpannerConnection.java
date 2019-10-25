@@ -24,7 +24,9 @@ import com.google.spanner.v1.TransactionOptions;
 import com.google.spanner.v1.TransactionOptions.ReadWrite;
 import io.r2dbc.spi.Batch;
 import io.r2dbc.spi.Connection;
+import io.r2dbc.spi.ConnectionMetadata;
 import io.r2dbc.spi.IsolationLevel;
+import io.r2dbc.spi.ValidationDepth;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
@@ -157,7 +159,15 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
 
   @Override
   public Publisher<Void> setTransactionIsolationLevel(IsolationLevel isolationLevel) {
-    return null;
+    return Mono.error(
+        new UnsupportedOperationException("Changing isolation level is not supported."));
+  }
+
+  @Override
+  public IsolationLevel getTransactionIsolationLevel() {
+    // This is an approximation.
+    // Cloud Spanner's isolation guarantees are stronger than traditional RDBMS.
+    return IsolationLevel.SERIALIZABLE;
   }
 
   @Override
@@ -194,4 +204,28 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
     this.transactionOptions = transactionOptions;
   }
 
+  @Override
+  public Publisher<Boolean> validate(ValidationDepth validationDepth) {
+    // TODO: https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/issues/162
+    return Mono.just(true);
+  }
+
+
+  @Override
+  public Publisher<Void> setAutoCommit(boolean b) {
+    // TODO: https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/issues/165
+    throw new RuntimeException("Turning off autocommit is not supported yet.");
+  }
+
+  @Override
+  public boolean isAutoCommit() {
+    // TODO: https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/issues/165
+    return true;
+  }
+
+  @Override
+  public ConnectionMetadata getMetadata() {
+    // TODO: https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/issues/163
+    return null;
+  }
 }
