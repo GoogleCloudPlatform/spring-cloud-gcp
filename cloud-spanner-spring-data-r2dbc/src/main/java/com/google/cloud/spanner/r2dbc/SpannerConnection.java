@@ -58,6 +58,8 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
 
   private final SpannerConnectionConfiguration config;
 
+  private boolean autoCommit = true;
+
   /**
    * Instantiates a Spanner session with given configuration.
    * @param client client controlling low-level Spanner operations.
@@ -83,7 +85,10 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
    */
   public Mono<Void> beginTransaction(TransactionOptions transactionOptions) {
     return this.client.beginTransaction(this.getSessionName(), transactionOptions)
-        .doOnNext(transaction -> this.setTransaction(transaction, transactionOptions))
+        .doOnNext(transaction -> {
+          this.setTransaction(transaction, transactionOptions);
+          this.autoCommit = false;
+        })
         .then();
   }
 
@@ -211,16 +216,41 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
   }
 
 
+  /**
+   * Changes the autocommit mode of the current connection. No-op if the value is unchanged.
+   *
+   * <p>If autocommit was previously off and a read/write transaction is in progress, the
+   * transaction is committed first.
+   *
+   * @param newAutoCommit whether autocommit should be on or off in the future.
+   * @return {@link Mono} of the transaction commit operation, if applicable; empty mono otherwise.
+   */
   @Override
-  public Publisher<Void> setAutoCommit(boolean b) {
-    // TODO: https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/issues/165
-    throw new RuntimeException("Turning off autocommit is not supported yet.");
+  public Publisher<Void> setAutoCommit(boolean newAutoCommit) {
+    return Mono.defer(
+        () -> {
+          boolean commitNeeded = newAutoCommit && !this.autoCommit && this.transaction != null;
+          return (commitNeeded ? this.commitTransaction(false) : Mono.<Void>empty())
+              .doOnSuccess(none -> {
+                this.autoCommit = newAutoCommit;
+              });
+        });
   }
 
+  /**
+   * Determines current autocommit state of the connection (default is autocommit-on).
+   * Autocommit applies to DML queries only.
+   *
+   * <p>When autocommit is on, each standalone DML query will be executed in its own Read/Write
+   * transaction.
+   *
+   * <p>For batching multiple DML queries, see {@link #createBatch()}.
+   *
+   * @return whether autocommit mode is on.
+   */
   @Override
   public boolean isAutoCommit() {
-    // TODO: https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/issues/165
-    return true;
+    return this.autoCommit;
   }
 
   @Override

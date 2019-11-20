@@ -24,6 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.spanner.r2dbc.client.Client;
@@ -282,6 +283,85 @@ public class SpannerConnectionTest {
       }
       prevNum = num;
     }
+  }
+
+  @Test
+  public void autocommitOnByDefault() {
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
+    assertThat(connection.isAutoCommit()).isTrue();
+  }
+
+  @Test
+  public void turningAutocommitOnIsNoopWhenAlreadyOn() {
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
+    StepVerifier.create(connection.setAutoCommit(true))
+        .verifyComplete();
+    assertThat(connection.isAutoCommit()).isTrue();
+    verifyZeroInteractions(this.mockClient);
+  }
+
+  @Test
+  public void turningAutocommitOffIsNoopWhenAlreadyOff() {
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
+    StepVerifier.create(
+        Mono.from(connection.setAutoCommit(false))
+            .then(Mono.from(connection.setAutoCommit(false)))
+    ).verifyComplete();
+
+    assertThat(connection.isAutoCommit()).isFalse();
+    verifyZeroInteractions(this.mockClient);
+  }
+
+
+  @Test
+  public void turningAutocommitOffWorksLocally() {
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
+    StepVerifier.create(connection.setAutoCommit(false))
+        .verifyComplete();
+    assertThat(connection.isAutoCommit()).isFalse();
+    verifyZeroInteractions(this.mockClient);
+  }
+
+  @Test
+  public void startingTransactionTurnsOffAutocommit() {
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
+    StepVerifier.create(
+        Mono.from(connection.beginTransaction())
+    ).verifyComplete();
+
+    verify(this.mockClient).beginTransaction(eq(TEST_SESSION_NAME), any());
+    assertThat(connection.isAutoCommit()).isFalse();
+  }
+
+  @Test
+  public void turningAutocommitOnCommitsExistingTransaction() {
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
+    StepVerifier.create(
+        Mono.from(connection.setAutoCommit(false))
+            .then(connection.beginTransaction())
+            .then(Mono.from(connection.setAutoCommit(true)))
+    ).verifyComplete();
+
+    verify(this.mockClient).beginTransaction(eq(TEST_SESSION_NAME), any());
+    verify(this.mockClient).commitTransaction(eq(TEST_SESSION_NAME), any());
+    assertThat(connection.isAutoCommit()).isTrue();
+  }
+
+  @Test
+  public void turningAutocommitOnDoesNotAffectNonReadwriteTransaction() {
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
+    TransactionOptions readonlyTransaction = TransactionOptions.newBuilder()
+        .setReadOnly(ReadOnly.getDefaultInstance()).build();
+
+    StepVerifier.create(
+        Mono.from(connection.setAutoCommit(false))
+            .then(connection.beginTransaction(readonlyTransaction))
+            .then(Mono.from(connection.setAutoCommit(true)))
+    ).verifyComplete();
+
+    verify(this.mockClient).beginTransaction(TEST_SESSION_NAME, readonlyTransaction);
+    verify(this.mockClient, times(0)).commitTransaction(eq(TEST_SESSION_NAME), any());
+    assertThat(connection.isAutoCommit()).isTrue();
   }
 
   private PartialResultSet makeBookPrs(String bookName) {
