@@ -182,6 +182,30 @@ public class GrpcClientTest {
         (String) userAgentField.get(deletegateField.get(channel))));
   }
 
+  @Test
+  public void testHealthcheck() throws IOException {
+    String sql = "SELECT 1";
+    SpannerImplBase spannerSpy = doTest(new SpannerImplBase() {
+      @Override
+      public void executeSql(ExecuteSqlRequest request,
+          StreamObserver<ResultSet> responseObserver) {
+        responseObserver.onNext(ResultSet.newBuilder().build());
+        responseObserver.onCompleted();
+      }
+      },
+        // call the method under test
+        grpcClient -> grpcClient.healthcheck(this.mockContext).block());
+
+    // verify the service was called correctly
+    ArgumentCaptor<ExecuteSqlRequest> requestCaptor = ArgumentCaptor
+        .forClass(ExecuteSqlRequest.class);
+    verify(spannerSpy).executeSql(requestCaptor.capture(), any());
+    assertEquals(sql, requestCaptor.getValue().getSql());
+    assertEquals(SESSION_NAME, requestCaptor.getValue().getSession());
+    assertEquals(ByteString.EMPTY, requestCaptor.getValue().getTransaction().getId());
+
+  }
+
   /**
    * Starts and shuts down an in-process gRPC service based on the {@code serviceImpl} provided,
    * while allowing a test to execute using the {@link GrpcClient}.

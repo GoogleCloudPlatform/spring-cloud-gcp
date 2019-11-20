@@ -48,7 +48,7 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
 
   private final Client client;
 
-  private final Session session;
+  private Session session;
 
   private Transaction transaction;
 
@@ -134,7 +134,10 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
 
   @Override
   public Mono<Void> close() {
-    return commitTransaction(false).then(this.client.deleteSession(this.getSessionName()));
+    return commitTransaction(false)
+        .then(this.client.deleteSession(this.getSessionName()).doOnSuccess(none -> {
+          this.session = null;
+        }));
   }
 
   @Override
@@ -211,8 +214,11 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
 
   @Override
   public Publisher<Boolean> validate(ValidationDepth validationDepth) {
-    // TODO: https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/issues/162
-    return Mono.just(true);
+    if (validationDepth == ValidationDepth.LOCAL) {
+      return Mono.fromSupplier(() -> this.getSessionName() != null);
+    }
+
+    return this.client.healthcheck(this);
   }
 
 

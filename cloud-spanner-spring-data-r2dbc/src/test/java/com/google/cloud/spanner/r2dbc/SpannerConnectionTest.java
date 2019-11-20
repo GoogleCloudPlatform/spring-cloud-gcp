@@ -45,6 +45,7 @@ import com.google.spanner.v1.TransactionOptions.ReadWrite;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 import io.r2dbc.spi.Statement;
+import io.r2dbc.spi.ValidationDepth;
 import java.util.Collections;
 import java.util.Map;
 import org.junit.Before;
@@ -312,7 +313,6 @@ public class SpannerConnectionTest {
     verifyZeroInteractions(this.mockClient);
   }
 
-
   @Test
   public void turningAutocommitOffWorksLocally() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
@@ -350,18 +350,54 @@ public class SpannerConnectionTest {
   @Test
   public void turningAutocommitOnDoesNotAffectNonReadwriteTransaction() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
-    TransactionOptions readonlyTransaction = TransactionOptions.newBuilder()
-        .setReadOnly(ReadOnly.getDefaultInstance()).build();
+    TransactionOptions readonlyTransaction =
+        TransactionOptions.newBuilder().setReadOnly(ReadOnly.getDefaultInstance()).build();
 
     StepVerifier.create(
-        Mono.from(connection.setAutoCommit(false))
-            .then(connection.beginTransaction(readonlyTransaction))
-            .then(Mono.from(connection.setAutoCommit(true)))
-    ).verifyComplete();
+            Mono.from(connection.setAutoCommit(false))
+                .then(connection.beginTransaction(readonlyTransaction))
+                .then(Mono.from(connection.setAutoCommit(true))))
+        .verifyComplete();
 
     verify(this.mockClient).beginTransaction(TEST_SESSION_NAME, readonlyTransaction);
     verify(this.mockClient, times(0)).commitTransaction(eq(TEST_SESSION_NAME), any());
     assertThat(connection.isAutoCommit()).isTrue();
+  }
+
+  @Test
+  public void localValidatePassesOnNewConnection() {
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
+    StepVerifier.create(connection.validate(ValidationDepth.LOCAL))
+        .expectNext(true)
+        .verifyComplete();
+    verifyZeroInteractions(this.mockClient);
+  }
+
+  @Test
+  public void localValidateFailsOnClosedConnection() {
+    when(this.mockClient.commitTransaction(any(), any()))
+        .thenReturn(Mono.just(CommitResponse.getDefaultInstance()));
+    when(this.mockClient.deleteSession(any())).thenReturn(Mono.empty());
+
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
+
+    StepVerifier.create(
+        connection.close()
+            .then(Mono.from(connection.validate(ValidationDepth.LOCAL))))
+        .expectNext(false)
+        .verifyComplete();
+    verify(this.mockClient, times(0)).healthcheck(any());
+  }
+
+  @Test
+  public void remoteValidateCallsServerHealthcheck() {
+    when(this.mockClient.healthcheck(any())).thenReturn(Mono.just(true));
+
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
+    StepVerifier.create(connection.validate(ValidationDepth.REMOTE))
+        .expectNext(true)
+        .verifyComplete();
+    verify(this.mockClient).healthcheck(connection);
   }
 
   private PartialResultSet makeBookPrs(String bookName) {

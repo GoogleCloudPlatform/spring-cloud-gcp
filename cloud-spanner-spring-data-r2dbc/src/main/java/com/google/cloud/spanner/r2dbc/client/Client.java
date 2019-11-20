@@ -141,4 +141,10 @@ public interface Client {
    * @return a {@link Mono} that indicates that a client has been closed
    */
   Mono<Void> close();
+
+  /**
+   * Validates session associated with the passed in {@link StatementExecutionContext}.
+   * @return {@link Mono} of whether the connection is working.
+   */
+  Mono<Boolean> healthcheck(StatementExecutionContext ctx);
 }

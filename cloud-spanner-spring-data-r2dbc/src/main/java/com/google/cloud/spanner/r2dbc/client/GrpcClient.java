@@ -40,6 +40,7 @@ import com.google.spanner.v1.ExecuteBatchDmlRequest;
 import com.google.spanner.v1.ExecuteBatchDmlRequest.Statement;
 import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import com.google.spanner.v1.ExecuteSqlRequest;
+import com.google.spanner.v1.ExecuteSqlRequest.Builder;
 import com.google.spanner.v1.PartialResultSet;
 import com.google.spanner.v1.ResultSet;
 import com.google.spanner.v1.RollbackRequest;
@@ -61,6 +62,8 @@ import io.r2dbc.spi.R2dbcNonTransientResourceException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -81,12 +84,17 @@ public class GrpcClient implements Client {
 
   private static final String USER_AGENT_LIBRARY_NAME = "cloud-spanner-r2dbc";
 
+  private static final String HEALTHCHECK_SQL = "SELECT 1";
+
   private static final int PORT = 443;
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(GrpcClient.class);
 
   private final ManagedChannel channel;
   private final SpannerStub spanner;
   private final DatabaseAdminStub databaseAdmin;
   private final OperationsStub operations;
+
 
   /**
    * Initializes the Cloud Spanner gRPC async stub.
@@ -260,10 +268,7 @@ public class GrpcClient implements Client {
     return Flux.defer(() -> {
       Assert.requireNonNull(ctx.getSessionName(), "Session name must not be null");
 
-      ExecuteSqlRequest.Builder executeSqlRequest =
-          ExecuteSqlRequest.newBuilder()
-              .setSql(sql)
-              .setSession(ctx.getSessionName());
+      ExecuteSqlRequest.Builder executeSqlRequest = buildSqlRequest(ctx, sql);
 
       if (params != null) {
         executeSqlRequest
@@ -329,6 +334,30 @@ public class GrpcClient implements Client {
         this.channel.shutdownNow();
       }
     });
+  }
+
+  @Override
+  public Mono<Boolean> healthcheck(StatementExecutionContext ctx) {
+    return Mono.defer(() -> {
+      if (ctx.getSessionName() == null) {
+        return Mono.just(false);
+      }
+
+      return ObservableReactiveUtil.<ResultSet>unaryCall(
+          obs -> this.spanner.executeSql(buildSqlRequest(ctx, HEALTHCHECK_SQL).build(), obs)
+      )
+          .map(rs -> Boolean.TRUE)
+          .onErrorResume(error -> {
+            this.LOGGER.warn("Cloud Spanner healthcheck failed", error);
+            return Mono.just(Boolean.FALSE);
+          });
+    });
+  }
+
+  private Builder buildSqlRequest(StatementExecutionContext ctx, String sql) {
+    return ExecuteSqlRequest.newBuilder()
+        .setSql(sql)
+        .setSession(ctx.getSessionName());
   }
 
   @VisibleForTesting
