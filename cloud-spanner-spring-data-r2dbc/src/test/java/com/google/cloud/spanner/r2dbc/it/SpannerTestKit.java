@@ -36,6 +36,7 @@ import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
+import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
 import io.r2dbc.spi.test.TestKit;
 import java.nio.charset.StandardCharsets;
@@ -57,9 +58,9 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 /**
- * Tests bringing in "TCK" Example.java from r2dbc-spi-test.
+ * R2DBC TCK test implementation.
  */
-public class SpannerExample implements TestKit<String> {
+public class SpannerTestKit implements TestKit<String> {
 
   private static final ConnectionFactory connectionFactory =
       ConnectionFactories.get(ConnectionFactoryOptions.builder()
@@ -69,7 +70,7 @@ public class SpannerExample implements TestKit<String> {
           .option(DATABASE, TEST_DATABASE)
           .build());
 
-  private static final Logger logger = LoggerFactory.getLogger(SpannerExample.class);
+  private static final Logger logger = LoggerFactory.getLogger(SpannerTestKit.class);
 
   private static final JdbcOperations jdbcOperations;
 
@@ -432,4 +433,48 @@ public class SpannerExample implements TestKit<String> {
         .expectNextCount(1).as("rows inserted")
         .verifyComplete();
   }
+
+  @Override
+  @Test
+  public void changeAutoCommitCommitsTransaction() {
+    Mono.from(getConnectionFactory().create())
+        .flatMapMany(connection ->
+            Flux.from(connection.setAutoCommit(false))
+                .thenMany(connection.beginTransaction())
+                // DML syntax fix adding column list
+                .thenMany(connection.createStatement(
+                    "INSERT INTO test (value) VALUES(200)").execute())
+                .flatMap(Result::getRowsUpdated)
+                .thenMany(connection.setAutoCommit(true))
+                .thenMany(connection.createStatement("SELECT value FROM test").execute())
+                .flatMap(it -> it.map((row, metadata) -> row.get("value")))
+                .concatWith(close(connection))
+        )
+        .as(StepVerifier::create)
+        // Cloud Spanner only has a 64 bit "integer"
+        .expectNext(200L)
+        .as("autoCommit(true) committed the transaction. Expecting a value to be present")
+        .verifyComplete();
+  }
+
+  @Override
+  @Test
+  public void sameAutoCommitLeavesTransactionUnchanged() {
+    Mono.from(getConnectionFactory().create())
+        .flatMapMany(connection ->
+            Flux.from(connection.setAutoCommit(false))
+                .thenMany(connection.beginTransaction())
+                .thenMany(connection.createStatement(
+                    "INSERT INTO test (value) VALUES(200)").execute())
+                .flatMap(Result::getRowsUpdated)
+                .thenMany(connection.setAutoCommit(false))
+                .thenMany(connection.rollbackTransaction())
+                .thenMany(connection.createStatement("SELECT value FROM test").execute())
+                .flatMap(it -> it.map((row, metadata) -> row.get("value")))
+                .concatWith(close(connection))
+        )
+        .as(StepVerifier::create)
+        .verifyComplete();
+  }
+
 }
