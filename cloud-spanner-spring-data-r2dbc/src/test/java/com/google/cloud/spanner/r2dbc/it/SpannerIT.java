@@ -312,48 +312,43 @@ public class SpannerIT {
     // Note that there is NO call to beginTransaction or commitTransaction.
     StepVerifier.create(
         Mono.from(this.connectionFactory.create())
-            .delayUntil(c ->
-                Mono.fromRunnable(() ->
-                    StepVerifier.create(Flux.from(c.createStatement(
-                        "INSERT BOOKS "
-                            + "(UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
-                            + "PUBLISHED, WORDS_PER_SENTENCE)"
-                            + " VALUES "
-                            + "(@uuid, @title, @author, @category, @fiction, @published, @wps);")
-                        .bind("uuid", "1")
-                        .bind("author", "a")
-                        .bind("category", 100L)
-                        .bind("title", "b1")
-                        .bind("fiction", true)
-                        .bind("published", LocalDate.of(2008, 5, 1))
-                        .bind("wps", 20.8)
-                        .add()
-                        .bind("uuid", "2")
-                        .bind("author", "b")
-                        .bind("category", 100L)
-                        .bind("title", "b2")
-                        .bind("fiction", false)
-                        .bind("published", LocalDate.of(2018, 1, 6))
-                        .bind("wps", 15.1)
-                        .add()
-                        .bind("uuid", "3")
-                        .bind("author", "c")
-                        .bind("category", 100L)
-                        .bind("title", "b3")
-                        .bind("fiction", false)
-                        .bind("published", LocalDate.of(2016, 1, 6))
-                        .bind("wps", 15.22)
-                        .execute())
-                        .flatMapSequential(r -> Mono.from(r.getRowsUpdated())))
-                        .expectNext(1).expectNext(1).expectNext(1).verifyComplete())
-            )
-            .doOnSuccess(avoid -> {
-              long retrieved = executeReadQuery(
-                  connectionFactory,
-                  "Select count(1) as count FROM books",
-                  (row, rowMetadata) -> row.get("count", Long.class)).get(0);
-              assertThat(retrieved).isEqualTo(3);
-            })).consumeNextWith(connection -> {}).verifyComplete();
+            .flatMapMany(c -> c.createStatement(
+                "INSERT BOOKS "
+                    + "(UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
+                    + "PUBLISHED, WORDS_PER_SENTENCE)"
+                    + " VALUES "
+                    + "(@uuid, @title, @author, @category, @fiction, @published, @wps);")
+                .bind("uuid", "1")
+                .bind("author", "a")
+                .bind("category", 100L)
+                .bind("title", "b1")
+                .bind("fiction", true)
+                .bind("published", LocalDate.of(2008, 5, 1))
+                .bind("wps", 20.8)
+                .add()
+                .bind("uuid", "2")
+                .bind("author", "b")
+                .bind("category", 100L)
+                .bind("title", "b2")
+                .bind("fiction", false)
+                .bind("published", LocalDate.of(2018, 1, 6))
+                .bind("wps", 15.1)
+                .add()
+                .bind("uuid", "3")
+                .bind("author", "c")
+                .bind("category", 100L)
+                .bind("title", "b3")
+                .bind("fiction", false)
+                .bind("published", LocalDate.of(2016, 1, 6))
+                .bind("wps", 15.22).execute())
+            .flatMapSequential(r -> Mono.from(r.getRowsUpdated()))
+    ).expectNext(1, 1, 1)
+        .verifyComplete();
+
+    long retrieved = executeReadQuery(connectionFactory,
+        "Select count(1) as count FROM books",
+        (row, rowMetadata) -> row.get("count", Long.class)).get(0);
+    assertThat(retrieved).isEqualTo(3);
   }
 
   @Test
@@ -364,11 +359,11 @@ public class SpannerIT {
         (row, rowMetadata) -> row.get("count", Long.class)).get(0);
     assertThat(count).isEqualTo(0);
 
-    Mono.from(this.connectionFactory.create())
-        .delayUntil(c -> c.beginTransaction())
-        .delayUntil(c ->
-            Mono.fromRunnable(() ->
-                StepVerifier.create(Flux.from(c.createStatement(
+    StepVerifier.create(
+        Mono.from(this.connectionFactory.create())
+            .flatMapMany(c -> Flux.concat(
+                c.beginTransaction(),
+                Flux.from(c.createStatement(
                     "INSERT BOOKS "
                         + "(UUID, TITLE, AUTHOR, CATEGORY, FICTION, PUBLISHED, WORDS_PER_SENTENCE)"
                         + " VALUES "
@@ -388,47 +383,38 @@ public class SpannerIT {
                     .bind("fiction", false)
                     .bind("published", LocalDate.of(2018, 1, 6))
                     .bind("wps", 15.1)
-                    .execute())
-                    .flatMapSequential(r -> Mono.from(r.getRowsUpdated())))
-                    .expectNext(1).expectNext(1).verifyComplete())
-        )
-        .delayUntil(c -> c.commitTransaction())
-        .block();
+                    .execute()).flatMapSequential(r -> Mono.from(r.getRowsUpdated())),
+                c.commitTransaction()))
+    ).expectNext(1).expectNext(1).verifyComplete();
 
-    Mono.from(this.connectionFactory.create())
-        .delayUntil(c -> c.beginTransaction())
-        .delayUntil(c ->
-            Mono.fromRunnable(() ->
-                StepVerifier
-                    .create(Flux.from(c.createStatement(
+    StepVerifier.create(Mono.from(this.connectionFactory.create())
+        .flatMapMany(c -> Flux.concat(
+            c.beginTransaction(),
+            Flux.from(c.createStatement(
                         "UPDATE BOOKS SET CATEGORY = @new_cat WHERE CATEGORY = @old_cat")
                         .bind("new_cat", 101L)
                         .bind("old_cat", 100L)
-                        .execute())
-                        .flatMap(r -> Mono.from(r.getRowsUpdated())))
-                    .expectNext(2).verifyComplete())
-        )
-        .delayUntil(c -> c.commitTransaction())
-        .block();
+                        .execute()
+            ).flatMap(r -> Mono.from(r.getRowsUpdated())),
+            c.commitTransaction())))
+        .expectNext(2)
+        .verifyComplete();
 
-    Mono.from(this.connectionFactory.create())
-        .delayUntil(c -> c.beginTransaction())
-        .delayUntil(c ->
-            Mono.fromRunnable(() ->
-                StepVerifier
-                    .create(Flux.from(c.createBatch()
+    StepVerifier.create(Mono.from(this.connectionFactory.create())
+        .flatMapMany(c -> Flux.concat(
+            c.beginTransaction(),
+            Flux.from(c.createBatch()
                         .add("UPDATE BOOKS SET CATEGORY = 102 WHERE CATEGORY = 101")
                         .add("UPDATE BOOKS SET CATEGORY = 202 WHERE CATEGORY = 201")
                         .add("UPDATE BOOKS SET CATEGORY = 302 WHERE CATEGORY = 301")
                         .execute())
-                        .flatMap(r -> r.getRowsUpdated()))
-                    .expectNext(2)
-                    .expectNext(0)
-                    .expectNext(0)
-                    .verifyComplete())
-        )
-        .delayUntil(c -> c.commitTransaction())
-        .block();
+                        .flatMap(r -> r.getRowsUpdated()),
+            c.commitTransaction()))
+    )
+        .expectNext(2)
+        .expectNext(0)
+        .expectNext(0)
+        .verifyComplete();
 
     List<String> authorStrings = executeReadQuery(
         connectionFactory,
