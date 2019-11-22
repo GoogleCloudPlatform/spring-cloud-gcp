@@ -47,6 +47,7 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import org.junit.Ignore;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -72,9 +73,13 @@ public class SpannerTestKit implements TestKit<String> {
 
   private static final Logger logger = LoggerFactory.getLogger(SpannerTestKit.class);
 
-  private static final JdbcOperations jdbcOperations;
+  private static JdbcOperations jdbcOperations;
 
-  static {
+  private static DatabaseAdminClient dbAdminClient;
+
+  @BeforeAll
+  static void setUp() {
+
     // only execute() is needed.
     jdbcOperations = mock(JdbcOperations.class);
 
@@ -103,25 +108,37 @@ public class SpannerTestKit implements TestKit<String> {
 
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
+    dbAdminClient = spanner.getDatabaseAdminClient();
 
     DatabaseId id = DatabaseId.of(options.getProjectId(), TEST_INSTANCE, TEST_DATABASE);
-    DatabaseAdminClient dbAdminClient = spanner.getDatabaseAdminClient();
-    runDdl(id, dbAdminClient, "CREATE TABLE test ( value INT64 ) PRIMARY KEY (value)");
-    runDdl(id, dbAdminClient,
-        "CREATE TABLE test_two_column ( col1 INT64, col2 STRING(MAX) )  PRIMARY KEY (col1)");
-    runDdl(id, dbAdminClient, "CREATE TABLE blob_test ( value BYTES(MAX) )  PRIMARY KEY (value)");
-    runDdl(id, dbAdminClient, "CREATE TABLE clob_test ( value BYTES(MAX) )  PRIMARY KEY (value)");
+    createTableIfNeeded(id, "test", " ( value INT64 ) PRIMARY KEY (value)");
+    createTableIfNeeded(
+        id, "test_two_column", " ( col1 INT64, col2 STRING(MAX) )  PRIMARY KEY (col1)");
+    createTableIfNeeded(id, "blob_test", " ( value BYTES(MAX) )  PRIMARY KEY (value)");
+    createTableIfNeeded(id, "clob_test", " ( value BYTES(MAX) )  PRIMARY KEY (value)");
   }
 
-  private static void runDdl(DatabaseId id, DatabaseAdminClient dbAdminClient, String query) {
-    try {
-      dbAdminClient.updateDatabaseDdl(
-          id.getInstanceId().getInstance(),
-          id.getDatabase(),
-          Collections.singletonList(query),
-          null).get();
-    } catch (Exception e) {
-      if (!e.getMessage().contains("Duplicate name in schema")) {
+
+  private static void createTableIfNeeded(DatabaseId id, String tableName, String definition) {
+    Boolean tableExists = Mono.from(connectionFactory.create())
+        .flatMapMany(c -> c.createStatement(
+            "SELECT table_name FROM information_schema.tables WHERE table_name = @name")
+                .bind("name", tableName)
+                .execute())
+        .flatMap(result -> result.map((r, m) -> r))
+        .hasElements()
+        .block();
+
+    if (!tableExists) {
+      logger.info("Table " + tableName + " does not exist; creating");
+      try {
+        dbAdminClient.updateDatabaseDdl(
+                id.getInstanceId().getInstance(),
+                id.getDatabase(),
+                Collections.singletonList("CREATE TABLE " + tableName + definition),
+                null)
+            .get();
+      } catch (Exception e) {
         logger.info("Couldn't run DDL", e);
       }
     }
