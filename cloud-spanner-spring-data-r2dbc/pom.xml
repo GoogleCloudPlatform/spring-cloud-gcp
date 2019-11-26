@@ -83,17 +83,36 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+
     <r2dbc.version>0.8.0.RELEASE</r2dbc.version>
     <reactor.version>Dysprosium-RELEASE</reactor.version>
+
     <google-auth.version>0.18.0</google-auth.version>
+    <google-cloud-bom.version>2.9.0</google-cloud-bom.version>
+
     <mockito.version>3.1.0</mockito.version>
-    <grpc.version>1.25.0</grpc.version>
-    <grpc-spanner.version>1.46.0</grpc-spanner.version>
-    <grpc-common.version>1.17.0</grpc-common.version>
-    <google-cloud-core.version>1.91.3</google-cloud-core.version>
-    <google-cloud-spanner-client.version>1.46.0</google-cloud-spanner-client.version>
     <slf4j.version>1.7.26</slf4j.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>${google-cloud-bom.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>io.projectreactor</groupId>
+        <artifactId>reactor-bom</artifactId>
+        <version>${reactor.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
 
@@ -101,13 +120,6 @@
       <groupId>io.r2dbc</groupId>
       <artifactId>r2dbc-spi</artifactId>
       <version>${r2dbc.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.r2dbc</groupId>
-      <artifactId>r2dbc-spi-test</artifactId>
-      <version>${r2dbc.version}</version>
-      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -123,19 +135,16 @@
     <dependency>
       <groupId>com.google.api.grpc</groupId>
       <artifactId>grpc-google-common-protos</artifactId>
-      <version>${grpc-common.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.api.grpc</groupId>
       <artifactId>grpc-google-cloud-spanner-v1</artifactId>
-      <version>${grpc-spanner.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.api.grpc</groupId>
       <artifactId>grpc-google-cloud-spanner-admin-database-v1</artifactId>
-      <version>${grpc-spanner.version}</version>
     </dependency>
 
     <dependency>
@@ -162,6 +171,12 @@
 
     <!-- test dependencies -->
     <dependency>
+      <groupId>io.r2dbc</groupId>
+      <artifactId>r2dbc-spi-test</artifactId>
+      <version>${r2dbc.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <version>3.12.2</version>
@@ -187,57 +202,23 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.25</version>
+      <version>${slf4j.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
-      <version>${google-cloud-spanner-client.version}</version>
       <scope>test</scope>
     </dependency>
 
 
-    <!-- TODO: this is a test dependency for now. Should project ID discovery be part of the driver itself? -->
+    <!-- facilitate project ID discovery in integration tests -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-core</artifactId>
-      <version>${google-cloud-core.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.5</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.r2dbc</groupId>
-      <artifactId>r2dbc-pool</artifactId>
-      <version>0.8.0.BUILD-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.grpc</groupId>
-        <artifactId>grpc-bom</artifactId>
-        <version>${grpc.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>io.projectreactor</groupId>
-        <artifactId>reactor-bom</artifactId>
-        <version>${reactor.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <build>
     <pluginManagement>
