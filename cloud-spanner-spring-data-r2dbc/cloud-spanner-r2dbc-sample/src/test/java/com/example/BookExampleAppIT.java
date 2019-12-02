@@ -28,7 +28,7 @@ import org.junit.Test;
 /**
  * Tests the sample application.
  */
-public class BookExampleAppTest {
+public class BookExampleAppIT {
 
   public static final String TEST_INSTANCE = "reactivetest";
 
