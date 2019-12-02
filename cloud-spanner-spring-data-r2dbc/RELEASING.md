@@ -1,8 +1,13 @@
 # How to Release to Maven Central
 
+All scripts can be found in the `.kokoro` directory.
+
+
 ## Snapshots
 
-A commit to the `master` branch will automatically trigger the `prod:cloud-java-frameworks/cloud-spanner-r2dbc/continuous` job that will publish snapshots to Sonatype Snapshots repository. The scripts can be found in the `.kokoro` directory.
+A commit to the `master` branch will automatically trigger the `prod:cloud-java-frameworks/cloud-spanner-r2dbc/continuous` job that will publish snapshots to Sonatype Snapshots repository.
+The snapshot repository cannot be browsed, but you can go to the version directly to check publish timestamps, for example http://oss.sonatype.org/content/repositories/snapshots/com/google/cloud/cloud-spanner-r2dbc/0.1.0-SNAPSHOT/.
+
 
 ## Releases
 
