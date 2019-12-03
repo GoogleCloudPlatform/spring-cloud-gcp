@@ -20,8 +20,7 @@ install:
 
 script:
   - if [ "$TRAVIS_SECURE_ENV_VARS" == "true" ]; then
-      ./mvnw verify -B -V;
+      ./mvnw verify javadoc:jar@attach-javadocs -B -V;
     else
-      ./mvnw verify -B -V -DskipITs;
+      ./mvnw verify javadoc:jar@attach-javadocs -B -V -DskipITs;
     fi;
-  - ./mvnw clean javadoc:jar@attach-javadocs
