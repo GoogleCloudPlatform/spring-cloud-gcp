@@ -92,11 +92,10 @@
     <google-auth.version>0.18.0</google-auth.version>
 
     <mockito.version>3.1.0</mockito.version>
-    <slf4j.version>1.7.26</slf4j.version>
+    <slf4j.version>1.7.29</slf4j.version>
 
     <assertj.version>3.12.2</assertj.version>
     <junit.version>4.12</junit.version>
-
   </properties>
 
   <dependencyManagement>

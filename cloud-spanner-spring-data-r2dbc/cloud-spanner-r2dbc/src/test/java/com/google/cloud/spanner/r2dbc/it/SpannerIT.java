@@ -70,17 +70,13 @@ import reactor.test.StepVerifier;
  */
 public class SpannerIT {
 
-  public static final String TEST_INSTANCE = "reactivetest";
-
-  public static final String TEST_DATABASE = "testdb";
-
   private static final ConnectionFactory connectionFactory =
       ConnectionFactories.get(ConnectionFactoryOptions.builder()
           // TODO: consider whether to bring autodiscovery of project ID
           .option(Option.valueOf("project"), ServiceOptions.getDefaultProjectId())
           .option(DRIVER, DRIVER_NAME)
-          .option(INSTANCE, TEST_INSTANCE)
-          .option(DATABASE, TEST_DATABASE)
+          .option(INSTANCE, DatabaseProperties.INSTANCE)
+          .option(DATABASE, DatabaseProperties.DATABASE)
           .build());
 
   private SpannerStub spanner;
@@ -562,8 +558,8 @@ public class SpannerIT {
   }
 
   private List<String> getSessionNames() {
-    String databaseName =
-        DatabaseName.format(ServiceOptions.getDefaultProjectId(), TEST_INSTANCE, TEST_DATABASE);
+    String databaseName = DatabaseName.format(ServiceOptions.getDefaultProjectId(),
+        DatabaseProperties.INSTANCE, DatabaseProperties.DATABASE);
 
     ListSessionsRequest listSessionsRequest =
         ListSessionsRequest.newBuilder()

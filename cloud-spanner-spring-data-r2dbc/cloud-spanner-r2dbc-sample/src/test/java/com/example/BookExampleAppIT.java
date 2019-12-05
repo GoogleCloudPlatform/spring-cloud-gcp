@@ -30,9 +30,11 @@ import org.junit.Test;
  */
 public class BookExampleAppIT {
 
-  public static final String TEST_INSTANCE = "reactivetest";
+  private static final String TEST_INSTANCE =
+      System.getProperty("spanner.instance", "reactivetest");
 
-  public static final String TEST_DATABASE = "testdb";
+  private static final String TEST_DATABASE =
+      System.getProperty("spanner.database", "testdb");
 
   private static PrintStream systemOut;
 

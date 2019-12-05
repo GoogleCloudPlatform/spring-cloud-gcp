@@ -18,8 +18,6 @@ package com.google.cloud.spanner.r2dbc.it;
 
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.DRIVER_NAME;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.INSTANCE;
-import static com.google.cloud.spanner.r2dbc.it.SpannerIT.TEST_DATABASE;
-import static com.google.cloud.spanner.r2dbc.it.SpannerIT.TEST_INSTANCE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 import static org.mockito.ArgumentMatchers.any;
@@ -67,8 +65,8 @@ public class SpannerTestKit implements TestKit<String> {
       ConnectionFactories.get(ConnectionFactoryOptions.builder()
           .option(Option.valueOf("project"), ServiceOptions.getDefaultProjectId())
           .option(DRIVER, DRIVER_NAME)
-          .option(INSTANCE, TEST_INSTANCE)
-          .option(DATABASE, TEST_DATABASE)
+          .option(INSTANCE, DatabaseProperties.INSTANCE)
+          .option(DATABASE, DatabaseProperties.DATABASE)
           .build());
 
   private static final Logger logger = LoggerFactory.getLogger(SpannerTestKit.class);
@@ -110,7 +108,8 @@ public class SpannerTestKit implements TestKit<String> {
     Spanner spanner = options.getService();
     dbAdminClient = spanner.getDatabaseAdminClient();
 
-    DatabaseId id = DatabaseId.of(options.getProjectId(), TEST_INSTANCE, TEST_DATABASE);
+    DatabaseId id = DatabaseId.of(
+        options.getProjectId(), DatabaseProperties.INSTANCE, DatabaseProperties.DATABASE);
     createTableIfNeeded(id, "test", " ( value INT64 ) PRIMARY KEY (value)");
     createTableIfNeeded(
         id, "test_two_column", " ( col1 INT64, col2 STRING(MAX) )  PRIMARY KEY (col1)");

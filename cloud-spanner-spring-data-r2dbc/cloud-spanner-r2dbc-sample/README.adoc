@@ -12,14 +12,20 @@ Alternatively, have the https://cloud.google.com/sdk/[Google Cloud SDK] installe
 
 3. Enable the https://console.cloud.google.com/apis/api/spanner.googleapis.com/overview[Cloud Spanner API]
 
-4. Create a Cloud Spanner instance and database in your project and insert those details into the `SAMPLE_INSTANCE` and `SAMPLE_DATABASE` properties of `SampleApplication.java`.
-Insert the project ID into the `SAMPLE_PROJECT` property.
+4. Create a Cloud Spanner instance and database in your project.
 
 == Run the Example
-Run the example `main` method in `SampleApplication.java`.
+Run the example `main` method in `SampleApplication.java`, passing in three properties: `gcp.project`, `spanner.instance` and `spanner.database`.
 
-This example creates a table of `BOOKS`.
-It then opens a transaction and saves a `BOOKS` rows and reads them from the database after inserting.
+For example, to run from command line, you could run the following:
+
+----
+./mvnw clean install exec:java -DskipTests -f cloud-spanner-r2dbc-sample/ -Dgcp.project=[PROJECT_ID] -Dspanner.instance=[INSTANCE] -Dspanner.database=[DATABASE]
+----
+
+The example creates a table named `BOOKS`.
+It then opens a transaction and saves some `BOOKS` rows.
+Finally, the example reads the books back from the database.
 
 The application output will show the sequence of operations:
 

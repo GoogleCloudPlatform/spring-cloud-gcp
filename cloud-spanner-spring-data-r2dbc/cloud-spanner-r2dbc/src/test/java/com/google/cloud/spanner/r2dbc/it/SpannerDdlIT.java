@@ -23,7 +23,6 @@ import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.google.cloud.ServiceOptions;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
@@ -42,10 +41,7 @@ public class SpannerDdlIT {
   private static final ConnectionFactory connectionFactory =
       ConnectionFactories.get(ConnectionFactoryOptions.builder()
           .option(DRIVER, DRIVER_NAME)
-          .option(URL,
-              "r2dbc:spanner://spanner.googleapis.com:443/projects/"
-                  + ServiceOptions.getDefaultProjectId()
-                  + "/instances/reactivetest/databases/testdb")
+          .option(URL, DatabaseProperties.URL)
           .build());
 
   /**

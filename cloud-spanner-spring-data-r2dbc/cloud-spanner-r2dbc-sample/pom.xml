@@ -15,7 +15,8 @@
   <name>Google Cloud Spanner R2DBC Sample App</name>
 
   <properties>
-    <apache-commons.version>2.6</apache-commons.version>
+    <apache-commons-io.version>2.6</apache-commons-io.version>
+    <apache-commons-lang.version>3.9</apache-commons-lang.version>
   </properties>
 
   <dependencies>
@@ -24,6 +25,19 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>cloud-spanner-r2dbc</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${apache-commons-lang.version}</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -40,7 +54,7 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>${apache-commons.version}</version>
+      <version>${apache-commons-io.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -55,6 +69,7 @@
 
   <build>
     <plugins>
+
       <plugin>
         <artifactId>maven-deploy-plugin</artifactId>
         <configuration>
@@ -66,6 +81,16 @@
         <artifactId>nexus-staging-maven-plugin</artifactId>
         <configuration>
           <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <configuration>
+          <mainClass>com.example.SampleApplication</mainClass>
+          <cleanupDaemonThreads>false</cleanupDaemonThreads>
         </configuration>
       </plugin>
     </plugins>

@@ -92,7 +92,7 @@ public class SpannerConnectionFactoryProviderTest {
         ConnectionFactoryOptions.builder()
             .option(DRIVER, DRIVER_NAME)
             .option(URL, "r2dbc:spanner://spanner.googleapis.com:443/projects/"
-                + "myproject/instances/reactivetest/databases/testdb")
+                + "myproject/instances/myinstance/databases/mydatabase")
             .build();
 
     ConnectionFactory spannerConnectionFactory =
