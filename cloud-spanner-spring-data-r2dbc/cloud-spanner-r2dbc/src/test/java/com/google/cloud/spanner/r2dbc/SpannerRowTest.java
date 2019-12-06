@@ -29,7 +29,7 @@ import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link SpannerRow}.

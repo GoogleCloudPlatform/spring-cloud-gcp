@@ -22,8 +22,8 @@ import com.google.cloud.ServiceOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.apache.commons.io.output.TeeOutputStream;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the sample application.
@@ -43,7 +43,7 @@ public class BookExampleAppIT {
   /**
    * Saves output.
    */
-  @BeforeClass
+  @BeforeAll
   public static void checkToRun() {
     systemOut = System.out;
     baos = new ByteArrayOutputStream();

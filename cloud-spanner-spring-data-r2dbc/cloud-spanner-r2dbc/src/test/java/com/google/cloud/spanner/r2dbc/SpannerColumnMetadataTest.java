@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.spanner.v1.StructType.Field;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link SpannerColumnMetadata}.

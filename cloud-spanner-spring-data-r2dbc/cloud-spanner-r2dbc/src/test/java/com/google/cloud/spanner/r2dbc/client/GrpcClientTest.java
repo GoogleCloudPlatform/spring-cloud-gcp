@@ -16,8 +16,8 @@
 
 package com.google.cloud.spanner.r2dbc.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -50,8 +50,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import reactor.test.StepVerifier;
 
@@ -69,7 +69,7 @@ public class GrpcClientTest {
   /**
    * Sets up execution context mock.
    */
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mockContext = mock(StatementExecutionContext.class);
     when(this.mockContext.getSessionName()).thenReturn(SESSION_NAME);

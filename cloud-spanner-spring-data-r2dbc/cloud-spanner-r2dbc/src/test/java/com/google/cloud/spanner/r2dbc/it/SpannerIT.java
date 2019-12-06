@@ -55,10 +55,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
@@ -88,7 +88,7 @@ public class SpannerIT {
   /**
    * Setup the Spanner stub for testing.
    */
-  @Before
+  @BeforeEach
   public void setupStubs() throws IOException {
     this.grpcClient = new GrpcClient(GoogleCredentials.getApplicationDefault());
     this.spanner = this.grpcClient.getSpanner();
@@ -98,7 +98,7 @@ public class SpannerIT {
         "DELETE FROM books WHERE true");
   }
 
-  @After
+  @AfterEach
   public void shutdown() {
     this.grpcClient.close().block();
   }
@@ -106,7 +106,7 @@ public class SpannerIT {
   /**
    * Setup the Spanner table for testing.
    */
-  @BeforeClass
+  @BeforeAll
   public static void setupSpannerTable() throws InterruptedException, ExecutionException {
 
     SpannerConnection con =

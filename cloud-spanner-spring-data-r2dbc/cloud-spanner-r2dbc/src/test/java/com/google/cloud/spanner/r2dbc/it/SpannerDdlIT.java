@@ -28,8 +28,8 @@ import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.R2dbcNonTransientException;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
@@ -47,7 +47,7 @@ public class SpannerDdlIT {
   /**
    * Setup the testing environment for DDL integration tests.
    */
-  @Before
+  @BeforeEach
   public void setupEnvironment() {
     try {
       Mono.from(connectionFactory.create())

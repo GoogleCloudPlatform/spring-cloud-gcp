@@ -22,8 +22,8 @@ import static org.mockito.Mockito.when;
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.spanner.v1.Session;
 import java.io.IOException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -38,7 +38,7 @@ public class SpannerConnectionFactoryTest {
   /**
    * Sets up {@link SpannerConnectionConfiguration} for test.
    */
-  @Before
+  @BeforeEach
   public void setupConnectionConfiguration() throws IOException {
     this.config = new SpannerConnectionConfiguration.Builder()
         .setProjectId("a-project")

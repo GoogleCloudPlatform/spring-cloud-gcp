@@ -23,7 +23,7 @@ import io.grpc.StatusRuntimeException;
 import io.r2dbc.spi.R2dbcNonTransientException;
 import io.r2dbc.spi.R2dbcNonTransientResourceException;
 import io.r2dbc.spi.R2dbcTransientResourceException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;

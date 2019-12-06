@@ -17,7 +17,7 @@
 package com.google.cloud.spanner.r2dbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -48,8 +48,8 @@ import io.r2dbc.spi.Statement;
 import io.r2dbc.spi.ValidationDepth;
 import java.util.Collections;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -93,7 +93,7 @@ public class SpannerConnectionTest {
   /**
    * Initializes the mocks in the test.
    */
-  @Before
+  @BeforeEach
   public void setupMocks() {
     this.mockClient = mock(Client.class);
 

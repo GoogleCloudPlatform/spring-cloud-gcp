@@ -16,13 +16,13 @@
 
 package com.google.cloud.spanner.r2dbc.codecs;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.google.protobuf.Value;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 import java.math.BigDecimal;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link DefaultCodecs}.
@@ -31,24 +31,25 @@ public class DefaultCodecsNegativeTest {
 
   private Codecs codecs = new DefaultCodecs();
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
   @Test
   public void encodeException() {
-    this.exception.expect(IllegalArgumentException.class);
-    this.exception.expectMessage("Cannot encode parameter of type java.math.BigDecimal");
 
-    this.codecs.encode(BigDecimal.valueOf(100));
+    assertThrows(IllegalArgumentException.class,
+        () -> this.codecs.encode(BigDecimal.valueOf(100)),
+        "Cannot encode parameter of type java.math.BigDecimal");
   }
 
   @Test
   public void decodeException() {
-    this.exception.expect(IllegalArgumentException.class);
-    this.exception.expectMessage("Cannot decode value of type code: STRING\n"
-        + " to java.lang.Integer");
 
-    Value value = this.codecs.encode("abc");
-    this.codecs.decode(value, Type.newBuilder().setCode(TypeCode.STRING).build(), Integer.class);
+    assertThrows(IllegalArgumentException.class,
+        () -> {
+          Value value = this.codecs.encode("abc");
+          this.codecs.decode(
+              value, Type.newBuilder().setCode(TypeCode.STRING).build(), Integer.class);
+        },
+        "Cannot decode value of type code: STRING\n to java.lang.Integer"
+    );
+
   }
 }

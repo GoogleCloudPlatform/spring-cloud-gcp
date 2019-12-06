@@ -24,7 +24,7 @@ import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StatementBindingsTest {
 

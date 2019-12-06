@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import java.time.Duration;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
@@ -37,7 +37,7 @@ public class SpannerConnectionConfigurationTest {
   /**
    * Sets up mock credentials to avoid accessing filesystem to get default credentials.
    */
-  @Before
+  @BeforeEach
   public void setUpMockCredentials() {
     this.configurationBuilder = new SpannerConnectionConfiguration.Builder()
         .setCredentials(this.mockCredentials);

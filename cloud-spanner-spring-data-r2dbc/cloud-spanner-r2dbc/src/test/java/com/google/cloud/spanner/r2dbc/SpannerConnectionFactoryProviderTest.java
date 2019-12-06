@@ -26,8 +26,8 @@ import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -44,8 +44,8 @@ import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import reactor.test.publisher.TestPublisher;
@@ -71,7 +71,7 @@ public class SpannerConnectionFactoryProviderTest {
   /**
    * Initializes unit under test with a mock {@link Client}.
    */
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mockClient =  mock(Client.class);
     this.spannerConnectionFactoryProvider = new SpannerConnectionFactoryProvider();

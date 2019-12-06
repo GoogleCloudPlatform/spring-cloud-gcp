@@ -43,10 +43,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 import java.util.stream.IntStream;
-import org.junit.Ignore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -202,7 +202,7 @@ public class SpannerTestKit implements TestKit<String> {
     return jdbcOperations;
   }
 
-  @Ignore
+  @Disabled
   @Override
   @Test
   public void transactionRollback() {
@@ -215,7 +215,7 @@ public class SpannerTestKit implements TestKit<String> {
      */
   }
 
-  @Ignore
+  @Disabled
   @Override
   @Test
   public void bindFails() {
@@ -300,7 +300,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Ignore
+  @Disabled
   @Test
   public void returnGeneratedValues() {
     /*
@@ -309,7 +309,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Ignore
+  @Disabled
   @Test
   public void clobInsert() {
     /*
@@ -318,7 +318,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Ignore
+  @Disabled
   @Test
   public void blobInsert() {
     /*
@@ -327,7 +327,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Ignore
+  @Disabled
   @Test
   public void blobSelect() {
     /*
@@ -336,7 +336,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Ignore
+  @Disabled
   @Test
   public void clobSelect() {
     /*
@@ -345,7 +345,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Ignore
+  @Disabled
   @Test
   public void batch() {
     /*
@@ -354,7 +354,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Ignore
+  @Disabled
   @Test
   public void savePoint() {
     /*
@@ -363,7 +363,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Ignore
+  @Disabled
   @Test
   public void savePointStartsTransaction() {
     /*
@@ -372,7 +372,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Ignore
+  @Disabled
   @Test
   public void prepareStatementWithIncompleteBindingFails() {
     /*
@@ -381,7 +381,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Ignore
+  @Disabled
   @Test
   public void prepareStatementWithIncompleteBatchFails() {
     /*
@@ -423,7 +423,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Ignore
+  @Disabled
   @Test
   public void compoundStatement() {
     /*

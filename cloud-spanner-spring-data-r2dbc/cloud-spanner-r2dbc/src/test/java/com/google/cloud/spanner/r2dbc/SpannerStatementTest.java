@@ -47,8 +47,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -84,7 +84,7 @@ public class SpannerStatementTest {
   private SpannerConnection mockConnection = mock(SpannerConnection.class);
 
 
-  @Before
+  @BeforeEach
   public void setupMocks() {
     when(this.mockConnection.beginTransaction()).thenReturn(Mono.empty());
     when(this.mockConnection.commitTransaction()).thenReturn(Mono.empty());

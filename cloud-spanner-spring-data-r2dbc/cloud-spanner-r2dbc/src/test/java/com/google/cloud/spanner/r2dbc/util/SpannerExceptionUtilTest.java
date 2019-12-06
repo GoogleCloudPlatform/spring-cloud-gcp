@@ -32,7 +32,7 @@ import io.r2dbc.spi.R2dbcNonTransientResourceException;
 import io.r2dbc.spi.R2dbcPermissionDeniedException;
 import io.r2dbc.spi.R2dbcTransientResourceException;
 import java.io.IOException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SpannerExceptionUtilTest {
 

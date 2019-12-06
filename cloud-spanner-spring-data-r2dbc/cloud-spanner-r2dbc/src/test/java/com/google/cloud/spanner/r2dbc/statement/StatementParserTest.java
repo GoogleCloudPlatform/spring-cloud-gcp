@@ -18,7 +18,7 @@ package com.google.cloud.spanner.r2dbc.statement;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StatementParserTest {
 
