@@ -77,7 +77,7 @@ public class GrpcClient implements Client {
           .setReadWrite(ReadWrite.getDefaultInstance())
           .build();
 
-  private static final String HOST = "spanner.googleapis.com";
+  private static final String GRPC_TARGET = "dns:///spanner.googleapis.com:443";
 
   private static final String PACKAGE_VERSION =
       GrpcClient.class.getPackage().getImplementationVersion();
@@ -85,8 +85,6 @@ public class GrpcClient implements Client {
   private static final String USER_AGENT_LIBRARY_NAME = "cloud-spanner-r2dbc";
 
   private static final String HEALTHCHECK_SQL = "SELECT 1";
-
-  private static final int PORT = 443;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GrpcClient.class);
 
@@ -107,7 +105,7 @@ public class GrpcClient implements Client {
 
     // Create a channel
     this.channel = ManagedChannelBuilder
-        .forAddress(HOST, PORT)
+        .forTarget(GRPC_TARGET)
         .userAgent(USER_AGENT_LIBRARY_NAME + "/" + PACKAGE_VERSION)
         .build();
 
