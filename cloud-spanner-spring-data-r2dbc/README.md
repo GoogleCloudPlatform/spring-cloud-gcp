@@ -342,7 +342,7 @@ In order to support backpressure under these conditions, the driver provides a s
 `partial_result_set_fetch_size` which specifies how many PartialResultSet objects the driver
 requests from Spanner in it's first request to store in the buffer. This number is an upper
 bound that affects how it is replenished; when the client has consumed 25% of the PartialResultSets,
-it will request 25% upstream from Spanner. See the [prefetch documentation](https://projectreactor.io/docs/core/release/reference/#_operators_changing_the_demand_from_downstream)
+it will request 25% upstream from Spanner. See the [prefetch documentation](https://projectreactor.io/docs/core/release/reference/#_operators_that_change_the_demand_from_downstream)
 for more info.
 
 The default buffer size of `PartialResultSets` is 1 and this may be increased by setting
