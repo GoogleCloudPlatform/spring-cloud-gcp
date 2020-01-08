@@ -191,9 +191,7 @@ thrown when you attempt to run queries using the connection, and you will have t
 connection in order to reattempt the query.
 
 If you definitely need to keep an idle connection alive, for example, if a significant near-term
-increase in database use is expected, then you can prevent the connection from being dropped.
-Perform an inexpensive operation such as executing the SQL query `SELECT 1` to keep the
-connection alive.
+increase in database use is expected, you may keep a connection active by calling `validate(ValidationDepth.REMOTE)` on the `Connection` object and subscribing to the returned `Publisher`. Remote validation performs an inexpensive SQL query `SELECT 1` against the database. 
 
 ## Transactions
 
