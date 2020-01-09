@@ -8,11 +8,11 @@
 
   <parent>
     <groupId>com.google.cloud</groupId>
-    <artifactId>cloud-spanner-r2dbc-parent</artifactId>
+    <artifactId>cloud-spanner-r2dbc-samples</artifactId>
     <version>0.2.0-SNAPSHOT</version>
   </parent>
 
-  <name>Google Cloud Spanner R2DBC Sample App</name>
+  <name>Google Cloud Spanner R2DBC via direct SPI</name>
 
   <properties>
     <apache-commons-io.version>2.6</apache-commons-io.version>
@@ -57,34 +57,4 @@
 
   </dependencies>
 
-  <build>
-    <plugins>
-
-      <plugin>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <configuration>
-          <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
-        <configuration>
-          <mainClass>com.example.SampleApplication</mainClass>
-          <cleanupDaemonThreads>false</cleanupDaemonThreads>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
 </project>
-
