@@ -1,0 +1,2 @@
+org.springframework.data.r2dbc.dialect.DialectResolver$R2dbcDialectProvider=\
+com.google.cloud.spanner.r2dbc.springdata.SpannerR2dbcDialectProvider

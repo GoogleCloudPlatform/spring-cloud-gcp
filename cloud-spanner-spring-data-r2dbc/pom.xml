@@ -9,6 +9,7 @@
   <version>0.2.0-SNAPSHOT</version>
   <modules>
     <module>cloud-spanner-r2dbc-samples</module>
+    <module>cloud-spanner-spring-data-r2dbc</module>
   </modules>
 
   <name>Google Cloud Spanner R2DBC Parent Project</name>
