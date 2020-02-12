@@ -1,0 +1,15 @@
+# Cloud Spanner Spring Data R2DBC sample
+
+This sample creates a table called `BOOK` on application startup, and deletes it prior to application shutdown.
+
+## Running the Sample
+
+1. Run the sample from the command line, providing `spanner.instance`, `spanner.database` and `gcp.project` properties:
+
+```
+mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dspanner.instance=[SPANNER-INSTANCE] -Dspanner.database=[SPANNER-DATABASE] -Dgcp.project=GCP-PROJECT"
+```
+
+2. Visit http://localhost:8080/index.html
+
+3. Try the different actions available -- listing books, adding a new book, and searching for a book by its ID.

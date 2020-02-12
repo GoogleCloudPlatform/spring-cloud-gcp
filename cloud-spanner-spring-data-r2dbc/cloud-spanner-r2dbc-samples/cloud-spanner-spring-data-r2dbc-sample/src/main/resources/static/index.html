@@ -1,0 +1,102 @@
+<html>
+<head>
+  <title>Spring Data R2DBC for Cloud Spanner demo</title>
+  <script>
+
+    function appendOutput(extraText, books) {
+      const el = document.getElementById('result');
+      el.value += extraText;
+      if (books) {
+        for (let book of books) {
+          el.value += (book.title + "(" + book.id + ")\n");
+        }
+      }
+      el.value +=  "\n\n";
+    }
+
+    function listBooks() {
+
+      fetch('/list', {
+        method: 'GET',
+      }).then(response => response.json())
+      .then(books => books.length > 0 ? appendOutput("Book list:\n", books) : appendOutput("No books found."));
+
+      return false;
+    }
+
+    function addBook() {
+      const newTitle = document.getElementById('newBookTitle').value;
+      if (!newTitle) {
+        appendOutput("Please provide non-empty title");
+        return false;
+      }
+
+      fetch('/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: newTitle
+      }).then(response => {
+         if (response.ok) {
+           appendOutput("Added book.");
+         } else {
+           appendOutput("Failed to add book.");
+         }
+       });
+
+
+      return false;
+    }
+
+    function findBookById() {
+      const id = document.getElementById('bookId').value;
+      if (!id) {
+        appendOutput("Please provide non-empty id");
+        return false;
+      }
+
+      fetch('/search/' + id, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json'},
+      }).then(response => response.text())
+      .then(text => text.length ? appendOutput("Found book:", [JSON.parse(text)]) : appendOutput("Book not found"));
+
+
+      return false;
+    }
+
+  </script>
+
+  <style>
+    div.buttonLink {
+      margin-bottom: 1em;
+    }
+  </style>
+</head>
+
+
+<body>
+
+<div id="actions" style="padding-bottom: 3em;">
+
+  <div class="buttonLink">
+    <a href="/" onClick="return listBooks();">List Books</a>
+  </div>
+
+  <div class="buttonLink">
+  New Book Title: <input id="newBookTitle" name="newBookTitle"/> <a class="buttonLink" href="/" onClick="return addBook();">Add Book</a>
+  </div>
+
+  <div class="buttonLink">
+    Search for: <input id="bookId" name="bookId"/> <a class="buttonLink" href="/" onClick="return findBookById();">Find Books</a>
+  </div>
+</div>
+
+<label for="result" style="display:block">Command Output</label>
+<textarea id="result" disabled="true" style="background-color: #DDEEFF; width: 80em; height: 30em;">
+
+
+</textarea>
+
+
+</body>
+</html>

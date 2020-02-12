@@ -16,6 +16,7 @@
 
   <modules>
     <module>cloud-spanner-r2dbc-sample</module>
+    <module>cloud-spanner-spring-data-r2dbc-sample</module>
   </modules>
 
   <build>

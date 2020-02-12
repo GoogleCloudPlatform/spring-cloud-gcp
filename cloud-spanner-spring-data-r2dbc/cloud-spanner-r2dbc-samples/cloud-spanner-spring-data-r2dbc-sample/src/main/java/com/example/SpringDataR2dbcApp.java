@@ -1,0 +1,123 @@
+/*
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.example;
+
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.DRIVER_NAME;
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.INSTANCE;
+import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
+import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+
+import io.r2dbc.spi.ConnectionFactories;
+import io.r2dbc.spi.ConnectionFactory;
+import io.r2dbc.spi.ConnectionFactoryOptions;
+import io.r2dbc.spi.Option;
+import java.net.URI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.data.r2dbc.core.DatabaseClient;
+import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
+import org.springframework.util.Assert;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.ServerResponse;
+
+/**
+ * Driver application showing Cloud Spanner R2DBC use with Spring Data.
+ */
+@SpringBootApplication
+@EnableR2dbcRepositories
+public class SpringDataR2dbcApp {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(SpringDataR2dbcApp.class);
+
+  private static final String SPANNER_INSTANCE = System.getProperty("spanner.instance");
+
+  private static final String SPANNER_DATABASE = System.getProperty("spanner.database");
+
+  private static final String GCP_PROJECT = System.getProperty("gcp.project");
+
+  @Autowired
+  private DatabaseClient r2dbcClient;
+
+  public static void main(String[] args) {
+    Assert.notNull(INSTANCE, "Please provide spanner.instance property");
+    Assert.notNull(DATABASE, "Please provide spanner.database property");
+    Assert.notNull(GCP_PROJECT, "Please provide gcp.project property");
+
+    SpringApplication.run(SpringDataR2dbcApp.class, args);
+  }
+
+
+  @Bean
+  public static ConnectionFactory spannerConnectionFactory() {
+    ConnectionFactory connectionFactory = ConnectionFactories.get(ConnectionFactoryOptions.builder()
+        .option(Option.valueOf("project"), GCP_PROJECT)
+        .option(DRIVER, DRIVER_NAME)
+        .option(INSTANCE, SPANNER_INSTANCE)
+        .option(DATABASE, SPANNER_DATABASE)
+        .build());
+
+    return connectionFactory;
+  }
+
+  @EventListener(ApplicationReadyEvent.class)
+  public void setUpData() {
+    LOGGER.info("Setting up test table BOOK...");
+    try {
+      r2dbcClient.execute("CREATE TABLE BOOK ("
+          + "  ID STRING(36) NOT NULL,"
+          + "  TITLE STRING(MAX) NOT NULL"
+          + ") PRIMARY KEY (ID)")
+          .fetch().rowsUpdated().block();
+    } catch (Exception e) {
+      LOGGER.info("Failed to set up test table BOOK", e);
+      return;
+    }
+    LOGGER.info("Finished setting up test table BOOK");
+  }
+
+  @EventListener({ContextClosedEvent.class})
+  public void tearDownData() {
+    LOGGER.info("Deleting test table BOOK...");
+    try {
+      r2dbcClient.execute("DROP TABLE BOOK")
+          .fetch().rowsUpdated().block();
+    } catch (Exception e) {
+      LOGGER.info("Failed to delete test table BOOK", e);
+      return;
+    }
+
+    LOGGER.info("Finished deleting test table BOOK.");
+  }
+
+
+  @Bean
+  public RouterFunction<ServerResponse> indexRouter() {
+    // Serve static index.html at root.
+    return route(
+        GET("/"),
+        req -> ServerResponse.permanentRedirect(URI.create("/index.html")).build());
+  }
+}
