@@ -88,12 +88,10 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <google-cloud-bom.version>2.9.0</google-cloud-bom.version>
+    <google-cloud-bom.version>4.0.0</google-cloud-bom.version>
 
     <r2dbc.version>0.8.0.RELEASE</r2dbc.version>
     <reactor.version>Dysprosium-RELEASE</reactor.version>
-
-    <google-auth.version>0.18.0</google-auth.version>
 
     <mockito.version>3.1.0</mockito.version>
     <slf4j.version>1.7.29</slf4j.version>
@@ -125,11 +123,7 @@
         <artifactId>r2dbc-spi</artifactId>
         <version>${r2dbc.version}</version>
       </dependency>
-      <dependency>
-        <groupId>com.google.auth</groupId>
-        <artifactId>google-auth-library-oauth2-http</artifactId>
-        <version>${google-auth.version}</version>
-      </dependency>
+
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
