@@ -31,7 +31,9 @@ public class StatementParser {
   private static final List<String> DDL_STATEMENTS = Arrays.asList("create", "drop", "alter");
   private static final List<String> DML_STATEMENTS = Arrays.asList("insert", "update", "delete");
 
-  private StatementParser() {}
+  private StatementParser() {
+    // Prevent instantiation.
+  }
 
   /**
    * Returns the statement type of a given SQL string.

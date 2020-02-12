@@ -25,7 +25,9 @@ import java.util.Set;
  */
 public class CollectionsBuilder {
 
-  private CollectionsBuilder() {}
+  private CollectionsBuilder() {
+    // Prevent instantiation.
+  }
 
   /**
    * Returns an unmodifiable set of the items provided.

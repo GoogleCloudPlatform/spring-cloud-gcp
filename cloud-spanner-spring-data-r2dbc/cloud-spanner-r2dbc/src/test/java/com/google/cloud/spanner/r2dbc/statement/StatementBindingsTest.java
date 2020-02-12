@@ -42,7 +42,7 @@ public class StatementBindingsTest {
               .setArrayElementType(Type.newBuilder().setCode(TypeCode.STRING).build()).build()),
           entry("name", Type.newBuilder().setCode(TypeCode.STRING).build()),
           entry("age", Type.newBuilder().setCode(TypeCode.INT64).build())
-      );
+        );
 
     assertThat(statementBindings.getBindings())
         .containsExactly(

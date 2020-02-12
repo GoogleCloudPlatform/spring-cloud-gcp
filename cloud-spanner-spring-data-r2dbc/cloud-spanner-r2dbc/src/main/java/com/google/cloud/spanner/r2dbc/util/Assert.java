@@ -24,8 +24,9 @@ import reactor.util.annotation.Nullable;
  */
 public class Assert {
 
-  // static methods only; no instantiation.
-  private Assert() {}
+  private Assert() {
+    // Prevent instantiation.
+  }
 
   /**
    * Checks that a specified object reference is not {@code null} and throws a customized
