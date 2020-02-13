@@ -18,6 +18,11 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>cloud-spanner-r2dbc</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.springframework.boot.experimental</groupId>
         <artifactId>spring-boot-bom-r2dbc</artifactId>
         <version>0.1.0.M3</version>
@@ -26,7 +31,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <dependencies>
 
     <dependency>
