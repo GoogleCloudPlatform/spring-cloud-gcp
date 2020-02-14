@@ -14,7 +14,7 @@
 
   <name>Google Cloud Spanner R2DBC Driver</name>
   <description>Reactive R2DBC driver implementation for Cloud Spanner.</description>
-  <url>https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/cloud-spanner-r2dbc</url>
+  <url>https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/tree/master/cloud-spanner-r2dbc</url>
 
   <dependencies>
 
