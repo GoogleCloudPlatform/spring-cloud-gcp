@@ -24,7 +24,9 @@ import io.r2dbc.spi.ConnectionMetadata;
  * <p>Effectively the same as {@link SpannerConnectionFactoryMetadata}, as there is no
  * connection-level difference in database behavior.
  */
-public class SpannerConnectionMetadata implements ConnectionMetadata {
+public enum SpannerConnectionMetadata implements ConnectionMetadata {
+
+  INSTANCE;
 
   @Override
   public String getDatabaseProductName() {

@@ -24,7 +24,6 @@ import com.google.spanner.v1.TransactionOptions;
 import com.google.spanner.v1.TransactionOptions.ReadWrite;
 import io.r2dbc.spi.Batch;
 import io.r2dbc.spi.Connection;
-import io.r2dbc.spi.ConnectionMetadata;
 import io.r2dbc.spi.IsolationLevel;
 import io.r2dbc.spi.ValidationDepth;
 import java.util.concurrent.atomic.AtomicLong;
@@ -260,8 +259,7 @@ public class SpannerConnection implements Connection, StatementExecutionContext 
   }
 
   @Override
-  public ConnectionMetadata getMetadata() {
-    // TODO: https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/issues/163
-    return null;
+  public SpannerConnectionMetadata getMetadata() {
+    return SpannerConnectionMetadata.INSTANCE;
   }
 }

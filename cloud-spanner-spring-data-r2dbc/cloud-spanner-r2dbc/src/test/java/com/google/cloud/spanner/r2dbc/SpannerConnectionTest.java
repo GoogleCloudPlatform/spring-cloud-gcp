@@ -400,6 +400,13 @@ public class SpannerConnectionTest {
     verify(this.mockClient).healthcheck(connection);
   }
 
+  @Test
+  public void getConnectionMetadata() {
+    SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
+    assertThat(connection.getMetadata().getDatabaseProductName()).isEqualTo("Cloud Spanner");
+    assertThat(connection.getMetadata().getDatabaseVersion()).isEqualTo("n/a");
+  }
+
   private PartialResultSet makeBookPrs(String bookName) {
     return PartialResultSet.newBuilder()
         .setMetadata(ResultSetMetadata.newBuilder().setRowType(StructType.newBuilder()

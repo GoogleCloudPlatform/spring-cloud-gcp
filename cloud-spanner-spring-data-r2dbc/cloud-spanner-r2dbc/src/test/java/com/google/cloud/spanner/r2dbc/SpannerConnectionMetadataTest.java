@@ -27,11 +27,12 @@ public class SpannerConnectionMetadataTest {
 
   @Test
   public void productNameIsCorrect() {
-    assertThat(new SpannerConnectionMetadata().getDatabaseProductName()).isEqualTo("Cloud Spanner");
+    SpannerConnectionMetadata spannerConnectionMetadata = SpannerConnectionMetadata.INSTANCE;
+    assertThat(spannerConnectionMetadata.getDatabaseProductName()).isEqualTo("Cloud Spanner");
   }
 
   @Test
   public void productVersionIrrelevant() {
-    assertThat(new SpannerConnectionMetadata().getDatabaseVersion()).isEqualTo("n/a");
+    assertThat(SpannerConnectionMetadata.INSTANCE.getDatabaseVersion()).isEqualTo("n/a");
   }
 }
