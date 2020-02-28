@@ -5,9 +5,7 @@ All scripts can be found in the `.kokoro` directory.
 
 ## Snapshots
 
-A commit to the `master` branch will automatically trigger the `prod:cloud-java-frameworks/cloud-spanner-r2dbc/continuous` job that will publish snapshots to Sonatype Snapshots repository.
-The snapshot repository cannot be browsed, but you can go to the version directly to check publish timestamps, for example http://oss.sonatype.org/content/repositories/snapshots/com/google/cloud/cloud-spanner-r2dbc/0.1.0-SNAPSHOT/.
-
+A commit to the `master` branch will automatically trigger the `prod:cloud-java-frameworks/cloud-spanner-r2dbc/continuous` job that will publish snapshots to https://oss.sonatype.org/content/repositories/snapshots/com/google/cloud/cloud-spanner-r2dbc/)[Sonatype Snapshots repository].
 
 ## Releases
 
@@ -17,10 +15,11 @@ The snapshot repository cannot be browsed, but you can go to the version directl
 ```
 [INFO]  * Created staging repository with ID "comgooglecloud-1416".
 ```
-The ID in this case is `comgooglecloud-1416`.
+The `{STAGING_ID}` in this case is `comgooglecloud-1416`.
 
-. Verify staged artifacts at http://oss.sonatype.org.
-(If you don't have access to `com.google.cloud`, please make a request similar to https://issues.sonatype.org/browse/OSSRH-52371[this one] and ask for support from someone who already has access to this group ID.)
+. Verify staged artifacts by going to `https://oss.sonatype.org/content/repositories/{STAGING_ID}/com/google/cloud/`
++
+NOTE: You can also view all staged artifacts at http://oss.sonatype.org. To get access to `com.google.cloud` group ID, please make a request similar to https://issues.sonatype.org/browse/OSSRH-52371[this one] and ask someone who already has access to this group ID to vouch for you in the issue comments.)
 
 . If you want to drop the staged artifacts, run the `prod:cloud-java-frameworks/cloud-spanner-r2dbc/drop` Kokoro job, while providing the staging repository ID as an environment variable like `STAGING_REPOSITORY_ID=comgooglecloud-1416`.
 
