@@ -7,10 +7,6 @@
   <artifactId>cloud-spanner-r2dbc-parent</artifactId>
   <packaging>pom</packaging>
   <version>0.2.0-SNAPSHOT</version>
-  <modules>
-    <module>cloud-spanner-r2dbc-samples</module>
-    <module>cloud-spanner-spring-data-r2dbc</module>
-  </modules>
 
   <name>Google Cloud Spanner R2DBC Parent Project</name>
   <description>Reactive R2DBC driver implementation for Cloud Spanner.</description>
@@ -88,16 +84,16 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <google-cloud-bom.version>4.0.0</google-cloud-bom.version>
+    <google-cloud-bom.version>4.1.1</google-cloud-bom.version>
 
-    <r2dbc.version>0.8.0.RELEASE</r2dbc.version>
-    <reactor.version>Dysprosium-RELEASE</reactor.version>
+    <r2dbc.version>0.8.1.RELEASE</r2dbc.version>
+    <reactor.version>Dysprosium-SR5</reactor.version>
 
-    <mockito.version>3.1.0</mockito.version>
-    <slf4j.version>1.7.29</slf4j.version>
+    <mockito.version>3.3.0</mockito.version>
+    <slf4j.version>1.7.30</slf4j.version>
 
-    <assertj.version>3.12.2</assertj.version>
-    <junit.version>5.5.2</junit.version>
+    <assertj.version>3.15.0</assertj.version>
+    <junit.version>5.6.0</junit.version>
   </properties>
 
   <dependencyManagement>
@@ -332,6 +328,7 @@
       </activation>
       <modules>
         <module>cloud-spanner-r2dbc</module>
+        <module>cloud-spanner-spring-data-r2dbc</module>
         <module>cloud-spanner-r2dbc-samples</module>
       </modules>
     </profile>
@@ -340,6 +337,7 @@
       <id>release</id>
       <modules>
         <module>cloud-spanner-r2dbc</module>
+        <module>cloud-spanner-spring-data-r2dbc</module>
       </modules>
       <build>
         <plugins>
