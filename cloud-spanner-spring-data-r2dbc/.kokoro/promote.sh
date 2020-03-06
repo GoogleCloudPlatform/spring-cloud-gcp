@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2019 Google LLC
+# Copyright 2019-2020 Google LLC
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
