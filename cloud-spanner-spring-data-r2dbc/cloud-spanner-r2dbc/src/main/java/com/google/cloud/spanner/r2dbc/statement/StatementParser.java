@@ -16,20 +16,13 @@
 
 package com.google.cloud.spanner.r2dbc.statement;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Parses SQL statements to determine what type of statement it is.
  */
 public class StatementParser {
 
-  /** Matches on the Spanner SQL hints in the form @{hintName...} */
-  private static final String SQL_OPTIONS_REGEX = "(?m)@\\{.*\\}";
-
-  private static final List<String> SELECT_STATEMENTS = Arrays.asList("select");
-  private static final List<String> DDL_STATEMENTS = Arrays.asList("create", "drop", "alter");
-  private static final List<String> DML_STATEMENTS = Arrays.asList("insert", "update", "delete");
+  private static com.google.cloud.spanner.connection.StatementParser clientLibraryParser =
+      com.google.cloud.spanner.connection.StatementParser.INSTANCE;
 
   private StatementParser() {
     // Prevent instantiation.
@@ -41,28 +34,14 @@ public class StatementParser {
    * @return the type of statement of the SQL string.
    */
   public static StatementType getStatementType(String sql) {
-    String processedSql = processSql(sql);
-
-    if (statementStartsWith(processedSql, SELECT_STATEMENTS)) {
+    if (clientLibraryParser.isQuery(sql)) {
       return StatementType.SELECT;
-    } else if (statementStartsWith(processedSql, DDL_STATEMENTS)) {
+    } else if (clientLibraryParser.isDdlStatement(sql)) {
       return StatementType.DDL;
-    } else if (statementStartsWith(processedSql, DML_STATEMENTS)) {
+    } else if (clientLibraryParser.isUpdateStatement(sql)) {
       return StatementType.DML;
     } else {
       return StatementType.UNKNOWN;
     }
   }
-
-  private static String processSql(String rawSql) {
-    return rawSql
-        .replaceAll(SQL_OPTIONS_REGEX, "")
-        .trim()
-        .toLowerCase();
-  }
-
-  private static boolean statementStartsWith(String sqlStatement, List<String> prefixes) {
-    return prefixes.stream().anyMatch(sqlPrefix -> sqlStatement.startsWith(sqlPrefix));
-  }
 }
-
