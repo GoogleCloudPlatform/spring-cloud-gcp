@@ -21,7 +21,7 @@
 	<properties>
 		<main.basedir>${basedir}/..</main.basedir>
 		<spring-cloud-build-tools.version>2.2.3.BUILD-SNAPSHOT</spring-cloud-build-tools.version>
-		<puppycrawl-tools-checkstyle.version>8.18</puppycrawl-tools-checkstyle.version>
+		<puppycrawl-tools-checkstyle.version>8.29</puppycrawl-tools-checkstyle.version>
 		<maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
 	</properties>
 
