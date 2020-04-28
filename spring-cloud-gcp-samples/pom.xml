@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.5.BUILD-SNAPSHOT</version>
+		<version>2.3.0.BUILD-SNAPSHOT</version>
 		<relativePath/>
 	</parent>
 
@@ -20,9 +20,12 @@
 
 	<properties>
 		<main.basedir>${basedir}/..</main.basedir>
-		<spring-cloud-build-tools.version>2.2.3.BUILD-SNAPSHOT</spring-cloud-build-tools.version>
-		<puppycrawl-tools-checkstyle.version>8.18</puppycrawl-tools-checkstyle.version>
-		<maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+
+		<!-- Checkstyle version settings. Keep in sync with ../pom.xml -->
+		<spring-cloud-build-tools.version>3.0.0-SNAPSHOT</spring-cloud-build-tools.version>
+		<puppycrawl-tools-checkstyle.version>8.32</puppycrawl-tools-checkstyle.version>
+		<spring-javaformat-checkstyle.version>0.0.9</spring-javaformat-checkstyle.version>
+		<maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
 	</properties>
 
 	<modules>
