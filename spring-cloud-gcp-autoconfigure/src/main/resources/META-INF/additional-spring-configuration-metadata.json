@@ -49,10 +49,22 @@
       "defaultValue": true
     },
     {
+      "name": "spring.cloud.gcp.secretmanager.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud Secret Manager components.",
+      "defaultValue": true
+    },
+    {
       "name": "spring.cloud.gcp.spanner.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud Spanner components.",
       "defaultValue": true
+    },
+    {
+      "name": "spring.cloud.gcp.spanner.emulator.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enables auto-configuration to use the Spanner emulator.",
+      "defaultValue": false
     },
     {
       "name": "spring.cloud.gcp.sql.enabled",
