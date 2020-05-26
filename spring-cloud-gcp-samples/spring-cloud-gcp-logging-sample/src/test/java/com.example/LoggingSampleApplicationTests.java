@@ -26,7 +26,7 @@ import com.google.api.gax.paging.Page;
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.Logging;
 import com.google.cloud.logging.LoggingOptions;
-import com.google.cloud.logging.Payload.StringPayload;
+import com.google.cloud.logging.Payload.JsonPayload;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -108,7 +108,8 @@ public class LoggingSampleApplicationTests {
 					});
 
 					List<String> logContents = logEntries.stream()
-							.map((logEntry) -> ((StringPayload) logEntry.getPayload()).getData())
+							.map((logEntry) -> (String) ((JsonPayload) logEntry.getPayload())
+									.getDataAsMap().get("message"))
 							.collect(Collectors.toList());
 
 					assertThat(logContents).containsExactlyInAnyOrder(
