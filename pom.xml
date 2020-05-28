@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>org.springframework.cloud</groupId>
 		<artifactId>spring-cloud-build</artifactId>
-		<version>3.0.0-SNAPSHOT</version>
+		<version>2.3.0.BUILD-SNAPSHOT</version>
 		<relativePath/><!-- lookup parent from repository -->
 	</parent>
 
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>2.0.0.BUILD-SNAPSHOT</version>
+	<version>1.2.3.BUILD-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Spring Cloud GCP</name>
 	<description>Spring Cloud GCP</description>
@@ -39,6 +39,7 @@
 		<module>spring-cloud-gcp-data-datastore</module>
 		<module>spring-cloud-gcp-security-iap</module>
 		<module>spring-cloud-gcp-vision</module>
+		<module>spring-cloud-gcp-kotlin-samples</module>
 		<module>spring-cloud-gcp-logging</module>
 		<module>spring-cloud-gcp-data-firestore</module>
 		<module>spring-cloud-gcp-bigquery</module>
@@ -49,16 +50,20 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<spring-cloud.version>2020.0.0-SNAPSHOT</spring-cloud.version>
+		<spring-cloud-commons.version>2.2.3.BUILD-SNAPSHOT</spring-cloud-commons.version>
+		<spring-cloud-bus.version>2.2.2.BUILD-SNAPSHOT</spring-cloud-bus.version>
 		<spring-cloud-sleuth.version>2.2.3.BUILD-SNAPSHOT</spring-cloud-sleuth.version>
+		<spring-cloud-stream.version>Horsham.SR5</spring-cloud-stream.version>
 		<zipkin-gcp.version>0.17.0</zipkin-gcp.version>
 		<app-engine-maven-plugin.version>1.3.2</app-engine-maven-plugin.version>
 		<kotlin.version>1.3.31</kotlin.version>
 		<errorprone.version>2.3.4</errorprone.version>
-		<skip.surefire.tests>false</skip.surefire.tests>
-		<skip.failsafe.tests>false</skip.failsafe.tests>
-		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
-		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+
+		<!-- Checkstyle version settings. Keep in sync with spring-cloud-gcp-samples/pom.xml -->
+		<spring-javaformat-checkstyle.version>0.0.21</spring-javaformat-checkstyle.version>
+		<puppycrawl-tools-checkstyle.version>8.32</puppycrawl-tools-checkstyle.version>
+		<maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
+		<spring-cloud-build-tools.version>3.0.0-SNAPSHOT</spring-cloud-build-tools.version>
 	</properties>
 
 	<dependencyManagement>
@@ -72,7 +77,14 @@
 				<scope>import</scope>
 			</dependency>
 
-			<!-- TODO: remove after upgrading to latest Sleuth -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-commons-dependencies</artifactId>
+				<version>${spring-cloud-commons.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-sleuth-dependencies</artifactId>
@@ -83,10 +95,24 @@
 
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>${spring-cloud.version}</version>
+				<artifactId>spring-cloud-stream-dependencies</artifactId>
+				<version>${spring-cloud-stream.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-config-dependencies</artifactId>
+				<version>${spring-cloud-commons.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-bus</artifactId>
+				<version>${spring-cloud-bus.version}</version>
 			</dependency>
 
 			<dependency>
@@ -134,12 +160,6 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Needed to run JUnit4 tests while inheriting from spring-cloud-build parent pom -->
-		<dependency>
-			<groupId>org.junit.vintage</groupId>
-			<artifactId>junit-vintage-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -162,30 +182,9 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>${maven-surefire-plugin.version}</version>
 					<configuration>
 						<argLine>-Xms512m -Xmx512m</argLine>
-						<skip>${skip.surefire.tests}</skip>
-						<excludes>
-							<exclude>${integration-test.pattern}</exclude>
-						</excludes>
 					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-failsafe-plugin</artifactId>
-					<version>${maven-failsafe-plugin.version}</version>
-					<configuration>
-						<skip>${skip.failsafe.tests}</skip>
-						<includes>
-							<include>${integration-test.pattern}</include>
-						</includes>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-deploy-plugin</artifactId>
-					<version>${maven-deploy-plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -193,6 +192,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.springframework.cloud</groupId>
+						<artifactId>spring-cloud-build-tools</artifactId>
+						<version>${spring-cloud-build-tools.version}</version>
+					</dependency>
+				</dependencies>
 				<executions>
 					<execution>
 						<id>checkstyle-validation</id>
@@ -245,10 +251,6 @@
 					</links>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-			</plugin>
 		</plugins>
 	</build>
 
@@ -259,7 +261,7 @@
 				<repository>
 					<id>spring-snapshots</id>
 					<name>Spring Snapshots</name>
-					<url>https://repo.spring.io/snapshot</url>
+					<url>https://repo.spring.io/libs-snapshot-local</url>
 					<snapshots>
 						<enabled>true</enabled>
 					</snapshots>
@@ -270,7 +272,7 @@
 				<repository>
 					<id>spring-milestones</id>
 					<name>Spring Milestones</name>
-					<url>https://repo.spring.io/milestone</url>
+					<url>https://repo.spring.io/libs-milestone-local</url>
 					<snapshots>
 						<enabled>false</enabled>
 					</snapshots>
@@ -299,7 +301,7 @@
 				<pluginRepository>
 					<id>spring-snapshots</id>
 					<name>Spring Snapshots</name>
-					<url>https://repo.spring.io/snapshot</url>
+					<url>https://repo.spring.io/libs-snapshot-local</url>
 					<snapshots>
 						<enabled>true</enabled>
 					</snapshots>
@@ -310,7 +312,7 @@
 				<pluginRepository>
 					<id>spring-milestones</id>
 					<name>Spring Milestones</name>
-					<url>https://repo.spring.io/milestone</url>
+					<url>https://repo.spring.io/libs-milestone-local</url>
 					<snapshots>
 						<enabled>false</enabled>
 					</snapshots>
