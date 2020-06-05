@@ -114,7 +114,7 @@
 			</build>
 		</profile>
 		<profile>
-			<id>integration-tests</id>
+			<id>spring-cloud-gcp-ci-it</id>
 			<build>
 				<plugins>
 					<plugin>

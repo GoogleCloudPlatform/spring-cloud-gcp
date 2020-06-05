@@ -57,7 +57,7 @@ jobs:
         run: |
           ./mvnw \
             --batch-mode \
-            --activate-profiles integration-tests \
+            --activate-profiles spring-cloud-gcp-ci-it \
             --show-version \
             --define test="**/*IntegrationTest*" \
             --define failIfNoTests=false \
