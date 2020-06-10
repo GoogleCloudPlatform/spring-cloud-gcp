@@ -9,6 +9,7 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         java: [8, 11, 14]
     steps:
@@ -45,6 +46,7 @@ jobs:
       github.event_name == 'push' && github.repository == 'GoogleCloudPlatform/spring-cloud-gcp'
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         it:
           - bigquery
