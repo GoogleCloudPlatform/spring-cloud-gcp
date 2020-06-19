@@ -1,8 +1,6 @@
-image:https://img.shields.io/travis/spring-cloud/spring-cloud-gcp.svg?branch=master&label=master["Master Build Status", link="https://travis-ci.org/spring-cloud/spring-cloud-gcp"]
-image:https://img.shields.io/travis/spring-cloud/spring-cloud-gcp.svg?branch=1.1.x&label=1.1.x["1.1.x Build Status", link="https://travis-ci.org/spring-cloud/spring-cloud-gcp"]
-image:https://img.shields.io/travis/spring-cloud/spring-cloud-gcp.svg?branch=1.0.x&label=1.0.x["1.0.x Build Status", link="https://travis-ci.org/spring-cloud/spring-cloud-gcp"]
+image:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/workflows/Build%20And%20Test/badge.svg?branch=master["Master Build Status", link="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/actions?query=branch%3Amaster+"]
 
-= Spring Framework on Google Cloud Platform
+== Spring Framework on Google Cloud Platform
 
 This project makes it easy for Spring users to run their applications on Google Cloud Platform.
 You can check our project website https://spring.io/projects/spring-cloud-gcp[here].
