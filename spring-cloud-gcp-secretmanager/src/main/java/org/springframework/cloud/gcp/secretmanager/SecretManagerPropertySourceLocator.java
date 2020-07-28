@@ -25,6 +25,7 @@ import org.springframework.core.env.PropertySource;
  * Implementation of {@link PropertySourceLocator} which provides GCP Secret Manager as a
  * property source.
  *
+ *
  * @author Daniel Zou
  * @author Eddú Meléndez
  * @since 1.2.2
