@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>2.0.0.BUILD-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Spring Cloud GCP</name>
 	<description>Spring Cloud GCP</description>
@@ -253,13 +253,10 @@
 				<repository>
 					<id>spring-snapshots</id>
 					<name>Spring Snapshots</name>
-					<url>https://repo.spring.io/libs-snapshot-local</url>
+					<url>https://repo.spring.io/snapshot</url>
 					<snapshots>
 						<enabled>true</enabled>
 					</snapshots>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
 				</repository>
 				<repository>
 					<id>spring-milestones</id>
