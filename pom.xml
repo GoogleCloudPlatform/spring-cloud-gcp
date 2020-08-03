@@ -250,16 +250,24 @@
 		<profile>
 			<id>spring</id>
 			<repositories>
+<!--				<repository>-->
+<!--					<id>spring-snapshots</id>-->
+<!--					<name>Spring Snapshots</name>-->
+<!--					<url>https://repo.spring.io/libs-snapshot-local</url>-->
+<!--					<snapshots>-->
+<!--						<enabled>true</enabled>-->
+<!--					</snapshots>-->
+<!--					<releases>-->
+<!--						<enabled>false</enabled>-->
+<!--					</releases>-->
+<!--				</repository>-->
 				<repository>
 					<id>spring-snapshots</id>
 					<name>Spring Snapshots</name>
-					<url>https://repo.spring.io/libs-snapshot-local</url>
+					<url>https://repo.spring.io/snapshot</url>
 					<snapshots>
 						<enabled>true</enabled>
 					</snapshots>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
 				</repository>
 				<repository>
 					<id>spring-milestones</id>
