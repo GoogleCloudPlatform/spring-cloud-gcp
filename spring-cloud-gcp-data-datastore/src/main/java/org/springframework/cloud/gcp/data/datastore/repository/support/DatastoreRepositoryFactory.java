@@ -19,7 +19,7 @@ package org.springframework.cloud.gcp.data.datastore.repository.support;
 import java.util.Optional;
 
 import org.springframework.beans.BeansException;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
+import org.springframework.cloud.gcp.data.datastore.core.DatastoreOperations;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentEntity;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentEntityInformation;
@@ -37,6 +37,7 @@ import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryLookupStrategy.Key;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
+import org.springframework.data.spel.ExpressionDependencies;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.lang.Nullable;
@@ -54,7 +55,7 @@ public class DatastoreRepositoryFactory extends RepositoryFactorySupport
 
 	private final DatastoreMappingContext datastoreMappingContext;
 
-	private final DatastoreTemplate datastoreTemplate;
+	private final DatastoreOperations datastoreOperations;
 
 	private ApplicationContext applicationContext;
 
@@ -62,17 +63,17 @@ public class DatastoreRepositoryFactory extends RepositoryFactorySupport
 	 * Constructor.
 	 * @param datastoreMappingContext the mapping context used to get mapping metadata for
 	 * entity types.
-	 * @param datastoreTemplate the Datastore operations object used by Datastore
+	 * @param datastoreOperations the Datastore operations object used by Datastore
 	 * repositories.
 	 */
 	DatastoreRepositoryFactory(DatastoreMappingContext datastoreMappingContext,
-			DatastoreTemplate datastoreTemplate) {
+			DatastoreOperations datastoreOperations) {
 		Assert.notNull(datastoreMappingContext,
 				"A non-null Datastore mapping context is required.");
-		Assert.notNull(datastoreTemplate,
+		Assert.notNull(datastoreOperations,
 				"A non-null Datastore template object is required.");
 		this.datastoreMappingContext = datastoreMappingContext;
-		this.datastoreTemplate = datastoreTemplate;
+		this.datastoreOperations = datastoreOperations;
 	}
 
 	@Override
@@ -92,7 +93,7 @@ public class DatastoreRepositoryFactory extends RepositoryFactorySupport
 
 	@Override
 	protected Object getTargetRepository(RepositoryInformation metadata) {
-		return getTargetRepositoryViaReflection(metadata, this.datastoreTemplate,
+		return getTargetRepositoryViaReflection(metadata, this.datastoreOperations,
 				metadata.getDomainType());
 	}
 
@@ -106,7 +107,7 @@ public class DatastoreRepositoryFactory extends RepositoryFactorySupport
 			QueryMethodEvaluationContextProvider evaluationContextProvider) {
 
 		return Optional.of(new DatastoreQueryLookupStrategy(this.datastoreMappingContext,
-				this.datastoreTemplate,
+				this.datastoreOperations,
 				delegateContextProvider(evaluationContextProvider)));
 	}
 
@@ -118,13 +119,13 @@ public class DatastoreRepositoryFactory extends RepositoryFactorySupport
 
 	private QueryMethodEvaluationContextProvider delegateContextProvider(
 			QueryMethodEvaluationContextProvider evaluationContextProvider) {
+
 		return new QueryMethodEvaluationContextProvider() {
 			@Override
 			public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
 					T parameters, Object[] parameterValues) {
 				StandardEvaluationContext evaluationContext = (StandardEvaluationContext)
-						evaluationContextProvider
-						.getEvaluationContext(parameters, parameterValues);
+						evaluationContextProvider.getEvaluationContext(parameters, parameterValues);
 				evaluationContext.setRootObject(
 						DatastoreRepositoryFactory.this.applicationContext);
 				evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
@@ -132,7 +133,20 @@ public class DatastoreRepositoryFactory extends RepositoryFactorySupport
 						DatastoreRepositoryFactory.this.applicationContext));
 				return evaluationContext;
 			}
+
+			@Override
+			public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
+					T parameters, Object[] parameterValues, ExpressionDependencies expressionDependencies) {
+				StandardEvaluationContext evaluationContext =
+						(StandardEvaluationContext) evaluationContextProvider.getEvaluationContext(
+								parameters, parameterValues, expressionDependencies);
+
+				evaluationContext.setRootObject(DatastoreRepositoryFactory.this.applicationContext);
+				evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
+				evaluationContext.setBeanResolver(
+						new BeanFactoryResolver(DatastoreRepositoryFactory.this.applicationContext));
+				return evaluationContext;
+			}
 		};
 	}
-
 }
