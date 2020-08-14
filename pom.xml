@@ -10,12 +10,14 @@
 		<relativePath/><!-- lookup parent from repository -->
 	</parent>
 
+	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
 	<version>2.0.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+
 	<name>Spring Cloud GCP</name>
 	<description>Spring Cloud GCP</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
+	<packaging>pom</packaging>
 
 	<scm>
 		<url>https://github.com/spring-cloud/spring-cloud-gcp</url>
