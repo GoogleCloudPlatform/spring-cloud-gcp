@@ -17,6 +17,17 @@
 	<description>Spring Cloud GCP Dependencies</description>
 	<packaging>pom</packaging>
 
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
 	<properties>
 		<gcp-libraries-bom.version>8.1.0</gcp-libraries-bom.version>
 		<cloud-sql-socket-factory.version>1.0.16</cloud-sql-socket-factory.version>
