@@ -47,6 +47,11 @@ public class SecretManagerSampleIntegrationTests {
 	@Autowired
 	private SecretManagerTemplate secretManagerTemplate;
 
+	private static final String SECRET_TO_DELETE = "secret-manager-sample-delete-secret";
+
+	@Autowired
+	private SecretManagerTemplate secretManagerTemplate;
+
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 
