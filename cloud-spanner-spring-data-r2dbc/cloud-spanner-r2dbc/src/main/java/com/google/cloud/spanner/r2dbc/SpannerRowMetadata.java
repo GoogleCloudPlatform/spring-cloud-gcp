@@ -72,7 +72,6 @@ public class SpannerRowMetadata implements RowMetadata {
   @Override
   public ColumnMetadata getColumnMetadata(String identifier) {
     int index = getColumnIndexByName(identifier);
-    // TODO: index validation
     return this.columnMetadatas.get(index);
   }
 

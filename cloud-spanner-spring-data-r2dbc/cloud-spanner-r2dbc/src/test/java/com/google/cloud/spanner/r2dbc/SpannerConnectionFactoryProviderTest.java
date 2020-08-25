@@ -34,6 +34,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.r2dbc.client.Client;
+import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryConnectionFactory;
 import com.google.protobuf.Value;
 import com.google.spanner.v1.PartialResultSet;
 import com.google.spanner.v1.ResultSetMetadata;
@@ -44,6 +45,7 @@ import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
+import io.r2dbc.spi.Option;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -175,6 +177,28 @@ public class SpannerConnectionFactoryProviderTest {
           partialResultSetPublisher.complete();
         })
         .verifyComplete();
+  }
+
+  @Test
+  public void testCreateFactoryWithClientLibraryClient() {
+    SpannerConnectionFactoryProvider customSpannerConnectionFactoryProvider
+        = new SpannerConnectionFactoryProvider();
+
+    ConnectionFactoryOptions options =
+        ConnectionFactoryOptions.builder()
+            .option(DRIVER, DRIVER_NAME)
+            .option(PROJECT, "project-id")
+            .option(INSTANCE, "an-instance")
+            .option(DATABASE, "db")
+            .option(GOOGLE_CREDENTIALS, mock(GoogleCredentials.class))
+            .option(Option.valueOf("client-implementation"), "client-library")
+            .build();
+
+    ConnectionFactory spannerConnectionFactory =
+        customSpannerConnectionFactoryProvider.create(options);
+    assertThat(spannerConnectionFactory).isNotNull();
+    assertThat(spannerConnectionFactory).isInstanceOf(SpannerClientLibraryConnectionFactory.class);
+
   }
 
   private PartialResultSet makeBook(String odyssey) {

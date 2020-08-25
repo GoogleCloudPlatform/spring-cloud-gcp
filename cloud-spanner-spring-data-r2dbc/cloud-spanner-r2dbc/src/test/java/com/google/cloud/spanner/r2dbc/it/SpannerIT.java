@@ -72,7 +72,7 @@ public class SpannerIT {
 
   private static final ConnectionFactory connectionFactory =
       ConnectionFactories.get(ConnectionFactoryOptions.builder()
-          // TODO: consider whether to bring autodiscovery of project ID
+          // TODO: bring in autodiscovery of project ID; since relying on client library anyway
           .option(Option.valueOf("project"), ServiceOptions.getDefaultProjectId())
           .option(DRIVER, DRIVER_NAME)
           .option(INSTANCE, DatabaseProperties.INSTANCE)

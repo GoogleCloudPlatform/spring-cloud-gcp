@@ -81,13 +81,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- facilitate project ID discovery in integration tests -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
 
 </project>

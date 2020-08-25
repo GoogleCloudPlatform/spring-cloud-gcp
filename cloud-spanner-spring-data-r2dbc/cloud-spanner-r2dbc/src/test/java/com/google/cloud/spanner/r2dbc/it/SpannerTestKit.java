@@ -396,7 +396,7 @@ public class SpannerTestKit implements TestKit<String> {
     executeDml(c -> c.createStatement("INSERT INTO test (value) VALUES (100)"));
 
     Mono.from(getConnectionFactory().create())
-        .flatMapMany(connection -> Mono.from(connection.beginTransaction())
+        .<Object>flatMapMany(connection -> Mono.from(connection.beginTransaction())
             .<Object>thenMany(Flux.from(connection.createStatement("SELECT value FROM test")
                 .execute())
                 .flatMap(TestKit::extractColumns))

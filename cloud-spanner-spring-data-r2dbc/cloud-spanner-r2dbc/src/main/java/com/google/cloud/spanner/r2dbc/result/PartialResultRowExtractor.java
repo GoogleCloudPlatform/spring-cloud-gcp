@@ -95,17 +95,19 @@ public class PartialResultRowExtractor implements Function<PartialResultSet, Lis
   }
 
   private void emitCompleteFirstValue(PartialResultSet partialResultSet, List<SpannerRow> rows) {
-    Value val = this.prevIsChunk ? this.incompletePieceKind == KindCase.STRING_VALUE
-        ? Value.newBuilder().setStringValue((String) this.incompletePiece)
-        .build()
-        : Value.newBuilder()
-            .setListValue(
-                ListValue.newBuilder()
-                    .addAllValues((List<Value>) this.incompletePiece))
-            .build()
+    Value val = this.prevIsChunk ? processIncompletePiece()
         : partialResultSet.getValues(0);
     appendToRow(val, rows);
     this.prevIsChunk = false;
+  }
+
+  private Value processIncompletePiece() {
+    return this.incompletePieceKind == KindCase.STRING_VALUE
+            ? Value.newBuilder().setStringValue((String) this.incompletePiece).build()
+            : Value.newBuilder().setListValue(
+            ListValue.newBuilder()
+                    .addAllValues((List<Value>) this.incompletePiece))
+            .build();
   }
 
   private void emitMiddleWholePieces(PartialResultSet partialResultSet, List<SpannerRow> rows,

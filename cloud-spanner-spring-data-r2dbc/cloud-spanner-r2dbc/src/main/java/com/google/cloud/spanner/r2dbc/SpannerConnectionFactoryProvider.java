@@ -23,6 +23,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.cloud.spanner.r2dbc.client.GrpcClient;
 import com.google.cloud.spanner.r2dbc.util.Assert;
+import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryConnectionFactory;
 import com.google.common.annotations.VisibleForTesting;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
@@ -75,12 +76,18 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   public ConnectionFactory create(ConnectionFactoryOptions connectionFactoryOptions) {
 
     SpannerConnectionConfiguration config = createConfiguration(connectionFactoryOptions);
-
     if (this.client == null) {
       // GrpcClient should only be instantiated if/when a SpannerConnectionFactory is needed.
       this.client = new GrpcClient(config.getCredentials());
     }
-    return new SpannerConnectionFactory(this.client, config);
+
+    if (connectionFactoryOptions.hasOption(Option.valueOf("client-implementation"))
+        && connectionFactoryOptions.getValue(Option.valueOf("client-implementation"))
+        .equals("client-library")) {
+      return new SpannerClientLibraryConnectionFactory(this.client, config);
+    } else {
+      return new SpannerConnectionFactory(this.client, config);
+    }
   }
 
   @Override
