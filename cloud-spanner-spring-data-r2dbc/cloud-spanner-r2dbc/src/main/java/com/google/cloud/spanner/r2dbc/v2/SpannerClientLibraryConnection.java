@@ -51,8 +51,7 @@ public class SpannerClientLibraryConnection implements Connection {
 
   private final DatabaseClientReactiveAdapter clientLibraryAdapter;
 
-  // TODO: make thread pool customizable
-  private ExecutorService executorService = Executors.newFixedThreadPool(4);
+  private ExecutorService executorService;
 
   /**
    * Cloud Spanner implementation of R2DBC Connection SPI.
@@ -69,6 +68,7 @@ public class SpannerClientLibraryConnection implements Connection {
     this.dbAdminClient = dbAdminClient;
     this.grpcClient = grpcClient;
     this.config = config;
+    this.executorService = Executors.newFixedThreadPool(config.getThreadPoolSize());
     this.clientLibraryAdapter = new DatabaseClientReactiveAdapter(dbClient, this.executorService);
 
   }
@@ -106,7 +106,7 @@ public class SpannerClientLibraryConnection implements Connection {
       LOGGER.debug("DML statement detected: " + query);
       return new SpannerClientLibraryDmlStatement(this.clientLibraryAdapter, query);
     }
-    return new SpannerClientLibraryStatement(this.dbClient, query);
+    return new SpannerClientLibraryStatement(this.dbClient, query, this.executorService);
   }
 
   @Override

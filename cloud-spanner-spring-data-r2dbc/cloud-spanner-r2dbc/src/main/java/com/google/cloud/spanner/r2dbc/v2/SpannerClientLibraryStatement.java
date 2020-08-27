@@ -24,7 +24,6 @@ import com.google.cloud.spanner.r2dbc.statement.TypedNull;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
@@ -37,9 +36,7 @@ public class SpannerClientLibraryStatement implements Statement {
 
   private final Builder statementBuilder;
 
-  // TODO: use a global Spanner R2DBC executor service for all these callbacks;
-  // see another one in SpannerClientLibraryConnection
-  private ExecutorService executorService = Executors.newSingleThreadExecutor();
+  private ExecutorService executorService;
 
   private DatabaseClient databaseClient;
 
@@ -49,12 +46,15 @@ public class SpannerClientLibraryStatement implements Statement {
    * Creates a ready-to-run Cloud Spanner statement.
    * @param databaseClient Cloud Spanner client library database client
    * @param query query to run, with `@` placeholders expected as parameters.
+   * @param executorService to use for AsyncResultSet callback
    */
   // TODO: accept a transaction
-  public SpannerClientLibraryStatement(DatabaseClient databaseClient, String query) {
+  public SpannerClientLibraryStatement(DatabaseClient databaseClient, String query,
+      ExecutorService executorService) {
     this.databaseClient = databaseClient;
     this.query = query;
     this.statementBuilder = com.google.cloud.spanner.Statement.newBuilder(this.query);
+    this.executorService = executorService;
   }
 
   @Override

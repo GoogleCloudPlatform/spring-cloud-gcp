@@ -53,6 +53,8 @@ public class SpannerConnectionConfiguration {
 
   private Duration ddlOperationPollInterval;
 
+  private int threadPoolSize;
+
   /**
    * Constructor which initializes the configuration from an Cloud Spanner R2DBC url.
    */
@@ -135,6 +137,10 @@ public class SpannerConnectionConfiguration {
     return this.ddlOperationPollInterval;
   }
 
+  public int getThreadPoolSize() {
+    return this.threadPoolSize;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -179,6 +185,8 @@ public class SpannerConnectionConfiguration {
 
     private Duration ddlOperationPollInterval = Duration.ofSeconds(5);
 
+    private Integer threadPoolSize;
+
     public Builder setUrl(String url) {
       this.url = url;
       return this;
@@ -219,6 +227,11 @@ public class SpannerConnectionConfiguration {
       return this;
     }
 
+    public Builder setThreadPoolSize(int threadPoolSize) {
+      this.threadPoolSize = threadPoolSize;
+      return this;
+    }
+
     /**
      * Constructs an instance of the {@link SpannerConnectionConfiguration}.
      *
@@ -245,6 +258,10 @@ public class SpannerConnectionConfiguration {
       configuration.partialResultSetFetchSize = this.partialResultSetFetchSize;
       configuration.ddlOperationTimeout = this.ddlOperationTimeout;
       configuration.ddlOperationPollInterval = this.ddlOperationPollInterval;
+      configuration.threadPoolSize =
+          this.threadPoolSize != null
+              ? this.threadPoolSize
+              : Runtime.getRuntime().availableProcessors();
 
       return configuration;
     }

@@ -22,18 +22,12 @@ import com.google.cloud.spanner.r2dbc.client.Client;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
 import java.util.Collections;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class SpannerClientLibraryDdlStatement implements Statement {
 
-  // YOLO; very temporary. TODO: manage disposal.
-  private ExecutorService executorService = Executors.newSingleThreadExecutor();
-
-  //private DatabaseAdminClient databaseAdminClient;
   private Client grpcClient;
 
   private String query;
