@@ -54,6 +54,7 @@ import zipkin2.reporter.stackdriver.StackdriverEncoder;
 import zipkin2.reporter.stackdriver.StackdriverSender;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -275,4 +276,49 @@ public class StackdriverTraceAutoConfiguration {
 			return builder -> builder.clientRequestParser(stackdriverHttpRequestParser);
 		}
 	}
+
+//	@Configuration(proxyBeanMethods = false)
+//	@ConditionalOnProperty(value = "spring.cloud.gcp.trace.pubsub.enabled",
+//			matchIfMissing = true)
+//	@ConditionalOnClass(PublisherFactory.class)
+//	protected static class TracePubSubAutoConfiguration {
+//
+//		@Bean
+//		@ConditionalOnMissingBean(name = "tracePubSubBeanPostProcessor")
+//		static BeanPostProcessor tracePubSubBeanPostProcessor() {
+//
+//			return new BeanPostProcessor() {
+//				@Override
+//				public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+//					if (bean instanceof PublisherFactory) {
+//						return new TracingPublisherFactory((PublisherFactory) bean);
+//					} else {
+//						return bean;
+//					}
+//				}
+//			};
+//		}
+//	}
+//
+//	private static class TracingPublisherFactory implements PublisherFactory {
+//		private PublisherFactory publisherFactory;
+//
+//		public TracingPublisherFactory(PublisherFactory publisherFactory) {
+//			this.publisherFactory = publisherFactory;
+//		}
+//
+//		@Override
+//		public PublisherInterface createPublisher(String topic) {
+//			PublisherInterface publisher = publisherFactory.createPublisher(topic);
+//			return message -> {
+//				System.out.println("tracing publisher");
+//				PubsubMessage tracedMessage = PubsubMessage.newBuilder(message).putAttributes("tracing-is-happening", "test").build();
+//				return publisher.publish(tracedMessage);
+//			};
+//		}
+//	}
+//
+//	private static class PubSubTracing {
+//
+//	}
 }

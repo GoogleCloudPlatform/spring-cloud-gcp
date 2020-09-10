@@ -114,7 +114,7 @@ public class Application implements WebMvcConfigurer {
 	@ServiceActivator(inputChannel = "pubsubInputChannel")
 	public void messageReceiver(String payload,
 			@Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
-		LOGGER.info("Message arrived! Payload: " + payload);
+		LOGGER.info("Message arrived! Payload: " + payload + "\nHeaders: " + message.getPubsubMessage().getAttributesMap());
 		message.ack();
 	}
 }
