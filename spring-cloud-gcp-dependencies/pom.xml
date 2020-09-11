@@ -354,7 +354,7 @@
 							<dependency>
 								<groupId>com.google.cloud.tools</groupId>
 								<artifactId>linkage-checker-enforcer-rules</artifactId>
-								<version>1.5.2-SNAPSHOT</version>
+								<version>1.5.2</version>
 							</dependency>
 						</dependencies>
 						<executions>
@@ -365,6 +365,7 @@
 									<goal>enforce</goal>
 								</goals>
 								<configuration>
+									<fail>true</fail>
 									<rules>
 										<LinkageCheckerRule
 											implementation="com.google.cloud.tools.dependencies.enforcer.LinkageCheckerRule">
