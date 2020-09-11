@@ -44,6 +44,10 @@ public class ClientLibraryBasedIntegrationTest {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(ClientLibraryBasedIntegrationTest.class);
 
+  static final String INSERT_QUERY = "INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
+      + "PUBLISHED, WORDS_PER_SENTENCE) VALUES (@uuid, 'A Sound of Thunder', 'Ray Bradbury', "
+      + "@category, TRUE, '1952-06-28', @wordCount)";
+
   private static final ConnectionFactory connectionFactory =
       ConnectionFactories.get(
           ConnectionFactoryOptions.builder()
@@ -139,7 +143,11 @@ public class ClientLibraryBasedIntegrationTest {
     StepVerifier.create(
         Mono.from(
             // TODO: replace hardcoded values with bind variables
-            conn.createStatement(makeInsertQuery(id, 100, 20.8)).execute())
+            conn.createStatement(INSERT_QUERY)
+                .bind("uuid", id)
+                .bind("category", 100L)
+                .bind("wordCount", 20.8)
+                .execute())
             .flatMapMany(rs -> rs.getRowsUpdated())
     ).expectNext(1).verifyComplete();
 
@@ -170,7 +178,8 @@ public class ClientLibraryBasedIntegrationTest {
                 c.beginTransaction(),
                 Flux.from(c.createStatement(makeInsertQuery(uuid1, 100, 15.0)).execute())
                     .flatMap(r -> r.getRowsUpdated()),
-                c.commitTransaction()))
+                c.commitTransaction(),
+                c.close()))
     ).expectNext(1).verifyComplete();
 
     StepVerifier.create(
@@ -249,7 +258,6 @@ public class ClientLibraryBasedIntegrationTest {
   }
 
 
-
   @Test
   public void testTransactionRolledBack() {
     String uuid = "transaction2-abort" + (new Random()).nextInt();
@@ -273,6 +281,53 @@ public class ClientLibraryBasedIntegrationTest {
         // Expect row not inserted
         .expectNext(Long.valueOf(0))
         .verifyComplete();
+  }
+
+  @Test
+  public void selectQueryReturnsUpdatedDataDuringAndAfterTransactionCommit() {
+
+    Random random = new Random();
+    String uuid1 = "transaction1-commit1-" + random.nextInt();
+
+    StepVerifier.create(
+        Mono.from(connectionFactory.create())
+            .flatMapMany(c -> Flux.concat(
+                c.beginTransaction(),
+                Flux.from(c.createStatement(makeInsertQuery(uuid1, 100, 15.0)).execute())
+                    .flatMap(r -> r.getRowsUpdated()),
+                Flux.from(c.createStatement("SELECT UUID FROM BOOKS WHERE UUID = @uuid")
+                  .bind("uuid", uuid1).execute()
+                ).flatMap(r -> r.map((row, rmeta) -> row.get("UUID", String.class))),
+                c.commitTransaction()
+            ))
+
+    ).expectNext(1, uuid1).verifyComplete();
+
+    verifyIds(uuid1);
+  }
+
+  @Test
+  public void selectQueryReturnsUpdatedDataDuringTransactionButNotAfterTransactionRollback() {
+
+    Random random = new Random();
+    String uuid1 = "transaction1-commit1-" + random.nextInt();
+
+    StepVerifier.create(
+        Mono.from(connectionFactory.create())
+            .flatMapMany(c -> Flux.concat(
+                c.beginTransaction(),
+                Flux.from(c.createStatement(makeInsertQuery(uuid1, 100, 15.0)).execute())
+                    .flatMap(r -> r.getRowsUpdated()),
+                Flux.from(c.createStatement("SELECT UUID FROM BOOKS WHERE UUID = @uuid")
+                    .bind("uuid", uuid1).execute()
+                ).flatMap(r -> r.map((row, rmeta) -> row.get("UUID", String.class))),
+                c.rollbackTransaction()
+            ))
+
+    ).expectNext(1, uuid1).verifyComplete();
+
+    // no data
+    verifyIds();
   }
 
   private String makeInsertQuery(String uuid, int category, double wordCount) {

@@ -106,7 +106,7 @@ public class SpannerClientLibraryConnection implements Connection {
       LOGGER.debug("DML statement detected: " + query);
       return new SpannerClientLibraryDmlStatement(this.clientLibraryAdapter, query);
     }
-    return new SpannerClientLibraryStatement(this.dbClient, query, this.executorService);
+    return new SpannerClientLibraryStatement(this.clientLibraryAdapter, query);
   }
 
   @Override

@@ -17,7 +17,6 @@
 package com.google.cloud.spanner.r2dbc.v2;
 
 import io.r2dbc.spi.Result;
-import io.r2dbc.spi.Statement;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,56 +26,25 @@ import reactor.core.publisher.Mono;
 /**
  * Cloud Spanner implementation of R2DBC SPI for DML statements.
  */
-public class SpannerClientLibraryDmlStatement implements Statement {
+public class SpannerClientLibraryDmlStatement extends AbstractSpannerClientLibraryStatement {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(SpannerClientLibraryDmlStatement.class);
-
-  private DatabaseClientReactiveAdapter clientLibraryAdapter;
-
-  private String query;
 
   /**
    * Creates a ready-to-run Cloud Spanner DML statement.
    * @param clientLibraryAdapter client library implementation of core functionality
    * @param query query to run
    */
-  // TODO: accept a transaction
   public SpannerClientLibraryDmlStatement(DatabaseClientReactiveAdapter clientLibraryAdapter,
       String query) {
-    this.clientLibraryAdapter = clientLibraryAdapter;
-    this.query = query;
-  }
-
-  @Override
-  public Statement add() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public Statement bind(int index, Object value) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public Statement bind(String name, Object value) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public Statement bindNull(int index, Class<?> type) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public Statement bindNull(String name, Class<?> type) {
-    throw new UnsupportedOperationException();
+    super(clientLibraryAdapter, query);
   }
 
   @Override
   public Publisher<? extends Result> execute() {
     return this.clientLibraryAdapter
-        .runDmlStatement(com.google.cloud.spanner.Statement.of(this.query))
+        .runDmlStatement(this.statementBuilder.build())
         .transform(numRowsUpdatedMono -> Mono.just(
             new SpannerClientLibraryResult(Flux.empty(), numRowsUpdatedMono.map(this::longToInt))));
   }
