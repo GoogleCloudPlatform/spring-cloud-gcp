@@ -144,6 +144,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Linkage Check for dependencies
+        # install before running Linkage Checker
         run: |
           ./mvnw \
              --batch-mode \
