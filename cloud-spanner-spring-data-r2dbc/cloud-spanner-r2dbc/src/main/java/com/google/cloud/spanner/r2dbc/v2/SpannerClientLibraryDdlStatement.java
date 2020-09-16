@@ -16,38 +16,29 @@
 
 package com.google.cloud.spanner.r2dbc.v2;
 
-import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
 import com.google.cloud.spanner.r2dbc.SpannerResult;
-import com.google.cloud.spanner.r2dbc.client.Client;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
-import java.util.Collections;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class SpannerClientLibraryDdlStatement implements Statement {
 
-  private Client grpcClient;
-
   private String query;
 
-  private SpannerConnectionConfiguration config;
+  private DatabaseClientReactiveAdapter clientLibraryAdapter;
 
   /**
    * Creates a ready-to-run Cloud Spanner DDL statement.
    *
    * @param query query to execute; does not support placeholders
-   * @param grpcClient TEMPORARY, to be removed
-   * @param config spanner config containing operation timeouts etc.
+   * @param clientLibraryAdapter client library implementation of core functionality
    */
   public SpannerClientLibraryDdlStatement(
       String query,
-      Client grpcClient,
-      SpannerConnectionConfiguration config) {
-    this.grpcClient = grpcClient;
+      DatabaseClientReactiveAdapter clientLibraryAdapter) {
     this.query = query;
-    this.config = config;
+    this.clientLibraryAdapter = clientLibraryAdapter;
   }
 
   @Override
@@ -76,15 +67,8 @@ public class SpannerClientLibraryDdlStatement implements Statement {
   }
 
   @Override
-  public Publisher<? extends Result> execute() {
-    // There is no DDL async support, so fall back to gRPC.
-
-    return this.grpcClient
-        .executeDdl(
-            this.config.getFullyQualifiedDatabaseName(),
-            Collections.singletonList(this.query),
-            this.config.getDdlOperationTimeout(),
-            this.config.getDdlOperationPollInterval())
-        .map(operation -> new SpannerResult(Flux.empty(), Mono.just(0)));
+  public Mono<? extends Result> execute() {
+    return this.clientLibraryAdapter.runDdlStatement(this.query)
+        .map(unusedVoid -> new SpannerResult(Flux.empty(), Mono.just(0)));
   }
 }

@@ -16,10 +16,8 @@
 
 package com.google.cloud.spanner.r2dbc.v2;
 
-import com.google.cloud.spanner.DatabaseAdminClient;
-import com.google.cloud.spanner.DatabaseClient;
+import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
-import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.cloud.spanner.r2dbc.statement.StatementParser;
 import com.google.cloud.spanner.r2dbc.statement.StatementType;
 import io.r2dbc.spi.Batch;
@@ -40,36 +38,20 @@ public class SpannerClientLibraryConnection implements Connection {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(SpannerClientLibraryConnection.class);
 
-  private DatabaseClient dbClient;
-
-  private DatabaseAdminClient dbAdminClient;
-
-  // fall back to grpc for unsupported client library async functionality (DDL)
-  private Client grpcClient;
-
-  private SpannerConnectionConfiguration config;
-
   private final DatabaseClientReactiveAdapter clientLibraryAdapter;
 
   private ExecutorService executorService;
 
   /**
    * Cloud Spanner implementation of R2DBC Connection SPI.
-   * @param dbClient Cloud Spanner client library database client
-   * @param dbAdminClient  Cloud Spanner client library DDL operations client
-   * @param grpcClient TEMPORARY - this will go away
+   * @param spanner Cloud Spanner spanner library database client
    * @param config driver configuration extracted from URL or passed directly to connection factory.
    */
-  public SpannerClientLibraryConnection(DatabaseClient dbClient,
-      DatabaseAdminClient dbAdminClient,
-      Client grpcClient,
-      SpannerConnectionConfiguration config) {
-    this.dbClient = dbClient;
-    this.dbAdminClient = dbAdminClient;
-    this.grpcClient = grpcClient;
-    this.config = config;
+  public SpannerClientLibraryConnection(Spanner spanner, SpannerConnectionConfiguration config) {
+
     this.executorService = Executors.newFixedThreadPool(config.getThreadPoolSize());
-    this.clientLibraryAdapter = new DatabaseClientReactiveAdapter(dbClient, this.executorService);
+    this.clientLibraryAdapter =
+        new DatabaseClientReactiveAdapter(spanner, this.executorService, config);
 
   }
 
@@ -94,14 +76,12 @@ public class SpannerClientLibraryConnection implements Connection {
     throw new UnsupportedOperationException();
   }
 
-  // TODO: test whether select statements interspersed with update statements need to be handled
-  // as part of async flow
   @Override
   public Statement createStatement(String query) {
     StatementType type = StatementParser.getStatementType(query);
     if (type == StatementType.DDL) {
       LOGGER.debug("DDL statement detected: " + query);
-      return new SpannerClientLibraryDdlStatement(query, this.grpcClient, this.config);
+      return new SpannerClientLibraryDdlStatement(query, this.clientLibraryAdapter);
     } else if (type == StatementType.DML) {
       LOGGER.debug("DML statement detected: " + query);
       return new SpannerClientLibraryDmlStatement(this.clientLibraryAdapter, query);

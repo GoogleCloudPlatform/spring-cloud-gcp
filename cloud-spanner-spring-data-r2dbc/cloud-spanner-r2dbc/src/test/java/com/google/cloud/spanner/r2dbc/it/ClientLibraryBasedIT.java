@@ -29,10 +29,12 @@ import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
+import io.r2dbc.spi.Result;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
@@ -40,9 +42,9 @@ import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-public class ClientLibraryBasedIntegrationTest {
+public class ClientLibraryBasedIT {
   private static final Logger LOGGER =
-      LoggerFactory.getLogger(ClientLibraryBasedIntegrationTest.class);
+      LoggerFactory.getLogger(ClientLibraryBasedIT.class);
 
   static final String INSERT_QUERY = "INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
       + "PUBLISHED, WORDS_PER_SENTENCE) VALUES (@uuid, 'A Sound of Thunder', 'Ray Bradbury', "
@@ -58,40 +60,45 @@ public class ClientLibraryBasedIntegrationTest {
               .option(Option.valueOf("client-implementation"), "client-library")
               .build());
 
+  Random random = new Random();
+
   // TODO: Don't drop/recreate tables; instead clear table before each test.
 
   /**
    * Recreates test table.
+   * Call with {@code it.recreate-ddl=true} to drop and create test tables.
    */
   @BeforeAll
   public static void setupSpannerTable() {
 
     Hooks.onOperatorDebug();
 
-    SpannerClientLibraryConnection con =
-        Mono.from(connectionFactory.create()).cast(SpannerClientLibraryConnection.class).block();
+    if ("true".equals(System.getProperty("it.recreate-ddl"))) {
+      LOGGER.info("Dropping and re-creating table BOOKS.");
+      Connection con = Mono.from(connectionFactory.create()).block();
 
-    try {
-      Mono.from(con.createStatement("DROP TABLE BOOKS").execute()).block();
-    } catch (Exception e) {
-      LOGGER.info("The BOOKS table doesn't exist", e);
+      try {
+        Mono.from(con.createStatement("DROP TABLE BOOKS").execute()).block();
+      } catch (Exception e) {
+        LOGGER.info("The BOOKS table doesn't exist", e);
+      }
+
+      Mono.from(
+              con.createStatement(
+                      "CREATE TABLE BOOKS ("
+                          + "  UUID STRING(36) NOT NULL,"
+                          + "  TITLE STRING(256) NOT NULL,"
+                          + "  AUTHOR STRING(256) NOT NULL,"
+                          + "  SYNOPSIS STRING(MAX),"
+                          + "  EDITIONS ARRAY<STRING(MAX)>,"
+                          + "  FICTION BOOL NOT NULL,"
+                          + "  PUBLISHED DATE NOT NULL,"
+                          + "  WORDS_PER_SENTENCE FLOAT64 NOT NULL,"
+                          + "  CATEGORY INT64 NOT NULL"
+                          + ") PRIMARY KEY (UUID)")
+                  .execute())
+          .block();
     }
-
-    Mono.from(
-            con.createStatement(
-                    "CREATE TABLE BOOKS ("
-                        + "  UUID STRING(36) NOT NULL,"
-                        + "  TITLE STRING(256) NOT NULL,"
-                        + "  AUTHOR STRING(256) NOT NULL,"
-                        + "  SYNOPSIS STRING(MAX),"
-                        + "  EDITIONS ARRAY<STRING(MAX)>,"
-                        + "  FICTION BOOL NOT NULL,"
-                        + "  PUBLISHED DATE NOT NULL,"
-                        + "  WORDS_PER_SENTENCE FLOAT64 NOT NULL,"
-                        + "  CATEGORY INT64 NOT NULL"
-                        + ") PRIMARY KEY (UUID)")
-                .execute())
-        .block();
   }
 
   /**
@@ -138,7 +145,7 @@ public class ClientLibraryBasedIntegrationTest {
   public void testDmlInsert() {
     Connection conn = Mono.from(connectionFactory.create()).block();
 
-    String id = "abc123-" + new Random().nextInt();
+    String id = "abc123-" + this.random.nextInt();
 
     StepVerifier.create(
         Mono.from(
@@ -169,8 +176,7 @@ public class ClientLibraryBasedIntegrationTest {
   public void testTransactionSingleStatementCommitted() {
     // TODO: introduce timeouts; when there is an issue in apifuture conversion,
     // test never completes
-    Random random = new Random();
-    String uuid1 = "transaction1-commit1-" + random.nextInt();
+    String uuid1 = "transaction1-commit1-" + this.random.nextInt();
 
     StepVerifier.create(
         Mono.from(connectionFactory.create())
@@ -197,9 +203,8 @@ public class ClientLibraryBasedIntegrationTest {
   @Test
   public void testTransactionMultipleStatementsCommitted() {
 
-    Random random = new Random();
-    String uuid1 = "transaction1-commit1-" + random.nextInt();
-    String uuid2 = "transaction1-commit2-" + random.nextInt();
+    String uuid1 = "transaction1-commit1-" + this.random.nextInt();
+    String uuid2 = "transaction1-commit2-" + this.random.nextInt();
 
     StepVerifier.create(
         Mono.from(connectionFactory.create())
@@ -237,9 +242,8 @@ public class ClientLibraryBasedIntegrationTest {
   @Test
   public void testTransactionFollowedByStandaloneStatementCommitted() {
 
-    Random random = new Random();
-    String uuid1 = "transaction1-commit1-" + random.nextInt();
-    String uuid2 = "transaction1-commit2-" + random.nextInt();
+    String uuid1 = "transaction1-commit1-" + this.random.nextInt();
+    String uuid2 = "transaction1-commit2-" + this.random.nextInt();
 
     StepVerifier.create(
         Mono.from(connectionFactory.create())
@@ -260,7 +264,7 @@ public class ClientLibraryBasedIntegrationTest {
 
   @Test
   public void testTransactionRolledBack() {
-    String uuid = "transaction2-abort" + (new Random()).nextInt();
+    String uuid = "transaction2-abort" + this.random.nextInt();
 
     StepVerifier.create(
         Mono.from(connectionFactory.create())
@@ -286,8 +290,7 @@ public class ClientLibraryBasedIntegrationTest {
   @Test
   public void selectQueryReturnsUpdatedDataDuringAndAfterTransactionCommit() {
 
-    Random random = new Random();
-    String uuid1 = "transaction1-commit1-" + random.nextInt();
+    String uuid1 = "transaction1-commit1-" + this.random.nextInt();
 
     StepVerifier.create(
         Mono.from(connectionFactory.create())
@@ -309,8 +312,7 @@ public class ClientLibraryBasedIntegrationTest {
   @Test
   public void selectQueryReturnsUpdatedDataDuringTransactionButNotAfterTransactionRollback() {
 
-    Random random = new Random();
-    String uuid1 = "transaction1-commit1-" + random.nextInt();
+    String uuid1 = "transaction1-commit1-" + this.random.nextInt();
 
     StepVerifier.create(
         Mono.from(connectionFactory.create())
@@ -330,6 +332,50 @@ public class ClientLibraryBasedIntegrationTest {
     verifyIds();
   }
 
+  @Test
+  public void ddlCreateAndDrop() {
+    String listTables = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name=@table";
+    String tableName = "test_table_" + this.random.nextInt(100000);
+
+    Connection conn = Mono.from(connectionFactory.create()).block();
+
+    StepVerifier.create(
+        Flux.from(conn.createStatement(listTables).bind("table", tableName).execute())
+            .flatMap(this::getFirstNumber)
+    ).expectNext(0L).as("Table not found before creation").verifyComplete();
+
+    StepVerifier.create(
+        Mono.from(conn.createStatement(
+            "CREATE TABLE " + tableName + " ("
+                + "  NAME STRING(256) NOT NULL,"
+                + "  START_YEAR INT64 NOT NULL"
+                + ") PRIMARY KEY (NAME)")
+            .execute()).flatMap(res -> Mono.from(res.getRowsUpdated()))
+    ).expectNext().as("DDL execution returns zero affected rows")
+    .verifyComplete();
+
+    StepVerifier.create(
+        Flux.from(conn.createStatement(listTables).bind("table", tableName).execute())
+            .flatMap(this::getFirstNumber)
+    ).expectNext(1L).as("Table found after creation").verifyComplete();
+
+    StepVerifier.create(
+        Flux.from(conn.createStatement("DROP TABLE " + tableName).execute())
+            .flatMap(res -> res.map(
+                (row, meta) -> "this should not happen because DDL does not return rows")))
+        .expectNext().as("DDL execution returns zero affected rows")
+        .verifyComplete();
+
+    StepVerifier.create(
+        Flux.from(conn.createStatement(listTables).bind("table", tableName).execute())
+            .flatMap(this::getFirstNumber)
+    ).expectNext(0L).as("Table not found after deletion").verifyComplete();
+  }
+
+  private Publisher<Long> getFirstNumber(Result result) {
+    return result.map((row, meta) -> (Long) row.get(1));
+  }
+
   private String makeInsertQuery(String uuid, int category, double wordCount) {
     return "INSERT BOOKS "
         + "(UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
@@ -347,8 +393,8 @@ public class ClientLibraryBasedIntegrationTest {
                 "SELECT UUID FROM BOOKS ORDER BY UUID")
                 .execute()
             ).flatMap(rs -> rs.map((row, rmeta) -> row.get("UUID", String.class))))
-        // Expected row inserted
         .expectNext(uuids)
+        .as("Expected rows inserted")
         .verifyComplete();
   }
 }

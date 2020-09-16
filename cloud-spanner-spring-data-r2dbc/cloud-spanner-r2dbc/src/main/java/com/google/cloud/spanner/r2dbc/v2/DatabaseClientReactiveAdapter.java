@@ -24,8 +24,13 @@ import com.google.cloud.spanner.AsyncResultSet.CallbackResponse;
 import com.google.cloud.spanner.AsyncTransactionManager;
 import com.google.cloud.spanner.AsyncTransactionManager.AsyncTransactionStep;
 import com.google.cloud.spanner.AsyncTransactionManager.TransactionContextFuture;
+import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
+import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.ReadContext;
+import com.google.cloud.spanner.Spanner;
+import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
+import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 import org.reactivestreams.Publisher;
@@ -43,7 +48,12 @@ class DatabaseClientReactiveAdapter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseClientReactiveAdapter.class);
 
+  // used for DDL operations
+  private final SpannerConnectionConfiguration config;
+
   private final DatabaseClient dbClient;
+
+  private final DatabaseAdminClient dbAdminClient;
 
   private AsyncTransactionManager transactionManager;
 
@@ -56,12 +66,17 @@ class DatabaseClientReactiveAdapter {
   /**
    * Instantiates the adapter with given client library {@code DatabaseClient} and executor.
    *
-   * @param dbClient Cloud Spanner client used to run queries and manage transactions.
+   * @param spannerClient Cloud Spanner client used to run queries and manage transactions.
    * @param executorService executor to be used for running callbacks.
    */
-  public DatabaseClientReactiveAdapter(DatabaseClient dbClient, ExecutorService executorService) {
-    this.dbClient = dbClient;
+  public DatabaseClientReactiveAdapter(Spanner spannerClient, ExecutorService executorService,
+      SpannerConnectionConfiguration config) {
+    this.dbClient = spannerClient.getDatabaseClient(
+        DatabaseId.of(config.getProjectId(), config.getInstanceName(), config.getDatabaseName()));
+    this.dbAdminClient = spannerClient.getDatabaseAdminClient();
+
     this.executorService = executorService;
+    this.config = config;
   }
 
   private boolean isInTransaction() {
@@ -190,22 +205,31 @@ class DatabaseClientReactiveAdapter {
             this.lastStep =
                 this.lastStep == null
                     ? this.txnContext.then(
-                        (ctx, unusedVoid) -> runSelectStatement(() -> ctx, statement, sink),
+                        (ctx, unusedVoid) -> runSelectStatementAsFlux(() -> ctx, statement, sink),
                         this.executorService)
                     : this.lastStep.then(
                         (ctx, unusedPreviousResult) ->
-                            runSelectStatement(() -> ctx, statement, sink),
+                            runSelectStatementAsFlux(() -> ctx, statement, sink),
                         this.executorService);
 
           } else {
             LOGGER.debug("  running standalone SELECT statement: " + statement.getSql());
-            runSelectStatement(() -> this.dbClient.singleUse(), statement, sink);
+            runSelectStatementAsFlux(() -> this.dbClient.singleUse(), statement, sink);
           }
         });
   }
 
+  public Mono<Void> runDdlStatement(String query) {
+
+    return convertFutureToMono(() -> this.dbAdminClient.updateDatabaseDdl(
+        this.config.getInstanceName(),
+        this.config.getDatabaseName(),
+        Collections.singletonList(query),
+        null));
+  }
+
   /**
-   * Adapts SELECT query output from an {@link AsyncResultSet} to a {@link FluxSink}.
+   * Runs SELECT query, adapting its output from {@link AsyncResultSet} to {@link FluxSink}.
    *
    * <p>Make sure that if run from a transactional context, this method is called after {@link
    * ApiFuture} returned by `transactionManager.beginAsync()` resolves. In practice, this means
@@ -216,7 +240,7 @@ class DatabaseClientReactiveAdapter {
    * @param sink output Flux sink
    * @return future suitable for transactional step chaining
    */
-  private ApiFuture<Void> runSelectStatement(
+  private ApiFuture<Void> runSelectStatementAsFlux(
       Supplier<ReadContext> ctxSupplier,
       com.google.cloud.spanner.Statement statement,
       FluxSink<SpannerClientLibraryRow> sink) {
