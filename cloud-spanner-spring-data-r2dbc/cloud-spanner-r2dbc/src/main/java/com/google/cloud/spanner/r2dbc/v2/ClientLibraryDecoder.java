@@ -63,6 +63,9 @@ public class ClientLibraryDecoder {
     decoders.put(Type.timestamp(), AbstractStructReader::getTimestamp);
     decoders.put(Type.array(Type.timestamp()), AbstractStructReader::getTimestampList);
 
+    decoders.put(Type.numeric(), AbstractStructReader::getBigDecimal);
+    decoders.put(Type.array(Type.numeric()), AbstractStructReader::getBigDecimalList);
+
     return decoders;
   }
 

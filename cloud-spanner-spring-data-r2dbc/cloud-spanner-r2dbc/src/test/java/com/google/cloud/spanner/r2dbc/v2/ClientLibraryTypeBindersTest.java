@@ -27,6 +27,7 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Statement.Builder;
 import com.google.cloud.spanner.ValueBinder;
 import com.google.cloud.spanner.r2dbc.statement.TypedNull;
+import java.math.BigDecimal;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
@@ -75,7 +76,12 @@ class ClientLibraryTypeBindersTest {
         arguments(
             Timestamp.class,
             Timestamp.ofTimeMicroseconds(123456),
-            (BiConsumer<ValueBinder, Object>) (binder, val) -> binder.to((Timestamp) val)));
+            (BiConsumer<ValueBinder, Object>) (binder, val) -> binder.to((Timestamp) val)),
+        arguments(
+            BigDecimal.class,
+            BigDecimal.TEN,
+            (BiConsumer<ValueBinder, Object>) (binder, val) -> binder.to((BigDecimal) val))
+    );
   }
 
   /** Validates that every supported type binds successfully. */

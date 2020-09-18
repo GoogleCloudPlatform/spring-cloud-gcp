@@ -30,6 +30,7 @@ import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
 import io.r2dbc.spi.Result;
+import java.math.BigDecimal;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,8 +48,8 @@ public class ClientLibraryBasedIT {
       LoggerFactory.getLogger(ClientLibraryBasedIT.class);
 
   static final String INSERT_QUERY = "INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
-      + "PUBLISHED, WORDS_PER_SENTENCE) VALUES (@uuid, 'A Sound of Thunder', 'Ray Bradbury', "
-      + "@category, TRUE, '1952-06-28', @wordCount)";
+      + "PUBLISHED, WORDS_PER_SENTENCE, PRICE) VALUES (@uuid, 'A Sound of Thunder', "
+      + "'Ray Bradbury', @category, TRUE, '1952-06-28', @wordCount, @price)";
 
   private static final ConnectionFactory connectionFactory =
       ConnectionFactories.get(
@@ -61,8 +62,6 @@ public class ClientLibraryBasedIT {
               .build());
 
   Random random = new Random();
-
-  // TODO: Don't drop/recreate tables; instead clear table before each test.
 
   /**
    * Recreates test table.
@@ -94,7 +93,8 @@ public class ClientLibraryBasedIT {
                           + "  FICTION BOOL NOT NULL,"
                           + "  PUBLISHED DATE NOT NULL,"
                           + "  WORDS_PER_SENTENCE FLOAT64 NOT NULL,"
-                          + "  CATEGORY INT64 NOT NULL"
+                          + "  CATEGORY INT64 NOT NULL,"
+                          + "  PRICE NUMERIC NOT NULL"
                           + ") PRIMARY KEY (UUID)")
                   .execute())
           .block();
@@ -154,6 +154,7 @@ public class ClientLibraryBasedIT {
                 .bind("uuid", id)
                 .bind("category", 100L)
                 .bind("wordCount", 20.8)
+                .bind("price", new BigDecimal("123.99"))
                 .execute())
             .flatMapMany(rs -> rs.getRowsUpdated())
     ).expectNext(1).verifyComplete();
@@ -170,6 +171,13 @@ public class ClientLibraryBasedIT {
                 .execute()
         ).flatMapMany(rs -> rs.map((row, rmeta) -> row.get(1, Double.class))))
         .expectNext(20.8d).verifyComplete();
+    StepVerifier.create(
+        Mono.from(
+            conn.createStatement("SELECT PRICE FROM BOOKS WHERE UUID = @uuid")
+                .bind("uuid", id)
+                .execute()
+        ).flatMapMany(rs -> rs.map((row, rmeta) -> row.get(1, BigDecimal.class))))
+        .expectNext(new BigDecimal("123.99")).verifyComplete();
   }
 
   @Test
@@ -379,11 +387,11 @@ public class ClientLibraryBasedIT {
   private String makeInsertQuery(String uuid, int category, double wordCount) {
     return "INSERT BOOKS "
         + "(UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
-        + "PUBLISHED, WORDS_PER_SENTENCE)"
+        + "PUBLISHED, WORDS_PER_SENTENCE, PRICE)"
         + " VALUES "
         + "('" + uuid + "', 'A Sound of Thunder', 'Ray Bradbury', "
         + category + ", TRUE, "
-        + "'1952-06-28', " + wordCount + ");";
+        + "'1952-06-28', " + wordCount + ", 99.99);";
   }
 
   private void verifyIds(String... uuids) {

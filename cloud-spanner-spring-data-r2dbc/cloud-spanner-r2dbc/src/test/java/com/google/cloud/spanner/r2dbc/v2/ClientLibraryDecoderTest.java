@@ -24,6 +24,7 @@ import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Value;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -98,7 +99,17 @@ class ClientLibraryDecoderTest {
             List.class,
             Arrays.asList(
                 Timestamp.ofTimeMicroseconds(123456), Timestamp.ofTimeMicroseconds(654321)),
-            (Function<Object, Value>) (o) -> Value.timestampArray((Iterable<Timestamp>) o)));
+            (Function<Object, Value>) (o) -> Value.timestampArray((Iterable<Timestamp>) o)),
+        arguments(
+            BigDecimal.class,
+            BigDecimal.TEN,
+            (Function<Object, Value>) (o) -> Value.numeric((BigDecimal) o)),
+        arguments(
+            List.class,
+            Arrays.asList(
+                BigDecimal.TEN, BigDecimal.ZERO),
+            (Function<Object, Value>) (o) -> Value.numericArray((Iterable<BigDecimal>) o))
+    );
   }
 
   /** Validates that every supported type converts to expected value. */

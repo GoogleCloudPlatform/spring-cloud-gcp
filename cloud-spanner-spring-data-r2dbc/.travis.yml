@@ -16,7 +16,7 @@ before_install:
     fi;
 
 install:
-  - ./mvnw clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - ./mvnw clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -Dit.recreate-ddl=true;
 
 script:
   - if [ "$TRAVIS_SECURE_ENV_VARS" == "true" ]; then

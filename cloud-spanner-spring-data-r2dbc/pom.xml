@@ -84,7 +84,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <google-cloud-bom.version>8.1.0</google-cloud-bom.version>
+    <google-cloud-bom.version>10.0.0</google-cloud-bom.version>
 
     <r2dbc.version>0.8.1.RELEASE</r2dbc.version>
     <reactor.version>Dysprosium-SR5</reactor.version>
@@ -102,7 +102,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>google-cloud-spanner</artifactId>
-        <version>1.58.0</version>
+        <version>1.59.0</version>
       </dependency>
 
       <dependency>

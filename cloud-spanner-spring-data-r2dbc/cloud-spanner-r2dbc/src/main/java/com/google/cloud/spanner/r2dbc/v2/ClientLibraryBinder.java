@@ -21,6 +21,7 @@ import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.r2dbc.statement.TypedNull;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +47,9 @@ class ClientLibraryBinder {
     binders.add(
         new ClientLibraryTypeBinderImpl(Timestamp.class,
             (binder, val) -> binder.to((Timestamp) val)));
+    binders.add(
+        new ClientLibraryTypeBinderImpl(BigDecimal.class,
+            (binder, val) -> binder.to((BigDecimal) val)));
 
     // There is technically one more supported type -  binder.to(Type type, @Nullable Struct value),
     // but it is not clear how r2dbc could pass both the type and the value
