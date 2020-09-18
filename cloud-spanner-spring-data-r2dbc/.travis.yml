@@ -16,11 +16,11 @@ before_install:
     fi;
 
 install:
-  - ./mvnw clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -Dit.recreate-ddl=true;
+  - ./mvnw clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V;
 
 script:
   - if [ "$TRAVIS_SECURE_ENV_VARS" == "true" ]; then
-      ./mvnw verify javadoc:jar@attach-javadocs -B -V;
+      ./mvnw verify javadoc:jar@attach-javadocs -B -V -Dit.recreate-ddl=true;
     else
       ./mvnw verify javadoc:jar@attach-javadocs -B -V -DskipITs;
     fi;
