@@ -21,27 +21,27 @@ import com.google.cloud.spanner.ValueBinder;
 import com.google.cloud.spanner.r2dbc.util.Assert;
 import java.util.function.BiConsumer;
 
-public class ClientLibraryTypeBinderImpl implements ClientLibraryTypeBinder {
+public class ClientLibraryTypeBinderImpl<T> implements ClientLibraryTypeBinder<T> {
 
-  private Class<?> type;
+  private Class<T> type;
 
-  private BiConsumer<ValueBinder, Object> bindingConsumer;
+  private BiConsumer<ValueBinder, T> bindingConsumer;
 
   public ClientLibraryTypeBinderImpl(
-      Class<?> type, BiConsumer<ValueBinder, Object> bindingConsumer) {
+      Class<T> type, BiConsumer<ValueBinder, T> bindingConsumer) {
     this.type = type;
     this.bindingConsumer = bindingConsumer;
   }
 
   @Override
-  public boolean canBind(Class<?> type) {
+  public boolean canBind(Class<T> type) {
     Assert.requireNonNull(type, "type to encode must not be null");
 
     return this.type.isAssignableFrom(type);
   }
 
   @Override
-  public void bind(Builder builder, String name, Object value) {
+  public void bind(Builder builder, String name, T value) {
     this.bindingConsumer.accept(builder.bind(name), value);
   }
 }
