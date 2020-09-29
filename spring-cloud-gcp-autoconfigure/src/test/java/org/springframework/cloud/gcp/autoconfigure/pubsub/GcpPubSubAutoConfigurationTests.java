@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 the original author or authors.
+ * Copyright 2019-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,11 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.auth.Credentials;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.autoconfigure.pubsub.health.PubSubHealthIndicator;
-import org.springframework.cloud.gcp.autoconfigure.pubsub.health.PubSubHealthIndicatorAutoConfiguration;
 import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
 import org.springframework.context.annotation.Bean;
 
@@ -36,6 +35,7 @@ import static org.mockito.Mockito.mock;
  * Tests for Pub/Sub autoconfiguration.
  *
  * @author Elena Felder
+ * @author Mike Eltsufin
  */
 public class GcpPubSubAutoConfigurationTests {
 
@@ -49,8 +49,11 @@ public class GcpPubSubAutoConfigurationTests {
 			GcpPubSubProperties props = ctx.getBean(GcpPubSubProperties.class);
 			assertThat(props.getKeepAliveIntervalMinutes()).isEqualTo(5);
 
-			TransportChannelProvider tcp = ctx.getBean(TransportChannelProvider.class);
-			assertThat(((InstantiatingGrpcChannelProvider) tcp).getKeepAliveTime().toMinutes())
+			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider", TransportChannelProvider.class);
+			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider", TransportChannelProvider.class);
+			assertThat(((InstantiatingGrpcChannelProvider) subscriberTcp).getKeepAliveTime().toMinutes())
+					.isEqualTo(5);
+			assertThat(((InstantiatingGrpcChannelProvider) publisherTcp).getKeepAliveTime().toMinutes())
 					.isEqualTo(5);
 		});
 	}
@@ -66,23 +69,30 @@ public class GcpPubSubAutoConfigurationTests {
 			GcpPubSubProperties props = ctx.getBean(GcpPubSubProperties.class);
 			assertThat(props.getKeepAliveIntervalMinutes()).isEqualTo(2);
 
-			TransportChannelProvider tcp = ctx.getBean(TransportChannelProvider.class);
-			assertThat(((InstantiatingGrpcChannelProvider) tcp).getKeepAliveTime().toMinutes())
+			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider", TransportChannelProvider.class);
+			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider", TransportChannelProvider.class);
+			assertThat(((InstantiatingGrpcChannelProvider) subscriberTcp).getKeepAliveTime().toMinutes())
+					.isEqualTo(2);
+			assertThat(((InstantiatingGrpcChannelProvider) publisherTcp).getKeepAliveTime().toMinutes())
 					.isEqualTo(2);
 		});
 	}
 
 	@Test
-	public void healthIndicatorPresent() {
+	public void maxInboundMessageSize_default() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-				.withConfiguration(AutoConfigurations.of(PubSubHealthIndicatorAutoConfiguration.class,
-						GcpPubSubAutoConfiguration.class))
-				.withUserConfiguration(TestConfig.class)
-				.withPropertyValues("spring.cloud.gcp.datastore.project-id=test-project",
-						"management.health.pubsub.enabled=true");
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withUserConfiguration(TestConfig.class);
+
 		contextRunner.run(ctx -> {
-			PubSubHealthIndicator healthIndicator = ctx.getBean(PubSubHealthIndicator.class);
-			assertThat(healthIndicator).isNotNull();
+
+			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider", TransportChannelProvider.class);
+			assertThat(FieldUtils.readField(subscriberTcp, "maxInboundMessageSize", true))
+					.isEqualTo(20 << 20);
+
+			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider", TransportChannelProvider.class);
+			assertThat(FieldUtils.readField(publisherTcp, "maxInboundMessageSize", true))
+					.isEqualTo(Integer.MAX_VALUE);
 		});
 	}
 
