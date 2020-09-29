@@ -78,6 +78,9 @@ public class SpannerClientLibraryConnection implements Connection {
 
   @Override
   public Statement createStatement(String query) {
+    if (query == null) {
+      throw new IllegalArgumentException("Invalid null query.");
+    }
     StatementType type = StatementParser.getStatementType(query);
     if (type == StatementType.DDL) {
       LOGGER.debug("DDL statement detected: " + query);

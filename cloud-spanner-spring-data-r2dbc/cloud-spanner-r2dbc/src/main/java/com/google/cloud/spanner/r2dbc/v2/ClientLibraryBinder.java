@@ -21,6 +21,7 @@ import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.r2dbc.statement.TypedNull;
+import com.google.cloud.spanner.r2dbc.util.Assert;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,9 @@ class ClientLibraryBinder {
   }
 
   static void bind(Statement.Builder builder, String name, Object value) {
+    Assert.requireNonNull(name, "Column name must not be null");
+    Assert.requireNonNull(value, "Value must not be null");
+
     Class<?> valueClass = isTypedNull(value) ? ((TypedNull) value).getType() : value.getClass();
 
     Optional<ClientLibraryTypeBinder> optionalBinder =

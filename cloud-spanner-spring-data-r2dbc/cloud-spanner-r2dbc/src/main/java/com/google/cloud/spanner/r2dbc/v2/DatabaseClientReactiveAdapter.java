@@ -120,7 +120,10 @@ class DatabaseClientReactiveAdapter {
     LOGGER.debug("close transaction manager");
     this.txnContext = null;
     this.lastStep = null;
-    this.transactionManager.close();
+    if (this.transactionManager != null) {
+      this.transactionManager.close();
+      this.transactionManager = null;
+    }
   }
 
   /**

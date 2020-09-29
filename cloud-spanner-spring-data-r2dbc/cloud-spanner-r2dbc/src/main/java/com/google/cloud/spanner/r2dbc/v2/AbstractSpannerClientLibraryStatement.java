@@ -59,6 +59,7 @@ abstract class AbstractSpannerClientLibraryStatement implements Statement {
 
   @Override
   public Statement bind(String name, Object value) {
+
     ClientLibraryBinder.bind(this.statementBuilder, name, value);
     return this;
   }
