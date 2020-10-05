@@ -307,8 +307,8 @@ public class SpannerStatementQueryTests {
 	@Test
 	public void unsupportedParamTypeTest() throws NoSuchMethodException {
 		this.expectedEx.expect(IllegalArgumentException.class);
-		this.expectedEx.expectMessage("is not a supported type: class org.springframework." +
-				"cloud.gcp.data.spanner.repository.query.SpannerStatementQueryTests$Trade");
+		this.expectedEx.expectMessage("is not a supported type: class com.google." +
+				"cloud.spring.data.spanner.repository.query.SpannerStatementQueryTests$Trade");
 		when(this.queryMethod.getName()).thenReturn(
 				"findTop3DistinctIdActionPriceByActionAndSymbolOrTraderIdAndPriceLessThanOrPriceGreater"
 						+ "ThanEqualAndIdIsNotNullAndTraderIdIsNullOrderByIdDesc");
