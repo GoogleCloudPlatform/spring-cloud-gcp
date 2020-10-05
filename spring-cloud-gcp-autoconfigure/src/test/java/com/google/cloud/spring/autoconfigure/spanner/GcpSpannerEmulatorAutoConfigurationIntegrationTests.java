@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.spanner;
+package com.google.cloud.spring.autoconfigure.spanner;
 
 import com.google.cloud.spanner.SpannerOptions;
 import org.junit.BeforeClass;
@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;

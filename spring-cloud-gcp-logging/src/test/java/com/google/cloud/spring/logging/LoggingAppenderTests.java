@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.logging;
+package com.google.cloud.spring.logging;
 
 import org.junit.Test;
 

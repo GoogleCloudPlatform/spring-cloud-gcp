@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.spanner;
+package com.google.cloud.spring.autoconfigure.spanner;
 
 import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.SpannerOptions;

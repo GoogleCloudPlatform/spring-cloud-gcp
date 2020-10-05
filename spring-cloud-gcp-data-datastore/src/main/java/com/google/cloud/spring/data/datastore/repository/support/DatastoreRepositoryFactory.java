@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository.support;
+package com.google.cloud.spring.data.datastore.repository.support;
 
 import java.util.Optional;
 
 import org.springframework.beans.BeansException;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreOperations;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentEntity;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentEntityInformation;
-import org.springframework.cloud.gcp.data.datastore.repository.query.DatastoreQueryLookupStrategy;
+import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntityInformation;
+import com.google.cloud.spring.data.datastore.repository.query.DatastoreQueryLookupStrategy;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.expression.BeanFactoryAccessor;

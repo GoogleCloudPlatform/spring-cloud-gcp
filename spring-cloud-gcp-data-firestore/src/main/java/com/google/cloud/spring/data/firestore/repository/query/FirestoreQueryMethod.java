@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.repository.query;
+package com.google.cloud.spring.data.firestore.repository.query;
 
 import java.lang.reflect.Method;
 

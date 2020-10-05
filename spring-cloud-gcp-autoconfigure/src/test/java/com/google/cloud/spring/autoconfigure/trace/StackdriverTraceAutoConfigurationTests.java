@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.trace;
+package com.google.cloud.spring.autoconfigure.trace;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -54,7 +54,7 @@ import zipkin2.reporter.Sender;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import org.springframework.cloud.sleuth.autoconfig.SleuthProperties;
 import org.springframework.cloud.sleuth.autoconfig.TraceAutoConfiguration;
 import org.springframework.context.annotation.Bean;

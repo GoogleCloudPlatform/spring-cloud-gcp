@@ -15,7 +15,7 @@
  */
 
 
-package org.springframework.cloud.gcp.data.firestore;
+package com.google.cloud.spring.data.firestore;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

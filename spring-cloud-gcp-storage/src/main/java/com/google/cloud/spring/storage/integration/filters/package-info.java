@@ -1,4 +1,4 @@
 /**
  * Google Cloud Storage file filter classes for Spring Integration.
  */
-package org.springframework.cloud.gcp.storage.integration.filters;
+package com.google.cloud.spring.storage.integration.filters;

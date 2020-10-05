@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.support;
+package com.google.cloud.spring.pubsub.support;
 
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
@@ -22,7 +22,7 @@ import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.pubsub.v1.PullRequest;
 
 /**
- * Interface used by the {@link org.springframework.cloud.gcp.pubsub.core.PubSubTemplate} to create
+ * Interface used by the {@link com.google.cloud.spring.pubsub.core.PubSubTemplate} to create
  * supporting objects for consuming messages from Pub/Sub subscriptions.
  *
  * @author João André Martins

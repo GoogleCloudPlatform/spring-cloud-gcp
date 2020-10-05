@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.pubsub.it;
+package com.google.cloud.spring.autoconfigure.pubsub.it;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,18 +36,18 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.system.OutputCaptureRule;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
-import org.springframework.cloud.gcp.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
-import org.springframework.cloud.gcp.core.Credentials;
-import org.springframework.cloud.gcp.core.DefaultCredentialsProvider;
-import org.springframework.cloud.gcp.core.DefaultGcpProjectIdProvider;
-import org.springframework.cloud.gcp.pubsub.PubSubAdmin;
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
-import org.springframework.cloud.gcp.pubsub.integration.AckMode;
-import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubInboundChannelAdapter;
-import org.springframework.cloud.gcp.pubsub.integration.outbound.PubSubMessageHandler;
-import org.springframework.cloud.gcp.pubsub.support.BasicAcknowledgeablePubsubMessage;
-import org.springframework.cloud.gcp.pubsub.support.GcpPubSubHeaders;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
+import com.google.cloud.spring.core.Credentials;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.PubSubAdmin;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.integration.AckMode;
+import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
+import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
+import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;

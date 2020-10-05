@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.core.test.allowed;
+package com.google.cloud.spring.pubsub.core.test.allowed;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 

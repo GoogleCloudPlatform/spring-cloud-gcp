@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository;
+package com.google.cloud.spring.data.datastore.repository;
 
 import java.util.function.Function;
 

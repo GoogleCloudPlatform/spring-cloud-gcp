@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.vision.it;
+package com.google.cloud.spring.vision.it;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,9 +29,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gcp.storage.GoogleStorageLocation;
-import org.springframework.cloud.gcp.vision.DocumentOcrResultSet;
-import org.springframework.cloud.gcp.vision.DocumentOcrTemplate;
+import com.google.cloud.spring.storage.GoogleStorageLocation;
+import com.google.cloud.spring.vision.DocumentOcrResultSet;
+import com.google.cloud.spring.vision.DocumentOcrTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.concurrent.ListenableFuture;

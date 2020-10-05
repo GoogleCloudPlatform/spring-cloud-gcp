@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.util;
+package com.google.cloud.spring.data.firestore.util;
 
 /**
  * @author Dmitry Solomakha

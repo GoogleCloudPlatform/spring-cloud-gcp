@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it;
 
 import java.util.List;
 import java.util.Objects;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.support;
+package com.google.cloud.spring.pubsub.support;
 
 import java.io.IOException;
 import java.util.Map;
@@ -28,8 +28,8 @@ import com.google.api.gax.rpc.HeaderProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.pubsub.v1.Publisher;
 
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.pubsub.core.PubSubException;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.core.PubSubException;
 import org.springframework.util.Assert;
 
 /**

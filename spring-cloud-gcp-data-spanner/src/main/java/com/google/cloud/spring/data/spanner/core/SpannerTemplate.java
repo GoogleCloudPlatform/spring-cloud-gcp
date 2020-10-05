@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core;
+package com.google.cloud.spring.data.spanner.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,21 +49,21 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerSchemaUtils;
-import org.springframework.cloud.gcp.data.spanner.core.convert.ConversionUtils;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerEntityProcessor;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerPersistentEntity;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.event.AfterDeleteEvent;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.event.AfterExecuteDmlEvent;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.event.AfterQueryEvent;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.event.AfterReadEvent;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.event.AfterSaveEvent;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.event.BeforeDeleteEvent;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.event.BeforeExecuteDmlEvent;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.event.BeforeSaveEvent;
-import org.springframework.cloud.gcp.data.spanner.repository.query.SpannerStatementQueryExecutor;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
+import com.google.cloud.spring.data.spanner.core.mapping.event.AfterDeleteEvent;
+import com.google.cloud.spring.data.spanner.core.mapping.event.AfterExecuteDmlEvent;
+import com.google.cloud.spring.data.spanner.core.mapping.event.AfterQueryEvent;
+import com.google.cloud.spring.data.spanner.core.mapping.event.AfterReadEvent;
+import com.google.cloud.spring.data.spanner.core.mapping.event.AfterSaveEvent;
+import com.google.cloud.spring.data.spanner.core.mapping.event.BeforeDeleteEvent;
+import com.google.cloud.spring.data.spanner.core.mapping.event.BeforeExecuteDmlEvent;
+import com.google.cloud.spring.data.spanner.core.mapping.event.BeforeSaveEvent;
+import com.google.cloud.spring.data.spanner.repository.query.SpannerStatementQueryExecutor;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;

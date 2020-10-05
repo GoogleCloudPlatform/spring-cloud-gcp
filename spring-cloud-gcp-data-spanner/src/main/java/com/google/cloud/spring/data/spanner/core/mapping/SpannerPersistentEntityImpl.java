@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.mapping;
+package com.google.cloud.spring.data.spanner.core.mapping;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,10 +29,10 @@ import java.util.regex.Pattern;
 import com.google.cloud.spanner.Key;
 
 import org.springframework.beans.BeansException;
-import org.springframework.cloud.gcp.data.spanner.core.convert.ConversionUtils;
-import org.springframework.cloud.gcp.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerEntityProcessor;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerEntityWriter;
+import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
+import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityWriter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.expression.BeanFactoryAccessor;
 import org.springframework.context.expression.BeanFactoryResolver;

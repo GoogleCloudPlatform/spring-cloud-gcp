@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.support.converter;
+package com.google.cloud.spring.pubsub.support.converter;
 
 import org.springframework.core.NestedRuntimeException;
 

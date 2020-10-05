@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.convert;
+package com.google.cloud.spring.data.spanner.core.convert;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -41,16 +41,16 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities.ChildTestEntity;
-import org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities.FaultyTestEntity;
-import org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities.FaultyTestEntity2;
-import org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities.TestEmbeddedColumns;
-import org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities.TestEntity;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Column;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
-import org.springframework.cloud.gcp.data.spanner.test.domain.CommitTimestamps;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.ChildTestEntity;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.FaultyTestEntity;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.FaultyTestEntity2;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.TestEmbeddedColumns;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.TestEntity;
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -359,7 +359,7 @@ public class ConverterAwareMappingSpannerEntityWriterTests {
 	public void writeIncompatibleTypeTest() {
 		this.expectedEx.expect(SpannerDataException.class);
 		this.expectedEx.expectMessage("Unsupported mapping for type: " +
-				"class org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities$TestEntity");
+				"class com.google.cloud.spring.data.spanner.core.convert.TestEntities$TestEntity");
 		FaultyTestEntity ft = new FaultyTestEntity();
 		ft.fieldWithUnsupportedType = new TestEntity();
 		WriteBuilder writeBuilder = Mutation.newInsertBuilder("faulty_test_table");

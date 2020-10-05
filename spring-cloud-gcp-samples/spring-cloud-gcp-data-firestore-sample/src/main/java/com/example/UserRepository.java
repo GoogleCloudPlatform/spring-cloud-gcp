@@ -18,7 +18,7 @@ package com.example;
 
 import reactor.core.publisher.Flux;
 
-import org.springframework.cloud.gcp.data.firestore.FirestoreReactiveRepository;
+import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
 
 /**
  * Demonstrates Spring Data Repository support in Firestore.

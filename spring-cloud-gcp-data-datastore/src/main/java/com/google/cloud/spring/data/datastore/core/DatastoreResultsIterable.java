@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core;
+package com.google.cloud.spring.data.datastore.core;
 
 import java.util.Iterator;
 

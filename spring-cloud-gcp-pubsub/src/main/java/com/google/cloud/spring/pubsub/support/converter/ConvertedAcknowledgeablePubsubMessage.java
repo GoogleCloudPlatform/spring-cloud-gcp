@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.support.converter;
+package com.google.cloud.spring.pubsub.support.converter;
 
-import org.springframework.cloud.gcp.pubsub.support.AcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 
 /**
  * An {@link AcknowledgeablePubsubMessage} that also contains the payload of the Pub/Sub

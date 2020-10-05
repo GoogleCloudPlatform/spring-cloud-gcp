@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.datastore;
+package com.google.cloud.spring.autoconfigure.datastore;
 
 import com.google.cloud.datastore.testing.LocalDatastoreHelper;
 import org.apache.commons.logging.Log;

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.logging;
+package com.google.cloud.spring.logging;
 
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.cloud.gcp.logging.extractors.TraceIdExtractor;
+import com.google.cloud.spring.logging.extractors.TraceIdExtractor;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 

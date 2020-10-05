@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it;
 
 import java.util.Objects;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import org.springframework.data.annotation.Id;
 
 /**

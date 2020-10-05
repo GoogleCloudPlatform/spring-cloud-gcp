@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.secretmanager;
+package com.google.cloud.spring.secretmanager;
 
 /**
  * Describes supported operations that one can perform on the Secret Manager API.

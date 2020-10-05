@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.core.publisher;
+package com.google.cloud.spring.pubsub.core.publisher;
 
 import java.util.Map;
 
@@ -25,10 +25,10 @@ import com.google.pubsub.v1.PubsubMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.springframework.cloud.gcp.pubsub.core.PubSubDeliveryException;
-import org.springframework.cloud.gcp.pubsub.support.PublisherFactory;
-import org.springframework.cloud.gcp.pubsub.support.converter.PubSubMessageConverter;
-import org.springframework.cloud.gcp.pubsub.support.converter.SimplePubSubMessageConverter;
+import com.google.cloud.spring.pubsub.core.PubSubDeliveryException;
+import com.google.cloud.spring.pubsub.support.PublisherFactory;
+import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
+import com.google.cloud.spring.pubsub.support.converter.SimplePubSubMessageConverter;
 import org.springframework.util.Assert;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.SettableListenableFuture;

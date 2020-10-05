@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.mapping;
+package com.google.cloud.spring.data.spanner.core.mapping;
 
 import java.util.List;
 
@@ -61,11 +61,11 @@ public class SpannerPersistentPropertyImplTests {
 		// The expectMessage calls below operate as `contains` and seperate calls are used
 		// because the printed order of some components can change randomly.
 		this.expectedEx.expectMessage("Invalid (null or empty) field name returned for " +
-				"property @org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey");
+				"property @com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey");
 		this.expectedEx.expectMessage("keyOrder=1");
 		this.expectedEx.expectMessage("value=1");
 		this.expectedEx.expectMessage(
-				"java.lang.String org.springframework.cloud.gcp.data.spanner.core.mapping." +
+				"java.lang.String com.google.cloud.spring.data.spanner.core.mapping." +
 				"SpannerPersistentPropertyImplTests$TestEntity.id by class " +
 				"org.springframework.data.mapping.model.FieldNamingStrategy$MockitoMock$");
 		SpannerMappingContext context = new SpannerMappingContext();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.bigquery.core;
+package com.google.cloud.spring.bigquery.core;
 
 import java.io.IOException;
 import java.io.InputStream;

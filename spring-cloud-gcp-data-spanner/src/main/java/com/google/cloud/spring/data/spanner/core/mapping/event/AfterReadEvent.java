@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.mapping.event;
+package com.google.cloud.spring.data.spanner.core.mapping.event;
 
 import java.util.Objects;
 
 import com.google.cloud.spanner.KeySet;
 
-import org.springframework.cloud.gcp.data.spanner.core.SpannerReadOptions;
+import com.google.cloud.spring.data.spanner.core.SpannerReadOptions;
 
 /**
  * This event read operation on Cloud Spanner.

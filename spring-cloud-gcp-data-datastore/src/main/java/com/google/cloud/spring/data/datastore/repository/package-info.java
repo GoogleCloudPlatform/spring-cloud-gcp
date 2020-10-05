@@ -1,4 +1,4 @@
 /**
  * Spring Data Cloud Datastore support for Spring Data Repositories.
  */
-package org.springframework.cloud.gcp.data.datastore.repository;
+package com.google.cloud.spring.data.datastore.repository;

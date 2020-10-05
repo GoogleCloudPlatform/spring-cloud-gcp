@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.logging;
+package com.google.cloud.spring.autoconfigure.logging;
 
 /**
  * Constants for Stackdriver Trace.
@@ -22,9 +22,9 @@ package org.springframework.cloud.gcp.autoconfigure.logging;
  * @author João André Martins
  * @author Chengyuan Zhao
  *
- * @deprecated use {@link org.springframework.cloud.gcp.logging.StackdriverTraceConstants}
+ * @deprecated use {@link com.google.cloud.spring.logging.StackdriverTraceConstants}
  */
 @Deprecated
-public interface StackdriverTraceConstants extends org.springframework.cloud.gcp.logging.StackdriverTraceConstants {
+public interface StackdriverTraceConstants extends com.google.cloud.spring.logging.StackdriverTraceConstants {
 
 }

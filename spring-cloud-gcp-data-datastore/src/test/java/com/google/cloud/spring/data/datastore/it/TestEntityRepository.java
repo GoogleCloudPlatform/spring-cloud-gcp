@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,9 +25,9 @@ import javax.annotation.Nonnull;
 
 import com.google.cloud.datastore.Key;
 
-import org.springframework.cloud.gcp.data.datastore.it.TestEntity.Shape;
-import org.springframework.cloud.gcp.data.datastore.repository.DatastoreRepository;
-import org.springframework.cloud.gcp.data.datastore.repository.query.Query;
+import com.google.cloud.spring.data.datastore.it.TestEntity.Shape;
+import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
+import com.google.cloud.spring.data.datastore.repository.query.Query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -81,7 +81,7 @@ public interface TestEntityRepository extends DatastoreRepository<TestEntity, Lo
 	@Query("select * from test_entities_ci where shape = @enum_val")
 	List<TestEntity> findByEnumQueryParam(@Param("enum_val") Shape shape);
 
-	@Query(value = "select __key__ from |org.springframework.cloud.gcp.data.datastore.it.TestEntity| "
+	@Query(value = "select __key__ from |com.google.cloud.spring.data.datastore.it.TestEntity| "
 			+ "where size = :#{#size}", exists = true)
 	boolean existsByEntitiesWithCustomQuery(@Param("size") long size);
 

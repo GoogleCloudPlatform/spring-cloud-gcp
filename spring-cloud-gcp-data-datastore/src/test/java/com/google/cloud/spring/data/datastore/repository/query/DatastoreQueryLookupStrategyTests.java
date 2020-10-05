@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository.query;
+package com.google.cloud.spring.data.datastore.repository.query;
 
 import java.util.Optional;
 
@@ -22,8 +22,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;

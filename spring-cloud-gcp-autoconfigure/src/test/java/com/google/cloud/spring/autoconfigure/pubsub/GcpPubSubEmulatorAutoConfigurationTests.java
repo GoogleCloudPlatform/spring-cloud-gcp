@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.pubsub;
+package com.google.cloud.spring.autoconfigure.pubsub;
 
 import com.google.api.gax.batching.BatchingSettings;
 import com.google.api.gax.batching.FlowControlSettings;
@@ -32,7 +32,7 @@ import org.threeten.bp.Duration;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
 import static org.assertj.core.api.Assertions.assertThat;

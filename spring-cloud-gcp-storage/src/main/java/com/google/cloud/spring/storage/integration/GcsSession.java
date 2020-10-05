@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.storage.integration;
+package com.google.cloud.spring.storage.integration;
 
 import java.io.IOException;
 import java.io.InputStream;

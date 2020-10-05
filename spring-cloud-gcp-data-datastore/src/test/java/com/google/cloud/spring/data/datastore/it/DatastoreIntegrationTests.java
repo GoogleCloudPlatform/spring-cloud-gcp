@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,18 +44,18 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Descendants;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DiscriminatorField;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DiscriminatorValue;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Unindexed;
-import org.springframework.cloud.gcp.data.datastore.entities.CustomMap;
-import org.springframework.cloud.gcp.data.datastore.entities.ServiceConfiguration;
-import org.springframework.cloud.gcp.data.datastore.it.TestEntity.Shape;
-import org.springframework.cloud.gcp.data.datastore.repository.DatastoreRepository;
-import org.springframework.cloud.gcp.data.datastore.repository.query.Query;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
+import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField;
+import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
+import com.google.cloud.spring.data.datastore.entities.CustomMap;
+import com.google.cloud.spring.data.datastore.entities.ServiceConfiguration;
+import com.google.cloud.spring.data.datastore.it.TestEntity.Shape;
+import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
+import com.google.cloud.spring.data.datastore.repository.query.Query;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.repository.config;
+package com.google.cloud.spring.data.firestore.repository.config;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -23,7 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.cloud.gcp.data.firestore.repository.support.FirestoreRepositoryFactoryBean;
+import com.google.cloud.spring.data.firestore.repository.support.FirestoreRepositoryFactoryBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.repository.config.DefaultRepositoryBaseClass;

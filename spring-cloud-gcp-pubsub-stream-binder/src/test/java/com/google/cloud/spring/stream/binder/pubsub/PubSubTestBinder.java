@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.stream.binder.pubsub;
+package com.google.cloud.spring.stream.binder.pubsub;
 
 import java.io.IOException;
 
@@ -29,15 +29,15 @@ import com.google.cloud.pubsub.v1.TopicAdminSettings;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.pubsub.PubSubAdmin;
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
-import org.springframework.cloud.gcp.pubsub.support.DefaultPublisherFactory;
-import org.springframework.cloud.gcp.pubsub.support.DefaultSubscriberFactory;
-import org.springframework.cloud.gcp.stream.binder.pubsub.properties.PubSubConsumerProperties;
-import org.springframework.cloud.gcp.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
-import org.springframework.cloud.gcp.stream.binder.pubsub.properties.PubSubProducerProperties;
-import org.springframework.cloud.gcp.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.PubSubAdmin;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
+import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
+import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
 import org.springframework.cloud.stream.binder.AbstractTestBinder;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;

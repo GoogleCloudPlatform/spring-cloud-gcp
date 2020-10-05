@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.trace;
+package com.google.cloud.spring.autoconfigure.trace;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -51,11 +51,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.gcp.autoconfigure.trace.sleuth.StackdriverHttpClientParser;
-import org.springframework.cloud.gcp.autoconfigure.trace.sleuth.StackdriverHttpServerParser;
-import org.springframework.cloud.gcp.core.DefaultCredentialsProvider;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.autoconfigure.trace.sleuth.StackdriverHttpClientParser;
+import com.google.cloud.spring.autoconfigure.trace.sleuth.StackdriverHttpServerParser;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import org.springframework.cloud.sleuth.autoconfig.SleuthProperties;
 import org.springframework.cloud.sleuth.autoconfig.TraceAutoConfiguration;
 import org.springframework.cloud.sleuth.instrument.web.TraceHttpAutoConfiguration;

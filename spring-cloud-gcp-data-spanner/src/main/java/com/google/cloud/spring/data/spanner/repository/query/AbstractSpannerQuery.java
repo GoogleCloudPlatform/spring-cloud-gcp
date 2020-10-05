@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository.query;
+package com.google.cloud.spring.data.spanner.repository.query;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import org.springframework.data.repository.query.RepositoryQuery;
 
 /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.test;
+package com.google.cloud.spring.data.spanner.test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +27,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerOperations;
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerSchemaUtils;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
-import org.springframework.cloud.gcp.data.spanner.test.domain.CommitTimestamps;
-import org.springframework.cloud.gcp.data.spanner.test.domain.Trade;
+import com.google.cloud.spring.data.spanner.core.SpannerOperations;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
+import com.google.cloud.spring.data.spanner.test.domain.Trade;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.storage.integration.inbound;
+package com.google.cloud.spring.storage.integration.inbound;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 
 import com.google.cloud.storage.BlobInfo;
 
-import org.springframework.cloud.gcp.storage.integration.GcsFileInfo;
-import org.springframework.cloud.gcp.storage.integration.filters.GcsPersistentAcceptOnceFileListFilter;
+import com.google.cloud.spring.storage.integration.GcsFileInfo;
+import com.google.cloud.spring.storage.integration.filters.GcsPersistentAcceptOnceFileListFilter;
 import org.springframework.integration.file.remote.AbstractFileInfo;
 import org.springframework.integration.file.remote.AbstractRemoteFileStreamingMessageSource;
 import org.springframework.integration.file.remote.RemoteFileTemplate;

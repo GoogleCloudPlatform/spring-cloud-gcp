@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it;
 
 import java.io.IOException;
 
@@ -23,17 +23,17 @@ import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.gcp.core.DefaultCredentialsProvider;
-import org.springframework.cloud.gcp.core.DefaultGcpProjectIdProvider;
-import org.springframework.cloud.gcp.core.UserAgentHeaderProvider;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTransactionManager;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreEntityConverter;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreServiceObjectToKeyFactory;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DefaultDatastoreEntityConverter;
-import org.springframework.cloud.gcp.data.datastore.core.convert.ObjectToKeyFactory;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.repository.config.EnableDatastoreRepositories;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
+import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreServiceObjectToKeyFactory;
+import com.google.cloud.spring.data.datastore.core.convert.DefaultDatastoreEntityConverter;
+import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreRepositories;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -53,7 +53,7 @@ public class DatastoreIntegrationTestConfiguration {
 	private final String projectId = new DefaultGcpProjectIdProvider().getProjectId();
 
 	private final Credentials credentials = new DefaultCredentialsProvider(
-			org.springframework.cloud.gcp.core.Credentials::new).getCredentials();
+			com.google.cloud.spring.core.Credentials::new).getCredentials();
 
 	@Value("${test.integration.datastore.namespacePrefix}")
 	private String namespacePrefix;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.convert;
+package com.google.cloud.spring.data.spanner.core.convert;
 
 import java.util.Arrays;
 
@@ -30,15 +30,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities.FaultyTestEntity;
-import org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities.OuterTestEntity;
-import org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities.OuterTestEntityFlat;
-import org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities.OuterTestEntityFlatFaulty;
-import org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities.OuterTestHoldingStructEntity;
-import org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities.OuterTestHoldingStructsEntity;
-import org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities.TestEntity;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.FaultyTestEntity;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.OuterTestEntity;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.OuterTestEntityFlat;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.OuterTestEntityFlatFaulty;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.OuterTestHoldingStructEntity;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.OuterTestHoldingStructsEntity;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.TestEntity;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;

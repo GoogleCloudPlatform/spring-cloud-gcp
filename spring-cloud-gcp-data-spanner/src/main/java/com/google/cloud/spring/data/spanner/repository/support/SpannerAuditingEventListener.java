@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository.support;
+package com.google.cloud.spring.data.spanner.repository.support;
 
-import org.springframework.cloud.gcp.data.spanner.core.mapping.event.BeforeSaveEvent;
+import com.google.cloud.spring.data.spanner.core.mapping.event.BeforeSaveEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.auditing.AuditingHandler;
 

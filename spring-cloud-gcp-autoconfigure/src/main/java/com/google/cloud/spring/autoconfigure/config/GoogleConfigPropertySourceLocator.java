@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.config;
+package com.google.cloud.spring.autoconfigure.config;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -25,9 +25,9 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
-import org.springframework.cloud.gcp.core.DefaultCredentialsProvider;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;

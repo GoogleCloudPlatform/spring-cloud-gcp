@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.logging;
+package com.google.cloud.spring.autoconfigure.logging;
 
-import org.springframework.cloud.gcp.logging.extractors.TraceIdExtractor;
+import com.google.cloud.spring.logging.extractors.TraceIdExtractor;
 
 /**
  * {@link org.springframework.web.servlet.HandlerInterceptor} that extracts the request
@@ -31,11 +31,11 @@ import org.springframework.cloud.gcp.logging.extractors.TraceIdExtractor;
  * @author Chengyuan Zhao
  *
  * @deprecated use
- * {@link org.springframework.cloud.gcp.logging.TraceIdLoggingWebMvcInterceptor}
+ * {@link com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor}
  */
 @Deprecated
 public class TraceIdLoggingWebMvcInterceptor extends
-		org.springframework.cloud.gcp.logging.TraceIdLoggingWebMvcInterceptor {
+		com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor {
 
 	public TraceIdLoggingWebMvcInterceptor(TraceIdExtractor extractor) {
 		super(extractor);

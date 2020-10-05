@@ -1,4 +1,4 @@
 /**
  * Classes supporting Spring Data Cloud Datastore custom-generated Query Methods.
  */
-package org.springframework.cloud.gcp.data.datastore.repository.query;
+package com.google.cloud.spring.data.datastore.repository.query;

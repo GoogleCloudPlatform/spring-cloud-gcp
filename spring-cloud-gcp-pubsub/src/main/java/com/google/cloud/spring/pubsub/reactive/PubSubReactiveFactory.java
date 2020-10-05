@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.reactive;
+package com.google.cloud.spring.pubsub.reactive;
 
 import java.time.Duration;
 import java.util.List;
@@ -29,8 +29,8 @@ import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
-import org.springframework.cloud.gcp.pubsub.core.subscriber.PubSubSubscriberOperations;
-import org.springframework.cloud.gcp.pubsub.support.AcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import org.springframework.util.Assert;
 
 /**

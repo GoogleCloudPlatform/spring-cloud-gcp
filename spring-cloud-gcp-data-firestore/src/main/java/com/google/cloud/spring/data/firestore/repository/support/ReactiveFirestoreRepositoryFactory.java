@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.repository.support;
+package com.google.cloud.spring.data.firestore.repository.support;
 
 import java.util.Optional;
 
-import org.springframework.cloud.gcp.data.firestore.FirestoreTemplate;
-import org.springframework.cloud.gcp.data.firestore.SimpleFirestoreReactiveRepository;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreMappingContext;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestorePersistentEntity;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestorePersistentEntityInformation;
+import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.SimpleFirestoreReactiveRepository;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
+import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntity;
+import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntityInformation;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;

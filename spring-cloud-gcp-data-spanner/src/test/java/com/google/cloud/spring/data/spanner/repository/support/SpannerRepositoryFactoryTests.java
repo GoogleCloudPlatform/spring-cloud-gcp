@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository.support;
+package com.google.cloud.spring.data.spanner.repository.support;
 
 import java.util.Optional;
 
@@ -25,12 +25,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Column;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Table;
-import org.springframework.cloud.gcp.data.spanner.repository.query.SpannerQueryLookupStrategy;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.cloud.spring.data.spanner.repository.query.SpannerQueryLookupStrategy;
 import org.springframework.data.mapping.MappingException;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.RepositoryInformation;
@@ -84,7 +84,7 @@ public class SpannerRepositoryFactoryTests {
 	public void getEntityInformationNotAvailableTest() {
 		this.expectedEx.expect(MappingException.class);
 		this.expectedEx.expectMessage("Could not lookup mapping metadata for domain " +
-				"class org.springframework.cloud.gcp.data.spanner.repository.support." +
+				"class com.google.cloud.spring.data.spanner.repository.support." +
 				"SpannerRepositoryFactoryTests$TestEntity!");
 		SpannerRepositoryFactory factory = new SpannerRepositoryFactory(
 				mock(SpannerMappingContext.class), this.spannerTemplate);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.datastore;
+package com.google.cloud.spring.autoconfigure.datastore;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -23,7 +23,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTransactionManager;
+import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +23,7 @@ import java.util.List;
 import com.google.cloud.datastore.BaseKey;
 import com.google.cloud.datastore.Key;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.CustomConversions;
 import org.springframework.data.convert.JodaTimeConverters;

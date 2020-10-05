@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.mapping;
+package com.google.cloud.spring.data.datastore.core.mapping;
 
 import org.springframework.data.util.TypeInformation;
 
@@ -56,9 +56,9 @@ public enum EmbeddedType {
 		}
 		else if ((typeInformation.isCollectionLike()
 				&& typeInformation.getComponentType().getType().isAnnotationPresent(
-						org.springframework.cloud.gcp.data.datastore.core.mapping.Entity.class))
+						com.google.cloud.spring.data.datastore.core.mapping.Entity.class))
 				|| typeInformation.getType().isAnnotationPresent(
-						org.springframework.cloud.gcp.data.datastore.core.mapping.Entity.class)) {
+						com.google.cloud.spring.data.datastore.core.mapping.Entity.class)) {
 			embeddedType = EmbeddedType.EMBEDDED_ENTITY;
 		}
 		else {

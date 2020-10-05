@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 import com.google.cloud.datastore.IncompleteKey;
 import com.google.cloud.datastore.Key;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentEntity;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
 
 /**
  * An interface for creating Datastore Keys from objects and ID values.

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository.config;
+package com.google.cloud.spring.data.datastore.repository.config;
 
 import java.lang.annotation.Annotation;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.cloud.gcp.data.datastore.repository.support.DatastoreAuditingEventListener;
+import com.google.cloud.spring.data.datastore.repository.support.DatastoreAuditingEventListener;
 import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.data.auditing.config.AuditingBeanDefinitionRegistrarSupport;
 import org.springframework.data.auditing.config.AuditingConfiguration;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.support.converter;
+package com.google.cloud.spring.pubsub.support.converter;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -27,7 +27,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import org.springframework.cloud.gcp.core.util.MapBuilder;
+import com.google.cloud.spring.core.util.MapBuilder;
 import org.springframework.core.convert.converter.Converter;
 
 import static org.assertj.core.api.Assertions.assertThat;

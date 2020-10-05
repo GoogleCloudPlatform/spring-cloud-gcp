@@ -1,4 +1,4 @@
 /**
  * Cloud Spanner database administrative functions and template classes.
  */
-package org.springframework.cloud.gcp.data.spanner.core.admin;
+package com.google.cloud.spring.data.spanner.core.admin;

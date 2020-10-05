@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository.support;
+package com.google.cloud.spring.data.datastore.repository.support;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,12 +30,12 @@ import java.util.stream.StreamSupport;
 import com.google.cloud.datastore.Cursor;
 import com.google.cloud.datastore.Key;
 
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreOperations;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreQueryOptions;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreResultsCollection;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreResultsIterable;
-import org.springframework.cloud.gcp.data.datastore.repository.DatastoreRepository;
-import org.springframework.cloud.gcp.data.datastore.repository.query.DatastorePageable;
+import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
+import com.google.cloud.spring.data.datastore.core.DatastoreQueryOptions;
+import com.google.cloud.spring.data.datastore.core.DatastoreResultsCollection;
+import com.google.cloud.spring.data.datastore.core.DatastoreResultsIterable;
+import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
+import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

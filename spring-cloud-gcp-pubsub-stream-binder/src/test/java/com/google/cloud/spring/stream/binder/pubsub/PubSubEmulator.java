@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.stream.binder.pubsub;
+package com.google.cloud.spring.stream.binder.pubsub;
 
 import java.io.BufferedReader;
 import java.io.IOException;

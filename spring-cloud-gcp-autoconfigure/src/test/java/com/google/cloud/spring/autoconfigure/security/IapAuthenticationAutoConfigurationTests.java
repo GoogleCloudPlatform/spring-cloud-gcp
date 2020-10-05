@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.security;
+package com.google.cloud.spring.autoconfigure.security;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -37,13 +37,13 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.core.GcpEnvironment;
-import org.springframework.cloud.gcp.core.GcpEnvironmentProvider;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.core.MetadataProvider;
-import org.springframework.cloud.gcp.security.iap.AppEngineAudienceProvider;
-import org.springframework.cloud.gcp.security.iap.AudienceProvider;
-import org.springframework.cloud.gcp.security.iap.AudienceValidator;
+import com.google.cloud.spring.core.GcpEnvironment;
+import com.google.cloud.spring.core.GcpEnvironmentProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.MetadataProvider;
+import com.google.cloud.spring.security.iap.AppEngineAudienceProvider;
+import com.google.cloud.spring.security.iap.AudienceProvider;
+import com.google.cloud.spring.security.iap.AudienceValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
@@ -195,7 +195,7 @@ public class IapAuthenticationAutoConfigurationTests {
 				.run((context) -> {
 					assertThat(context).getFailure()
 							.hasCauseInstanceOf(NoSuchBeanDefinitionException.class)
-							.hasMessageContaining("No qualifying bean of type 'org.springframework.cloud.gcp.security.iap.AudienceProvider'");
+							.hasMessageContaining("No qualifying bean of type 'com.google.cloud.spring.security.iap.AudienceProvider'");
 				});
 	}
 

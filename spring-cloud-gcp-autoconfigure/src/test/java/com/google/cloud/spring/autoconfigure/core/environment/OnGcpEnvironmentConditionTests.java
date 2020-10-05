@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.core.environment;
+package com.google.cloud.spring.autoconfigure.core.environment;
 
 import java.util.Collections;
 
@@ -29,8 +29,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
-import org.springframework.cloud.gcp.core.GcpEnvironment;
-import org.springframework.cloud.gcp.core.GcpEnvironmentProvider;
+import com.google.cloud.spring.core.GcpEnvironment;
+import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 

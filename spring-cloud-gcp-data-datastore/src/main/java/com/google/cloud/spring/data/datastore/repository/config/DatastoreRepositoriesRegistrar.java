@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository.config;
+package com.google.cloud.spring.data.datastore.repository.config;
 
 import java.lang.annotation.Annotation;
 

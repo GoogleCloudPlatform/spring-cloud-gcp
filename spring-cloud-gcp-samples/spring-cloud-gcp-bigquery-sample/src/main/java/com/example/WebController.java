@@ -24,7 +24,7 @@ import com.google.cloud.bigquery.Job;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.gcp.bigquery.core.BigQueryTemplate;
+import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.concurrent.ListenableFuture;

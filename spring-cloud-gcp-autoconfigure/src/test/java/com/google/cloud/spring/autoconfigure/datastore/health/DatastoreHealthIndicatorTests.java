@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.datastore.health;
+package com.google.cloud.spring.autoconfigure.datastore.health;
 
 import com.google.cloud.datastore.Datastore;
 import org.junit.Test;

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.stream.binder.pubsub.properties;
+package com.google.cloud.spring.stream.binder.pubsub.properties;
 
-import org.springframework.cloud.gcp.pubsub.integration.AckMode;
+import com.google.cloud.spring.pubsub.integration.AckMode;
 
 /**
  * Consumer properties for Pub/Sub.

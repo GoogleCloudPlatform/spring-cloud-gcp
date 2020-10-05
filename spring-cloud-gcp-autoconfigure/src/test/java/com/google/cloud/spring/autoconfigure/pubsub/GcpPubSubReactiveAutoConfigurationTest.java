@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.pubsub;
+package com.google.cloud.spring.autoconfigure.pubsub;
 
 import java.util.Arrays;
 
@@ -34,11 +34,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.pubsub.core.subscriber.PubSubSubscriberOperations;
-import org.springframework.cloud.gcp.pubsub.core.subscriber.PubSubSubscriberTemplate;
-import org.springframework.cloud.gcp.pubsub.reactive.PubSubReactiveFactory;
-import org.springframework.cloud.gcp.pubsub.support.AcknowledgeablePubsubMessage;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
+import com.google.cloud.spring.pubsub.reactive.PubSubReactiveFactory;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

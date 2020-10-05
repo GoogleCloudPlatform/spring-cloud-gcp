@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.test.domain;
+package com.google.cloud.spring.data.spanner.test.domain;
 
-import org.springframework.cloud.gcp.data.spanner.repository.SpannerRepository;
+import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 
 /**
  * A repository based on the a child object for integration tests.

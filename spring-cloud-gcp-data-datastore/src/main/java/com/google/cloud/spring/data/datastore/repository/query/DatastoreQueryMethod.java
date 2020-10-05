@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository.query;
+package com.google.cloud.spring.data.datastore.repository.query;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

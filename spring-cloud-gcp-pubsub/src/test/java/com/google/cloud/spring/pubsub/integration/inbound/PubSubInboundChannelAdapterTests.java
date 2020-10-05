@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.integration.inbound;
+package com.google.cloud.spring.pubsub.integration.inbound;
 
 import java.util.function.Consumer;
 
@@ -28,10 +28,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import org.springframework.boot.test.system.OutputCaptureRule;
-import org.springframework.cloud.gcp.pubsub.core.subscriber.PubSubSubscriberOperations;
-import org.springframework.cloud.gcp.pubsub.integration.AckMode;
-import org.springframework.cloud.gcp.pubsub.support.GcpPubSubHeaders;
-import org.springframework.cloud.gcp.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
+import com.google.cloud.spring.pubsub.integration.AckMode;
+import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
+import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
 import org.springframework.integration.support.MutableMessageBuilder;
 import org.springframework.integration.support.MutableMessageBuilderFactory;
 import org.springframework.messaging.Message;

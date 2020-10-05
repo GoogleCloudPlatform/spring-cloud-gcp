@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.integration.outbound;
+package com.google.cloud.spring.pubsub.integration.outbound;
 
 import java.util.Map;
 
@@ -26,9 +26,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import org.springframework.cloud.gcp.core.util.MapBuilder;
-import org.springframework.cloud.gcp.pubsub.core.PubSubOperations;
-import org.springframework.cloud.gcp.pubsub.support.GcpPubSubHeaders;
+import com.google.cloud.spring.core.util.MapBuilder;
+import com.google.cloud.spring.pubsub.core.PubSubOperations;
+import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
 import org.springframework.expression.spel.standard.SpelExpression;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository.support;
+package com.google.cloud.spring.data.spanner.repository.support;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,10 +28,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import org.springframework.cloud.gcp.data.spanner.core.SpannerPageableQueryOptions;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerEntityProcessor;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 

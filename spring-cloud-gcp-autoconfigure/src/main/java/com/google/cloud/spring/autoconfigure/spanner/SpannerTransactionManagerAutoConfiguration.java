@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.spanner;
+package com.google.cloud.spring.autoconfigure.spanner;
 
 import java.util.function.Supplier;
 
@@ -27,7 +27,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTransactionManager;
+import com.google.cloud.spring.data.spanner.core.SpannerTransactionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;

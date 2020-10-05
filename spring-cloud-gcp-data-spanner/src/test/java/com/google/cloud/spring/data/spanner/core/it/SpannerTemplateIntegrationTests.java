@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.it;
+package com.google.cloud.spring.data.spanner.core.it;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,12 +29,12 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerPageableQueryOptions;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerReadOptions;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException;
-import org.springframework.cloud.gcp.data.spanner.test.AbstractSpannerIntegrationTest;
-import org.springframework.cloud.gcp.data.spanner.test.domain.Trade;
+import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
+import com.google.cloud.spring.data.spanner.core.SpannerReadOptions;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.test.AbstractSpannerIntegrationTest;
+import com.google.cloud.spring.data.spanner.test.domain.Trade;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 

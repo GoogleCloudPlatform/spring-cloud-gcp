@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Blob;
@@ -27,9 +27,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentEntity;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -101,7 +101,7 @@ public class EntityPropertyValueProviderTests {
 	public void testException() {
 		this.expectedException.expect(DatastoreDataException.class);
 		this.expectedException.expectMessage("Unable to read property boolField; nested exception is " +
-				"org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException: " +
+				"com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException: " +
 				"Unable to convert class java.lang.Long to class java.lang.Boolean");
 		Entity entity = Entity.newBuilder(this.datastore.newKeyFactory().setKind("aKind").newKey("1"))
 				.set("boolField", 123L)

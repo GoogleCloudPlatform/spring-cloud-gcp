@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.storage;
+package com.google.cloud.spring.autoconfigure.storage;
 
 import com.google.cloud.storage.Storage;
 import org.junit.Test;

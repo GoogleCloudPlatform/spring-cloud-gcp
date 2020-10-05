@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core;
+package com.google.cloud.spring.data.spanner.core;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,12 +28,12 @@ import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Mutation.Op;
 import com.google.cloud.spanner.Mutation.WriteBuilder;
 
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerSchemaUtils;
-import org.springframework.cloud.gcp.data.spanner.core.convert.ConversionUtils;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerEntityProcessor;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerPersistentEntity;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.util.Assert;

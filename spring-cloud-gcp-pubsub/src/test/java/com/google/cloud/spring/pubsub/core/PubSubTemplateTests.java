@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.core;
+package com.google.cloud.spring.pubsub.core;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -37,11 +37,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import org.springframework.cloud.gcp.pubsub.core.publisher.PubSubPublisherTemplate;
-import org.springframework.cloud.gcp.pubsub.core.test.allowed.AllowedPayload;
-import org.springframework.cloud.gcp.pubsub.support.PublisherFactory;
-import org.springframework.cloud.gcp.pubsub.support.SubscriberFactory;
-import org.springframework.cloud.gcp.pubsub.support.converter.JacksonPubSubMessageConverter;
+import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
+import com.google.cloud.spring.pubsub.core.test.allowed.AllowedPayload;
+import com.google.cloud.spring.pubsub.support.PublisherFactory;
+import com.google.cloud.spring.pubsub.support.SubscriberFactory;
+import com.google.cloud.spring.pubsub.support.converter.JacksonPubSubMessageConverter;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -159,7 +159,7 @@ public class PubSubTemplateTests {
 			PubsubMessage message = invocation.getArgument(1);
 			assertThat(message.getData().toStringUtf8())
 					.isEqualTo("{\"@class\":"
-					+ "\"org.springframework.cloud.gcp.pubsub.core.test.allowed.AllowedPayload\""
+					+ "\"com.google.cloud.spring.pubsub.core.test.allowed.AllowedPayload\""
 							+ ",\"name\":\"allowed\",\"value\":12345}");
 			return null;
 		}).when(pubSubPublisherTemplate).publish(eq("test"), any());

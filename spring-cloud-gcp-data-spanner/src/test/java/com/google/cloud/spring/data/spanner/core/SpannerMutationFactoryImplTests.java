@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core;
+package com.google.cloud.spring.data.spanner.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,16 +31,16 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerSchemaUtils;
-import org.springframework.cloud.gcp.data.spanner.core.convert.ConversionUtils;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerEntityProcessor;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Column;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Embedded;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Interleaved;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Table;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.Embedded;
+import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -156,8 +156,8 @@ public class SpannerMutationFactoryImplTests {
 		this.expectedEx.expect(SpannerDataException.class);
 		this.expectedEx.expectMessage("A child entity's common primary key parts with its parent must have " +
 				"the same values. Primary key component 1 does not match for entities: " +
-				"class org.springframework.cloud.gcp.data.spanner.core.SpannerMutationFactoryImplTests$TestEntity " +
-				"class org.springframework.cloud.gcp.data.spanner.core.SpannerMutationFactoryImplTests$ChildEntity");
+				"class com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$TestEntity " +
+				"class com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$ChildEntity");
 
 		TestEntity t = new TestEntity();
 		t.id = "a";

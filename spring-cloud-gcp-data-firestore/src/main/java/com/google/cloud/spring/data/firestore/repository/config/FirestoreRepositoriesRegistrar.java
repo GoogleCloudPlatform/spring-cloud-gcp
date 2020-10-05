@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.repository.config;
+package com.google.cloud.spring.data.firestore.repository.config;
 
 import java.lang.annotation.Annotation;
 

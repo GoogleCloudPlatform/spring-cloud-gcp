@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.logging;
+package com.google.cloud.spring.logging;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -28,8 +28,8 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.contrib.json.classic.JsonLayout;
 import com.google.gson.Gson;
 
-import org.springframework.cloud.gcp.core.DefaultGcpProjectIdProvider;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.springframework.util.StringUtils;
 
 /**

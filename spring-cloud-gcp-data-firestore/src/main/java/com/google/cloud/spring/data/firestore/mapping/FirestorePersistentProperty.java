@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.mapping;
+package com.google.cloud.spring.data.firestore.mapping;
 
 import org.springframework.data.mapping.PersistentProperty;
 

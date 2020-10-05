@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.reactive;
+package com.google.cloud.spring.pubsub.reactive;
 
 import java.nio.charset.Charset;
 import java.time.Duration;
@@ -37,8 +37,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import reactor.test.StepVerifier;
 import reactor.test.scheduler.VirtualTimeScheduler;
 
-import org.springframework.cloud.gcp.pubsub.core.subscriber.PubSubSubscriberOperations;
-import org.springframework.cloud.gcp.pubsub.support.AcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import org.springframework.scheduling.annotation.AsyncResult;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

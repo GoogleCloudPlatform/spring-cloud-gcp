@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.security;
+package com.google.cloud.spring.autoconfigure.security;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +30,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
-import org.springframework.cloud.gcp.autoconfigure.core.environment.ConditionalOnGcpEnvironment;
-import org.springframework.cloud.gcp.core.GcpEnvironment;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.security.iap.AppEngineAudienceProvider;
-import org.springframework.cloud.gcp.security.iap.AudienceProvider;
-import org.springframework.cloud.gcp.security.iap.AudienceValidator;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.core.environment.ConditionalOnGcpEnvironment;
+import com.google.cloud.spring.core.GcpEnvironment;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.security.iap.AppEngineAudienceProvider;
+import com.google.cloud.spring.security.iap.AudienceProvider;
+import com.google.cloud.spring.security.iap.AudienceValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;

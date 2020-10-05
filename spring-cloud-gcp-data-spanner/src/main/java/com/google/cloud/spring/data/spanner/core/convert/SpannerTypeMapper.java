@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.convert;
+package com.google.cloud.spring.data.spanner.core.convert;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -27,7 +27,7 @@ import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Type.Code;
 
-import org.springframework.cloud.gcp.core.util.MapBuilder;
+import com.google.cloud.spring.core.util.MapBuilder;
 
 /**
  * A utility class to map between common Java types and types to use with Spanner.

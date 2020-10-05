@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.pubsub;
+package com.google.cloud.spring.autoconfigure.pubsub;
 
 import java.io.IOException;
 import java.util.concurrent.Executor;
@@ -47,20 +47,20 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
-import org.springframework.cloud.gcp.core.DefaultCredentialsProvider;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.core.UserAgentHeaderProvider;
-import org.springframework.cloud.gcp.pubsub.PubSubAdmin;
-import org.springframework.cloud.gcp.pubsub.core.PubSubException;
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
-import org.springframework.cloud.gcp.pubsub.core.publisher.PubSubPublisherTemplate;
-import org.springframework.cloud.gcp.pubsub.core.subscriber.PubSubSubscriberTemplate;
-import org.springframework.cloud.gcp.pubsub.support.DefaultPublisherFactory;
-import org.springframework.cloud.gcp.pubsub.support.DefaultSubscriberFactory;
-import org.springframework.cloud.gcp.pubsub.support.PublisherFactory;
-import org.springframework.cloud.gcp.pubsub.support.SubscriberFactory;
-import org.springframework.cloud.gcp.pubsub.support.converter.PubSubMessageConverter;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.pubsub.PubSubAdmin;
+import com.google.cloud.spring.pubsub.core.PubSubException;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
+import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
+import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
+import com.google.cloud.spring.pubsub.support.PublisherFactory;
+import com.google.cloud.spring.pubsub.support.SubscriberFactory;
+import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;

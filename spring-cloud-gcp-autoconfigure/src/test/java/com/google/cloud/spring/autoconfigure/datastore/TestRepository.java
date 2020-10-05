@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.datastore;
+package com.google.cloud.spring.autoconfigure.datastore;
 
-import org.springframework.cloud.gcp.data.datastore.repository.DatastoreRepository;
+import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 
 /**
  * A repository for testing instantiation.

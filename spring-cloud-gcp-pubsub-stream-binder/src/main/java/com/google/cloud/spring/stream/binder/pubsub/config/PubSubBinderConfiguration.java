@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.stream.binder.pubsub.config;
+package com.google.cloud.spring.stream.binder.pubsub.config;
 
 import java.util.Collections;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
-import org.springframework.cloud.gcp.pubsub.PubSubAdmin;
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
-import org.springframework.cloud.gcp.stream.binder.pubsub.PubSubMessageChannelBinder;
-import org.springframework.cloud.gcp.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
-import org.springframework.cloud.gcp.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
+import com.google.cloud.spring.pubsub.PubSubAdmin;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.stream.binder.pubsub.PubSubMessageChannelBinder;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
+import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
 import org.springframework.cloud.stream.binder.Binder;
 import org.springframework.cloud.stream.config.BindingHandlerAdvise.MappingsProvider;
 import org.springframework.context.annotation.Bean;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.pubsub.health;
+package com.google.cloud.spring.autoconfigure.pubsub.health;
 
 import java.util.Map;
 
@@ -28,8 +28,8 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.cloud.gcp.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

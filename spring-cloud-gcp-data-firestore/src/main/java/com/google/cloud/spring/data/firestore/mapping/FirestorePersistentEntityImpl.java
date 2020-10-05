@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.mapping;
+package com.google.cloud.spring.data.firestore.mapping;
 
-import org.springframework.cloud.gcp.data.firestore.Document;
-import org.springframework.cloud.gcp.data.firestore.FirestoreDataException;
+import com.google.cloud.spring.data.firestore.Document;
+import com.google.cloud.spring.data.firestore.FirestoreDataException;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.mapping.model.BasicPersistentEntity;
 import org.springframework.data.util.TypeInformation;

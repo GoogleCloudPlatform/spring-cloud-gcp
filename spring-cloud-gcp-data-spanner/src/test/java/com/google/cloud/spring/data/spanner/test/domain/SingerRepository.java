@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.test.domain;
+package com.google.cloud.spring.data.spanner.test.domain;
 
-import org.springframework.cloud.gcp.data.spanner.repository.SpannerRepository;
-import org.springframework.cloud.gcp.data.spanner.repository.query.Query;
+import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
+import com.google.cloud.spring.data.spanner.repository.query.Query;
 
 public interface SingerRepository extends SpannerRepository<Singer, String> {
 	@Query(dmlStatement = true, value = "INSERT INTO singers_list (singerId, firstName, lastName) VALUES (@singerId, @firstName, @lastName)")

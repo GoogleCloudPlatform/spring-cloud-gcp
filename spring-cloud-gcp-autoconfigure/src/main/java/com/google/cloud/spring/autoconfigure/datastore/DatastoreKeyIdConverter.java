@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.datastore;
+package com.google.cloud.spring.autoconfigure.datastore;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -23,8 +23,8 @@ import java.nio.charset.Charset;
 
 import com.google.cloud.datastore.Key;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 
 /**

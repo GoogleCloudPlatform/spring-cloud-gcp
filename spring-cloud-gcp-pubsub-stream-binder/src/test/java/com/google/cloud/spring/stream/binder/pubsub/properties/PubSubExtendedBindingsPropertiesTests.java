@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.stream.binder.pubsub.properties;
+package com.google.cloud.spring.stream.binder.pubsub.properties;
 
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
@@ -26,15 +26,15 @@ import org.mockito.Mockito;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.gcp.pubsub.PubSubAdmin;
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
-import org.springframework.cloud.gcp.pubsub.core.publisher.PubSubPublisherTemplate;
-import org.springframework.cloud.gcp.pubsub.core.subscriber.PubSubSubscriberTemplate;
-import org.springframework.cloud.gcp.pubsub.integration.AckMode;
-import org.springframework.cloud.gcp.pubsub.support.PublisherFactory;
-import org.springframework.cloud.gcp.pubsub.support.SubscriberFactory;
-import org.springframework.cloud.gcp.stream.binder.pubsub.PubSubMessageChannelBinder;
-import org.springframework.cloud.gcp.stream.binder.pubsub.properties.PubSubExtendedBindingsPropertiesTests.PubSubBindingsTestConfiguration;
+import com.google.cloud.spring.pubsub.PubSubAdmin;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
+import com.google.cloud.spring.pubsub.integration.AckMode;
+import com.google.cloud.spring.pubsub.support.PublisherFactory;
+import com.google.cloud.spring.pubsub.support.SubscriberFactory;
+import com.google.cloud.spring.stream.binder.pubsub.PubSubMessageChannelBinder;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingsPropertiesTests.PubSubBindingsTestConfiguration;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.StreamListener;

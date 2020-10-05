@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.mapping.event;
+package com.google.cloud.spring.data.spanner.core.mapping.event;
 
 import java.util.List;
 

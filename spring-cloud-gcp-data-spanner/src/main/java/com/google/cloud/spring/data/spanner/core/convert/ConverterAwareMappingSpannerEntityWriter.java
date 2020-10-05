@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.convert;
+package com.google.cloud.spring.data.spanner.core.convert;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -36,10 +36,10 @@ import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Value;
 import com.google.cloud.spanner.ValueBinder;
 
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerPersistentEntity;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerPersistentProperty;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.util.Assert;
 

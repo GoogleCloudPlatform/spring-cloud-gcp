@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it;
 
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import com.google.cloud.datastore.Key;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Descendants;
+import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
 import org.springframework.data.annotation.Id;
 
 /**

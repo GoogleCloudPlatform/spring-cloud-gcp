@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.secretmanager;
+package com.google.cloud.spring.autoconfigure.secretmanager;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;

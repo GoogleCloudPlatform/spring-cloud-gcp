@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 
 /**
  * A test entity for Datastore integration tests.

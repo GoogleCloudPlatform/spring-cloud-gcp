@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.integration.outbound;
+package com.google.cloud.spring.pubsub.integration.outbound;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,9 +22,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.springframework.cloud.gcp.pubsub.core.publisher.PubSubPublisherOperations;
-import org.springframework.cloud.gcp.pubsub.integration.PubSubHeaderMapper;
-import org.springframework.cloud.gcp.pubsub.support.GcpPubSubHeaders;
+import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherOperations;
+import com.google.cloud.spring.pubsub.integration.PubSubHeaderMapper;
+import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
@@ -43,7 +43,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
  * Outbound channel adapter to publish messages to Google Cloud Pub/Sub.
  *
  * <p>It delegates Google Cloud Pub/Sub interaction to
- * {@link org.springframework.cloud.gcp.pubsub.core.PubSubTemplate}.
+ * {@link com.google.cloud.spring.pubsub.core.PubSubTemplate}.
  *
  * @author João André Martins
  * @author Mike Eltsufin

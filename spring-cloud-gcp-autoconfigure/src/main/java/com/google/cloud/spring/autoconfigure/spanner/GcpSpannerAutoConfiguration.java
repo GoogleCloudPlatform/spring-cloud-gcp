@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.spanner;
+package com.google.cloud.spring.autoconfigure.spanner;
 
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -34,21 +34,21 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
-import org.springframework.cloud.gcp.core.DefaultCredentialsProvider;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.core.UserAgentHeaderProvider;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerMutationFactory;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerMutationFactoryImpl;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerOperations;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.admin.CachingComposingSupplier;
-import org.springframework.cloud.gcp.data.spanner.core.admin.DatabaseIdProvider;
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerSchemaUtils;
-import org.springframework.cloud.gcp.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerEntityProcessor;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.data.spanner.core.SpannerMutationFactory;
+import com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImpl;
+import com.google.cloud.spring.data.spanner.core.SpannerOperations;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.CachingComposingSupplier;
+import com.google.cloud.spring.data.spanner.core.admin.DatabaseIdProvider;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.webmvc.spi.BackendIdConverter;

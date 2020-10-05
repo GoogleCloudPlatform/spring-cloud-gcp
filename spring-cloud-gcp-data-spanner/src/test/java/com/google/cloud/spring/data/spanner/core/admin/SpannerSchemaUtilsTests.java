@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.admin;
+package com.google.cloud.spring.data.spanner.core.admin;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,15 +27,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import org.springframework.cloud.gcp.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerEntityProcessor;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Column;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Embedded;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Interleaved;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerPersistentProperty;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Table;
+import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.Embedded;
+import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

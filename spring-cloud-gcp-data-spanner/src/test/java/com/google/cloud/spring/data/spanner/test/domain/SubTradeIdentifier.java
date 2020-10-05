@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.test.domain;
+package com.google.cloud.spring.data.spanner.test.domain;
 
 import java.util.Objects;
 
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Column;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Embedded;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.Embedded;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 
 /**
  * An object that holds the components that identify a {@link SubTrade}. This is

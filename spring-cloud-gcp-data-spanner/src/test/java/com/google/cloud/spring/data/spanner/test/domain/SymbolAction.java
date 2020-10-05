@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.test.domain;
+package com.google.cloud.spring.data.spanner.test.domain;
 
 /**
  * A small object containing just a stock symbol and action.

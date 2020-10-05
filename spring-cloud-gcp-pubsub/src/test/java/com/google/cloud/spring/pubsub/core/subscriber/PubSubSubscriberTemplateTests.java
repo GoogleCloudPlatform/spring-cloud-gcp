@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.core.subscriber;
+package com.google.cloud.spring.pubsub.core.subscriber;
 
 import java.math.BigInteger;
 import java.util.HashSet;
@@ -49,12 +49,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import org.springframework.cloud.gcp.pubsub.support.AcknowledgeablePubsubMessage;
-import org.springframework.cloud.gcp.pubsub.support.BasicAcknowledgeablePubsubMessage;
-import org.springframework.cloud.gcp.pubsub.support.SubscriberFactory;
-import org.springframework.cloud.gcp.pubsub.support.converter.ConvertedAcknowledgeablePubsubMessage;
-import org.springframework.cloud.gcp.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
-import org.springframework.cloud.gcp.pubsub.support.converter.PubSubMessageConverter;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.SubscriberFactory;
+import com.google.cloud.spring.pubsub.support.converter.ConvertedAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 

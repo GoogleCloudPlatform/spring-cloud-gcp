@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.pubsub;
+package com.google.cloud.spring.autoconfigure.pubsub;
 
 import java.util.Optional;
 
@@ -27,8 +27,8 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cloud.gcp.pubsub.core.subscriber.PubSubSubscriberTemplate;
-import org.springframework.cloud.gcp.pubsub.reactive.PubSubReactiveFactory;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
+import com.google.cloud.spring.pubsub.reactive.PubSubReactiveFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -24,9 +24,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerOperations;
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.core.SpannerOperations;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import org.springframework.stereotype.Component;
 
 /**

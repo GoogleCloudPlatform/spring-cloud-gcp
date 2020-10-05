@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.test.domain;
+package com.google.cloud.spring.data.spanner.test.domain;
 
 import java.util.Objects;
 
-import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 
 /**
  * An embedded grouping of columns.

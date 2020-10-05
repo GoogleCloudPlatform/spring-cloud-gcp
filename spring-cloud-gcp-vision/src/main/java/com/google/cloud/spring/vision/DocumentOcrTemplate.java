@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.vision;
+package com.google.cloud.spring.vision;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +42,7 @@ import com.google.cloud.vision.v1.OperationMetadata;
 import com.google.cloud.vision.v1.OutputConfig;
 import com.google.cloud.vision.v1.TextAnnotation;
 
-import org.springframework.cloud.gcp.storage.GoogleStorageLocation;
+import com.google.cloud.spring.storage.GoogleStorageLocation;
 import org.springframework.util.Assert;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.SettableListenableFuture;

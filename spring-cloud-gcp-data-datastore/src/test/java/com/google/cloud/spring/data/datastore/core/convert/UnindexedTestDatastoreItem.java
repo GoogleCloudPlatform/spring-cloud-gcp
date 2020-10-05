@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Unindexed;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
 
 /**
  * A test entity with an unindexed property and unindexed list property.

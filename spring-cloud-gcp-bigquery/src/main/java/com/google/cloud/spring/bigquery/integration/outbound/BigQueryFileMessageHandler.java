@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.bigquery.integration.outbound;
+package com.google.cloud.spring.bigquery.integration.outbound;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -31,8 +31,8 @@ import java.util.concurrent.TimeoutException;
 import com.google.cloud.bigquery.FormatOptions;
 import com.google.cloud.bigquery.Job;
 
-import org.springframework.cloud.gcp.bigquery.core.BigQueryTemplate;
-import org.springframework.cloud.gcp.bigquery.integration.BigQuerySpringMessageHeaders;
+import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
+import com.google.cloud.spring.bigquery.integration.BigQuerySpringMessageHeaders;
 import org.springframework.core.io.Resource;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;

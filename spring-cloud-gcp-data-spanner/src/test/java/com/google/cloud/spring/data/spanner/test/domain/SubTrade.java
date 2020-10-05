@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.test.domain;
+package com.google.cloud.spring.data.spanner.test.domain;
 
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Column;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Embedded;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Interleaved;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Table;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Where;
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.Embedded;
+import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.cloud.spring.data.spanner.core.mapping.Where;
 
 /**
  * An interleaved child of {@link Trade}.

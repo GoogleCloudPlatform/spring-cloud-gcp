@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.logging.extractors;
+package com.google.cloud.spring.logging.extractors;
 
 import javax.servlet.http.HttpServletRequest;
 

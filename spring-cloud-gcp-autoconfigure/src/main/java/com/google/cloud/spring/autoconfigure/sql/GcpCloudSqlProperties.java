@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.sql;
+package com.google.cloud.spring.autoconfigure.sql;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cloud.gcp.core.Credentials;
+import com.google.cloud.spring.core.Credentials;
 
 /**
  * Google Cloud SQL properties.

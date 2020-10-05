@@ -28,8 +28,8 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerOperations;
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.core.SpannerOperations;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;

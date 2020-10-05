@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.convert;
+package com.google.cloud.spring.data.spanner.core.convert;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -33,8 +33,8 @@ import org.assertj.core.data.Offset;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.springframework.cloud.gcp.data.spanner.core.convert.TestEntities.TestEntity;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.TestEntity;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 

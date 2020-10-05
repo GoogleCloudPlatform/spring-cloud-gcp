@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.LazyReference;
+import com.google.cloud.spring.data.datastore.core.mapping.LazyReference;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 

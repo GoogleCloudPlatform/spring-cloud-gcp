@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 
 import java.util.ArrayList;

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.datastore;
+package com.google.cloud.spring.autoconfigure.datastore;
 
 import java.lang.annotation.Annotation;
 
 import org.springframework.boot.autoconfigure.data.AbstractRepositoryConfigurationSourceSupport;
-import org.springframework.cloud.gcp.data.datastore.repository.config.DatastoreRepositoryConfigurationExtension;
-import org.springframework.cloud.gcp.data.datastore.repository.config.EnableDatastoreRepositories;
+import com.google.cloud.spring.data.datastore.repository.config.DatastoreRepositoryConfigurationExtension;
+import com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreRepositories;
 import org.springframework.data.repository.config.RepositoryConfigurationExtension;
 
 /**

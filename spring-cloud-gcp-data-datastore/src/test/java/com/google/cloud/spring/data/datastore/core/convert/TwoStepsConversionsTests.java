@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,8 +23,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import org.springframework.core.convert.converter.Converter;
 
 import static org.assertj.core.api.Assertions.assertThat;

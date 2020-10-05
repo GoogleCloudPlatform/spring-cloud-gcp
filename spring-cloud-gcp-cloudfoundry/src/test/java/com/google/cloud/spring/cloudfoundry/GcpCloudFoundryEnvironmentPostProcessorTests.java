@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.cloudfoundry;
+package com.google.cloud.spring.cloudfoundry;
 
 import java.io.IOException;
 import java.nio.file.Files;

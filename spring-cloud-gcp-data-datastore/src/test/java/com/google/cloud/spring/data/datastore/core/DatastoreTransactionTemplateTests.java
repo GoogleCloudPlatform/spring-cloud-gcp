@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core;
+package com.google.cloud.spring.data.datastore.core;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +31,10 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreEntityConverter;
-import org.springframework.cloud.gcp.data.datastore.core.convert.ObjectToKeyFactory;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
+import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.Id;

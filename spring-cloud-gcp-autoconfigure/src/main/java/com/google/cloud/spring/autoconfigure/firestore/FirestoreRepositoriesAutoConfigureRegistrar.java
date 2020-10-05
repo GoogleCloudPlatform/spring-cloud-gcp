@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.firestore;
+package com.google.cloud.spring.autoconfigure.firestore;
 
 import java.lang.annotation.Annotation;
 
 import org.springframework.boot.autoconfigure.data.AbstractRepositoryConfigurationSourceSupport;
-import org.springframework.cloud.gcp.data.firestore.repository.config.EnableReactiveFirestoreRepositories;
-import org.springframework.cloud.gcp.data.firestore.repository.config.FirestoreRepositoryConfigurationExtension;
+import com.google.cloud.spring.data.firestore.repository.config.EnableReactiveFirestoreRepositories;
+import com.google.cloud.spring.data.firestore.repository.config.FirestoreRepositoryConfigurationExtension;
 import org.springframework.data.repository.config.RepositoryConfigurationExtension;
 
 /**

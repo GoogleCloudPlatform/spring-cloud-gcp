@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.datastore.health;
+package com.google.cloud.spring.autoconfigure.datastore.health;
 
 import java.util.function.Supplier;
 
@@ -28,8 +28,8 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.cloud.gcp.autoconfigure.datastore.DatastoreProvider;
-import org.springframework.cloud.gcp.autoconfigure.datastore.GcpDatastoreAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.datastore.DatastoreProvider;
+import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

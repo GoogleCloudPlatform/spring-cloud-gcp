@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.core;
+package com.google.cloud.spring.pubsub.core;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,15 +28,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.cloud.gcp.pubsub.core.publisher.PubSubPublisherTemplate;
-import org.springframework.cloud.gcp.pubsub.core.subscriber.PubSubSubscriberTemplate;
-import org.springframework.cloud.gcp.pubsub.support.AcknowledgeablePubsubMessage;
-import org.springframework.cloud.gcp.pubsub.support.BasicAcknowledgeablePubsubMessage;
-import org.springframework.cloud.gcp.pubsub.support.PublisherFactory;
-import org.springframework.cloud.gcp.pubsub.support.SubscriberFactory;
-import org.springframework.cloud.gcp.pubsub.support.converter.ConvertedAcknowledgeablePubsubMessage;
-import org.springframework.cloud.gcp.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
-import org.springframework.cloud.gcp.pubsub.support.converter.PubSubMessageConverter;
+import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.PublisherFactory;
+import com.google.cloud.spring.pubsub.support.SubscriberFactory;
+import com.google.cloud.spring.pubsub.support.converter.ConvertedAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import org.springframework.util.Assert;
 import org.springframework.util.concurrent.ListenableFuture;
 

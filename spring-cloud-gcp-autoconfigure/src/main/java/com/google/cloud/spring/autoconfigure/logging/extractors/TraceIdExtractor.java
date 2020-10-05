@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.logging.extractors;
+package com.google.cloud.spring.autoconfigure.logging.extractors;
 
 /**
  * An extractor that can provide a trace ID from an HTTP request.
@@ -22,9 +22,9 @@ package org.springframework.cloud.gcp.autoconfigure.logging.extractors;
  * @author Chengyuan Zhao
  *
  * @deprecated use
- * {@link org.springframework.cloud.gcp.logging.extractors.TraceIdExtractor}
+ * {@link com.google.cloud.spring.logging.extractors.TraceIdExtractor}
  */
 @Deprecated
-public interface TraceIdExtractor extends org.springframework.cloud.gcp.logging.extractors.TraceIdExtractor {
+public interface TraceIdExtractor extends com.google.cloud.spring.logging.extractors.TraceIdExtractor {
 
 }

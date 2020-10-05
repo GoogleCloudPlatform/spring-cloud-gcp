@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore;
+package com.google.cloud.spring.data.firestore;
 
 import java.security.SecureRandom;
 import java.util.Random;

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.entities;
+package com.google.cloud.spring.data.firestore.entities;
 
 import java.util.List;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import org.springframework.cloud.gcp.data.firestore.FirestoreReactiveRepository;
+import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 

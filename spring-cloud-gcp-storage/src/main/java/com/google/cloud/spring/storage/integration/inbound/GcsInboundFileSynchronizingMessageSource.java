@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.storage.integration.inbound;
+package com.google.cloud.spring.storage.integration.inbound;
 
 import java.io.File;
 import java.util.Comparator;

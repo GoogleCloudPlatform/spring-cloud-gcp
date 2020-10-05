@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository.query;
+package com.google.cloud.spring.data.datastore.repository.query;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -42,17 +42,17 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreResultsIterable;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreCustomConversions;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreEntityConverter;
-import org.springframework.cloud.gcp.data.datastore.core.convert.ReadWriteConversions;
-import org.springframework.cloud.gcp.data.datastore.core.convert.TwoStepsConversions;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
-import org.springframework.cloud.gcp.data.datastore.it.EmbeddedEntity;
-import org.springframework.cloud.gcp.data.datastore.it.TestEntity;
+import com.google.cloud.spring.data.datastore.core.DatastoreResultsIterable;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreCustomConversions;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
+import com.google.cloud.spring.data.datastore.core.convert.ReadWriteConversions;
+import com.google.cloud.spring.data.datastore.core.convert.TwoStepsConversions;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.core.mapping.Field;
+import com.google.cloud.spring.data.datastore.it.EmbeddedEntity;
+import com.google.cloud.spring.data.datastore.it.TestEntity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -720,7 +720,7 @@ public class PartTreeDatastoreQueryTests {
 	public void unsupportedParamTypeTest() throws NoSuchMethodException {
 		this.expectedException.expectMessage(
 				"Unable to convert class " +
-						"org.springframework.cloud.gcp.data.datastore.repository.query." +
+						"com.google.cloud.spring.data.datastore.repository.query." +
 						"PartTreeDatastoreQueryTests$Trade to Datastore supported type.");
 		queryWithMockResult("findByAction", null,
 				getClass().getMethod("countByPrice", Integer.class));

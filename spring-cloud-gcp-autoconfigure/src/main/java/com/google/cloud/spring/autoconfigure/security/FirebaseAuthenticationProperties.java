@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.security;
+package com.google.cloud.spring.autoconfigure.security;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

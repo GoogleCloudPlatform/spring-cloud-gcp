@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -32,11 +32,11 @@ import com.google.cloud.datastore.ListValue;
 import com.google.cloud.datastore.StringValue;
 import com.google.cloud.datastore.Value;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentEntity;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentProperty;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.EmbeddedType;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
+import com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType;
 import org.springframework.data.convert.EntityInstantiator;
 import org.springframework.data.convert.EntityInstantiators;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
@@ -46,7 +46,7 @@ import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.data.util.TypeInformation;
 import org.springframework.util.Assert;
 
-import static org.springframework.cloud.gcp.data.datastore.core.mapping.EmbeddedType.NOT_EMBEDDED;
+import static com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType.NOT_EMBEDDED;
 
 /**
  * A class for object to entity and entity to object conversions.

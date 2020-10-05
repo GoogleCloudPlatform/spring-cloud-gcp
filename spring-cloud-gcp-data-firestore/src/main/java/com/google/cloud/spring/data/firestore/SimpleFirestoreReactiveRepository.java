@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore;
+package com.google.cloud.spring.data.firestore;
 
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository.it;
+package com.google.cloud.spring.data.spanner.repository.it;
 
 import java.util.List;
 import java.util.function.IntConsumer;
@@ -27,9 +27,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gcp.data.spanner.test.AbstractSpannerIntegrationTest;
-import org.springframework.cloud.gcp.data.spanner.test.domain.Trade;
-import org.springframework.cloud.gcp.data.spanner.test.domain.TradeRepository;
+import com.google.cloud.spring.data.spanner.test.AbstractSpannerIntegrationTest;
+import com.google.cloud.spring.data.spanner.test.domain.Trade;
+import com.google.cloud.spring.data.spanner.test.domain.TradeRepository;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;

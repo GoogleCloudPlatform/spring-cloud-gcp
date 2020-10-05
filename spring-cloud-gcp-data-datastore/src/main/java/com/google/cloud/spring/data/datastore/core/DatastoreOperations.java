@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core;
+package com.google.cloud.spring.data.datastore.core;
 
 import java.util.Collection;
 import java.util.Map;
@@ -24,7 +24,7 @@ import com.google.cloud.datastore.BaseEntity;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.Query;
 
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreEntityConverter;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
 import org.springframework.data.domain.Example;
 
 /**

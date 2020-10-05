@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core;
+package com.google.cloud.spring.data.datastore.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,23 +59,23 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-import org.springframework.cloud.gcp.core.util.MapBuilder;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreEntityConverter;
-import org.springframework.cloud.gcp.data.datastore.core.convert.ObjectToKeyFactory;
-import org.springframework.cloud.gcp.data.datastore.core.convert.ReadWriteConversions;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Descendants;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DiscriminatorField;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DiscriminatorValue;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.LazyReference;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.event.AfterDeleteEvent;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.event.AfterFindByKeyEvent;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.event.AfterQueryEvent;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.event.AfterSaveEvent;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.event.BeforeDeleteEvent;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.event.BeforeSaveEvent;
+import com.google.cloud.spring.core.util.MapBuilder;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
+import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
+import com.google.cloud.spring.data.datastore.core.convert.ReadWriteConversions;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
+import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField;
+import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue;
+import com.google.cloud.spring.data.datastore.core.mapping.Field;
+import com.google.cloud.spring.data.datastore.core.mapping.LazyReference;
+import com.google.cloud.spring.data.datastore.core.mapping.event.AfterDeleteEvent;
+import com.google.cloud.spring.data.datastore.core.mapping.event.AfterFindByKeyEvent;
+import com.google.cloud.spring.data.datastore.core.mapping.event.AfterQueryEvent;
+import com.google.cloud.spring.data.datastore.core.mapping.event.AfterSaveEvent;
+import com.google.cloud.spring.data.datastore.core.mapping.event.BeforeDeleteEvent;
+import com.google.cloud.spring.data.datastore.core.mapping.event.BeforeSaveEvent;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.annotation.Id;
@@ -1183,7 +1183,7 @@ public class DatastoreTemplateTests {
 		verify(this.objectToKeyFactory, times(1)).getKeyFromId(eq(1L), eq("kind1"));
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity(name = "custom_test_kind")
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity(name = "custom_test_kind")
 	private static class TestEntity {
 		@Id
 		String id;
@@ -1222,7 +1222,7 @@ public class DatastoreTemplateTests {
 		}
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity(name = "child_entity")
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity(name = "child_entity")
 	private static class ChildEntity {
 		@Id
 		Key id;
@@ -1245,7 +1245,7 @@ public class DatastoreTemplateTests {
 		}
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity(name = "test_kind")
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity(name = "test_kind")
 	private static class SimpleTestEntity {
 		@Id
 		String id;
@@ -1256,7 +1256,7 @@ public class DatastoreTemplateTests {
 		int intField;
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity(name = "test_kind")
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity(name = "test_kind")
 	@DiscriminatorField(field = "discrimination_field")
 	@DiscriminatorValue("A")
 	private static class SimpleDiscriminationTestEntity {

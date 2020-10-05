@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.convert;
+package com.google.cloud.spring.data.spanner.core.convert;
 
 import java.sql.Date;
 import java.time.Instant;
@@ -33,7 +33,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import static org.springframework.cloud.gcp.data.spanner.core.convert.CommitTimestamp.CommitTimestampDecorator;
+import static com.google.cloud.spring.data.spanner.core.convert.CommitTimestamp.CommitTimestampDecorator;
 
 /**
  * Default commonly-used custom converters.

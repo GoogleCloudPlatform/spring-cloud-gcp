@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,8 +45,8 @@ import com.google.cloud.datastore.StringValue;
 import com.google.cloud.datastore.TimestampValue;
 import com.google.cloud.datastore.Value;
 
-import org.springframework.cloud.gcp.core.util.MapBuilder;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.core.util.MapBuilder;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 
 /**

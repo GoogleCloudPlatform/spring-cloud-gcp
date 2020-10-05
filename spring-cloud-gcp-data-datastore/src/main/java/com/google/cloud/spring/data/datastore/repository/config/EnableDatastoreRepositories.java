@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository.config;
+package com.google.cloud.spring.data.datastore.repository.config;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -23,7 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.cloud.gcp.data.datastore.repository.support.DatastoreRepositoryFactoryBean;
+import com.google.cloud.spring.data.datastore.repository.support.DatastoreRepositoryFactoryBean;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.repository.config.DefaultRepositoryBaseClass;
@@ -125,7 +125,7 @@ public @interface EnableDatastoreRepositories {
 
 	/**
 	 * Configures the name of the
-	 * {@link org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate} bean to
+	 * {@link com.google.cloud.spring.data.datastore.core.DatastoreTemplate} bean to
 	 * be used by default with the repositories detected.
 	 *
 	 * @return the name of the Datastore template class
@@ -134,7 +134,7 @@ public @interface EnableDatastoreRepositories {
 
 	/**
 	 * Configures the name of the
-	 * {@link org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext}
+	 * {@link com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext}
 	 * bean to be used by default with the repositories detected.
 	 *
 	 * @return the name of the Datastore mapping context class

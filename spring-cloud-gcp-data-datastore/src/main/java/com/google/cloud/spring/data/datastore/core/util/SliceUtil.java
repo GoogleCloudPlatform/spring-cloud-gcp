@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.util;
+package com.google.cloud.spring.data.datastore.core.util;
 
 import java.util.Arrays;
 import java.util.function.Consumer;

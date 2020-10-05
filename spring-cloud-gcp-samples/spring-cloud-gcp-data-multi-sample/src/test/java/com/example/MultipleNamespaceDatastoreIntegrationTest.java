@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.cloud.gcp.autoconfigure.datastore.DatastoreNamespaceProvider;
+import com.google.cloud.spring.autoconfigure.datastore.DatastoreNamespaceProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.TestPropertySource;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.bigquery.core;
+package com.google.cloud.spring.bigquery.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -43,7 +43,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
-import static org.springframework.cloud.gcp.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
+import static com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
 
 /**
  * Integration tests for BigQuery.

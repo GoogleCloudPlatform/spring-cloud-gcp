@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.datastore;
+package com.google.cloud.spring.autoconfigure.datastore;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cloud.gcp.data.datastore.repository.DatastoreRepository;
-import org.springframework.cloud.gcp.data.datastore.repository.config.DatastoreRepositoryConfigurationExtension;
-import org.springframework.cloud.gcp.data.datastore.repository.support.DatastoreRepositoryFactoryBean;
+import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
+import com.google.cloud.spring.data.datastore.repository.config.DatastoreRepositoryConfigurationExtension;
+import com.google.cloud.spring.data.datastore.repository.support.DatastoreRepositoryFactoryBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
  * Enables autoconfiguration for
- * {@link org.springframework.cloud.gcp.data.datastore.repository.config.EnableDatastoreRepositories}.
+ * {@link com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreRepositories}.
  *
  * @author Chengyuan Zhao
  *

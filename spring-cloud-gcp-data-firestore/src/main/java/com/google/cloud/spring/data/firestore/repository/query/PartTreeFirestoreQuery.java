@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.repository.query;
+package com.google.cloud.spring.data.firestore.repository.query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,12 +28,12 @@ import com.google.firestore.v1.StructuredQuery;
 import com.google.firestore.v1.StructuredQuery.FieldReference;
 import com.google.protobuf.Int32Value;
 
-import org.springframework.cloud.gcp.core.util.MapBuilder;
-import org.springframework.cloud.gcp.data.firestore.FirestoreDataException;
-import org.springframework.cloud.gcp.data.firestore.FirestoreReactiveOperations;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreClassMapper;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreMappingContext;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestorePersistentEntity;
+import com.google.cloud.spring.core.util.MapBuilder;
+import com.google.cloud.spring.data.firestore.FirestoreDataException;
+import com.google.cloud.spring.data.firestore.FirestoreReactiveOperations;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
+import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.test.domain;
+package com.google.cloud.spring.data.spanner.test.domain;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 
-import org.springframework.cloud.gcp.data.spanner.core.convert.CommitTimestamp;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Table;
+import com.google.cloud.spring.data.spanner.core.convert.CommitTimestamp;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
 
 /**
  * A test object for testing {@link CommitTimestamp} features.

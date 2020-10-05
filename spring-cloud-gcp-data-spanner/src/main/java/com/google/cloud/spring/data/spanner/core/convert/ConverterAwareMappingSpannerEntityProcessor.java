@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.convert;
+package com.google.cloud.spring.data.spanner.core.convert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,8 +27,8 @@ import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Struct;
 
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.Assert;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.pubsub;
+package com.google.cloud.spring.autoconfigure.pubsub;
 
 import com.google.api.gax.grpc.GrpcStatusCode;
 import com.google.api.gax.rpc.ApiException;
@@ -25,8 +25,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import org.springframework.boot.actuate.health.Status;
-import org.springframework.cloud.gcp.autoconfigure.pubsub.health.PubSubHealthIndicator;
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.autoconfigure.pubsub.health.PubSubHealthIndicator;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;

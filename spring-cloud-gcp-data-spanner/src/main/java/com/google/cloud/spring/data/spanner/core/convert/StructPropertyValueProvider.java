@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.convert;
+package com.google.cloud.spring.data.spanner.core.convert;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.cloud.spanner.Struct;
 
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerPersistentProperty;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
 import org.springframework.data.mapping.model.PropertyValueProvider;
 
 /**

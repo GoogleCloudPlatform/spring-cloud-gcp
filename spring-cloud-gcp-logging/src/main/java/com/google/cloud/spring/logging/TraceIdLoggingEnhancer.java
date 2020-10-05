@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.logging;
+package com.google.cloud.spring.logging;
 
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.LoggingEnhancer;
 
-import org.springframework.cloud.gcp.core.DefaultGcpProjectIdProvider;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 
 /**
  * Adds the trace ID and span ID to the logging entry, in its correct format to be

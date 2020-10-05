@@ -1,4 +1,4 @@
 /**
  * Cloud Firestore support for Spring Data.
  */
-package org.springframework.cloud.gcp.data.firestore;
+package com.google.cloud.spring.data.firestore;

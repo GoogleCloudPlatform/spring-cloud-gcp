@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.core.environment;
+package com.google.cloud.spring.autoconfigure.core.environment;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -22,7 +22,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.cloud.gcp.core.GcpEnvironment;
+import com.google.cloud.spring.core.GcpEnvironment;
 import org.springframework.context.annotation.Conditional;
 
 /**

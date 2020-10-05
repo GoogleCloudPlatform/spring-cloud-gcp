@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.mapping;
+package com.google.cloud.spring.data.spanner.core.mapping;
 
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerEntityWriter;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityWriter;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.data.mapping.model.MutablePersistentEntity;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.mapping;
+package com.google.cloud.spring.data.datastore.core.mapping;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -108,7 +108,7 @@ public class DatastorePersistentEntityImplTests {
 	public void testGetIdPropertyOrFail() {
 		this.expectedException.expect(DatastoreDataException.class);
 		this.expectedException.expectMessage("An ID property was required but does not exist for the type: " +
-				"class org.springframework.cloud.gcp.data.datastore.core.mapping." +
+				"class com.google.cloud.spring.data.datastore.core.mapping." +
 				"DatastorePersistentEntityImplTests$EntityWithNoId");
 		new DatastoreMappingContext().getPersistentEntity(EntityWithNoId.class)
 				.getIdPropertyOrFail();

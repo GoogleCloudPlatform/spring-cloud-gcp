@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.transaction;
+package com.google.cloud.spring.data.firestore.transaction;
 
 import java.util.ArrayList;
 import java.util.List;

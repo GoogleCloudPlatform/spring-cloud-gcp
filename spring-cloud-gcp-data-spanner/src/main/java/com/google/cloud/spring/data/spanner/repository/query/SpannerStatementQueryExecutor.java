@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository.query;
+package com.google.cloud.spring.data.spanner.repository.query;
 
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
@@ -36,16 +36,16 @@ import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.ValueBinder;
 import org.apache.commons.lang3.StringUtils;
 
-import org.springframework.cloud.gcp.data.spanner.core.SpannerPageableQueryOptions;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.convert.ConversionUtils;
-import org.springframework.cloud.gcp.data.spanner.core.convert.ConverterAwareMappingSpannerEntityWriter;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerCustomConverter;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerPersistentEntity;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerPersistentProperty;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Where;
+import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
+import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityWriter;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerCustomConverter;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
+import com.google.cloud.spring.data.spanner.core.mapping.Where;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.ParameterAccessor;
@@ -211,7 +211,7 @@ public final class SpannerStatementQueryExecutor {
 
 	/**
 	 * Builds a query that returns the rows associated with a key set.
-	 * If the entity class has {@link org.springframework.cloud.gcp.data.spanner.core.mapping.Where}
+	 * If the entity class has {@link com.google.cloud.spring.data.spanner.core.mapping.Where}
 	 * annotation it will be used to build the query.
 	 * @param keySet the key set whose members to get.
 	 * @param persistentEntity the persistent entity of the table.
@@ -228,7 +228,7 @@ public final class SpannerStatementQueryExecutor {
 
 	/**
 	 * Builds a query that returns the rows associated with a key set with additional SQL-where.
-	 * The {@link org.springframework.cloud.gcp.data.spanner.core.mapping.Where} of the {@code persistentEntity} parameter
+	 * The {@link com.google.cloud.spring.data.spanner.core.mapping.Where} of the {@code persistentEntity} parameter
 	 * is ignored, you should pass the SQL-where as a {@code whereClause} parameter.
 	 * @param keySet the key set whose members to get.
 	 * @param persistentEntity the persistent entity of the table.
@@ -246,7 +246,7 @@ public final class SpannerStatementQueryExecutor {
 
 	/**
 	 * Builds a query that returns the rows associated with a key set with additional SQL-where.
-	 * The {@link org.springframework.cloud.gcp.data.spanner.core.mapping.Where} of the {@code persistentEntity} parameter
+	 * The {@link com.google.cloud.spring.data.spanner.core.mapping.Where} of the {@code persistentEntity} parameter
 	 * is ignored, you should pass the SQL-where as a {@code whereClause} parameter.
 	 * The secondary {@code index} will be used instead of the table name when the corresponding parameter is not null.
 	 * @param keySet the key set whose members to get.

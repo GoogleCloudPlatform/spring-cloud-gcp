@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.metrics;
+package com.google.cloud.spring.autoconfigure.metrics;
 
 import com.google.api.gax.core.CredentialsProvider;
 

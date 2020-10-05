@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -45,14 +45,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import org.springframework.cloud.gcp.core.util.MapBuilder;
-import org.springframework.cloud.gcp.data.datastore.core.convert.TestDatastoreItemCollections.ComparableBeanContextSupport;
-import org.springframework.cloud.gcp.data.datastore.core.convert.TestItemWithEmbeddedEntity.EmbeddedEntity;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DiscriminatorField;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DiscriminatorValue;
-import org.springframework.cloud.gcp.data.datastore.entities.CustomMap;
+import com.google.cloud.spring.core.util.MapBuilder;
+import com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItemCollections.ComparableBeanContextSupport;
+import com.google.cloud.spring.data.datastore.core.convert.TestItemWithEmbeddedEntity.EmbeddedEntity;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField;
+import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue;
+import com.google.cloud.spring.data.datastore.entities.CustomMap;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.annotation.Id;
@@ -208,7 +208,7 @@ public class DefaultDatastoreEntityConverterTests {
 		this.thrown.expect(DatastoreDataException.class);
 		this.thrown.expectMessage(
 				"Unable to read " +
-						"org.springframework.cloud.gcp.data.datastore.core.convert.TestDatastoreItem entity");
+						"com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItem entity");
 		this.thrown.expectMessage("Unable to read property boolField");
 		this.thrown.expectMessage("Unable to convert class java.lang.Long to class java.lang.Boolean");
 
@@ -238,7 +238,7 @@ public class DefaultDatastoreEntityConverterTests {
 		this.thrown.expect(DatastoreDataException.class);
 		this.thrown.expectMessage(
 				"Unable to read " +
-						"org.springframework.cloud.gcp.data.datastore.core.convert.TestDatastoreItem entity");
+						"com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItem entity");
 		this.thrown.expectMessage("Unable to read property boolField");
 		this.thrown.expectMessage(
 				"Unable to convert class " +
@@ -343,7 +343,7 @@ public class DefaultDatastoreEntityConverterTests {
 		this.thrown.expect(DatastoreDataException.class);
 		this.thrown.expectMessage("Unable to write testItemUnsupportedFields.unsupportedField");
 		this.thrown.expectMessage("Unable to convert class " +
-				"org.springframework.cloud.gcp.data.datastore.core.convert." +
+				"com.google.cloud.spring.data.datastore.core.convert." +
 				"TestItemUnsupportedFields$NewType to Datastore supported type.");
 
 		TestItemUnsupportedFields item = new TestItemUnsupportedFields();
@@ -386,12 +386,12 @@ public class DefaultDatastoreEntityConverterTests {
 
 		this.thrown.expect(DatastoreDataException.class);
 		this.thrown.expectMessage("Unable to read " +
-				"org.springframework.cloud.gcp.data.datastore.core.convert.TestDatastoreItemCollections entity;");
+				"com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItemCollections entity;");
 		this.thrown.expectMessage("Unable to read property beanContext;");
 
 		this.thrown.expectMessage(
 				"Failed to convert from type [java.util.ArrayList<?>] " +
-						"to type [org.springframework.cloud.gcp.data.datastore.core.convert.TestDatastoreItemCollections$ComparableBeanContextSupport]");
+						"to type [com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItemCollections$ComparableBeanContextSupport]");
 
 		ComparableBeanContextSupport comparableBeanContextSupport = new ComparableBeanContextSupport();
 		comparableBeanContextSupport.add("this implementation of Collection");
@@ -515,7 +515,7 @@ public class DefaultDatastoreEntityConverterTests {
 		this.thrown.expect(DatastoreDataException.class);
 		this.thrown.expectMessage("Unable to write collectionOfUnsupportedTypes.unsupportedElts");
 		this.thrown.expectMessage("Unable to convert " +
-						"class org.springframework.cloud.gcp.data.datastore.core.convert." +
+						"class com.google.cloud.spring.data.datastore.core.convert." +
 						"TestItemUnsupportedFields$NewType to Datastore supported type.");
 
 		TestItemUnsupportedFields.CollectionOfUnsupportedTypes item = getCollectionOfUnsupportedTypesItem();
@@ -546,13 +546,13 @@ public class DefaultDatastoreEntityConverterTests {
 	public void testCollectionFieldsUnsupportedWriteReadException() {
 		this.thrown.expect(DatastoreDataException.class);
 		this.thrown.expectMessage(
-				"Unable to read org.springframework.cloud.gcp.data.datastore.core.convert." +
+				"Unable to read com.google.cloud.spring.data.datastore.core.convert." +
 						"TestItemUnsupportedFields$CollectionOfUnsupportedTypes entity");
 		this.thrown.expectMessage("Unable to read property unsupportedElts");
 		this.thrown.expectMessage("Unable process elements of a collection");
 		this.thrown.expectMessage(
 				"No converter found capable of converting from type [java.lang.Integer] " +
-				"to type [org.springframework.cloud.gcp.data.datastore.core.convert." +
+				"to type [com.google.cloud.spring.data.datastore.core.convert." +
 				"TestItemUnsupportedFields$NewType]");
 
 		TestItemUnsupportedFields.CollectionOfUnsupportedTypes item = getCollectionOfUnsupportedTypesItem();
@@ -786,7 +786,7 @@ public class DefaultDatastoreEntityConverterTests {
 			entityConverter.read(ServiceConfigurationPrivateCustomMap.class, entity);
 		}).isInstanceOf(DatastoreDataException.class).hasMessageContaining(
 				"Unable to create an instance of a custom map type: "
-						+ "class org.springframework.cloud.gcp.data.datastore.core.convert."
+						+ "class com.google.cloud.spring.data.datastore.core.convert."
 						+ "DefaultDatastoreEntityConverterTests$PrivateCustomMap "
 						+ "(make sure the class is public and has a public no-args constructor)");
 	}
@@ -831,57 +831,57 @@ public class DefaultDatastoreEntityConverterTests {
 		};
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity
 	private static class StringIdEntity {
 		@Id
 		String id;
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity
 	private static class LongIdEntity {
 		@Id
 		long id;
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity
 	@DiscriminatorField(field = "discrimination_column")
 	@DiscriminatorValue("X")
 	private static class DiscrimEntityX {
 		TestDatastoreItem.Color enumField;
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity
 	@DiscriminatorValue("A")
 	private static class DiscrimEntityA extends DiscrimEntityX {
 		boolean boolField;
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity
 	@DiscriminatorValue("B")
 	private static class DiscrimEntityB extends DiscrimEntityX {
 		int intField;
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity
 	@DiscriminatorValue("D")
 	private static class DiscrimEntityD extends DiscrimEntityB {
 		String stringField;
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity
 	@DiscriminatorField(field = "discrimination_column")
 	@DiscriminatorValue("Y")
 	private static class DiscrimEntityY {
 		TestDatastoreItem.Color enumField;
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity
 	@DiscriminatorValue("Y")
 	private static class DiscrimEntityC extends DiscrimEntityY {
 		int intField;
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity
 	public class ServiceConfigurationPrivateCustomMap {
 		@Id
 		private String serviceName;

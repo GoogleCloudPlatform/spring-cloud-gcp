@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository.config;
+package com.google.cloud.spring.data.spanner.repository.config;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -23,7 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.cloud.gcp.data.spanner.repository.support.SpannerRepositoryFactoryBean;
+import com.google.cloud.spring.data.spanner.repository.support.SpannerRepositoryFactoryBean;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.repository.config.DefaultRepositoryBaseClass;
@@ -126,7 +126,7 @@ public @interface EnableSpannerRepositories {
 
 	/**
 	 * Configures the name of the
-	 * {@link org.springframework.cloud.gcp.data.spanner.core.SpannerOperations} bean to be used by
+	 * {@link com.google.cloud.spring.data.spanner.core.SpannerOperations} bean to be used by
 	 * default with the repositories detected.
 	 *
 	 * @return the name of the Cloud Spanner template class
@@ -135,7 +135,7 @@ public @interface EnableSpannerRepositories {
 
 	/**
 	 * Configures the name of the
-	 * {@link org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext}
+	 * {@link com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext}
 	 * bean to be used by default with the repositories detected.
 	 *
 	 * @return the name of the Cloud Spanner mapping context class

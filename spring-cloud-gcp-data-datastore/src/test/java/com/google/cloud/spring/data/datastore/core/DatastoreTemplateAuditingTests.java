@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core;
+package com.google.cloud.spring.data.datastore.core;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,12 +29,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreServiceObjectToKeyFactory;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DefaultDatastoreEntityConverter;
-import org.springframework.cloud.gcp.data.datastore.core.convert.ObjectToKeyFactory;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
-import org.springframework.cloud.gcp.data.datastore.repository.config.EnableDatastoreAuditing;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreServiceObjectToKeyFactory;
+import com.google.cloud.spring.data.datastore.core.convert.DefaultDatastoreEntityConverter;
+import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreAuditing;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.Id;

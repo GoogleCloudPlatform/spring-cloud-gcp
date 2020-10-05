@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository.query;
+package com.google.cloud.spring.data.datastore.repository.query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,14 +36,14 @@ import com.google.cloud.datastore.GqlQuery;
 import com.google.cloud.datastore.GqlQuery.Builder;
 import com.google.cloud.datastore.Key;
 
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreOperations;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreResultsIterable;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreNativeTypes;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentEntity;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DiscriminatorField;
-import org.springframework.cloud.gcp.data.datastore.core.util.ValueUtil;
+import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
+import com.google.cloud.spring.data.datastore.core.DatastoreResultsIterable;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreNativeTypes;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
+import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField;
+import com.google.cloud.spring.data.datastore.core.util.ValueUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;

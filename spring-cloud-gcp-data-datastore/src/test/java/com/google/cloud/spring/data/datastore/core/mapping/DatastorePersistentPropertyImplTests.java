@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.mapping;
+package com.google.cloud.spring.data.datastore.core.mapping;
 
 import java.util.List;
 import java.util.Map;

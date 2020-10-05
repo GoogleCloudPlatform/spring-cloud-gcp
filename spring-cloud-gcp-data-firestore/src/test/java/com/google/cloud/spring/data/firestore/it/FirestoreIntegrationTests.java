@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.it;
+package com.google.cloud.spring.data.firestore.it;
 
 import java.util.List;
 
@@ -28,12 +28,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gcp.data.firestore.FirestoreDataException;
-import org.springframework.cloud.gcp.data.firestore.FirestoreReactiveOperations;
-import org.springframework.cloud.gcp.data.firestore.FirestoreTemplate;
-import org.springframework.cloud.gcp.data.firestore.entities.PhoneNumber;
-import org.springframework.cloud.gcp.data.firestore.entities.User;
-import org.springframework.cloud.gcp.data.firestore.transaction.ReactiveFirestoreTransactionManager;
+import com.google.cloud.spring.data.firestore.FirestoreDataException;
+import com.google.cloud.spring.data.firestore.FirestoreReactiveOperations;
+import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.entities.PhoneNumber;
+import com.google.cloud.spring.data.firestore.entities.User;
+import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.reactive.TransactionalOperator;

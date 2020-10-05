@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.mapping;
+package com.google.cloud.spring.data.spanner.core.mapping;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -25,7 +25,7 @@ import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
 import org.junit.Test;
 
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerConverters;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerConverters;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

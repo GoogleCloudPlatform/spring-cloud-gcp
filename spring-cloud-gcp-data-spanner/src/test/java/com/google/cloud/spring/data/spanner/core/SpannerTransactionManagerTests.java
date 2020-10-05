@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core;
+package com.google.cloud.spring.data.spanner.core;
 
 import com.google.cloud.spanner.AbortedException;
 import com.google.cloud.spanner.DatabaseClient;

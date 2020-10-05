@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.sql;
+package com.google.cloud.spring.autoconfigure.sql;
 
 import javax.sql.DataSource;
 
@@ -26,7 +26,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import static org.assertj.core.api.Assertions.assertThat;

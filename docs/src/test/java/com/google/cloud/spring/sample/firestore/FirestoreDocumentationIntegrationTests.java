@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.sample.firestore;
+package com.google.cloud.spring.sample.firestore;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
@@ -30,8 +30,8 @@ import org.junit.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
-import org.springframework.cloud.gcp.autoconfigure.firestore.GcpFirestoreAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreAutoConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;

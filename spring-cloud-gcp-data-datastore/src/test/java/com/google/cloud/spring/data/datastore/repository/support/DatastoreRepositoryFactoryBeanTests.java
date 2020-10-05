@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository.support;
+package com.google.cloud.spring.data.datastore.repository.support;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.repository.DatastoreRepository;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
 import static org.assertj.core.api.Assertions.assertThat;

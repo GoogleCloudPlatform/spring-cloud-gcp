@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.spanner;
+package com.google.cloud.spring.autoconfigure.spanner;
 
-import org.springframework.cloud.gcp.data.spanner.repository.SpannerRepository;
+import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import org.springframework.stereotype.Repository;
 
 /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.transaction;
+package com.google.cloud.spring.data.firestore.transaction;
 
 import java.time.Duration;
 
@@ -32,11 +32,11 @@ import org.junit.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import org.springframework.cloud.gcp.data.firestore.FirestoreDataException;
-import org.springframework.cloud.gcp.data.firestore.FirestoreTemplate;
-import org.springframework.cloud.gcp.data.firestore.FirestoreTemplateTests;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreDefaultClassMapper;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreMappingContext;
+import com.google.cloud.spring.data.firestore.FirestoreDataException;
+import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.FirestoreTemplateTests;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import org.springframework.transaction.reactive.TransactionalOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;

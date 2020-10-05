@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.mapping.event;
+package com.google.cloud.spring.data.spanner.core.mapping.event;
 
 import java.util.Objects;
 
 import com.google.cloud.spanner.Statement;
 
-import org.springframework.cloud.gcp.data.spanner.core.SpannerQueryOptions;
+import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
 
 /**
  * This event is published immediately following a read-by-query operation on Cloud

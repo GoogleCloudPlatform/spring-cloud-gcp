@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore;
+package com.google.cloud.spring.data.firestore;
 
 import com.google.firestore.v1.StructuredQuery;
 import org.reactivestreams.Publisher;

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.integration.inbound;
+package com.google.cloud.spring.pubsub.integration.inbound;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import org.springframework.cloud.gcp.pubsub.integration.AckMode;
-import org.springframework.cloud.gcp.pubsub.support.AcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.integration.AckMode;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import org.springframework.integration.acks.AcknowledgmentCallback;
 
 import static org.assertj.core.api.Assertions.assertThat;

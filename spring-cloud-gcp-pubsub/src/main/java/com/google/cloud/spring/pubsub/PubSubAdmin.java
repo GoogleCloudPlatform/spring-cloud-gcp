@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub;
+package com.google.cloud.spring.pubsub;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,9 +33,9 @@ import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.Topic;
 
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.pubsub.support.PubSubSubscriptionUtils;
-import org.springframework.cloud.gcp.pubsub.support.PubSubTopicUtils;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
+import com.google.cloud.spring.pubsub.support.PubSubTopicUtils;
 import org.springframework.util.Assert;
 
 /**

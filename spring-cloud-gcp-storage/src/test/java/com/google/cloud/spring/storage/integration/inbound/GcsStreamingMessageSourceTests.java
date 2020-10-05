@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.storage.integration.inbound;
+package com.google.cloud.spring.storage.integration.inbound;
 
 import java.io.InputStream;
 import java.util.Comparator;
@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gcp.storage.integration.GcsSessionFactory;
+import com.google.cloud.spring.storage.integration.GcsSessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.InboundChannelAdapter;

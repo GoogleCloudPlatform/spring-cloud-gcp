@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.sql;
+package com.google.cloud.spring.autoconfigure.sql;
 
 /**
  * Implementations of this interface typically construct a JDBC URL for Cloud SQL from a GCP

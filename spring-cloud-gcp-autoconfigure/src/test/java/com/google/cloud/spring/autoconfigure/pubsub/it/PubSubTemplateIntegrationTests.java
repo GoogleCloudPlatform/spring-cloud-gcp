@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.pubsub.it;
+package com.google.cloud.spring.autoconfigure.pubsub.it;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,14 +42,14 @@ import org.junit.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
-import org.springframework.cloud.gcp.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
-import org.springframework.cloud.gcp.pubsub.PubSubAdmin;
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
-import org.springframework.cloud.gcp.pubsub.support.AcknowledgeablePubsubMessage;
-import org.springframework.cloud.gcp.pubsub.support.converter.ConvertedAcknowledgeablePubsubMessage;
-import org.springframework.cloud.gcp.pubsub.support.converter.JacksonPubSubMessageConverter;
-import org.springframework.cloud.gcp.pubsub.support.converter.PubSubMessageConverter;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
+import com.google.cloud.spring.pubsub.PubSubAdmin;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.converter.ConvertedAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.converter.JacksonPubSubMessageConverter;
+import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

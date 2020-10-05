@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.core;
+package com.google.cloud.spring.pubsub.core;
 
 import com.google.pubsub.v1.PubsubMessage;
 

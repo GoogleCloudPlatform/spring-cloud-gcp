@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.datastore;
+package com.google.cloud.spring.autoconfigure.datastore;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,21 +35,21 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
-import org.springframework.cloud.gcp.core.DefaultCredentialsProvider;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.core.UserAgentHeaderProvider;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreOperations;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreCustomConversions;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreEntityConverter;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreServiceObjectToKeyFactory;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DefaultDatastoreEntityConverter;
-import org.springframework.cloud.gcp.data.datastore.core.convert.ObjectToKeyFactory;
-import org.springframework.cloud.gcp.data.datastore.core.convert.ReadWriteConversions;
-import org.springframework.cloud.gcp.data.datastore.core.convert.TwoStepsConversions;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreCustomConversions;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreServiceObjectToKeyFactory;
+import com.google.cloud.spring.data.datastore.core.convert.DefaultDatastoreEntityConverter;
+import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
+import com.google.cloud.spring.data.datastore.core.convert.ReadWriteConversions;
+import com.google.cloud.spring.data.datastore.core.convert.TwoStepsConversions;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.webmvc.spi.BackendIdConverter;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.support;
+package com.google.cloud.spring.pubsub.support;
 
 /**
  * Google Cloud Platform internal headers for Spring Messaging messages.

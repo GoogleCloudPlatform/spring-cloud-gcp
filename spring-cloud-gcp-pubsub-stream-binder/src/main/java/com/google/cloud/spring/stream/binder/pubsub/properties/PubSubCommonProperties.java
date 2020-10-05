@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.stream.binder.pubsub.properties;
+package com.google.cloud.spring.stream.binder.pubsub.properties;
 
 /**
  * Properties common to consumers and producers.

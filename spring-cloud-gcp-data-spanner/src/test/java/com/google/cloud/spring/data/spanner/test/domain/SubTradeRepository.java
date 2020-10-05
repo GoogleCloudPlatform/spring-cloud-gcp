@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.test.domain;
+package com.google.cloud.spring.data.spanner.test.domain;
 
 
 import java.util.List;
 
 import com.google.cloud.spanner.Key;
 
-import org.springframework.cloud.gcp.data.spanner.repository.SpannerRepository;
-import org.springframework.cloud.gcp.data.spanner.repository.query.Query;
+import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
+import com.google.cloud.spring.data.spanner.repository.query.Query;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
@@ -36,15 +36,15 @@ import org.springframework.data.repository.query.Param;
  */
 public interface SubTradeRepository extends SpannerRepository<SubTrade, Key> {
 
-	@Query("SELECT * FROM :org.springframework.cloud.gcp.data.spanner.test.domain.SubTrade:"
+	@Query("SELECT * FROM :com.google.cloud.spring.data.spanner.test.domain.SubTrade:"
 			+ " WHERE id = @id AND trader_id = @trader_id")
 	List<SubTrade> getPage(@Param("id") String id, @Param("trader_id") String tradeId, Pageable pageable);
 
-	@Query("SELECT * FROM :org.springframework.cloud.gcp.data.spanner.test.domain.SubTrade:"
+	@Query("SELECT * FROM :com.google.cloud.spring.data.spanner.test.domain.SubTrade:"
 			+ " WHERE id = @id AND trader_id = @trader_id")
 	List<SubTrade> getList(@Param("id") String id, @Param("trader_id") String tradeId, Sort sort);
 
-	@Query("SELECT count(1) FROM :org.springframework.cloud.gcp.data.spanner.test.domain.SubTrade:"
+	@Query("SELECT count(1) FROM :com.google.cloud.spring.data.spanner.test.domain.SubTrade:"
 			+ " WHERE id = @id AND trader_id = @trader_id")
 	long countBy(@Param("id") String id, @Param("trader_id") String tradeId);
 

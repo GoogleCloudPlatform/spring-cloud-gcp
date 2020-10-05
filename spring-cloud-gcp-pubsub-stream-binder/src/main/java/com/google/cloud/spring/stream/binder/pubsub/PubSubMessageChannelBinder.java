@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.stream.binder.pubsub;
+package com.google.cloud.spring.stream.binder.pubsub;
 
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
-import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubInboundChannelAdapter;
-import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubMessageSource;
-import org.springframework.cloud.gcp.pubsub.integration.outbound.PubSubMessageHandler;
-import org.springframework.cloud.gcp.stream.binder.pubsub.properties.PubSubConsumerProperties;
-import org.springframework.cloud.gcp.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
-import org.springframework.cloud.gcp.stream.binder.pubsub.properties.PubSubProducerProperties;
-import org.springframework.cloud.gcp.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
+import com.google.cloud.spring.pubsub.integration.inbound.PubSubMessageSource;
+import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
+import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
 import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;

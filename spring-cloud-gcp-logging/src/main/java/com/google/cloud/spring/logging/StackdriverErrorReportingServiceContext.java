@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.logging;
+package com.google.cloud.spring.logging;
 
 /**
  * This class provides the service context data for stackdriver error reporting.

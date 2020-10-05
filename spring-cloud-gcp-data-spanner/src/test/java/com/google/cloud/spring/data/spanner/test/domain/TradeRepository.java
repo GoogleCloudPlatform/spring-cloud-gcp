@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.test.domain;
+package com.google.cloud.spring.data.spanner.test.domain;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +25,8 @@ import javax.annotation.Nonnull;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Struct;
 
-import org.springframework.cloud.gcp.data.spanner.repository.SpannerRepository;
-import org.springframework.cloud.gcp.data.spanner.repository.query.Query;
+import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
+import com.google.cloud.spring.data.spanner.repository.query.Query;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
@@ -56,37 +56,37 @@ public interface TradeRepository extends SpannerRepository<Trade, Key> {
 
 	void deleteBySymbolAndAction(String symbol, String action);
 
-	@Query("SELECT * FROM :org.springframework.cloud.gcp.data.spanner.test.domain.Trade: WHERE id = @id")
+	@Query("SELECT * FROM :com.google.cloud.spring.data.spanner.test.domain.Trade: WHERE id = @id")
 	Optional<Trade> fetchById(@Param("id") String id);
 
-	@Query(dmlStatement = true, value = "UPDATE :org.springframework.cloud.gcp.data.spanner.test.domain.Trade:" +
+	@Query(dmlStatement = true, value = "UPDATE :com.google.cloud.spring.data.spanner.test.domain.Trade:" +
 			" set action = @action WHERE id = @id")
 	long updateActionTradeById(@Param("id") String id, @Param("action") String act);
 
-	@Query(" select count(1) from :org.springframework.cloud.gcp.data.spanner.test.domain.Trade: "
+	@Query(" select count(1) from :com.google.cloud.spring.data.spanner.test.domain.Trade: "
 			+ "where action = @action")
 	int countByActionQuery(@Param("action") String action);
 
 	@Query("SELECT EXISTS(select * from "
-			+ ":org.springframework.cloud.gcp.data.spanner.test.domain.Trade: "
+			+ ":com.google.cloud.spring.data.spanner.test.domain.Trade: "
 			+ "where action = @action limit 1)")
 	boolean existsByActionQuery(@Param("action") String action);
 
-	@Query("select action from :org.springframework.cloud.gcp.data.spanner.test.domain.Trade: "
+	@Query("select action from :com.google.cloud.spring.data.spanner.test.domain.Trade: "
 			+ "where action in (@action) limit 1")
 	String getFirstString(@Param("action") String action);
 
-	@Query("SELECT * FROM :org.springframework.cloud.gcp.data.spanner.test.domain.Trade:"
+	@Query("SELECT * FROM :com.google.cloud.spring.data.spanner.test.domain.Trade:"
 			+ " WHERE action=@action AND action=#{#action} ORDER BY action desc limit 1")
 	Trade getOneTrade(@Param("action") String action);
 
-	@Query("select action from :org.springframework.cloud.gcp.data.spanner.test.domain.Trade: "
+	@Query("select action from :com.google.cloud.spring.data.spanner.test.domain.Trade: "
 			+ "where action = @action")
 	List<String> getFirstStringList(@Param("action") String action);
 
 	//The sort should be passed as a Pageable param - Spanner did not preserve the order
 	//of a wrapped query that we will have at fetching of eager-interleaved fields of the Trade entity
-	@Query("SELECT * FROM :org.springframework.cloud.gcp.data.spanner.test.domain.Trade:"
+	@Query("SELECT * FROM :com.google.cloud.spring.data.spanner.test.domain.Trade:"
 			+ " WHERE action=@action AND action=#{#action}")
 	List<Trade> annotatedTradesByAction(@Param("action") String action, Pageable pageable);
 
@@ -94,7 +94,7 @@ public interface TradeRepository extends SpannerRepository<Trade, Key> {
 
 	// The sort is defined in the query string here, but can be overriden by the Pageable
 	// param.
-	@Query("SELECT * FROM :org.springframework.cloud.gcp.data.spanner.test.domain.Trade:"
+	@Query("SELECT * FROM :com.google.cloud.spring.data.spanner.test.domain.Trade:"
 			+ " ORDER BY LOWER(action) DESC")
 	List<Trade> sortedTrades(Pageable pageable);
 
@@ -106,17 +106,17 @@ public interface TradeRepository extends SpannerRepository<Trade, Key> {
 
 	List<Trade> findBySymbolNotContains(String symbolFragment);
 
-	@Query("SELECT * FROM :org.springframework.cloud.gcp.data.spanner.test.domain.Trade:"
+	@Query("SELECT * FROM :com.google.cloud.spring.data.spanner.test.domain.Trade:"
 			+ " WHERE STRUCT(symbol,action) = @pairTag ORDER BY LOWER(action) DESC")
 	List<Trade> findBySymbolAndActionStruct(@Param("pairTag") Struct symbolAction);
 
-	@Query("SELECT * FROM :org.springframework.cloud.gcp.data.spanner.test.domain.Trade:"
+	@Query("SELECT * FROM :com.google.cloud.spring.data.spanner.test.domain.Trade:"
 			+ " WHERE STRUCT(symbol,action) = @pairTag ORDER BY LOWER(action) DESC")
 	List<Trade> findBySymbolAndActionPojo(@Param("pairTag") SymbolAction symbolAction);
 
 	long countByActionIn(List<String> action);
 
-	@Query("SELECT count(1) FROM :org.springframework.cloud.gcp.data.spanner.test.domain.Trade:" +
+	@Query("SELECT count(1) FROM :com.google.cloud.spring.data.spanner.test.domain.Trade:" +
 			" where action in unnest(@actions)")
 	long countWithInQuery(@Param("actions") List<String> actions);
 

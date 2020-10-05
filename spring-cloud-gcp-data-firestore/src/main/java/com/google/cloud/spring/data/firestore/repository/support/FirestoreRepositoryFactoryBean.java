@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.repository.support;
+package com.google.cloud.spring.data.firestore.repository.support;
 
-import org.springframework.cloud.gcp.data.firestore.FirestoreTemplate;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreMappingContext;
+import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;

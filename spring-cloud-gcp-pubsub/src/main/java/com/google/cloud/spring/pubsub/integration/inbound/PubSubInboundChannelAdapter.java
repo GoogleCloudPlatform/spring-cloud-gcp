@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.integration.inbound;
+package com.google.cloud.spring.pubsub.integration.inbound;
 
 import java.util.Map;
 
@@ -23,11 +23,11 @@ import com.google.cloud.pubsub.v1.Subscriber;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.springframework.cloud.gcp.pubsub.core.subscriber.PubSubSubscriberOperations;
-import org.springframework.cloud.gcp.pubsub.integration.AckMode;
-import org.springframework.cloud.gcp.pubsub.integration.PubSubHeaderMapper;
-import org.springframework.cloud.gcp.pubsub.support.GcpPubSubHeaders;
-import org.springframework.cloud.gcp.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
+import com.google.cloud.spring.pubsub.integration.AckMode;
+import com.google.cloud.spring.pubsub.integration.PubSubHeaderMapper;
+import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
+import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.util.Assert;
@@ -80,7 +80,7 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 	/**
 	 * Set the desired type of the payload of the {@link org.springframework.messaging.Message} constructed by
 	 * converting the incoming Pub/Sub message. The channel adapter will use the
-	 * {@link org.springframework.cloud.gcp.pubsub.support.converter.PubSubMessageConverter} configured for
+	 * {@link com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter} configured for
 	 * {@link PubSubSubscriberOperations#subscribeAndConvert(String, java.util.function.Consumer, Class)}. The default
 	 * payload type is {@code byte[].class}.
 	 * @param payloadType the type of the payload of the {@link org.springframework.messaging.Message} produced by the

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.integration;
+package com.google.cloud.spring.pubsub.integration;
 
 import java.util.HashMap;
 import java.util.Map;

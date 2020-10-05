@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.convert.it;
+package com.google.cloud.spring.data.spanner.core.convert.it;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -27,13 +27,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerMutationFactory;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerOperations;
-import org.springframework.cloud.gcp.data.spanner.core.convert.CommitTimestamp;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerConverters;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
-import org.springframework.cloud.gcp.data.spanner.test.AbstractSpannerIntegrationTest;
-import org.springframework.cloud.gcp.data.spanner.test.domain.CommitTimestamps;
+import com.google.cloud.spring.data.spanner.core.SpannerMutationFactory;
+import com.google.cloud.spring.data.spanner.core.SpannerOperations;
+import com.google.cloud.spring.data.spanner.core.convert.CommitTimestamp;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerConverters;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.test.AbstractSpannerIntegrationTest;
+import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.test.context.junit4.SpringRunner;
 

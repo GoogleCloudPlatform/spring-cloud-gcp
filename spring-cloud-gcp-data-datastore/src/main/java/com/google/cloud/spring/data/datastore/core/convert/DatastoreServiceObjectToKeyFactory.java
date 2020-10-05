@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 import java.util.function.Supplier;
 
@@ -23,9 +23,9 @@ import com.google.cloud.datastore.IncompleteKey;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.KeyFactory;
 
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentEntity;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.util.Assert;
 

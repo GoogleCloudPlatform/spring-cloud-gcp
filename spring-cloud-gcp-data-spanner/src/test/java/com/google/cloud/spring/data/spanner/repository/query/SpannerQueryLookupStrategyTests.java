@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository.query;
+package com.google.cloud.spring.data.spanner.repository.query;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -27,15 +27,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerWriteConverter;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Column;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Interleaved;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerPersistentEntity;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Table;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Where;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerWriteConverter;
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.cloud.spring.data.spanner.core.mapping.Where;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;

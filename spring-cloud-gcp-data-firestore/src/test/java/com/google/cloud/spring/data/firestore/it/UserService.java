@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.it;
+package com.google.cloud.spring.data.firestore.it;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gcp.data.firestore.FirestoreDataException;
-import org.springframework.cloud.gcp.data.firestore.entities.User;
-import org.springframework.cloud.gcp.data.firestore.entities.UserRepository;
+import com.google.cloud.spring.data.firestore.FirestoreDataException;
+import com.google.cloud.spring.data.firestore.entities.User;
+import com.google.cloud.spring.data.firestore.entities.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

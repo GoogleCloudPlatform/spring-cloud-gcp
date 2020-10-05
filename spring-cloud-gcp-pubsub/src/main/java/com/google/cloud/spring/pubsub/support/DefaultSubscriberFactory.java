@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.support;
+package com.google.cloud.spring.pubsub.support;
 
 import java.io.IOException;
 
@@ -33,7 +33,7 @@ import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.pubsub.v1.PullRequest;
 import org.threeten.bp.Duration;
 
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.springframework.util.Assert;
 
 /**

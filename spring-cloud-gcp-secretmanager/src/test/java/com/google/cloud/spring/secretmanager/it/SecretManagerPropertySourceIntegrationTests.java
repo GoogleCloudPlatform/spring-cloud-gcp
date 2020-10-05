@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.secretmanager.it;
+package com.google.cloud.spring.secretmanager.it;
 
 import io.grpc.StatusRuntimeException;
 import org.junit.BeforeClass;
@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.gcp.secretmanager.SecretManagerTemplate;
+import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

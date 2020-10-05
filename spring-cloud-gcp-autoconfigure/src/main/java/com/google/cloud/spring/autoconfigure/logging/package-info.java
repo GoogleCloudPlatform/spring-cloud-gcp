@@ -1,4 +1,4 @@
 /**
  * Auto-configuration for Spring Cloud GCP Logging module.
  */
-package org.springframework.cloud.gcp.autoconfigure.logging;
+package com.google.cloud.spring.autoconfigure.logging;

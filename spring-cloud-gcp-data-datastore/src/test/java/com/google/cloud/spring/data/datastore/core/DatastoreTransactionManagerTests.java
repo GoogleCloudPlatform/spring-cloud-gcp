@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core;
+package com.google.cloud.spring.data.datastore.core;
 
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreException;
@@ -26,7 +26,7 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTransactionManager.Tx;
+import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager.Tx;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.support.DefaultTransactionDefinition;

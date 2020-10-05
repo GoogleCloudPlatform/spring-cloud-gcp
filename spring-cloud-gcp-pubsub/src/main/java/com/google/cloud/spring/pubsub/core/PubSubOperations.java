@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.core;
+package com.google.cloud.spring.pubsub.core;
 
-import org.springframework.cloud.gcp.pubsub.core.publisher.PubSubPublisherOperations;
-import org.springframework.cloud.gcp.pubsub.core.subscriber.PubSubSubscriberOperations;
+import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherOperations;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
 
 /**
  * An abstraction for Google Cloud Pub/Sub for publish and subscribe / pull methods.

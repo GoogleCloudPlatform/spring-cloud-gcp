@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.stream.binder.pubsub.provisioning;
+package com.google.cloud.spring.stream.binder.pubsub.provisioning;
 
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 

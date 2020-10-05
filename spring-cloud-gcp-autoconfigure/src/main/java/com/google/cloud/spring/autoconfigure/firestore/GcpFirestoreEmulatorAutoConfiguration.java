@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.firestore;
+package com.google.cloud.spring.autoconfigure.firestore;
 
 import java.io.IOException;
 import java.net.URI;
@@ -37,10 +37,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.gcp.autoconfigure.firestore.GcpFirestoreAutoConfiguration.FirestoreReactiveAutoConfiguration;
-import org.springframework.cloud.gcp.data.firestore.FirestoreTemplate;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreClassMapper;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreMappingContext;
+import com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreAutoConfiguration.FirestoreReactiveAutoConfiguration;
+import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

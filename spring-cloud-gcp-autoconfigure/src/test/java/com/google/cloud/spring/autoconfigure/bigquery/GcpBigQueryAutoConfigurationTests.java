@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.bigquery;
+package com.google.cloud.spring.autoconfigure.bigquery;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -25,8 +25,8 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
-import org.springframework.cloud.gcp.bigquery.core.BigQueryTemplate;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import org.springframework.context.annotation.Bean;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,11 +37,11 @@ import com.google.cloud.datastore.IncompleteKey;
 import com.google.cloud.datastore.ListValue;
 import com.google.cloud.datastore.Value;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentProperty;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.EmbeddedType;
-import org.springframework.cloud.gcp.data.datastore.core.util.ValueUtil;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
+import com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType;
+import com.google.cloud.spring.data.datastore.core.util.ValueUtil;
 import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -52,7 +52,7 @@ import org.springframework.data.util.TypeInformation;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
-import static org.springframework.cloud.gcp.data.datastore.core.util.ValueUtil.boxIfNeeded;
+import static com.google.cloud.spring.data.datastore.core.util.ValueUtil.boxIfNeeded;
 
 /**
  * In order to support {@link CustomConversions}, this class applies 2-step conversions.

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.storage.integration.filters;
+package com.google.cloud.spring.storage.integration.filters;
 
 import com.google.cloud.storage.BlobInfo;
 

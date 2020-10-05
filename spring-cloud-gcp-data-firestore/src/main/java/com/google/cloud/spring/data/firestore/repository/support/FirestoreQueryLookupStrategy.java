@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.repository.support;
+package com.google.cloud.spring.data.firestore.repository.support;
 
 import java.lang.reflect.Method;
 
-import org.springframework.cloud.gcp.data.firestore.FirestoreTemplate;
-import org.springframework.cloud.gcp.data.firestore.repository.query.FirestoreQueryMethod;
-import org.springframework.cloud.gcp.data.firestore.repository.query.PartTreeFirestoreQuery;
+import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.repository.query.FirestoreQueryMethod;
+import com.google.cloud.spring.data.firestore.repository.query.PartTreeFirestoreQuery;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryMetadata;

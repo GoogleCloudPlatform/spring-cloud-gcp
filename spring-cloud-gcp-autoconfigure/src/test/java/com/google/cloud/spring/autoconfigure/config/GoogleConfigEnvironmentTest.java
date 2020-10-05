@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.config;
+package com.google.cloud.spring.autoconfigure.config;
 
 import java.util.Base64;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.springframework.cloud.gcp.autoconfigure.config.GoogleConfigEnvironment.Variable;
+import com.google.cloud.spring.autoconfigure.config.GoogleConfigEnvironment.Variable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

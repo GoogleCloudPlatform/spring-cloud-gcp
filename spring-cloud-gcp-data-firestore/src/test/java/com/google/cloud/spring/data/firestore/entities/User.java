@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.entities;
+package com.google.cloud.spring.data.firestore.entities;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +22,7 @@ import java.util.Objects;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.PropertyName;
 
-import org.springframework.cloud.gcp.data.firestore.Document;
+import com.google.cloud.spring.data.firestore.Document;
 
 /**
  * Sample entity for integration tests.

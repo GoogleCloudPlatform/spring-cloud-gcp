@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.integration.inbound;
+package com.google.cloud.spring.pubsub.integration.inbound;
 
-import org.springframework.cloud.gcp.pubsub.integration.AckMode;
-import org.springframework.cloud.gcp.pubsub.support.AcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.integration.AckMode;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import org.springframework.integration.acks.AcknowledgmentCallback;
 import org.springframework.util.Assert;
 
@@ -50,7 +50,7 @@ public class PubSubAcknowledgmentCallback implements AcknowledgmentCallback {
 
 	/**
 	 * In {@link AckMode#AUTO_ACK} mode, nacking cannot be done through this callback.
-	 * <p>Use {@link org.springframework.cloud.gcp.pubsub.support.GcpPubSubHeaders#ORIGINAL_MESSAGE}
+	 * <p>Use {@link com.google.cloud.spring.pubsub.support.GcpPubSubHeaders#ORIGINAL_MESSAGE}
 	 * to nack instead.
 	 */
 	@Override

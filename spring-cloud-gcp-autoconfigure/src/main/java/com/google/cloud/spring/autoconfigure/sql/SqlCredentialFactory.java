@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.sql;
+package com.google.cloud.spring.autoconfigure.sql;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -29,7 +29,7 @@ import com.google.cloud.sql.CredentialFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.springframework.cloud.gcp.core.GcpScope;
+import com.google.cloud.spring.core.GcpScope;
 
 /**
  * Returns the credentials that are written to a system property by the Cloud SQL starter.

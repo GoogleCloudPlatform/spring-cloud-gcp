@@ -21,8 +21,8 @@ import java.nio.charset.Charset;
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gcp.pubsub.reactive.PubSubReactiveFactory;
-import org.springframework.cloud.gcp.pubsub.support.AcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.reactive.PubSubReactiveFactory;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

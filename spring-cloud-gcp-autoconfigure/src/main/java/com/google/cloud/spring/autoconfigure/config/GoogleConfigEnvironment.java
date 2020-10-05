@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.config;
+package com.google.cloud.spring.autoconfigure.config;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository.support;
+package com.google.cloud.spring.data.datastore.repository.support;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -22,10 +22,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mapping.MappingException;
 import org.springframework.data.repository.core.EntityInformation;
@@ -75,7 +75,7 @@ public class DatastoreRepositoryFactoryTests {
 	public void getEntityInformationNotAvailableTest() {
 		this.expectedException.expect(MappingException.class);
 		this.expectedException.expectMessage("Could not lookup mapping metadata for domain class: " +
-				"org.springframework.cloud.gcp.data.datastore.repository.support." +
+				"com.google.cloud.spring.data.datastore.repository.support." +
 				"DatastoreRepositoryFactoryTests$TestEntity");
 		DatastoreRepositoryFactory factory = new DatastoreRepositoryFactory(
 				mock(DatastoreMappingContext.class), this.datastoreTemplate);

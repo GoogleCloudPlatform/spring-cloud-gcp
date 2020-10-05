@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 import com.google.cloud.datastore.BaseEntity;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentProperty;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.EmbeddedType;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
+import com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType;
 import org.springframework.core.convert.ConversionException;
 import org.springframework.data.mapping.model.PropertyValueProvider;
 import org.springframework.data.util.TypeInformation;

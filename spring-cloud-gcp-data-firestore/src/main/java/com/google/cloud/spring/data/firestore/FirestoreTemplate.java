@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore;
+package com.google.cloud.spring.data.firestore;
 
 import java.time.Duration;
 import java.util.List;
@@ -39,13 +39,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.context.Context;
 
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreClassMapper;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreMappingContext;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestorePersistentEntity;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestorePersistentProperty;
-import org.springframework.cloud.gcp.data.firestore.transaction.ReactiveFirestoreResourceHolder;
-import org.springframework.cloud.gcp.data.firestore.util.ObservableReactiveUtil;
-import org.springframework.cloud.gcp.data.firestore.util.Util;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
+import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntity;
+import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentProperty;
+import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreResourceHolder;
+import com.google.cloud.spring.data.firestore.util.ObservableReactiveUtil;
+import com.google.cloud.spring.data.firestore.util.Util;
 import org.springframework.transaction.reactive.TransactionContext;
 import org.springframework.util.Assert;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.stream.binder.pubsub;
+package com.google.cloud.spring.stream.binder.pubsub;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,13 +24,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.pubsub.PubSubAdmin;
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
-import org.springframework.cloud.gcp.pubsub.integration.outbound.PubSubMessageHandler;
-import org.springframework.cloud.gcp.stream.binder.pubsub.config.PubSubBinderConfiguration;
-import org.springframework.cloud.gcp.stream.binder.pubsub.properties.PubSubConsumerProperties;
-import org.springframework.cloud.gcp.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
-import org.springframework.cloud.gcp.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
+import com.google.cloud.spring.pubsub.PubSubAdmin;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
+import com.google.cloud.spring.stream.binder.pubsub.config.PubSubBinderConfiguration;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
+import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;

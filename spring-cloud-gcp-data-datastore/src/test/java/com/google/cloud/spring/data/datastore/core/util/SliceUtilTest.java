@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.util;
+package com.google.cloud.spring.data.datastore.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.List;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.cloud.gcp.data.datastore.core.util.SliceUtil.sliceAndExecute;
+import static com.google.cloud.spring.data.datastore.core.util.SliceUtil.sliceAndExecute;
 
 /**
  * @author Dmitry Solomakha

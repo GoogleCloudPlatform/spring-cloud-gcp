@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.vision;
+package com.google.cloud.spring.vision;
 
 import java.util.Collection;
 import java.util.Collections;

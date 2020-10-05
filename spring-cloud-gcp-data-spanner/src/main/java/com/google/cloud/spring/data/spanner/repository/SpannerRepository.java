@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository;
+package com.google.cloud.spring.data.spanner.repository;
 
 import java.util.function.Function;
 
-import org.springframework.cloud.gcp.data.spanner.core.SpannerOperations;
+import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.mapping;
+package com.google.cloud.spring.data.spanner.core.mapping;
 
 import java.util.List;
 
@@ -214,7 +214,7 @@ public class SpannerPersistentEntityImplTests {
 		this.thrown.expect(SpannerDataException.class);
 		this.thrown.expectMessage(
 				"Error getting table name for EntityBadName; nested exception is " +
-						"org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException: Only " +
+						"com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException: Only " +
 						"letters, numbers, and underscores are allowed in table names: ;DROP TABLE your_table;");
 
 		SpannerPersistentEntityImpl<EntityBadName> entity = new SpannerPersistentEntityImpl<>(
@@ -227,7 +227,7 @@ public class SpannerPersistentEntityImplTests {
 		this.thrown.expect(SpannerDataException.class);
 		this.thrown.expectMessage(
 				"Error getting table name for EntityWithExpression; nested exception is " +
-						"org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException: " +
+						"com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException: " +
 						"Only letters, numbers, and underscores are allowed in table names: " +
 						"table_; DROP TABLE your_table;");
 
@@ -292,7 +292,7 @@ public class SpannerPersistentEntityImplTests {
 				"Embedded properties cannot be collections:");
 
 		this.thrown.expectMessage(
-				"org.springframework.cloud.gcp.data.spanner.core.mapping." +
+				"com.google.cloud.spring.data.spanner.core.mapping." +
 						"SpannerPersistentEntityImplTests$ChildCollectionEmbedded.parentEmbedded");
 
 		this.spannerMappingContext.getPersistentEntity(ChildCollectionEmbedded.class);

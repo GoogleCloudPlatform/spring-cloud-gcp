@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.storage;
+package com.google.cloud.spring.autoconfigure.storage;
 
 import java.io.IOException;
 
@@ -28,8 +28,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.storage.GoogleStorageResource;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.storage.GoogleStorageResource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;

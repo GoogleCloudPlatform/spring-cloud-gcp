@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.util.Strings;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Descendants;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
+import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Reference;

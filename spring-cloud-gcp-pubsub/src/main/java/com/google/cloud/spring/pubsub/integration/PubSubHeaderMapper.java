@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.integration;
+package com.google.cloud.spring.pubsub.integration;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.cloud.gcp.pubsub.support.GcpPubSubHeaders;
+import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.integration.support.utils.PatternMatchUtils;
 import org.springframework.messaging.MessageHeaders;

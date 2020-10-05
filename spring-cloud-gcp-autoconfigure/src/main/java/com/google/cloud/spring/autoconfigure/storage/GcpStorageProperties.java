@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.storage;
+package com.google.cloud.spring.autoconfigure.storage;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.cloud.gcp.core.Credentials;
-import org.springframework.cloud.gcp.core.CredentialsSupplier;
-import org.springframework.cloud.gcp.core.GcpScope;
-import org.springframework.cloud.gcp.storage.GoogleStorageProtocolResolverSettings;
+import com.google.cloud.spring.core.Credentials;
+import com.google.cloud.spring.core.CredentialsSupplier;
+import com.google.cloud.spring.core.GcpScope;
+import com.google.cloud.spring.storage.GoogleStorageProtocolResolverSettings;
 
 /**
  * Settings for Storage.

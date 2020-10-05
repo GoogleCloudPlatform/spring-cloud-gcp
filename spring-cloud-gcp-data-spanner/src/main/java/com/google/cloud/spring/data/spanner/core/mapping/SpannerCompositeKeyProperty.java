@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.mapping;
+package com.google.cloud.spring.data.spanner.core.mapping;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -28,7 +28,7 @@ import java.util.OptionalLong;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Type.Code;
 
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerTypeMapper;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerTypeMapper;
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.PersistentPropertyAccessor;

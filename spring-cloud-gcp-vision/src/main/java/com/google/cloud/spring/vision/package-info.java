@@ -1,4 +1,4 @@
 /**
  * Google Cloud Vision integration with Spring.
  */
-package org.springframework.cloud.gcp.vision;
+package com.google.cloud.spring.vision;

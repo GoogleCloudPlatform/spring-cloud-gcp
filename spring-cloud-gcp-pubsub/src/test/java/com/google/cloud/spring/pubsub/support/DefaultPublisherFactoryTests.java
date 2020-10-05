@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.support;
+package com.google.cloud.spring.pubsub.support;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.pubsub.v1.Publisher;

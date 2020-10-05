@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.secretmanager;
+package com.google.cloud.spring.secretmanager;
 
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 

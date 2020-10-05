@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.storage;
+package com.google.cloud.spring.storage;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.core.environment;
+package com.google.cloud.spring.autoconfigure.core.environment;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
-import org.springframework.cloud.gcp.core.GcpEnvironment;
-import org.springframework.cloud.gcp.core.GcpEnvironmentProvider;
+import com.google.cloud.spring.core.GcpEnvironment;
+import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.util.Assert;

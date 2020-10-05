@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.repository.query;
+package com.google.cloud.spring.data.firestore.repository.query;
 
 import java.util.function.Consumer;
 
@@ -24,12 +24,12 @@ import org.mockito.invocation.InvocationOnMock;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import org.springframework.cloud.gcp.data.firestore.FirestoreDataException;
-import org.springframework.cloud.gcp.data.firestore.FirestoreTemplate;
-import org.springframework.cloud.gcp.data.firestore.entities.User;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreClassMapper;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreDefaultClassMapper;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreMappingContext;
+import com.google.cloud.spring.data.firestore.FirestoreDataException;
+import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.entities.User;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.ResultProcessor;
 import org.springframework.data.repository.query.ReturnedType;

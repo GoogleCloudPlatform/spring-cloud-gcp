@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.logging;
+package com.google.cloud.spring.autoconfigure.logging;
 
 /**
  * Adds the trace ID and span ID to the logging entry, in its correct format to be
@@ -24,9 +24,9 @@ package org.springframework.cloud.gcp.autoconfigure.logging;
  * @author Mike Eltsufin
  * @author Chengyuan Zhao
  *
- * @deprecated use {@link org.springframework.cloud.gcp.logging.TraceIdLoggingEnhancer}
+ * @deprecated use {@link com.google.cloud.spring.logging.TraceIdLoggingEnhancer}
  */
 @Deprecated
-public class TraceIdLoggingEnhancer extends org.springframework.cloud.gcp.logging.TraceIdLoggingEnhancer {
+public class TraceIdLoggingEnhancer extends com.google.cloud.spring.logging.TraceIdLoggingEnhancer {
 
 }

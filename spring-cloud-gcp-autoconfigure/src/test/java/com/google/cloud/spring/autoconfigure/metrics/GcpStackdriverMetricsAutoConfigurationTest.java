@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.metrics;
+package com.google.cloud.spring.autoconfigure.metrics;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
@@ -26,7 +26,7 @@ import org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfigu
 import org.springframework.boot.actuate.autoconfigure.metrics.export.stackdriver.StackdriverMetricsExportAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

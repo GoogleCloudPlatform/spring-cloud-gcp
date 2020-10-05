@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.vision;
+package com.google.cloud.spring.autoconfigure.vision;
 
 import java.io.IOException;
 import java.util.concurrent.Executor;
@@ -29,10 +29,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.gcp.core.DefaultCredentialsProvider;
-import org.springframework.cloud.gcp.core.UserAgentHeaderProvider;
-import org.springframework.cloud.gcp.vision.CloudVisionTemplate;
-import org.springframework.cloud.gcp.vision.DocumentOcrTemplate;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.vision.CloudVisionTemplate;
+import com.google.cloud.spring.vision.DocumentOcrTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.vision.it;
+package com.google.cloud.spring.vision.it;
 
 import java.io.IOException;
 
@@ -25,10 +25,10 @@ import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageAnnotatorSettings;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.cloud.gcp.core.Credentials;
-import org.springframework.cloud.gcp.core.DefaultCredentialsProvider;
-import org.springframework.cloud.gcp.core.DefaultGcpProjectIdProvider;
-import org.springframework.cloud.gcp.vision.DocumentOcrTemplate;
+import com.google.cloud.spring.core.Credentials;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
+import com.google.cloud.spring.vision.DocumentOcrTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

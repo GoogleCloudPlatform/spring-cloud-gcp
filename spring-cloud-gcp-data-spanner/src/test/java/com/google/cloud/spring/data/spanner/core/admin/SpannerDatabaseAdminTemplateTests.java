@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.admin;
+package com.google.cloud.spring.data.spanner.core.admin;
 
 import java.util.ArrayList;
 import java.util.Arrays;

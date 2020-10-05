@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.security.iap;
+package com.google.cloud.spring.security.iap;
 
 import com.google.cloud.resourcemanager.Project;
 import com.google.cloud.resourcemanager.ResourceManager;
@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

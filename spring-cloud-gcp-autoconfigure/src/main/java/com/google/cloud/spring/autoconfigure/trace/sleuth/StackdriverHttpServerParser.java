@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.trace.sleuth;
+package com.google.cloud.spring.autoconfigure.trace.sleuth;
 
 import brave.SpanCustomizer;
 import brave.http.HttpAdapter;

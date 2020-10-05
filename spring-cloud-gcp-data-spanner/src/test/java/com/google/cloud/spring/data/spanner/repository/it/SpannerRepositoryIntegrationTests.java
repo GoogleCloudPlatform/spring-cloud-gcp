@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository.it;
+package com.google.cloud.spring.data.spanner.repository.it;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,19 +35,19 @@ import org.mockito.Mockito;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerQueryOptions;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerPersistentEntity;
-import org.springframework.cloud.gcp.data.spanner.test.AbstractSpannerIntegrationTest;
-import org.springframework.cloud.gcp.data.spanner.test.domain.SubTrade;
-import org.springframework.cloud.gcp.data.spanner.test.domain.SubTradeComponent;
-import org.springframework.cloud.gcp.data.spanner.test.domain.SubTradeComponentRepository;
-import org.springframework.cloud.gcp.data.spanner.test.domain.SubTradeRepository;
-import org.springframework.cloud.gcp.data.spanner.test.domain.SymbolAction;
-import org.springframework.cloud.gcp.data.spanner.test.domain.Trade;
-import org.springframework.cloud.gcp.data.spanner.test.domain.TradeProjection;
-import org.springframework.cloud.gcp.data.spanner.test.domain.TradeRepository;
+import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
+import com.google.cloud.spring.data.spanner.test.AbstractSpannerIntegrationTest;
+import com.google.cloud.spring.data.spanner.test.domain.SubTrade;
+import com.google.cloud.spring.data.spanner.test.domain.SubTradeComponent;
+import com.google.cloud.spring.data.spanner.test.domain.SubTradeComponentRepository;
+import com.google.cloud.spring.data.spanner.test.domain.SubTradeRepository;
+import com.google.cloud.spring.data.spanner.test.domain.SymbolAction;
+import com.google.cloud.spring.data.spanner.test.domain.Trade;
+import com.google.cloud.spring.data.spanner.test.domain.TradeProjection;
+import com.google.cloud.spring.data.spanner.test.domain.TradeRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

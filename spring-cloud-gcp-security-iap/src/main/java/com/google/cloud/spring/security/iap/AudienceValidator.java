@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.security.iap;
+package com.google.cloud.spring.security.iap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

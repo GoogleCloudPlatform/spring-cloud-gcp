@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.secretmanager;
+package com.google.cloud.spring.secretmanager;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.secretmanager.v1beta1.AccessSecretVersionResponse;

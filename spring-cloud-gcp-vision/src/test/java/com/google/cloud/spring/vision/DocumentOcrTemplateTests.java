@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.vision;
+package com.google.cloud.spring.vision;
 
 import com.google.cloud.storage.Storage;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
-import org.springframework.cloud.gcp.storage.GoogleStorageLocation;
+import com.google.cloud.spring.storage.GoogleStorageLocation;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

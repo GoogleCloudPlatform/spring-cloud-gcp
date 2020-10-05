@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.pubsub;
+package com.google.cloud.spring.autoconfigure.pubsub;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.springframework.context.annotation.Bean;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.security.firebase;
+package com.google.cloud.spring.security.firebase;
 
 import java.security.PrivateKey;
 import java.time.Instant;

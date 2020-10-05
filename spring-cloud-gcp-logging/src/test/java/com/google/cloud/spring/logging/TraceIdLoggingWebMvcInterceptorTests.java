@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.logging;
+package com.google.cloud.spring.logging;
 
 import org.junit.Test;
 
-import org.springframework.cloud.gcp.logging.extractors.XCloudTraceIdExtractor;
+import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;

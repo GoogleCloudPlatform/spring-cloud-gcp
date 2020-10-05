@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.logging;
+package com.google.cloud.spring.autoconfigure.logging;
 
 import com.google.cloud.logging.logback.LoggingAppender;
 
@@ -24,11 +24,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
-import org.springframework.cloud.gcp.autoconfigure.trace.StackdriverTraceAutoConfiguration;
-import org.springframework.cloud.gcp.logging.LoggingWebMvcConfigurer;
-import org.springframework.cloud.gcp.logging.TraceIdLoggingWebMvcInterceptor;
-import org.springframework.cloud.gcp.logging.extractors.TraceIdExtractor;
-import org.springframework.cloud.gcp.logging.extractors.XCloudTraceIdExtractor;
+import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
+import com.google.cloud.spring.logging.LoggingWebMvcConfigurer;
+import com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor;
+import com.google.cloud.spring.logging.extractors.TraceIdExtractor;
+import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

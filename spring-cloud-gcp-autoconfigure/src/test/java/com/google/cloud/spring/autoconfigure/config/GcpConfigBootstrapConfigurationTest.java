@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.config;
+package com.google.cloud.spring.autoconfigure.config;
 
 import org.junit.Ignore;
 import org.junit.Test;

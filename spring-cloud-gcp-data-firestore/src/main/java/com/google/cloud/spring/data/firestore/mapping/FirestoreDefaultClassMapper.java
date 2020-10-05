@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.mapping;
+package com.google.cloud.spring.data.firestore.mapping;
 
 import java.util.Map;
 
@@ -25,7 +25,7 @@ import com.google.cloud.firestore.Internal;
 import com.google.firestore.v1.Document;
 import com.google.firestore.v1.Value;
 
-import org.springframework.cloud.gcp.core.util.MapBuilder;
+import com.google.cloud.spring.core.util.MapBuilder;
 
 /**
  *

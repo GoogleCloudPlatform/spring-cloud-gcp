@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.stream.binder.pubsub.provisioning;
+package com.google.cloud.spring.stream.binder.pubsub.provisioning;
 
 import com.google.api.gax.rpc.AlreadyExistsException;
 import com.google.pubsub.v1.Subscription;
@@ -27,8 +27,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import org.springframework.cloud.gcp.pubsub.PubSubAdmin;
-import org.springframework.cloud.gcp.stream.binder.pubsub.properties.PubSubConsumerProperties;
+import com.google.cloud.spring.pubsub.PubSubAdmin;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.provisioning.ProvisioningException;
 

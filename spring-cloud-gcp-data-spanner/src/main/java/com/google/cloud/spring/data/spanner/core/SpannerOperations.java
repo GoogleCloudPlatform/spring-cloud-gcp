@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core;
+package com.google.cloud.spring.data.spanner.core;
 
 import java.util.List;
 import java.util.Set;
@@ -86,7 +86,7 @@ public interface SpannerOperations {
 
 	/**
 	 * Finds objects stored from their keys.
-	 * When the entity has a {@link org.springframework.cloud.gcp.data.spanner.core.mapping.Where} class annotation
+	 * When the entity has a {@link com.google.cloud.spring.data.spanner.core.mapping.Where} class annotation
 	 * or any of the properties is eagerly interleaved, the SQL query will be performed instead of the
 	 * {@link ReadContext#read} to fetch such properties and satisfy the {@code sql where} condition.
 	 * @param entityClass the type of the object to retrieve.

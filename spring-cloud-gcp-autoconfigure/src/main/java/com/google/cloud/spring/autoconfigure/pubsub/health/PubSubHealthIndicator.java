@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.pubsub.health;
+package com.google.cloud.spring.autoconfigure.pubsub.health;
 
 import java.util.UUID;
 
@@ -24,7 +24,7 @@ import com.google.api.gax.rpc.StatusCode.Code;
 
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import org.springframework.util.Assert;
 
 /**

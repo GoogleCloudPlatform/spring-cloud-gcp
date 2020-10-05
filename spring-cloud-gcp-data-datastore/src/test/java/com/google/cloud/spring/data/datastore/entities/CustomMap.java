@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.entities;
+package com.google.cloud.spring.data.datastore.entities;
 
 import java.util.HashMap;
 

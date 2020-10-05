@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.config;
+package com.google.cloud.spring.autoconfigure.config;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ import com.google.auth.Credentials;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.StandardEnvironment;
@@ -62,8 +62,8 @@ public class GoogleConfigPropertySourceLocatorTest {
 		this.gcpConfigProperties = mock(GcpConfigProperties.class);
 		when(this.gcpConfigProperties.getName()).thenReturn("test");
 		when(this.gcpConfigProperties.isEnabled()).thenReturn(true);
-		org.springframework.cloud.gcp.core.Credentials configCredentials =
-				mock(org.springframework.cloud.gcp.core.Credentials.class);
+		com.google.cloud.spring.core.Credentials configCredentials =
+				mock(com.google.cloud.spring.core.Credentials.class);
 		when(this.gcpConfigProperties.getCredentials()).thenReturn(configCredentials);
 		when(this.gcpConfigProperties.getProfile()).thenReturn("default");
 		this.expectedProperties = new HashMap<>();

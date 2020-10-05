@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub;
+package com.google.cloud.spring.pubsub;
 
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;

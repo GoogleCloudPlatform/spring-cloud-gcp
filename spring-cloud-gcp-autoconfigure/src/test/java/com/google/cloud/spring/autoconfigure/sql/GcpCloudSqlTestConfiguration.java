@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.sql;
+package com.google.cloud.spring.autoconfigure.sql;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.core;
+package com.google.cloud.spring.autoconfigure.core;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
@@ -24,10 +24,10 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ContextConsumer;
-import org.springframework.cloud.gcp.core.DefaultGcpEnvironmentProvider;
-import org.springframework.cloud.gcp.core.DefaultGcpProjectIdProvider;
-import org.springframework.cloud.gcp.core.GcpEnvironmentProvider;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.DefaultGcpEnvironmentProvider;
+import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
+import com.google.cloud.spring.core.GcpEnvironmentProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.springframework.context.annotation.Bean;
 
 import static org.assertj.core.api.Assertions.assertThat;

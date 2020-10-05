@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.sample.firestore;
+package com.google.cloud.spring.sample.firestore;
 
 import java.util.List;
 import java.util.Objects;

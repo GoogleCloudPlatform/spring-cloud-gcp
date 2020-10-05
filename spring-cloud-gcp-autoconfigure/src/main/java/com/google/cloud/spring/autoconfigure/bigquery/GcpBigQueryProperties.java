@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.bigquery;
+package com.google.cloud.spring.autoconfigure.bigquery;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.cloud.gcp.core.Credentials;
-import org.springframework.cloud.gcp.core.CredentialsSupplier;
-import org.springframework.cloud.gcp.core.GcpScope;
+import com.google.cloud.spring.core.Credentials;
+import com.google.cloud.spring.core.CredentialsSupplier;
+import com.google.cloud.spring.core.GcpScope;
 
 /**
  * Properties for configuring BigQuery.

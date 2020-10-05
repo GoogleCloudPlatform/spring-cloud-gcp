@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository.config;
+package com.google.cloud.spring.data.spanner.repository.config;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -23,9 +23,9 @@ import java.util.Collections;
 import org.w3c.dom.Element;
 
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Table;
-import org.springframework.cloud.gcp.data.spanner.repository.SpannerRepository;
-import org.springframework.cloud.gcp.data.spanner.repository.support.SpannerRepositoryFactoryBean;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
+import com.google.cloud.spring.data.spanner.repository.support.SpannerRepositoryFactoryBean;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.data.config.ParsingUtils;
 import org.springframework.data.repository.config.AnnotationRepositoryConfigurationSource;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core;
+package com.google.cloud.spring.data.datastore.core;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -28,7 +28,7 @@ import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.Factory;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import org.springframework.objenesis.ObjenesisStd;
 import org.springframework.util.Assert;
 

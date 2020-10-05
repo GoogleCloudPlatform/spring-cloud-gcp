@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.cloudfoundry;
+package com.google.cloud.spring.cloudfoundry;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -33,7 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.config.ConfigFileApplicationListener;
 import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.cloud.gcp.core.util.MapBuilder;
+import com.google.cloud.spring.core.util.MapBuilder;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;

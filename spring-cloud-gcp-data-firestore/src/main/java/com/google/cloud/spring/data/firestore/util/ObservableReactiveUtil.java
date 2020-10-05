@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.util;
+package com.google.cloud.spring.data.firestore.util;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;

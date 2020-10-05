@@ -20,8 +20,8 @@ import java.util.List;
 
 import com.google.cloud.spanner.Key;
 
-import org.springframework.cloud.gcp.data.spanner.repository.SpannerRepository;
-import org.springframework.cloud.gcp.data.spanner.repository.query.Query;
+import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
+import com.google.cloud.spring.data.spanner.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.security;
+package com.google.cloud.spring.autoconfigure.security;
 
 
 import java.util.ArrayList;
@@ -27,10 +27,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.security.firebase.FirebaseJwtTokenDecoder;
-import org.springframework.cloud.gcp.security.firebase.FirebaseTokenValidator;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.security.firebase.FirebaseJwtTokenDecoder;
+import com.google.cloud.spring.security.firebase.FirebaseTokenValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;

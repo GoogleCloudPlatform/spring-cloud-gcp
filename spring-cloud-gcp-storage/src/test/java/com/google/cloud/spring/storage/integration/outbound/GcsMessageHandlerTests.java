@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.storage.integration.outbound;
+package com.google.cloud.spring.storage.integration.outbound;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import org.mockito.ArgumentCaptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cloud.gcp.storage.integration.GcsSessionFactory;
+import com.google.cloud.spring.storage.integration.GcsSessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.springframework.cloud.gcp.data.datastore.core.convert.TestDatastoreItem.Color;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
-import org.springframework.cloud.gcp.data.datastore.entities.CustomMap;
+import com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItem.Color;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.entities.CustomMap;
 
 /**
  * A test entity focused on holding embedded entities.

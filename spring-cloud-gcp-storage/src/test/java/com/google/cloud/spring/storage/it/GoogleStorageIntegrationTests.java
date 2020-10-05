@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.storage.it;
+package com.google.cloud.spring.storage.it;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,12 +31,12 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.gcp.core.Credentials;
-import org.springframework.cloud.gcp.core.DefaultCredentialsProvider;
-import org.springframework.cloud.gcp.core.DefaultGcpProjectIdProvider;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.storage.GoogleStorageProtocolResolver;
-import org.springframework.cloud.gcp.storage.GoogleStorageResource;
+import com.google.cloud.spring.core.Credentials;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.storage.GoogleStorageProtocolResolver;
+import com.google.cloud.spring.storage.GoogleStorageResource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

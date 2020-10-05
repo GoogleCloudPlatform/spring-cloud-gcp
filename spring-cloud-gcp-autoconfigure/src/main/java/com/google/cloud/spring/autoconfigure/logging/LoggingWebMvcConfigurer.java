@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.logging;
+package com.google.cloud.spring.autoconfigure.logging;
 
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -25,11 +25,11 @@ import org.springframework.context.annotation.Configuration;
  * @author Mike Eltsufin
  * @author Chengyuan Zhao
  *
- * @deprecated use {@link org.springframework.cloud.gcp.logging.LoggingWebMvcConfigurer}
+ * @deprecated use {@link com.google.cloud.spring.logging.LoggingWebMvcConfigurer}
  */
 @Configuration(proxyBeanMethods = false)
 @Deprecated
-public class LoggingWebMvcConfigurer extends org.springframework.cloud.gcp.logging.LoggingWebMvcConfigurer {
+public class LoggingWebMvcConfigurer extends com.google.cloud.spring.logging.LoggingWebMvcConfigurer {
 	public LoggingWebMvcConfigurer(TraceIdLoggingWebMvcInterceptor interceptor,
 			GcpProjectIdProvider projectIdProvider) {
 		super(interceptor, projectIdProvider);

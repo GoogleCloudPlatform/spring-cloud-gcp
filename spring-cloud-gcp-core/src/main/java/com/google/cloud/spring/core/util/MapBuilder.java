@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.core.util;
+package com.google.cloud.spring.core.util;
 
 import java.util.Collections;
 import java.util.HashMap;

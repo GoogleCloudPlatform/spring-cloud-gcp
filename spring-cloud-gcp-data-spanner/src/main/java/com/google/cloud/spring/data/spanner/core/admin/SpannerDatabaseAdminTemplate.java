@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.core.admin;
+package com.google.cloud.spring.data.spanner.core.admin;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,7 +31,7 @@ import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import org.springframework.util.Assert;
 
 /**

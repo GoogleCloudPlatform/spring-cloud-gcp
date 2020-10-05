@@ -19,9 +19,9 @@ package com.example;
 import com.google.cloud.bigquery.FormatOptions;
 import com.google.cloud.bigquery.Job;
 
-import org.springframework.cloud.gcp.bigquery.core.BigQueryTemplate;
-import org.springframework.cloud.gcp.bigquery.integration.BigQuerySpringMessageHeaders;
-import org.springframework.cloud.gcp.bigquery.integration.outbound.BigQueryFileMessageHandler;
+import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
+import com.google.cloud.spring.bigquery.integration.BigQuerySpringMessageHeaders;
+import com.google.cloud.spring.bigquery.integration.outbound.BigQueryFileMessageHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.MessagingGateway;

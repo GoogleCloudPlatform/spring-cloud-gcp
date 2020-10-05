@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.datastore.health;
+package com.google.cloud.spring.autoconfigure.datastore.health;
 
 import com.google.cloud.datastore.Query;
 
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
-import org.springframework.cloud.gcp.autoconfigure.datastore.DatastoreProvider;
+import com.google.cloud.spring.autoconfigure.datastore.DatastoreProvider;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 

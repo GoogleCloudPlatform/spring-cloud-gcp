@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.logging;
+package com.google.cloud.spring.autoconfigure.logging;
 
 /**
  * This class provides a JSON layout for a Logback appender compatible to the Stackdriver
@@ -25,9 +25,9 @@ package org.springframework.cloud.gcp.autoconfigure.logging;
  * @author Andreas Berger
  * @author Chengyuan Zhao
  *
- * @deprecated use {@link org.springframework.cloud.gcp.logging.StackdriverJsonLayout}
+ * @deprecated use {@link com.google.cloud.spring.logging.StackdriverJsonLayout}
  */
 @Deprecated
-public class StackdriverJsonLayout extends org.springframework.cloud.gcp.logging.StackdriverJsonLayout {
+public class StackdriverJsonLayout extends com.google.cloud.spring.logging.StackdriverJsonLayout {
 
 }

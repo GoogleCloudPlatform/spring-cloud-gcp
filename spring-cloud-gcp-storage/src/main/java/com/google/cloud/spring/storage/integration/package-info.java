@@ -1,4 +1,4 @@
 /**
  * Google Cloud Storage module for Spring Integration.
  */
-package org.springframework.cloud.gcp.storage.integration;
+package com.google.cloud.spring.storage.integration;

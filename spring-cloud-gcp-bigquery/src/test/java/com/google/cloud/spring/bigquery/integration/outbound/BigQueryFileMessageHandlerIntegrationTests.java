@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.bigquery.integration.outbound;
+package com.google.cloud.spring.bigquery.integration.outbound;
 
 import java.io.File;
 import java.util.HashMap;
@@ -36,8 +36,8 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.gcp.bigquery.core.BigQueryTestConfiguration;
-import org.springframework.cloud.gcp.bigquery.integration.BigQuerySpringMessageHeaders;
+import com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration;
+import com.google.cloud.spring.bigquery.integration.BigQuerySpringMessageHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
@@ -51,7 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
-import static org.springframework.cloud.gcp.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
+import static com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
 
 
 @RunWith(SpringRunner.class)

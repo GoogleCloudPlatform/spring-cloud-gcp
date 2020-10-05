@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore;
+package com.google.cloud.spring.data.firestore;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,8 +43,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreDefaultClassMapper;
-import org.springframework.cloud.gcp.data.firestore.mapping.FirestoreMappingContext;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

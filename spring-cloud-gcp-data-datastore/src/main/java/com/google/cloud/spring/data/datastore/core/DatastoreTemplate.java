@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core;
+package com.google.cloud.spring.data.datastore.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,21 +54,21 @@ import com.google.cloud.datastore.StructuredQuery.Filter;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.cloud.datastore.Value;
 
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreEntityConverter;
-import org.springframework.cloud.gcp.data.datastore.core.convert.ObjectToKeyFactory;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentEntity;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastorePersistentProperty;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.event.AfterDeleteEvent;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.event.AfterFindByKeyEvent;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.event.AfterQueryEvent;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.event.AfterSaveEvent;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.event.BeforeDeleteEvent;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.event.BeforeSaveEvent;
-import org.springframework.cloud.gcp.data.datastore.core.util.KeyUtil;
-import org.springframework.cloud.gcp.data.datastore.core.util.SliceUtil;
-import org.springframework.cloud.gcp.data.datastore.core.util.ValueUtil;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
+import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
+import com.google.cloud.spring.data.datastore.core.mapping.event.AfterDeleteEvent;
+import com.google.cloud.spring.data.datastore.core.mapping.event.AfterFindByKeyEvent;
+import com.google.cloud.spring.data.datastore.core.mapping.event.AfterQueryEvent;
+import com.google.cloud.spring.data.datastore.core.mapping.event.AfterSaveEvent;
+import com.google.cloud.spring.data.datastore.core.mapping.event.BeforeDeleteEvent;
+import com.google.cloud.spring.data.datastore.core.mapping.event.BeforeSaveEvent;
+import com.google.cloud.spring.data.datastore.core.util.KeyUtil;
+import com.google.cloud.spring.data.datastore.core.util.SliceUtil;
+import com.google.cloud.spring.data.datastore.core.util.ValueUtil;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;

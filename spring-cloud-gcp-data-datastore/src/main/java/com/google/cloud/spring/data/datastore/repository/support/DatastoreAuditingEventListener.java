@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository.support;
+package com.google.cloud.spring.data.datastore.repository.support;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.event.BeforeSaveEvent;
+import com.google.cloud.spring.data.datastore.core.mapping.event.BeforeSaveEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.auditing.AuditingHandler;
 

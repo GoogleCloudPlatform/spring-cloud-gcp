@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.logging;
+package com.google.cloud.spring.logging;
 
 import com.google.auth.Credentials;
 import com.google.cloud.logging.LoggingOptions;
 
-import org.springframework.cloud.gcp.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.core.UserAgentHeaderProvider;
 
 /**
  * A Google Cloud Java Logback {@link com.google.cloud.logging.logback.LoggingAppender}

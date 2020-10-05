@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository.query;
+package com.google.cloud.spring.data.spanner.repository.query;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -34,18 +34,18 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
-import org.springframework.cloud.gcp.data.spanner.core.SpannerMutationFactory;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerQueryOptions;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerSchemaUtils;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerEntityProcessor;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerWriteConverter;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Column;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Interleaved;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Table;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Where;
+import com.google.cloud.spring.data.spanner.core.SpannerMutationFactory;
+import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerWriteConverter;
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.cloud.spring.data.spanner.core.mapping.Where;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -128,7 +128,7 @@ public class SqlSpannerQueryTests {
 	@Test
 	public void noPageableParamQueryTest() throws NoSuchMethodException {
 		String sql = "SELECT DISTINCT * FROM "
-				+ ":org.springframework.cloud.gcp.data.spanner.repository.query.SqlSpannerQueryTests$Trade:";
+				+ ":com.google.cloud.spring.data.spanner.repository.query.SqlSpannerQueryTests$Trade:";
 		// @formatter:off
 		String entityResolvedSql = "SELECT *, " +
 				"ARRAY (SELECT AS STRUCT disabled, id, childId, value, " +
@@ -173,7 +173,7 @@ public class SqlSpannerQueryTests {
 	@Test
 	public void pageableParamQueryTest() throws NoSuchMethodException {
 
-		String sql = "SELECT * FROM :org.springframework.cloud.gcp.data.spanner.repository.query.SqlSpannerQueryTests$Child:"
+		String sql = "SELECT * FROM :com.google.cloud.spring.data.spanner.repository.query.SqlSpannerQueryTests$Child:"
 				+ " WHERE id = @id AND trader_id = @trader_id";
 		// @formatter:off
 		String entityResolvedSql = "SELECT *, " +
@@ -229,7 +229,7 @@ public class SqlSpannerQueryTests {
 	@Test
 	public void sortParamQueryTest() throws NoSuchMethodException {
 
-		String sql = "SELECT * FROM :org.springframework.cloud.gcp.data.spanner.repository.query.SqlSpannerQueryTests$Child:"
+		String sql = "SELECT * FROM :com.google.cloud.spring.data.spanner.repository.query.SqlSpannerQueryTests$Child:"
 				+ " WHERE id = @id AND trader_id = @trader_id";
 		// @formatter:off
 		String entityResolvedSql = "SELECT *, " +
@@ -286,7 +286,7 @@ public class SqlSpannerQueryTests {
 	@Test
 	public void sortAndPageableQueryTest() throws NoSuchMethodException {
 
-		String sql = "SELECT * FROM :org.springframework.cloud.gcp.data.spanner.repository.query.SqlSpannerQueryTests$Child:"
+		String sql = "SELECT * FROM :com.google.cloud.spring.data.spanner.repository.query.SqlSpannerQueryTests$Child:"
 						+ " WHERE id = @id AND trader_id = @trader_id";
 		// @formatter:off
 		String entityResolvedSql = "SELECT *, " +
@@ -343,7 +343,7 @@ public class SqlSpannerQueryTests {
 	public void compoundNameConventionTest() throws NoSuchMethodException {
 
 		String sql = "SELECT DISTINCT * FROM "
-				+ ":org.springframework.cloud.gcp.data.spanner.repository.query.SqlSpannerQueryTests$Trade:"
+				+ ":com.google.cloud.spring.data.spanner.repository.query.SqlSpannerQueryTests$Trade:"
 				+ "@{index=fakeindex}"
 				+ " WHERE price=#{#tag3 * -1} AND price<>#{#tag3 * -1} OR "
 				+ "price<>#{#tag4 * -1} AND " + "( action=@tag0 AND ticker=@tag1 ) OR "
@@ -464,7 +464,7 @@ public class SqlSpannerQueryTests {
 
 	@Test
 	public void sqlCountWithWhereTest() throws NoSuchMethodException {
-		String sql = "SELECT count(1) FROM :org.springframework.cloud.gcp.data.spanner.repository.query.SqlSpannerQueryTests$Child:"
+		String sql = "SELECT count(1) FROM :com.google.cloud.spring.data.spanner.repository.query.SqlSpannerQueryTests$Child:"
 				+ " WHERE id = @id AND trader_id = @trader_id";
 
 		String entityResolvedSql = "SELECT count(1) FROM children WHERE id = @id AND trader_id = @trader_id";

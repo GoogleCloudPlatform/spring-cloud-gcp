@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.firestore.mapping;
+package com.google.cloud.spring.data.firestore.mapping;
 
 import org.junit.Test;
 
-import org.springframework.cloud.gcp.data.firestore.Document;
+import com.google.cloud.spring.data.firestore.Document;
 import org.springframework.data.util.ClassTypeInformation;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.core;
+package com.google.cloud.spring.core;
 
 /**
  * Interface for retrieving properties from Metadata Server.

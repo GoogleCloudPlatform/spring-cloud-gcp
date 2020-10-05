@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository.it;
+package com.google.cloud.spring.data.spanner.repository.it;
 
 import java.util.Collections;
 
@@ -25,12 +25,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerSchemaUtils;
-import org.springframework.cloud.gcp.data.spanner.test.IntegrationTestConfiguration;
-import org.springframework.cloud.gcp.data.spanner.test.domain.Singer;
-import org.springframework.cloud.gcp.data.spanner.test.domain.SingerRepository;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.test.IntegrationTestConfiguration;
+import com.google.cloud.spring.data.spanner.test.domain.Singer;
+import com.google.cloud.spring.data.spanner.test.domain.SingerRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 

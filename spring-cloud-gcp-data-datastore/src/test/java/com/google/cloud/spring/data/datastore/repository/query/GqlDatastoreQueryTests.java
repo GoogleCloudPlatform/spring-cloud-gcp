@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.repository.query;
+package com.google.cloud.spring.data.datastore.repository.query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,15 +36,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreResultsIterable;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreCustomConversions;
-import org.springframework.cloud.gcp.data.datastore.core.convert.DatastoreEntityConverter;
-import org.springframework.cloud.gcp.data.datastore.core.convert.ReadWriteConversions;
-import org.springframework.cloud.gcp.data.datastore.core.convert.TwoStepsConversions;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
+import com.google.cloud.spring.data.datastore.core.DatastoreResultsIterable;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreCustomConversions;
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
+import com.google.cloud.spring.data.datastore.core.convert.ReadWriteConversions;
+import com.google.cloud.spring.data.datastore.core.convert.TwoStepsConversions;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -114,7 +114,7 @@ public class GqlDatastoreQueryTests {
 	public void compoundNameConventionTest() {
 
 		String gql = "SELECT * FROM "
-				+ "|org.springframework.cloud.gcp.data.datastore."
+				+ "|com.google.cloud.spring.data.datastore."
 				+ "repository.query.GqlDatastoreQueryTests$Trade|"
 				+ " WHERE price=:#{#tag6 * -1} AND price<>:#{#tag6 * -1} OR "
 				+ "price<>:#{#tag7 * -1} AND " + "( action=@tag0 AND ticker=@tag1 ) OR "

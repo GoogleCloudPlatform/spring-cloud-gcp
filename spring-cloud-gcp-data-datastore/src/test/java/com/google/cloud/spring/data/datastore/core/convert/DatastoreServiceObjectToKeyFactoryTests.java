@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.datastore.core.convert;
+package com.google.cloud.spring.data.datastore.core.convert;
 
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.IncompleteKey;
@@ -25,8 +25,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreDataException;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import org.springframework.data.annotation.Id;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -102,7 +102,7 @@ public class DatastoreServiceObjectToKeyFactoryTests {
 	public void getKeyNoIdTest() {
 		this.expectedEx.expect(DatastoreDataException.class);
 		this.expectedEx.expectMessage("An ID property was required but does not exist for the type: " +
-				"class org.springframework.cloud.gcp.data.datastore.core.convert." +
+				"class com.google.cloud.spring.data.datastore.core.convert." +
 				"DatastoreServiceObjectToKeyFactoryTests$TestEntityNoId");
 		this.datastoreServiceObjectToKeyFactory.getKeyFromObject(new TestEntityNoId(),
 				this.datastoreMappingContext.getPersistentEntity(TestEntityNoId.class));
@@ -175,23 +175,23 @@ public class DatastoreServiceObjectToKeyFactoryTests {
 						keyFactory.newKey("key"));
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity(name = "custom_test_kind")
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity(name = "custom_test_kind")
 	private static class TestEntityWithId {
 		@Id
 		Long id;
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity(name = "custom_test_kind")
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity(name = "custom_test_kind")
 	private static class TestEntityWithStringId {
 		@Id
 		String id;
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity(name = "custom_test_kind")
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity(name = "custom_test_kind")
 	private static class TestEntityNoId {
 	}
 
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity(name = "custom_test_kind")
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity(name = "custom_test_kind")
 	private static class TestEntityWithKeyId {
 		@Id
 		Key id;

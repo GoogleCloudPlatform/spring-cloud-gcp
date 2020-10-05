@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.config.it;
+package com.google.cloud.spring.autoconfigure.config.it;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -22,8 +22,8 @@ import org.junit.Test;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.gcp.autoconfigure.config.GcpConfigBootstrapConfiguration;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.config.GcpConfigBootstrapConfiguration;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;

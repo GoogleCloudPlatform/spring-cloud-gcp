@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.support.converter;
+package com.google.cloud.spring.pubsub.support.converter;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;

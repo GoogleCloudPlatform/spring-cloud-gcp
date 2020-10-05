@@ -1,4 +1,4 @@
 /**
  * Auto-configuration for Spring Data Cloud Spanner module.
  */
-package org.springframework.cloud.gcp.autoconfigure.spanner;
+package com.google.cloud.spring.autoconfigure.spanner;

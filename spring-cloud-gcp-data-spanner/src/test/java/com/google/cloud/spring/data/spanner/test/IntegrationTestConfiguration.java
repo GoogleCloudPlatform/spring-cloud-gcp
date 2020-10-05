@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.test;
+package com.google.cloud.spring.data.spanner.test;
 
 import java.io.IOException;
 
@@ -26,21 +26,21 @@ import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.gcp.core.Credentials;
-import org.springframework.cloud.gcp.core.DefaultCredentialsProvider;
-import org.springframework.cloud.gcp.core.DefaultGcpProjectIdProvider;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerMutationFactory;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerMutationFactoryImpl;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTransactionManager;
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
-import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerSchemaUtils;
-import org.springframework.cloud.gcp.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
-import org.springframework.cloud.gcp.data.spanner.core.convert.SpannerEntityProcessor;
-import org.springframework.cloud.gcp.data.spanner.core.it.SpannerTemplateIntegrationTests.TemplateTransactionalService;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.SpannerMappingContext;
-import org.springframework.cloud.gcp.data.spanner.repository.config.EnableSpannerRepositories;
-import org.springframework.cloud.gcp.data.spanner.repository.it.SpannerRepositoryIntegrationTests.TradeRepositoryTransactionalService;
+import com.google.cloud.spring.core.Credentials;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
+import com.google.cloud.spring.data.spanner.core.SpannerMutationFactory;
+import com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImpl;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.SpannerTransactionManager;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.it.SpannerTemplateIntegrationTests.TemplateTransactionalService;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.repository.config.EnableSpannerRepositories;
+import com.google.cloud.spring.data.spanner.repository.it.SpannerRepositoryIntegrationTests.TradeRepositoryTransactionalService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

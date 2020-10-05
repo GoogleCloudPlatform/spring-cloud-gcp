@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.security;
+package com.google.cloud.spring.autoconfigure.security;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
@@ -23,8 +23,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.security.firebase.FirebaseJwtTokenDecoder;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.security.firebase.FirebaseJwtTokenDecoder;
 import org.springframework.context.annotation.Bean;
 
 import static org.assertj.core.api.Assertions.assertThat;

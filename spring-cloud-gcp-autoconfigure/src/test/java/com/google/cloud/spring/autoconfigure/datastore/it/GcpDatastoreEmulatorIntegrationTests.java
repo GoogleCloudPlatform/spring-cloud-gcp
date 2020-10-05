@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.autoconfigure.datastore.it;
+package com.google.cloud.spring.autoconfigure.datastore.it;
 
 import java.util.function.Supplier;
 
@@ -32,13 +32,13 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration;
-import org.springframework.cloud.gcp.autoconfigure.datastore.DatastoreRepositoriesAutoConfiguration;
-import org.springframework.cloud.gcp.autoconfigure.datastore.DatastoreTransactionManagerAutoConfiguration;
-import org.springframework.cloud.gcp.autoconfigure.datastore.GcpDatastoreAutoConfiguration;
-import org.springframework.cloud.gcp.autoconfigure.datastore.GcpDatastoreEmulatorAutoConfiguration;
-import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
-import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.datastore.DatastoreRepositoriesAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.datastore.DatastoreTransactionManagerAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreEmulatorAutoConfiguration;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.ResolvableType;
 import org.springframework.data.annotation.Id;
@@ -130,7 +130,7 @@ public class GcpDatastoreEmulatorIntegrationTests {
 	/**
 	 * Document to be stored on Datastore. An instance of `LocalDatastoreHelper` as a bean.
 	 */
-	@org.springframework.cloud.gcp.data.datastore.core.mapping.Entity
+	@com.google.cloud.spring.data.datastore.core.mapping.Entity
 	static class EmulatorEntityTest {
 
 		@Id

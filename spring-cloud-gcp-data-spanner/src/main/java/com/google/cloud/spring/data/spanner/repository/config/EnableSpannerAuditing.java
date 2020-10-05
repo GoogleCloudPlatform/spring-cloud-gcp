@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.data.spanner.repository.config;
+package com.google.cloud.spring.data.spanner.repository.config;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

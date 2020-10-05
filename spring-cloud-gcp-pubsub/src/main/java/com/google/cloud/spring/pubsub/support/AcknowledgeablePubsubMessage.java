@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gcp.pubsub.support;
+package com.google.cloud.spring.pubsub.support;
 
 import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * An extension of {@link BasicAcknowledgeablePubsubMessage} that exposes ack ID and subscription name of the message.
  * It also allows modification of the ack deadline and acknowledgement of multiple messages at once using
- * {@link org.springframework.cloud.gcp.pubsub.core.subscriber.PubSubSubscriberOperations#ack(java.util.Collection)}.
+ * {@link com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations#ack(java.util.Collection)}.
  *
  * @author João André Martins
  * @author Mike Eltsufin
