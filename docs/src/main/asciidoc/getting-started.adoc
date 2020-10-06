@@ -56,51 +56,51 @@ A summary of these artifacts are provided below.
 
 | Core
 | Automatically configure authentication and Google project settings
-| <<core.adoc#spring-cloud-gcp-core, org.springframework.cloud:spring-cloud-gcp-starter>>
+| <<core.adoc#spring-cloud-gcp-core, com.google.cloud:spring-cloud-gcp-starter>>
 
 | Cloud Spanner
 | Provides integrations with Google Cloud Spanner
-| <<spanner.adoc#_spring_data_cloud_spanner, org.springframework.cloud:spring-cloud-gcp-starter-data-spanner>>
+| <<spanner.adoc#_spring_data_cloud_spanner, com.google.cloud:spring-cloud-gcp-starter-data-spanner>>
 
 | Cloud Datastore
 | Provides integrations with Google Cloud Datastore
-| <<datastore.adoc#_spring_data_cloud_datastore, org.springframework.cloud:spring-cloud-gcp-starter-data-datastore>>
+| <<datastore.adoc#_spring_data_cloud_datastore, com.google.cloud:spring-cloud-gcp-starter-data-datastore>>
 
 | Cloud Pub/Sub
 | Provides integrations with Google Cloud Pub/Sub
-| <<pubsub.adoc#_google_cloud_pubsub, org.springframework.cloud:spring-cloud-gcp-starter-pubsub>>
+| <<pubsub.adoc#_google_cloud_pubsub, com.google.cloud:spring-cloud-gcp-starter-pubsub>>
 
 | Logging
 | Enables Stackdriver Logging
-| <<logging.adoc#_stackdriver_logging, org.springframework.cloud:spring-cloud-gcp-starter-logging>>
+| <<logging.adoc#_stackdriver_logging, com.google.cloud:spring-cloud-gcp-starter-logging>>
 
 | SQL - MySQL
 | Cloud SQL integrations with MySQL
-| <<sql.adoc#_spring_jdbc, org.springframework.cloud:spring-cloud-gcp-starter-sql-mysql>>
+| <<sql.adoc#_spring_jdbc, com.google.cloud:spring-cloud-gcp-starter-sql-mysql>>
 
 | SQL - PostgreSQL
 | Cloud SQL integrations with PostgreSQL
-| <<sql.adoc#_spring_jdbc, org.springframework.cloud:spring-cloud-gcp-starter-sql-postgresql>>
+| <<sql.adoc#_spring_jdbc, com.google.cloud:spring-cloud-gcp-starter-sql-postgresql>>
 
 | Storage
 | Provides integrations with Google Cloud Storage and Spring Resource
-| <<storage.adoc#_spring_resources, org.springframework.cloud:spring-cloud-gcp-starter-storage>>
+| <<storage.adoc#_spring_resources, com.google.cloud:spring-cloud-gcp-starter-storage>>
 
 | Config
 | Enables usage of Google Runtime Configuration API as a Spring Cloud Config server
-| <<config.adoc#_spring_cloud_config, org.springframework.cloud:spring-cloud-gcp-starter-config>>
+| <<config.adoc#_spring_cloud_config, com.google.cloud:spring-cloud-gcp-starter-config>>
 
 | Trace
 | Enables instrumentation with Google Stackdriver Tracing
-| <<trace.adoc#_spring_cloud_sleuth, org.springframework.cloud:spring-cloud-gcp-starter-trace>>
+| <<trace.adoc#_spring_cloud_sleuth, com.google.cloud:spring-cloud-gcp-starter-trace>>
 
 | Vision
 | Provides integrations with Google Cloud Vision
-| <<vision.adoc#_google_cloud_vision, org.springframework.cloud:spring-cloud-gcp-starter-vision>>
+| <<vision.adoc#_google_cloud_vision, com.google.cloud:spring-cloud-gcp-starter-vision>>
 
 | Security - IAP
 | Provides a security layer over applications deployed to Google Cloud
-| <<security-iap.adoc#_cloud_identity_aware_proxy_iap_authentication, org.springframework.cloud:spring-cloud-gcp-starter-security-iap>>
+| <<security-iap.adoc#_cloud_identity_aware_proxy_iap_authentication, com.google.cloud:spring-cloud-gcp-starter-security-iap>>
 
 |===
 

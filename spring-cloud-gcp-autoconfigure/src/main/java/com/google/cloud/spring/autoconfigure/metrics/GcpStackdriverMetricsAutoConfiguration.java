@@ -23,8 +23,10 @@ import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.stackdriver.StackdriverConfig;
 
+import org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.stackdriver.StackdriverMetricsExportAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.stackdriver.StackdriverProperties;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -44,6 +46,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore(StackdriverMetricsExportAutoConfiguration.class)
+@AutoConfigureAfter(MetricsAutoConfiguration.class)
 @ConditionalOnClass({StepMeterRegistry.class, StackdriverConfig.class})
 @ConditionalOnBean(Clock.class)
 @EnableConfigurationProperties({GcpMetricsProperties.class, StackdriverProperties.class})

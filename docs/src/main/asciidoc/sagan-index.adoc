@@ -53,47 +53,47 @@ A sample of these artifacts are provided below.
 
 | Cloud Spanner
 | Provides integrations with Google Cloud Spanner
-| `org.springframework.cloud:spring-cloud-gcp-starter-data-spanner`
+| `com.google.cloud:spring-cloud-gcp-starter-data-spanner`
 
 | Cloud Datastore
 | Provides integrations with Google Cloud Datastore
-| `org.springframework.cloud:spring-cloud-gcp-starter-data-datastore`
+| `com.google.cloud:spring-cloud-gcp-starter-data-datastore`
 
 | Cloud Firestore
 | Provides Spring Data Reactive Repositories support for Cloud Firestore
-| `org.springframework.cloud:spring-cloud-gcp-starter-data-firestore`
+| `com.google.cloud:spring-cloud-gcp-starter-data-firestore`
 
 | Cloud Pub/Sub
 | Provides integrations with Google Cloud Pub/Sub
-| `org.springframework.cloud:spring-cloud-gcp-starter-pubsub`
+| `com.google.cloud:spring-cloud-gcp-starter-pubsub`
 
 | Logging
 | Enables Stackdriver Logging
-| `org.springframework.cloud:spring-cloud-gcp-starter-logging`
+| `com.google.cloud:spring-cloud-gcp-starter-logging`
 
 | SQL - MySQL
 | Cloud SQL integrations with MySQL
-| `org.springframework.cloud:spring-cloud-gcp-starter-sql-mysql`
+| `com.google.cloud:spring-cloud-gcp-starter-sql-mysql`
 
 | SQL - PostgreSQL
 | Cloud SQL integrations with PostgreSQL
-| `org.springframework.cloud:spring-cloud-gcp-starter-sql-postgresql`
+| `com.google.cloud:spring-cloud-gcp-starter-sql-postgresql`
 
 | Storage
 | Provides integrations with Google Cloud Storage and Spring Resource
-| `org.springframework.cloud:spring-cloud-gcp-starter-storage`
+| `com.google.cloud:spring-cloud-gcp-starter-storage`
 
 | Trace
 | Enables instrumentation with Google Stackdriver Tracing
-| `org.springframework.cloud:spring-cloud-gcp-starter-trace`
+| `com.google.cloud:spring-cloud-gcp-starter-trace`
 
 | Vision
 | Provides integrations with Google Cloud Vision
-| `org.springframework.cloud:spring-cloud-gcp-starter-vision`
+| `com.google.cloud:spring-cloud-gcp-starter-vision`
 
 | Security - IAP
 | Extracts IAP identity information from applications deployed to Google Cloud
-| `org.springframework.cloud:spring-cloud-gcp-starter-security-iap`
+| `com.google.cloud:spring-cloud-gcp-starter-security-iap`
 
 |===
 
