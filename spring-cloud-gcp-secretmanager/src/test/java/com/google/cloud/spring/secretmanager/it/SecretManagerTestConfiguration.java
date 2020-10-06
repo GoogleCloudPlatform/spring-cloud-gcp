@@ -21,9 +21,6 @@ import java.io.IOException;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1beta1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1beta1.SecretManagerServiceSettings;
-import com.google.protobuf.ByteString;
-
-import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpEnvironmentProvider;
@@ -32,6 +29,9 @@ import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerPropertySourceLocator;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
+import com.google.protobuf.ByteString;
+
+import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;

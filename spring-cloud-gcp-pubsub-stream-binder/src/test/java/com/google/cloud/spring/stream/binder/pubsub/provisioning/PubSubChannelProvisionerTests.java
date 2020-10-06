@@ -17,6 +17,8 @@
 package com.google.cloud.spring.stream.binder.pubsub.provisioning;
 
 import com.google.api.gax.rpc.AlreadyExistsException;
+import com.google.cloud.spring.pubsub.PubSubAdmin;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.Topic;
 import org.junit.Before;
@@ -27,8 +29,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.google.cloud.spring.pubsub.PubSubAdmin;
-import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.provisioning.ProvisioningException;
 

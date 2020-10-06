@@ -25,11 +25,6 @@ import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Type.StructField;
 import com.google.cloud.spanner.Value;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
 import com.google.cloud.spring.data.spanner.core.convert.TestEntities.FaultyTestEntity;
 import com.google.cloud.spring.data.spanner.core.convert.TestEntities.OuterTestEntity;
 import com.google.cloud.spring.data.spanner.core.convert.TestEntities.OuterTestEntityFlat;
@@ -39,6 +34,11 @@ import com.google.cloud.spring.data.spanner.core.convert.TestEntities.OuterTestH
 import com.google.cloud.spring.data.spanner.core.convert.TestEntities.TestEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;

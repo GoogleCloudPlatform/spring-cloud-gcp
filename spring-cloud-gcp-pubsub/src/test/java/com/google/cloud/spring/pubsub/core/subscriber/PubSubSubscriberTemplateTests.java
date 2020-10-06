@@ -33,6 +33,12 @@ import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.SubscriberFactory;
+import com.google.cloud.spring.pubsub.support.converter.ConvertedAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import com.google.protobuf.Empty;
 import com.google.pubsub.v1.AcknowledgeRequest;
 import com.google.pubsub.v1.ModifyAckDeadlineRequest;
@@ -49,12 +55,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
-import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
-import com.google.cloud.spring.pubsub.support.SubscriberFactory;
-import com.google.cloud.spring.pubsub.support.converter.ConvertedAcknowledgeablePubsubMessage;
-import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
-import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 

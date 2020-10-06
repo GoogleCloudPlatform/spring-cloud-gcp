@@ -18,6 +18,9 @@ package com.google.cloud.spring.pubsub.integration.outbound;
 
 import java.util.Map;
 
+import com.google.cloud.spring.core.util.MapBuilder;
+import com.google.cloud.spring.pubsub.core.PubSubOperations;
+import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,9 +29,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.google.cloud.spring.core.util.MapBuilder;
-import com.google.cloud.spring.pubsub.core.PubSubOperations;
-import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
 import org.springframework.expression.spel.standard.SpelExpression;

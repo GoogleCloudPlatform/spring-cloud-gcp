@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.cloud.spanner.Struct;
-
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
+
 import org.springframework.data.mapping.model.PropertyValueProvider;
 
 /**

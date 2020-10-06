@@ -24,16 +24,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import com.google.firestore.v1.StructuredQuery;
-import com.google.firestore.v1.StructuredQuery.FieldReference;
-import com.google.protobuf.Int32Value;
-
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.data.firestore.FirestoreDataException;
 import com.google.cloud.spring.data.firestore.FirestoreReactiveOperations;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntity;
+import com.google.firestore.v1.StructuredQuery;
+import com.google.firestore.v1.StructuredQuery.FieldReference;
+import com.google.protobuf.Int32Value;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;

@@ -18,13 +18,13 @@ package com.google.cloud.spring.autoconfigure.security;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.security.firebase.FirebaseJwtTokenDecoder;
 import org.junit.Test;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import com.google.cloud.spring.core.GcpProjectIdProvider;
-import com.google.cloud.spring.security.firebase.FirebaseJwtTokenDecoder;
 import org.springframework.context.annotation.Bean;
 
 import static org.assertj.core.api.Assertions.assertThat;

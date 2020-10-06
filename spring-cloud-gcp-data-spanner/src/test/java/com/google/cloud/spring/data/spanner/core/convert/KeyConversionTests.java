@@ -25,12 +25,11 @@ import com.google.cloud.ByteArray;
 import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Key;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
-import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

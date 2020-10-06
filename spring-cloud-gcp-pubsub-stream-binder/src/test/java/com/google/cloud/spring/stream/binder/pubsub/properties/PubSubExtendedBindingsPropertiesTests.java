@@ -18,14 +18,6 @@ package com.google.cloud.spring.stream.binder.pubsub.properties;
 
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
-import com.google.pubsub.v1.Subscription;
-import com.google.pubsub.v1.Topic;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
@@ -35,6 +27,14 @@ import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.cloud.spring.stream.binder.pubsub.PubSubMessageChannelBinder;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingsPropertiesTests.PubSubBindingsTestConfiguration;
+import com.google.pubsub.v1.Subscription;
+import com.google.pubsub.v1.Topic;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.StreamListener;

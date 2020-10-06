@@ -26,12 +26,6 @@ import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.EntityQuery;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.StructuredQuery;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
-import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.datastore.DatastoreRepositoriesAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.datastore.DatastoreTransactionManagerAutoConfiguration;
@@ -39,6 +33,12 @@ import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreAutoConfigura
 import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreEmulatorAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.ResolvableType;
 import org.springframework.data.annotation.Id;

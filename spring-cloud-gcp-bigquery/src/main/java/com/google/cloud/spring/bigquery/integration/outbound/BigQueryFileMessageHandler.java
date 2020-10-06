@@ -30,9 +30,9 @@ import java.util.concurrent.TimeoutException;
 
 import com.google.cloud.bigquery.FormatOptions;
 import com.google.cloud.bigquery.Job;
-
 import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import com.google.cloud.spring.bigquery.integration.BigQuerySpringMessageHeaders;
+
 import org.springframework.core.io.Resource;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;

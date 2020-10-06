@@ -18,6 +18,11 @@ package com.google.cloud.spring.data.firestore.transaction;
 
 import java.time.Duration;
 
+import com.google.cloud.spring.data.firestore.FirestoreDataException;
+import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.FirestoreTemplateTests;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.firestore.v1.BeginTransactionResponse;
 import com.google.firestore.v1.CommitRequest;
 import com.google.firestore.v1.CommitResponse;
@@ -32,11 +37,6 @@ import org.junit.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import com.google.cloud.spring.data.firestore.FirestoreDataException;
-import com.google.cloud.spring.data.firestore.FirestoreTemplate;
-import com.google.cloud.spring.data.firestore.FirestoreTemplateTests;
-import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
-import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import org.springframework.transaction.reactive.TransactionalOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;

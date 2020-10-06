@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import com.google.cloud.spring.vision.DocumentOcrResultSet;
+
 import org.springframework.util.concurrent.ListenableFuture;
 
 public class OcrStatusReporter {

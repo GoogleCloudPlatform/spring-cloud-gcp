@@ -26,7 +26,6 @@ import java.util.function.BiFunction;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Type;
-
 import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerTypeMapper;
@@ -34,6 +33,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
+
 import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.util.Assert;
 

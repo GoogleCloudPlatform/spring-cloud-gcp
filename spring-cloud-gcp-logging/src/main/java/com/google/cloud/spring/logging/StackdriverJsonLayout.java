@@ -26,10 +26,10 @@ import java.util.concurrent.TimeUnit;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.contrib.json.classic.JsonLayout;
-import com.google.gson.Gson;
-
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.gson.Gson;
+
 import org.springframework.util.StringUtils;
 
 /**

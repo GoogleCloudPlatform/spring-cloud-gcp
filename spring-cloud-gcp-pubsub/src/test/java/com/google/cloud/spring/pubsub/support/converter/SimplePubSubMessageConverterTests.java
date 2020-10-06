@@ -21,13 +21,13 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.google.cloud.spring.core.util.MapBuilder;
 import org.springframework.core.convert.converter.Converter;
 
 import static org.assertj.core.api.Assertions.assertThat;

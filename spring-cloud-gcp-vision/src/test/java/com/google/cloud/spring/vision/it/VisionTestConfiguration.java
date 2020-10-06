@@ -19,16 +19,16 @@ package com.google.cloud.spring.vision.it;
 import java.io.IOException;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.cloud.spring.core.Credentials;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
+import com.google.cloud.spring.vision.DocumentOcrTemplate;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageAnnotatorSettings;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import com.google.cloud.spring.core.Credentials;
-import com.google.cloud.spring.core.DefaultCredentialsProvider;
-import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
-import com.google.cloud.spring.vision.DocumentOcrTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -18,18 +18,18 @@ package com.google.cloud.spring.data.firestore.repository.query;
 
 import java.util.function.Consumer;
 
-import com.google.firestore.v1.StructuredQuery;
-import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import com.google.cloud.spring.data.firestore.FirestoreDataException;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.entities.User;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
+import com.google.firestore.v1.StructuredQuery;
+import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.ResultProcessor;
 import org.springframework.data.repository.query.ReturnedType;

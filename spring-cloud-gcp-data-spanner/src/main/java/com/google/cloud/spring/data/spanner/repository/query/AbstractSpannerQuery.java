@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+
 import org.springframework.data.repository.query.RepositoryQuery;
 
 /**

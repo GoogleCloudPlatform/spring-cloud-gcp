@@ -30,10 +30,10 @@ import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.stub.GrpcSubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.pubsub.v1.PullRequest;
 import org.threeten.bp.Duration;
 
-import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.springframework.util.Assert;
 
 /**

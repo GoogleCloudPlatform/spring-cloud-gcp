@@ -19,6 +19,8 @@ package com.google.cloud.spring.autoconfigure.metrics;
 import java.io.IOException;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.stackdriver.StackdriverConfig;
@@ -33,8 +35,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import com.google.cloud.spring.core.DefaultCredentialsProvider;
-import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

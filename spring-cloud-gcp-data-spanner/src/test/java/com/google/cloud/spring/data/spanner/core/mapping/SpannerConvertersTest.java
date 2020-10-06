@@ -23,9 +23,8 @@ import java.time.LocalDateTime;
 import com.google.cloud.ByteArray;
 import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
-import org.junit.Test;
-
 import com.google.cloud.spring.data.spanner.core.convert.SpannerConverters;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

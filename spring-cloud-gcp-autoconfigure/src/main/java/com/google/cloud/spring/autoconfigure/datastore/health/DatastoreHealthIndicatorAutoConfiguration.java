@@ -19,6 +19,8 @@ package com.google.cloud.spring.autoconfigure.datastore.health;
 import java.util.function.Supplier;
 
 import com.google.cloud.datastore.Datastore;
+import com.google.cloud.spring.autoconfigure.datastore.DatastoreProvider;
+import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreAutoConfiguration;
 
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.autoconfigure.health.HealthContributorAutoConfiguration;
@@ -28,8 +30,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import com.google.cloud.spring.autoconfigure.datastore.DatastoreProvider;
-import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -21,18 +21,18 @@ import java.io.IOException;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1beta1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1beta1.SecretManagerServiceSettings;
-import com.google.protobuf.ByteString;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerPropertySourceLocator;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
+import com.google.protobuf.ByteString;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;

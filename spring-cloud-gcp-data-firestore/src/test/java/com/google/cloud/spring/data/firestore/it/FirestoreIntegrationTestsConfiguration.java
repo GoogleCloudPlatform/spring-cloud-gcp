@@ -19,6 +19,13 @@ package com.google.cloud.spring.data.firestore.it;
 import java.io.IOException;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.entities.UserRepository;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
+import com.google.cloud.spring.data.firestore.repository.config.EnableReactiveFirestoreRepositories;
+import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
 import com.google.firestore.v1.FirestoreGrpc;
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
@@ -28,13 +35,6 @@ import org.mockito.Mockito;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import com.google.cloud.spring.data.firestore.FirestoreTemplate;
-import com.google.cloud.spring.data.firestore.entities.UserRepository;
-import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
-import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
-import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
-import com.google.cloud.spring.data.firestore.repository.config.EnableReactiveFirestoreRepositories;
-import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

@@ -29,12 +29,12 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Value;
+import com.google.cloud.spring.data.spanner.core.convert.TestEntities.TestEntity;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import org.assertj.core.data.Offset;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.cloud.spring.data.spanner.core.convert.TestEntities.TestEntity;
-import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 

@@ -21,12 +21,12 @@ import com.google.cloud.datastore.IncompleteKey;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.KeyFactory;
 import com.google.cloud.datastore.PathElement;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
-import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import org.springframework.data.annotation.Id;
 
 import static org.assertj.core.api.Assertions.assertThat;

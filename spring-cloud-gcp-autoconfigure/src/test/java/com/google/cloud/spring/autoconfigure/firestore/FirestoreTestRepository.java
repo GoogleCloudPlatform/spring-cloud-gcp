@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.firestore;
 
 import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
+
 import org.springframework.stereotype.Repository;
 
 /**

@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Objects;
 
 import com.google.cloud.datastore.Key;
-
 import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
+
 import org.springframework.data.annotation.Id;
 
 /**

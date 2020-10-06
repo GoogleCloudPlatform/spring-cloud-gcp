@@ -18,6 +18,8 @@ package com.google.cloud.spring.autoconfigure.core.environment;
 
 import java.util.Collections;
 
+import com.google.cloud.spring.core.GcpEnvironment;
+import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,8 +31,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
-import com.google.cloud.spring.core.GcpEnvironment;
-import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 

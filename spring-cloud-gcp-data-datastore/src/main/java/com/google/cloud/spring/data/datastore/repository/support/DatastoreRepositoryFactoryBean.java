@@ -16,10 +16,11 @@
 
 package com.google.cloud.spring.data.datastore.repository.support;
 
-import org.springframework.beans.BeansException;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
+
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport;

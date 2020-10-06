@@ -22,6 +22,12 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.cloud.spring.core.Credentials;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.storage.GoogleStorageProtocolResolver;
+import com.google.cloud.spring.storage.GoogleStorageResource;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import org.junit.Before;
@@ -31,12 +37,6 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import com.google.cloud.spring.core.Credentials;
-import com.google.cloud.spring.core.DefaultCredentialsProvider;
-import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
-import com.google.cloud.spring.core.GcpProjectIdProvider;
-import com.google.cloud.spring.storage.GoogleStorageProtocolResolver;
-import com.google.cloud.spring.storage.GoogleStorageResource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

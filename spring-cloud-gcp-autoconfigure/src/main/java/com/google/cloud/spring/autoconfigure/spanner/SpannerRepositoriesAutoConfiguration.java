@@ -16,13 +16,14 @@
 
 package com.google.cloud.spring.autoconfigure.spanner;
 
+import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
+import com.google.cloud.spring.data.spanner.repository.config.SpannerRepositoryConfigurationExtension;
+import com.google.cloud.spring.data.spanner.repository.support.SpannerRepositoryFactoryBean;
+
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
-import com.google.cloud.spring.data.spanner.repository.config.SpannerRepositoryConfigurationExtension;
-import com.google.cloud.spring.data.spanner.repository.support.SpannerRepositoryFactoryBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 

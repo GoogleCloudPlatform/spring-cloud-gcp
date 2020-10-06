@@ -40,7 +40,6 @@ import com.google.cloud.datastore.StructuredQuery.CompositeFilter;
 import com.google.cloud.datastore.StructuredQuery.Filter;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.cloud.datastore.Value;
-
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
 import com.google.cloud.spring.data.datastore.core.DatastoreQueryOptions;
@@ -50,6 +49,7 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataExceptio
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
+
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;

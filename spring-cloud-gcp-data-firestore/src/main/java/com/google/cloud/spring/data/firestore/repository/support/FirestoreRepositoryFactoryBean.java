@@ -18,6 +18,7 @@ package com.google.cloud.spring.data.firestore.repository.support;
 
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
+
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;

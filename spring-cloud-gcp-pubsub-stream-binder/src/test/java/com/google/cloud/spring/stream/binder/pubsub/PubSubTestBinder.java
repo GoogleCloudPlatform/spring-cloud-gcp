@@ -26,9 +26,6 @@ import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminSettings;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminSettings;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
@@ -38,6 +35,9 @@ import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerPro
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
 import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+
 import org.springframework.cloud.stream.binder.AbstractTestBinder;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;

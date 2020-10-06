@@ -24,13 +24,12 @@ import com.google.cloud.ByteArray;
 import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Struct;
-import com.google.spanner.v1.TypeCode;
-
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.Embedded;
 import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.spanner.v1.TypeCode;
 
 /**
  * Test entities for Spanner tests that hit many features and situations.

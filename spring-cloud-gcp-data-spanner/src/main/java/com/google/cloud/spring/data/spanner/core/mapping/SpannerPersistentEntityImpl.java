@@ -27,12 +27,12 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import com.google.cloud.spanner.Key;
-
-import org.springframework.beans.BeansException;
 import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
 import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityWriter;
+
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.expression.BeanFactoryAccessor;
 import org.springframework.context.expression.BeanFactoryResolver;

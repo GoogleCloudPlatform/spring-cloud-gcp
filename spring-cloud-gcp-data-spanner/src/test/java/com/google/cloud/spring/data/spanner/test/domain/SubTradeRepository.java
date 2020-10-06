@@ -20,9 +20,9 @@ package com.google.cloud.spring.data.spanner.test.domain;
 import java.util.List;
 
 import com.google.cloud.spanner.Key;
-
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import com.google.cloud.spring.data.spanner.repository.query.Query;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;

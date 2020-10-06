@@ -28,14 +28,14 @@ import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminSettings;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminSettings;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
+import com.google.cloud.spring.pubsub.support.PubSubTopicUtils;
 import com.google.pubsub.v1.ProjectName;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.Topic;
 
-import com.google.cloud.spring.core.GcpProjectIdProvider;
-import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
-import com.google.cloud.spring.pubsub.support.PubSubTopicUtils;
 import org.springframework.util.Assert;
 
 /**

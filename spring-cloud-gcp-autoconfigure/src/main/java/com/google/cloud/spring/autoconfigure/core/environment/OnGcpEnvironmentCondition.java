@@ -20,10 +20,11 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
-import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import com.google.cloud.spring.core.GcpEnvironment;
 import com.google.cloud.spring.core.GcpEnvironmentProvider;
+
+import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
+import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.util.Assert;

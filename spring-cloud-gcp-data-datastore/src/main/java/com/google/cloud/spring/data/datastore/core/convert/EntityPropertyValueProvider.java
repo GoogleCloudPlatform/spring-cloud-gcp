@@ -17,10 +17,10 @@
 package com.google.cloud.spring.data.datastore.core.convert;
 
 import com.google.cloud.datastore.BaseEntity;
-
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
 import com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType;
+
 import org.springframework.core.convert.ConversionException;
 import org.springframework.data.mapping.model.PropertyValueProvider;
 import org.springframework.data.util.TypeInformation;

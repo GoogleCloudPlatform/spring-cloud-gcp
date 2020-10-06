@@ -22,13 +22,13 @@ import java.lang.reflect.Proxy;
 import java.util.function.Supplier;
 
 import com.google.cloud.datastore.Value;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 
 import org.springframework.cglib.proxy.Callback;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.Factory;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
-import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import org.springframework.objenesis.ObjenesisStd;
 import org.springframework.util.Assert;
 

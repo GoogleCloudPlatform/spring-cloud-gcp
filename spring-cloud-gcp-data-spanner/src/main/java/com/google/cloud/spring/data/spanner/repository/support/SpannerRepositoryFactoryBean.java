@@ -16,9 +16,10 @@
 
 package com.google.cloud.spring.data.spanner.repository.support;
 
-import org.springframework.beans.BeansException;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.repository.Repository;

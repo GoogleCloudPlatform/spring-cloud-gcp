@@ -34,8 +34,6 @@ import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.ValueBinder;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
@@ -46,6 +44,8 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
 import com.google.cloud.spring.data.spanner.core.mapping.Where;
+import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.ParameterAccessor;

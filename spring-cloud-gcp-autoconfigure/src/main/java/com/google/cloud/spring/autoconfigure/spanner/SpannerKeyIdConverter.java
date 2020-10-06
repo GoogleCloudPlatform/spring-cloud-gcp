@@ -20,13 +20,13 @@ import java.io.Serializable;
 import java.util.StringJoiner;
 
 import com.google.cloud.spanner.Key;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 
 /**

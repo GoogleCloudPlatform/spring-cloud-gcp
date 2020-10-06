@@ -19,6 +19,13 @@ package com.google.cloud.spring.autoconfigure.security;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.core.environment.ConditionalOnGcpEnvironment;
+import com.google.cloud.spring.core.GcpEnvironment;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.security.iap.AppEngineAudienceProvider;
+import com.google.cloud.spring.security.iap.AudienceProvider;
+import com.google.cloud.spring.security.iap.AudienceValidator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -30,13 +37,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
-import com.google.cloud.spring.autoconfigure.core.environment.ConditionalOnGcpEnvironment;
-import com.google.cloud.spring.core.GcpEnvironment;
-import com.google.cloud.spring.core.GcpProjectIdProvider;
-import com.google.cloud.spring.security.iap.AppEngineAudienceProvider;
-import com.google.cloud.spring.security.iap.AudienceProvider;
-import com.google.cloud.spring.security.iap.AudienceValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;

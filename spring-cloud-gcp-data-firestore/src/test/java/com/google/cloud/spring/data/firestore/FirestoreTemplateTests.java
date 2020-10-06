@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.google.cloud.firestore.annotation.DocumentId;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.firestore.v1.Document.Builder;
 import com.google.firestore.v1.DocumentMask;
 import com.google.firestore.v1.FirestoreGrpc.FirestoreStub;
@@ -42,9 +44,6 @@ import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-
-import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
-import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

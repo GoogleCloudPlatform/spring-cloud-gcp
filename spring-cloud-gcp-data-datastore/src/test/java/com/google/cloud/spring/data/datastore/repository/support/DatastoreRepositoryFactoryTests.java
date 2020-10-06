@@ -16,16 +16,16 @@
 
 package com.google.cloud.spring.data.datastore.repository.support;
 
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.core.mapping.Field;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
-import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
-import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
-import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-import com.google.cloud.spring.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mapping.MappingException;
 import org.springframework.data.repository.core.EntityInformation;

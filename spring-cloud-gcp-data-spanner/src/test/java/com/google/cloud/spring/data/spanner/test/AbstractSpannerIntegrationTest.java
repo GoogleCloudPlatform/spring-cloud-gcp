@@ -19,6 +19,12 @@ package com.google.cloud.spring.data.spanner.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.cloud.spring.data.spanner.core.SpannerOperations;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
+import com.google.cloud.spring.data.spanner.test.domain.Trade;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.After;
@@ -27,12 +33,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.google.cloud.spring.data.spanner.core.SpannerOperations;
-import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
-import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
-import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
-import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
-import com.google.cloud.spring.data.spanner.test.domain.Trade;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 

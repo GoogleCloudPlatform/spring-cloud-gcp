@@ -24,10 +24,10 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import com.google.cloud.datastore.Key;
-
 import com.google.cloud.spring.data.datastore.it.TestEntity.Shape;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.query.Query;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;

@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static com.google.cloud.spring.data.datastore.core.util.SliceUtil.sliceAndExecute;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Dmitry Solomakha

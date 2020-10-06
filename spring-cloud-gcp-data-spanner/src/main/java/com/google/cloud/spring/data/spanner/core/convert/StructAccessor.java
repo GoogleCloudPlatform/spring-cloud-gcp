@@ -30,7 +30,6 @@ import com.google.cloud.spanner.AbstractStructReader;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Type.Code;
-
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 

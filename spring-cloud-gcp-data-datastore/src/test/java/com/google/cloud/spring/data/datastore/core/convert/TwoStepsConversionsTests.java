@@ -21,10 +21,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
-
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import org.junit.Test;
+
 import org.springframework.core.convert.converter.Converter;
 
 import static org.assertj.core.api.Assertions.assertThat;

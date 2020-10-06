@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.spanner;
 import java.util.function.Supplier;
 
 import com.google.cloud.spanner.DatabaseClient;
+import com.google.cloud.spring.data.spanner.core.SpannerTransactionManager;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -27,7 +28,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
-import com.google.cloud.spring.data.spanner.core.SpannerTransactionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;

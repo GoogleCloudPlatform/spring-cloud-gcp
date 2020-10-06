@@ -19,9 +19,9 @@ package com.google.cloud.spring.data.datastore.core.convert;
 import java.util.Optional;
 
 import com.google.cloud.datastore.Value;
-
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
 import com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType;
+
 import org.springframework.data.util.TypeInformation;
 
 /**

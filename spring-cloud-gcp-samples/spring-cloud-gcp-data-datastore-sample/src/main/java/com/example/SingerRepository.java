@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.query.Query;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.repository.query.Param;

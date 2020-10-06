@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import com.google.cloud.spring.data.datastore.core.mapping.LazyReference;
+
 import org.springframework.data.annotation.Id;
 
 @Entity

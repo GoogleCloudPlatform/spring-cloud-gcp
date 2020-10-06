@@ -22,14 +22,13 @@ import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.LatLng;
 import com.google.cloud.datastore.testing.LocalDatastoreHelper;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
-import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
-import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

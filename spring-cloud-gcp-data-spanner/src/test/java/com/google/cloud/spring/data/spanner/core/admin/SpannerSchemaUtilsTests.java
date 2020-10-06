@@ -22,11 +22,6 @@ import java.util.OptionalLong;
 
 import com.google.cloud.ByteArray;
 import com.google.cloud.spanner.Key;
-import com.google.spanner.v1.TypeCode;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
@@ -36,6 +31,10 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.spanner.v1.TypeCode;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

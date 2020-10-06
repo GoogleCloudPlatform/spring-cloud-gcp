@@ -23,15 +23,15 @@ import java.util.function.Function;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
+import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
-import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
-import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
-import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 

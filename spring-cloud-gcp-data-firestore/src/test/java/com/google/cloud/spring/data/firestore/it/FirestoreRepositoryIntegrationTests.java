@@ -21,6 +21,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import com.google.cloud.spring.data.firestore.entities.User;
+import com.google.cloud.spring.data.firestore.entities.User.Address;
+import com.google.cloud.spring.data.firestore.entities.UserRepository;
+import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,10 +33,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.google.cloud.spring.data.firestore.entities.User;
-import com.google.cloud.spring.data.firestore.entities.User.Address;
-import com.google.cloud.spring.data.firestore.entities.UserRepository;
-import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;

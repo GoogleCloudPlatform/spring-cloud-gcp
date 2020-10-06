@@ -20,6 +20,7 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.firestore.v1.FirestoreGrpc;
 import io.grpc.ManagedChannel;
 import org.junit.Test;
@@ -28,7 +29,6 @@ import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
 import static org.assertj.core.api.Assertions.assertThat;

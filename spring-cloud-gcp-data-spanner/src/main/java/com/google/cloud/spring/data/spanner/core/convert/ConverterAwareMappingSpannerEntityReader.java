@@ -19,11 +19,11 @@ package com.google.cloud.spring.data.spanner.core.convert;
 import java.util.Set;
 
 import com.google.cloud.spanner.Struct;
-
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
+
 import org.springframework.data.convert.EntityInstantiator;
 import org.springframework.data.convert.EntityInstantiators;
 import org.springframework.data.mapping.PersistentPropertyAccessor;

@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.vision;
 
+import com.google.cloud.spring.storage.GoogleStorageLocation;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import org.junit.Before;
@@ -23,7 +24,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
-import com.google.cloud.spring.storage.GoogleStorageLocation;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

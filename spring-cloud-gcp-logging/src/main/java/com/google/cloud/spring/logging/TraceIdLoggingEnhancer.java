@@ -18,7 +18,6 @@ package com.google.cloud.spring.logging;
 
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.LoggingEnhancer;
-
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 

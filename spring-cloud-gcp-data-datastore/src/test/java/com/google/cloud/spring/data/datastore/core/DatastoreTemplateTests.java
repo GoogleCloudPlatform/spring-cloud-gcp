@@ -51,14 +51,6 @@ import com.google.cloud.datastore.Query.ResultType;
 import com.google.cloud.datastore.QueryResults;
 import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.mockito.ArgumentMatchers;
-import org.mockito.InOrder;
-import org.mockito.Mockito;
-
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
 import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
@@ -76,6 +68,14 @@ import com.google.cloud.spring.data.datastore.core.mapping.event.AfterQueryEvent
 import com.google.cloud.spring.data.datastore.core.mapping.event.AfterSaveEvent;
 import com.google.cloud.spring.data.datastore.core.mapping.event.BeforeDeleteEvent;
 import com.google.cloud.spring.data.datastore.core.mapping.event.BeforeSaveEvent;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
+
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.annotation.Id;

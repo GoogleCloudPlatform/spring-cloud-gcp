@@ -21,6 +21,9 @@ import java.io.IOException;
 
 import javax.sql.DataSource;
 
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.core.GcpProperties;
+import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.sql.CredentialFactory;
 import com.google.cloud.sql.core.CoreSocketFactory;
 import org.apache.commons.logging.Log;
@@ -37,9 +40,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.jdbc.JndiDataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.XADataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
-import com.google.cloud.spring.autoconfigure.core.GcpProperties;
-import com.google.cloud.spring.core.Credentials;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

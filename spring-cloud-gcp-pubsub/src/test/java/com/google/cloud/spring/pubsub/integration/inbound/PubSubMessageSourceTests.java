@@ -19,6 +19,10 @@ package com.google.cloud.spring.pubsub.integration.inbound;
 import java.util.Arrays;
 import java.util.Collections;
 
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
+import com.google.cloud.spring.pubsub.integration.AckMode;
+import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
+import com.google.cloud.spring.pubsub.support.converter.ConvertedAcknowledgeablePubsubMessage;
 import com.google.pubsub.v1.PubsubMessage;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +30,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
-import com.google.cloud.spring.pubsub.integration.AckMode;
-import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
-import com.google.cloud.spring.pubsub.support.converter.ConvertedAcknowledgeablePubsubMessage;
 import org.springframework.integration.IntegrationMessageHeaderAccessor;
 import org.springframework.integration.acks.AcknowledgmentCallback;
 import org.springframework.integration.endpoint.MessageSourcePollingTemplate;

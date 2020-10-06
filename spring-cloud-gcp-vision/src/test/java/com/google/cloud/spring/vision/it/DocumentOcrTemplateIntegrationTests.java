@@ -22,6 +22,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.google.cloud.spring.storage.GoogleStorageLocation;
+import com.google.cloud.spring.vision.DocumentOcrResultSet;
+import com.google.cloud.spring.vision.DocumentOcrTemplate;
 import com.google.cloud.vision.v1.TextAnnotation;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.junit.BeforeClass;
@@ -29,9 +32,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.google.cloud.spring.storage.GoogleStorageLocation;
-import com.google.cloud.spring.vision.DocumentOcrResultSet;
-import com.google.cloud.spring.vision.DocumentOcrTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.concurrent.ListenableFuture;

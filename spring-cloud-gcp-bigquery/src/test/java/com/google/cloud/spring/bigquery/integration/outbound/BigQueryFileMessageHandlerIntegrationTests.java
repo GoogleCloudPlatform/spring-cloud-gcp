@@ -27,6 +27,8 @@ import com.google.cloud.bigquery.Job;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.TableResult;
+import com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration;
+import com.google.cloud.spring.bigquery.integration.BigQuerySpringMessageHeaders;
 import org.awaitility.Duration;
 import org.junit.After;
 import org.junit.Before;
@@ -36,8 +38,6 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration;
-import com.google.cloud.spring.bigquery.integration.BigQuerySpringMessageHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
@@ -47,11 +47,11 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.concurrent.ListenableFuture;
 
+import static com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
-import static com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
 
 
 @RunWith(SpringRunner.class)

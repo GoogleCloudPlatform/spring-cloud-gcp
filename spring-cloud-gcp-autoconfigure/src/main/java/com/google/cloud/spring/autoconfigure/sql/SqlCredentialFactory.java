@@ -25,11 +25,10 @@ import java.util.Collections;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.cloud.spring.core.GcpScope;
 import com.google.cloud.sql.CredentialFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import com.google.cloud.spring.core.GcpScope;
 
 /**
  * Returns the credentials that are written to a system property by the Cloud SQL starter.

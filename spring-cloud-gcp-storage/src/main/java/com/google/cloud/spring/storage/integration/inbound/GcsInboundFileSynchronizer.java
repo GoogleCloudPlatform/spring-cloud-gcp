@@ -16,11 +16,11 @@
 
 package com.google.cloud.spring.storage.integration.inbound;
 
+import com.google.cloud.spring.storage.integration.GcsSessionFactory;
+import com.google.cloud.spring.storage.integration.filters.GcsPersistentAcceptOnceFileListFilter;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 
-import com.google.cloud.spring.storage.integration.GcsSessionFactory;
-import com.google.cloud.spring.storage.integration.filters.GcsPersistentAcceptOnceFileListFilter;
 import org.springframework.integration.file.remote.synchronizer.AbstractInboundFileSynchronizer;
 import org.springframework.integration.metadata.SimpleMetadataStore;
 

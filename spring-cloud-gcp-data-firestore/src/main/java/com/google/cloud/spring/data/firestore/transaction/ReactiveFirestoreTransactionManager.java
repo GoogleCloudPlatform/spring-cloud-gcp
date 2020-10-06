@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.data.firestore.transaction;
 
+import com.google.cloud.spring.data.firestore.util.ObservableReactiveUtil;
+import com.google.cloud.spring.data.firestore.util.Util;
 import com.google.firestore.v1.BeginTransactionRequest;
 import com.google.firestore.v1.BeginTransactionResponse;
 import com.google.firestore.v1.CommitRequest;
@@ -27,8 +29,6 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import reactor.core.publisher.Mono;
 
-import com.google.cloud.spring.data.firestore.util.ObservableReactiveUtil;
-import com.google.cloud.spring.data.firestore.util.Util;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;

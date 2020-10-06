@@ -22,10 +22,9 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.firestore.Internal;
+import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.firestore.v1.Document;
 import com.google.firestore.v1.Value;
-
-import com.google.cloud.spring.core.util.MapBuilder;
 
 /**
  *

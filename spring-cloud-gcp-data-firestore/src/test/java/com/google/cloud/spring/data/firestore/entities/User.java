@@ -21,7 +21,6 @@ import java.util.Objects;
 
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.PropertyName;
-
 import com.google.cloud.spring.data.firestore.Document;
 
 /**

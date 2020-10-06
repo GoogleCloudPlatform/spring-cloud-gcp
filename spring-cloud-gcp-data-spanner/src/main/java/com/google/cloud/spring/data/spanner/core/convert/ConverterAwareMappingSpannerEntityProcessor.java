@@ -26,9 +26,9 @@ import java.util.Set;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Struct;
-
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.Assert;
 

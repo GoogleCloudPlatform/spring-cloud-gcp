@@ -17,9 +17,8 @@
 package com.google.cloud.spring.secretmanager;
 
 import com.google.cloud.secretmanager.v1beta1.SecretVersionName;
-import org.junit.Test;
-
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

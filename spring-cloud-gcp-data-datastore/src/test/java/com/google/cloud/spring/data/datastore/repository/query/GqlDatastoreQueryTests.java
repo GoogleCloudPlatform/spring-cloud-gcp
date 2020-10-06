@@ -31,11 +31,6 @@ import com.google.cloud.datastore.KeyFactory;
 import com.google.cloud.datastore.KeyValue;
 import com.google.cloud.datastore.LongValue;
 import com.google.cloud.datastore.Value;
-import org.assertj.core.data.Offset;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import com.google.cloud.spring.data.datastore.core.DatastoreResultsIterable;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import com.google.cloud.spring.data.datastore.core.convert.DatastoreCustomConversions;
@@ -45,6 +40,11 @@ import com.google.cloud.spring.data.datastore.core.convert.TwoStepsConversions;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import com.google.cloud.spring.data.datastore.core.mapping.Field;
+import org.assertj.core.data.Offset;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -44,9 +44,9 @@ import com.google.cloud.datastore.NullValue;
 import com.google.cloud.datastore.StringValue;
 import com.google.cloud.datastore.TimestampValue;
 import com.google.cloud.datastore.Value;
-
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 
 /**

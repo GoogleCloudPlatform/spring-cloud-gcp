@@ -16,12 +16,12 @@
 
 package com.google.cloud.spring.stream.binder.pubsub;
 
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
-import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
 import org.springframework.cloud.stream.binder.AbstractBinderTests;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;

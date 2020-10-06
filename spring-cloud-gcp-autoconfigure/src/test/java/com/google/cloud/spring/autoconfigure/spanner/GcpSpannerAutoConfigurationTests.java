@@ -18,17 +18,17 @@ package com.google.cloud.spring.autoconfigure.spanner;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.data.spanner.core.SpannerOperations;
+import com.google.cloud.spring.data.spanner.core.SpannerTransactionManager;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import org.junit.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
-import com.google.cloud.spring.data.spanner.core.SpannerOperations;
-import com.google.cloud.spring.data.spanner.core.SpannerTransactionManager;
-import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
-import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 

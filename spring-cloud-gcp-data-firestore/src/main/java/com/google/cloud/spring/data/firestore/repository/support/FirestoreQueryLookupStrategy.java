@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.repository.query.FirestoreQueryMethod;
 import com.google.cloud.spring.data.firestore.repository.query.PartTreeFirestoreQuery;
+
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryMetadata;

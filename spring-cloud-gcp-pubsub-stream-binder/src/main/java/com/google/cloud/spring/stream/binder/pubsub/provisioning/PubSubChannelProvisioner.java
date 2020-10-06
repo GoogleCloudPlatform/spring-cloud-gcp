@@ -21,14 +21,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.google.api.gax.rpc.AlreadyExistsException;
+import com.google.cloud.spring.pubsub.PubSubAdmin;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.Topic;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.google.cloud.spring.pubsub.PubSubAdmin;
-import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
-import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;

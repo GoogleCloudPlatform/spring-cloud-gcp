@@ -17,12 +17,12 @@
 package com.google.cloud.spring.autoconfigure.spanner;
 
 import com.google.cloud.spanner.SpannerOptions;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;

@@ -23,13 +23,13 @@ import java.util.stream.Stream;
 
 import com.google.cloud.PageImpl;
 import com.google.cloud.ReadChannel;
+import com.google.cloud.spring.storage.integration.GcsSessionFactory;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.google.cloud.spring.storage.integration.GcsSessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.InboundChannelAdapter;

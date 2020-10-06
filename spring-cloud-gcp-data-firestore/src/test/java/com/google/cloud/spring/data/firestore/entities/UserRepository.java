@@ -18,10 +18,10 @@ package com.google.cloud.spring.data.firestore.entities;
 
 import java.util.List;
 
+import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 

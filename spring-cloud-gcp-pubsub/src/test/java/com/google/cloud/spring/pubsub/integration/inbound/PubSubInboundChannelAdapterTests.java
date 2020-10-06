@@ -18,6 +18,10 @@ package com.google.cloud.spring.pubsub.integration.inbound;
 
 import java.util.function.Consumer;
 
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
+import com.google.cloud.spring.pubsub.integration.AckMode;
+import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
+import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
 import com.google.pubsub.v1.PubsubMessage;
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,10 +32,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import org.springframework.boot.test.system.OutputCaptureRule;
-import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
-import com.google.cloud.spring.pubsub.integration.AckMode;
-import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
-import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
 import org.springframework.integration.support.MutableMessageBuilder;
 import org.springframework.integration.support.MutableMessageBuilderFactory;
 import org.springframework.messaging.Message;

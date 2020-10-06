@@ -26,7 +26,6 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Type.Code;
-
 import com.google.cloud.spring.core.util.MapBuilder;
 
 /**

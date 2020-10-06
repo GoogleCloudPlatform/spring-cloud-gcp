@@ -22,10 +22,10 @@ import java.util.Map;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.StandardEnvironment;

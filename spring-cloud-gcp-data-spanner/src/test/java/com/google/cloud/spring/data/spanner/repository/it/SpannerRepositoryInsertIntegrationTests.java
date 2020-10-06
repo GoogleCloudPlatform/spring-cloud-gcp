@@ -18,6 +18,12 @@ package com.google.cloud.spring.data.spanner.repository.it;
 
 import java.util.Collections;
 
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.test.IntegrationTestConfiguration;
+import com.google.cloud.spring.data.spanner.test.domain.Singer;
+import com.google.cloud.spring.data.spanner.test.domain.SingerRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -25,12 +31,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
-import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
-import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
-import com.google.cloud.spring.data.spanner.test.IntegrationTestConfiguration;
-import com.google.cloud.spring.data.spanner.test.domain.Singer;
-import com.google.cloud.spring.data.spanner.test.domain.SingerRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 

@@ -17,14 +17,13 @@
 package com.google.cloud.spring.pubsub.core;
 
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
+import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
-import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

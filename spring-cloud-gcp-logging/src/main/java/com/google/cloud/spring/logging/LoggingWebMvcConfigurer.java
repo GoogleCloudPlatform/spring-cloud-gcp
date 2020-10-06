@@ -16,9 +16,10 @@
 
 package com.google.cloud.spring.logging;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

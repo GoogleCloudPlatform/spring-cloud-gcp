@@ -16,11 +16,12 @@
 
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import com.google.cloud.spring.core.GcpScope;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 @ConfigurationProperties("spring.cloud.gcp.secretmanager")
 public class GcpSecretManagerProperties implements CredentialsSupplier {

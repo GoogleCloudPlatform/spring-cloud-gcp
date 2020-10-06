@@ -21,10 +21,10 @@ import java.util.UUID;
 import com.google.api.gax.rpc.ApiException;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.api.gax.rpc.StatusCode.Code;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
-import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import org.springframework.util.Assert;
 
 /**

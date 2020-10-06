@@ -18,6 +18,9 @@ package com.google.cloud.spring.autoconfigure.logging;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
+import com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor;
 import org.junit.Test;
 import zipkin2.reporter.Reporter;
 
@@ -25,9 +28,6 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ReactiveWebApplicationContextRunner;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
-import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
-import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
-import com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor;
 import org.springframework.cloud.sleuth.autoconfig.TraceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 

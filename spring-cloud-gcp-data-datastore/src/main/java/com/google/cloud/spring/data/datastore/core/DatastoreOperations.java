@@ -23,8 +23,8 @@ import java.util.function.Function;
 import com.google.cloud.datastore.BaseEntity;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.Query;
-
 import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
+
 import org.springframework.data.domain.Example;
 
 /**

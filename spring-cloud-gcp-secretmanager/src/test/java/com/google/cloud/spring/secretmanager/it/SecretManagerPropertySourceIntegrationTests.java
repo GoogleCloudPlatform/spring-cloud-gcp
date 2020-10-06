@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.secretmanager.it;
 
+import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import io.grpc.StatusRuntimeException;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,7 +24,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

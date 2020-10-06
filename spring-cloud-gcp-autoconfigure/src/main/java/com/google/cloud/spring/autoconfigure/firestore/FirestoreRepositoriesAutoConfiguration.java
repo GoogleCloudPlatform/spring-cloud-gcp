@@ -16,13 +16,14 @@
 
 package com.google.cloud.spring.autoconfigure.firestore;
 
+import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
+import com.google.cloud.spring.data.firestore.repository.config.FirestoreRepositoryConfigurationExtension;
+import com.google.cloud.spring.data.firestore.repository.support.FirestoreRepositoryFactoryBean;
+
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
-import com.google.cloud.spring.data.firestore.repository.config.FirestoreRepositoryConfigurationExtension;
-import com.google.cloud.spring.data.firestore.repository.support.FirestoreRepositoryFactoryBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 

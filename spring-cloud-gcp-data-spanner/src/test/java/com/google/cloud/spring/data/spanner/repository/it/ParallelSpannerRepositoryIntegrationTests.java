@@ -21,15 +21,15 @@ import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 
 import com.google.cloud.spanner.KeySet;
+import com.google.cloud.spring.data.spanner.test.AbstractSpannerIntegrationTest;
+import com.google.cloud.spring.data.spanner.test.domain.Trade;
+import com.google.cloud.spring.data.spanner.test.domain.TradeRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.google.cloud.spring.data.spanner.test.AbstractSpannerIntegrationTest;
-import com.google.cloud.spring.data.spanner.test.domain.Trade;
-import com.google.cloud.spring.data.spanner.test.domain.TradeRepository;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -16,11 +16,11 @@
 
 package com.google.cloud.spring.pubsub.integration.inbound;
 
+import com.google.cloud.spring.pubsub.integration.AckMode;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.cloud.spring.pubsub.integration.AckMode;
-import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import org.springframework.integration.acks.AcknowledgmentCallback;
 
 import static org.assertj.core.api.Assertions.assertThat;

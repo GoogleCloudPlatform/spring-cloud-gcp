@@ -18,6 +18,7 @@ package com.google.cloud.spring.pubsub.integration.inbound;
 
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
+
 import org.springframework.integration.acks.AcknowledgmentCallback;
 import org.springframework.util.Assert;
 

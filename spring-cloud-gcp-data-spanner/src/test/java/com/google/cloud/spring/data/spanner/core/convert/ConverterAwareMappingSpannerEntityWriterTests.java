@@ -35,12 +35,6 @@ import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Mutation.WriteBuilder;
 import com.google.cloud.spanner.Value;
 import com.google.cloud.spanner.ValueBinder;
-import com.google.spanner.v1.TypeCode;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
 import com.google.cloud.spring.data.spanner.core.convert.TestEntities.ChildTestEntity;
 import com.google.cloud.spring.data.spanner.core.convert.TestEntities.FaultyTestEntity;
 import com.google.cloud.spring.data.spanner.core.convert.TestEntities.FaultyTestEntity2;
@@ -51,6 +45,11 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
+import com.google.spanner.v1.TypeCode;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

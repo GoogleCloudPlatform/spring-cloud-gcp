@@ -21,6 +21,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
+import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntity;
+import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentProperty;
+import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreResourceHolder;
+import com.google.cloud.spring.data.firestore.util.ObservableReactiveUtil;
+import com.google.cloud.spring.data.firestore.util.Util;
 import com.google.firestore.v1.Document;
 import com.google.firestore.v1.DocumentMask;
 import com.google.firestore.v1.FirestoreGrpc.FirestoreStub;
@@ -39,13 +46,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.context.Context;
 
-import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
-import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
-import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntity;
-import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentProperty;
-import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreResourceHolder;
-import com.google.cloud.spring.data.firestore.util.ObservableReactiveUtil;
-import com.google.cloud.spring.data.firestore.util.Util;
 import org.springframework.transaction.reactive.TransactionContext;
 import org.springframework.util.Assert;
 

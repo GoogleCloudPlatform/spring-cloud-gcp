@@ -16,9 +16,8 @@
 
 package com.google.cloud.spring.data.firestore;
 
-import org.junit.Test;
-
 import com.google.cloud.spring.data.firestore.util.Util;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

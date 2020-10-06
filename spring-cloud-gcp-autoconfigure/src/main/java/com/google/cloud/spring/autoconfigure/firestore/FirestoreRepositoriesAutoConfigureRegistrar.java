@@ -18,9 +18,10 @@ package com.google.cloud.spring.autoconfigure.firestore;
 
 import java.lang.annotation.Annotation;
 
-import org.springframework.boot.autoconfigure.data.AbstractRepositoryConfigurationSourceSupport;
 import com.google.cloud.spring.data.firestore.repository.config.EnableReactiveFirestoreRepositories;
 import com.google.cloud.spring.data.firestore.repository.config.FirestoreRepositoryConfigurationExtension;
+
+import org.springframework.boot.autoconfigure.data.AbstractRepositoryConfigurationSourceSupport;
 import org.springframework.data.repository.config.RepositoryConfigurationExtension;
 
 /**

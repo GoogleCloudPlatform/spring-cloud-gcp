@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+
 import org.springframework.data.repository.query.QueryMethod;
 import org.springframework.data.repository.query.RepositoryQuery;
 

@@ -18,10 +18,11 @@ package com.google.cloud.spring.data.spanner.repository.config;
 
 import java.lang.annotation.Annotation;
 
+import com.google.cloud.spring.data.spanner.repository.support.SpannerAuditingEventListener;
+
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import com.google.cloud.spring.data.spanner.repository.support.SpannerAuditingEventListener;
 import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.data.auditing.config.AuditingBeanDefinitionRegistrarSupport;
 import org.springframework.data.auditing.config.AuditingConfiguration;

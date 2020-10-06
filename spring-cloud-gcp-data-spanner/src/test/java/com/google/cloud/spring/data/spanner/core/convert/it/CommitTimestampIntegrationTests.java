@@ -23,10 +23,6 @@ import java.util.UUID;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.Key;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import com.google.cloud.spring.data.spanner.core.SpannerMutationFactory;
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.convert.CommitTimestamp;
@@ -34,6 +30,10 @@ import com.google.cloud.spring.data.spanner.core.convert.SpannerConverters;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.test.AbstractSpannerIntegrationTest;
 import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.test.context.junit4.SpringRunner;
 

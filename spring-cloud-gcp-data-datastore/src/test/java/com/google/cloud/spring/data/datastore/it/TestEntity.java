@@ -19,8 +19,8 @@ package com.google.cloud.spring.data.datastore.it;
 import java.util.Objects;
 
 import com.google.cloud.datastore.Blob;
-
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+
 import org.springframework.data.annotation.Id;
 
 /**

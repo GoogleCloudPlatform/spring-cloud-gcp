@@ -23,11 +23,11 @@ import java.util.Map;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
-
-import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
+
+import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;

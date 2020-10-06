@@ -18,13 +18,13 @@ package com.example;
 
 import java.util.List;
 
+import com.google.cloud.spring.vision.CloudVisionTemplate;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.EntityAnnotation;
 import com.google.cloud.vision.v1.Feature.Type;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.google.cloud.spring.vision.CloudVisionTemplate;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;

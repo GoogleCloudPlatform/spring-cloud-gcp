@@ -18,6 +18,7 @@ package com.google.cloud.spring.data.firestore.mapping;
 
 import com.google.cloud.spring.data.firestore.Document;
 import com.google.cloud.spring.data.firestore.FirestoreDataException;
+
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.mapping.model.BasicPersistentEntity;
 import org.springframework.data.util.TypeInformation;

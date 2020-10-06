@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.logging;
 
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+
 import org.springframework.context.annotation.Configuration;
 
 /**

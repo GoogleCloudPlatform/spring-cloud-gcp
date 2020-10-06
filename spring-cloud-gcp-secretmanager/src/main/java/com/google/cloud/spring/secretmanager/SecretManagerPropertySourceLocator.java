@@ -16,8 +16,9 @@
 
 package com.google.cloud.spring.secretmanager;
 
-import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+
+import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 

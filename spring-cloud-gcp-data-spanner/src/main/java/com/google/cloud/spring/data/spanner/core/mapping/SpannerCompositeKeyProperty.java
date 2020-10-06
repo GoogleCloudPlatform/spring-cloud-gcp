@@ -27,8 +27,8 @@ import java.util.OptionalLong;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Type.Code;
-
 import com.google.cloud.spring.data.spanner.core.convert.SpannerTypeMapper;
+
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.PersistentPropertyAccessor;

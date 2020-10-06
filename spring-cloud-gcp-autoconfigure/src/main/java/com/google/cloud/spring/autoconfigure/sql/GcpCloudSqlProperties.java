@@ -16,8 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.sql;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import com.google.cloud.spring.core.Credentials;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Google Cloud SQL properties.

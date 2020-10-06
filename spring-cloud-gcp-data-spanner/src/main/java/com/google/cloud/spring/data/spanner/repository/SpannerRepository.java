@@ -19,6 +19,7 @@ package com.google.cloud.spring.data.spanner.repository;
 import java.util.function.Function;
 
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
+
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**

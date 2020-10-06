@@ -18,9 +18,10 @@ package com.google.cloud.spring.autoconfigure.datastore;
 
 import java.lang.annotation.Annotation;
 
-import org.springframework.boot.autoconfigure.data.AbstractRepositoryConfigurationSourceSupport;
 import com.google.cloud.spring.data.datastore.repository.config.DatastoreRepositoryConfigurationExtension;
 import com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreRepositories;
+
+import org.springframework.boot.autoconfigure.data.AbstractRepositoryConfigurationSourceSupport;
 import org.springframework.data.repository.config.RepositoryConfigurationExtension;
 
 /**

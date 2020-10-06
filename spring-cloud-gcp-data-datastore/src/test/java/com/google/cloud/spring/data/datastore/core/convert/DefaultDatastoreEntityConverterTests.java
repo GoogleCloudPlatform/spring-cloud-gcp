@@ -40,11 +40,6 @@ import com.google.cloud.datastore.NullValue;
 import com.google.cloud.datastore.StringValue;
 import com.google.cloud.datastore.Value;
 import com.google.cloud.datastore.testing.LocalDatastoreHelper;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItemCollections.ComparableBeanContextSupport;
 import com.google.cloud.spring.data.datastore.core.convert.TestItemWithEmbeddedEntity.EmbeddedEntity;
@@ -53,6 +48,11 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingConte
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField;
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue;
 import com.google.cloud.spring.data.datastore.entities.CustomMap;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.annotation.Id;

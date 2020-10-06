@@ -29,13 +29,13 @@ import java.util.stream.StreamSupport;
 
 import com.google.cloud.datastore.Cursor;
 import com.google.cloud.datastore.Key;
-
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
 import com.google.cloud.spring.data.datastore.core.DatastoreQueryOptions;
 import com.google.cloud.spring.data.datastore.core.DatastoreResultsCollection;
 import com.google.cloud.spring.data.datastore.core.DatastoreResultsIterable;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable;
+
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

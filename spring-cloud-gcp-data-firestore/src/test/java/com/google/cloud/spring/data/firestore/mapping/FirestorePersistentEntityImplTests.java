@@ -16,9 +16,9 @@
 
 package com.google.cloud.spring.data.firestore.mapping;
 
+import com.google.cloud.spring.data.firestore.Document;
 import org.junit.Test;
 
-import com.google.cloud.spring.data.firestore.Document;
 import org.springframework.data.util.ClassTypeInformation;
 
 import static org.assertj.core.api.Assertions.assertThat;

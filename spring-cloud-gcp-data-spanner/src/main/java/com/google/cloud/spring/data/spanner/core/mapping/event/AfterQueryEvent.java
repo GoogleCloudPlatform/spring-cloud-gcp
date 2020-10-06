@@ -19,7 +19,6 @@ package com.google.cloud.spring.data.spanner.core.mapping.event;
 import java.util.Objects;
 
 import com.google.cloud.spanner.Statement;
-
 import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
 
 /**

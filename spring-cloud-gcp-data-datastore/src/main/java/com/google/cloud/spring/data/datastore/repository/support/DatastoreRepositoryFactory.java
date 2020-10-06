@@ -18,12 +18,13 @@ package com.google.cloud.spring.data.datastore.repository.support;
 
 import java.util.Optional;
 
-import org.springframework.beans.BeansException;
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntityInformation;
 import com.google.cloud.spring.data.datastore.repository.query.DatastoreQueryLookupStrategy;
+
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.expression.BeanFactoryAccessor;

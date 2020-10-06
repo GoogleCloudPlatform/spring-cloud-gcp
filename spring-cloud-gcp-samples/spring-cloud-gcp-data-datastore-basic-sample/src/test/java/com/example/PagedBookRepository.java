@@ -18,6 +18,7 @@ package com.example;
 
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.query.Query;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

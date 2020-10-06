@@ -18,7 +18,6 @@ package com.google.cloud.spring.data.datastore.core.convert;
 
 import com.google.cloud.datastore.IncompleteKey;
 import com.google.cloud.datastore.Key;
-
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
 
 /**

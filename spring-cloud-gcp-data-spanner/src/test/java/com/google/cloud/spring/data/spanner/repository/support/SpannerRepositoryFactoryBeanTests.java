@@ -17,12 +17,12 @@
 package com.google.cloud.spring.data.spanner.repository.support;
 
 import com.google.cloud.spanner.Key;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
+import org.junit.Before;
+import org.junit.Test;
+
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
 import static org.assertj.core.api.Assertions.assertThat;

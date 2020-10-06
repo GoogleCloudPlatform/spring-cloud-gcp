@@ -17,12 +17,11 @@
 package com.google.cloud.spring.data.spanner.test.domain;
 
 import com.google.cloud.Timestamp;
-import com.google.spanner.v1.TypeCode;
-
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.Embedded;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.spanner.v1.TypeCode;
 
 /**
  * A child interleaved table of {@link SubTrade} and a grand-child of {@link Trade}.

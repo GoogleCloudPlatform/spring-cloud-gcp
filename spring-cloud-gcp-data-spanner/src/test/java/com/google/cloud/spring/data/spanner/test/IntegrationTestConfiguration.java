@@ -24,8 +24,6 @@ import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.SessionPoolOptions;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
-
-import org.springframework.beans.factory.annotation.Value;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
@@ -41,6 +39,8 @@ import com.google.cloud.spring.data.spanner.core.it.SpannerTemplateIntegrationTe
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.repository.config.EnableSpannerRepositories;
 import com.google.cloud.spring.data.spanner.repository.it.SpannerRepositoryIntegrationTests.TradeRepositoryTransactionalService;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

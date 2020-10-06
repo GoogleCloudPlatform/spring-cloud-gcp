@@ -18,6 +18,8 @@ package com.google.cloud.spring.autoconfigure.pubsub;
 
 import com.google.api.gax.grpc.GrpcStatusCode;
 import com.google.api.gax.rpc.ApiException;
+import com.google.cloud.spring.autoconfigure.pubsub.health.PubSubHealthIndicator;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import io.grpc.Status.Code;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +27,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import org.springframework.boot.actuate.health.Status;
-import com.google.cloud.spring.autoconfigure.pubsub.health.PubSubHealthIndicator;
-import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;

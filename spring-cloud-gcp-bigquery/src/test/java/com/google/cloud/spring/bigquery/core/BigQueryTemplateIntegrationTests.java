@@ -40,10 +40,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.concurrent.ListenableFuture;
 
+import static com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
-import static com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
 
 /**
  * Integration tests for BigQuery.

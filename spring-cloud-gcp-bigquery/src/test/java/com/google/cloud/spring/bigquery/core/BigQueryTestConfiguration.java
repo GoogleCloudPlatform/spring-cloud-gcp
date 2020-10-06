@@ -19,8 +19,8 @@ package com.google.cloud.spring.bigquery.core;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.JobInfo.WriteDisposition;
-
 import com.google.cloud.spring.bigquery.integration.outbound.BigQueryFileMessageHandler;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.config.EnableIntegration;

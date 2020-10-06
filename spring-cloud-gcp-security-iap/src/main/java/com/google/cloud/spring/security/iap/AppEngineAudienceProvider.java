@@ -19,8 +19,8 @@ package com.google.cloud.spring.security.iap;
 import com.google.cloud.resourcemanager.Project;
 import com.google.cloud.resourcemanager.ResourceManager;
 import com.google.cloud.resourcemanager.ResourceManagerOptions;
-
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+
 import org.springframework.util.Assert;
 
 /**

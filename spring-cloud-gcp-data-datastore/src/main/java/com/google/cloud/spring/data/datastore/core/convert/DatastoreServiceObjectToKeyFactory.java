@@ -22,10 +22,10 @@ import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.IncompleteKey;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.KeyFactory;
-
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
+
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.util.Assert;
 

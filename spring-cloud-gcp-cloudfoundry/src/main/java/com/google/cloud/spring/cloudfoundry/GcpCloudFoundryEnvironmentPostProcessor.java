@@ -24,6 +24,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import com.google.api.client.util.ArrayMap;
+import com.google.cloud.spring.core.util.MapBuilder;
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfEnv;
 import io.pivotal.cfenv.core.CfService;
@@ -33,7 +34,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.config.ConfigFileApplicationListener;
 import org.springframework.boot.env.EnvironmentPostProcessor;
-import com.google.cloud.spring.core.util.MapBuilder;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;

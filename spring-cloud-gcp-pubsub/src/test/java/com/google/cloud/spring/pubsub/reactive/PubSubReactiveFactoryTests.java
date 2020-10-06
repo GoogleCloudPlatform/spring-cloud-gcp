@@ -24,6 +24,8 @@ import java.util.List;
 
 import com.google.api.gax.grpc.GrpcStatusCode;
 import com.google.api.gax.rpc.DeadlineExceededException;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
 import io.grpc.Status;
@@ -37,8 +39,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import reactor.test.StepVerifier;
 import reactor.test.scheduler.VirtualTimeScheduler;
 
-import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
-import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import org.springframework.scheduling.annotation.AsyncResult;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

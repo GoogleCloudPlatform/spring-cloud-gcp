@@ -41,13 +41,6 @@ import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionRunner;
 import com.google.cloud.spanner.TransactionRunner.TransactionCallable;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.mockito.InOrder;
-import org.mockito.Mockito;
-
 import com.google.cloud.spring.data.spanner.core.admin.CachingComposingSupplier;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
@@ -67,6 +60,13 @@ import com.google.cloud.spring.data.spanner.core.mapping.event.AfterSaveEvent;
 import com.google.cloud.spring.data.spanner.core.mapping.event.BeforeDeleteEvent;
 import com.google.cloud.spring.data.spanner.core.mapping.event.BeforeExecuteDmlEvent;
 import com.google.cloud.spring.data.spanner.core.mapping.event.BeforeSaveEvent;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
+
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;

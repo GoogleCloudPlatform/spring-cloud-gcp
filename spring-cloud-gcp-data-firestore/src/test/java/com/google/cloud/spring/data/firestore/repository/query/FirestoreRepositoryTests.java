@@ -16,6 +16,14 @@
 
 package com.google.cloud.spring.data.firestore.repository.query;
 
+import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.entities.User;
+import com.google.cloud.spring.data.firestore.entities.UserRepository;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
+import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
+import com.google.cloud.spring.data.firestore.repository.config.EnableReactiveFirestoreRepositories;
+import com.google.cloud.spring.data.firestore.repository.query.FirestoreRepositoryTests.FirestoreRepositoryTestsConfiguration;
 import com.google.firestore.v1.StructuredQuery;
 import com.google.firestore.v1.StructuredQuery.Direction;
 import com.google.firestore.v1.StructuredQuery.FieldReference;
@@ -28,14 +36,6 @@ import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import com.google.cloud.spring.data.firestore.FirestoreTemplate;
-import com.google.cloud.spring.data.firestore.entities.User;
-import com.google.cloud.spring.data.firestore.entities.UserRepository;
-import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
-import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
-import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
-import com.google.cloud.spring.data.firestore.repository.config.EnableReactiveFirestoreRepositories;
-import com.google.cloud.spring.data.firestore.repository.query.FirestoreRepositoryTests.FirestoreRepositoryTestsConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;

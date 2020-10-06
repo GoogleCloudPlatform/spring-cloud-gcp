@@ -19,6 +19,12 @@ package com.google.cloud.spring.data.firestore.it;
 import java.util.List;
 
 import ch.qos.logback.classic.Level;
+import com.google.cloud.spring.data.firestore.FirestoreDataException;
+import com.google.cloud.spring.data.firestore.FirestoreReactiveOperations;
+import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.entities.PhoneNumber;
+import com.google.cloud.spring.data.firestore.entities.User;
+import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,12 +34,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.google.cloud.spring.data.firestore.FirestoreDataException;
-import com.google.cloud.spring.data.firestore.FirestoreReactiveOperations;
-import com.google.cloud.spring.data.firestore.FirestoreTemplate;
-import com.google.cloud.spring.data.firestore.entities.PhoneNumber;
-import com.google.cloud.spring.data.firestore.entities.User;
-import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.reactive.TransactionalOperator;

@@ -18,6 +18,7 @@ package com.google.cloud.spring.autoconfigure.sql;
 
 import javax.sql.DataSource;
 
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Test;
 
@@ -26,7 +27,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import static org.assertj.core.api.Assertions.assertThat;

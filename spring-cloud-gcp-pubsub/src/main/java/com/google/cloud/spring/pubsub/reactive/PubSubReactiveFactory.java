@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.api.gax.rpc.DeadlineExceededException;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import reactor.core.Disposable;
@@ -29,8 +31,6 @@ import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
-import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
-import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import org.springframework.util.Assert;
 
 /**

@@ -20,12 +20,12 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.w3c.dom.Element;
-
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import com.google.cloud.spring.data.firestore.Document;
 import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
 import com.google.cloud.spring.data.firestore.repository.support.FirestoreRepositoryFactoryBean;
+import org.w3c.dom.Element;
+
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.data.config.ParsingUtils;
 import org.springframework.data.repository.config.AnnotationRepositoryConfigurationSource;

@@ -23,6 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.google.cloud.spring.core.GcpEnvironment;
+
 import org.springframework.context.annotation.Conditional;
 
 /**

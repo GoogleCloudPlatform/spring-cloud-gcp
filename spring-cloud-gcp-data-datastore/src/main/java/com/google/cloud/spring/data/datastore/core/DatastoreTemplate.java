@@ -53,7 +53,6 @@ import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.datastore.StructuredQuery.Filter;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.cloud.datastore.Value;
-
 import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
 import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
@@ -69,6 +68,7 @@ import com.google.cloud.spring.data.datastore.core.mapping.event.BeforeSaveEvent
 import com.google.cloud.spring.data.datastore.core.util.KeyUtil;
 import com.google.cloud.spring.data.datastore.core.util.SliceUtil;
 import com.google.cloud.spring.data.datastore.core.util.ValueUtil;
+
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityWriter;
+
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.data.mapping.model.MutablePersistentEntity;

@@ -21,10 +21,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.google.cloud.storage.BlobInfo;
-
 import com.google.cloud.spring.storage.integration.GcsFileInfo;
 import com.google.cloud.spring.storage.integration.filters.GcsPersistentAcceptOnceFileListFilter;
+import com.google.cloud.storage.BlobInfo;
+
 import org.springframework.integration.file.remote.AbstractFileInfo;
 import org.springframework.integration.file.remote.AbstractRemoteFileStreamingMessageSource;
 import org.springframework.integration.file.remote.RemoteFileTemplate;

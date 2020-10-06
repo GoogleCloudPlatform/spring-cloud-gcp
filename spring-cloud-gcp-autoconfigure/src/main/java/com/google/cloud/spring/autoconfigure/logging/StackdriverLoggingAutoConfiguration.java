@@ -17,6 +17,11 @@
 package com.google.cloud.spring.autoconfigure.logging;
 
 import com.google.cloud.logging.logback.LoggingAppender;
+import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
+import com.google.cloud.spring.logging.LoggingWebMvcConfigurer;
+import com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor;
+import com.google.cloud.spring.logging.extractors.TraceIdExtractor;
+import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -24,11 +29,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
-import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
-import com.google.cloud.spring.logging.LoggingWebMvcConfigurer;
-import com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor;
-import com.google.cloud.spring.logging.extractors.TraceIdExtractor;
-import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

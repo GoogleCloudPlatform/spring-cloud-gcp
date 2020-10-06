@@ -18,7 +18,6 @@ package com.google.cloud.spring.logging;
 
 import com.google.auth.Credentials;
 import com.google.cloud.logging.LoggingOptions;
-
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 
 /**

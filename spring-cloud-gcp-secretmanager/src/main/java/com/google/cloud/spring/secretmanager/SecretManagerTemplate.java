@@ -28,9 +28,8 @@ import com.google.cloud.secretmanager.v1beta1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1beta1.SecretName;
 import com.google.cloud.secretmanager.v1beta1.SecretPayload;
 import com.google.cloud.secretmanager.v1beta1.SecretVersionName;
-import com.google.protobuf.ByteString;
-
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.protobuf.ByteString;
 
 /**
  * Offers convenience methods for performing common operations on Secret Manager including

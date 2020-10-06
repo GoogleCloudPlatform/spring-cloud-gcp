@@ -18,9 +18,10 @@ package com.google.cloud.spring.autoconfigure.spanner;
 
 import java.lang.annotation.Annotation;
 
-import org.springframework.boot.autoconfigure.data.AbstractRepositoryConfigurationSourceSupport;
 import com.google.cloud.spring.data.spanner.repository.config.EnableSpannerRepositories;
 import com.google.cloud.spring.data.spanner.repository.config.SpannerRepositoryConfigurationExtension;
+
+import org.springframework.boot.autoconfigure.data.AbstractRepositoryConfigurationSourceSupport;
 import org.springframework.data.repository.config.RepositoryConfigurationExtension;
 
 /**

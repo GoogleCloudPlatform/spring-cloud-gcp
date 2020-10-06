@@ -16,9 +16,9 @@
 
 package com.google.cloud.spring.logging;
 
+import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
 import org.junit.Test;
 
-import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -17,8 +17,8 @@
 package com.google.cloud.spring.secretmanager;
 
 import com.google.cloud.secretmanager.v1beta1.SecretVersionName;
-
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+
 import org.springframework.core.env.EnumerablePropertySource;
 
 /**

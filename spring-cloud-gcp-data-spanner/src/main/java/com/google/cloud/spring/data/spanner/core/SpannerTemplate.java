@@ -45,10 +45,6 @@ import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionRunner.TransactionCallable;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
@@ -64,6 +60,10 @@ import com.google.cloud.spring.data.spanner.core.mapping.event.BeforeDeleteEvent
 import com.google.cloud.spring.data.spanner.core.mapping.event.BeforeExecuteDmlEvent;
 import com.google.cloud.spring.data.spanner.core.mapping.event.BeforeSaveEvent;
 import com.google.cloud.spring.data.spanner.repository.query.SpannerStatementQueryExecutor;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;

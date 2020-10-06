@@ -22,6 +22,7 @@ import com.google.cloud.spring.autoconfigure.datastore.DatastoreProvider;
 import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager;
 import com.google.cloud.spring.data.datastore.core.convert.DatastoreCustomConversions;
 import com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreAuditing;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;

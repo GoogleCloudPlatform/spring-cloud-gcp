@@ -16,13 +16,13 @@
 
 package com.google.cloud.spring.data.firestore.it;
 
+import com.google.cloud.spring.data.firestore.FirestoreDataException;
+import com.google.cloud.spring.data.firestore.entities.User;
+import com.google.cloud.spring.data.firestore.entities.UserRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.google.cloud.spring.data.firestore.FirestoreDataException;
-import com.google.cloud.spring.data.firestore.entities.User;
-import com.google.cloud.spring.data.firestore.entities.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
