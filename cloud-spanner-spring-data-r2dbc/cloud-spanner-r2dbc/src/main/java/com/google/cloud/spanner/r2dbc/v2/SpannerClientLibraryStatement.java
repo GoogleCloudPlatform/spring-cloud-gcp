@@ -16,10 +16,11 @@
 
 package com.google.cloud.spanner.r2dbc.v2;
 
-import io.r2dbc.spi.Result;
-import org.reactivestreams.Publisher;
+import com.google.cloud.spanner.Statement;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -41,10 +42,14 @@ public class SpannerClientLibraryStatement extends AbstractSpannerClientLibraryS
   }
 
   @Override
-  public Publisher<? extends Result> execute() {
+  protected Mono<SpannerClientLibraryResult> executeSingle(Statement statement) {
     return this.clientLibraryAdapter
-        .runSelectStatement(this.statementBuilder.build())
-        .transform(rows -> Mono.just(new SpannerClientLibraryResult(rows, Mono.empty())));
+        .runSelectStatement(statement)
+        .transform(rows -> Mono.just(new SpannerClientLibraryResult(rows, Mono.empty()))).single();
   }
 
+  @Override
+  protected Flux<SpannerClientLibraryResult> executeMultiple(List<Statement> statements) {
+    return Flux.fromIterable(statements).flatMapSequential(statement -> executeSingle(statement));
+  }
 }

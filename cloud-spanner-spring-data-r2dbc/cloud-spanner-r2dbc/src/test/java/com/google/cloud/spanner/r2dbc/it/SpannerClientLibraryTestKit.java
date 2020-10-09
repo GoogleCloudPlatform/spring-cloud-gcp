@@ -230,7 +230,6 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   // override to fix DDL for Spanner.
   @Override
   @Test
-  @Disabled // TODO: GH-273
   public void prepareStatement() {
     Mono.from(getConnectionFactory().create())
         .delayUntil(c -> c.beginTransaction())
@@ -453,7 +452,6 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   // DML syntax fix.
   @Override
   @Test
-  @Disabled // TODO: GH-273
   public void bindNull() {
     Mono.from(getConnectionFactory().create())
         .delayUntil(c -> c.beginTransaction())
