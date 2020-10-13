@@ -141,7 +141,12 @@ jobs:
           path: "**/target/failsafe-reports/*"
 
   linkageCheck:
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    if: |
+      github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' &&
+      (
+        github.event_name == 'workflow_dispatch' ||
+        github.event_name == 'schedule'
+      )
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -150,7 +155,7 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 8
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -163,9 +168,7 @@ jobs:
              --batch-mode \
              --show-version \
              --threads 1.5C \
-             --define maven.test.skip=true \
-             --define skip.surefire.tests=true \
-             --define skipITs=true \
+             --define skipTests=true \
              --define maven.javadoc.skip=true \
              --errors \
              install
@@ -176,9 +179,7 @@ jobs:
             --batch-mode \
             --show-version \
             --threads 1.5C \
-            --define maven.test.skip=true \
-            --define skip.surefire.tests=true \
-            --define skipITs=true \
+            --define skipTests=true \
             --define maven.javadoc.skip=true \
             --errors \
             verify
