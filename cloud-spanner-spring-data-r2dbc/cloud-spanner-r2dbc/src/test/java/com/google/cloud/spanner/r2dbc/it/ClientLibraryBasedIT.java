@@ -24,7 +24,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.spanner.SpannerException;
+import com.google.cloud.spanner.Type;
+import com.google.cloud.spanner.Type.StructField;
+import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryColumnMetadata;
 import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryConnection;
+import io.r2dbc.spi.ColumnMetadata;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
@@ -32,6 +36,9 @@ import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
 import io.r2dbc.spi.Result;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -139,6 +146,40 @@ public class ClientLibraryBasedIT {
         Mono.from(conn.createStatement("SELECT count(*) as count FROM BOOKS").execute())
             .flatMapMany(rs -> rs.map((row, rmeta) -> row.get("count", Long.class))))
         .expectNext(Long.valueOf(0))
+        .verifyComplete();
+  }
+
+  @Test
+  public void testMetadata() {
+
+    Connection conn = Mono.from(connectionFactory.create()).block();
+
+    StepVerifier.create(
+        Mono.from(
+            conn.createStatement(INSERT_QUERY)
+                .bind("uuid", "abc")
+                .bind("category", 100L)
+                .bind("wordCount", 20.8)
+                .bind("price", new BigDecimal("123.99"))
+                .execute())
+            .flatMapMany(rs -> rs.getRowsUpdated())
+    ).expectNext(1).verifyComplete();
+
+    List<ColumnMetadata> expectedColumnMetadataList = Arrays
+        .asList(
+            new SpannerClientLibraryColumnMetadata(StructField.of("AUTHOR", Type.string())),
+            new SpannerClientLibraryColumnMetadata(StructField.of("PRICE", Type.numeric()))
+            );
+    StepVerifier.create(
+        Mono.from(conn.createStatement("SELECT AUTHOR, PRICE FROM BOOKS LIMIT 1").execute())
+            .flatMapMany(rs -> rs.map(
+                (row, rmeta) -> {
+                  List<ColumnMetadata> metadataList = new ArrayList<>();
+                  rmeta.getColumnMetadatas().forEach(metadataList::add);
+                  return metadataList;
+                })
+            ))
+        .expectNext(expectedColumnMetadataList)
         .verifyComplete();
   }
 

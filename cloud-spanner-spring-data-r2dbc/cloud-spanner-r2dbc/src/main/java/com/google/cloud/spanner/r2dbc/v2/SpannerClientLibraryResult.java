@@ -30,6 +30,8 @@ public class SpannerClientLibraryResult implements Result {
 
   private final Mono<Integer> rowsUpdated;
 
+  private RowMetadata rowMetadata;
+
   public SpannerClientLibraryResult(
       Flux<SpannerClientLibraryRow> resultRows, Mono<Integer> rowsUpdated) {
     this.resultRows = resultRows;
@@ -47,10 +49,11 @@ public class SpannerClientLibraryResult implements Result {
       return Flux.empty();
     }
 
-    return this.resultRows.map(row -> mappingFunction.apply(
-        row,
-        /* TODO: Get metadata from row.getRowMetadata() and pass it to user-provided function */
-        null));
-
+    return this.resultRows.map(row -> {
+      if (this.rowMetadata == null) {
+        this.rowMetadata = row.generateMetadata();
+      }
+      return mappingFunction.apply(row, this.rowMetadata);
+    });
   }
 }

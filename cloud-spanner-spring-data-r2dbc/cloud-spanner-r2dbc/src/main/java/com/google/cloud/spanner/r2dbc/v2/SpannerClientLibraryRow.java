@@ -17,12 +17,15 @@
 package com.google.cloud.spanner.r2dbc.v2;
 
 import com.google.cloud.spanner.Struct;
+import com.google.cloud.spanner.r2dbc.util.Assert;
 import io.r2dbc.spi.Row;
+import io.r2dbc.spi.RowMetadata;
 
 public class SpannerClientLibraryRow implements Row {
   private Struct rowFields;
 
   public SpannerClientLibraryRow(Struct rowFields) {
+    Assert.requireNonNull(rowFields, "rowFields must not be null");
     this.rowFields = rowFields;
   }
 
@@ -34,5 +37,10 @@ public class SpannerClientLibraryRow implements Row {
   @Override
   public <T> T get(String name, Class<T> type) {
     return ClientLibraryDecoder.decode(this.rowFields, this.rowFields.getColumnIndex(name), type);
+  }
+
+  public RowMetadata generateMetadata() {
+    Assert.requireNonNull(this.rowFields.getType(), "rowFields type must not be null");
+    return new SpannerClientLibraryRowMetadata(this.rowFields.getType().getStructFields());
   }
 }
