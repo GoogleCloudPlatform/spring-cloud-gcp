@@ -17,8 +17,8 @@
 package com.google.cloud.spanner.r2dbc.v2;
 
 import com.google.cloud.spanner.Spanner;
-import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
+import com.google.cloud.spanner.r2dbc.util.Assert;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryMetadata;
@@ -35,14 +35,11 @@ public class SpannerClientLibraryConnectionFactory implements ConnectionFactory 
 
   private Spanner spannerClient;
 
-  /** TODO: add proper javadoc. */
+  /** R2DBC ConnectionFactory based on the Cloud Spanner Client Library. */
   public SpannerClientLibraryConnectionFactory(SpannerConnectionConfiguration config) {
-    this.config = config;
+    this.config = Assert.requireNonNull(config, "Spanner configuration must not be null");
 
-    SpannerOptions options = SpannerOptions.newBuilder().build();
-    // TODO: allow customizing project ID.
-
-    this.spannerClient = options.getService();
+    this.spannerClient = config.buildSpannerOptions().getService();
   }
 
   @Override

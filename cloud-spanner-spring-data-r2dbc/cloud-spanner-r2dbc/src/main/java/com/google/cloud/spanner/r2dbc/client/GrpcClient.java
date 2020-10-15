@@ -16,7 +16,7 @@
 
 package com.google.cloud.spanner.r2dbc.client;
 
-import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.OAuth2Credentials;
 import com.google.cloud.spanner.r2dbc.StatementExecutionContext;
 import com.google.cloud.spanner.r2dbc.util.Assert;
 import com.google.cloud.spanner.r2dbc.util.ObservableReactiveUtil;
@@ -99,7 +99,7 @@ public class GrpcClient implements Client {
    *
    * @param credentials the Google Cloud Platform credentials used to authenticate with Spanner.
    */
-  public GrpcClient(GoogleCredentials credentials) {
+  public GrpcClient(OAuth2Credentials credentials) {
     // Create blocking and async stubs using the channel
     CallCredentials callCredentials = MoreCallCredentials.from(credentials);
 

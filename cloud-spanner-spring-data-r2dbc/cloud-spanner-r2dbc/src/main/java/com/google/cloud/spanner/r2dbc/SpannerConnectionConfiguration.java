@@ -17,11 +17,14 @@
 package com.google.cloud.spanner.r2dbc;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.OAuth2Credentials;
+import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.r2dbc.util.Assert;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.R2dbcNonTransientResourceException;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -36,6 +39,13 @@ public class SpannerConnectionConfiguration {
   private static final String DB_NAME_VALIDATE_PATTERN =
       "projects\\/[\\w\\-]+\\/instances\\/[\\w\\-]+\\/databases\\/[\\w\\-]+$";
 
+  private static final String USER_AGENT_LIBRARY_NAME = "cloud-spanner-r2dbc";
+
+  private static final String PACKAGE_VERSION =
+      SpannerConnectionConfiguration.class.getPackage().getImplementationVersion();
+
+  private static final String USER_AGENT_KEY = "User-Agent";
+
   // TODO: check how to handle full URL (it gets parsed by SPI, we only get pieces)
   private final String fullyQualifiedDbName;
 
@@ -45,7 +55,7 @@ public class SpannerConnectionConfiguration {
 
   private String databaseName;
 
-  private final GoogleCredentials credentials;
+  private final OAuth2Credentials credentials;
 
   private int partialResultSetFetchSize;
 
@@ -58,7 +68,7 @@ public class SpannerConnectionConfiguration {
   /**
    * Constructor which initializes the configuration from an Cloud Spanner R2DBC url.
    */
-  private SpannerConnectionConfiguration(String url, GoogleCredentials credentials) {
+  private SpannerConnectionConfiguration(String url, OAuth2Credentials credentials) {
     String databaseString =
         ConnectionFactoryOptions.parse(url).getValue(ConnectionFactoryOptions.DATABASE);
 
@@ -86,7 +96,7 @@ public class SpannerConnectionConfiguration {
       String projectId,
       String instanceName,
       String databaseName,
-      GoogleCredentials credentials) {
+      OAuth2Credentials credentials) {
 
     Assert.requireNonNull(projectId, "projectId must not be null");
     Assert.requireNonNull(instanceName, "instanceName must not be null");
@@ -121,7 +131,7 @@ public class SpannerConnectionConfiguration {
     return this.fullyQualifiedDbName;
   }
 
-  public GoogleCredentials getCredentials() {
+  public OAuth2Credentials getCredentials() {
     return this.credentials;
   }
 
@@ -167,6 +177,32 @@ public class SpannerConnectionConfiguration {
             this.ddlOperationPollInterval);
   }
 
+  /**
+   * Converts current custom configuration object into client library {@link SpannerOptions}.
+   *
+   * <p>Supports customizable project ID, credentials and UserAgent header.
+   *
+   * @return configured spanner options.
+   */
+  public SpannerOptions buildSpannerOptions() {
+    SpannerOptions.Builder optionsBuilder = SpannerOptions.newBuilder();
+
+    if (this.projectId != null) {
+      optionsBuilder.setProjectId(this.projectId);
+    }
+
+    if (this.credentials != null) {
+      optionsBuilder.setCredentials(this.credentials);
+    }
+
+    optionsBuilder.setHeaderProvider(() ->
+        Collections.singletonMap(USER_AGENT_KEY, USER_AGENT_LIBRARY_NAME + "/" + PACKAGE_VERSION));
+
+    // TODO (GH-200): allow customizing emulator with optionsBuilder.setEmulatorHost()
+
+    return optionsBuilder.build();
+  }
+
   public static class Builder {
 
     private String url;
@@ -177,7 +213,7 @@ public class SpannerConnectionConfiguration {
 
     private String databaseName;
 
-    private GoogleCredentials credentials;
+    private OAuth2Credentials credentials;
 
     private int partialResultSetFetchSize = 1;
 
@@ -207,7 +243,7 @@ public class SpannerConnectionConfiguration {
       return this;
     }
 
-    public Builder setCredentials(GoogleCredentials credentials) {
+    public Builder setCredentials(OAuth2Credentials credentials) {
       this.credentials = credentials;
       return this;
     }
