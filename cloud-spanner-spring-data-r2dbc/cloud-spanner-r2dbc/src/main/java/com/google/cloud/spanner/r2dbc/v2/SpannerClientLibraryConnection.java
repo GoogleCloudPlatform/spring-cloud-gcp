@@ -48,7 +48,6 @@ public class SpannerClientLibraryConnection implements Connection {
    * @param config driver configuration extracted from URL or passed directly to connection factory.
    */
   public SpannerClientLibraryConnection(Spanner spanner, SpannerConnectionConfiguration config) {
-
     this.executorService = Executors.newFixedThreadPool(config.getThreadPoolSize());
     this.clientLibraryAdapter =
         new DatabaseClientReactiveAdapter(spanner, this.executorService, config);
@@ -57,7 +56,6 @@ public class SpannerClientLibraryConnection implements Connection {
 
   @Override
   public Publisher<Void> beginTransaction() {
-
     return this.clientLibraryAdapter.beginTransaction();
   }
 
@@ -134,7 +132,11 @@ public class SpannerClientLibraryConnection implements Connection {
 
   @Override
   public Publisher<Boolean> validate(ValidationDepth depth) {
-    throw new UnsupportedOperationException();
+    if (depth == ValidationDepth.LOCAL) {
+      return Mono.fromSupplier(() -> !this.executorService.isShutdown());
+    } else {
+      return this.clientLibraryAdapter.healthCheck();
+    }
   }
 
   @Override
@@ -145,5 +147,4 @@ public class SpannerClientLibraryConnection implements Connection {
           this.executorService.shutdown();
         }));
   }
-
 }

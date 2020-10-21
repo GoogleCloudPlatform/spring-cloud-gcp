@@ -55,13 +55,15 @@ class DatabaseClientReactiveAdapter {
   // used for DDL operations
   private final SpannerConnectionConfiguration config;
 
+  private final Spanner spannerClient;
+
   private final DatabaseClient dbClient;
 
   private final DatabaseAdminClient dbAdminClient;
 
-  private AsyncTransactionManager transactionManager;
+  private final ExecutorService executorService;
 
-  private ExecutorService executorService;
+  private AsyncTransactionManager transactionManager;
 
   private TransactionContextFuture txnContext;
 
@@ -73,12 +75,14 @@ class DatabaseClientReactiveAdapter {
    * @param spannerClient Cloud Spanner client used to run queries and manage transactions.
    * @param executorService executor to be used for running callbacks.
    */
-  public DatabaseClientReactiveAdapter(Spanner spannerClient, ExecutorService executorService,
+  public DatabaseClientReactiveAdapter(
+      Spanner spannerClient,
+      ExecutorService executorService,
       SpannerConnectionConfiguration config) {
+    this.spannerClient = spannerClient;
     this.dbClient = spannerClient.getDatabaseClient(
         DatabaseId.of(config.getProjectId(), config.getInstanceName(), config.getDatabaseName()));
     this.dbAdminClient = spannerClient.getDatabaseAdminClient();
-
     this.executorService = executorService;
     this.config = config;
   }
@@ -159,7 +163,32 @@ class DatabaseClientReactiveAdapter {
   public Mono<Void> close() {
     // TODO: if txn is committed/rolled back and then connection closed, clearTransactionManager
     // will run twice, causing trace span to be closed twice. Introduce `closed` field.
-    return Mono.<Void>fromRunnable(this::clearTransactionManager);
+    return Mono.fromRunnable(this::clearTransactionManager);
+  }
+
+  /**
+   * Runs a health check query to determine if the connection is running.
+   *
+   * @return true if the connection is working, false if not.
+   */
+  public Mono<Boolean> healthCheck() {
+    return Mono.defer(() -> {
+      if (this.executorService.isShutdown() || this.spannerClient.isClosed()) {
+        return Mono.just(false);
+      } else {
+        return Flux.<SpannerClientLibraryRow>create(sink -> {
+          com.google.cloud.spanner.Statement statement =
+              Statement.newBuilder("SELECT 1").build();
+          runSelectStatementAsFlux(
+              () -> this.dbClient.singleUseReadOnlyTransaction(), statement, sink);
+        })
+        .then(Mono.just(true))
+        .onErrorResume(error -> {
+          LOGGER.warn("Cloud Spanner healthcheck failed", error);
+          return Mono.just(false);
+        });
+      }
+    });
   }
 
   /**

@@ -35,6 +35,7 @@ import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
 import io.r2dbc.spi.Result;
+import io.r2dbc.spi.ValidationDepth;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -130,6 +131,17 @@ public class ClientLibraryBasedIT {
     Connection conn = Mono.from(connectionFactory.create()).block();
 
     assertThat(conn).isInstanceOf(SpannerClientLibraryConnection.class);
+  }
+
+  @Test
+  public void testValidate() {
+    Connection conn = Mono.from(connectionFactory.create()).block();
+    boolean result = Mono.from(conn.validate(ValidationDepth.REMOTE)).block();
+    assertThat(result).isTrue();
+
+    Mono.from(conn.close()).block();
+    result = Mono.from(conn.validate(ValidationDepth.REMOTE)).block();
+    assertThat(result).isFalse();
   }
 
   @Test

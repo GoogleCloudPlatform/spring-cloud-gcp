@@ -303,12 +303,6 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
         .verifyComplete();
   }
 
-  @Test
-  @Disabled // TODO: GH-274
-  public void validate() {
-
-  }
-
   @Override
   @Disabled
   @Test
