@@ -84,7 +84,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <google-cloud-bom.version>10.0.0</google-cloud-bom.version>
+    <google-cloud-bom.version>13.1.0</google-cloud-bom.version>
 
     <r2dbc.version>0.8.3.RELEASE</r2dbc.version>
     <reactor.version>Dysprosium-SR12</reactor.version>
@@ -98,12 +98,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- override to snapshot until Connection API released -->
-      <dependency>
-        <groupId>com.google.cloud</groupId>
-        <artifactId>google-cloud-spanner</artifactId>
-        <version>1.59.0</version>
-      </dependency>
 
       <dependency>
         <groupId>com.google.cloud</groupId>
