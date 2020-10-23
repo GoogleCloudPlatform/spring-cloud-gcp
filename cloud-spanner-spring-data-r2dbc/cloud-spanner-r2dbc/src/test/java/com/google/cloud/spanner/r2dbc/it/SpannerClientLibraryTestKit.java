@@ -20,6 +20,8 @@ import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.DR
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.INSTANCE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
+import static io.r2dbc.spi.test.TestKit.TestStatement.INSERT_TWO_COLUMNS;
+import static io.r2dbc.spi.test.TestKit.TestStatement.SELECT_VALUE_TWO_COLUMNS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -37,13 +39,11 @@ import io.r2dbc.spi.Option;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
 import io.r2dbc.spi.test.TestKit;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +52,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.PreparedStatementCallback;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -85,27 +84,9 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
     jdbcOperations = mock(JdbcOperations.class);
 
     doAnswer(invocation -> {
-      String query = invocation.getArgument(0);
-      executeDml(c -> c.createStatement(query.replace("INTO test ", "INTO test (value) ")
-          .replace("INTO test_two_column", "INTO test_two_column (col1,col2)")));
+      executeDml(c -> c.createStatement(invocation.getArgument(0)));
       return null;
     }).when(jdbcOperations).execute((String) any());
-
-    doAnswer(invocation -> {
-      String query = invocation.getArgument(0);
-
-      // The TCK uses java.sql JDBC classes that we have no implemented, but only in two cases
-      // that we can detect and substitute here.
-      if (query.equalsIgnoreCase("INSERT INTO clob_test VALUES (?)")) {
-        executeDml(c -> c.createStatement("INSERT INTO clob_test (value) VALUES (@val)")
-            .bind("val", "test-value"));
-      } else if (query.equalsIgnoreCase("INSERT INTO blob_test VALUES (?)")) {
-        executeDml(c -> c.createStatement("INSERT INTO blob_test (value) VALUES (@val)").bind("val",
-            StandardCharsets.UTF_8.encode("test-value").array()));
-      }
-
-      return null;
-    }).when(jdbcOperations).execute((String) any(), (PreparedStatementCallback) any());
 
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
@@ -119,7 +100,6 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
     createTableIfNeeded(id, "blob_test", " ( value BYTES(MAX) )  PRIMARY KEY (value)");
     createTableIfNeeded(id, "clob_test", " ( value BYTES(MAX) )  PRIMARY KEY (value)");
   }
-
 
   private static void createTableIfNeeded(DatabaseId id, String tableName, String definition) {
     Boolean tableExists = Mono.from(connectionFactory.create())
@@ -227,38 +207,16 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
      */
   }
 
-  // override to fix DDL for Spanner.
-  @Override
-  @Test
-  public void prepareStatement() {
-    Mono.from(getConnectionFactory().create())
-        .delayUntil(c -> c.beginTransaction())
-        .flatMapMany(connection -> {
-          Statement statement = connection.createStatement(
-              String.format("INSERT INTO test (value) VALUES(%s)", getPlaceholder(0)));
-
-          IntStream.range(0, 10)
-              .forEach(i -> statement.bind(getIdentifier(0), i).add());
-
-          return Flux.from(statement
-              .execute())
-              .concatWith(close(connection));
-        })
-        .as(StepVerifier::create)
-        .expectNextCount(10).as("values from insertions")
-        .verifyComplete();
-  }
-
   // override. column names are case-sensitive in Spanner.
   @Override
   @Test
   public void duplicateColumnNames() {
-    getJdbcOperations().execute("INSERT INTO test_two_column VALUES (100, 'hello')");
+    getJdbcOperations().execute(expand(INSERT_TWO_COLUMNS));
 
     Mono.from(getConnectionFactory().create())
         .flatMapMany(connection -> Flux.from(connection
 
-            .createStatement("SELECT col1 AS value, col2 AS VALUE FROM test_two_column")
+            .createStatement(expand(SELECT_VALUE_TWO_COLUMNS))
             .execute())
 
             .flatMap(result -> result
@@ -275,9 +233,8 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   // override. column names are case-sensitive in Spanner.
   @Override
   @Test
-  @Disabled // TODO: GH-252
   public void columnMetadata() {
-    getJdbcOperations().execute("INSERT INTO test_two_column VALUES (100, 'hello')");
+    getJdbcOperations().execute(expand(INSERT_TWO_COLUMNS));
 
     Mono.from(getConnectionFactory().create())
         .flatMapMany(connection -> Flux.from(connection
@@ -393,28 +350,28 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
      */
   }
 
-  // DML syntax needed to be fixed.
+  // Returns Long instead of Integer. Equivalent test in V1 did not need an override.
   @Override
   @Test
   public void transactionCommit() {
-    executeDml(c -> c.createStatement("INSERT INTO test (value) VALUES (100)"));
+    executeDml(c -> c.createStatement(expand(TestStatement.INSERT_VALUE100)));
 
     Mono.from(getConnectionFactory().create())
         .<Object>flatMapMany(connection -> Mono.from(connection.beginTransaction())
-            .<Object>thenMany(Flux.from(connection.createStatement("SELECT value FROM test")
-                .execute())
-                .flatMap(this::extractColumnsLong))
+            .<Object>thenMany(
+                Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE)).execute())
+                    .flatMap(this::extractColumnsLong))
 
             // NOTE: this defer is a from() in the original. needs a follow up to resolve
             .concatWith(Flux.from(connection.createStatement(
-                String.format("INSERT INTO test (value) VALUES (%s)", getPlaceholder(0)))
+                String.format(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0))))
                 .bind(getIdentifier(0), 200)
                 .execute())
-                .flatMap(TestKit::extractRowsUpdated))
-            .concatWith(Flux.from(connection.createStatement("SELECT value FROM test")
+                .flatMap(this::extractRowsUpdated))
+            .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
                 .execute())
                 .flatMap(this::extractColumnsLong))
-            .concatWith(Flux.from(connection.createStatement("SELECT value FROM test")
+            .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
                 .execute())
                 .flatMap(this::extractColumnsLong))
             .concatWith(close(connection)))
@@ -443,25 +400,6 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
      */
   }
 
-  // DML syntax fix.
-  @Override
-  @Test
-  public void bindNull() {
-    Mono.from(getConnectionFactory().create())
-        .delayUntil(c -> c.beginTransaction())
-        .flatMapMany(connection -> Flux.from(connection
-
-            .createStatement(
-                String.format("INSERT INTO test (value) VALUES(%s)", getPlaceholder(0)))
-            .bindNull(getIdentifier(0), Integer.class).add()
-            .execute())
-
-            .concatWith(close(connection)))
-        .as(StepVerifier::create)
-        .expectNextCount(1).as("rows inserted")
-        .verifyComplete();
-  }
-
   @Override
   @Test
   @Disabled // TODO: GH-275
@@ -471,11 +409,11 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
             Flux.from(connection.setAutoCommit(false))
                 .thenMany(connection.beginTransaction())
                 // DML syntax fix adding column list
-                .thenMany(connection.createStatement(
-                    "INSERT INTO test (value) VALUES(200)").execute())
+                .thenMany(
+                    connection.createStatement(expand(TestStatement.INSERT_VALUE200)).execute())
                 .flatMap(Result::getRowsUpdated)
                 .thenMany(connection.setAutoCommit(true))
-                .thenMany(connection.createStatement("SELECT value FROM test").execute())
+                .thenMany(connection.createStatement(expand(TestStatement.SELECT_VALUE)).execute())
                 .flatMap(it -> it.map((row, metadata) -> row.get("value")))
                 .concatWith(close(connection))
         )
@@ -494,8 +432,8 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
         .flatMapMany(connection ->
             Flux.from(connection.setAutoCommit(false))
                 .thenMany(connection.beginTransaction())
-                .thenMany(connection.createStatement(
-                    "INSERT INTO test (value) VALUES(200)").execute())
+                .thenMany(
+                    connection.createStatement(expand(TestStatement.INSERT_VALUE200)).execute())
                 .flatMap(Result::getRowsUpdated)
                 .thenMany(connection.setAutoCommit(false))
                 .thenMany(connection.rollbackTransaction())
@@ -513,4 +451,8 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
 
   }
 
+  @Override
+  public String expand(TestStatement statement, Object... args) {
+    return SpannerTestKitStatements.expand(statement, args);
+  }
 }
