@@ -1,4 +1,4 @@
-== Migration Guide from Spring Cloud GCP 1.x
+== Migration Guide from Spring Cloud GCP 1.x to 2.x
 
 === Maven Group ID Change
 Spring Cloud  link:https://spring.io/blog/2019/07/24/simplifying-the-spring-cloud-release-train[unbundled] Spring Cloud GCP and other cloud providers from their release train.
