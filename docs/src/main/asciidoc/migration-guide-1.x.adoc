@@ -9,7 +9,10 @@ To use the newly unbundled libraries, change the group IDs in your `pom.xml` fil
 ----
 <dependency>
   <groupId>com.google.cloud</groupId> <!-- formerly org.springframework.cloud</groupId> -->
-  <artifactId>spring-cloud-gcp-starter-config</artifactId>
+  <artifactId>spring-cloud-gcp-dependencies</artifactId>
+  <version>2.0.0</version>
+  <type>pom</type>
+  <scope>import</scope>
 </dependency>
 ----
 
@@ -22,16 +25,16 @@ All code in Spring Cloud GCP has been moved from `org.springframework.cloud.gcp`
 `GcpPubSubHeaders.ACKNOWLEDGEMENT`:: Use `GcpPubSubHeaders.ORIGINAL_MESSAGE`, which is of type `BasicAcknowledgeablePubsubMessage`
 `SpannerQueryOptions.getQueryOptions`:: Use `getOptions()`
 `PubSubTemplate.subscribe(String, MessageReceiver)`:: Use `subscribe(String, Consumer<BasicAcknowledgeablePubsubMessage>)`
-`SpannerReadOptions.getReadOptions()`:: Use `getOptions`
+`SpannerReadOptions.getReadOptions()`:: Use `getOptions()`
 Stackdriver Logging::
   `org.springframework.cloud.gcp.autoconfigure.logging` classes::: Use `com.google.cloud.spring.logging` from the `spring-cloud-gcp-logging` module.
-  Stackdriver Logback Appenders::: Use `com/google/cloud/spring/logging/logback-appender.xml` or `com/google/cloud/spring/logging/logback-json-appender.xml` from the `spring-cloud-gcp-logging` module.
-+  
+  Stackdriver Logback Appenders::: Replace `org/springframework/cloud/gcp/autoconfigure/logging/logback[-json]-appender.xml` with `com/google/cloud/spring/logging/logback[-json]-appender.xml` from the `spring-cloud-gcp-logging` module.
++
 [source,xml]
 .logback-spring.xml
 ----
 <configuration>
-    <include resource="com/google/cloud/spring/logging/logback-appender.xml" />
-    ...
+  <include resource="com/google/cloud/spring/logging/logback-appender.xml" />
+  ...
 </configuration>
 ----
