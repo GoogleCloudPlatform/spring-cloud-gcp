@@ -5,25 +5,71 @@ Spring Cloud  link:https://spring.io/blog/2019/07/24/simplifying-the-spring-clou
 To use the newly unbundled libraries, change the group IDs in your `pom.xml` files:
 
 [source,xml]
-.pom.xml
+.Before (pom.xml)
 ----
-<dependency>
-  <groupId>com.google.cloud</groupId> <!-- formerly org.springframework.cloud</groupId> -->
-  <artifactId>spring-cloud-gcp-dependencies</artifactId>
-  <version>2.0.0</version>
-  <type>pom</type>
-  <scope>import</scope>
-</dependency>
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-dependencies</artifactId>
+      <version>${spring-cloud.version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+
+<dependencies>
+  <dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-gcp-starter</artifactId>
+  </dependency>
+</dependencies>
 ----
+
+[source,xml]
+.After (pom.xml)
+----
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-dependencies</artifactId>
+      <version>2020.0.0</version> <!--1-->
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId> <!--2-->
+      <artifactId>spring-cloud-gcp-dependencies</artifactId>
+      <version>2.0.0</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+
+<dependencies>
+  <dependency>
+    <groupId>com.google.cloud</groupId> <!--3-->
+    <artifactId>spring-cloud-gcp-starter</artifactId>
+  </dependency>
+  ... <!--4-->
+</dependencies>
+----
+<1> Upgrade to Spring Cloud Ilford release
+<2> Explicitly add `spring-cloud-gcp-dependencies` to import the POM
+<3> Change Group IDs to `com.google.cloud`
+<4> Add other `starters` as desired (i.e., `spring-cloud-gcp-starter-pubsub` or `spring-cloud-gcp-starter-storage`)
 
 === Java Package Name Change
 All code in Spring Cloud GCP has been moved from `org.springframework.cloud.gcp` over to the `com.google.cloud.spring` package.
 
-=== Deprecated Items removed
+=== Deprecated Items Removed
 
-`GCPDatastoreProperties.emulatorHost`:: Use `host` instead
+Property `spring.cloud.gcp.datastore.emulatorHost` :: Use `spring.cloud.gcp.datastore.host` instead
 `GcpPubSubHeaders.ACKNOWLEDGEMENT`:: Use `GcpPubSubHeaders.ORIGINAL_MESSAGE`, which is of type `BasicAcknowledgeablePubsubMessage`
-`SpannerQueryOptions.getQueryOptions`:: Use `getOptions()`
+`SpannerQueryOptions.getQueryOptions()`:: Use `getOptions()`
 `PubSubTemplate.subscribe(String, MessageReceiver)`:: Use `subscribe(String, Consumer<BasicAcknowledgeablePubsubMessage>)`
 `SpannerReadOptions.getReadOptions()`:: Use `getOptions()`
 Stackdriver Logging::
