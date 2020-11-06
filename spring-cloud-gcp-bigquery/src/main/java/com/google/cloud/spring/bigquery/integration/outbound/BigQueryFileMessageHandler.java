@@ -139,7 +139,7 @@ public class BigQueryFileMessageHandler extends AbstractReplyProducingMessageHan
 	}
 
 	/**
-   * Sets the {@link Schema} of the table to load for the handler.
+	 * Sets the {@link Schema} of the table to load for the handler.
 	 * @param schema the schema of the table to load.
 	 */
 	public void setTableSchema(Schema schema) {
