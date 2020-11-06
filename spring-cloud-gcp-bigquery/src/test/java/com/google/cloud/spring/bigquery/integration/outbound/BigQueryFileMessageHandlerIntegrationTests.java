@@ -83,7 +83,7 @@ public class BigQueryFileMessageHandlerIntegrationTests {
 	}
 
 	@Before
-  @After
+	@After
 	public void setup() {
 		// Clear the previous dataset before beginning the test.
 		this.bigquery.delete(TableId.of(DATASET_NAME, TABLE_NAME));
@@ -92,7 +92,7 @@ public class BigQueryFileMessageHandlerIntegrationTests {
 	@Test
 	public void testLoadFileWithSchema() throws InterruptedException, ExecutionException {
 		Schema schema = Schema.of(
-		    Field.newBuilder("CountyId", StandardSQLTypeName.STRING).setMode(Mode.NULLABLE).build(),
+				Field.newBuilder("CountyId", StandardSQLTypeName.STRING).setMode(Mode.NULLABLE).build(),
 				Field.newBuilder("State", StandardSQLTypeName.STRING).setMode(Mode.NULLABLE).build(),
 				Field.newBuilder("County", StandardSQLTypeName.STRING).setMode(Mode.NULLABLE).build()
 		);

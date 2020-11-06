@@ -51,17 +51,18 @@ public interface BigQueryOperations {
    *
    * <p>Example:
    *
-	 * <pre>
-	 *  Schema schema = Schema.of(
-	 *   	Field.of("CountyId", StandardSQLTypeName.INT64),
-	 * 		Field.of("State", StandardSQLTypeName.STRING),
-	 * 		Field.of("County", StandardSQLTypeName.STRING)
-	 * 	);
+	 * <pre>{@code
+	 *
+	 * Schema schema = Schema.of(
+	 *    Field.of("CountyId", StandardSQLTypeName.INT64),
+	 *    Field.of("State", StandardSQLTypeName.STRING),
+	 *    Field.of("County", StandardSQLTypeName.STRING)
+	 * );
    *
-	 * 	ListenableFuture<Job> bigQueryJobFuture =
-	 * 			bigQueryTemplate.writeDataToTable(
-	 * 					TABLE_NAME, dataFile.getInputStream(), FormatOptions.csv(), schema);
-	 * </pre>
+	 * ListenableFuture<Job> bigQueryJobFuture =
+	 *     bigQueryTemplate.writeDataToTable(
+	 * 	       TABLE_NAME, dataFile.getInputStream(), FormatOptions.csv(), schema);
+	 * }</pre>
    *
 	 * @param tableName name of the table to write to
 	 * @param inputStream input stream of the table data to write

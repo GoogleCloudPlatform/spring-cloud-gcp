@@ -125,7 +125,7 @@ public class BigQueryTemplate implements BigQueryOperations {
 	@Override
 	public ListenableFuture<Job> writeDataToTable(
 			String tableName, InputStream inputStream, FormatOptions dataFormatOptions) {
-	  return this.writeDataToTable(tableName, inputStream, dataFormatOptions, null);
+		return this.writeDataToTable(tableName, inputStream, dataFormatOptions, null);
 	}
 
 	@Override
@@ -174,7 +174,7 @@ public class BigQueryTemplate implements BigQueryOperations {
 		SettableListenableFuture<Job> result = new SettableListenableFuture<>();
 
 		ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
-		  try {
+			try {
 				Job job = pendingJob.reload();
 				if (State.DONE.equals(job.getStatus().getState())) {
 					if (job.getStatus().getError() != null) {
@@ -185,7 +185,8 @@ public class BigQueryTemplate implements BigQueryOperations {
 						result.set(job);
 					}
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				result.setException(new BigQueryException(e.getMessage()));
 			}
 		}, this.jobPollInterval);

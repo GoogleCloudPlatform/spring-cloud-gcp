@@ -78,7 +78,7 @@ public class BigQueryTemplateIntegrationTests {
 	}
 
 	@Before
-  @After
+	@After
 	public void cleanupTestEnvironment() {
 		// Clear the previous dataset before beginning the test.
 		this.bigQuery.delete(TableId.of(DATASET_NAME, TABLE_NAME));
