@@ -254,6 +254,11 @@
 	<profiles>
 		<profile>
 			<id>spring</id>
+			<activation>
+				<property>
+					<name>!spring</name>
+				</property>
+			</activation>
 			<repositories>
 				<repository>
 					<id>spring-snapshots</id>
