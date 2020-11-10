@@ -84,8 +84,17 @@ public class ClientLibraryDecoder {
     Object value =
         struct.isNull(index)
             ? null
-            : selectedCodecsMap.get(struct.getColumnType(index)).apply(struct, index);
+            : readAndConvert(struct, index, selectedCodecsMap, type);
 
     return (T) value;
+  }
+
+  private static <T> T readAndConvert(Struct struct, int index,
+      Map<Type, BiFunction<Struct, Integer, Object>> selectedCodecsMap, Class<T> type) {
+    Object value = selectedCodecsMap.get(struct.getColumnType(index)).apply(struct, index);
+    if (type.isAssignableFrom(value.getClass())) {
+      return (T) value;
+    }
+    return SpannerClientLibraryConverters.convert(value, type);
   }
 }

@@ -488,8 +488,8 @@ public class ClientLibraryBasedIT {
                     .bind("words", 0).add()
                     .execute()
             )
-            .flatMapSequential(rs -> rs.map((row, rmeta) -> row.get(1, Long.class))))
-    ).expectNext(0L, 0L, 1L, 2L, 3L).as("Row count matches bound variables").verifyComplete();
+            .flatMapSequential(rs -> rs.map((row, rmeta) -> row.get(1, Integer.class))))
+    ).expectNext(0, 0, 1, 2, 3).as("Row count matches bound variables").verifyComplete();
 
   }
 

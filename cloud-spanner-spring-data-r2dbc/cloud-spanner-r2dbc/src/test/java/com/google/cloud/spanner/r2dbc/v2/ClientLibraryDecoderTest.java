@@ -17,6 +17,7 @@
 package com.google.cloud.spanner.r2dbc.v2;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import com.google.cloud.ByteArray;
@@ -38,21 +39,36 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 class ClientLibraryDecoderTest {
 
-  /** Prepare parameters for parametrized test. */
+  /**
+   * Prepare parameters for parametrized test.
+   */
+  static Stream<Arguments> decodingWithConversion() {
+    return Stream.of(
+        arguments(Integer.class, 12345L, (Function<Object, Value>) (o) -> Value.int64((Long) o),
+            12345, null),
+        arguments(Integer.class, Integer.MAX_VALUE + 1L,
+            (Function<Object, Value>) (o) -> Value.int64((Long) o), null,
+            new ConversionFailureException("2147483648 is out of range for Integer")),
+        arguments(Integer.class, Integer.MIN_VALUE - 1L,
+            (Function<Object, Value>) (o) -> Value.int64((Long) o), null,
+            new ConversionFailureException("-2147483649 is out of range for Integer"))
+    );
+  }
+
   static Stream<Arguments> data() {
     return Stream.of(
         // Arrays
         arguments(
             long[].class,
-            new long[] {123456L, 45678L},
+            new long[]{123456L, 45678L},
             (Function<Object, Value>) (o) -> Value.int64Array((long[]) o)),
         arguments(
             double[].class,
-            new double[] {1.0d, 123.0d},
+            new double[]{1.0d, 123.0d},
             (Function<Object, Value>) (o) -> Value.float64Array((double[]) o)),
         arguments(
             boolean[].class,
-            new boolean[] {true, false},
+            new boolean[]{true, false},
             (Function<Object, Value>) (o) -> Value.boolArray((boolean[]) o)),
         arguments(Long.class, 12345L, (Function<Object, Value>) (o) -> Value.int64((Long) o)),
         arguments(
@@ -112,15 +128,29 @@ class ClientLibraryDecoderTest {
     );
   }
 
-  /** Validates that every supported type converts to expected value. */
+  /**
+   * Validates that every supported type converts to expected value.
+   */
   @ParameterizedTest
   @MethodSource("data")
   public void codecsTest(Class<?> type, Object value, Function<Object, Value> valueBuilder) {
+    codecsTest(type, value, valueBuilder, null, null);
+  }
 
+  @ParameterizedTest
+  @MethodSource("decodingWithConversion")
+  public void codecsTest(Class<?> type, Object value, Function<Object, Value> valueBuilder,
+      Object expectedVal, Exception exception) {
+    Object expected = expectedVal == null ? value : expectedVal;
     Struct row =
         Struct.newBuilder().add(valueBuilder.apply(value)).add(valueBuilder.apply(null)).build();
 
-    assertThat(ClientLibraryDecoder.decode(row, 0, type)).isEqualTo(value);
-    assertThat(ClientLibraryDecoder.decode(row, 1, type)).isNull();
+    if (exception == null) {
+      assertThat(ClientLibraryDecoder.decode(row, 0, type)).isEqualTo(expected);
+      assertThat(ClientLibraryDecoder.decode(row, 1, type)).isNull();
+    } else {
+      assertThatThrownBy(() -> ClientLibraryDecoder.decode(row, 0, type))
+          .isInstanceOf(exception.getClass()).hasMessage(exception.getMessage());
+    }
   }
 }
