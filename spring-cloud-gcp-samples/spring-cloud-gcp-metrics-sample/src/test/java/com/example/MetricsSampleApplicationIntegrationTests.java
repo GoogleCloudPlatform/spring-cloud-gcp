@@ -47,7 +47,7 @@ import static org.junit.Assume.assumeThat;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = MetricsApplication.class)
-public class MetricsSampleApplicationTests {
+public class MetricsSampleApplicationIntegrationTests {
 
 	@Autowired
 	private GcpProjectIdProvider projectIdProvider;
