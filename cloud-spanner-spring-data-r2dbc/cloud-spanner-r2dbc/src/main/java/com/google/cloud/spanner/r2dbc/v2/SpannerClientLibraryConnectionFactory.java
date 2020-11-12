@@ -44,7 +44,11 @@ public class SpannerClientLibraryConnectionFactory implements ConnectionFactory 
 
   @Override
   public Publisher<? extends Connection> create() {
-    return Mono.just(new SpannerClientLibraryConnection(this.spannerClient, this.config));
+
+    return Mono.just(
+        new SpannerClientLibraryConnection(
+          new DatabaseClientReactiveAdapter(this.spannerClient, this.config),
+          this.config));
   }
 
   @Override

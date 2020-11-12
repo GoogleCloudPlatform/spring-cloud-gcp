@@ -1,0 +1,49 @@
+# Cloud Spanner R2DBC Driver V2 (Client Library-based)
+
+The original version of Cloud Spanner R2DBC driver was based on direct communication to Cloud Spanner gRPC endpoints.
+V2 is built on top of the Cloud Spanner client library, allowing for consistent behavior between JDBC and R2DBC drivers.
+
+To activate V2, provide an option named `client-implementation` with the value of `client-library`, as in the example below.
+```java
+ConnectionFactories.get(
+          ConnectionFactoryOptions.builder()
+              ...
+              .option(Option.valueOf("client-implementation"), "client-library")
+              .build());
+```
+
+## Transactions
+
+### Read-Write Transactions
+Read-write transactions are supported natively through R2DBC SPI.
+
+```java
+Mono.from(connectionFactory.create())
+            .flatMapMany(c -> Flux.concat(
+                c.beginTransaction(),
+                ...
+                c.commitTransaction(),
+                c.close()))
+```
+
+### Read-Only Transactions
+Read-only transactions, including stale transactions, can be used by downcasting the `Connection` object to `SpannerClientLibraryConnection` and calling `beginReadonlyTransaction()` on it.
+Invoking `beginReadonlyTransaction()` without parameters will begin a new strongly consistent readonly transaction.
+To customize staleness, pass in a `TimestampBound` parameter.
+```java
+Mono.from(connectionFactory.create())
+            .flatMapMany(c ->
+                Flux.concat(
+                          conn.beginReadonlyTransaction(TimestampBound.ofExactStaleness(1, TimeUnit.SECONDS)),
+                            ...
+                          conn.commitTransaction(),
+                    )
+```
+NOTE: Readonly transactions must be closed by calling `commit()` before starting a new read-write or a read-only transaction.
+
+### Partitioned DML transactions
+Partitioned DML transactions are not supported at this time.
+
+### Nesting transactions
+Cloud Spanner does not support nested transactions, so each transaction must be either committed or rolled back.
+For readonly transactions, either committing or rolling back will result in closing of the readonly transaction.
