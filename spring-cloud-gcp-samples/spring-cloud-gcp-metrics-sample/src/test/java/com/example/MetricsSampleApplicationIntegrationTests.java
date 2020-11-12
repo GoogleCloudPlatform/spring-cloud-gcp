@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.actuate.metrics.AutoConfigureMetrics;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -47,6 +48,7 @@ import static org.junit.Assume.assumeThat;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = MetricsApplication.class)
+@AutoConfigureMetrics // needed to enable metrics export in Spring Boot tests
 public class MetricsSampleApplicationIntegrationTests {
 
 	@Autowired
@@ -80,7 +82,7 @@ public class MetricsSampleApplicationIntegrationTests {
 		String id = "integration_test_" + UUID.randomUUID().toString().replace('-', '_');
 		String url = String.format("http://localhost:%s/%s", this.port, id);
 
-		ResponseEntity<String> responseEntity = this.testRestTemplate.postForEntity(url, null, String.class);
+		ResponseEntity<String> responseEntity = this.testRestTemplate.getForEntity(url, String.class, String.class);
 		assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
 
 		String metricType = "custom.googleapis.com/" + id;
