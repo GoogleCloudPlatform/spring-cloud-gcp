@@ -84,7 +84,3 @@ Stackdriver Logging::
   ...
 </configuration>
 ----
-
-=== Stackdriver Metrics Explicitly Enabled
-
-If you're importing the `spring-cloud-gcp-starter-metrics` module, the Stackdriver metrics now need to be explicitly enabled with the property `management.metrics.export.stackdriver.enabled=true`
