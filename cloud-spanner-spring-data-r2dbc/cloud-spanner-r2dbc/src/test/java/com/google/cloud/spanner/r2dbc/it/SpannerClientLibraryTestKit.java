@@ -402,7 +402,6 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
 
   @Override
   @Test
-  @Disabled // TODO: GH-275
   public void changeAutoCommitCommitsTransaction() {
     Mono.from(getConnectionFactory().create())
         .flatMapMany(connection ->
@@ -422,33 +421,6 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
         .expectNext(200L)
         .as("autoCommit(true) committed the transaction. Expecting a value to be present")
         .verifyComplete();
-  }
-
-  @Override
-  @Test
-  @Disabled // TODO: GH-275
-  public void sameAutoCommitLeavesTransactionUnchanged() {
-    Mono.from(getConnectionFactory().create())
-        .flatMapMany(connection ->
-            Flux.from(connection.setAutoCommit(false))
-                .thenMany(connection.beginTransaction())
-                .thenMany(
-                    connection.createStatement(expand(TestStatement.INSERT_VALUE200)).execute())
-                .flatMap(Result::getRowsUpdated)
-                .thenMany(connection.setAutoCommit(false))
-                .thenMany(connection.rollbackTransaction())
-                .thenMany(connection.createStatement("SELECT value FROM test").execute())
-                .flatMap(it -> it.map((row, metadata) -> row.get("value")))
-                .concatWith(close(connection))
-        )
-        .as(StepVerifier::create)
-        .verifyComplete();
-  }
-
-  @Override
-  @Disabled // TODO: GH-275
-  public void autoCommitByDefault() {
-
   }
 
   @Override

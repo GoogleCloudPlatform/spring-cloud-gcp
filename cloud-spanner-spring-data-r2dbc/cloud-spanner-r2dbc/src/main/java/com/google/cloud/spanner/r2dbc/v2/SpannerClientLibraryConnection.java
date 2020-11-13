@@ -38,8 +38,6 @@ public class SpannerClientLibraryConnection implements Connection {
 
   private final DatabaseClientReactiveAdapter clientLibraryAdapter;
 
-
-
   /**
    * Cloud Spanner implementation of R2DBC Connection SPI.
    * @param clientLibraryAdapter adapter to Cloud Spanner database client
@@ -105,7 +103,7 @@ public class SpannerClientLibraryConnection implements Connection {
 
   @Override
   public boolean isAutoCommit() {
-    return false;
+    return this.clientLibraryAdapter.isAutoCommit();
   }
 
   @Override
@@ -135,7 +133,7 @@ public class SpannerClientLibraryConnection implements Connection {
 
   @Override
   public Publisher<Void> setAutoCommit(boolean autoCommit) {
-    throw new UnsupportedOperationException();
+    return this.clientLibraryAdapter.setAutoCommit(autoCommit);
   }
 
   @Override

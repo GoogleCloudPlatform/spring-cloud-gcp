@@ -30,6 +30,7 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
+import com.google.common.annotations.VisibleForTesting;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -64,6 +65,8 @@ class DatabaseClientReactiveAdapter {
 
   private final DatabaseClientTransactionManager txnManager;
 
+  private boolean autoCommit = true;
+
   /**
    * Instantiates the adapter with given client library {@code DatabaseClient} and executor.
    *
@@ -80,6 +83,22 @@ class DatabaseClientReactiveAdapter {
     this.executorService = Executors.newFixedThreadPool(config.getThreadPoolSize());
     this.config = config;
     this.txnManager = new DatabaseClientTransactionManager(this.dbClient, this.executorService);
+  }
+
+  @VisibleForTesting
+  DatabaseClientReactiveAdapter(
+      SpannerConnectionConfiguration config,
+      Spanner spannerClient,
+      DatabaseClient dbClient,
+      DatabaseAdminClient dbAdminClient,
+      ExecutorService executorService,
+      DatabaseClientTransactionManager txnManager) {
+    this.config = config;
+    this.spannerClient = spannerClient;
+    this.dbClient = dbClient;
+    this.dbAdminClient = dbAdminClient;
+    this.executorService = executorService;
+    this.txnManager = txnManager;
   }
 
   /**
@@ -111,8 +130,7 @@ class DatabaseClientReactiveAdapter {
    *
    * @return reactive pipeline for committing a transaction
    */
-  public Publisher<Void> commitTransaction() {
-
+  public Mono<Void> commitTransaction() {
     return convertFutureToMono(() -> this.txnManager.commitTransaction())
         .doOnTerminate(this.txnManager::clearTransactionManager)
         .then();
@@ -173,6 +191,21 @@ class DatabaseClientReactiveAdapter {
     return Mono.fromSupplier(() -> !this.executorService.isShutdown());
   }
 
+  public boolean isAutoCommit() {
+    return this.autoCommit;
+  }
+
+  public Publisher<Void> setAutoCommit(boolean autoCommit) {
+    return Mono.defer(() -> {
+      Mono<Void> result = Mono.empty();
+      if (this.autoCommit != autoCommit && this.txnManager.isInTransaction()) {
+        // If autocommit is changed, commit the existing transaction.
+        result = this.commitTransaction();
+      }
+      return result.doOnSuccess(empty -> this.autoCommit = autoCommit);
+    });
+  }
+
   /**
    * Allows running a DML statement.
    *
@@ -197,16 +230,26 @@ class DatabaseClientReactiveAdapter {
 
   private <T> Mono<T> runBatchDmlInternal(
       Function<TransactionContext, ApiFuture<T>> asyncOperation) {
-    return convertFutureToMono(() -> {
-      if (this.txnManager.isInReadWriteTransaction()) {
-        return this.txnManager.runInTransaction(asyncOperation);
-      } else {
-        ApiFuture<T> rowCountFuture =
-            this.dbClient
-                .runAsync()
-                .runAsync(txn -> asyncOperation.apply(txn), this.executorService);
-        return rowCountFuture;
+    return Mono.defer(() -> {
+      if (this.txnManager.isInReadonlyTransaction()) {
+        return Mono.error(
+            new IllegalAccessException("Cannot run DML statements in a readonly transaction."));
+      } else if (!this.autoCommit && !this.txnManager.isInReadWriteTransaction()) {
+        return Mono.error(new IllegalAccessException(
+            "Cannot run DML statements outside of a transaction when autocommit is set to false."));
       }
+
+      return convertFutureToMono(() -> {
+        if (this.txnManager.isInReadWriteTransaction()) {
+          return this.txnManager.runInTransaction(asyncOperation);
+        } else {
+          ApiFuture<T> rowCountFuture =
+              this.dbClient
+                  .runAsync()
+                  .runAsync(txn -> asyncOperation.apply(txn), this.executorService);
+          return rowCountFuture;
+        }
+      });
     });
   }
 
@@ -215,18 +258,14 @@ class DatabaseClientReactiveAdapter {
     return Flux.create(
         sink -> {
           if (this.txnManager.isInReadWriteTransaction()) {
-
             this.txnManager.runInTransaction(ctx -> runSelectStatementAsFlux(ctx, statement, sink));
-
           } else {
-
             runSelectStatementAsFlux(this.txnManager.getReadContext(), statement, sink);
           }
         });
   }
 
   public Mono<Void> runDdlStatement(String query) {
-
     return convertFutureToMono(() -> this.dbAdminClient.updateDatabaseDdl(
         this.config.getInstanceName(),
         this.config.getDatabaseName(),
