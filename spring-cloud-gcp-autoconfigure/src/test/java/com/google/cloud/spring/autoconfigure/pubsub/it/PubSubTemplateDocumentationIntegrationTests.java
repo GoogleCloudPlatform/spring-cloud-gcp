@@ -42,6 +42,7 @@ import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.Topic;
 import org.awaitility.Awaitility;
 import org.awaitility.Duration;
+import org.jetbrains.annotations.NotNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -297,7 +298,7 @@ public class PubSubTemplateDocumentationIntegrationTests {
 			// tag::adapter_callback[]
 			adapter.setPublishCallback(new ListenableFutureCallback<String>() {
 				@Override
-				public void onFailure(Throwable ex) {
+				public void onFailure(@NotNull Throwable ex) {
 				}
 
 				@Override

@@ -22,11 +22,10 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import io.micrometer.core.instrument.Clock;
+import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.stackdriver.StackdriverConfig;
-import io.micrometer.stackdriver.StackdriverMeterRegistry;
 
 import org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.metrics.export.ConditionalOnEnabledMetricsExport;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.stackdriver.StackdriverMetricsExportAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.stackdriver.StackdriverProperties;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -48,9 +47,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore(StackdriverMetricsExportAutoConfiguration.class)
 @AutoConfigureAfter(MetricsAutoConfiguration.class)
-@ConditionalOnClass(StackdriverMeterRegistry.class)
+@ConditionalOnClass({StepMeterRegistry.class, StackdriverConfig.class})
 @ConditionalOnBean(Clock.class)
-@ConditionalOnEnabledMetricsExport("stackdriver")
 @EnableConfigurationProperties({GcpMetricsProperties.class, StackdriverProperties.class})
 @ConditionalOnProperty(value = "spring.cloud.gcp.metrics.enabled", matchIfMissing = true, havingValue = "true")
 public class GcpStackdriverMetricsAutoConfiguration {
