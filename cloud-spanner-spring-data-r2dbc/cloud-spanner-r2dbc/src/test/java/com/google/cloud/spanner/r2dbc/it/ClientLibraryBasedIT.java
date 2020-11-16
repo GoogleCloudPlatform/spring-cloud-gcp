@@ -250,8 +250,7 @@ public class ClientLibraryBasedIT {
 
   @Test
   public void testTransactionSingleStatementCommitted() {
-    // TODO: introduce timeouts; when there is an issue in apifuture conversion,
-    // test never completes
+
     String uuid1 = "transaction1-commit1-" + this.random.nextInt();
 
     StepVerifier.create(
@@ -295,8 +294,6 @@ public class ClientLibraryBasedIT {
                     .execute()
                 ).flatMap(r -> r.getRowsUpdated()),
 
-                // TODO: garble SQL below and watch the publisher hang. Troubleshoot how to surface
-                // exception insead of hanging.
                 Flux.from(c.createStatement(
                     "UPDATE BOOKS SET CATEGORY=200 WHERE CATEGORY = 100").execute())
                     .flatMap(r -> r.getRowsUpdated()),
