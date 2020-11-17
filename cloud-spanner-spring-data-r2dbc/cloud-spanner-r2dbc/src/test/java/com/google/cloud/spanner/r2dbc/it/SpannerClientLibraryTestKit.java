@@ -40,7 +40,6 @@ import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
 import io.r2dbc.spi.test.TestKit;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -227,36 +226,6 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
         .as(StepVerifier::create)
         .expectNext(100L).as("value from col1")
         .expectNext("hello").as("value from col2")
-        .verifyComplete();
-  }
-
-  // override. column names are case-sensitive in Spanner.
-  @Override
-  @Test
-  public void columnMetadata() {
-    getJdbcOperations().execute(expand(INSERT_TWO_COLUMNS));
-
-    Mono.from(getConnectionFactory().create())
-        .flatMapMany(connection -> Flux.from(connection
-
-            .createStatement("SELECT col1 AS value, col2 AS VALUE FROM test_two_column")
-            .execute())
-            .flatMap(result -> {
-              return result.map((row, rowMetadata) -> {
-                Collection<String> columnNames = rowMetadata.getColumnNames();
-                return Arrays.asList(rowMetadata.getColumnMetadata("value").getName(),
-                    rowMetadata.getColumnMetadata("VALUE").getName(), columnNames.contains("value"),
-                    columnNames.contains(
-                        "VALUE"));
-              });
-            })
-            .flatMapIterable(Function.identity())
-            .concatWith(close(connection)))
-        .as(StepVerifier::create)
-        .expectNext("value").as("Column label col1")
-        .expectNext("VALUE").as("Column label col2 (get by uppercase)")
-        .expectNext(true).as("getColumnNames.contains(value)")
-        .expectNext(true).as("getColumnNames.contains(VALUE)")
         .verifyComplete();
   }
 

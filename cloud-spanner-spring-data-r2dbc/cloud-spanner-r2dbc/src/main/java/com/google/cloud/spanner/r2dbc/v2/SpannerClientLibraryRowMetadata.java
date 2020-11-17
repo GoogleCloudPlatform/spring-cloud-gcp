@@ -55,7 +55,10 @@ public class SpannerClientLibraryRowMetadata implements RowMetadata {
       ColumnMetadata metadata = new SpannerClientLibraryColumnMetadata(field);
       tmpColumnMetadata.add(metadata);
       tmpColumnNames.add(field.getName());
-      this.columnNameIndex.put(field.getName(), i);
+      String columnName = field.getName().toLowerCase();
+      if (!this.columnNameIndex.containsKey(columnName)) {
+        this.columnNameIndex.put(columnName, i);
+      }
     }
 
     this.columnMetadatas = Collections.unmodifiableList(tmpColumnMetadata);
@@ -84,12 +87,13 @@ public class SpannerClientLibraryRowMetadata implements RowMetadata {
   }
 
   protected int getColumnIndexByName(String name) {
-    if (!this.columnNameIndex.containsKey(name)) {
+    String identifier = name.toLowerCase();
+    if (!this.columnNameIndex.containsKey(identifier)) {
       throw new IllegalArgumentException(
           "The column name " + name + " does not exist for the Spanner row. "
               + "Available columns: " + this.columnNameIndex.keySet());
     }
 
-    return this.columnNameIndex.get(name);
+    return this.columnNameIndex.get(identifier);
   }
 }
