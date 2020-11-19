@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>spring-cloud-gcp-starters</artifactId>
 		<groupId>com.google.cloud</groupId>
-		<version>2.0.0-RC1-SNAPSHOT</version>
+		<version>2.0.0-RC2-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -23,6 +23,10 @@
 			<artifactId>spring-cloud-starter-sleuth</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-sleuth-brave</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.zipkin.gcp</groupId>
 			<artifactId>zipkin-sender-stackdriver</artifactId>
 			<exclusions>
@@ -37,10 +41,6 @@
 				<exclusion>
 					<groupId>io.grpc</groupId>
 					<artifactId>grpc-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.zipkin.zipkin2</groupId>
-					<artifactId>zipkin</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
