@@ -114,7 +114,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testCloudSqlAppEngineDataSourceDefaultUserNameRootTest() {
+	public void testCloudSqlAppEngineDataSourceDefaultUserNameMySqlTest() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.project-id=im-not-used-for-anything",
 				"spring.cloud.gcp.sql.instance-connection-name=tubular-bells:australia:test-instance",
@@ -210,11 +210,14 @@ public class CloudSqlEnvironmentPostProcessorTests {
 				.withClassLoader(
 						new FilteredClassLoader("com.google.cloud.sql.mysql"))
 				.run((context) -> {
+					HikariDataSource dataSource =
+							(HikariDataSource) context.getBean(DataSource.class);
 					assertThat(getSpringDatasourceUrl(context)).isEqualTo(
 							"jdbc:postgresql://google/test-database?"
 									+ "socketFactory=com.google.cloud.sql.postgres.SocketFactory"
 									+ "&cloudSqlInstance=tubular-bells:singapore:test-instance");
 					assertThat(getSpringDatasourceDriverClassName(context)).matches("org.postgresql.Driver");
+					assertThat(dataSource.getUsername()).matches("postgres");
 				});
 	}
 

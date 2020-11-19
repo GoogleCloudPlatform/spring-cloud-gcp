@@ -61,7 +61,7 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
 
 			// configure default JDBC driver and username as fallback values when not specified
 			Map<String, Object> fallbackMap = new HashMap<>();
-			fallbackMap.put("spring.datasource.username", "root");
+			fallbackMap.put("spring.datasource.username", databaseType.getDefaultUsername());
 			fallbackMap.put("spring.datasource.driver-class-name", cloudSqlJdbcInfoProvider.getJdbcDriverClass());
 			environment.getPropertySources()
 					.addLast(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_FALLBACK", fallbackMap));
