@@ -114,7 +114,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testCloudSqlAppEngineDataSourceTest() {
+	public void testCloudSqlAppEngineDataSourceDefaultUserNameRootTest() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.project-id=im-not-used-for-anything",
 				"spring.cloud.gcp.sql.instance-connection-name=tubular-bells:australia:test-instance",
@@ -156,6 +156,22 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
+	public void testUserSpecifiedDriverOverride() {
+		this.contextRunner.withPropertyValues(
+				"spring.cloud.gcp.sql.instance-connection-name=proj:reg:test-instance",
+				"spring.datasource.driver-class-name=org.postgresql.Driver")
+				.run((context) -> {
+					HikariDataSource dataSource =
+							(HikariDataSource) context.getBean(DataSource.class);
+					assertThat(getSpringDatasourceUrl(context)).isEqualTo(
+							"jdbc:mysql://google/test-database?"
+									+ "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
+									+ "&cloudSqlInstance=proj:reg:test-instance");
+					assertThat(dataSource.getDriverClassName()).matches("org.postgresql.Driver");
+				});
+	}
+
+	@Test
 	public void testDataSourceProperties() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=proj:reg:test-instance",
@@ -188,7 +204,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testPostgre() {
+	public void testPostgres() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=tubular-bells:singapore:test-instance")
 				.withClassLoader(

@@ -50,66 +50,51 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
 
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+		DatabaseType databaseType = getEnabledDatabaseType(environment);
+
+		if (databaseType != null) {
+			if (LOGGER.isInfoEnabled()) {
+				LOGGER.info("post-processing Cloud SQL properties for + " + databaseType.name());
+			}
+
+			CloudSqlJdbcInfoProvider cloudSqlJdbcInfoProvider = buildCloudSqlJdbcInfoProvider(environment, databaseType);
+
+			// configure default JDBC driver and username as fallback values when not specified
+			Map<String, Object> fallbackMap = new HashMap<>();
+			fallbackMap.put("spring.datasource.username", "root");
+			fallbackMap.put("spring.datasource.driver-class-name", cloudSqlJdbcInfoProvider.getJdbcDriverClass());
+			environment.getPropertySources()
+					.addLast(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_FALLBACK", fallbackMap));
+
+			// always set the spring.datasource.url property in the environment
+			Map<String, Object> primaryMap = new HashMap<>();
+			primaryMap.put("spring.datasource.url", cloudSqlJdbcInfoProvider.getJdbcUrl());
+			environment.getPropertySources()
+					.addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
+
+			setCredentials(environment, application);
+
+			// support usage metrics
+			CoreSocketFactory.setApplicationName("spring-cloud-gcp-sql/"
+					+ this.getClass().getPackage().getImplementationVersion());
+		}
+	}
+
+	private DatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
 		if (Boolean.parseBoolean(getSqlProperty(environment, "enabled", "true"))
 				&& isOnClasspath("javax.sql.DataSource")
 				&& isOnClasspath("org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType")
 				&& isOnClasspath("com.google.cloud.sql.CredentialFactory")) {
-
-			DatabaseType databaseType = null;
 			if (isOnClasspath("com.google.cloud.sql.mysql.SocketFactory")
 					&& isOnClasspath("com.mysql.cj.jdbc.Driver")) {
-				databaseType = DatabaseType.MYSQL;
+				return DatabaseType.MYSQL;
 			}
 			else if (isOnClasspath("com.google.cloud.sql.postgres.SocketFactory")
 					&& isOnClasspath("org.postgresql.Driver")) {
-				databaseType = DatabaseType.POSTGRESQL;
-			}
-
-			if (databaseType != null) {
-				LOGGER.info("post-processing Cloud SQL properties");
-
-				CloudSqlJdbcInfoProvider cloudSqlJdbcInfoProvider = new DefaultCloudSqlJdbcInfoProvider(
-						getSqlProperty(environment, "database-name", null),
-						getSqlProperty(environment, "instance-connection-name", null),
-						getSqlProperty(environment, "ip-types", null),
-						databaseType);
-
-				// configure default JDBC driver and username as fallback values when not specified
-				Map<String, Object> fallbackMap = new HashMap<>();
-				fallbackMap.put("spring.datasource.username", "root");
-				fallbackMap.put("spring.datasource.driver-class-name", cloudSqlJdbcInfoProvider.getJdbcDriverClass());
-				environment.getPropertySources()
-						.addLast(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_FALLBACK", fallbackMap));
-
-				// always set the spring.datasource.url property in the environment
-				Map<String, Object> primaryMap = new HashMap<>();
-				primaryMap.put("spring.datasource.url", cloudSqlJdbcInfoProvider.getJdbcUrl());
-				environment.getPropertySources()
-						.addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
-
-				if (LOGGER.isInfoEnabled()) {
-					LOGGER.info("Default " + databaseType.name()
-							+ " JdbcUrl provider. Connecting to "
-							+ cloudSqlJdbcInfoProvider.getJdbcUrl() + " with driver "
-							+ cloudSqlJdbcInfoProvider.getJdbcDriverClass());
-				}
-
-				String encodedKey = getSqlProperty(environment, "credentials.encoded-key", null);
-				if (encodedKey != null) {
-					setCredentialsEncodedKeyProperty(encodedKey);
-				}
-				else {
-					setCredentialsFileProperty(environment, application);
-				}
-
-				CoreSocketFactory.setApplicationName("spring-cloud-gcp-sql/"
-						+ this.getClass().getPackage().getImplementationVersion());
+				return DatabaseType.POSTGRESQL;
 			}
 		}
-	}
-
-	private String getSqlProperty(ConfigurableEnvironment environment, String shortName, String defaultValue) {
-		return environment.getProperty(CLOUD_SQL_PROPERTIES_PREFIX + shortName, defaultValue);
+		return null;
 	}
 
 	private boolean isOnClasspath(String className) {
@@ -119,6 +104,35 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
 		}
 		catch (ClassNotFoundException ex) {
 			return false;
+		}
+	}
+
+	private CloudSqlJdbcInfoProvider buildCloudSqlJdbcInfoProvider(ConfigurableEnvironment environment, DatabaseType databaseType) {
+		CloudSqlJdbcInfoProvider cloudSqlJdbcInfoProvider = new DefaultCloudSqlJdbcInfoProvider(
+				getSqlProperty(environment, "database-name", null),
+				getSqlProperty(environment, "instance-connection-name", null),
+				getSqlProperty(environment, "ip-types", null),
+				databaseType);
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Default " + databaseType.name()
+					+ " JdbcUrl provider. Connecting to "
+					+ cloudSqlJdbcInfoProvider.getJdbcUrl() + " with driver "
+					+ cloudSqlJdbcInfoProvider.getJdbcDriverClass());
+		}
+		return cloudSqlJdbcInfoProvider;
+	}
+
+	private String getSqlProperty(ConfigurableEnvironment environment, String shortName, String defaultValue) {
+		return environment.getProperty(CLOUD_SQL_PROPERTIES_PREFIX + shortName, defaultValue);
+	}
+
+	private void setCredentials(ConfigurableEnvironment environment, SpringApplication application) {
+		String encodedKey = getSqlProperty(environment, "credentials.encoded-key", null);
+		if (encodedKey != null) {
+			setCredentialsEncodedKeyProperty(encodedKey);
+		}
+		else {
+			setCredentialsFileProperty(environment, application);
 		}
 	}
 
