@@ -27,21 +27,19 @@ import org.springframework.util.StringUtils;
  * @author Ray Tsang
  * @author João André Martins
  * @author Øystein Urdahl Hardeng
- * @author Mike Eltsufin
  */
 public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider {
-	private final String databaseName;
-	private final String instanceConnectionName;
-	private final String ipTypes;
+
+	private final GcpCloudSqlProperties properties;
+
 	private final DatabaseType databaseType;
 
-	public DefaultCloudSqlJdbcInfoProvider(String databaseName, String instanceConnectionName, String ipTypes, DatabaseType databaseType) {
-		this.databaseName = databaseName;
-		this.instanceConnectionName = instanceConnectionName;
-		this.ipTypes = ipTypes;
+	public DefaultCloudSqlJdbcInfoProvider(GcpCloudSqlProperties properties,
+			DatabaseType databaseType) {
+		this.properties = properties;
 		this.databaseType = databaseType;
-		Assert.hasText(this.databaseName, "A database name must be provided.");
-		Assert.hasText(this.instanceConnectionName,
+		Assert.hasText(this.properties.getDatabaseName(), "A database name must be provided.");
+		Assert.hasText(properties.getInstanceConnectionName(),
 				"An instance connection name must be provided in the format <PROJECT_ID>:<REGION>:<INSTANCE_ID>.");
 	}
 
@@ -53,10 +51,10 @@ public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider
 	@Override
 	public String getJdbcUrl() {
 		String jdbcUrl = String.format(this.databaseType.getJdbcUrlTemplate(),
-				this.databaseName,
-				this.instanceConnectionName);
-		if (StringUtils.hasText(this.ipTypes)) {
-			jdbcUrl = String.format(jdbcUrl + "&ipTypes=%s", this.ipTypes);
+				this.properties.getDatabaseName(),
+				this.properties.getInstanceConnectionName());
+		if (StringUtils.hasText(properties.getIpTypes())) {
+			jdbcUrl = String.format(jdbcUrl + "&ipTypes=%s", properties.getIpTypes());
 		}
 		return jdbcUrl;
 	}
