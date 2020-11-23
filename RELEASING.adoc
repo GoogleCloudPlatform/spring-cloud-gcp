@@ -38,15 +38,15 @@ For GA releases this should be configured under the `central` Maven profile.
 </profile>
 ----
 
-. Ensure all Maven commands listed in `.kokoro/stage.sh` script can be executed successfully locally.
-You can add `-Dgpg.skip` in place of the actual GPG key locally.
+. Invoke the Kokoro `prod:cloud-java-frameworks/spring-cloud-gcp/stage` job.
+Note the staging repository ID in the logging output (i.e. `comgooglecloud-1234`).
 
-. Invoke the Kokoro `stage` job.
-Log in to OSS Sonatype and verify the contents of the staged package.
+. Log in to link:https://oss.sonatype.org/[OSS Sonatype] and verify the contents of the staged package. The URL should be similar to https://oss.sonatype.org/content/repositories/{STAGING_ID}/com/google/cloud/
 
-. Invoke to the Kokoko `promote` job.
+. Invoke to the Kokoko `prod:cloud-java-frameworks/spring-cloud-gcp/promote` job.
+Verify the artifacts have been published (https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:spring-cloud-gcp, may take a few hours).
 
-. Make sure that the link:https://github.com/spring-io/start.spring.io/blob/master/start-site/src/main/resources/application.yml[Spring Boot Initializr] is updated to support the new version of Spring Cloud GCP.
+. Update start.spring.io by ensuring link:https://github.com/spring-io/start.spring.io/blob/master/start-site/src/main/resources/application.yml[Spring Boot Initializr] is updated to include the new version of Spring Cloud GCP.
 
 == Uploading Javadocs
 
