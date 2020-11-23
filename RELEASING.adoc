@@ -32,6 +32,7 @@ For GA releases this should be configured under the `central` Maven profile.
         <module>spring-cloud-gcp-secretmanager</module>
         <module>spring-cloud-gcp-security-firebase</module>
         <module>spring-cloud-gcp-vision</module>
+        ...
     </modules>
     ...
 </profile>
@@ -76,5 +77,5 @@ Example: If you published the javadocs for version `2.0.0-SNAPSHOT`, then the UR
 
 5. For GA releases, ask on the https://gitter.im/spring-cloud-gcp/Lobby[Spring Cloud GCP Gitter] for the Spring team to update the https://spring.io/projects/spring-cloud-gcp#learn[API Documentation link] to point to the published Javadocs of the correct version.
 
-6. Smoke test changes by running through a handful of our link:https://github.com/spring-io/start.spring.io/blob/master/start-site/src/main/resources/application.yml[Spring Cloud GCP codelabs] with the newly release version.
+6. Smoke test changes by running through a handful of our link:https://codelabs.developers.google.com/spring[Spring Cloud GCP codelabs] with the newly release version.
 Update the instructions as needed.
