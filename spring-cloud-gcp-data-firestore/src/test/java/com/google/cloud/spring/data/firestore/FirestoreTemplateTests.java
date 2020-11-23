@@ -88,12 +88,7 @@ public class FirestoreTemplateTests {
 
 	@Test
 	public void saveAllTest() {
-		doAnswer(invocation -> {
-			StreamObserver<CommitResponse> streamObserver = invocation.getArgument(1);
-			streamObserver.onNext(CommitResponse.newBuilder().build());
-			streamObserver.onCompleted();
-			return null;
-		}).when(this.firestoreStub).commit(any(), any());
+		mockCommitMethod();
 
 		StepVerifier.create(
 				this.firestoreTemplate
@@ -109,17 +104,11 @@ public class FirestoreTemplateTests {
 
 
 		verify(this.firestoreStub, times(1)).commit(eq(builder.build()), any());
-		verify(this.firestoreStub, times(1)).commit(any(), any());
 	}
 
 	@Test
 	public void deleteTest() {
-		doAnswer(invocation -> {
-			StreamObserver<CommitResponse> streamObserver = invocation.getArgument(1);
-			streamObserver.onNext(CommitResponse.newBuilder().build());
-			streamObserver.onCompleted();
-			return null;
-		}).when(this.firestoreStub).commit(any(), any());
+		mockCommitMethod();
 
 		StepVerifier.create(
 				this.firestoreTemplate
@@ -133,7 +122,16 @@ public class FirestoreTemplateTests {
 		builder.addWrites(Write.newBuilder().setDelete(parent + "/testEntities/e2").build());
 
 		verify(this.firestoreStub, times(1)).commit(eq(builder.build()), any());
-		verify(this.firestoreStub, times(1)).commit(any(), any());
+	}
+
+
+	private void mockCommitMethod() {
+		doAnswer(invocation -> {
+			StreamObserver<CommitResponse> streamObserver = invocation.getArgument(1);
+			streamObserver.onNext(CommitResponse.newBuilder().build());
+			streamObserver.onCompleted();
+			return null;
+		}).when(this.firestoreStub).commit(any(), any());
 	}
 
 	@Test
