@@ -17,6 +17,7 @@
 package com.google.cloud.spanner.r2dbc.v2;
 
 import com.google.cloud.spanner.r2dbc.statement.TypedNull;
+import com.google.spanner.v1.ExecuteSqlRequest.QueryOptions;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
 import java.util.ArrayList;
@@ -47,6 +48,8 @@ abstract class AbstractSpannerClientLibraryStatement implements Statement {
 
   private final String query;
 
+  private final QueryOptions queryOptions;
+
   /**
    * Creates a ready-to-run Cloud Spanner statement.
    * @param clientLibraryAdapter client library implementation of core functionality
@@ -55,8 +58,21 @@ abstract class AbstractSpannerClientLibraryStatement implements Statement {
   public AbstractSpannerClientLibraryStatement(
       DatabaseClientReactiveAdapter clientLibraryAdapter, String query) {
     this.clientLibraryAdapter = clientLibraryAdapter;
-    this.currentStatementBuilder = com.google.cloud.spanner.Statement.newBuilder(query);
     this.query = query;
+    this.queryOptions = this.clientLibraryAdapter.getQueryOptions();
+
+    this.currentStatementBuilder = createStatementBuilder(this.query, this.queryOptions);
+  }
+
+  private static com.google.cloud.spanner.Statement.Builder createStatementBuilder(
+      String query, QueryOptions options) {
+
+    com.google.cloud.spanner.Statement.Builder builder =
+        com.google.cloud.spanner.Statement.newBuilder(query);
+    if (options != null) {
+      builder = builder.withQueryOptions(options);
+    }
+    return builder;
   }
 
   @Override
@@ -66,7 +82,7 @@ abstract class AbstractSpannerClientLibraryStatement implements Statement {
     }
 
     this.statements.add(this.currentStatementBuilder.build());
-    this.currentStatementBuilder = com.google.cloud.spanner.Statement.newBuilder(this.query);
+    this.currentStatementBuilder = createStatementBuilder(this.query, this.queryOptions);
     this.startedBinding = false;
 
     return this;

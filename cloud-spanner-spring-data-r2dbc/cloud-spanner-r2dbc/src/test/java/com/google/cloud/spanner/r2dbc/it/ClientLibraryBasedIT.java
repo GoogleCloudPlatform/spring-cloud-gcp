@@ -29,6 +29,7 @@ import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Type.StructField;
 import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryColumnMetadata;
 import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryConnection;
+import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryConnectionFactory;
 import io.r2dbc.spi.ColumnMetadata;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactories;
@@ -641,6 +642,15 @@ public class ClientLibraryBasedIT {
         .expectNext(1L)
         .as("strong read returns the inserted row after stale-read transaction terminates")
         .verifyComplete();
+  }
+
+  @Test
+  public void testConnectingThroughUrl() {
+    ConnectionFactory urlBasedConnectionFactory =
+        ConnectionFactories.get(DatabaseProperties.URL + "?client-implementation=client-library");
+
+    StepVerifier.create(urlBasedConnectionFactory.create())
+        .expectNextMatches(cf -> cf instanceof SpannerClientLibraryConnectionFactory);
   }
 
   private Publisher<Long> getFirstNumber(Result result) {

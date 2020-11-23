@@ -16,10 +16,13 @@
 
 package com.google.cloud.spanner.r2dbc;
 
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration.FQDN_PATTERN_PARSE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.OAuth2Credentials;
+import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.cloud.spanner.r2dbc.client.GrpcClient;
 import com.google.cloud.spanner.r2dbc.util.Assert;
@@ -30,6 +33,8 @@ import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.ConnectionFactoryProvider;
 import io.r2dbc.spi.Option;
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * An implementation of {@link ConnectionFactoryProvider} for creating {@link
@@ -66,13 +71,34 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   public static final Option<Duration> DDL_OPERATION_POLL_INTERVAL =
       Option.valueOf("ddl_operation_poll_interval");
 
+  // TODO: GH-292
+  public static final Option<String> OPTIMIZER_VERSION =
+      Option.valueOf("optimizerVersion");
   /**
-   * Option specifying the location of the GCP credentials file.
+   * Option specifying the already-instantiated credentials object.
    */
   public static final Option<GoogleCredentials> GOOGLE_CREDENTIALS =
       Option.valueOf("google_credentials");
 
+  /**
+   * Option specifying the location of the GCP credentials file. Same as GOOGLE_CREDENTIALS,
+   * but consistent with the JDBC driver option.
+   */
+  public static final Option<String> CREDENTIALS = Option.valueOf("credentials");
+
+  // TODO: GH-292
+  /** Plain-text option used to connect to the emulator. */
+  public static final Option<Boolean> USE_PLAIN_TEXT = Option.valueOf("usePlainText");
+
+  /** OAuth token to use for authentication. */
+  public static final Option<String> OAUTH_TOKEN = Option.valueOf("oauthToken");
+
+  private static final Option[] SECURITY_OPTIONS =
+      new Option[] { OAUTH_TOKEN, CREDENTIALS, GOOGLE_CREDENTIALS};
+
   private Client client;
+
+  private CredentialsHelper credentialsHelper = new CredentialsHelper();
 
   @Override
   public ConnectionFactory create(ConnectionFactoryOptions connectionFactoryOptions) {
@@ -111,21 +137,30 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
     this.client = client;
   }
 
-  private static SpannerConnectionConfiguration createConfiguration(
+  @VisibleForTesting
+  SpannerConnectionConfiguration createConfiguration(
       ConnectionFactoryOptions options) {
 
     SpannerConnectionConfiguration.Builder config = new SpannerConnectionConfiguration.Builder();
 
+    // Directly passed URL is supported for backwards compatibility. R2DBC SPI does not provide
+    // the original URL when creating connection through ConnectionFactories.get(String).
     if (options.hasOption(URL)) {
       config.setUrl(options.getValue(URL));
+    } else if (options.hasOption(DATABASE)
+        && FQDN_PATTERN_PARSE.matcher(options.getValue(DATABASE)).matches()) {
+      // URL-based connection configuration
+      config.setFullyQualifiedDatabaseName(options.getValue(DATABASE));
     } else {
+      // Programmatic connection configuration.
       config.setProjectId(options.getRequiredValue(PROJECT))
           .setInstanceName(options.getRequiredValue(INSTANCE))
           .setDatabaseName(options.getRequiredValue(DATABASE));
     }
 
-    config.setCredentials(options.getValue(GOOGLE_CREDENTIALS));
+    config.setCredentials(extractCredentials(options));
 
+    // V1 properties
     if (options.hasOption(PARTIAL_RESULT_SET_FETCH_SIZE)) {
       config.setPartialResultSetFetchSize(options.getValue(PARTIAL_RESULT_SET_FETCH_SIZE));
     }
@@ -138,10 +173,57 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
       config.setDdlOperationPollInterval(options.getValue(DDL_OPERATION_POLL_INTERVAL));
     }
 
+    // V2 properties
     if (options.hasOption(THREAD_POOL_SIZE)) {
       config.setThreadPoolSize(options.getValue(THREAD_POOL_SIZE));
     }
 
+    if (options.hasOption(USE_PLAIN_TEXT)) {
+      config.setUsePlainText(true);
+    }
+
+    if (options.hasOption(OPTIMIZER_VERSION)) {
+      config.setOptimizerVersion(options.getValue(OPTIMIZER_VERSION));
+    }
+
     return config.build();
+  }
+
+  /**
+   * Extracts credentials from properties passed in either through URL or programmatically.
+   * Fails if more than one known security option is specified.
+   * @param options user-supplied configuration options
+   * @return
+   */
+  private OAuth2Credentials extractCredentials(ConnectionFactoryOptions options) {
+
+    Set<Option<?>> foundSecurityOptions = new HashSet<>();
+    for (Option<?> option : SECURITY_OPTIONS) {
+      if (options.hasOption(option)) {
+        foundSecurityOptions.add(option);
+      }
+    }
+
+    if (foundSecurityOptions.size() > 1) {
+      throw new IllegalArgumentException(
+          "Please provide at most one authentication option. Found: " + foundSecurityOptions);
+    }
+
+    if (options.hasOption(OAUTH_TOKEN)) {
+      return this.credentialsHelper.getOauthCredentials(options.getValue(OAUTH_TOKEN));
+    } else if (options.hasOption(CREDENTIALS)) {
+      return this.credentialsHelper.getFileCredentials(options.getValue(CREDENTIALS));
+    } else if (options.hasOption(GOOGLE_CREDENTIALS)) {
+      return options.getValue(GOOGLE_CREDENTIALS);
+    } else if (options.hasOption(USE_PLAIN_TEXT)) {
+      return NoCredentials.getInstance();
+    }
+
+    return this.credentialsHelper.getDefaultCredentials();
+  }
+
+  @VisibleForTesting
+  public void setCredentialsHelper(CredentialsHelper credentialsHelper) {
+    this.credentialsHelper = credentialsHelper;
   }
 }

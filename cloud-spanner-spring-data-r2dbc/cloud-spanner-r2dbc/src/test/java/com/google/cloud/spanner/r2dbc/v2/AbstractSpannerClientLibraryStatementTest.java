@@ -20,12 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Value;
+import com.google.spanner.v1.ExecuteSqlRequest.QueryOptions;
 import java.util.List;
 import java.util.stream.LongStream;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +47,7 @@ public class AbstractSpannerClientLibraryStatementTest {
     when(this.mockAdapter.runDmlStatement(any(Statement.class))).thenReturn(Mono.just(19L));
 
     when(this.mockAdapter.runBatchDml(anyList())).thenReturn(Mono.just(new long[] {7L, 11L, 13L}));
+    when(this.mockAdapter.getQueryOptions()).thenReturn(QueryOptions.getDefaultInstance());
   }
 
   @Test
@@ -61,7 +63,8 @@ public class AbstractSpannerClientLibraryStatementTest {
     verify(this.mockAdapter).runDmlStatement(capturedStatement.capture());
     assertThat(capturedStatement.getValue().getSql()).isEqualTo(query);
     assertThat(capturedStatement.getValue().getParameters()).isEmpty();
-    verifyNoMoreInteractions(this.mockAdapter);
+    verify(this.mockAdapter, times(0)).runSelectStatement(any());
+    verify(this.mockAdapter, times(0)).runBatchDml(any());
   }
 
   @Test
@@ -85,7 +88,8 @@ public class AbstractSpannerClientLibraryStatementTest {
         .containsEntry("one", Value.string("111"))
         .containsEntry("two", Value.string("222"))
         .containsEntry("three", Value.string("333"));
-    verifyNoMoreInteractions(this.mockAdapter);
+    verify(this.mockAdapter, times(0)).runSelectStatement(any());
+    verify(this.mockAdapter, times(0)).runBatchDml(any());
   }
 
   @Test
@@ -112,7 +116,8 @@ public class AbstractSpannerClientLibraryStatementTest {
         .containsEntry("two", Value.string("222"))
         .containsEntry("three", Value.string("333"));
 
-    verifyNoMoreInteractions(this.mockAdapter);
+    verify(this.mockAdapter, times(0)).runSelectStatement(any());
+    verify(this.mockAdapter, times(0)).runDmlStatement(any());
   }
 
   @Test
@@ -146,7 +151,8 @@ public class AbstractSpannerClientLibraryStatementTest {
         .containsEntry("two", Value.string("B222"))
         .containsEntry("three", Value.string("B333"));
 
-    verifyNoMoreInteractions(this.mockAdapter);
+    verify(this.mockAdapter, times(0)).runSelectStatement(any());
+    verify(this.mockAdapter, times(0)).runDmlStatement(any());
   }
 
   @Test
@@ -181,7 +187,8 @@ public class AbstractSpannerClientLibraryStatementTest {
         .containsEntry("two", Value.string("B222"))
         .containsEntry("three", Value.string("B333"));
 
-    verifyNoMoreInteractions(this.mockAdapter);
+    verify(this.mockAdapter, times(0)).runSelectStatement(any());
+    verify(this.mockAdapter, times(0)).runDmlStatement(any());
   }
 
   /* Exercises the mock `DatabaseClientReactiveAdapter`; return values don't matter */

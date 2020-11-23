@@ -16,18 +16,21 @@
 
 package com.google.cloud.spanner.r2dbc.v2;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Value;
+import com.google.spanner.v1.ExecuteSqlRequest.QueryOptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -90,7 +93,25 @@ public class SpannerClientLibraryStatementTest {
 
     verify(this.mockAdapter).runSelectStatement(eq(expectedSpannerStatement1));
     verify(this.mockAdapter).runSelectStatement(eq(expectedSpannerStatement2));
-    verifyNoMoreInteractions(this.mockAdapter);
+    verify(this.mockAdapter, times(0)).runDmlStatement(any());
+    verify(this.mockAdapter, times(0)).runBatchDml(any());
+  }
 
+  @Test
+  public void optimizerVersionPassedThroughToQuery() {
+    QueryOptions queryOptions = QueryOptions.newBuilder().setOptimizerVersion("2").build();
+    when(this.mockAdapter.getQueryOptions()).thenReturn(queryOptions);
+    SpannerClientLibraryRow mockRow = mock(SpannerClientLibraryRow.class);
+    when(this.mockAdapter.runSelectStatement(any())).thenReturn(Flux.just(mockRow));
+
+    SpannerClientLibraryStatement statement =
+        new SpannerClientLibraryStatement(this.mockAdapter, "SELECT * from fake");
+    StepVerifier.create(statement.execute())
+        .expectNextCount(1)
+        .verifyComplete();
+
+    ArgumentCaptor<Statement> captor = ArgumentCaptor.forClass(Statement.class);
+    verify(this.mockAdapter).runSelectStatement(captor.capture());
+    assertEquals("2", captor.getValue().getQueryOptions().getOptimizerVersion());
   }
 }

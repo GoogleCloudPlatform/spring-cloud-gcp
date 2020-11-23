@@ -16,9 +16,11 @@
 
 package com.google.cloud.spanner.r2dbc;
 
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.CREDENTIALS;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.DRIVER_NAME;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.GOOGLE_CREDENTIALS;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.INSTANCE;
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.OPTIMIZER_VERSION;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PARTIAL_RESULT_SET_FETCH_SIZE;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PROJECT;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.URL;
@@ -26,10 +28,14 @@ import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.auth.oauth2.GoogleCredentials;
@@ -70,6 +76,10 @@ public class SpannerConnectionFactoryProviderTest {
 
   Client mockClient;
 
+  CredentialsHelper mockCredentialsHelper;
+
+  GoogleCredentials mockCredentials;
+
   /**
    * Initializes unit under test with a mock {@link Client}.
    */
@@ -78,6 +88,12 @@ public class SpannerConnectionFactoryProviderTest {
     this.mockClient =  mock(Client.class);
     this.spannerConnectionFactoryProvider = new SpannerConnectionFactoryProvider();
     this.spannerConnectionFactoryProvider.setClient(this.mockClient);
+
+    this.mockCredentialsHelper = mock(CredentialsHelper.class);
+    this.spannerConnectionFactoryProvider.setCredentialsHelper(this.mockCredentialsHelper);
+
+    this.mockCredentials = mock(GoogleCredentials.class);
+
   }
 
   @Test
@@ -199,6 +215,103 @@ public class SpannerConnectionFactoryProviderTest {
     assertThat(spannerConnectionFactory).isNotNull();
     assertThat(spannerConnectionFactory).isInstanceOf(SpannerClientLibraryConnectionFactory.class);
 
+  }
+
+  @Test
+  public void createFactoryFromUrlWithOauthCredentials() {
+
+    when(this.mockCredentialsHelper.getOauthCredentials(anyString()))
+        .thenReturn(this.mockCredentials);
+
+    ConnectionFactoryOptions options = ConnectionFactoryOptions.parse(
+        "r2dbc:spanner://host:443/projects/p/instances/i/databases/d?oauthToken=ABC");
+    SpannerConnectionConfiguration config =
+        this.spannerConnectionFactoryProvider.createConfiguration(options);
+
+    assertEquals(this.mockCredentials, config.getCredentials());
+    verify(this.mockCredentialsHelper).getOauthCredentials("ABC");
+  }
+
+  @Test
+  public void createFactoryFromUrlWithGoogleCredentialsIncorrectType() {
+
+    ConnectionFactoryOptions options = ConnectionFactoryOptions.parse(
+        "r2dbc:spanner://host:443/projects/p/instances/i/databases/d?google_credentials=ABC");
+    assertThatThrownBy(() -> this.spannerConnectionFactoryProvider.createConfiguration(options))
+        .isInstanceOf(ClassCastException.class)
+        .hasMessageContaining("com.google.auth.oauth2.OAuth2Credentials");
+  }
+
+  @Test
+  public void createFactoryWithGoogleCredentialsRetainsThem() {
+
+    ConnectionFactoryOptions options = ConnectionFactoryOptions.builder()
+        .option(DATABASE, "projects/p/instances/i/databases/d")
+        .option(DRIVER, "spanner")
+        .option(GOOGLE_CREDENTIALS, this.mockCredentials)
+        .build();
+
+    SpannerConnectionConfiguration config =
+        this.spannerConnectionFactoryProvider.createConfiguration(options);
+
+    assertEquals(this.mockCredentials, config.getCredentials());
+    verifyNoInteractions(this.mockCredentialsHelper);
+  }
+
+  @Test
+  public void createFactoryWithFileCredentials() {
+
+    when(this.mockCredentialsHelper.getFileCredentials(anyString()))
+        .thenReturn(this.mockCredentials);
+
+    ConnectionFactoryOptions options = ConnectionFactoryOptions.parse(
+        "r2dbc:spanner://host:443/projects/p/instances/i/databases/d?credentials=ABCD");
+
+    SpannerConnectionConfiguration config =
+        this.spannerConnectionFactoryProvider.createConfiguration(options);
+
+    assertEquals(this.mockCredentials, config.getCredentials());
+    verify(this.mockCredentialsHelper).getFileCredentials("ABCD");
+  }
+
+  @Test
+  public void multipleAuthenticationMethodsDisallowed() {
+    String prefix = "r2dbc:spanner://host:443/projects/p/instances/i/databases/d?";
+
+    assertThatThrownBy(() -> this.spannerConnectionFactoryProvider.createConfiguration(
+        ConnectionFactoryOptions.parse(prefix + "credentials=A&oauthToken=B")
+    )).isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Please provide at most one authentication option");
+  }
+
+  @Test
+  public void multipleAuthenticationMethodsDisallowedProgrammatic() {
+
+    ConnectionFactoryOptions options = ConnectionFactoryOptions.builder()
+        .option(DATABASE, "projects/p/instances/i/databases/d")
+        .option(DRIVER, "spanner")
+        .option(GOOGLE_CREDENTIALS, this.mockCredentials)
+        .option(CREDENTIALS, "ABC")
+        .build();
+
+    assertThatThrownBy(() -> this.spannerConnectionFactoryProvider.createConfiguration(options)
+    ).isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Please provide at most one authentication option");
+  }
+
+  @Test
+  public void passOptimizerVersion() {
+    ConnectionFactoryOptions options = ConnectionFactoryOptions.builder()
+        .option(DATABASE, "projects/p/instances/i/databases/d")
+        .option(DRIVER, "spanner")
+        .option(GOOGLE_CREDENTIALS, this.mockCredentials)
+        .option(OPTIMIZER_VERSION, "2")
+        .build();
+
+    SpannerConnectionConfiguration config =
+        this.spannerConnectionFactoryProvider.createConfiguration(options);
+
+    assertEquals("2", config.getOptimizerVersion());
   }
 
   private PartialResultSet makeBook(String odyssey) {

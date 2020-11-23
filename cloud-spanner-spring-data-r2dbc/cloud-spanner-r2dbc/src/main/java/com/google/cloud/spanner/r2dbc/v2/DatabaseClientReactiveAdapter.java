@@ -31,6 +31,7 @@ import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.spanner.v1.ExecuteSqlRequest.QueryOptions;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -63,9 +64,11 @@ class DatabaseClientReactiveAdapter {
 
   private final ExecutorService executorService;
 
-  private final DatabaseClientTransactionManager txnManager;
+  private DatabaseClientTransactionManager txnManager;
 
   private boolean autoCommit = true;
+
+  private QueryOptions queryOptions;
 
   /**
    * Instantiates the adapter with given client library {@code DatabaseClient} and executor.
@@ -83,22 +86,12 @@ class DatabaseClientReactiveAdapter {
     this.executorService = Executors.newFixedThreadPool(config.getThreadPoolSize());
     this.config = config;
     this.txnManager = new DatabaseClientTransactionManager(this.dbClient, this.executorService);
-  }
 
-  @VisibleForTesting
-  DatabaseClientReactiveAdapter(
-      SpannerConnectionConfiguration config,
-      Spanner spannerClient,
-      DatabaseClient dbClient,
-      DatabaseAdminClient dbAdminClient,
-      ExecutorService executorService,
-      DatabaseClientTransactionManager txnManager) {
-    this.config = config;
-    this.spannerClient = spannerClient;
-    this.dbClient = dbClient;
-    this.dbAdminClient = dbAdminClient;
-    this.executorService = executorService;
-    this.txnManager = txnManager;
+    QueryOptions.Builder builder =  QueryOptions.newBuilder();
+    if (config.getOptimizerVersion() != null) {
+      builder.setOptimizerVersion(config.getOptimizerVersion());
+    }
+    this.queryOptions = builder.build();
   }
 
   /**
@@ -337,4 +330,12 @@ class DatabaseClientReactiveAdapter {
         });
   }
 
+  public QueryOptions getQueryOptions() {
+    return this.queryOptions;
+  }
+
+  @VisibleForTesting
+  void setTxnManager(DatabaseClientTransactionManager txnManager) {
+    this.txnManager = txnManager;
+  }
 }
