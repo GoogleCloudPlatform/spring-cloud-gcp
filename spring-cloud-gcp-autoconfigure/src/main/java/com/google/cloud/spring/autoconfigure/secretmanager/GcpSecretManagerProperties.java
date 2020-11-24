@@ -23,8 +23,15 @@ import com.google.cloud.spring.core.GcpScope;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-@ConfigurationProperties("spring.cloud.gcp.secretmanager")
+import static com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManagerProperties.PREFIX;
+
+@ConfigurationProperties(PREFIX)
 public class GcpSecretManagerProperties implements CredentialsSupplier {
+
+	/**
+	 * Configuration prefix for Secret Manager properties.
+	 */
+	public static final String PREFIX = "spring.cloud.gcp.secretmanager";
 
 	/**
 	 * Overrides the GCP OAuth2 credentials specified in the Core module.
