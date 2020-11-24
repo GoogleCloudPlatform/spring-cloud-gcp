@@ -70,7 +70,10 @@ This might take a while.
 
 . https://github.com/GoogleCloudPlatform/spring-cloud-gcp/releases[Create] a new release on GitHub.
 
-. Increment the project base _patch_ version. For example, from `2.0.0-SNAPSHOT` to `2.0.1-SNAPSHOT`.
+. Increment the project base _patch_ version. For example, from `2.0.0-SNAPSHOT` to `2.0.1-SNAPSHOT`, do:
+```
+$ ./mvnw versions:set -DprocessAllModules -DnewVersion=2.0.1-SNAPSHOT
+```
 
 == Uploading Javadocs
 
