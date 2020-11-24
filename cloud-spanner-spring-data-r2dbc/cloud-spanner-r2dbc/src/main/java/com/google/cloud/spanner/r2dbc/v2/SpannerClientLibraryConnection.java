@@ -27,14 +27,9 @@ import io.r2dbc.spi.IsolationLevel;
 import io.r2dbc.spi.Statement;
 import io.r2dbc.spi.ValidationDepth;
 import org.reactivestreams.Publisher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
 
 public class SpannerClientLibraryConnection implements Connection {
-
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(SpannerClientLibraryConnection.class);
 
   private final DatabaseClientReactiveAdapter clientLibraryAdapter;
 
@@ -92,10 +87,8 @@ public class SpannerClientLibraryConnection implements Connection {
     }
     StatementType type = StatementParser.getStatementType(query);
     if (type == StatementType.DDL) {
-      LOGGER.debug("DDL statement detected: " + query);
       return new SpannerClientLibraryDdlStatement(query, this.clientLibraryAdapter);
     } else if (type == StatementType.DML) {
-      LOGGER.debug("DML statement detected: " + query);
       return new SpannerClientLibraryDmlStatement(this.clientLibraryAdapter, query);
     }
     return new SpannerClientLibraryStatement(this.clientLibraryAdapter, query);

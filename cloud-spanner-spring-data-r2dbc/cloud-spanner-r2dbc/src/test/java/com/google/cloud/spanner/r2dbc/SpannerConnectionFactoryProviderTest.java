@@ -111,6 +111,7 @@ public class SpannerConnectionFactoryProviderTest {
             .option(DRIVER, DRIVER_NAME)
             .option(URL, "r2dbc:spanner://spanner.googleapis.com:443/projects/"
                 + "myproject/instances/myinstance/databases/mydatabase")
+            .option(GOOGLE_CREDENTIALS, this.mockCredentials)
             .build();
 
     ConnectionFactory spannerConnectionFactory =

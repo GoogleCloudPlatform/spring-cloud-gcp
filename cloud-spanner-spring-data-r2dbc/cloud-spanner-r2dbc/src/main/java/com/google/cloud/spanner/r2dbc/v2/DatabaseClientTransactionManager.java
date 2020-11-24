@@ -103,7 +103,6 @@ class DatabaseClientTransactionManager {
    * Closes the read/write transaction manager and clears its state.
    */
   void clearTransactionManager() {
-    LOGGER.debug("close transaction manager");
     this.txnContextFuture = null;
     this.lastStep = null;
     if (this.transactionManager != null) {

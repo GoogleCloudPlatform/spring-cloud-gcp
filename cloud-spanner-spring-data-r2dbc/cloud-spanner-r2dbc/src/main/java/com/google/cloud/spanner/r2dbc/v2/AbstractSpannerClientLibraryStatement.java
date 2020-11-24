@@ -23,8 +23,6 @@ import io.r2dbc.spi.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import org.reactivestreams.Publisher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -34,9 +32,6 @@ import reactor.core.publisher.Mono;
  * <p>Supports parameter binding.
  */
 abstract class AbstractSpannerClientLibraryStatement implements Statement {
-
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(AbstractSpannerClientLibraryStatement.class);
 
   protected final DatabaseClientReactiveAdapter clientLibraryAdapter;
 

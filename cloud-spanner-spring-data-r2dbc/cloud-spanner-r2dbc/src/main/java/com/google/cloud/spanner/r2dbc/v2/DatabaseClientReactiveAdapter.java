@@ -150,7 +150,6 @@ class DatabaseClientReactiveAdapter {
     // TODO: if txn is committed/rolled back and then connection closed, clearTransactionManager
     // will run twice, causing trace span to be closed twice. Introduce `closed` field.
     return Mono.fromRunnable(() -> {
-      LOGGER.debug("  shutting down executor service");
       this.txnManager.clearTransactionManager();
       this.executorService.shutdown();
     });
