@@ -1,12 +1,20 @@
 = Spring Cloud GCP release process
 
-The actual release process is triggered by the release admin.
+All scripts can be found in the `.kokoro` directory.
+
+
+## Snapshots
+
+A commit to the `master` branch will automatically trigger the `prod:cloud-java-frameworks/spring-cloud-gcp/continuous` job that will publish snapshots to link:https://oss.sonatype.org/content/repositories/snapshots/com/google/cloud/spring-cloud-gcp/[Sonatype Snapshots repository].
+
+
+## Releases
+
 As opposed to the 1.x releases, the 2.0 release happens independent of the Spring Cloud release train.
 To simplify the process, perform this list of prerequisites before asking the release admin to run the release scripts.
 
 . Ensure that modules that shouldn't be released are not included in the `<modules>` block in the `release` profile of `pom.xml`.
-For GA releases this should be configured under the `central` Maven profile.
-+
+
 [source,xml]
 ----
 <profile>
@@ -38,17 +46,31 @@ For GA releases this should be configured under the `central` Maven profile.
 </profile>
 ----
 
-. Invoke the Kokoro `prod:cloud-java-frameworks/spring-cloud-gcp/stage` job.
-Note the staging repository ID in the logging output (i.e. `comgooglecloud-1234`).
+. Run the `prod:cloud-java-frameworks/spring-cloud-gcp/stage` Kokoro job.
 
-. Log in to link:https://oss.sonatype.org/[OSS Sonatype] and verify the contents of the staged package.
-The URL should be similar to https://oss.sonatype.org/content/repositories/{STAGING_ID}/com/google/cloud/.
-(If you don't have access to `com.google.cloud`, please make a request similar to https://issues.sonatype.org/browse/OSSRH-52371[this one] and ask for support from someone who already has access to this group ID.)
+. In the build logs, find the ID of the staging repository. You should see a log line that looks something like this:
+```
+[INFO]  * Created staging repository with ID "comgooglecloud-1416".
+```
+The `{STAGING_ID}` in this case is `comgooglecloud-1416`.
 
-. Invoke to the Kokoko `prod:cloud-java-frameworks/spring-cloud-gcp/promote` job.
-Verify the artifacts have been published (https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:spring-cloud-gcp, may take a few hours).
+. Verify staged artifacts by going to `https://oss.sonatype.org/content/repositories/{STAGING_ID}/com/google/cloud/`
++
+NOTE: You can also view all staged artifacts at http://oss.sonatype.org.
+To get access to `com.google.cloud` group ID, please make a request similar to https://issues.sonatype.org/browse/OSSRH-52371[this one] and ask someone who already has access to this group ID to vouch for you in the issue comments.
 
-. Update start.spring.io by ensuring link:https://github.com/spring-io/start.spring.io/blob/master/start-site/src/main/resources/application.yml[Spring Boot Initializr] is updated to include the new version of Spring Cloud GCP.
+. If you want to drop the staged artifacts, run the `prod:cloud-java-frameworks/spring-cloud-gcp/drop` Kokoro job.
+Provide the staging repository ID as an environment variable (i.e. `STAGING_REPOSITORY_ID=comgooglecloud-1416`).
+
+. If you want to release the staged artifacts, run the `prod:cloud-java-frameworks/spring-cloud-gcp/promote` Kokoro job.
+Providing the staging repository ID as an environment variable (i.e. `STAGING_REPOSITORY_ID=comgooglecloud-1416`).
+
+. Verify that the new version has been published to Maven Central by checking https://repo.maven.apache.org/maven2/com/google/cloud/spring-cloud-gcp/[here].
+This might take a while.
+
+. https://github.com/GoogleCloudPlatform/spring-cloud-gcp/releases[Create] a new release on GitHub.
+
+. Increment the project base _patch_ version. For example, from `2.0.0-SNAPSHOT` to `2.0.1-SNAPSHOT`.
 
 == Uploading Javadocs
 
