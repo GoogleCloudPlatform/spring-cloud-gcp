@@ -70,6 +70,10 @@ This might take a while.
 
 . https://github.com/GoogleCloudPlatform/spring-cloud-gcp/releases[Create] a new release on GitHub.
 
+. Publish the Javadocs (see section below).
+
+. Publish the Reference documentation (see section below).
+
 . Increment the project base _patch_ version. For example, from `2.0.0-SNAPSHOT` to `2.0.1-SNAPSHOT`, do:
 ```
 $ ./mvnw versions:set -DprocessAllModules -DnewVersion=2.0.1-SNAPSHOT
@@ -78,7 +82,6 @@ $ ./mvnw versions:set -DprocessAllModules -DnewVersion=2.0.1-SNAPSHOT
 == Uploading Javadocs
 
 After releasing a new version of Spring Cloud GCP, you will need to upload the javadocs for the released version.
-By this point, we assume that a new release branch has been created for project (such as `2.0.x`, `2.1.x`, etc.).
 
 The latest version of the docs can be accessed at the `latest/` url:
 https://googleapis.dev/java/spring-cloud-gcp/latest/index.html
@@ -102,7 +105,11 @@ https://googleapis.dev/java/spring-cloud-gcp/{BRANCH_VERSION_NAME}/index.html
 +
 Example: If you published the javadocs for version `2.0.0-SNAPSHOT`, then the URL would be: https://googleapis.dev/java/spring-cloud-gcp/2.0.0-SNAPSHOT/index.html
 
-5. For GA releases, ask on the https://gitter.im/spring-cloud-gcp/Lobby[Spring Cloud GCP Gitter] for the Spring team to update the https://spring.io/projects/spring-cloud-gcp#learn[API Documentation link] to point to the published Javadocs of the correct version.
 
-6. Smoke test changes by running through a handful of our link:https://codelabs.developers.google.com/spring[Spring Cloud GCP codelabs] with the newly release version.
+== Updating Spring Documentation
+. (TODO): Update GitHub Pages to publish the refdoc for the newly released version.
+
+. For GA releases, ask on the https://gitter.im/spring-cloud-gcp/Lobby[Spring Cloud GCP Gitter] for the Spring team to update the https://spring.io/projects/spring-cloud-gcp#learn[API Documentation link] to point to the newly published Ref doc and Javadocs.
+
+. Smoke test changes by running through a handful of our link:https://codelabs.developers.google.com/spring[Spring Cloud GCP codelabs] with the newly release version.
 Update the instructions as needed.
