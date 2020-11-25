@@ -21,7 +21,7 @@ import com.google.cloud.spanner.ValueBinder;
 import com.google.cloud.spanner.r2dbc.util.Assert;
 import java.util.function.BiConsumer;
 
-public class ClientLibraryTypeBinderImpl<T> implements ClientLibraryTypeBinder<T> {
+class ClientLibraryTypeBinderImpl<T> implements ClientLibraryTypeBinder<T> {
 
   private Class<T> type;
 

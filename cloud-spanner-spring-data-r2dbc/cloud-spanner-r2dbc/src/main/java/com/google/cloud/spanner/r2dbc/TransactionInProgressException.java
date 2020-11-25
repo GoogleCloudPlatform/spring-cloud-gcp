@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Google LLC
+ * Copyright 2020-2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spanner.r2dbc.v2;
+package com.google.cloud.spanner.r2dbc;
 
 import io.r2dbc.spi.R2dbcNonTransientException;
 
-public class ConversionFailureException extends R2dbcNonTransientException {
+public class TransactionInProgressException extends R2dbcNonTransientException {
 
-  public ConversionFailureException(String message) {
-    super(message);
+  public static final String MSG_READONLY =
+      "Cannot begin a new transaction because a readonly transaction is already in progress.";
+  public static final String MSG_READWRITE =
+      "Cannot begin a new transaction because a read/write transaction is already in progress.";
+
+  public TransactionInProgressException(boolean isReadwrite) {
+    super(isReadwrite ? MSG_READWRITE : MSG_READONLY);
   }
+
 }

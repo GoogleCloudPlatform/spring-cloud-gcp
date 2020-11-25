@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * {@link RowMetadata} implementation for Cloud Spanner.
  */
-public class SpannerClientLibraryRowMetadata implements RowMetadata {
+class SpannerClientLibraryRowMetadata implements RowMetadata {
 
   private final List<ColumnMetadata> columnMetadatas;
 

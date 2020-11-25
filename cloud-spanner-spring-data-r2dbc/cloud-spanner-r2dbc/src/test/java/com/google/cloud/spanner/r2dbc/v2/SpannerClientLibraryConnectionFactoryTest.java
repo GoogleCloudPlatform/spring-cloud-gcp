@@ -21,7 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
+import io.r2dbc.spi.Connection;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Mono;
 
 public class SpannerClientLibraryConnectionFactoryTest {
 
@@ -52,5 +54,14 @@ public class SpannerClientLibraryConnectionFactoryTest {
 
     // The version suffix is not available until code is packaged as a JAR.
     assertThat(options.getUserAgent()).startsWith("cloud-spanner-r2dbc/");
+  }
+
+  @Test
+  public void testSessionCreation() {
+    SpannerClientLibraryConnectionFactory cf =
+        new SpannerClientLibraryConnectionFactory(this.configBuilder.build());
+    Connection conn = Mono.from(cf.create()).block();
+
+    assertThat(conn).isInstanceOf(SpannerClientLibraryConnection.class);
   }
 }

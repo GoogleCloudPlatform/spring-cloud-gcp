@@ -18,6 +18,7 @@ package com.google.cloud.spanner.r2dbc.v2;
 
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
+import com.google.cloud.spanner.r2dbc.api.SpannerConnection;
 import com.google.cloud.spanner.r2dbc.statement.StatementParser;
 import com.google.cloud.spanner.r2dbc.statement.StatementType;
 import io.r2dbc.spi.Batch;
@@ -29,7 +30,7 @@ import io.r2dbc.spi.ValidationDepth;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
-public class SpannerClientLibraryConnection implements Connection {
+class SpannerClientLibraryConnection implements Connection, SpannerConnection {
 
   private final DatabaseClientReactiveAdapter clientLibraryAdapter;
 
@@ -48,19 +49,12 @@ public class SpannerClientLibraryConnection implements Connection {
     return this.clientLibraryAdapter.beginTransaction();
   }
 
-  /**
-   * Allows starting a readonly Cloud Spanner transaction with given staleness settings.
-   * @param timestampBound staleness settings
-   * @return {@link Mono} signaling readonly transaction is ready for use
-   */
+  @Override
   public Mono<Void> beginReadonlyTransaction(TimestampBound timestampBound) {
     return this.clientLibraryAdapter.beginReadonlyTransaction(timestampBound);
   }
 
-  /**
-   * Allows starting a readonly Cloud Spanner transaction with strong consistency.
-   * @return {@link Mono} signaling readonly transaction is ready for use
-   */
+  @Override
   public Mono<Void> beginReadonlyTransaction() {
     return this.clientLibraryAdapter.beginReadonlyTransaction(TimestampBound.strong());
   }

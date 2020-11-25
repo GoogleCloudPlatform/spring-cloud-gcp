@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spanner.r2dbc.v2.conversion;
+package com.google.cloud.spanner.r2dbc.v2;
 
-import com.google.cloud.spanner.r2dbc.v2.ConversionFailureException;
+import com.google.cloud.spanner.r2dbc.ConversionFailureException;
 
-public class LongIntegerConverter implements SpannerClientLibrariesConverter<Integer> {
+class LongIntegerConverter implements SpannerClientLibrariesConverter<Integer> {
 
   @Override
   public boolean canConvert(Class<?> inputClass, Class<?> resultClass) {

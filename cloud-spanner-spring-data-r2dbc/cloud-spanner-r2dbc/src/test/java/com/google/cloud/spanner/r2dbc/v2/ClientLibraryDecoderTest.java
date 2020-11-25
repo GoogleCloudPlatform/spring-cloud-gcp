@@ -25,6 +25,7 @@ import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Value;
+import com.google.cloud.spanner.r2dbc.ConversionFailureException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;

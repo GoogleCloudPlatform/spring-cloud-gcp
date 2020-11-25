@@ -18,7 +18,7 @@ package com.google.cloud.spanner.r2dbc.v2;
 
 import com.google.cloud.spanner.Statement.Builder;
 
-public interface ClientLibraryTypeBinder<T> {
+interface ClientLibraryTypeBinder<T> {
 
   /**
    * Indicates if the binder can bind a value of a given type.

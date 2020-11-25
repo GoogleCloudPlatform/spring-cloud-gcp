@@ -21,14 +21,13 @@ import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.IN
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.Type;
-import com.google.cloud.spanner.Type.StructField;
-import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryColumnMetadata;
-import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryConnection;
+import com.google.cloud.spanner.r2dbc.api.SpannerConnection;
 import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryConnectionFactory;
 import io.r2dbc.spi.ColumnMetadata;
 import io.r2dbc.spi.Connection;
@@ -41,7 +40,6 @@ import io.r2dbc.spi.Statement;
 import io.r2dbc.spi.ValidationDepth;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -120,21 +118,13 @@ public class ClientLibraryBasedIT {
   @BeforeEach
   public void deleteData() {
 
-    SpannerClientLibraryConnection con =
-        Mono.from(connectionFactory.create()).cast(SpannerClientLibraryConnection.class).block();
+    Connection conn =
+        Mono.from(connectionFactory.create()).block();
 
     Mono.from(
-        con.createStatement("DELETE FROM BOOKS WHERE true").execute())
+        conn.createStatement("DELETE FROM BOOKS WHERE true").execute())
         .flatMap(rs -> Mono.from(rs.getRowsUpdated()))
         .block();
-  }
-
-  @Test
-  public void testSessionCreation() {
-
-    Connection conn = Mono.from(connectionFactory.create()).block();
-
-    assertThat(conn).isInstanceOf(SpannerClientLibraryConnection.class);
   }
 
   @Test
@@ -181,21 +171,20 @@ public class ClientLibraryBasedIT {
             .flatMapMany(rs -> rs.getRowsUpdated())
     ).expectNext(1).verifyComplete();
 
-    List<ColumnMetadata> expectedColumnMetadataList = Arrays
-        .asList(
-            new SpannerClientLibraryColumnMetadata(StructField.of("AUTHOR", Type.string())),
-            new SpannerClientLibraryColumnMetadata(StructField.of("PRICE", Type.numeric()))
-            );
     StepVerifier.create(
         Mono.from(conn.createStatement("SELECT AUTHOR, PRICE FROM BOOKS LIMIT 1").execute())
-            .flatMapMany(rs -> rs.map(
-                (row, rmeta) -> {
-                  List<ColumnMetadata> metadataList = new ArrayList<>();
-                  rmeta.getColumnMetadatas().forEach(metadataList::add);
-                  return metadataList;
-                })
-            ))
-        .expectNext(expectedColumnMetadataList)
+            .flatMapMany(rs -> rs.map((row, rmeta) -> {
+              List<ColumnMetadata> list = new ArrayList<>();
+              rmeta.getColumnMetadatas().forEach(list::add);
+              return list;
+            })))
+        .assertNext(metadataList -> {
+          assertEquals(2, metadataList.size());
+          assertEquals("AUTHOR", metadataList.get(0).getName());
+          assertEquals("PRICE", metadataList.get(1).getName());
+          assertEquals(Type.string(), metadataList.get(0).getNativeTypeMetadata());
+          assertEquals(Type.numeric(), metadataList.get(1).getNativeTypeMetadata());
+        })
         .verifyComplete();
   }
 
@@ -619,8 +608,8 @@ public class ClientLibraryBasedIT {
 
     String uuid1 = "transaction1-staleread" + this.random.nextInt();
 
-    SpannerClientLibraryConnection conn = Mono.from(connectionFactory.create())
-        .cast(SpannerClientLibraryConnection.class).block();
+    Connection conn = Mono.from(connectionFactory.create()).block();
+
     Statement readStatement = conn.createStatement("SELECT count(*) from BOOKS WHERE UUID=@uuid")
         .bind("uuid", uuid1);
 
@@ -629,7 +618,8 @@ public class ClientLibraryBasedIT {
               conn.createStatement(makeInsertQuery(uuid1, 100, 15.0)).execute()
           ).flatMap(r -> r.getRowsUpdated()),
           Flux.from(readStatement.execute()).flatMap(result -> result.map((row, rm) -> row.get(1))),
-          conn.beginReadonlyTransaction(TimestampBound.ofExactStaleness(1, TimeUnit.SECONDS)),
+          ((SpannerConnection) conn).beginReadonlyTransaction(
+              TimestampBound.ofExactStaleness(1, TimeUnit.SECONDS)),
           Flux.from(readStatement.execute()).flatMap(result -> result.map((row, rm) -> row.get(1))),
           conn.commitTransaction(),
           Flux.from(readStatement.execute()).flatMap(result -> result.map((row, rm) -> row.get(1)))
@@ -641,6 +631,37 @@ public class ClientLibraryBasedIT {
         .as("stale read returns nothing")
         .expectNext(1L)
         .as("strong read returns the inserted row after stale-read transaction terminates")
+        .verifyComplete();
+  }
+
+  @Test
+  public void testStrongReadFromSubclassedConnection() throws InterruptedException {
+
+    String uuid1 = "transaction1-strong-read" + this.random.nextInt();
+    String sql = "SELECT count(*) from BOOKS WHERE UUID='" + uuid1 + "'";
+
+    StepVerifier.create(
+        Mono.from(connectionFactory.create()).flatMapMany(conn ->
+            Flux.concat(
+                Flux.from(conn.createStatement(sql).execute()).flatMap(this::getFirstNumber),
+                Flux.from(conn.createStatement(makeInsertQuery(uuid1, 100, 15.0)).execute())
+                    .flatMap(r -> r.getRowsUpdated()),
+                Flux.from(conn.createStatement(sql).execute()).flatMap(this::getFirstNumber),
+                ((SpannerConnection) conn).beginReadonlyTransaction(), // non-SPI method
+                Flux.from(conn.createStatement(sql).execute()).flatMap(this::getFirstNumber),
+                conn.commitTransaction(),
+                Flux.from(conn.createStatement(sql).execute()).flatMap(this::getFirstNumber)
+            )
+        )).expectNext(0L)
+        .as("empty table; nothing has been inserted yet")
+        .expectNext(1)
+        .as("row inserted")
+        .expectNext(1L)
+        .as("strong read returns the inserted row without a transaction")
+        .expectNext(1L)
+        .as("strong read in read-only transaction returns the inserted row, too")
+        .expectNext(1L)
+        .as("strong read still returns the inserted row, after transaction completes")
         .verifyComplete();
   }
 

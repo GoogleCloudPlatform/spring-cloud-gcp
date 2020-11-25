@@ -76,7 +76,7 @@ class DatabaseClientReactiveAdapter {
    * @param spannerClient Cloud Spanner client used to run queries and manage transactions
    * @param config User-provided connection configuration options
    */
-  public DatabaseClientReactiveAdapter(
+  DatabaseClientReactiveAdapter(
       Spanner spannerClient,
       SpannerConnectionConfiguration config) {
     this.spannerClient = spannerClient;
@@ -99,7 +99,7 @@ class DatabaseClientReactiveAdapter {
    *
    * @return reactive pipeline for starting a transaction
    */
-  public Mono<Void> beginTransaction() {
+  Mono<Void> beginTransaction() {
     return convertFutureToMono(() -> this.txnManager.beginTransaction()).then();
   }
 
@@ -108,7 +108,7 @@ class DatabaseClientReactiveAdapter {
    *
    * @return reactive pipeline for starting a transaction
    */
-  public Mono<Void> beginReadonlyTransaction(TimestampBound timestampBound) {
+  Mono<Void> beginReadonlyTransaction(TimestampBound timestampBound) {
 
     return Mono.defer(() -> {
       this.txnManager.beginReadonlyTransaction(timestampBound);
@@ -123,7 +123,7 @@ class DatabaseClientReactiveAdapter {
    *
    * @return reactive pipeline for committing a transaction
    */
-  public Mono<Void> commitTransaction() {
+  Mono<Void> commitTransaction() {
     return convertFutureToMono(() -> this.txnManager.commitTransaction())
         .doOnTerminate(this.txnManager::clearTransactionManager)
         .then();
@@ -134,7 +134,7 @@ class DatabaseClientReactiveAdapter {
    *
    * @return reactive pipeline for rolling back a transaction
    */
-  public Publisher<Void> rollback() {
+  Publisher<Void> rollback() {
     return convertFutureToMono(() -> this.txnManager.rollbackTransaction())
         .doOnTerminate(this.txnManager::clearTransactionManager);
   }
@@ -146,7 +146,7 @@ class DatabaseClientReactiveAdapter {
    *
    * @return reactive pipeline for closing the connection.
    */
-  public Mono<Void> close() {
+  Mono<Void> close() {
     // TODO: if txn is committed/rolled back and then connection closed, clearTransactionManager
     // will run twice, causing trace span to be closed twice. Introduce `closed` field.
     return Mono.fromRunnable(() -> {
@@ -160,7 +160,7 @@ class DatabaseClientReactiveAdapter {
    *
    * @return true if the connection is working, false if not.
    */
-  public Mono<Boolean> healthCheck() {
+  Mono<Boolean> healthCheck() {
     return Mono.defer(() -> {
       if (this.executorService.isShutdown() || this.spannerClient.isClosed()) {
         return Mono.just(false);
@@ -183,11 +183,11 @@ class DatabaseClientReactiveAdapter {
     return Mono.fromSupplier(() -> !this.executorService.isShutdown());
   }
 
-  public boolean isAutoCommit() {
+  boolean isAutoCommit() {
     return this.autoCommit;
   }
 
-  public Publisher<Void> setAutoCommit(boolean autoCommit) {
+  Publisher<Void> setAutoCommit(boolean autoCommit) {
     return Mono.defer(() -> {
       Mono<Void> result = Mono.empty();
       if (this.autoCommit != autoCommit && this.txnManager.isInTransaction()) {
@@ -205,7 +205,7 @@ class DatabaseClientReactiveAdapter {
    *
    * @return reactive pipeline for running a DML statement
    */
-  public Mono<Long> runDmlStatement(com.google.cloud.spanner.Statement statement) {
+  Mono<Long> runDmlStatement(com.google.cloud.spanner.Statement statement) {
     return runBatchDmlInternal(ctx -> ctx.executeUpdateAsync(statement));
   }
 
@@ -216,7 +216,7 @@ class DatabaseClientReactiveAdapter {
    *
    * @return reactive pipeline for running the provided DML statements
    */
-  public Mono<long[]> runBatchDml(List<Statement> statements) {
+  Mono<long[]> runBatchDml(List<Statement> statements) {
     return runBatchDmlInternal(ctx -> ctx.batchUpdateAsync(statements));
   }
 
@@ -245,7 +245,7 @@ class DatabaseClientReactiveAdapter {
     });
   }
 
-  public Flux<SpannerClientLibraryRow> runSelectStatement(
+  Flux<SpannerClientLibraryRow> runSelectStatement(
       com.google.cloud.spanner.Statement statement) {
     return Flux.create(
         sink -> {
@@ -257,7 +257,7 @@ class DatabaseClientReactiveAdapter {
         });
   }
 
-  public Mono<Void> runDdlStatement(String query) {
+  Mono<Void> runDdlStatement(String query) {
     return convertFutureToMono(() -> this.dbAdminClient.updateDatabaseDdl(
         this.config.getInstanceName(),
         this.config.getDatabaseName(),
@@ -329,7 +329,7 @@ class DatabaseClientReactiveAdapter {
         });
   }
 
-  public QueryOptions getQueryOptions() {
+  QueryOptions getQueryOptions() {
     return this.queryOptions;
   }
 

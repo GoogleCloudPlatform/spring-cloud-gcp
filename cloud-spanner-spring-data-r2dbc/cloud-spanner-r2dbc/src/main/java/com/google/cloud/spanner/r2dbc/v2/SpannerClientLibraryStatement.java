@@ -24,7 +24,7 @@ import reactor.core.publisher.Mono;
 /**
  * Cloud Spanner implementation of R2DBC SPI for SELECT query statements.
  */
-public class SpannerClientLibraryStatement extends AbstractSpannerClientLibraryStatement {
+class SpannerClientLibraryStatement extends AbstractSpannerClientLibraryStatement {
 
   /**
    * Creates a ready-to-run Cloud Spanner statement.

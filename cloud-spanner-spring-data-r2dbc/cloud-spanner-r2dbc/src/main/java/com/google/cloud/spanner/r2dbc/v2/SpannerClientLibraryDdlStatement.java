@@ -22,7 +22,7 @@ import io.r2dbc.spi.Statement;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public class SpannerClientLibraryDdlStatement implements Statement {
+class SpannerClientLibraryDdlStatement implements Statement {
 
   private String query;
 

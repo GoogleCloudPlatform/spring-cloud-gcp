@@ -24,7 +24,7 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public class SpannerClientLibraryResult implements Result {
+class SpannerClientLibraryResult implements Result {
 
   private final Flux<SpannerClientLibraryRow> resultRows;
 

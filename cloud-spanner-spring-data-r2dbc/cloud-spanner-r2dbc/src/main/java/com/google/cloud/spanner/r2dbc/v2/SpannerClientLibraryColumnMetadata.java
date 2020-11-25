@@ -24,11 +24,11 @@ import java.util.Objects;
 /**
  * {@link ColumnMetadata} implementation for Cloud Spanner.
  */
-public class SpannerClientLibraryColumnMetadata implements ColumnMetadata {
+class SpannerClientLibraryColumnMetadata implements ColumnMetadata {
 
   private final StructField structField;
 
-  public SpannerClientLibraryColumnMetadata(StructField structField) {
+  SpannerClientLibraryColumnMetadata(StructField structField) {
     this.structField = structField;
   }
 

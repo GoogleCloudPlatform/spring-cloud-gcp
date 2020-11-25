@@ -85,14 +85,14 @@ Mono.from(connectionFactory.create())
 ```
 
 ### Read-Only Transactions
-Read-only transactions, including stale transactions, can be used by downcasting the `Connection` object to `SpannerClientLibraryConnection` and calling `beginReadonlyTransaction()` on it.
+Read-only transactions, including stale transactions, can be used by downcasting the `Connection` object to `com.google.cloud.spanner.r2dbc.api.SpannerConnection` and calling `beginReadonlyTransaction()` on it.
 Invoking `beginReadonlyTransaction()` without parameters will begin a new strongly consistent readonly transaction.
 To customize staleness, pass in a `TimestampBound` parameter.
 ```java
 Mono.from(connectionFactory.create())
             .flatMapMany(c ->
                 Flux.concat(
-                          conn.beginReadonlyTransaction(TimestampBound.ofExactStaleness(1, TimeUnit.SECONDS)),
+                          ((SpannerConnection) conn).beginReadonlyTransaction(TimestampBound.ofExactStaleness(1, TimeUnit.SECONDS)),
                             ...
                           conn.commitTransaction(),
                     )

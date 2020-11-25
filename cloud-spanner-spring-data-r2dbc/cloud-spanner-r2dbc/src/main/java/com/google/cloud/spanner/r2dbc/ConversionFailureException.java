@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spanner.r2dbc.v2.conversion;
+package com.google.cloud.spanner.r2dbc;
 
-public interface SpannerClientLibrariesConverter<T> {
+import io.r2dbc.spi.R2dbcNonTransientException;
 
-  boolean canConvert(Class<?> inputClass, Class<?> resultClass);
+public class ConversionFailureException extends R2dbcNonTransientException {
 
-  T convert(Object input);
-
+  public ConversionFailureException(String message) {
+    super(message);
+  }
 }

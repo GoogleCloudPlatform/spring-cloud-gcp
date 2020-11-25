@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-public class ClientLibraryDecoder {
+class ClientLibraryDecoder {
   private static final Map<Type, BiFunction<Struct, Integer, Object>> decodersMap =
       createDecoders();
 

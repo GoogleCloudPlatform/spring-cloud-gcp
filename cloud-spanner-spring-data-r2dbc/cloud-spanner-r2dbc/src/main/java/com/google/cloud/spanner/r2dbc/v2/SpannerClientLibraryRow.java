@@ -21,7 +21,7 @@ import com.google.cloud.spanner.r2dbc.util.Assert;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 
-public class SpannerClientLibraryRow implements Row {
+class SpannerClientLibraryRow implements Row {
   private Struct rowFields;
 
   public SpannerClientLibraryRow(Struct rowFields) {

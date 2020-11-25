@@ -27,7 +27,7 @@ import reactor.core.publisher.Mono;
 /**
  * Cloud Spanner implementation of R2DBC SPI for DML statements.
  */
-public class SpannerClientLibraryDmlStatement extends AbstractSpannerClientLibraryStatement {
+class SpannerClientLibraryDmlStatement extends AbstractSpannerClientLibraryStatement {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(SpannerClientLibraryDmlStatement.class);
