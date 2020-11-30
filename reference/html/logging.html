@@ -2,112 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="generator" content="Asciidoctor 2.0.10">
 <title>Stackdriver Logging</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
-<script type="text/javascript">
-function addBlockSwitches() {
-	$('.primary').each(function() {
-		primary = $(this);
-		createSwitchItem(primary, createBlockSwitch(primary)).item.addClass("selected");
-		primary.children('.title').remove();
-	});
-	$('.secondary').each(function(idx, node) {
-		secondary = $(node);
-		primary = findPrimary(secondary);
-		switchItem = createSwitchItem(secondary, primary.children('.switch'));
-		switchItem.content.addClass('hidden');
-		findPrimary(secondary).append(switchItem.content);
-		secondary.remove();
-	});
-}
-
-function createBlockSwitch(primary) {
-	blockSwitch = $('<div class="switch"></div>');
-	primary.prepend(blockSwitch);
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	candidate = secondary.prev();
-	while (!candidate.is('.primary')) {
-		candidate = candidate.prev();
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	blockName = block.children('.title').text();
-	content = block.children('.content').first().append(block.next('.colist'));
-	item = $('<div class="switch--item">' + blockName + '</div>');
-	item.on('click', '', content, function(e) {
-		$(this).addClass('selected');
-		$(this).siblings().removeClass('selected');
-		e.data.siblings('.content').addClass('hidden');
-		e.data.removeClass('hidden');
-	});
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function globalSwitch() {
-	$('.switch--item').each(function() {
-		$(this).off('click');
-		$(this).on('click', function() {
-			selectedText = $(this).text()
-			selectedIndex = $(this).index()
-			$(".switch--item").filter(function() { return ($(this).text() === selectedText) }).each(function() {
-				$(this).addClass('selected');
-				$(this).siblings().removeClass('selected');
-				selectedContent = $(this).parent().siblings(".content").eq(selectedIndex)
-				selectedContent.removeClass('hidden');
-				selectedContent.siblings().addClass('hidden');
-			});
-		});
-	});
-}
-
-$(addBlockSwitches);
-$(globalSwitch);
-
-</script>
-
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
@@ -133,8 +33,8 @@ $(globalSwitch);
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-logging&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -144,8 +44,8 @@ $(globalSwitch);
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>dependencies {
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter-logging'
+<pre class="highlight"><code>dependencies {
+    implementation("org.springframework.cloud:spring-cloud-gcp-starter-logging")
 }</code></pre>
 </div>
 </div>
@@ -205,7 +105,7 @@ However, if Sleuth is used the trace ID will be picked up from the MDC.</p>
 <div class="sect3">
 <h4 id="_log_via_api"><a class="link" href="#_log_via_api">Log via API</a></h4>
 <div class="paragraph">
-<p>A Stackdriver appender is available using <code>org/springframework/cloud/gcp/logging/logback-appender.xml</code>.
+<p>A Stackdriver appender is available using <code>com/google/cloud/spring/logging/logback-appender.xml</code>.
 This appender builds a Stackdriver Logging log entry from a JUL or Logback log entry, adds a trace ID to it and sends it to Stackdriver Logging.</p>
 </div>
 <div class="paragraph">
@@ -216,8 +116,8 @@ This appender builds a Stackdriver Logging log entry from a JUL or Logback log e
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;configuration&gt;
-  &lt;include resource="org/springframework/cloud/gcp/logging/logback-appender.xml" /&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
+  &lt;include resource="com/google/cloud/spring/logging/logback-appender.xml" /&gt;
 
   &lt;root level="INFO"&gt;
     &lt;appender-ref ref="STACKDRIVER" /&gt;
@@ -261,15 +161,15 @@ This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmen
 <div class="sect3">
 <h4 id="_log_via_console"><a class="link" href="#_log_via_console">Log via Console</a></h4>
 <div class="paragraph">
-<p>For Logback, a <code>org/springframework/cloud/gcp/logging/logback-json-appender.xml</code> file is made available for import to make it easier to configure the JSON Logback appender.</p>
+<p>For Logback, a <code>com/google/cloud/spring/logging/logback-json-appender.xml</code> file is made available for import to make it easier to configure the JSON Logback appender.</p>
 </div>
 <div class="paragraph">
 <p>Your configuration may then look something like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;configuration&gt;
-  &lt;include resource="org/springframework/cloud/gcp/logging/logback-json-appender.xml" /&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
+  &lt;include resource="com/google/cloud/spring/logging/logback-json-appender.xml" /&gt;
 
   &lt;root level="INFO"&gt;
     &lt;appender-ref ref="CONSOLE_JSON" /&gt;
@@ -279,7 +179,7 @@ This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmen
 </div>
 <div class="paragraph">
 <p>If your application is running on Google Kubernetes Engine, Google Compute Engine or Google App Engine Flexible, your console logging is automatically saved to Google Stackdriver Logging.
-Therefore, you can just include <code>org/springframework/cloud/gcp/logging/logback-json-appender.xml</code> in your logging configuration, which logs JSON entries to the console.
+Therefore, you can just include <code>com/google/cloud/spring/logging/logback-json-appender.xml</code> in your logging configuration, which logs JSON entries to the console.
 The trace id will be set correctly.</p>
 </div>
 <div class="paragraph">
@@ -399,12 +299,12 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;configuration &gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration &gt;
   &lt;property name="projectId" value="${projectId:-${GOOGLE_CLOUD_PROJECT}}"/&gt;
 
   &lt;appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender"&gt;
     &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder"&gt;
-      &lt;layout class="org.springframework.cloud.gcp.logging.StackdriverJsonLayout"&gt;
+      &lt;layout class="com.google.cloud.spring.logging.StackdriverJsonLayout"&gt;
         &lt;projectId&gt;${projectId}&lt;/projectId&gt;
 
         &lt;!--&lt;includeTraceId&gt;true&lt;/includeTraceId&gt;--&gt;
@@ -434,7 +334,7 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
 <div class="sect2">
 <h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
 <div class="paragraph">
-<p>A <a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-logging-sample">Sample Spring Boot Application</a> is provided to show how to use the Cloud logging starter.</p>
+<p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-logging-sample">Sample Spring Boot Application</a> is provided to show how to use the Cloud logging starter.</p>
 </div>
 </div>
 </div>
@@ -442,8 +342,5 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
 </div>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
-<script src="js/highlight/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
 </body>
 </html>

@@ -2,112 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="generator" content="Asciidoctor 2.0.10">
 <title>Channel Adapters for Cloud Pub/Sub</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
-<script type="text/javascript">
-function addBlockSwitches() {
-	$('.primary').each(function() {
-		primary = $(this);
-		createSwitchItem(primary, createBlockSwitch(primary)).item.addClass("selected");
-		primary.children('.title').remove();
-	});
-	$('.secondary').each(function(idx, node) {
-		secondary = $(node);
-		primary = findPrimary(secondary);
-		switchItem = createSwitchItem(secondary, primary.children('.switch'));
-		switchItem.content.addClass('hidden');
-		findPrimary(secondary).append(switchItem.content);
-		secondary.remove();
-	});
-}
-
-function createBlockSwitch(primary) {
-	blockSwitch = $('<div class="switch"></div>');
-	primary.prepend(blockSwitch);
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	candidate = secondary.prev();
-	while (!candidate.is('.primary')) {
-		candidate = candidate.prev();
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	blockName = block.children('.title').text();
-	content = block.children('.content').first().append(block.next('.colist'));
-	item = $('<div class="switch--item">' + blockName + '</div>');
-	item.on('click', '', content, function(e) {
-		$(this).addClass('selected');
-		$(this).siblings().removeClass('selected');
-		e.data.siblings('.content').addClass('hidden');
-		e.data.removeClass('hidden');
-	});
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function globalSwitch() {
-	$('.switch--item').each(function() {
-		$(this).off('click');
-		$(this).on('click', function() {
-			selectedText = $(this).text()
-			selectedIndex = $(this).index()
-			$(".switch--item").filter(function() { return ($(this).text() === selectedText) }).each(function() {
-				$(this).addClass('selected');
-				$(this).siblings().removeClass('selected');
-				selectedContent = $(this).parent().siblings(".content").eq(selectedIndex)
-				selectedContent.removeClass('hidden');
-				selectedContent.siblings().addClass('hidden');
-			});
-		});
-	});
-}
-
-$(addBlockSwitches);
-$(globalSwitch);
-
-</script>
-
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
@@ -122,7 +22,7 @@ $(globalSwitch);
 <div class="sect2">
 <h3 id="_channel_adapters_for_cloud_pubsub"><a class="link" href="#_channel_adapters_for_cloud_pubsub">Channel Adapters for Cloud Pub/Sub</a></h3>
 <div class="paragraph">
-<p>The channel adapters for Google Cloud Pub/Sub connect your Spring <a href="https://docs.spring.io/spring-integration/reference/html/messaging-channels-section.html#channel"><code>MessageChannels</code></a> to Google Cloud Pub/Sub topics and subscriptions.
+<p>The channel adapters for Google Cloud Pub/Sub connect your Spring <a href="https://docs.spring.io/spring-integration/reference/html/channel.html"><code>MessageChannels</code></a> to Google Cloud Pub/Sub topics and subscriptions.
 This enables messaging between different processes, applications or micro-services backed up by Google Cloud Pub/Sub.</p>
 </div>
 <div class="paragraph">
@@ -133,8 +33,8 @@ This enables messaging between different processes, applications or micro-servic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-pubsub&lt;/artifactId&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
@@ -148,9 +48,9 @@ This enables messaging between different processes, applications or micro-servic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>dependencies {
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter-pubsub'
-    compile group: 'org.springframework.integration', name: 'spring-integration-core'
+<pre class="highlight"><code>dependencies {
+    implementation("org.springframework.cloud:spring-cloud-gcp-starter-pubsub")
+    implementation("org.springframework.integration:spring-integration-core")
 }</code></pre>
 </div>
 </div>
@@ -171,7 +71,7 @@ The <code>PubSubInboundChannelAdapter</code> delegates the conversion to the des
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public MessageChannel pubsubInputChannel() {
     return new PublishSubscribeChannel();
 }
@@ -285,7 +185,7 @@ Users can extract the <code>BasicAcknowledgeablePubsubMessage</code> using the <
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 @ServiceActivator(inputChannel = "pubsubInputChannel")
 public MessageHandler messageReceiver() {
     return message -&gt; {
@@ -318,7 +218,7 @@ Otherwise, the adapter will assume that processing completed successfully and wi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public MessageChannel pubsubInputChannel() {
     return new PublishSubscribeChannel();
 }
@@ -347,7 +247,7 @@ public void pubsubErrorHandler(Message&lt;MessagingException&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@ServiceActivator(inputChannel =  "pubsubErrors")
+<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel =  "pubsubErrors")
 public void pubsubErrorHandler(Message&lt;MessagingException&gt; exceptionMessage) {
 
 	BasicAcknowledgeablePubsubMessage originalMessage =
@@ -385,7 +285,7 @@ To pull a batch of messages on each request, use the <code>setMaxFetchSize()</co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 @InboundChannelAdapter(channel = "pubsubInputChannel", poller = @Poller(fixedDelay = "100"))
 public MessageSource&lt;Object&gt; pubsubAdapter(PubSubTemplate pubSubTemplate) {
 	PubSubMessageSource messageSource = new PubSubMessageSource(pubSubTemplate,  "exampleSubscription");
@@ -407,7 +307,7 @@ The object can be used for manually (n)acking the message.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@ServiceActivator(inputChannel = "pubsubInputChannel")
+<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = "pubsubInputChannel")
 public void messageReceiver(String payload,
         @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) AcknowledgeablePubsubMessage message)
             throws InterruptedException {
@@ -446,7 +346,7 @@ To customize the conversion, you can specify a <code>PubSubMessageConverter</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 @ServiceActivator(inputChannel = "pubsubOutputChannel")
 public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
     return new PubSubMessageHandler(pubsubTemplate, "topicName");
@@ -465,12 +365,25 @@ If none is provided, the adapter waits indefinitely for a response.</p>
 <p>It is possible to set user-defined callbacks for the <code>publish()</code> call in <code>PubSubMessageHandler</code> through the <code>setPublishFutureCallback()</code> method.
 These are useful to process the message ID, in case of success, or the error if any was thrown.</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">adapter.setPublishCallback(new ListenableFutureCallback&lt;String&gt;() {
+	@Override
+	public void onFailure(Throwable ex) {
+	}
+
+	@Override
+	public void onSuccess(String result) {
+	}
+});</code></pre>
+</div>
+</div>
 <div class="paragraph">
-<p>To override the default destination you can use the <code>GcpPubSubHeaders.DESTINATION</code> header.</p>
+<p>To override the default topic you can use the <code>GcpPubSubHeaders.TOPIC</code> header.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 private MessageChannel pubsubOutputChannel;
 
 public void handleMessage(Message&lt;?&gt; msg) throws MessagingException {
@@ -483,6 +396,12 @@ public void handleMessage(Message&lt;?&gt; msg) throws MessagingException {
 </div>
 <div class="paragraph">
 <p>It is also possible to set an SpEL expression for the topic with the <code>setTopicExpression()</code> or <code>setTopicExpressionString()</code> methods.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">PubSubMessageHandler adapter = new PubSubMessageHandler(pubSubTemplate, "myDefaultTopic");
+adapter.setTopicExpressionString("headers['sendToTopic']");</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -501,7 +420,7 @@ In the process, the outbound mapper also converts the value of the headers into 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">PubSubMessageHandler adapter = ...
+<pre class="highlight"><code class="language-java" data-lang="java">PubSubMessageHandler adapter = ...
 ...
 PubSubHeaderMapper headerMapper = new PubSubHeaderMapper();
 headerMapper.setOutboundHeaderPatterns("!foo", "!bar", "!prefix_*", "*");
@@ -534,10 +453,10 @@ However, because it comes last in the list, <a href="https://docs.spring.io/spri
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-sample">Sending/Receiving Messages with Channel Adapters</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-sample">Sending/Receiving Messages with Channel Adapters</a></p>
 </li>
 <li>
-<p><a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-json-sample">Pub/Sub Channel Adapters with JSON payloads</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-json-sample">Pub/Sub Channel Adapters with JSON payloads</a></p>
 </li>
 <li>
 <p><a href="https://codelabs.developers.google.com/codelabs/cloud-spring-cloud-gcp-pubsub-integration/index.html">Spring Integration and Pub/Sub Codelab</a></p>
@@ -549,8 +468,5 @@ However, because it comes last in the list, <a href="https://docs.spring.io/spri
 </div>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
-<script src="js/highlight/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
 </body>
 </html>

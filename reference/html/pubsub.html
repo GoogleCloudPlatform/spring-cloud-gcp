@@ -2,112 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="generator" content="Asciidoctor 2.0.10">
 <title>Cloud Pub/Sub</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
-<script type="text/javascript">
-function addBlockSwitches() {
-	$('.primary').each(function() {
-		primary = $(this);
-		createSwitchItem(primary, createBlockSwitch(primary)).item.addClass("selected");
-		primary.children('.title').remove();
-	});
-	$('.secondary').each(function(idx, node) {
-		secondary = $(node);
-		primary = findPrimary(secondary);
-		switchItem = createSwitchItem(secondary, primary.children('.switch'));
-		switchItem.content.addClass('hidden');
-		findPrimary(secondary).append(switchItem.content);
-		secondary.remove();
-	});
-}
-
-function createBlockSwitch(primary) {
-	blockSwitch = $('<div class="switch"></div>');
-	primary.prepend(blockSwitch);
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	candidate = secondary.prev();
-	while (!candidate.is('.primary')) {
-		candidate = candidate.prev();
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	blockName = block.children('.title').text();
-	content = block.children('.content').first().append(block.next('.colist'));
-	item = $('<div class="switch--item">' + blockName + '</div>');
-	item.on('click', '', content, function(e) {
-		$(this).addClass('selected');
-		$(this).siblings().removeClass('selected');
-		e.data.siblings('.content').addClass('hidden');
-		e.data.removeClass('hidden');
-	});
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function globalSwitch() {
-	$('.switch--item').each(function() {
-		$(this).off('click');
-		$(this).on('click', function() {
-			selectedText = $(this).text()
-			selectedIndex = $(this).index()
-			$(".switch--item").filter(function() { return ($(this).text() === selectedText) }).each(function() {
-				$(this).addClass('selected');
-				$(this).siblings().removeClass('selected');
-				selectedContent = $(this).parent().siblings(".content").eq(selectedIndex)
-				selectedContent.removeClass('hidden');
-				selectedContent.siblings().addClass('hidden');
-			});
-		});
-	});
-}
-
-$(addBlockSwitches);
-$(globalSwitch);
-
-</script>
-
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
@@ -142,8 +42,8 @@ $(globalSwitch);
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-pubsub&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -153,8 +53,8 @@ $(globalSwitch);
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>dependencies {
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter-pubsub'
+<pre class="highlight"><code>dependencies {
+    implementation("org.springframework.cloud:spring-cloud-gcp-starter-pubsub")
 }</code></pre>
 </div>
 </div>
@@ -438,7 +338,7 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -478,7 +378,7 @@ The topic name could either be a canonical topic name within the current project
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Map&lt;String, String&gt; headers = Collections.singletonMap("key1", "val1");
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, String&gt; headers = Collections.singletonMap("key1", "val1");
 pubSubTemplate.publish(topicName, "message", headers).get();</code></pre>
 </div>
 </div>
@@ -501,7 +401,7 @@ The subscription name could either be a canonical subscription name within the c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Subscriber subscriber = pubSubTemplate.subscribe(subscriptionName, (message) -&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">Subscriber subscriber = pubSubTemplate.subscribe(subscriptionName, (message) -&gt; {
 	logger.info("Message received from " + subscriptionName + " subscription: "
 			+ message.getPubsubMessage().getData().toStringUtf8());
 	message.ack();
@@ -561,7 +461,7 @@ This is different from subscribing to a subscription, in the sense that subscrib
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">int maxMessages = 10;
+<pre class="highlight"><code class="language-java" data-lang="java">int maxMessages = 10;
 boolean returnImmediately = false;
 List&lt;AcknowledgeablePubsubMessage&gt; messages = pubSubTemplate.pull(subscriptionName, maxMessages,
 		returnImmediately);
@@ -632,7 +532,7 @@ Using these methods for acknowledging messages in batches is more efficient than
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-All <code>ack()</code>, <code>nack()</code>, and <code>modifyAckDeadline()</code> methods on messages as well as <code>PubSubSubscriberTemplate</code> are implemented asynchronously, returning a <code>ListenableFuture&lt;Void&gt;</code> to be able to process the asynchronous execution.
+All <code>ack()</code>, <code>nack()</code>, and <code>modifyAckDeadline()</code> methods on messages, as well as <code>PubSubSubscriberTemplate</code>, are implemented asynchronously, returning a <code>ListenableFuture&lt;Void&gt;</code> to enable asynchronous processing.
 </td>
 </tr>
 </table>
@@ -646,7 +546,7 @@ All <code>ack()</code>, <code>nack()</code>, and <code>modifyAckDeadline()</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">// Note: The ObjectMapper is used to convert Java POJOs to and from JSON.
+<pre class="highlight"><code class="language-java" data-lang="java">// Note: The ObjectMapper is used to convert Java POJOs to and from JSON.
 // You will have to configure your own instance if you are unable to depend
 // on the ObjectMapper provided by Spring Boot starters.
 @Bean
@@ -673,7 +573,7 @@ Other implementations of the <code>PubSubMessageConverter</code> can also be con
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">static class TestUser {
+<pre class="highlight"><code class="language-java" data-lang="java">static class TestUser {
 
 	String username;
 
@@ -702,7 +602,7 @@ Other implementations of the <code>PubSubMessageConverter</code> can also be con
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TestUser user = new TestUser();
+<pre class="highlight"><code class="language-java" data-lang="java">TestUser user = new TestUser();
 user.setUsername("John");
 user.setPassword("password");
 pubSubTemplate.publish(topicName, user);</code></pre>
@@ -713,7 +613,7 @@ pubSubTemplate.publish(topicName, user);</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">int maxMessages = 1;
+<pre class="highlight"><code class="language-java" data-lang="java">int maxMessages = 1;
 boolean returnImmediately = false;
 List&lt;ConvertedAcknowledgeablePubsubMessage&lt;TestUser&gt;&gt; messages = pubSubTemplate.pullAndConvert(
 		subscriptionName, maxMessages, returnImmediately, TestUser.class);
@@ -727,7 +627,7 @@ TestUser receivedTestUser = message.getPayload();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Please refer to our <a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-json-sample">Pub/Sub JSON Payload Sample App</a> as a reference for using this functionality.</p>
+<p>Please refer to our <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-json-sample">Pub/Sub JSON Payload Sample App</a> as a reference for using this functionality.</p>
 </div>
 </div>
 </div>
@@ -740,7 +640,7 @@ The combination of the Pub/Sub starter and the Project Reactor dependencies will
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 PubSubReactiveFactory reactiveFactory;
 
 // ...
@@ -765,7 +665,7 @@ For example, if you only want to fetch 5 messages, you can use <code>limitReques
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Flux&lt;AcknowledgeablePubsubMessage&gt; fiveMessageFlux = flux.limitRequest(5);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">Flux&lt;AcknowledgeablePubsubMessage&gt; fiveMessageFlux = flux.limitRequest(5);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -773,7 +673,7 @@ For example, if you only want to fetch 5 messages, you can use <code>limitReques
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">flux.doOnNext(AcknowledgeablePubsubMessage::ack);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">flux.doOnNext(AcknowledgeablePubsubMessage::ack);</code></pre>
 </div>
 </div>
 </div>
@@ -807,7 +707,7 @@ The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public Topic createTopic(String topicName)</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public Topic createTopic(String topicName)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -815,7 +715,7 @@ The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void newTopic() {
+<pre class="highlight"><code class="language-java" data-lang="java">public void newTopic() {
     pubSubAdmin.createTopic("topicName");
 }</code></pre>
 </div>
@@ -828,7 +728,7 @@ The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void deleteTopic(String topicName)</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public void deleteTopic(String topicName)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -836,7 +736,7 @@ The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void deleteTopic() {
+<pre class="highlight"><code class="language-java" data-lang="java">public void deleteTopic() {
     pubSubAdmin.deleteTopic("topicName");
 }</code></pre>
 </div>
@@ -849,7 +749,7 @@ The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public List&lt;Topic&gt; listTopics</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;Topic&gt; listTopics</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -857,7 +757,7 @@ The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;String&gt; topics = pubSubAdmin
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; topics = pubSubAdmin
 		.listTopics()
 		.stream()
 		.map(Topic::getName)
@@ -872,7 +772,7 @@ The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline, String pushEndpoint)</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline, String pushEndpoint)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -880,7 +780,7 @@ The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void newSubscription() {
+<pre class="highlight"><code class="language-java" data-lang="java">public void newSubscription() {
     pubSubAdmin.createSubscription("subscriptionName", "topicName", 10, “https://my.endpoint/push”);
 }</code></pre>
 </div>
@@ -892,17 +792,17 @@ If <code>pushEndpoint</code> isn’t specified, the subscription uses message pu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName)</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName)</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline)</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline)</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName, String pushEndpoint)</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName, String pushEndpoint)</code></pre>
 </div>
 </div>
 </div>
@@ -913,7 +813,7 @@ If <code>pushEndpoint</code> isn’t specified, the subscription uses message pu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void deleteSubscription(String subscriptionName)</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public void deleteSubscription(String subscriptionName)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -921,7 +821,7 @@ If <code>pushEndpoint</code> isn’t specified, the subscription uses message pu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void deleteSubscription() {
+<pre class="highlight"><code class="language-java" data-lang="java">public void deleteSubscription() {
     pubSubAdmin.deleteSubscription("subscriptionName");
 }</code></pre>
 </div>
@@ -934,7 +834,7 @@ If <code>pushEndpoint</code> isn’t specified, the subscription uses message pu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public List&lt;Subscription&gt; listSubscriptions()</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;Subscription&gt; listSubscriptions()</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -942,7 +842,7 @@ If <code>pushEndpoint</code> isn’t specified, the subscription uses message pu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;String&gt; subscriptions = pubSubAdmin
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; subscriptions = pubSubAdmin
 		.listSubscriptions()
 		.stream()
 		.map(Subscription::getName)
@@ -954,7 +854,7 @@ If <code>pushEndpoint</code> isn’t specified, the subscription uses message pu
 <div class="sect2">
 <h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
 <div class="paragraph">
-<p>Sample applications for <a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-sample">using the template</a> and <a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-reactive-sample">using a subscription-backed reactive stream</a> are available.</p>
+<p>Sample applications for <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-sample">using the template</a> and <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-reactive-sample">using a subscription-backed reactive stream</a> are available.</p>
 </div>
 </div>
 </div>
@@ -962,8 +862,5 @@ If <code>pushEndpoint</code> isn’t specified, the subscription uses message pu
 </div>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
-<script src="js/highlight/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
 </body>
 </html>

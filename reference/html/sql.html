@@ -2,112 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="generator" content="Asciidoctor 2.0.10">
 <title>Cloud SQL</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
-<script type="text/javascript">
-function addBlockSwitches() {
-	$('.primary').each(function() {
-		primary = $(this);
-		createSwitchItem(primary, createBlockSwitch(primary)).item.addClass("selected");
-		primary.children('.title').remove();
-	});
-	$('.secondary').each(function(idx, node) {
-		secondary = $(node);
-		primary = findPrimary(secondary);
-		switchItem = createSwitchItem(secondary, primary.children('.switch'));
-		switchItem.content.addClass('hidden');
-		findPrimary(secondary).append(switchItem.content);
-		secondary.remove();
-	});
-}
-
-function createBlockSwitch(primary) {
-	blockSwitch = $('<div class="switch"></div>');
-	primary.prepend(blockSwitch);
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	candidate = secondary.prev();
-	while (!candidate.is('.primary')) {
-		candidate = candidate.prev();
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	blockName = block.children('.title').text();
-	content = block.children('.content').first().append(block.next('.colist'));
-	item = $('<div class="switch--item">' + blockName + '</div>');
-	item.on('click', '', content, function(e) {
-		$(this).addClass('selected');
-		$(this).siblings().removeClass('selected');
-		e.data.siblings('.content').addClass('hidden');
-		e.data.removeClass('hidden');
-	});
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function globalSwitch() {
-	$('.switch--item').each(function() {
-		$(this).off('click');
-		$(this).on('click', function() {
-			selectedText = $(this).text()
-			selectedIndex = $(this).index()
-			$(".switch--item").filter(function() { return ($(this).text() === selectedText) }).each(function() {
-				$(this).addClass('selected');
-				$(this).siblings().removeClass('selected');
-				selectedContent = $(this).parent().siblings(".content").eq(selectedIndex)
-				selectedContent.removeClass('hidden');
-				selectedContent.siblings().addClass('hidden');
-			});
-		});
-	});
-}
-
-$(addBlockSwitches);
-$(globalSwitch);
-
-</script>
-
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
@@ -141,12 +41,12 @@ The role of the starters is to read configuration from properties and assume def
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-sql-mysql&lt;/artifactId&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-sql-postgresql&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -156,9 +56,9 @@ The role of the starters is to read configuration from properties and assume def
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>dependencies {
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter-sql-mysql'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter-sql-postgresql'
+<pre class="highlight"><code>dependencies {
+    implementation("org.springframework.cloud:spring-cloud-gcp-starter-sql-mysql")
+    implementation("org.springframework.cloud:spring-cloud-gcp-starter-sql-postgresql")
 }</code></pre>
 </div>
 </div>
@@ -193,7 +93,7 @@ Coupled with Spring JDBC, it provides a
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public List&lt;Map&lt;String, Object&gt;&gt; listUsers() {
+<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;Map&lt;String, Object&gt;&gt; listUsers() {
     return jdbcTemplate.queryForList("SELECT * FROM user;");
 }</code></pre>
 </div>
@@ -206,43 +106,73 @@ There is also some configuration specific to Google Cloud SQL:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Property name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.enabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables Cloud SQL auto configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.database-name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the database to connect to.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.instance-connection-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A string containing a Google Cloud SQL instance&#8217;s project ID, region and name, each separated by a colon.
-For example, <code>my-project-id:my-region:my-instance-name</code>.</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A string containing a Google Cloud SQL instance&#8217;s project ID, region and name, each separated by a colon.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">For example, <code>my-project-id:my-region:my-instance-name</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.ip-types</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows you to specify a comma delimited list of preferred IP types for connecting to a Cloud SQL instance. Left unconfigured Cloud SQL Socket Factory will default it to <code>PUBLIC,PRIVATE</code>. See <a href="https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#specifying-ip-types">Cloud SQL Socket Factory - Specifying IP Types</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PUBLIC,PRIVATE</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.credentials.location</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">File system path to the Google OAuth2 credentials private key file.
 Used to authenticate and authorize new connections to a Google Cloud SQL instance.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default credentials provided by the Spring GCP Boot starter</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.credentials.encoded-key</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded contents of OAuth2 account private key in JSON format.
 Used to authenticate and authorize new connections to a Google Cloud SQL instance.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default credentials provided by the Spring GCP Boot starter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MySQL: <code>root</code>; PostgreSQL: <code>postgres</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.driver-class-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JDBC driver to use.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MySQL: <code>com.mysql.cj.jdbc.Driver</code>; PostgreSQL: <code>org.postgresql.Driver</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -261,16 +191,12 @@ If you provide your own <code>spring.datasource.url</code>, it will be ignored, 
 <div class="sect3">
 <h4 id="_datasource_creation_flow"><a class="link" href="#_datasource_creation_flow"><code>DataSource</code> creation flow</a></h4>
 <div class="paragraph">
-<p>Based on the previous properties, the Spring Boot starter for Google Cloud SQL creates a <code>CloudSqlJdbcInfoProvider</code> object which is used to obtain an instance&#8217;s JDBC URL and driver class name.
-If you provide your own <code>CloudSqlJdbcInfoProvider</code> bean, it is used instead and the properties related to building the JDBC URL or driver class are ignored.</p>
+<p>Spring Boot starter for Google Cloud SQL registers a <code>CloudSqlEnvironmentPostProcessor</code> that provides a correctly formatted <code>spring.datasource.url</code> property to the environment based on the properties defined above.
+It also provides defaults for <code>spring.datasource.username</code> and <code>spring.datasource.driver-class-name</code>, which can be overridden.
+The starter also configures credentials for the JDBC connection based on the properties above.</p>
 </div>
 <div class="paragraph">
-<p>The <code>DataSourceProperties</code> object provided by Spring Boot Autoconfigure is mutated in order to use the JDBC URL and driver class names provided by <code>CloudSqlJdbcInfoProvider</code>, unless those values were provided in the properties.
-It is in the <code>DataSourceProperties</code> mutation step that the credentials factory is registered in a system property to be <code>SqlCredentialFactory</code>.</p>
-</div>
-<div class="paragraph">
-<p><code>DataSource</code> creation is delegated to
-<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html">Spring Boot</a>.
+<p>The user properties and the properties provided by the <code>CloudSqlEnvironmentPostProcessor</code> are then used by <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html">Spring Boot</a> to create the <code>DataSource</code>.
 You can select the type of connection pool (e.g., Tomcat, HikariCP, etc.) by <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database">adding their dependency to the classpath</a>.</p>
 </div>
 <div class="paragraph">
@@ -291,7 +217,7 @@ This may be the case with HikariCP, if your logger is set to INFO or higher leve
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;configuration&gt;
   &lt;include resource="org/springframework/boot/logging/logback/base.xml"/&gt;
   &lt;logger name="com.zaxxer.hikari.pool" level="DEBUG"/&gt;
@@ -320,7 +246,7 @@ For example, in Maven:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
   &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
   &lt;version&gt;42.1.1&lt;/version&gt;
@@ -338,13 +264,13 @@ For example, in Maven:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-sample">Spring Cloud GCP MySQL</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-sample">Spring Cloud GCP MySQL</a></p>
 </li>
 <li>
-<p><a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-sample">Spring Cloud GCP PostgreSQL</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-sample">Spring Cloud GCP PostgreSQL</a></p>
 </li>
 <li>
-<p><a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-data-jpa-sample">Spring Data JPA with Spring Cloud GCP SQL</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-data-jpa-sample">Spring Data JPA with Spring Cloud GCP SQL</a></p>
 </li>
 <li>
 <p>Codelab: <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-petclinic-cloudsql/index.html">Spring Pet Clinic using Cloud SQL</a></p>
@@ -357,8 +283,5 @@ For example, in Maven:</p>
 </div>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
-<script src="js/highlight/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
 </body>
 </html>

@@ -2,127 +2,24 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="generator" content="Asciidoctor 2.0.10">
 <title>Spring Framework on Google Cloud Platform</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
-<script type="text/javascript">
-function addBlockSwitches() {
-	$('.primary').each(function() {
-		primary = $(this);
-		createSwitchItem(primary, createBlockSwitch(primary)).item.addClass("selected");
-		primary.children('.title').remove();
-	});
-	$('.secondary').each(function(idx, node) {
-		secondary = $(node);
-		primary = findPrimary(secondary);
-		switchItem = createSwitchItem(secondary, primary.children('.switch'));
-		switchItem.content.addClass('hidden');
-		findPrimary(secondary).append(switchItem.content);
-		secondary.remove();
-	});
-}
-
-function createBlockSwitch(primary) {
-	blockSwitch = $('<div class="switch"></div>');
-	primary.prepend(blockSwitch);
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	candidate = secondary.prev();
-	while (!candidate.is('.primary')) {
-		candidate = candidate.prev();
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	blockName = block.children('.title').text();
-	content = block.children('.content').first().append(block.next('.colist'));
-	item = $('<div class="switch--item">' + blockName + '</div>');
-	item.on('click', '', content, function(e) {
-		$(this).addClass('selected');
-		$(this).siblings().removeClass('selected');
-		e.data.siblings('.content').addClass('hidden');
-		e.data.removeClass('hidden');
-	});
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function globalSwitch() {
-	$('.switch--item').each(function() {
-		$(this).off('click');
-		$(this).on('click', function() {
-			selectedText = $(this).text()
-			selectedIndex = $(this).index()
-			$(".switch--item").filter(function() { return ($(this).text() === selectedText) }).each(function() {
-				$(this).addClass('selected');
-				$(this).siblings().removeClass('selected');
-				selectedContent = $(this).parent().siblings(".content").eq(selectedIndex)
-				selectedContent.removeClass('hidden');
-				selectedContent.siblings().addClass('hidden');
-			});
-		});
-	});
-}
-
-$(addBlockSwitches);
-$(globalSwitch);
-
-</script>
-
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel0">
-<li><a href="#_spring_framework_on_google_cloud_platform">Spring Framework on Google Cloud Platform</a>
 <ul class="sectlevel1">
+<li><a href="#_spring_framework_on_google_cloud_platform">Spring Framework on Google Cloud Platform</a></li>
 <li><a href="#_spring_initializr">Spring Initializr</a></li>
 <li><a href="#_spring_cloud_gcp_bill_of_materials_bom">Spring Cloud GCP Bill of Materials (BOM)</a></li>
 <li><a href="#_spring_milestones_maven_repository">Spring Milestones Maven Repository</a></li>
 <li><a href="#_spring_snapshots_maven_repository">Spring Snapshots Maven Repository</a></li>
 <li><a href="#_spring_boot_starters">Spring Boot Starters</a></li>
-</ul>
-</li>
 </ul>
 </div>
 </div>
@@ -130,15 +27,13 @@ $(globalSwitch);
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><span class="image"><a class="image" href="https://travis-ci.org/spring-cloud/spring-cloud-gcp"><img src="https://img.shields.io/travis/spring-cloud/spring-cloud-gcp.svg?branch=master&amp;label=master" alt="Master Build Status"></a></span>
-<span class="image"><a class="image" href="https://travis-ci.org/spring-cloud/spring-cloud-gcp"><img src="https://img.shields.io/travis/spring-cloud/spring-cloud-gcp.svg?branch=1.1.x&amp;label=1.1.x" alt="1.1.x Build Status"></a></span>
-<span class="image"><a class="image" href="https://travis-ci.org/spring-cloud/spring-cloud-gcp"><img src="https://img.shields.io/travis/spring-cloud/spring-cloud-gcp.svg?branch=1.0.x&amp;label=1.0.x" alt="1.0.x Build Status"></a></span></p>
+<p><span class="image"><a class="image" href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/actions?query=branch%3Amaster+"><img src="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/workflows/Build%20And%20Test/badge.svg?branch=master" alt="Master Build Status"></a></span></p>
 </div>
 </div>
 </div>
-<h1 id="_spring_framework_on_google_cloud_platform" class="sect0"><a class="link" href="#_spring_framework_on_google_cloud_platform">Spring Framework on Google Cloud Platform</a></h1>
-<div class="openblock partintro">
-<div class="content">
+<div class="sect1">
+<h2 id="_spring_framework_on_google_cloud_platform"><a class="link" href="#_spring_framework_on_google_cloud_platform">Spring Framework on Google Cloud Platform</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>This project makes it easy for Spring users to run their applications on Google Cloud Platform.
 You can check our project website <a href="https://spring.io/projects/spring-cloud-gcp">here</a>.</p>
@@ -147,7 +42,7 @@ You can check our project website <a href="https://spring.io/projects/spring-clo
 <p>For a deep dive into the project, refer to the <a href="https://cloud.spring.io/spring-cloud-gcp/reference/html/">Spring Cloud GCP 1.2 Reference Document</a> or the <a href="https://googleapis.dev/java/spring-cloud-gcp/latest/index.html">latest Javadocs</a>.</p>
 </div>
 <div class="paragraph">
-<p>If you prefer to learn by doing, try taking a look at the <a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples">Spring Cloud GCP sample applications</a> or the <a href="https://codelabs.developers.google.com/spring">Spring on GCP codelabs</a>.</p>
+<p>If you prefer to learn by doing, try taking a look at the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples">Spring Cloud GCP sample applications</a> or the <a href="https://codelabs.developers.google.com/spring">Spring on GCP codelabs</a>.</p>
 </div>
 <div class="paragraph">
 <p>Currently, this repository provides support for:</p>
@@ -230,8 +125,9 @@ You can check our project website <a href="https://spring.io/projects/spring-clo
 </ul>
 </div>
 <div class="paragraph">
-<p>If you have any other ideas, suggestions or bug reports, please use our <a href="https://github.com/spring-cloud/spring-cloud-gcp/issues">GitHub issue tracker</a> and let us know!
-We would love to hear from you.</p>
+<p>If you have any other ideas, suggestions or bug reports, please use our <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues">GitHub issue tracker</a> and let us know!
+Also, please take the <a href="https://www.techvalidate.com/registration/google-spring-cloud-gcp-customer-survey"><strong>Spring Cloud GCP 5 Minute Customer Survey</strong></a> to help us learn about your usage of the project.
+We would love to hear from you!</p>
 </div>
 <div class="paragraph">
 <p>If you want to collaborate in the project, we would also love to get your Pull Requests.
@@ -262,10 +158,10 @@ This will allow you to not specify versions for any of the Maven dependencies an
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencyManagement&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
     &lt;dependencies&gt;
         &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
             &lt;artifactId&gt;spring-cloud-gcp-dependencies&lt;/artifactId&gt;
             &lt;version&gt;1.2.3.RELEASE&lt;/version&gt;
             &lt;type&gt;pom&lt;/type&gt;
@@ -286,7 +182,7 @@ You will want to make sure that the repository is added to your <code>pom.xml</c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;repositories&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;repositories&gt;
     &lt;repository&gt;
         &lt;id&gt;spring-milestones&lt;/id&gt;
         &lt;name&gt;Spring Milestones&lt;/name&gt;
@@ -305,11 +201,11 @@ You will want to make sure that the repository is added to your <code>pom.xml</c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;repositories&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;repositories&gt;
     &lt;repository&gt;
         &lt;id&gt;spring-snapshots&lt;/id&gt;
         &lt;name&gt;Spring Snapshots&lt;/name&gt;
-        &lt;url&gt;https://repo.spring.io/libs-snapshot&lt;/url&gt;
+        &lt;url&gt;https://repo.spring.io/snapshot&lt;/url&gt;
         &lt;snapshots&gt;
             &lt;enabled&gt;true&lt;/enabled&gt;
         &lt;/snapshots&gt;
@@ -318,7 +214,7 @@ You will want to make sure that the repository is added to your <code>pom.xml</c
 </div>
 </div>
 <div class="paragraph">
-<p>For example, the <code>1.2.4.BUILD-SNAPSHOT</code> is available from this repository.</p>
+<p>For example, the <code>1.2.5.BUILD-SNAPSHOT</code> is available from this repository.</p>
 </div>
 </div>
 </div>
@@ -335,7 +231,7 @@ You can configure these as properties in, for example, a properties file:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>spring.cloud.gcp.project-id=[YOUR_GCP_PROJECT_ID]
+<pre class="highlight"><code>spring.cloud.gcp.project-id=[YOUR_GCP_PROJECT_ID]
 spring.cloud.gcp.credentials.location=file:[LOCAL_PRIVATE_KEY_FILE]
 spring.cloud.gcp.credentials.scopes=[SCOPE_1],[SCOPE_2],[SCOPE_3]</code></pre>
 </div>
@@ -361,8 +257,5 @@ If your app is running on Google App Engine or Google Compute Engine, in most ca
 </div>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
-<script src="js/highlight/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
 </body>
 </html>

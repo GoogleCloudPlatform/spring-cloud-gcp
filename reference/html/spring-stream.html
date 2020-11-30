@@ -2,112 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="generator" content="Asciidoctor 2.0.10">
 <title>Spring Cloud Stream</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
-<script type="text/javascript">
-function addBlockSwitches() {
-	$('.primary').each(function() {
-		primary = $(this);
-		createSwitchItem(primary, createBlockSwitch(primary)).item.addClass("selected");
-		primary.children('.title').remove();
-	});
-	$('.secondary').each(function(idx, node) {
-		secondary = $(node);
-		primary = findPrimary(secondary);
-		switchItem = createSwitchItem(secondary, primary.children('.switch'));
-		switchItem.content.addClass('hidden');
-		findPrimary(secondary).append(switchItem.content);
-		secondary.remove();
-	});
-}
-
-function createBlockSwitch(primary) {
-	blockSwitch = $('<div class="switch"></div>');
-	primary.prepend(blockSwitch);
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	candidate = secondary.prev();
-	while (!candidate.is('.primary')) {
-		candidate = candidate.prev();
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	blockName = block.children('.title').text();
-	content = block.children('.content').first().append(block.next('.colist'));
-	item = $('<div class="switch--item">' + blockName + '</div>');
-	item.on('click', '', content, function(e) {
-		$(this).addClass('selected');
-		$(this).siblings().removeClass('selected');
-		e.data.siblings('.content').addClass('hidden');
-		e.data.removeClass('hidden');
-	});
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function globalSwitch() {
-	$('.switch--item').each(function() {
-		$(this).off('click');
-		$(this).on('click', function() {
-			selectedText = $(this).text()
-			selectedIndex = $(this).index()
-			$(".switch--item").filter(function() { return ($(this).text() === selectedText) }).each(function() {
-				$(this).addClass('selected');
-				$(this).siblings().removeClass('selected');
-				selectedContent = $(this).parent().siblings(".content").eq(selectedIndex)
-				selectedContent.removeClass('hidden');
-				selectedContent.siblings().addClass('hidden');
-			});
-		});
-	});
-}
-
-$(addBlockSwitches);
-$(globalSwitch);
-
-</script>
-
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
@@ -135,15 +35,15 @@ $(globalSwitch);
 <p>Spring Cloud GCP provides a <a href="https://cloud.spring.io/spring-cloud-stream/">Spring Cloud Stream</a> binder to Google Cloud Pub/Sub.</p>
 </div>
 <div class="paragraph">
-<p>The provided binder relies on the <a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-pubsub/src/main/java/org/springframework/cloud/gcp/pubsub/integration">Spring Integration Channel Adapters for Google Cloud Pub/Sub</a>.</p>
+<p>The provided binder relies on the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-pubsub/src/main/java/com/google/cloud/spring/pubsub/integration">Spring Integration Channel Adapters for Google Cloud Pub/Sub</a>.</p>
 </div>
 <div class="paragraph">
 <p>Maven coordinates, using <a href="getting-started.html#_bill_of_materials">Spring Cloud GCP BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-pubsub-stream-binder&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -153,8 +53,8 @@ $(globalSwitch);
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>dependencies {
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-gcp-pubsub-stream-binder'
+<pre class="highlight"><code>dependencies {
+    implementation("org.springframework.cloud:spring-cloud-gcp-pubsub-stream-binder")
 }</code></pre>
 </div>
 </div>
@@ -201,6 +101,13 @@ To use this binder with a <a href="https://cloud.google.com/pubsub/docs/emulator
 </table>
 </div>
 <div class="sect3">
+<h4 id="_producer_synchronous_sending_configuration"><a class="link" href="#_producer_synchronous_sending_configuration">Producer Synchronous Sending Configuration</a></h4>
+<div class="paragraph">
+<p>By default, this binder will send messages to Cloud Pub/Sub asynchronously.
+If synchronous sending is preferred (for example, to allow propagating errors back to the sender), set <code>spring.cloud.stream.gcp.pubsub.default.producer.sync</code> property to <code>true</code>.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_producer_destination_configuration"><a class="link" href="#_producer_destination_configuration">Producer Destination Configuration</a></h4>
 <div class="paragraph">
 <p>If automatic resource creation is turned ON and the topic corresponding to the destination name does not exist, it will be created.</p>
@@ -211,7 +118,7 @@ To use this binder with a <a href="https://cloud.google.com/pubsub/docs/emulator
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code>spring.cloud.stream.bindings.events.destination=myEvents
+<pre class="highlight"><code>spring.cloud.stream.bindings.events.destination=myEvents
 spring.cloud.stream.gcp.pubsub.bindings.events.producer.auto-create-resources=true</code></pre>
 </div>
 </div>
@@ -228,7 +135,7 @@ These options are described in detail in the <a href="#inbound-channel-adapter-u
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code># How to set the ACK mode of the consumer endpoint.
+<pre class="highlight"><code># How to set the ACK mode of the consumer endpoint.
 spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.ack-mode=AUTO_ACK</code></pre>
 </div>
 </div>
@@ -259,7 +166,7 @@ If you are manually creating Pub/Sub subscriptions for consumers, make sure that
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code>spring.cloud.stream.bindings.events.destination=myEvents
+<pre class="highlight"><code>spring.cloud.stream.bindings.events.destination=myEvents
 spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=true
 
 # specify consumer group, and avoid anonymous consumer group generation
@@ -276,7 +183,7 @@ This means that the only requirement for turning your application into a sink is
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>@Bean
+<pre class="highlight"><code>@Bean
 public Consumer&lt;UserMessage&gt; logUserMessage() {
   return userMessage -&gt; {
     // process message
@@ -291,7 +198,7 @@ Alternatively, the function can return a reactive stream, which will be used as 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>@Bean
+<pre class="highlight"><code>@Bean
 Supplier&lt;Flux&lt;UserMessage&gt;&gt; generateUserMessages() {
   return () -&gt; /* flux creation logic */;
 }</code></pre>
@@ -320,7 +227,7 @@ As of version 3.0, annotation binding is considered legacy.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>@EnableBinding(Sink.class)
+<pre class="highlight"><code>@EnableBinding(Sink.class)
 public class SinkExample {
 
 	@StreamListener(Sink.INPUT)
@@ -335,7 +242,7 @@ public class SinkExample {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>@EnableBinding(Source.class)
+<pre class="highlight"><code>@EnableBinding(Source.class)
 public class SourceExample {
 
 	@Autowired
@@ -359,7 +266,7 @@ Messages can then be consumed with an input handler marked by <code>@StreamListe
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public interface PollableSink {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface PollableSink {
 
 	@Input("input")
 	PollableMessageSource input();
@@ -371,7 +278,7 @@ Messages can then be consumed with an input handler marked by <code>@StreamListe
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@EnableBinding(PollableSink.class)
+<pre class="highlight"><code class="language-java" data-lang="java">@EnableBinding(PollableSink.class)
 public class SinkExample {
 
     @Autowired
@@ -388,6 +295,10 @@ public class SinkExample {
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>By default, the polling will only get 1 message at a time.
+Use the <code>spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize</code> property to fetch additional messages per network roundtrip.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
@@ -397,13 +308,13 @@ public class SinkExample {
 <div class="ulist">
 <ul>
 <li>
-<p>For <a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-binder-sample">streaming input, annotation-based</a>.</p>
+<p>For <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-binder-sample">streaming input, annotation-based</a>.</p>
 </li>
 <li>
-<p>For <a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-binder-functional-sample">streaming input, functional style</a>.</p>
+<p>For <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-binder-functional-sample">streaming input, functional style</a>.</p>
 </li>
 <li>
-<p>For <a href="https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-polling-binder-sample">polled input</a>.</p>
+<p>For <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-polling-binder-sample">polled input</a>.</p>
 </li>
 </ul>
 </div>
@@ -413,8 +324,5 @@ public class SinkExample {
 </div>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
-<script src="js/highlight/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
 </body>
 </html>

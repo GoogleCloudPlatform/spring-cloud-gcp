@@ -2,112 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="generator" content="Asciidoctor 2.0.10">
 <title>Spring Cloud GCP Core</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
-<script type="text/javascript">
-function addBlockSwitches() {
-	$('.primary').each(function() {
-		primary = $(this);
-		createSwitchItem(primary, createBlockSwitch(primary)).item.addClass("selected");
-		primary.children('.title').remove();
-	});
-	$('.secondary').each(function(idx, node) {
-		secondary = $(node);
-		primary = findPrimary(secondary);
-		switchItem = createSwitchItem(secondary, primary.children('.switch'));
-		switchItem.content.addClass('hidden');
-		findPrimary(secondary).append(switchItem.content);
-		secondary.remove();
-	});
-}
-
-function createBlockSwitch(primary) {
-	blockSwitch = $('<div class="switch"></div>');
-	primary.prepend(blockSwitch);
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	candidate = secondary.prev();
-	while (!candidate.is('.primary')) {
-		candidate = candidate.prev();
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	blockName = block.children('.title').text();
-	content = block.children('.content').first().append(block.next('.colist'));
-	item = $('<div class="switch--item">' + blockName + '</div>');
-	item.on('click', '', content, function(e) {
-		$(this).addClass('selected');
-		$(this).siblings().removeClass('selected');
-		e.data.siblings('.content').addClass('hidden');
-		e.data.removeClass('hidden');
-	});
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function globalSwitch() {
-	$('.switch--item').each(function() {
-		$(this).off('click');
-		$(this).on('click', function() {
-			selectedText = $(this).text()
-			selectedIndex = $(this).index()
-			$(".switch--item").filter(function() { return ($(this).text() === selectedText) }).each(function() {
-				$(this).addClass('selected');
-				$(this).siblings().removeClass('selected');
-				selectedContent = $(this).parent().siblings(".content").eq(selectedIndex)
-				selectedContent.removeClass('hidden');
-				selectedContent.siblings().addClass('hidden');
-			});
-		});
-	});
-}
-
-$(addBlockSwitches);
-$(globalSwitch);
-
-</script>
-
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
@@ -141,8 +41,8 @@ $(globalSwitch);
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -152,8 +52,8 @@ $(globalSwitch);
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>dependencies {
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter'
+<pre class="highlight"><code>dependencies {
+    implementation("org.springframework.cloud:spring-cloud-gcp-starter")
 }</code></pre>
 </div>
 </div>
@@ -192,7 +92,7 @@ $(globalSwitch);
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public interface GcpProjectIdProvider {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface GcpProjectIdProvider {
 	String getProjectId();
 }</code></pre>
 </div>
@@ -203,7 +103,7 @@ If a <code>spring.cloud.gcp.project-id</code> property is specified, the provide
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">spring.cloud.gcp.project-id=my-gcp-project-id</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">spring.cloud.gcp.project-id=my-gcp-project-id</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -237,7 +137,7 @@ If a <code>spring.cloud.gcp.project-id</code> property is specified, the provide
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public interface CredentialsProvider {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface CredentialsProvider {
   Credentials getCredentials() throws IOException;
 }</code></pre>
 </div>
@@ -250,7 +150,7 @@ The next example specifies the credentials location property in the file system.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>spring.cloud.gcp.credentials.location=file:/usr/local/key.json</code></pre>
+<pre class="highlight"><code>spring.cloud.gcp.credentials.location=file:/usr/local/key.json</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -315,7 +215,7 @@ On App Engine Standard, the <a href="https://cloud.google.com/appengine/docs/sta
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.googleapis.com/auth/devstorage.read_only" class="bare">https://www.googleapis.com/auth/devstorage.read_only</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Storage (Write/Write)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage (Read/Write)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.googleapis.com/auth/devstorage.read_write" class="bare">https://www.googleapis.com/auth/devstorage.read_write</a></p></td>
 </tr>
 <tr>
@@ -345,7 +245,7 @@ To do that, specify a comma-delimited list of <a href="https://developers.google
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>spring.cloud.gcp.credentials.scopes=https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/sqlservice.admin</code></pre>
+<pre class="highlight"><code>spring.cloud.gcp.credentials.scopes=https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/sqlservice.admin</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -353,7 +253,7 @@ To do that, specify a comma-delimited list of <a href="https://developers.google
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>spring.cloud.gcp.credentials.scopes=DEFAULT_SCOPES,https://www.googleapis.com/auth/cloud-vision</code></pre>
+<pre class="highlight"><code>spring.cloud.gcp.credentials.scopes=DEFAULT_SCOPES,https://www.googleapis.com/auth/cloud-vision</code></pre>
 </div>
 </div>
 </div>
@@ -366,7 +266,7 @@ The provider can help determine programmatically in which GCP environment (App E
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public interface GcpEnvironmentProvider {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface GcpEnvironmentProvider {
 	GcpEnvironment getCurrentEnvironment();
 }</code></pre>
 </div>
@@ -383,8 +283,5 @@ The provider can help determine programmatically in which GCP environment (App E
 </div>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
-<script src="js/highlight/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
 </body>
 </html>
