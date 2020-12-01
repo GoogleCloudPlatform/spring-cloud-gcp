@@ -35,7 +35,7 @@
 	<profiles>
 		<!-- skip for GA releases to Maven Central -->
 		<profile>
-			<id>central</id>
+			<id>skip-unreleased-modules</id>
 			<build>
 				<plugins>
 					<plugin>

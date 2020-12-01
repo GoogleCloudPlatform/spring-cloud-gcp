@@ -46,6 +46,6 @@ create_settings_xml_file $MAVEN_SETTINGS_FILE
   -Dgpg.passphrase=${GPG_PASSPHRASE} \
   -Dgpg.homedir=${GPG_HOMEDIR} \
   -Drelease=true \
-  --activate-profiles central
+  --activate-profiles skip-unreleased-modules
 
 popd
