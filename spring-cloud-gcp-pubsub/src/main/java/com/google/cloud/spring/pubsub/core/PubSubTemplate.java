@@ -147,38 +147,35 @@ public class PubSubTemplate implements PubSubOperations, InitializingBean {
 
 
 	@Override
-	public List<AcknowledgeablePubsubMessage> pull(String subscription, Integer maxMessages,
-			Boolean returnImmediately) {
-		return this.pubSubSubscriberTemplate.pull(subscription, maxMessages, returnImmediately);
+	public List<AcknowledgeablePubsubMessage> pull(String subscription, Integer maxMessages) {
+		return this.pubSubSubscriberTemplate.pull(subscription, maxMessages);
 	}
 
 	@Override
-	public ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(String subscription, Integer maxMessages,
-																			Boolean returnImmediately) {
-		return this.pubSubSubscriberTemplate.pullAsync(subscription, maxMessages, returnImmediately);
+	public ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(String subscription, Integer maxMessages) {
+		return this.pubSubSubscriberTemplate.pullAsync(subscription, maxMessages);
 	}
 
 	@Override
-	public <T> List<ConvertedAcknowledgeablePubsubMessage<T>> pullAndConvert(String subscription, Integer maxMessages,
-			Boolean returnImmediately, Class<T> payloadType) {
-		return this.pubSubSubscriberTemplate.pullAndConvert(subscription, maxMessages, returnImmediately, payloadType);
+	public <T> List<ConvertedAcknowledgeablePubsubMessage<T>> pullAndConvert(
+			String subscription, Integer maxMessages, Class<T> payloadType) {
+		return this.pubSubSubscriberTemplate.pullAndConvert(subscription, maxMessages, payloadType);
 	}
 
 	@Override
-	public <T> ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(String subscription,
-			Integer maxMessages, Boolean returnImmediately, Class<T> payloadType) {
-		return this.pubSubSubscriberTemplate.pullAndConvertAsync(subscription, maxMessages, returnImmediately, payloadType);
+	public <T> ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(
+			String subscription, Integer maxMessages, Class<T> payloadType) {
+		return this.pubSubSubscriberTemplate.pullAndConvertAsync(subscription, maxMessages, payloadType);
 	}
 
 	@Override
-	public List<PubsubMessage> pullAndAck(String subscription, Integer maxMessages,
-			Boolean returnImmediately) {
-		return this.pubSubSubscriberTemplate.pullAndAck(subscription, maxMessages, returnImmediately);
+	public List<PubsubMessage> pullAndAck(String subscription, Integer maxMessages) {
+		return this.pubSubSubscriberTemplate.pullAndAck(subscription, maxMessages);
 	}
 
 	@Override
-	public ListenableFuture<List<PubsubMessage>> pullAndAckAsync(String subscription, Integer maxMessages, Boolean returnImmediately) {
-		return this.pubSubSubscriberTemplate.pullAndAckAsync(subscription, maxMessages, returnImmediately);
+	public ListenableFuture<List<PubsubMessage>> pullAndAckAsync(String subscription, Integer maxMessages) {
+		return this.pubSubSubscriberTemplate.pullAndAckAsync(subscription, maxMessages);
 	}
 
 	@Override

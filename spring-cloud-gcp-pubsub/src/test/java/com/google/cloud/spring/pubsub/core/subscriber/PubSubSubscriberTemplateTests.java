@@ -154,7 +154,7 @@ public class PubSubSubscriberTemplateTests {
 		});
 
 		// for pull
-		when(this.subscriberFactory.createPullRequest(any(String.class), any(Integer.class), any(Boolean.class)))
+		when(this.subscriberFactory.createPullRequest(any(String.class), any(Integer.class)))
 				.then((invocation) -> PullRequest.newBuilder().setSubscription(invocation.getArgument(0)).build());
 
 		when(this.subscriberStub.acknowledgeCallable()).thenReturn(this.ackCallable);
@@ -305,8 +305,7 @@ public class PubSubSubscriberTemplateTests {
 	@Test
 	public void testPull_AndManualAck() throws InterruptedException, ExecutionException, TimeoutException {
 
-		List<AcknowledgeablePubsubMessage> result = this.pubSubSubscriberTemplate.pull(
-				"sub2", 1, true);
+		List<AcknowledgeablePubsubMessage> result = this.pubSubSubscriberTemplate.pull("sub2", 1);
 
 		assertThat(result.size()).isEqualTo(1);
 		assertThat(result.get(0).getPubsubMessage()).isSameAs(this.pubsubMessage);
@@ -332,8 +331,7 @@ public class PubSubSubscriberTemplateTests {
 
 	@Test
 	public void testPull_AndManualNack() throws InterruptedException, ExecutionException, TimeoutException {
-		List<AcknowledgeablePubsubMessage> result = this.pubSubSubscriberTemplate.pull(
-				"sub2", 1, true);
+		List<AcknowledgeablePubsubMessage> result = this.pubSubSubscriberTemplate.pull("sub2", 1);
 
 		assertThat(result.size()).isEqualTo(1);
 		assertThat(result.get(0).getPubsubMessage()).isSameAs(this.pubsubMessage);
@@ -364,9 +362,9 @@ public class PubSubSubscriberTemplateTests {
 		this.pubSubSubscriberTemplate.setAckExecutor(mockExecutor);
 
 		List<AcknowledgeablePubsubMessage> result1 = this.pubSubSubscriberTemplate.pull(
-				"sub1", 1, true);
+				"sub1", 1);
 		List<AcknowledgeablePubsubMessage> result2 = this.pubSubSubscriberTemplate.pull(
-				"sub2", 1, true);
+				"sub2", 1);
 		Set<AcknowledgeablePubsubMessage> combinedMessages = new HashSet<>(result1);
 		combinedMessages.addAll(result2);
 
@@ -390,7 +388,7 @@ public class PubSubSubscriberTemplateTests {
 	public void testPullAsync_AndManualAck() throws InterruptedException, ExecutionException, TimeoutException {
 
 		ListenableFuture<List<AcknowledgeablePubsubMessage>> asyncResult = this.pubSubSubscriberTemplate
-				.pullAsync("sub", 1, true);
+				.pullAsync("sub", 1);
 
 		List<AcknowledgeablePubsubMessage> result = asyncResult.get(10L, TimeUnit.SECONDS);
 
@@ -421,7 +419,7 @@ public class PubSubSubscriberTemplateTests {
 	@Test
 	public void testPullAndAck() {
 		List<PubsubMessage> result = this.pubSubSubscriberTemplate.pullAndAck(
-				"sub2", 1, true);
+				"sub2", 1);
 
 		assertThat(result.size()).isEqualTo(1);
 
@@ -436,7 +434,7 @@ public class PubSubSubscriberTemplateTests {
 		when(this.pullCallable.call(any(PullRequest.class))).thenReturn(PullResponse.newBuilder().build());
 
 		List<PubsubMessage> result = this.pubSubSubscriberTemplate.pullAndAck(
-				"sub2", 1, true);
+				"sub2", 1);
 
 		assertThat(result.size()).isEqualTo(0);
 
@@ -446,7 +444,7 @@ public class PubSubSubscriberTemplateTests {
 	@Test
 	public void testPullAndAckAsync() throws InterruptedException, ExecutionException, TimeoutException {
 		ListenableFuture<List<PubsubMessage>> asyncResult = this.pubSubSubscriberTemplate.pullAndAckAsync(
-				"sub2", 1, true);
+				"sub2", 1);
 
 		List<PubsubMessage> result = asyncResult.get(10L, TimeUnit.SECONDS);
 		assertThat(asyncResult.isDone()).isTrue();
@@ -464,7 +462,7 @@ public class PubSubSubscriberTemplateTests {
 		when(this.pullApiFuture.get()).thenReturn(PullResponse.newBuilder().build());
 
 		ListenableFuture<List<PubsubMessage>> asyncResult = this.pubSubSubscriberTemplate.pullAndAckAsync(
-				"sub2", 1, true);
+				"sub2", 1);
 
 		List<PubsubMessage> result = asyncResult.get(10L, TimeUnit.SECONDS);
 		assertThat(asyncResult.isDone()).isTrue();
@@ -477,7 +475,7 @@ public class PubSubSubscriberTemplateTests {
 	@Test
 	public void testPullAndConvert() {
 		List<ConvertedAcknowledgeablePubsubMessage<BigInteger>> result = this.pubSubSubscriberTemplate.pullAndConvert(
-				"sub2", 1, true, BigInteger.class);
+				"sub2", 1, BigInteger.class);
 
 		verify(this.messageConverter).fromPubSubMessage(this.pubsubMessage, BigInteger.class);
 
@@ -490,7 +488,7 @@ public class PubSubSubscriberTemplateTests {
 	@Test
 	public void testPullAndConvertAsync() throws InterruptedException, ExecutionException, TimeoutException {
 		ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<BigInteger>>> asyncResult = this.pubSubSubscriberTemplate.pullAndConvertAsync(
-				"sub2", 1, true, BigInteger.class);
+				"sub2", 1, BigInteger.class);
 
 		List<ConvertedAcknowledgeablePubsubMessage<BigInteger>> result = asyncResult.get(10L, TimeUnit.SECONDS);
 		assertThat(asyncResult.isDone()).isTrue();
@@ -510,7 +508,7 @@ public class PubSubSubscriberTemplateTests {
 
 		assertThat(message).isSameAs(this.pubsubMessage);
 
-		verify(this.subscriberFactory).createPullRequest("sub2", 1, true);
+		verify(this.subscriberFactory).createPullRequest("sub2", 1);
 		verify(this.pubSubSubscriberTemplate, times(1)).ack(any());
 	}
 
@@ -522,7 +520,7 @@ public class PubSubSubscriberTemplateTests {
 
 		assertThat(message).isNull();
 
-		verify(this.subscriberFactory).createPullRequest("sub2", 1, true);
+		verify(this.subscriberFactory).createPullRequest("sub2", 1);
 		verify(this.pubSubSubscriberTemplate, never()).ack(any());
 	}
 
@@ -536,7 +534,7 @@ public class PubSubSubscriberTemplateTests {
 
 		assertThat(message).isSameAs(this.pubsubMessage);
 
-		verify(this.subscriberFactory).createPullRequest("sub2", 1, true);
+		verify(this.subscriberFactory).createPullRequest("sub2", 1);
 		verify(this.pubSubSubscriberTemplate, times(1)).ack(any());
 	}
 
@@ -551,7 +549,7 @@ public class PubSubSubscriberTemplateTests {
 
 		assertThat(message).isNull();
 
-		verify(this.subscriberFactory).createPullRequest("sub2", 1, true);
+		verify(this.subscriberFactory).createPullRequest("sub2", 1);
 		verify(this.pubSubSubscriberTemplate, never()).ack(any());
 	}
 

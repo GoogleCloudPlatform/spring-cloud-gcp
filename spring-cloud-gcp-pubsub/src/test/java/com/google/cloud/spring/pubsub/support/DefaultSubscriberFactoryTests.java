@@ -78,7 +78,7 @@ public class DefaultSubscriberFactoryTests {
 
 		this.expectedException.expect(IllegalArgumentException.class);
 		this.expectedException.expectMessage("The maxMessages must be greater than 0.");
-		factory.createPullRequest("test", -1, true);
+		factory.createPullRequest("test", -1);
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class DefaultSubscriberFactoryTests {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project");
 		factory.setCredentialsProvider(this.credentialsProvider);
 
-		PullRequest request = factory.createPullRequest("test", null, true);
+		PullRequest request = factory.createPullRequest("test", null);
 		assertThat(request.getMaxMessages()).isEqualTo(Integer.MAX_VALUE);
 	}
 }

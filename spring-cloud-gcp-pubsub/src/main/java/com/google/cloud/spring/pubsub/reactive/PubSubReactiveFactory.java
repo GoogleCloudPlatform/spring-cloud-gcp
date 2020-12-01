@@ -127,8 +127,10 @@ public final class PubSubReactiveFactory {
 	}
 
 	private Flux<AcknowledgeablePubsubMessage> pullAll(String subscriptionName) {
-		CompletableFuture<List<AcknowledgeablePubsubMessage>> pullResponseFuture = this.subscriberOperations
-				.pullAsync(subscriptionName, maxMessages, true).completable();
+		CompletableFuture<List<AcknowledgeablePubsubMessage>> pullResponseFuture =
+				this.subscriberOperations
+						.pullAsync(subscriptionName, maxMessages)
+						.completable();
 
 		return Mono.fromFuture(pullResponseFuture).flatMapMany(Flux::fromIterable);
 	}
@@ -136,7 +138,7 @@ public final class PubSubReactiveFactory {
 	private void backpressurePull(String subscriptionName, long numRequested,
 			FluxSink<AcknowledgeablePubsubMessage> sink) {
 		int intDemand = numRequested > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) numRequested;
-		this.subscriberOperations.pullAsync(subscriptionName, intDemand, false).addCallback(
+		this.subscriberOperations.pullAsync(subscriptionName, intDemand).addCallback(
 				messages -> {
 					if (!sink.isCancelled()) {
 						messages.forEach(sink::next);

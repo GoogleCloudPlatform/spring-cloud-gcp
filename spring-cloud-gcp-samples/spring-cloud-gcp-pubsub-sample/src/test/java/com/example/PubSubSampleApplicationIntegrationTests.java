@@ -209,7 +209,6 @@ public class PubSubSampleApplicationIntegrationTests {
 				projectName, subscriptionName);
 
 		PullRequest pullRequest = PullRequest.newBuilder()
-				.setReturnImmediately(true)
 				.setMaxMessages(10)
 				.setSubscription(projectSubscriptionName)
 				.build();

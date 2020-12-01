@@ -186,9 +186,7 @@ public class PubSubTemplateDocumentationIntegrationTests {
 			await().atMost(Duration.TEN_SECONDS).untilAsserted(() -> {
 				// tag::pull[]
 				int maxMessages = 10;
-				boolean returnImmediately = false;
-				List<AcknowledgeablePubsubMessage> messages = pubSubTemplate.pull(subscriptionName, maxMessages,
-						returnImmediately);
+				List<AcknowledgeablePubsubMessage> messages = pubSubTemplate.pull(subscriptionName, maxMessages);
 				// end::pull[]
 
 				assertThat(messages).hasSize(1);
@@ -222,9 +220,8 @@ public class PubSubTemplateDocumentationIntegrationTests {
 			await().atMost(Duration.TEN_SECONDS).untilAsserted(() -> {
 				// tag::json_pull[]
 				int maxMessages = 1;
-				boolean returnImmediately = false;
-				List<ConvertedAcknowledgeablePubsubMessage<TestUser>> messages = pubSubTemplate.pullAndConvert(
-						subscriptionName, maxMessages, returnImmediately, TestUser.class);
+				List<ConvertedAcknowledgeablePubsubMessage<TestUser>> messages =
+						pubSubTemplate.pullAndConvert(subscriptionName, maxMessages, TestUser.class);
 				// end::json_pull[]
 
 				assertThat(messages).hasSize(1);

@@ -56,12 +56,9 @@ public interface SubscriberFactory {
 	 * @param subscriptionName the name of the subscription
 	 * @param maxMessages the maximum number of pulled messages; must be greater than zero.
 	 * If null is passed in, then up to Integer.MAX_VALUE messages will be requested.
-	 * @param returnImmediately causes the pull request to return immediately even
-	 * if subscription doesn't contain enough messages to satisfy {@code maxMessages}
 	 * @return the pull request that can be executed using a {@link SubscriberStub}
 	 */
-	PullRequest createPullRequest(String subscriptionName, Integer maxMessages,
-			Boolean returnImmediately);
+	PullRequest createPullRequest(String subscriptionName, Integer maxMessages);
 
 	/**
 	 * Create a {@link SubscriberStub} that is needed to execute {@link PullRequest}s.

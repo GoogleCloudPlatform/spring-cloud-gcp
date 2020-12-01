@@ -219,8 +219,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	@Override
-	public PullRequest createPullRequest(String subscriptionName, Integer maxMessages,
-			Boolean returnImmediately) {
+	public PullRequest createPullRequest(String subscriptionName, Integer maxMessages) {
 		Assert.hasLength(subscriptionName, "The subscription name must be provided.");
 
 		if (maxMessages == null) {
@@ -228,17 +227,11 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 		Assert.isTrue(maxMessages > 0, "The maxMessages must be greater than 0.");
 
-		PullRequest.Builder pullRequestBuilder =
-				PullRequest.newBuilder()
-						.setSubscription(
-								PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId).toString())
-						.setMaxMessages(maxMessages);
-
-		if (returnImmediately != null) {
-			pullRequestBuilder.setReturnImmediately(returnImmediately);
-		}
-
-		return pullRequestBuilder.build();
+		return PullRequest.newBuilder()
+				.setSubscription(
+						PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId).toString())
+				.setMaxMessages(maxMessages)
+				.build();
 	}
 
 	@Override

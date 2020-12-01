@@ -248,31 +248,29 @@ public class PubSubSubscriberTemplate
 	}
 
 	@Override
-	public List<AcknowledgeablePubsubMessage> pull(
-			String subscription, Integer maxMessages, Boolean returnImmediately) {
-		return pull(this.subscriberFactory.createPullRequest(subscription, maxMessages,
-				returnImmediately));
+	public List<AcknowledgeablePubsubMessage> pull(String subscription, Integer maxMessages) {
+		return pull(this.subscriberFactory.createPullRequest(subscription, maxMessages));
 	}
 
 	@Override
-	public ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(String subscription, Integer maxMessages, Boolean returnImmediately) {
-		return pullAsync(this.subscriberFactory.createPullRequest(subscription, maxMessages, returnImmediately));
+	public ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(String subscription, Integer maxMessages) {
+		return pullAsync(this.subscriberFactory.createPullRequest(subscription, maxMessages));
 	}
 
 	@Override
-	public <T> List<ConvertedAcknowledgeablePubsubMessage<T>> pullAndConvert(String subscription, Integer maxMessages,
-			Boolean returnImmediately, Class<T> payloadType) {
-		List<AcknowledgeablePubsubMessage> ackableMessages = this.pull(subscription, maxMessages, returnImmediately);
+	public <T> List<ConvertedAcknowledgeablePubsubMessage<T>> pullAndConvert(
+			String subscription, Integer maxMessages, Class<T> payloadType) {
+		List<AcknowledgeablePubsubMessage> ackableMessages = this.pull(subscription, maxMessages);
 
 		return this.toConvertedAcknowledgeablePubsubMessages(payloadType, ackableMessages);
 	}
 
 	@Override
-	public <T> ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(String subscription,
-			Integer maxMessages, Boolean returnImmediately, Class<T> payloadType) {
+	public <T> ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(
+			String subscription, Integer maxMessages, Class<T> payloadType) {
 		final SettableListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> settableFuture = new SettableListenableFuture<>();
 
-		this.pullAsync(subscription, maxMessages, returnImmediately).addCallback(
+		this.pullAsync(subscription, maxMessages).addCallback(
 				ackableMessages -> settableFuture
 						.set(this.toConvertedAcknowledgeablePubsubMessages(payloadType, ackableMessages)),
 				settableFuture::setException);
@@ -288,10 +286,8 @@ public class PubSubSubscriberTemplate
 	}
 
 	@Override
-	public List<PubsubMessage> pullAndAck(String subscription, Integer maxMessages,
-			Boolean returnImmediately) {
-		PullRequest pullRequest = this.subscriberFactory.createPullRequest(
-				subscription, maxMessages, returnImmediately);
+	public List<PubsubMessage> pullAndAck(String subscription, Integer maxMessages) {
+		PullRequest pullRequest = this.subscriberFactory.createPullRequest(subscription, maxMessages);
 
 		List<AcknowledgeablePubsubMessage> ackableMessages = pull(pullRequest);
 
@@ -304,10 +300,8 @@ public class PubSubSubscriberTemplate
 	}
 
 	@Override
-	public ListenableFuture<List<PubsubMessage>> pullAndAckAsync(String subscription, Integer maxMessages,
-			Boolean returnImmediately) {
-		PullRequest pullRequest = this.subscriberFactory.createPullRequest(
-				subscription, maxMessages, returnImmediately);
+	public ListenableFuture<List<PubsubMessage>> pullAndAckAsync(String subscription, Integer maxMessages) {
+		PullRequest pullRequest = this.subscriberFactory.createPullRequest(subscription, maxMessages);
 
 		final SettableListenableFuture<List<PubsubMessage>> settableFuture = new SettableListenableFuture<>();
 
@@ -329,7 +323,7 @@ public class PubSubSubscriberTemplate
 
 	@Override
 	public PubsubMessage pullNext(String subscription) {
-		List<PubsubMessage> receivedMessageList = pullAndAck(subscription, 1, true);
+		List<PubsubMessage> receivedMessageList = pullAndAck(subscription, 1);
 
 		return receivedMessageList.isEmpty() ? null : receivedMessageList.get(0);
 	}
@@ -338,7 +332,7 @@ public class PubSubSubscriberTemplate
 	public ListenableFuture<PubsubMessage> pullNextAsync(String subscription) {
 		final SettableListenableFuture<PubsubMessage> settableFuture = new SettableListenableFuture<>();
 
-		this.pullAndAckAsync(subscription, 1, true).addCallback(
+		this.pullAndAckAsync(subscription, 1).addCallback(
 				messages -> {
 					PubsubMessage message = messages.isEmpty() ? null : messages.get(0);
 					settableFuture.set(message);
