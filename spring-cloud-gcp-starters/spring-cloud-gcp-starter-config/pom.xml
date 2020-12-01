@@ -44,6 +44,16 @@
 							<skip>true</skip>
 						</configuration>
 					</plugin>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<extensions>true</extensions>
+						<configuration>
+							<skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+						</configuration>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
