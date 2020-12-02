@@ -93,24 +93,24 @@
 <li><a href="#configuration-management-with-spring-cloud-config-and-spring-cloud-bus">9.1. Configuration Management with Spring Cloud Config and Spring Cloud Bus</a></li>
 </ul>
 </li>
-<li><a href="#stackdriver-trace">10. Stackdriver Trace</a>
+<li><a href="#cloud-trace">10. Cloud Trace</a>
 <ul class="sectlevel2">
 <li><a href="#tracing">10.1. Tracing</a></li>
-<li><a href="#spring-boot-starter-for-stackdriver-trace">10.2. Spring Boot Starter for Stackdriver Trace</a></li>
+<li><a href="#spring-boot-starter-for-cloud-trace">10.2. Spring Boot Starter for Cloud Trace</a></li>
 <li><a href="#overriding-the-auto-configuration">10.3. Overriding the auto-configuration</a></li>
 <li><a href="#customizing-spans">10.4. Customizing spans</a></li>
 <li><a href="#integration-with-logging">10.5. Integration with Logging</a></li>
 <li><a href="#sample-5">10.6. Sample</a></li>
 </ul>
 </li>
-<li><a href="#stackdriver-logging">11. Stackdriver Logging</a>
+<li><a href="#cloud-logging">11. Cloud Logging</a>
 <ul class="sectlevel2">
 <li><a href="#web-mvc-interceptor">11.1. Web MVC Interceptor</a></li>
 <li><a href="#logback-support">11.2. Logback Support</a></li>
 <li><a href="#sample-6">11.3. Sample</a></li>
 </ul>
 </li>
-<li><a href="#stackdriver-monitoring">12. Stackdriver Monitoring</a>
+<li><a href="#cloud-monitoring">12. Cloud Monitoring</a>
 <ul class="sectlevel2">
 <li><a href="#configuration-4">12.1. Configuration</a></li>
 <li><a href="#sample-7">12.2. Sample</a></li>
@@ -251,7 +251,7 @@
 <p>Exchange messages with Spring Integration using Google Cloud Pub/Sub on the background</p>
 </li>
 <li>
-<p>Trace the execution of your app with Spring Cloud Sleuth and Google Stackdriver Trace</p>
+<p>Trace the execution of your app with Spring Cloud Sleuth and Google Cloud Trace</p>
 </li>
 <li>
 <p>Configure your app with Spring Cloud Config, backed up by the Google Runtime Configuration API</p>
@@ -378,8 +378,8 @@ You do <strong>not</strong> need to include the underlying <code>spring-cloud-gc
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Logging</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enables Stackdriver Logging</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#_stackdriver_logging">com.google.cloud:spring-cloud-gcp-starter-logging</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables Cloud Logging</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#_cloud_logging">com.google.cloud:spring-cloud-gcp-starter-logging</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SQL - MySQL</p></td>
@@ -403,7 +403,7 @@ You do <strong>not</strong> need to include the underlying <code>spring-cloud-gc
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Trace</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enables instrumentation with Google Stackdriver Tracing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables instrumentation with Google Cloud Trace</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#_spring_cloud_sleuth">com.google.cloud:spring-cloud-gcp-starter-trace</a></p></td>
 </tr>
 <tr>
@@ -489,7 +489,7 @@ The table below highlights several samples of the most commonly used integration
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-storage-resource-sample">spring-cloud-gcp-storage-resource-sample</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Stackdriver Logging</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cloud Logging</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-logging-sample">spring-cloud-gcp-logging-sample</a></p></td>
 </tr>
 <tr>
@@ -3004,17 +3004,17 @@ The sample contains two examples of configuration management with Spring Cloud B
 </div>
 </div>
 <div class="sect1">
-<h2 id="stackdriver-trace"><a class="anchor" href="#stackdriver-trace"></a><a class="link" href="#stackdriver-trace">10. Stackdriver Trace</a></h2>
+<h2 id="cloud-trace"><a class="anchor" href="#cloud-trace"></a><a class="link" href="#cloud-trace">10. Cloud Trace</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Google Cloud Platform provides a managed distributed tracing service called <a href="https://cloud.google.com/trace/">Stackdriver Trace</a>, and <a href="https://cloud.spring.io/spring-cloud-sleuth/">Spring Cloud Sleuth</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
+<p>Google Cloud Platform provides a managed distributed tracing service called <a href="https://cloud.google.com/trace/">Cloud Trace</a>, and <a href="https://cloud.spring.io/spring-cloud-sleuth/">Spring Cloud Sleuth</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
 </div>
 <div class="paragraph">
 <p>Typically, Spring Cloud Sleuth captures trace information and forwards traces to services like Zipkin for storage and analysis.
-However, on GCP, instead of running and maintaining your own Zipkin instance and storage, you can use Stackdriver Trace to store traces, view trace details, generate latency distributions graphs, and generate performance regression reports.</p>
+However, on GCP, instead of running and maintaining your own Zipkin instance and storage, you can use Cloud Trace to store traces, view trace details, generate latency distributions graphs, and generate performance regression reports.</p>
 </div>
 <div class="paragraph">
-<p>This Spring Cloud GCP starter can forward Spring Cloud Sleuth traces to Stackdriver Trace without an intermediary Zipkin server.</p>
+<p>This Spring Cloud GCP starter can forward Spring Cloud Sleuth traces to Cloud Trace without an intermediary Zipkin server.</p>
 </div>
 <div class="paragraph">
 <p>Maven coordinates, using <a href="#_bill_of_materials">Spring Cloud GCP BOM</a>:</p>
@@ -3038,8 +3038,8 @@ However, on GCP, instead of running and maintaining your own Zipkin instance and
 </div>
 </div>
 <div class="paragraph">
-<p>You must enable Stackdriver Trace API from the Google Cloud Console in order to capture traces.
-Navigate to the <a href="https://console.cloud.google.com/apis/api/cloudtrace.googleapis.com/overview">Stackdriver Trace API</a> for your project and make sure it’s enabled.</p>
+<p>You must enable Cloud Trace API from the Google Cloud Console in order to capture traces.
+Navigate to the <a href="https://console.cloud.google.com/apis/api/cloudtrace.googleapis.com/overview">Cloud Trace API</a> for your project and make sure it’s enabled.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3049,7 +3049,7 @@ Navigate to the <a href="https://console.cloud.google.com/apis/api/cloudtrace.go
 </td>
 <td class="content">
 <div class="paragraph">
-<p>If you are already using a Zipkin server capturing trace information from multiple platform/frameworks, you can also use a <a href="https://cloud.google.com/trace/docs/zipkin">Stackdriver Zipkin proxy</a> to forward those traces to Stackdriver Trace without modifying existing applications.</p>
+<p>If you are already using a Zipkin server capturing trace information from multiple platform/frameworks, you can also use a <a href="https://cloud.google.com/trace/docs/zipkin">Stackdriver Zipkin proxy</a> to forward those traces to Cloud Trace without modifying existing applications.</p>
 </div>
 </td>
 </tr>
@@ -3085,7 +3085,7 @@ The value of the <code>x-cloud-trace-context</code> key can be formatted in thre
 </div>
 <div class="paragraph">
 <p><code>SPAN_ID</code> is an unsigned long.
-Since Stackdriver Trace doesn&#8217;t support span joins, a new span ID is always generated, regardless of the one specified in <code>x-cloud-trace-context</code>.</p>
+Since Cloud Trace doesn&#8217;t support span joins, a new span ID is always generated, regardless of the one specified in <code>x-cloud-trace-context</code>.</p>
 </div>
 <div class="paragraph">
 <p><code>TRACE_TRUE</code> can either be <code>0</code> if the entity should be untraced, or <code>1</code> if it should be traced.
@@ -3096,9 +3096,9 @@ This field forces the decision of whether or not to trace the request; if omitte
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-boot-starter-for-stackdriver-trace"><a class="anchor" href="#spring-boot-starter-for-stackdriver-trace"></a><a class="link" href="#spring-boot-starter-for-stackdriver-trace">10.2. Spring Boot Starter for Stackdriver Trace</a></h3>
+<h3 id="spring-boot-starter-for-cloud-trace"><a class="anchor" href="#spring-boot-starter-for-cloud-trace"></a><a class="link" href="#spring-boot-starter-for-cloud-trace">10.2. Spring Boot Starter for Cloud Trace</a></h3>
 <div class="paragraph">
-<p>Spring Boot Starter for Stackdriver Trace uses Spring Cloud Sleuth and auto-configures a <a href="https://github.com/openzipkin/zipkin-gcp/blob/master/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java">StackdriverSender</a> that sends the Sleuth’s trace information to Stackdriver Trace.</p>
+<p>Spring Boot Starter for Cloud Trace uses Spring Cloud Sleuth and auto-configures a <a href="https://github.com/openzipkin/zipkin-gcp/blob/master/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java">StackdriverSender</a> that sends the Sleuth’s trace information to Cloud Trace.</p>
 </div>
 <div class="paragraph">
 <p>All configurations are optional:</p>
@@ -3119,7 +3119,7 @@ This field forces the decision of whether or not to trace the request; if omitte
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Auto-configure Spring Cloud Sleuth to send traces to Stackdriver Trace.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auto-configure Spring Cloud Sleuth to send traces to Cloud Trace.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
@@ -3191,7 +3191,7 @@ This field forces the decision of whether or not to trace the request; if omitte
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.messageTimeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout in seconds before pending spans will be sent in batches to GCP Stackdriver Trace. (previously <code>spring.zipkin.messageTimeout</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout in seconds before pending spans will be sent in batches to GCP Cloud Trace. (previously <code>spring.zipkin.messageTimeout</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 </tr>
@@ -3206,7 +3206,7 @@ Read <a href="https://cloud.spring.io/spring-cloud-sleuth/">Sleuth documentation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>spring.sleuth.sampler.probability=1                     # Send 100% of the request traces to Stackdriver.
+<pre class="highlight"><code>spring.sleuth.sampler.probability=1                     # Send 100% of the request traces to Cloud Trace.
 spring.sleuth.web.skipPattern=(^cleanup.*|.+favicon.*)  # Ignore some URL paths.
 spring.sleuth.scheduled.enabled=false                   # disable executor 'async' traces</code></pre>
 </div>
@@ -3218,7 +3218,7 @@ spring.sleuth.scheduled.enabled=false                   # disable executor 'asyn
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-By default, Spring Cloud Sleuth auto-configuration instruments executor beans, which may cause recurring traces with the name <code>async</code> to appear in Stackdriver Trace if your application or one of its dependencies introduces scheduler beans into Spring application context. To avoid this noise, please disable automatic instrumentation of executors via <code>spring.sleuth.scheduled.enabled=false</code> in your application configuration.
+By default, Spring Cloud Sleuth auto-configuration instruments executor beans, which may cause recurring traces with the name <code>async</code> to appear in Cloud Trace if your application or one of its dependencies introduces scheduler beans into Spring application context. To avoid this noise, please disable automatic instrumentation of executors via <code>spring.sleuth.scheduled.enabled=false</code> in your application configuration.
 </td>
 </tr>
 </table>
@@ -3230,12 +3230,12 @@ By default, Spring Cloud Sleuth auto-configuration instruments executor beans, w
 <ul>
 <li>
 <p>Always uses 128-bit Trace IDs.
-This is required by Stackdriver Trace.</p>
+This is required by Cloud Trace.</p>
 </li>
 <li>
 <p>Does not use Span joins.
 Span joins will share the span ID between the client and server Spans.
-Stackdriver requires that every Span ID within a Trace to be unique, so Span joins are not supported.</p>
+Cloud Trace requires that every Span ID within a Trace to be unique, so Span joins are not supported.</p>
 </li>
 <li>
 <p>Uses <code>StackdriverHttpRequestParser</code> by default to populate Stackdriver related fields.</p>
@@ -3288,13 +3288,13 @@ public class Application implements WebMvcConfigurer {
 </div>
 </div>
 <div class="paragraph">
-<p>You can then search and filter traces based on these additional tags in the Stackdriver Trace service.</p>
+<p>You can then search and filter traces based on these additional tags in the Cloud Trace service.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="integration-with-logging"><a class="anchor" href="#integration-with-logging"></a><a class="link" href="#integration-with-logging">10.5. Integration with Logging</a></h3>
 <div class="paragraph">
-<p>Integration with Stackdriver Logging is available through the <a href="logging.adoc">Stackdriver Logging Support</a>.
+<p>Integration with Cloud Logging is available through the <a href="logging.adoc">Cloud Logging Support</a>.
 If the Trace integration is used together with the Logging one, the request logs will be associated to the corresponding traces.
 The trace logs can be viewed by going to the <a href="https://console.cloud.google.com/traces/traces">Google Cloud Console Trace List</a>, selecting a trace and pressing the <code>Logs &#8594; View</code> link in the <code>Details</code> section.</p>
 </div>
@@ -3308,7 +3308,7 @@ The trace logs can be viewed by going to the <a href="https://console.cloud.goog
 </div>
 </div>
 <div class="sect1">
-<h2 id="stackdriver-logging"><a class="anchor" href="#stackdriver-logging"></a><a class="link" href="#stackdriver-logging">11. Stackdriver Logging</a></h2>
+<h2 id="cloud-logging"><a class="anchor" href="#cloud-logging"></a><a class="link" href="#cloud-logging">11. Cloud Logging</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Maven coordinates, using <a href="#_bill_of_materials">Spring Cloud GCP BOM</a>:</p>
@@ -3332,7 +3332,7 @@ The trace logs can be viewed by going to the <a href="https://console.cloud.goog
 </div>
 </div>
 <div class="paragraph">
-<p><a href="https://cloud.google.com/logging/">Stackdriver Logging</a> is the managed logging service provided by Google Cloud Platform.</p>
+<p><a href="https://cloud.google.com/logging/">Cloud Logging</a> is the managed logging service provided by Google Cloud Platform.</p>
 </div>
 <div class="paragraph">
 <p>This module provides support for associating a web request trace ID with the corresponding log entries.
@@ -3382,13 +3382,13 @@ However, if Sleuth is used the trace ID will be picked up from the MDC.</p>
 <div class="sect2">
 <h3 id="logback-support"><a class="anchor" href="#logback-support"></a><a class="link" href="#logback-support">11.2. Logback Support</a></h3>
 <div class="paragraph">
-<p>Currently, only Logback is supported and there are 2 possibilities to log to Stackdriver via this library with Logback: via direct API calls and through JSON-formatted console logs.</p>
+<p>Currently, only Logback is supported and there are 2 possibilities to log to Cloud Logging via this library with Logback: via direct API calls and through JSON-formatted console logs.</p>
 </div>
 <div class="sect3">
 <h4 id="log-via-api"><a class="anchor" href="#log-via-api"></a><a class="link" href="#log-via-api">11.2.1. Log via API</a></h4>
 <div class="paragraph">
-<p>A Stackdriver appender is available using <code>com/google/cloud/spring/logging/logback-appender.xml</code>.
-This appender builds a Stackdriver Logging log entry from a JUL or Logback log entry, adds a trace ID to it and sends it to Stackdriver Logging.</p>
+<p>A Cloud Logging appender is available using <code>com/google/cloud/spring/logging/logback-appender.xml</code>.
+This appender builds a Cloud Logging log entry from a JUL or Logback log entry, adds a trace ID to it and sends it to Cloud Logging.</p>
 </div>
 <div class="paragraph">
 <p><code>STACKDRIVER_LOG_NAME</code> and <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environment variables can be used to customize the <code>STACKDRIVER</code> appender.</p>
@@ -3428,13 +3428,13 @@ The following properties are available:</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>log</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.log</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Stackdriver Log name.
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Cloud Logging Log name.
 This can also be set via the <code>STACKDRIVER_LOG_NAME</code> environmental variable.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>flushLevel</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If a log entry with this level is encountered, trigger a flush of locally buffered log to Stackdriver Logging.
+<td class="tableblock halign-left valign-top"><p class="tableblock">If a log entry with this level is encountered, trigger a flush of locally buffered log to Cloud Logging.
 This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmental variable.</p></td>
 </tr>
 </tbody>
@@ -3460,7 +3460,7 @@ This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmen
 </div>
 </div>
 <div class="paragraph">
-<p>If your application is running on Google Kubernetes Engine, Google Compute Engine or Google App Engine Flexible, your console logging is automatically saved to Google Stackdriver Logging.
+<p>If your application is running on Google Kubernetes Engine, Google Compute Engine or Google App Engine Flexible, your console logging is automatically saved to Google Cloud Logging.
 Therefore, you can just include <code>com/google/cloud/spring/logging/logback-json-appender.xml</code> in your logging configuration, which logs JSON entries to the console.
 The trace id will be set correctly.</p>
 </div>
@@ -3498,10 +3498,10 @@ The following properties are available:</p>
 </ol>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>This is used to generate fully qualified Stackdriver Trace ID format: <code>projects/[PROJECT-ID]/traces/[TRACE-ID]</code>.</p>
+<p>This is used to generate fully qualified Cloud Trace ID format: <code>projects/[PROJECT-ID]/traces/[TRACE-ID]</code>.</p>
 </div>
 <div class="paragraph">
-<p>This format is required to correlate trace between Stackdriver Trace and Stackdriver Logging.</p>
+<p>This format is required to correlate trace between Cloud Trace and Cloud Logging.</p>
 </div>
 <div class="paragraph">
 <p>If <code>projectId</code> is not set and cannot be determined, then it&#8217;ll log <code>traceId</code> without the fully qualified format.</p>
@@ -3622,13 +3622,13 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
 </div>
 </div>
 <div class="sect1">
-<h2 id="stackdriver-monitoring"><a class="anchor" href="#stackdriver-monitoring"></a><a class="link" href="#stackdriver-monitoring">12. Stackdriver Monitoring</a></h2>
+<h2 id="cloud-monitoring"><a class="anchor" href="#cloud-monitoring"></a><a class="link" href="#cloud-monitoring">12. Cloud Monitoring</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Google Cloud Platform provides a service called <a href="https://cloud.google.com/monitoring/">Stackdriver Monitoring</a>, and <a href="https://micrometer.io/docs/registry/stackdriver">Micrometer</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
+<p>Google Cloud Platform provides a service called <a href="https://cloud.google.com/monitoring/">Cloud Monitoring</a>, and <a href="https://micrometer.io/docs/registry/stackdriver">Micrometer</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
 </div>
 <div class="paragraph">
-<p>Spring Boot already provides auto-configuration for Stackdriver.
+<p>Spring Boot already provides auto-configuration for Cloud Monitoring.
 This module enables auto-detection of the <code>project-id</code> and <code>credentials</code>.
 Also, it can be customized.</p>
 </div>
@@ -3654,11 +3654,11 @@ Also, it can be customized.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>You must enable Stackdriver Monitoring API from the Google Cloud Console in order to capture metrics.
-Navigate to the <a href="https://console.cloud.google.com/apis/api/monitoring.googleapis.com/overview">Stackdriver Monitoring API</a> for your project and make sure it’s enabled.</p>
+<p>You must enable Cloud Monitoring API from the Google Cloud Console in order to capture metrics.
+Navigate to the <a href="https://console.cloud.google.com/apis/api/monitoring.googleapis.com/overview">Cloud Monitoring API</a> for your project and make sure it’s enabled.</p>
 </div>
 <div class="paragraph">
-<p>Spring Boot Starter for Stackdriver Monitoring uses Micrometer.</p>
+<p>Spring Boot Starter for Cloud Monitoring uses Micrometer.</p>
 </div>
 <div class="sect2">
 <h3 id="configuration-4"><a class="anchor" href="#configuration-4"></a><a class="link" href="#configuration-4">12.1. Configuration</a></h3>
@@ -3681,7 +3681,7 @@ Navigate to the <a href="https://console.cloud.google.com/apis/api/monitoring.go
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.metrics.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Auto-configure Micrometer to send metrics to Stackdriver Monitoring.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auto-configure Micrometer to send metrics to Cloud Monitoring.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
@@ -9836,7 +9836,7 @@ public class SampleConfig {
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring Cloud GCP provides support for Cloud Foundry&#8217;s <a href="https://docs.pivotal.io/partners/gcp-sb/index.html">GCP Service Broker</a>.
-Our Pub/Sub, Cloud Spanner, Storage, Stackdriver Trace and Cloud SQL MySQL and PostgreSQL starters are Cloud Foundry aware and retrieve properties like project ID, credentials, etc., that are used in auto configuration from the Cloud Foundry environment.</p>
+Our Pub/Sub, Cloud Spanner, Storage, Cloud Trace and Cloud SQL MySQL and PostgreSQL starters are Cloud Foundry aware and retrieve properties like project ID, credentials, etc., that are used in auto configuration from the Cloud Foundry environment.</p>
 </div>
 <div class="paragraph">
 <p>In order to take advantage of the Cloud Foundry support make sure the following dependency is added:</p>
@@ -9939,7 +9939,7 @@ The tag should simply be the Cloud Foundry name for the Google Service.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>google-bigquery</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cloud.google.com/products/operations">Stackdriver Trace</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cloud.google.com/products/operations">Cloud Trace</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>google-stackdriver-trace</code></p></td>
 </tr>
 <tr>
@@ -10128,7 +10128,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 <dd>
 <p>Use <code>getOptions()</code></p>
 </dd>
-<dt class="hdlist1">Stackdriver Logging</dt>
+<dt class="hdlist1">Cloud Logging</dt>
 <dd>
 <div class="dlist">
 <dl>
@@ -10136,7 +10136,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 <dd>
 <p>Use <code>com.google.cloud.spring.logging</code> from the <code>spring-cloud-gcp-logging</code> module.</p>
 </dd>
-<dt class="hdlist1">Stackdriver Logback Appenders</dt>
+<dt class="hdlist1">Cloud Logging Logback Appenders</dt>
 <dd>
 <p>Replace <code>org/springframework/cloud/gcp/autoconfigure/logging/logback[-json]-appender.xml</code> with <code>com/google/cloud/spring/logging/logback[-json]-appender.xml</code> from the <code>spring-cloud-gcp-logging</code> module.</p>
 <div class="listingblock">

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Stackdriver Trace</title>
+<title>Cloud Trace</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
@@ -14,10 +14,10 @@
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_stackdriver_trace">Stackdriver Trace</a>
+<li><a href="#_cloud_trace">Cloud Trace</a>
 <ul class="sectlevel2">
 <li><a href="#_tracing">Tracing</a></li>
-<li><a href="#_spring_boot_starter_for_stackdriver_trace">Spring Boot Starter for Stackdriver Trace</a></li>
+<li><a href="#_spring_boot_starter_for_cloud_trace">Spring Boot Starter for Cloud Trace</a></li>
 <li><a href="#_overriding_the_auto_configuration">Overriding the auto-configuration</a></li>
 <li><a href="#_customizing_spans">Customizing spans</a></li>
 <li><a href="#_integration_with_logging">Integration with Logging</a></li>
@@ -29,17 +29,17 @@
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_stackdriver_trace"><a class="link" href="#_stackdriver_trace">Stackdriver Trace</a></h2>
+<h2 id="_cloud_trace"><a class="link" href="#_cloud_trace">Cloud Trace</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Google Cloud Platform provides a managed distributed tracing service called <a href="https://cloud.google.com/trace/">Stackdriver Trace</a>, and <a href="https://cloud.spring.io/spring-cloud-sleuth/">Spring Cloud Sleuth</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
+<p>Google Cloud Platform provides a managed distributed tracing service called <a href="https://cloud.google.com/trace/">Cloud Trace</a>, and <a href="https://cloud.spring.io/spring-cloud-sleuth/">Spring Cloud Sleuth</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
 </div>
 <div class="paragraph">
 <p>Typically, Spring Cloud Sleuth captures trace information and forwards traces to services like Zipkin for storage and analysis.
-However, on GCP, instead of running and maintaining your own Zipkin instance and storage, you can use Stackdriver Trace to store traces, view trace details, generate latency distributions graphs, and generate performance regression reports.</p>
+However, on GCP, instead of running and maintaining your own Zipkin instance and storage, you can use Cloud Trace to store traces, view trace details, generate latency distributions graphs, and generate performance regression reports.</p>
 </div>
 <div class="paragraph">
-<p>This Spring Cloud GCP starter can forward Spring Cloud Sleuth traces to Stackdriver Trace without an intermediary Zipkin server.</p>
+<p>This Spring Cloud GCP starter can forward Spring Cloud Sleuth traces to Cloud Trace without an intermediary Zipkin server.</p>
 </div>
 <div class="paragraph">
 <p>Maven coordinates, using <a href="getting-started.html#_bill_of_materials">Spring Cloud GCP BOM</a>:</p>
@@ -63,8 +63,8 @@ However, on GCP, instead of running and maintaining your own Zipkin instance and
 </div>
 </div>
 <div class="paragraph">
-<p>You must enable Stackdriver Trace API from the Google Cloud Console in order to capture traces.
-Navigate to the <a href="https://console.cloud.google.com/apis/api/cloudtrace.googleapis.com/overview">Stackdriver Trace API</a> for your project and make sure it’s enabled.</p>
+<p>You must enable Cloud Trace API from the Google Cloud Console in order to capture traces.
+Navigate to the <a href="https://console.cloud.google.com/apis/api/cloudtrace.googleapis.com/overview">Cloud Trace API</a> for your project and make sure it’s enabled.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -74,7 +74,7 @@ Navigate to the <a href="https://console.cloud.google.com/apis/api/cloudtrace.go
 </td>
 <td class="content">
 <div class="paragraph">
-<p>If you are already using a Zipkin server capturing trace information from multiple platform/frameworks, you can also use a <a href="https://cloud.google.com/trace/docs/zipkin">Stackdriver Zipkin proxy</a> to forward those traces to Stackdriver Trace without modifying existing applications.</p>
+<p>If you are already using a Zipkin server capturing trace information from multiple platform/frameworks, you can also use a <a href="https://cloud.google.com/trace/docs/zipkin">Stackdriver Zipkin proxy</a> to forward those traces to Cloud Trace without modifying existing applications.</p>
 </div>
 </td>
 </tr>
@@ -110,7 +110,7 @@ The value of the <code>x-cloud-trace-context</code> key can be formatted in thre
 </div>
 <div class="paragraph">
 <p><code>SPAN_ID</code> is an unsigned long.
-Since Stackdriver Trace doesn&#8217;t support span joins, a new span ID is always generated, regardless of the one specified in <code>x-cloud-trace-context</code>.</p>
+Since Cloud Trace doesn&#8217;t support span joins, a new span ID is always generated, regardless of the one specified in <code>x-cloud-trace-context</code>.</p>
 </div>
 <div class="paragraph">
 <p><code>TRACE_TRUE</code> can either be <code>0</code> if the entity should be untraced, or <code>1</code> if it should be traced.
@@ -121,9 +121,9 @@ This field forces the decision of whether or not to trace the request; if omitte
 </div>
 </div>
 <div class="sect2">
-<h3 id="_spring_boot_starter_for_stackdriver_trace"><a class="link" href="#_spring_boot_starter_for_stackdriver_trace">Spring Boot Starter for Stackdriver Trace</a></h3>
+<h3 id="_spring_boot_starter_for_cloud_trace"><a class="link" href="#_spring_boot_starter_for_cloud_trace">Spring Boot Starter for Cloud Trace</a></h3>
 <div class="paragraph">
-<p>Spring Boot Starter for Stackdriver Trace uses Spring Cloud Sleuth and auto-configures a <a href="https://github.com/openzipkin/zipkin-gcp/blob/master/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java">StackdriverSender</a> that sends the Sleuth’s trace information to Stackdriver Trace.</p>
+<p>Spring Boot Starter for Cloud Trace uses Spring Cloud Sleuth and auto-configures a <a href="https://github.com/openzipkin/zipkin-gcp/blob/master/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java">StackdriverSender</a> that sends the Sleuth’s trace information to Cloud Trace.</p>
 </div>
 <div class="paragraph">
 <p>All configurations are optional:</p>
@@ -144,7 +144,7 @@ This field forces the decision of whether or not to trace the request; if omitte
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Auto-configure Spring Cloud Sleuth to send traces to Stackdriver Trace.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auto-configure Spring Cloud Sleuth to send traces to Cloud Trace.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
@@ -216,7 +216,7 @@ This field forces the decision of whether or not to trace the request; if omitte
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.messageTimeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout in seconds before pending spans will be sent in batches to GCP Stackdriver Trace. (previously <code>spring.zipkin.messageTimeout</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout in seconds before pending spans will be sent in batches to GCP Cloud Trace. (previously <code>spring.zipkin.messageTimeout</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 </tr>
@@ -231,7 +231,7 @@ Read <a href="https://cloud.spring.io/spring-cloud-sleuth/">Sleuth documentation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>spring.sleuth.sampler.probability=1                     # Send 100% of the request traces to Stackdriver.
+<pre class="highlight"><code>spring.sleuth.sampler.probability=1                     # Send 100% of the request traces to Cloud Trace.
 spring.sleuth.web.skipPattern=(^cleanup.*|.+favicon.*)  # Ignore some URL paths.
 spring.sleuth.scheduled.enabled=false                   # disable executor 'async' traces</code></pre>
 </div>
@@ -243,7 +243,7 @@ spring.sleuth.scheduled.enabled=false                   # disable executor 'asyn
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-By default, Spring Cloud Sleuth auto-configuration instruments executor beans, which may cause recurring traces with the name <code>async</code> to appear in Stackdriver Trace if your application or one of its dependencies introduces scheduler beans into Spring application context. To avoid this noise, please disable automatic instrumentation of executors via <code>spring.sleuth.scheduled.enabled=false</code> in your application configuration.
+By default, Spring Cloud Sleuth auto-configuration instruments executor beans, which may cause recurring traces with the name <code>async</code> to appear in Cloud Trace if your application or one of its dependencies introduces scheduler beans into Spring application context. To avoid this noise, please disable automatic instrumentation of executors via <code>spring.sleuth.scheduled.enabled=false</code> in your application configuration.
 </td>
 </tr>
 </table>
@@ -255,12 +255,12 @@ By default, Spring Cloud Sleuth auto-configuration instruments executor beans, w
 <ul>
 <li>
 <p>Always uses 128-bit Trace IDs.
-This is required by Stackdriver Trace.</p>
+This is required by Cloud Trace.</p>
 </li>
 <li>
 <p>Does not use Span joins.
 Span joins will share the span ID between the client and server Spans.
-Stackdriver requires that every Span ID within a Trace to be unique, so Span joins are not supported.</p>
+Cloud Trace requires that every Span ID within a Trace to be unique, so Span joins are not supported.</p>
 </li>
 <li>
 <p>Uses <code>StackdriverHttpRequestParser</code> by default to populate Stackdriver related fields.</p>
@@ -313,13 +313,13 @@ public class Application implements WebMvcConfigurer {
 </div>
 </div>
 <div class="paragraph">
-<p>You can then search and filter traces based on these additional tags in the Stackdriver Trace service.</p>
+<p>You can then search and filter traces based on these additional tags in the Cloud Trace service.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_integration_with_logging"><a class="link" href="#_integration_with_logging">Integration with Logging</a></h3>
 <div class="paragraph">
-<p>Integration with Stackdriver Logging is available through the <a href="logging.adoc">Stackdriver Logging Support</a>.
+<p>Integration with Cloud Logging is available through the <a href="logging.adoc">Cloud Logging Support</a>.
 If the Trace integration is used together with the Logging one, the request logs will be associated to the corresponding traces.
 The trace logs can be viewed by going to the <a href="https://console.cloud.google.com/traces/traces">Google Cloud Console Trace List</a>, selecting a trace and pressing the <code>Logs &#8594; View</code> link in the <code>Details</code> section.</p>
 </div>

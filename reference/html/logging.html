@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Stackdriver Logging</title>
+<title>Cloud Logging</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
@@ -14,7 +14,7 @@
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_stackdriver_logging">Stackdriver Logging</a>
+<li><a href="#_cloud_logging">Cloud Logging</a>
 <ul class="sectlevel2">
 <li><a href="#_web_mvc_interceptor">Web MVC Interceptor</a></li>
 <li><a href="#_logback_support">Logback Support</a></li>
@@ -26,7 +26,7 @@
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_stackdriver_logging"><a class="link" href="#_stackdriver_logging">Stackdriver Logging</a></h2>
+<h2 id="_cloud_logging"><a class="link" href="#_cloud_logging">Cloud Logging</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Maven coordinates, using <a href="getting-started.html#_bill_of_materials">Spring Cloud GCP BOM</a>:</p>
@@ -50,7 +50,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p><a href="https://cloud.google.com/logging/">Stackdriver Logging</a> is the managed logging service provided by Google Cloud Platform.</p>
+<p><a href="https://cloud.google.com/logging/">Cloud Logging</a> is the managed logging service provided by Google Cloud Platform.</p>
 </div>
 <div class="paragraph">
 <p>This module provides support for associating a web request trace ID with the corresponding log entries.
@@ -100,13 +100,13 @@ However, if Sleuth is used the trace ID will be picked up from the MDC.</p>
 <div class="sect2">
 <h3 id="_logback_support"><a class="link" href="#_logback_support">Logback Support</a></h3>
 <div class="paragraph">
-<p>Currently, only Logback is supported and there are 2 possibilities to log to Stackdriver via this library with Logback: via direct API calls and through JSON-formatted console logs.</p>
+<p>Currently, only Logback is supported and there are 2 possibilities to log to Cloud Logging via this library with Logback: via direct API calls and through JSON-formatted console logs.</p>
 </div>
 <div class="sect3">
 <h4 id="_log_via_api"><a class="link" href="#_log_via_api">Log via API</a></h4>
 <div class="paragraph">
-<p>A Stackdriver appender is available using <code>com/google/cloud/spring/logging/logback-appender.xml</code>.
-This appender builds a Stackdriver Logging log entry from a JUL or Logback log entry, adds a trace ID to it and sends it to Stackdriver Logging.</p>
+<p>A Cloud Logging appender is available using <code>com/google/cloud/spring/logging/logback-appender.xml</code>.
+This appender builds a Cloud Logging log entry from a JUL or Logback log entry, adds a trace ID to it and sends it to Cloud Logging.</p>
 </div>
 <div class="paragraph">
 <p><code>STACKDRIVER_LOG_NAME</code> and <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environment variables can be used to customize the <code>STACKDRIVER</code> appender.</p>
@@ -146,13 +146,13 @@ The following properties are available:</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>log</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.log</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Stackdriver Log name.
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Cloud Logging Log name.
 This can also be set via the <code>STACKDRIVER_LOG_NAME</code> environmental variable.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>flushLevel</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If a log entry with this level is encountered, trigger a flush of locally buffered log to Stackdriver Logging.
+<td class="tableblock halign-left valign-top"><p class="tableblock">If a log entry with this level is encountered, trigger a flush of locally buffered log to Cloud Logging.
 This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmental variable.</p></td>
 </tr>
 </tbody>
@@ -178,7 +178,7 @@ This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmen
 </div>
 </div>
 <div class="paragraph">
-<p>If your application is running on Google Kubernetes Engine, Google Compute Engine or Google App Engine Flexible, your console logging is automatically saved to Google Stackdriver Logging.
+<p>If your application is running on Google Kubernetes Engine, Google Compute Engine or Google App Engine Flexible, your console logging is automatically saved to Google Cloud Logging.
 Therefore, you can just include <code>com/google/cloud/spring/logging/logback-json-appender.xml</code> in your logging configuration, which logs JSON entries to the console.
 The trace id will be set correctly.</p>
 </div>
@@ -216,10 +216,10 @@ The following properties are available:</p>
 </ol>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>This is used to generate fully qualified Stackdriver Trace ID format: <code>projects/[PROJECT-ID]/traces/[TRACE-ID]</code>.</p>
+<p>This is used to generate fully qualified Cloud Trace ID format: <code>projects/[PROJECT-ID]/traces/[TRACE-ID]</code>.</p>
 </div>
 <div class="paragraph">
-<p>This format is required to correlate trace between Stackdriver Trace and Stackdriver Logging.</p>
+<p>This format is required to correlate trace between Cloud Trace and Cloud Logging.</p>
 </div>
 <div class="paragraph">
 <p>If <code>projectId</code> is not set and cannot be determined, then it&#8217;ll log <code>traceId</code> without the fully qualified format.</p>
