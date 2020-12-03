@@ -54,7 +54,6 @@ import zipkin2.reporter.stackdriver.StackdriverEncoder;
 import zipkin2.reporter.stackdriver.StackdriverSender;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -276,6 +275,4 @@ public class StackdriverTraceAutoConfiguration {
 			return builder -> builder.clientRequestParser(stackdriverHttpRequestParser);
 		}
 	}
-
-
 }
