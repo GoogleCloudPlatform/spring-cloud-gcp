@@ -123,7 +123,7 @@ public interface PubSubSubscriberOperations {
 	 * received acknowledgeable messages
 	 * @since 1.2.3
 	 */
-	ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(String subscription, Integer maxMessages, Boolean returnImmediately);
+	ListenableFuture<List<? extends AcknowledgeablePubsubMessage>> pullAsync(String subscription, Integer maxMessages, Boolean returnImmediately);
 
 	/**
 	 * Pull a number of messages from a Google Cloud Pub/Sub subscription and convert them to Spring messages with
