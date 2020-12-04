@@ -86,16 +86,6 @@ public final class SpringPubSubTracing {
 //
 
 
-	<R> TraceContextOrSamplingFlags extractAndClearTraceIdHeaders(
-			Extractor<R> extractor, R request, PubsubMessage.Builder message
-	) {
-		TraceContextOrSamplingFlags extracted = extractor.extract(request);
-		// Clear any propagation keys present in the headers
-		if (extracted.samplingFlags() == null) { // then trace IDs were extracted
-			clearTraceIdHeaders(message);
-		}
-		return extracted;
-	}
 
 	/** Creates a potentially noop remote span representing this request */
 	Span nextMessagingSpan(
@@ -109,6 +99,17 @@ public final class SpringPubSubTracing {
 			extracted = extracted.sampled(sampled.booleanValue());
 		}
 		return tracer.nextSpan(extracted);
+	}
+
+	<R> TraceContextOrSamplingFlags extractAndClearTraceIdHeaders(
+			Extractor<R> extractor, R request, PubsubMessage.Builder message
+	) {
+		TraceContextOrSamplingFlags extracted = extractor.extract(request);
+		// Clear any propagation keys present in the headers
+		if (extracted.samplingFlags() == null) { // then trace IDs were extracted
+			clearTraceIdHeaders(message);
+		}
+		return extracted;
 	}
 
 	// We can't just skip clearing headers we use because we might inject B3 single, yet have stale B3

@@ -42,23 +42,27 @@ final class TracingPublisherFactory implements PublisherFactory {
 		Span span;
 		if (maybeParent == null) {
 			TraceContextOrSamplingFlags extracted =
-					extractAndClearTraceIdHeaders(producerExtractor, request, message);
-			span = nextMessagingSpan(sampler, request, extracted);
+					springPubSubTracing.extractAndClearTraceIdHeaders(springPubSubTracing.producerExtractor, request, message.toBuilder());
+			span = springPubSubTracing.nextMessagingSpan(springPubSubTracing.producerSampler, request, extracted);
 		}
 		else { // If we have a span in scope assume headers were cleared before
-			span = tracer.newChild(maybeParent);
+			span = springPubSubTracing.tracer.newChild(maybeParent);
 		}
 
 		if (!span.isNoop()) {
 			span.kind(PRODUCER).name("publish");
-			if (remoteServiceName != null) span.remoteServiceName(remoteServiceName);
+			if (springPubSubTracing.remoteServiceName != null) span.remoteServiceName(springPubSubTracing.remoteServiceName);
 			// incur timestamp overhead only once
-			long timestamp = springPubSubTracing.clock(span.context()).currentTimeMicroseconds();
+			long timestamp = springPubSubTracing.tracing.clock(span.context()).currentTimeMicroseconds();
 			span.start(timestamp).finish(timestamp);
 		}
 
-		producerInjector.inject(span.context(), request);
+		springPubSubTracing.producerInjector.inject(span.context(), request);
+
+		// TODO: return instrumented message?
 		return message;
 	}
+
+
 
 }
