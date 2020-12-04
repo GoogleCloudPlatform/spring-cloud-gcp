@@ -57,7 +57,7 @@ public class PubSubJsonPayloadSampleApplicationIntegrationTests {
 		assumeThat(
 				"PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub-integration=true' "
 						+ "to enable them. ",
-				System.getProperty("it.pubsub"), is("true"));
+				System.getProperty("it.pubsub-integration"), is("true"));
 	}
 
 	@Test

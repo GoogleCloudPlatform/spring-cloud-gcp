@@ -77,7 +77,7 @@ public class LocalSampleAppIntegrationTest {
 	public static void prepare() throws Exception {
 		assumeThat(
 			"PUB/SUB integration tests are disabled. Use '-Dit.pubsub-bus=true' to enable.",
-			System.getProperty("it.pubsub"), is("true"));
+			System.getProperty("it.pubsub-bus"), is("true"));
 
 		Files.createDirectories(Paths.get(CONFIG_DIR));
 	}
