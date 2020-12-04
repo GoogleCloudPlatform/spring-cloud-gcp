@@ -52,7 +52,7 @@ public class SampleAppIntegrationTest {
 	@BeforeClass
 	public static void prepare() {
 		assumeThat(
-				"PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub=true' "
+				"PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub-integration=true' "
 						+ "to enable them. ",
 				System.getProperty("it.pubsub"), is("true"));
 
