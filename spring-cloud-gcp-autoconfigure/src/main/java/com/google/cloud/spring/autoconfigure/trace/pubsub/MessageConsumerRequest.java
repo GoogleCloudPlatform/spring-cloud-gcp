@@ -6,6 +6,10 @@ import brave.propagation.Propagation.RemoteGetter;
 import brave.propagation.Propagation.RemoteSetter;
 import com.google.pubsub.v1.PubsubMessage;
 
+/**
+ * Adds support for injecting and extracting context headers in {@link PubsubMessage.Builder},
+ * for the consumer side (receiving).
+ */
 final class MessageConsumerRequest extends ConsumerRequest {
 	static final RemoteGetter<MessageConsumerRequest> GETTER =
 			new RemoteGetter<MessageConsumerRequest>() {
@@ -61,7 +65,7 @@ final class MessageConsumerRequest extends ConsumerRequest {
 
 	@Override
 	public Object unwrap() {
-		return delegate.build();
+		return delegate;
 	}
 
 	@Override

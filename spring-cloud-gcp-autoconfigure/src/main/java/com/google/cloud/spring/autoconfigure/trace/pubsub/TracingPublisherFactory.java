@@ -29,9 +29,8 @@ final class TracingPublisherFactory implements PublisherFactory {
 		};
 	}
 
-	public PubsubMessage postProcessMessageForPublishing(PubsubMessage message, String topic) {
-		MessageProducerRequest request = new MessageProducerRequest(message, topic);
-
+	public void postProcessMessageForPublishing(PubsubMessage.Builder messageBuilder, String topic) {
+		MessageProducerRequest request = new MessageProducerRequest(messageBuilder, topic);
 
 		TraceContext maybeParent = springPubSubTracing.tracing.currentTraceContext().get();
 		// Unlike message consumers, we try current span before trying extraction. This is the proper
@@ -42,7 +41,7 @@ final class TracingPublisherFactory implements PublisherFactory {
 		Span span;
 		if (maybeParent == null) {
 			TraceContextOrSamplingFlags extracted =
-					springPubSubTracing.extractAndClearTraceIdHeaders(springPubSubTracing.producerExtractor, request, message.toBuilder());
+					springPubSubTracing.extractAndClearTraceIdHeaders(springPubSubTracing.producerExtractor, request, messageBuilder);
 			span = springPubSubTracing.nextMessagingSpan(springPubSubTracing.producerSampler, request, extracted);
 		}
 		else { // If we have a span in scope assume headers were cleared before
@@ -54,15 +53,11 @@ final class TracingPublisherFactory implements PublisherFactory {
 			if (springPubSubTracing.remoteServiceName != null) span.remoteServiceName(springPubSubTracing.remoteServiceName);
 			// incur timestamp overhead only once
 			long timestamp = springPubSubTracing.tracing.clock(span.context()).currentTimeMicroseconds();
+			// the span is just an instant, since we can't track how long it takes to publish and carry that forward
 			span.start(timestamp).finish(timestamp);
 		}
 
+		// inject span context into the messageBuilder
 		springPubSubTracing.producerInjector.inject(span.context(), request);
-
-		// TODO: return instrumented message?
-		return message;
 	}
-
-
-
 }

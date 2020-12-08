@@ -10,6 +10,8 @@ import brave.propagation.TraceContext.Extractor;
 import brave.propagation.TraceContext.Injector;
 import brave.propagation.TraceContextOrSamplingFlags;
 import brave.sampler.SamplerFunction;
+import com.google.cloud.spring.pubsub.support.PublisherFactory;
+import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.pubsub.v1.PubsubMessage;
 
 /**
@@ -73,17 +75,17 @@ public final class SpringPubSubTracing {
 		this.traceIdHeaders = propagation.keys().toArray(new String[0]);
 
 	}
-//
-//	/** Creates an instrumented {@linkplain PublisherFactory} */
-//	public TracingPublisherFactory newPublisher(PublisherFactory publisherFactory) {
-//		return new TracingPublisherFactory(publisherFactory);
-//	}
-//
-//	/** Creates an instrumented {@linkplain SubscriberFactory} */
-//	public TracingSubscriberFactory newSubscriber(SubscriberFactory subscriberFactory) {
-//		return new TracingSubscriberFactory(subscriberFactory);
-//	}
-//
+
+	/** Creates an instrumented {@linkplain PublisherFactory} */
+	public TracingPublisherFactory newPublisher(PublisherFactory publisherFactory) {
+		return new TracingPublisherFactory(this, publisherFactory);
+	}
+
+	/** Creates an instrumented {@linkplain SubscriberFactory} */
+	public TracingSubscriberFactory newSubscriber(SubscriberFactory subscriberFactory) {
+		return new TracingSubscriberFactory(this, subscriberFactory);
+	}
+
 
 
 

@@ -7,6 +7,10 @@ import brave.propagation.Propagation.RemoteGetter;
 import brave.propagation.Propagation.RemoteSetter;
 import com.google.pubsub.v1.PubsubMessage;
 
+/**
+ * Adds support for injecting and extracting context headers in {@link PubsubMessage.Builder},
+ * for the producer side (publishing).
+ */
 final class MessageProducerRequest extends ProducerRequest {
 
 	static final RemoteGetter<MessageProducerRequest> GETTER =
@@ -49,10 +53,10 @@ final class MessageProducerRequest extends ProducerRequest {
 
 	final String topic;
 
-	MessageProducerRequest(PubsubMessage delegate, String topic) {
+	MessageProducerRequest(PubsubMessage.Builder delegate, String topic) {
 		if (delegate == null) throw new NullPointerException("delegate == null");
 		if (topic == null) throw new NullPointerException("topic == null");
-		this.delegate = PubsubMessage.newBuilder(delegate);
+		this.delegate = delegate;
 		this.topic = topic;
 	}
 
@@ -78,6 +82,6 @@ final class MessageProducerRequest extends ProducerRequest {
 
 	@Override
 	public Object unwrap() {
-		return delegate.build();
+		return delegate;
 	}
 }

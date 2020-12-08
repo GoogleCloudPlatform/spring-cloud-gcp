@@ -1,6 +1,7 @@
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import brave.Span;
+import brave.Tracer;
 import brave.propagation.TraceContextOrSamplingFlags;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
@@ -28,37 +29,59 @@ final class TracingSubscriberFactory implements SubscriberFactory {
 
 	@Override
 	public Subscriber createSubscriber(String subscriptionName, MessageReceiver receiver) {
-		MessageReceiver wrappedMessageReceiver = new MessageReceiver(){
-			@Override
-			public void receiveMessage(PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) {
-				// instrument message
-				// TODO: do not convert from message to builder multiple times
-				MessageConsumerRequest request = new MessageConsumerRequest(pubsubMessage.toBuilder(), subscriptionName);
-				TraceContextOrSamplingFlags extracted =
-						springPubSubTracing.extractAndClearTraceIdHeaders(springPubSubTracing.consumerExtractor, request, pubsubMessage.toBuilder());
+		return subscriberFactory.createSubscriber(subscriptionName,
+				new TracingMessageReceiver(receiver, subscriptionName));
+	}
 
-				Span consumerSpan = springPubSubTracing.nextMessagingSpan(springPubSubTracing.consumerSampler, request, extracted);
-				Span listenerSpan = springPubSubTracing.tracer.newChild(consumerSpan.context());
+	private final class TracingMessageReceiver implements MessageReceiver {
+		private final MessageReceiver receiver;
+		private final String subscriptionName;
 
-				if (!consumerSpan.isNoop()) {
-					consumerSpan.name("next-message").kind(CONSUMER);
-					if (springPubSubTracing.remoteServiceName != null) consumerSpan.remoteServiceName(springPubSubTracing.remoteServiceName);
+		public TracingMessageReceiver(MessageReceiver receiver, String subscriptionName) {
+			this.receiver = receiver;
+			this.subscriptionName = subscriptionName;
+		}
 
-					// incur timestamp overhead only once
-					long timestamp = springPubSubTracing.tracing.clock(consumerSpan.context()).currentTimeMicroseconds();
-					consumerSpan.start(timestamp);
-					long consumerFinish = timestamp + 1L; // save a clock reading
-					consumerSpan.finish(consumerFinish);
+		@Override
+		public void receiveMessage(PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) {
+			// instrument message
+			PubsubMessage.Builder messageBuilder = pubsubMessage.toBuilder();
+			MessageConsumerRequest request = new MessageConsumerRequest(messageBuilder, subscriptionName);
+			TraceContextOrSamplingFlags extracted =
+					springPubSubTracing.extractAndClearTraceIdHeaders(springPubSubTracing.consumerExtractor, request, messageBuilder);
 
-					// not using scoped span as we want to start with a pre-configured time
-					listenerSpan.name("on-message").start(consumerFinish);
-				}
+			Span consumerSpan = springPubSubTracing.nextMessagingSpan(springPubSubTracing.consumerSampler, request, extracted);
+			Span listenerSpan = springPubSubTracing.tracer.newChild(consumerSpan.context());
 
-				// TODO: pass instrumented message?
-				receiver.receiveMessage(pubsubMessage, ackReplyConsumer);
+			if (!consumerSpan.isNoop()) {
+				consumerSpan.name("next-message").kind(CONSUMER);
+				if (springPubSubTracing.remoteServiceName != null) consumerSpan.remoteServiceName(springPubSubTracing.remoteServiceName);
+
+				// incur timestamp overhead only once
+				long timestamp = springPubSubTracing.tracing.clock(consumerSpan.context()).currentTimeMicroseconds();
+				consumerSpan.start(timestamp);
+				long consumerFinish = timestamp + 1L; // save a clock reading
+				consumerSpan.finish(consumerFinish);
+
+				// not using scoped span as we want to start with a pre-configured time
+				listenerSpan.name("on-message").start(consumerFinish);
 			}
-		};
-		return null;
+
+			Tracer.SpanInScope ws = springPubSubTracing.tracer.withSpanInScope(listenerSpan);
+			Throwable error = null;
+			try {
+				// pass instrumented message the actual receiver
+				receiver.receiveMessage(messageBuilder.build(), ackReplyConsumer);
+			} catch (Throwable t) {
+				error = t;
+				throw t;
+			} finally {
+				if (error != null) listenerSpan.error(error);
+				listenerSpan.finish();
+				ws.close();
+			}
+
+		}
 	}
 
 	@Override
