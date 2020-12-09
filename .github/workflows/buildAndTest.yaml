@@ -63,7 +63,8 @@ jobs:
           --batch-mode \
           --fail-at-end \
           --threads 1.5C \
-          test org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+          test
+# org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
     - name: Aggregate Report
       run: |
