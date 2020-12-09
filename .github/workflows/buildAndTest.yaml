@@ -30,13 +30,6 @@ jobs:
       with:
         java-version: ${{ matrix.java }}
 
-    - name: Cache SonarCloud packages
-      uses: actions/cache@v1
-      with:
-        path: ~/.sonar/cache
-        key: ${{ runner.os }}-sonar
-        restore-keys: ${{ runner.os }}-sonar
-  
     - uses: actions/cache@v2
       with:
         path: ~/.m2/repository
@@ -55,16 +48,12 @@ jobs:
           install
 
     - name: Unit Tests
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}      
       run: |
         ./mvnw \
           --batch-mode \
           --fail-at-end \
           --threads 1.5C \
           test
-# org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
     - name: Aggregate Report
       run: |
