@@ -398,6 +398,8 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 						Precondition.newBuilder().setUpdateTime(((Timestamp) version).toProto()).build());
 			}
 			else {
+				//If an entity with an empty update time field is being saved, it must be new.
+				//Otherwise it will overwrite an existing document.
 				builder.setCurrentDocument(Precondition.newBuilder().setExists(false).build());
 			}
 		}

@@ -71,10 +71,10 @@ public final class FirestoreDefaultClassMapper implements FirestoreClassMapper {
 	public  <T> T setUpdateTime(T entity, Timestamp updateTime) {
 		FirestorePersistentEntity<?> persistentEntity =
 				this.mappingContext.getPersistentEntity(entity.getClass());
-		FirestorePersistentProperty versionProperty = persistentEntity.getUpdateTimeProperty();
+		FirestorePersistentProperty updateTimeProperty = persistentEntity.getUpdateTimeProperty();
 
-		if (versionProperty != null) {
-			persistentEntity.getPropertyAccessor(entity).setProperty(versionProperty, updateTime);
+		if (updateTimeProperty != null) {
+			persistentEntity.getPropertyAccessor(entity).setProperty(updateTimeProperty, updateTime);
 		}
 
 		return entity;
@@ -83,9 +83,9 @@ public final class FirestoreDefaultClassMapper implements FirestoreClassMapper {
 	private Map<String, Value> removeUpdateTimestamp(Map<String, Value> valuesMap, Object entity) {
 		FirestorePersistentEntity<?> persistentEntity =
 				this.mappingContext.getPersistentEntity(entity.getClass());
-		FirestorePersistentProperty versionProperty = persistentEntity.getUpdateTimeProperty();
-		if (versionProperty != null) {
-			valuesMap.remove(versionProperty.getFieldName());
+		FirestorePersistentProperty updateTimeProperty = persistentEntity.getUpdateTimeProperty();
+		if (updateTimeProperty != null) {
+			valuesMap.remove(updateTimeProperty.getFieldName());
 		}
 		return valuesMap;
 	}

@@ -21,7 +21,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** Marks a field as excluded from the Database. */
+/** Marks a field to be used for update time.
+ *
+ * @author Dmitry Solomakha
+ *
+ * @since 2.0.0
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.FIELD })
 public @interface UpdateTime {
