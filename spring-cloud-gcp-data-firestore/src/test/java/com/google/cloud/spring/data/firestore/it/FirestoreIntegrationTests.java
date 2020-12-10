@@ -107,7 +107,6 @@ public class FirestoreIntegrationTests {
 
 	@Test
 	public void optimisticLockingTest() {
-		firestoreTemplate.deleteAll(User.class).block();
 		User bob = new User("Bob", 60, null);
 
 		this.firestoreTemplate.saveAll(Flux.just(bob)).collectList().block();

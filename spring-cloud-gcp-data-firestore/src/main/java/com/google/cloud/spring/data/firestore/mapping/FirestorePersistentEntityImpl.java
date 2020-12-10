@@ -88,7 +88,7 @@ public class FirestorePersistentEntityImpl<T>
 		super.addPersistentProperty(property);
 		if (property.findAnnotation(UpdateTime.class) != null) {
 			if (property.getActualType() != Timestamp.class) {
-				throw new FirestoreDataException("@UpdateTime annotated field should be of com.google.protobuf.Timestamp type");
+				throw new FirestoreDataException("@UpdateTime annotated field should be of com.google.cloud.Timestamp type");
 			}
 			updateTimeProperty = property;
 		}

@@ -21,7 +21,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** Marks a field to be used for update time.
+/**
+ * Marks a field to be used for update time.
  *
  * @author Dmitry Solomakha
  *
