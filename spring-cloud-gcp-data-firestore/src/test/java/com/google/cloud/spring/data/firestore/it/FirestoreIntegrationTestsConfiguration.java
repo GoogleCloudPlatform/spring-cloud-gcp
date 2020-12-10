@@ -91,7 +91,7 @@ public class FirestoreIntegrationTestsConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public FirestoreClassMapper getClassMapper() {
-		return new FirestoreDefaultClassMapper();
+	public FirestoreClassMapper getClassMapper(FirestoreMappingContext mappingContext) {
+		return new FirestoreDefaultClassMapper(mappingContext);
 	}
 }

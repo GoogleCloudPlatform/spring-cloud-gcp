@@ -197,9 +197,9 @@ public class ReactiveFirestoreTransactionManagerTest {
 			return null;
 		}).when(this.firestoreStub).getDocument(any(), any());
 
-
+		FirestoreMappingContext mappingContext = new FirestoreMappingContext();
 		FirestoreTemplate template = new FirestoreTemplate(this.firestoreStub, this.parent,
-				new FirestoreDefaultClassMapper(), new FirestoreMappingContext());
+				new FirestoreDefaultClassMapper(mappingContext), mappingContext);
 
 		StepVerifier.setDefaultTimeout(Duration.ofSeconds(5));
 		return template;

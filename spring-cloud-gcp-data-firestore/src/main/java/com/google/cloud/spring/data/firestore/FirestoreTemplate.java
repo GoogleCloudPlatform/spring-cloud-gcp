@@ -22,10 +22,12 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntity;
 import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentProperty;
+import com.google.cloud.spring.data.firestore.mapping.UpdateTime;
 import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreResourceHolder;
 import com.google.cloud.spring.data.firestore.util.ObservableReactiveUtil;
 import com.google.cloud.spring.data.firestore.util.Util;
@@ -208,7 +210,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 				//In a transaction, all write operations should be sent in the commit request, so we just collect them
 				return Flux.from(instances).doOnNext(t -> writes.add(createUpdateWrite(t)));
 			}
-			return commitWrites(instances, this::createUpdateWrite);
+			return commitWrites(instances, this::createUpdateWrite, true);
 		});
 	}
 
@@ -288,11 +290,12 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 				//In a transaction, all write operations should be sent in the commit request, so we just collect them
 				return Flux.from(documentNames).doOnNext(t -> writes.add(createDeleteWrite(t)));
 			}
-			return commitWrites(documentNames, this::createDeleteWrite);
+			return commitWrites(documentNames, this::createDeleteWrite, false);
 		});
 	}
 
-	private <T> Flux<T> commitWrites(Publisher<T> instances, Function<T, Write> converterToWrite) {
+	private <T> Flux<T> commitWrites(Publisher<T> instances, Function<T, Write> converterToWrite,
+			boolean setUpdateTime) {
 		return Flux.from(instances).bufferTimeout(this.writeBufferSize, this.writeBufferTimeout)
 				.flatMap(batch -> {
 					CommitRequest.Builder builder = CommitRequest.newBuilder()
@@ -302,7 +305,16 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 					return ObservableReactiveUtil
 							.<CommitResponse>unaryCall(obs -> this.firestore.commit(builder.build(), obs))
-							.thenMany(Flux.fromIterable(batch));
+							.flatMapMany(
+									response -> {
+										if (setUpdateTime) {
+											for (T entity : batch) {
+												getClassMapper()
+														.setUpdateTime(entity, Timestamp.fromProto(response.getCommitTime()));
+											}
+										}
+										return Flux.fromIterable(batch);
+									});
 				});
 	}
 
@@ -376,6 +388,19 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 		}
 		String resourceName = buildResourceName(entity);
 		Document document = getClassMapper().entityToDocument(entity, resourceName);
+		FirestorePersistentEntity<?> persistentEntity =
+				this.mappingContext.getPersistentEntity(entity.getClass());
+		FirestorePersistentProperty updateTimeProperty = persistentEntity.getUpdateTimeProperty();
+		if (updateTimeProperty != null && updateTimeProperty.findAnnotation(UpdateTime.class).version()) {
+			Object version = persistentEntity.getPropertyAccessor(entity).getProperty(updateTimeProperty);
+			if (version != null) {
+				builder.setCurrentDocument(
+						Precondition.newBuilder().setUpdateTime(((Timestamp) version).toProto()).build());
+			}
+			else {
+				builder.setCurrentDocument(Precondition.newBuilder().setExists(false).build());
+			}
+		}
 		return builder.setUpdate(document).build();
 	}
 
