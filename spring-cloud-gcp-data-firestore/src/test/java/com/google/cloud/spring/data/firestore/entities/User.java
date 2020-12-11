@@ -141,6 +141,7 @@ public class User {
 				", pets=" + pets +
 				", addresses=" + addresses +
 				", homeAddress=" + homeAddress +
+				", updateTime=" + updateTime +
 				'}';
 	}
 
@@ -198,8 +199,7 @@ public class User {
 			}
 			Address address = (Address) o;
 			return Objects.equals(getStreetAddress(), address.getStreetAddress()) &&
-					Objects.equals(getCountry(), address.getCountry()
-					);
+					Objects.equals(getCountry(), address.getCountry());
 		}
 
 		@Override

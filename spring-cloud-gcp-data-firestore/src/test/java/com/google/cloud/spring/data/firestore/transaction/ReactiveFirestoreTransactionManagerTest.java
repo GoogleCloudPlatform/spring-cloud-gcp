@@ -53,12 +53,16 @@ public class ReactiveFirestoreTransactionManagerTest {
 
 	private final String parent = "projects/my-project/databases/(default)/documents";
 
+	private FirestoreDefaultClassMapper classMapper;
+
 	@Test
 	public void triggerCommitCorrectly() {
 
 		FirestoreTemplate template = getFirestoreTemplate();
 
-		ReactiveFirestoreTransactionManager txManager = new ReactiveFirestoreTransactionManager(this.firestoreStub, this.parent);
+		classMapper = new FirestoreDefaultClassMapper(new FirestoreMappingContext());
+		ReactiveFirestoreTransactionManager txManager =
+				new ReactiveFirestoreTransactionManager(this.firestoreStub, this.parent, this.classMapper);
 		TransactionalOperator operator = TransactionalOperator.create(txManager);
 
 		template.findById(Mono.just("e1"), FirestoreTemplateTests.TestEntity.class)
@@ -92,7 +96,8 @@ public class ReactiveFirestoreTransactionManagerTest {
 
 		FirestoreTemplate template = getFirestoreTemplate();
 
-		ReactiveFirestoreTransactionManager txManager = new ReactiveFirestoreTransactionManager(this.firestoreStub, this.parent);
+		ReactiveFirestoreTransactionManager txManager =
+				new ReactiveFirestoreTransactionManager(this.firestoreStub, this.parent, this.classMapper);
 		TransactionalOperator operator = TransactionalOperator.create(txManager);
 
 		template.findById(Mono.defer(() -> {
@@ -115,7 +120,8 @@ public class ReactiveFirestoreTransactionManagerTest {
 
 		FirestoreTemplate template = getFirestoreTemplate();
 
-		ReactiveFirestoreTransactionManager txManager = new ReactiveFirestoreTransactionManager(this.firestoreStub, this.parent);
+		ReactiveFirestoreTransactionManager txManager =
+				new ReactiveFirestoreTransactionManager(this.firestoreStub, this.parent, this.classMapper);
 		TransactionalOperator operator = TransactionalOperator.create(txManager);
 
 		doAnswer(invocation -> {

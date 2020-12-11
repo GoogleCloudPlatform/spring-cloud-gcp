@@ -146,9 +146,9 @@ public class GcpFirestoreAutoConfiguration {
 		@Bean
 		@ConditionalOnMissingBean
 		public ReactiveFirestoreTransactionManager firestoreTransactionManager(
-				FirestoreGrpc.FirestoreStub firestoreStub) {
+				FirestoreGrpc.FirestoreStub firestoreStub, FirestoreClassMapper classMapper) {
 			return new ReactiveFirestoreTransactionManager(firestoreStub,
-					GcpFirestoreAutoConfiguration.this.firestoreRootPath);
+					GcpFirestoreAutoConfiguration.this.firestoreRootPath, classMapper);
 		}
 
 		@Bean

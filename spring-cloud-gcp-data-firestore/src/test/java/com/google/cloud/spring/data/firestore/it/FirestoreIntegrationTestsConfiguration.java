@@ -77,8 +77,8 @@ public class FirestoreIntegrationTestsConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public ReactiveFirestoreTransactionManager firestoreTransactionManager(
-			FirestoreGrpc.FirestoreStub firestoreStub) {
-		return Mockito.spy(new ReactiveFirestoreTransactionManager(firestoreStub, this.defaultParent));
+			FirestoreGrpc.FirestoreStub firestoreStub, FirestoreClassMapper classMapper) {
+		return Mockito.spy(new ReactiveFirestoreTransactionManager(firestoreStub, this.defaultParent, classMapper));
 	}
 
 	//tag::user_service_bean[]

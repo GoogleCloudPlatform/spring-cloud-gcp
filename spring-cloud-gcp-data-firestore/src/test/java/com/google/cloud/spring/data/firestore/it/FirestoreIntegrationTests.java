@@ -210,6 +210,8 @@ public class FirestoreIntegrationTests {
 				.containsExactlyInAnyOrder(bob, alice);
 
 		List<User> usersBeforeDelete = this.firestoreTemplate.findAll(User.class).collectList().block();
+		assertThat(usersBeforeDelete).containsExactlyInAnyOrder(alice, bob);
+
 
 		assertThat(this.firestoreTemplate.count(User.class).block()).isEqualTo(2);
 		this.firestoreTemplate.delete(Mono.just(bob)).block();
@@ -219,11 +221,12 @@ public class FirestoreIntegrationTests {
 		this.firestoreTemplate.deleteById(Mono.just("Alice"), User.class).block();
 		assertThat(this.firestoreTemplate.count(User.class).block()).isEqualTo(0);
 
+		alice.setUpdateTime(null);
 		this.firestoreTemplate.save(alice).block();
+		bob.setUpdateTime(null);
 		this.firestoreTemplate.save(bob).block();
 
 		assertThat(this.firestoreTemplate.deleteAll(User.class).block()).isEqualTo(2);
-		assertThat(usersBeforeDelete).containsExactlyInAnyOrder(alice, bob);
 		assertThat(this.firestoreTemplate.findAll(User.class).collectList().block()).isEmpty();
 
 		//tag::subcollection[]

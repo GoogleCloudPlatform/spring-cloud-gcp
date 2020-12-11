@@ -206,9 +206,11 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 			if (transactionContext.isPresent()) {
 				ReactiveFirestoreResourceHolder holder = (ReactiveFirestoreResourceHolder) transactionContext.get()
 						.getResources().get(this.firestore);
-				List<Write> writes = holder.getWrites();
 				//In a transaction, all write operations should be sent in the commit request, so we just collect them
-				return Flux.from(instances).doOnNext(t -> writes.add(createUpdateWrite(t)));
+				return Flux.from(instances).doOnNext(t -> {
+					holder.getWrites().add(createUpdateWrite(t));
+					holder.getEntities().add(t);
+				});
 			}
 			return commitWrites(instances, this::createUpdateWrite, true);
 		});
