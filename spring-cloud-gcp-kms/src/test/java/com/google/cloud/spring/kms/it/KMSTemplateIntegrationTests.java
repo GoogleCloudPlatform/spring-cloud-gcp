@@ -17,7 +17,6 @@
 package com.google.cloud.spring.kms.it;
 
 import com.google.cloud.spring.kms.KMSTemplate;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +24,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
@@ -52,7 +50,7 @@ public class KMSTemplateIntegrationTests {
 
 	@Test
 	public void testEncryptDecrypt() {
-		String kmsStr = "kms://bigquerttest/europe-west2/spring-cloud-gcp/key-id";
+		String kmsStr = "kms://project-name/europe-west2/spring-cloud-gcp/key-id";
 		String encryptedText = kmsTemplate.encrypt(kmsStr, "1234");
 
 		String decryptedText = kmsTemplate.decrypt(kmsStr, encryptedText);
