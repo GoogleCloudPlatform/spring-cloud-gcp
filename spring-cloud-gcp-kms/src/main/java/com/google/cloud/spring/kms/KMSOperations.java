@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.kms;
 
+import com.google.cloud.spring.core.GcpProjectIdProvider;
+
 /**
  * Describes supported operations that one can perform on the KMS API.
  *
