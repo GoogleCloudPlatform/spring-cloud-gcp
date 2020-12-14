@@ -64,6 +64,32 @@ public class KmsTemplateTests {
 		Assert.assertEquals("1234", decryptedText);
 	}
 
+	@Test(expected = com.google.cloud.spring.kms.KmsException.class)
+	public void testEncryptCorrupt() {
+		EncryptResponse encryptResponse = EncryptResponse.newBuilder()
+				.setCiphertext(ByteString.copyFromUtf8("invalid"))
+				.setCiphertextCrc32C(Int64Value.newBuilder().setValue(0L).build())
+				.build();
+
+		when(this.client.encrypt(any(EncryptRequest.class))).thenReturn(encryptResponse);
+
+		String cryptoKeyNameStr = "kms://test-project/europe-west2/key-ring-id/key-id";
+		kmsTemplate.encrypt(cryptoKeyNameStr, "1234");
+	}
+
+	@Test(expected = com.google.cloud.spring.kms.KmsException.class)
+	public void testDecryptCorrupt() {
+		DecryptResponse decryptResponse = DecryptResponse.newBuilder()
+				.setPlaintext(ByteString.copyFromUtf8("1234"))
+				.setPlaintextCrc32C(Int64Value.newBuilder().setValue(0L).build())
+				.build();
+
+		when(this.client.decrypt(any(DecryptRequest.class))).thenReturn(decryptResponse);
+
+		String cryptoKeyNameStr = "kms://test-project/europe-west2/key-ring-id/key-id";
+		kmsTemplate.decrypt(cryptoKeyNameStr, "ZW5jcnlwdGVkLWJ5dGVzCg==");
+	}
+
 	@Test(expected = com.google.api.gax.rpc.InvalidArgumentException.class)
 	public void testEncryptDecryptMissMatch() {
 		EncryptResponse encryptResponse = createEncryptResponse();
