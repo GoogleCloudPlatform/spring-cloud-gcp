@@ -269,6 +269,7 @@
 							<failsOnError>true</failsOnError>
 							<failOnViolation>true</failOnViolation>
 							<violationSeverity>warning</violationSeverity>
+							<excludes>**/KmsTemplate.java</excludes>
 						</configuration>
 					</execution>
 				</executions>
