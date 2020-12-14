@@ -35,7 +35,7 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
  *
  * @author Emmanouil Gkatziouras
  */
-public interface KMSOperations {
+public interface KmsOperations {
 
 	/**
 	 * Encrypt the text using the specified KMS URI string {@code cryptoKey}.

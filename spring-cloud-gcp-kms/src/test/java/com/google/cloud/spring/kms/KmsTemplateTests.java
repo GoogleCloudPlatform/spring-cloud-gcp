@@ -36,16 +36,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class KMSTemplateTests {
+public class KmsTemplateTests {
 
 	private KeyManagementServiceClient client;
 
-	private KMSTemplate kmsTemplate;
+	private KmsTemplate kmsTemplate;
 
 	@Before
 	public void setupMocks() {
 		this.client = mock(KeyManagementServiceClient.class);
-		this.kmsTemplate = new KMSTemplate(this.client, () -> "my-project");
+		this.kmsTemplate = new KmsTemplate(this.client, () -> "my-project");
 	}
 
 	@Test

@@ -26,11 +26,11 @@ import org.springframework.util.Assert;
  *
  * @author Emmanouil Gkatziouras
  */
-final class KMSPropertyUtils {
+final class KmsPropertyUtils {
 
 	private static final String GCP_KMS_PREFIX = "kms://";
 
-	private KMSPropertyUtils() { }
+	private KmsPropertyUtils() { }
 
 	static CryptoKeyName getCryptoKeyName(String input, GcpProjectIdProvider projectIdProvider) {
 		assertPrefix(input);
@@ -94,7 +94,7 @@ final class KMSPropertyUtils {
 
 	private static void assertPrefix(String input) {
 		if (!input.startsWith(GCP_KMS_PREFIX)) {
-			throw new KMSException("Cryptographic key names should start with kms://");
+			throw new KmsException("Cryptographic key names should start with kms://");
 		}
 	}
 

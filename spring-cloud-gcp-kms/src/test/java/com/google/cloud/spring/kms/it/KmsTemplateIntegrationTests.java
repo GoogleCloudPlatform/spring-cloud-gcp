@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.kms.it;
 
-import com.google.cloud.spring.kms.KMSTemplate;
+import com.google.cloud.spring.kms.KmsTemplate;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,16 +29,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
 /**
- * Integration tests for {@link KMSTemplate}.
+ * Integration tests for {@link KmsTemplate}.
  *
  * @author Emmanouil Gkatziouras
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { KMSTestConfiguration.class })
-public class KMSTemplateIntegrationTests {
+@ContextConfiguration(classes = { KmsTestConfiguration.class })
+public class KmsTemplateIntegrationTests {
 
 	@Autowired
-	KMSTemplate kmsTemplate;
+	KmsTemplate kmsTemplate;
 
 	@BeforeClass
 	public static void prepare() {

@@ -23,13 +23,13 @@ import org.springframework.core.NestedRuntimeException;
  *
  * @author Emmanouil Gkatziouras
  */
-public class KMSException extends NestedRuntimeException {
+public class KmsException extends NestedRuntimeException {
 
-	public KMSException(String msg) {
+	public KmsException(String msg) {
 		super(msg);
 	}
 
-	public KMSException(String msg, Throwable cause) {
+	public KmsException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }

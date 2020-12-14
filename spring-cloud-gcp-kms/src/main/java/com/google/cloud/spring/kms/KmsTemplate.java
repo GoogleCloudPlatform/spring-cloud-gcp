@@ -33,13 +33,13 @@ import com.google.protobuf.ByteString;
  *
  * @author Emmanouil Gkatziouras
  */
-public class KMSTemplate implements KMSOperations {
+public class KmsTemplate implements KmsOperations {
 
 	private final KeyManagementServiceClient client;
 
 	private final GcpProjectIdProvider projectIdProvider;
 
-	public KMSTemplate(
+	public KmsTemplate(
 			KeyManagementServiceClient keyManagementServiceClient,
 			GcpProjectIdProvider projectIdProvider) {
 		this.client = keyManagementServiceClient;
@@ -47,7 +47,7 @@ public class KMSTemplate implements KMSOperations {
 	}
 
 	public String encrypt(String cryptoKey, String plaintext) {
-		CryptoKeyName cryptoKeyName = KMSPropertyUtils.getCryptoKeyName(cryptoKey, projectIdProvider);
+		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKey, projectIdProvider);
 
 		ByteString plaintextByteString = ByteString.copyFromUtf8(plaintext);
 
@@ -62,7 +62,7 @@ public class KMSTemplate implements KMSOperations {
 	}
 
 	public String decrypt(String cryptoKey, String encryptedText) {
-		CryptoKeyName cryptoKeyName = KMSPropertyUtils.getCryptoKeyName(cryptoKey, projectIdProvider);
+		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKey, projectIdProvider);
 
 		byte[] decodedBytes = decodeBase64(encryptedText);
 		ByteString encryptedByteString = ByteString.copyFrom(decodedBytes);

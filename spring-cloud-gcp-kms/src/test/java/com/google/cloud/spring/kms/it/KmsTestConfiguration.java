@@ -27,7 +27,7 @@ import com.google.cloud.spring.core.DefaultGcpEnvironmentProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import com.google.cloud.spring.kms.KMSTemplate;
+import com.google.cloud.spring.kms.KmsTemplate;
 import com.google.protobuf.ByteString;
 
 import org.springframework.context.annotation.Bean;
@@ -41,13 +41,13 @@ import org.springframework.core.env.ConfigurableEnvironment;
  * @author Emmanouil Gkatziouras
  */
 @Configuration
-public class KMSTestConfiguration {
+public class KmsTestConfiguration {
 
 	private final GcpProjectIdProvider projectIdProvider;
 
 	private final CredentialsProvider credentialsProvider;
 
-	public KMSTestConfiguration(
+	public KmsTestConfiguration(
 			ConfigurableEnvironment configurableEnvironment) throws IOException {
 
 		this.projectIdProvider = new DefaultGcpProjectIdProvider();
@@ -91,8 +91,8 @@ public class KMSTestConfiguration {
 	}
 
 	@Bean
-	public KMSTemplate kmsTemplate(KeyManagementServiceClient client) {
-		return new KMSTemplate(client, this.projectIdProvider);
+	public KmsTemplate kmsTemplate(KeyManagementServiceClient client) {
+		return new KmsTemplate(client, this.projectIdProvider);
 	}
 
 
