@@ -86,9 +86,9 @@ final class KMSPropertyUtils {
 
 		return CryptoKeyName.newBuilder()
 				.setProject(projectId)
+				.setLocation(locationId)
 				.setKeyRing(keyRingId)
 				.setCryptoKey(keyId)
-				.setLocation(locationId)
 				.build();
 	}
 
