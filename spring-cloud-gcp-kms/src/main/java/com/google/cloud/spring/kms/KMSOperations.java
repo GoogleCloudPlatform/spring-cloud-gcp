@@ -41,7 +41,7 @@ public interface KMSOperations {
 	 * Encrypt the text using the specified KMS URI string {@code cryptoKey}.
 	 *
 	 * <p>
-	 * An encryption request will be issued using GCP KMS. The encrypted bytes received the response are Bas64 encoded.
+	 * An encryption request will be issued using GCP KMS. The encrypted bytes received the response are Base64 encoded.
 	 *
 	 * @param cryptoKey The KMS URI string
 	 * @param text The text to encrypt
