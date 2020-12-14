@@ -53,7 +53,7 @@ public interface KMSOperations {
 	 * Decrypt the text using the specified KMS URI string {@code cryptoKey}.
 	 *
 	 * <p>
-	 * An decryption request will be issued using GCP KMS. The encrypted shall be Bas64 decode to extract the encrypted bytes for the request.
+	 * A decryption request will be issued using GCP KMS. The encrypted text shall be Base64-encoded to extract the encrypted bytes for the request.
 	 *
 	 * @param cryptoKey The KMS URI string
 	 * @param encryptedText The encrypted bytes in Base64 encoding
