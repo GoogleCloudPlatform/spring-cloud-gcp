@@ -46,6 +46,14 @@ public class TracingSubscriberStub extends SubscriberStub {
 		this.pubSubTracing = pubSubTracing;
 	}
 
+	/** Trace instrumented pull method. **/
+	@Override
+	public UnaryCallable<PullRequest, PullResponse> pullCallable() {
+		return new TracingPullCallable(delegate.pullCallable(), pubSubTracing);
+	}
+
+	// Simply delegated methods below...
+
 	@Override
 	public UnaryCallable<Subscription, Subscription> createSubscriptionCallable() {
 		return delegate.createSubscriptionCallable();
@@ -89,11 +97,6 @@ public class TracingSubscriberStub extends SubscriberStub {
 	@Override
 	public UnaryCallable<AcknowledgeRequest, Empty> acknowledgeCallable() {
 		return delegate.acknowledgeCallable();
-	}
-
-	@Override
-	public UnaryCallable<PullRequest, PullResponse> pullCallable() {
-		return new TracingPullCallable(delegate.pullCallable(), pubSubTracing);
 	}
 
 	@Override

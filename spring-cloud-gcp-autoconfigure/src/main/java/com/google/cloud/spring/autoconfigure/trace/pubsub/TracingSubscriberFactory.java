@@ -23,7 +23,7 @@ final class TracingSubscriberFactory implements SubscriberFactory {
 
 	@Override
 	public Subscriber createSubscriber(String subscriptionName, MessageReceiver receiver) {
-		return delegate.createSubscriber(subscriptionName, new TracingMessageReceiver(pubSubTracing, receiver, subscriptionName));
+		return delegate.createSubscriber(subscriptionName, new TracingMessageReceiver(receiver, pubSubTracing, subscriptionName));
 	}
 
 	@Override

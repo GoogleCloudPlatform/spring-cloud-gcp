@@ -22,6 +22,18 @@ public class TracingApiFuturePullResponse implements ApiFuture<PullResponse> {
 	}
 
 	@Override
+	public PullResponse get() throws InterruptedException, ExecutionException {
+		return pubSubTracing.tracePullResponse(delegate.get(), subscriptionName);
+	}
+
+	@Override
+	public PullResponse get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+		return pubSubTracing.tracePullResponse(delegate.get(timeout, unit), subscriptionName);
+	}
+
+	// Simply delegated methods below...
+
+	@Override
 	public void addListener(Runnable runnable, Executor executor) {
 		delegate.addListener(runnable, executor);
 	}
@@ -41,13 +53,4 @@ public class TracingApiFuturePullResponse implements ApiFuture<PullResponse> {
 		return delegate.isDone();
 	}
 
-	@Override
-	public PullResponse get() throws InterruptedException, ExecutionException {
-		return pubSubTracing.tracePullResponse(delegate.get(), subscriptionName);
-	}
-
-	@Override
-	public PullResponse get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-		return pubSubTracing.tracePullResponse(delegate.get(timeout, unit), subscriptionName);
-	}
 }

@@ -16,7 +16,7 @@ public class TracingMessageReceiver implements MessageReceiver {
 
 	private final String subscriptionName;
 
-	public TracingMessageReceiver(PubSubTracing pubSubTracing, MessageReceiver delegate, String subscriptionName) {
+	public TracingMessageReceiver(MessageReceiver delegate, PubSubTracing pubSubTracing, String subscriptionName) {
 		this.pubSubTracing = pubSubTracing;
 		this.delegate = delegate;
 		this.subscriptionName = subscriptionName;
