@@ -54,6 +54,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class Application implements WebMvcConfigurer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
+	@Autowired
+	PubSubTemplate pubSubTemplate;
+
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
@@ -80,6 +83,8 @@ public class Application implements WebMvcConfigurer {
 		});
 	}
 
+
+	/*
 	// MESSAGE SENDING
 	@Bean
 	public DirectChannel pubsubOutputChannel() {
@@ -93,6 +98,7 @@ public class Application implements WebMvcConfigurer {
 	}
 
 	// MESSAGE RECEIVING
+
 	@Bean
 	public MessageChannel pubsubInputChannel() {
 		return new DirectChannel();
@@ -116,4 +122,6 @@ public class Application implements WebMvcConfigurer {
 		LOGGER.info("Message arrived! Payload: " + payload + "\nHeaders: " + message.getPubsubMessage().getAttributesMap());
 		message.ack();
 	}
+	 */
+
 }

@@ -25,34 +25,31 @@ import com.google.pubsub.v1.PullResponse;
 final class TracingPullCallable extends UnaryCallable<PullRequest, PullResponse> {
 	private final UnaryCallable<PullRequest, PullResponse> delegate;
 
-	private final String subscriptionName;
-
 	private final PubSubTracing pubSubTracing;
 
 	TracingPullCallable(UnaryCallable<PullRequest, PullResponse> delegate, PubSubTracing pubSubTracing) {
 		this.delegate = delegate;
-		this.subscriptionName = null; // TODO: fill in the subscription name
 		this.pubSubTracing = pubSubTracing;
 	}
 
 	@Override
 	public ApiFuture<PullResponse> futureCall(PullRequest pullRequest, ApiCallContext apiCallContext) {
-		return new TracingApiFuturePullResponse(delegate.futureCall(pullRequest, apiCallContext), pubSubTracing);
+		return new TracingApiFuturePullResponse(delegate.futureCall(pullRequest, apiCallContext), pubSubTracing, pullRequest.getSubscription());
 	}
 
 	@Override
 	public ApiFuture<PullResponse> futureCall(PullRequest request) {
-		return new TracingApiFuturePullResponse(delegate.futureCall(request), pubSubTracing);
+		return new TracingApiFuturePullResponse(delegate.futureCall(request), pubSubTracing, request.getSubscription());
 	}
 
 	@Override
 	public PullResponse call(PullRequest request, ApiCallContext context) {
-		return pubSubTracing.tracePullResponse(delegate.call(request, context), subscriptionName);
+		return pubSubTracing.tracePullResponse(delegate.call(request, context), request.getSubscription());
 	}
 
 	@Override
 	public PullResponse call(PullRequest request) {
-		return pubSubTracing.tracePullResponse(delegate.call(request), subscriptionName);
+		return pubSubTracing.tracePullResponse(delegate.call(request), request.getSubscription());
 	}
 
 	@Override

@@ -16,6 +16,7 @@
 
 package com.example;
 
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,7 +42,10 @@ public class WorkService {
 	private final RestTemplate restTemplate;
 
 	@Autowired
-	private MessageChannel pubsubOutputChannel;
+	PubSubTemplate pubSubTemplate;
+//
+//	@Autowired
+//	private MessageChannel pubsubOutputChannel;
 
 	public WorkService(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
@@ -56,12 +60,17 @@ public class WorkService {
 		LOGGER.info("finished busy work");
 	}
 
+//	@NewSpan
+//	public void sendMessage(String text) throws MessagingException {
+//		final Message<?> message = MessageBuilder
+//				.withPayload(text)
+//				.setHeader(GcpPubSubHeaders.TOPIC, "traceTopic").build();
+//		pubsubOutputChannel.send(message);
+//	}
+
 	@NewSpan
-	public void sendMessage(String text) throws MessagingException {
-		final Message<?> message = MessageBuilder
-				.withPayload(text)
-				.setHeader(GcpPubSubHeaders.TOPIC, "traceTopic").build();
-		pubsubOutputChannel.send(message);
+	public void sendMessageDirect(String text) throws MessagingException {
+		pubSubTemplate.publish("traceTopic", text);
 	}
 
 }

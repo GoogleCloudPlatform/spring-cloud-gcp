@@ -31,9 +31,9 @@ final class TracingApiFuturePullResponse implements ApiFuture<PullResponse> {
 
 	private final PubSubTracing pubSubTracing;
 
-	TracingApiFuturePullResponse(ApiFuture<PullResponse> delegate, PubSubTracing pubSubTracing) {
+	TracingApiFuturePullResponse(ApiFuture<PullResponse> delegate, PubSubTracing pubSubTracing, String subscriptionName) {
 		this.delegate = delegate;
-		this.subscriptionName = null; // TODO: set subscription name
+		this.subscriptionName = subscriptionName;
 		this.pubSubTracing = pubSubTracing;
 	}
 

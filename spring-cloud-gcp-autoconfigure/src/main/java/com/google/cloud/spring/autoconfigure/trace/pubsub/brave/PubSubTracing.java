@@ -183,6 +183,7 @@ public final class PubSubTracing {
 			Span span = batchSpan[0];
 			if (span == null) {
 				span = nextMessagingSpan(consumerSampler, request, extracted);
+				span.tag("subscription", subscriptionName);
 				if (!span.isNoop()) {
 					setConsumerSpan(span);
 
@@ -198,6 +199,7 @@ public final class PubSubTracing {
 		}
 		else { // we extracted request-scoped data, so cannot share a consumer span.
 			Span span = nextMessagingSpan(consumerSampler, request, extracted);
+			span.tag("subscription", subscriptionName);
 			if (!span.isNoop()) {
 
 				setConsumerSpan(span);

@@ -68,6 +68,7 @@ final class TracingPublisher implements PublisherInterface {
 
 		if (!span.isNoop()) {
 			span.kind(PRODUCER).name("publish");
+			span.tag("topic", topic); // TODO: shouldn't have to do this manually because topic is in MessageProducerRequest
 			if (pubSubTracing.remoteServiceName != null) {
 				span.remoteServiceName(pubSubTracing.remoteServiceName);
 			}

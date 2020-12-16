@@ -17,20 +17,26 @@
 package com.google.cloud.spring.autoconfigure.trace;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
 
+import brave.Tracing;
 import brave.TracingCustomizer;
 import brave.baggage.BaggagePropagation;
 import brave.handler.SpanHandler;
 import brave.http.HttpRequestParser;
 import brave.http.HttpTracingCustomizer;
+import brave.messaging.MessagingRequest;
 import brave.messaging.MessagingTracing;
+import brave.messaging.MessagingTracingCustomizer;
 import brave.propagation.B3Propagation;
 import brave.propagation.Propagation;
 import brave.propagation.stackdriver.StackdriverTracePropagation;
+import brave.sampler.SamplerFunction;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.FixedExecutorProvider;
@@ -60,12 +66,17 @@ import zipkin2.reporter.stackdriver.StackdriverSender;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
 import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
 import org.springframework.cloud.sleuth.autoconfig.brave.instrument.web.BraveHttpConfiguration;
+import org.springframework.cloud.sleuth.brave.instrument.messaging.ConditionalOnMessagingEnabled;
+import org.springframework.cloud.sleuth.brave.instrument.messaging.ConsumerSampler;
+import org.springframework.cloud.sleuth.brave.instrument.messaging.ProducerSampler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -279,25 +290,5 @@ public class StackdriverTraceAutoConfiguration {
 		HttpTracingCustomizer stackdriverHttpTracingCustomizer(HttpRequestParser stackdriverHttpRequestParser) {
 			return builder -> builder.clientRequestParser(stackdriverHttpRequestParser);
 		}
-	}
-
-	@Configuration(proxyBeanMethods = false)
-	@ConditionalOnProperty(value = "spring.cloud.gcp.trace.pubsub.enabled", matchIfMissing = true)
-	@ConditionalOnClass(PublisherFactory.class)
-	protected static class TracePubSubConfiguration {
-
-		@Bean
-		// for tests
-		@ConditionalOnMissingBean
-		static TracePubSubBeanPostProcessor tracePubSubBeanPostProcessor(BeanFactory beanFactory) {
-			return new TracePubSubBeanPostProcessor(beanFactory);
-		}
-
-		@Bean
-		@ConditionalOnMissingBean
-		PubSubTracing pubSubTracing(MessagingTracing messagingTracing) {
-			return PubSubTracing.newBuilder(messagingTracing).build();
-		}
-
 	}
 }

@@ -18,9 +18,13 @@ package com.example;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.pubsub.v1.PubsubMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,6 +40,9 @@ public class ExampleController {
 
 	private final WorkService workService;
 
+	@Autowired
+	PubSubTemplate pubSubTemplate;
+
 	public ExampleController(WorkService workService) {
 		this.workService = workService;
 	}
@@ -44,7 +51,8 @@ public class ExampleController {
 	public String work(HttpServletRequest request) {
 		String meetUrl = request.getRequestURL().toString() + "/meet";
 		this.workService.visitMeetEndpoint(meetUrl);
-		this.workService.sendMessage("All work is done.");
+		// this.workService.sendMessage("All work is done.");
+		this.workService.sendMessageDirect("All work is done.");
 		return "finished";
 	}
 
@@ -56,5 +64,16 @@ public class ExampleController {
 
 		LOGGER.info("meeting took " + duration + "ms");
 		return "meeting finished in " + duration + "ms";
+	}
+
+	@RequestMapping("/pull")
+	public String pull() throws InterruptedException {
+		String result = "nothing";
+
+		PubsubMessage message = pubSubTemplate.pullNext("traceSubscription");
+		if (message != null) {
+			result = message.toString();
+		}
+		return "pulled: " + result;
 	}
 }

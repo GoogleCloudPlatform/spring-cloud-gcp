@@ -50,7 +50,8 @@ final class TracingMessageReceiver implements MessageReceiver {
 		Span listenerSpan = pubSubTracing.tracer.newChild(consumerSpan.context());
 
 		if (!consumerSpan.isNoop()) {
-			consumerSpan.name("next-message").kind(CONSUMER);
+			consumerSpan.name("next-message").kind(CONSUMER); // TODO: do we need this consumer span at all?
+			consumerSpan.tag("subscription", subscriptionName); // TODO: shouldn't have to tag manually since it's in MessageConsumerRequest
 			if (pubSubTracing.remoteServiceName != null) {
 				consumerSpan.remoteServiceName(pubSubTracing.remoteServiceName);
 			}
