@@ -1,7 +1,22 @@
-package com.google.cloud.spring.autoconfigure.trace.pubsub;
+/*
+ * Copyright 2017-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.spring.autoconfigure.trace.pubsub.brave;
 
 import java.util.LinkedHashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import brave.Span;
@@ -17,8 +32,6 @@ import brave.sampler.SamplerFunction;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.PublisherInterface;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
-import com.google.cloud.spring.pubsub.support.PublisherFactory;
-import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.PullResponse;
 import com.google.pubsub.v1.ReceivedMessage;
@@ -44,7 +57,9 @@ public final class PubSubTracing {
 
 	final TraceContextOrSamplingFlags emptyExtraction;
 
-	final SamplerFunction<MessagingRequest> producerSampler, consumerSampler;
+	final SamplerFunction<MessagingRequest> producerSampler;
+
+	final SamplerFunction<MessagingRequest> consumerSampler;
 
 	final String remoteServiceName;
 
@@ -78,18 +93,6 @@ public final class PubSubTracing {
 		return new Builder(messagingTracing);
 	}
 
-	/** Creates an instrumented {@linkplain PublisherFactory} */
-	// TODO: move it out as it depends on Spring
-	public TracingPublisherFactory newPublisherFactory(PublisherFactory publisherFactory) {
-		return new TracingPublisherFactory(this, publisherFactory);
-	}
-
-	/** Creates an instrumented {@linkplain SubscriberFactory} */
-	// TODO: move it out as it depends on Spring
-	public TracingSubscriberFactory newSubscriber(SubscriberFactory subscriberFactory) {
-		return new TracingSubscriberFactory(this, subscriberFactory);
-	}
-
 	/** Creates an instrumented {@linkplain PublisherInterface}. */
 	public TracingPublisher publisher(PublisherInterface publisher, String topic) {
 		return new TracingPublisher(publisher, this, topic);
@@ -105,7 +108,7 @@ public final class PubSubTracing {
 		return new TracingMessageReceiver(messageReceiver, this, subscriptionName);
 	}
 
-	/** Creates a potentially noop remote span representing this request */
+	/** Creates a potentially noop remote span representing this request. */
 	Span nextMessagingSpan(
 			SamplerFunction<MessagingRequest> sampler,
 			MessagingRequest request,
@@ -113,8 +116,11 @@ public final class PubSubTracing {
 	) {
 		Boolean sampled = extracted.sampled();
 		// only recreate the context if the messaging sampler made a decision
-		if (sampled == null && (sampled = sampler.trySample(request)) != null) {
-			extracted = extracted.sampled(sampled.booleanValue());
+		if (sampled == null) {
+			sampled = sampler.trySample(request);
+			if (sampled != null) {
+				extracted = extracted.sampled(sampled.booleanValue());
+			}
 		}
 		return tracer.nextSpan(extracted);
 	}
@@ -133,13 +139,16 @@ public final class PubSubTracing {
 	// We can't just skip clearing headers we use because we might inject B3 single, yet have stale B3
 	// multi, or visa versa.
 	void clearTraceIdHeaders(PubsubMessage.Builder message) {
-		for (String traceIDHeader : traceIdHeaders) message.removeAttributes(traceIDHeader);
+		for (String traceIDHeader : traceIdHeaders) {
+			message.removeAttributes(traceIDHeader);
+		}
 	}
 
 	PullResponse tracePullResponse(PullResponse delegate, String subscriptionName) {
 
-		if (delegate.getReceivedMessagesCount() == 0 || tracing.isNoop())
+		if (delegate.getReceivedMessagesCount() == 0 || tracing.isNoop()) {
 			return delegate;
+		}
 
 		Span[] batchSpan = null;
 		if (singleRootSpanOnReceiveBatch) {
@@ -186,7 +195,8 @@ public final class PubSubTracing {
 				batchSpan[0] = span;
 			}
 			consumerInjector.inject(span.context(), request);
-		} else { // we extracted request-scoped data, so cannot share a consumer span.
+		}
+		else { // we extracted request-scoped data, so cannot share a consumer span.
 			Span span = nextMessagingSpan(consumerSampler, request, extracted);
 			if (!span.isNoop()) {
 
@@ -209,8 +219,9 @@ public final class PubSubTracing {
 
 	private void setConsumerSpan(Span span) {
 		span.name("pull").kind(Span.Kind.CONSUMER);
-		if (remoteServiceName != null)
+		if (remoteServiceName != null) {
 			span.remoteServiceName(remoteServiceName);
+		}
 	}
 
 	public static final class Builder {
@@ -221,8 +232,9 @@ public final class PubSubTracing {
 		boolean singleRootSpanOnReceiveBatch = true;
 
 		Builder(MessagingTracing messagingTracing) {
-			if (messagingTracing == null)
+			if (messagingTracing == null) {
 				throw new NullPointerException("messagingTracing == null");
+			}
 			this.messagingTracing = messagingTracing;
 		}
 

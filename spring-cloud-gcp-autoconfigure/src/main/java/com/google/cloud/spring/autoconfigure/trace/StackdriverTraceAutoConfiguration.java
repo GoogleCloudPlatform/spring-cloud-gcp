@@ -27,16 +27,20 @@ import brave.baggage.BaggagePropagation;
 import brave.handler.SpanHandler;
 import brave.http.HttpRequestParser;
 import brave.http.HttpTracingCustomizer;
+import brave.messaging.MessagingTracing;
 import brave.propagation.B3Propagation;
 import brave.propagation.Propagation;
 import brave.propagation.stackdriver.StackdriverTracePropagation;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.FixedExecutorProvider;
+import com.google.cloud.spring.autoconfigure.trace.pubsub.TracePubSubBeanPostProcessor;
+import com.google.cloud.spring.autoconfigure.trace.pubsub.brave.PubSubTracing;
 import com.google.cloud.spring.autoconfigure.trace.sleuth.StackdriverHttpRequestParser;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import io.grpc.CallOptions;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -53,6 +57,7 @@ import zipkin2.reporter.brave.ZipkinSpanHandler;
 import zipkin2.reporter.stackdriver.StackdriverEncoder;
 import zipkin2.reporter.stackdriver.StackdriverSender;
 
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -81,8 +86,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @AutoConfigureBefore(BraveAutoConfiguration.class)
 public class StackdriverTraceAutoConfiguration {
 
-	private static final Log LOGGER = LogFactory.getLog(StackdriverTraceAutoConfiguration.class);
-
 	/**
 	 * Stackdriver reporter bean name. Name of the bean matters for supporting multiple tracing
 	 * systems.
@@ -104,6 +107,8 @@ public class StackdriverTraceAutoConfiguration {
 	 * Stackdriver customizer bean name. Name of the bean matters for supporting multiple tracing systems.
 	 */
 	public static final String CUSTOMIZER_BEAN_NAME = "stackdriverTracingCustomizer";
+
+	private static final Log LOGGER = LogFactory.getLog(StackdriverTraceAutoConfiguration.class);
 
 	private GcpProjectIdProvider finalProjectIdProvider;
 
@@ -129,9 +134,9 @@ public class StackdriverTraceAutoConfiguration {
 	@ConditionalOnMissingBean(name = CUSTOMIZER_BEAN_NAME)
 	public TracingCustomizer stackdriverTracingCustomizer(@Qualifier(SPAN_HANDLER_BEAN_NAME) SpanHandler spanHandler) {
 		return builder -> builder
-					.supportsJoin(false)
-					.traceId128Bit(true)
-					.addSpanHandler(spanHandler);
+				.supportsJoin(false)
+				.traceId128Bit(true)
+				.addSpanHandler(spanHandler);
 	}
 
 	@Bean(SPAN_HANDLER_BEAN_NAME)
@@ -274,5 +279,25 @@ public class StackdriverTraceAutoConfiguration {
 		HttpTracingCustomizer stackdriverHttpTracingCustomizer(HttpRequestParser stackdriverHttpRequestParser) {
 			return builder -> builder.clientRequestParser(stackdriverHttpRequestParser);
 		}
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnProperty(value = "spring.cloud.gcp.trace.pubsub.enabled", matchIfMissing = true)
+	@ConditionalOnClass(PublisherFactory.class)
+	protected static class SleuthRabbitConfiguration {
+
+		@Bean
+		// for tests
+		@ConditionalOnMissingBean
+		static TracePubSubBeanPostProcessor tracePubSubBeanPostProcessor(BeanFactory beanFactory) {
+			return new TracePubSubBeanPostProcessor(beanFactory);
+		}
+
+		@Bean
+		@ConditionalOnMissingBean
+		PubSubTracing pubSubTracing(MessagingTracing messagingTracing) {
+			return PubSubTracing.newBuilder(messagingTracing).build();
+		}
+
 	}
 }

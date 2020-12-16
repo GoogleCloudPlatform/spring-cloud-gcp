@@ -1,4 +1,20 @@
-package com.google.cloud.spring.autoconfigure.trace.pubsub;
+/*
+ * Copyright 2017-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.spring.autoconfigure.trace.pubsub.brave;
 
 import brave.Span;
 import brave.Tracer;
@@ -9,14 +25,14 @@ import com.google.pubsub.v1.PubsubMessage;
 
 import static brave.Span.Kind.CONSUMER;
 
-public class TracingMessageReceiver implements MessageReceiver {
+final class TracingMessageReceiver implements MessageReceiver {
 	private final PubSubTracing pubSubTracing;
 
 	private final MessageReceiver delegate;
 
 	private final String subscriptionName;
 
-	public TracingMessageReceiver(MessageReceiver delegate, PubSubTracing pubSubTracing, String subscriptionName) {
+	TracingMessageReceiver(MessageReceiver delegate, PubSubTracing pubSubTracing, String subscriptionName) {
 		this.pubSubTracing = pubSubTracing;
 		this.delegate = delegate;
 		this.subscriptionName = subscriptionName;
@@ -35,8 +51,9 @@ public class TracingMessageReceiver implements MessageReceiver {
 
 		if (!consumerSpan.isNoop()) {
 			consumerSpan.name("next-message").kind(CONSUMER);
-			if (pubSubTracing.remoteServiceName != null)
+			if (pubSubTracing.remoteServiceName != null) {
 				consumerSpan.remoteServiceName(pubSubTracing.remoteServiceName);
+			}
 
 			// incur timestamp overhead only once
 			long timestamp = pubSubTracing.tracing.clock(consumerSpan.context()).currentTimeMicroseconds();
@@ -59,7 +76,9 @@ public class TracingMessageReceiver implements MessageReceiver {
 			throw t;
 		}
 		finally {
-			if (error != null) listenerSpan.error(error);
+			if (error != null) {
+				listenerSpan.error(error);
+			}
 			listenerSpan.finish();
 			ws.close();
 		}
