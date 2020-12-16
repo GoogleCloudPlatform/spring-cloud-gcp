@@ -284,7 +284,7 @@ public class StackdriverTraceAutoConfiguration {
 	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnProperty(value = "spring.cloud.gcp.trace.pubsub.enabled", matchIfMissing = true)
 	@ConditionalOnClass(PublisherFactory.class)
-	protected static class SleuthRabbitConfiguration {
+	protected static class TracePubSubConfiguration {
 
 		@Bean
 		// for tests
