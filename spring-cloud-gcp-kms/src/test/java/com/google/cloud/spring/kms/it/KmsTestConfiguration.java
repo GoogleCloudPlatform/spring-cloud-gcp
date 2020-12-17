@@ -23,17 +23,12 @@ import com.google.cloud.kms.v1.KeyManagementServiceClient;
 import com.google.cloud.kms.v1.KeyManagementServiceSettings;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
-import com.google.cloud.spring.core.DefaultGcpEnvironmentProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
-import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.kms.KmsTemplate;
-import com.google.protobuf.ByteString;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
  * Configuration for Integration tests.
@@ -44,41 +39,16 @@ import org.springframework.core.env.ConfigurableEnvironment;
 public class KmsTestConfiguration {
 
 	private final GcpProjectIdProvider projectIdProvider;
-
 	private final CredentialsProvider credentialsProvider;
 
-	public KmsTestConfiguration(
-			ConfigurableEnvironment configurableEnvironment) throws IOException {
-
+	public KmsTestConfiguration() throws IOException {
 		this.projectIdProvider = new DefaultGcpProjectIdProvider();
 		this.credentialsProvider = new DefaultCredentialsProvider(Credentials::new);
-
-		// Registers {@link ByteString} type converters to convert to String and byte[].
-		configurableEnvironment.getConversionService().addConverter(
-				new Converter<ByteString, String>() {
-					@Override
-					public String convert(ByteString source) {
-						return source.toStringUtf8();
-					}
-				});
-
-		configurableEnvironment.getConversionService().addConverter(
-				new Converter<ByteString, byte[]>() {
-					@Override
-					public byte[] convert(ByteString source) {
-						return source.toByteArray();
-					}
-				});
 	}
 
 	@Bean
 	public GcpProjectIdProvider gcpProjectIdProvider() {
 		return this.projectIdProvider;
-	}
-
-	@Bean
-	public static GcpEnvironmentProvider gcpEnvironmentProvider() {
-		return new DefaultGcpEnvironmentProvider();
 	}
 
 	@Bean
