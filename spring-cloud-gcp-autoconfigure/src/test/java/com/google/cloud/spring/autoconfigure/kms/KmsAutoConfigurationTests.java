@@ -36,7 +36,7 @@ import static org.mockito.Mockito.mock;
  *
  * @author Emmanouil Gkatziouras
  */
-public class KmsBootstrapConfigurationTests {
+public class KmsAutoConfigurationTests {
 
 	private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
 	private static final String LOCATION_NAME = "global";
