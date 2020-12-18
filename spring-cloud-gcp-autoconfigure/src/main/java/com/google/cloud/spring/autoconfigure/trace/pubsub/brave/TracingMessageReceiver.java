@@ -42,7 +42,7 @@ final class TracingMessageReceiver implements MessageReceiver {
 	public void receiveMessage(PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) {
 		// instrument message
 		PubsubMessage.Builder messageBuilder = pubsubMessage.toBuilder();
-		MessageConsumerRequest request = new MessageConsumerRequest(messageBuilder, subscriptionName);
+		PubSubConsumerRequest request = new PubSubConsumerRequest(messageBuilder, subscriptionName);
 		TraceContextOrSamplingFlags extracted =
 				pubSubTracing.extractAndClearTraceIdHeaders(pubSubTracing.consumerExtractor, request, messageBuilder);
 
@@ -51,7 +51,7 @@ final class TracingMessageReceiver implements MessageReceiver {
 
 		if (!consumerSpan.isNoop()) {
 			consumerSpan.name("next-message").kind(CONSUMER); // TODO: do we need this consumer span at all?
-			consumerSpan.tag("subscription", subscriptionName); // TODO: shouldn't have to tag manually since it's in MessageConsumerRequest
+			consumerSpan.tag("subscription", subscriptionName); // TODO: shouldn't have to tag manually since it's in PubSubConsumerRequest
 			if (pubSubTracing.remoteServiceName != null) {
 				consumerSpan.remoteServiceName(pubSubTracing.remoteServiceName);
 			}

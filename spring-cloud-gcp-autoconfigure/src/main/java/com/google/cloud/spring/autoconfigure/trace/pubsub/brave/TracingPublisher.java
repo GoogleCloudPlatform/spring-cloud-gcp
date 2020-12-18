@@ -48,7 +48,7 @@ final class TracingPublisher implements PublisherInterface {
 	}
 
 	private void postProcessMessageForPublishing(PubsubMessage.Builder messageBuilder) {
-		MessageProducerRequest request = new MessageProducerRequest(messageBuilder, topic);
+		PubSubProducerRequest request = new PubSubProducerRequest(messageBuilder, topic);
 
 		TraceContext maybeParent = pubSubTracing.tracing.currentTraceContext().get();
 		// Unlike message consumers, we try current span before trying extraction. This is the proper
@@ -68,7 +68,7 @@ final class TracingPublisher implements PublisherInterface {
 
 		if (!span.isNoop()) {
 			span.kind(PRODUCER).name("publish");
-			span.tag("topic", topic); // TODO: shouldn't have to do this manually because topic is in MessageProducerRequest
+			span.tag("topic", topic); // TODO: shouldn't have to do this manually because topic is in PubSubProducerRequest
 			if (pubSubTracing.remoteServiceName != null) {
 				span.remoteServiceName(pubSubTracing.remoteServiceName);
 			}

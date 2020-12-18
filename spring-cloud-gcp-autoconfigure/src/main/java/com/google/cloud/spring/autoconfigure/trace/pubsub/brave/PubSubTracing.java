@@ -20,11 +20,13 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import brave.Span;
+import brave.SpanCustomizer;
 import brave.Tracer;
 import brave.Tracing;
 import brave.messaging.MessagingRequest;
 import brave.messaging.MessagingTracing;
 import brave.propagation.Propagation;
+import brave.propagation.Propagation.Getter;
 import brave.propagation.TraceContext.Extractor;
 import brave.propagation.TraceContext.Injector;
 import brave.propagation.TraceContextOrSamplingFlags;
@@ -33,25 +35,36 @@ import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.PublisherInterface;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.pubsub.v1.PubsubMessage;
+import com.google.pubsub.v1.PubsubMessage.Builder;
 import com.google.pubsub.v1.PullResponse;
 import com.google.pubsub.v1.ReceivedMessage;
 
-/**
- * Factory for Trace instrumented Spring Cloud GCP Pub/Sub classes.
- */
+/** Use this class to decorate your Pub/Sub publisher / subscriber and enable Tracing. */
 public final class PubSubTracing {
+	/** Used for local message processors in {@link PubSubTracing#nextSpan(PubsubMessage.Builder)}. */
+	static final Getter<PubsubMessage.Builder, String> GETTER = new Getter<PubsubMessage.Builder, String>() {
+		@Override public String get(PubsubMessage.Builder request, String key) {
+			return request.getAttributesOrDefault(key, null);
+		}
+
+		@Override public String toString() {
+			return "PubsubMessage.Builder::getAttributesOrThrow";
+		}
+	};
 
 	final Tracing tracing;
 
 	final Tracer tracer;
 
-	final Extractor<MessageProducerRequest> producerExtractor;
+	final Extractor<PubSubProducerRequest> producerExtractor;
 
-	final Extractor<MessageConsumerRequest> consumerExtractor;
+	final Extractor<PubSubConsumerRequest> consumerExtractor;
 
-	final Injector<MessageProducerRequest> producerInjector;
+	final Extractor<PubsubMessage.Builder> processorExtractor;
 
-	final Injector<MessageConsumerRequest> consumerInjector;
+	final Injector<PubSubProducerRequest> producerInjector;
+
+	final Injector<PubSubConsumerRequest> consumerInjector;
 
 	final Set<String> traceIdHeaders;
 
@@ -70,10 +83,11 @@ public final class PubSubTracing {
 		this.tracer = tracing.tracer();
 		MessagingTracing messagingTracing = builder.messagingTracing;
 		Propagation<String> propagation = tracing.propagation();
-		this.producerExtractor = propagation.extractor(MessageProducerRequest.GETTER);
-		this.consumerExtractor = propagation.extractor(MessageConsumerRequest.GETTER);
-		this.producerInjector = propagation.injector(MessageProducerRequest.SETTER);
-		this.consumerInjector = propagation.injector(MessageConsumerRequest.SETTER);
+		this.producerExtractor = propagation.extractor(PubSubProducerRequest.GETTER);
+		this.consumerExtractor = propagation.extractor(PubSubConsumerRequest.GETTER);
+		this.processorExtractor = propagation.extractor(GETTER);
+		this.producerInjector = propagation.injector(PubSubProducerRequest.SETTER);
+		this.consumerInjector = propagation.injector(PubSubConsumerRequest.SETTER);
 		this.producerSampler = messagingTracing.producerSampler();
 		this.consumerSampler = messagingTracing.consumerSampler();
 		this.remoteServiceName = builder.remoteServiceName;
@@ -85,8 +99,16 @@ public final class PubSubTracing {
 		this.emptyExtraction = propagation.extractor((c, k) -> null).extract(Boolean.TRUE);
 	}
 
+	public static PubSubTracing create(Tracing tracing) {
+		return newBuilder(tracing).build();
+	}
+
 	public static PubSubTracing create(MessagingTracing messagingTracing) {
 		return newBuilder(messagingTracing).build();
+	}
+
+	public static PubSubTracing.Builder newBuilder(Tracing tracing) {
+		return newBuilder(MessagingTracing.create(tracing));
 	}
 
 	public static Builder newBuilder(MessagingTracing messagingTracing) {
@@ -106,6 +128,25 @@ public final class PubSubTracing {
 	/** Creates an instrumented {@linkplain MessageReceiver} for use in message listening scenario. */
 	public TracingMessageReceiver messageReceiver(MessageReceiver messageReceiver, String subscriptionName) {
 		return new TracingMessageReceiver(messageReceiver, this, subscriptionName);
+	}
+
+	/**
+	 * Use this to create a span for processing the given message. Note: the result has no name and is
+	 * not started.
+	 *
+	 * <p>This creates a child from identifiers extracted from the message headers, or a new span if
+	 * one couldn't be extracted.
+	 */
+	public Span nextSpan(PubsubMessage.Builder message) {
+		// Even though the type is PubSubMessage.Builder, this is not a (remote) consumer span. Only "pull/subscribe"
+		// events create consumer spans. Since this is a processor span, we use the normal sampler.
+		TraceContextOrSamplingFlags extracted =
+				extractAndClearTraceIdHeaders(processorExtractor, message, message);
+		Span result = tracer.nextSpan(extracted);
+		if (extracted.context() == null && !result.isNoop()) {
+			addTags(message, result);
+		}
+		return result;
 	}
 
 	/** Creates a potentially noop remote span representing this request. */
@@ -144,6 +185,13 @@ public final class PubSubTracing {
 		}
 	}
 
+	/** When an upstream context was not present, lookup keys are unlikely added */
+	static void addTags(PubsubMessage.Builder message, SpanCustomizer result) {
+
+		// TODO: anything to do here?
+	}
+
+
 	PullResponse tracePullResponse(PullResponse delegate, String subscriptionName) {
 
 		if (delegate.getReceivedMessagesCount() == 0 || tracing.isNoop()) {
@@ -173,7 +221,7 @@ public final class PubSubTracing {
 
 	private void postProcessMessageForConsuming(PubsubMessage.Builder messageBuilder, String subscriptionName, Span[] batchSpan) {
 		long timestamp = 0;
-		MessageConsumerRequest request = new MessageConsumerRequest(messageBuilder, subscriptionName);
+		PubSubConsumerRequest request = new PubSubConsumerRequest(messageBuilder, subscriptionName);
 		TraceContextOrSamplingFlags extracted =
 				extractAndClearTraceIdHeaders(consumerExtractor, request, messageBuilder);
 
@@ -209,7 +257,7 @@ public final class PubSubTracing {
 					timestamp = tracing.clock(span.context()).currentTimeMicroseconds();
 				}
 
-				span.start(timestamp).finish(timestamp); // span won't be shared by other records
+				span.start(timestamp).finish(timestamp); // span won't be shared by other messages
 			}
 			consumerInjector.inject(span.context(), request);
 		}
