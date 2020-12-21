@@ -59,20 +59,21 @@ public class KmsSampleIntegrationTests {
 	@Test
 	public void testEncrypt() {
 		MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-		params.add("keyId", "kms://us-east1/integration-test-key-ring/test-key");
+		params.add("keyId", "kms://spring-cloud-gcp-ci/us-east1/integration-test-key-ring/test-key");
 		params.add("text", "12345");
 
 		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
 
 		ResponseEntity<String> response = this.testRestTemplate.postForEntity("/encrypt", request, String.class);
+		System.out.println(response.getBody());
 		assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
 	}
 
 	@Test
 	public void testDecrypt() {
 		MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-		params.add("keyId", "kms://us-east1/integration-test-key-ring/test-key");
-		params.add("encryptedText", "CiQAIVnQixr1TCWHVV/3Ar9PvgI2SgLuBD1ZA7VQdPTpB+gN88MSLgAe63KkXaOJmfogmsy0+iE6TFjjO9TvQpFC3o6DAyd9vC/lFUMcy2rO0MDn2GQ=");
+		params.add("keyId", "kms://spring-cloud-gcp-ci/us-east1/integration-test-key-ring/test-key");
+		params.add("encryptedText", "CiQA9oGpAZWS7YfHvtvl3gD42KD3cpaPtVb/OvaQvx/T5wikp2sSLgDPaDHEgKQWhD5HPNKqYiFGDP5SofmM0Nec5q/AyyYgRUBimEmG8i6vrpiEf9o=");
 
 		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
 
