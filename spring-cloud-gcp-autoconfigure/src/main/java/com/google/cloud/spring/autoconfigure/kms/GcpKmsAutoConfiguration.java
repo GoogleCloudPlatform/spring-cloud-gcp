@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Bootstrap Autoconfiguration for GCP KMS which enables data encryption and decryption.
+ * Autoconfiguration for GCP KMS which enables data encryption and decryption.
  *
  * @author Emmanouil Gkatziouras
  */
@@ -47,9 +47,7 @@ public class GcpKmsAutoConfiguration {
 
 	private final GcpProjectIdProvider gcpProjectIdProvider;
 
-	public GcpKmsAutoConfiguration(
-			GcpKmsProperties properties
-			) {
+	public GcpKmsAutoConfiguration(GcpKmsProperties properties) {
 		this.gcpProjectIdProvider = properties.getProjectId() != null
 				? properties::getProjectId
 				: new DefaultGcpProjectIdProvider();

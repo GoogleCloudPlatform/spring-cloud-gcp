@@ -59,7 +59,7 @@ public class KmsSampleIntegrationTests {
 	@Test
 	public void testEncrypt() {
 		MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-		params.add("keyId", "kms://project-name/europe-west2/spring-cloud-gcp/key-id");
+		params.add("keyId", "kms://us-east1/integration-test-key-ring/test-key");
 		params.add("text", "12345");
 
 		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
@@ -71,7 +71,7 @@ public class KmsSampleIntegrationTests {
 	@Test
 	public void testDecrypt() {
 		MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-		params.add("keyId", "kms://project-name/europe-west2/spring-cloud-gcp/key-id");
+		params.add("keyId", "kms://us-east1/integration-test-key-ring/test-key");
 		params.add("encryptedText", "CiQAIVnQixr1TCWHVV/3Ar9PvgI2SgLuBD1ZA7VQdPTpB+gN88MSLgAe63KkXaOJmfogmsy0+iE6TFjjO9TvQpFC3o6DAyd9vC/lFUMcy2rO0MDn2GQ=");
 
 		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
