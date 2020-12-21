@@ -257,7 +257,6 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-kms</artifactId>
             <optional>true</optional>
-            <version>${parent.version}</version>
         </dependency>
 
         <!-- Config -->
