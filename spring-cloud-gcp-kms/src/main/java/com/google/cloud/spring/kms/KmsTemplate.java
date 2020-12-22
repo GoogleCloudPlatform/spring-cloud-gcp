@@ -76,7 +76,7 @@ public class KmsTemplate implements KmsOperations {
 
 		EncryptResponse response = client.encrypt(request);
 		assertCrcMatch(response);
-		return new byte[0];
+		return response.getCiphertext().toByteArray();
 	}
 
 	@Override

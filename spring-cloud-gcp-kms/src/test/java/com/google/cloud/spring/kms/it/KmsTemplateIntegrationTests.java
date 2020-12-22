@@ -51,14 +51,6 @@ public class KmsTemplateIntegrationTests {
 	}
 
 	@Test
-	public void testEncryptDecrypt() {
-		String kmsStr = "kms://us-east1/integration-test-key-ring/test-key";
-		String encryptedText = kmsTemplate.encrypt(kmsStr, "1234");
-		String decryptedText = kmsTemplate.decrypt(kmsStr, encryptedText);
-		assertThat(decryptedText).isEqualTo("1234");
-	}
-
-	@Test
 	public void testEncryptDecryptText() {
 		String kmsStr = "kms://us-east1/integration-test-key-ring/test-key";
 		byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
