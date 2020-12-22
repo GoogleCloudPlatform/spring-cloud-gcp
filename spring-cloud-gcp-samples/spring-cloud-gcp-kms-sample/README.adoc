@@ -8,7 +8,7 @@ This code sample demonstrates how to use the Spring Cloud GCP Key Management Ser
 
 2. Enable the Cloud Key Management Service from the "APIs & Services" menu of the Google Cloud Console.
 This can be done using the `gcloud` command line tool:
-+
+
 ```
 gcloud services enable cloudkms.googleapis.com
 ```
@@ -18,7 +18,6 @@ gcloud services enable cloudkms.googleapis.com
 a. Use the Google Cloud SDK to https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login[authenticate with application default credentials].
 This method is convenient but should only be used in local development.
 b. https://cloud.google.com/iam/docs/creating-managing-service-accounts[Create a new service account], download its private key and point the `spring.cloud.gcp.kms.credentials.location` property to it.
-+
 Such as: `spring.cloud.gcp.credentials.location=file:/path/to/creds.json`
 
 4. Using the https://console.cloud.google.com/security/kms[Key Management Service in Cloud Console], create a new key ring named `spring-cloud-gcp` to the location of your choice, and create a key on that key-ring.
@@ -28,19 +27,15 @@ Instructions for using the Key Management Service UI can be found in the https:/
 
 6. Go to http://localhost:8080 in your browser.
 
-Use an encryption key you configured on GCP and try to encrypt the text
+a. Use an encryption key you configured on GCP and try to encrypt some text.
 
-+
-You should see the text you submitted encrypted with the encryption key used in Base64 format
-+
+b. You should see the text you submitted encrypted with the encryption key used in Base64 format
 
-7. Copy the encrypted text generated previously
+7. Copy the encrypted text generated previously.
 
-Place the encrypted text on the `Encrypted Text` field of the Decrypt Text section
+a. Place the encrypted text on the `Encrypted Text` field of the `Decrypt Text` section.
 
-Specify the same encryption key used previously to encrypt the text
+b. Specify the same encryption key used previously to encrypt the text.
 
-+
-You should see the original text you submitted
-+
+c. You should see the original text you submitted.
 
