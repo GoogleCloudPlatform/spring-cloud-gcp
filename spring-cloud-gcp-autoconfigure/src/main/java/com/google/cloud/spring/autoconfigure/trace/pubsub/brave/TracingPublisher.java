@@ -40,10 +40,9 @@ final class TracingPublisher implements PublisherInterface {
 
 	@Override
 	public ApiFuture<String> publish(PubsubMessage message) {
-		System.out.println("tracing publisher");
 		PubsubMessage.Builder builder = message.toBuilder();
 		postProcessMessageForPublishing(builder);
-		PubsubMessage tracedMessage = builder.putAttributes("tracing-is-happening", "test").build();
+		PubsubMessage tracedMessage = builder.build();
 		return delegate.publish(tracedMessage);
 	}
 
@@ -68,7 +67,9 @@ final class TracingPublisher implements PublisherInterface {
 
 		if (!span.isNoop()) {
 			span.kind(PRODUCER).name("publish");
-			span.tag("topic", topic); // TODO: shouldn't have to do this manually because topic is in PubSubProducerRequest
+			if (topic != null) {
+				span.tag("pubsub.topic", topic); // TODO: shouldn't have to do this manually because topic is in PubSubProducerRequest
+			}
 			if (pubSubTracing.remoteServiceName != null) {
 				span.remoteServiceName(pubSubTracing.remoteServiceName);
 			}

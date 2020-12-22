@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.trace.pubsub.brave;
 
 import brave.Span.Kind;
+import brave.internal.Nullable;
 import brave.messaging.ConsumerRequest;
 import brave.propagation.Propagation.RemoteGetter;
 import brave.propagation.Propagation.RemoteSetter;
@@ -67,12 +68,9 @@ final class PubSubConsumerRequest extends ConsumerRequest {
 
 	final String subscription;
 
-	PubSubConsumerRequest(PubsubMessage.Builder delegate, String subscription) {
+	PubSubConsumerRequest(PubsubMessage.Builder delegate, @Nullable String subscription) {
 		if (delegate == null) {
 			throw new NullPointerException("delegate == null");
-		}
-		if (subscription == null) {
-			throw new NullPointerException("subscription == null");
 		}
 		this.delegate = delegate;
 		this.subscription = subscription;
