@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.kms.it;
 
+import java.nio.charset.Charset;
+
 import com.google.cloud.spring.kms.KmsTemplate;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,6 +56,25 @@ public class KmsTemplateIntegrationTests {
 		String encryptedText = kmsTemplate.encrypt(kmsStr, "1234");
 		String decryptedText = kmsTemplate.decrypt(kmsStr, encryptedText);
 		assertThat(decryptedText).isEqualTo("1234");
+	}
+
+	@Test
+	public void testEncryptDecryptText() {
+		String kmsStr = "kms://us-east1/integration-test-key-ring/test-key";
+		byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
+		String decryptedText = kmsTemplate.decryptText(kmsStr, encryptedBytes);
+		assertThat(decryptedText).isEqualTo("1234");
+	}
+
+	@Test
+	public void testEncryptDecryptBytes() {
+		String kmsStr = "kms://us-east1/integration-test-key-ring/test-key";
+		String originalText = "1234";
+		byte[] bytesToEncrypt = originalText.getBytes(Charset.defaultCharset());
+		byte[] encryptedBytes = kmsTemplate.encryptBytes(kmsStr, bytesToEncrypt);
+		byte[] decryptedBytes = kmsTemplate.decryptBytes(kmsStr, encryptedBytes);
+		String resultText = new String(decryptedBytes, Charset.defaultCharset());
+		assertThat(resultText).isEqualTo(originalText);
 	}
 
 	@Test(expected = com.google.api.gax.rpc.InvalidArgumentException.class)

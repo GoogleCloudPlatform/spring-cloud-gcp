@@ -38,16 +38,40 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 public interface KmsOperations {
 
 	/**
-	 * Encrypt the text using the specified KMS URI string {@code cryptoKey}.
+	 * Encrypt the {@code text} using the specified KMS URI string {@code cryptoKey}.
 	 *
 	 * <p>
 	 * An encryption request will be issued using GCP KMS. The encrypted bytes received the response are Base64 encoded.
 	 *
 	 * @param cryptoKey The KMS URI string
 	 * @param text The text to encrypt
-	 * @return The encrypted bytes in Base64 encoding
+	 * @return The encrypted text
 	 */
 	String encrypt(String cryptoKey, String text);
+
+	/**
+	 * Encrypt the {@code text} using the specified KMS URI string {@code cryptoKey}.
+	 *
+	 * <p>
+	 * An encryption request will be issued using GCP KMS.
+	 *
+	 * @param cryptoKey The KMS URI string
+	 * @param text UTF-8 encoded text to encrypt
+	 * @return The encrypted bytes
+	 */
+	byte[] encryptText(String cryptoKey, String text);
+
+	/**
+	 * Encrypt the {@code bytes} using the specified KMS URI string {@code cryptoKey}.
+	 *
+	 * <p>
+	 * An encryption request will be issued using GCP KMS.
+	 *
+	 * @param cryptoKey The KMS URI string
+	 * @param bytes The bytes to encrypt
+	 * @return The encrypted bytes
+	 */
+	byte[] encryptBytes(String cryptoKey, byte[] bytes);
 
 	/**
 	 * Decrypt the text using the specified KMS URI string {@code cryptoKey}.
@@ -61,4 +85,27 @@ public interface KmsOperations {
 	 */
 	String decrypt(String cryptoKey, String encryptedText);
 
+	/**
+	 * Decrypt the text using the specified KMS URI string {@code cryptoKey}
+	 *
+	 * <p>
+	 * A decryption request will be issued using GCP KMS.
+	 *
+	 * @param cryptoKey The KMS URI string
+	 * @param cipherText The encrypted bytes
+	 * @return The decrypted bytes
+	 */
+	byte[] decryptBytes(String cryptoKey, byte[] cipherText);
+
+	/**
+	 * Decrypt the text using the specified KMS URI string {@code cryptoKey}
+	 *
+	 * <p>
+	 * A decryption request will be issued using GCP KMS.
+	 *
+	 * @param cryptoKey The KMS URI string
+	 * @param cipherText The encrypted bytes
+	 * @return The decrypted bytes UTF-8 encoded
+	 */
+	String decryptText(String cryptoKey, byte[] cipherText);
 }

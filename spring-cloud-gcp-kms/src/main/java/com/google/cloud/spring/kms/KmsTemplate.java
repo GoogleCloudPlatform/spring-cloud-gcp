@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.kms;
 
+import java.nio.charset.Charset;
 import java.util.Base64;
 
 import com.google.cloud.kms.v1.CryptoKeyName;
@@ -48,31 +49,53 @@ public class KmsTemplate implements KmsOperations {
 		this.projectIdProvider = projectIdProvider;
 	}
 
+	@Override
 	public String encrypt(String cryptoKey, String plaintext) {
+		byte[] encryptedBytes = encryptText(cryptoKey, plaintext);
+		return encodeBase64(encryptedBytes);
+	}
+
+	@Override
+	public byte[] encryptText(String cryptoKey, String text) {
+		byte[] bytes = text.getBytes(Charset.defaultCharset());
+		return encryptBytes(cryptoKey, bytes);
+	}
+
+	@Override
+	public byte[] encryptBytes(String cryptoKey, byte[] bytes) {
 		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKey, projectIdProvider);
 
-		ByteString plaintextByteString = ByteString.copyFromUtf8(plaintext);
-
-		long crc32c = longCrc32c(plaintextByteString);
+		long crc32c = longCrc32c(bytes);
 
 		EncryptRequest request = EncryptRequest.newBuilder()
 				.setName(cryptoKeyName.toString())
-				.setPlaintext(plaintextByteString)
+				.setPlaintext(ByteString.copyFrom(bytes))
 				.setPlaintextCrc32C(
 						Int64Value.newBuilder().setValue(crc32c).build())
 				.build();
 
 		EncryptResponse response = client.encrypt(request);
 		assertCrcMatch(response);
-
-		return encodeBase64(response);
+		return new byte[0];
 	}
 
+	@Override
 	public String decrypt(String cryptoKey, String encryptedText) {
+		byte[] cipherText = decodeBase64(encryptedText);
+		return decryptText(cryptoKey, cipherText);
+	}
+
+	@Override
+	public String decryptText(String cryptoKey, byte[] cipherText) {
+		byte[] decryptedBytes = decryptBytes(cryptoKey, cipherText);
+		return new String(decryptedBytes, Charset.defaultCharset());
+	}
+
+	@Override
+	public byte[] decryptBytes(String cryptoKey, byte[] cipherText) {
 		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKey, projectIdProvider);
 
-		byte[] decodedBytes = decodeBase64(encryptedText);
-		ByteString encryptedByteString = ByteString.copyFrom(decodedBytes);
+		ByteString encryptedByteString = ByteString.copyFrom(cipherText);
 		long crc32c = longCrc32c(encryptedByteString);
 
 		DecryptRequest request =
@@ -85,11 +108,10 @@ public class KmsTemplate implements KmsOperations {
 
 		DecryptResponse response = client.decrypt(request);
 		assertCrcMatch(response);
-		return response.getPlaintext().toStringUtf8();
+		return response.getPlaintext().toByteArray();
 	}
 
-	private String encodeBase64(EncryptResponse response) {
-		byte[] bytes = response.getCiphertext().toByteArray();
+	private String encodeBase64(byte[] bytes) {
 		byte[] encoded = Base64.getEncoder().encode(bytes);
 		return new String(encoded);
 	}
@@ -100,7 +122,11 @@ public class KmsTemplate implements KmsOperations {
 	}
 
 	private long longCrc32c(ByteString plaintextByteString) {
-		return Hashing.crc32c().hashBytes(plaintextByteString.toByteArray()).padToLong();
+		return longCrc32c(plaintextByteString.toByteArray());
+	}
+
+	private long longCrc32c(byte[] bytes) {
+		return Hashing.crc32c().hashBytes(bytes).padToLong();
 	}
 
 	private void assertCrcMatch(EncryptResponse response) {
