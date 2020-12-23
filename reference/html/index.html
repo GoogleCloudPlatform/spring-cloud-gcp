@@ -571,7 +571,7 @@ These guides provide step-by-step instructions for building an application using
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter")
+    implementation("com.google.cloud:spring-cloud-gcp-starter")
 }</code></pre>
 </div>
 </div>
@@ -812,8 +812,8 @@ This makes the most sense if your application is already redefining those beans.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring.cloud.refresh.extra-refreshable=org.springframework.cloud.gcp.pubsub.support.SubscriberFactory,\
-  org.springframework.cloud.gcp.pubsub.core.subscriber.PubSubSubscriberTemplate</pre>
+<pre>spring.cloud.refresh.extra-refreshable=com.google.cloud.spring.pubsub.support.SubscriberFactory,\
+  com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate</pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -876,7 +876,7 @@ A Spring Boot starter is provided to auto-configure the various Storage componen
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-storage")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-storage")
 }</code></pre>
 </div>
 </div>
@@ -1060,8 +1060,8 @@ The role of the starters is to read configuration from properties and assume def
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-sql-mysql")
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-sql-postgresql")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgresql")
 }</code></pre>
 </div>
 </div>
@@ -1309,7 +1309,7 @@ For example, in Maven:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-pubsub")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-pubsub")
 }</code></pre>
 </div>
 </div>
@@ -2150,7 +2150,7 @@ This enables messaging between different processes, applications or micro-servic
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-pubsub")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-pubsub")
     implementation("org.springframework.integration:spring-integration-core")
 }</code></pre>
 </div>
@@ -2601,7 +2601,7 @@ However, because it comes last in the list, <a href="https://docs.spring.io/spri
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-storage")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-storage")
     implementation("org.springframework.integration:spring-integration-file")
 }</code></pre>
 </div>
@@ -2713,7 +2713,7 @@ public MessageHandler outboundChannelAdapter(Storage gcs) {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-pubsub-stream-binder")
+    implementation("com.google.cloud:spring-cloud-gcp-pubsub-stream-binder")
 }</code></pre>
 </div>
 </div>
@@ -3008,7 +3008,7 @@ The binder also creates anonymous subscriptions for each project using the <code
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-bus-pubsub")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-bus-pubsub")
 }</code></pre>
 </div>
 </div>
@@ -3088,7 +3088,7 @@ However, on GCP, instead of running and maintaining your own Zipkin instance and
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-trace")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-trace")
 }</code></pre>
 </div>
 </div>
@@ -3382,7 +3382,7 @@ The trace logs can be viewed by going to the <a href="https://console.cloud.goog
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-logging")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-logging")
 }</code></pre>
 </div>
 </div>
@@ -3704,7 +3704,7 @@ Also, it can be customized.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-metrics")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-metrics")
 }</code></pre>
 </div>
 </div>
@@ -3803,7 +3803,7 @@ Spring Cloud GCP adds Spring Data support for <a href="https://cloud.google.com/
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-data-spanner")
+    implementation("com.google.cloud:spring-cloud-gcp-data-spanner")
 }</code></pre>
 </div>
 </div>
@@ -3828,7 +3828,7 @@ To use the starter, see the coordinates see below.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-data-spanner")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-data-spanner")
 }</code></pre>
 </div>
 </div>
@@ -5874,7 +5874,7 @@ Spring Cloud GCP adds Spring Data support for <a href="https://cloud.google.com/
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-data-datastore")
+    implementation("com.google.cloud:spring-cloud-gcp-data-datastore")
 }</code></pre>
 </div>
 </div>
@@ -5899,7 +5899,7 @@ To use the starter, see the coordinates below.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-data-datastore")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-data-datastore")
 }</code></pre>
 </div>
 </div>
@@ -7770,7 +7770,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-  implementation("org.springframework.cloud:spring-cloud-gcp-data-firestore")
+  implementation("com.google.cloud:spring-cloud-gcp-data-firestore")
 }</code></pre>
 </div>
 </div>
@@ -7791,7 +7791,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-  implementation("org.springframework.cloud:spring-cloud-gcp-starter-data-firestore")
+  implementation("com.google.cloud:spring-cloud-gcp-starter-data-firestore")
 }</code></pre>
 </div>
 </div>
@@ -8533,7 +8533,7 @@ assertThat(bobTemplate.findAll(PhoneNumber.class).collectList().block()).isEmpty
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-  implementation("org.springframework.cloud:spring-cloud-gcp-starter-firestore")
+  implementation("com.google.cloud:spring-cloud-gcp-starter-firestore")
 }</code></pre>
 </div>
 </div>
@@ -8723,7 +8723,7 @@ public String hello(@PathVariable String name) {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-bigquery")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-bigquery")
 }</code></pre>
 </div>
 </div>
@@ -9021,7 +9021,7 @@ If you create a custom <a href="https://docs.spring.io/spring-security/site/docs
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("org.springframework.cloud:spring-cloud-gcp-starter-security-iap")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-security-iap")
 }</code></pre>
 </div>
 </div>
@@ -9153,7 +9153,7 @@ Modifying registry, algorithm, and header properties might be useful for testing
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-  implementation("org.springframework.cloud:spring-cloud-gcp-starter-vision")
+  implementation("com.google.cloud:spring-cloud-gcp-starter-vision")
 }</code></pre>
 </div>
 </div>
@@ -9224,8 +9224,8 @@ The storage starter is necessary because the Cloud Vision API will process your 
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-  implementation("org.springframework.cloud:spring-cloud-gcp-starter-vision")
-  implementation("org.springframework.cloud:spring-cloud-gcp-starter-storage")
+  implementation("com.google.cloud:spring-cloud-gcp-starter-vision")
+  implementation("com.google.cloud:spring-cloud-gcp-starter-storage")
 }</code></pre>
 </div>
 </div>
@@ -9475,7 +9475,7 @@ A detailed summary of its features can be found in the <a href="https://cloud.go
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-  implementation("org.springframework.cloud:spring-cloud-gcp-starter-secretmanager")
+  implementation("com.google.cloud:spring-cloud-gcp-starter-secretmanager")
 }</code></pre>
 </div>
 </div>
