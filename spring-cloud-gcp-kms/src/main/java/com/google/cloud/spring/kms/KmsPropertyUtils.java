@@ -50,7 +50,7 @@ final class KmsPropertyUtils {
 			keyRingId = tokens[0];
 			keyId = tokens[1];
 		}
-		if (tokens.length == 3) {
+		else if (tokens.length == 3) {
 			// property is form "kms://<location-id>/<key-ring-id>/<key-id>"
 			locationId = tokens[0];
 			keyRingId = tokens[1];
