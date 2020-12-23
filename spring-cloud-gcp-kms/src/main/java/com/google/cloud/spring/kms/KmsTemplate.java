@@ -99,16 +99,6 @@ public class KmsTemplate implements KmsOperations {
 		return response.getPlaintext().toByteArray();
 	}
 
-	private String encodeBase64(byte[] bytes) {
-		byte[] encoded = Base64.getEncoder().encode(bytes);
-		return new String(encoded);
-	}
-
-	private byte[] decodeBase64(String encryptedText) {
-		byte[] bytes = encryptedText.getBytes();
-		return Base64.getDecoder().decode(bytes);
-	}
-
 	private long longCrc32c(ByteString plaintextByteString) {
 		return longCrc32c(plaintextByteString.toByteArray());
 	}
