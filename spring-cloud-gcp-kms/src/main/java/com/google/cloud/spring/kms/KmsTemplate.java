@@ -50,12 +50,6 @@ public class KmsTemplate implements KmsOperations {
 	}
 
 	@Override
-	public String encrypt(String cryptoKey, String plaintext) {
-		byte[] encryptedBytes = encryptText(cryptoKey, plaintext);
-		return encodeBase64(encryptedBytes);
-	}
-
-	@Override
 	public byte[] encryptText(String cryptoKey, String text) {
 		byte[] bytes = text.getBytes(Charset.defaultCharset());
 		return encryptBytes(cryptoKey, bytes);
@@ -77,12 +71,6 @@ public class KmsTemplate implements KmsOperations {
 		EncryptResponse response = client.encrypt(request);
 		assertCrcMatch(response);
 		return response.getCiphertext().toByteArray();
-	}
-
-	@Override
-	public String decrypt(String cryptoKey, String encryptedText) {
-		byte[] cipherText = decodeBase64(encryptedText);
-		return decryptText(cryptoKey, cipherText);
 	}
 
 	@Override

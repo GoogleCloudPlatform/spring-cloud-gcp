@@ -58,8 +58,8 @@ public class KmsTemplateTests {
 
 		String cryptoKeyNameStr = "kms://test-project/europe-west2/key-ring-id/key-id";
 
-		String encryptedText = kmsTemplate.encrypt(cryptoKeyNameStr, "1234");
-		String decryptedText = kmsTemplate.decrypt(cryptoKeyNameStr, encryptedText);
+		byte[] encryptedBytes = kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
+		String decryptedText = kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes);
 
 		Assert.assertEquals("1234", decryptedText);
 	}
@@ -87,7 +87,7 @@ public class KmsTemplateTests {
 		when(this.client.decrypt(any(DecryptRequest.class))).thenReturn(decryptResponse);
 
 		String cryptoKeyNameStr = "kms://test-project/europe-west2/key-ring-id/key-id";
-		kmsTemplate.decrypt(cryptoKeyNameStr, "ZW5jcnlwdGVkLWJ5dGVzCg==");
+		kmsTemplate.decryptText(cryptoKeyNameStr, "1234".getBytes());
 	}
 
 	@Test(expected = com.google.api.gax.rpc.InvalidArgumentException.class)
@@ -99,8 +99,8 @@ public class KmsTemplateTests {
 
 		String cryptoKeyNameStr = "kms://test-project/europe-west2/key-ring-id/key-id";
 
-		String encryptedText = kmsTemplate.encrypt(cryptoKeyNameStr, "1234");
-		kmsTemplate.decrypt(cryptoKeyNameStr, encryptedText);
+		byte[] encryptedBytes = kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
+		kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes);
 	}
 
 	@Test(expected = com.google.api.gax.rpc.PermissionDeniedException.class)
@@ -109,8 +109,8 @@ public class KmsTemplateTests {
 
 		String cryptoKeyNameStr = "kms://test-project/europe-west2/no-access/key-id";
 
-		String encryptedText = kmsTemplate.encrypt(cryptoKeyNameStr, "1234");
-		kmsTemplate.decrypt(cryptoKeyNameStr, encryptedText);
+		byte[] encryptedBytes = kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
+		kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes);
 	}
 
 	@Test(expected = com.google.api.gax.rpc.NotFoundException.class)
@@ -119,8 +119,8 @@ public class KmsTemplateTests {
 
 		String cryptoKeyNameStr = "kms://test-project/europe-west2/key-ring-id/not-found";
 
-		String encryptedText = kmsTemplate.encrypt(cryptoKeyNameStr, "1234");
-		kmsTemplate.decrypt(cryptoKeyNameStr, encryptedText);
+		byte[] encryptedBytes = kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
+		kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes);
 	}
 
 	private DecryptResponse createDecryptResponse() {

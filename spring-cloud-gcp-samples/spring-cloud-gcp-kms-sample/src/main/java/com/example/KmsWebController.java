@@ -16,6 +16,8 @@
 
 package com.example;
 
+import java.util.Base64;
+
 import com.google.cloud.spring.kms.KmsTemplate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +43,9 @@ public class KmsWebController {
 			@RequestParam String text,
 			ModelMap map) {
 
-		String encrypted = kmsTemplate.encrypt(keyId, text);
-		map.put("message", "Text encrypted: " + encrypted);
+		byte[] encryptedBytes = kmsTemplate.encryptText(keyId, text);
+		String encryptedText = encodeBase64(encryptedBytes);
+		map.put("message", "Text encrypted: " + encryptedText);
 		return new ModelAndView("index.html", map);
 	}
 
@@ -52,9 +55,20 @@ public class KmsWebController {
 			@RequestParam String encryptedText,
 			ModelMap map) {
 
-		String encrypted = kmsTemplate.decrypt(keyId, encryptedText);
+		byte[] encryptedBytes = decodeBase64(encryptedText);
+		String encrypted = kmsTemplate.decryptText(keyId, encryptedBytes);
 		map.put("message", "Text decrypted " + encrypted);
 		return new ModelAndView("index.html", map);
+	}
+
+	private String encodeBase64(byte[] bytes) {
+		byte[] encoded = Base64.getEncoder().encode(bytes);
+		return new String(encoded);
+	}
+
+	private byte[] decodeBase64(String encryptedText) {
+		byte[] bytes = encryptedText.getBytes();
+		return Base64.getDecoder().decode(bytes);
 	}
 
 }

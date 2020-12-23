@@ -41,18 +41,6 @@ public interface KmsOperations {
 	 * Encrypt the {@code text} using the specified KMS URI string {@code cryptoKey}.
 	 *
 	 * <p>
-	 * An encryption request will be issued using GCP KMS. The encrypted bytes received the response are Base64 encoded.
-	 *
-	 * @param cryptoKey The KMS URI string
-	 * @param text The text to encrypt
-	 * @return The encrypted text
-	 */
-	String encrypt(String cryptoKey, String text);
-
-	/**
-	 * Encrypt the {@code text} using the specified KMS URI string {@code cryptoKey}.
-	 *
-	 * <p>
 	 * An encryption request will be issued using GCP KMS.
 	 *
 	 * @param cryptoKey The KMS URI string
@@ -72,18 +60,6 @@ public interface KmsOperations {
 	 * @return The encrypted bytes
 	 */
 	byte[] encryptBytes(String cryptoKey, byte[] bytes);
-
-	/**
-	 * Decrypt the text using the specified KMS URI string {@code cryptoKey}.
-	 *
-	 * <p>
-	 * A decryption request will be issued using GCP KMS. The encrypted text shall be Base64-encoded to extract the encrypted bytes for the request.
-	 *
-	 * @param cryptoKey The KMS URI string
-	 * @param encryptedText The encrypted bytes in Base64 encoding
-	 * @return The decrypted text
-	 */
-	String decrypt(String cryptoKey, String encryptedText);
 
 	/**
 	 * Decrypt the text using the specified KMS URI string {@code cryptoKey}
