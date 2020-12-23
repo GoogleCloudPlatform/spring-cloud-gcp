@@ -43,7 +43,7 @@ The following options may be configured with Spring Cloud GCP KMS libraries.
 
 Once you have added the `spring-cloud-gcp-starter-kms` to your project, the autoconfiguration class `com.google.cloud.spring.autoconfigure.kms.GcpKmsAutoConfiguration` will be activated for your project.
 
-The `com.google.cloud.spring.kms.KmsTemplate` class provided by the autoconfiguration is the entrypoint to using Spring Cloud GCP support for Google KMS. This class allows you to specify a Cloud KMS key in your project via a URI string (format described below) and perform encryption/decryption with it.
+The `com.google.cloud.spring.kms.KmsTemplate` bean provided by the autoconfiguration is the entrypoint to using Spring Cloud GCP support for Google KMS. This class allows you to specify a Cloud KMS key in your project via a URI string (format described below) and perform encryption/decryption with it.
 
 The template class automatically validates the CRC32 checksums received responses from Cloud KMS APIs to verify correctness of the response.
 
