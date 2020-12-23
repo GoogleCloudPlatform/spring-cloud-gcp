@@ -20,7 +20,7 @@ This method is convenient but should only be used in local development.
 b. https://cloud.google.com/iam/docs/creating-managing-service-accounts[Create a new service account], download its private key and point the `spring.cloud.gcp.kms.credentials.location` property to it.
 Such as: `spring.cloud.gcp.credentials.location=file:/path/to/creds.json`
 
-4. Using the https://console.cloud.google.com/security/kms[Key Management Service in Cloud Console], create a new key ring named `spring-cloud-gcp` to the location of your choice, and create a key on that key-ring.
+4. Using the https://console.cloud.google.com/security/kms[Key Management Service in Cloud Console], create a new global key ring named `spring-cloud-gcp` to the location of your choice, and create a key on that key-ring.
 Instructions for using the Key Management Service UI can be found in the https://cloud.google.com/kms/docs[Key Management Service documentation].
 
 5. Run the `$ mvn spring-boot:run` command from the same directory as this sample's `pom.xml` file.
