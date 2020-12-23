@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.kms.it;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import com.google.cloud.spring.kms.KmsTemplate;
 import org.junit.BeforeClass;
@@ -62,10 +62,10 @@ public class KmsTemplateIntegrationTests {
 	public void testEncryptDecryptBytes() {
 		String kmsStr = "kms://us-east1/integration-test-key-ring/test-key";
 		String originalText = "1234";
-		byte[] bytesToEncrypt = originalText.getBytes(Charset.defaultCharset());
+		byte[] bytesToEncrypt = originalText.getBytes(StandardCharsets.UTF_8);
 		byte[] encryptedBytes = kmsTemplate.encryptBytes(kmsStr, bytesToEncrypt);
 		byte[] decryptedBytes = kmsTemplate.decryptBytes(kmsStr, encryptedBytes);
-		String resultText = new String(decryptedBytes, Charset.defaultCharset());
+		String resultText = new String(decryptedBytes, StandardCharsets.UTF_8);
 		assertThat(resultText).isEqualTo(originalText);
 	}
 
