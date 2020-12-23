@@ -53,17 +53,24 @@ Spring Cloud GCP offers the following URI syntax to specify Cloud KMS keys in yo
 
 [source]
 ----
- 1. Shortest form - specify the key by location ID, key ring ID, and key ID.
+ 1. Shortest form - specify the key by key ring ID, and key ID.
+ The project is inferred from the spring.cloud.gcp.kms.project-id if set, otherwise
+ the default GCP project (such as using application-default-credentials) is used.
+ The location is assumed to be `global`.
+
+ kms://{key-ring-id}/{key-id}
+
+ 2. Short form - specify the key by location ID, key ring ID, and key ID.
  The project is inferred from the spring.cloud.gcp.kms.project-id if set, otherwise
  the default GCP project (such as using application-default-credentials) is used.
 
  kms://{location-id}/{key-ring-id}/{key-id}
 
- 2. Short form - specify project ID, location ID, key ring ID, and key ID
+ 3. Full form - specify project ID, location ID, key ring ID, and key ID
 
  kms://{project-id}/{location-id}/{key-ring-id}/{key-id}
 
- 3. Long form - specify project ID, location ID, key ring ID, and key ID.
+ 4. Long form - specify project ID, location ID, key ring ID, and key ID.
  This format is equivalent to the fully-qualified resource name of a Cloud KMS key.
 
  kms://projects/{project-id}/locations/{location-id}/keyRings/{key-ring-id}/cryptoKeys/{key-id}
