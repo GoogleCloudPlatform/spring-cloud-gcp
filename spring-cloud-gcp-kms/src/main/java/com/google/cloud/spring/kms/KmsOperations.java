@@ -24,10 +24,13 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
  * <p>For the methods you need specify the secret from GCP KMS by URI string.
  * The following secret URI syntax is supported:
  *
- * 1. Shortest form - specify location ID, key ring ID, and key ID. Project is derived through {@link GcpProjectIdProvider}.
+ * 1. Shortest form - specify the key by key ring ID, and key ID. Project is derived through {@link GcpProjectIdProvider}. The location is assumed to be `global`.
+ * kms://{key-ring-id}/{key-id}
+ *
+ * 1. Short form - specify location ID, key ring ID, and key ID. Project is derived through {@link GcpProjectIdProvider}.
  * kms://{location-id}/{key-ring-id}/{key-id}
  *
- * 2.  Short form - specify project ID, location ID, key ring ID, and key ID
+ * 2. Full form - specify project ID, location ID, key ring ID, and key ID
  * kms://{project-id}/{location-id}/{key-ring-id}/{key-id}
  *
  * 3. Long form - specify project ID, location ID, key ring ID, and key ID (full resource name)
