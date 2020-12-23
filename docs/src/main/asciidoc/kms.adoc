@@ -2,7 +2,7 @@
 
 The https://cloud.google.com/kms/docs[Google Cloud Key Management Service (KMS)] allows you to create, import, and manage cryptographic keys and perform cryptographic operations in a single centralized cloud service.
 
-Spring Cloud GCP offers a utility template class `KmsTemplate` which allows you to conveniently specify secrets for encryption/decryption.
+Spring Cloud GCP offers a utility template class `KmsTemplate` which allows you to conveniently encrypt and decrypt binary or text data.
 
 === Dependency Setup
 
