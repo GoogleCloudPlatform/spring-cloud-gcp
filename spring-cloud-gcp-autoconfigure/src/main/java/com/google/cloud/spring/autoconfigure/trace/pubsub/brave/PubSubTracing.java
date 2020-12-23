@@ -231,9 +231,8 @@ public final class PubSubTracing {
 			Span span = batchSpan[0];
 			if (span == null) {
 				span = nextMessagingSpan(consumerSampler, request, extracted);
-				span.tag("subscription", subscriptionName);
 				if (!span.isNoop()) {
-					setConsumerSpan(span);
+					setConsumerSpan(span, subscriptionName);
 
 					// incur timestamp overhead only once
 					if (timestamp == 0L) {
@@ -247,27 +246,26 @@ public final class PubSubTracing {
 		}
 		else { // we extracted request-scoped data, so cannot share a consumer span.
 			Span span = nextMessagingSpan(consumerSampler, request, extracted);
-			span.tag("subscription", subscriptionName);
 			if (!span.isNoop()) {
-
-				setConsumerSpan(span);
+				setConsumerSpan(span, subscriptionName);
 
 				// incur timestamp overhead only once
 				if (timestamp == 0L) {
 					timestamp = tracing.clock(span.context()).currentTimeMicroseconds();
 				}
-
-				span.start(timestamp).finish(timestamp); // span won't be shared by other messages
+				span.start(timestamp);
+				span.finish(timestamp); // span won't be shared by other messages
 			}
 			consumerInjector.inject(span.context(), request);
 		}
 
-		if (batchSpan[0] != null) {
+		if (singleRootSpanOnReceiveBatch && batchSpan[0] != null) {
 			batchSpan[0].finish(timestamp);
 		}
 	}
 
-	private void setConsumerSpan(Span span) {
+	private void setConsumerSpan(Span span, String subscriptionName) {
+		span.tag("pubsub.subscription", subscriptionName);
 		span.name("pull").kind(Span.Kind.CONSUMER);
 		if (remoteServiceName != null) {
 			span.remoteServiceName(remoteServiceName);

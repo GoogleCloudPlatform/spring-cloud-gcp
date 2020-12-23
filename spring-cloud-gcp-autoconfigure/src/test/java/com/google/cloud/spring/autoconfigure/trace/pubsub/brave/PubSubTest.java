@@ -74,9 +74,9 @@ public class PubSubTest {
 				.isEqualTo(parent.spanIdString());
 	}
 
-	static void addB3MultiHeaders(TraceContext parent, PubsubMessage.Builder record) {
+	static void addB3MultiHeaders(TraceContext parent, PubsubMessage.Builder message) {
 		Propagation.B3_STRING.injector(PubSubConsumerRequest.SETTER)
-				.inject(parent, new PubSubConsumerRequest(record, TEST_SUBSCRIPTION));
+				.inject(parent, new PubSubConsumerRequest(message, TEST_SUBSCRIPTION));
 	}
 
 	@After

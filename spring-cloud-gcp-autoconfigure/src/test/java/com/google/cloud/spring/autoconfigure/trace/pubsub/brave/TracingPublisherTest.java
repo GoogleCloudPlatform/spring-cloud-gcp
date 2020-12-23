@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import static brave.Span.Kind.PRODUCER;
-import static org.assertj.core.api.Assertions.anyOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,7 +67,6 @@ public class TracingPublisherTest extends PubSubTest {
 				.containsEntry("tx-id", "1")
 				.containsEntry("b3", producerSpan.traceId() + "-" + producerSpan.id() + "-1");
 	}
-
 
 	@Test
 	public void should_inject_child_context() {
