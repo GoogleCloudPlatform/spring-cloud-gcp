@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.kms;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import com.google.cloud.kms.v1.CryptoKeyName;
@@ -51,7 +51,7 @@ public class KmsTemplate implements KmsOperations {
 
 	@Override
 	public byte[] encryptText(String cryptoKey, String text) {
-		byte[] bytes = text.getBytes(Charset.defaultCharset());
+		byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
 		return encryptBytes(cryptoKey, bytes);
 	}
 
@@ -76,7 +76,7 @@ public class KmsTemplate implements KmsOperations {
 	@Override
 	public String decryptText(String cryptoKey, byte[] cipherText) {
 		byte[] decryptedBytes = decryptBytes(cryptoKey, cipherText);
-		return new String(decryptedBytes, Charset.defaultCharset());
+		return new String(decryptedBytes, StandardCharsets.UTF_8);
 	}
 
 	@Override
