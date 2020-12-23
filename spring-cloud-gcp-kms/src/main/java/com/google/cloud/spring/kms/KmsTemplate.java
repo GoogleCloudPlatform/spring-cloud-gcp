@@ -17,7 +17,6 @@
 package com.google.cloud.spring.kms;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 import com.google.cloud.kms.v1.CryptoKeyName;
 import com.google.cloud.kms.v1.DecryptRequest;
