@@ -72,9 +72,9 @@ public class KmsTemplateIntegrationTests {
 	@Test(expected = com.google.api.gax.rpc.InvalidArgumentException.class)
 	public void testEncryptDecryptMissMatch() {
 		String kmsStr = "kms://us-east1/integration-test-key-ring/test-key";
-		String encryptedText = kmsTemplate.encrypt(kmsStr, "1234");
+		byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
 
 		String kmsStr2 = "kms://us-east1/integration-test-key-ring/other-key";
-		kmsTemplate.decrypt(kmsStr2, encryptedText);
+		kmsTemplate.decryptText(kmsStr2, encryptedBytes);
 	}
 }

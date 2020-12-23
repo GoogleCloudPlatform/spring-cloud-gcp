@@ -47,6 +47,18 @@ public class KmsPropertyUtilsTests {
 	}
 
 	@Test
+	public void testKmsFormat_globalDefault() {
+		String cryptoKeyNameStr = "kms://key-ring-id/key-id";
+
+		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKeyNameStr, DEFAULT_PROJECT_ID_PROVIDER);
+
+		assertThat(cryptoKeyName.getProject()).isEqualTo(DEFAULT_PROJECT_ID_PROVIDER.getProjectId());
+		assertThat(cryptoKeyName.getLocation()).isEqualTo("global");
+		assertThat(cryptoKeyName.getKeyRing()).isEqualTo("key-ring-id");
+		assertThat(cryptoKeyName.getCryptoKey()).isEqualTo("key-id");
+	}
+
+	@Test
 	public void testKmsFormat_noProject() {
 		String cryptoKeyNameStr = "kms://europe-west2/key-ring-id/key-id";
 

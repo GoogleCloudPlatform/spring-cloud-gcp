@@ -74,7 +74,7 @@ public class KmsTemplateTests {
 		when(this.client.encrypt(any(EncryptRequest.class))).thenReturn(encryptResponse);
 
 		String cryptoKeyNameStr = "kms://test-project/europe-west2/key-ring-id/key-id";
-		kmsTemplate.encrypt(cryptoKeyNameStr, "1234");
+		kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
 	}
 
 	@Test(expected = com.google.cloud.spring.kms.KmsException.class)

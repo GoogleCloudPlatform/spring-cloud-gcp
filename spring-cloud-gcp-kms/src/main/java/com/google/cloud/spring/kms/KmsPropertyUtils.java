@@ -29,6 +29,7 @@ import org.springframework.util.Assert;
 final class KmsPropertyUtils {
 
 	private static final String GCP_KMS_PREFIX = "kms://";
+	public static final String LOCATION_GLOBAL = "global";
 
 	private KmsPropertyUtils() { }
 
@@ -43,6 +44,12 @@ final class KmsPropertyUtils {
 		String keyRingId;
 		String keyId;
 
+		if (tokens.length == 2) {
+			// property is form "kms://<key-ring-id>/<key-id>"
+			locationId = LOCATION_GLOBAL;
+			keyRingId = tokens[0];
+			keyId = tokens[1];
+		}
 		if (tokens.length == 3) {
 			// property is form "kms://<location-id>/<key-ring-id>/<key-id>"
 			locationId = tokens[0];
