@@ -6,7 +6,7 @@ Spring Cloud GCP offers a utility template class `KmsTemplate` which allows you 
 
 === Dependency Setup
 
-To begin using this library, add the `spring-cloud-gcp-starter-vision` artifact to your project.
+To begin using this library, add the `spring-cloud-gcp-starter-kms` artifact to your project.
 
 Maven coordinates, using <<getting-started.adoc#_bill_of_materials, Spring Cloud GCP BOM>>:
 
