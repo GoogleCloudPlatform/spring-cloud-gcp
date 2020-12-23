@@ -482,6 +482,9 @@ public class FirestoreTemplateTests {
 
 		Long longField;
 
+		@UpdateTime
+		Timestamp updateTimestamp;
+
 		TestEntity() {
 		}
 
@@ -504,6 +507,14 @@ public class FirestoreTemplateTests {
 
 		public void setLongField(Long longField) {
 			this.longField = longField;
+		}
+
+		public Timestamp getUpdateTimestamp() {
+			return updateTimestamp;
+		}
+
+		public void setUpdateTimestamp(Timestamp updateTimestamp) {
+			this.updateTimestamp = updateTimestamp;
 		}
 
 		@Override

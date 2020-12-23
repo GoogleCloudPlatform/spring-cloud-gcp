@@ -113,7 +113,7 @@ public class ReactiveFirestoreTransactionManager extends AbstractReactiveTransac
 								}
 								return Mono.empty();
 							}
-					).then();
+					);
 		});
 	}
 

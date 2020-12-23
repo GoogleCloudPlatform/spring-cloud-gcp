@@ -35,6 +35,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -134,6 +135,43 @@ public class FirestoreIntegrationTests {
 		assertThatThrownBy(() -> this.firestoreTemplate.saveAll(Flux.just(bob)).collectList().block())
 				.isInstanceOf(StatusRuntimeException.class)
 				.hasMessageContaining("does not match the required base version");
+	}
+
+	@Test
+	public void optimisticLockingTransactionTest() {
+		User bob = new User("Bob", 60, null);
+
+		TransactionalOperator operator = TransactionalOperator.create(txManager);
+
+		this.firestoreTemplate.saveAll(Flux.just(bob)).collectList().block();
+		Timestamp bobUpdateTime = bob.getUpdateTime();
+		assertThat(bobUpdateTime).isNotNull();
+
+		User bob2 = new User("Bob", 60, null);
+
+		this.firestoreTemplate.saveAll(Flux.just(bob2)).collectList()
+				.as(operator::transactional)
+				.as(StepVerifier::create)
+				.expectError()
+				.verify();
+
+		bob.setAge(15);
+		this.firestoreTemplate.saveAll(Flux.just(bob)).as(operator::transactional).collectList().block();
+		assertThat(bob.getUpdateTime()).isGreaterThan(bobUpdateTime);
+
+
+		List<User> users = this.firestoreTemplate.findAll(User.class).collectList().block();
+		assertThat(users).containsExactly(bob);
+
+		User bob3 = users.get(0);
+		bob3.setAge(20);
+		this.firestoreTemplate.saveAll(Flux.just(bob3)).as(operator::transactional).collectList().block();
+
+		this.firestoreTemplate.saveAll(Flux.just(bob)).as(operator::transactional).collectList()
+				.as(operator::transactional)
+				.as(StepVerifier::create)
+				.expectError()
+				.verify();
 	}
 
 	@Test
