@@ -28,16 +28,13 @@ import org.springframework.util.Assert;
  */
 final class KmsPropertyUtils {
 
-	private static final String GCP_KMS_PREFIX = "kms://";
 	public static final String LOCATION_GLOBAL = "global";
 
 	private KmsPropertyUtils() { }
 
 	static CryptoKeyName getCryptoKeyName(String input, GcpProjectIdProvider projectIdProvider) {
-		assertPrefix(input);
 
-		String resourcePath = input.substring(GCP_KMS_PREFIX.length());
-		String[] tokens = resourcePath.split("/");
+		String[] tokens = input.split("/");
 
 		String projectId = projectIdProvider.getProjectId();
 		String locationId;
@@ -45,19 +42,19 @@ final class KmsPropertyUtils {
 		String keyId;
 
 		if (tokens.length == 2) {
-			// property is form "kms://<key-ring-id>/<key-id>"
+			// property is form "<key-ring-id>/<key-id>"
 			locationId = LOCATION_GLOBAL;
 			keyRingId = tokens[0];
 			keyId = tokens[1];
 		}
 		else if (tokens.length == 3) {
-			// property is form "kms://<location-id>/<key-ring-id>/<key-id>"
+			// property is form "<location-id>/<key-ring-id>/<key-id>"
 			locationId = tokens[0];
 			keyRingId = tokens[1];
 			keyId = tokens[2];
 		}
 		else if (tokens.length == 4) {
-			// property is form "kms://<project-id>/<location-id>/<key-ring-id>/<key-id>"
+			// property is form "<project-id>/<location-id>/<key-ring-id>/<key-id>"
 			projectId = tokens[0];
 			locationId = tokens[1];
 			keyRingId = tokens[2];
@@ -68,7 +65,7 @@ final class KmsPropertyUtils {
 					&& tokens[2].equals("locations")
 					&& tokens[4].equals("keyRings")
 					&& tokens[6].equals("cryptoKeys")) {
-			// property is form "kms://projects/<project-id>/locations/<location-id>/keyRings/<key-ring-id>/cryptoKeys/<key-id>"
+			// property is form "projects/<project-id>/locations/<location-id>/keyRings/<key-ring-id>/cryptoKeys/<key-id>"
 			projectId = tokens[1];
 			locationId = tokens[3];
 			keyRingId = tokens[5];
@@ -98,11 +95,4 @@ final class KmsPropertyUtils {
 				.setCryptoKey(keyId)
 				.build();
 	}
-
-	private static void assertPrefix(String input) {
-		if (!input.startsWith(GCP_KMS_PREFIX)) {
-			throw new KmsException("Cryptographic key names should start with kms://");
-		}
-	}
-
 }

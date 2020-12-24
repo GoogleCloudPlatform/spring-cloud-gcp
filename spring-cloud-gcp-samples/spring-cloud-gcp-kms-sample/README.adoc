@@ -27,7 +27,7 @@ Instructions for using the Key Management Service UI can be found in the https:/
 
 6. Go to http://localhost:8080 in your browser.
 
-a. Put `kms://spring-cloud-gcp/key-id` as the `Key Id`, add some text and press to `Encrypt Text`.
+a. Put `spring-cloud-gcp/key-id` as the `Key Id`, add some text and press to `Encrypt Text`.
 
 b. You should see the text you submitted encrypted with the encryption key used in Base64 format
 
@@ -35,7 +35,7 @@ b. You should see the text you submitted encrypted with the encryption key used 
 
 a. Place the encrypted text on the `Encrypted Text` field of the `Decrypt Text` section.
 
-b. Put `kms://spring-cloud-gcp/key-id` as the `Key Id` and press `Decrypt Text`.
+b. Put `spring-cloud-gcp/key-id` as the `Key Id` and press `Decrypt Text`.
 
 c. You should see the original text you submitted.
 

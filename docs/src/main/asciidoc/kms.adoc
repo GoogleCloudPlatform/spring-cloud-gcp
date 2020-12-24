@@ -47,9 +47,9 @@ The `com.google.cloud.spring.kms.KmsTemplate` bean provided by the autoconfigura
 
 The template class automatically validates the CRC32 checksums received responses from Cloud KMS APIs to verify correctness of the response.
 
-==== Cloud KMS URI format
+==== Cloud KMS Key ID format
 
-Spring Cloud GCP offers the following URI syntax to specify Cloud KMS keys in your project:
+Spring Cloud GCP offers the following key syntax to specify Cloud KMS keys in your project:
 
 [source]
 ----
@@ -58,22 +58,22 @@ Spring Cloud GCP offers the following URI syntax to specify Cloud KMS keys in yo
  the default GCP project (such as using application-default-credentials) is used.
  The location is assumed to be `global`.
 
- kms://{key-ring-id}/{key-id}
+ {key-ring-id}/{key-id}
 
  2. Short form - specify the key by location ID, key ring ID, and key ID.
  The project is inferred from the spring.cloud.gcp.kms.project-id if set, otherwise
  the default GCP project (such as using application-default-credentials) is used.
 
- kms://{location-id}/{key-ring-id}/{key-id}
+ {location-id}/{key-ring-id}/{key-id}
 
  3. Full form - specify project ID, location ID, key ring ID, and key ID
 
- kms://{project-id}/{location-id}/{key-ring-id}/{key-id}
+ {project-id}/{location-id}/{key-ring-id}/{key-id}
 
  4. Long form - specify project ID, location ID, key ring ID, and key ID.
  This format is equivalent to the fully-qualified resource name of a Cloud KMS key.
 
- kms://projects/{project-id}/locations/{location-id}/keyRings/{key-ring-id}/cryptoKeys/{key-id}
+ projects/{project-id}/locations/{location-id}/keyRings/{key-ring-id}/cryptoKeys/{key-id}
 ----
 
 === Sample

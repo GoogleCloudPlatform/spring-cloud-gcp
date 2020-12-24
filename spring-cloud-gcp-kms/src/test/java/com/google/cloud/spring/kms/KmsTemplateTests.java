@@ -56,7 +56,7 @@ public class KmsTemplateTests {
 		when(this.client.encrypt(any(EncryptRequest.class))).thenReturn(encryptResponse);
 		when(this.client.decrypt(any(DecryptRequest.class))).thenReturn(decryptResponse);
 
-		String cryptoKeyNameStr = "kms://test-project/europe-west2/key-ring-id/key-id";
+		String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/key-id";
 
 		byte[] encryptedBytes = kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
 		String decryptedText = kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes);
@@ -73,7 +73,7 @@ public class KmsTemplateTests {
 
 		when(this.client.encrypt(any(EncryptRequest.class))).thenReturn(encryptResponse);
 
-		String cryptoKeyNameStr = "kms://test-project/europe-west2/key-ring-id/key-id";
+		String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/key-id";
 		kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
 	}
 
@@ -86,7 +86,7 @@ public class KmsTemplateTests {
 
 		when(this.client.decrypt(any(DecryptRequest.class))).thenReturn(decryptResponse);
 
-		String cryptoKeyNameStr = "kms://test-project/europe-west2/key-ring-id/key-id";
+		String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/key-id";
 		kmsTemplate.decryptText(cryptoKeyNameStr, "1234".getBytes());
 	}
 
@@ -97,7 +97,7 @@ public class KmsTemplateTests {
 		when(this.client.encrypt(any(EncryptRequest.class))).thenReturn(encryptResponse);
 		when(this.client.decrypt(any(DecryptRequest.class))).thenThrow(InvalidArgumentException.class);
 
-		String cryptoKeyNameStr = "kms://test-project/europe-west2/key-ring-id/key-id";
+		String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/key-id";
 
 		byte[] encryptedBytes = kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
 		kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes);
@@ -107,7 +107,7 @@ public class KmsTemplateTests {
 	public void testEncryptPermissionDenied() {
 		when(this.client.encrypt(any(EncryptRequest.class))).thenThrow(PermissionDeniedException.class);
 
-		String cryptoKeyNameStr = "kms://test-project/europe-west2/no-access/key-id";
+		String cryptoKeyNameStr = "test-project/europe-west2/no-access/key-id";
 
 		byte[] encryptedBytes = kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
 		kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes);
@@ -117,7 +117,7 @@ public class KmsTemplateTests {
 	public void testEncryptNotFound() {
 		when(this.client.encrypt(any(EncryptRequest.class))).thenThrow(NotFoundException.class);
 
-		String cryptoKeyNameStr = "kms://test-project/europe-west2/key-ring-id/not-found";
+		String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/not-found";
 
 		byte[] encryptedBytes = kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
 		kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes);

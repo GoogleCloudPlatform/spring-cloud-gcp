@@ -52,7 +52,7 @@ public class KmsTemplateIntegrationTests {
 
 	@Test
 	public void testEncryptDecryptText() {
-		String kmsStr = "kms://us-east1/integration-test-key-ring/test-key";
+		String kmsStr = "us-east1/integration-test-key-ring/test-key";
 		byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
 		String decryptedText = kmsTemplate.decryptText(kmsStr, encryptedBytes);
 		assertThat(decryptedText).isEqualTo("1234");
@@ -60,7 +60,7 @@ public class KmsTemplateIntegrationTests {
 
 	@Test
 	public void testEncryptDecryptBytes() {
-		String kmsStr = "kms://us-east1/integration-test-key-ring/test-key";
+		String kmsStr = "us-east1/integration-test-key-ring/test-key";
 		String originalText = "1234";
 		byte[] bytesToEncrypt = originalText.getBytes(StandardCharsets.UTF_8);
 		byte[] encryptedBytes = kmsTemplate.encryptBytes(kmsStr, bytesToEncrypt);
@@ -71,10 +71,10 @@ public class KmsTemplateIntegrationTests {
 
 	@Test(expected = com.google.api.gax.rpc.InvalidArgumentException.class)
 	public void testEncryptDecryptMissMatch() {
-		String kmsStr = "kms://us-east1/integration-test-key-ring/test-key";
+		String kmsStr = "us-east1/integration-test-key-ring/test-key";
 		byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
 
-		String kmsStr2 = "kms://us-east1/integration-test-key-ring/other-key";
+		String kmsStr2 = "us-east1/integration-test-key-ring/other-key";
 		kmsTemplate.decryptText(kmsStr2, encryptedBytes);
 	}
 }

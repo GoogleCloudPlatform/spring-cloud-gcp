@@ -27,18 +27,10 @@ public class KmsPropertyUtilsTests {
 
 	private static final GcpProjectIdProvider DEFAULT_PROJECT_ID_PROVIDER = () -> "defaultProject";
 
-	@Test
-	public void testNonKms() {
-		String cryptoKeyNameStr = "spring.cloud.datasource";
-		assertThatThrownBy(() ->
-				KmsPropertyUtils.getCryptoKeyName(cryptoKeyNameStr, DEFAULT_PROJECT_ID_PROVIDER))
-				.isInstanceOf(KmsException.class)
-				.hasMessageContaining("Cryptographic key names should start with kms://");
-	}
 
 	@Test
 	public void testInvalidKmsFormat_missingValues() {
-		String cryptoKeyNameStr = "kms://";
+		String cryptoKeyNameStr = "some-key";
 
 		assertThatThrownBy(() ->
 				KmsPropertyUtils.getCryptoKeyName(cryptoKeyNameStr, DEFAULT_PROJECT_ID_PROVIDER))
@@ -48,7 +40,7 @@ public class KmsPropertyUtilsTests {
 
 	@Test
 	public void testKmsFormat_globalDefault() {
-		String cryptoKeyNameStr = "kms://key-ring-id/key-id";
+		String cryptoKeyNameStr = "key-ring-id/key-id";
 
 		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKeyNameStr, DEFAULT_PROJECT_ID_PROVIDER);
 
@@ -60,7 +52,7 @@ public class KmsPropertyUtilsTests {
 
 	@Test
 	public void testKmsFormat_noProject() {
-		String cryptoKeyNameStr = "kms://europe-west2/key-ring-id/key-id";
+		String cryptoKeyNameStr = "europe-west2/key-ring-id/key-id";
 
 		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKeyNameStr, DEFAULT_PROJECT_ID_PROVIDER);
 
@@ -72,7 +64,7 @@ public class KmsPropertyUtilsTests {
 
 	@Test
 	public void testKmsFormat_lean() {
-		String cryptoKeyNameStr = "kms://test-project/europe-west2/key-ring-id/key-id";
+		String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/key-id";
 
 		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKeyNameStr, DEFAULT_PROJECT_ID_PROVIDER);
 
@@ -84,7 +76,7 @@ public class KmsPropertyUtilsTests {
 
 	@Test
 	public void testKmsFormat_verbose() {
-		String cryptoKeyNameStr = "kms://projects/test-project/locations/europe-west2/keyRings/key-ring-id/cryptoKeys/key-id";
+		String cryptoKeyNameStr = "projects/test-project/locations/europe-west2/keyRings/key-ring-id/cryptoKeys/key-id";
 
 		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKeyNameStr, DEFAULT_PROJECT_ID_PROVIDER);
 
