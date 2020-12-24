@@ -194,31 +194,39 @@
 <li><a href="#sample-13">20.4. Sample</a></li>
 </ul>
 </li>
-<li><a href="#cloud-runtime-configuration-api">21. Cloud Runtime Configuration API</a>
+<li><a href="#google-cloud-key-management-service">21. Google Cloud Key Management Service</a>
 <ul class="sectlevel2">
-<li><a href="#configuration-12">21.1. Configuration</a></li>
-<li><a href="#quick-start">21.2. Quick start</a></li>
-<li><a href="#refreshing-the-configuration-at-runtime">21.3. Refreshing the configuration at runtime</a></li>
+<li><a href="#dependency-setup-3">21.1. Dependency Setup</a></li>
+<li><a href="#configuration-12">21.2. Configuration</a></li>
+<li><a href="#basic-usage">21.3. Basic Usage</a></li>
 <li><a href="#sample-14">21.4. Sample</a></li>
 </ul>
 </li>
-<li><a href="#cloud-foundry">22. Cloud Foundry</a>
+<li><a href="#cloud-runtime-configuration-api">22. Cloud Runtime Configuration API</a>
 <ul class="sectlevel2">
-<li><a href="#user-provided-services">22.1. User-Provided Services</a></li>
+<li><a href="#configuration-13">22.1. Configuration</a></li>
+<li><a href="#quick-start">22.2. Quick start</a></li>
+<li><a href="#refreshing-the-configuration-at-runtime">22.3. Refreshing the configuration at runtime</a></li>
+<li><a href="#sample-15">22.4. Sample</a></li>
 </ul>
 </li>
-<li><a href="#kotlin-support">23. Kotlin Support</a>
+<li><a href="#cloud-foundry">23. Cloud Foundry</a>
 <ul class="sectlevel2">
-<li><a href="#prerequisites-2">23.1. Prerequisites</a></li>
-<li><a href="#sample-15">23.2. Sample</a></li>
+<li><a href="#user-provided-services">23.1. User-Provided Services</a></li>
 </ul>
 </li>
-<li><a href="#configuration-properties">24. Configuration properties</a></li>
-<li><a href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x">25. Migration Guide from Spring Cloud GCP 1.x to 2.x</a>
+<li><a href="#kotlin-support">24. Kotlin Support</a>
 <ul class="sectlevel2">
-<li><a href="#maven-group-id-change">25.1. Maven Group ID Change</a></li>
-<li><a href="#java-package-name-change">25.2. Java Package Name Change</a></li>
-<li><a href="#deprecated-items-removed">25.3. Deprecated Items Removed</a></li>
+<li><a href="#prerequisites-2">24.1. Prerequisites</a></li>
+<li><a href="#sample-16">24.2. Sample</a></li>
+</ul>
+</li>
+<li><a href="#configuration-properties">25. Configuration properties</a></li>
+<li><a href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x">26. Migration Guide from Spring Cloud GCP 1.x to 2.x</a>
+<ul class="sectlevel2">
+<li><a href="#maven-group-id-change">26.1. Maven Group ID Change</a></li>
+<li><a href="#java-package-name-change">26.2. Java Package Name Change</a></li>
+<li><a href="#deprecated-items-removed">26.3. Deprecated Items Removed</a></li>
 </ul>
 </li>
 </ul>
@@ -9625,7 +9633,134 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="cloud-runtime-configuration-api"><a class="anchor" href="#cloud-runtime-configuration-api"></a><a class="link" href="#cloud-runtime-configuration-api">21. Cloud Runtime Configuration API</a></h2>
+<h2 id="google-cloud-key-management-service"><a class="anchor" href="#google-cloud-key-management-service"></a><a class="link" href="#google-cloud-key-management-service">21. Google Cloud Key Management Service</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="https://cloud.google.com/kms/docs">Google Cloud Key Management Service (KMS)</a> allows you to create, import, and manage cryptographic keys and perform cryptographic operations in a single centralized cloud service.</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud GCP offers a utility template class <code>KmsTemplate</code> which allows you to conveniently encrypt and decrypt binary or text data.</p>
+</div>
+<div class="sect2">
+<h3 id="dependency-setup-3"><a class="anchor" href="#dependency-setup-3"></a><a class="link" href="#dependency-setup-3">21.1. Dependency Setup</a></h3>
+<div class="paragraph">
+<p>To begin using this library, add the <code>spring-cloud-gcp-starter-kms</code> artifact to your project.</p>
+</div>
+<div class="paragraph">
+<p>Maven coordinates, using <a href="#_bill_of_materials">Spring Cloud GCP BOM</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-cloud-gcp-starter-kms&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Gradle coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>dependencies {
+  implementation("com.google.cloud:spring-cloud-gcp-starter-kms")
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuration-12"><a class="anchor" href="#configuration-12"></a><a class="link" href="#configuration-12">21.2. Configuration</a></h3>
+<div class="paragraph">
+<p>The following options may be configured with Spring Cloud GCP KMS libraries.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.kms.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables Google Cloud KMS autoconfiguration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.kms.project-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GCP project ID of the project using Cloud KMS APIs, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Project ID is typically inferred from <a href="https://cloud.google.com/sdk/gcloud/reference/config/set"><code>gcloud</code></a> configuration.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.kms.credentials.location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Credentials file location for authenticating with the Cloud KMS APIs, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inferred from <a href="https://cloud.google.com/docs/authentication/production">Application Default Credentials</a>, typically set by <a href="https://cloud.google.com/sdk/gcloud/reference/auth/application-default"><code>gcloud</code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="basic-usage"><a class="anchor" href="#basic-usage"></a><a class="link" href="#basic-usage">21.3. Basic Usage</a></h3>
+<div class="paragraph">
+<p>Once you have added the <code>spring-cloud-gcp-starter-kms</code> to your project, the autoconfiguration class <code>com.google.cloud.spring.autoconfigure.kms.GcpKmsAutoConfiguration</code> will be activated for your project.</p>
+</div>
+<div class="paragraph">
+<p>The <code>com.google.cloud.spring.kms.KmsTemplate</code> bean provided by the autoconfiguration is the entrypoint to using Spring Cloud GCP support for Google KMS. This class allows you to specify a Cloud KMS key in your project via a URI string (format described below) and perform encryption/decryption with it.</p>
+</div>
+<div class="paragraph">
+<p>The template class automatically validates the CRC32 checksums received responses from Cloud KMS APIs to verify correctness of the response.</p>
+</div>
+<div class="sect3">
+<h4 id="cloud-kms-key-id-format"><a class="anchor" href="#cloud-kms-key-id-format"></a><a class="link" href="#cloud-kms-key-id-format">21.3.1. Cloud KMS Key ID format</a></h4>
+<div class="paragraph">
+<p>Spring Cloud GCP offers the following key syntax to specify Cloud KMS keys in your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code> 1. Shortest form - specify the key by key ring ID, and key ID.
+ The project is inferred from the spring.cloud.gcp.kms.project-id if set, otherwise
+ the default GCP project (such as using application-default-credentials) is used.
+ The location is assumed to be `global`.
+
+ {key-ring-id}/{key-id}
+
+ 2. Short form - specify the key by location ID, key ring ID, and key ID.
+ The project is inferred from the spring.cloud.gcp.kms.project-id if set, otherwise
+ the default GCP project (such as using application-default-credentials) is used.
+
+ {location-id}/{key-ring-id}/{key-id}
+
+ 3. Full form - specify project ID, location ID, key ring ID, and key ID
+
+ {project-id}/{location-id}/{key-ring-id}/{key-id}
+
+ 4. Long form - specify project ID, location ID, key ring ID, and key ID.
+ This format is equivalent to the fully-qualified resource name of a Cloud KMS key.
+
+ projects/{project-id}/locations/{location-id}/keyRings/{key-ring-id}/cryptoKeys/{key-id}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sample-14"><a class="anchor" href="#sample-14"></a><a class="link" href="#sample-14">21.4. Sample</a></h3>
+<div class="paragraph">
+<p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-kms-sample">Cloud KMS Sample Application</a> is provided which demonstrates basic encryption and decryption operations.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cloud-runtime-configuration-api"><a class="anchor" href="#cloud-runtime-configuration-api"></a><a class="link" href="#cloud-runtime-configuration-api">22. Cloud Runtime Configuration API</a></h2>
 <div class="sectionbody">
 <div class="admonitionblock warning">
 <table>
@@ -9671,7 +9806,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-12"><a class="anchor" href="#configuration-12"></a><a class="link" href="#configuration-12">21.1. Configuration</a></h3>
+<h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">22.1. Configuration</a></h3>
 <div class="paragraph">
 <p>The following parameters are configurable in Spring Cloud GCP Config:</p>
 </div>
@@ -9767,7 +9902,7 @@ Core properties, as described in <a href="#spring-cloud-gcp-core">Spring Cloud G
 </div>
 </div>
 <div class="sect2">
-<h3 id="quick-start"><a class="anchor" href="#quick-start"></a><a class="link" href="#quick-start">21.2. Quick start</a></h3>
+<h3 id="quick-start"><a class="anchor" href="#quick-start"></a><a class="link" href="#quick-start">22.2. Quick start</a></h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -9821,7 +9956,7 @@ public class SampleConfig {
 </div>
 </div>
 <div class="sect2">
-<h3 id="refreshing-the-configuration-at-runtime"><a class="anchor" href="#refreshing-the-configuration-at-runtime"></a><a class="link" href="#refreshing-the-configuration-at-runtime">21.3. Refreshing the configuration at runtime</a></h3>
+<h3 id="refreshing-the-configuration-at-runtime"><a class="anchor" href="#refreshing-the-configuration-at-runtime"></a><a class="link" href="#refreshing-the-configuration-at-runtime">22.3. Refreshing the configuration at runtime</a></h3>
 <div class="paragraph">
 <p><a href="https://cloud.spring.io/spring-cloud-static/docs/1.0.x/spring-cloud.html#_endpoints">Spring Cloud</a> provides support to have configuration parameters be reloadable with the POST request to <code>/actuator/refresh</code> endpoint.</p>
 </div>
@@ -9879,7 +10014,7 @@ public class SampleConfig {
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-14"><a class="anchor" href="#sample-14"></a><a class="link" href="#sample-14">21.4. Sample</a></h3>
+<h3 id="sample-15"><a class="anchor" href="#sample-15"></a><a class="link" href="#sample-15">22.4. Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-config-sample">sample application</a> and a <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-runtime-config/index.html">codelab</a> are available.</p>
 </div>
@@ -9887,7 +10022,7 @@ public class SampleConfig {
 </div>
 </div>
 <div class="sect1">
-<h2 id="cloud-foundry"><a class="anchor" href="#cloud-foundry"></a><a class="link" href="#cloud-foundry">22. Cloud Foundry</a></h2>
+<h2 id="cloud-foundry"><a class="anchor" href="#cloud-foundry"></a><a class="link" href="#cloud-foundry">23. Cloud Foundry</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring Cloud GCP provides support for Cloud Foundry&#8217;s <a href="https://docs.pivotal.io/partners/gcp-sb/index.html">GCP Service Broker</a>.
@@ -9936,7 +10071,7 @@ Otherwise, Cloud Foundry will produce a <code>DataSource</code> with an invalid 
 </table>
 </div>
 <div class="sect2">
-<h3 id="user-provided-services"><a class="anchor" href="#user-provided-services"></a><a class="link" href="#user-provided-services">22.1. User-Provided Services</a></h3>
+<h3 id="user-provided-services"><a class="anchor" href="#user-provided-services"></a><a class="link" href="#user-provided-services">23.1. User-Provided Services</a></h3>
 <div class="paragraph">
 <p><a href="https://docs.cloudfoundry.org/devguide/services/user-provided.html">User-provided services</a> enable developers to use services that are not available in the marketplace with their apps running on Cloud Foundry.
 For example, you may want to use a user-provided service that points to a shared Google Service (like Cloud Spanner) used across your organization.</p>
@@ -10011,7 +10146,7 @@ The tag should simply be the Cloud Foundry name for the Google Service.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="kotlin-support"><a class="anchor" href="#kotlin-support"></a><a class="link" href="#kotlin-support">23. Kotlin Support</a></h2>
+<h2 id="kotlin-support"><a class="anchor" href="#kotlin-support"></a><a class="link" href="#kotlin-support">24. Kotlin Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The latest version of the Spring Framework provides first-class support for Kotlin.
@@ -10021,7 +10156,7 @@ For Kotlin users of Spring, the Spring Cloud GCP libraries work out-of-the-box a
 <p>For more information on building a Spring application in Kotlin, please consult the <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/languages.html#kotlin">Spring Kotlin documentation</a>.</p>
 </div>
 <div class="sect2">
-<h3 id="prerequisites-2"><a class="anchor" href="#prerequisites-2"></a><a class="link" href="#prerequisites-2">23.1. Prerequisites</a></h3>
+<h3 id="prerequisites-2"><a class="anchor" href="#prerequisites-2"></a><a class="link" href="#prerequisites-2">24.1. Prerequisites</a></h3>
 <div class="paragraph">
 <p>Ensure that your Kotlin application is properly set up.
 Based on your build system, you will need to include the correct Kotlin build plugin in your project:</p>
@@ -10054,7 +10189,7 @@ Based on your build system, you will need to include the correct Kotlin build pl
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-15"><a class="anchor" href="#sample-15"></a><a class="link" href="#sample-15">23.2. Sample</a></h3>
+<h3 id="sample-16"><a class="anchor" href="#sample-16"></a><a class="link" href="#sample-16">24.2. Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-kotlin-samples/spring-cloud-gcp-kotlin-app-sample">Kotlin sample application</a> is provided to demonstrate a working Maven setup and various Spring Cloud GCP integrations from within Kotlin.</p>
 </div>
@@ -10062,7 +10197,7 @@ Based on your build system, you will need to include the correct Kotlin build pl
 </div>
 </div>
 <div class="sect1">
-<h2 id="configuration-properties"><a class="anchor" href="#configuration-properties"></a><a class="link" href="#configuration-properties">24. Configuration properties</a></h2>
+<h2 id="configuration-properties"><a class="anchor" href="#configuration-properties"></a><a class="link" href="#configuration-properties">25. Configuration properties</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To see the list of all GCP related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
@@ -10070,10 +10205,10 @@ Based on your build system, you will need to include the correct Kotlin build pl
 </div>
 </div>
 <div class="sect1">
-<h2 id="migration-guide-from-spring-cloud-gcp-1-x-to-2-x"><a class="anchor" href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x"></a><a class="link" href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x">25. Migration Guide from Spring Cloud GCP 1.x to 2.x</a></h2>
+<h2 id="migration-guide-from-spring-cloud-gcp-1-x-to-2-x"><a class="anchor" href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x"></a><a class="link" href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x">26. Migration Guide from Spring Cloud GCP 1.x to 2.x</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="maven-group-id-change"><a class="anchor" href="#maven-group-id-change"></a><a class="link" href="#maven-group-id-change">25.1. Maven Group ID Change</a></h3>
+<h3 id="maven-group-id-change"><a class="anchor" href="#maven-group-id-change"></a><a class="link" href="#maven-group-id-change">26.1. Maven Group ID Change</a></h3>
 <div class="paragraph">
 <p>Spring Cloud  <a href="https://spring.io/blog/2019/07/24/simplifying-the-spring-cloud-release-train">unbundled</a> Spring Cloud GCP and other cloud providers from their release train.
 To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencies</code> bill of materials (BOM) and change the <code>spring-cloud-gcp</code> group IDs in your <code>pom.xml</code> files:</p>
@@ -10154,13 +10289,13 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 </div>
 </div>
 <div class="sect2">
-<h3 id="java-package-name-change"><a class="anchor" href="#java-package-name-change"></a><a class="link" href="#java-package-name-change">25.2. Java Package Name Change</a></h3>
+<h3 id="java-package-name-change"><a class="anchor" href="#java-package-name-change"></a><a class="link" href="#java-package-name-change">26.2. Java Package Name Change</a></h3>
 <div class="paragraph">
 <p>All code in Spring Cloud GCP has been moved from <code>org.springframework.cloud.gcp</code> over to the <code>com.google.cloud.spring</code> package.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="deprecated-items-removed"><a class="anchor" href="#deprecated-items-removed"></a><a class="link" href="#deprecated-items-removed">25.3. Deprecated Items Removed</a></h3>
+<h3 id="deprecated-items-removed"><a class="anchor" href="#deprecated-items-removed"></a><a class="link" href="#deprecated-items-removed">26.3. Deprecated Items Removed</a></h3>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Property <code>spring.cloud.gcp.datastore.emulatorHost</code> </dt>
