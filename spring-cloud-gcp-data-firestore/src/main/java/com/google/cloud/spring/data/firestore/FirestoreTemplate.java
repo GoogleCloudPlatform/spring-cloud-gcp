@@ -18,6 +18,7 @@ package com.google.cloud.spring.data.firestore;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -392,8 +393,10 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 		Document document = getClassMapper().entityToDocument(entity, resourceName);
 		FirestorePersistentEntity<?> persistentEntity =
 				this.mappingContext.getPersistentEntity(entity.getClass());
-		FirestorePersistentProperty updateTimeProperty = persistentEntity.getUpdateTimeProperty();
-		if (updateTimeProperty != null && updateTimeProperty.findAnnotation(UpdateTime.class).version()) {
+		FirestorePersistentProperty updateTimeProperty =
+				Objects.requireNonNull(persistentEntity).getUpdateTimeProperty();
+		if (updateTimeProperty != null
+				&& Objects.requireNonNull(updateTimeProperty.findAnnotation(UpdateTime.class)).version()) {
 			Object version = persistentEntity.getPropertyAccessor(entity).getProperty(updateTimeProperty);
 			if (version != null) {
 				builder.setCurrentDocument(

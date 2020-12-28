@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.firestore.mapping;
 
 import java.util.Map;
+import java.util.Objects;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentSnapshot;
@@ -71,7 +72,8 @@ public final class FirestoreDefaultClassMapper implements FirestoreClassMapper {
 	public  <T> T setUpdateTime(T entity, Timestamp updateTime) {
 		FirestorePersistentEntity<?> persistentEntity =
 				this.mappingContext.getPersistentEntity(entity.getClass());
-		FirestorePersistentProperty updateTimeProperty = persistentEntity.getUpdateTimeProperty();
+		FirestorePersistentProperty updateTimeProperty =
+				Objects.requireNonNull(persistentEntity).getUpdateTimeProperty();
 
 		if (updateTimeProperty != null) {
 			persistentEntity.getPropertyAccessor(entity).setProperty(updateTimeProperty, updateTime);
@@ -83,7 +85,8 @@ public final class FirestoreDefaultClassMapper implements FirestoreClassMapper {
 	private Map<String, Value> removeUpdateTimestamp(Map<String, Value> valuesMap, Object entity) {
 		FirestorePersistentEntity<?> persistentEntity =
 				this.mappingContext.getPersistentEntity(entity.getClass());
-		FirestorePersistentProperty updateTimeProperty = persistentEntity.getUpdateTimeProperty();
+		FirestorePersistentProperty updateTimeProperty =
+				Objects.requireNonNull(persistentEntity).getUpdateTimeProperty();
 		if (updateTimeProperty != null) {
 			valuesMap.remove(updateTimeProperty.getFieldName());
 		}
