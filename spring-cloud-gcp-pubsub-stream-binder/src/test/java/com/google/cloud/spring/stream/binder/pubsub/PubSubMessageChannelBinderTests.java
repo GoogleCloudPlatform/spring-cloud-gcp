@@ -19,6 +19,9 @@ package com.google.cloud.spring.stream.binder.pubsub;
 import java.util.List;
 import java.util.Map;
 
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.auth.Credentials;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
@@ -58,6 +61,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.MessageChannel;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -218,6 +222,16 @@ public class PubSubMessageChannelBinderTests {
 		@StreamListener(Sink.INPUT)
 		public void process(String payload) throws InterruptedException {
 			LOGGER.info("received: " + payload);
+		}
+
+		@Bean
+		public GcpProjectIdProvider projectIdProvider() {
+			return () -> "fake project";
+		}
+
+		@Bean
+		public CredentialsProvider googleCredentials() {
+			return () -> mock(Credentials.class);
 		}
 
 	}
