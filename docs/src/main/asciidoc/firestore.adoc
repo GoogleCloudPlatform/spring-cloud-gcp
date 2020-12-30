@@ -321,6 +321,31 @@ include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google
 
 ----
 
+==== Update time
+Firestore stores update time for every document.
+If you would like to retrieve it you can add a field of `com.google.cloud.Timestamp` type to your entity and annotate it with `@UpdateTime` annotation.
+
+[source,java,indent=0]
+----
+@UpdateTime
+Timestamp updateTime;
+----
+
+===== Using update time for optimistic locking
+A field annotated with `@UpdateTime` can be used for optimistic locking.
+To enable that, you need to set `version` parameter to true:
+
+[source,java,indent=0]
+----
+@UpdateTime(version = true)
+Timestamp updateTime;
+----
+
+When you enable optimistic locking, a precondition will be automatically added to the write request to ensure that the document you are updating was not changed since your last read.
+It uses this field's value as a document version and checks that the version of the document you write is the same as the one you've read.
+
+If the field is empty, a precondition would check that the document with the same id does not exist to ensure you don't overwrite existing documents unintentionally.
+
 === Cloud Firestore Spring Boot Starter
 
 If you prefer using Firestore client only, Spring Cloud GCP provides a convenience starter which automatically configures authentication settings and client objects needed to begin using https://cloud.google.com/firestore/[Google Cloud Firestore] in native mode.
