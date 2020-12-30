@@ -297,7 +297,7 @@ Now when you call the methods annotated with `@Transactional` on your service ob
 If an error occurs during the execution of a method annotated with `@Transactional`, the transaction will be rolled back. 
 If no error occurs, the transaction will be committed.
 
-==== Subcollections
+=== Subcollections
 A subcollection is a collection associated with a specific entity.
 Documents in subcollections can contain subcollections as well, allowing you to further nest data. You can nest data up to 100 levels deep.
 
@@ -321,9 +321,9 @@ include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google
 
 ----
 
-==== Update time
+=== Update Time and Optimistic Locking
 Firestore stores update time for every document.
-If you would like to retrieve it you can add a field of `com.google.cloud.Timestamp` type to your entity and annotate it with `@UpdateTime` annotation.
+If you would like to retrieve it, you can add a field of `com.google.cloud.Timestamp` type to your entity and annotate it with `@UpdateTime` annotation.
 
 [source,java,indent=0]
 ----
@@ -333,7 +333,7 @@ Timestamp updateTime;
 
 ===== Using update time for optimistic locking
 A field annotated with `@UpdateTime` can be used for optimistic locking.
-To enable that, you need to set `version` parameter to true:
+To enable that, you need to set `version` parameter to `true`:
 
 [source,java,indent=0]
 ----
