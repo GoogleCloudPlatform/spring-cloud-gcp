@@ -266,6 +266,11 @@
 			<id>spring</id>
 			<repositories>
 				<repository>
+					<id>jcenter</id>
+					<name>jcenter</name>
+					<url>https://jcenter.bintray.com</url>
+				</repository>
+				<repository>
 					<id>spring-snapshots</id>
 					<name>Spring Snapshots</name>
 					<url>https://repo.spring.io/snapshot</url>
@@ -294,6 +299,11 @@
 				</repository>
 			</repositories>
 			<pluginRepositories>
+				<pluginRepository>
+					<id>jcenter</id>
+					<name>jcenter</name>
+					<url>https://jcenter.bintray.com</url>
+				</pluginRepository>
 				<pluginRepository>
 					<id>spring-snapshots</id>
 					<name>Spring Snapshots</name>
