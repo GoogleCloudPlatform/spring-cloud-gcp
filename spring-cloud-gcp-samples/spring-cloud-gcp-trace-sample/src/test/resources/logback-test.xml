@@ -10,8 +10,13 @@
 		</encoder>
 	</appender>
 
+	<appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="STACKDRIVER" />
+	</appender>
+
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
-		<appender-ref ref="STACKDRIVER" />
+<!--		<appender-ref ref="STACKDRIVER" />-->
+		<appender-ref ref="ASYNC" />
 	</root>
 </configuration>
