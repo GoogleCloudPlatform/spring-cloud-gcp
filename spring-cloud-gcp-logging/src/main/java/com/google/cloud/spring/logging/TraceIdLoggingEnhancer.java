@@ -34,7 +34,7 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
  */
 public class TraceIdLoggingEnhancer implements LoggingEnhancer, LoggingEventEnhancer {
 
-	private static final ThreadLocal<String> traceId = new ThreadLocal<>();
+	private static final ThreadLocal<String> threadLocalTraceId = new ThreadLocal<>();
 
 	private static final String APP_ENGINE_LABEL_NAME = "appengine.googleapis.com/trace_id";
 
@@ -44,10 +44,10 @@ public class TraceIdLoggingEnhancer implements LoggingEnhancer, LoggingEventEnha
 
 	public static void setCurrentTraceId(String id) {
 		if (id == null) {
-			traceId.remove();
+			threadLocalTraceId.remove();
 		}
 		else {
-			traceId.set(id);
+			threadLocalTraceId.set(id);
 		}
 	}
 
@@ -56,7 +56,7 @@ public class TraceIdLoggingEnhancer implements LoggingEnhancer, LoggingEventEnha
 	 * @return the trace ID stored through {@link #setCurrentTraceId(String)}
 	 */
 	public static String getCurrentTraceId() {
-		return traceId.get();
+		return threadLocalTraceId.get();
 	}
 
 	/**
