@@ -61,7 +61,6 @@ public class TraceIdLoggingEnhancerTests {
 
 	@Test
 	public void testLoggingEventMDC() {
-		TraceIdLoggingEnhancer enhancer = new TraceIdLoggingEnhancer();
 		LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
 
 		ILoggingEvent mockLoggingEvent = mock(ILoggingEvent.class);
