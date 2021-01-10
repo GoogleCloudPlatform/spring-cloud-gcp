@@ -16,10 +16,12 @@
 
 package com.google.cloud.spring.logging;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.MDC;
@@ -64,9 +66,10 @@ public class TraceIdLoggingEnhancerTests {
 		LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
 
 		ILoggingEvent mockLoggingEvent = mock(ILoggingEvent.class);
-		when(mockLoggingEvent.getMDCPropertyMap()).thenReturn(ImmutableMap
-				.of(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid123",
-						StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "sid123"));
+		Map<String, String> map = new HashMap<>();
+		map.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid123");
+		map.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "sid123");
+		when(mockLoggingEvent.getMDCPropertyMap()).thenReturn(map);
 
 		MDC.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid-mdc");
 		MDC.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "sid-mdc");
