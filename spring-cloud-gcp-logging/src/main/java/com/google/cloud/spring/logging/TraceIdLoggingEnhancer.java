@@ -118,7 +118,7 @@ public class TraceIdLoggingEnhancer implements LoggingEnhancer, LoggingEventEnha
 		}
 	}
 
-	public void setProjectIdProvider(GcpProjectIdProvider projectIdProvider) {
+	void setProjectIdProvider(GcpProjectIdProvider projectIdProvider) {
 		this.projectIdProvider = projectIdProvider;
 	}
 }

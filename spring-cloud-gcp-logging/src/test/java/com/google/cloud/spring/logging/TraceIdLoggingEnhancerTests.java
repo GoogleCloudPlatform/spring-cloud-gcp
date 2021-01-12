@@ -41,12 +41,9 @@ public class TraceIdLoggingEnhancerTests {
 
 	@Before
 	public void before() {
-		enhancer.setProjectIdProvider(new GcpProjectIdProvider() {
-			@Override
-			public String getProjectId() {
-				return "gcp-project";
-			}
-		});
+		enhancer.setProjectIdProvider(() -> "gcp-project");
+		MDC.clear();
+		TraceIdLoggingEnhancer.setCurrentTraceId(null);
 	}
 
 	@Test
@@ -108,7 +105,5 @@ public class TraceIdLoggingEnhancerTests {
 
 		assertThat(logEntry.getTrace()).isEqualTo("projects/gcp-project/traces/tid123");
 		assertThat(logEntry.getSpanId()).isNull();
-
-		TraceIdLoggingEnhancer.setCurrentTraceId(null);
 	}
 }
