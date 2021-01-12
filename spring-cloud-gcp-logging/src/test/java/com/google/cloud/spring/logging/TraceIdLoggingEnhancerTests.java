@@ -21,7 +21,6 @@ import java.util.Map;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import com.google.cloud.logging.LogEntry;
-import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.MDC;
