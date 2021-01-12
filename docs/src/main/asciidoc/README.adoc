@@ -1,4 +1,4 @@
-image:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/workflows/Build%20And%20Test/badge.svg?branch=master["Master Build Status", link="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/actions?query=branch%3Amaster+"]
+image:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/workflows/Build%20And%20Test/badge.svg?branch=main["Main Build Status", link="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/actions?query=branch%3Amain+"]
 
 == Spring Framework on Google Cloud Platform
 
@@ -11,7 +11,7 @@ For a deep dive into the project, refer to the Spring Cloud GCP Reference docume
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/1.2.x/reference/html/index.html[Spring Cloud GCP 1.2.x]
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/1.1.x/single/spring-cloud-gcp.html[Spring Cloud GCP 1.1.x]
 
-If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples[Spring Cloud GCP sample applications] or the https://codelabs.developers.google.com/spring[Spring on GCP codelabs].
+If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[Spring Cloud GCP sample applications] or the https://codelabs.developers.google.com/spring[Spring on GCP codelabs].
 
 Currently, this repository provides support for:
 
