@@ -5,6 +5,14 @@ https://spring.io/projects/spring-cloud-gcp[Spring Cloud GCP] is a set of integr
 This document provides a high-level overview of the changes introduced in Spring Cloud GCP by release.
 For a detailed view of what has changed, refer to the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/master[commit history] on GitHub.
 
+== 2.0.0
+
+* Package renamed from `org.springframework.cloud.gcp` to `com.google.cloud.spring`
+* Maven coordinates now use `com.google.cloud` as the group ID
+* All `deprecated` items removed
+
+For a full list, please see the https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/index.html#migration-guide-from-spring-cloud-gcp-1-x-to-2-x[2.x migration guide].
+
 == 1.2.7.BUILD-SNAPSHOT
 
 === Pub/Sub
