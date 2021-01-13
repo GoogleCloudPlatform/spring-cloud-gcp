@@ -195,20 +195,20 @@ Pub/Sub credentials</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.publisher.batching.element-count-threshold</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The element count threshold to use for batching.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unset (threshold does not apply)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1 (batching off)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.publisher.batching.request-byte-threshold</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The request byte threshold to use for batching.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unset (threshold does not apply)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1 byte (batching off)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.publisher.batching.delay-threshold-seconds</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The delay threshold to use for batching.
 After this amount of time has elapsed (counting from the first element added), the elements will be wrapped up in a batch and sent.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unset (threshold does not apply)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1 ms (batching off)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.publisher.batching.enabled</code></p></td>
