@@ -22,12 +22,12 @@ For a full list, please see the https://googlecloudplatform.github.io/spring-clo
 
 === Datastore
 
-* Fix auditing when running through `DatastoreTemplate.performTransaction()` (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/157[#157])
+* Fixed auditing when running through `DatastoreTemplate.performTransaction()` (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/157[#157])
 * Fixed `FindAll(example, pageable)` ignores `@Reference` annotated fields (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/177[#177])
 
 === Firestore
 
-* Fix 10 simultaneous writes limitation (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/135[#135])
+* Resolved 10 simultaneous writes limitation (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/135[#135])
 * Added update time and optimistic locking support (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/171[#171])
 
 === KMS
@@ -49,7 +49,7 @@ For a full list, please see the https://googlecloudplatform.github.io/spring-clo
 
 === Secret Manager
 
-* Change secret manager module to use v1 instead of v1beta (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/173[#173])
+* Changed secret manager module to use v1 instead of v1beta (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/173[#173])
 
 === Spanner
 
