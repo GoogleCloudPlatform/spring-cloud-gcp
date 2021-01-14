@@ -16,9 +16,11 @@
 
 package com.google.cloud.spring.logging;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.contrib.json.classic.JsonLayout;
+import ch.qos.logback.core.util.Loader;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.gson.Gson;
@@ -60,6 +63,8 @@ public class StackdriverJsonLayout extends JsonLayout {
 	private StackdriverErrorReportingServiceContext serviceContext;
 
 	private Map<String, Object> customJson;
+
+	private final List<StackdriverJsonLayoutEnhancer> enhancers = new ArrayList<>();
 
 	/**
 	 * creates a layout for a Logback appender compatible to the Stackdriver log format.
@@ -157,6 +162,24 @@ public class StackdriverJsonLayout extends JsonLayout {
 		this.customJson = gson.fromJson(json, Map.class);
 	}
 
+	/**
+	 * Add additional logging enhancers that implement {@link StackdriverJsonLayoutEnhancer}.
+	 * @param enhancerClassName class name of the layout enhancer
+	 */
+	public void addEnhancer(String enhancerClassName) {
+		StackdriverJsonLayoutEnhancer enhancer = getEnhancer(enhancerClassName);
+		enhancers.add(enhancer);
+	}
+
+	private <T extends StackdriverJsonLayoutEnhancer> T getEnhancer(String enhancerClassName) {
+		try {
+			Class<T> clz = (Class<T>) Loader.loadClass(enhancerClassName.trim());
+			return clz.getDeclaredConstructor().newInstance();
+		}
+		catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+	}
 
 	@Override
 	public void start() {
@@ -226,6 +249,11 @@ public class StackdriverJsonLayout extends JsonLayout {
 			}
 		}
 		addCustomDataToJsonMap(map, event);
+
+		for (StackdriverJsonLayoutEnhancer enhancer : enhancers) {
+			enhancer.enhanceJsonLogEntry(map, event);
+		}
+
 		return map;
 	}
 

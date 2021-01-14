@@ -7,8 +7,9 @@
 
     <appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <layout class="com.example.CustomLayout">
+            <layout class="com.google.cloud.spring.logging.StackdriverJsonLayout">
                 <projectId>${projectId}</projectId>
+                <enhancer>com.google.cloud.spring.logging.extensions.LogstashEnhancer</enhancer>
             </layout>
         </encoder>
     </appender>

@@ -38,6 +38,7 @@ public class ExampleController {
 		String message = "This line was written to the log.";
 		String secondMessage = "This line was also written to the log with the same Trace ID.";
 
+
 		Marker m = Markers.append("test_key", "test_value")
 				.and(Markers.append("test_key2", "test_value2"));
 
