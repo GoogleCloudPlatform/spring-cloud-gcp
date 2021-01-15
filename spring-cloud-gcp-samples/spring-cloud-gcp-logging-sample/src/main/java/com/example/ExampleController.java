@@ -16,10 +16,8 @@
 
 package com.example;
 
-import net.logstash.logback.marker.Markers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,19 +29,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class ExampleController {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExampleController.class);
+	private static final Log LOGGER = LogFactory.getLog(ExampleController.class);
 
 	@GetMapping("/log")
 	public String log() {
 		String message = "This line was written to the log.";
 		String secondMessage = "This line was also written to the log with the same Trace ID.";
-
-
-		Marker m = Markers.append("test_key", "test_value")
-				.and(Markers.append("test_key2", "test_value2"));
-
-		LOGGER.info(m, message);
-		LOGGER.info(m, secondMessage);
+		LOGGER.info(message);
+		LOGGER.info(secondMessage);
 		return message;
 	}
 }

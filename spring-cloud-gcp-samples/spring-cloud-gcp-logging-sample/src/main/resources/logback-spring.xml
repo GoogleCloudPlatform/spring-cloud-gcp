@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <include resource="com/google/cloud/spring/logging/logback-appender.xml" />
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
 
-    <property name="projectId" value="${projectId:-${GOOGLE_CLOUD_PROJECT}}"/>
-
-    <appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <layout class="com.google.cloud.spring.logging.StackdriverJsonLayout">
-                <projectId>${projectId}</projectId>
-                <loggingEventEnhancer>
-                    com.google.cloud.spring.logging.extensions.LogstashLoggingEventEnhancer
-                </loggingEventEnhancer>
-            </layout>
-        </encoder>
-    </appender>
-
-    <root level="info">
-        <appender-ref ref="CONSOLE_JSON"/>
+    <root level="INFO">
+        <!-- If running in GCP, remove the CONSOLE appender otherwise logs will be duplicated. -->
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="STACKDRIVER" />
     </root>
 </configuration>

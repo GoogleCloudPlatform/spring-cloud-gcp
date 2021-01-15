@@ -39,12 +39,6 @@
             <artifactId>spring-cloud-gcp-starter-logging</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>net.logstash.logback</groupId>
-            <artifactId>logstash-logback-encoder</artifactId>
-            <version>6.6</version>
-        </dependency>
-
         <!-- Test-related dependencies. -->
         <dependency>
             <groupId>org.awaitility</groupId>
