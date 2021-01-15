@@ -22,8 +22,11 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
  * This interface allows users to write additional JSON record the JSON log layout.
+ *
+ * <p>Implementing classes can be used as {@code <loggingEventEnhancer>} elements in the logback definition
+ * for {@link StackdriverJsonLayout}.
  */
-public interface StackdriverJsonLayoutEnhancer {
+public interface JsonLoggingEventEnhancer {
 
 	/**
 	 * Add additional JSON data to the JSON log entry, based on the {@link ILoggingEvent}.

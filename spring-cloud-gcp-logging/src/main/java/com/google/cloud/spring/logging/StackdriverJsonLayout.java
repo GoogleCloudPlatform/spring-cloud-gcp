@@ -64,7 +64,7 @@ public class StackdriverJsonLayout extends JsonLayout {
 
 	private Map<String, Object> customJson;
 
-	private final List<StackdriverJsonLayoutEnhancer> enhancers = new ArrayList<>();
+	private final List<JsonLoggingEventEnhancer> loggingEventEnhancers = new ArrayList<>();
 
 	/**
 	 * creates a layout for a Logback appender compatible to the Stackdriver log format.
@@ -163,18 +163,14 @@ public class StackdriverJsonLayout extends JsonLayout {
 	}
 
 	/**
-	 * Add additional logging enhancers that implement {@link StackdriverJsonLayoutEnhancer}.
+	 * Add additional logging enhancers that implement {@link JsonLoggingEventEnhancer}.
 	 * @param enhancerClassName class name of the layout enhancer
 	 */
-	public void addEnhancer(String enhancerClassName) {
-		StackdriverJsonLayoutEnhancer enhancer = getEnhancer(enhancerClassName);
-		enhancers.add(enhancer);
-	}
-
-	private <T extends StackdriverJsonLayoutEnhancer> T getEnhancer(String enhancerClassName) {
+	public void addLoggingEventEnhancer(String enhancerClassName) {
 		try {
-			Class<T> clz = (Class<T>) Loader.loadClass(enhancerClassName.trim());
-			return clz.getDeclaredConstructor().newInstance();
+			Class<JsonLoggingEventEnhancer> clz =
+					(Class<JsonLoggingEventEnhancer>) Loader.loadClass(enhancerClassName.trim());
+			loggingEventEnhancers.add(clz.getDeclaredConstructor().newInstance());
 		}
 		catch (Exception ex) {
 			throw new RuntimeException(ex);
@@ -250,7 +246,7 @@ public class StackdriverJsonLayout extends JsonLayout {
 		}
 		addCustomDataToJsonMap(map, event);
 
-		for (StackdriverJsonLayoutEnhancer enhancer : enhancers) {
+		for (JsonLoggingEventEnhancer enhancer : loggingEventEnhancers) {
 			enhancer.enhanceJsonLogEntry(map, event);
 		}
 

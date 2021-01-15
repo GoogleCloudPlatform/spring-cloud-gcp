@@ -23,14 +23,23 @@ import java.util.function.Consumer;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.logback.LoggingEventEnhancer;
-import com.google.cloud.spring.logging.StackdriverJsonLayoutEnhancer;
+import com.google.cloud.spring.logging.JsonLoggingEventEnhancer;
 import net.logstash.logback.marker.ObjectAppendingMarker;
 import org.slf4j.Marker;
 
 /**
- * Adds Logstash markers to Logging API calls and JSON log entries.
+ * Logging enhancer which adds Logstash markers to Logging API calls and JSON log entries.
+ *
+ * <p>
+ * Supported Markers:
+ * - ObjectAppendingMarker: key-value pairs are added to the log entries.
+ *
+ * <p>
+ * This can be used by specifying this class in a {@code <loggingEventEnhancer>} element for your
+ * {@link com.google.cloud.logging.logback.LoggingAppender} or
+ * {@link com.google.cloud.spring.logging.StackdriverJsonLayout} definitions in logback.xml.
  */
-public class LogstashEnhancer implements LoggingEventEnhancer, StackdriverJsonLayoutEnhancer {
+public class LogstashLoggingEventEnhancer implements LoggingEventEnhancer, JsonLoggingEventEnhancer {
 
 	@Override
 	public void enhanceLogEntry(LogEntry.Builder builder, ILoggingEvent event) {

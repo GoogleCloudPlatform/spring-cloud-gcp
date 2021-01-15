@@ -9,7 +9,9 @@
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="com.google.cloud.spring.logging.StackdriverJsonLayout">
                 <projectId>${projectId}</projectId>
-                <enhancer>com.google.cloud.spring.logging.extensions.LogstashEnhancer</enhancer>
+                <loggingEventEnhancer>
+                    com.google.cloud.spring.logging.extensions.LogstashLoggingEventEnhancer
+                </loggingEventEnhancer>
             </layout>
         </encoder>
     </appender>
