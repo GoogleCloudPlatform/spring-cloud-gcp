@@ -37,7 +37,7 @@
 	<properties>
 		<app-engine-maven-plugin.version>2.3.0</app-engine-maven-plugin.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.3.4</errorprone.version>
+		<errorprone.version>2.4.0</errorprone.version>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
 		<java-cfenv.version>2.1.2.RELEASE</java-cfenv.version>
 		<javadoc.failOnError>false</javadoc.failOnError>
@@ -448,7 +448,7 @@
 		<profile>
 			<id>errorprone_java_9_and_up</id>
 			<activation>
-				<jdk>[9,13]</jdk>
+				<jdk>[9,)</jdk>
 			</activation>
 			<build>
 				<pluginManagement>
