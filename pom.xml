@@ -489,10 +489,9 @@
 					<plugins>
 						<plugin>
 							<artifactId>maven-compiler-plugin</artifactId>
+							<version>3.8.1</version>
 							<configuration>
-								<compilerId>javac-with-errorprone</compilerId>
-								<forceJavacCompilerUse>true</forceJavacCompilerUse>
-								<compilerArgs>
+								<compilerArgs combine.children="append">
 									<!-- Enable all warnings -->
 									<compilerArg>-Xlint:all</compilerArg>
 									<!-- Disable options warning because we will have differences between the compiler and source code level-->
@@ -501,14 +500,11 @@
 									<compilerArg>-Xlint:-serial</compilerArg>
 									<!--compilerArg>-Werror</compilerArg-->
 									<arg>-parameters</arg>
+									<!-- Needed for errorprone version 2.4.0 -->
+									<arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
 								</compilerArgs>
 							</configuration>
 							<dependencies>
-								<dependency>
-									<groupId>org.codehaus.plexus</groupId>
-									<artifactId>plexus-compiler-javac-errorprone</artifactId>
-									<version>2.8.6</version>
-								</dependency>
 								<dependency>
 									<groupId>com.google.errorprone</groupId>
 									<artifactId>error_prone_core</artifactId>
