@@ -129,7 +129,6 @@ public class GcpFirestoreEmulatorAutoConfiguration {
 					rootPath + "/documents",
 					classMapper,
 					firestoreMappingContext);
-			template.setUsingStreamTokens(false);
 			return template;
 		}
 
