@@ -146,6 +146,7 @@ This setting is only evaluated if `includeFormattedMessage` is `true`
 | `includeException` | `false` | Should the stacktrace be included as a own field
 | `serviceContext` | none | Define the Stackdriver service context data (service and version). This allows filtering of error reports for service and version in the https://console.cloud.google.com/errors[Google Cloud Error Reporting View].
 | `customJson` | none | Defines custom json data. Data will be added to the json output.
+| `loggingEventEnhancer` | none | Classes which implement `com.google.cloud.spring.logging.JsonLoggingEventEnhancer` to extend the JSON logging output (link:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-logging/src/main/java/com/google/cloud/spring/logging/extensions[examples]).
 |=======================================================================
 
 This is an example of such an Logback configuration:
@@ -176,6 +177,7 @@ This is an example of such an Logback configuration:
               <version>service-version</version>
             </serviceContext>-->
         <!--<customJson>{"custom-key": "custom-value"}</customJson>-->
+        <!--<loggingEventEnhancer>your.package.YourLoggingEventEnhancer</loggingEventEnhancer> -->
       </layout>
     </encoder>
   </appender>
