@@ -3663,6 +3663,13 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
 <td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines custom json data. Data will be added to the json output.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>loggingEventEnhancer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of a class implementing <code>JsonLoggingEventEnhancer</code> which modifies the JSON logging output. This tag is repeatable.</p>
+<p class="tableblock">Examples are provided in the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-logging/src/main/java/com/google/cloud/spring/logging/extensions">extensions package</a>.</p>
+<p class="tableblock">- <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-logging/src/main/java/com/google/cloud/spring/logging/extensions/LogstashLoggingEventEnhancer.java">Logstash Enhancer</a></p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -3694,6 +3701,7 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
               &lt;version&gt;service-version&lt;/version&gt;
             &lt;/serviceContext&gt;--&gt;
         &lt;!--&lt;customJson&gt;{"custom-key": "custom-value"}&lt;/customJson&gt;--&gt;
+        &lt;!--&lt;loggingEventEnhancer&gt;your.package.YourLoggingEventEnhancer&lt;/loggingEventEnhancer&gt; --&gt;
       &lt;/layout&gt;
     &lt;/encoder&gt;
   &lt;/appender&gt;
