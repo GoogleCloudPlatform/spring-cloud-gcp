@@ -45,14 +45,19 @@ public class LogstashLoggingEventEnhancerTests {
 
 		loggingEvent = Mockito.mock(ILoggingEvent.class);
 		when(loggingEvent.getMarker())
-				.thenReturn(Markers.append("test_key", "test_value"));
+				.thenReturn(
+						Markers
+								.append("k1", "v1")
+								.and(Markers.append("k2", "v2"))
+				);
 	}
 
 	@Test
 	public void testEnhanceJson() {
 		Map<String, Object> jsonMap = new HashMap<>();
 		enhancer.enhanceJsonLogEntry(jsonMap, loggingEvent);
-		assertThat(jsonMap.get("test_key")).isEqualTo("test_value");
+		assertThat(jsonMap).containsEntry("k1", "v1");
+		assertThat(jsonMap).containsEntry("k2", "v2");
 	}
 
 	@Test
@@ -61,6 +66,7 @@ public class LogstashLoggingEventEnhancerTests {
 		enhancer.enhanceLogEntry(logEntryBuilder, loggingEvent);
 
 		Map<String, String> labels = logEntryBuilder.build().getLabels();
-		assertThat(labels.get("test_key")).isEqualTo("test_value");
+		assertThat(labels).containsEntry("k1", "v1");
+		assertThat(labels).containsEntry("k2", "v2");
 	}
 }
