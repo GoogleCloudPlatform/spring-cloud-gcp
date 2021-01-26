@@ -56,8 +56,9 @@ public class LogstashLoggingEventEnhancerTests {
 	public void testEnhanceJson() {
 		Map<String, Object> jsonMap = new HashMap<>();
 		enhancer.enhanceJsonLogEntry(jsonMap, loggingEvent);
-		assertThat(jsonMap).containsEntry("k1", "v1");
-		assertThat(jsonMap).containsEntry("k2", "v2");
+		assertThat(jsonMap)
+				.containsEntry("k1", "v1")
+				.containsEntry("k2", "v2");
 	}
 
 	@Test
@@ -66,7 +67,8 @@ public class LogstashLoggingEventEnhancerTests {
 		enhancer.enhanceLogEntry(logEntryBuilder, loggingEvent);
 
 		Map<String, String> labels = logEntryBuilder.build().getLabels();
-		assertThat(labels).containsEntry("k1", "v1");
-		assertThat(labels).containsEntry("k2", "v2");
+		assertThat(labels)
+				.containsEntry("k1", "v1")
+				.containsEntry("k2", "v2");
 	}
 }
