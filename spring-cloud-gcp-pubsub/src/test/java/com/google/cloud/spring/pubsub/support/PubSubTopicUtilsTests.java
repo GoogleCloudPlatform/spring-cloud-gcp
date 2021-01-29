@@ -38,8 +38,9 @@ public class PubSubTopicUtilsTests {
 
 		ProjectTopicName parsedProjectTopicName = PubSubTopicUtils.toProjectTopicName(topic, project);
 
-		assertThat(parsedProjectTopicName).isEqualTo(ProjectTopicName.of(project, topic));
-		assertThat(parsedProjectTopicName).hasToString(fqn);
+		assertThat(parsedProjectTopicName)
+				.isEqualTo(ProjectTopicName.of(project, topic))
+				.hasToString(fqn);
 	}
 
 	@Test
@@ -64,8 +65,9 @@ public class PubSubTopicUtilsTests {
 
 		ProjectTopicName parsedProjectTopicName = PubSubTopicUtils.toProjectTopicName(fqn, project);
 
-		assertThat(parsedProjectTopicName).isEqualTo(ProjectTopicName.of(project, topic));
-		assertThat(parsedProjectTopicName).hasToString(fqn);
+		assertThat(parsedProjectTopicName)
+				.isEqualTo(ProjectTopicName.of(project, topic))
+				.hasToString(fqn);
 	}
 
 	@Test
@@ -76,8 +78,9 @@ public class PubSubTopicUtilsTests {
 
 		ProjectTopicName parsedProjectTopicName = PubSubTopicUtils.toProjectTopicName(fqn, null);
 
-		assertThat(parsedProjectTopicName).isEqualTo(ProjectTopicName.of(project, topic));
-		assertThat(parsedProjectTopicName).hasToString(fqn);
+		assertThat(parsedProjectTopicName)
+				.isEqualTo(ProjectTopicName.of(project, topic))
+				.hasToString(fqn);
 	}
 
 	@Test
@@ -88,8 +91,9 @@ public class PubSubTopicUtilsTests {
 
 		TopicName parsedTopicName = PubSubTopicUtils.toTopicName(topic, project);
 
-		assertThat(parsedTopicName).isEqualTo(TopicName.of(project, topic));
-		assertThat(parsedTopicName).hasToString(fqn);
+		assertThat(parsedTopicName)
+				.isEqualTo(TopicName.of(project, topic))
+				.hasToString(fqn);
 	}
 
 	@Test
@@ -114,8 +118,9 @@ public class PubSubTopicUtilsTests {
 
 		TopicName parsedTopicName = PubSubTopicUtils.toTopicName(fqn, project);
 
-		assertThat(parsedTopicName).isEqualTo(TopicName.of(project, topic));
-		assertThat(parsedTopicName).hasToString(fqn);
+		assertThat(parsedTopicName)
+				.isEqualTo(TopicName.of(project, topic))
+				.hasToString(fqn);
 	}
 
 	@Test
@@ -126,7 +131,8 @@ public class PubSubTopicUtilsTests {
 
 		TopicName parsedTopicName = PubSubTopicUtils.toTopicName(fqn, null);
 
-		assertThat(parsedTopicName).isEqualTo(TopicName.of(project, topic));
-		assertThat(parsedTopicName).hasToString(fqn);
+		assertThat(parsedTopicName)
+				.isEqualTo(TopicName.of(project, topic))
+				.hasToString(fqn);
 	}
 }
