@@ -17,6 +17,7 @@
 package com.google.cloud.spring.pubsub.support;
 
 import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.TopicName;
 
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
@@ -40,7 +41,9 @@ public final class PubSubTopicUtils {
 	 * @param topic the topic name in the project or the fully-qualified project name
 	 * @param projectId the project ID to use if the topic is not a fully-qualified name
 	 * @return the Pub/Sub object representing the topic name
+	 * @deprecated Use toTopicName instead.
 	 */
+	@Deprecated
 	public static ProjectTopicName toProjectTopicName(String topic, @Nullable String projectId) {
 		Assert.notNull(topic, "The topic can't be null.");
 
@@ -56,5 +59,22 @@ public final class PubSubTopicUtils {
 		}
 
 		return projectTopicName;
+	}
+
+	public static TopicName toTopicName(String topic, @Nullable String projectId) {
+		Assert.notNull(topic, "The topic can't be null.");
+
+		TopicName topicName = null;
+
+		if (TopicName.isParsableFrom(topic)) {
+			// Fully-qualified topic name in the "projects/<project_name>/topics/<topic_name>" format
+			topicName = TopicName.parse(topic);
+		}
+		else {
+			Assert.notNull(projectId, "The project ID can't be null when using canonical topic name.");
+			topicName = TopicName.of(projectId, topic);
+		}
+
+		return topicName;
 	}
 }

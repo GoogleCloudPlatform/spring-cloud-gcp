@@ -17,6 +17,7 @@
 package com.google.cloud.spring.pubsub.support;
 
 import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.TopicName;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,5 +78,55 @@ public class PubSubTopicUtilsTests {
 
 		assertThat(parsedProjectTopicName).isEqualTo(ProjectTopicName.of(project, topic));
 		assertThat(parsedProjectTopicName.toString()).isEqualTo(fqn);
+	}
+
+	@Test
+	public void testToTopicName_canonical() {
+		String project = "projectA";
+		String topic = "topicA";
+		String fqn = "projects/" + project + "/topics/" + topic;
+
+		TopicName parsedTopicName = PubSubTopicUtils.toTopicName(topic, project);
+
+		assertThat(parsedTopicName).isEqualTo(TopicName.of(project, topic));
+		assertThat(parsedTopicName.toString()).isEqualTo(fqn);
+	}
+
+	@Test
+	public void testToTopicName_no_topic() {
+		assertThatThrownBy(() -> PubSubTopicUtils.toTopicName(null, "topicA"))
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessage("The topic can't be null.");
+	}
+
+	@Test
+	public void testToTopicName_canonical_no_project() {
+		assertThatThrownBy(() -> PubSubTopicUtils.toTopicName("topicA", null))
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessage("The project ID can't be null when using canonical topic name.");
+	}
+
+	@Test
+	public void testToTopicName_fqn() {
+		String project = "projectA";
+		String topic = "topicA";
+		String fqn = "projects/" + project + "/topics/" + topic;
+
+		TopicName parsedTopicName = PubSubTopicUtils.toTopicName(fqn, project);
+
+		assertThat(parsedTopicName).isEqualTo(TopicName.of(project, topic));
+		assertThat(parsedTopicName.toString()).isEqualTo(fqn);
+	}
+
+	@Test
+	public void testToTopicName_fqn_no_project() {
+		String project = "projectA";
+		String topic = "topicA";
+		String fqn = "projects/" + project + "/topics/" + topic;
+
+		TopicName parsedTopicName = PubSubTopicUtils.toTopicName(fqn, null);
+
+		assertThat(parsedTopicName).isEqualTo(TopicName.of(project, topic));
+		assertThat(parsedTopicName.toString()).isEqualTo(fqn);
 	}
 }
