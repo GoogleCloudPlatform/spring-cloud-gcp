@@ -72,12 +72,13 @@ public class PubSubChannelProvisionerTests {
 
 	@Before
 	public void setup() {
-		when(this.pubSubAdminMock.getProjectId()).thenReturn("test-project");
 		when(this.pubSubAdminMock.getSubscription(any())).thenReturn(null);
 		doAnswer((invocation) ->
 			Subscription.newBuilder()
 					.setName("projects/test-project/subscriptions/" + invocation.getArgument(0))
-					.setTopic(invocation.getArgument(1))
+					.setTopic(invocation.getArgument(1, String.class).startsWith("projects/") ?
+							invocation.getArgument(1) :
+							"projects/test-project/topics/" + invocation.getArgument(1))
 					.build()
 		).when(this.pubSubAdminMock).createSubscription(any(), any());
 		doAnswer((invocation) ->
@@ -96,7 +97,7 @@ public class PubSubChannelProvisionerTests {
 
 		assertThat(result.getName()).isEqualTo("topic_A.group_A");
 
-		verify(this.pubSubAdminMock).createSubscription("topic_A.group_A", "projects/test-project/topics/topic_A");
+		verify(this.pubSubAdminMock).createSubscription("topic_A.group_A", "topic_A");
 	}
 
 	@Test
@@ -104,6 +105,7 @@ public class PubSubChannelProvisionerTests {
 		String fullTopicName = "projects/differentProject/topics/topic_A";
 		when(this.pubSubAdminMock.getTopic(fullTopicName)).thenReturn(
 				Topic.newBuilder().setName(fullTopicName).build());
+
 		PubSubConsumerDestination result = (PubSubConsumerDestination) this.pubSubChannelProvisioner
 				.provisionConsumerDestination(fullTopicName, "group_A", this.properties);
 
@@ -159,7 +161,7 @@ public class PubSubChannelProvisionerTests {
 
 		assertThat(result.getName()).matches(subscriptionNameRegex);
 
-		verify(this.pubSubAdminMock).createSubscription(matches(subscriptionNameRegex), eq("projects/test-project/topics/topic_A"));
+		verify(this.pubSubAdminMock).createSubscription(matches(subscriptionNameRegex), eq("topic_A"));
 	}
 
 	@Test

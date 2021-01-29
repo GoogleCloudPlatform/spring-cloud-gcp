@@ -23,7 +23,6 @@ import java.util.UUID;
 
 import com.google.api.gax.rpc.AlreadyExistsException;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
-import com.google.cloud.spring.pubsub.support.PubSubTopicUtils;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
 import com.google.pubsub.v1.Subscription;
@@ -75,11 +74,8 @@ public class PubSubChannelProvisioner
 			throws ProvisioningException {
 
 		// topicName may be either the short or fully-qualified version.
-		TopicName topicNameObj = PubSubTopicUtils.toTopicName(topicName, this.pubSubAdmin.getProjectId());
-		String topicShortName = topicNameObj.getTopic();
-		String topicFullyQualifiedName = topicNameObj.toString();
-
-		ensureTopicExists(topicName, properties.getExtension().isAutoCreateResources());
+		String topicShortName = TopicName.isParsableFrom(topicName) ? TopicName.parse(topicName).getTopic() : topicName;
+		Optional<Topic> topic = ensureTopicExists(topicName, properties.getExtension().isAutoCreateResources());
 
 		String subscriptionName;
 		Subscription subscription;
@@ -90,19 +86,19 @@ public class PubSubChannelProvisioner
 		else {
 			// Generate anonymous random group since one wasn't provided
 			subscriptionName = "anonymous." + topicShortName + "." + UUID.randomUUID().toString();
-			subscription = this.pubSubAdmin.createSubscription(subscriptionName, topicFullyQualifiedName);
+			subscription = this.pubSubAdmin.createSubscription(subscriptionName, topicName);
 			this.anonymousGroupSubscriptionNames.add(subscriptionName);
 		}
 
 		if (subscription == null) {
 			if (properties.getExtension().isAutoCreateResources()) {
-				this.pubSubAdmin.createSubscription(subscriptionName, topicFullyQualifiedName);
+				this.pubSubAdmin.createSubscription(subscriptionName, topicName);
 			}
 			else {
 				throw new ProvisioningException("Non-existing '" + subscriptionName + "' subscription.");
 			}
 		}
-		else if (!subscription.getTopic().equals(topicFullyQualifiedName)) {
+		else if (topic.isPresent() && !subscription.getTopic().equals(topic.get().getName())) {
 			throw new ProvisioningException(
 					"Existing '" + subscriptionName + "' subscription is for a different topic '"
 							+ subscription.getTopic() + "'.");

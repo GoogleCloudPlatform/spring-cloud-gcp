@@ -324,8 +324,4 @@ public class PubSubAdmin implements AutoCloseable {
 			this.subscriptionAdminClient.close();
 		}
 	}
-
-	public String getProjectId() {
-		return projectId;
-	}
 }
