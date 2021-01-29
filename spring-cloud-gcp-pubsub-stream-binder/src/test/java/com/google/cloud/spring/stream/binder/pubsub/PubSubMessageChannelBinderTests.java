@@ -114,6 +114,7 @@ public class PubSubMessageChannelBinderTests {
 		this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate,
 				this.properties);
 
+		when(pubSubAdmin.getProjectId()).thenReturn("test-project");
 		when(producerDestination.getName()).thenReturn("test-topic");
 		when(consumerDestination.getName()).thenReturn("test-subscription");
 	}

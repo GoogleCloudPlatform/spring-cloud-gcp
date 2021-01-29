@@ -325,4 +325,7 @@ public class PubSubAdmin implements AutoCloseable {
 		}
 	}
 
+	public String getProjectId() {
+		return projectId;
+	}
 }
