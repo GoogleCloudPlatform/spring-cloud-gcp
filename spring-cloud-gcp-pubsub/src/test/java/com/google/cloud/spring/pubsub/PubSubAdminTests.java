@@ -124,9 +124,10 @@ public class PubSubAdminTests {
 	public void testGetTopic_serviceDown() {
 		when(this.mockTopicAdminClient.getTopic(any(TopicName.class)))
 				.thenThrow(new ApiException(null, GrpcStatusCode.of(io.grpc.Status.Code.UNAVAILABLE), false));
-		assertThatExceptionOfType(ApiException.class)
-				.isThrownBy(() -> new PubSubAdmin(() -> "test-project",
-						this.mockTopicAdminClient, this.mockSubscriptionAdminClient).getTopic("fooTopic"));
+		PubSubAdmin psa = new PubSubAdmin(() -> "test-project",
+				this.mockTopicAdminClient, this.mockSubscriptionAdminClient);
+
+		assertThatExceptionOfType(ApiException.class).isThrownBy(() -> psa.getTopic("fooTopic"));
 		verify(this.mockTopicAdminClient).getTopic(TopicName.of("test-project", "fooTopic"));
 	}
 
@@ -240,9 +241,10 @@ public class PubSubAdminTests {
 	public void testGetSubscription_serviceDown() {
 		when(this.mockSubscriptionAdminClient.getSubscription(any(ProjectSubscriptionName.class)))
 				.thenThrow(new ApiException(null, GrpcStatusCode.of(io.grpc.Status.Code.UNAVAILABLE), false));
-		assertThatExceptionOfType(ApiException.class).isThrownBy(() -> new PubSubAdmin(
-				() -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
-				.getSubscription("fooSubscription"));
+		PubSubAdmin psa = new PubSubAdmin(() -> "test-project",
+				this.mockTopicAdminClient, this.mockSubscriptionAdminClient);
+
+		assertThatExceptionOfType(ApiException.class).isThrownBy(() -> psa.getSubscription("fooSubscription"));
 		verify(this.mockSubscriptionAdminClient).getSubscription(
 				ProjectSubscriptionName.of("test-project", "fooSubscription"));
 	}
