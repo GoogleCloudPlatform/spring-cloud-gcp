@@ -5,6 +5,7 @@ on:
       - master
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
   schedule:
     - cron: '30 9 * * *' # 09:30 UTC every day
 
