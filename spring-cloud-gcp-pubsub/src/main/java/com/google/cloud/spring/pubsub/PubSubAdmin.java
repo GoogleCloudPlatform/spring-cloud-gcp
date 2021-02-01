@@ -48,9 +48,9 @@ import org.springframework.util.Assert;
  */
 public class PubSubAdmin implements AutoCloseable {
 
-	private static final int MIN_ACK_DEADLINE_SECONDS = 10;
+	protected static final int MIN_ACK_DEADLINE_SECONDS = 10;
 
-	private static final int MAX_ACK_DEADLINE_SECONDS = 600;
+	protected static final int MAX_ACK_DEADLINE_SECONDS = 600;
 
 	private final String projectId;
 
