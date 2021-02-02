@@ -173,7 +173,7 @@ public class StackdriverJsonLayout extends JsonLayout {
 			loggingEventEnhancers.add(clz.getDeclaredConstructor().newInstance());
 		}
 		catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new EnhancedLoggingEventException(ex);
 		}
 	}
 
@@ -280,5 +280,11 @@ public class StackdriverJsonLayout extends JsonLayout {
 		}
 
 		add(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE, this.includeTraceId, traceId, map);
+	}
+
+	static class EnhancedLoggingEventException extends RuntimeException {
+		EnhancedLoggingEventException(Throwable cause) {
+			super(cause);
+		}
 	}
 }
