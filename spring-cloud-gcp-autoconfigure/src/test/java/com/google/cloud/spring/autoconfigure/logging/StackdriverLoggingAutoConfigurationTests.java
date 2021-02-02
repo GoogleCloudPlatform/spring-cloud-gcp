@@ -55,7 +55,7 @@ public class StackdriverLoggingAutoConfigurationTests {
 		this.contextRunner.withPropertyValues("spring.cloud.gcp.logging.enabled=false")
 				.run((context) -> assertThat(context
 						.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class).size())
-								.isEqualTo(0));
+								.isZero());
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class StackdriverLoggingAutoConfigurationTests {
 				.withUserConfiguration(TestConfiguration.class)
 				.run((context) -> assertThat(context
 						.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class).size())
-								.isEqualTo(0));
+								.isZero());
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class StackdriverLoggingAutoConfigurationTests {
 				.withUserConfiguration(TestConfiguration.class)
 				.run((context) -> assertThat(context
 						.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class).size())
-								.isEqualTo(0));
+								.isZero());
 	}
 
 	@Test
@@ -97,7 +97,7 @@ public class StackdriverLoggingAutoConfigurationTests {
 				.withPropertyValues("spring.cloud.gcp.project-id=pop-1")
 				.run((context) -> assertThat(context
 						.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class).size())
-								.isEqualTo(0));
+								.isZero());
 	}
 
 	private static class TestConfiguration {

@@ -131,10 +131,10 @@ public class PubSubTemplateIntegrationTests {
 			assertThat(pubSubAdmin.getSubscription(subscriptionName)).isNull();
 			assertThat(pubSubAdmin.listTopics().stream()
 					.filter((topic) -> topic.getName().endsWith(topicName)).toArray().length)
-					.isEqualTo(0);
+					.isZero();
 			assertThat(pubSubAdmin.listSubscriptions().stream().filter(
 					(subscription) -> subscription.getName().endsWith(subscriptionName))
-					.toArray().length).isEqualTo(0);
+					.toArray().length).isZero();
 		});
 	}
 
