@@ -203,10 +203,14 @@ public class BigQueryFileMessageHandler extends AbstractReplyProducingMessageHan
 			throw new MessageHandlingException(
 					message, "Failed to write data to BigQuery tables in message handler: " + this, e);
 		}
-		catch (InterruptedException | ExecutionException | TimeoutException e) {
+		catch (ExecutionException | TimeoutException e) {
 			throw new MessageHandlingException(
 					message, "Failed to wait for BigQuery Job to complete in message handler: " + this, e);
 		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+		return null;
 	}
 
 	private static InputStream convertToInputStream(Object payload) throws IOException {
