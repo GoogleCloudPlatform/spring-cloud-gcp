@@ -149,9 +149,9 @@ This setting is only evaluated if `includeFormattedMessage` is `true`
 | `loggingEventEnhancer` | none
 | Name of a class implementing `JsonLoggingEventEnhancer` which modifies the JSON logging output. This tag is repeatable.
 
-Examples are provided in the link:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-logging/src/main/java/com/google/cloud/spring/logging/extensions[extensions package].
+Examples are provided in the link:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-logging/src/main/java/com/google/cloud/spring/logging/extensions[extensions package].
 
-- link:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-logging/src/main/java/com/google/cloud/spring/logging/extensions/LogstashLoggingEventEnhancer.java[Logstash Enhancer]
+- link:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-logging/src/main/java/com/google/cloud/spring/logging/extensions/LogstashLoggingEventEnhancer.java[Logstash Enhancer]
 
 |=======================================================================
 
