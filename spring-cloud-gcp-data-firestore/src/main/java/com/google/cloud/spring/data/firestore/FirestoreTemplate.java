@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.cloud.Timestamp;
+import com.google.cloud.firestore.Internal;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntity;
@@ -87,8 +88,6 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	private int writeBufferSize = FIRESTORE_WRITE_MAX_SIZE;
 
-	private boolean usingStreamTokens = true;
-
 	/**
 	 * Constructor for FirestoreTemplate.
 	 * @param firestore Firestore gRPC stub
@@ -104,17 +103,6 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 		this.databasePath = Util.extractDatabasePath(parent);
 		this.classMapper = classMapper;
 		this.mappingContext = mappingContext;
-	}
-
-	@Override
-	public <T> FirestoreReactiveOperations withParent(T parent) {
-		FirestoreTemplate firestoreTemplate =
-						new FirestoreTemplate(this.firestore, buildResourceName(parent), this.classMapper, this.mappingContext);
-		firestoreTemplate.setUsingStreamTokens(this.usingStreamTokens);
-		firestoreTemplate.setWriteBufferSize(this.writeBufferSize);
-		firestoreTemplate.setWriteBufferTimeout(this.writeBufferTimeout);
-
-		return firestoreTemplate;
 	}
 
 	/**
@@ -145,25 +133,6 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	public int getWriteBufferSize() {
 		return this.writeBufferSize;
-	}
-
-	/**
-	 * Sets whether the {@link FirestoreTemplate} should attach stream resume tokens to write
-	 * requests.
-	 *
-	 * <p>Note that this should always be set to true unless you are using the
-	 * Firestore emulator in which case it should be set to false because the emulator
-	 * does not support using resume tokens.
-	 *
-	 * @param usingStreamTokens whether the template should use stream tokens
-   * @since 1.2.3
-	 */
-	public void setUsingStreamTokens(boolean usingStreamTokens) {
-		this.usingStreamTokens = usingStreamTokens;
-	}
-
-	public boolean isUsingStreamTokens() {
-		return usingStreamTokens;
 	}
 
 	@Override
@@ -277,6 +246,25 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 		return Flux.defer(() ->
 				findAllDocuments(entityType, null, builder)
 				.map(document -> getClassMapper().documentToEntity(document, entityType)));
+	}
+
+	@Override
+	public FirestoreReactiveOperations withParent(Object id, Class<?> entityClass) {
+		return withParent(buildResourceName(id, entityClass));
+	}
+
+	@Override
+	public <T> FirestoreReactiveOperations withParent(T parent) {
+		return withParent(buildResourceName(parent));
+	}
+
+	private FirestoreReactiveOperations withParent(String resourceName) {
+		FirestoreTemplate firestoreTemplate =
+				new FirestoreTemplate(this.firestore, resourceName, this.classMapper, this.mappingContext);
+		firestoreTemplate.setWriteBufferSize(this.writeBufferSize);
+		firestoreTemplate.setWriteBufferTimeout(this.writeBufferTimeout);
+
+		return firestoreTemplate;
 	}
 
 	public FirestoreMappingContext getMappingContext() {
@@ -411,14 +399,29 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 		return builder.setUpdate(document).build();
 	}
 
+	private <T> String buildResourceName(Object entityId, Class<T> entityClass) {
+		FirestorePersistentEntity<?> persistentEntity =
+				this.mappingContext.getPersistentEntity(entityClass);
+
+		if (persistentEntity == null) {
+			throw new IllegalArgumentException(entityClass.toString() + " is not a valid Firestore entity class.");
+		}
+
+		return buildResourceName(persistentEntity, entityId.toString());
+	}
+
 	private <T> String buildResourceName(T entity) {
 		FirestorePersistentEntity<?> persistentEntity =
 				this.mappingContext.getPersistentEntity(entity.getClass());
+
+		if (persistentEntity == null) {
+			throw new IllegalArgumentException(entity.getClass().toString() + " is not a valid Firestore entity class.");
+		}
+
 		FirestorePersistentProperty idProperty = persistentEntity.getIdPropertyOrFail();
 		Object idVal = persistentEntity.getPropertyAccessor(entity).getProperty(idProperty);
 		if (idVal == null) {
-			//TODO: replace with com.google.cloud.firestore.Internal.autoId() when it is available
-			idVal = AutoId.autoId();
+			idVal = Internal.autoId();
 			persistentEntity.getPropertyAccessor(entity).setProperty(idProperty, idVal);
 		}
 		return buildResourceName(persistentEntity, idVal.toString());

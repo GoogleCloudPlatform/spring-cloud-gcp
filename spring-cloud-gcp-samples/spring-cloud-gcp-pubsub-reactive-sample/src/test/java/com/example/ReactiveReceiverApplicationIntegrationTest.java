@@ -17,28 +17,22 @@
 package com.example;
 
 import java.io.UnsupportedEncodingException;
-import java.time.Duration;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.test.web.reactive.server.FluxExchangeResult;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
 
@@ -59,7 +53,7 @@ public class ReactiveReceiverApplicationIntegrationTest {
 	private int port;
 
 	@Autowired
-	private TestRestTemplate testRestTemplate;
+	private WebTestClient webTestClient;
 
 	@Autowired
 	private PubSubTemplate pubSubTemplate;
@@ -77,33 +71,27 @@ public class ReactiveReceiverApplicationIntegrationTest {
 				pubSubTemplate.pullAndAck("exampleSubscription", 1000, true).size() +
 				" old messages");
 
-		String messagePostingUrl = UriComponentsBuilder.newInstance()
-			.scheme("http")
-			.host("localhost")
-			.port(this.port)
-			.path("/postMessage")
-			.toUriString();
+		webTestClient.post()
+				.uri(uriBuilder -> uriBuilder
+						.path("/postMessage")
+						.queryParam("message", "reactive test msg")
+						.queryParam("count", (ReactiveController.MAX_RESPONSE_ITEMS + 10) + "")
+						.build())
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.exchange();
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add("message", "reactive test msg");
-		map.add("count", "2");
-
-		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
-
-		testRestTemplate.postForObject(messagePostingUrl, request, String.class);
-
-		List<String> streamedMessages = WebClient.create("http://localhost:" + this.port).get()
-			.uri("/getmessages")
+		FluxExchangeResult<String> result = webTestClient.get()
+			.uri("/getMessages")
 			.accept(MediaType.TEXT_EVENT_STREAM)
-			.retrieve()
-			.bodyToFlux(String.class)
-			.limitRequest(2)
-			.collectList().block(Duration.ofSeconds(20));
+			.exchange()
+			.returnResult(String.class);
 
-		assertThat(streamedMessages).containsExactlyInAnyOrder("reactive test msg 0", "reactive test msg 1");
+		AtomicInteger i = new AtomicInteger(0);
+		StepVerifier.create(result.getResponseBody())
+				.expectNextCount(ReactiveController.MAX_RESPONSE_ITEMS)
+				.thenConsumeWhile(s -> s.startsWith("reactive test msg " + i.getAndIncrement()))
+			.thenCancel()
+			.verify();
 	}
 
 }
