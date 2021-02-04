@@ -281,10 +281,4 @@ public class StackdriverJsonLayout extends JsonLayout {
 
 		add(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE, this.includeTraceId, traceId, map);
 	}
-
-	static class EnhancedLoggingEventException extends RuntimeException {
-		EnhancedLoggingEventException(Throwable cause) {
-			super(cause);
-		}
-	}
 }
