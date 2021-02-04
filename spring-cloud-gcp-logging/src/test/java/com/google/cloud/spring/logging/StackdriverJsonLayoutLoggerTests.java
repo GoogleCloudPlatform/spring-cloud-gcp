@@ -212,7 +212,7 @@ public class StackdriverJsonLayoutLoggerTests {
 				.stream()
 				.filter(s -> s.getLevel() == Status.ERROR)
 				.map(s -> s.getThrowable().getCause())
-				.filter(t -> t instanceof EnhancedLoggingEventException)
+				.filter(t -> t instanceof IllegalArgumentException)
 				.findFirst()
 		).isPresent();
 
