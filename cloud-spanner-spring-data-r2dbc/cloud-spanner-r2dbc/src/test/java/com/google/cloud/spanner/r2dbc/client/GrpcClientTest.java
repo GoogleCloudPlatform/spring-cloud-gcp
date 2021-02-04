@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.rpc.StatusCode.Code;
-import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.r2dbc.StatementExecutionContext;
 import com.google.protobuf.ByteString;
 import com.google.rpc.Status;
@@ -158,17 +158,16 @@ public class GrpcClientTest {
   }
 
   @Test
-  public void testHostPortConfig()
-      throws IOException {
+  public void testHostPortConfig() {
     assertEquals("spanner.googleapis.com:443",
-        new GrpcClient(GoogleCredentials.getApplicationDefault()).getSpanner().getChannel()
+        new GrpcClient(NoCredentials.getInstance()).getSpanner().getChannel()
             .authority());
   }
 
   @Test
   public void testUserAgentConfig()
-      throws IOException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
-    GrpcClient grpcClient = new GrpcClient(GoogleCredentials.getApplicationDefault());
+      throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+    GrpcClient grpcClient = new GrpcClient(NoCredentials.getInstance());
     Channel channel = grpcClient.getSpanner().getChannel();
     Class innerChannelWrapperClass = Class.forName("io.grpc.internal.ForwardingManagedChannel");
     Class channelImplClass = Class.forName("io.grpc.internal.ManagedChannelImpl");

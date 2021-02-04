@@ -19,6 +19,7 @@ package com.google.cloud.spanner.r2dbc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.spanner.v1.Session;
 import java.io.IOException;
@@ -44,6 +45,7 @@ public class SpannerConnectionFactoryTest {
         .setProjectId("a-project")
         .setInstanceName("an-instance")
         .setDatabaseName("db")
+        .setCredentials(NoCredentials.getInstance())
         .build();
   }
 

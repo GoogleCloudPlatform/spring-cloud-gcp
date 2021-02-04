@@ -294,16 +294,8 @@
         </configuration>
         <executions>
           <execution>
-            <id>failsafe-integration-tests</id>
-            <phase>test</phase>
             <goals>
               <goal>integration-test</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>failsafe-verify</id>
-            <phase>verify</phase>
-            <goals>
               <goal>verify</goal>
             </goals>
           </execution>

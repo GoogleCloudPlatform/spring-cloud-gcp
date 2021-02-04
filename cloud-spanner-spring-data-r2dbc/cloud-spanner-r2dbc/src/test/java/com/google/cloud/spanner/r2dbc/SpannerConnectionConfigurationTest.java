@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.NoCredentials;
 import java.time.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,7 @@ public class SpannerConnectionConfigurationTest {
           new SpannerConnectionConfiguration.Builder()
               .setProjectId("project1")
               .setDatabaseName("db")
+              .setCredentials(NoCredentials.getInstance())
               .build();
         })
         .isInstanceOf(IllegalArgumentException.class)
@@ -63,6 +65,7 @@ public class SpannerConnectionConfigurationTest {
           new SpannerConnectionConfiguration.Builder()
               .setProjectId("project1")
               .setInstanceName("an-instance")
+              .setCredentials(NoCredentials.getInstance())
               .build();
         })
         .isInstanceOf(IllegalArgumentException.class)
@@ -76,6 +79,7 @@ public class SpannerConnectionConfigurationTest {
           new SpannerConnectionConfiguration.Builder()
               .setInstanceName("an-instance")
               .setDatabaseName("db")
+              .setCredentials(NoCredentials.getInstance())
               .build();
         })
         .isInstanceOf(IllegalArgumentException.class)

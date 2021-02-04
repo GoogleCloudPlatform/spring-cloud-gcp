@@ -27,6 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Struct;
@@ -71,6 +72,7 @@ public class SpannerConnectionTest {
           .setInstanceName("test-instance")
           .setProjectId("project")
           .setDatabaseName("db")
+          .setCredentials(NoCredentials.getInstance())
           .build();
 
   private static final TransactionOptions READ_WRITE_TRANSACTION =

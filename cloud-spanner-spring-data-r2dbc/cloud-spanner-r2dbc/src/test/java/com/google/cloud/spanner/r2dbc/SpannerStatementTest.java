@@ -26,6 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.longrunning.Operation;
 import com.google.protobuf.ByteString;
@@ -63,6 +64,7 @@ public class SpannerStatementTest {
           .setInstanceName("test-instance")
           .setProjectId("project")
           .setDatabaseName("db")
+          .setCredentials(NoCredentials.getInstance())
           .build();
 
   private final Value a1 = Value.newBuilder().setBoolValue(false).build();
