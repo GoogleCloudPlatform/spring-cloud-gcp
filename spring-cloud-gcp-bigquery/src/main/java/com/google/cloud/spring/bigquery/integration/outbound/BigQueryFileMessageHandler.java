@@ -209,8 +209,9 @@ public class BigQueryFileMessageHandler extends AbstractReplyProducingMessageHan
 		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
+			throw new MessageHandlingException(
+					message, "Failed to wait for BigQuery Job (interrupted) in message handler: " + this, e);
 		}
-		return null;
 	}
 
 	private static InputStream convertToInputStream(Object payload) throws IOException {
