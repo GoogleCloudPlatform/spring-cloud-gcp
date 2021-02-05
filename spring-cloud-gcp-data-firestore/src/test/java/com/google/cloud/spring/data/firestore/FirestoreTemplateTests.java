@@ -96,8 +96,8 @@ public class FirestoreTemplateTests {
 
 		StepVerifier.create(
 				this.firestoreTemplate
-						.saveAll(Flux.just(new TestEntity("e1", 100L), new TestEntity("e2", 200L))))
-				.expectNext(new TestEntity("e1", 100L), new TestEntity("e2", 200L))
+						.saveAll(Flux.just(new TestEntity(null, 100L), new TestEntity(null, 200L))))
+				.expectNext(new TestEntity(null, 100L), new TestEntity(null, 200L))
 				.verifyComplete();
 
 		CommitRequest.Builder builder = CommitRequest.newBuilder()
@@ -575,6 +575,15 @@ public class FirestoreTemplateTests {
 		@Override
 		public int hashCode() {
 			return Objects.hash(getIdField(), getLongField());
+		}
+
+		@Override
+		public String toString() {
+			return "TestEntity{" +
+							"idField='" + idField + '\'' +
+							", longField=" + longField +
+							", updateTimestamp=" + updateTimestamp +
+							'}';
 		}
 	}
 
