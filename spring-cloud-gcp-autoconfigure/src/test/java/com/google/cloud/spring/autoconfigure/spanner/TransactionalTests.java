@@ -23,7 +23,6 @@ import com.google.cloud.spanner.AbortedException;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
-import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import io.grpc.Status;
 import org.junit.jupiter.api.Test;
 
@@ -32,8 +31,6 @@ import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.annotation.Id;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +55,7 @@ public class TransactionalTests {
 	public void testTestRepositoryCreated() {
 		this.contextRunner.run((context) -> {
 
-			BasicRepository repo = context.getBean(BasicRepository.class);
+			TestRepository repo = context.getBean(TestRepository.class);
 			assertThat(repo).isNotNull();
 
 			TestConfig.TransactionalService service = context.getBean(TestConfig.TransactionalService.class);
@@ -95,7 +92,7 @@ public class TransactionalTests {
 
 		static class TransactionalService {
 			@Autowired
-			BasicRepository spannerRepository;
+			TestRepository spannerRepository;
 
 			@Transactional
 			public void transactionalSave() {
@@ -113,15 +110,3 @@ public class TransactionalTests {
 
 }
 
-
-@Repository
-interface BasicRepository extends SpannerRepository<Data, String> {
-
-}
-
-class Data {
-	@Id
-	String id;
-
-	Integer num;
-}
