@@ -122,7 +122,7 @@ try (OutputStream os = ((WritableResource) gcsResource).getOutputStream()) {
 <p>To work with the <code>Resource</code> as a Google Cloud Storage resource, cast it to <code>GoogleStorageResource</code>.</p>
 </div>
 <div class="paragraph">
-<p>If the resource path refers to an object on Google Cloud Storage (as opposed to a bucket), then the <code>getBlob</code> method can be called to obtain a <a href="https://github.com/GoogleCloudPlatform/google-cloud-java/blob/master/google-cloud-storage/src/main/java/com/google/cloud/storage/Blob.java"><code>Blob</code></a>.
+<p>If the resource path refers to an object on Google Cloud Storage (as opposed to a bucket), then the <code>getBlob</code> method can be called to obtain a <a href="https://github.com/GoogleCloudPlatform/google-cloud-java/blob/main/google-cloud-storage/src/main/java/com/google/cloud/storage/Blob.java"><code>Blob</code></a>.
 This type represents a GCS file, which has associated <a href="https://cloud.google.com/storage/docs/gsutil/addlhelp/WorkingWithObjectMetadata">metadata</a>, such as content-type, that can be set.
 The <code>createSignedUrl</code> method can also be used to obtain <a href="https://cloud.google.com/storage/docs/access-control/signed-urls">signed URLs</a> for GCS objects.
 However, creating signed URLs requires that the resource was created using service account credentials.</p>
@@ -197,7 +197,7 @@ However, creating signed URLs requires that the resource was created using servi
 <div class="sect2">
 <h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
 <div class="paragraph">
-<p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-storage-resource-sample">sample application</a> and a <a href="https://codelabs.developers.google.com/codelabs/spring-cloud-gcp-gcs/index.html">codelab</a> are available.</p>
+<p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-storage-resource-sample">sample application</a> and a <a href="https://codelabs.developers.google.com/codelabs/spring-cloud-gcp-gcs/index.html">codelab</a> are available.</p>
 </div>
 </div>
 </div>

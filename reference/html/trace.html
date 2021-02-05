@@ -84,7 +84,7 @@ Navigate to the <a href="https://console.cloud.google.com/apis/api/cloudtrace.go
 <h3 id="_tracing"><a class="link" href="#_tracing">Tracing</a></h3>
 <div class="paragraph">
 <p>Spring Cloud Sleuth uses the <a href="https://github.com/openzipkin/brave">Brave tracer</a> to generate traces.
-This integration enables Brave to use the <a href="https://github.com/openzipkin/zipkin-gcp/tree/master/propagation-stackdriver"><code>StackdriverTracePropagation</code></a> propagation.</p>
+This integration enables Brave to use the <a href="https://github.com/openzipkin/zipkin-gcp/tree/main/propagation-stackdriver"><code>StackdriverTracePropagation</code></a> propagation.</p>
 </div>
 <div class="paragraph">
 <p>A propagation is responsible for extracting trace context from an entity (e.g., an HTTP servlet request) and injecting trace context into an entity.
@@ -123,7 +123,7 @@ This field forces the decision of whether or not to trace the request; if omitte
 <div class="sect2">
 <h3 id="_spring_boot_starter_for_cloud_trace"><a class="link" href="#_spring_boot_starter_for_cloud_trace">Spring Boot Starter for Cloud Trace</a></h3>
 <div class="paragraph">
-<p>Spring Boot Starter for Cloud Trace uses Spring Cloud Sleuth and auto-configures a <a href="https://github.com/openzipkin/zipkin-gcp/blob/master/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java">StackdriverSender</a> that sends the Sleuth’s trace information to Cloud Trace.</p>
+<p>Spring Boot Starter for Cloud Trace uses Spring Cloud Sleuth and auto-configures a <a href="https://github.com/openzipkin/zipkin-gcp/blob/main/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java">StackdriverSender</a> that sends the Sleuth’s trace information to Cloud Trace.</p>
 </div>
 <div class="paragraph">
 <p>All configurations are optional:</p>
@@ -210,7 +210,7 @@ This field forces the decision of whether or not to trace the request; if omitte
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.wait-for-ready</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/grpc/grpc/blob/master/doc/wait-for-ready.md">Waits for the channel to be ready</a> in case of a transient failure</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/grpc/grpc/blob/main/doc/wait-for-ready.md">Waits for the channel to be ready</a> in case of a transient failure</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
@@ -327,7 +327,7 @@ The trace logs can be viewed by going to the <a href="https://console.cloud.goog
 <div class="sect2">
 <h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
 <div class="paragraph">
-<p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/master/spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample">sample application</a> and a <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-cloud-gcp-trace/index.html">codelab</a> are available.</p>
+<p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample">sample application</a> and a <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-cloud-gcp-trace/index.html">codelab</a> are available.</p>
 </div>
 </div>
 </div>
