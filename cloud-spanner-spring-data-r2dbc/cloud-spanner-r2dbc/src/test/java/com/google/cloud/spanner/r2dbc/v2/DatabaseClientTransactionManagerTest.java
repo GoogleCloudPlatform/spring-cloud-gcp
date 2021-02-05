@@ -16,6 +16,7 @@
 
 package com.google.cloud.spanner.r2dbc.v2;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -26,7 +27,11 @@ import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.ReadOnlyTransaction;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.r2dbc.TransactionInProgressException;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.concurrent.Executors;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +42,20 @@ public class DatabaseClientTransactionManagerTest {
   AsyncTransactionManager mockClientLibraryTransactionManager;
   TransactionContextFuture mockTransactionFuture;
   ReadOnlyTransaction mockReadOnlyTransaction;
+
+  private static PrintStream systemErr;
+  private static ByteArrayOutputStream redirectedOutput = new ByteArrayOutputStream();
+
+  @BeforeAll
+  public static void redirectOutput() {
+    systemErr = System.out;
+    System.setErr(new PrintStream(redirectedOutput));
+  }
+
+  @AfterAll
+  public static void restoreOutput() {
+    System.setErr(systemErr);
+  }
 
   /** Sets up mocks. */
   @BeforeEach
@@ -56,6 +75,7 @@ public class DatabaseClientTransactionManagerTest {
     this.transactionManager =
         new DatabaseClientTransactionManager(
             this.mockDbClient, Executors.newSingleThreadExecutor());
+
   }
 
   @Test
@@ -96,5 +116,13 @@ public class DatabaseClientTransactionManagerTest {
         this.transactionManager.beginTransaction()
     ).isInstanceOf(TransactionInProgressException.class)
         .hasMessage(TransactionInProgressException.MSG_READWRITE);
+  }
+
+  @Test
+  public void testCommitWithNoStatementsLogsWarning() {
+    this.transactionManager.beginTransaction();
+    this.transactionManager.commitTransaction();
+    assertThat(redirectedOutput.toString())
+        .contains("Read/Write transaction committing without any statements.");
   }
 }

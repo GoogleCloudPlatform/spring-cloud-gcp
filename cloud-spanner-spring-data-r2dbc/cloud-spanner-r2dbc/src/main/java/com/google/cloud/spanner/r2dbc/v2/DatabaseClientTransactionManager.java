@@ -121,6 +121,7 @@ class DatabaseClientTransactionManager {
     if (isInReadWriteTransaction()) {
       if (this.lastStep == null) {
         LOGGER.warn("Read/Write transaction committing without any statements.");
+        return ApiFutures.immediateFuture(null);
       }
       return this.lastStep.commitAsync();
 
