@@ -419,7 +419,7 @@ public class PartTreeDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 
 		private boolean isCountingQuery;
 
-		private Builder<?> structuredQueryBuilder;
+		private Builder structuredQueryBuilder;
 
 		private boolean singularResult;
 
@@ -451,7 +451,7 @@ public class PartTreeDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 			return isCountingQuery;
 		}
 
-		Builder<?> getQueryBuilder() {
+		Builder getQueryBuilder() {
 			return structuredQueryBuilder;
 		}
 

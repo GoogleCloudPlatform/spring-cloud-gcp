@@ -307,7 +307,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 	}
 
 	@Override
-	public <T> DatastoreResultsIterable<?> queryKeysOrEntities(Query query, Class<T> entityClass) {
+	public <T> DatastoreResultsIterable<Object> queryKeysOrEntities(Query query, Class<T> entityClass) {
 		QueryResults results = getDatastoreReadWriter().run(query);
 		DatastoreResultsIterable resultsIterable;
 		if (results.getResultClass() == Key.class) {
