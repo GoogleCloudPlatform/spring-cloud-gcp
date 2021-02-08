@@ -411,7 +411,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 		if (queryOptions.getCursor() != null) {
 			builder.setStartCursor(queryOptions.getCursor());
 		}
-		if (queryOptions.getSort() != null && persistentEntity != null) {
+		if (queryOptions.getSort() != null) {
 			queryOptions.getSort().stream()
 					.map((order) -> createOrderBy(persistentEntity, order))
 					.forEachOrdered((orderBy) -> builder.addOrderBy(orderBy));
