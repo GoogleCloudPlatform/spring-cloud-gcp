@@ -68,7 +68,8 @@ public class MapBuilderTests {
 	@Test
 	public void mapWithDuplicateKeysThrowsException() {
 		MapBuilder<String, String> mb = new MapBuilder<>();
-		assertThatThrownBy(() -> mb.put("b", "beta").put("b", "vita"))
+		mb.put("b", "beta");
+		assertThatThrownBy(() -> mb.put("b", "vita"))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("Duplicate keys not allowed.");
 	}
