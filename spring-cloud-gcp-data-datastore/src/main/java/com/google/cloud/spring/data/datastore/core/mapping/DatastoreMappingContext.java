@@ -115,4 +115,14 @@ public class DatastoreMappingContext extends
 		return new DatastorePersistentPropertyImpl(property, owner, simpleTypeHolder,
 				this.fieldNamingStrategy);
 	}
+
+	@Override
+	public DatastorePersistentEntity<?> getPersistentEntity(Class<?> type) {
+		DatastorePersistentEntity<?> result = super.getPersistentEntity(type);
+		if (result != null) {
+			return result;
+		} else {
+			throw new IllegalArgumentException("Cannot create Datastore persistent entity from: " + type);
+		}
+	}
 }
