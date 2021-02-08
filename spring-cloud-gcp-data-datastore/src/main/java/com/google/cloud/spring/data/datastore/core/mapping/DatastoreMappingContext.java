@@ -121,7 +121,8 @@ public class DatastoreMappingContext extends
 		DatastorePersistentEntity<?> result = super.getPersistentEntity(type);
 		if (result != null) {
 			return result;
-		} else {
+		}
+		else {
 			throw new IllegalArgumentException("Cannot create Datastore persistent entity from: " + type);
 		}
 	}
