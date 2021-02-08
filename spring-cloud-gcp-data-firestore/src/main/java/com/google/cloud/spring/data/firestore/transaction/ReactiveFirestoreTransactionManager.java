@@ -201,11 +201,11 @@ public class ReactiveFirestoreTransactionManager extends AbstractReactiveTransac
 		}
 
 		/**
-		 * Not supported in Firestore.
+		 * Does nothing - not supported in Firestore.
 		 */
 		@Override
 		public void flush() {
-
+			// Not supported in Firestore.
 		}
 	}
 }
