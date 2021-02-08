@@ -69,8 +69,9 @@ public class BigQueryFileMessageHandlerTests {
 		Object result = messageHandler.handleRequestMessage(message);
 
 		verify(bigQueryTemplate).writeDataToTable("testTable", payload, FormatOptions.csv(), Schema.of());
-		assertThat(result).isNotNull();
-		assertThat(result).isInstanceOf(ListenableFuture.class);
+		assertThat(result)
+				.isNotNull()
+				.isInstanceOf(ListenableFuture.class);
 	}
 
 	@Test
@@ -87,7 +88,8 @@ public class BigQueryFileMessageHandlerTests {
 		Object result = messageHandler.handleRequestMessage(message);
 
 		verify(bigQueryTemplate).writeDataToTable("testTable", payload, FormatOptions.csv(), Schema.of());
-		assertThat(result).isNotNull();
-		assertThat(result).isInstanceOf(Job.class);
+		assertThat(result)
+				.isNotNull()
+				.isInstanceOf(Job.class);
 	}
 }
