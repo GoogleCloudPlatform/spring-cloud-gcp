@@ -14,6 +14,10 @@
   <name>Google Cloud Spanner R2DBC Sample Applications</name>
   <packaging>pom</packaging>
 
+  <properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
+
   <modules>
     <module>cloud-spanner-r2dbc-sample</module>
     <module>cloud-spanner-spring-data-r2dbc-sample</module>
