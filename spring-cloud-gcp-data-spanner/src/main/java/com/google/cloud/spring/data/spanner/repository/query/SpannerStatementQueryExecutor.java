@@ -67,13 +67,13 @@ import org.springframework.data.repository.query.parser.PartTree;
  */
 public final class SpannerStatementQueryExecutor {
 
-	public static final String LIMIT = " LIMIT ";
+	private static final String LIMIT = " LIMIT ";
 
-	public static final String WHERE = " WHERE ";
+	private static final String WHERE = " WHERE ";
 
-	public static final String AND = " AND ";
+	private static final String AND = " AND ";
 
-	public static final String LOWER_LHS = "LOWER(";
+	private static final String LOWER_LHS = "LOWER(";
 
 	private SpannerStatementQueryExecutor() {
 	}
