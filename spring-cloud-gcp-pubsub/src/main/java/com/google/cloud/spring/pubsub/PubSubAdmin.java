@@ -72,7 +72,6 @@ public class PubSubAdmin implements AutoCloseable {
 	 */
 	public PubSubAdmin(GcpProjectIdProvider projectIdProvider,
 			CredentialsProvider credentialsProvider) throws PubSubException {
-		SubscriptionAdminClient subscriptionClient;
 		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
 		this.projectId = projectIdProvider.getProjectId();
 		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
