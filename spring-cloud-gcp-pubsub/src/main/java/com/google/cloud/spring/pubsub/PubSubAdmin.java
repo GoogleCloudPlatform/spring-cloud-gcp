@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.pubsub;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +28,7 @@ import com.google.cloud.pubsub.v1.SubscriptionAdminSettings;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.cloud.spring.pubsub.support.PubSubTopicUtils;
 import com.google.pubsub.v1.ProjectName;
@@ -68,22 +68,35 @@ public class PubSubAdmin implements AutoCloseable {
 	 * defaults and the provided credentials provider.
 	 * @param projectIdProvider the project id provider to use
 	 * @param credentialsProvider the credentials provider to use
-	 * @throws IOException thrown when there are errors in contacting Google Cloud Pub/Sub
+	 * @throws PubSubException thrown when there are errors in contacting Google Cloud Pub/Sub
 	 */
 	public PubSubAdmin(GcpProjectIdProvider projectIdProvider,
-			CredentialsProvider credentialsProvider) throws IOException {
-		try (
-				TopicAdminClient topicClient = TopicAdminClient.create(
-						TopicAdminSettings.newBuilder()
-								.setCredentialsProvider(credentialsProvider)
-								.build());
-				SubscriptionAdminClient subscriptionClient = SubscriptionAdminClient.create(
-						SubscriptionAdminSettings.newBuilder()
-								.setCredentialsProvider(credentialsProvider)
-								.build());
-		) {
-			build(projectIdProvider, topicClient, subscriptionClient);
+			CredentialsProvider credentialsProvider) throws PubSubException {
+		TopicAdminClient topicClient;
+		SubscriptionAdminClient subscriptionClient;
+
+		try {
+			topicClient = TopicAdminClient.create(
+					TopicAdminSettings.newBuilder()
+							.setCredentialsProvider(credentialsProvider)
+							.build());
 		}
+		catch (Exception ex) {
+			throw new PubSubException("Failed to create TopicAdminClient", ex);
+		}
+
+		try {
+			subscriptionClient = SubscriptionAdminClient.create(
+					SubscriptionAdminSettings.newBuilder()
+							.setCredentialsProvider(credentialsProvider)
+							.build());
+		}
+		catch (Exception ex) {
+			topicClient.close();
+			throw new PubSubException("Failed to create SubscriptionAdminClient", ex);
+		}
+
+		build(projectIdProvider, topicClient, subscriptionClient);
 	}
 
 	public PubSubAdmin(GcpProjectIdProvider projectIdProvider, TopicAdminClient topicAdminClient,
