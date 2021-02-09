@@ -54,11 +54,11 @@ public class PubSubAdmin implements AutoCloseable {
 
 	private static final String NO_TOPIC_SPECIFIED = "No topic name was specified.";
 
-	private String projectId;
+	private final String projectId;
 
-	private TopicAdminClient topicAdminClient;
+	private final TopicAdminClient topicAdminClient;
 
-	private SubscriptionAdminClient subscriptionAdminClient;
+	private final SubscriptionAdminClient subscriptionAdminClient;
 
 	/** Default inspired in the subscription creation web UI. */
 	private int defaultAckDeadline = MIN_ACK_DEADLINE_SECONDS;
@@ -72,11 +72,13 @@ public class PubSubAdmin implements AutoCloseable {
 	 */
 	public PubSubAdmin(GcpProjectIdProvider projectIdProvider,
 			CredentialsProvider credentialsProvider) throws PubSubException {
-		TopicAdminClient topicClient;
 		SubscriptionAdminClient subscriptionClient;
+		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
+		this.projectId = projectIdProvider.getProjectId();
+		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
 
 		try {
-			topicClient = TopicAdminClient.create(
+			this.topicAdminClient  = TopicAdminClient.create(
 					TopicAdminSettings.newBuilder()
 							.setCredentialsProvider(credentialsProvider)
 							.build());
@@ -86,25 +88,18 @@ public class PubSubAdmin implements AutoCloseable {
 		}
 
 		try {
-			subscriptionClient = SubscriptionAdminClient.create(
+			this.subscriptionAdminClient = SubscriptionAdminClient.create(
 					SubscriptionAdminSettings.newBuilder()
 							.setCredentialsProvider(credentialsProvider)
 							.build());
 		}
 		catch (Exception ex) {
-			topicClient.close();
+			this.topicAdminClient.close();
 			throw new PubSubException("Failed to create SubscriptionAdminClient", ex);
 		}
-
-		build(projectIdProvider, topicClient, subscriptionClient);
 	}
 
 	public PubSubAdmin(GcpProjectIdProvider projectIdProvider, TopicAdminClient topicAdminClient,
-			SubscriptionAdminClient subscriptionAdminClient) {
-		build(projectIdProvider, topicAdminClient, subscriptionAdminClient);
-	}
-
-	private void build(GcpProjectIdProvider projectIdProvider, TopicAdminClient topicAdminClient,
 			SubscriptionAdminClient subscriptionAdminClient) {
 		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
 		Assert.notNull(topicAdminClient, "The topic administration client can't be null");
