@@ -26,11 +26,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.mapping.context.AbstractMappingContext;
+import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 import org.springframework.data.util.TypeInformation;
+import org.springframework.lang.NonNull;
 
 /**
  * A mapping context for Datastore that provides ways to create persistent entities and
@@ -116,14 +118,21 @@ public class DatastoreMappingContext extends
 				this.fieldNamingStrategy);
 	}
 
-	@Override
-	public DatastorePersistentEntity<?> getPersistentEntity(Class<?> type) {
-		DatastorePersistentEntity<?> result = super.getPersistentEntity(type);
-		if (result != null) {
-			return result;
+	/**
+	 * A non-null version of the {@link MappingContext#getPersistentEntity(Class)}.
+	 * @param entityClass the entity type.
+	 * @throws DatastoreDataException if unable to retrieve a DatastorePersistentEntity for the provided type.
+	 * @return the {@link DatastorePersistentEntity} for the provided type.
+	 */
+	@NonNull
+	public DatastorePersistentEntity<?> getDatastorePersistentEntity(Class<?> entityClass) {
+		DatastorePersistentEntity<?> persistentEntity = this.getPersistentEntity(entityClass);
+		if (persistentEntity != null) {
+			return persistentEntity;
 		}
 		else {
-			throw new IllegalArgumentException("Cannot create Datastore persistent entity from: " + type);
+			throw new DatastoreDataException("Unable to find a DatastorePersistentEntity for: " + entityClass);
 		}
 	}
+
 }

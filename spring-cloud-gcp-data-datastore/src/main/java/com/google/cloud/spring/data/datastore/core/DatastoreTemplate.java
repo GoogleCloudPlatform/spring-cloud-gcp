@@ -484,8 +484,9 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 		if (!order.getNullHandling().equals(Sort.NullHandling.NATIVE)) {
 			throw new DatastoreDataException("Datastore supports only NullHandling.NATIVE null handling");
 		}
-		return new StructuredQuery.OrderBy(
-				persistentEntity.getPersistentProperty(order.getProperty()).getFieldName(),
+		DatastorePersistentProperty persistentProperty = persistentEntity.getPersistentProperty(order.getProperty());
+		Assert.notNull(persistentProperty, "Sort property '" + order.getProperty() + "' must exist in entity '" + persistentEntity.getName() + "'.");
+		return new StructuredQuery.OrderBy(persistentProperty.getFieldName(),
 				(order.getDirection() == Sort.Direction.DESC)
 						? StructuredQuery.OrderBy.Direction.DESCENDING
 						: StructuredQuery.OrderBy.Direction.ASCENDING);
@@ -911,11 +912,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
 	@NonNull
 	private <T> DatastorePersistentEntity<?> getPersistentEntity(Class<T> entityClass) {
-		try  {
-			return this.datastoreMappingContext.getPersistentEntity(entityClass);
-		} catch (NullPointerException ex) {
-			throw new DatastoreDataException("Unable to find a DatastorePersistentEntity for: " + entityClass, ex);
-		}
+		return this.datastoreMappingContext.getDatastorePersistentEntity(entityClass);
 	}
 
 	void setMaxWriteSize(int maxWriteSize) {

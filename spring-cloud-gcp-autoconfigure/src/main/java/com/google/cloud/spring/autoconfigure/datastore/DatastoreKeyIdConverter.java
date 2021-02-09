@@ -68,7 +68,8 @@ public class DatastoreKeyIdConverter implements BackendIdConverter {
 		// default converter from Spring Data to be used.
 		try {
 			return this.datastoreMappingContext.getPersistentEntity(entityType).getIdProperty().getType().equals(Key.class);
-		} catch (NullPointerException ex) {
+		}
+		catch (NullPointerException ex) {
 			return false;
 		}
 	}

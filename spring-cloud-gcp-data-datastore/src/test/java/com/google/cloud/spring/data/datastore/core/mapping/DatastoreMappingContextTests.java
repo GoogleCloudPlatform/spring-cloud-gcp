@@ -65,8 +65,9 @@ public class DatastoreMappingContextTests {
 				DatastorePersistentEntityImpl.class);
 		DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
 
-		assertThatThrownBy(() -> context.getPersistentEntity(Integer.class))
-				.isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> context.getDatastorePersistentEntity(Integer.class))
+				.isInstanceOf(DatastoreDataException.class)
+				.hasMessage("Unable to find a DatastorePersistentEntity for: class java.lang.Integer");
 	}
 
 	private DatastoreMappingContext createDatastoreMappingContextWith(
