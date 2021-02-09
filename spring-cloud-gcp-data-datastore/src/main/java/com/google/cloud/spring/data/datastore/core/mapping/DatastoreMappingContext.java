@@ -125,7 +125,7 @@ public class DatastoreMappingContext extends
 	 * @return the {@link DatastorePersistentEntity} for the provided type.
 	 */
 	@NonNull
-	public DatastorePersistentEntity<?> getDatastorePersistentEntity(Class<?> entityClass) {
+	public DatastorePersistentEntity getDatastorePersistentEntity(Class<?> entityClass) {
 		DatastorePersistentEntity<?> persistentEntity = this.getPersistentEntity(entityClass);
 		if (persistentEntity != null) {
 			return persistentEntity;
