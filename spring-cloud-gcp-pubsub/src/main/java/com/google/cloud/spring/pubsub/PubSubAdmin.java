@@ -73,16 +73,16 @@ public class PubSubAdmin implements AutoCloseable {
 	public PubSubAdmin(GcpProjectIdProvider projectIdProvider,
 			CredentialsProvider credentialsProvider) throws IOException {
 		try (
-				TopicAdminClient topicAdminClient = TopicAdminClient.create(
+				TopicAdminClient topicClient = TopicAdminClient.create(
 						TopicAdminSettings.newBuilder()
 								.setCredentialsProvider(credentialsProvider)
 								.build());
-				SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create(
+				SubscriptionAdminClient subscriptionClient = SubscriptionAdminClient.create(
 						SubscriptionAdminSettings.newBuilder()
 								.setCredentialsProvider(credentialsProvider)
 								.build());
 		) {
-			build(projectIdProvider, topicAdminClient, subscriptionAdminClient);
+			build(projectIdProvider, topicClient, subscriptionClient);
 		}
 	}
 
