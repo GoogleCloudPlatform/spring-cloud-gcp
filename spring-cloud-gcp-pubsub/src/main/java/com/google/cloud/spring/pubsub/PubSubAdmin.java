@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,11 +54,11 @@ public class PubSubAdmin implements AutoCloseable {
 
 	private static final String NO_TOPIC_SPECIFIED = "No topic name was specified.";
 
-	private final String projectId;
+	private String projectId;
 
-	private final TopicAdminClient topicAdminClient;
+	private TopicAdminClient topicAdminClient;
 
-	private final SubscriptionAdminClient subscriptionAdminClient;
+	private SubscriptionAdminClient subscriptionAdminClient;
 
 	/** Default inspired in the subscription creation web UI. */
 	private int defaultAckDeadline = MIN_ACK_DEADLINE_SECONDS;
@@ -72,18 +72,26 @@ public class PubSubAdmin implements AutoCloseable {
 	 */
 	public PubSubAdmin(GcpProjectIdProvider projectIdProvider,
 			CredentialsProvider credentialsProvider) throws IOException {
-		this(projectIdProvider,
-				TopicAdminClient.create(
+		try (
+				TopicAdminClient topicAdminClient = TopicAdminClient.create(
 						TopicAdminSettings.newBuilder()
 								.setCredentialsProvider(credentialsProvider)
-								.build()),
-				SubscriptionAdminClient.create(
+								.build());
+				SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create(
 						SubscriptionAdminSettings.newBuilder()
-						.setCredentialsProvider(credentialsProvider)
-						.build()));
+								.setCredentialsProvider(credentialsProvider)
+								.build());
+		) {
+			build(projectIdProvider, topicAdminClient, subscriptionAdminClient);
+		}
 	}
 
 	public PubSubAdmin(GcpProjectIdProvider projectIdProvider, TopicAdminClient topicAdminClient,
+			SubscriptionAdminClient subscriptionAdminClient) {
+		build(projectIdProvider, topicAdminClient, subscriptionAdminClient);
+	}
+
+	private void build(GcpProjectIdProvider projectIdProvider, TopicAdminClient topicAdminClient,
 			SubscriptionAdminClient subscriptionAdminClient) {
 		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
 		Assert.notNull(topicAdminClient, "The topic administration client can't be null");
