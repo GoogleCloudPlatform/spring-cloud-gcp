@@ -26,6 +26,7 @@ import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.springframework.integration.expression.ValueExpression;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
@@ -79,7 +80,7 @@ public class BigQueryFileMessageHandlerTests {
 		messageHandler.setTableName("testTable");
 		messageHandler.setFormatOptions(FormatOptions.csv());
 		messageHandler.setSync(true);
-		messageHandler.setTableSchema(Schema.of());
+		messageHandler.setTableSchemaExpression(new ValueExpression<>(Schema.of()));
 
 		InputStream payload = mock(InputStream.class);
 		Message<?> message = MessageBuilder.createMessage(
