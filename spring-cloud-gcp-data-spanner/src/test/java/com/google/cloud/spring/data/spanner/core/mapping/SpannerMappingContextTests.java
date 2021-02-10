@@ -28,7 +28,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -68,7 +67,7 @@ public class SpannerMappingContextTests {
 
 		context.createPersistentEntity(ClassTypeInformation.from(Object.class));
 
-		verify(mockEntity, times(1)).setApplicationContext(eq(applicationContext));
+		verify(mockEntity, times(1)).setApplicationContext(applicationContext);
 	}
 
 
