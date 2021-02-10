@@ -172,10 +172,7 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 		Assert.notNull(key, "A non-null key is required.");
 
 		SpannerPersistentEntity<?> persistentEntity =
-				this.mappingContext.getPersistentEntity(entityClass);
-		Assert.notNull(persistentEntity,
-				"The provided entity class cannot be converted to a Spanner Entity class: "
-						+ entityClass);
+				this.mappingContext.getPersistentEntityOrFail(entityClass);
 
 		KeySet keys = KeySet.singleKey(key);
 
@@ -200,10 +197,7 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 	@Override
 	public <T> List<T> read(Class<T> entityClass, KeySet keys, SpannerReadOptions options) {
 		SpannerPersistentEntity<T> persistentEntity =
-				(SpannerPersistentEntity<T>) this.mappingContext.getPersistentEntity(entityClass);
-		Assert.notNull(persistentEntity,
-				"The provided entity class cannot be converted to a Spanner Entity class: "
-						+ entityClass);
+				(SpannerPersistentEntity<T>) this.mappingContext.getPersistentEntityOrFail(entityClass);
 
 		List<T> entities;
 		if (persistentEntity.hasEagerlyLoadedProperties() || persistentEntity.hasWhere()) {
@@ -272,10 +266,7 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 	@Override
 	public <T> List<T> queryAll(Class<T> entityClass,
 			SpannerPageableQueryOptions options) {
-		SpannerPersistentEntity<?> entity = this.mappingContext.getPersistentEntity(entityClass);
-		Assert.notNull(entity,
-				"The provided entity class cannot be converted to a Spanner Entity class: "
-						+ entityClass);
+		SpannerPersistentEntity<?> entity = this.mappingContext.getPersistentEntityOrFail(entityClass);
 
 		String sql = "SELECT " + SpannerStatementQueryExecutor.getColumnsStringForSelect(
 				entity, this.mappingContext, true)
@@ -394,11 +385,8 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 
 	@Override
 	public <T> long count(Class<T> entityClass) {
-		SpannerPersistentEntity<?> persistentEntity = this.mappingContext
-				.getPersistentEntity(entityClass);
-		Assert.notNull(persistentEntity,
-				"The provided entity class cannot be converted to a Spanner Entity class: "
-						+ entityClass);
+		SpannerPersistentEntity<?> persistentEntity =
+				this.mappingContext.getPersistentEntityOrFail(entityClass);
 
 		Statement statement = Statement.of(
 				String.format("SELECT COUNT(*) FROM %s", persistentEntity.tableName()));
@@ -592,11 +580,8 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 	}
 
 	private void resolveChildEntity(Object entity, Set<String> includeProperties) {
-		SpannerPersistentEntity<?> spannerPersistentEntity = this.mappingContext
-				.getPersistentEntity(entity.getClass());
-		Assert.notNull(spannerPersistentEntity,
-				"The provided entity class cannot be converted to a Spanner Entity class: "
-						+ entity.getClass());
+		SpannerPersistentEntity<?> spannerPersistentEntity =
+				this.mappingContext.getPersistentEntityOrFail(entity.getClass());
 
 		PersistentPropertyAccessor<?> accessor = spannerPersistentEntity
 				.getPropertyAccessor(entity);

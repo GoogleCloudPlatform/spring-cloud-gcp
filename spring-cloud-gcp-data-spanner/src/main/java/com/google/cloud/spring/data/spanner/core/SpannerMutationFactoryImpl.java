@@ -93,9 +93,7 @@ public class SpannerMutationFactoryImpl implements SpannerMutationFactory {
 	@Override
 	public <T> Mutation delete(Class<T> entityClass, Iterable<? extends T> entities) {
 		SpannerPersistentEntity<?> persistentEntity =
-				this.spannerMappingContext.getPersistentEntity(entityClass);
-		Assert.notNull(persistentEntity,
-				"The provided entity class cannot be converted to a Spanner Entity class: " + entityClass);
+				this.spannerMappingContext.getPersistentEntityOrFail(entityClass);
 
 		KeySet.Builder builder = KeySet.newBuilder();
 		for (T entity : entities) {
@@ -117,10 +115,8 @@ public class SpannerMutationFactoryImpl implements SpannerMutationFactory {
 
 	@Override
 	public Mutation delete(Class entityClass, KeySet keys) {
-		SpannerPersistentEntity<?> persistentEntity = this.spannerMappingContext
-				.getPersistentEntity(entityClass);
-		Assert.notNull(persistentEntity,
-				"The provided entity class cannot be converted to a Spanner Entity class: " + entityClass);
+		SpannerPersistentEntity<?> persistentEntity =
+				this.spannerMappingContext.getPersistentEntityOrFail(entityClass);
 		return Mutation.delete(persistentEntity.tableName(), keys);
 	}
 
@@ -131,11 +127,8 @@ public class SpannerMutationFactoryImpl implements SpannerMutationFactory {
 
 	private List<Mutation> saveObject(Op op, Object object,
 			Set<String> includeProperties) {
-		SpannerPersistentEntity<?> persistentEntity = this.spannerMappingContext
-				.getPersistentEntity(object.getClass());
-		Assert.notNull(persistentEntity,
-				"The provided entity class cannot be converted to a Spanner Entity class: "
-						+ object.getClass());
+		SpannerPersistentEntity<?> persistentEntity =
+				this.spannerMappingContext.getPersistentEntityOrFail(object.getClass());
 
 		List<Mutation> mutations = new ArrayList<>();
 		Mutation.WriteBuilder writeBuilder = writeBuilder(op,
