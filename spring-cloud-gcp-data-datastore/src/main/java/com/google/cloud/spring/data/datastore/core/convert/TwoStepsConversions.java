@@ -163,7 +163,7 @@ public class TwoStepsConversions implements ReadWriteConversions {
 				else {
 					elements = StreamSupport
 							.stream(((Iterable<?>) val).spliterator(), false)
-							.map((v) -> {
+							.map(v -> {
 								Object o = (v instanceof Value) ? ((Value) v).get() : v;
 								return readConverter.apply(o, targetComponentType);
 							})

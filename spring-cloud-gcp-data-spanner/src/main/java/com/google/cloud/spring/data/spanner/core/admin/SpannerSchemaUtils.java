@@ -257,7 +257,7 @@ public class SpannerSchemaUtils {
 				false);
 	}
 
-	private String generateSingleStringDdl(Class type, String parent) {
+	private String generateSingleStringDdl(Class<?> type, String parent) {
 		StringBuilder ddlStr = new StringBuilder(getCreateTableDdlString(type));
 		if (parent != null) {
 			ddlStr.append(", INTERLEAVE IN PARENT ")
