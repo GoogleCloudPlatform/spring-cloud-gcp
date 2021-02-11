@@ -60,6 +60,9 @@ import reactor.test.StepVerifier;
  */
 public class SpannerClientLibraryTestKit implements TestKit<String> {
 
+  private static final String DISABLE_UNSUPPORTED_FUNCTIONALITY =
+      "Functionality not supported in Cloud Spanner";
+
   private static final ConnectionFactory connectionFactory =
       ConnectionFactories.get(
           ConnectionFactoryOptions.builder()
@@ -184,7 +187,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
     return jdbcOperations;
   }
 
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Override
   @Test
   public void transactionRollback() {
@@ -197,7 +200,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
      */
   }
 
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Override
   @Test
   public void bindFails() {
@@ -230,7 +233,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void returnGeneratedValues() {
     /*
@@ -239,7 +242,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void clobInsert() {
     /*
@@ -248,7 +251,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void blobInsert() {
     /*
@@ -257,7 +260,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void blobSelect() {
     /*
@@ -266,7 +269,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void clobSelect() {
     /*
@@ -275,7 +278,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void batch() {
     /*
@@ -284,7 +287,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void savePoint() {
     /*
@@ -293,7 +296,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void savePointStartsTransaction() {
     /*
@@ -302,7 +305,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void prepareStatementWithIncompleteBindingFails() {
     /*
@@ -311,7 +314,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void prepareStatementWithIncompleteBatchFails() {
     /*
@@ -361,7 +364,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void compoundStatement() {
     /*

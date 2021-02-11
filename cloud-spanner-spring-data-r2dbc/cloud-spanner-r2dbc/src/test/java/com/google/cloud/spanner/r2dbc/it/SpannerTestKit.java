@@ -62,6 +62,9 @@ import reactor.test.StepVerifier;
  */
 public class SpannerTestKit implements TestKit<String> {
 
+  private static final String DISABLE_UNSUPPORTED_FUNCTIONALITY =
+      "Functionality not supported in Cloud Spanner";
+
   private static final ConnectionFactory connectionFactory =
       ConnectionFactories.get(ConnectionFactoryOptions.builder()
           .option(Option.valueOf("project"), ServiceOptions.getDefaultProjectId())
@@ -185,7 +188,7 @@ public class SpannerTestKit implements TestKit<String> {
     return jdbcOperations;
   }
 
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Override
   @Test
   public void transactionRollback() {
@@ -198,7 +201,7 @@ public class SpannerTestKit implements TestKit<String> {
      */
   }
 
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Override
   @Test
   public void bindFails() {
@@ -264,7 +267,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void returnGeneratedValues() {
     /*
@@ -273,7 +276,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void clobInsert() {
     /*
@@ -291,7 +294,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void blobSelect() {
     /*
@@ -300,7 +303,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void clobSelect() {
     /*
@@ -309,7 +312,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void batch() {
     /*
@@ -318,7 +321,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void savePoint() {
     /*
@@ -327,7 +330,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void savePointStartsTransaction() {
     /*
@@ -336,7 +339,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void prepareStatementWithIncompleteBindingFails() {
     /*
@@ -345,7 +348,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void prepareStatementWithIncompleteBatchFails() {
     /*
@@ -354,7 +357,7 @@ public class SpannerTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled
+  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void compoundStatement() {
     /*
