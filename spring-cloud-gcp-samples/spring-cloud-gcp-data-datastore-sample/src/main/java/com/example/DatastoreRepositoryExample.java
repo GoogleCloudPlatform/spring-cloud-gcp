@@ -16,12 +16,9 @@
 
 package com.example;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,24 +57,30 @@ public class DatastoreRepositoryExample {
 			this.singerRepository.deleteAll();
 
 			this.singerRepository
-					.save(new Singer("singer1", "John", "Doe", new HashSet<Album>()));
+					.save(new Singer("singer1", "John", "e", new HashSet<Album>()));
+			this.singerRepository
+					.save(new Singer("singer2", "John", "f", new HashSet<Album>()));
+			this.singerRepository
+					.save(new Singer("singer3", "John", "g", new HashSet<Album>()));
+			this.singerRepository
+					.save(new Singer("singer9", "John", "a", new HashSet<Album>()));
+			this.singerRepository
+					.save(new Singer("singer4", "John", "h", new HashSet<Album>()));
+			this.singerRepository
+					.save(new Singer("singer5", "John", "i", new HashSet<Album>()));
+			this.singerRepository
+					.save(new Singer("singer6", "John", "j", new HashSet<Album>()));
+			this.singerRepository
+					.save(new Singer("singer7", "John", "k", new HashSet<Album>()));
+			this.singerRepository
+					.save(new Singer("singer8", "John", "l", new HashSet<Album>()));
 
-			Singer janeDoe = new Singer("singer2", "Jane", "Doe",
-					new TreeSet<>(Arrays.asList(
-							new Album("a", LocalDate.of(2012, Month.JANUARY, 20)),
-							new Album("b", LocalDate.of(2018, Month.FEBRUARY, 12)))));
-			Singer richardRoe = new Singer("singer3", "Richard", "Roe",
-					new HashSet<>(Arrays.asList(new Album("c", LocalDate.of(2000, Month.AUGUST, 31)))));
-
-			this.singerRepository.saveAll(Arrays.asList(janeDoe, richardRoe));
-
-			createRelationshipsInTransaction(janeDoe, richardRoe);
 
 			// The following line uses count(), which is a global-query in Datastore. This
 			// has only eventual consistency.
 			Thread.sleep(3000);
 
-			retrieveAndPrintSingers();
+			System.out.println(this.singerRepository.findFirstByFirstNameOrderByLastNameAsc("John"));
 
 			System.out.println("This concludes the sample.");
 

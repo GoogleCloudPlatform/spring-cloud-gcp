@@ -17,6 +17,7 @@
 package com.example;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.query.Query;
@@ -39,4 +40,6 @@ public interface SingerRepository extends DatastoreRepository<Singer, String> {
 	List<Singer> findSingersByFirstBand(@Param("band") Band band);
 
 	List<Singer> findByFirstBand(Band band);
+
+	Optional<Singer> findFirstByFirstNameOrderByLastNameAsc(String firstName);
 }
