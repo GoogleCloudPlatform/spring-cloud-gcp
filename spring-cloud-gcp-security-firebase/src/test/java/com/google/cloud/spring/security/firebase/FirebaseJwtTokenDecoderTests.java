@@ -92,12 +92,7 @@ public class FirebaseJwtTokenDecoderTests {
 
 	@Test
 	public void signedTokenTests() throws Exception {
-		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("one").build();
-		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-				.subject("test-subject")
-				.expirationTime(Date.from(Instant.now().plusSeconds(60)))
-				.build();
-		String signedJWT = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
+		String signedJWT = signedJwt();
 		OAuth2TokenValidator validator = mock(OAuth2TokenValidator.class);
 		when(validator.validate(any())).thenReturn(OAuth2TokenValidatorResult.success());
 		FirebaseJwtTokenDecoder decoder = new FirebaseJwtTokenDecoder(mockRestOperations(), "https://spring.local", validator);
@@ -106,12 +101,7 @@ public class FirebaseJwtTokenDecoderTests {
 
 	@Test
 	public void refreshFlowTests()  throws Exception {
-		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("one").build();
-		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-				.subject("test-subject")
-				.expirationTime(Date.from(Instant.now().plusSeconds(60)))
-				.build();
-		String signedJWT = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
+		String signedJWT = signedJwt();
 		OAuth2TokenValidator validator = mock(OAuth2TokenValidator.class);
 		when(validator.validate(any())).thenReturn(OAuth2TokenValidatorResult.success());
 		RestOperations operations = mockRestOperations();
@@ -143,12 +133,7 @@ public class FirebaseJwtTokenDecoderTests {
 
 	@Test
 	public void connectionErrorTests() throws Exception {
-		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("one").build();
-		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-				.subject("test-subject")
-				.expirationTime(Date.from(Instant.now().plusSeconds(60)))
-				.build();
-		String signedJWT = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
+		String signedJWT = signedJwt();
 		OAuth2TokenValidator validator = mock(OAuth2TokenValidator.class);
 		when(validator.validate(any())).thenReturn(OAuth2TokenValidatorResult.success());
 		RestOperations operations = mock(RestOperations.class);
@@ -164,12 +149,7 @@ public class FirebaseJwtTokenDecoderTests {
 
 	@Test
 	public void invalidResponses_nullBody() throws Exception {
-		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("one").build();
-		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-				.subject("test-subject")
-				.expirationTime(Date.from(Instant.now().plusSeconds(60)))
-				.build();
-		String signedJWT = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
+		String signedJWT = signedJwt();
 
 		Map<String, String> payload = null;
 		RestOperations operations = mockRestOperations(payload);
@@ -184,12 +164,7 @@ public class FirebaseJwtTokenDecoderTests {
 
 	@Test
 	public void invalidResponses_emptyBody() throws Exception {
-		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("one").build();
-		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-				.subject("test-subject")
-				.expirationTime(Date.from(Instant.now().plusSeconds(60)))
-				.build();
-		String signedJWT = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
+		String signedJWT = signedJwt();
 
 		Map<String, String> payload = new HashMap<>();
 		RestOperations operations = mockRestOperations(payload);
@@ -358,6 +333,15 @@ public class FirebaseJwtTokenDecoderTests {
 				eq(new ParameterizedTypeReference<Map<String, String>>() { })))
 				.thenReturn(response);
 		return mock;
+	}
+
+	private String signedJwt() throws Exception {
+		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("one").build();
+		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+				.subject("test-subject")
+				.expirationTime(Date.from(Instant.now().plusSeconds(60)))
+				.build();
+		return signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
 	}
 
 	private String signedJwt(PrivateKey privateKey, JWSHeader header, JWTClaimsSet claimsSet) throws Exception {
