@@ -113,18 +113,17 @@ public class FirebaseJwtTokenDecoder implements JwtDecoder {
 			if (body.isEmpty()) {
 				throw new JwtException("Invalid response body (empty) received from remote endpoint.");
 			}
-			for (String key : body.keySet()) {
+			for (Map.Entry<String, String> e : body.entrySet()) {
 				try {
-					String val = body.get(key);
 					NimbusJwtDecoder nimbusJwtDecoder = NimbusJwtDecoder.withPublicKey(
-							(RSAPublicKey) convertToX509Cert(val).getPublicKey())
+							(RSAPublicKey) convertToX509Cert(e.getValue()).getPublicKey())
 							.signatureAlgorithm(SignatureAlgorithm.from("RS256"))
 							.build();
 					nimbusJwtDecoder.setJwtValidator(tokenValidator);
-					delegates.put(key, nimbusJwtDecoder);
+					delegates.put(e.getKey(), nimbusJwtDecoder);
 				}
 				catch (Exception ce) {
-					logger.error("Could not read certificate for key {}", key);
+					logger.error("Could not read certificate for key {}", e.getKey());
 				}
 			}
 		}
