@@ -34,10 +34,10 @@ import io.r2dbc.spi.R2dbcTransientResourceException;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
-public class SpannerExceptionUtilTest {
+class SpannerExceptionUtilTest {
 
   @Test
-  public void testCreateR2dbcException() {
+  void testCreateR2dbcException() {
     R2dbcException exception = SpannerExceptionUtil.createR2dbcException(
         Code.ALREADY_EXISTS_VALUE, "test");
 
@@ -46,7 +46,7 @@ public class SpannerExceptionUtilTest {
   }
 
   @Test
-  public void testNonRetryableException() {
+  void testNonRetryableException() {
     assertThat(createR2dbcException(new IllegalArgumentException()))
         .isInstanceOf(R2dbcNonTransientResourceException.class);
     assertThat(createR2dbcException((new IOException())))
@@ -59,7 +59,7 @@ public class SpannerExceptionUtilTest {
   }
 
   @Test
-  public void testRetryableInternalException() {
+  void testRetryableInternalException() {
     StatusRuntimeException retryableException =
         new StatusRuntimeException(
             Status.INTERNAL.withDescription("HTTP/2 error code: INTERNAL_ERROR"), null);
@@ -69,7 +69,7 @@ public class SpannerExceptionUtilTest {
   }
 
   @Test
-  public void testRetryableExceptionWithDelay() {
+  void testRetryableExceptionWithDelay() {
     RetryInfo retryInfo =
         RetryInfo.newBuilder()
             .setRetryDelay(Duration.newBuilder().setSeconds(22L))

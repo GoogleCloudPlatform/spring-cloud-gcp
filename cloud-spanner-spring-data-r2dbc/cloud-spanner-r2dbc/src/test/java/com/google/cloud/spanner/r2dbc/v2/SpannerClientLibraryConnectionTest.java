@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-public class SpannerClientLibraryConnectionTest {
+class SpannerClientLibraryConnectionTest {
 
   SpannerConnectionConfiguration mockConfig;
   DatabaseClientReactiveAdapter mockAdapter;
@@ -44,7 +44,7 @@ public class SpannerClientLibraryConnectionTest {
   }
 
   @Test
-  public void beginReadonlyTransactionUsesStrongConsistencyByDefault() {
+  void beginReadonlyTransactionUsesStrongConsistencyByDefault() {
 
     when(this.mockAdapter.beginReadonlyTransaction(any())).thenReturn(Mono.empty());
 

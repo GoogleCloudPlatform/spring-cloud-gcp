@@ -33,7 +33,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Test for {@link DefaultCodecs}.
  */
-public class DefaultCodecsTest {
+class DefaultCodecsTest {
 
   private Codecs codecs = new DefaultCodecs();
 

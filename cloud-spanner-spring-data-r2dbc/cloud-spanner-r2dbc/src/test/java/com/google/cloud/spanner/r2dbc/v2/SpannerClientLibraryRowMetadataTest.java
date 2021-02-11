@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Test for {@link SpannerClientLibraryRowMetadata}.
  */
-public class SpannerClientLibraryRowMetadataTest {
+class SpannerClientLibraryRowMetadataTest {
 
   @Test
-  public void testHandleMissingColumn() {
+  void testHandleMissingColumn() {
     SpannerClientLibraryRowMetadata metadata =
         new SpannerClientLibraryRowMetadata(Collections.emptyList());
 
@@ -45,7 +45,7 @@ public class SpannerClientLibraryRowMetadataTest {
   }
 
   @Test
-  public void testHandleOutOfBoundsIndex() {
+  void testHandleOutOfBoundsIndex() {
     SpannerClientLibraryRowMetadata metadata =
         new SpannerClientLibraryRowMetadata(Collections.emptyList());
 
@@ -54,7 +54,7 @@ public class SpannerClientLibraryRowMetadataTest {
   }
 
   @Test
-  public void testEmptyResultSetMetadata() {
+  void testEmptyResultSetMetadata() {
     SpannerClientLibraryRowMetadata metadata =
         new SpannerClientLibraryRowMetadata(Collections.emptyList());
 
@@ -63,7 +63,7 @@ public class SpannerClientLibraryRowMetadataTest {
   }
 
   @Test
-  public void testSpannerRowMetadataRetrieval() {
+  void testSpannerRowMetadataRetrieval() {
 
     List<StructField> structFields =
         buildResultSetMetadata(Type.int64(), Type.string(), Type.bool());
@@ -79,7 +79,7 @@ public class SpannerClientLibraryRowMetadataTest {
   }
 
   @Test
-  public void testSpannerRowMetadataCaseInsensitivity() {
+  void testSpannerRowMetadataCaseInsensitivity() {
     List<StructField> structFields =
         buildResultSetMetadata(Type.int64(), Type.string(), Type.bool());
 
@@ -95,7 +95,7 @@ public class SpannerClientLibraryRowMetadataTest {
   }
 
   @Test
-  public void getColumnNamesReturnsCorrectNamesWhenColumnsPresent() {
+  void getColumnNamesReturnsCorrectNamesWhenColumnsPresent() {
     SpannerClientLibraryRowMetadata metadata =
         new SpannerClientLibraryRowMetadata(
             buildResultSetMetadata(Type.int64(), Type.string(), Type.bool()));
@@ -104,7 +104,7 @@ public class SpannerClientLibraryRowMetadataTest {
   }
 
   @Test
-  public void getColumnNamesReturnsEmptyCollectionWhenNoColumns() {
+  void getColumnNamesReturnsEmptyCollectionWhenNoColumns() {
     SpannerRowMetadata metadata = new SpannerRowMetadata(ResultSetMetadata.getDefaultInstance());
 
     assertThat(metadata.getColumnNames()).isEmpty();

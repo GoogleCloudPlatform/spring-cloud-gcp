@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
 
-public class SpannerDdlIT {
+class SpannerDdlIT {
 
   private static final Logger logger = LoggerFactory.getLogger(SpannerDdlIT.class);
 
@@ -59,7 +59,7 @@ public class SpannerDdlIT {
   }
 
   @Test
-  public void testDdlErrorPropagation() {
+  void testDdlErrorPropagation() {
     assertThat(listTables()).doesNotContain("PRESIDENTS");
 
     assertThatThrownBy(() ->
@@ -71,7 +71,7 @@ public class SpannerDdlIT {
   }
 
   @Test
-  public void testCreateAndDrop() {
+  void testCreateAndDrop() {
     assertThat(listTables()).doesNotContain("PRESIDENTS");
 
     Mono.from(connectionFactory.create())

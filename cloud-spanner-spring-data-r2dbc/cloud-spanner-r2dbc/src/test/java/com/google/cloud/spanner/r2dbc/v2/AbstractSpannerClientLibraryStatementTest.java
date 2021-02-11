@@ -36,7 +36,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-public class AbstractSpannerClientLibraryStatementTest {
+class AbstractSpannerClientLibraryStatementTest {
 
   DatabaseClientReactiveAdapter mockAdapter;
 
@@ -51,7 +51,7 @@ public class AbstractSpannerClientLibraryStatementTest {
   }
 
   @Test
-  public void noParametersSendsSingleStatement() {
+  void noParametersSendsSingleStatement() {
     String query = "SELECT * FROM tbl";
     FakeStatement statement = new FakeStatement(this.mockAdapter, query);
 
@@ -68,7 +68,7 @@ public class AbstractSpannerClientLibraryStatementTest {
   }
 
   @Test
-  public void singleSetOfParametersWithNoAddSendsOneStatement() {
+  void singleSetOfParametersWithNoAddSendsOneStatement() {
     String query = "SELECT * FROM tbl WHERE col1=@one AND col2=@two AND col3=@three";
     FakeStatement statement = new FakeStatement(this.mockAdapter, query);
 
@@ -93,7 +93,7 @@ public class AbstractSpannerClientLibraryStatementTest {
   }
 
   @Test
-  public void singleSetOfParametersWithAddTriggersBatchWithOneStatement() {
+  void singleSetOfParametersWithAddTriggersBatchWithOneStatement() {
     String query = "SELECT * FROM tbl WHERE col1=@one AND col2=@two AND col3=@three";
     FakeStatement statement = new FakeStatement(this.mockAdapter, query);
 
@@ -121,7 +121,7 @@ public class AbstractSpannerClientLibraryStatementTest {
   }
 
   @Test
-  public void twoParameterSetsWithNoTrailingAddSendsTwoStatements() {
+  void twoParameterSetsWithNoTrailingAddSendsTwoStatements() {
     String query = "SELECT * FROM tbl WHERE col1=@one AND col2=@two AND col3=@three";
     FakeStatement statement = new FakeStatement(this.mockAdapter, query);
 
@@ -156,7 +156,7 @@ public class AbstractSpannerClientLibraryStatementTest {
   }
 
   @Test
-  public void twoParameterSetsWithTrailingAddSendsTwoStatements() {
+  void twoParameterSetsWithTrailingAddSendsTwoStatements() {
     String query = "SELECT * FROM tbl WHERE col1=@one AND col2=@two AND col3=@three";
     FakeStatement statement = new FakeStatement(this.mockAdapter, query);
 

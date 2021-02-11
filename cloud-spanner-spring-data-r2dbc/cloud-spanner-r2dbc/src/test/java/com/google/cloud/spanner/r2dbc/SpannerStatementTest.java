@@ -57,7 +57,7 @@ import reactor.test.StepVerifier;
 /**
  * Test for {@link SpannerStatement}.
  */
-public class SpannerStatementTest {
+class SpannerStatementTest {
 
   private static final SpannerConnectionConfiguration TEST_CONFIG =
       new SpannerConnectionConfiguration.Builder()
@@ -93,7 +93,7 @@ public class SpannerStatementTest {
   }
 
   @Test
-  public void executeDummyImplementation() {
+  void executeDummyImplementation() {
     String sql = "select book from library";
     PartialResultSet partialResultSet = PartialResultSet.newBuilder()
         .setMetadata(ResultSetMetadata.newBuilder().setRowType(StructType.newBuilder()
@@ -121,7 +121,7 @@ public class SpannerStatementTest {
   }
 
   @Test
-  public void executeDummyImplementationBind() {
+  void executeDummyImplementationBind() {
     //set up mock results
     PartialResultSet partialResultSet1 = PartialResultSet.newBuilder()
         .setMetadata(ResultSetMetadata.newBuilder().setRowType(StructType.newBuilder()
@@ -176,7 +176,7 @@ public class SpannerStatementTest {
   }
 
   @Test
-  public void readOneResultSetQueryTest() {
+  void readOneResultSetQueryTest() {
     PartialResultSet p1 = PartialResultSet.newBuilder().setMetadata(
         this.resultSetMetadata
     ).setChunkedValue(false)
@@ -202,7 +202,7 @@ public class SpannerStatementTest {
   }
 
   @Test
-  public void readMultiResultSetQueryTest() {
+  void readMultiResultSetQueryTest() {
     PartialResultSet p1 = PartialResultSet.newBuilder().setMetadata(
         this.resultSetMetadata
     ).setChunkedValue(false)
@@ -224,7 +224,7 @@ public class SpannerStatementTest {
   }
 
   @Test
-  public void readDmlQueryTest() {
+  void readDmlQueryTest() {
     ResultSet resultSet = ResultSet.newBuilder()
         .setStats(ResultSetStats.newBuilder().setRowCountExact(555).build())
         .build();
@@ -241,7 +241,7 @@ public class SpannerStatementTest {
   }
 
   @Test
-  public void batchDmlQueryWithinTransactionTest() {
+  void batchDmlQueryWithinTransactionTest() {
     batchDmlQueryTest(ByteString.copyFromUtf8("abc"), 0, 0);
   }
 
@@ -276,7 +276,7 @@ public class SpannerStatementTest {
   }
 
   @Test
-  public void batchDmlExceptionTest() {
+  void batchDmlExceptionTest() {
     assertThatThrownBy(() ->
         new SpannerBatch(this.mockClient, null)
         .add("select * from books"))
@@ -285,7 +285,7 @@ public class SpannerStatementTest {
   }
 
   @Test
-  public void runDdlQueryTest() {
+  void runDdlQueryTest() {
     when(this.mockClient.executeDdl(any(), any(), any(), any()))
         .thenReturn(Mono.just(Operation.getDefaultInstance()));
 
@@ -306,7 +306,7 @@ public class SpannerStatementTest {
   }
 
   @Test
-  public void noopMapOnUpdateQueriesWhenNoRowsAffected() {
+  void noopMapOnUpdateQueriesWhenNoRowsAffected() {
     String sql = "delete from Books where true";
 
     ResultSet resultSet = ResultSet.newBuilder()

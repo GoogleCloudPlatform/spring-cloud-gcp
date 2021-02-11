@@ -35,7 +35,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class DatabaseClientTransactionManagerTest {
+class DatabaseClientTransactionManagerTest {
 
   DatabaseClientTransactionManager transactionManager;
   DatabaseClient mockDbClient;
@@ -79,7 +79,7 @@ public class DatabaseClientTransactionManagerTest {
   }
 
   @Test
-  public void testReadonlyTransactionStartedWhileReadWriteInProgressFails() {
+  void testReadonlyTransactionStartedWhileReadWriteInProgressFails() {
 
     this.transactionManager.beginTransaction();
     assertThatThrownBy(() ->
@@ -89,7 +89,7 @@ public class DatabaseClientTransactionManagerTest {
   }
 
   @Test
-  public void testReadWriteTransactionStartedWhileReadonlyInProgressFails() {
+  void testReadWriteTransactionStartedWhileReadonlyInProgressFails() {
 
     this.transactionManager.beginReadonlyTransaction(TimestampBound.strong());
     assertThatThrownBy(() ->
@@ -99,7 +99,7 @@ public class DatabaseClientTransactionManagerTest {
   }
 
   @Test
-  public void testReadonlyTransactionStartedWhileReadonlyInProgressFails() {
+  void testReadonlyTransactionStartedWhileReadonlyInProgressFails() {
 
     this.transactionManager.beginReadonlyTransaction(TimestampBound.strong());
     assertThatThrownBy(() ->
@@ -109,7 +109,7 @@ public class DatabaseClientTransactionManagerTest {
   }
 
   @Test
-  public void testReadWriteTransactionStartedWhileReadwriteInProgressFails() {
+  void testReadWriteTransactionStartedWhileReadwriteInProgressFails() {
 
     this.transactionManager.beginTransaction();
     assertThatThrownBy(() ->
@@ -119,7 +119,7 @@ public class DatabaseClientTransactionManagerTest {
   }
 
   @Test
-  public void testCommitWithNoStatementsLogsWarning() {
+  void testCommitWithNoStatementsLogsWarning() {
     this.transactionManager.beginTransaction();
     this.transactionManager.commitTransaction();
     assertThat(redirectedOutput.toString())

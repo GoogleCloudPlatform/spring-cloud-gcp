@@ -135,7 +135,7 @@ class ClientLibraryTypeBindersTest {
   }
 
   @Test
-  public void integerBindsAsLong() {
+  void integerBindsAsLong() {
 
     ClientLibraryBinder.bind(this.statementBuilder, "a", 123);
     verify(this.valueBinder).to((Long) 123L);
@@ -143,7 +143,7 @@ class ClientLibraryTypeBindersTest {
   }
 
   @Test
-  public void integerNullBindsAsLong() {
+  void integerNullBindsAsLong() {
 
     ClientLibraryBinder.bind(this.statementBuilder, "b", new TypedNull(Integer.class));
     verify(this.valueBinder).to((Long) null);

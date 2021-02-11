@@ -68,7 +68,7 @@ import reactor.test.StepVerifier;
 /**
  * Integration test for connecting to a real Spanner instance.
  */
-public class SpannerIT {
+class SpannerIT {
 
   private static final ConnectionFactory connectionFactory =
       ConnectionFactories.get(ConnectionFactoryOptions.builder()
@@ -136,7 +136,7 @@ public class SpannerIT {
   }
 
   @Test
-  public void testLargeReadWrite() {
+  void testLargeReadWrite() {
     // string size must be below 10 MB
     int maxStringLength = 100000;
 
@@ -205,7 +205,7 @@ public class SpannerIT {
   }
 
   @Test
-  public void testSessionManagement() {
+  void testSessionManagement() {
     assertThat(this.connectionFactory).isInstanceOf(SpannerConnectionFactory.class);
 
     Mono<Connection> connection = (Mono<Connection>) this.connectionFactory.create();
@@ -222,7 +222,7 @@ public class SpannerIT {
   }
 
   @Test
-  public void testRunDmlAfterTransaction() {
+  void testRunDmlAfterTransaction() {
     SpannerConnection connection =
         Mono.from(this.connectionFactory.create())
             .cast(SpannerConnection.class)
@@ -252,7 +252,7 @@ public class SpannerIT {
   }
 
   @Test
-  public void testDmlExceptions() {
+  void testDmlExceptions() {
     StepVerifier.create(
         Mono.from(connectionFactory.create())
             .flatMapMany(conn -> conn.createStatement("INSERT BOOKS asdfasdfasdf").execute()))
@@ -261,7 +261,7 @@ public class SpannerIT {
   }
 
   @Test
-  public void testMultipleDmlExceptions() {
+  void testMultipleDmlExceptions() {
     StepVerifier.create(
         Mono.from(connectionFactory.create())
             .flatMapMany(conn ->
@@ -280,7 +280,7 @@ public class SpannerIT {
   }
 
   @Test
-  public void testDataIntegrityExceptions() {
+  void testDataIntegrityExceptions() {
     StepVerifier.create(
         Mono.from(connectionFactory.create())
             .flatMapMany(conn ->
@@ -298,7 +298,7 @@ public class SpannerIT {
 
 
   @Test
-  public void testSingleUseDml() {
+  void testSingleUseDml() {
     long count = executeReadQuery(
         connectionFactory,
         "Select count(1) as count FROM books",
@@ -348,7 +348,7 @@ public class SpannerIT {
   }
 
   @Test
-  public void testQuerying() {
+  void testQuerying() {
     long count = executeReadQuery(
         connectionFactory,
         "Select count(1) as count FROM books",
@@ -459,7 +459,7 @@ public class SpannerIT {
   }
 
   @Test
-  public void testNoopUpdate() {
+  void testNoopUpdate() {
     Result result = Mono.from(connectionFactory.create())
         .delayUntil(c -> c.beginTransaction())
         .flatMap(c -> Mono.from(c.createStatement(
@@ -477,7 +477,7 @@ public class SpannerIT {
   }
 
   @Test
-  public void testEmptySelect() {
+  void testEmptySelect() {
     List<String> results = executeReadQuery(
         connectionFactory,
         "SELECT title, author FROM books where author = 'Nobody P. Smith'",
@@ -487,7 +487,7 @@ public class SpannerIT {
   }
 
   @Test
-  public void testMultiTransactionType() {
+  void testMultiTransactionType() {
     Mono.from(this.connectionFactory.create())
         .delayUntil(c -> c.beginTransaction())
         .delayUntil(c -> Flux.from(c.createStatement(

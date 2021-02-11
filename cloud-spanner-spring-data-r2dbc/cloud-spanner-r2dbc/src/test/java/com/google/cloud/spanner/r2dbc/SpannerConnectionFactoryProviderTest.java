@@ -61,7 +61,7 @@ import reactor.test.publisher.TestPublisher;
 /**
  * Unit test for {@link SpannerConnectionFactoryProvider}.
  */
-public class SpannerConnectionFactoryProviderTest {
+class SpannerConnectionFactoryProviderTest {
 
   public static final ConnectionFactoryOptions SPANNER_OPTIONS =
       ConnectionFactoryOptions.builder()
@@ -97,7 +97,7 @@ public class SpannerConnectionFactoryProviderTest {
   }
 
   @Test
-  public void testCreate() {
+  void testCreate() {
     ConnectionFactory spannerConnectionFactory =
         this.spannerConnectionFactoryProvider.create(SPANNER_OPTIONS);
     assertThat(spannerConnectionFactory).isNotNull();
@@ -105,7 +105,7 @@ public class SpannerConnectionFactoryProviderTest {
   }
 
   @Test
-  public void testCreateFactoryWithUrl() {
+  void testCreateFactoryWithUrl() {
     ConnectionFactoryOptions optionsWithUrl =
         ConnectionFactoryOptions.builder()
             .option(DRIVER, DRIVER_NAME)
@@ -121,7 +121,7 @@ public class SpannerConnectionFactoryProviderTest {
   }
 
   @Test
-  public void testSupportsThrowsExceptionOnNullOptions() {
+  void testSupportsThrowsExceptionOnNullOptions() {
     assertThatThrownBy(() -> {
       this.spannerConnectionFactoryProvider.supports(null);
     }).isInstanceOf(IllegalArgumentException.class)
@@ -129,28 +129,28 @@ public class SpannerConnectionFactoryProviderTest {
   }
 
   @Test
-  public void testSupportsReturnsFalseWhenNoDriverInOptions() {
+  void testSupportsReturnsFalseWhenNoDriverInOptions() {
     assertFalse(this.spannerConnectionFactoryProvider.supports(
         ConnectionFactoryOptions.builder().build()));
   }
 
   @Test
-  public void testSupportsReturnsFalseWhenWrongDriverInOptions() {
+  void testSupportsReturnsFalseWhenWrongDriverInOptions() {
     assertFalse(this.spannerConnectionFactoryProvider.supports(buildOptions("not spanner")));
   }
 
   @Test
-  public void testSupportsReturnsTrueWhenCorrectDriverInOptions() {
+  void testSupportsReturnsTrueWhenCorrectDriverInOptions() {
     assertTrue(this.spannerConnectionFactoryProvider.supports(buildOptions("spanner")));
   }
 
   @Test
-  public void getDriverReturnsSpanner() {
+  void getDriverReturnsSpanner() {
     assertThat(this.spannerConnectionFactoryProvider.getDriver()).isEqualTo(DRIVER_NAME);
   }
 
   @Test
-  public void partialResultSetFetchSizePropagatesAsDemand() {
+  void partialResultSetFetchSizePropagatesAsDemand() {
     ConnectionFactoryOptions options =
         ConnectionFactoryOptions.builder()
             .option(PARTIAL_RESULT_SET_FETCH_SIZE, 4)
@@ -197,7 +197,7 @@ public class SpannerConnectionFactoryProviderTest {
   }
 
   @Test
-  public void testCreateFactoryWithClientLibraryClient() {
+  void testCreateFactoryWithClientLibraryClient() {
     SpannerConnectionFactoryProvider customSpannerConnectionFactoryProvider
         = new SpannerConnectionFactoryProvider();
 
@@ -219,7 +219,7 @@ public class SpannerConnectionFactoryProviderTest {
   }
 
   @Test
-  public void createFactoryFromUrlWithOauthCredentials() {
+  void createFactoryFromUrlWithOauthCredentials() {
 
     when(this.mockCredentialsHelper.getOauthCredentials(anyString()))
         .thenReturn(this.mockCredentials);
@@ -234,7 +234,7 @@ public class SpannerConnectionFactoryProviderTest {
   }
 
   @Test
-  public void createFactoryFromUrlWithGoogleCredentialsIncorrectType() {
+  void createFactoryFromUrlWithGoogleCredentialsIncorrectType() {
 
     ConnectionFactoryOptions options = ConnectionFactoryOptions.parse(
         "r2dbc:spanner://host:443/projects/p/instances/i/databases/d?google_credentials=ABC");
@@ -244,7 +244,7 @@ public class SpannerConnectionFactoryProviderTest {
   }
 
   @Test
-  public void createFactoryWithGoogleCredentialsRetainsThem() {
+  void createFactoryWithGoogleCredentialsRetainsThem() {
 
     ConnectionFactoryOptions options = ConnectionFactoryOptions.builder()
         .option(DATABASE, "projects/p/instances/i/databases/d")
@@ -260,7 +260,7 @@ public class SpannerConnectionFactoryProviderTest {
   }
 
   @Test
-  public void createFactoryWithFileCredentials() {
+  void createFactoryWithFileCredentials() {
 
     when(this.mockCredentialsHelper.getFileCredentials(anyString()))
         .thenReturn(this.mockCredentials);
@@ -276,7 +276,7 @@ public class SpannerConnectionFactoryProviderTest {
   }
 
   @Test
-  public void multipleAuthenticationMethodsDisallowed() {
+  void multipleAuthenticationMethodsDisallowed() {
     String prefix = "r2dbc:spanner://host:443/projects/p/instances/i/databases/d?";
 
     assertThatThrownBy(() -> this.spannerConnectionFactoryProvider.createConfiguration(
@@ -286,7 +286,7 @@ public class SpannerConnectionFactoryProviderTest {
   }
 
   @Test
-  public void multipleAuthenticationMethodsDisallowedProgrammatic() {
+  void multipleAuthenticationMethodsDisallowedProgrammatic() {
 
     ConnectionFactoryOptions options = ConnectionFactoryOptions.builder()
         .option(DATABASE, "projects/p/instances/i/databases/d")
@@ -301,7 +301,7 @@ public class SpannerConnectionFactoryProviderTest {
   }
 
   @Test
-  public void passOptimizerVersion() {
+  void passOptimizerVersion() {
     ConnectionFactoryOptions options = ConnectionFactoryOptions.builder()
         .option(DATABASE, "projects/p/instances/i/databases/d")
         .option(DRIVER, "spanner")

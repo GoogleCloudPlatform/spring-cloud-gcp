@@ -30,10 +30,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Test for {@link SpannerRowMetadata}.
  */
-public class SpannerRowMetadataTest {
+class SpannerRowMetadataTest {
 
   @Test
-  public void testHandleMissingColumn() {
+  void testHandleMissingColumn() {
     SpannerRowMetadata metadata = new SpannerRowMetadata(ResultSetMetadata.newBuilder().build());
     assertThatThrownBy(() -> metadata.getColumnMetadata("columnName"))
         .isInstanceOf(IllegalArgumentException.class)
@@ -41,21 +41,21 @@ public class SpannerRowMetadataTest {
   }
 
   @Test
-  public void testHandleOutOfBoundsIndex() {
+  void testHandleOutOfBoundsIndex() {
     SpannerRowMetadata metadata = new SpannerRowMetadata(ResultSetMetadata.newBuilder().build());
     assertThatThrownBy(() -> metadata.getColumnMetadata(4))
         .isInstanceOf(IndexOutOfBoundsException.class);
   }
 
   @Test
-  public void testEmptyResultSetMetadata() {
+  void testEmptyResultSetMetadata() {
     SpannerRowMetadata metadata = new SpannerRowMetadata(ResultSetMetadata.newBuilder().build());
     assertThat(metadata.getColumnMetadatas()).isEmpty();
     assertThat(metadata.getColumnNames()).isEmpty();
   }
 
   @Test
-  public void testSpannerRowMetadataRetrieval() {
+  void testSpannerRowMetadataRetrieval() {
     ResultSetMetadata resultSetMetadata = buildResultSetMetadata(
         TypeCode.INT64,
         TypeCode.STRING,
@@ -74,7 +74,7 @@ public class SpannerRowMetadataTest {
   }
 
   @Test
-  public void getColumnNamesReturnsCorrectNamesWhenColumnsPresent() {
+  void getColumnNamesReturnsCorrectNamesWhenColumnsPresent() {
     ResultSetMetadata resultSetMetadata
         = buildResultSetMetadata(TypeCode.INT64, TypeCode.STRING, TypeCode.BOOL);
     SpannerRowMetadata metadata = new SpannerRowMetadata(resultSetMetadata);
@@ -83,7 +83,7 @@ public class SpannerRowMetadataTest {
   }
 
   @Test
-  public void getColumnNamesReturnsEmptyCollectionWhenNoColumns() {
+  void getColumnNamesReturnsEmptyCollectionWhenNoColumns() {
     SpannerRowMetadata metadata = new SpannerRowMetadata(ResultSetMetadata.getDefaultInstance());
 
     assertThat(metadata.getColumnNames()).isEmpty();

@@ -25,7 +25,7 @@ import io.r2dbc.spi.Connection;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 
-public class SpannerClientLibraryConnectionFactoryTest {
+class SpannerClientLibraryConnectionFactoryTest {
 
   SpannerConnectionConfiguration.Builder configBuilder =
       new SpannerConnectionConfiguration.Builder()
@@ -35,7 +35,7 @@ public class SpannerClientLibraryConnectionFactoryTest {
         .setCredentials(NoCredentials.getInstance());
 
   @Test
-  public void testProjectId() {
+  void testProjectId() {
 
     SpannerConnectionConfiguration config = this.configBuilder
         .setProjectId("custom-project")
@@ -46,7 +46,7 @@ public class SpannerClientLibraryConnectionFactoryTest {
   }
 
   @Test
-  public void testUserAgentString() {
+  void testUserAgentString() {
 
     SpannerConnectionConfiguration config = this.configBuilder.build();
 
@@ -57,7 +57,7 @@ public class SpannerClientLibraryConnectionFactoryTest {
   }
 
   @Test
-  public void testSessionCreation() {
+  void testSessionCreation() {
     SpannerClientLibraryConnectionFactory cf =
         new SpannerClientLibraryConnectionFactory(this.configBuilder.build());
     Connection conn = Mono.from(cf.create()).block();

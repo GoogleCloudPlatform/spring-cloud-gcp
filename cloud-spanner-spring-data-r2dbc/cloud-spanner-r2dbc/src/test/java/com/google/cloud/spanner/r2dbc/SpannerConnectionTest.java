@@ -59,7 +59,7 @@ import reactor.test.publisher.PublisherProbe;
 /**
  * Test for {@link SpannerConnection}.
  */
-public class SpannerConnectionTest {
+class SpannerConnectionTest {
 
   static final String TEST_SESSION_NAME = "project/session/1234";
   static final Session TEST_SESSION =
@@ -108,7 +108,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void executeStatementReturnsWorkingStatementWithCorrectQuery() {
+  void executeStatementReturnsWorkingStatementWithCorrectQuery() {
     SpannerConnection connection
         = new SpannerConnection(this.mockClient, TEST_SESSION, TEST_CONFIG);
     String sql = "select book from library";
@@ -143,7 +143,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void executeDmlInTransactionStartingAfterCreationTest() {
+  void executeDmlInTransactionStartingAfterCreationTest() {
     SpannerConnection connection
         = new SpannerConnection(this.mockClient, TEST_SESSION, TEST_CONFIG);
     String sql = "insert into books values (title) @title";
@@ -160,7 +160,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void noopCommitTransactionWhenTransactionNotStarted() {
+  void noopCommitTransactionWhenTransactionNotStarted() {
     SpannerConnection connection =
         new SpannerConnection(this.mockClient, TEST_SESSION, TEST_CONFIG);
 
@@ -170,7 +170,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void beginAndCommitTransactions() {
+  void beginAndCommitTransactions() {
     SpannerConnection connection =
         new SpannerConnection(this.mockClient, TEST_SESSION, TEST_CONFIG);
 
@@ -197,7 +197,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void rollbackTransactions() {
+  void rollbackTransactions() {
     SpannerConnection connection =
         new SpannerConnection(this.mockClient, TEST_SESSION, TEST_CONFIG);
 
@@ -225,7 +225,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void testCustomTransactionType() {
+  void testCustomTransactionType() {
     SpannerConnection connection = new SpannerConnection(
         this.mockClient, TEST_SESSION, TEST_CONFIG);
 
@@ -244,20 +244,20 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void executionContextHasCorrectSessionName() {
+  void executionContextHasCorrectSessionName() {
     SpannerConnection connection = new SpannerConnection(
         this.mockClient, Session.newBuilder().setName("session-name").build(), null);
     assertThat(connection.getSessionName()).isEqualTo("session-name");
   }
 
   @Test
-  public void executionContextDoesNotHaveTransactionWhenInitialized() {
+  void executionContextDoesNotHaveTransactionWhenInitialized() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
     assertThat(connection.getTransactionId()).isNull();
   }
 
   @Test
-  public void executionContextHasCorrectTransactionIdWhenTransactionSet() {
+  void executionContextHasCorrectTransactionIdWhenTransactionSet() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
     ByteString transactionId = ByteString.copyFrom("transaction-id".getBytes());
 
@@ -274,7 +274,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void nextSeqNumIsSequential() {
+  void nextSeqNumIsSequential() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
     long prevNum = connection.nextSeqNum();
 
@@ -289,13 +289,13 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void autocommitOnByDefault() {
+  void autocommitOnByDefault() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
     assertThat(connection.isAutoCommit()).isTrue();
   }
 
   @Test
-  public void turningAutocommitOnIsNoopWhenAlreadyOn() {
+  void turningAutocommitOnIsNoopWhenAlreadyOn() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
     StepVerifier.create(connection.setAutoCommit(true))
         .verifyComplete();
@@ -304,7 +304,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void turningAutocommitOffIsNoopWhenAlreadyOff() {
+  void turningAutocommitOffIsNoopWhenAlreadyOff() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
     StepVerifier.create(
         Mono.from(connection.setAutoCommit(false))
@@ -316,7 +316,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void turningAutocommitOffWorksLocally() {
+  void turningAutocommitOffWorksLocally() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
     StepVerifier.create(connection.setAutoCommit(false))
         .verifyComplete();
@@ -325,7 +325,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void startingTransactionTurnsOffAutocommit() {
+  void startingTransactionTurnsOffAutocommit() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
     StepVerifier.create(
         Mono.from(connection.beginTransaction())
@@ -336,7 +336,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void turningAutocommitOnCommitsExistingTransaction() {
+  void turningAutocommitOnCommitsExistingTransaction() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
     StepVerifier.create(
         Mono.from(connection.setAutoCommit(false))
@@ -350,7 +350,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void turningAutocommitOnDoesNotAffectNonReadwriteTransaction() {
+  void turningAutocommitOnDoesNotAffectNonReadwriteTransaction() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
     TransactionOptions readonlyTransaction =
         TransactionOptions.newBuilder().setReadOnly(ReadOnly.getDefaultInstance()).build();
@@ -367,7 +367,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void localValidatePassesOnNewConnection() {
+  void localValidatePassesOnNewConnection() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
     StepVerifier.create(connection.validate(ValidationDepth.LOCAL))
         .expectNext(true)
@@ -376,7 +376,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void localValidateFailsOnClosedConnection() {
+  void localValidateFailsOnClosedConnection() {
     when(this.mockClient.commitTransaction(any(), any()))
         .thenReturn(Mono.just(CommitResponse.getDefaultInstance()));
     when(this.mockClient.deleteSession(any())).thenReturn(Mono.empty());
@@ -392,7 +392,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void remoteValidateCallsServerHealthcheck() {
+  void remoteValidateCallsServerHealthcheck() {
     when(this.mockClient.healthcheck(any())).thenReturn(Mono.just(true));
 
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
@@ -403,7 +403,7 @@ public class SpannerConnectionTest {
   }
 
   @Test
-  public void getConnectionMetadata() {
+  void getConnectionMetadata() {
     SpannerConnection connection = new SpannerConnection(this.mockClient, TEST_SESSION, null);
     assertThat(connection.getMetadata().getDatabaseProductName()).isEqualTo("Cloud Spanner");
     assertThat(connection.getMetadata().getDatabaseVersion()).isEqualTo("n/a");

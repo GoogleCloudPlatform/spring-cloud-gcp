@@ -26,10 +26,10 @@ import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
 import org.junit.jupiter.api.Test;
 
-public class StatementBindingsTest {
+class StatementBindingsTest {
 
   @Test
-  public void addBasicBinding() {
+  void addBasicBinding() {
     StatementBindings statementBindings = new StatementBindings();
     statementBindings.createBind("name", "John");
     statementBindings.createBind("age", 50);
@@ -56,7 +56,7 @@ public class StatementBindingsTest {
   }
 
   @Test
-  public void testNoopAddBinding() {
+  void testNoopAddBinding() {
     StatementBindings statementBindings = new StatementBindings();
     statementBindings.completeBinding();
     statementBindings.completeBinding();

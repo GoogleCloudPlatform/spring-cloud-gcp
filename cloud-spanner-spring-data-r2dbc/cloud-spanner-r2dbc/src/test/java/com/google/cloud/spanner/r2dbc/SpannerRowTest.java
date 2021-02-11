@@ -34,14 +34,14 @@ import org.junit.jupiter.api.Test;
 /**
  * Test for {@link SpannerRow}.
  */
-public class SpannerRowTest {
+class SpannerRowTest {
 
   private static final Codecs codecs = new DefaultCodecs();
   private final SpannerRowMetadata rowMetadata
       = new SpannerRowMetadata(ResultSetMetadata.getDefaultInstance());
 
   @Test
-  public void testOutOfBoundsIndex() {
+  void testOutOfBoundsIndex() {
     SpannerRow row = new SpannerRow(
         new ArrayList<>(), this.rowMetadata);
 
@@ -50,7 +50,7 @@ public class SpannerRowTest {
   }
 
   @Test
-  public void testInvalidColumnLabel() {
+  void testInvalidColumnLabel() {
     SpannerRow row = new SpannerRow(
         new ArrayList<>(), this.rowMetadata);
 
@@ -60,7 +60,7 @@ public class SpannerRowTest {
   }
 
   @Test
-  public void testIndexingIntoColumns() {
+  void testIndexingIntoColumns() {
     SpannerRowMetadata rowMetadata =
         createRowMetadata(TypeCode.STRING, TypeCode.INT64, TypeCode.BOOL);
     List<Value> rawSpannerRow = createRawSpannerRow("Hello", 25L, true);

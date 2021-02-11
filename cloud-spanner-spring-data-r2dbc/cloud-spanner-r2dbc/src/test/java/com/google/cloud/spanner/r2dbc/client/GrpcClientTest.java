@@ -58,7 +58,7 @@ import reactor.test.StepVerifier;
 /**
  * Test for {@link GrpcClient}.
  */
-public class GrpcClientTest {
+class GrpcClientTest {
 
   static String SESSION_NAME = "/session/1234";
 
@@ -77,7 +77,7 @@ public class GrpcClientTest {
   }
 
   @Test
-  public void testCreateSession() throws IOException {
+  void testCreateSession() throws IOException {
 
     SpannerImplBase spannerSpy = doTest(new SpannerImplBase() {
           @Override
@@ -99,7 +99,7 @@ public class GrpcClientTest {
   }
 
   @Test
-  public void testExecuteStreamingSql() throws IOException {
+  void testExecuteStreamingSql() throws IOException {
     ExecuteSqlRequest request = ExecuteSqlRequest.newBuilder().build();
 
     String sql = "select book from library";
@@ -125,7 +125,7 @@ public class GrpcClientTest {
 
 
   @Test
-  public void testBatchDmlErrorPropagation() throws IOException {
+  void testBatchDmlErrorPropagation() throws IOException {
     ResultSet expectedResultSet =
         ResultSet.newBuilder()
             .setStats(ResultSetStats.newBuilder().setRowCountExact(20))
@@ -158,14 +158,14 @@ public class GrpcClientTest {
   }
 
   @Test
-  public void testHostPortConfig() {
+  void testHostPortConfig() {
     assertEquals("spanner.googleapis.com:443",
         new GrpcClient(NoCredentials.getInstance()).getSpanner().getChannel()
             .authority());
   }
 
   @Test
-  public void testUserAgentConfig()
+  void testUserAgentConfig()
       throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
     GrpcClient grpcClient = new GrpcClient(NoCredentials.getInstance());
     Channel channel = grpcClient.getSpanner().getChannel();
@@ -182,7 +182,7 @@ public class GrpcClientTest {
   }
 
   @Test
-  public void testHealthcheck() throws IOException {
+  void testHealthcheck() throws IOException {
     String sql = "SELECT 1";
     SpannerImplBase spannerSpy = doTest(new SpannerImplBase() {
       @Override

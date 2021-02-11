@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Test for {@link SpannerConnectionFactoryMetadata}.
  */
-public class SpannerConnectionFactoryMetadataTest {
+class SpannerConnectionFactoryMetadataTest {
 
   @Test
-  public void getNameReturnsCorrectValue() {
+  void getNameReturnsCorrectValue() {
     assertThat(SpannerConnectionFactoryMetadata.INSTANCE.getName()).isEqualTo("Cloud Spanner");
   }
 

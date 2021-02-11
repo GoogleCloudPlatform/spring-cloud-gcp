@@ -45,7 +45,7 @@ import reactor.test.StepVerifier;
  * `testdb` database. This can be configured by overriding the `spanner.instance` and
  * `spanner.database` system properties.
  */
-public class SpannerR2dbcDialectIT {
+class SpannerR2dbcDialectIT {
 
   private static final Logger logger = LoggerFactory.getLogger(SpannerR2dbcDialectIT.class);
 
@@ -94,7 +94,7 @@ public class SpannerR2dbcDialectIT {
   }
 
   @Test
-  public void testReadWrite() {
+  void testReadWrite() {
     insertPresident(new President("Bill Clinton", 1992));
 
     this.databaseClient.select()
@@ -109,7 +109,7 @@ public class SpannerR2dbcDialectIT {
   }
 
   @Test
-  public void testLimitOffsetSupport() {
+  void testLimitOffsetSupport() {
     insertPresident(new President("Bill Clinton", 1992));
     insertPresident(new President("Joe Smith", 1996));
     insertPresident(new President("Bob", 2000));
@@ -130,7 +130,7 @@ public class SpannerR2dbcDialectIT {
   }
 
   @Test
-  public void testRowMap() {
+  void testRowMap() {
     insertPresident(new President("Bill Clinton", 1992));
     insertPresident(new President("Joe Smith", 1996));
     insertPresident(new President("Bob", 2000));

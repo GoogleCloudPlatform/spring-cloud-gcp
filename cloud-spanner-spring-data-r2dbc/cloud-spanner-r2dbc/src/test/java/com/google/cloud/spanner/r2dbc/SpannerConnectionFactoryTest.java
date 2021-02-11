@@ -32,7 +32,7 @@ import reactor.test.StepVerifier;
 /**
  * Test for {@link SpannerConnectionFactory}.
  */
-public class SpannerConnectionFactoryTest {
+class SpannerConnectionFactoryTest {
 
   private SpannerConnectionConfiguration config;
 
@@ -50,7 +50,7 @@ public class SpannerConnectionFactoryTest {
   }
 
   @Test
-  public void getMetadataReturnsSingleton() {
+  void getMetadataReturnsSingleton() {
     Client mockClient = Mockito.mock(Client.class);
     SpannerConnectionFactory factory = new SpannerConnectionFactory(mockClient, this.config);
 
@@ -58,7 +58,7 @@ public class SpannerConnectionFactoryTest {
   }
 
   @Test
-  public void createReturnsNewSpannerConnection() {
+  void createReturnsNewSpannerConnection() {
 
     Client mockClient = Mockito.mock(Client.class);
     Session session = Session.newBuilder().setName("jam session").build();

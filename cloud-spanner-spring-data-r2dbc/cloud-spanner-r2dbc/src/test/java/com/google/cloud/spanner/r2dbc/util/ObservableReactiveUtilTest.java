@@ -31,10 +31,10 @@ import reactor.test.StepVerifier;
 /**
  * Test for {@link ObservableReactiveUtil}.
  */
-public class ObservableReactiveUtilTest {
+class ObservableReactiveUtilTest {
 
   @Test
-  public void unaryCallReturnsSingleValue() {
+  void unaryCallReturnsSingleValue() {
     Mono<Integer> mono = ObservableReactiveUtil.unaryCall(observer -> {
       observer.onNext(42);
       observer.onCompleted();
@@ -45,7 +45,7 @@ public class ObservableReactiveUtilTest {
   }
 
   @Test
-  public void unaryCallForwardsError() {
+  void unaryCallForwardsError() {
     Mono<Integer> mono = ObservableReactiveUtil.unaryCall(observer -> {
       observer.onError(new IllegalArgumentException("oh no"));
     });
@@ -57,7 +57,7 @@ public class ObservableReactiveUtilTest {
   }
 
   @Test
-  public void unaryCallThrowsExceptionIfCompletedWithNoValue() {
+  void unaryCallThrowsExceptionIfCompletedWithNoValue() {
     Mono<Integer> mono = ObservableReactiveUtil.unaryCall(observer -> observer.onCompleted());
 
     StepVerifier.create(mono)
@@ -68,7 +68,7 @@ public class ObservableReactiveUtilTest {
   }
 
   @Test
-  public void propagateTransientErrorUnaryCall() {
+  void propagateTransientErrorUnaryCall() {
     StatusRuntimeException retryableException =
         new StatusRuntimeException(
             Status.INTERNAL.withDescription("HTTP/2 error code: INTERNAL_ERROR"));
@@ -84,7 +84,7 @@ public class ObservableReactiveUtilTest {
   }
 
   @Test
-  public void propagateNonRetryableError() {
+  void propagateNonRetryableError() {
     Mono<Void> result =
         ObservableReactiveUtil.unaryCall(
             observer -> observer.onError(new IllegalArgumentException()));
@@ -97,7 +97,7 @@ public class ObservableReactiveUtilTest {
   }
 
   @Test
-  public void propagateTransientErrorStreamingCall() {
+  void propagateTransientErrorStreamingCall() {
     StatusRuntimeException retryableException =
         new StatusRuntimeException(
             Status.INTERNAL.withDescription("HTTP/2 error code: INTERNAL_ERROR"));

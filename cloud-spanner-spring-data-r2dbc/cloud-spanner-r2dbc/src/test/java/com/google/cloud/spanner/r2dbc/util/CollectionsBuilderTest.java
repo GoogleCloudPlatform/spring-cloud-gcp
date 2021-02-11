@@ -21,10 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-public class CollectionsBuilderTest {
+class CollectionsBuilderTest {
 
   @Test
-  public void testSetCreation() {
+  void testSetCreation() {
     Set<String> items = CollectionsBuilder.setOf("Hello", "bob", "world");
     assertThat(items).containsExactlyInAnyOrder("Hello", "bob", "world");
   }

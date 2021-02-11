@@ -29,7 +29,7 @@ import org.mockito.Mockito;
 /**
  * Test for {@link SpannerConnectionConfiguration}.
  */
-public class SpannerConnectionConfigurationTest {
+class SpannerConnectionConfigurationTest {
 
   GoogleCredentials mockCredentials = Mockito.mock(GoogleCredentials.class);
 
@@ -45,7 +45,7 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void missingInstanceNameTriggersException() {
+  void missingInstanceNameTriggersException() {
     assertThatThrownBy(
         () -> {
           new SpannerConnectionConfiguration.Builder()
@@ -59,7 +59,7 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void missingDatabaseNameTriggersException() {
+  void missingDatabaseNameTriggersException() {
     assertThatThrownBy(
         () -> {
           new SpannerConnectionConfiguration.Builder()
@@ -73,7 +73,7 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void missingProjectIdTriggersException() {
+  void missingProjectIdTriggersException() {
     assertThatThrownBy(
         () -> {
           new SpannerConnectionConfiguration.Builder()
@@ -87,7 +87,7 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void passingCustomGoogleCredentials() {
+  void passingCustomGoogleCredentials() {
 
     SpannerConnectionConfiguration configuration = this.configurationBuilder
             .setProjectId("project")
@@ -99,7 +99,7 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void nonNullConstructorParametersPassPreconditions() {
+  void nonNullConstructorParametersPassPreconditions() {
     SpannerConnectionConfiguration config = this.configurationBuilder
         .setProjectId("project1")
         .setInstanceName("an-instance")
@@ -110,7 +110,7 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void partialResultSetFetchSize() {
+  void partialResultSetFetchSize() {
     SpannerConnectionConfiguration config = this.configurationBuilder
         .setPartialResultSetFetchSize(42)
         .setProjectId("project1")
@@ -121,7 +121,7 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void executorThreads() {
+  void executorThreads() {
     SpannerConnectionConfiguration config = this.configurationBuilder
         .setThreadPoolSize(42)
         .setProjectId("project1")
@@ -132,7 +132,7 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void executorThreadsNotSet() {
+  void executorThreadsNotSet() {
     SpannerConnectionConfiguration config = this.configurationBuilder
         .setProjectId("project1")
         .setInstanceName("an-instance")
@@ -143,7 +143,7 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void ddlOperationWaitSettings() {
+  void ddlOperationWaitSettings() {
     SpannerConnectionConfiguration config = this.configurationBuilder
         .setProjectId("project1")
         .setInstanceName("an-instance")
@@ -157,7 +157,7 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void databaseUrlMatchesPropertyConfiguration() {
+  void databaseUrlMatchesPropertyConfiguration() {
     SpannerConnectionConfiguration urlBased =
         this.configurationBuilder
             .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
@@ -174,7 +174,7 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void databaseUrlExtracting() {
+  void databaseUrlExtracting() {
     SpannerConnectionConfiguration config =
         this.configurationBuilder
             .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
@@ -186,7 +186,7 @@ public class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  public void invalidUrlFormats() {
+  void invalidUrlFormats() {
     assertThatThrownBy(() ->
         this.configurationBuilder
             .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"

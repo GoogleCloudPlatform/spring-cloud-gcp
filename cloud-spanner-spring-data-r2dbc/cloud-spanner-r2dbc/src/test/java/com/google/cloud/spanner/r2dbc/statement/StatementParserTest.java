@@ -20,16 +20,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-public class StatementParserTest {
+class StatementParserTest {
 
   @Test
-  public void parsesSelectQueries() {
+  void parsesSelectQueries() {
     String sql = "SELECT * from blahblahblah";
     assertThat(StatementParser.getStatementType(sql)).isEqualTo(StatementType.SELECT);
   }
 
   @Test
-  public void parsesDmlQueries() {
+  void parsesDmlQueries() {
     String sql = "InSeRt INTO TABLE_NAME VALUES (value1, value2, value3,...valueN)";
     assertThat(StatementParser.getStatementType(sql)).isEqualTo(StatementType.DML);
 
@@ -43,7 +43,7 @@ public class StatementParserTest {
   }
 
   @Test
-  public void parsesDdlQueries() {
+  void parsesDdlQueries() {
     String sql = "drop table Blarg";
     assertThat(StatementParser.getStatementType(sql)).isEqualTo(StatementType.DDL);
 
@@ -55,13 +55,13 @@ public class StatementParserTest {
   }
 
   @Test
-  public void parseUnknownQuery() {
+  void parseUnknownQuery() {
     String sql = "int number = 5";
     assertThat(StatementParser.getStatementType(sql)).isEqualTo(StatementType.UNKNOWN);
   }
 
   @Test
-  public void parseQueryWithOptionsPrefix() {
+  void parseQueryWithOptionsPrefix() {
     String sql = "@{FORCE_INDEX=index_name} @{JOIN_METHOD=HASH_JOIN} SELECT * FROM blahblah";
     assertThat(StatementParser.getStatementType(sql)).isEqualTo(StatementType.SELECT);
   }

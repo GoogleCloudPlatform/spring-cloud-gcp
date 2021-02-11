@@ -26,16 +26,16 @@ import org.junit.jupiter.api.Test;
 /**
  * Test for {@link SpannerColumnMetadata}.
  */
-public class SpannerColumnMetadataTest {
+class SpannerColumnMetadataTest {
 
   @Test
-  public void testEmptyFieldName() {
+  void testEmptyFieldName() {
     SpannerColumnMetadata metadata = new SpannerColumnMetadata(Field.getDefaultInstance());
     assertThat(metadata.getName()).isEmpty();
   }
 
   @Test
-  public void testSpannerColumnCorrectMetadata() {
+  void testSpannerColumnCorrectMetadata() {
     Field rawColumnInfo =
         Field.newBuilder()
             .setName("firstColumn")

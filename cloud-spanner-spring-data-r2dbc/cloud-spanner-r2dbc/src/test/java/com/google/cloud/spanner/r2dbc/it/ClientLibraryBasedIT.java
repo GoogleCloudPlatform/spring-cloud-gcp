@@ -54,7 +54,7 @@ import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-public class ClientLibraryBasedIT {
+class ClientLibraryBasedIT {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(ClientLibraryBasedIT.class);
 
@@ -128,7 +128,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void testValidate() {
+  void testValidate() {
     Connection conn = Mono.from(connectionFactory.create()).block();
     boolean result = Mono.from(conn.validate(ValidationDepth.REMOTE)).block();
     assertThat(result).isTrue();
@@ -139,7 +139,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void testReadQuery() {
+  void testReadQuery() {
 
     Connection conn = Mono.from(connectionFactory.create()).block();
 
@@ -156,7 +156,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void testMetadata() {
+  void testMetadata() {
 
     Connection conn = Mono.from(connectionFactory.create()).block();
 
@@ -189,7 +189,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void testErrorPropagation() {
+  void testErrorPropagation() {
 
     Connection conn = Mono.from(connectionFactory.create()).block();
 
@@ -201,7 +201,7 @@ public class ClientLibraryBasedIT {
 
 
   @Test
-  public void testDmlInsert() {
+  void testDmlInsert() {
     Connection conn = Mono.from(connectionFactory.create()).block();
 
     String id = "abc123-" + this.random.nextInt();
@@ -239,7 +239,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void testTransactionSingleStatementCommitted() {
+  void testTransactionSingleStatementCommitted() {
 
     String uuid1 = "transaction1-commit1-" + this.random.nextInt();
 
@@ -267,7 +267,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void testTransactionMultipleStatementsCommitted() {
+  void testTransactionMultipleStatementsCommitted() {
 
     String uuid1 = "transaction1-commit1-" + this.random.nextInt();
     String uuid2 = "transaction1-commit2-" + this.random.nextInt();
@@ -306,7 +306,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void testTransactionFollowedByStandaloneStatementCommitted() {
+  void testTransactionFollowedByStandaloneStatementCommitted() {
 
     String uuid1 = "transaction1-commit1-" + this.random.nextInt();
     String uuid2 = "transaction1-commit2-" + this.random.nextInt();
@@ -331,7 +331,7 @@ public class ClientLibraryBasedIT {
 
 
   @Test
-  public void testTransactionRolledBack() {
+  void testTransactionRolledBack() {
     String uuid = "transaction2-abort" + this.random.nextInt();
 
     StepVerifier.create(
@@ -357,7 +357,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void selectQueryReturnsUpdatedDataDuringAndAfterTransactionCommit() {
+  void selectQueryReturnsUpdatedDataDuringAndAfterTransactionCommit() {
 
     String uuid1 = "transaction1-commit1-" + this.random.nextInt();
 
@@ -380,7 +380,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void selectQueryReturnsUpdatedDataDuringTransactionButNotAfterTransactionRollback() {
+  void selectQueryReturnsUpdatedDataDuringTransactionButNotAfterTransactionRollback() {
 
     String uuid1 = "transaction1-commit1-" + this.random.nextInt();
 
@@ -404,7 +404,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void ddlCreateAndDrop() {
+  void ddlCreateAndDrop() {
     String listTables = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name=@table";
     String tableName = "test_table_" + this.random.nextInt(100000);
 
@@ -444,7 +444,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void selectMultipleBoundParameterSetsNoTransaction() {
+  void selectMultipleBoundParameterSetsNoTransaction() {
 
     String uuid1 = "params-no-transaction-" + this.random.nextInt();
     String uuid2 = "params-no-transaction-" + this.random.nextInt();
@@ -488,7 +488,7 @@ public class ClientLibraryBasedIT {
   2) omits the final add() for the last bound row.
   */
   @Test
-  public void selectMultipleBoundParameterSetsInTransaction() {
+  void selectMultipleBoundParameterSetsInTransaction() {
 
     String uuid1 = "params-no-transaction-" + this.random.nextInt();
     String uuid2 = "params-no-transaction-" + this.random.nextInt();
@@ -533,7 +533,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void insertMultipleBoundParameterSetsNoTransaction() {
+  void insertMultipleBoundParameterSetsNoTransaction() {
 
     String uuid1 = "params-no-transaction-" + this.random.nextInt();
     String uuid2 = "params-no-transaction-" + this.random.nextInt();
@@ -566,7 +566,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void insertMultipleBoundParameterSetsInTransaction() {
+  void insertMultipleBoundParameterSetsInTransaction() {
 
     String uuid1 = "params-no-transaction-" + this.random.nextInt();
     String uuid2 = "params-no-transaction-" + this.random.nextInt();
@@ -601,7 +601,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void testStaleRead() throws InterruptedException {
+  void testStaleRead() throws InterruptedException {
 
     // Prevent a stale read from 1 second ago from seeing a nonexistent table.
     Thread.sleep(1000);
@@ -635,7 +635,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void testStrongReadFromSubclassedConnection() throws InterruptedException {
+  void testStrongReadFromSubclassedConnection() throws InterruptedException {
 
     String uuid1 = "transaction1-strong-read" + this.random.nextInt();
     String sql = "SELECT count(*) from BOOKS WHERE UUID='" + uuid1 + "'";
@@ -666,7 +666,7 @@ public class ClientLibraryBasedIT {
   }
 
   @Test
-  public void testConnectingThroughUrl() {
+  void testConnectingThroughUrl() {
     ConnectionFactory urlBasedConnectionFactory =
         ConnectionFactories.get(DatabaseProperties.URL + "?client-implementation=client-library");
 

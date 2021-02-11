@@ -30,7 +30,7 @@ import reactor.test.StepVerifier;
 /**
  * Test for {@link SpannerResult}.
  */
-public class SpannerResultTest {
+class SpannerResultTest {
 
   private Flux<SpannerClientLibraryRow> resultSet;
 
@@ -48,7 +48,7 @@ public class SpannerResultTest {
   }
 
   @Test
-  public void getRowsUpdatedTest() {
+  void getRowsUpdatedTest() {
     StepVerifier.create(
         ((Mono) new SpannerClientLibraryResult(this.resultSet,Mono.just(2)).getRowsUpdated()))
         .expectNext(2)
@@ -56,19 +56,19 @@ public class SpannerResultTest {
   }
 
   @Test
-  public void nullResultSetTest() {
+  void nullResultSetTest() {
     assertThatThrownBy(() -> new SpannerResult(null, Mono.empty()))
         .hasMessage("A non-null flux of rows is required.");
   }
 
   @Test
-  public void nullRowsTest() {
+  void nullRowsTest() {
     assertThatThrownBy(() -> new SpannerResult(Flux.empty(),null))
         .hasMessage("A non-null mono of rows updated is required.");
   }
 
   @Test
-  public void mapTest() {
+  void mapTest() {
 
     Publisher<String> result = new SpannerClientLibraryResult(this.resultSet, Mono.just(0))
         .map((row, metadata) ->
