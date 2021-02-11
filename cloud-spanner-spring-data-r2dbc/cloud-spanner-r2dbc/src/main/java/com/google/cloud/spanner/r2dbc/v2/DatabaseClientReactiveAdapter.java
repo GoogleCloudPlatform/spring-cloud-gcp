@@ -21,6 +21,7 @@ import com.google.api.core.ApiFutureCallback;
 import com.google.api.core.ApiFutures;
 import com.google.cloud.spanner.AsyncResultSet;
 import com.google.cloud.spanner.AsyncResultSet.CallbackResponse;
+import com.google.cloud.spanner.AsyncResultSet.ReadyCallback;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -286,25 +287,36 @@ class DatabaseClientReactiveAdapter {
 
     return ars.setCallback(
         this.executorService,
-        resultSet -> {
-          // TODO: handle backpressure by asking callback to signal CallbackResponse.PAUSE
-          try {
-            switch (resultSet.tryNext()) {
-              case DONE:
-                sink.complete();
-                return CallbackResponse.DONE;
-              case NOT_READY:
-              default:
-                return CallbackResponse.CONTINUE;
-              case OK:
-                sink.next(new SpannerClientLibraryRow(resultSet.getCurrentRowAsStruct()));
-                return CallbackResponse.CONTINUE;
-            }
-          } catch (Throwable t) {
-            sink.error(t);
+        new ResultSetReadyCallback(sink));
+  }
+
+  static class ResultSetReadyCallback implements ReadyCallback {
+    private FluxSink<SpannerClientLibraryRow> sink;
+
+    ResultSetReadyCallback(FluxSink<SpannerClientLibraryRow> sink) {
+      this.sink = sink;
+    }
+
+    @Override
+    public CallbackResponse cursorReady(AsyncResultSet resultSet) {
+      // TODO: handle backpressure by asking callback to signal CallbackResponse.PAUSE
+      try {
+        switch (resultSet.tryNext()) {
+          case DONE:
+            this.sink.complete();
             return CallbackResponse.DONE;
-          }
-        });
+          case OK:
+            this.sink.next(new SpannerClientLibraryRow(resultSet.getCurrentRowAsStruct()));
+            return CallbackResponse.CONTINUE;
+          default:
+            // ResultSet returning NOT_READY or null.
+            return CallbackResponse.CONTINUE;
+        }
+      } catch (Throwable t) {
+        this.sink.error(t);
+        return CallbackResponse.DONE;
+      }
+    }
   }
 
   private <T> Mono<T> convertFutureToMono(Supplier<ApiFuture<T>> futureSupplier) {

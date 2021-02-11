@@ -88,6 +88,8 @@ public class GrpcClient implements Client {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GrpcClient.class);
 
+  private static final String SESSION_NAME_MUST_NOT_BE_NULL = "Session name must not be null";
+
   private final ManagedChannel channel;
   private final SpannerStub spanner;
   private final DatabaseAdminStub databaseAdmin;
@@ -133,7 +135,7 @@ public class GrpcClient implements Client {
       String sessionName, TransactionOptions transactionOptions) {
 
     return Mono.defer(() -> {
-      Assert.requireNonNull(sessionName, "Session name must not be null");
+      Assert.requireNonNull(sessionName, SESSION_NAME_MUST_NOT_BE_NULL);
       BeginTransactionRequest beginTransactionRequest =
           BeginTransactionRequest.newBuilder()
               .setSession(sessionName)
@@ -148,7 +150,7 @@ public class GrpcClient implements Client {
   @Override
   public Mono<CommitResponse> commitTransaction(String sessionName, Transaction transaction) {
     return Mono.defer(() -> {
-      Assert.requireNonNull(sessionName, "Session name must not be null");
+      Assert.requireNonNull(sessionName, SESSION_NAME_MUST_NOT_BE_NULL);
       Assert.requireNonEmpty(transaction.getId(), "Transaction ID must not be empty");
 
       CommitRequest commitRequest =
@@ -165,7 +167,7 @@ public class GrpcClient implements Client {
   @Override
   public Mono<Void> rollbackTransaction(String sessionName, Transaction transaction) {
     return Mono.defer(() -> {
-      Assert.requireNonNull(sessionName, "Session name must not be null");
+      Assert.requireNonNull(sessionName, SESSION_NAME_MUST_NOT_BE_NULL);
       Assert.requireNonEmpty(transaction.getId(), "Transaction ID must not be empty");
 
       RollbackRequest rollbackRequest =
@@ -196,7 +198,7 @@ public class GrpcClient implements Client {
   @Override
   public Mono<Void> deleteSession(String sessionName) {
     return Mono.defer(() -> {
-      Assert.requireNonNull(sessionName, "Session name must not be null");
+      Assert.requireNonNull(sessionName, SESSION_NAME_MUST_NOT_BE_NULL);
 
       DeleteSessionRequest deleteSessionRequest =
           DeleteSessionRequest.newBuilder()
@@ -264,7 +266,7 @@ public class GrpcClient implements Client {
       Map<String, Type> types) {
 
     return Flux.defer(() -> {
-      Assert.requireNonNull(ctx.getSessionName(), "Session name must not be null");
+      Assert.requireNonNull(ctx.getSessionName(), SESSION_NAME_MUST_NOT_BE_NULL);
 
       ExecuteSqlRequest.Builder executeSqlRequest = buildSqlRequest(ctx, sql);
 

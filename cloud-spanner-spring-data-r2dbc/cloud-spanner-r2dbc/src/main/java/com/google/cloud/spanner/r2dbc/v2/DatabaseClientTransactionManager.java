@@ -18,6 +18,7 @@ package com.google.cloud.spanner.r2dbc.v2;
 
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
+import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.AsyncTransactionManager;
 import com.google.cloud.spanner.AsyncTransactionManager.AsyncTransactionStep;
 import com.google.cloud.spanner.AsyncTransactionManager.TransactionContextFuture;
@@ -117,7 +118,7 @@ class DatabaseClientTransactionManager {
    *
    * @return chainable {@link ApiFuture} for commit status.
    */
-  ApiFuture<? extends Object> commitTransaction() {
+  ApiFuture<Timestamp> commitTransaction() {
     if (isInReadWriteTransaction()) {
       if (this.lastStep == null) {
         LOGGER.warn("Read/Write transaction committing without any statements.");
