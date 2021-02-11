@@ -90,7 +90,7 @@ class DefaultCodecsTest {
   /** Validates that every supported type converts to expected value. */
   @ParameterizedTest
   @MethodSource("data")
-  public void codecsTest(Object val, Class<?> type, Type valueType) {
+  void codecsTest(Object val, Class<?> type, Type valueType) {
     Value value = this.codecs.encode(val);
     Value nullValue = this.codecs.encode(null);
 

@@ -134,13 +134,13 @@ class ClientLibraryDecoderTest {
    */
   @ParameterizedTest
   @MethodSource("data")
-  public void codecsTest(Class<?> type, Object value, Function<Object, Value> valueBuilder) {
+  void codecsTest(Class<?> type, Object value, Function<Object, Value> valueBuilder) {
     codecsTest(type, value, valueBuilder, null, null);
   }
 
   @ParameterizedTest
   @MethodSource("decodingWithConversion")
-  public void codecsTest(Class<?> type, Object value, Function<Object, Value> valueBuilder,
+  void codecsTest(Class<?> type, Object value, Function<Object, Value> valueBuilder,
       Object expectedVal, Exception exception) {
     Object expected = expectedVal == null ? value : expectedVal;
     Struct row =
