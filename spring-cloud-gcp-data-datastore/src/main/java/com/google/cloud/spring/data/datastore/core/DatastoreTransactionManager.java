@@ -42,7 +42,7 @@ public class DatastoreTransactionManager extends AbstractPlatformTransactionMana
 			.setReadOnly(TransactionOptions.ReadOnly.newBuilder().build())
 			.build();
 
-	private final Supplier<Datastore> datastore;
+	private transient final Supplier<Datastore> datastore;
 
 	public DatastoreTransactionManager(final Supplier<Datastore> datastore) {
 		this.datastore = datastore;

@@ -31,11 +31,11 @@ import org.springframework.context.ApplicationEvent;
  */
 public class DeleteEvent extends ApplicationEvent {
 
-	private final Optional<Class> targetEntityClass;
+	private transient final Optional<Class> targetEntityClass;
 
-	private final Optional<Iterable> targetIds;
+	private transient final Optional<Iterable> targetIds;
 
-	private final Optional<Iterable> targetEntities;
+	private transient final Optional<Iterable> targetEntities;
 
 	/**
 	 * Constructor.

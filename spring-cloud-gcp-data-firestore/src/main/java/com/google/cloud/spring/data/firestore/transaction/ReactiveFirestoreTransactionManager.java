@@ -49,11 +49,11 @@ import org.springframework.util.Assert;
  */
 public class ReactiveFirestoreTransactionManager extends AbstractReactiveTransactionManager {
 
-	private final FirestoreGrpc.FirestoreStub firestore;
+	private transient final FirestoreGrpc.FirestoreStub firestore;
 
 	private final String databasePath;
 
-	private FirestoreClassMapper classMapper;
+	private transient final FirestoreClassMapper classMapper;
 
 	/**
 	 * Constructor for ReactiveFirestoreTransactionManager.

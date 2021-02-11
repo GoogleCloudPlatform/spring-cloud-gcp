@@ -30,7 +30,7 @@ import org.springframework.context.ApplicationEvent;
  */
 public class MutationEvent extends ApplicationEvent {
 
-	private final Iterable targetEntities;
+	private transient final Iterable<?> targetEntities;
 
 	/**
 	 * Constructor.
@@ -38,7 +38,7 @@ public class MutationEvent extends ApplicationEvent {
 	 * @param targetEntities the target entities that need to be mutated. This may be
 	 *     {@code null} depending on the type of delete request.
 	 */
-	public MutationEvent(List<Mutation> source, Iterable targetEntities) {
+	public MutationEvent(List<Mutation> source, Iterable<?> targetEntities) {
 		super(source);
 		this.targetEntities = targetEntities;
 	}

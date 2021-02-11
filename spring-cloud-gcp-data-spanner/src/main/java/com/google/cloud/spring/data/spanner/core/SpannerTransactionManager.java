@@ -57,7 +57,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * @since 1.1
  */
 public class SpannerTransactionManager extends AbstractPlatformTransactionManager {
-	private final Supplier<DatabaseClient> databaseClientProvider;
+	private transient final Supplier<DatabaseClient> databaseClientProvider;
 
 	public SpannerTransactionManager(final Supplier databaseClientProvider) {
 		this.databaseClientProvider = databaseClientProvider;
