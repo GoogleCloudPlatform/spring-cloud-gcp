@@ -1673,7 +1673,7 @@ The subscription name could either be a canonical subscription name within the c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Subscriber subscriber = pubSubTemplate.subscribe(subscriptionName, (message) -&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">Subscriber subscriber = pubSubTemplate.subscribe(subscriptionName, message -&gt; {
     logger.info("Message received from " + subscriptionName + " subscription: "
             + message.getPubsubMessage().getData().toStringUtf8());
     message.ack();
@@ -2965,7 +2965,7 @@ public class SinkExample {
         return args -&gt; {
             // This will poll only once.
             // Add a loop or a scheduler to get more messages.
-            destIn.poll((message) -&gt; System.out.println("Message retrieved: " + message));
+            destIn.poll(message -&gt; System.out.println("Message retrieved: " + message));
         };
     }
 }</code></pre>

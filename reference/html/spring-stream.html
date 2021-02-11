@@ -289,7 +289,7 @@ public class SinkExample {
         return args -&gt; {
             // This will poll only once.
             // Add a loop or a scheduler to get more messages.
-            destIn.poll((message) -&gt; System.out.println("Message retrieved: " + message));
+            destIn.poll(message -&gt; System.out.println("Message retrieved: " + message));
         };
     }
 }</code></pre>
