@@ -47,6 +47,7 @@ import org.springframework.expression.ParserContext;
 import org.springframework.expression.common.LiteralExpression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -406,7 +407,8 @@ public class SpannerPersistentEntityImpl<T>
 	}
 
 	@Override
-	public <B> PersistentPropertyAccessor<B> getPropertyAccessor(B object) {
+	@NonNull
+	public <B> PersistentPropertyAccessor<B> getPropertyAccessor(@NonNull B object) {
 		return new DelegatingPersistentPropertyAccessor<>(super.getPropertyAccessor(object));
 	}
 
@@ -418,7 +420,7 @@ public class SpannerPersistentEntityImpl<T>
 				: primaryKeyProperty.getColumnName();
 	}
 
-	class DelegatingPersistentPropertyAccessor<B> implements PersistentPropertyAccessor<B> {
+	private class DelegatingPersistentPropertyAccessor<B> implements PersistentPropertyAccessor<B> {
 
 		private final PersistentPropertyAccessor<B> delegate;
 
@@ -469,6 +471,7 @@ public class SpannerPersistentEntityImpl<T>
 		}
 
 		@Override
+		@NonNull
 		public B getBean() {
 			return delegate.getBean();
 		}
