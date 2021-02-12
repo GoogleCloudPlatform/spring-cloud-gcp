@@ -39,7 +39,6 @@ public class GcpConfigBootstrapConfigurationTest {
 			.withConfiguration(AutoConfigurations.of(GcpConfigBootstrapConfiguration.class));
 
 	@Test
-	@Ignore
 	public void testConfigurationValueDefaultsAreAsExpected() {
 		this.contextRunner.withPropertyValues("spring.cloud.gcp.config.enabled=true")
 				.run(context -> {
@@ -52,7 +51,6 @@ public class GcpConfigBootstrapConfigurationTest {
 	}
 
 	@Test
-	@Ignore
 	public void testConfigurationValuesAreCorrectlyLoaded() {
 		this.contextRunner.withPropertyValues("spring.application.name=myapp",
 				"spring.profiles.active=prod",
