@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.config;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
