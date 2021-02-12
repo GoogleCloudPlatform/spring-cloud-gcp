@@ -75,15 +75,15 @@ public class BigQueryFileMessageHandler extends AbstractReplyProducingMessageHan
 		this.bigQueryTemplate = bigQueryTemplate;
 
 		this.tableNameExpression =
-				new FunctionExpression<Message>(
+				new FunctionExpression<Message<?>>(
 						message -> message.getHeaders().get(BigQuerySpringMessageHeaders.TABLE_NAME));
 
 		this.formatOptionsExpression =
-				new FunctionExpression<Message>(
+				new FunctionExpression<Message<?>>(
 						message -> message.getHeaders().get(BigQuerySpringMessageHeaders.FORMAT_OPTIONS));
 
 		this.tableSchemaExpression =
-				new FunctionExpression<Message>(
+				new FunctionExpression<Message<?>>(
 						message -> message.getHeaders().get(BigQuerySpringMessageHeaders.TABLE_SCHEMA));
 	}
 
