@@ -79,7 +79,6 @@ public class SpannerQueryLookupStrategy implements QueryLookupStrategy {
 			ProjectionFactory factory, NamedQueries namedQueries) {
 		SpannerQueryMethod queryMethod = createQueryMethod(method, metadata, factory);
 		Class<?> entityType = getEntityType(queryMethod);
-
 		boolean isDml = queryMethod.getQueryAnnotation() != null && queryMethod.getQueryAnnotation().dmlStatement();
 
 		if (queryMethod.hasAnnotatedQuery()) {
