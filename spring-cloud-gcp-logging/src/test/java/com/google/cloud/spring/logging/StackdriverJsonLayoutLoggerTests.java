@@ -67,7 +67,7 @@ public class StackdriverJsonLayoutLoggerTests {
 			Map data = new Gson().fromJson(new String(out.toByteArray()), Map.class);
 
 			checkData(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test", data);
-			checkData(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARN", data);
+			checkData(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARNING", data);
 			checkData(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutLoggerTests", data);
 			checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
 					"projects/test-project/traces/12345678901234561234567890123456", data);
@@ -107,7 +107,7 @@ public class StackdriverJsonLayoutLoggerTests {
 			Map<String, Object> data = new Gson().fromJson(new String(out.toByteArray()), stringObjType);
 
 			checkData(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test", data);
-			checkData(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARN", data);
+			checkData(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARNING", data);
 			checkData(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutServiceCtxLoggerTests", data);
 			checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
 					"projects/test-project/traces/12345678901234561234567890123456", data);
