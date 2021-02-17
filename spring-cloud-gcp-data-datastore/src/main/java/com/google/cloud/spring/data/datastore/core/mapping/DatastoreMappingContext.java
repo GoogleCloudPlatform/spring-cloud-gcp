@@ -114,7 +114,7 @@ public class DatastoreMappingContext extends
 	@Override
 	protected DatastorePersistentProperty createPersistentProperty(Property property,
 			DatastorePersistentEntity<?> owner, SimpleTypeHolder simpleTypeHolder) {
-		return new DatastorePersistentPropertyImpl(property, owner, simpleTypeHolder, this.FIELD_NAMING_STRATEGY);
+		return new DatastorePersistentPropertyImpl(property, owner, simpleTypeHolder, FIELD_NAMING_STRATEGY);
 	}
 
 	/**
