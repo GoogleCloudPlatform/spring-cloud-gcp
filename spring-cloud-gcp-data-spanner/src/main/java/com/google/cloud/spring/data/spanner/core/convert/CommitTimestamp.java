@@ -38,7 +38,7 @@ import org.springframework.lang.Nullable;
  * @since 1.2.2
  */
 public final class CommitTimestamp {
-	private final static Map<Object, Object> VALUES = new ConcurrentHashMap<>();
+	private static final Map<Object, Object> VALUES = new ConcurrentHashMap<>();
 
 	static {
 		VALUES.put(com.google.cloud.Timestamp.class, Value.COMMIT_TIMESTAMP);
