@@ -82,8 +82,9 @@ class DatabaseClientTransactionManagerTest {
   void testReadonlyTransactionStartedWhileReadWriteInProgressFails() {
 
     this.transactionManager.beginTransaction();
+    TimestampBound strongBound = TimestampBound.strong();
     assertThatThrownBy(() ->
-        this.transactionManager.beginReadonlyTransaction(TimestampBound.strong())
+        this.transactionManager.beginReadonlyTransaction(strongBound)
     ).isInstanceOf(TransactionInProgressException.class)
         .hasMessage(TransactionInProgressException.MSG_READWRITE);
   }
@@ -100,10 +101,10 @@ class DatabaseClientTransactionManagerTest {
 
   @Test
   void testReadonlyTransactionStartedWhileReadonlyInProgressFails() {
-
-    this.transactionManager.beginReadonlyTransaction(TimestampBound.strong());
+    TimestampBound strongBound = TimestampBound.strong();
+    this.transactionManager.beginReadonlyTransaction(strongBound);
     assertThatThrownBy(() ->
-        this.transactionManager.beginReadonlyTransaction(TimestampBound.strong())
+        this.transactionManager.beginReadonlyTransaction(strongBound)
     ).isInstanceOf(TransactionInProgressException.class)
         .hasMessage(TransactionInProgressException.MSG_READONLY);
   }

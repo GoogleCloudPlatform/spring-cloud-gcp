@@ -277,9 +277,8 @@ class SpannerStatementTest {
 
   @Test
   void batchDmlExceptionTest() {
-    assertThatThrownBy(() ->
-        new SpannerBatch(this.mockClient, null)
-        .add("select * from books"))
+    SpannerBatch batch = new SpannerBatch(this.mockClient, null);
+    assertThatThrownBy(() -> batch.add("select * from books"))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("Only DML statements are supported in batches");
   }

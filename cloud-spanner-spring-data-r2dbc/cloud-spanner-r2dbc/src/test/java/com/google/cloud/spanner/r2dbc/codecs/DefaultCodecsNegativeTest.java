@@ -34,20 +34,17 @@ class DefaultCodecsNegativeTest {
   @Test
   void encodeException() {
 
-    assertThrows(IllegalArgumentException.class,
-        () -> this.codecs.encode(BigDecimal.valueOf(100)),
+    assertThrows(IllegalArgumentException.class, () -> this.codecs.encode(BigDecimal.TEN),
         "Cannot encode parameter of type java.math.BigDecimal");
   }
 
   @Test
   void decodeException() {
+    Value value = this.codecs.encode("abc");
+    Type type = Type.newBuilder().setCode(TypeCode.STRING).build();
 
     assertThrows(IllegalArgumentException.class,
-        () -> {
-          Value value = this.codecs.encode("abc");
-          this.codecs.decode(
-              value, Type.newBuilder().setCode(TypeCode.STRING).build(), Integer.class);
-        },
+        () -> this.codecs.decode(value, type, Integer.class),
         "Cannot decode value of type code: STRING\n to java.lang.Integer"
     );
 

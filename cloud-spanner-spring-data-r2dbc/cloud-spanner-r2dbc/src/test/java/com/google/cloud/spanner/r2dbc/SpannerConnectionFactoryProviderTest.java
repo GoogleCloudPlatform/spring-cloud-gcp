@@ -279,9 +279,11 @@ class SpannerConnectionFactoryProviderTest {
   void multipleAuthenticationMethodsDisallowed() {
     String prefix = "r2dbc:spanner://host:443/projects/p/instances/i/databases/d?";
 
-    assertThatThrownBy(() -> this.spannerConnectionFactoryProvider.createConfiguration(
-        ConnectionFactoryOptions.parse(prefix + "credentials=A&oauthToken=B")
-    )).isInstanceOf(IllegalArgumentException.class)
+    ConnectionFactoryOptions config =
+        ConnectionFactoryOptions.parse(prefix + "credentials=A&oauthToken=B");
+
+    assertThatThrownBy(() -> this.spannerConnectionFactoryProvider.createConfiguration(config))
+        .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("Please provide at most one authentication option");
   }
 

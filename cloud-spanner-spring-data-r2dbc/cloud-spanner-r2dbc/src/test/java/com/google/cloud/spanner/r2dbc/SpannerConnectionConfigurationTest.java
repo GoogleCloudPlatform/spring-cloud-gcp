@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.NoCredentials;
+import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration.Builder;
 import java.time.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,42 +47,36 @@ class SpannerConnectionConfigurationTest {
 
   @Test
   void missingInstanceNameTriggersException() {
-    assertThatThrownBy(
-        () -> {
-          new SpannerConnectionConfiguration.Builder()
-              .setProjectId("project1")
-              .setDatabaseName("db")
-              .setCredentials(NoCredentials.getInstance())
-              .build();
-        })
+    Builder builder = new SpannerConnectionConfiguration.Builder()
+        .setProjectId("project1")
+        .setDatabaseName("db")
+        .setCredentials(NoCredentials.getInstance());
+
+    assertThatThrownBy(() -> builder.build())
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("instanceName must not be null");
   }
 
   @Test
   void missingDatabaseNameTriggersException() {
-    assertThatThrownBy(
-        () -> {
-          new SpannerConnectionConfiguration.Builder()
-              .setProjectId("project1")
-              .setInstanceName("an-instance")
-              .setCredentials(NoCredentials.getInstance())
-              .build();
-        })
+    Builder builder = new SpannerConnectionConfiguration.Builder()
+        .setProjectId("project1")
+        .setInstanceName("an-instance")
+        .setCredentials(NoCredentials.getInstance());
+
+    assertThatThrownBy(() -> builder.build())
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("databaseName must not be null");
   }
 
   @Test
   void missingProjectIdTriggersException() {
-    assertThatThrownBy(
-        () -> {
-          new SpannerConnectionConfiguration.Builder()
-              .setInstanceName("an-instance")
-              .setDatabaseName("db")
-              .setCredentials(NoCredentials.getInstance())
-              .build();
-        })
+    Builder builder = new SpannerConnectionConfiguration.Builder()
+        .setInstanceName("an-instance")
+        .setDatabaseName("db")
+        .setCredentials(NoCredentials.getInstance());
+
+    assertThatThrownBy(() -> builder.build())
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("projectId must not be null");
   }
@@ -190,36 +185,31 @@ class SpannerConnectionConfigurationTest {
     assertThatThrownBy(() ->
         this.configurationBuilder
             .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
-                + "projects//instances/my-instance/databases/my-database")
-            .build())
+                + "projects//instances/my-instance/databases/my-database"))
         .isInstanceOf(IllegalArgumentException.class);
 
     assertThatThrownBy(() ->
         this.configurationBuilder
             .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
-                + "projects/proj/instances//databases/my-database")
-            .build())
+                + "projects/proj/instances//databases/my-database"))
         .isInstanceOf(IllegalArgumentException.class);
 
     assertThatThrownBy(() ->
         this.configurationBuilder
             .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
-                + "projects/a/instances/b/databases/c/d")
-            .build())
+                + "projects/a/instances/b/databases/c/d"))
         .isInstanceOf(IllegalArgumentException.class);
 
     assertThatThrownBy(() ->
         this.configurationBuilder
             .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
-                + "projects/a/instances/b/databases/c d")
-            .build())
+                + "projects/a/instances/b/databases/c d"))
         .isInstanceOf(IllegalArgumentException.class);
 
     assertThatThrownBy(() ->
         this.configurationBuilder
             .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
-                + "foobar")
-            .build())
+                + "foobar"))
         .isInstanceOf(IllegalArgumentException.class);
   }
 }

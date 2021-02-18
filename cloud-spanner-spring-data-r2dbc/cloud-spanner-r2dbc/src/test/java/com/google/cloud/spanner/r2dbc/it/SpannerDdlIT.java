@@ -23,6 +23,7 @@ import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
@@ -62,10 +63,9 @@ class SpannerDdlIT {
   void testDdlErrorPropagation() {
     assertThat(listTables()).doesNotContain("PRESIDENTS");
 
-    assertThatThrownBy(() ->
-        Mono.from(connectionFactory.create())
-            .delayUntil(c -> c.createStatement("DROP TABLE PRESIDENTS").execute())
-            .block())
+    Mono<? extends Connection> cf = Mono.from(connectionFactory.create())
+        .delayUntil(c -> c.createStatement("DROP TABLE PRESIDENTS").execute());
+    assertThatThrownBy(() -> cf.block())
         .isInstanceOf(R2dbcNonTransientException.class)
         .hasMessageContaining("Table not found: PRESIDENTS");
   }
