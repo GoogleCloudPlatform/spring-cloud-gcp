@@ -18,18 +18,21 @@ package com.google.cloud.spring.logging;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.contrib.json.classic.JsonLayout;
 import ch.qos.logback.core.status.Status;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.slf4j.MDCContextMap;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,160 +50,144 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class StackdriverJsonLayoutLoggerTests {
 
+	private static final Gson GSON = new Gson();
+
+	private static final PrintStream CONSOLE_OUTPUT = System.out;
+
 	private static final Log LOGGER = LogFactory.getLog("StackdriverJsonLayoutLoggerTests");
+
+	private ByteArrayOutputStream logOutput;
+
+	private MDCContextMap mdc;
+
+	@Before
+	public void setLoggingContext() {
+		logOutput = new ByteArrayOutputStream();
+		System.setOut(new java.io.PrintStream(logOutput));
+
+		mdc = new MDCContextMap();
+		mdc.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "12345678901234561234567890123456");
+		mdc.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "span123");
+		mdc.put(StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT, "true");
+		mdc.put("foo", "bar");
+	}
+
+	@After
+	public void cleanupLoggingContext() {
+		// Reset the System output to System.out
+		System.setOut(CONSOLE_OUTPUT);
+		mdc.clear();
+	}
 
 	@Test
 	public void testEmulatorConfig() {
-		PrintStream oldOut = System.out;
-		MDCContextMap mdc = new MDCContextMap();
-		try {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			System.setOut(new java.io.PrintStream(out));
+		LOGGER.warn("test");
+		Map<String, String> data = getLogMetadata();
 
-			mdc.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "12345678901234561234567890123456");
-			mdc.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "span123");
-			mdc.put(StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT, "true");
-			mdc.put("foo", "bar");
+		checkData(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test", data);
+		checkData(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARNING", data);
+		checkData(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutLoggerTests", data);
+		checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
+				"projects/test-project/traces/12345678901234561234567890123456", data);
+		checkData(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, "span123", data);
+		checkData("foo", "bar", data);
 
-			LOGGER.warn("test");
-
-			Map data = new Gson().fromJson(new String(out.toByteArray()), Map.class);
-
-			checkData(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test", data);
-			checkData(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARNING", data);
-			checkData(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutLoggerTests", data);
-			checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
-					"projects/test-project/traces/12345678901234561234567890123456", data);
-			checkData(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, "span123", data);
-			checkData("foo", "bar", data);
-			assertThat(data).doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_TRACE_ID);
-			assertThat(data).doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_ID);
-			assertThat(data).doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT);
-			assertThat(data).doesNotContainKey(JsonLayout.TIMESTAMP_ATTR_NAME);
-			assertThat(data).containsKey(StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE);
-			assertThat(data).containsKey(StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE);
-		}
-		finally {
-			System.setOut(oldOut);
-			mdc.clear();
-		}
+		assertThat(data)
+				.doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_TRACE_ID)
+				.doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_ID)
+				.doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT)
+				.doesNotContainKey(JsonLayout.TIMESTAMP_ATTR_NAME)
+				.containsKey(StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE)
+				.containsKey(StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE);
 	}
 
 	@Test
 	public void testServiceContext() {
-		PrintStream oldOut = System.out;
-		MDCContextMap mdc = new MDCContextMap();
-		try {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			System.setOut(new java.io.PrintStream(out));
+		Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutServiceCtxLoggerTests");
 
+		logger.warn("test");
+		Map<String, String> data = getLogMetadata();
 
-			mdc.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "12345678901234561234567890123456");
-			mdc.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "span123");
-			mdc.put(StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT, "true");
-			mdc.put("foo", "bar");
+		checkData(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test", data);
+		checkData(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARNING", data);
+		checkData(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutServiceCtxLoggerTests", data);
+		checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
+				"projects/test-project/traces/12345678901234561234567890123456", data);
+		checkData(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, "span123", data);
+		checkData("foo", "bar", data);
+		assertThat(data).doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_TRACE_ID);
+		assertThat(data).doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_ID);
+		assertThat(data).doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT);
+		assertThat(data).doesNotContainKey(JsonLayout.TIMESTAMP_ATTR_NAME);
+		assertThat(data).containsKey(StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE);
+		assertThat(data).containsKey(StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE);
+		assertThat(data).containsEntry("custom-key", "custom-value");
 
-			Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutServiceCtxLoggerTests");
-			logger.warn("test");
-
-			Type stringObjType = new TypeToken<Map<String, Object>>() { }.getType();
-			Map<String, Object> data = new Gson().fromJson(new String(out.toByteArray()), stringObjType);
-
-			checkData(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test", data);
-			checkData(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARNING", data);
-			checkData(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutServiceCtxLoggerTests", data);
-			checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
-					"projects/test-project/traces/12345678901234561234567890123456", data);
-			checkData(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, "span123", data);
-			checkData("foo", "bar", data);
-			assertThat(data).doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_TRACE_ID);
-			assertThat(data).doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_ID);
-			assertThat(data).doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT);
-			assertThat(data).doesNotContainKey(JsonLayout.TIMESTAMP_ATTR_NAME);
-			assertThat(data).containsKey(StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE);
-			assertThat(data).containsKey(StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE);
-			assertThat(data).containsEntry("custom-key", "custom-value");
-
-			// test service context
-			assertThat(data).containsKey(StackdriverTraceConstants.SERVICE_CONTEXT_ATTRIBUTE);
-			Object serviceCtxObject = data.get(StackdriverTraceConstants.SERVICE_CONTEXT_ATTRIBUTE);
-			assertThat(serviceCtxObject).isInstanceOf(Map.class);
-			Map<String, String> serviceContextMap = (Map) serviceCtxObject;
-			assertThat(serviceContextMap).containsEntry("service", "service");
-			assertThat(serviceContextMap).containsEntry("version", "version");
-		}
-		finally {
-			System.setOut(oldOut);
-			mdc.clear();
-		}
+		// test service context
+		assertThat(data).containsKey(StackdriverTraceConstants.SERVICE_CONTEXT_ATTRIBUTE);
+		Object serviceCtxObject = data.get(StackdriverTraceConstants.SERVICE_CONTEXT_ATTRIBUTE);
+		assertThat(serviceCtxObject).isInstanceOf(Map.class);
+		Map<String, String> serviceContextMap = (Map) serviceCtxObject;
+		assertThat(serviceContextMap).containsEntry("service", "service");
+		assertThat(serviceContextMap).containsEntry("version", "version");
 	}
 
 	@Test
 	public void test64BitTraceId() {
-		PrintStream oldOut = System.out;
-		MDCContextMap mdc = new MDCContextMap();
-		try {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			System.setOut(new java.io.PrintStream(out));
+		mdc.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "1234567890123456");
 
-			mdc.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "1234567890123456");
+		LOGGER.warn("test");
+		Map<String, String> data = getLogMetadata();
 
-			LOGGER.warn("test");
-
-			Map data = new Gson().fromJson(new String(out.toByteArray()), Map.class);
-
-			checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
-					"projects/test-project/traces/00000000000000001234567890123456", data);
-		}
-		finally {
-			System.setOut(oldOut);
-			mdc.clear();
-		}
+		checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
+				"projects/test-project/traces/00000000000000001234567890123456", data);
 	}
 
 	@Test
 	public void testEnhancerNoMdc() {
-		PrintStream oldOut = System.out;
+		// Test if no MDC is set.
+		mdc.clear();
+		String traceId = "1234567890123456";
+		TraceIdLoggingEnhancer.setCurrentTraceId(traceId);
 
-		try {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			System.setOut(new java.io.PrintStream(out));
+		LOGGER.warn("test");
 
-			String traceId = "1234567890123456";
-			TraceIdLoggingEnhancer.setCurrentTraceId(traceId);
-
-			LOGGER.warn("test");
-
-			Map data = new Gson().fromJson(new String(out.toByteArray()), Map.class);
-
-			checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
-					"projects/test-project/traces/0000000000000000" + traceId, data);
-		}
-		finally {
-			System.setOut(oldOut);
-			TraceIdLoggingEnhancer.setCurrentTraceId(null);
-		}
+		Map<String, String> data = getLogMetadata();
+		checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
+				"projects/test-project/traces/0000000000000000" + traceId, data);
 	}
 
 	@Test
 	public void testJsonLayoutEnhancer() {
-		PrintStream oldOut = System.out;
+		Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutServiceCtxLoggerTests");
 
-		try {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			System.setOut(new java.io.PrintStream(out));
+		Marker marker = MarkerFactory.getMarker("testMarker");
+		logger.warn(marker, "test");
 
-			Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutServiceCtxLoggerTests");
+		Map<String, String> data = getLogMetadata();
+		checkData("marker", "testMarker", data);
+	}
 
-			Marker marker = MarkerFactory.getMarker("testMarker");
-			logger.warn(marker, "test");
+	@Test
+	public void testJsonSeverityLevelMapping() {
+		// Tests that Logback levels are mapped to correct com.google.cloud logging severities.
+		LOGGER.trace("test");
+		LOGGER.debug("test");
+		LOGGER.info("test");
+		LOGGER.warn("test");
+		LOGGER.error("test");
+		LOGGER.fatal("test");
 
-			Map data = new Gson().fromJson(new String(out.toByteArray()), Map.class);
-			checkData("marker", "testMarker", data);
-		}
-		finally {
-			System.setOut(oldOut);
-		}
+		List<String> jsonLogRecords = Arrays.asList(new String(logOutput.toByteArray()).split("\n"));
+
+		List<String> logSeverities =
+				jsonLogRecords.stream()
+						.map(record -> GSON.fromJson(record, Map.class))
+						.map(data -> (String) data.get(StackdriverTraceConstants.SEVERITY_ATTRIBUTE))
+						.collect(Collectors.toList());
+
+		assertThat(logSeverities)
+				.containsExactly("DEBUG", "DEBUG", "INFO", "WARNING", "ERROR", "ERROR");
 	}
 
 	@Test
@@ -216,8 +203,12 @@ public class StackdriverJsonLayoutLoggerTests {
 
 	}
 
-	private void checkData(String attribute, Object value, Map data) {
-		Object actual = data.get(attribute);
+	private Map<String, String> getLogMetadata() {
+		return GSON.fromJson(new String(logOutput.toByteArray()), Map.class);
+	}
+
+	private void checkData(String attribute, Object value, Map<String, String> data) {
+		String actual = data.get(attribute);
 		assertThat(actual).isNotNull();
 		assertThat(actual).isEqualTo(value);
 	}
