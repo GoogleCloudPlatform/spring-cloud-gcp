@@ -57,6 +57,11 @@ jobs:
         run: |
           gcloud components install pubsub-emulator beta && \
             gcloud components update
+      - name: Install datastore-emulator
+        if: ${{ matrix.it == 'datastore' }}
+        run: |
+          gcloud components install cloud-datastore-emulator && \
+            gcloud components update
       - name: Mvn install # Need this when the directory/pom structure changes
         id: install1
         continue-on-error: true
