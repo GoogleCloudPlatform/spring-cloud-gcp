@@ -84,21 +84,20 @@ public class StackdriverJsonLayoutLoggerTests {
 		LOGGER.warn("test");
 		Map<String, String> data = getLogMetadata();
 
-		checkData(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test", data);
-		checkData(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARNING", data);
-		checkData(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutLoggerTests", data);
-		checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
-				"projects/test-project/traces/12345678901234561234567890123456", data);
-		checkData(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, "span123", data);
-		checkData("foo", "bar", data);
-
 		assertThat(data)
+				.isNotNull()
+				.containsEntry("foo", "bar")
+				.containsEntry(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test")
+				.containsEntry(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARN")
+				.containsEntry(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutLoggerTests")
+				.containsEntry(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE, "projects/test-project/traces/12345678901234561234567890123456")
+				.containsEntry(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, "span123")
+				.containsKey(StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE)
+				.containsKey(StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE)
 				.doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_TRACE_ID)
 				.doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_ID)
 				.doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT)
-				.doesNotContainKey(JsonLayout.TIMESTAMP_ATTR_NAME)
-				.containsKey(StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE)
-				.containsKey(StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE);
+				.doesNotContainKey(JsonLayout.TIMESTAMP_ATTR_NAME);
 	}
 
 	@Test
@@ -108,28 +107,30 @@ public class StackdriverJsonLayoutLoggerTests {
 		logger.warn("test");
 		Map<String, String> data = getLogMetadata();
 
-		checkData(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test", data);
-		checkData(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARNING", data);
-		checkData(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutServiceCtxLoggerTests", data);
-		checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
-				"projects/test-project/traces/12345678901234561234567890123456", data);
-		checkData(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, "span123", data);
-		checkData("foo", "bar", data);
-		assertThat(data).doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_TRACE_ID);
-		assertThat(data).doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_ID);
-		assertThat(data).doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT);
-		assertThat(data).doesNotContainKey(JsonLayout.TIMESTAMP_ATTR_NAME);
-		assertThat(data).containsKey(StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE);
-		assertThat(data).containsKey(StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE);
-		assertThat(data).containsEntry("custom-key", "custom-value");
+		assertThat(data)
+				.isNotNull()
+				.containsEntry(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test")
+				.containsEntry(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARN")
+				.containsEntry(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutServiceCtxLoggerTests")
+				.containsEntry(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE, "projects/test-project/traces/12345678901234561234567890123456")
+				.containsEntry(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, "span123")
+				.containsEntry("foo", "bar")
+				.containsEntry("custom-key", "custom-value")
+				.containsKey(StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE)
+				.containsKey(StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE)
+				.containsKey(StackdriverTraceConstants.SERVICE_CONTEXT_ATTRIBUTE)
+				.doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_TRACE_ID)
+				.doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_ID)
+				.doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT)
+				.doesNotContainKey(JsonLayout.TIMESTAMP_ATTR_NAME);
 
 		// test service context
-		assertThat(data).containsKey(StackdriverTraceConstants.SERVICE_CONTEXT_ATTRIBUTE);
 		Object serviceCtxObject = data.get(StackdriverTraceConstants.SERVICE_CONTEXT_ATTRIBUTE);
 		assertThat(serviceCtxObject).isInstanceOf(Map.class);
 		Map<String, String> serviceContextMap = (Map) serviceCtxObject;
-		assertThat(serviceContextMap).containsEntry("service", "service");
-		assertThat(serviceContextMap).containsEntry("version", "version");
+		assertThat(serviceContextMap)
+				.containsEntry("service", "service")
+				.containsEntry("version", "version");
 	}
 
 	@Test
@@ -139,8 +140,9 @@ public class StackdriverJsonLayoutLoggerTests {
 		LOGGER.warn("test");
 		Map<String, String> data = getLogMetadata();
 
-		checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
-				"projects/test-project/traces/00000000000000001234567890123456", data);
+		assertThat(data).containsEntry(
+				StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
+				"projects/test-project/traces/00000000000000001234567890123456");
 	}
 
 	@Test
@@ -153,8 +155,8 @@ public class StackdriverJsonLayoutLoggerTests {
 		LOGGER.warn("test");
 
 		Map<String, String> data = getLogMetadata();
-		checkData(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
-				"projects/test-project/traces/0000000000000000" + traceId, data);
+		assertThat(data).containsEntry(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
+				"projects/test-project/traces/0000000000000000" + traceId);
 	}
 
 	@Test
@@ -165,7 +167,7 @@ public class StackdriverJsonLayoutLoggerTests {
 		logger.warn(marker, "test");
 
 		Map<String, String> data = getLogMetadata();
-		checkData("marker", "testMarker", data);
+		assertThat(data).containsEntry("marker", "testMarker");
 	}
 
 	@Test
@@ -205,12 +207,6 @@ public class StackdriverJsonLayoutLoggerTests {
 
 	private Map<String, String> getLogMetadata() {
 		return GSON.fromJson(new String(logOutput.toByteArray()), Map.class);
-	}
-
-	private void checkData(String attribute, Object value, Map<String, String> data) {
-		String actual = data.get(attribute);
-		assertThat(actual).isNotNull();
-		assertThat(actual).isEqualTo(value);
 	}
 
 	static class JsonLayoutTestEnhancer implements JsonLoggingEventEnhancer {

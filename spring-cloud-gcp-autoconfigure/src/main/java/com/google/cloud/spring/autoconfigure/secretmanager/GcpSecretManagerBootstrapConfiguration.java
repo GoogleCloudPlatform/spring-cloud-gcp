@@ -56,7 +56,7 @@ public class GcpSecretManagerBootstrapConfiguration {
 
 	public GcpSecretManagerBootstrapConfiguration(
 			GcpSecretManagerProperties properties,
-			ConfigurableEnvironment configurableEnvironment) throws IOException {
+			ConfigurableEnvironment configurableEnvironment) {
 
 		this.gcpProjectIdProvider = properties.getProjectId() != null
 				? properties::getProjectId
@@ -82,7 +82,7 @@ public class GcpSecretManagerBootstrapConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public CredentialsProvider googleCredentials(GcpSecretManagerProperties secretManagerProperties) throws Exception {
+	public CredentialsProvider googleCredentials(GcpSecretManagerProperties secretManagerProperties) throws IOException {
 		return new DefaultCredentialsProvider(secretManagerProperties);
 	}
 
@@ -107,8 +107,6 @@ public class GcpSecretManagerBootstrapConfiguration {
 	@ConditionalOnMissingBean
 	public SecretManagerPropertySourceLocator secretManagerPropertySourceLocator(
 			SecretManagerTemplate secretManagerTemplate) {
-		SecretManagerPropertySourceLocator propertySourceLocator =
-				new SecretManagerPropertySourceLocator(secretManagerTemplate, this.gcpProjectIdProvider);
-		return propertySourceLocator;
+		return new SecretManagerPropertySourceLocator(secretManagerTemplate, this.gcpProjectIdProvider);
 	}
 }

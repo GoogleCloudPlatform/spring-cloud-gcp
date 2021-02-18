@@ -37,9 +37,9 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEn
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
 import com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType;
 
-import org.springframework.data.convert.EntityInstantiator;
-import org.springframework.data.convert.EntityInstantiators;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
+import org.springframework.data.mapping.model.EntityInstantiator;
+import org.springframework.data.mapping.model.EntityInstantiators;
 import org.springframework.data.mapping.model.ParameterValueProvider;
 import org.springframework.data.mapping.model.PersistentEntityParameterValueProvider;
 import org.springframework.data.util.ClassTypeInformation;
@@ -115,13 +115,11 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
 	}
 
 	@Override
-	public <T, R> Map<T, R> readAsMap(Class<T> keyType, TypeInformation<R> componentType,
-			BaseEntity entity) {
+	public <T, R> Map<T, R> readAsMap(Class<T> keyType, TypeInformation<R> componentType, BaseEntity entity) {
 		if (entity == null) {
 			return null;
 		}
-		Map<T, R> result = new HashMap<>();
-		return readAsMap(entity, ClassTypeInformation.from(result.getClass()));
+		return readAsMap(entity, ClassTypeInformation.from(HashMap.class));
 	}
 
 	@Override

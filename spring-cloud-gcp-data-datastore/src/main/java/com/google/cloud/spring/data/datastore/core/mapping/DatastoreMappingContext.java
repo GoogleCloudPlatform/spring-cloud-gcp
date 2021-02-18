@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.mapping.context.AbstractMappingContext;
@@ -48,7 +47,7 @@ public class DatastoreMappingContext extends
 
 	private static final FieldNamingStrategy DEFAULT_NAMING_STRATEGY = PropertyNameFieldNamingStrategy.INSTANCE;
 
-	private final FieldNamingStrategy fieldNamingStrategy = DEFAULT_NAMING_STRATEGY;
+	private static final FieldNamingStrategy FIELD_NAMING_STRATEGY = DEFAULT_NAMING_STRATEGY;
 
 	private ApplicationContext applicationContext;
 
@@ -57,8 +56,7 @@ public class DatastoreMappingContext extends
 	private static final Map<Class, Set<Class>> discriminationFamilies = new ConcurrentHashMap<>();
 
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
+	public void setApplicationContext(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
 
@@ -114,8 +112,7 @@ public class DatastoreMappingContext extends
 	@Override
 	protected DatastorePersistentProperty createPersistentProperty(Property property,
 			DatastorePersistentEntity<?> owner, SimpleTypeHolder simpleTypeHolder) {
-		return new DatastorePersistentPropertyImpl(property, owner, simpleTypeHolder,
-				this.fieldNamingStrategy);
+		return new DatastorePersistentPropertyImpl(property, owner, simpleTypeHolder, FIELD_NAMING_STRATEGY);
 	}
 
 	/**

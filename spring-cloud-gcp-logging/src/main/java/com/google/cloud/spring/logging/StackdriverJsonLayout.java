@@ -18,6 +18,7 @@ package com.google.cloud.spring.logging;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -194,7 +195,7 @@ public class StackdriverJsonLayout extends JsonLayout {
 		super.start();
 
 		// If no Project ID set, then attempt to resolve it with the default project ID provider
-		if (StringUtils.isEmpty(this.projectId) || this.projectId.endsWith("_IS_UNDEFINED")) {
+		if (!StringUtils.hasText(this.projectId) || this.projectId.endsWith("_IS_UNDEFINED")) {
 			GcpProjectIdProvider projectIdProvider = new DefaultGcpProjectIdProvider();
 			this.projectId = projectIdProvider.getProjectId();
 		}
@@ -211,11 +212,9 @@ public class StackdriverJsonLayout extends JsonLayout {
 		Map<String, Object> map = new LinkedHashMap<>();
 
 		if (this.includeMDC) {
-			event.getMDCPropertyMap().forEach((key, value) -> {
-				if (!FILTERED_MDC_FIELDS.contains(key)) {
-					map.put(key, value);
-				}
-			});
+			Map<String, String> shallowCopy = new HashMap<>(event.getMDCPropertyMap());
+			shallowCopy.keySet().removeAll(FILTERED_MDC_FIELDS);
+			map.putAll(shallowCopy);
 		}
 		if (this.includeTimestamp) {
 			map.put(StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE,
@@ -233,17 +232,7 @@ public class StackdriverJsonLayout extends JsonLayout {
 		add(JsonLayout.LOGGER_ATTR_NAME, this.includeLoggerName, event.getLoggerName(), map);
 
 		if (this.includeFormattedMessage) {
-			String message = event.getFormattedMessage();
-			if (this.includeExceptionInMessage) {
-				IThrowableProxy throwableProxy = event.getThrowableProxy();
-				if (throwableProxy != null) {
-					String stackTrace = getThrowableProxyConverter().convert(event);
-					if (stackTrace != null && !stackTrace.equals("")) {
-						message += "\n" + stackTrace;
-					}
-				}
-			}
-			map.put(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, message);
+			map.put(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, formatMessage(event));
 		}
 		add(JsonLayout.MESSAGE_ATTR_NAME, this.includeMessage, event.getMessage(), map);
 		add(JsonLayout.CONTEXT_ATTR_NAME, this.includeContextName, event.getLoggerContextVO().getName(), map);
@@ -268,6 +257,23 @@ public class StackdriverJsonLayout extends JsonLayout {
 		return map;
 	}
 
+	private String formatMessage(ILoggingEvent event) {
+		StringBuilder message = new StringBuilder(event.getFormattedMessage());
+		if (!this.includeExceptionInMessage) {
+			return message.toString();
+		}
+		IThrowableProxy throwableProxy = event.getThrowableProxy();
+		if (throwableProxy != null) {
+			message.append(formatThrowable(event));
+		}
+		return message.toString();
+	}
+
+	private String formatThrowable(ILoggingEvent event) {
+		String stackTrace = getThrowableProxyConverter().convert(event);
+		return StringUtils.hasText(stackTrace) ? "\n" + stackTrace : "";
+	}
+
 	protected String formatTraceId(final String traceId) {
 		// Trace IDs are either 64-bit or 128-bit, which is 16-digit hex, or 32-digit hex.
 		// If traceId is 64-bit (16-digit hex), then we need to prepend 0's to make a 32-digit hex.
@@ -287,8 +293,8 @@ public class StackdriverJsonLayout extends JsonLayout {
 		if (traceId == null) {
 			traceId = TraceIdLoggingEnhancer.getCurrentTraceId();
 		}
-		if (!StringUtils.isEmpty(traceId)
-				&& !StringUtils.isEmpty(this.projectId)
+		if (StringUtils.hasText(traceId)
+				&& StringUtils.hasText(this.projectId)
 				&& !this.projectId.endsWith("_IS_UNDEFINED")) {
 			traceId = StackdriverTraceConstants.composeFullTraceName(
 					this.projectId, formatTraceId(traceId));

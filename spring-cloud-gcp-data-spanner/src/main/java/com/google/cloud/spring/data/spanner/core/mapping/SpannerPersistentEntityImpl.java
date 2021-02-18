@@ -47,6 +47,7 @@ import org.springframework.expression.ParserContext;
 import org.springframework.expression.common.LiteralExpression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -171,14 +172,13 @@ public class SpannerPersistentEntityImpl<T>
 		if (property.getPrimaryKeyOrder() != null
 				&& property.getPrimaryKeyOrder().isPresent()) {
 			int order = property.getPrimaryKeyOrder().getAsInt();
-			if (this.primaryKeyParts.containsKey(order)) {
-				throw new SpannerDataException(
-						"Two properties were annotated with the same primary key order: "
-								+ property.getColumnName() + " and "
-								+ this.primaryKeyParts.get(order).getColumnName()
-								+ " in " + getType().getSimpleName() + ".");
-			}
-			this.primaryKeyParts.put(order, property);
+			this.primaryKeyParts.merge(order, property, (oldVal, newVal) -> {
+						throw new SpannerDataException(
+								"Two properties were annotated with the same primary key order: "
+										+ property.getColumnName() + " and "
+										+ this.primaryKeyParts.get(order).getColumnName()
+										+ " in " + getType().getSimpleName() + ".");
+					});
 		}
 	}
 
@@ -406,64 +406,9 @@ public class SpannerPersistentEntityImpl<T>
 	}
 
 	@Override
-	public <B> PersistentPropertyAccessor<B> getPropertyAccessor(B object) {
-		PersistentPropertyAccessor<B> delegatedAccessor = super.getPropertyAccessor(object);
-		return new PersistentPropertyAccessor<B>() {
-
-			@Override
-			public void setProperty(PersistentProperty<?> property,
-					@Nullable Object value) {
-				if (property.isIdProperty()) {
-					SpannerPersistentEntity<?> owner = (SpannerPersistentEntity<?>) property.getOwner();
-					SpannerPersistentProperty[] primaryKeyProperties = owner.getPrimaryKeyProperties();
-
-					Iterator<Object> partsIterator;
-					if (value instanceof Key) {
-						Key keyValue = (Key) value;
-						if (keyValue.size() != primaryKeyProperties.length) {
-							throwWrongNumOfPartsException();
-						}
-						partsIterator = keyValue.getParts().iterator();
-					}
-					else {
-						if (primaryKeyProperties.length > 1) {
-							throwWrongNumOfPartsException();
-						}
-						partsIterator = Collections.singleton(value).iterator();
-					}
-					for (int i = 0; i < primaryKeyProperties.length; i++) {
-						SpannerPersistentProperty prop = primaryKeyProperties[i];
-						delegatedAccessor.setProperty(prop,
-								SpannerPersistentEntityImpl.this.spannerEntityProcessor.getReadConverter().convert(
-										partsIterator.next(), prop.getType()));
-					}
-				}
-				else {
-					delegatedAccessor.setProperty(property, value);
-				}
-			}
-
-			private void throwWrongNumOfPartsException() {
-				throw new SpannerDataException(
-						"The number of key parts is not equal to the number of primary key properties");
-			}
-
-			@Nullable
-			@Override
-			public Object getProperty(PersistentProperty<?> property) {
-				if (property.isIdProperty()) {
-					return ((SpannerCompositeKeyProperty) property).getId(getBean());
-				}
-				else {
-					return delegatedAccessor.getProperty(property);
-				}
-			}
-
-			@Override
-			public B getBean() {
-				return delegatedAccessor.getBean();
-			}
-		};
+	@NonNull
+	public <B> PersistentPropertyAccessor<B> getPropertyAccessor(@NonNull B object) {
+		return new DelegatingPersistentPropertyAccessor<>(super.getPropertyAccessor(object));
 	}
 
 	@Override
@@ -472,5 +417,62 @@ public class SpannerPersistentEntityImpl<T>
 		return primaryKeyProperty.isEmbedded()
 				? this.spannerMappingContext.getPersistentEntityOrFail(primaryKeyProperty.getType()).getPrimaryKeyColumnName()
 				: primaryKeyProperty.getColumnName();
+	}
+
+	private class DelegatingPersistentPropertyAccessor<B> implements PersistentPropertyAccessor<B> {
+
+		private final PersistentPropertyAccessor<B> delegate;
+
+		DelegatingPersistentPropertyAccessor(PersistentPropertyAccessor<B> delegate) {
+			this.delegate = delegate;
+		}
+
+		@Override
+		public void setProperty(PersistentProperty<?> property, @Nullable Object value) {
+			if (!property.isIdProperty()) {
+				delegate.setProperty(property, value);
+				return;
+			}
+
+			SpannerPersistentEntity<?> owner = (SpannerPersistentEntity<?>) property.getOwner();
+			SpannerPersistentProperty[] primaryKeyProperties = owner.getPrimaryKeyProperties();
+
+			Iterator<Object> partsIterator;
+			if (value instanceof Key) {
+				Key keyValue = (Key) value;
+				if (keyValue.size() != primaryKeyProperties.length) {
+					throw new SpannerDataException(
+							"The number of key parts is not equal to the number of primary key properties");
+				}
+				partsIterator = keyValue.getParts().iterator();
+			}
+			else {
+				if (primaryKeyProperties.length > 1) {
+					throw new SpannerDataException(
+							"The number of key parts is not equal to the number of primary key properties");
+				}
+				partsIterator = Collections.singleton(value).iterator();
+			}
+
+			for (SpannerPersistentProperty prop : primaryKeyProperties) {
+				delegate.setProperty(prop,
+						SpannerPersistentEntityImpl.this.spannerEntityProcessor.getReadConverter()
+								.convert(partsIterator.next(), prop.getType()));
+			}
+		}
+
+		@Nullable
+		@Override
+		public Object getProperty(PersistentProperty<?> property) {
+			return property.isIdProperty()
+					? ((SpannerCompositeKeyProperty) property).getId(getBean())
+					: delegate.getProperty(property);
+		}
+
+		@Override
+		@NonNull
+		public B getBean() {
+			return delegate.getBean();
+		}
 	}
 }
