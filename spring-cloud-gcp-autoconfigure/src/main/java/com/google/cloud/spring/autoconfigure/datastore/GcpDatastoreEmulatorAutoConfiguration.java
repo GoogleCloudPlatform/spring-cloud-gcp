@@ -114,7 +114,7 @@ public class GcpDatastoreEmulatorAutoConfiguration implements SmartLifecycle {
 			this.running = true;
 		}
 		catch (Exception e) {
-			LOGGER.error("Error constructing datastore instance.");
+			LOGGER.error("Error constructing datastore instance.", e);
 		}
 	}
 }
