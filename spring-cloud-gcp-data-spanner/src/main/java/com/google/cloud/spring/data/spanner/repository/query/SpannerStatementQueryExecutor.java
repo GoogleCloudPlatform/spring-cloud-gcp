@@ -323,11 +323,11 @@ public final class SpannerStatementQueryExecutor {
 	 * @return the combination of SQL conditions joined by {@code AND}.
 	 */
 	private static String combineWithAnd(String cond1, String cond2) {
-		if (StringUtils.hasLength(cond1)) {
-			return !StringUtils.hasLength(cond2) ? cond2 : "";
+		if (!StringUtils.hasLength(cond1)) {
+			return StringUtils.hasLength(cond2) ? cond2 : "";
 		}
-		if (StringUtils.hasLength(cond2)) {
-			return !StringUtils.hasLength(cond1) ? cond1 : "";
+		if (!StringUtils.hasLength(cond2)) {
+			return StringUtils.hasLength(cond1) ? cond1 : "";
 		}
 		return "(" + cond1 + ") AND (" + cond2 + ")";
 	}
