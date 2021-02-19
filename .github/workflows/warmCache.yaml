@@ -22,9 +22,14 @@ jobs:
           java-version: 11
 
       - uses: actions/cache@v2
+        id: loadCache
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ steps.date.outputs.date }}
+
+      - name: Fail if cache already warm
+        if: steps.loadCache.outputs.cache-hit == 'true'
+        run: /bin/false # Do nothing, unsuccessfully.
 
       - uses: actions/cache@v2
         with:
