@@ -140,28 +140,38 @@ spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.ack-mode=AUTO_A
 </div>
 </div>
 <div class="paragraph">
-<p>If automatic resource creation is turned ON and the subscription and/or the topic do not exist for a consumer, a subscription and potentially a topic will be created.
-The topic name will be the same as the destination name, and the subscription name will be the destination name followed by the consumer group name.</p>
+<p>With automatic resource creation turned ON for a consumer, the library creates a topic and/or a subscription if they do not exist.
+The topic name becomes the same as the destination name, and the subscription name follows these rules (in order of precedence):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A user-defined, pre-existing subscription (use <code>spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.subscriptionName</code>)</p>
+</li>
+<li>
+<p>A consumer group using the topic name (use <code>spring.cloud.stream.bindings.events.group</code> to create a subscription named <code>&lt;topicName&gt;.&lt;group&gt;</code>)</p>
+</li>
+<li>
+<p>If neither of the above are specified, the library creates an anonymous subscription with the name <code>anonymous.&lt;destinationName&gt;.&lt;randomUUID&gt;</code>.
+Then when the binder shuts down, the library automatically cleans up all Pub/Sub subscriptions created for anonymous consumer groups.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Regardless of the <code>auto-create-resources</code> setting, if the consumer group is not specified, an anonymous one will be created with the name <code>anonymous.&lt;destinationName&gt;.&lt;randomUUID&gt;</code>.
-Then when the binder shuts down, all Pub/Sub subscriptions created for anonymous consumer groups will be automatically cleaned up.</p>
+<p>For example, with this configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.properties</div>
+<div class="content">
+<pre class="highlight"><code>spring.cloud.stream.bindings.events.destination=myEvents
+spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=false</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>For example, for the following configuration, a topic named <code>myEvents</code> and a subscription called <code>myEvents.consumerGroup1</code> would be created.
-If the consumer group is not specified, a subscription called <code>anonymous.myEvents.a6d83782-c5a3-4861-ac38-e6e2af15a7be</code> would be created and later cleaned up.</p>
+<p>Only an anonymous subscription named <code>anonymous.myEvents.a6d83782-c5a3-4861-ac38-e6e2af15a7be</code> is created and later cleaned up.</p>
 </div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-If you are manually creating Pub/Sub subscriptions for consumers, make sure that they follow the naming convention of <code>&lt;destinationName&gt;.&lt;consumerGroup&gt;</code>.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>In another example, with the following configuration:</p>
 </div>
 <div class="listingblock">
 <div class="title">application.properties</div>
@@ -172,6 +182,19 @@ spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=tr
 # specify consumer group, and avoid anonymous consumer group generation
 spring.cloud.stream.bindings.events.group=consumerGroup1</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>These resources will be created:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A topic named <code>myEvents</code></p>
+</li>
+<li>
+<p>A subscription named <code>myEvents.consumerGroup1</code></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
