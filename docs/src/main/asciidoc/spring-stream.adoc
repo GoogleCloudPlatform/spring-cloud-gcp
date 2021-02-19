@@ -72,15 +72,13 @@ These options are described in detail in the <<inbound-channel-adapter-using-pub
 spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.ack-mode=AUTO_ACK
 ----
 
-If automatic resource creation is turned ON and the subscription and/or the topic do not exist for a consumer, a subscription and potentially a topic will be created.
-The topic name will be the same as the destination name, and the subscription name will be the destination name followed by the consumer group name.
+With automatic resource creation turned ON for a consumer, the library creates a topic and/or a subscription if they do not exist.
+The topic name becomes the same as the destination name, and the subscription name follows these rules (in order of precedence):
 
-Regardless of the `auto-create-resources` setting, you can control the subscriber with the following options (in order of precedence):
-
-* A pre-existing subscription (use `spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.subscriptionName`)
-* A consumer group that uses the topic name (use `spring.cloud.stream.bindings.events.group` to create a subscription named `<topicName>.<group>`)
-* If neither of the above are specified, an anonymous one will be created with the name `anonymous.<destinationName>.<randomUUID>`.
-Then when the binder shuts down, all Pub/Sub subscriptions created for anonymous consumer groups will be automatically cleaned up.
+* A user-defined, pre-existing subscription (use `spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.subscriptionName`)
+* A consumer group using the topic name (use `spring.cloud.stream.bindings.events.group` to create a subscription named `<topicName>.<group>`)
+* If neither of the above are specified, the library creates an anonymous subscription with the name `anonymous.<destinationName>.<randomUUID>`.
+Then when the binder shuts down, the library automatically cleans up all Pub/Sub subscriptions created for anonymous consumer groups.
 
 For example, with this configuration:
 
@@ -90,7 +88,7 @@ For example, with this configuration:
 spring.cloud.stream.bindings.events.destination=myEvents
 spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=false
 ----
-Only an anonymous subscription named `anonymous.myEvents.a6d83782-c5a3-4861-ac38-e6e2af15a7be` will be created and later cleaned up.
+Only an anonymous subscription named `anonymous.myEvents.a6d83782-c5a3-4861-ac38-e6e2af15a7be` is created and later cleaned up.
 
 In another example, with the following configuration:
 
