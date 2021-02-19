@@ -292,7 +292,7 @@ public final class SpannerStatementQueryExecutor {
 		String keyClause = orParts.stream().map(s -> "(" + s + ")").collect(Collectors.joining(" OR "));
 		String condition = combineWithAnd(keyClause, whereClause);
 		String sb = "SELECT " + getColumnsStringForSelect(persistentEntity, mappingContext, true) + " FROM "
-				+ (StringUtils.isEmpty(index) ? persistentEntity.tableName() : String.format("%s@{FORCE_INDEX=%s}", persistentEntity.tableName(), index))
+				+ (!StringUtils.hasLength(index) ? persistentEntity.tableName() : String.format("%s@{FORCE_INDEX=%s}", persistentEntity.tableName(), index))
 				+ (condition.isEmpty() ? "" : WHERE + condition);
 		return buildStatementFromSqlWithArgs(sb, tags, null, writeConverter,
 				keyParts.toArray(), null);
