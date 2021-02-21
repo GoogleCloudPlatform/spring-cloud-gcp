@@ -16,55 +16,70 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
-import java.util.UUID;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import com.google.api.gax.rpc.ApiException;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.api.gax.rpc.StatusCode.Code;
-import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.util.Assert;
+import org.springframework.util.concurrent.ListenableFuture;
 
 /**
- * Default implemenation of
+ * Default implementation of
  * {@link org.springframework.boot.actuate.health.HealthIndicator} for Pub/Sub. Validates
- * if connection is successful by looking for a random generated subscription name that
- * won't be found. If no subscription is found we know the client is able to connect to
- * GCP Pub/Sub APIs.
+ * if connection is successful by pulling message asynchronously from the pubSubHealthTemplate.
+ * If no subscription is found we know the client is able to connect to GCP Pub/Sub APIs.
  *
  * @author Vinicius Carvalho
+ * @author Patrik Hörlin
  *
  * @since 1.2.2
  */
 public class PubSubHealthIndicator extends AbstractHealthIndicator {
 
-	private final PubSubTemplate pubSubTemplate;
+	private final PubSubHealthTemplate pubSubHealthTemplate;
 
-	public PubSubHealthIndicator(PubSubTemplate pubSubTemplate) {
+	public PubSubHealthIndicator(PubSubHealthTemplate pubSubHealthTemplate) {
 		super("Failed to connect to Pub/Sub APIs. Check your credentials and verify you have proper access to the service.");
-		Assert.notNull(pubSubTemplate, "PubSubTemplate can't be null");
-		this.pubSubTemplate = pubSubTemplate;
+		Assert.notNull(pubSubHealthTemplate, "PubSubHealthTemplate can't be null");
+		this.pubSubHealthTemplate = pubSubHealthTemplate;
 	}
 
 	@Override
 	protected void doHealthCheck(Health.Builder builder) {
+		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = this.pubSubHealthTemplate.pullAsync();
 		try {
-			this.pubSubTemplate.pull("subscription-" + UUID.randomUUID().toString(), 1, true);
+			future.get(this.pubSubHealthTemplate.getTimeoutMillis(), TimeUnit.MILLISECONDS);
 		}
-		catch (ApiException aex) {
-			Code errorCode = aex.getStatusCode().getCode();
-			if (errorCode == StatusCode.Code.NOT_FOUND || errorCode == Code.PERMISSION_DENIED) {
-				builder.up();
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			builder.withException(e).unknown();
+		}
+		catch (ExecutionException e) {
+			Throwable t = e.getCause();
+			if (t instanceof ApiException) {
+				ApiException aex = (ApiException) t;
+				Code errorCode = aex.getStatusCode().getCode();
+				if (errorCode == StatusCode.Code.NOT_FOUND || errorCode == Code.PERMISSION_DENIED) {
+					builder.up();
+				}
+				else {
+					builder.down(aex);
+				}
 			}
 			else {
-				builder.withException(aex).down();
+				builder.down(t);
 			}
 		}
-		catch (Exception e) {
-			builder.withException(e).down();
+		catch (TimeoutException e) {
+			builder.withException(e).unknown();
 		}
 	}
-
 }

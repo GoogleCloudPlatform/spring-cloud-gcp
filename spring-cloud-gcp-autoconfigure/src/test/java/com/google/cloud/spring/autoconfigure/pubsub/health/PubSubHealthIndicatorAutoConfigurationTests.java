@@ -49,7 +49,10 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 	@Test
 	public void healthIndicatorPresent() {
 		this.baseContextRunner
-				.withPropertyValues("management.health.pubsub.enabled=true")
+				.withPropertyValues(
+						"management.health.pubsub.enabled=true",
+						"spring.cloud.gcp.pubsub.health.subscription=test",
+						"spring.cloud.gcp.pubsub.health.timeout-millis=1500")
 				.run(ctx -> {
 					PubSubHealthIndicator healthIndicator = ctx.getBean(PubSubHealthIndicator.class);
 					assertThat(healthIndicator).isNotNull();
@@ -64,14 +67,16 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 		this.baseContextRunner
 				.withBean("pubSubTemplate1", PubSubTemplate.class, () -> mockPubSubTemplate1)
 				.withBean("pubSubTemplate2", PubSubTemplate.class, () -> mockPubSubTemplate2)
-				.withPropertyValues("management.health.pubsub.enabled=true")
+				.withPropertyValues(
+						"management.health.pubsub.enabled=true",
+						"spring.cloud.gcp.pubsub.health.subscription=test",
+						"spring.cloud.gcp.pubsub.health.timeout-millis=1500")
 				.run(ctx -> {
 					assertThatThrownBy(() -> ctx.getBean(PubSubHealthIndicator.class))
 							.isInstanceOf(NoSuchBeanDefinitionException.class);
 					CompositeHealthContributor healthContributor = ctx.getBean("pubSubHealthContributor", CompositeHealthContributor.class);
 					assertThat(healthContributor).isNotNull();
 					assertThat(healthContributor.stream()).hasSize(2);
-					healthContributor.stream().forEach(System.out::println);
 					assertThat(healthContributor.stream().map(c -> ((NamedContributor) c).getName()))
 							.containsExactlyInAnyOrder("pubSubTemplate1", "pubSubTemplate2");
 				});

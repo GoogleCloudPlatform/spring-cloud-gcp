@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
@@ -31,8 +32,10 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.Assert;
 
 /**
  * {@link HealthContributorAutoConfiguration Auto-configuration} for
@@ -40,6 +43,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author Vinicius Carvalho
  * @author Elena Felder
+ * @author Patrik Hörlin
  *
  * @since 1.2.2
  */
@@ -49,13 +53,19 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnEnabledHealthIndicator("pubsub")
 @AutoConfigureBefore(HealthContributorAutoConfiguration.class)
 @AutoConfigureAfter(GcpPubSubAutoConfiguration.class)
+@EnableConfigurationProperties(PubSubHealthIndicatorProperties.class)
 public class PubSubHealthIndicatorAutoConfiguration extends
-		CompositeHealthContributorConfiguration<PubSubHealthIndicator, PubSubTemplate> {
+		CompositeHealthContributorConfiguration<PubSubHealthIndicator, PubSubHealthTemplate> {
 
 	@Bean
 	@ConditionalOnMissingBean(name = { "pubSubHealthIndicator", "pubSubHealthContributor"})
-	public HealthContributor pubSubHealthContributor(Map<String, PubSubTemplate> pubSubTemplates) {
-		return createContributor(pubSubTemplates);
-	}
+	public HealthContributor pubSubHealthContributor(Map<String, PubSubTemplate> pubSubTemplates, PubSubHealthIndicatorProperties gcpPubSubHealthProperties) {
+		Assert.notNull(pubSubTemplates, "pubSubTemplates must be provided");
+		String subscription = gcpPubSubHealthProperties.getSubscription();
+		long timeoutMillis = gcpPubSubHealthProperties.getTimeoutMillis();
 
+		Map<String, PubSubHealthTemplate> pubSubHealthTemplates = new HashMap<String, PubSubHealthTemplate>();
+		pubSubTemplates.forEach((k, v) -> pubSubHealthTemplates.put(k, new PubSubHealthTemplate(v, subscription, timeoutMillis)));
+		return createContributor(pubSubHealthTemplates);
+	}
 }
