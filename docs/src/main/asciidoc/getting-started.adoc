@@ -34,7 +34,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
 </dependencyManagement>
 ----
 
-Or, if you're a gradle user:
+Or, if you're a Gradle user:
 
 [source,subs="normal"]
 ----
