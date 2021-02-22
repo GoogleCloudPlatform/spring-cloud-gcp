@@ -40,6 +40,6 @@ public class PubSubHealthTemplateTest {
 	public void testPullAsync() {
 		PubSubHealthTemplate healthTemplate = new PubSubHealthTemplate(pubSubTemplate, "test-subscription", 1000);
 		healthTemplate.pullAsync();
-		verify(pubSubTemplate).pullAsync(eq("test-subscription"), eq(1), eq(true));
+		verify(pubSubTemplate).pullAsync("test-subscription", 1, true);
 	}
 }

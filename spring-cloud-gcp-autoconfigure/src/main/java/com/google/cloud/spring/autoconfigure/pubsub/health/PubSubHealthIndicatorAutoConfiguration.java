@@ -64,7 +64,7 @@ public class PubSubHealthIndicatorAutoConfiguration extends
 		String subscription = gcpPubSubHealthProperties.getSubscription();
 		long timeoutMillis = gcpPubSubHealthProperties.getTimeoutMillis();
 
-		Map<String, PubSubHealthTemplate> pubSubHealthTemplates = new HashMap<String, PubSubHealthTemplate>();
+		Map<String, PubSubHealthTemplate> pubSubHealthTemplates = new HashMap<>();
 		pubSubTemplates.forEach((k, v) -> pubSubHealthTemplates.put(k, new PubSubHealthTemplate(v, subscription, timeoutMillis)));
 		return createContributor(pubSubHealthTemplates);
 	}
