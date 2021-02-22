@@ -81,5 +81,8 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 		catch (TimeoutException e) {
 			builder.withException(e).unknown();
 		}
+		catch (Exception e) {
+			builder.withException(e).down();
+		}
 	}
 }

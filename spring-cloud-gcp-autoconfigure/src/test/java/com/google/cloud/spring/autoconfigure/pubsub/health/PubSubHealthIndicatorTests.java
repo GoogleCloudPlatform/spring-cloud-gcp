@@ -115,4 +115,15 @@ public class PubSubHealthIndicatorTests {
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UNKNOWN);
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void healthDownException() throws InterruptedException, ExecutionException, TimeoutException {
+		ListenableFuture<List<AcknowledgeablePubsubMessage>> result = mock(ListenableFuture.class);
+		when(result.get(anyLong(), any())).thenThrow(new RuntimeException("Runtime error"));
+
+		when(pubSubHealthTemplate.pullAsync()).thenReturn(result);
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
+		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
+	}
 }
