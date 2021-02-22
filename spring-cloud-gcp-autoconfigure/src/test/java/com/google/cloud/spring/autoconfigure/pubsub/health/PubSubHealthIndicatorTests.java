@@ -115,7 +115,7 @@ public class PubSubHealthIndicatorTests {
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UNKNOWN);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void healthDownException() throws InterruptedException, ExecutionException, TimeoutException {
