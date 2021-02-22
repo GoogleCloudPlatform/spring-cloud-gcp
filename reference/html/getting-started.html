@@ -74,14 +74,20 @@ Instead, the version of the BOM you’re using determines the versions of the us
 </div>
 </div>
 <div class="paragraph">
+<p>Or, if you&#8217;re a Gradle user:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>dependencies {
+    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:2.0.2-SNAPSHOT")
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>See the <a href="#README.adoc">sections</a> in the README for selecting an available version and Maven repository.</p>
 </div>
 <div class="paragraph">
 <p>In the following sections, it will be assumed you are using the Spring Cloud GCP BOM and the dependency snippets will not contain versions.</p>
-</div>
-<div class="paragraph">
-<p>Gradle users can achieve the same kind of BOM experience using Spring&#8217;s <a href="https://github.com/spring-gradle-plugins/dependency-management-plugin">dependency-management-plugin</a> Gradle plugin.
-For simplicity, the Gradle dependency snippets in the remainder of this document will also omit their versions.</p>
 </div>
 </div>
 <div class="sect3">
