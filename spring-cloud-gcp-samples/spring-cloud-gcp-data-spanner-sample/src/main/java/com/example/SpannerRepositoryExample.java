@@ -17,7 +17,6 @@
 package com.example;
 
 import java.util.Arrays;
-import java.util.List;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
@@ -105,18 +104,10 @@ public class SpannerRepositoryExample {
 		this.tradeRepository.getTradeIds("BUY").stream()
 				.forEach(x -> LOGGER.info(x));
 
+		LOGGER.info("Lazy-loading collection of trades for 'demo_trader1`:");
+		LOGGER.info(this.traderRepository.findById("demo_trader1").get().getTrades());
+
 		LOGGER.info("Try http://localhost:8080/trades in the browser to see all trades.");
-
-
-		Iterable<Trader> traders = traderRepository.findAll();
-		for (Trader t: traders) {
-			List<Trade> itemList = t.getTrades();
-			System.out.println("-----");
-			for (Trade oi: itemList) {
-				System.out.println(oi);
-			}
-			System.out.println("-----");
-		}
 	}
 
 	void createTablesIfNotExists() {
