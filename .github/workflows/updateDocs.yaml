@@ -41,7 +41,7 @@ jobs:
     - name: Maven go offline
       id: mvn-offline
       if: steps.mvn-cache.outputs.cache-hit != 'true'
-      run: ./mvnw dependency:go-offline
+      run: ./mvnw compile dependency:go-offline
 
     - name: Mvn install # Need this when the version/directory/pom structure changes
       run: |
