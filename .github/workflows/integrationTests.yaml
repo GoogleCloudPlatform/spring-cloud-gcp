@@ -46,7 +46,7 @@ jobs:
         id: mvn-cache
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ steps.date.outputs.date }}
+          key: ${{ runner.os }}-maven-unified-${{ steps.date.outputs.date }}
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@master
         with:
