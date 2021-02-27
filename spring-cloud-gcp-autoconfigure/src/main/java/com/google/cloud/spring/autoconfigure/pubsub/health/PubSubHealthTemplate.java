@@ -76,10 +76,7 @@ class PubSubHealthTemplate {
 	}
 
 	boolean isExpectedExecutionException(ExecutionException e) {
-		if (!hasUserSubscription() && isExpectedResponseForUnspecifiedSubscription(e)) {
-			return true;
-		}
-		return false;
+		return !hasUserSubscription() && isExpectedResponseForUnspecifiedSubscription(e);
 	}
 
 	private boolean hasUserSubscription() {

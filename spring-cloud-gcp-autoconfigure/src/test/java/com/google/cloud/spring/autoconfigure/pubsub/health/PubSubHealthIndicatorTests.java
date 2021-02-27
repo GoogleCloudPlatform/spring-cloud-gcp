@@ -27,7 +27,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.actuate.health.Status;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -48,7 +47,7 @@ public class PubSubHealthIndicatorTests {
 		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
 
 		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
-		when(pubSubHealthTemplate.isExpectedExecutionException(eq(e))).thenReturn(true);
+		when(pubSubHealthTemplate.isExpectedExecutionException(e)).thenReturn(true);
 
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UP);
@@ -59,7 +58,7 @@ public class PubSubHealthIndicatorTests {
 		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
 
 		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
-		when(pubSubHealthTemplate.isExpectedExecutionException(eq(e))).thenReturn(false);
+		when(pubSubHealthTemplate.isExpectedExecutionException(e)).thenReturn(false);
 
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
