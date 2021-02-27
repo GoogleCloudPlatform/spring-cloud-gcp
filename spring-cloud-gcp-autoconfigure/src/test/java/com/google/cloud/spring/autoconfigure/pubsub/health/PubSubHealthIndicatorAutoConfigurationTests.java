@@ -16,27 +16,46 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.grpc.GrpcStatusCode;
+import com.google.api.gax.rpc.ApiException;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import org.junit.Test;
 
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.actuate.health.CompositeHealthContributor;
 import org.springframework.boot.actuate.health.NamedContributor;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests for Pub/Sub Health Indicator autoconfiguration.
  *
  * @author Elena Felder
+ * @author Patrik Hörlin
  */
 public class PubSubHealthIndicatorAutoConfigurationTests {
 
@@ -46,9 +65,17 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 			.withBean(GcpProjectIdProvider.class,  () -> () -> "fake project")
 			.withBean(CredentialsProvider.class, () -> () -> mock(Credentials.class));
 
+	@SuppressWarnings("unchecked")
 	@Test
-	public void healthIndicatorPresent() {
+	public void healthIndicatorPresent() throws Exception {
+		PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
+		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
+
+		when(future.get(anyLong(), any())).thenReturn(Collections.emptyList());
+		when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+
 		this.baseContextRunner
+				.withBean("pubSubTemplate", PubSubTemplate.class, () -> mockPubSubTemplate)
 				.withPropertyValues(
 						"management.health.pubsub.enabled=true",
 						"spring.cloud.gcp.pubsub.health.subscription=test",
@@ -59,10 +86,16 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 				});
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	public void compositeHealthIndicatorPresentMultiplePubSubTemplate() {
+	public void compositeHealthIndicatorPresentMultiplePubSubTemplate() throws Exception {
 		PubSubTemplate mockPubSubTemplate1 = mock(PubSubTemplate.class);
 		PubSubTemplate mockPubSubTemplate2 = mock(PubSubTemplate.class);
+		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
+
+		when(future.get(anyLong(), any())).thenReturn(Collections.emptyList());
+		when(mockPubSubTemplate1.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+		when(mockPubSubTemplate2.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 
 		this.baseContextRunner
 				.withBean("pubSubTemplate1", PubSubTemplate.class, () -> mockPubSubTemplate1)
@@ -77,9 +110,60 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 					CompositeHealthContributor healthContributor = ctx.getBean("pubSubHealthContributor", CompositeHealthContributor.class);
 					assertThat(healthContributor).isNotNull();
 					assertThat(healthContributor.stream()).hasSize(2);
-					assertThat(healthContributor.stream().map(c -> ((NamedContributor) c).getName()))
+					assertThat(healthContributor.stream().map(c -> ((NamedContributor<?>) c).getName()))
 							.containsExactlyInAnyOrder("pubSubTemplate1", "pubSubTemplate2");
 				});
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void apiExceptionWhenValidating_userSubscriptionSpecified_healthAutoConfigurationFails() throws Exception {
+		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration();
+		PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
+		properties.setSubscription("test");
+
+		PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
+		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
+		Exception e = new ApiException(new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND), false);
+
+		when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+		doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
+
+		assertThatThrownBy(() -> p.pubSubHealthContributor(Map.of("pubSubTemplate", mockPubSubTemplate), properties))
+				.isInstanceOf(BeanInitializationException.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void apiExceptionWhenValidating_userSubscriptionNotSpecified_healthAutoConfigurationSucceeds() throws Exception {
+		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration();
+		PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
+
+		PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
+		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
+		Exception e = new ApiException(new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND), false);
+
+		when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+		doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
+
+		assertThatCode(() -> p.pubSubHealthContributor(Map.of("pubSubTemplate", mockPubSubTemplate), properties)).doesNotThrowAnyException();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void runtimeExceptionWhenValidating_healthAutoConfigurationFails() throws Exception {
+		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration();
+		PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
+
+		PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
+		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
+		Exception e = new RuntimeException("Runtime exception");
+
+		when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+		doThrow(e).when(future).get(anyLong(), any());
+
+		assertThatThrownBy(() -> p.pubSubHealthContributor(Map.of("pubSubTemplate", mockPubSubTemplate), properties))
+				.isInstanceOf(BeanInitializationException.class);
 	}
 
 	@Test

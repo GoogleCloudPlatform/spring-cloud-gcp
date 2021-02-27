@@ -16,26 +16,27 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
-import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.google.api.gax.rpc.ApiException;
 import com.google.api.gax.rpc.StatusCode;
-import com.google.api.gax.rpc.StatusCode.Code;
-import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.util.Assert;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * Default implementation of
  * {@link org.springframework.boot.actuate.health.HealthIndicator} for Pub/Sub. Validates
  * if connection is successful by pulling message asynchronously from the pubSubHealthTemplate.
- * If no subscription is found we know the client is able to connect to GCP Pub/Sub APIs.
+ *
+ * If a custom subscription has been specified, this health indicator will only signal up
+ * if messages are successfully pulled and acknowledged.
+ *
+ * If no subscription has been specified, this health indicator will pull messages from a random subscription
+ * that is expected not to exist. It will signal up if it is able to connect to GCP Pub/Sub APIs,
+ * i.e. the pull results in a response of {@link StatusCode.Code#NOT_FOUND} or
+ * {@link StatusCode.Code#PERMISSION_DENIED}.
  *
  * @author Vinicius Carvalho
  * @author Patrik Hörlin
@@ -48,41 +49,33 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 
 	public PubSubHealthIndicator(PubSubHealthTemplate pubSubHealthTemplate) {
 		super("Failed to connect to Pub/Sub APIs. Check your credentials and verify you have proper access to the service.");
-		Assert.notNull(pubSubHealthTemplate, "PubSubHealthTemplate can't be null");
+		Assert.notNull(pubSubHealthTemplate, "pubSubHealthTemplate can't be null");
 		this.pubSubHealthTemplate = pubSubHealthTemplate;
 	}
 
 	@Override
 	protected void doHealthCheck(Health.Builder builder) {
-		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = this.pubSubHealthTemplate.pullAsync();
 		try {
-			future.get(this.pubSubHealthTemplate.getTimeoutMillis(), TimeUnit.MILLISECONDS);
+			pubSubHealthTemplate.pullAndAckAsync();
+			builder.up();
 		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			builder.withException(e).unknown();
 		}
 		catch (ExecutionException e) {
-			Throwable t = e.getCause();
-			if (t instanceof ApiException) {
-				ApiException aex = (ApiException) t;
-				Code errorCode = aex.getStatusCode().getCode();
-				if (errorCode == StatusCode.Code.NOT_FOUND || errorCode == Code.PERMISSION_DENIED) {
-					builder.up();
-				}
-				else {
-					builder.down(aex);
-				}
+			if (pubSubHealthTemplate.isExpectedExecutionException(e)) {
+				builder.up();
 			}
 			else {
-				builder.down(t);
+				builder.down(e);
 			}
 		}
 		catch (TimeoutException e) {
 			builder.withException(e).unknown();
 		}
 		catch (Exception e) {
-			builder.withException(e).down();
+			builder.down(e);
 		}
 	}
 }

@@ -17,41 +17,82 @@
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import com.google.api.gax.rpc.ApiException;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 
+import org.springframework.util.StringUtils;
 import org.springframework.util.concurrent.ListenableFuture;
 
-public class PubSubHealthTemplate {
+/**
+ * Template for performing health checks against GCP Pub/Sub.
+ *
+ * @author Patrik Hörlin
+ *
+ */
+class PubSubHealthTemplate {
 
+	/**
+	 * Template used when performing health check calls.
+	 */
 	private PubSubTemplate pubSubTemplate;
 
+	/**
+	 * Subscription used when health checking.
+	 */
+	private String userSubscription;
+
+	/**
+	 * Subscription used when health checking if {@link #userSubscription} is {@code null}.
+	 */
 	private String subscription;
 
+	/**
+	 * Timeout when performing health check.
+	 */
 	private long timeoutMillis;
 
-	public PubSubHealthTemplate(PubSubTemplate pubSubTemplate, String subscription,
-			long timeoutMillis) {
-		super();
+	PubSubHealthTemplate(PubSubTemplate pubSubTemplate, String userSubscription, long timeoutMillis) {
 		this.pubSubTemplate = pubSubTemplate;
-		this.subscription = subscription;
+		this.userSubscription = userSubscription;
+		this.subscription = userSubscription;
+		if (!StringUtils.hasText(this.subscription)) {
+			this.subscription = UUID.randomUUID().toString();
+		}
 		this.timeoutMillis = timeoutMillis;
 	}
 
-	public PubSubTemplate getPubSubTemplate() {
-		return pubSubTemplate;
+	void pullAndAckAsync() throws InterruptedException, ExecutionException, TimeoutException {
+		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = pubSubTemplate.pullAsync(this.subscription, 1, true);
+		List<AcknowledgeablePubsubMessage> messages = future.get(timeoutMillis, TimeUnit.MILLISECONDS);
+		messages.forEach(AcknowledgeablePubsubMessage::ack);
 	}
 
-	public String getSubscription() {
-		return subscription;
+	boolean isExpectedExecutionException(ExecutionException e) {
+		if (!hasUserSubscription() && isExpectedResponseForUnspecifiedSubscription(e)) {
+			return true;
+		}
+		return false;
 	}
 
-	public long getTimeoutMillis() {
-		return timeoutMillis;
+	private boolean hasUserSubscription() {
+		return StringUtils.hasText(userSubscription);
 	}
 
-	public ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync() {
-		return this.pubSubTemplate.pullAsync(this.subscription, 1, true);
+	private boolean isExpectedResponseForUnspecifiedSubscription(ExecutionException e) {
+		Throwable t = e.getCause();
+		if (t instanceof ApiException) {
+			ApiException aex = (ApiException) t;
+			Code errorCode = aex.getStatusCode().getCode();
+			return errorCode == StatusCode.Code.NOT_FOUND || errorCode == Code.PERMISSION_DENIED;
+		}
+		return false;
 	}
 }

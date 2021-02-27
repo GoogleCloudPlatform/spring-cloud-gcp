@@ -18,10 +18,12 @@ package com.google.cloud.spring.autoconfigure.pubsub.health;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.boot.actuate.autoconfigure.health.CompositeHealthContributorConfiguration;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.autoconfigure.health.HealthContributorAutoConfiguration;
@@ -62,10 +64,33 @@ public class PubSubHealthIndicatorAutoConfiguration extends
 	public HealthContributor pubSubHealthContributor(Map<String, PubSubTemplate> pubSubTemplates, PubSubHealthIndicatorProperties gcpPubSubHealthProperties) {
 		Assert.notNull(pubSubTemplates, "pubSubTemplates must be provided");
 		String subscription = gcpPubSubHealthProperties.getSubscription();
-		long timeoutMillis = gcpPubSubHealthProperties.getTimeoutMillis();
+		Long timeoutMillis = gcpPubSubHealthProperties.getTimeoutMillis();
 
 		Map<String, PubSubHealthTemplate> pubSubHealthTemplates = new HashMap<>();
 		pubSubTemplates.forEach((k, v) -> pubSubHealthTemplates.put(k, new PubSubHealthTemplate(v, subscription, timeoutMillis)));
+		pubSubHealthTemplates.forEach(this::validatePubSubHealthTemplate);
 		return createContributor(pubSubHealthTemplates);
+	}
+
+	private void validatePubSubHealthTemplate(String name, PubSubHealthTemplate pubSubHealthTemplate) {
+		try {
+			pubSubHealthTemplate.pullAndAckAsync();
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			validationFailed(name, e);
+		}
+		catch (ExecutionException e) {
+			if (!pubSubHealthTemplate.isExpectedExecutionException(e)) {
+				validationFailed(name, e);
+			}
+		}
+		catch (Exception e) {
+			validationFailed(name, e);
+		}
+	}
+
+	private void validationFailed(String name, Exception e) {
+		throw new BeanInitializationException("Validation of health indicator failed for " + name, e);
 	}
 }

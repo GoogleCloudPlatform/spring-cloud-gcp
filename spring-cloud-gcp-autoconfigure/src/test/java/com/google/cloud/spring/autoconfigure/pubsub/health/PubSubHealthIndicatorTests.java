@@ -16,27 +16,19 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import com.google.api.gax.grpc.GrpcStatusCode;
-import com.google.api.gax.rpc.ApiException;
-import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
-import io.grpc.Status.Code;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import org.springframework.boot.actuate.health.Status;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.SettableListenableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
@@ -52,77 +44,59 @@ public class PubSubHealthIndicatorTests {
 	private PubSubHealthTemplate pubSubHealthTemplate;
 
 	@Test
-	public void healthUpFor404() throws Exception {
-		SettableListenableFuture<List<AcknowledgeablePubsubMessage>> result = new SettableListenableFuture<>();
-		result.setException(new ApiException(
-				new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND), false));
+	public void healthUpForExpectedException() throws Exception {
+		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
 
-		when(pubSubHealthTemplate.pullAsync()).thenReturn(result);
+		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
+		when(pubSubHealthTemplate.isExpectedExecutionException(eq(e))).thenReturn(true);
+
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UP);
 	}
 
 	@Test
-	public void healthUpFor403() throws Exception {
-		SettableListenableFuture<List<AcknowledgeablePubsubMessage>> result = new SettableListenableFuture<>();
-		result.setException(new ApiException(
-				new IllegalStateException("Illegal State"), GrpcStatusCode.of(Code.PERMISSION_DENIED), false));
+	public void healthDown() throws Exception {
+		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
 
-		when(pubSubHealthTemplate.pullAsync()).thenReturn(result);
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
-		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UP);
-	}
+		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
+		when(pubSubHealthTemplate.isExpectedExecutionException(eq(e))).thenReturn(false);
 
-	@Test
-	public void healthDown() {
-		SettableListenableFuture<List<AcknowledgeablePubsubMessage>> result = new SettableListenableFuture<>();
-		result.setException(new ApiException(new IllegalStateException("Illegal State"),
-				GrpcStatusCode.of(io.grpc.Status.Code.INVALID_ARGUMENT), false));
-
-		when(pubSubHealthTemplate.pullAsync()).thenReturn(result);
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}
 
 	@Test
-	public void healthDownGenericException() {
-		SettableListenableFuture<List<AcknowledgeablePubsubMessage>> result = new SettableListenableFuture<>();
-		result.setException(new IllegalStateException("Illegal State"));
+	public void healthDownGenericException() throws Exception {
+		Exception e = new IllegalStateException("Illegal State");
 
-		when(pubSubHealthTemplate.pullAsync()).thenReturn(result);
+		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
-	public void healthUnknownInterruptedException() throws InterruptedException, ExecutionException, TimeoutException {
-		ListenableFuture<List<AcknowledgeablePubsubMessage>> result = mock(ListenableFuture.class);
-		when(result.get(anyLong(), any())).thenThrow(new InterruptedException("Interrupted"));
+	public void healthUnknownInterruptedException() throws Exception {
+		Exception e = new InterruptedException("Interrupted");
 
-		when(pubSubHealthTemplate.pullAsync()).thenReturn(result);
+		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UNKNOWN);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
-	public void healthUnknownTimeoutException() throws InterruptedException, ExecutionException, TimeoutException {
-		ListenableFuture<List<AcknowledgeablePubsubMessage>> result = mock(ListenableFuture.class);
-		when(result.get(anyLong(), any())).thenThrow(new TimeoutException("Timed out waiting for result"));
+	public void healthUnknownTimeoutException() throws Exception {
+		Exception e = new TimeoutException("Timed out waiting for result");
 
-		when(pubSubHealthTemplate.pullAsync()).thenReturn(result);
+		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UNKNOWN);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void healthDownException() throws InterruptedException, ExecutionException, TimeoutException {
-		ListenableFuture<List<AcknowledgeablePubsubMessage>> result = mock(ListenableFuture.class);
-		when(result.get(anyLong(), any())).thenThrow(new RuntimeException("Runtime error"));
+		Exception e = new RuntimeException("Runtime error");
 
-		when(pubSubHealthTemplate.pullAsync()).thenReturn(result);
+		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}

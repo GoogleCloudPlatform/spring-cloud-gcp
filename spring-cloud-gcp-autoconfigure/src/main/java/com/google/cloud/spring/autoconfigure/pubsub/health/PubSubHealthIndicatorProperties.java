@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
-import java.util.UUID;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -31,7 +29,7 @@ public class PubSubHealthIndicatorProperties {
 	/**
 	 * Subscription to health check against by pulling message.
 	 */
-	private String subscription = String.format("%s-%s", "subscription", UUID.randomUUID().toString());
+	private String subscription;
 
 	/**
 	 * Milliseconds to wait for response from PubSub before timing out.
