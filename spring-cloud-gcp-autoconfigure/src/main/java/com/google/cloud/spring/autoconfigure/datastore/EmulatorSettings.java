@@ -53,7 +53,7 @@ public class EmulatorSettings {
 
 	/**
 	 * The directory to be used to store/retrieve data/config for an emulator run.
-	 * Correspondent CLI property: --data-dir. The default value <USER_CONFIG_DIR>/emulators/datastore is used on null
+	 * Correspondent CLI property: --data-dir. The default value ${USER_CONFIG_DIR}/emulators/datastore is used on null
 	 */
 	private Path dataDir;
 
