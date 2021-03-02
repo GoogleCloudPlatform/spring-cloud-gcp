@@ -6077,6 +6077,18 @@ The following configuration options are available:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>0.9</code></p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.emulator.store-on-disk</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configures whether or not the emulator should persist any data to disk.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.emulator.data-dir</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The directory to be used to store/retrieve data/config for an emulator run.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default value is <code>&lt;USER_CONFIG_DIR&gt;/emulators/datastore</code>. See the <a href="https://cloud.google.com/sdk/gcloud/reference/beta/emulators/datastore/start">gcloud documentation</a> for finding your <code>USER_CONFIG_DIR</code>.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
