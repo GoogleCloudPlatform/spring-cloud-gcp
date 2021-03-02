@@ -235,8 +235,8 @@ public class PubSubAdmin implements AutoCloseable {
 		Assert.hasText(topicName, NO_TOPIC_SPECIFIED);
 
 		Subscription.Builder builder = Subscription.newBuilder()
-				.setName(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId).toString())
-				.setTopic(PubSubTopicUtils.toTopicName(topicName, this.projectId).toString());
+				.setName(subscriptionName)
+				.setTopic(topicName);
 
 		builder.setAckDeadlineSeconds(this.defaultAckDeadline);
 		if (ackDeadline != null) {
@@ -260,6 +260,13 @@ public class PubSubAdmin implements AutoCloseable {
 	 * @return the created subscription
 	 */
 	public Subscription createSubscription(Subscription.Builder builder) {
+		Assert.notNull(builder, "Builder cannot be null");
+		Assert.hasText(builder.getName(), "Subscription name must not be null or empty");
+		Assert.hasText(builder.getTopic(), "Topic name must not be null or empty");
+
+		builder.setName(PubSubSubscriptionUtils.toProjectSubscriptionName(builder.getName(), this.projectId).toString());
+		builder.setTopic(PubSubTopicUtils.toTopicName(builder.getTopic(), this.projectId).toString());
+
 		return this.subscriptionAdminClient.createSubscription(builder.build());
 	}
 
