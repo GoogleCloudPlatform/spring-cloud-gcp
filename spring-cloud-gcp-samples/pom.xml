@@ -45,6 +45,7 @@
 		<module>spring-cloud-gcp-data-multi-sample</module>
 		<module>spring-cloud-gcp-data-spanner-sample</module>
 		<module>spring-cloud-gcp-firestore-sample</module>
+		<module>spring-cloud-gcp-integration-pubsub-error-handling-sample</module>
 		<module>spring-cloud-gcp-integration-pubsub-json-sample</module>
 		<module>spring-cloud-gcp-integration-pubsub-sample</module>
 		<module>spring-cloud-gcp-integration-storage-sample</module>
