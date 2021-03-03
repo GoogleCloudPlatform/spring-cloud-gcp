@@ -47,6 +47,6 @@ public interface Codecs {
    */
   Value encode(Object value);
 
-  Codec getCodec(Class type);
+  <T> Codec<T> getCodec(Class<T> type);
 
 }

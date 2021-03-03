@@ -46,13 +46,13 @@ public final class DefaultCodecs implements Codecs {
    */
   public DefaultCodecs() {
     this.codecs = Arrays.asList(
-        new ArrayCodec(this, Boolean[].class, TypeCode.BOOL),
-        new ArrayCodec(this, ByteBuffer[].class, TypeCode.BYTES),
-        new ArrayCodec(this, LocalDate[].class, TypeCode.DATE),
-        new ArrayCodec(this, Double[].class, TypeCode.FLOAT64),
-        new ArrayCodec(this, Long[].class, TypeCode.INT64),
-        new ArrayCodec(this, String[].class, TypeCode.STRING),
-        new ArrayCodec(this, LocalDateTime[].class, TypeCode.TIMESTAMP),
+        new ArrayCodec<>(this, Boolean[].class, TypeCode.BOOL),
+        new ArrayCodec<>(this, ByteBuffer[].class, TypeCode.BYTES),
+        new ArrayCodec<>(this, LocalDate[].class, TypeCode.DATE),
+        new ArrayCodec<>(this, Double[].class, TypeCode.FLOAT64),
+        new ArrayCodec<>(this, Long[].class, TypeCode.INT64),
+        new ArrayCodec<>(this, String[].class, TypeCode.STRING),
+        new ArrayCodec<>(this, LocalDateTime[].class, TypeCode.TIMESTAMP),
         new SpannerCodec<>(Boolean.class, TypeCode.BOOL,
             v -> Value.newBuilder().setBoolValue(v).build()),
         new SpannerCodec<>(ByteBuffer.class, TypeCode.BYTES,
@@ -123,7 +123,7 @@ public final class DefaultCodecs implements Codecs {
     if (value == null) {
       return NULL_VALUE;
     }
-    Codec codec = getCodec(value.getClass());
+    Codec<?> codec = getCodec(value.getClass());
     return codec.encode(value);
   }
 }

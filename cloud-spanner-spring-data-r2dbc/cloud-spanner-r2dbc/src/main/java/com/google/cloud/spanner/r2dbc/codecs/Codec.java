@@ -38,7 +38,7 @@ public interface Codec<T> {
    * @param type input data object type
    * @return true the codec can encode value, false otherwise
    */
-  boolean canEncode(Class type);
+  boolean canEncode(Class<?> type);
 
   /**
    * Decode data to a value.
@@ -71,7 +71,7 @@ public interface Codec<T> {
    *
    * @return the encoded value
    */
-  Class<?> type();
+  Class<T> type();
 
   TypeCode getTypeCode();
 

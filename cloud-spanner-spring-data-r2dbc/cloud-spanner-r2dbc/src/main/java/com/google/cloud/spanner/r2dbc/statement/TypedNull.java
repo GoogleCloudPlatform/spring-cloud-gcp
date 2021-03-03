@@ -21,13 +21,13 @@ package com.google.cloud.spanner.r2dbc.statement;
  */
 public class TypedNull {
 
-  private final Class type;
+  private final Class<?> type;
 
-  public TypedNull(Class type) {
+  public TypedNull(Class<?> type) {
     this.type = type;
   }
 
-  public Class getType() {
+  public Class<?> getType() {
     return this.type;
   }
 }

@@ -76,7 +76,7 @@ class SpannerCodec<T> implements Codec<T> {
   }
 
   @Override
-  public Class<?> type() {
+  public Class<T> type() {
     return this.type;
   }
 

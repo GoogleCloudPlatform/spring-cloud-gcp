@@ -40,7 +40,7 @@ public class ObservableReactiveUtil {
    */
   public static <ResponseT> Mono<ResponseT> unaryCall(
       Consumer<StreamObserver<ResponseT>> remoteCall) {
-    return Mono.create(sink -> remoteCall.accept(new UnaryStreamObserver(sink)));
+    return Mono.create(sink -> remoteCall.accept(new UnaryStreamObserver<>(sink)));
   }
 
   /**
@@ -56,7 +56,7 @@ public class ObservableReactiveUtil {
       Consumer<StreamObserver<ResponseT>> remoteCall) {
 
     return Flux.create(sink -> {
-      StreamingObserver observer = new StreamingObserver(sink);
+      StreamingObserver<RequestT, ResponseT> observer = new StreamingObserver<>(sink);
       remoteCall.accept(observer);
       sink.onRequest(demand -> observer.request(demand));
     });
@@ -110,9 +110,9 @@ public class ObservableReactiveUtil {
 
     private boolean terminalEventReceived;
 
-    private final MonoSink sink;
+    private final MonoSink<ResponseT> sink;
 
-    public UnaryStreamObserver(MonoSink sink) {
+    public UnaryStreamObserver(MonoSink<ResponseT> sink) {
       this.sink = sink;
     }
 
