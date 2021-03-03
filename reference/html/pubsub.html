@@ -805,6 +805,14 @@ If <code>pushEndpoint</code> isn’t specified, the subscription uses message pu
 <pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName, String pushEndpoint)</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>You can also pass a full <code>Subscription.Builder</code> for full access to any options or features available in the client library.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(Subscription.Builder builder)</code></pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_deleting_a_subscription"><a class="link" href="#_deleting_a_subscription">Deleting a subscription</a></h4>
