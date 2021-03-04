@@ -18,10 +18,12 @@ package com.example;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
+import org.awaitility.Duration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +37,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
 
@@ -66,7 +69,7 @@ public class SenderIntegrationTest {
 	}
 
 	@Test
-	public void testSample() throws Exception {
+	public void testSample() {
 		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		String message = "test message " + UUID.randomUUID();
 
@@ -75,21 +78,11 @@ public class SenderIntegrationTest {
 
 		this.restTemplate.postForObject("/postMessage", map, String.class);
 
-		List<AcknowledgeablePubsubMessage> messages;
-
-		boolean messageReceived = false;
-		for (int i = 0; i < 100; i++) {
-			messages = this.pubSubTemplate.pull("exampleSubscription", 10, true);
+		await().pollDelay(Duration.FIVE_HUNDRED_MILLISECONDS).atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
+			List<AcknowledgeablePubsubMessage>  messages = this.pubSubTemplate.pull("exampleSubscription", 10, true);
 			messages.forEach(BasicAcknowledgeablePubsubMessage::ack);
 
-			if (messages.stream()
-					.anyMatch(m -> m.getPubsubMessage().getData().toStringUtf8().startsWith(message))) {
-				messageReceived = true;
-				break;
-			}
-			Thread.sleep(100);
-		}
-		assertThat(messageReceived).isTrue();
-
+			assertThat(messages.stream()).anyMatch(m -> m.getPubsubMessage().getData().toStringUtf8().startsWith(message));
+		});
 	}
 }
