@@ -507,6 +507,20 @@ messages.forEach(message -&gt; logger.info(message.getPubsubMessage().getData().
 </tr>
 </tbody>
 </table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+We do not recommend setting <code>returnImmediately</code> to <code>true</code>, as it may result in delayed message delivery.
+"Immediately" really means 1 second, and if Pub/Sub cannot retrieve any messages from the backend in that time, it will return 0 messages, despite having messages queue up on the topic.
+Therefore, we recommend setting <code>returnImmediately</code> to <code>false</code>, or using <code>subscribe</code> methods from the previous section.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_acknowledging_messages"><a class="link" href="#_acknowledging_messages">Acknowledging messages</a></h5>
