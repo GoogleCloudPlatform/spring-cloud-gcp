@@ -19,7 +19,7 @@
 <li><a href="#pubsub-configuration">Configuration</a></li>
 <li><a href="#_spring_boot_actuator_support">Spring Boot Actuator Support</a></li>
 <li><a href="#_pubsub_operations_template">Pub/Sub Operations &amp; Template</a></li>
-<li><a href="#_reactive_stream_subscription">Reactive Stream Subscription</a></li>
+<li><a href="#_reactive_stream_subscriber">Reactive Stream Subscriber</a></li>
 <li><a href="#_pubsub_management">Pub/Sub management</a></li>
 <li><a href="#_sample">Sample</a></li>
 </ul>
@@ -538,6 +538,34 @@ All <code>ack()</code>, <code>nack()</code>, and <code>modifyAckDeadline()</code
 </table>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_dead_letter_topics"><a class="link" href="#_dead_letter_topics">Dead Letter Topics</a></h5>
+<div class="paragraph">
+<p>Your application may occasionally receive a message it cannot process.
+If you <a href="#creating-a-subscription">create your <code>Subscription</code></a> passing the <code>Subscription.Builder</code> argument, you can specify a <code>DeadLetterPolicy</code> that will forward all <code>nack()</code>-ed and non-<code>ack()</code>-ed messages after a configurable amount of redelivery attempts.
+See <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics">here</a> for more information.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription newSubscription() {
+	// Must use the fully-qualified topic name.
+	String fullDeadLetterTopic = PubSubTopicUtils
+						.toTopicName(DEAD_LETTER_TOPIC, gcpProjectIdProvider.getProjectId())
+						.toString();
+	return pubSubAdmin.createSubscription(Subscription.newBuilder()
+			.setName(SUBSCRIPTION_NAME)
+			.setTopic(TOPIC_NAME)
+			.setDeadLetterPolicy(DeadLetterPolicy.newBuilder()
+					.setDeadLetterTopic(fullDeadLetterTopic)
+					.setMaxDeliveryAttempts(6)
+					.build()));
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dead letter topics are no different than any other topic, though some <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics#granting_forwarding_permissions">additional permissions</a> are necessary to ensure the Cloud Pub/Sub service can successfully <code>ack</code> the original message and re-<code>publish</code> it on the dead letter topic.</p>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_json_support"><a class="link" href="#_json_support">JSON support</a></h4>
@@ -632,7 +660,7 @@ TestUser receivedTestUser = message.getPayload();</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_reactive_stream_subscription"><a class="link" href="#_reactive_stream_subscription">Reactive Stream Subscription</a></h3>
+<h3 id="_reactive_stream_subscriber"><a class="link" href="#_reactive_stream_subscriber">Reactive Stream Subscriber</a></h3>
 <div class="paragraph">
 <p>It is also possible to acquire a reactive stream backed by a subscription.
 To do so, a Project Reactor dependency (<code>io.projectreactor:reactor-core</code>) must be added to the project.
@@ -696,9 +724,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </table>
 </div>
 <div class="paragraph">
-<p><code>PubSubAdmin</code> depends on <code>GcpProjectIdProvider</code> and either a <code>CredentialsProvider</code> or a <code>TopicAdminClient</code> and a <code>SubscriptionAdminClient</code>.
-If given a <code>CredentialsProvider</code>, it creates a <code>TopicAdminClient</code> and a <code>SubscriptionAdminClient</code> with the Google Cloud Java Library for Pub/Sub default settings.
-The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</code> object using the <code>GcpProjectIdProvider</code> and the <code>CredentialsProvider</code> auto-configured by the Spring Boot GCP Core starter.</p>
+<p>The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</code> object using the <code>GcpProjectIdProvider</code> and the <code>CredentialsProvider</code> auto-configured by the Spring Boot GCP Core starter.</p>
 </div>
 <div class="sect3">
 <h4 id="_creating_a_topic"><a class="link" href="#_creating_a_topic">Creating a topic</a></h4>
@@ -768,49 +794,32 @@ The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</cod
 <div class="sect3">
 <h4 id="_creating_a_subscription"><a class="link" href="#_creating_a_subscription">Creating a subscription</a></h4>
 <div class="paragraph">
-<p><code>PubSubAdmin</code> implements a method to create subscriptions to existing topics:</p>
+<p><code>PubSubAdmin</code> implements several methods to create subscriptions to existing topics:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline, String pushEndpoint)</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName)
+
+public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline)
+
+public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline, String pushEndpoint)
+
+public Subscription createSubscription(Subscriber.Builder builder)</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The default value for <code>ackDeadline</code> is 10 seconds.
+If <code>pushEndpoint</code> isn’t specified, the subscription uses message pulling, instead.
+You can also pass a <code>Subscription.Builder</code> for full control over any options or features available in the client library.</p>
 </div>
 <div class="paragraph">
 <p>Here is an example of how to create a Google Cloud Pub/Sub subscription:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public void newSubscription() {
-    pubSubAdmin.createSubscription("subscriptionName", "topicName", 10, “https://my.endpoint/push”);
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription newSubscription() {
+    return pubSubAdmin.createSubscription("subscriptionName", "topicName", 15);
 }</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Alternative methods with default settings are provided for ease of use.
-The default value for <code>ackDeadline</code> is 10 seconds.
-If <code>pushEndpoint</code> isn’t specified, the subscription uses message pulling, instead.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName)</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline)</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName, String pushEndpoint)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can also pass a full <code>Subscription.Builder</code> for full access to any options or features available in the client library.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(Subscription.Builder builder)</code></pre>
 </div>
 </div>
 </div>
