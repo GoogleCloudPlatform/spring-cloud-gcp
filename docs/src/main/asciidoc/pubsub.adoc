@@ -234,7 +234,7 @@ NOTE: All `ack()`, `nack()`, and `modifyAckDeadline()` methods on messages, as w
 ===== Dead Letter Topics
 
 Your application may occasionally receive a message it cannot process.
-If you <<creating-a-subscription,create your `Subscription`>> using the `Subscription.Builder` option, you can specify a `DeadLetterPolicy` that will forward all `nack()`-ed and non-`ack()`-ed message after a configurable amount of redelivery attempts.
+If you <<creating-a-subscription,create your `Subscription`>> passing the `Subscription.Builder` argument, you can specify a `DeadLetterPolicy` that will forward all `nack()`-ed and non-`ack()`-ed messages after a configurable amount of redelivery attempts.
 See https://cloud.google.com/pubsub/docs/dead-letter-topics[here] for more information.
 
 // TODO(ttomsu): make this an include to working code.
@@ -410,7 +410,7 @@ public Subscription createSubscription(Subscriber.Builder builder)
 
 The default value for `ackDeadline` is 10 seconds.
 If `pushEndpoint` isn’t specified, the subscription uses message pulling, instead.
-You can also pass a full `Subscription.Builder` for full control over any options or features available in the client library.
+You can also pass a `Subscription.Builder` for full control over any options or features available in the client library.
 
 Here is an example of how to create a Google Cloud Pub/Sub subscription:
 
