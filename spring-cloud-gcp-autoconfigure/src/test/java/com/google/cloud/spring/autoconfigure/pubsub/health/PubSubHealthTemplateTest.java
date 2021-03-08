@@ -96,8 +96,8 @@ class PubSubHealthTemplateTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED"})
-	void testExpectedException_userSubscriptionSpecified_shouldReturnFalse(String code) throws Exception {
+	@ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED", "UNKNOWN", "CANCELLED"})
+	void testHealthyException_userSubscriptionSpecified_shouldReturnFalse(String code) throws Exception {
 		PubSubHealthTemplate healthTemplate = new PubSubHealthTemplate(pubSubTemplate, "test-subscription", 1000);
 		Exception e = new ApiException(new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false);
 		assertThat(healthTemplate.isHealthyException(new ExecutionException(e))).isFalse();
@@ -105,9 +105,17 @@ class PubSubHealthTemplateTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED"})
-	void testExpectedException_userSubscriptionNotSpecified_shouldReturnTrue(String code) throws Exception {
+	void testHealthyException_userSubscriptionNotSpecified_shouldReturnTrue(String code) throws Exception {
 		PubSubHealthTemplate healthTemplate = new PubSubHealthTemplate(pubSubTemplate, null, 1000);
 		Exception e = new ApiException(new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false);
 		assertThat(healthTemplate.isHealthyException(new ExecutionException(e))).isTrue();
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"UNKNOWN", "CANCELLED"})
+	void testHealthyException_userSubscriptionNotSpecified_shouldReturnFalse(String code) throws Exception {
+		PubSubHealthTemplate healthTemplate = new PubSubHealthTemplate(pubSubTemplate, null, 1000);
+		Exception e = new ApiException(new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false);
+		assertThat(healthTemplate.isHealthyException(new ExecutionException(e))).isFalse();
 	}
 }

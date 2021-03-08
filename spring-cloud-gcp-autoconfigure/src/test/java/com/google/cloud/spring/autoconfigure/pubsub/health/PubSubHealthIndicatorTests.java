@@ -43,6 +43,12 @@ public class PubSubHealthIndicatorTests {
 	private PubSubHealthTemplate pubSubHealthTemplate;
 
 	@Test
+	public void healthUp() throws Exception {
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
+		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UP);
+	}
+
+	@Test
 	public void healthUpForExpectedException() throws Exception {
 		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
 

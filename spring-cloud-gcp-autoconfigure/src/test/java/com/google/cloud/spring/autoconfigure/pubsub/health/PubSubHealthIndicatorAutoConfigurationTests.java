@@ -165,8 +165,24 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 		doThrow(e).when(future).get(anyLong(), any());
 
 		Map<String, PubSubTemplate> pubSubTemplates = Map.of("pubSubTemplate", mockPubSubTemplate);
-		assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates, properties))
-				.isInstanceOf(BeanInitializationException.class);
+		assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates, properties)).isInstanceOf(BeanInitializationException.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void interruptedExceptionWhenValidating_healthAutoConfigurationFails() throws Exception {
+		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration();
+		PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
+
+		PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
+		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
+		InterruptedException e = new InterruptedException("interrupted");
+
+		when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+		doThrow(e).when(future).get(anyLong(), any());
+
+		Map<String, PubSubTemplate> pubSubTemplates = Map.of("pubSubTemplate", mockPubSubTemplate);
+		assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates, properties)).isInstanceOf(BeanInitializationException.class);
 	}
 
 	@Test
