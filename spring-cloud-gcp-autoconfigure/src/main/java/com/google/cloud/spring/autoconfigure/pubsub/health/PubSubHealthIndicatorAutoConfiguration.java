@@ -74,14 +74,14 @@ public class PubSubHealthIndicatorAutoConfiguration extends
 
 	private void validatePubSubHealthTemplate(String name, PubSubHealthTemplate pubSubHealthTemplate) {
 		try {
-			pubSubHealthTemplate.pullAndAckAsync();
+			pubSubHealthTemplate.probeHealth();
 		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			validationFailed(name, e);
 		}
 		catch (ExecutionException e) {
-			if (!pubSubHealthTemplate.isExpectedExecutionException(e)) {
+			if (!pubSubHealthTemplate.isHealthyException(e)) {
 				validationFailed(name, e);
 			}
 		}

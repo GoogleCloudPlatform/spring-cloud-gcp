@@ -28,6 +28,7 @@ import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.util.concurrent.ListenableFuture;
 
@@ -45,12 +46,12 @@ class PubSubHealthTemplate {
 	private PubSubTemplate pubSubTemplate;
 
 	/**
-	 * Subscription used when health checking.
+	 * Indicates whether a user subscription has been configured.
 	 */
-	private String userSubscription;
+	private boolean specifiedSubscription;
 
 	/**
-	 * Subscription used when health checking if {@link #userSubscription} is {@code null}.
+	 * Subscription used when health checking.
 	 */
 	private String subscription;
 
@@ -60,30 +61,29 @@ class PubSubHealthTemplate {
 	private long timeoutMillis;
 
 	PubSubHealthTemplate(PubSubTemplate pubSubTemplate, String userSubscription, long timeoutMillis) {
+		Assert.notNull(pubSubTemplate, "pubSubTemplate must be supplied.");
 		this.pubSubTemplate = pubSubTemplate;
-		this.userSubscription = userSubscription;
-		this.subscription = userSubscription;
-		if (!StringUtils.hasText(this.subscription)) {
+		this.specifiedSubscription = StringUtils.hasText(userSubscription);
+		if (this.specifiedSubscription) {
+			this.subscription = userSubscription;
+		}
+		else {
 			this.subscription = UUID.randomUUID().toString();
 		}
 		this.timeoutMillis = timeoutMillis;
 	}
 
-	void pullAndAckAsync() throws InterruptedException, ExecutionException, TimeoutException {
+	void probeHealth() throws InterruptedException, ExecutionException, TimeoutException {
 		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = pubSubTemplate.pullAsync(this.subscription, 1, true);
 		List<AcknowledgeablePubsubMessage> messages = future.get(timeoutMillis, TimeUnit.MILLISECONDS);
 		messages.forEach(AcknowledgeablePubsubMessage::ack);
 	}
 
-	boolean isExpectedExecutionException(ExecutionException e) {
-		return !hasUserSubscription() && isExpectedResponseForUnspecifiedSubscription(e);
+	boolean isHealthyException(ExecutionException e) {
+		return !this.specifiedSubscription && isHealthyResponseForUnspecifiedSubscription(e);
 	}
 
-	private boolean hasUserSubscription() {
-		return StringUtils.hasText(userSubscription);
-	}
-
-	private boolean isExpectedResponseForUnspecifiedSubscription(ExecutionException e) {
+	private boolean isHealthyResponseForUnspecifiedSubscription(ExecutionException e) {
 		Throwable t = e.getCause();
 		if (t instanceof ApiException) {
 			ApiException aex = (ApiException) t;

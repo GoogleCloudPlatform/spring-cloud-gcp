@@ -46,8 +46,8 @@ public class PubSubHealthIndicatorTests {
 	public void healthUpForExpectedException() throws Exception {
 		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
 
-		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
-		when(pubSubHealthTemplate.isExpectedExecutionException(e)).thenReturn(true);
+		doThrow(e).when(pubSubHealthTemplate).probeHealth();
+		when(pubSubHealthTemplate.isHealthyException(e)).thenReturn(true);
 
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UP);
@@ -57,8 +57,8 @@ public class PubSubHealthIndicatorTests {
 	public void healthDown() throws Exception {
 		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
 
-		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
-		when(pubSubHealthTemplate.isExpectedExecutionException(e)).thenReturn(false);
+		doThrow(e).when(pubSubHealthTemplate).probeHealth();
+		when(pubSubHealthTemplate.isHealthyException(e)).thenReturn(false);
 
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
@@ -68,7 +68,7 @@ public class PubSubHealthIndicatorTests {
 	public void healthDownGenericException() throws Exception {
 		Exception e = new IllegalStateException("Illegal State");
 
-		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
+		doThrow(e).when(pubSubHealthTemplate).probeHealth();
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}
@@ -77,7 +77,7 @@ public class PubSubHealthIndicatorTests {
 	public void healthUnknownInterruptedException() throws Exception {
 		Exception e = new InterruptedException("Interrupted");
 
-		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
+		doThrow(e).when(pubSubHealthTemplate).probeHealth();
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UNKNOWN);
 	}
@@ -86,7 +86,7 @@ public class PubSubHealthIndicatorTests {
 	public void healthUnknownTimeoutException() throws Exception {
 		Exception e = new TimeoutException("Timed out waiting for result");
 
-		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
+		doThrow(e).when(pubSubHealthTemplate).probeHealth();
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UNKNOWN);
 	}
@@ -95,7 +95,7 @@ public class PubSubHealthIndicatorTests {
 	public void healthDownException() throws InterruptedException, ExecutionException, TimeoutException {
 		Exception e = new RuntimeException("Runtime error");
 
-		doThrow(e).when(pubSubHealthTemplate).pullAndAckAsync();
+		doThrow(e).when(pubSubHealthTemplate).probeHealth();
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}

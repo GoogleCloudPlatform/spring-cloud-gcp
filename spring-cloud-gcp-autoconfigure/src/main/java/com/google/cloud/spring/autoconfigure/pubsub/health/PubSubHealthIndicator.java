@@ -56,7 +56,7 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 	@Override
 	protected void doHealthCheck(Health.Builder builder) {
 		try {
-			pubSubHealthTemplate.pullAndAckAsync();
+			pubSubHealthTemplate.probeHealth();
 			builder.up();
 		}
 		catch (InterruptedException e) {
@@ -64,7 +64,7 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 			builder.withException(e).unknown();
 		}
 		catch (ExecutionException e) {
-			if (pubSubHealthTemplate.isExpectedExecutionException(e)) {
+			if (pubSubHealthTemplate.isHealthyException(e)) {
 				builder.up();
 			}
 			else {

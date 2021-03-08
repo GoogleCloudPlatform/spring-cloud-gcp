@@ -24,12 +24,12 @@ import com.google.api.gax.grpc.GrpcStatusCode;
 import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.util.concurrent.ListenableFuture;
 
@@ -49,65 +49,65 @@ import static org.mockito.Mockito.when;
  *
  * @author Patrik Hörlin
  */
-@RunWith(MockitoJUnitRunner.class)
-public class PubSubHealthTemplateTest {
+@ExtendWith(MockitoExtension.class)
+class PubSubHealthTemplateTest {
 
 	@Mock
 	private PubSubTemplate pubSubTemplate;
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testPullAsync() throws Exception {
+	void testProbeHealth() throws Exception {
 		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
 
 		when(future.get(anyLong(), any())).thenReturn(Collections.emptyList());
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		PubSubHealthTemplate healthTemplate = new PubSubHealthTemplate(pubSubTemplate, "test-subscription", 1000);
-		healthTemplate.pullAndAckAsync();
+		healthTemplate.probeHealth();
 
 		verify(pubSubTemplate).pullAsync("test-subscription", 1, true);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testPullAsync_userSubscriptionNotSpecified_shouldGenerateRandomSubscription() throws Exception {
+	void testProbeHealth_userSubscriptionNotSpecified_shouldGenerateRandomSubscription() throws Exception {
 		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
 
 		when(future.get(anyLong(), any())).thenReturn(Collections.emptyList());
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		PubSubHealthTemplate healthTemplate = new PubSubHealthTemplate(pubSubTemplate, null, 1000);
-		healthTemplate.pullAndAckAsync();
+		healthTemplate.probeHealth();
 
 		verify(pubSubTemplate).pullAsync(anyString(), eq(1), eq(true));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testPullAsync_shouldAckMessages() throws Exception {
+	void testProbeHealth_shouldAckMessages() throws Exception {
 		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
 		AcknowledgeablePubsubMessage msg = mock(AcknowledgeablePubsubMessage.class);
 
 		when(future.get(anyLong(), any())).thenReturn(List.of(msg));
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		PubSubHealthTemplate healthTemplate = new PubSubHealthTemplate(pubSubTemplate, "test-subscription", 1000);
-		healthTemplate.pullAndAckAsync();
+		healthTemplate.probeHealth();
 
 		verify(msg).ack();
 	}
 
 	@ParameterizedTest
 	@ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED"})
-	public void testExpectedException_userSubscriptionSpecified_shouldReturnFalse(String code) throws Exception {
+	void testExpectedException_userSubscriptionSpecified_shouldReturnFalse(String code) throws Exception {
 		PubSubHealthTemplate healthTemplate = new PubSubHealthTemplate(pubSubTemplate, "test-subscription", 1000);
 		Exception e = new ApiException(new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false);
-		assertThat(healthTemplate.isExpectedExecutionException(new ExecutionException(e))).isFalse();
+		assertThat(healthTemplate.isHealthyException(new ExecutionException(e))).isFalse();
 	}
 
 	@ParameterizedTest
 	@ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED"})
-	public void testExpectedException_userSubscriptionNotSpecified_shouldReturnTrue(String code) throws Exception {
+	void testExpectedException_userSubscriptionNotSpecified_shouldReturnTrue(String code) throws Exception {
 		PubSubHealthTemplate healthTemplate = new PubSubHealthTemplate(pubSubTemplate, null, 1000);
 		Exception e = new ApiException(new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false);
-		assertThat(healthTemplate.isExpectedExecutionException(new ExecutionException(e))).isTrue();
+		assertThat(healthTemplate.isHealthyException(new ExecutionException(e))).isTrue();
 	}
 }
