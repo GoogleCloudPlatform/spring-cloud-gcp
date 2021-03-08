@@ -164,7 +164,8 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 		when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(e).when(future).get(anyLong(), any());
 
-		assertThatThrownBy(() -> p.pubSubHealthContributor(Map.of("pubSubTemplate", mockPubSubTemplate), properties))
+		Map<String, PubSubTemplate> pubSubTemplates = Map.of("pubSubTemplate", mockPubSubTemplate);
+		assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates, properties))
 				.isInstanceOf(BeanInitializationException.class);
 	}
 
