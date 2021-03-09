@@ -105,14 +105,21 @@ public class SpannerTestKit implements TestKit<String> {
 
 
   private static void createTableIfNeeded(DatabaseId id, String tableName, String definition) {
-    Boolean tableExists = Mono.from(connectionFactory.create())
-        .flatMapMany(c -> c.createStatement(
-            "SELECT table_name FROM information_schema.tables WHERE table_name = @name")
-                .bind("name", tableName)
-                .execute())
-        .flatMap(result -> result.map((r, m) -> r))
-        .hasElements()
-        .block();
+    Connection connection = Mono.from(connectionFactory.create()).block();
+
+    Boolean tableExists = false;
+
+    try {
+      tableExists = Flux.from(connection.createStatement(
+              "SELECT table_name FROM information_schema.tables WHERE table_name = @name")
+                  .bind("name", tableName)
+                  .execute())
+          .flatMap(result -> result.map((r, m) -> r))
+          .hasElements()
+          .block();
+    } finally {
+      Mono.from(connection.close()).block();
+    }
 
     if (!tableExists) {
       logger.info("Table " + tableName + " does not exist; creating");

@@ -21,10 +21,12 @@ import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.IN
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 
+import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
+import io.r2dbc.spi.Statement;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -34,6 +36,8 @@ import reactor.core.publisher.Mono;
 public class BookExampleApp {
 
   private final ConnectionFactory connectionFactory;
+
+  private final Connection connection;
 
   /**
    * Constructor.
@@ -50,14 +54,19 @@ public class BookExampleApp {
         .option(INSTANCE, sampleInstance)
         .option(DATABASE, sampleDatabase)
         .build());
+
+    this.connection = Mono.from(this.connectionFactory.create()).block();
+  }
+
+  public void cleanup() {
+    Mono.from(this.connection.close()).block();
   }
 
   /**
    * Creates a table named BOOKS.
    */
   public void createTable() {
-    Mono.from(this.connectionFactory.create())
-        .delayUntil(c -> c.createStatement("CREATE TABLE BOOKS ("
+    Mono.from(this.connection.createStatement("CREATE TABLE BOOKS ("
             + "  ID STRING(20) NOT NULL,"
             + "  TITLE STRING(MAX) NOT NULL"
             + ") PRIMARY KEY (ID)").execute())
@@ -69,37 +78,29 @@ public class BookExampleApp {
    * Saves two books.
    */
   public void saveBooks() {
-    Mono.from(this.connectionFactory.create())
-        .delayUntil(c -> c.beginTransaction())
-        .delayUntil(c ->
-            Mono.fromRunnable(() ->
-                Flux.from(c.createStatement(
-                    "INSERT BOOKS "
-                        + "(ID, TITLE)"
-                        + " VALUES "
-                        + "(@id, @title)")
-                    .bind("id", "book1")
-                    .bind("title", "Book One")
-                    .add()
-                    .bind("id", "book2")
-                    .bind("title", "Book Two")
-                    .execute())
-                    .flatMapSequential(r -> Mono.from(r.getRowsUpdated()))
-                    .collectList().block()
-            )
-        )
-        .delayUntil(c -> c.commitTransaction())
-        .doOnNext(x -> System.out.println("Insert books transaction committed."))
-        .block();
+    Statement statement = this.connection.createStatement(
+        "INSERT BOOKS "
+            + "(ID, TITLE)"
+            + " VALUES "
+            + "(@id, @title)")
+        .bind("id", "book1")
+        .bind("title", "Book One")
+        .add()
+        .bind("id", "book2")
+        .bind("title", "Book Two");
+
+    Flux.concat(this.connection.beginTransaction(),
+        Flux.from(statement.execute()).flatMapSequential(r -> Mono.from(r.getRowsUpdated())).then(),
+        this.connection.commitTransaction()
+    ).doOnComplete(() -> System.out.println("Insert books transaction committed."))
+        .blockLast();
   }
 
   /**
    * Finds books in the table named BOOKS.
    */
   public void retrieveBooks() {
-    Mono.from(this.connectionFactory.create())
-        .flatMapMany(connection -> connection
-            .createStatement("SELECT * FROM books").execute())
+    Flux.from(this.connection.createStatement("SELECT * FROM books").execute())
         .flatMap(spannerResult -> spannerResult.map(
             (r, meta) -> "Retrieved book: " + r.get("ID", String.class) + " " + r
                 .get("TITLE", String.class)
@@ -114,8 +115,7 @@ public class BookExampleApp {
    */
   public void dropTableIfPresent() {
     try {
-      Mono.from(this.connectionFactory.create())
-          .delayUntil(c -> c.createStatement("DROP TABLE BOOKS").execute())
+      Mono.from(this.connection.createStatement("DROP TABLE BOOKS").execute())
           .doOnNext(x -> System.out.println("Table drop completed."))
           .block();
     } catch (Exception e) {

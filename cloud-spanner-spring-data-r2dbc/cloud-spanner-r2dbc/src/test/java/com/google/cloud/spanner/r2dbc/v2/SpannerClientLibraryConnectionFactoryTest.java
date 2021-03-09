@@ -17,13 +17,19 @@
 package com.google.cloud.spanner.r2dbc.v2;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.NoCredentials;
+import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
 import io.r2dbc.spi.Connection;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 class SpannerClientLibraryConnectionFactoryTest {
 
@@ -63,5 +69,22 @@ class SpannerClientLibraryConnectionFactoryTest {
     Connection conn = Mono.from(cf.create()).block();
 
     assertThat(conn).isInstanceOf(SpannerClientLibraryConnection.class);
+  }
+
+  @Test
+  void connectionFactoryClosingResultsInSpannerClientClosure() {
+    SpannerConnectionConfiguration mockConfig = mock(SpannerConnectionConfiguration.class);
+    SpannerOptions mockSpannerOptions = mock(SpannerOptions.class);
+    Spanner mockSpanner = mock(Spanner.class);
+    when(mockConfig.buildSpannerOptions()).thenReturn(mockSpannerOptions);
+    when(mockSpannerOptions.getService()).thenReturn(mockSpanner);
+
+    SpannerClientLibraryConnectionFactory cf =
+        new SpannerClientLibraryConnectionFactory(mockConfig);
+    StepVerifier.create(cf.close()).verifyComplete();
+
+    verify(mockSpanner).close();
+    verifyNoMoreInteractions(mockSpanner);
+
   }
 }

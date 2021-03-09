@@ -19,6 +19,7 @@ package com.google.cloud.spanner.r2dbc.v2;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
 import com.google.cloud.spanner.r2dbc.util.Assert;
+import io.r2dbc.spi.Closeable;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryMetadata;
@@ -29,7 +30,7 @@ import reactor.core.publisher.Mono;
  * The factory is for a specific project/instance/database + credentials.
  *
  */
-public class SpannerClientLibraryConnectionFactory implements ConnectionFactory {
+public class SpannerClientLibraryConnectionFactory implements ConnectionFactory, Closeable {
 
   private SpannerConnectionConfiguration config;
 
@@ -54,5 +55,14 @@ public class SpannerClientLibraryConnectionFactory implements ConnectionFactory 
   @Override
   public ConnectionFactoryMetadata getMetadata() {
     return null;
+  }
+
+  /**
+   * This method is blocking, to be called at the end of the application lifecycle.
+   * @return
+   */
+  @Override
+  public Publisher<Void> close() {
+    return Mono.fromRunnable(() -> this.spannerClient.close());
   }
 }

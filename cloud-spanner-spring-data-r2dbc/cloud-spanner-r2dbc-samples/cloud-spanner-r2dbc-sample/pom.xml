@@ -12,7 +12,7 @@
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <name>Google Cloud Spanner R2DBC via direct SPI</name>
+  <name>Google Cloud Spanner R2DBC Sample via direct SPI</name>
 
   <properties>
     <apache-commons-io.version>2.6</apache-commons-io.version>
@@ -47,14 +47,6 @@
       <version>${apache-commons-io.version}</version>
       <scope>test</scope>
     </dependency>
-
-    <!-- facilitate project ID discovery in integration tests -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
 
   <build>

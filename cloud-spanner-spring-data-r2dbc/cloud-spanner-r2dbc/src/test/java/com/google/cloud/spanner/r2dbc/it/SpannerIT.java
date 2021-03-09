@@ -41,13 +41,13 @@ import com.google.spanner.v1.TransactionOptions;
 import com.google.spanner.v1.TransactionOptions.PartitionedDml;
 import com.google.spanner.v1.TransactionOptions.ReadOnly;
 import com.google.spanner.v1.TransactionOptions.ReadWrite;
-import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
 import io.r2dbc.spi.R2dbcDataIntegrityViolationException;
 import io.r2dbc.spi.Result;
+import io.r2dbc.spi.Statement;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -62,6 +62,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -72,7 +73,6 @@ class SpannerIT {
 
   private static final ConnectionFactory connectionFactory =
       ConnectionFactories.get(ConnectionFactoryOptions.builder()
-          // TODO: bring in autodiscovery of project ID; since relying on client library anyway
           .option(Option.valueOf("project"), ServiceOptions.getDefaultProjectId())
           .option(DRIVER, DRIVER_NAME)
           .option(INSTANCE, DatabaseProperties.INSTANCE)
@@ -83,6 +83,8 @@ class SpannerIT {
 
   private GrpcClient grpcClient;
 
+  private SpannerConnection connection;
+
   private static final Logger logger = LoggerFactory.getLogger(SpannerIT.class);
 
   /**
@@ -92,14 +94,18 @@ class SpannerIT {
   public void setupStubs() throws IOException {
     this.grpcClient = new GrpcClient(GoogleCredentials.getApplicationDefault());
     this.spanner = this.grpcClient.getSpanner();
+    this.connection = Mono.from(connectionFactory.create())
+        .cast(SpannerConnection.class)
+        .block();
 
     executeDmlQuery(
-        connectionFactory,
+        this.connection,
         "DELETE FROM books WHERE true");
   }
 
   @AfterEach
   public void shutdown() {
+    this.connection.close().block();
     this.grpcClient.close().block();
   }
 
@@ -109,6 +115,7 @@ class SpannerIT {
   @BeforeAll
   public static void setupSpannerTable() throws InterruptedException, ExecutionException {
 
+    Hooks.onOperatorDebug();
     SpannerConnection con =
         Mono.from(connectionFactory.create())
             .cast(SpannerConnection.class)
@@ -133,7 +140,10 @@ class SpannerIT {
             + "  CATEGORY INT64 NOT NULL"
             + ") PRIMARY KEY (UUID)").execute())
         .block();
+
+    con.close().block();
   }
+
 
   @Test
   void testLargeReadWrite() {
@@ -155,12 +165,10 @@ class SpannerIT {
               i % 3 == 0, LocalDate.now(), i + 0.1, i));
     }
 
-    Mono.from(this.connectionFactory.create())
-        .delayUntil(c -> c.beginTransaction())
-        .delayUntil(c ->
+    Flux.concat(this.connection.beginTransaction(),
             Flux.fromIterable(books)
                 .concatMapDelayError(book ->
-                    Flux.from(c.createStatement(
+                    Flux.from(this.connection.createStatement(
                         "INSERT BOOKS (UUID, TITLE, AUTHOR, SYNOPSIS, EDITIONS, "
                             + "CATEGORY, FICTION, PUBLISHED, WORDS_PER_SENTENCE)"
                             + " VALUES (@uuid, @title, @author, @synopsis, @editions, "
@@ -176,17 +184,13 @@ class SpannerIT {
                         .bind("wps", book.getWordsPerSentence())
                         .execute())
                         .doOnNext(r -> logger.info("Inserting book: " + book.getId()))
-                ).flatMap(r -> Mono.from(r.getRowsUpdated()))
-        )
-        .delayUntil(c -> c.commitTransaction())
-        .delayUntil(c -> c.close())
-        .block();
+                ).flatMap(r -> Mono.from(r.getRowsUpdated())),
+        this.connection.commitTransaction())
+        .blockLast();
 
-    List<Book> result = Mono.from(this.connectionFactory.create())
-        .map(connection -> connection
-            .createStatement("SELECT * FROM books ORDER BY category")
-        )
-        .flatMapMany(statement -> statement.execute())
+    List<Book> result = Flux.from(this.connection
+        .createStatement("SELECT * FROM books ORDER BY category")
+        .execute())
         .flatMapSequential(spannerResult -> spannerResult.map((r, meta) -> new Book(
             r.get("UUID", String.class),
             r.get("TITLE", String.class),
@@ -208,30 +212,28 @@ class SpannerIT {
   void testSessionManagement() {
     assertThat(this.connectionFactory).isInstanceOf(SpannerConnectionFactory.class);
 
-    Mono<Connection> connection = (Mono<Connection>) this.connectionFactory.create();
-    SpannerConnection spannerConnection = (SpannerConnection) connection.block();
+    SpannerConnection spannerConnection = Mono.from(this.connectionFactory.create())
+        .cast(SpannerConnection.class).block();
     String activeSessionName = spannerConnection.getSessionName();
 
     List<String> activeSessions = getSessionNames();
+
     assertThat(activeSessions).contains(activeSessionName);
 
     Mono.from(spannerConnection.close()).block();
 
     activeSessions = getSessionNames();
+
     assertThat(activeSessions).doesNotContain(activeSessionName);
   }
 
   @Test
   void testRunDmlAfterTransaction() {
-    SpannerConnection connection =
-        Mono.from(this.connectionFactory.create())
-            .cast(SpannerConnection.class)
-            .block();
 
     StepVerifier.create(
-        Mono.from(connection.beginTransaction())
+        Mono.from(this.connection.beginTransaction())
             .then(Mono.just(
-                connection.createStatement(
+                this.connection.createStatement(
                     "INSERT BOOKS "
                         + "(UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
                         + "PUBLISHED, WORDS_PER_SENTENCE)"
@@ -244,7 +246,7 @@ class SpannerIT {
                     .bind("fiction", true)
                     .bind("published", LocalDate.of(2008, 5, 1))
                     .bind("wps", 20.8)))
-            .delayUntil(statement -> connection.commitTransaction())
+            .delayUntil(statement -> this.connection.commitTransaction())
             .flatMapMany(statement -> statement.execute())
             .cast(SpannerResult.class))
         .assertNext(result -> assertThat(result.getRowsUpdated().block()).isEqualTo(1))
@@ -254,8 +256,8 @@ class SpannerIT {
   @Test
   void testDmlExceptions() {
     StepVerifier.create(
-        Mono.from(connectionFactory.create())
-            .flatMapMany(conn -> conn.createStatement("INSERT BOOKS asdfasdfasdf").execute()))
+        this.connection.createStatement("INSERT BOOKS asdfasdfasdf").execute()
+    )
         .expectErrorMatches(err -> err.getMessage().contains("Syntax error:"))
         .verify();
   }
@@ -263,9 +265,7 @@ class SpannerIT {
   @Test
   void testMultipleDmlExceptions() {
     StepVerifier.create(
-        Mono.from(connectionFactory.create())
-            .flatMapMany(conn ->
-                conn.createBatch()
+        this.connection.createBatch()
                     .add("INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
                         + "PUBLISHED, WORDS_PER_SENTENCE) VALUES ('23', 'blarg', "
                         + "'joe', 245, true, DATE '2013-12-25', 20)")
@@ -273,7 +273,7 @@ class SpannerIT {
                     .add("INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY, FICTION, PUBLISHED, "
                         + "WORDS_PER_SENTENCE) VALUES ('24', 'blarg2', 'Bob', "
                         + "245, true, DATE '2013-12-25', 20)")
-                    .execute()))
+                    .execute())
         .expectNextMatches(result -> Mono.from(result.getRowsUpdated()).block() == 1)
         .expectErrorMatches(err -> err.getMessage().contains("Syntax error:"))
         .verify();
@@ -282,16 +282,14 @@ class SpannerIT {
   @Test
   void testDataIntegrityExceptions() {
     StepVerifier.create(
-        Mono.from(connectionFactory.create())
-            .flatMapMany(conn ->
-                conn.createBatch()
+        this.connection.createBatch()
                     .add("INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
                         + "PUBLISHED, WORDS_PER_SENTENCE) VALUES ('23', 'blarg', "
                         + "'joe', 245, true, DATE '2013-12-25', 20)")
                     .add("INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY, FICTION, PUBLISHED, "
                         + "WORDS_PER_SENTENCE) VALUES ('23', 'blarg2', 'Bob', "
                         + "245, true, DATE '2013-12-25', 20)")
-                    .execute()))
+                    .execute())
         .expectErrorMatches(err -> err instanceof R2dbcDataIntegrityViolationException)
         .verify();
   }
@@ -300,48 +298,48 @@ class SpannerIT {
   @Test
   void testSingleUseDml() {
     long count = executeReadQuery(
-        connectionFactory,
+        this.connection,
         "Select count(1) as count FROM books",
         (row, rowMetadata) -> row.get("count", Long.class)).get(0);
     assertThat(count).isEqualTo(0);
 
+    Statement statement = this.connection.createStatement(
+        "INSERT BOOKS "
+            + "(UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
+            + "PUBLISHED, WORDS_PER_SENTENCE)"
+            + " VALUES "
+            + "(@uuid, @title, @author, @category, @fiction, @published, @wps);")
+        .bind("uuid", "1")
+        .bind("author", "a")
+        .bind("category", 100L)
+        .bind("title", "b1")
+        .bind("fiction", true)
+        .bind("published", LocalDate.of(2008, 5, 1))
+        .bind("wps", 20.8)
+        .add()
+        .bind("uuid", "2")
+        .bind("author", "b")
+        .bind("category", 100L)
+        .bind("title", "b2")
+        .bind("fiction", false)
+        .bind("published", LocalDate.of(2018, 1, 6))
+        .bind("wps", 15.1)
+        .add()
+        .bind("uuid", "3")
+        .bind("author", "c")
+        .bind("category", 100L)
+        .bind("title", "b3")
+        .bind("fiction", false)
+        .bind("published", LocalDate.of(2016, 1, 6))
+        .bind("wps", 15.22);
     // Note that there is NO call to beginTransaction or commitTransaction.
     StepVerifier.create(
-        Mono.from(this.connectionFactory.create())
-            .flatMapMany(c -> c.createStatement(
-                "INSERT BOOKS "
-                    + "(UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
-                    + "PUBLISHED, WORDS_PER_SENTENCE)"
-                    + " VALUES "
-                    + "(@uuid, @title, @author, @category, @fiction, @published, @wps);")
-                .bind("uuid", "1")
-                .bind("author", "a")
-                .bind("category", 100L)
-                .bind("title", "b1")
-                .bind("fiction", true)
-                .bind("published", LocalDate.of(2008, 5, 1))
-                .bind("wps", 20.8)
-                .add()
-                .bind("uuid", "2")
-                .bind("author", "b")
-                .bind("category", 100L)
-                .bind("title", "b2")
-                .bind("fiction", false)
-                .bind("published", LocalDate.of(2018, 1, 6))
-                .bind("wps", 15.1)
-                .add()
-                .bind("uuid", "3")
-                .bind("author", "c")
-                .bind("category", 100L)
-                .bind("title", "b3")
-                .bind("fiction", false)
-                .bind("published", LocalDate.of(2016, 1, 6))
-                .bind("wps", 15.22).execute())
+        Flux.from(statement.execute())
             .flatMapSequential(r -> Mono.from(r.getRowsUpdated()))
     ).expectNext(1, 1, 1)
         .verifyComplete();
 
-    long retrieved = executeReadQuery(connectionFactory,
+    long retrieved = executeReadQuery(this.connection,
         "Select count(1) as count FROM books",
         (row, rowMetadata) -> row.get("count", Long.class)).get(0);
     assertThat(retrieved).isEqualTo(3);
@@ -350,16 +348,14 @@ class SpannerIT {
   @Test
   void testQuerying() {
     long count = executeReadQuery(
-        connectionFactory,
+        this.connection,
         "Select count(1) as count FROM books",
         (row, rowMetadata) -> row.get("count", Long.class)).get(0);
     assertThat(count).isEqualTo(0);
 
-    StepVerifier.create(
-        Mono.from(this.connectionFactory.create())
-            .flatMapMany(c -> Flux.concat(
-                c.beginTransaction(),
-                Flux.from(c.createStatement(
+    StepVerifier.create(Flux.concat(
+                this.connection.beginTransaction(),
+                Flux.from(this.connection.createStatement(
                     "INSERT BOOKS "
                         + "(UUID, TITLE, AUTHOR, CATEGORY, FICTION, PUBLISHED, WORDS_PER_SENTENCE)"
                         + " VALUES "
@@ -380,32 +376,30 @@ class SpannerIT {
                     .bind("published", LocalDate.of(2018, 1, 6))
                     .bind("wps", 15.1)
                     .execute()).flatMapSequential(r -> Mono.from(r.getRowsUpdated())),
-                c.commitTransaction()))
+                this.connection.commitTransaction())
     ).expectNext(1).expectNext(1).verifyComplete();
 
-    StepVerifier.create(Mono.from(this.connectionFactory.create())
-        .flatMapMany(c -> Flux.concat(
-            c.beginTransaction(),
-            Flux.from(c.createStatement(
+    StepVerifier.create(Flux.concat(
+            this.connection.beginTransaction(),
+            Flux.from(this.connection.createStatement(
                         "UPDATE BOOKS SET CATEGORY = @new_cat WHERE CATEGORY = @old_cat")
                         .bind("new_cat", 101L)
                         .bind("old_cat", 100L)
                         .execute()
             ).flatMap(r -> Mono.from(r.getRowsUpdated())),
-            c.commitTransaction())))
+            this.connection.commitTransaction()))
         .expectNext(2)
         .verifyComplete();
 
-    StepVerifier.create(Mono.from(this.connectionFactory.create())
-        .flatMapMany(c -> Flux.concat(
-            c.beginTransaction(),
-            Flux.from(c.createBatch()
+    StepVerifier.create(Flux.concat(
+            this.connection.beginTransaction(),
+            Flux.from(this.connection.createBatch()
                         .add("UPDATE BOOKS SET CATEGORY = 102 WHERE CATEGORY = 101")
                         .add("UPDATE BOOKS SET CATEGORY = 202 WHERE CATEGORY = 201")
                         .add("UPDATE BOOKS SET CATEGORY = 302 WHERE CATEGORY = 301")
                         .execute())
                         .flatMap(r -> r.getRowsUpdated()),
-            c.commitTransaction()))
+            this.connection.commitTransaction())
     )
         .expectNext(2)
         .expectNext(0)
@@ -413,7 +407,7 @@ class SpannerIT {
         .verifyComplete();
 
     List<String> authorStrings = executeReadQuery(
-        connectionFactory,
+        this.connection,
         "SELECT title, author FROM books",
         (r, meta) -> r.get(0, String.class) + " by " + r.get(1, String.class));
 
@@ -421,28 +415,24 @@ class SpannerIT {
         "JavaScript: The Good Parts by Douglas Crockford",
         "Effective Java by Joshua Bloch");
 
-    List<String> result2 = Mono.from(this.connectionFactory.create())
-        .map(connection -> connection
-            .createStatement("SELECT title, author FROM books WHERE author = @author"))
-        .flatMapMany(statement -> statement
+    List<String> result2 = Flux.from(
+        this.connection.createStatement("SELECT title, author FROM books WHERE author = @author")
             .bind("author", "Joshua Bloch")
-            .execute())
-        .flatMap(spannerResult -> spannerResult.map(
-            (r, meta) -> r.get(0, String.class) + " by " + r.get(1, String.class)
-        ))
-        .doOnNext(s -> System.out.println("Book: " + s))
+            .execute()
+    ).flatMap(spannerResult ->
+        spannerResult.map((r, meta) -> r.get(0, String.class) + " by " + r.get(1, String.class)
+    )).doOnNext(s -> System.out.println("Book: " + s))
         .collectList()
         .block();
 
     assertThat(result2).containsExactly("Effective Java by Joshua Bloch");
 
-    List<String> result3 = Mono.from(this.connectionFactory.create())
-        .map(connection -> connection
-            .createStatement("SELECT title, author FROM books WHERE author = @author"))
-        .flatMapMany(statement -> statement
+    List<String> result3 = Flux.from(
+        this.connection.createStatement("SELECT title, author FROM books WHERE author = @author")
             .bind("author", "Joshua Bloch").add()
             .bind("author", "Douglas Crockford")
-            .execute())
+            .execute()
+    )
         .flatMap(spannerResult -> spannerResult.map(
             (r, meta) -> r.get(0, String.class) + " by " + r.get(1, String.class)
         ))
@@ -454,17 +444,16 @@ class SpannerIT {
         "JavaScript: The Good Parts by Douglas Crockford",
         "Effective Java by Joshua Bloch");
 
-    int rowsUpdated = executeDmlQuery(connectionFactory, "DELETE FROM books WHERE true");
+    int rowsUpdated = executeDmlQuery(this.connection, "DELETE FROM books WHERE true");
     assertThat(rowsUpdated).isEqualTo(2);
   }
 
   @Test
   void testNoopUpdate() {
-    Result result = Mono.from(connectionFactory.create())
-        .delayUntil(c -> c.beginTransaction())
-        .flatMap(c -> Mono.from(c.createStatement(
+    Result result = this.connection.beginTransaction()
+        .thenMany(Flux.from(this.connection.createStatement(
             "UPDATE BOOKS set author = 'blah2' where title = 'asdasdf_dont_exist'").execute()))
-        .block();
+        .blockFirst();
 
     int rowsUpdated = Mono.from(result.getRowsUpdated()).block();
     assertThat(rowsUpdated).isEqualTo(0);
@@ -479,7 +468,7 @@ class SpannerIT {
   @Test
   void testEmptySelect() {
     List<String> results = executeReadQuery(
-        connectionFactory,
+        this.connection,
         "SELECT title, author FROM books where author = 'Nobody P. Smith'",
         (r, meta) -> r.get(0, String.class));
 
@@ -510,51 +499,54 @@ class SpannerIT {
             .bind("wps", 15.1)
             .execute()).flatMapSequential(r -> Mono.from(r.getRowsUpdated())))
         .delayUntil(c -> c.commitTransaction())
+        .delayUntil(c -> c.close())
         .block();
 
-    SpannerConnection connection =
+    SpannerConnection connection2 =
         Mono.from(this.connectionFactory.create())
             .cast(SpannerConnection.class)
             .block();
 
-    connection.beginTransaction(
+    connection2.beginTransaction(
         TransactionOptions.newBuilder()
             .setPartitionedDml(PartitionedDml.getDefaultInstance())
             .build())
         .block();
     int rowsUpdated = Mono.from(
-        connection.createStatement("UPDATE BOOKS SET TITLE = 'bad-book' WHERE true")
+        connection2.createStatement("UPDATE BOOKS SET TITLE = 'bad-book' WHERE true")
             .execute())
         .flatMap(result -> Mono.from(result.getRowsUpdated()))
         .block();
-    connection.commitTransaction().block();
+    connection2.commitTransaction().block();
     assertThat(rowsUpdated).isEqualTo(2);
 
-    connection.beginTransaction(
+    connection2.beginTransaction(
         TransactionOptions.newBuilder()
             .setReadOnly(ReadOnly.getDefaultInstance())
             .build())
         .block();
     List<String> titles =
-        Mono.from(connection.createStatement("SELECT title FROM BOOKS").execute())
+        Mono.from(connection2.createStatement("SELECT title FROM BOOKS").execute())
             .flatMapMany(result -> result.map((row, rowMetadata) -> row.get(0, String.class)))
             .collectList()
             .block();
     assertThat(titles).containsExactlyInAnyOrder("bad-book", "bad-book");
 
-    connection.beginTransaction(
+    connection2.beginTransaction(
         TransactionOptions.newBuilder()
             .setReadWrite(ReadWrite.getDefaultInstance())
             .build())
         .block();
-    Mono.from(connection.createStatement("DELETE FROM BOOKS WHERE true").execute()).block();
-    connection.commitTransaction().block();
+    Mono.from(connection2.createStatement("DELETE FROM BOOKS WHERE true").execute()).block();
+    connection2.commitTransaction().block();
     titles =
-        Mono.from(connection.createStatement("SELECT title FROM BOOKS").execute())
+        Mono.from(connection2.createStatement("SELECT title FROM BOOKS").execute())
             .flatMapMany(result -> result.map((row, rowMetadata) -> row.get(0, String.class)))
             .collectList()
             .block();
     assertThat(titles).isEmpty();
+
+    connection2.close().block();
   }
 
   private List<String> getSessionNames() {

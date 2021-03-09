@@ -60,6 +60,7 @@ class BookExampleAppIT {
     bookExampleApp.createTable();
     bookExampleApp.saveBooks();
     bookExampleApp.retrieveBooks();
+    bookExampleApp.cleanup();
 
     assertThat(baos.toString()).contains("Table creation completed.");
     assertThat(baos.toString()).contains("Insert books transaction committed.");

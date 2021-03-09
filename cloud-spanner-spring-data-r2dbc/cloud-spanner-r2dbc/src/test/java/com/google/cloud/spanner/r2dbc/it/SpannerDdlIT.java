@@ -29,10 +29,12 @@ import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.R2dbcNonTransientException;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 class SpannerDdlIT {
@@ -45,18 +47,26 @@ class SpannerDdlIT {
           .option(URL, DatabaseProperties.URL)
           .build());
 
+  Connection connection;
+
   /**
    * Setup the testing environment for DDL integration tests.
    */
   @BeforeEach
   public void setupEnvironment() {
+
+    this.connection = Mono.from(connectionFactory.create()).block();
     try {
-      Mono.from(connectionFactory.create())
-          .delayUntil(c -> c.createStatement("DROP TABLE PRESIDENTS").execute())
-          .block();
+      Flux.from(this.connection.createStatement("DROP TABLE PRESIDENTS").execute())
+          .blockFirst();
     } catch (Exception e) {
       logger.debug("Did not drop PRESIDENTS table.", e);
     }
+  }
+
+  @AfterEach
+  void tearDown() {
+    this.connection.close();
   }
 
   @Test
@@ -84,15 +94,14 @@ class SpannerDdlIT {
         .block();
     assertThat(listTables()).contains("PRESIDENTS");
 
-    Mono.from(connectionFactory.create())
-        .delayUntil(c -> c.createStatement("DROP TABLE PRESIDENTS").execute())
-        .block();
+    Flux.from(this.connection.createStatement("DROP TABLE PRESIDENTS").execute())
+        .blockFirst();
     assertThat(listTables()).doesNotContain("PRESIDENTS");
   }
 
   private List<String> listTables() {
     return executeReadQuery(
-        connectionFactory,
+        this.connection,
         "SELECT table_name "
             + " FROM information_schema.tables"
             + " WHERE table_catalog = '' and table_schema = ''",

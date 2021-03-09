@@ -17,11 +17,11 @@
 package com.google.cloud.spanner.r2dbc.it;
 
 import io.r2dbc.spi.Connection;
-import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.List;
 import java.util.function.BiFunction;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class SpannerQueryUtil {
@@ -30,13 +30,11 @@ public class SpannerQueryUtil {
    * Executes a read query and runs the provided {@code mappingFunction} on the elements returned.
    */
   static <T> List<T> executeReadQuery(
-      ConnectionFactory connectionFactory,
+      Connection connection,
       String sql,
       BiFunction<Row, RowMetadata, T> mappingFunction) {
 
-    return Mono.from(connectionFactory.create())
-        .map(connection -> connection.createStatement(sql))
-        .flatMapMany(statement -> statement.execute())
+    return Flux.from(connection.createStatement(sql).execute())
         .flatMap(spannerResult -> spannerResult.map(mappingFunction))
         .collectList()
         .block();
@@ -45,8 +43,7 @@ public class SpannerQueryUtil {
   /**
    * Executes a DML query and returns the rows updated.
    */
-  static int executeDmlQuery(ConnectionFactory connectionFactory, String sql) {
-    Connection connection = Mono.from(connectionFactory.create()).block();
+  static int executeDmlQuery(Connection connection, String sql) {
 
     Mono.from(connection.beginTransaction()).block();
     int rowsUpdated = Mono.from(connection.createStatement(sql).execute())

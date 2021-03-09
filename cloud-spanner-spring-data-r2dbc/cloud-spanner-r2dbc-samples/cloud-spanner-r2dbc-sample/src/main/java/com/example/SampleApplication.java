@@ -52,6 +52,7 @@ public class SampleApplication {
     bookExampleApp.createTable();
     bookExampleApp.saveBooks();
     bookExampleApp.retrieveBooks();
+    bookExampleApp.cleanup();
   }
 
 }
