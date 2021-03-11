@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
-import org.springframework.util.Assert;
 
 /**
  * Example of a sink for the sample app.
@@ -41,13 +40,12 @@ public class SinkExample {
 	public Consumer<Message<UserMessage>> logUserMessage() {
 		return message -> {
 			UserMessage userMessage = message.getPayload();
-			BasicAcknowledgeablePubsubMessage nackable =
-					(BasicAcknowledgeablePubsubMessage) message.getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE);
-			Assert.notNull(nackable, "Message was missing original message");
+			BasicAcknowledgeablePubsubMessage nackable = GcpPubSubHeaders.getOriginalMessage(message)
+					.orElseThrow(() -> new IllegalStateException("Could not find original PubSubMessage."));
 			Integer deliveryAttempt = Subscriber.getDeliveryAttempt(nackable.getPubsubMessage());
 
-			// Typically you won't nack() _every_ message, but this demonstrates a max number of retries before the
-			// message is routed to the dead letter queue.
+			// Typically you wouldn't nack() every message, but this demonstrates the Pub/Sub system retrying delivery
+			// some number of times before the message is routed to the dead letter queue.
 			log.info("Nacking message {} from {} at {}: {}", deliveryAttempt, userMessage.getUsername(),
 					userMessage.getCreatedAt(), userMessage.getBody());
 			nackable.nack();

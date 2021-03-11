@@ -130,21 +130,19 @@ public class PubSubChannelProvisioner
 
 	Topic ensureTopicExists(String topicName, boolean autoCreate) {
 		Topic topic = this.pubSubAdmin.getTopic(topicName);
-		if (topic == null) {
-			if (autoCreate) {
-				try {
-					topic = this.pubSubAdmin.createTopic(topicName);
-				}
-				catch (AlreadyExistsException alreadyExistsException) {
-					return ensureTopicExists(topicName, false);
-				}
-			}
-			else {
-				throw new ProvisioningException("Non-existing '" + topicName + "' topic.");
-			}
+		if (topic != null) {
+			return topic;
 		}
 
-		return topic;
+		if (autoCreate) {
+			try {
+				return this.pubSubAdmin.createTopic(topicName);
+			}
+			catch (AlreadyExistsException alreadyExistsException) {
+				return ensureTopicExists(topicName, false);
+			}
+		}
+		throw new ProvisioningException("Non-existing '" + topicName + "' topic.");
 	}
 
 	private Subscription createSubscription(String subscriptionName, String topicName,
