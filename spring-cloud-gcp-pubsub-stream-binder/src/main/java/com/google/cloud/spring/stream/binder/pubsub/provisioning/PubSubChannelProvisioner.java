@@ -72,16 +72,17 @@ public class PubSubChannelProvisioner
 	public ConsumerDestination provisionConsumerDestination(String topicName, String group,
 			ExtendedConsumerProperties<PubSubConsumerProperties> properties)  {
 
-		// topicName may be either the short or fully-qualified version.
-		String topicShortName = TopicName.isParsableFrom(topicName) ? TopicName.parse(topicName).getTopic() : topicName;
-		Topic topic = ensureTopicExists(topicName, properties.getExtension().isAutoCreateResources());
-
-		PubSubConsumerProperties.DeadLetterPolicy deadLetterPolicy = properties.getExtension().getDeadLetterPolicy();
-		boolean autoCreate = properties.getExtension().isAutoCreateResources();
-
 		String subscriptionName;
 		Subscription subscription;
+
 		String customName = properties.getExtension().getSubscriptionName();
+		boolean autoCreate = properties.getExtension().isAutoCreateResources();
+		PubSubConsumerProperties.DeadLetterPolicy deadLetterPolicy = properties.getExtension().getDeadLetterPolicy();
+
+		// topicName may be either the short or fully-qualified version.
+		String topicShortName = TopicName.isParsableFrom(topicName) ? TopicName.parse(topicName).getTopic() : topicName;
+		Topic topic = ensureTopicExists(topicName, autoCreate);
+
 		if (StringUtils.hasText(customName)) {
 			if (StringUtils.hasText(group)) {
 				LOGGER.warn("Either subscriptionName or group can be specified, but not both. " +
@@ -102,7 +103,7 @@ public class PubSubChannelProvisioner
 		}
 
 		if (subscription == null) {
-			if (properties.getExtension().isAutoCreateResources()) {
+			if (autoCreate) {
 				this.createSubscription(subscriptionName, topicName, deadLetterPolicy, autoCreate);
 			}
 			else {
@@ -139,6 +140,8 @@ public class PubSubChannelProvisioner
 				return this.pubSubAdmin.createTopic(topicName);
 			}
 			catch (AlreadyExistsException alreadyExistsException) {
+				// Sometimes 2+ instances of this application will race to create the topic, so this ensures we retry
+				// in the non-winning instances. In the rare case it fails, we throw an exception.
 				return ensureTopicExists(topicName, false);
 			}
 		}
@@ -161,7 +164,7 @@ public class PubSubChannelProvisioner
 			DeadLetterPolicy.Builder dlpBuilder = DeadLetterPolicy.newBuilder().setDeadLetterTopic(dlTopic.getName());
 
 			Integer maxAttempts = deadLetterPolicy.getMaxDeliveryAttempts();
-			if (maxAttempts != null && maxAttempts > 0) {
+			if (maxAttempts != null) {
 				dlpBuilder.setMaxDeliveryAttempts(maxAttempts);
 			}
 			builder.setDeadLetterPolicy(dlpBuilder);

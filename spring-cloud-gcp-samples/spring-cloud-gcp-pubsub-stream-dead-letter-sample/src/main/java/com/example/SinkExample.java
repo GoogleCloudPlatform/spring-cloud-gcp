@@ -46,7 +46,7 @@ public class SinkExample {
 
 			// Typically you wouldn't nack() every message, but this demonstrates the Pub/Sub system retrying delivery
 			// some number of times before the message is routed to the dead letter queue.
-			log.info("Nacking message {} from {} at {}: {}", deliveryAttempt, userMessage.getUsername(),
+			log.info("Nacking message (attempt {}) from {} at {}: {}", deliveryAttempt, userMessage.getUsername(),
 					userMessage.getCreatedAt(), userMessage.getBody());
 			nackable.nack();
 		};

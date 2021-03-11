@@ -85,8 +85,8 @@ public class PubSubDeadLetterTopicSampleAppIntegrationTest {
 		await().atMost(60, TimeUnit.SECONDS)
 				.pollDelay(3, TimeUnit.SECONDS)
 				.untilAsserted(() -> assertThat(baos.toString())
-						.contains("Nacking message 1 ")
-						.contains("Nacking message 6")
+						.contains("Nacking message (attempt 1)")
+						.contains("Nacking message (attempt 6)")
 						.contains("Received message on dead letter topic")
 						.contains(message));
 	}

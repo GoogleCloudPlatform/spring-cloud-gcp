@@ -18,15 +18,13 @@ package com.google.cloud.spring.pubsub.support;
 
 import java.util.Collections;
 
-import com.google.pubsub.v1.ProjectSubscriptionName;
-import com.google.pubsub.v1.PubsubMessage;
 import org.junit.Test;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.util.concurrent.ListenableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class GcpPubSubHeadersTest {
 
@@ -47,34 +45,10 @@ public class GcpPubSubHeadersTest {
 	public void getOriginalMessage() {
 		Message<String> m = new GenericMessage<>("batman",
 				Collections.singletonMap(GcpPubSubHeaders.ORIGINAL_MESSAGE,
-						new TestBasicAcknowledgeablePubsubMessage()));
+						mock(BasicAcknowledgeablePubsubMessage.class)));
 		assertThat(GcpPubSubHeaders.getOriginalMessage(m))
 				.isNotEmpty()
 				.get()
 				.isInstanceOf(BasicAcknowledgeablePubsubMessage.class);
-	}
-
-
-	private static class TestBasicAcknowledgeablePubsubMessage implements BasicAcknowledgeablePubsubMessage {
-
-		@Override
-		public ProjectSubscriptionName getProjectSubscriptionName() {
-			return null;
-		}
-
-		@Override
-		public PubsubMessage getPubsubMessage() {
-			return null;
-		}
-
-		@Override
-		public ListenableFuture<Void> ack() {
-			return null;
-		}
-
-		@Override
-		public ListenableFuture<Void> nack() {
-			return null;
-		}
 	}
 }
