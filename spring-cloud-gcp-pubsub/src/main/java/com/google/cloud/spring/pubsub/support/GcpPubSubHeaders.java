@@ -29,7 +29,8 @@ import org.springframework.messaging.Message;
  */
 public abstract class GcpPubSubHeaders {
 
-	private GcpPubSubHeaders() {}
+	private GcpPubSubHeaders() {
+	}
 
 	private static final String PREFIX = "gcp_pubsub_";
 
@@ -52,7 +53,7 @@ public abstract class GcpPubSubHeaders {
 	 */
 	public static Optional<BasicAcknowledgeablePubsubMessage> getOriginalMessage(Message<?> message) {
 		Object originalMessage = message.getHeaders().get(ORIGINAL_MESSAGE);
-		if (originalMessage instanceof BasicAcknowledgeablePubsubMessage){
+		if (originalMessage instanceof BasicAcknowledgeablePubsubMessage) {
 			return Optional.of((BasicAcknowledgeablePubsubMessage) originalMessage);
 		}
 		return Optional.empty();
