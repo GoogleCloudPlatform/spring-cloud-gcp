@@ -15,7 +15,7 @@
     <description>Spring Cloud GCP Cloud Foundry Module</description>
 
     <properties>
-				<jmockit.version>1.49</jmockit.version>
+        <jmockit.version>1.49</jmockit.version>
         <argLine /> <!-- Needs to be defined so code coverage on/off profile works. -->
     </properties>
     <dependencies>
@@ -56,7 +56,7 @@
                 <!-- CloudFoundry test utils depend on JMockit, which requires
                      using the javaagent  -->
                 <configuration>
-									<argLine>${argLine} -javaagent:"${settings.localRepository}"/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar</argLine>
+                    <argLine>${argLine} -javaagent:"${settings.localRepository}"/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar</argLine>
                 </configuration>
             </plugin>
         </plugins>
