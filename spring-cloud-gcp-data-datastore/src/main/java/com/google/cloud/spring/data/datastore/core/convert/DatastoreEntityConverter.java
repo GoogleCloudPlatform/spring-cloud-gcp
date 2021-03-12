@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.google.cloud.datastore.BaseEntity;
 
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
 import org.springframework.data.convert.EntityReader;
 import org.springframework.data.convert.EntityWriter;
 import org.springframework.data.util.TypeInformation;
@@ -39,6 +40,8 @@ public interface DatastoreEntityConverter extends
 	 * @return the conversions used.
 	 */
 	ReadWriteConversions getConversions();
+
+	DatastorePersistentEntity getDiscriminationPersistentEntity(Class<?> aClass, BaseEntity entity);
 
 	/**
 	 * Read the entity as a {@link Map}.
