@@ -641,7 +641,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 			context.removeReadEntity(key);
 			if (convertedObject != null) {
 				DatastorePersistentEntity discriminatedEntity = this.datastoreEntityConverter.getDiscriminationPersistentEntity(entityClass, readEntity);
-				resolveDescendantProperties(datastorePersistentEntity, readEntity, convertedObject, context);
+				resolveDescendantProperties(discriminatedEntity, readEntity, convertedObject, context);
 				resolveReferenceProperties(discriminatedEntity, readEntity, convertedObject, context);
 			}
 		}
