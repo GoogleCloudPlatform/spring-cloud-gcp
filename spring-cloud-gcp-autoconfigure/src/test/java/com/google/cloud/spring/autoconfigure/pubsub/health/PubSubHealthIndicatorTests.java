@@ -60,7 +60,7 @@ public class PubSubHealthIndicatorTests {
 	ListenableFuture<List<AcknowledgeablePubsubMessage>> future;
 
 	@Test
-	public void healthUp() throws Exception {
+	void healthUp() throws Exception {
 		when(future.get(anyLong(), any())).thenReturn(Collections.emptyList());
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 
@@ -70,7 +70,7 @@ public class PubSubHealthIndicatorTests {
 
 	@ParameterizedTest
 	@ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED"})
-	public void healthUpForExpectedException(String code) throws Exception {
+	void healthUpForExpectedException(String code) throws Exception {
 		Exception e = new ApiException(new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false);
 
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
@@ -82,7 +82,7 @@ public class PubSubHealthIndicatorTests {
 
 	@ParameterizedTest
 	@ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED"})
-	public void healthDownForApiException(String code) throws Exception {
+	void healthDownForApiException(String code) throws Exception {
 		Exception e = new ApiException(new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false);
 
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
@@ -93,7 +93,7 @@ public class PubSubHealthIndicatorTests {
 	}
 
 	@Test
-	public void healthDown() throws Exception {
+	void healthDown() throws Exception {
 		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
 
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
@@ -104,7 +104,7 @@ public class PubSubHealthIndicatorTests {
 	}
 
 	@Test
-	public void healthDownGenericException() throws Exception {
+	void healthDownGenericException() throws Exception {
 		Exception e = new IllegalStateException("Illegal State");
 
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
@@ -115,7 +115,7 @@ public class PubSubHealthIndicatorTests {
 	}
 
 	@Test
-	public void healthUnknownInterruptedException() throws Exception {
+	void healthUnknownInterruptedException() throws Exception {
 		Exception e = new InterruptedException("Interrupted");
 
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
@@ -126,7 +126,7 @@ public class PubSubHealthIndicatorTests {
 	}
 
 	@Test
-	public void healthUnknownTimeoutException() throws Exception {
+	void healthUnknownTimeoutException() throws Exception {
 		Exception e = new TimeoutException("Timed out waiting for result");
 
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
@@ -137,7 +137,7 @@ public class PubSubHealthIndicatorTests {
 	}
 
 	@Test
-	public void healthDownException() throws InterruptedException, ExecutionException, TimeoutException {
+	void healthDownException() throws InterruptedException, ExecutionException, TimeoutException {
 		Exception e = new RuntimeException("Runtime error");
 
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
