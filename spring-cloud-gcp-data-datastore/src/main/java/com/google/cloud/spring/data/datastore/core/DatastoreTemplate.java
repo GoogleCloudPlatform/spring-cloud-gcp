@@ -742,12 +742,15 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 					DatastorePersistentEntity descendantEntityType = this.datastoreMappingContext
 							.getPersistentEntity(descendantType);
 
-					EntityQuery descendantQuery = Query.newEntityQueryBuilder()
-							.setKind(descendantEntityType.kindName())
-							.setFilter(StructuredQuery.CompositeFilter.and(
+					Filter ancestorFilter = descendantEntityType.getDiscriminationFieldName() != null ?
+							StructuredQuery.CompositeFilter.and(
 									PropertyFilter.eq(descendantEntityType.getDiscriminationFieldName(), descendantEntityType.getDiscriminatorValue()),
 									PropertyFilter.hasAncestor(ancestorKey)
-							))
+							) : PropertyFilter.hasAncestor(ancestorKey);
+
+					EntityQuery descendantQuery = Query.newEntityQueryBuilder()
+							.setKind(descendantEntityType.kindName())
+							.setFilter(ancestorFilter)
 							.build();
 
 					List entities = convertEntitiesForRead(
