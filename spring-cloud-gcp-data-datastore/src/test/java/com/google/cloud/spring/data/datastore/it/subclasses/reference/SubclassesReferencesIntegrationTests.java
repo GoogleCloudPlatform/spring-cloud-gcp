@@ -1,9 +1,11 @@
-package com.google.cloud.spring.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it.subclasses.reference;
 
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
-import com.google.cloud.spring.data.datastore.entities.EntityA;
-import com.google.cloud.spring.data.datastore.entities.EntityB;
-import com.google.cloud.spring.data.datastore.entities.EntityC;
+import com.google.cloud.spring.data.datastore.entities.subclasses.reference.EntityAReference;
+import com.google.cloud.spring.data.datastore.entities.subclasses.reference.EntityBReference;
+import com.google.cloud.spring.data.datastore.entities.subclasses.reference.EntityCReference;
+import com.google.cloud.spring.data.datastore.it.AbstractDatastoreIntegrationTests;
+import com.google.cloud.spring.data.datastore.it.DatastoreIntegrationTestConfiguration;
 import com.google.common.collect.Lists;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -20,10 +22,10 @@ import static org.junit.Assume.assumeThat;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { DatastoreIntegrationTestConfiguration.class })
-public class SubclassesReferencesIntegrationTests extends AbstractDatastoreIntegrationTests{
+public class SubclassesReferencesIntegrationTests extends AbstractDatastoreIntegrationTests {
 
     @Autowired
-    EntityARepository entityARepository;
+    EntityAReferenceRepository entityARepository;
 
     @SpyBean
     private DatastoreTemplate datastoreTemplate;
@@ -38,28 +40,18 @@ public class SubclassesReferencesIntegrationTests extends AbstractDatastoreInteg
 
     @After
     public void deleteAll(){
-        datastoreTemplate.deleteAll(EntityA.class);
-        datastoreTemplate.deleteAll(EntityB.class);
-        datastoreTemplate.deleteAll(EntityC.class);
+        datastoreTemplate.deleteAll(EntityAReference.class);
+        datastoreTemplate.deleteAll(EntityBReference.class);
+        datastoreTemplate.deleteAll(EntityCReference.class);
     }
 
     @Test
     public void TestEntityCContainsReferenceToEntityB(){
-        EntityB entityB_1 = new EntityB();
-        EntityC entityC_1 = new EntityC(entityB_1);
+        EntityBReference entityB_1 = new EntityBReference();
+        EntityCReference entityC_1 = new EntityCReference(entityB_1);
         entityARepository.saveAll(Lists.newArrayList(entityB_1, entityC_1));
-        EntityC fetchedC = (EntityC) entityARepository.findById(entityC_1.getId()).get();
+        EntityCReference fetchedC = (EntityCReference) entityARepository.findById(entityC_1.getId()).get();
         assertThat(fetchedC.getEntityB()).isNotNull();
-    }
-
-    @Test
-    public void TestEntityBContainsDescendantsToEntityC(){
-        EntityB entityB_1 = new EntityB();
-        EntityC entityC_1 = new EntityC(entityB_1);
-        entityB_1.addEntityC(entityC_1);
-        entityARepository.saveAll(Lists.newArrayList(entityB_1, entityC_1));
-        EntityB fetchedB = (EntityB) entityARepository.findById(entityB_1.getId()).get();
-        assertThat(fetchedB.getEntitiesC()).containsExactly(entityC_1);
     }
 
 }

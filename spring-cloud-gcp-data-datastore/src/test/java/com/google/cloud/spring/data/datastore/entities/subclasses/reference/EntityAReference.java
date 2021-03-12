@@ -1,4 +1,4 @@
-package com.google.cloud.spring.data.datastore.entities;
+package com.google.cloud.spring.data.datastore.entities.subclasses.reference;
 
 import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 
 @Entity(name = "A")
 @DiscriminatorField(field = "type")
-public abstract class EntityA {
+public abstract class EntityAReference {
     @Id
     private Key id;
 

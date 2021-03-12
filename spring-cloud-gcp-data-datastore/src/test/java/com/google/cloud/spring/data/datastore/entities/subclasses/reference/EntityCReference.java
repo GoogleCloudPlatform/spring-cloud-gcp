@@ -1,4 +1,4 @@
-package com.google.cloud.spring.data.datastore.entities;
+package com.google.cloud.spring.data.datastore.entities.subclasses.reference;
 
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
@@ -6,15 +6,15 @@ import org.springframework.data.annotation.Reference;
 
 @Entity(name = "A")
 @DiscriminatorValue("C")
-public class EntityC extends EntityA {
+public class EntityCReference extends EntityAReference {
     @Reference
-    private EntityB entityB;
+    private EntityBReference entityB;
 
-    public EntityC(EntityB entityB) {
+    public EntityCReference(EntityBReference entityB) {
         this.entityB = entityB;
     }
 
-    public EntityB getEntityB() {
+    public EntityBReference getEntityB() {
         return entityB;
     }
 }
