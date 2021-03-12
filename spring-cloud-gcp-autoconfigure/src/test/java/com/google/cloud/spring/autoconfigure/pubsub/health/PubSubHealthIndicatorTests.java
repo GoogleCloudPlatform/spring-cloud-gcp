@@ -16,17 +16,31 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.google.api.gax.grpc.GrpcStatusCode;
+import com.google.api.gax.rpc.ApiException;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.boot.actuate.health.Status;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -36,37 +50,56 @@ import static org.mockito.Mockito.when;
  * @author Vinicius Carvalho
  * @author Patrik Hörlin
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PubSubHealthIndicatorTests {
 
 	@Mock
-	private PubSubHealthTemplate pubSubHealthTemplate;
+	private PubSubTemplate pubSubTemplate;
+
+	@Mock
+	ListenableFuture<List<AcknowledgeablePubsubMessage>> future;
 
 	@Test
 	public void healthUp() throws Exception {
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
+		when(future.get(anyLong(), any())).thenReturn(Collections.emptyList());
+		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UP);
 	}
 
-	@Test
-	public void healthUpForExpectedException() throws Exception {
-		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
+	@ParameterizedTest
+	@ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED"})
+	public void healthUpForExpectedException(String code) throws Exception {
+		Exception e = new ApiException(new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false);
 
-		doThrow(e).when(pubSubHealthTemplate).probeHealth();
-		when(pubSubHealthTemplate.isHealthyException(e)).thenReturn(true);
+		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+		doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
 
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, null, 1000);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UP);
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED"})
+	public void healthDownForApiException(String code) throws Exception {
+		Exception e = new ApiException(new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false);
+
+		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+		doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
+
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
+		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}
 
 	@Test
 	public void healthDown() throws Exception {
 		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
 
-		doThrow(e).when(pubSubHealthTemplate).probeHealth();
-		when(pubSubHealthTemplate.isHealthyException(e)).thenReturn(false);
+		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+		doThrow(e).when(future).get(anyLong(), any());
 
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}
 
@@ -74,8 +107,10 @@ public class PubSubHealthIndicatorTests {
 	public void healthDownGenericException() throws Exception {
 		Exception e = new IllegalStateException("Illegal State");
 
-		doThrow(e).when(pubSubHealthTemplate).probeHealth();
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
+		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+		doThrow(e).when(future).get(anyLong(), any());
+
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}
 
@@ -83,8 +118,10 @@ public class PubSubHealthIndicatorTests {
 	public void healthUnknownInterruptedException() throws Exception {
 		Exception e = new InterruptedException("Interrupted");
 
-		doThrow(e).when(pubSubHealthTemplate).probeHealth();
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
+		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+		doThrow(e).when(future).get(anyLong(), any());
+
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UNKNOWN);
 	}
 
@@ -92,8 +129,10 @@ public class PubSubHealthIndicatorTests {
 	public void healthUnknownTimeoutException() throws Exception {
 		Exception e = new TimeoutException("Timed out waiting for result");
 
-		doThrow(e).when(pubSubHealthTemplate).probeHealth();
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
+		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+		doThrow(e).when(future).get(anyLong(), any());
+
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UNKNOWN);
 	}
 
@@ -101,8 +140,10 @@ public class PubSubHealthIndicatorTests {
 	public void healthDownException() throws InterruptedException, ExecutionException, TimeoutException {
 		Exception e = new RuntimeException("Runtime error");
 
-		doThrow(e).when(pubSubHealthTemplate).probeHealth();
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubHealthTemplate);
+		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+		doThrow(e).when(future).get(anyLong(), any());
+
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}
 }

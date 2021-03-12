@@ -16,14 +16,11 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 
-import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.boot.actuate.autoconfigure.health.CompositeHealthContributorConfiguration;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.autoconfigure.health.HealthContributorAutoConfiguration;
@@ -57,40 +54,26 @@ import org.springframework.util.Assert;
 @AutoConfigureAfter(GcpPubSubAutoConfiguration.class)
 @EnableConfigurationProperties(PubSubHealthIndicatorProperties.class)
 public class PubSubHealthIndicatorAutoConfiguration extends
-		CompositeHealthContributorConfiguration<PubSubHealthIndicator, PubSubHealthTemplate> {
+		CompositeHealthContributorConfiguration<PubSubHealthIndicator, PubSubTemplate> {
+
+	private PubSubHealthIndicatorProperties pubSubHealthProperties;
 
 	@Bean
 	@ConditionalOnMissingBean(name = { "pubSubHealthIndicator", "pubSubHealthContributor"})
-	public HealthContributor pubSubHealthContributor(Map<String, PubSubTemplate> pubSubTemplates, PubSubHealthIndicatorProperties gcpPubSubHealthProperties) {
+	public HealthContributor pubSubHealthContributor(Map<String, PubSubTemplate> pubSubTemplates, PubSubHealthIndicatorProperties pubSubHealthProperties) {
 		Assert.notNull(pubSubTemplates, "pubSubTemplates must be provided");
-		String subscription = gcpPubSubHealthProperties.getSubscription();
-		Long timeoutMillis = gcpPubSubHealthProperties.getTimeoutMillis();
+		this.pubSubHealthProperties = pubSubHealthProperties;
 
-		Map<String, PubSubHealthTemplate> pubSubHealthTemplates = new HashMap<>();
-		pubSubTemplates.forEach((k, v) -> pubSubHealthTemplates.put(k, new PubSubHealthTemplate(v, subscription, timeoutMillis)));
-		pubSubHealthTemplates.forEach(this::validatePubSubHealthTemplate);
-		return createContributor(pubSubHealthTemplates);
+		return createContributor(pubSubTemplates);
 	}
 
-	private void validatePubSubHealthTemplate(String name, PubSubHealthTemplate pubSubHealthTemplate) {
-		try {
-			pubSubHealthTemplate.probeHealth();
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			validationFailed(name, e);
-		}
-		catch (ExecutionException e) {
-			if (!pubSubHealthTemplate.isHealthyException(e)) {
-				validationFailed(name, e);
-			}
-		}
-		catch (Exception e) {
-			validationFailed(name, e);
-		}
-	}
-
-	private void validationFailed(String name, Exception e) {
-		throw new BeanInitializationException("Validation of health indicator failed for " + name, e);
+	@Override
+	protected PubSubHealthIndicator createIndicator(PubSubTemplate pubSubTemplate) {
+		PubSubHealthIndicator indicator = new PubSubHealthIndicator(
+				pubSubTemplate,
+				this.pubSubHealthProperties.getSubscription(),
+				this.pubSubHealthProperties.getTimeoutMillis());
+		indicator.validateHealthCheck();
+		return indicator;
 	}
 }
