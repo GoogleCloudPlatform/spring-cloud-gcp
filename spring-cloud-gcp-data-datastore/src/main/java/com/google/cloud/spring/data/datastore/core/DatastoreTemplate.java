@@ -73,6 +73,7 @@ import com.google.cloud.spring.data.datastore.core.util.SliceUtil;
 import com.google.cloud.spring.data.datastore.core.util.ValueUtil;
 import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable;
 
+import com.google.datastore.v1.CompositeFilter;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -738,10 +739,15 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 					Key entityKey = (Key) entity.getKey();
 					Key ancestorKey = KeyUtil.getKeyWithoutAncestors(entityKey);
 
+					DatastorePersistentEntity descendantEntityType = this.datastoreMappingContext
+							.getPersistentEntity(descendantType);
+
 					EntityQuery descendantQuery = Query.newEntityQueryBuilder()
-							.setKind(this.datastoreMappingContext
-									.getPersistentEntity(descendantType).kindName())
-							.setFilter(PropertyFilter.hasAncestor(ancestorKey))
+							.setKind(descendantEntityType.kindName())
+							.setFilter(StructuredQuery.CompositeFilter.and(
+									PropertyFilter.eq(descendantEntityType.getDiscriminationFieldName(), descendantEntityType.getDiscriminatorValue()),
+									PropertyFilter.hasAncestor(ancestorKey)
+							))
 							.build();
 
 					List entities = convertEntitiesForRead(

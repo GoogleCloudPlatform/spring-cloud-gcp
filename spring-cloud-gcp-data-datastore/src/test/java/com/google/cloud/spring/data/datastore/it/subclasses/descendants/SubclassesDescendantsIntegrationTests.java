@@ -19,6 +19,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
@@ -55,7 +57,8 @@ public class SubclassesDescendantsIntegrationTests  extends AbstractDatastoreInt
         entityB_1.addEntityC(entityC_1);
         entityARepository.saveAll(Lists.newArrayList(entityB_1, entityC_1));
         EntityBDescendants fetchedB = (EntityBDescendants) entityARepository.findById(entityB_1.getId()).get();
-        assertThat(fetchedB.getEntitiesC()).containsExactly(entityC_1);
+        List<EntityCDescendants> entitiesCOfB = fetchedB.getEntitiesC();
+        assertThat(entitiesCOfB).hasSize(1);
     }
 
 }
