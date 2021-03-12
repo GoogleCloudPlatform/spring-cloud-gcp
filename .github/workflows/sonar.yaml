@@ -11,8 +11,7 @@ on:
 
 jobs:
   sonar:
-    # Only run on upstream branch
-    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' && github.actor != 'dependabot'
+    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' # Only run on upstream branch
     name: Build with Sonar
     runs-on: ubuntu-20.04
     steps:
