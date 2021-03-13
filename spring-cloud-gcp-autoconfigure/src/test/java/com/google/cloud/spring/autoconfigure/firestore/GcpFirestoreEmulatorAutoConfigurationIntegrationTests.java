@@ -54,7 +54,6 @@ public class GcpFirestoreEmulatorAutoConfigurationIntegrationTests {
 	public void testAutoConfigurationEnabled() {
 		contextRunner
 				.withPropertyValues(
-						"spring.cloud.gcp.firestore.project-id=",
 						"spring.cloud.gcp.firestore.emulator.enabled=true",
 						"spring.cloud.gcp.firestore.host-port=localhost:9000")
 				.run(context -> {
