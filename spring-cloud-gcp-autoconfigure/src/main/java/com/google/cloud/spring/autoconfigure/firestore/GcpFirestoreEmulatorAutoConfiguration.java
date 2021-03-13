@@ -29,6 +29,7 @@ import com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreAutoConfigura
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
+import com.google.common.base.Strings;
 import com.google.firestore.v1.FirestoreGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -60,7 +61,7 @@ public class GcpFirestoreEmulatorAutoConfiguration {
 
 	GcpFirestoreEmulatorAutoConfiguration(GcpFirestoreProperties properties) {
 		this.hostPort = properties.getHostPort();
-		this.projectId = properties.getProjectId() == null ? "unused" : properties.getProjectId();
+		this.projectId = Strings.isNullOrEmpty(properties.getProjectId()) ? "unused" : properties.getProjectId();
 		this.rootPath = String.format("projects/%s/databases/(default)", this.projectId);
 	}
 
