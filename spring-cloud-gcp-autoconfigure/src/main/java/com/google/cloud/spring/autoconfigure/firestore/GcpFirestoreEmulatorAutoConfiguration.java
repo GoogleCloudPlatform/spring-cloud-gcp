@@ -33,7 +33,6 @@ import com.google.firestore.v1.FirestoreGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
-import org.apache.commons.lang3.StringUtils;
 import reactor.core.publisher.Flux;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -61,7 +60,7 @@ public class GcpFirestoreEmulatorAutoConfiguration {
 
 	GcpFirestoreEmulatorAutoConfiguration(GcpFirestoreProperties properties) {
 		this.hostPort = properties.getHostPort();
-		this.projectId = StringUtils.defaultIfEmpty(properties.getProjectId(), "unused");
+		this.projectId = properties.getProjectId() == null ? "unused" : properties.getProjectId();
 		this.rootPath = String.format("projects/%s/databases/(default)", this.projectId);
 	}
 
