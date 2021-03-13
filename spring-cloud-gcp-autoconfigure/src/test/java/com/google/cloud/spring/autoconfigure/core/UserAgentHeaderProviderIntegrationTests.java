@@ -31,19 +31,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Mike Eltsufin
  * @author Chengyuan Zhao
  */
-public class UserAgentHeaderProviderIntegrationTests {
+public class UserAgentHeaderProviderIntegrationTests extends UserAgentHeaderProviderTests {
 
-	/**
-	 * This test is check if the generated user-agent header is in the right format.
-	 */
-	@Test
-	public void testGetHeaders() {
-		UserAgentHeaderProvider subject = new UserAgentHeaderProvider(this.getClass());
-
-		String versionRegex = "\\d+\\.\\d+\\.\\d+(\\-RC\\d+)?(\\-SNAPSHOT)?";
-		assertThat(subject.getHeaders()).containsKey("user-agent");
-		assertThat(subject.getHeaders().get("user-agent")).matches(
-				Pattern.compile("Spring/" + versionRegex + " spring-cloud-gcp-core/" + versionRegex));
-		assertThat(subject.getHeaders()).hasSize(1);
+	public UserAgentHeaderProviderIntegrationTests() {
+		super("\\d+\\.\\d+\\.\\d+(\\-RC\\d+)?(\\-SNAPSHOT)?");
 	}
 }
