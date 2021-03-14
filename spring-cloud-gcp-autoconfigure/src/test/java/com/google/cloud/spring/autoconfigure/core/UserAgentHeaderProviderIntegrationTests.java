@@ -16,13 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.core;
 
-import java.util.regex.Pattern;
-
-import com.google.cloud.spring.core.UserAgentHeaderProvider;
-import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * This needs to be an integration test because the JAR MANIFEST has to be available for
  * this.getClass().getPackage().getImplementationVersion() to work properly.
