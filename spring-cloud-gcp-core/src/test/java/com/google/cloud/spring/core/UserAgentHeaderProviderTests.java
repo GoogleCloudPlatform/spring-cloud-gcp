@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class UserAgentHeaderProviderTests {
 
-	public static final String USER_AGENT_HEADER_NAME = "user-agent";
+	static final String USER_AGENT_HEADER_NAME = "user-agent";
 
 	private String versionRegex;
 
