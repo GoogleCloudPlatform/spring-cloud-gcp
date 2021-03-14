@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 the original author or authors.
+ * Copyright 2017-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.core;
+package com.google.cloud.spring.autoconfigure.core;
 
 import java.util.regex.Pattern;
 
+import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A more complete integration test is available in {@code UserAgentHeaderProviderIntegrationTests}.
+ * This needs to be an integration test and in a different module because the JAR MANIFEST
+ * has to be available for this.getClass().getPackage().getImplementationVersion() to work
+ * properly.
  *
  * @author João André Martins
  * @author Mike Eltsufin
  * @author Chengyuan Zhao
  */
-public class UserAgentHeaderProviderTests {
+public class UserAgentHeaderProviderIntegrationTests {
 
 	static final String USER_AGENT_HEADER_NAME = "user-agent";
 
@@ -40,8 +43,7 @@ public class UserAgentHeaderProviderTests {
 	public void testGetHeaders() {
 		UserAgentHeaderProvider subject = new UserAgentHeaderProvider(this.getClass());
 
-		String versionRegex = ".*"; // no version verification because we don't have JAR MANIFEST
-
+		String versionRegex = "\\d+\\.\\d+\\.\\d+(\\-RC\\d+)?(\\-SNAPSHOT)?";
 		assertThat(subject.getHeaders()).containsKey(USER_AGENT_HEADER_NAME);
 		assertThat(subject.getHeaders().get(USER_AGENT_HEADER_NAME)).isEqualTo(subject.getUserAgent());
 		assertThat(subject.getHeaders().get(USER_AGENT_HEADER_NAME)).matches(
