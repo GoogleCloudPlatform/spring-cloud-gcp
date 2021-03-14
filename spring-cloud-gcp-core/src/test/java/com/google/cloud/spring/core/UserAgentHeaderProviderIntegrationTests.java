@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.core;
+package com.google.cloud.spring.core;
 
 /**
  * This needs to be an integration test because the JAR MANIFEST has to be available for
