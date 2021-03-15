@@ -490,15 +490,15 @@
 			<activation>
 				<jdk>1.8</jdk>
 			</activation>
-      <properties>
+			<properties>
         <javac.version>9+181-r4173-1</javac.version>
-      </properties>
+			</properties>
 			<build>
 				<pluginManagement>
 					<plugins>
 						<plugin>
 							<artifactId>maven-compiler-plugin</artifactId>
-              <version>3.8.0</version>
+							<version>3.8.0</version>
 							<configuration>
 								<compilerId>javac-with-errorprone</compilerId>
 								<forceJavacCompilerUse>true</forceJavacCompilerUse>
@@ -511,7 +511,7 @@
 									<compilerArg>-Xlint:-serial</compilerArg>
 									<!--compilerArg>-Werror</compilerArg-->
 									<arg>-parameters</arg>
-                  <arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
+							    <arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
 								</compilerArgs>
 							</configuration>
 							<dependencies>
