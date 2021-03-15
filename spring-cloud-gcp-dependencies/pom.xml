@@ -29,7 +29,7 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>16.2.0</gcp-libraries-bom.version>
+		<gcp-libraries-bom.version>19.0.0</gcp-libraries-bom.version>
 		<cloud-sql-socket-factory.version>1.2.1</cloud-sql-socket-factory.version>
 		<guava.version>30.0-jre</guava.version>
 	</properties>
@@ -324,7 +324,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.5</version>
+						<version>1.6</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -362,7 +362,7 @@
 							<dependency>
 								<groupId>com.google.cloud.tools</groupId>
 								<artifactId>linkage-checker-enforcer-rules</artifactId>
-								<version>1.5.3</version>
+								<version>1.5.7</version>
 							</dependency>
 						</dependencies>
 						<executions>
