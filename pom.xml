@@ -469,7 +469,6 @@
 								<compilerArgs>
 									<arg>-XDcompilePolicy=simple</arg>
 									<arg>-Xplugin:ErrorProne</arg>
-									<arg>-parameters</arg>
 								</compilerArgs>
 								<annotationProcessorPaths>
 									<path>
@@ -500,17 +499,8 @@
 							<artifactId>maven-compiler-plugin</artifactId>
 							<version>3.8.0</version>
 							<configuration>
-								<compilerId>javac-with-errorprone</compilerId>
-								<forceJavacCompilerUse>true</forceJavacCompilerUse>
-								<compilerArgs>
-									<!-- Enable all warnings -->
-									<compilerArg>-Xlint:all</compilerArg>
-									<!-- Disable options warning because we will have differences between the compiler and source code level-->
-									<compilerArg>-Xlint:-options</compilerArg>
-									<!-- Disable serialversionuid warnings -->
-									<compilerArg>-Xlint:-serial</compilerArg>
-									<!--compilerArg>-Werror</compilerArg-->
-									<arg>-parameters</arg>
+								<fork>true</fork>
+								<compilerArgs combine.children="append">
 									<arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
 								</compilerArgs>
 							</configuration>
