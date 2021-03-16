@@ -86,7 +86,7 @@
 
     <google-cloud-bom.version>15.1.0</google-cloud-bom.version>
 
-    <r2dbc.version>0.8.3.RELEASE</r2dbc.version>
+    <r2dbc.version>0.8.4.RELEASE</r2dbc.version>
     <reactor.version>Dysprosium-SR16</reactor.version>
 
     <mockito.version>3.3.0</mockito.version>
