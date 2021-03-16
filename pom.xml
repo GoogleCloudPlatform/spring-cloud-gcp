@@ -469,6 +469,7 @@
 								<compilerArgs>
 									<arg>-XDcompilePolicy=simple</arg>
 									<arg>-Xplugin:ErrorProne</arg>
+									<arg>-parameters</arg>
 								</compilerArgs>
 								<annotationProcessorPaths>
 									<path>
@@ -502,6 +503,7 @@
 								<fork>true</fork>
 								<compilerArgs combine.children="append">
 									<arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
+									<arg>-parameters</arg>
 								</compilerArgs>
 							</configuration>
 							<dependencies>
