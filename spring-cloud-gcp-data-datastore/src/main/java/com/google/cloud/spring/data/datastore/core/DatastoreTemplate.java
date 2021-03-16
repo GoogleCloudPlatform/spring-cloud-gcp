@@ -73,7 +73,6 @@ import com.google.cloud.spring.data.datastore.core.util.SliceUtil;
 import com.google.cloud.spring.data.datastore.core.util.ValueUtil;
 import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable;
 
-import com.google.datastore.v1.CompositeFilter;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -99,12 +98,9 @@ import org.springframework.util.TypeUtils;
  *
  * @author Chengyuan Zhao
  * @author Vinicius Carvalho
- *
  * @since 1.1
  */
 public class DatastoreTemplate implements DatastoreOperations, ApplicationEventPublisherAware {
-
-	private int maxWriteSize = 500;
 
 	private final Supplier<? extends DatastoreReaderWriter> datastore;
 
@@ -113,6 +109,8 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 	private final DatastoreMappingContext datastoreMappingContext;
 
 	private final ObjectToKeyFactory objectToKeyFactory;
+
+	private int maxWriteSize = 500;
 
 	private @Nullable ApplicationEventPublisher eventPublisher;
 
@@ -131,6 +129,64 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 		this.datastoreEntityConverter = datastoreEntityConverter;
 		this.datastoreMappingContext = datastoreMappingContext;
 		this.objectToKeyFactory = objectToKeyFactory;
+	}
+
+	public static void applyQueryOptions(StructuredQuery.Builder builder, DatastoreQueryOptions queryOptions,
+			DatastorePersistentEntity<?> persistentEntity) {
+		Assert.notNull(persistentEntity, "A non-null persistentEntity is required.");
+		if (persistentEntity.getDiscriminationFieldName() != null
+				&& persistentEntity.getDiscriminatorValue() != null) {
+			StructuredQuery.Filter discriminationFilter = PropertyFilter
+					.eq(persistentEntity.getDiscriminationFieldName(),
+							persistentEntity.getDiscriminatorValue());
+			StructuredQuery.Filter filter = builder.build().getFilter();
+			if (filter != null) {
+				discriminationFilter = StructuredQuery.CompositeFilter.and(filter, discriminationFilter);
+			}
+			builder.setFilter(discriminationFilter);
+		}
+		if (queryOptions == null) {
+			return;
+		}
+		if (queryOptions.getLimit() != null) {
+			builder.setLimit(queryOptions.getLimit());
+		}
+		if (queryOptions.getCursor() == null && queryOptions.getOffset() != null) {
+			builder.setOffset(queryOptions.getOffset());
+		}
+		if (queryOptions.getCursor() != null) {
+			builder.setStartCursor(queryOptions.getCursor());
+		}
+		if (queryOptions.getSort() != null) {
+			queryOptions.getSort().stream()
+					.map(order -> createOrderBy(persistentEntity, order))
+					.forEachOrdered(builder::addOrderBy);
+		}
+	}
+
+	private static StructuredQuery.OrderBy createOrderBy(DatastorePersistentEntity<?> persistentEntity,
+			Sort.Order order) {
+		if (order.isIgnoreCase()) {
+			throw new DatastoreDataException("Datastore doesn't support sorting ignoring case");
+		}
+		if (!order.getNullHandling().equals(Sort.NullHandling.NATIVE)) {
+			throw new DatastoreDataException("Datastore supports only NullHandling.NATIVE null handling");
+		}
+		DatastorePersistentProperty persistentProperty = persistentEntity.getPersistentProperty(order.getProperty());
+		Assert.notNull(persistentProperty,
+				"Sort property '" + order.getProperty() + "' must exist in entity '" + persistentEntity.getName()
+						+ "'.");
+		return new StructuredQuery.OrderBy(persistentProperty.getFieldName(),
+				(order.getDirection() == Sort.Direction.DESC)
+						? StructuredQuery.OrderBy.Direction.DESCENDING
+						: StructuredQuery.OrderBy.Direction.ASCENDING);
+	}
+
+	public static PathElement keyToPathElement(Key key) {
+		Assert.notNull(key, "A non-null key is required");
+		return (key.getName() != null)
+				? PathElement.of(key.getKind(), key.getName())
+				: PathElement.of(key.getKind(), key.getId());
 	}
 
 	@Override
@@ -387,38 +443,6 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 				queryResults != null ? queryResults.getCursorAfter() : null);
 	}
 
-	public static void applyQueryOptions(StructuredQuery.Builder builder, DatastoreQueryOptions queryOptions,
-			DatastorePersistentEntity<?> persistentEntity) {
-		Assert.notNull(persistentEntity, "A non-null persistentEntity is required.");
-		if (persistentEntity.getDiscriminationFieldName() != null
-				&& persistentEntity.getDiscriminatorValue() != null) {
-			StructuredQuery.Filter discriminationFilter = PropertyFilter.eq(persistentEntity.getDiscriminationFieldName(),
-					persistentEntity.getDiscriminatorValue());
-			StructuredQuery.Filter filter = builder.build().getFilter();
-			if (filter != null) {
-				discriminationFilter = StructuredQuery.CompositeFilter.and(filter, discriminationFilter);
-			}
-			builder.setFilter(discriminationFilter);
-		}
-		if (queryOptions == null) {
-			return;
-		}
-		if (queryOptions.getLimit() != null) {
-			builder.setLimit(queryOptions.getLimit());
-		}
-		if (queryOptions.getCursor() == null && queryOptions.getOffset() != null) {
-			builder.setOffset(queryOptions.getOffset());
-		}
-		if (queryOptions.getCursor() != null) {
-			builder.setStartCursor(queryOptions.getCursor());
-		}
-		if (queryOptions.getSort() != null) {
-			queryOptions.getSort().stream()
-					.map(order -> createOrderBy(persistentEntity, order))
-					.forEachOrdered(builder::addOrderBy);
-		}
-	}
-
 	@Override
 	public <T> boolean existsById(Object id, Class<T> entityClass) {
 		return findById(id, entityClass) != null;
@@ -434,14 +458,14 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 		}
 		return ((Datastore) getDatastoreReadWriter())
 				.runInTransaction(
-				(DatastoreReaderWriter readerWriter) -> {
-					DatastoreTemplate template = new DatastoreTemplate(() -> readerWriter,
-							DatastoreTemplate.this.datastoreEntityConverter,
-							DatastoreTemplate.this.datastoreMappingContext,
-							DatastoreTemplate.this.objectToKeyFactory);
-					template.setApplicationEventPublisher(DatastoreTemplate.this.eventPublisher);
-					return operations.apply(template);
-				});
+						(DatastoreReaderWriter readerWriter) -> {
+							DatastoreTemplate template = new DatastoreTemplate(() -> readerWriter,
+									DatastoreTemplate.this.datastoreEntityConverter,
+									DatastoreTemplate.this.datastoreMappingContext,
+									DatastoreTemplate.this.objectToKeyFactory);
+							template.setApplicationEventPublisher(DatastoreTemplate.this.eventPublisher);
+							return operations.apply(template);
+						});
 	}
 
 	@Override
@@ -475,22 +499,6 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 	public Key createKey(Class aClass, Object id) {
 		return this.objectToKeyFactory.getKeyFromId(id,
 				getPersistentEntity(aClass).kindName());
-	}
-
-	private static StructuredQuery.OrderBy createOrderBy(DatastorePersistentEntity<?> persistentEntity,
-			Sort.Order order) {
-		if (order.isIgnoreCase()) {
-			throw new DatastoreDataException("Datastore doesn't support sorting ignoring case");
-		}
-		if (!order.getNullHandling().equals(Sort.NullHandling.NATIVE)) {
-			throw new DatastoreDataException("Datastore supports only NullHandling.NATIVE null handling");
-		}
-		DatastorePersistentProperty persistentProperty = persistentEntity.getPersistentProperty(order.getProperty());
-		Assert.notNull(persistentProperty, "Sort property '" + order.getProperty() + "' must exist in entity '" + persistentEntity.getName() + "'.");
-		return new StructuredQuery.OrderBy(persistentProperty.getFieldName(),
-				(order.getDirection() == Sort.Direction.DESC)
-						? StructuredQuery.OrderBy.Direction.DESCENDING
-						: StructuredQuery.OrderBy.Direction.ASCENDING);
 	}
 
 	private List<Entity> convertToEntityForSave(Object entity, Set<Key> persistedEntities, Key... ancestors) {
@@ -554,17 +562,11 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 						//we can be sure that the property is an array or an iterable,
 						//because we check it in isDescendant
 						entitiesToSave
-								.addAll(getEntitiesForSave((Iterable<?>) ValueUtil.toListIfArray(val), persistedEntities, key));
+								.addAll(getEntitiesForSave((Iterable<?>) ValueUtil.toListIfArray(val),
+										persistedEntities, key));
 					}
 				});
 		return entitiesToSave;
-	}
-
-	public static PathElement keyToPathElement(Key key) {
-		Assert.notNull(key, "A non-null key is required");
-		return (key.getName() != null)
-				? PathElement.of(key.getKind(), key.getName())
-				: PathElement.of(key.getKind(), key.getId());
 	}
 
 	private void validateKey(Object entity, PathElement ancestorPE) {
@@ -584,9 +586,10 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
 	/**
 	 * Convert Datastore entities to objects of a specified type.
-	 * @param entities the Datastore entities
+	 *
+	 * @param entities    the Datastore entities
 	 * @param entityClass the type the entities should be converted to.
-	 * @param <T> the type the entities should be converted to.
+	 * @param <T>         the type the entities should be converted to.
 	 * @return a list of converted entities
 	 */
 	public <T> List<T> convertEntitiesForRead(Iterator<? extends BaseEntity> entities, Class<T> entityClass) {
@@ -594,7 +597,8 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 		return convertEntitiesForRead(entities, entityClass, context);
 	}
 
-	private <T> List<T> convertEntitiesForRead(Iterator<? extends BaseEntity> entities, Class<T> entityClass, ReadContext context) {
+	private <T> List<T> convertEntitiesForRead(Iterator<? extends BaseEntity> entities, Class<T> entityClass,
+			ReadContext context) {
 		if (entities == null) {
 			return Collections.emptyList();
 		}
@@ -607,7 +611,8 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 		return convertEntitiesForRead(keys, entityClass, context);
 	}
 
-	private <T> List<T> convertEntitiesForRead(Collection<? extends BaseKey> keys, Class<T> entityClass, ReadContext context) {
+	private <T> List<T> convertEntitiesForRead(Collection<? extends BaseKey> keys, Class<T> entityClass,
+			ReadContext context) {
 		if (keys == null) {
 			return Collections.emptyList();
 		}
@@ -617,9 +622,9 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
 		return keys.stream()
 				.map(key -> convertEntityResolveDescendantsAndReferences(entityClass,
-				datastorePersistentEntity,
-				key,
-				context)).filter(Objects::nonNull)
+						datastorePersistentEntity,
+						key,
+						context)).filter(Objects::nonNull)
 				.collect(Collectors.toList());
 	}
 
@@ -641,7 +646,8 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 			//raw Datastore entity is no longer needed
 			context.removeReadEntity(key);
 			if (convertedObject != null) {
-				DatastorePersistentEntity discriminatedEntity = this.datastoreEntityConverter.getDiscriminationPersistentEntity(entityClass, readEntity);
+				DatastorePersistentEntity discriminatedEntity = this.datastoreEntityConverter
+						.getDiscriminationPersistentEntity(entityClass, readEntity);
 				resolveDescendantProperties(discriminatedEntity, readEntity, convertedObject, context);
 				resolveReferenceProperties(discriminatedEntity, readEntity, convertedObject, context);
 			}
@@ -704,11 +710,11 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 			return referenced;
 		}
 		catch (ClassCastException ex) {
-				throw new DatastoreDataException(
+			throw new DatastoreDataException(
 					"Error loading reference property " + fieldName + "."
 							+ "Reference properties must be stored as Keys or lists of Keys"
 							+ " in Cloud Datastore for singular or multiple references, respectively.");
-			}
+		}
 	}
 
 	// Given keys, fetches and converts values to the required collection type
@@ -744,7 +750,8 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
 					Filter ancestorFilter = descendantEntityType.getDiscriminationFieldName() != null ?
 							StructuredQuery.CompositeFilter.and(
-									PropertyFilter.eq(descendantEntityType.getDiscriminationFieldName(), descendantEntityType.getDiscriminatorValue()),
+									PropertyFilter.eq(descendantEntityType.getDiscriminationFieldName(),
+											descendantEntityType.getDiscriminatorValue()),
 									PropertyFilter.hasAncestor(ancestorKey)
 							) : PropertyFilter.hasAncestor(ancestorKey);
 
@@ -809,7 +816,8 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 		return this.datastore.get();
 	}
 
-	private <T> StructuredQuery exampleToQuery(Example<T> example, DatastoreQueryOptions queryOptions, boolean keyQuery) {
+	private <T> StructuredQuery exampleToQuery(Example<T> example, DatastoreQueryOptions queryOptions,
+			boolean keyQuery) {
 		validateExample(example);
 
 		T probe = example.getProbe();
@@ -853,7 +861,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 	}
 
 	private <T> Value<?> getValue(Example<T> example, FullEntity<IncompleteKey> probeEntity,
-					DatastorePersistentEntity<?> persistentEntity, DatastorePersistentProperty persistentProperty) {
+			DatastorePersistentEntity<?> persistentEntity, DatastorePersistentProperty persistentProperty) {
 		Value<?> value;
 		if (persistentProperty.isIdProperty()) {
 			value = getIdValue(example, persistentEntity, persistentProperty);
@@ -869,14 +877,14 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 	}
 
 	private <T> Value<?> getIdValue(Example<T> example, DatastorePersistentEntity<?> persistentEntity,
-					DatastorePersistentProperty persistentProperty) {
+			DatastorePersistentProperty persistentProperty) {
 		// ID properties are not stored as regular fields in Datastore.
 		Value<?> value;
 		PersistentPropertyAccessor accessor = persistentEntity.getPropertyAccessor(example.getProbe());
 		Object property = accessor.getProperty(persistentProperty);
 		value = property != null
-						? KeyValue.of(createKey(persistentEntity.kindName(), property))
-						: NullValue.of();
+				? KeyValue.of(createKey(persistentEntity.kindName(), property))
+				: NullValue.of();
 		return value;
 	}
 
@@ -936,6 +944,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 	 */
 	class ReadContext {
 		private final Map<BaseKey, Object> convertedEntities = new HashMap<>();
+
 		private final Map<BaseKey, BaseEntity> readEntities = new HashMap<>();
 
 		void putConvertedEntity(BaseKey key, Object entity) {
