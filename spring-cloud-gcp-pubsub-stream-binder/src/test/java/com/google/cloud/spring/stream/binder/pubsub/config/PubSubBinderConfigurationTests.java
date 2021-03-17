@@ -20,6 +20,7 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
@@ -128,6 +129,12 @@ public class PubSubBinderConfigurationTests {
 		@Bean
 		public CredentialsProvider googleCredentials() {
 			return () -> mock(Credentials.class);
+		}
+
+
+		@Bean
+		public GcpProjectIdProvider gcpProjectIdProvider() {
+			return () -> "test-project";
 		}
 	}
 }
