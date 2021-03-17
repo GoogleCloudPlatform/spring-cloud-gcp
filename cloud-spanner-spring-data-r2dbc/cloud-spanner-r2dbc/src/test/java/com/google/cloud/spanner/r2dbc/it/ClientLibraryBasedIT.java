@@ -78,14 +78,14 @@ class ClientLibraryBasedIT {
 
   /**
    * Recreates test table.
-   * Call with {@code it.recreate-ddl=true} to drop and create test tables.
+   * Call with {@code it.recreate-ddl=false} to skip dropping and recreating test tables.
    */
   @BeforeAll
   public static void setupSpannerTable() {
 
     Hooks.onOperatorDebug();
 
-    if ("true".equals(System.getProperty("it.recreate-ddl"))) {
+    if (!"false".equals(System.getProperty("it.recreate-ddl"))) {
       LOGGER.info("Dropping and re-creating table BOOKS.");
       Connection con = Mono.from(connectionFactory.create()).block();
 
