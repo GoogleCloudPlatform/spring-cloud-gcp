@@ -53,14 +53,15 @@ import static com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType.N
  *
  * @author Dmitry Solomakha
  * @author Chengyuan Zhao
+ *
  * @since 1.1
  */
 public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter {
+	private DatastoreMappingContext mappingContext;
+
 	private final EntityInstantiators instantiators = new EntityInstantiators();
 
 	private final ReadWriteConversions conversions;
-
-	private final DatastoreMappingContext mappingContext;
 
 	public DefaultDatastoreEntityConverter(DatastoreMappingContext mappingContext,
 			ObjectToKeyFactory objectToKeyFactory) {
@@ -121,8 +122,8 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
 		return readAsMap(entity, ClassTypeInformation.from(HashMap.class));
 	}
 
-	public DatastorePersistentEntity getDiscriminationPersistentEntity(Class<?> aClass, BaseEntity entity) {
-		DatastorePersistentEntity ostensiblePersistentEntity = this.mappingContext
+	public DatastorePersistentEntity getDiscriminationPersistentEntity(Class<?> aClass, BaseEntity entity){
+		DatastorePersistentEntity ostensiblePersistentEntity = (DatastorePersistentEntity) this.mappingContext
 				.getPersistentEntity(aClass);
 
 		if (ostensiblePersistentEntity == null) {
@@ -204,8 +205,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
 	@Override
 	@SuppressWarnings("unchecked")
 	public void write(Object source, BaseEntity.Builder sink) {
-		DatastorePersistentEntity<?> persistentEntity = this.mappingContext
-				.getDatastorePersistentEntity(source.getClass());
+		DatastorePersistentEntity<?> persistentEntity = this.mappingContext.getDatastorePersistentEntity(source.getClass());
 
 		String discriminationFieldName = persistentEntity.getDiscriminationFieldName();
 		List<String> discriminationValues = persistentEntity.getCompatibleDiscriminationValues();
@@ -245,12 +245,12 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
 		if (convertedVal.getClass().equals(EntityValue.class)) {
 			FullEntity.Builder<IncompleteKey> builder = FullEntity.newBuilder();
 			((EntityValue) convertedVal).get().getProperties()
-					.forEach((key, value) -> builder.set(key, setExcludeFromIndexes(value)));
+							.forEach((key, value) -> builder.set(key, setExcludeFromIndexes(value)));
 			return EntityValue.of(builder.build());
 		}
 		else if (convertedVal.getClass().equals(ListValue.class)) {
 			return ListValue.of((List) ((ListValue) convertedVal).get().stream()
-					.map(this::setExcludeFromIndexes).collect(Collectors.toList()));
+							.map(this::setExcludeFromIndexes).collect(Collectors.toList()));
 		}
 		else {
 			return convertedVal.toBuilder().setExcludeFromIndexes(true).build();
