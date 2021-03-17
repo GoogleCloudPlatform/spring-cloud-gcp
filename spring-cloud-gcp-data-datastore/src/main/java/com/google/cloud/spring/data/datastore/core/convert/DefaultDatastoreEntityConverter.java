@@ -122,12 +122,12 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
 		return readAsMap(entity, ClassTypeInformation.from(HashMap.class));
 	}
 
-	public DatastorePersistentEntity getDiscriminationPersistentEntity(Class<?> aClass, BaseEntity entity) {
-		DatastorePersistentEntity ostensiblePersistentEntity = (DatastorePersistentEntity) this.mappingContext
-				.getPersistentEntity(aClass);
+	public <T> DatastorePersistentEntity<T> getDiscriminationPersistentEntity(Class<T> entityClass, BaseEntity<?> entity) {
+		DatastorePersistentEntity ostensiblePersistentEntity = this.mappingContext
+				.getPersistentEntity(entityClass);
 
 		if (ostensiblePersistentEntity == null) {
-			throw new DatastoreDataException("Unable to convert Datastore Entity to " + aClass);
+			throw new DatastoreDataException("Unable to convert Datastore Entity to " + entityClass);
 		}
 
 		EntityPropertyValueProvider propertyValueProvider = new EntityPropertyValueProvider(entity, this.conversions);

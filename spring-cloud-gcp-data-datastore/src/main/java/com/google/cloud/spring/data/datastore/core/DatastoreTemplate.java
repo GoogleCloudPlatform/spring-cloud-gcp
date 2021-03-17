@@ -616,14 +616,11 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
 		return keys.stream()
 				.map(key -> convertEntityResolveDescendantsAndReferences(entityClass,
-				datastorePersistentEntity,
-				key,
-				context)).filter(Objects::nonNull)
+				key, context)).filter(Objects::nonNull)
 				.collect(Collectors.toList());
 	}
 
 	private <T> T convertEntityResolveDescendantsAndReferences(Class<T> entityClass,
-			DatastorePersistentEntity datastorePersistentEntity,
 			BaseKey key, ReadContext context) {
 		T convertedObject;
 		if (context.converted(key)) {

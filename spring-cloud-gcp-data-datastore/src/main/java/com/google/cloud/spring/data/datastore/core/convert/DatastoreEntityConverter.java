@@ -41,7 +41,14 @@ public interface DatastoreEntityConverter extends
 	 */
 	ReadWriteConversions getConversions();
 
-	DatastorePersistentEntity getDiscriminationPersistentEntity(Class<?> aClass, BaseEntity entity);
+	/**
+	 * Provide a {@link DatastorePersistentEntity} with support for discriminator fields.
+	 * @param entityClass the entity class
+	 * @param entity the Datastore entity
+	 * @param <T> the type of the entity
+	 * @return {@link DatastorePersistentEntity} for the entity type with support for discriminator fields.
+	 */
+	<T> DatastorePersistentEntity<T> getDiscriminationPersistentEntity(Class<T> entityClass, BaseEntity<?> entity);
 
 	/**
 	 * Read the entity as a {@link Map}.
