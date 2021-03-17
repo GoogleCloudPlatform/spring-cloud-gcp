@@ -122,7 +122,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
 		return readAsMap(entity, ClassTypeInformation.from(HashMap.class));
 	}
 
-	public DatastorePersistentEntity getDiscriminationPersistentEntity(Class<?> aClass, BaseEntity entity){
+	public DatastorePersistentEntity getDiscriminationPersistentEntity(Class<?> aClass, BaseEntity entity) {
 		DatastorePersistentEntity ostensiblePersistentEntity = (DatastorePersistentEntity) this.mappingContext
 				.getPersistentEntity(aClass);
 

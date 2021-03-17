@@ -73,7 +73,6 @@ import com.google.cloud.spring.data.datastore.core.util.SliceUtil;
 import com.google.cloud.spring.data.datastore.core.util.ValueUtil;
 import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable;
 
-import com.google.datastore.v1.CompositeFilter;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -641,7 +640,8 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 			//raw Datastore entity is no longer needed
 			context.removeReadEntity(key);
 			if (convertedObject != null) {
-				DatastorePersistentEntity discriminatedEntity = this.datastoreEntityConverter.getDiscriminationPersistentEntity(entityClass, readEntity);
+				DatastorePersistentEntity discriminatedEntity = this.datastoreEntityConverter
+						.getDiscriminationPersistentEntity(entityClass, readEntity);
 				resolveDescendantProperties(discriminatedEntity, readEntity, convertedObject, context);
 				resolveReferenceProperties(discriminatedEntity, readEntity, convertedObject, context);
 			}
@@ -744,7 +744,8 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
 					Filter ancestorFilter = descendantEntityType.getDiscriminationFieldName() != null ?
 							StructuredQuery.CompositeFilter.and(
-									PropertyFilter.eq(descendantEntityType.getDiscriminationFieldName(), descendantEntityType.getDiscriminatorValue()),
+									PropertyFilter.eq(descendantEntityType.getDiscriminationFieldName(),
+											descendantEntityType.getDiscriminatorValue()),
 									PropertyFilter.hasAncestor(ancestorKey)
 							) : PropertyFilter.hasAncestor(ancestorKey);
 
