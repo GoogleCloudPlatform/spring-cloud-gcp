@@ -16,24 +16,27 @@
 
 package com.google.cloud.spring.data.datastore.it.subclasses.descendants;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
-import com.google.cloud.spring.data.datastore.entities.subclasses.descendants.EntityBDescendants;
-import com.google.cloud.spring.data.datastore.entities.subclasses.descendants.EntityCDescendants;
-import com.google.cloud.spring.data.datastore.entities.subclasses.reference.EntityAReference;
-import com.google.cloud.spring.data.datastore.entities.subclasses.reference.EntityBReference;
-import com.google.cloud.spring.data.datastore.entities.subclasses.reference.EntityCReference;
+import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
+import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField;
+import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import com.google.cloud.spring.data.datastore.it.AbstractDatastoreIntegrationTests;
 import com.google.cloud.spring.data.datastore.it.DatastoreIntegrationTestConfiguration;
+import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.data.annotation.Id;
+import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -41,14 +44,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
 
+@Repository
+interface SubclassesDescendantsEntityARepository extends DatastoreRepository<EntityA, Key> {
+}
+
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { DatastoreIntegrationTestConfiguration.class })
 public class SubclassesDescendantsIntegrationTests extends AbstractDatastoreIntegrationTests {
 
 	@Autowired
-	EntityADescendantsRepository entityARepository;
+	SubclassesDescendantsEntityARepository entityARepository;
 
-	@SpyBean
+	@Autowired
 	private DatastoreTemplate datastoreTemplate;
 
 	@BeforeClass
@@ -61,20 +68,51 @@ public class SubclassesDescendantsIntegrationTests extends AbstractDatastoreInte
 
 	@After
 	public void deleteAll() {
-		datastoreTemplate.deleteAll(EntityAReference.class);
-		datastoreTemplate.deleteAll(EntityBReference.class);
-		datastoreTemplate.deleteAll(EntityCReference.class);
+		datastoreTemplate.deleteAll(EntityA.class);
+		datastoreTemplate.deleteAll(EntityB.class);
+		datastoreTemplate.deleteAll(EntityC.class);
 	}
 
 	@Test
 	public void TestEntityCContainsReferenceToEntityB() {
-		EntityBDescendants entityB_1 = new EntityBDescendants();
-		EntityCDescendants entityC_1 = new EntityCDescendants();
+		EntityB entityB_1 = new EntityB();
+		EntityC entityC_1 = new EntityC();
 		entityB_1.addEntityC(entityC_1);
 		entityARepository.saveAll(Arrays.asList(entityB_1, entityC_1));
-		EntityBDescendants fetchedB = (EntityBDescendants) entityARepository.findById(entityB_1.getId()).get();
-		List<EntityCDescendants> entitiesCOfB = fetchedB.getEntitiesC();
+		EntityB fetchedB = (EntityB) entityARepository.findById(entityB_1.getId()).get();
+		List<EntityC> entitiesCOfB = fetchedB.getEntitiesC();
 		assertThat(entitiesCOfB).hasSize(1);
 	}
 
+}
+
+@Entity(name = "A")
+@DiscriminatorField(field = "type")
+abstract class EntityA {
+	@Id
+	private Key id;
+
+	public Key getId() {
+		return id;
+	}
+}
+
+@Entity(name = "A")
+@DiscriminatorValue("B")
+class EntityB extends EntityA {
+	@Descendants
+	private List<EntityC> entitiesC = new ArrayList<>();
+
+	public void addEntityC(EntityC entityCDescendants) {
+		this.entitiesC.add(entityCDescendants);
+	}
+
+	public List<EntityC> getEntitiesC() {
+		return entitiesC;
+	}
+}
+
+@Entity(name = "A")
+@DiscriminatorValue("C")
+class EntityC extends EntityA {
 }
