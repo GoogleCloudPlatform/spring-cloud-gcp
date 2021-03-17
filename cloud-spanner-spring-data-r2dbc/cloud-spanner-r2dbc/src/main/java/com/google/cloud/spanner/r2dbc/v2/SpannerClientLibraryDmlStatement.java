@@ -18,7 +18,8 @@ package com.google.cloud.spanner.r2dbc.v2;
 
 import com.google.cloud.spanner.Statement;
 import java.util.List;
-import org.apache.commons.lang3.ArrayUtils;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
@@ -54,10 +55,10 @@ class SpannerClientLibraryDmlStatement extends AbstractSpannerClientLibraryState
   protected Flux<SpannerClientLibraryResult> executeMultiple(List<Statement> statements) {
     return this.clientLibraryAdapter
         .runBatchDml(statements)
-        .flatMapMany(numRowsArray ->
-              Flux.fromArray(ArrayUtils.toObject(numRowsArray))
-                  .map(numRows ->
-                      new SpannerClientLibraryResult(Flux.empty(), Mono.just(longToInt(numRows))))
+        .flatMapIterable(
+            numRowsArray -> LongStream.of(numRowsArray).boxed().collect(Collectors.toList()))
+        .map(numRows ->
+                      new SpannerClientLibraryResult(Flux.empty(), Mono.just(longToInt(numRows)))
         );
   }
 

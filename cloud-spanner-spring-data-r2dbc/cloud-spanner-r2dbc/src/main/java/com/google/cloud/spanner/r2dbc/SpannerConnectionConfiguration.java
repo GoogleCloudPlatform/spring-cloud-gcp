@@ -46,7 +46,7 @@ public class SpannerConnectionConfiguration {
   private static final String PACKAGE_VERSION =
       SpannerConnectionConfiguration.class.getPackage().getImplementationVersion();
 
-  private static final String USER_AGENT_KEY = "User-Agent";
+  private static final String USER_AGENT_KEY = "user-agent";
 
   // TODO: check how to handle full URL (it gets parsed by SPI, we only get pieces)
   private final String fullyQualifiedDbName;
