@@ -611,9 +611,6 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 			return Collections.emptyList();
 		}
 
-		DatastorePersistentEntity datastorePersistentEntity = this.datastoreMappingContext
-				.getPersistentEntity(entityClass);
-
 		return keys.stream()
 				.map(key -> convertEntityResolveDescendantsAndReferences(entityClass,
 				key, context)).filter(Objects::nonNull)
@@ -637,7 +634,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 			//raw Datastore entity is no longer needed
 			context.removeReadEntity(key);
 			if (convertedObject != null) {
-				DatastorePersistentEntity discriminatedEntity = this.datastoreEntityConverter
+				DatastorePersistentEntity<T> discriminatedEntity = this.datastoreEntityConverter
 						.getDiscriminationPersistentEntity(entityClass, readEntity);
 				resolveDescendantProperties(discriminatedEntity, readEntity, convertedObject, context);
 				resolveReferenceProperties(discriminatedEntity, readEntity, convertedObject, context);
