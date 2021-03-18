@@ -88,22 +88,68 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
 		Resource providedLocation = credentialsSupplier.getCredentials().getLocation();
 		String encodedKey = credentialsSupplier.getCredentials().getEncodedKey();
 
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+		System.out.println("Hello");
+
 		if (providedLocation != null) {
-			LOGGER.info("We entered case 1");
+			System.out.println("Hello1");
+			System.out.println("Hello1");
+			System.out.println("Hello1");
+			System.out.println("Hello1");
 			this.wrappedCredentialsProvider = FixedCredentialsProvider
 					.create(GoogleCredentials.fromStream(
 							providedLocation.getInputStream())
 							.createScoped(scopes));
 		}
 		else if (StringUtils.hasText(encodedKey)) {
-			LOGGER.info("We entered case 2");
+			System.out.println("Hello2");
+			System.out.println("Hello2");
+			System.out.println("Hello2");
+			System.out.println("Hello2");
 			this.wrappedCredentialsProvider = FixedCredentialsProvider.create(
 					GoogleCredentials.fromStream(
 							new ByteArrayInputStream(Base64.getDecoder().decode(encodedKey)))
 							.createScoped(scopes));
 		}
 		else {
-			LOGGER.info("We entered case 3");
+			System.out.println("Hello3");
+			System.out.println("Hello3");
+			System.out.println("Hello3");
+			System.out.println("Hello3");
+			System.out.println("Hello3");
 			this.wrappedCredentialsProvider = GoogleCredentialsProvider.newBuilder()
 					.setScopesToApply(scopes)
 					.build();
