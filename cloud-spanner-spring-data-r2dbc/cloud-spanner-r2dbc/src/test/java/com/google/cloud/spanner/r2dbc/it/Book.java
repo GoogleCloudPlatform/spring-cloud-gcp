@@ -45,6 +45,7 @@ public class Book {
 
   /**
    * Constructor.
+   *
    * @param id id
    * @param title title
    * @param author author

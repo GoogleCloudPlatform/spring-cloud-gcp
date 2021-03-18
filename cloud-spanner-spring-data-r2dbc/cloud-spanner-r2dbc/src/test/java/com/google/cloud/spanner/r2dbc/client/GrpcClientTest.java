@@ -212,6 +212,7 @@ class GrpcClientTest {
    * @param serviceImpl implementation of the Spanner service. Typically, just the methods needed to
    *     execute the test.
    * @param clientConsumer consumer of the {@link GrpcClient} - the class under test.
+   *
    * @return a Mockito spy for the gRPC service for verification.
    */
   private SpannerImplBase doTest(SpannerGrpc.SpannerImplBase serviceImpl,

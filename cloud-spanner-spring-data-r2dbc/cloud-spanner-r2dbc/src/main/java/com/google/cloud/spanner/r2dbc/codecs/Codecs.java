@@ -32,6 +32,7 @@ public interface Codecs {
    * @param spannerType the type to decode to
    * @param type the type to decode to
    * @param <T> the type of item being returned
+   *
    * @return the decoded value
    * @throws NullPointerException if {@code format} or {@code type} is {@code null}
    */
@@ -42,7 +43,9 @@ public interface Codecs {
    * Encode a value.
    *
    * @param value the value to encode
+   *
    * @return the encoded value
+   *
    * @throws NullPointerException if {@code value} is {@code null}
    */
   Value encode(Object value);

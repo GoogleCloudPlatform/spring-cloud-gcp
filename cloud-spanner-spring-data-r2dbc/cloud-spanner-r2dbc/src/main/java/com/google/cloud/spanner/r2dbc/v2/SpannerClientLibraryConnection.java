@@ -36,6 +36,7 @@ class SpannerClientLibraryConnection implements Connection, SpannerConnection {
 
   /**
    * Cloud Spanner implementation of R2DBC Connection SPI.
+   *
    * @param clientLibraryAdapter adapter to Cloud Spanner database client
    * @param config driver configuration extracted from URL or passed directly to connection factory.
    */

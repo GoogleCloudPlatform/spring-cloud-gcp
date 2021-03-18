@@ -35,6 +35,7 @@ class SpannerClientLibraryDmlStatement extends AbstractSpannerClientLibraryState
 
   /**
    * Creates a ready-to-run Cloud Spanner DML statement.
+   *
    * @param clientLibraryAdapter client library implementation of core functionality
    * @param query query to run
    */

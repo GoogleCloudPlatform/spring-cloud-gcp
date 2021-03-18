@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the sample application.
  */
-class BookExampleAppIT {
+class BookExampleAppIntegrationTest {
 
   private static final String TEST_INSTANCE =
       System.getProperty("spanner.instance", "reactivetest");

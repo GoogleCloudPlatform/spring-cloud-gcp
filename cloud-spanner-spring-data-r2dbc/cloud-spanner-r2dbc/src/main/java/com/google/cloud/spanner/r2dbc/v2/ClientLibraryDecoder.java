@@ -76,6 +76,7 @@ class ClientLibraryDecoder {
    * @param index the index of the result to decode
    * @param type the type of the result
    * @param <T> the type of the result
+   *
    * @return decoded value
    */
   public static <T> T decode(Struct struct, int index, Class<T> type) {

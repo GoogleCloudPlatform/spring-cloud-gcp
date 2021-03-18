@@ -60,6 +60,7 @@ public class SpannerStatement implements Statement {
    *
    * <p>If no transaction is present, a temporary strongly consistent readonly transaction will be
    * used.
+   *
    * @param client cloud spanner client to use for performing the query operation
    * @param ctx Execution context containing the current session and optional transaction.
    * @param sql the query to execute

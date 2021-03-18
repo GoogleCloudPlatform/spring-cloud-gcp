@@ -250,7 +250,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>8.29</version>
+            <version>8.41</version>
           </dependency>
         </dependencies>
         <executions>
@@ -284,6 +284,9 @@
         <version>3.0.0-M5</version>
         <configuration>
           <skip>${skip.surefire.tests}</skip>
+          <excludes>
+            <exclude>**/*IntegrationTest*</exclude>
+          </excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -293,7 +296,7 @@
         <configuration>
           <includes>
             <include>**/*TestKit.java</include>
-            <include>**/*IT.java</include>
+            <include>**/*IntegrationTest*</include>
           </includes>
         </configuration>
         <executions>
@@ -339,10 +342,9 @@
             <configuration>
               <!-- need for JaCoCo -->
               <argLine>@{argLine} -Xms512m -Xmx512m</argLine>
-              <includes>
-                <include>**/*Tests.java</include>
-                <include>**/*Test.java</include>
-              </includes>
+              <excludes>
+                <exclude>**/*IntegrationTest*</exclude>
+              </excludes>
             </configuration>
           </plugin>
           <plugin>

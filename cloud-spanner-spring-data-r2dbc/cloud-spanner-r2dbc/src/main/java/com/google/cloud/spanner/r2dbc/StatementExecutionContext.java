@@ -32,6 +32,7 @@ public interface StatementExecutionContext {
 
   /**
    * Retrieves the session name associated with the current connection.
+   *
    * @return valid name of a currently valid Cloud Spanner session.
    */
   String getSessionName();
@@ -41,12 +42,14 @@ public interface StatementExecutionContext {
    *
    * <p>Cloud Spanner uses the sequence number to prevent a DDL statement from being executed
    * multiple times.
+   *
    * @return a valid sequence number for DML updates.
    */
   long nextSeqNum();
 
   /**
    * Retrieves the current transaction ID, if present.
+   *
    * @return id of the current transaction or {@code null} if there is no active transaction.
    */
   ByteString getTransactionId();
@@ -54,6 +57,7 @@ public interface StatementExecutionContext {
   /**
    * Determines whether the current transaction, if present, is a Read/Write Cloud Spanner
    * transaction.
+   *
    * @return whether the current transaction is a Read/Write transaction ({@code false} if there is
    *     no active transaction).
    */
@@ -62,6 +66,7 @@ public interface StatementExecutionContext {
   /**
    * Determines whether the current transaction, if present, is a Partitioned DML Cloud Spanner
    * transaction.
+   *
    * @return whether the current transaction is a Partitioned DML transaction ({@code false} if
    *     there is no active transaction).
    */

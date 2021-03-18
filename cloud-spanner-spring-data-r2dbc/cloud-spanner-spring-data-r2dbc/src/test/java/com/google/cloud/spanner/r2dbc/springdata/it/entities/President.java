@@ -16,6 +16,9 @@
 
 package com.google.cloud.spanner.r2dbc.springdata.it.entities;
 
+/**
+ * Example entity.
+ */
 public class President {
 
   private String name;

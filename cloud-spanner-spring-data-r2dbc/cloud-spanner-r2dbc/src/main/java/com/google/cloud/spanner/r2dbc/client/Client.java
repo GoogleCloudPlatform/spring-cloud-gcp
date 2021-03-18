@@ -43,6 +43,7 @@ public interface Client {
    *
    * @param databaseName Fully qualified Spanner database name in the format {@code
    * projects/[PROJECT_ID]/instances/[INSTANCE]/databases/[DATABASE]}
+   *
    * @return {@link Mono} of the generated session.
    */
   Mono<Session> createSession(String databaseName);
@@ -51,6 +52,7 @@ public interface Client {
    * Deletes a Spanner session that is used to call Spanner APIs.
    *
    * @param sessionName name of existing Cloud Spanner session to be closed.
+   *
    * @return {@link Mono} indicating completion closing the session.
    */
   Mono<Void> deleteSession(String sessionName);
@@ -60,6 +62,7 @@ public interface Client {
    *
    * @param sessionName name of existing Cloud Spanner session.
    * @param transactionOptions properties determining the type of transaction to create
+   *
    * @return {@link Mono} of the transaction that was started.
    */
   Mono<Transaction> beginTransaction(String sessionName, TransactionOptions transactionOptions);
@@ -69,6 +72,7 @@ public interface Client {
    *
    * @param sessionName name of existing Cloud Spanner session
    * @param transaction The transaction that you want to commit.
+   *
    * @return {@link CommitResponse} describing the timestamp at which the transaction committed.
    */
   Mono<CommitResponse> commitTransaction(String sessionName, Transaction transaction);
@@ -79,6 +83,7 @@ public interface Client {
    *
    * @param sessionName name of existing Cloud Spanner session.
    * @param transaction The transaction that you want to rollback.
+   *
    * @return {@link Mono} indicating completion of the rollback.
    */
   Mono<Void> rollbackTransaction(String sessionName, Transaction transaction);
@@ -90,6 +95,7 @@ public interface Client {
    * @param sql select or DML query to execute
    * @param params parameter values
    * @param types parameter types
+   *
    * @return the {@link Flux} of partial result sets from the query.
    */
   Flux<PartialResultSet> executeStreamingSql(
@@ -103,6 +109,7 @@ public interface Client {
    *
    * @param ctx connection-specific state.
    * @param sql select or DML query to execute
+   *
    * @return the {@link Flux} of partial result sets from the query.
    */
   default Flux<PartialResultSet> executeStreamingSql(StatementExecutionContext ctx, String sql) {
@@ -114,6 +121,7 @@ public interface Client {
    *
    * @param ctx connection-specific state.
    * @param statements list of DML statements to execute.
+   *
    * @return the {@link ResultSet}s returned after executing the query
    */
   Flux<ResultSet> executeBatchDml(StatementExecutionContext ctx, List<Statement> statements);
@@ -127,6 +135,7 @@ public interface Client {
    * @param ddlStatement statement to execute (CREATE/DROP etc.).
    * @param ddlOperationTimeout how long to poll for the operation results until giving up.
    * @param ddlPollInterval how frequently to poll for the operation results.
+   *
    * @return a {@link Mono} containing the operation metadata for tracking status of operation.
    */
   Mono<Operation> executeDdl(
@@ -144,6 +153,7 @@ public interface Client {
 
   /**
    * Validates session associated with the passed in {@link StatementExecutionContext}.
+   *
    * @return {@link Mono} of whether the connection is working.
    */
   Mono<Boolean> healthcheck(StatementExecutionContext ctx);

@@ -18,6 +18,9 @@ package com.google.cloud.spanner.r2dbc;
 
 import io.r2dbc.spi.R2dbcNonTransientException;
 
+/**
+ * A non-retryable exception indicating improperly done parameter binding.
+ */
 public class BindingFailureException extends R2dbcNonTransientException {
 
   public BindingFailureException(String message) {

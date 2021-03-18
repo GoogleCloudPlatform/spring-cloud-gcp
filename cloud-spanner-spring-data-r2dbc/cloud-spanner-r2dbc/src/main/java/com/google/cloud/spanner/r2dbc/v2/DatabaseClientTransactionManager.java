@@ -91,6 +91,7 @@ class DatabaseClientTransactionManager {
    * Starts a Cloud Spanner Read-only transaction with specified staleness.
    *
    * @param timestampBound staleness settings
+   *
    * @return chainable {@link TransactionContextFuture} for the current transaction.
    */
   void beginReadonlyTransaction(TimestampBound timestampBound) {
@@ -158,9 +159,11 @@ class DatabaseClientTransactionManager {
 
   /**
    * Runs provided operation, managing the client library transactional future chaining.
+   *
    * @param operation a function executing either streaming SQL or DML.
    *     The function accepts ReadContext for SELECT queries, and TransactionContext for DML.
    * @param <T> Type of object wrapped by the {@link ApiFuture} returned by the operation
+   *
    * @return {@link ApiFuture} result of the provided operation
    */
   <T> ApiFuture<T> runInTransaction(Function<? super TransactionContext, ApiFuture<T>> operation) {

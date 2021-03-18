@@ -45,9 +45,10 @@ import reactor.test.StepVerifier;
  * `testdb` database. This can be configured by overriding the `spanner.instance` and
  * `spanner.database` system properties.
  */
-class SpannerR2dbcDialectIT {
+class SpannerR2dbcDialectIntegrationTest {
 
-  private static final Logger logger = LoggerFactory.getLogger(SpannerR2dbcDialectIT.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(SpannerR2dbcDialectIntegrationTest.class);
 
   private static final String DRIVER_NAME = "spanner";
 

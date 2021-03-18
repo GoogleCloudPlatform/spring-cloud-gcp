@@ -33,9 +33,11 @@ public class ObservableReactiveUtil {
   /**
    * Invokes a lambda that in turn issues a remote call, directing the response to a {@link Mono}
    * stream.
+   *
    * @param remoteCall lambda capable of invoking the correct remote call, making use of the
-   * {@link Mono}-converting {@link StreamObserver} implementation.
+   *     {@link Mono}-converting {@link StreamObserver} implementation.
    * @param <ResponseT> type of remote call response
+   *
    * @return {@link Mono} containing the response of the unary call.
    */
   public static <ResponseT> Mono<ResponseT> unaryCall(
@@ -50,6 +52,7 @@ public class ObservableReactiveUtil {
    * @param remoteCall call to make
    * @param <RequestT> request type
    * @param <ResponseT> response type
+   *
    * @return {@link Flux} of response objects resulting from the streaming call.
    */
   public static <RequestT, ResponseT> Flux<ResponseT> streamingCall(
@@ -94,7 +97,7 @@ public class ObservableReactiveUtil {
     }
 
     public void request(long n) {
-      this.rsObserver.request(n > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int)n);
+      this.rsObserver.request(n > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) n);
     }
   }
 

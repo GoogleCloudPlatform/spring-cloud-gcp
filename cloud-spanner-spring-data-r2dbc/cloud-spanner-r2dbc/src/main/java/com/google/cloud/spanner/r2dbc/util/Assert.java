@@ -34,9 +34,11 @@ public class Assert {
    *
    * @param t the object reference to check for nullity
    * @param message informative message to be used in the event that an
-   * {@link IllegalArgumentException} is thrown
+   *     {@link IllegalArgumentException} is thrown
    * @param <T> the type of object reference
+   *
    * @return the original object {@code t}
+   *
    * @throws IllegalArgumentException if {@code o} is {@code null}
    */
   public static <T> T requireNonNull(@Nullable T t, String message) {
@@ -53,8 +55,10 @@ public class Assert {
    *
    * @param s string to check
    * @param message informative message to be used in the event that an
-   * {@link IllegalArgumentException} is thrown
+   *     {@link IllegalArgumentException} is thrown
+   *
    * @return the original string {@code s}
+   *
    * @throws IllegalArgumentException if {@code o} is {@code null}
    */
   public static ByteString requireNonEmpty(@Nullable ByteString s, String message) {
@@ -71,8 +75,10 @@ public class Assert {
    *
    * @param s string to check
    * @param message informative message to be used in the event that an
-   * {@link IllegalArgumentException} is thrown
+   *     {@link IllegalArgumentException} is thrown
+   *
    * @return the original string {@code s}
+   *
    * @throws IllegalArgumentException if {@code o} is {@code null}
    */
   public static String requireNonEmpty(@Nullable String s, String message) {

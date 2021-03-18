@@ -18,6 +18,9 @@ package com.google.cloud.spanner.r2dbc;
 
 import io.r2dbc.spi.R2dbcNonTransientException;
 
+/**
+ * Non-retryable exception indicating another transaction is already in progress in this connection.
+ */
 public class TransactionInProgressException extends R2dbcNonTransientException {
 
   public static final String MSG_READONLY =

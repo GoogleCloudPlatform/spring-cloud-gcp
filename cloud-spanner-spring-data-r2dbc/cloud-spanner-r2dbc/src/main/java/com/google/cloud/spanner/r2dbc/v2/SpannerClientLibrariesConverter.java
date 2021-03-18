@@ -16,6 +16,11 @@
 
 package com.google.cloud.spanner.r2dbc.v2;
 
+/**
+ * Generic converter interface validating feasibility and performing conversion between two types.
+ *
+ * @param <T> Type of the conversion result
+ */
 public interface SpannerClientLibrariesConverter<T> {
 
   boolean canConvert(Class<?> inputClass, Class<?> resultClass);

@@ -18,6 +18,9 @@ package com.google.cloud.spanner.r2dbc;
 
 import io.r2dbc.spi.R2dbcNonTransientException;
 
+/**
+ * Non-retryable exception indicating that type conversion failed.
+ */
 public class ConversionFailureException extends R2dbcNonTransientException {
 
   public ConversionFailureException(String message) {

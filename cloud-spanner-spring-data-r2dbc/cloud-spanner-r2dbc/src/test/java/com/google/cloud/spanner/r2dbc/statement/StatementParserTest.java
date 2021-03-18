@@ -30,7 +30,7 @@ class StatementParserTest {
 
   @Test
   void parsesDmlQueries() {
-    String sql = "InSeRt INTO TABLE_NAME VALUES (value1, value2, value3,...valueN)";
+    String sql = "InSeRt INTO TABLE_NAME VALUES (value1, value2, value3, ...valueN)";
     assertThat(StatementParser.getStatementType(sql)).isEqualTo(StatementType.DML);
 
     sql = "DELETE FROM target_name WHERE true";

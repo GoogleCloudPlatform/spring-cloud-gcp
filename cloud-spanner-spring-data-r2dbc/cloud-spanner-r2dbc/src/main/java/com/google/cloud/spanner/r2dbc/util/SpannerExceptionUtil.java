@@ -50,6 +50,7 @@ public class SpannerExceptionUtil {
    *
    * @param errorCode the Spanner error code of the error.
    * @param message the error message.
+   *
    * @return the resulting {@link R2dbcException} that is propagated to the user.
    */
   public static R2dbcException createR2dbcException(int errorCode, String message) {
@@ -60,6 +61,7 @@ public class SpannerExceptionUtil {
    * Extracts metadata of a thrown exception and creates a {@link R2dbcException} from it.
    *
    * @param baseException the base exception that is thrown
+   *
    * @return the resulting {@link R2dbcException} that is propagated to the user.
    */
   public static R2dbcException createR2dbcException(Throwable baseException) {

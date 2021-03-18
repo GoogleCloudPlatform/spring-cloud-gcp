@@ -47,6 +47,7 @@ abstract class AbstractSpannerClientLibraryStatement implements Statement {
 
   /**
    * Creates a ready-to-run Cloud Spanner statement.
+   *
    * @param clientLibraryAdapter client library implementation of core functionality
    * @param query query to run, with `@` placeholders expected as parameters.
    */

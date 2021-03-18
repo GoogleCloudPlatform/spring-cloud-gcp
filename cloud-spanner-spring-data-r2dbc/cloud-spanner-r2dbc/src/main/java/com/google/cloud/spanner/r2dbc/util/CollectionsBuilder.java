@@ -34,6 +34,7 @@ public class CollectionsBuilder {
    *
    * @param <T> the type of object being built into a {@link Set}.
    * @param items the collection of items to build into a {@link Set}.
+   *
    * @return the resulting set of items.
    */
   public static <T> Set<T> setOf(T... items) {

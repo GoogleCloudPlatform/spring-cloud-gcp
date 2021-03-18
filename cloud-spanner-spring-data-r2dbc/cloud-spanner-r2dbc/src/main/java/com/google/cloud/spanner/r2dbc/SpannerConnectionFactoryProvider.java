@@ -192,8 +192,10 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   /**
    * Extracts credentials from properties passed in either through URL or programmatically.
    * Fails if more than one known security option is specified.
+   *
    * @param options user-supplied configuration options
-   * @return
+   *
+   * @return constructed credentials if successful
    */
   private OAuth2Credentials extractCredentials(ConnectionFactoryOptions options) {
 

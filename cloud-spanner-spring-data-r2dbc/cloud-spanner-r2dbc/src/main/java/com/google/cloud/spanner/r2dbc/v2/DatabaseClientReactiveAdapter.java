@@ -276,6 +276,7 @@ class DatabaseClientReactiveAdapter {
    * @param readContext Cloud Spanner read context (plain or transactional)
    * @param statement query to run
    * @param sink output Flux sink
+   *
    * @return future suitable for transactional step chaining
    */
   private ApiFuture<Void> runSelectStatementAsFlux(

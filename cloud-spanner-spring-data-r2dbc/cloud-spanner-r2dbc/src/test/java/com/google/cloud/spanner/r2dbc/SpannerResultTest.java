@@ -68,7 +68,7 @@ class SpannerResultTest {
   @Test
   void getRowsUpdatedTest() {
     StepVerifier.create(
-        ((Mono) new SpannerResult(this.resultSet,Mono.just(2)).getRowsUpdated()))
+        ((Mono) new SpannerResult(this.resultSet, Mono.just(2)).getRowsUpdated()))
         .expectNext(2)
         .verifyComplete();
   }
@@ -81,7 +81,7 @@ class SpannerResultTest {
 
   @Test
   void nullRowsTest() {
-    assertThatThrownBy(() -> new SpannerResult(Flux.empty(),null))
+    assertThatThrownBy(() -> new SpannerResult(Flux.empty(), null))
         .hasMessage("A non-null mono of rows updated is required.");
   }
 

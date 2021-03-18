@@ -37,9 +37,9 @@ import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-class SpannerDdlIT {
+class SpannerDdlIntegrationTest {
 
-  private static final Logger logger = LoggerFactory.getLogger(SpannerDdlIT.class);
+  private static final Logger logger = LoggerFactory.getLogger(SpannerDdlIntegrationTest.class);
 
   private static final ConnectionFactory connectionFactory =
       ConnectionFactories.get(ConnectionFactoryOptions.builder()

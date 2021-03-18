@@ -24,6 +24,7 @@ interface ClientLibraryTypeBinder<T> {
    * Indicates if the binder can bind a value of a given type.
    *
    * @param type input data object type
+   *
    * @return true if the codec can encode value, false otherwise
    */
   boolean canBind(Class<T> type);

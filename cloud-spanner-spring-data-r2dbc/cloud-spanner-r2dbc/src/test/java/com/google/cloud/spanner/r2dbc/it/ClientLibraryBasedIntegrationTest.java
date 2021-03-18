@@ -55,9 +55,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-class ClientLibraryBasedIT {
+class ClientLibraryBasedIntegrationTest {
   private static final Logger LOGGER =
-      LoggerFactory.getLogger(ClientLibraryBasedIT.class);
+      LoggerFactory.getLogger(ClientLibraryBasedIntegrationTest.class);
 
   static final String INSERT_QUERY = "INSERT BOOKS (UUID, TITLE, AUTHOR, CATEGORY, FICTION, "
       + "PUBLISHED, WORDS_PER_SENTENCE, PRICE) VALUES (@uuid, 'A Sound of Thunder', "

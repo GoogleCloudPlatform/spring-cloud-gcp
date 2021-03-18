@@ -24,7 +24,7 @@ import java.util.function.BiFunction;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public class SpannerQueryUtil {
+class SpannerQueryUtil {
 
   /**
    * Executes a read query and runs the provided {@code mappingFunction} on the elements returned.
