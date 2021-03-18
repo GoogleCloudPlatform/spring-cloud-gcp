@@ -89,18 +89,21 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
 		String encodedKey = credentialsSupplier.getCredentials().getEncodedKey();
 
 		if (providedLocation != null) {
+			LOGGER.info("We entered case 1");
 			this.wrappedCredentialsProvider = FixedCredentialsProvider
 					.create(GoogleCredentials.fromStream(
 							providedLocation.getInputStream())
 							.createScoped(scopes));
 		}
 		else if (StringUtils.hasText(encodedKey)) {
+			LOGGER.info("We entered case 2");
 			this.wrappedCredentialsProvider = FixedCredentialsProvider.create(
 					GoogleCredentials.fromStream(
 							new ByteArrayInputStream(Base64.getDecoder().decode(encodedKey)))
 							.createScoped(scopes));
 		}
 		else {
+			LOGGER.info("We entered case 3");
 			this.wrappedCredentialsProvider = GoogleCredentialsProvider.newBuilder()
 					.setScopesToApply(scopes)
 					.build();
@@ -109,20 +112,18 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
 		try {
 			Credentials credentials = this.wrappedCredentialsProvider.getCredentials();
 
-			if (LOGGER.isInfoEnabled()) {
-				if (credentials instanceof UserCredentials) {
-					LOGGER.info("Default credentials provider for user "
-							+ ((UserCredentials) credentials).getClientId());
-				}
-				else if (credentials instanceof ServiceAccountCredentials) {
-					LOGGER.info("Default credentials provider for service account "
-							+ ((ServiceAccountCredentials) credentials).getClientEmail());
-				}
-				else if (credentials instanceof ComputeEngineCredentials) {
-					LOGGER.info("Default credentials provider for Google Compute Engine.");
-				}
-				LOGGER.info("Scopes in use by default credentials: " + scopes.toString());
+			if (credentials instanceof UserCredentials) {
+				LOGGER.info("Default credentials provider for user "
+						+ ((UserCredentials) credentials).getClientId());
 			}
+			else if (credentials instanceof ServiceAccountCredentials) {
+				LOGGER.info("Default credentials provider for service account "
+						+ ((ServiceAccountCredentials) credentials).getClientEmail());
+			}
+			else if (credentials instanceof ComputeEngineCredentials) {
+				LOGGER.info("Default credentials provider for Google Compute Engine.");
+			}
+			LOGGER.info("Scopes in use by default credentials: " + scopes.toString());
 		}
 		catch (IOException ioe) {
 			LOGGER.warn("No core credentials are set. Service-specific credentials " +
