@@ -64,7 +64,7 @@
 		<skip.surefire.tests>${skipTests}</skip.surefire.tests>
 		<skipTests>false</skipTests>
 		<spring-cloud-build.version>3.0.2</spring-cloud-build.version>
-		<spring-cloud-dependencies.version>2020.0.1</spring-cloud-dependencies.version>
+		<spring-cloud-dependencies.version>2020.0.2</spring-cloud-dependencies.version>
 		<spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
 		<zipkin-gcp.version>1.0.2</zipkin-gcp.version>
 	</properties>
@@ -471,6 +471,8 @@
 								<compilerArgs>
 									<arg>-XDcompilePolicy=simple</arg>
 									<arg>-Xplugin:ErrorProne</arg>
+									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
+									<arg>-parameters</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
@@ -514,6 +516,8 @@
 								<fork>true</fork>
 								<compilerArgs combine.children="append">
 									<arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
+									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
+									<arg>-parameters</arg>
 								</compilerArgs>
 							</configuration>
 							<dependencies>
