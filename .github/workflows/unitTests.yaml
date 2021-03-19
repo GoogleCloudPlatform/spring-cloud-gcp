@@ -43,7 +43,7 @@ jobs:
       # needed for Kotlin Sample on JDK 16
       if: matrix.java == 16
       env:
-        MAVEN_OPTS: --illegal-access=permit
+        GITHUB_ENV: "MAVEN_OPTS=--illegal-access=permit"
       run: echo "Remove this step if https://youtrack.jetbrains.com/issue/KT-44624 is fixed."
 
     - name: Mvn install # Need this when the directory/pom structure changes
