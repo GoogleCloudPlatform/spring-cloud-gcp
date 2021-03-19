@@ -4,7 +4,7 @@
 
 An implementation of the [R2DBC](https://r2dbc.io/) driver for [Cloud Spanner](https://cloud.google.com/spanner/) is being developed in this repository.
 
-A [Spring Data R2DBC dialect for Cloud Spanner](https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/tree/master/cloud-spanner-spring-data-r2dbc) dialect is available, as well.
+A [Spring Data R2DBC dialect for Cloud Spanner](https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/tree/main/cloud-spanner-spring-data-r2dbc) dialect is available, as well.
 
 ## Setup Instructions
 

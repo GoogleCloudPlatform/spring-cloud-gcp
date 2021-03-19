@@ -5,7 +5,7 @@ All scripts can be found in the `.kokoro` directory.
 
 ## Snapshots
 
-A commit to the `master` branch will automatically trigger the `prod:cloud-java-frameworks/cloud-spanner-r2dbc/continuous` job that will publish snapshots to https://oss.sonatype.org/content/repositories/snapshots/com/google/cloud/cloud-spanner-r2dbc/)[Sonatype Snapshots repository].
+A commit to the `main` branch will automatically trigger the `prod:cloud-java-frameworks/cloud-spanner-r2dbc/continuous` job that will publish snapshots to https://oss.sonatype.org/content/repositories/snapshots/com/google/cloud/cloud-spanner-r2dbc/)[Sonatype Snapshots repository].
 
 ## Releases
 
