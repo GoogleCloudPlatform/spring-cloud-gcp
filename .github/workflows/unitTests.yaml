@@ -39,6 +39,13 @@ jobs:
       if: steps.mvn-cache.outputs.cache-hit != 'true'
       run: ./mvnw compile dependency:go-offline
 
+    - name: Set Maven Options for Java 16
+      # needed for Kotlin Sample on JDK 16
+      if: matrix.java == 16
+      env:
+        MAVEN_OPTS: --illegal-access=permit
+      run: echo "Remove this step if https://youtrack.jetbrains.com/issue/KT-44624 is fixed."
+
     - name: Mvn install # Need this when the directory/pom structure changes
       id: install1
       continue-on-error: true
