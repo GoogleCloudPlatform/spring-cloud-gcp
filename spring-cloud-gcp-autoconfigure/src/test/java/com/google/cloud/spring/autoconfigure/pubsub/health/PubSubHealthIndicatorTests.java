@@ -55,7 +55,7 @@ import static org.mockito.Mockito.when;
  * @author Patrik Hörlin
  */
 @ExtendWith(MockitoExtension.class)
-public class PubSubHealthIndicatorTests {
+class PubSubHealthIndicatorTests {
 
 	@Mock
 	private PubSubTemplate pubSubTemplate;
