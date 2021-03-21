@@ -131,7 +131,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 		when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
 
-		Map<String, PubSubTemplate> pubSubTemplates = Map.of("pubSubTemplate", mockPubSubTemplate);
+		Map<String, PubSubTemplate> pubSubTemplates = Collections.singletonMap("pubSubTemplate", mockPubSubTemplate);
 		assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates, properties))
 				.isInstanceOf(BeanInitializationException.class);
 	}
@@ -149,7 +149,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 		when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
 
-		Map<String, PubSubTemplate> pubSubTemplates = Map.of("pubSubTemplate", mockPubSubTemplate);
+		Map<String, PubSubTemplate> pubSubTemplates = Collections.singletonMap("pubSubTemplate", mockPubSubTemplate);
 		assertThatCode(() -> p.pubSubHealthContributor(pubSubTemplates, properties)).doesNotThrowAnyException();
 	}
 
@@ -166,7 +166,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 		when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(e).when(future).get(anyLong(), any());
 
-		Map<String, PubSubTemplate> pubSubTemplates = Map.of("pubSubTemplate", mockPubSubTemplate);
+		Map<String, PubSubTemplate> pubSubTemplates = Collections.singletonMap("pubSubTemplate", mockPubSubTemplate);
 		assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates, properties)).isInstanceOf(BeanInitializationException.class);
 	}
 
@@ -183,7 +183,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 		when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(e).when(future).get(anyLong(), any());
 
-		Map<String, PubSubTemplate> pubSubTemplates = Map.of("pubSubTemplate", mockPubSubTemplate);
+		Map<String, PubSubTemplate> pubSubTemplates = Collections.singletonMap("pubSubTemplate", mockPubSubTemplate);
 		assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates, properties)).isInstanceOf(BeanInitializationException.class);
 	}
 
