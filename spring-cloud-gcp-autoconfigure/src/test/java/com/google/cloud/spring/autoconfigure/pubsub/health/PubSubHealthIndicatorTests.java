@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -74,7 +75,7 @@ public class PubSubHealthIndicatorTests {
 	@Test
 	void acknowledgeEnabled_shouldAcknowledgeMessages() throws Exception {
 		AcknowledgeablePubsubMessage msg = mock(AcknowledgeablePubsubMessage.class);
-		when(future.get(anyLong(), any())).thenReturn(List.of(msg));
+		when(future.get(anyLong(), any())).thenReturn(Arrays.asList(msg));
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
@@ -85,7 +86,7 @@ public class PubSubHealthIndicatorTests {
 	@Test
 	void acknowledgeDisabled_shouldAcknowledgeMessages() throws Exception {
 		AcknowledgeablePubsubMessage msg = mock(AcknowledgeablePubsubMessage.class);
-		when(future.get(anyLong(), any())).thenReturn(List.of(msg));
+		when(future.get(anyLong(), any())).thenReturn(Arrays.asList(msg));
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, false);
