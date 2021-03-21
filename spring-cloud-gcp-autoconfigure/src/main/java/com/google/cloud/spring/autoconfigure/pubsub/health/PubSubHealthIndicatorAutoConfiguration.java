@@ -72,7 +72,8 @@ public class PubSubHealthIndicatorAutoConfiguration extends
 		PubSubHealthIndicator indicator = new PubSubHealthIndicator(
 				pubSubTemplate,
 				this.pubSubHealthProperties.getSubscription(),
-				this.pubSubHealthProperties.getTimeoutMillis());
+				this.pubSubHealthProperties.getTimeoutMillis(),
+				this.pubSubHealthProperties.isAcknowledgeMessages());
 		indicator.validateHealthCheck();
 		return indicator;
 	}

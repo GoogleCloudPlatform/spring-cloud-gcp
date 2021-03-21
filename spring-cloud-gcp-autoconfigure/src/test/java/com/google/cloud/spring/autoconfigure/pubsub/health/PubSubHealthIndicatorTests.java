@@ -42,6 +42,9 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -64,8 +67,30 @@ public class PubSubHealthIndicatorTests {
 		when(future.get(anyLong(), any())).thenReturn(Collections.emptyList());
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UP);
+	}
+
+	@Test
+	void acknowledgeEnabled_shouldAcknowledgeMessages() throws Exception {
+		AcknowledgeablePubsubMessage msg = mock(AcknowledgeablePubsubMessage.class);
+		when(future.get(anyLong(), any())).thenReturn(List.of(msg));
+		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
+		healthIndicator.health();
+		verify(msg).ack();
+	}
+
+	@Test
+	void acknowledgeDisabled_shouldAcknowledgeMessages() throws Exception {
+		AcknowledgeablePubsubMessage msg = mock(AcknowledgeablePubsubMessage.class);
+		when(future.get(anyLong(), any())).thenReturn(List.of(msg));
+		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, false);
+		healthIndicator.health();
+		verify(msg, never()).ack();
 	}
 
 	@ParameterizedTest
@@ -76,7 +101,7 @@ public class PubSubHealthIndicatorTests {
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
 
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, null, 1000);
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, null, 1000, true);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UP);
 	}
 
@@ -88,7 +113,7 @@ public class PubSubHealthIndicatorTests {
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
 
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}
 
@@ -99,7 +124,7 @@ public class PubSubHealthIndicatorTests {
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(e).when(future).get(anyLong(), any());
 
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}
 
@@ -110,7 +135,7 @@ public class PubSubHealthIndicatorTests {
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(e).when(future).get(anyLong(), any());
 
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}
 
@@ -121,7 +146,7 @@ public class PubSubHealthIndicatorTests {
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(e).when(future).get(anyLong(), any());
 
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UNKNOWN);
 	}
 
@@ -132,7 +157,7 @@ public class PubSubHealthIndicatorTests {
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(e).when(future).get(anyLong(), any());
 
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UNKNOWN);
 	}
 
@@ -143,7 +168,7 @@ public class PubSubHealthIndicatorTests {
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(e).when(future).get(anyLong(), any());
 
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000);
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}
 }

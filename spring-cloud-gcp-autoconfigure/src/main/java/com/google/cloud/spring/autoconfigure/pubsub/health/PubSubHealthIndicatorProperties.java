@@ -36,6 +36,11 @@ public class PubSubHealthIndicatorProperties {
 	 */
 	private Long timeoutMillis = 1000L;
 
+	/**
+	 * Whether to acknowledge messages pulled from {@link #subscription}.
+	 */
+	private boolean acknowledgeMessages = false;
+
 	public String getSubscription() {
 		return subscription;
 	}
@@ -50,5 +55,13 @@ public class PubSubHealthIndicatorProperties {
 
 	public void setTimeoutMillis(Long timeoutMillis) {
 		this.timeoutMillis = timeoutMillis;
+	}
+
+	public boolean isAcknowledgeMessages() {
+		return acknowledgeMessages;
+	}
+
+	public void setAcknowledgeMessages(boolean acknowledgeMessages) {
+		this.acknowledgeMessages = acknowledgeMessages;
 	}
 }

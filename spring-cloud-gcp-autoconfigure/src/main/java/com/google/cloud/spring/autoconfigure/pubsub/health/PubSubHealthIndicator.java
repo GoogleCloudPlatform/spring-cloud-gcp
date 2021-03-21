@@ -80,7 +80,12 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 	 */
 	private final long timeoutMillis;
 
-	public PubSubHealthIndicator(PubSubTemplate pubSubTemplate, String healthCheckSubscription, long timeoutMillis) {
+	/**
+	 * If messages pull should be acknowledged or not.
+	 */
+	private final boolean acknowledgeMessages;
+
+	public PubSubHealthIndicator(PubSubTemplate pubSubTemplate, String healthCheckSubscription, long timeoutMillis, boolean acknowledgeMessages) {
 		super("Failed to connect to Pub/Sub APIs. Check your credentials and verify you have proper access to the service.");
 		Assert.notNull(pubSubTemplate, "pubSubTemplate can't be null");
 		this.pubSubTemplate = pubSubTemplate;
@@ -92,6 +97,7 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 			this.subscription = UUID.randomUUID().toString();
 		}
 		this.timeoutMillis = timeoutMillis;
+		this.acknowledgeMessages = acknowledgeMessages;
 	}
 
 	protected void validateHealthCheck() {
@@ -141,7 +147,9 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 	private void pullMessage() throws InterruptedException, ExecutionException, TimeoutException {
 		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = pubSubTemplate.pullAsync(this.subscription, 1, true);
 		List<AcknowledgeablePubsubMessage> messages = future.get(timeoutMillis, TimeUnit.MILLISECONDS);
-		messages.forEach(AcknowledgeablePubsubMessage::ack);
+		if (this.acknowledgeMessages) {
+			messages.forEach(AcknowledgeablePubsubMessage::ack);
+		}
 	}
 
 	boolean isHealthyException(ExecutionException e) {

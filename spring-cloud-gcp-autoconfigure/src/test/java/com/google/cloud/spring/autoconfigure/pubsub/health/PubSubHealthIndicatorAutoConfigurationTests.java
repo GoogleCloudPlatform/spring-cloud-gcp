@@ -79,7 +79,8 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 				.withPropertyValues(
 						"management.health.pubsub.enabled=true",
 						"spring.cloud.gcp.pubsub.health.subscription=test",
-						"spring.cloud.gcp.pubsub.health.timeout-millis=1500")
+						"spring.cloud.gcp.pubsub.health.timeout-millis=1500",
+						"spring.cloud.gcp.pubsub.health.acknowledgeMessages=true")
 				.run(ctx -> {
 					PubSubHealthIndicator healthIndicator = ctx.getBean(PubSubHealthIndicator.class);
 					assertThat(healthIndicator).isNotNull();
@@ -103,7 +104,8 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 				.withPropertyValues(
 						"management.health.pubsub.enabled=true",
 						"spring.cloud.gcp.pubsub.health.subscription=test",
-						"spring.cloud.gcp.pubsub.health.timeout-millis=1500")
+						"spring.cloud.gcp.pubsub.health.timeout-millis=1500",
+						"spring.cloud.gcp.pubsub.health.acknowledgeMessage=true")
 				.run(ctx -> {
 					assertThatThrownBy(() -> ctx.getBean(PubSubHealthIndicator.class))
 							.isInstanceOf(NoSuchBeanDefinitionException.class);
@@ -211,5 +213,4 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 					assertThat(ctx.getBeansOfType(PubSubHealthIndicator.class)).isEmpty();
 				});
 	}
-
 }
