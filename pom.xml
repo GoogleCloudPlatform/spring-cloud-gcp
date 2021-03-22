@@ -186,7 +186,8 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${maven-surefire-plugin.version}</version>
 					<configuration>
-						<argLine>-Xms512m -Xmx512m --illegal-access=permit</argLine>
+						<!-- ${env.MAVEN_OPTS} is provided by GitHub Actions job for JDK 16 support -->
+						<argLine>-Xms512m -Xmx512m ${env.MAVEN_OPTS}</argLine>
 						<skip>${skip.surefire.tests}</skip>
 						<excludes>
 							<exclude>${integration-test.pattern}</exclude>
