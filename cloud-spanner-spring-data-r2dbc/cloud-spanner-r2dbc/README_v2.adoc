@@ -105,3 +105,11 @@ Partitioned DML transactions are not supported at this time.
 ### Nesting transactions
 Cloud Spanner does not support nested transactions, so each transaction must be either committed or rolled back.
 For readonly transactions, either committing or rolling back will result in closing of the readonly transaction.
+
+## Cleaning Up
+
+Client library-based `ConnectionFactory` must be closed as part of application shutdown process to ensure all server-side Cloud Spanner sessions are cleaned up.
+
+```
+Mono.from(((Closeable) connectionFactory).close()).subscribe();
+```
