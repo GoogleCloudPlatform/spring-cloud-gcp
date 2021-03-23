@@ -35,26 +35,25 @@
 	</distributionManagement>
 
 	<properties>
-		<app-engine-maven-plugin.version>2.3.0</app-engine-maven-plugin.version>
+		<app-engine-maven-plugin.version>2.4.0</app-engine-maven-plugin.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.3.4</errorprone.version>
+		<errorprone.version>2.5.1</errorprone.version>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
-		<java-cfenv.version>2.1.2.RELEASE</java-cfenv.version>
+		<java-cfenv.version>2.3.0</java-cfenv.version>
 		<javadoc.failOnError>false</javadoc.failOnError>
 		<javadoc.failOnWarnings>false</javadoc.failOnWarnings>
-		<kotlin.version>1.4.21</kotlin.version>
 		<maven-checkstyle-plugin.failOnViolation>true</maven-checkstyle-plugin.failOnViolation>
 		<maven-checkstyle-plugin.failsOnError>true</maven-checkstyle-plugin.failsOnError>
 		<maven-checkstyle-plugin.skip>false</maven-checkstyle-plugin.skip>
-		<maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 		<maven-failsafe-plugin.version>2.22.1</maven-failsafe-plugin.version>
-		<maven-flatten-plugin.version>1.2.5</maven-flatten-plugin.version>
-		<maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
+		<maven-flatten-plugin.version>1.2.7</maven-flatten-plugin.version>
+		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
 		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
-		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -63,9 +62,9 @@
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
 		<skip.surefire.tests>${skipTests}</skip.surefire.tests>
 		<skipTests>false</skipTests>
-		<spring-cloud-build.version>3.0.1</spring-cloud-build.version>
-		<spring-cloud-dependencies.version>2020.0.1</spring-cloud-dependencies.version>
-		<spring-javaformat-checkstyle.version>0.0.25</spring-javaformat-checkstyle.version>
+		<spring-cloud-build.version>3.0.2</spring-cloud-build.version>
+		<spring-cloud-dependencies.version>2020.0.2</spring-cloud-dependencies.version>
+		<spring-javaformat-checkstyle.version>0.0.27</spring-javaformat-checkstyle.version>
 		<zipkin-gcp.version>1.0.2</zipkin-gcp.version>
 	</properties>
 
@@ -143,7 +142,7 @@
 		<dependency>
 			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
-			<version>3.1.6</version>
+			<version>4.0.3</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -169,6 +168,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -444,12 +448,37 @@
 				</plugins>
 			</build>
 		</profile>
-		<!-- Error prone; plugin is recommended but only works with Java 9 - 13.
-		Update activation jdk when this issue is fixed: https://github.com/google/error-prone/issues/1106 -->
+
+		<!-- JDK 16+ configuration -->
+		<profile>
+			<id>jdk_16_and_up</id>
+			<activation>
+				<jdk>[16,]</jdk>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-plugin</artifactId>
+							<configuration>
+								<!-- illegal-access=permit is needed to make GCLIB proxying work, used in Datastore -->
+								<argLine>-Xms512m -Xmx512m --illegal-access=permit</argLine>
+								<skip>${skip.surefire.tests}</skip>
+								<excludes>
+									<exclude>${integration-test.pattern}</exclude>
+								</excludes>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+		<!-- Error prone; JDK 8 requires a different configuration than 9+ -->
 		<profile>
 			<id>errorprone_java_9_and_up</id>
 			<activation>
-				<jdk>[9,13]</jdk>
+				<jdk>[9,]</jdk>
 			</activation>
 			<build>
 				<pluginManagement>
@@ -457,14 +486,27 @@
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-compiler-plugin</artifactId>
-							<version>3.8.0</version>
+							<version>3.8.1</version>
 							<configuration>
 								<source>${maven.compiler.source}</source>
 								<target>${maven.compiler.target}</target>
+								<encoding>UTF-8</encoding>
+								<fork>true</fork>
 								<compilerArgs>
 									<arg>-XDcompilePolicy=simple</arg>
 									<arg>-Xplugin:ErrorProne</arg>
+									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
 									<arg>-parameters</arg>
+									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
+									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
+									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
+									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
+									<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+									<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
 								</compilerArgs>
 								<annotationProcessorPaths>
 									<path>
@@ -485,31 +527,24 @@
 			<activation>
 				<jdk>1.8</jdk>
 			</activation>
+			<properties>
+				<javac.version>9+181-r4173-1</javac.version>
+			</properties>
 			<build>
 				<pluginManagement>
 					<plugins>
 						<plugin>
 							<artifactId>maven-compiler-plugin</artifactId>
+							<version>3.8.0</version>
 							<configuration>
-								<compilerId>javac-with-errorprone</compilerId>
-								<forceJavacCompilerUse>true</forceJavacCompilerUse>
-								<compilerArgs>
-									<!-- Enable all warnings -->
-									<compilerArg>-Xlint:all</compilerArg>
-									<!-- Disable options warning because we will have differences between the compiler and source code level-->
-									<compilerArg>-Xlint:-options</compilerArg>
-									<!-- Disable serialversionuid warnings -->
-									<compilerArg>-Xlint:-serial</compilerArg>
-									<!--compilerArg>-Werror</compilerArg-->
+								<fork>true</fork>
+								<compilerArgs combine.children="append">
+									<arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
+									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
 									<arg>-parameters</arg>
 								</compilerArgs>
 							</configuration>
 							<dependencies>
-								<dependency>
-									<groupId>org.codehaus.plexus</groupId>
-									<artifactId>plexus-compiler-javac-errorprone</artifactId>
-									<version>2.8.6</version>
-								</dependency>
 								<dependency>
 									<groupId>com.google.errorprone</groupId>
 									<artifactId>error_prone_core</artifactId>

@@ -7,7 +7,7 @@ on:
   pull_request:
   workflow_dispatch:
   schedule:
-    - cron: '30 9 * * *' # 09:30 UTC every day
+    - cron: '00 7 * * *' # 07:00 UTC every day
 
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [8, 11, 15]
+        java: [8, 11, 16]
     steps:
     - name: Get current date
       id: date
@@ -29,9 +29,22 @@ jobs:
         java-version: ${{ matrix.java }}
 
     - uses: actions/cache@v2
+      id: mvn-cache
       with:
         path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ steps.date.outputs.date }}
+        key: ${{ runner.os }}-maven-unified-${{ steps.date.outputs.date }}
+
+    - name: Maven go offline
+      id: mvn-offline
+      if: steps.mvn-cache.outputs.cache-hit != 'true'
+      run: ./mvnw compile dependency:go-offline
+
+    - name: Set Maven Options for Java 16
+      # needed for Kotlin Sample on JDK 16
+      if: matrix.java == 16
+      run: |
+        echo "MAVEN_OPTS=--illegal-access=permit" >> $GITHUB_ENV
+        echo "Remove this step if https://youtrack.jetbrains.com/issue/KT-44624 is fixed."
 
     - name: Mvn install # Need this when the directory/pom structure changes
       id: install1
@@ -58,8 +71,6 @@ jobs:
           install
 
     - name: Unit Tests
-      id: unitTest1
-      continue-on-error: true
       run: |
         ./mvnw \
           --batch-mode \
@@ -101,9 +112,15 @@ jobs:
           java-version: 11
 
       - uses: actions/cache@v2
+        id: mvn-cache
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ steps.date.outputs.date }}
+          key: ${{ runner.os }}-maven-unified-${{ steps.date.outputs.date }}
+
+      - name: Maven go offline
+        id: mvn-offline
+        if: steps.mvn-cache.outputs.cache-hit != 'true'
+        run: ./mvnw compile dependency:go-offline
 
       - name: releaseCheck
         run: |

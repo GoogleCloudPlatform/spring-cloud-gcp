@@ -21,7 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.cloud.spring.pubsub.reactive.PubSubReactiveFactory;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +40,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @ResponseBody
-@Slf4j
 public class ReactiveController {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Max number of messages returned from one call. Requests above this limit will be truncated to this limit.
 	 */
-	public final static int MAX_RESPONSE_ITEMS = 100;
+	public static final int MAX_RESPONSE_ITEMS = 100;
 
 	@Autowired
 	PubSubReactiveFactory reactiveFactory;
