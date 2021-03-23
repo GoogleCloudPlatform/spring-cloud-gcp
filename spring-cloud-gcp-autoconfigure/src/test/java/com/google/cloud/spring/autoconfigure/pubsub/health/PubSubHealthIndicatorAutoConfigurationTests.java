@@ -34,7 +34,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.actuate.health.CompositeHealthContributor;
-import org.springframework.boot.actuate.health.NamedContributor;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -84,6 +83,9 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 				.run(ctx -> {
 					PubSubHealthIndicator healthIndicator = ctx.getBean(PubSubHealthIndicator.class);
 					assertThat(healthIndicator).isNotNull();
+					assertThat(healthIndicator.getSubscription()).isEqualTo("test");
+					assertThat(healthIndicator.getTimeoutMillis()).isEqualTo(1500);
+					assertThat(healthIndicator.isAcknowledgeMessages()).isEqualTo(true);
 				});
 	}
 
@@ -112,7 +114,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 					CompositeHealthContributor healthContributor = ctx.getBean("pubSubHealthContributor", CompositeHealthContributor.class);
 					assertThat(healthContributor).isNotNull();
 					assertThat(healthContributor.stream()).hasSize(2);
-					assertThat(healthContributor.stream().map(c -> ((NamedContributor<?>) c).getName()))
+					assertThat(healthContributor.stream().map(c -> c.getName()))
 							.containsExactlyInAnyOrder("pubSubTemplate1", "pubSubTemplate2");
 				});
 	}
@@ -120,8 +122,8 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void apiExceptionWhenValidating_userSubscriptionSpecified_healthAutoConfigurationFails() throws Exception {
-		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration();
 		PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
+		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration(properties);
 		properties.setSubscription("test");
 
 		PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
@@ -132,15 +134,15 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 		doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
 
 		Map<String, PubSubTemplate> pubSubTemplates = Collections.singletonMap("pubSubTemplate", mockPubSubTemplate);
-		assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates, properties))
+		assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates))
 				.isInstanceOf(BeanInitializationException.class);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void apiExceptionWhenValidating_userSubscriptionNotSpecified_healthAutoConfigurationSucceeds() throws Exception {
-		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration();
 		PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
+		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration(properties);
 
 		PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
 		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
@@ -150,14 +152,14 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 		doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
 
 		Map<String, PubSubTemplate> pubSubTemplates = Collections.singletonMap("pubSubTemplate", mockPubSubTemplate);
-		assertThatCode(() -> p.pubSubHealthContributor(pubSubTemplates, properties)).doesNotThrowAnyException();
+		assertThatCode(() -> p.pubSubHealthContributor(pubSubTemplates)).doesNotThrowAnyException();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void runtimeExceptionWhenValidating_healthAutoConfigurationFails() throws Exception {
-		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration();
 		PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
+		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration(properties);
 
 		PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
 		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
@@ -167,14 +169,14 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 		doThrow(e).when(future).get(anyLong(), any());
 
 		Map<String, PubSubTemplate> pubSubTemplates = Collections.singletonMap("pubSubTemplate", mockPubSubTemplate);
-		assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates, properties)).isInstanceOf(BeanInitializationException.class);
+		assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates)).isInstanceOf(BeanInitializationException.class);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void interruptedExceptionWhenValidating_healthAutoConfigurationFails() throws Exception {
-		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration();
 		PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
+		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration(properties);
 
 		PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
 		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
@@ -184,7 +186,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 		doThrow(e).when(future).get(anyLong(), any());
 
 		Map<String, PubSubTemplate> pubSubTemplates = Collections.singletonMap("pubSubTemplate", mockPubSubTemplate);
-		assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates, properties)).isInstanceOf(BeanInitializationException.class);
+		assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates)).isInstanceOf(BeanInitializationException.class);
 	}
 
 	@Test

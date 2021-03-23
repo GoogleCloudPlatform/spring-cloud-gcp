@@ -27,12 +27,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class PubSubHealthIndicatorProperties {
 
 	/**
-	 * Subscription to health check against by pulling message.
+	 * Subscription to health check against by pulling a message.
 	 */
 	private String subscription;
 
 	/**
-	 * Milliseconds to wait for response from PubSub before timing out.
+	 * Milliseconds to wait for response from Pub/Sub before timing out.
 	 */
 	private Long timeoutMillis = 1000L;
 

@@ -58,12 +58,14 @@ public class PubSubHealthIndicatorAutoConfiguration extends
 
 	private PubSubHealthIndicatorProperties pubSubHealthProperties;
 
+	public PubSubHealthIndicatorAutoConfiguration(PubSubHealthIndicatorProperties pubSubHealthProperties) {
+		this.pubSubHealthProperties = pubSubHealthProperties;
+	}
+
 	@Bean
 	@ConditionalOnMissingBean(name = { "pubSubHealthIndicator", "pubSubHealthContributor"})
-	public HealthContributor pubSubHealthContributor(Map<String, PubSubTemplate> pubSubTemplates, PubSubHealthIndicatorProperties pubSubHealthProperties) {
+	public HealthContributor pubSubHealthContributor(Map<String, PubSubTemplate> pubSubTemplates) {
 		Assert.notNull(pubSubTemplates, "pubSubTemplates must be provided");
-		this.pubSubHealthProperties = pubSubHealthProperties;
-
 		return createContributor(pubSubTemplates);
 	}
 

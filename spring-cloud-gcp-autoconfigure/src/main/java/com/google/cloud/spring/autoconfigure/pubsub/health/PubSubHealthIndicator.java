@@ -41,17 +41,18 @@ import org.springframework.util.concurrent.ListenableFuture;
  * if connection is successful by pulling message from the pubSubTemplate using
  * {@link PubSubTemplate#pullAsync(String, Integer, Boolean)}.
  *
- * <p>If a custom subscription has been specified, this health indicator will signal up
- * if messages are successfully pulled and acknowledged <b>or</b> if a successful pull is performed
- * but no messages are returned from PubSub.</p>
+ * <p>If a custom subscription has been specified, this health indicator will signal "up"
+ * if messages are successfully pulled and (optionally) acknowledged <b>or</b> if a
+ * successful pull is performed but no messages are returned from Pub/Sub.</p>
  *
  * <p>If no subscription has been specified, this health indicator will pull messages from a random subscription
- * that is expected not to exist. It will signal up if it is able to connect to GCP Pub/Sub APIs,
+ * that is expected not to exist. It will signal "up" if it is able to connect to GCP Pub/Sub APIs,
  * i.e. the pull results in a response of {@link StatusCode.Code#NOT_FOUND} or
  * {@link StatusCode.Code#PERMISSION_DENIED}.</p>
  *
- * <p>Note that <b>messages pulled from the subscription will be acknowledged</b>. Take
- * care not to configure a subscription that has a business impact or leave the custom subscription out completely.
+ * <p>Note that messages pulled from the subscription will not be acknowledged, unless you
+ * set the {@code acknowledgeMessages} option to "true". However, take care not to configure
+ * a subscription that has a business impact, or leave the custom subscription out completely.
  *
  * @author Vinicius Carvalho
  * @author Patrik Hörlin
@@ -100,7 +101,7 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 		this.acknowledgeMessages = acknowledgeMessages;
 	}
 
-	protected void validateHealthCheck() {
+	void validateHealthCheck() {
 		try {
 			pullMessage();
 		}
@@ -168,5 +169,21 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 
 	private void validationFailed(Exception e) {
 		throw new BeanInitializationException("Validation of health indicator failed", e);
+	}
+
+	boolean isSpecifiedSubscription() {
+		return specifiedSubscription;
+	}
+
+	String getSubscription() {
+		return subscription;
+	}
+
+	long getTimeoutMillis() {
+		return timeoutMillis;
+	}
+
+	boolean isAcknowledgeMessages() {
+		return acknowledgeMessages;
 	}
 }

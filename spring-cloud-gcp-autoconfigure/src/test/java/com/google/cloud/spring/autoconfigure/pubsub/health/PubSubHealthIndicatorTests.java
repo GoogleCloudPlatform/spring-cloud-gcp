@@ -118,58 +118,41 @@ class PubSubHealthIndicatorTests {
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
 	}
 
-	@Test
-	void healthDown() throws Exception {
-		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
-
+	void healthExceptionTest(Exception e, Status expectedStatus) throws Exception {
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(e).when(future).get(anyLong(), any());
 
 		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
-		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
+		assertThat(healthIndicator.health().getStatus()).isEqualTo(expectedStatus);
+	}
+
+	@Test
+	void healthDown() throws Exception {
+		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
+		healthExceptionTest(e, Status.DOWN);
 	}
 
 	@Test
 	void healthDownGenericException() throws Exception {
 		Exception e = new IllegalStateException("Illegal State");
-
-		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
-		doThrow(e).when(future).get(anyLong(), any());
-
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
-		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
+		healthExceptionTest(e, Status.DOWN);
 	}
 
 	@Test
 	void healthUnknownInterruptedException() throws Exception {
 		Exception e = new InterruptedException("Interrupted");
-
-		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
-		doThrow(e).when(future).get(anyLong(), any());
-
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
-		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UNKNOWN);
+		healthExceptionTest(e, Status.UNKNOWN);
 	}
 
 	@Test
 	void healthUnknownTimeoutException() throws Exception {
 		Exception e = new TimeoutException("Timed out waiting for result");
-
-		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
-		doThrow(e).when(future).get(anyLong(), any());
-
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
-		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UNKNOWN);
+		healthExceptionTest(e, Status.UNKNOWN);
 	}
 
 	@Test
-	void healthDownException() throws InterruptedException, ExecutionException, TimeoutException {
+	void healthDownException() throws Exception {
 		Exception e = new RuntimeException("Runtime error");
-
-		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
-		doThrow(e).when(future).get(anyLong(), any());
-
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
-		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
+		healthExceptionTest(e, Status.DOWN);
 	}
 }
