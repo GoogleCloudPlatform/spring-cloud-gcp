@@ -96,7 +96,7 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 			this.subscription = healthCheckSubscription;
 		}
 		else {
-			this.subscription = UUID.randomUUID().toString();
+			this.subscription = "spring-cloud-gcp-healthcheck-" + UUID.randomUUID().toString();
 		}
 		this.timeoutMillis = timeoutMillis;
 		this.acknowledgeMessages = acknowledgeMessages;
@@ -128,6 +128,7 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 		}
 		catch (ExecutionException e) {
 			if (isHealthyException(e)) {
+				// ignore expected exceptions
 				up.run();
 			}
 			else {

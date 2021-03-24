@@ -147,7 +147,7 @@ class PubSubHealthIndicatorTests {
 	}
 
 	@Test
-	void customSubsription_TimeoutException() throws Exception {
+	void customSubscription_TimeoutException() throws Exception {
 		Exception e = new TimeoutException("Timed out waiting for result");
 		testHealth(e, "testSubscription", Status.UNKNOWN);
 	}

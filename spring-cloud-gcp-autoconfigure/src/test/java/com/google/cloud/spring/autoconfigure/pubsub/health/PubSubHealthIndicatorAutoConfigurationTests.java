@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import com.google.api.gax.core.CredentialsProvider;
@@ -49,6 +50,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -60,7 +62,7 @@ import static org.mockito.Mockito.when;
 public class PubSubHealthIndicatorAutoConfigurationTests {
 
 	private static final Pattern UUID_PATTERN =
-			Pattern.compile("[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}");
+			Pattern.compile("spring-cloud-gcp-healthcheck-[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}");
 
 	private ApplicationContextRunner baseContextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(PubSubHealthIndicatorAutoConfiguration.class,
@@ -86,6 +88,8 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 					assertThat(healthIndicator.getTimeoutMillis()).isEqualTo(1000);
 					assertThat(healthIndicator.isAcknowledgeMessages()).isFalse();
 					assertThat(healthIndicator.isSpecifiedSubscription()).isFalse();
+					verify(mockPubSubTemplate).pullAsync(healthIndicator.getSubscription(), 1, true);
+					verify(future).get(healthIndicator.getTimeoutMillis(), TimeUnit.MILLISECONDS);
 				});
 	}
 
@@ -112,6 +116,8 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 					assertThat(healthIndicator.getTimeoutMillis()).isEqualTo(1500);
 					assertThat(healthIndicator.isAcknowledgeMessages()).isTrue();
 					assertThat(healthIndicator.isSpecifiedSubscription()).isTrue();
+					verify(mockPubSubTemplate).pullAsync(healthIndicator.getSubscription(), 1, true);
+					verify(future).get(healthIndicator.getTimeoutMillis(), TimeUnit.MILLISECONDS);
 				});
 	}
 
