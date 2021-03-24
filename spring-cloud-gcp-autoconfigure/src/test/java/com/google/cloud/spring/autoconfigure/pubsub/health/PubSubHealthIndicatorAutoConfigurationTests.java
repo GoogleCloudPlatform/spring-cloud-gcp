@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.grpc.GrpcStatusCode;
@@ -58,6 +59,9 @@ import static org.mockito.Mockito.when;
  */
 public class PubSubHealthIndicatorAutoConfigurationTests {
 
+	private static final Pattern UUID_PATTERN =
+			Pattern.compile("[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}");
+
 	private ApplicationContextRunner baseContextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(PubSubHealthIndicatorAutoConfiguration.class,
 					GcpPubSubAutoConfiguration.class))
@@ -66,7 +70,28 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void healthIndicatorPresent() throws Exception {
+	public void healthIndicatorPresent_defaults() throws Exception {
+		PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
+		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
+
+		when(future.get(anyLong(), any())).thenReturn(Collections.emptyList());
+		when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+
+		this.baseContextRunner
+				.withBean("pubSubTemplate", PubSubTemplate.class, () -> mockPubSubTemplate)
+				.run(ctx -> {
+					PubSubHealthIndicator healthIndicator = ctx.getBean(PubSubHealthIndicator.class);
+					assertThat(healthIndicator).isNotNull();
+					assertThat(healthIndicator.getSubscription()).matches(UUID_PATTERN);
+					assertThat(healthIndicator.getTimeoutMillis()).isEqualTo(1000);
+					assertThat(healthIndicator.isAcknowledgeMessages()).isFalse();
+					assertThat(healthIndicator.isSpecifiedSubscription()).isFalse();
+				});
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void healthIndicatorPresent_customConfig() throws Exception {
 		PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
 		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
 
@@ -85,7 +110,8 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 					assertThat(healthIndicator).isNotNull();
 					assertThat(healthIndicator.getSubscription()).isEqualTo("test");
 					assertThat(healthIndicator.getTimeoutMillis()).isEqualTo(1500);
-					assertThat(healthIndicator.isAcknowledgeMessages()).isEqualTo(true);
+					assertThat(healthIndicator.isAcknowledgeMessages()).isTrue();
+					assertThat(healthIndicator.isSpecifiedSubscription()).isTrue();
 				});
 	}
 

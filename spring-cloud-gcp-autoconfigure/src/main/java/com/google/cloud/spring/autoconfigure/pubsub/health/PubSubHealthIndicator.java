@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 
 import com.google.api.gax.rpc.ApiException;
 import com.google.api.gax.rpc.StatusCode;
@@ -102,46 +103,42 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 	}
 
 	void validateHealthCheck() {
-		try {
-			pullMessage();
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			validationFailed(e);
-		}
-		catch (ExecutionException e) {
-			if (!isHealthyException(e)) {
-				validationFailed(e);
-			}
-		}
-		catch (Exception e) {
-			validationFailed(e);
-		}
+		doHealthCheck(
+				() -> { },
+				this::validationFailed,
+				this::validationFailed);
 	}
 
 	@Override
 	protected void doHealthCheck(Health.Builder builder) {
+		doHealthCheck(
+				builder::up,
+				builder::down,
+				e -> builder.withException(e).unknown());
+	}
+
+	private void doHealthCheck(Runnable up, Consumer<Throwable> down, Consumer<Throwable> unknown) {
 		try {
 			pullMessage();
-			builder.up();
+			up.run();
 		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			builder.withException(e).unknown();
+			unknown.accept(e);
 		}
 		catch (ExecutionException e) {
 			if (isHealthyException(e)) {
-				builder.up();
+				up.run();
 			}
 			else {
-				builder.down(e);
+				down.accept(e);
 			}
 		}
 		catch (TimeoutException e) {
-			builder.withException(e).unknown();
+			unknown.accept(e);
 		}
 		catch (Exception e) {
-			builder.down(e);
+			down.accept(e);
 		}
 	}
 
@@ -167,7 +164,7 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 		return false;
 	}
 
-	private void validationFailed(Exception e) {
+	private void validationFailed(Throwable e) {
 		throw new BeanInitializationException("Validation of health indicator failed", e);
 	}
 

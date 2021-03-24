@@ -26,6 +26,7 @@ import com.google.api.gax.grpc.GrpcStatusCode;
 import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
+import io.grpc.Status.Code;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,10 +34,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.boot.actuate.health.Status;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -64,7 +67,7 @@ class PubSubHealthIndicatorTests {
 	ListenableFuture<List<AcknowledgeablePubsubMessage>> future;
 
 	@Test
-	void healthUp() throws Exception {
+	void healthUp_customSubscription() throws Exception {
 		when(future.get(anyLong(), any())).thenReturn(Collections.emptyList());
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 
@@ -73,7 +76,7 @@ class PubSubHealthIndicatorTests {
 	}
 
 	@Test
-	void acknowledgeEnabled_shouldAcknowledgeMessages() throws Exception {
+	void acknowledgeEnabled() throws Exception {
 		AcknowledgeablePubsubMessage msg = mock(AcknowledgeablePubsubMessage.class);
 		when(future.get(anyLong(), any())).thenReturn(Arrays.asList(msg));
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
@@ -84,7 +87,7 @@ class PubSubHealthIndicatorTests {
 	}
 
 	@Test
-	void acknowledgeDisabled_shouldAcknowledgeMessages() throws Exception {
+	void acknowledgeDisabled() throws Exception {
 		AcknowledgeablePubsubMessage msg = mock(AcknowledgeablePubsubMessage.class);
 		when(future.get(anyLong(), any())).thenReturn(Arrays.asList(msg));
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
@@ -94,65 +97,73 @@ class PubSubHealthIndicatorTests {
 		verify(msg, never()).ack();
 	}
 
-	@ParameterizedTest
-	@ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED"})
-	void healthUpForExpectedException(String code) throws Exception {
-		Exception e = new ApiException(new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false);
-
-		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
-		doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
-
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, null, 1000, true);
-		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.UP);
-	}
-
-	@ParameterizedTest
-	@ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED"})
-	void healthDownForApiException(String code) throws Exception {
-		Exception e = new ApiException(new IllegalStateException("Illegal State"), GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false);
-
-		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
-		doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
-
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
-		assertThat(healthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
-	}
-
-	void healthExceptionTest(Exception e, Status expectedStatus) throws Exception {
+	void testHealth(Exception e, String customSubscription, Status expectedStatus) throws Exception {
 		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 		doThrow(e).when(future).get(anyLong(), any());
 
-		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, customSubscription, 1000, true);
 		assertThat(healthIndicator.health().getStatus()).isEqualTo(expectedStatus);
 	}
 
+	@ParameterizedTest
+	@ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED"})
+	void randomSubscription_expectedError(String code) throws Exception {
+		Exception e = new ExecutionException(
+				new ApiException(null, GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false));
+		testHealth(e, null, Status.UP);
+	}
+
 	@Test
-	void healthDown() throws Exception {
+	void randomSubscription_unexpectedErrorCode() throws Exception {
+		Exception e = new ExecutionException(
+				new ApiException(null, GrpcStatusCode.of(Code.ABORTED), false));
+		testHealth(e, null, Status.DOWN);
+	}
+
+	@Test
+	void randomSubscription_NotApiExcpetion() throws Exception {
 		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
-		healthExceptionTest(e, Status.DOWN);
+		testHealth(e, null, Status.DOWN);
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED"})
+	void customSubscription_ApiException(String code) throws Exception {
+		Exception e = new ExecutionException(
+				new ApiException(null, GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false));
+		testHealth(e, "testSubscription", Status.DOWN);
 	}
 
 	@Test
-	void healthDownGenericException() throws Exception {
-		Exception e = new IllegalStateException("Illegal State");
-		healthExceptionTest(e, Status.DOWN);
+	void customSubscription_ExecutionException_NotApiException() throws Exception {
+		ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
+		testHealth(e, "testSubscription", Status.DOWN);
 	}
 
 	@Test
-	void healthUnknownInterruptedException() throws Exception {
+	void customSubscription_InterruptedException() throws Exception {
 		Exception e = new InterruptedException("Interrupted");
-		healthExceptionTest(e, Status.UNKNOWN);
+		testHealth(e, "testSubscription", Status.UNKNOWN);
 	}
 
 	@Test
-	void healthUnknownTimeoutException() throws Exception {
+	void customSubsription_TimeoutException() throws Exception {
 		Exception e = new TimeoutException("Timed out waiting for result");
-		healthExceptionTest(e, Status.UNKNOWN);
+		testHealth(e, "testSubscription", Status.UNKNOWN);
 	}
 
 	@Test
-	void healthDownException() throws Exception {
+	void customSubscription_RuntimeException() throws Exception {
 		Exception e = new RuntimeException("Runtime error");
-		healthExceptionTest(e, Status.DOWN);
+		testHealth(e, "testSubscription", Status.DOWN);
+	}
+
+	@Test
+	void validateHealth() throws Exception {
+		doThrow(new RuntimeException()).when(future).get(anyLong(), any());
+		when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
+
+		PubSubHealthIndicator healthIndicator = new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
+		assertThatThrownBy(() -> healthIndicator.validateHealthCheck()).isInstanceOf(BeanInitializationException.class);
 	}
 }
