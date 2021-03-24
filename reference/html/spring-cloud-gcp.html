@@ -1766,6 +1766,58 @@ To disable the Cloud Pub/Sub indicator, set <code>management.health.pubsub.enabl
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>The health indicator validates the connection to Pub/Sub by pulling messages from a Pub/Sub subscription.</p>
+</div>
+<div class="paragraph">
+<p>If no subscription has been specified via <code>spring.cloud.gcp.pubsub.health.subscription</code>, it will pull messages from a random subscription that is expected not to exist.
+It will signal "up" if it is able to connect to GCP Pub/Sub APIs, i.e. the pull results in a response of <code>NOT_FOUND</code> or <code>PERMISSION_DENIED</code>.</p>
+</div>
+<div class="paragraph">
+<p>If a custom subscription has been specified, this health indicator will signal "up" if messages are successfully pulled and (optionally) acknowledged, or when a successful pull is performed but no messages are returned from Pub/Sub.
+Note that messages pulled from the subscription will not be acknowledged, unless you set the <code>spring.cloud.gcp.pubsub.health.acknowledge-messages</code> option to <code>true</code>.
+So, take care not to configure a subscription that has a business impact, or instead leave the custom subscription out completely.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>management.health.pubsub.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the Pub/Sub health indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> with Spring Boot Actuator, <code>false</code> otherwise</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.subscription</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription to health check against by pulling a message</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Random non-existent</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.timeout-millis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Milliseconds to wait for response from Pub/Sub before timing out</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1000</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.acknowledge-messages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to acknowledge messages pulled from the optionally specified subscription</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect2">
