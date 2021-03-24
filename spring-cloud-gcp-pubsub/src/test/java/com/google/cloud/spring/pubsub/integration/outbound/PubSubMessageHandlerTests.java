@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.pubsub.integration.outbound;
 
+import java.util.Collections;
+
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.pubsub.core.PubSubOperations;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
@@ -227,4 +229,18 @@ public class PubSubMessageHandlerTests {
 
 		this.adapter.setHeaderMapper(null);
 	}
+
+	@Test
+	public void testPublishWithOrderingKey() {
+		this.message = new GenericMessage<byte[]>("testPayload".getBytes(),
+				new MapBuilder<String, Object>()
+						.put(GcpPubSubHeaders.ORDERING_KEY, "key1")
+						.build());
+
+		this.adapter.handleMessage(this.message);
+		verify(this.pubSubTemplate, times(1))
+				.publish(eq("testTopic"), eq("testPayload".getBytes()),
+						eq(Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1")));
+	}
+
 }
