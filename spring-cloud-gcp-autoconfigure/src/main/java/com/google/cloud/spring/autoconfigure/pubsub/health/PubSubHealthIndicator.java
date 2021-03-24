@@ -83,7 +83,7 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 	private final long timeoutMillis;
 
 	/**
-	 * If messages pull should be acknowledged or not.
+	 * Whether pulled messages should be acknowledged.
 	 */
 	private final boolean acknowledgeMessages;
 
