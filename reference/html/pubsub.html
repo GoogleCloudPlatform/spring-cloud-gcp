@@ -331,6 +331,12 @@ After this amount of time has elapsed (counting from the first element added), t
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.publisher.enable-message-ordering</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables message ordering.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -551,6 +557,20 @@ pubSubTemplate.publish(topicName, "message", headers).get();</code></pre>
 </div>
 <div class="paragraph">
 <p>By default, the <code>SimplePubSubMessageConverter</code> is used to convert payloads of type <code>byte[]</code>, <code>ByteString</code>, <code>ByteBuffer</code>, and <code>String</code> to Pub/Sub messages.</p>
+</div>
+<div class="sect4">
+<h5 id="_ordering_messages"><a class="link" href="#_ordering_messages">Ordering messages</a></h5>
+<div class="paragraph">
+<p>If you are relying on message converters and would like to provide an ordering key, use the <code>GcpPubSubHeaders.ORDERING_KEY</code> header.
+You will also need to make sure to enable message ordering on the publisher via the <code>spring.cloud.gcp.pubsub.publisher.enable-message-ordering</code> property.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, String&gt; headers = Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1");
+pubSubTemplate.publish(topicName, "message1", headers).get();
+pubSubTemplate.publish(topicName, "message2", headers).get();</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">

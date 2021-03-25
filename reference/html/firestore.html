@@ -520,6 +520,8 @@ public class User {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public interface UserRepository extends FirestoreReactiveRepository&lt;User&gt; {
+	Flux&lt;User&gt; findBy(Pageable pageable);
+
 	Flux&lt;User&gt; findByAge(Integer age);
 
 	Flux&lt;User&gt; findByAgeNot(Integer age);
@@ -675,6 +677,7 @@ public class FirestoreTemplateExample {
 		this.userRepository.saveAll(users).blockLast();
 
 		assertThat(this.userRepository.count().block()).isEqualTo(2);
+		assertThat(this.userRepository.findBy(PageRequest.of(0, 10)).collectList().block()).containsExactly(u1, u2);
 		assertThat(this.userRepository.findByAge(22).collectList().block()).containsExactly(u1);
 		assertThat(this.userRepository.findByAgeNot(22).collectList().block()).containsExactly(u2);
 		assertThat(this.userRepository.findByHomeAddressCountry("USA").collectList().block()).containsExactly(u1);
