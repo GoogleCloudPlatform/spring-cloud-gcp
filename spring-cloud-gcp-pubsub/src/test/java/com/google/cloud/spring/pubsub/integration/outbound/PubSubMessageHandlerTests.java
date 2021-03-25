@@ -238,8 +238,8 @@ public class PubSubMessageHandlerTests {
 
 		this.adapter.handleMessage(this.message);
 		verify(this.pubSubTemplate)
-				.publish(eq("testTopic"), eq("testPayload".getBytes()),
-						eq(Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1")));
+				.publish("testTopic", "testPayload".getBytes(),
+						Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1"));
 	}
 
 }
