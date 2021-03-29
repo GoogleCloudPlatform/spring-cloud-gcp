@@ -16,13 +16,17 @@
 
 package com.google.cloud.spanner.r2dbc.springdata.it.entities;
 
+import org.springframework.data.relational.core.mapping.Column;
+
 /**
  * Example entity.
  */
 public class President {
 
+  @Column("NAME")
   private String name;
 
+  @Column("START_YEAR")
   private long startYear;
 
   public President(String name, long startYear) {

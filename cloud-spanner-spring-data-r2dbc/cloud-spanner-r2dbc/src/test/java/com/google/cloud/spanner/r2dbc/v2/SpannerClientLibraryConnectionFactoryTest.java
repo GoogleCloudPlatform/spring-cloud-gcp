@@ -26,6 +26,7 @@ import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
+import com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryMetadata;
 import io.r2dbc.spi.Connection;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -86,5 +87,15 @@ class SpannerClientLibraryConnectionFactoryTest {
     verify(mockSpanner).close();
     verifyNoMoreInteractions(mockSpanner);
 
+  }
+
+  @Test
+  void testGetMetadata() {
+    SpannerClientLibraryConnectionFactory cf =
+        new SpannerClientLibraryConnectionFactory(this.configBuilder.build());
+
+    assertThat(cf.getMetadata()).isSameAs(SpannerConnectionFactoryMetadata.INSTANCE);
+
+    cf.close().block();
   }
 }

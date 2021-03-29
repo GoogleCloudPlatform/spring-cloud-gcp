@@ -16,17 +16,19 @@
 
 package com.google.cloud.spanner.r2dbc.springdata;
 
-import org.springframework.data.r2dbc.dialect.BindMarkersFactory;
 import org.springframework.data.r2dbc.dialect.R2dbcDialect;
 import org.springframework.data.relational.core.dialect.AbstractDialect;
 import org.springframework.data.relational.core.dialect.LimitClause;
+import org.springframework.data.relational.core.dialect.LockClause;
+import org.springframework.data.relational.core.sql.LockOptions;
+import org.springframework.r2dbc.core.binding.BindMarkersFactory;
 
 /**
  * The {@link R2dbcDialect} implementation which enables usage of Spring Data R2DBC with Cloud
  * Spanner.
  */
 public class SpannerR2dbcDialect extends AbstractDialect implements R2dbcDialect {
-  private static final BindMarkersFactory NAMED =
+  static final BindMarkersFactory NAMED =
       BindMarkersFactory.named("@", "val", 32);
 
   public static final String SQL_LIMIT = "LIMIT ";
@@ -53,6 +55,24 @@ public class SpannerR2dbcDialect extends AbstractDialect implements R2dbcDialect
     }
   };
 
+  /**
+   * Pessimistic locking is not supported.
+   * Spanner has a LOCK_SCANNED_RANGES hint, but it appears before SELECT, a position not currently
+   * supported in LockClause.Position
+   */
+  private static final LockClause LOCK_CLAUSE = new LockClause() {
+    @Override
+    public String getLock(LockOptions lockOptions) {
+      return "";
+    }
+
+    @Override
+    public Position getClausePosition() {
+      // It does not matter where to append an empty string.
+      return Position.AFTER_FROM_TABLE;
+    }
+  };
+
   @Override
   public BindMarkersFactory getBindMarkersFactory() {
     return NAMED;
@@ -61,5 +81,10 @@ public class SpannerR2dbcDialect extends AbstractDialect implements R2dbcDialect
   @Override
   public LimitClause limit() {
     return LIMIT_CLAUSE;
+  }
+
+  @Override
+  public LockClause lock() {
+    return LOCK_CLAUSE;
   }
 }

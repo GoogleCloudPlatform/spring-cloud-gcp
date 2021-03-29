@@ -27,13 +27,6 @@
         <artifactId>cloud-spanner-r2dbc</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.springframework.boot.experimental</groupId>
-        <artifactId>spring-boot-bom-r2dbc</artifactId>
-        <version>0.1.0.M3</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
@@ -45,24 +38,11 @@
     </dependency>
 
     <dependency>
-      <groupId>org.springframework.boot.experimental</groupId>
-      <artifactId>spring-boot-starter-data-r2dbc</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-webflux</artifactId>
     </dependency>
 
   </dependencies>
-
-  <repositories>
-    <repository>
-      <id>spring-milestones</id>
-      <name>Spring Milestones</name>
-      <url>https://repo.spring.io/milestone</url>
-    </repository>
-  </repositories>
 
   <build>
     <plugins>

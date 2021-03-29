@@ -18,11 +18,10 @@ package com.example;
 
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.r2dbc.core.DatabaseClient;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
@@ -40,24 +39,23 @@ import reactor.core.publisher.Mono;
 public class WebController {
 
   @Autowired
-  private DatabaseClient r2dbcClient;
+  private R2dbcEntityTemplate r2dbcEntityTemplate;
 
   @Autowired
   private BookRepository r2dbcRepository;
 
   @GetMapping("/list")
   public Flux<Book> listBooks() {
-    return r2dbcClient.execute("SELECT id, title FROM BOOK")
-        .as(Book.class)
-        .fetch().all();
+    return r2dbcEntityTemplate
+        .select(Book.class)
+        .all();
   }
 
   @PostMapping("/add")
   public Mono<Void> addBook(@RequestBody String bookTitle) {
-    return r2dbcClient.insert()
-        .into("book")
-        .value("id", UUID.randomUUID().toString())
-        .value("title", bookTitle)
+    return r2dbcEntityTemplate.insert(Book.class)
+        .using(new Book(UUID.randomUUID().toString(), bookTitle))
+        .log()
         .then();
   }
 

@@ -37,11 +37,12 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
+import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.util.Assert;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Hooks;
 
 /**
  * Driver application showing Cloud Spanner R2DBC use with Spring Data.
@@ -62,6 +63,7 @@ public class SpringDataR2dbcApp {
   private DatabaseClient r2dbcClient;
 
   public static void main(String[] args) {
+    Hooks.onOperatorDebug();
     Assert.notNull(INSTANCE, "Please provide spanner.instance property");
     Assert.notNull(DATABASE, "Please provide spanner.database property");
     Assert.notNull(GCP_PROJECT, "Please provide gcp.project property");
@@ -86,11 +88,12 @@ public class SpringDataR2dbcApp {
   public void setUpData() {
     LOGGER.info("Setting up test table BOOK...");
     try {
-      r2dbcClient.execute("CREATE TABLE BOOK ("
+      r2dbcClient.sql("CREATE TABLE BOOK ("
           + "  ID STRING(36) NOT NULL,"
           + "  TITLE STRING(MAX) NOT NULL"
-          + ") PRIMARY KEY (ID)")
-          .fetch().rowsUpdated().block();
+          + ") PRIMARY KEY (ID)"
+      ).fetch().rowsUpdated().block();
+
     } catch (Exception e) {
       LOGGER.info("Failed to set up test table BOOK", e);
       return;
@@ -102,7 +105,7 @@ public class SpringDataR2dbcApp {
   public void tearDownData() {
     LOGGER.info("Deleting test table BOOK...");
     try {
-      r2dbcClient.execute("DROP TABLE BOOK")
+      r2dbcClient.sql("DROP TABLE BOOK")
           .fetch().rowsUpdated().block();
     } catch (Exception e) {
       LOGGER.info("Failed to delete test table BOOK", e);

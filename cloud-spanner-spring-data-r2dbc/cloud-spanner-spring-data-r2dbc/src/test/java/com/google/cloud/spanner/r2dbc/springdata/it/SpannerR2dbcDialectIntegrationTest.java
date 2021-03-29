@@ -34,7 +34,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.r2dbc.core.DatabaseClient;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.data.relational.core.query.Query;
+import org.springframework.r2dbc.core.DatabaseClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -68,6 +70,8 @@ class SpannerR2dbcDialectIntegrationTest {
 
   private DatabaseClient databaseClient;
 
+  private R2dbcEntityTemplate r2dbcEntityTemplate;
+
   /**
    * Initializes the integration test environment for the Spanner R2DBC dialect.
    */
@@ -75,16 +79,17 @@ class SpannerR2dbcDialectIntegrationTest {
   public void initializeTestEnvironment() {
     Connection connection = Mono.from(connectionFactory.create()).block();
 
-    this.databaseClient = DatabaseClient.create(connectionFactory);
+    this.r2dbcEntityTemplate = new R2dbcEntityTemplate(connectionFactory);
+    this.databaseClient = this.r2dbcEntityTemplate.getDatabaseClient();
 
     if (SpannerTestUtils.tableExists(connection, "PRESIDENT")) {
-      this.databaseClient.execute("DROP TABLE PRESIDENT")
+      this.databaseClient.sql("DROP TABLE PRESIDENT")
           .fetch()
           .rowsUpdated()
           .block();
     }
 
-    this.databaseClient.execute(
+    this.databaseClient.sql(
         "CREATE TABLE PRESIDENT ("
             + "  NAME STRING(256) NOT NULL,"
             + "  START_YEAR INT64 NOT NULL"
@@ -98,9 +103,7 @@ class SpannerR2dbcDialectIntegrationTest {
   void testReadWrite() {
     insertPresident(new President("Bill Clinton", 1992));
 
-    this.databaseClient.select()
-        .from(President.class)
-        .fetch()
+    this.r2dbcEntityTemplate.select(President.class)
         .first()
         .as(StepVerifier::create)
         .expectNextMatches(
@@ -117,12 +120,14 @@ class SpannerR2dbcDialectIntegrationTest {
     insertPresident(new President("Hello", 2004));
     insertPresident(new President("George Washington", 2008));
 
-    this.databaseClient.select()
-        .from(President.class)
+    this.r2dbcEntityTemplate.select(President.class)
+        .matching(
+            Query.empty()
+                .sort(Sort.by(Direction.ASC, "name"))
+                .with(PageRequest.of(0, 2))
+        )
         // Get the page at index 1; 2 elements per page.
-        .orderBy(Sort.by(Direction.ASC, "name"))
-        .page(PageRequest.of(0, 2))
-        .fetch()
+        //.page()
         .all()
         .as(StepVerifier::create)
         .expectNextMatches(president -> president.getName().equals("Bill Clinton"))
@@ -138,11 +143,12 @@ class SpannerR2dbcDialectIntegrationTest {
     insertPresident(new President("Hello", 2004));
     insertPresident(new President("George Washington", 2008));
 
-    this.databaseClient.select()
-        .from(President.class)
-        .orderBy(Sort.by(Direction.ASC, "name"))
-        .map(row -> (String) row.get("name"))
+    this.r2dbcEntityTemplate.select(President.class)
+        .matching(
+            Query.empty()
+                .sort(Sort.by(Direction.ASC, "name")))
         .all()
+        .map(president -> president.getName())
         .as(StepVerifier::create)
         .expectNext(
             "Bill Clinton", "Bob", "George Washington", "Hello", "Joe Smith")
@@ -150,9 +156,8 @@ class SpannerR2dbcDialectIntegrationTest {
   }
 
   private void insertPresident(President president) {
-    this.databaseClient
-        .insert()
-        .into(President.class)
+    this.r2dbcEntityTemplate
+        .insert(President.class)
         .using(president)
         .then()
         .as(StepVerifier::create)
