@@ -337,6 +337,14 @@ After this amount of time has elapsed (counting from the first element added), t
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.publisher.endpoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The publisher endpoint.
+Example: <code>"us-east1-pubsub.googleapis.com:443"</code>.
+This is useful in conjunction with enabling message ordering because sending messages to the same region ensures they are received in order even when multiple publishers are used.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pubsub.googleapis.com:443</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -562,7 +570,8 @@ pubSubTemplate.publish(topicName, "message", headers).get();</code></pre>
 <h5 id="_ordering_messages"><a class="link" href="#_ordering_messages">Ordering messages</a></h5>
 <div class="paragraph">
 <p>If you are relying on message converters and would like to provide an ordering key, use the <code>GcpPubSubHeaders.ORDERING_KEY</code> header.
-You will also need to make sure to enable message ordering on the publisher via the <code>spring.cloud.gcp.pubsub.publisher.enable-message-ordering</code> property.</p>
+You will also need to make sure to enable message ordering on the publisher via the <code>spring.cloud.gcp.pubsub.publisher.enable-message-ordering</code> property.
+Additionally, if you are using multiple publishers, you will want to set the <code>spring.cloud.gcp.pubsub.publisher.endpoint</code> to a regional endpoint such as <code>"us-east1-pubsub.googleapis.com:443"</code> so that messages are sent to the same region and received in order.</p>
 </div>
 <div class="listingblock">
 <div class="content">
