@@ -71,6 +71,14 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Pub/Sub Lite -->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>spring-cloud-gcp-pubsublite</artifactId>
+            <version>2.0.3-SNAPSHOT</version>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Cloud SQL -->
         <dependency>
             <groupId>org.springframework</groupId>

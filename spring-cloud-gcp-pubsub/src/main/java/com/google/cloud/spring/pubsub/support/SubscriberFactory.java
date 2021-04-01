@@ -32,15 +32,7 @@ import com.google.pubsub.v1.PullRequest;
  * @author Chengyuan Zhao
  * @author Maurice Zeijen
  */
-public interface SubscriberFactory {
-
-	/**
-	 * Method to get the project id.
-	 * @return the project id
-	 * @since 1.1
-	 */
-	String getProjectId();
-
+public interface SubscriberFactory extends StreamingSubscriberFactory {
 	/**
 	 * Create a {@link Subscriber} for the specified subscription name and wired it up to
 	 * asynchronously deliver messages to the provided {@link MessageReceiver}.
@@ -48,6 +40,7 @@ public interface SubscriberFactory {
 	 * @param receiver the callback for receiving messages asynchronously
 	 * @return the {@link Subscriber} that was created to bind the receiver to the subscription
 	 */
+	@Override
 	Subscriber createSubscriber(String subscriptionName, MessageReceiver receiver);
 
 	/**
@@ -69,5 +62,4 @@ public interface SubscriberFactory {
 	 * @return the {@link SubscriberStub} used for executing {@link PullRequest}s
 	 */
 	SubscriberStub createSubscriberStub();
-
 }

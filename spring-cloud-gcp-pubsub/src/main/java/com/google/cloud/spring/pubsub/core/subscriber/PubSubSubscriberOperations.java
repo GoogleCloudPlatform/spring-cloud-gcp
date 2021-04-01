@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.google.cloud.pubsub.v1.Subscriber;
+import com.google.cloud.pubsub.v1.SubscriberInterface;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.converter.ConvertedAcknowledgeablePubsubMessage;
@@ -41,8 +42,7 @@ import org.springframework.util.concurrent.ListenableFuture;
  *
  * @since 1.1
  */
-public interface PubSubSubscriberOperations {
-
+public interface PubSubSubscriberOperations extends PubSubStreamingSubscriberOperations {
 	/**
 	 * Add a callback method to an existing subscription.
 	 * <p>The created {@link Subscriber} is returned so it can be stopped.
@@ -52,12 +52,13 @@ public interface PubSubSubscriberOperations {
 	 * @return subscriber listening to new messages
 	 * @since 1.1
 	 */
+	@Override
 	Subscriber subscribe(String subscription, Consumer<BasicAcknowledgeablePubsubMessage> messageConsumer);
 
 	/**
 	 * Add a callback method to an existing subscription that receives Pub/Sub messages converted to the requested
 	 * payload type.
-	 * <p>The created {@link Subscriber} is returned so it can be stopped.
+	 * <p>The created {@link SubscriberInterface} is returned so it can be stopped.
 	 * @param subscription canonical subscription name, e.g., "subscriptionName", or the fully-qualified
 	 * subscription name in the {@code projects/<project_name>/subscriptions/<subscription_name>} format
 	 * @param messageConsumer the callback method triggered when new messages arrive
@@ -66,6 +67,7 @@ public interface PubSubSubscriberOperations {
 	 * @return subscriber listening to new messages
 	 * @since 1.1
 	 */
+	@Override
 	<T> Subscriber subscribeAndConvert(String subscription,
 			Consumer<ConvertedBasicAcknowledgeablePubsubMessage<T>> messageConsumer, Class<T> payloadType);
 

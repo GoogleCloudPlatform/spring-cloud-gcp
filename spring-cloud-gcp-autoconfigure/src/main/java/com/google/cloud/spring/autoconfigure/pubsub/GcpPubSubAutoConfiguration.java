@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub;
 
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubStreamingSubscriberTemplate;
 import java.io.IOException;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
@@ -162,6 +163,16 @@ public class GcpPubSubAutoConfiguration {
 		ackExecutor.setThreadNamePrefix("gcp-pubsub-ack-executor");
 		ackExecutor.setDaemon(true);
 		return ackExecutor;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public PubSubStreamingSubscriberTemplate pubSubStreamingSubscriberTemplate(
+			SubscriberFactory subscriberFactory,
+			ObjectProvider<PubSubMessageConverter> pubSubMessageConverter) {
+		PubSubSubscriberTemplate pubSubSubscriberTemplate = new PubSubSubscriberTemplate(subscriberFactory);
+		pubSubMessageConverter.ifUnique(pubSubSubscriberTemplate::setMessageConverter);
+		return pubSubSubscriberTemplate;
 	}
 
 	@Bean

@@ -331,6 +331,7 @@
 				<module>spring-cloud-gcp-data-spanner</module>
 				<module>spring-cloud-gcp-logging</module>
 				<module>spring-cloud-gcp-pubsub</module>
+				<module>spring-cloud-gcp-pubsublite</module>
 				<module>spring-cloud-gcp-pubsub-stream-binder</module>
 				<module>spring-cloud-gcp-security-iap</module>
 				<module>spring-cloud-gcp-storage</module>
@@ -580,6 +581,7 @@
 				<module>spring-cloud-gcp-data-spanner</module>
 				<module>spring-cloud-gcp-logging</module>
 				<module>spring-cloud-gcp-pubsub</module>
+				<module>spring-cloud-gcp-pubsublite</module>
 				<module>spring-cloud-gcp-pubsub-stream-binder</module>
 				<module>spring-cloud-gcp-security-iap</module>
 				<module>spring-cloud-gcp-storage</module>

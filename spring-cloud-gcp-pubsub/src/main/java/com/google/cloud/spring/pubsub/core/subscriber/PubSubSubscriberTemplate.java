@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutureCallback;
 import com.google.api.core.ApiFutures;
-import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
@@ -81,7 +80,7 @@ import org.springframework.util.concurrent.SettableListenableFuture;
  *
  * @since 1.1
  */
-public class PubSubSubscriberTemplate
+public class PubSubSubscriberTemplate extends PubSubStreamingSubscriberTemplate
 		implements PubSubSubscriberOperations, DisposableBean {
 
 	private final SubscriberFactory subscriberFactory;
@@ -103,6 +102,7 @@ public class PubSubSubscriberTemplate
 	 *                          to subscribe to subscriptions or pull messages.
 	 */
 	public PubSubSubscriberTemplate(SubscriberFactory subscriberFactory) {
+		super(subscriberFactory);
 		Assert.notNull(subscriberFactory, "The subscriberFactory can't be null.");
 
 		this.subscriberFactory = subscriberFactory;
@@ -154,36 +154,13 @@ public class PubSubSubscriberTemplate
 	@Override
 	public Subscriber subscribe(String subscription,
 			Consumer<BasicAcknowledgeablePubsubMessage> messageConsumer) {
-		Assert.notNull(messageConsumer, "The messageConsumer can't be null.");
-
-		Subscriber subscriber =
-				this.subscriberFactory.createSubscriber(subscription,
-						(message, ackReplyConsumer) -> messageConsumer.accept(
-								new PushedAcknowledgeablePubsubMessage(
-										PubSubSubscriptionUtils.toProjectSubscriptionName(subscription,
-												this.subscriberFactory.getProjectId()),
-										message,
-										ackReplyConsumer)));
-		subscriber.startAsync();
-		return subscriber;
+		return (Subscriber) super.subscribe(subscription, messageConsumer);
 	}
 
 	@Override
 	public <T> Subscriber subscribeAndConvert(String subscription,
 			Consumer<ConvertedBasicAcknowledgeablePubsubMessage<T>> messageConsumer, Class<T> payloadType) {
-		Assert.notNull(messageConsumer, "The messageConsumer can't be null.");
-
-		Subscriber subscriber =
-				this.subscriberFactory.createSubscriber(subscription,
-						(message, ackReplyConsumer) -> messageConsumer.accept(
-								new ConvertedPushedAcknowledgeablePubsubMessage<>(
-										PubSubSubscriptionUtils.toProjectSubscriptionName(subscription,
-												this.subscriberFactory.getProjectId()),
-										message,
-										this.getMessageConverter().fromPubSubMessage(message, payloadType),
-										ackReplyConsumer)));
-		subscriber.startAsync();
-		return subscriber;
+		return (Subscriber) super.subscribeAndConvert(subscription, messageConsumer, payloadType);
 	}
 
 	/**
@@ -486,30 +463,6 @@ public class PubSubSubscriberTemplate
 		return settableListenableFuture;
 	}
 
-	private abstract static class AbstractBasicAcknowledgeablePubsubMessage
-			implements BasicAcknowledgeablePubsubMessage {
-
-		private final ProjectSubscriptionName projectSubscriptionName;
-
-		private final PubsubMessage message;
-
-		AbstractBasicAcknowledgeablePubsubMessage(
-				ProjectSubscriptionName projectSubscriptionName, PubsubMessage message) {
-			this.projectSubscriptionName = projectSubscriptionName;
-			this.message = message;
-		}
-
-		@Override
-		public ProjectSubscriptionName getProjectSubscriptionName() {
-			return this.projectSubscriptionName;
-		}
-
-		@Override
-		public PubsubMessage getPubsubMessage() {
-			return this.message;
-		}
-	}
-
 	private class PulledAcknowledgeablePubsubMessage extends AbstractBasicAcknowledgeablePubsubMessage
 			implements AcknowledgeablePubsubMessage {
 
@@ -552,56 +505,6 @@ public class PubSubSubscriberTemplate
 		}
 	}
 
-	private static class PushedAcknowledgeablePubsubMessage extends AbstractBasicAcknowledgeablePubsubMessage {
-
-		private final AckReplyConsumer ackReplyConsumer;
-
-		PushedAcknowledgeablePubsubMessage(ProjectSubscriptionName projectSubscriptionName, PubsubMessage message,
-				AckReplyConsumer ackReplyConsumer) {
-			super(projectSubscriptionName, message);
-			this.ackReplyConsumer = ackReplyConsumer;
-		}
-
-		@Override
-		public ListenableFuture<Void> ack() {
-			SettableListenableFuture<Void> settableListenableFuture = new SettableListenableFuture<>();
-
-			try {
-				this.ackReplyConsumer.ack();
-				settableListenableFuture.set(null);
-			}
-			catch (Exception e) {
-				settableListenableFuture.setException(e);
-			}
-
-			return settableListenableFuture;
-		}
-
-		@Override
-		public ListenableFuture<Void> nack() {
-			SettableListenableFuture<Void> settableListenableFuture = new SettableListenableFuture<>();
-
-			try {
-				this.ackReplyConsumer.nack();
-				settableListenableFuture.set(null);
-			}
-			catch (Exception e) {
-				settableListenableFuture.setException(e);
-			}
-
-			return settableListenableFuture;
-		}
-
-		@Override
-		public String toString() {
-			return "PushedAcknowledgeablePubsubMessage{" +
-					"projectId='" + getProjectSubscriptionName().getProject() + '\'' +
-					", subscriptionName='" + getProjectSubscriptionName().getSubscription() + '\'' +
-					", message=" + getPubsubMessage() +
-					'}';
-		}
-	}
-
 	private class ConvertedPulledAcknowledgeablePubsubMessage<T> extends PulledAcknowledgeablePubsubMessage
 			implements ConvertedAcknowledgeablePubsubMessage<T> {
 
@@ -618,22 +521,4 @@ public class PubSubSubscriberTemplate
 			return this.payload;
 		}
 	}
-
-	private static class ConvertedPushedAcknowledgeablePubsubMessage<T> extends PushedAcknowledgeablePubsubMessage
-			implements ConvertedBasicAcknowledgeablePubsubMessage<T> {
-
-		private final T payload;
-
-		ConvertedPushedAcknowledgeablePubsubMessage(ProjectSubscriptionName projectSubscriptionName,
-				PubsubMessage message, T payload, AckReplyConsumer ackReplyConsumer) {
-			super(projectSubscriptionName, message, ackReplyConsumer);
-			this.payload = payload;
-		}
-
-		@Override
-		public T getPayload() {
-			return this.payload;
-		}
-	}
-
 }

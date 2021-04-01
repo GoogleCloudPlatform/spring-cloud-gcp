@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.pubsub.support;
 
-import com.google.cloud.pubsub.v1.Publisher;
+import com.google.cloud.pubsub.v1.PublisherInterface;
 
 /**
  * The publisher factory interface that can create publishers.
@@ -25,6 +25,5 @@ import com.google.cloud.pubsub.v1.Publisher;
  * @author Chengyuan Zhao
  */
 public interface PublisherFactory {
-
-	Publisher createPublisher(String topic);
+	PublisherInterface createPublisher(String topic);
 }
