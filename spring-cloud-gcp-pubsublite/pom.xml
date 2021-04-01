@@ -38,14 +38,14 @@
         <configuration>
           <annotationProcessorPaths>
             <path>
-              <groupId>com.google.auto.value</groupId>
-              <artifactId>auto-value</artifactId>
-              <version>1.7.4</version>
-            </path>
-            <path>
               <groupId>com.google.errorprone</groupId>
               <artifactId>error_prone_core</artifactId>
               <version>${errorprone.version}</version>
+            </path>
+            <path>
+              <groupId>com.google.auto.value</groupId>
+              <artifactId>auto-value</artifactId>
+              <version>1.7.4</version>
             </path>
           </annotationProcessorPaths>
         </configuration>

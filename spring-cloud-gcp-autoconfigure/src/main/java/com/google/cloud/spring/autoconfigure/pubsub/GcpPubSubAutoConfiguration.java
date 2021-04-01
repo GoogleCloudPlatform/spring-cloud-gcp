@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub;
 
-import com.google.cloud.spring.pubsub.core.subscriber.PubSubStreamingSubscriberTemplate;
 import java.io.IOException;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
@@ -46,6 +45,7 @@ import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubStreamingSubscriberTemplate;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;

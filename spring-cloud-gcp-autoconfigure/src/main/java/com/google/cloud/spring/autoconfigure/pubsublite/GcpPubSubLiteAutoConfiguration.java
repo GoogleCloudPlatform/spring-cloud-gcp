@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.autoconfigure.pubsublite;
 
+import java.io.IOException;
+
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.pubsublite.CloudZone;
 import com.google.cloud.pubsublite.cloudpubsub.FlowControlSettings;
@@ -29,7 +31,7 @@ import com.google.cloud.spring.pubsublite.support.DefaultPublisherFactory;
 import com.google.cloud.spring.pubsublite.support.DefaultSubscriberFactory;
 import com.google.cloud.spring.pubsublite.support.PublisherFactorySettings;
 import com.google.cloud.spring.pubsublite.support.SubscriberFactorySettings;
-import java.io.IOException;
+
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -44,48 +46,48 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass(PublisherFactorySettings.class)
 @EnableConfigurationProperties(GcpPubSubLiteProperties.class)
 public class GcpPubSubLiteAutoConfiguration {
-  private final GcpPubSubLiteProperties properties;
+	private final GcpPubSubLiteProperties properties;
 
-  private final GcpProjectIdProvider finalProjectIdProvider;
+	private final GcpProjectIdProvider finalProjectIdProvider;
 
-  private final CredentialsProvider finalCredentialsProvider;
+	private final CredentialsProvider finalCredentialsProvider;
 
-  public GcpPubSubLiteAutoConfiguration(GcpPubSubLiteProperties properties,
-      GcpProjectIdProvider gcpProjectIdProvider,
-      CredentialsProvider credentialsProvider) throws IOException {
-    this.properties = properties;
-    this.finalProjectIdProvider = (properties.getProjectId() != null)
-        ? properties::getProjectId
-        : gcpProjectIdProvider;
-    this.finalCredentialsProvider = properties.getCredentials().hasKey()
-        ? new DefaultCredentialsProvider(properties)
-        : credentialsProvider;
-  }
+	public GcpPubSubLiteAutoConfiguration(GcpPubSubLiteProperties properties,
+			GcpProjectIdProvider gcpProjectIdProvider,
+			CredentialsProvider credentialsProvider) throws IOException {
+		this.properties = properties;
+		this.finalProjectIdProvider = (properties.getProjectId() != null)
+				? properties::getProjectId
+				: gcpProjectIdProvider;
+		this.finalCredentialsProvider = properties.getCredentials().hasKey()
+				? new DefaultCredentialsProvider(properties)
+				: credentialsProvider;
+	}
 
-  @Bean
-  @ConditionalOnMissingBean
-  public PublisherFactory defaultPublisherFactory() {
-    PublisherFactorySettings settings = PublisherFactorySettings.newBuilder()
-        .setLocation(CloudZone.parse(properties.getLocation()))
-        .setProjectIdProvider(finalProjectIdProvider)
-        .setCredentialsProvider(finalCredentialsProvider)
-        .build();
-    return new DefaultPublisherFactory(settings);
-  }
+	@Bean
+	@ConditionalOnMissingBean
+	public PublisherFactory defaultPublisherFactory() {
+		PublisherFactorySettings settings = PublisherFactorySettings.newBuilder()
+				.setLocation(CloudZone.parse(properties.getLocation()))
+				.setProjectIdProvider(finalProjectIdProvider)
+				.setCredentialsProvider(finalCredentialsProvider)
+				.build();
+		return new DefaultPublisherFactory(settings);
+	}
 
-  @Bean
-  @ConditionalOnMissingBean
-  public StreamingSubscriberFactory defaultSubscriberFactory() {
-    FlowControl flowControl = properties.getSubscriber().getPerPartitionFlowControl();
-    SubscriberFactorySettings settings = SubscriberFactorySettings.newBuilder()
-        .setLocation(CloudZone.parse(properties.getLocation()))
-        .setProjectIdProvider(finalProjectIdProvider)
-        .setCredentialsProvider(finalCredentialsProvider)
-        .setPerPartitionFlowControlSettings(FlowControlSettings.builder()
-            .setBytesOutstanding(flowControl.getMaxOutstandingRequestBytes())
-            .setMessagesOutstanding(flowControl.getMaxOutstandingElementCount())
-            .build())
-        .build();
-    return new DefaultSubscriberFactory(settings);
-  }
+	@Bean
+	@ConditionalOnMissingBean
+	public StreamingSubscriberFactory defaultSubscriberFactory() {
+		FlowControl flowControl = properties.getSubscriber().getPerPartitionFlowControl();
+		SubscriberFactorySettings settings = SubscriberFactorySettings.newBuilder()
+				.setLocation(CloudZone.parse(properties.getLocation()))
+				.setProjectIdProvider(finalProjectIdProvider)
+				.setCredentialsProvider(finalCredentialsProvider)
+				.setPerPartitionFlowControlSettings(FlowControlSettings.builder()
+						.setBytesOutstanding(flowControl.getMaxOutstandingRequestBytes())
+						.setMessagesOutstanding(flowControl.getMaxOutstandingElementCount())
+						.build())
+				.build();
+		return new DefaultSubscriberFactory(settings);
+	}
 }
