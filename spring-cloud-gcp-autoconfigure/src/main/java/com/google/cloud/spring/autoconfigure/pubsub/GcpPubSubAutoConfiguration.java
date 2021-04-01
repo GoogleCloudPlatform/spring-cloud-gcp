@@ -50,6 +50,7 @@ import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
+import com.google.cloud.spring.pubsub.support.StreamingSubscriberFactory;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import org.threeten.bp.Duration;
@@ -168,9 +169,10 @@ public class GcpPubSubAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public PubSubStreamingSubscriberTemplate pubSubStreamingSubscriberTemplate(
-			SubscriberFactory subscriberFactory,
+			StreamingSubscriberFactory subscriberFactory,
 			ObjectProvider<PubSubMessageConverter> pubSubMessageConverter) {
-		PubSubSubscriberTemplate pubSubSubscriberTemplate = new PubSubSubscriberTemplate(subscriberFactory);
+		PubSubStreamingSubscriberTemplate pubSubSubscriberTemplate =
+				new PubSubStreamingSubscriberTemplate(subscriberFactory);
 		pubSubMessageConverter.ifUnique(pubSubSubscriberTemplate::setMessageConverter);
 		return pubSubSubscriberTemplate;
 	}
