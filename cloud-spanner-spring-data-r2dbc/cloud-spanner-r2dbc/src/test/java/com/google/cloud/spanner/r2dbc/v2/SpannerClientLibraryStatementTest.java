@@ -56,7 +56,7 @@ class SpannerClientLibraryStatementTest {
 
     StepVerifier.create(
         Flux.from(statement.execute()).flatMap(result -> result.getRowsUpdated()))
-        // SELECT statements never have updated row counts.
+        .expectNext(0)
         .verifyComplete();
 
     StepVerifier.create(

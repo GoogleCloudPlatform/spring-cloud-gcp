@@ -204,7 +204,7 @@ class AbstractSpannerClientLibraryStatementTest {
           .runDmlStatement(statement)
           .map(
               numRows ->
-                  new SpannerClientLibraryResult(Flux.empty(), Mono.just(numRows.intValue())));
+                  new SpannerClientLibraryResult(Flux.empty(), numRows.intValue()));
     }
 
     @Override
@@ -219,7 +219,7 @@ class AbstractSpannerClientLibraryStatementTest {
                           .map(
                               rowCount ->
                                   new SpannerClientLibraryResult(
-                                      Flux.empty(), Mono.just(rowCount.intValue())))));
+                                      Flux.empty(), rowCount.intValue()))));
     }
   }
 }

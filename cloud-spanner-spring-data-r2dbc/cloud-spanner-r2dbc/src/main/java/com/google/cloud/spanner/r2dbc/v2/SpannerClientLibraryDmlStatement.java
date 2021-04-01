@@ -48,8 +48,8 @@ class SpannerClientLibraryDmlStatement extends AbstractSpannerClientLibraryState
   protected Mono<SpannerClientLibraryResult> executeSingle(Statement statement) {
     return this.clientLibraryAdapter
         .runDmlStatement(statement)
-        .transform(numRowsUpdatedMono -> Mono.just(
-            new SpannerClientLibraryResult(Flux.empty(), numRowsUpdatedMono.map(this::longToInt))));
+        .map(numRowsUpdated ->
+            new SpannerClientLibraryResult(Flux.empty(), longToInt(numRowsUpdated)));
   }
 
   @Override
@@ -59,13 +59,13 @@ class SpannerClientLibraryDmlStatement extends AbstractSpannerClientLibraryState
         .flatMapIterable(
             numRowsArray -> LongStream.of(numRowsArray).boxed().collect(Collectors.toList()))
         .map(numRows ->
-                      new SpannerClientLibraryResult(Flux.empty(), Mono.just(longToInt(numRows)))
+                      new SpannerClientLibraryResult(Flux.empty(), longToInt(numRows))
         );
   }
 
   private int longToInt(Long numRows) {
     if (numRows > Integer.MAX_VALUE) {
-      LOGGER.warn("Number of updated rows exceeds maximum integer value; actual rows updated = %s; "
+      LOGGER.warn("Number of updated rows exceeds maximum integer value; actual rows updated = {}; "
           + "returning max int value", numRows);
       return Integer.MAX_VALUE;
     }

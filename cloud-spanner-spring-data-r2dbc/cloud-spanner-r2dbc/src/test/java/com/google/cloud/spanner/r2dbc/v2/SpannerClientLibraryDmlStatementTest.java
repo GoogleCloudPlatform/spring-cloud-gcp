@@ -44,7 +44,8 @@ class SpannerClientLibraryDmlStatementTest {
         new SpannerClientLibraryDmlStatement(this.mockAdapter, "irrelevant sql");
 
     StepVerifier.create(
-            Flux.from(dmlStatement.execute()).flatMap(result -> result.getRowsUpdated()))
+            Flux.from(dmlStatement.execute()).flatMap(result -> result.getRowsUpdated())
+    )
         .expectNext(0)
         .verifyComplete();
   }

@@ -50,7 +50,7 @@ class SpannerResultTest {
   @Test
   void getRowsUpdatedTest() {
     StepVerifier.create(
-        ((Mono) new SpannerClientLibraryResult(this.resultSet, Mono.just(2)).getRowsUpdated()))
+        ((Mono) new SpannerClientLibraryResult(this.resultSet, 2).getRowsUpdated()))
         .expectNext(2)
         .verifyComplete();
   }
@@ -70,7 +70,7 @@ class SpannerResultTest {
   @Test
   void mapTest() {
 
-    Publisher<String> result = new SpannerClientLibraryResult(this.resultSet, Mono.just(0))
+    Publisher<String> result = new SpannerClientLibraryResult(this.resultSet, 0)
         .map((row, metadata) ->
             row.get(1, Boolean.class)
                 + "-"

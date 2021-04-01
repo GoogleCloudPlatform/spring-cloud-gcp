@@ -79,6 +79,7 @@ public class SpringDataR2dbcApp {
         .option(DRIVER, DRIVER_NAME)
         .option(INSTANCE, SPANNER_INSTANCE)
         .option(DATABASE, SPANNER_DATABASE)
+        .option(Option.valueOf("client-implementation"), "client-library")
         .build());
 
     return connectionFactory;

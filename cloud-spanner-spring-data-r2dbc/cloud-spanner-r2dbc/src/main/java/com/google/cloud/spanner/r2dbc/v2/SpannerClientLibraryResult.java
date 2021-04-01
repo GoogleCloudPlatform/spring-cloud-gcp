@@ -28,19 +28,19 @@ class SpannerClientLibraryResult implements Result {
 
   private final Flux<SpannerClientLibraryRow> resultRows;
 
-  private final Mono<Integer> rowsUpdated;
+  private final int numRowsUpdated;
 
   private RowMetadata rowMetadata;
 
   public SpannerClientLibraryResult(
-      Flux<SpannerClientLibraryRow> resultRows, Mono<Integer> rowsUpdated) {
+      Flux<SpannerClientLibraryRow> resultRows, int numRowsUpdated) {
     this.resultRows = resultRows;
-    this.rowsUpdated = rowsUpdated;
+    this.numRowsUpdated = numRowsUpdated;
   }
 
   @Override
   public Publisher<Integer> getRowsUpdated() {
-    return this.rowsUpdated;
+    return Mono.just(this.numRowsUpdated);
   }
 
   @Override

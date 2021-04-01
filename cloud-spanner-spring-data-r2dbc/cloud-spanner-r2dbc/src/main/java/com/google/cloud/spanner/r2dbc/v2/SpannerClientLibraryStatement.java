@@ -41,7 +41,7 @@ class SpannerClientLibraryStatement extends AbstractSpannerClientLibraryStatemen
   protected Mono<SpannerClientLibraryResult> executeSingle(Statement statement) {
     return this.clientLibraryAdapter
         .runSelectStatement(statement)
-        .transform(rows -> Mono.just(new SpannerClientLibraryResult(rows, Mono.empty()))).single();
+        .transform(rows -> Mono.just(new SpannerClientLibraryResult(rows, 0))).single();
   }
 
   @Override
