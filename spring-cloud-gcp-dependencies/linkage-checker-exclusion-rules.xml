@@ -18,4 +18,37 @@
 			The source class is used only when the target class is available.
 		</Reason>
 	</LinkageError>
+	<LinkageError>
+		<Target>
+			<Package name="org.springframework.integration"/>
+		</Target>
+		<Source>
+			<Package name="com.google.cloud.spring.storage.integration"/>
+		</Source>
+		<Reason>
+			Spring Integration is optional for Storage.
+		</Reason>
+	</LinkageError>
+	<LinkageError>
+		<Target>
+			<Package name="org.springframework.web"/>
+		</Target>
+		<Source>
+			<Package name="com.google.cloud.spring.logging"/>
+		</Source>
+		<Reason>
+			Spring Web MVC is optional for Logging.
+		</Reason>
+	</LinkageError>
+	<LinkageError>
+		<Target>
+			<Package name="net.logstash"/>
+		</Target>
+		<Source>
+			<Package name="com.google.cloud.spring.logging"/>
+		</Source>
+		<Reason>
+			Logstash is optional for Logging.
+		</Reason>
+	</LinkageError>
 </LinkageCheckerFilter>
