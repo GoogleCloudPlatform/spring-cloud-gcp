@@ -10,6 +10,8 @@ This application allows you to load CSV data into BigQuery tables through either
 
 == Running the sample
 
+image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples%2Fspring-cloud-gcp-bigquery-sample%2FREADME.adoc]
+
 1. Create a Google Cloud Platform project with https://cloud.google.com/billing/docs/how-to/modify-project#enable-billing[billing enabled], if you don't have one already.
 
 2. Enable the BigQuery API from https://console.cloud.google.com/apis/library/bigquery-json.googleapis.com[the APIs & Services menu] of the Google Cloud Console.
