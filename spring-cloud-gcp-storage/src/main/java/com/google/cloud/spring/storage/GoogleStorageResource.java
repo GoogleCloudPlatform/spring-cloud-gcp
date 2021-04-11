@@ -33,6 +33,7 @@ import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -250,9 +251,10 @@ public class GoogleStorageResource implements WritableResource {
 
 	@Override
 	@NonNull
-	public File getFile() {
-		throw new UnsupportedOperationException(
-				getDescription() + " cannot be resolved to absolute file path");
+	public File getFile() throws IOException {
+		File file = new File(location.getBlobName());
+		FileUtils.writeByteArrayToFile(file,this.getBlob().getContent());
+		return file;
 	}
 
 	@Override

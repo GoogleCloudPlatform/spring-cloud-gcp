@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.storage;
 
+import java.io.File;
 import java.io.IOException;
 
 import com.google.cloud.storage.Blob;
@@ -72,5 +73,19 @@ public class GoogleStorageResourceTest {
 		GoogleStorageResource gsr = new GoogleStorageResource(mockStorage, "gs://my-bucket/my-object");
 		assertThat(gsr.getURL()).isNotNull();
 
+	}
+
+	@Test
+	public void getGoogleObject() throws IOException {
+		Storage mockStorage = mock(Storage.class);
+		Blob mockBlob = mock(Blob.class);
+		String content= "some Content";
+
+		when(mockStorage.get(BlobId.of("my-bucket", "my-object"))).thenReturn(mockBlob);
+		when(mockBlob.getContent()).thenReturn(content.getBytes());
+
+		GoogleStorageResource googleStorageResource = new GoogleStorageResource(mockStorage, "gs://my-bucket/my-object");
+		File file = googleStorageResource.getFile();
+		assertThat(file).isNotNull();
 	}
 }
