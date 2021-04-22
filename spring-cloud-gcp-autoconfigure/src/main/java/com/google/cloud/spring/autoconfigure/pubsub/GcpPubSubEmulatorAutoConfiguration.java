@@ -21,6 +21,7 @@ import javax.annotation.PreDestroy;
 import com.google.api.gax.grpc.GrpcTransportChannel;
 import com.google.api.gax.rpc.FixedTransportChannelProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -40,7 +41,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Mike Eltsufin
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass(ManagedChannel.class)
+@ConditionalOnClass({ManagedChannel.class, PubSubTemplate.class})
 @ConditionalOnProperty(prefix = "spring.cloud.gcp.pubsub", name = "emulator-host")
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)
 @EnableConfigurationProperties(GcpPubSubProperties.class)
