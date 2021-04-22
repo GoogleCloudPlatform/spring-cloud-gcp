@@ -42,7 +42,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ManagedChannel.class, PubSubTemplate.class})
-@ConditionalOnProperty(prefix = "spring.cloud.gcp.pubsub", name = "emulator-host")
+@ConditionalOnProperty(prefix = "spring.cloud.gcp.pubsub", name = "enabled", matchIfMissing = true)
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)
 @EnableConfigurationProperties(GcpPubSubProperties.class)
 public class GcpPubSubEmulatorAutoConfiguration {
@@ -50,6 +50,7 @@ public class GcpPubSubEmulatorAutoConfiguration {
 
 	@Bean(name = {"subscriberTransportChannelProvider", "publisherTransportChannelProvider"})
 	@ConditionalOnMissingBean(name = {"subscriberTransportChannelProvider", "publisherTransportChannelProvider"})
+	@ConditionalOnProperty(prefix = "spring.cloud.gcp.pubsub", name = "emulator-host")
 	public TransportChannelProvider transportChannelProvider(GcpPubSubProperties gcpPubSubProperties) {
 		this.channel = ManagedChannelBuilder
 				.forTarget("dns:///" + gcpPubSubProperties.getEmulatorHost())
