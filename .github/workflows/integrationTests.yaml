@@ -6,7 +6,7 @@ on:
       - 'dependabot/**'
   workflow_dispatch:
   schedule:
-    - cron: '00 8 * * *' # 08:00 UTC every day
+    - cron: '05 8 * * *' # 08:00 UTC every day
 
 
 jobs:
