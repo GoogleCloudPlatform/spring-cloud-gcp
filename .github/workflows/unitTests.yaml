@@ -7,7 +7,7 @@ on:
   pull_request:
   workflow_dispatch:
   schedule:
-    - cron: '00 7 * * *' # 07:00 UTC every day
+    - cron: '05 7 * * *' # 07:00 UTC every day
 
 
 jobs:
