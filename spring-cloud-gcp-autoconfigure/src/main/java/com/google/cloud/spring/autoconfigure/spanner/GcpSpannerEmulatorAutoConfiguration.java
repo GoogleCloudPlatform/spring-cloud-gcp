@@ -22,7 +22,6 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
-
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
