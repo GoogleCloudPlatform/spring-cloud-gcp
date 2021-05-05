@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.autoconfigure.spanner;
 
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import org.junit.BeforeClass;
@@ -52,6 +54,9 @@ public class GcpSpannerEmulatorAutoConfigurationIntegrationTests {
 				.run(context -> {
 					SpannerOptions spannerOptions = context.getBean(SpannerOptions.class);
 					assertThat(spannerOptions.getEndpoint()).isEqualTo("localhost:9010");
+
+					assertThat(context.getBean(CredentialsProvider.class).getCredentials())
+							.isEqualTo(NoCredentials.getInstance());
 				});
 	}
 
