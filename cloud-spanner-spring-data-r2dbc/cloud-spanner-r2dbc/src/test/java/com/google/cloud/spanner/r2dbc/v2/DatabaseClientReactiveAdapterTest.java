@@ -32,11 +32,14 @@ import com.google.cloud.spanner.AsyncResultSet.CallbackResponse;
 import com.google.cloud.spanner.AsyncResultSet.CursorState;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
+import com.google.cloud.spanner.ReadContext;
 import com.google.cloud.spanner.Spanner;
+import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Value;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
 import com.google.cloud.spanner.r2dbc.v2.DatabaseClientReactiveAdapter.ResultSetReadyCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.spanner.v1.ExecuteSqlRequest.QueryOptions;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,6 +49,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 class DatabaseClientReactiveAdapterTest {
 
@@ -58,8 +62,9 @@ class DatabaseClientReactiveAdapterTest {
   private ExecutorService executorService;
 
   private FluxSink mockSink;
-  private AsyncResultSet mockResultSet;
 
+  private AsyncResultSet mockResultSet;
+  private ReadContext mockReadContext;
 
   private DatabaseClientReactiveAdapter adapter;
 
@@ -76,17 +81,25 @@ class DatabaseClientReactiveAdapterTest {
     this.mockDbAdminClient = mock(DatabaseAdminClient.class);
     this.mockTxnManager = mock(DatabaseClientTransactionManager.class);
     this.executorService = Executors.newSingleThreadExecutor();
+    this.adapter = new DatabaseClientReactiveAdapter(this.mockSpannerClient, this.config);
+    this.adapter.setTxnManager(this.mockTxnManager);
+    this.mockReadContext = mock(ReadContext.class);
+    this.mockSink =  mock(FluxSink.class);
+    this.mockResultSet = mock(AsyncResultSet.class);
 
     when(this.mockSpannerClient.getDatabaseClient(any())).thenReturn(this.mockDbClient);
     when(this.mockSpannerClient.getDatabaseAdminClient()).thenReturn(this.mockDbAdminClient);
-
-    this.adapter = new DatabaseClientReactiveAdapter(this.mockSpannerClient, this.config);
-    this.adapter.setTxnManager(this.mockTxnManager);
-
     when(this.mockTxnManager.commitTransaction()).thenReturn(ApiFutures.immediateFuture(null));
+    when(this.mockTxnManager.getReadContext()).thenReturn(this.mockReadContext);
+    when(this.mockReadContext.executeQueryAsync(any())).thenReturn(this.mockResultSet);
 
-    this.mockSink =  mock(FluxSink.class);
-    this.mockResultSet = mock(AsyncResultSet.class);
+    // Normally client library ResultSet implementation would invoke R2DBC driver's callback
+    // as many times as needed. Here, the mock result set simulates this by running callback once.
+    when(this.mockResultSet.setCallback(any(), any())).thenAnswer(invocation -> {
+      ((ResultSetReadyCallback) invocation.getArgument(1)).cursorReady(this.mockResultSet);
+      return Futures.immediateFuture(null);
+    });
+
   }
 
   @AfterEach
@@ -197,5 +210,27 @@ class DatabaseClientReactiveAdapterTest {
     assertThat(response).isSameAs(CallbackResponse.DONE);
     verify(this.mockSink).error(exception);
     verifyNoMoreInteractions(this.mockSink);
+  }
+
+  @Test
+  void resultSetClosedOnSuccessfulFluxCompletion() {
+
+    // simulate no results
+    when(this.mockResultSet.tryNext()).thenReturn(CursorState.DONE);
+
+    StepVerifier.create(this.adapter.runSelectStatement(Statement.of("SELECT 1")))
+        .verifyComplete();
+
+    verify(this.mockResultSet).close();
+  }
+
+  @Test
+  void resultSetCanceledOnFluxCancellation() {
+
+    StepVerifier.create(this.adapter.runSelectStatement(Statement.of("SELECT 1")))
+        .thenCancel().verify();
+    verify(this.mockResultSet).cancel();
+    verify(this.mockResultSet).close();
+
   }
 }

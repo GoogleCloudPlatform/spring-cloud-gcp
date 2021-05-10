@@ -285,6 +285,7 @@ class DatabaseClientReactiveAdapter {
       FluxSink<SpannerClientLibraryRow> sink) {
     AsyncResultSet ars = readContext.executeQueryAsync(statement);
     sink.onCancel(ars::cancel);
+    sink.onDispose(ars::close);
 
     return ars.setCallback(
         this.executorService,
