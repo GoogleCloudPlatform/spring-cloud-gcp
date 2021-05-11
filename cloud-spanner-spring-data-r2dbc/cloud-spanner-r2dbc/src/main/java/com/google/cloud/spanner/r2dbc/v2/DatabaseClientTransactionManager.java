@@ -16,6 +16,8 @@
 
 package com.google.cloud.spanner.r2dbc.v2;
 
+import static com.google.cloud.spanner.r2dbc.v2.DatabaseClientReactiveAdapter.REACTOR_EXECUTOR;
+
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.cloud.Timestamp;
@@ -28,7 +30,6 @@ import com.google.cloud.spanner.ReadOnlyTransaction;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.r2dbc.TransactionInProgressException;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +54,8 @@ class DatabaseClientTransactionManager {
 
   private AsyncTransactionStep<?, ? extends Object> lastStep;
 
-  private final ExecutorService executorService;
-
-  public DatabaseClientTransactionManager(
-      DatabaseClient dbClient, ExecutorService executorService) {
+  public DatabaseClientTransactionManager(DatabaseClient dbClient) {
     this.dbClient = dbClient;
-    this.executorService = executorService;
   }
 
   boolean isInReadWriteTransaction() {
@@ -105,13 +102,21 @@ class DatabaseClientTransactionManager {
   /**
    * Closes the read/write transaction manager and clears its state.
    */
-  void clearTransactionManager() {
+  ApiFuture<Void> clearTransactionManager() {
     this.txnContextFuture = null;
     this.lastStep = null;
+    ApiFuture<Void> returnFuture = ApiFutures.immediateFuture(null);
+
     if (this.transactionManager != null) {
-      this.transactionManager.close();
+      returnFuture = this.transactionManager.closeAsync();
       this.transactionManager = null;
     }
+
+    if (isInReadonlyTransaction()) {
+      closeReadOnlyTransaction();
+    }
+
+    return returnFuture;
   }
 
   /**
@@ -174,9 +179,9 @@ class DatabaseClientTransactionManager {
     AsyncTransactionStep<? extends Object, T> updateStatementFuture =
         this.lastStep == null
             ? this.txnContextFuture.then(
-                (ctx, unusedVoid) -> operation.apply(ctx), this.executorService)
+                (ctx, unusedVoid) -> operation.apply(ctx), REACTOR_EXECUTOR)
             : this.lastStep.then(
-                (ctx, unusedPreviousResult) -> operation.apply(ctx), this.executorService);
+                (ctx, unusedPreviousResult) -> operation.apply(ctx), REACTOR_EXECUTOR);
 
     this.lastStep = updateStatementFuture;
     return updateStatementFuture;

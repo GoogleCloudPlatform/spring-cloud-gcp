@@ -19,9 +19,11 @@ package com.google.cloud.spanner.r2dbc.v2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -30,12 +32,15 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.AsyncResultSet;
 import com.google.cloud.spanner.AsyncResultSet.CallbackResponse;
 import com.google.cloud.spanner.AsyncResultSet.CursorState;
+import com.google.cloud.spanner.AsyncTransactionManager.TransactionContextFuture;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.ReadContext;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
+import com.google.cloud.spanner.TimestampBound;
+import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.Value;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
 import com.google.cloud.spanner.r2dbc.v2.DatabaseClientReactiveAdapter.ResultSetReadyCallback;
@@ -47,6 +52,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -65,11 +71,12 @@ class DatabaseClientReactiveAdapterTest {
 
   private AsyncResultSet mockResultSet;
   private ReadContext mockReadContext;
+  TransactionContextFuture mockTxnContextFuture;
 
   private DatabaseClientReactiveAdapter adapter;
 
   @BeforeEach
-  void setup() {
+  void setup() throws Exception {
     this.config =
         new SpannerConnectionConfiguration.Builder()
             .setFullyQualifiedDatabaseName("projects/p/instances/i/databases/d")
@@ -81,17 +88,28 @@ class DatabaseClientReactiveAdapterTest {
     this.mockDbAdminClient = mock(DatabaseAdminClient.class);
     this.mockTxnManager = mock(DatabaseClientTransactionManager.class);
     this.executorService = Executors.newSingleThreadExecutor();
-    this.adapter = new DatabaseClientReactiveAdapter(this.mockSpannerClient, this.config);
-    this.adapter.setTxnManager(this.mockTxnManager);
     this.mockReadContext = mock(ReadContext.class);
     this.mockSink =  mock(FluxSink.class);
     this.mockResultSet = mock(AsyncResultSet.class);
+    this.mockTxnContextFuture = mock(TransactionContextFuture.class);
 
     when(this.mockSpannerClient.getDatabaseClient(any())).thenReturn(this.mockDbClient);
     when(this.mockSpannerClient.getDatabaseAdminClient()).thenReturn(this.mockDbAdminClient);
+    when(this.mockTxnManager.beginTransaction()).thenReturn(this.mockTxnContextFuture);
     when(this.mockTxnManager.commitTransaction()).thenReturn(ApiFutures.immediateFuture(null));
+    when(this.mockTxnManager.rollbackTransaction()).thenReturn(ApiFutures.immediateFuture(null));
     when(this.mockTxnManager.getReadContext()).thenReturn(this.mockReadContext);
+    when(this.mockTxnManager.clearTransactionManager())
+        .thenReturn(ApiFutures.immediateFuture(null));
     when(this.mockReadContext.executeQueryAsync(any())).thenReturn(this.mockResultSet);
+    doAnswer(invocation -> {
+      ((Runnable) invocation.getArgument(0)).run();
+      return null;
+    }).when(this.mockTxnContextFuture).addListener(any(), any());
+    TransactionContext mockTxnContext = mock(TransactionContext.class);
+    when(this.mockTxnContextFuture.isDone()).thenReturn(true);
+
+    when(this.mockDbClient.singleUse()).thenReturn(this.mockReadContext);
 
     // Normally client library ResultSet implementation would invoke R2DBC driver's callback
     // as many times as needed. Here, the mock result set simulates this by running callback once.
@@ -100,6 +118,8 @@ class DatabaseClientReactiveAdapterTest {
       return Futures.immediateFuture(null);
     });
 
+    this.adapter = new DatabaseClientReactiveAdapter(this.mockSpannerClient, this.config);
+    this.adapter.setTxnManager(this.mockTxnManager);
   }
 
   @AfterEach
@@ -232,5 +252,84 @@ class DatabaseClientReactiveAdapterTest {
     verify(this.mockResultSet).cancel();
     verify(this.mockResultSet).close();
 
+  }
+
+  @Test
+  void beginTransactionCallsDelegate() {
+    StepVerifier.create(this.adapter.beginTransaction())
+        .verifyComplete();
+
+    verify(this.mockTxnManager).beginTransaction();
+  }
+
+  @Test
+  void beginReadonlyTransactionCallsDelegate() {
+    StepVerifier.create(this.adapter.beginReadonlyTransaction(TimestampBound.strong()))
+        .verifyComplete();
+
+    verify(this.mockTxnManager).beginReadonlyTransaction(TimestampBound.strong());
+  }
+
+  @Test
+  void rollbackTransactionCallsDelegateAndClearsTransactionManager() {
+    StepVerifier.create(this.adapter.rollback())
+        .verifyComplete();
+
+    verify(this.mockTxnManager).rollbackTransaction();
+    verify(this.mockTxnManager).clearTransactionManager();
+  }
+
+  @Test
+  void closedAdapterUnhealthy() {
+    StepVerifier.create(
+        Flux.concat(this.adapter.close(), this.adapter.localHealthcheck())
+    ).expectNext(false).verifyComplete();
+  }
+
+  @Test
+  void closedAdapterHealthcheckDoesNotNeedToCheckServer() {
+    StepVerifier.create(
+        Flux.concat(this.adapter.close(), this.adapter.healthCheck())
+    ).expectNext(false).verifyComplete();
+
+    verifyNoInteractions(this.mockReadContext);
+  }
+
+  @Test
+  void closedSpannerClientHealthcheckDoesNotNeedToCheckServer() {
+    when(this.mockSpannerClient.isClosed()).thenReturn(true);
+
+    StepVerifier.create(this.adapter.healthCheck())
+        .expectNext(false).verifyComplete();
+
+    verifyNoInteractions(this.mockReadContext);
+  }
+
+  @Test
+  void healthcheckRunsRemoteQuerySuccessfully() {
+    when(this.mockSpannerClient.isClosed()).thenReturn(false);
+    when(this.mockResultSet.tryNext()).thenReturn(CursorState.DONE);
+
+    StepVerifier.create(this.adapter.healthCheck())
+        .expectNext(true).verifyComplete();
+  }
+
+  @Test
+  void healthcheckRunsRemoteQueryWithError() {
+    when(this.mockSpannerClient.isClosed()).thenReturn(false);
+    when(this.mockResultSet.tryNext()).thenThrow(new RuntimeException("nope"));
+
+    StepVerifier.create(this.adapter.healthCheck())
+        .expectNext(false).verifyComplete();
+  }
+
+  @Test
+  void closingAdapterTwiceOnlyCallsDelegateOnce() {
+    StepVerifier.create(
+        Flux.concat(this.adapter.close(), this.adapter.close())
+    ).verifyComplete();
+
+    verify(this.mockTxnManager).clearTransactionManager();
+    verifyNoMoreInteractions(this.mockTxnManager);
   }
 }
