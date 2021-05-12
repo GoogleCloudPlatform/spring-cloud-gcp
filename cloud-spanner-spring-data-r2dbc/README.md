@@ -29,7 +29,7 @@ The easiest way to start using the driver is to add the driver dependency throug
 <dependency>
   <groupId>com.google.cloud</groupId>
   <artifactId>cloud-spanner-r2dbc</artifactId>
-  <version>0.4.0</version>
+  <version>0.5.0</version>
 </dependency>
 ```
 
