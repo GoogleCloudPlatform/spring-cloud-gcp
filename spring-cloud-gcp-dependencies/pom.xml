@@ -232,6 +232,12 @@
 			<!-- spring-cloud-gcp-starter-sql -->
 			<dependency>
 				<groupId>com.google.cloud.sql</groupId>
+				<artifactId>jdbc-socket-factory-core</artifactId>
+				<version>${cloud-sql-socket-factory.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.google.cloud.sql</groupId>
 				<artifactId>mysql-socket-factory</artifactId>
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
