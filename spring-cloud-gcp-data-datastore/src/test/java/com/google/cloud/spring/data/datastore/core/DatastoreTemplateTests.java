@@ -841,6 +841,7 @@ public class DatastoreTemplateTests {
 	}
 
 	@Test
+	@SuppressWarnings("ReturnValueIgnored")
 	public void queryKeysTest() {
 		KeyQuery keyQuery = GqlQuery.newKeyQueryBuilder().build();
 		this.datastoreTemplate.queryKeys(keyQuery).iterator();
