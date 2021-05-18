@@ -106,6 +106,7 @@ public class SpannerMutationFactoryImplTests {
 	}
 
 	@Test
+	@SuppressWarnings("ReturnValueIgnored")
 	public void lazyWriteTest() {
 		TestEntity t = new TestEntity();
 		t.id = "a";
