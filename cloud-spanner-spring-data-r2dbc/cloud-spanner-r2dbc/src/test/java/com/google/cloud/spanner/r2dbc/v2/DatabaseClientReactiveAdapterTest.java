@@ -30,7 +30,6 @@ import static org.mockito.Mockito.when;
 import com.google.api.core.ApiFutures;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.AsyncResultSet;
-import com.google.cloud.spanner.AsyncResultSet.CallbackResponse;
 import com.google.cloud.spanner.AsyncResultSet.CursorState;
 import com.google.cloud.spanner.AsyncTransactionManager.TransactionContextFuture;
 import com.google.cloud.spanner.DatabaseAdminClient;
@@ -38,12 +37,9 @@ import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.ReadContext;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.Statement;
-import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
-import com.google.cloud.spanner.Value;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
-import com.google.cloud.spanner.r2dbc.v2.DatabaseClientReactiveAdapter.ResultSetReadyCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.spanner.v1.ExecuteSqlRequest.QueryOptions;
 import java.util.concurrent.ExecutorService;
@@ -51,9 +47,7 @@ import java.util.concurrent.Executors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -66,8 +60,6 @@ class DatabaseClientReactiveAdapterTest {
   private DatabaseAdminClient mockDbAdminClient;
   private DatabaseClientTransactionManager mockTxnManager;
   private ExecutorService executorService;
-
-  private FluxSink mockSink;
 
   private AsyncResultSet mockResultSet;
   private ReadContext mockReadContext;
@@ -89,7 +81,6 @@ class DatabaseClientReactiveAdapterTest {
     this.mockTxnManager = mock(DatabaseClientTransactionManager.class);
     this.executorService = Executors.newSingleThreadExecutor();
     this.mockReadContext = mock(ReadContext.class);
-    this.mockSink =  mock(FluxSink.class);
     this.mockResultSet = mock(AsyncResultSet.class);
     this.mockTxnContextFuture = mock(TransactionContextFuture.class);
 
@@ -114,7 +105,7 @@ class DatabaseClientReactiveAdapterTest {
     // Normally client library ResultSet implementation would invoke R2DBC driver's callback
     // as many times as needed. Here, the mock result set simulates this by running callback once.
     when(this.mockResultSet.setCallback(any(), any())).thenAnswer(invocation -> {
-      ((ResultSetReadyCallback) invocation.getArgument(1)).cursorReady(this.mockResultSet);
+      ((ReactiveResultSetCallback) invocation.getArgument(1)).cursorReady(this.mockResultSet);
       return Futures.immediateFuture(null);
     });
 
@@ -172,64 +163,6 @@ class DatabaseClientReactiveAdapterTest {
     DatabaseClientReactiveAdapter adapter =
         new DatabaseClientReactiveAdapter(this.mockSpannerClient, config);
     assertEquals("2", adapter.getQueryOptions().getOptimizerVersion());
-  }
-
-  @Test
-  void resultSetReadyCallbackStopsSinkOnCompletion() {
-    when(this.mockResultSet.tryNext()).thenReturn(CursorState.DONE);
-
-    DatabaseClientReactiveAdapter.ResultSetReadyCallback cb =
-        new ResultSetReadyCallback(this.mockSink);
-    CallbackResponse response = cb.cursorReady(this.mockResultSet);
-
-    assertThat(response).isSameAs(CallbackResponse.DONE);
-    verify(this.mockSink).complete();
-    verifyNoMoreInteractions(this.mockSink);
-  }
-
-  @Test
-  void resultSetReadyCallbackEmitsOnOk() {
-    when(this.mockResultSet.tryNext()).thenReturn(CursorState.OK);
-    Struct struct = Struct.newBuilder().add(Value.string("some result")).build();
-    when(this.mockResultSet.getCurrentRowAsStruct()).thenReturn(struct);
-
-    DatabaseClientReactiveAdapter.ResultSetReadyCallback cb =
-        new ResultSetReadyCallback(this.mockSink);
-    CallbackResponse response = cb.cursorReady(this.mockResultSet);
-
-    assertThat(response).isSameAs(CallbackResponse.CONTINUE);
-    ArgumentCaptor<SpannerClientLibraryRow> arg =
-        ArgumentCaptor.forClass(SpannerClientLibraryRow.class);
-    verify(this.mockSink).next(arg.capture());
-    assertThat(arg.getValue().get(1)).isEqualTo("some result");
-
-    verifyNoMoreInteractions(this.mockSink);
-  }
-
-  @Test
-  void resultSetReadyCallbackWaitsOnNotReady() {
-    when(this.mockResultSet.tryNext()).thenReturn(CursorState.NOT_READY);
-
-    DatabaseClientReactiveAdapter.ResultSetReadyCallback cb =
-        new ResultSetReadyCallback(this.mockSink);
-    CallbackResponse response = cb.cursorReady(this.mockResultSet);
-
-    assertThat(response).isSameAs(CallbackResponse.CONTINUE);
-    verifyNoMoreInteractions(this.mockSink);
-  }
-
-  @Test
-  void resultSetReadyCallbackSendsErrorOnException() {
-    Exception exception = new RuntimeException("boom");
-    when(this.mockResultSet.tryNext()).thenThrow(exception);
-
-    DatabaseClientReactiveAdapter.ResultSetReadyCallback cb =
-        new ResultSetReadyCallback(this.mockSink);
-    CallbackResponse response = cb.cursorReady(this.mockResultSet);
-
-    assertThat(response).isSameAs(CallbackResponse.DONE);
-    verify(this.mockSink).error(exception);
-    verifyNoMoreInteractions(this.mockSink);
   }
 
   @Test

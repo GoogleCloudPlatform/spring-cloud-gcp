@@ -86,7 +86,63 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.reactivestreams</groupId>
+      <artifactId>reactive-streams-tck</artifactId>
+      <version>1.0.3</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- TestNG is used for Reactive Streams TCK verification tests -->
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>${testng.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${surefire-failsafe.version}</version>
+
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit-platform</artifactId>
+            <version>${surefire-failsafe.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-testng</artifactId>
+            <version>${surefire-failsafe.version}</version>
+          </dependency>
+        </dependencies>
+
+        <configuration>
+          <includes>
+            <include>**/*TestKit.java</include>
+            <include>**/*Verification.java</include>
+            <include>**/*IntegrationTest*</include>
+          </includes>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>junit5-and-testng-integration-tests</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+
+      </plugin>
+    </plugins>
+  </build>
 </project>
 

@@ -95,6 +95,8 @@
 
     <assertj.version>3.19.0</assertj.version>
     <junit.version>5.7.1</junit.version>
+    <surefire-failsafe.version>3.0.0-M5</surefire-failsafe.version>
+    <testng.version>7.4.0</testng.version>
   </properties>
 
   <dependencyManagement>
@@ -281,7 +283,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M5</version>
+        <version>${surefire-failsafe.version}</version>
         <configuration>
           <skip>${skip.surefire.tests}</skip>
           <excludes>
@@ -289,25 +291,30 @@
           </excludes>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M5</version>
+        <version>${surefire-failsafe.version}</version>
+
         <configuration>
           <includes>
-            <include>**/*TestKit.java</include>
             <include>**/*IntegrationTest*</include>
           </includes>
         </configuration>
+
         <executions>
           <execution>
+            <id>integration-tests</id>
             <goals>
               <goal>integration-test</goal>
               <goal>verify</goal>
             </goals>
           </execution>
         </executions>
+
       </plugin>
+
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>

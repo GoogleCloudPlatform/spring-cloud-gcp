@@ -20,8 +20,6 @@ import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutureCallback;
 import com.google.api.core.ApiFutures;
 import com.google.cloud.spanner.AsyncResultSet;
-import com.google.cloud.spanner.AsyncResultSet.CallbackResponse;
-import com.google.cloud.spanner.AsyncResultSet.ReadyCallback;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -283,39 +281,7 @@ class DatabaseClientReactiveAdapter {
   private ApiFuture<Void> runSelectStatementAsFlux(
       ReadContext readContext, Statement statement, FluxSink<SpannerClientLibraryRow> sink) {
     AsyncResultSet ars = readContext.executeQueryAsync(statement);
-    sink.onCancel(ars::cancel);
-    sink.onDispose(ars::close);
-
-    return ars.setCallback(REACTOR_EXECUTOR, new ResultSetReadyCallback(sink));
-  }
-
-  static class ResultSetReadyCallback implements ReadyCallback {
-    private FluxSink<SpannerClientLibraryRow> sink;
-
-    ResultSetReadyCallback(FluxSink<SpannerClientLibraryRow> sink) {
-      this.sink = sink;
-    }
-
-    @Override
-    public CallbackResponse cursorReady(AsyncResultSet resultSet) {
-      // TODO: handle backpressure by asking callback to signal CallbackResponse.PAUSE
-      try {
-        switch (resultSet.tryNext()) {
-          case DONE:
-            this.sink.complete();
-            return CallbackResponse.DONE;
-          case OK:
-            this.sink.next(new SpannerClientLibraryRow(resultSet.getCurrentRowAsStruct()));
-            return CallbackResponse.CONTINUE;
-          default:
-            // ResultSet returning NOT_READY or null.
-            return CallbackResponse.CONTINUE;
-        }
-      } catch (Throwable t) {
-        this.sink.error(t);
-        return CallbackResponse.DONE;
-      }
-    }
+    return ars.setCallback(REACTOR_EXECUTOR, new ReactiveResultSetCallback(sink, ars));
   }
 
   private <T> Mono<T> convertFutureToMono(Supplier<ApiFuture<T>> futureSupplier) {
