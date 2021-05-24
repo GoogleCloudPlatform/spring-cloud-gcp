@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SpannerStructReadMethodCoverageTests {
 
 	private static final Set<String> DISREGARDED_METHOD_NAMES = Collections.unmodifiableSet(new HashSet<String>(
-		Arrays.asList("getColumnIndex", "getStructList", "getColumnType")
+		Arrays.asList("getColumnIndex", "getStructList", "getColumnType", "getValue")
 	));
 
 	// Checks that the converter is aware of all Spanner struct getter types
