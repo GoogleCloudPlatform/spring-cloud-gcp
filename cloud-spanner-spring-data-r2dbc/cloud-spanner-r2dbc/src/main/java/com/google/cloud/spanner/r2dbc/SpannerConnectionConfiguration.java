@@ -71,6 +71,10 @@ public class SpannerConnectionConfiguration {
 
   private String optimizerVersion;
 
+  private boolean readonly;
+
+  private boolean autocommit;
+
   /**
    * Basic property initializing constructor.
    *
@@ -145,6 +149,14 @@ public class SpannerConnectionConfiguration {
 
   public String getOptimizerVersion() {
     return this.optimizerVersion;
+  }
+
+  public boolean isReadonly() {
+    return this.readonly;
+  }
+
+  public boolean isAutocommit() {
+    return this.autocommit;
   }
 
   @Override
@@ -226,6 +238,10 @@ public class SpannerConnectionConfiguration {
     private boolean usePlainText = false;
 
     private String optimizerVersion;
+
+    private boolean readonly = false;
+
+    private boolean autocommit = true;
 
     /**
      * R2DBC SPI does not provide the full URL to drivers after parsing the connection string.
@@ -317,6 +333,16 @@ public class SpannerConnectionConfiguration {
       return this;
     }
 
+    public Builder setReadonly(boolean readonly) {
+      this.readonly = readonly;
+      return this;
+    }
+
+    public Builder setAutocommit(boolean autocommit) {
+      this.autocommit = autocommit;
+      return this;
+    }
+
     /**
      * Constructs an instance of the {@link SpannerConnectionConfiguration}.
      *
@@ -357,6 +383,8 @@ public class SpannerConnectionConfiguration {
               : Runtime.getRuntime().availableProcessors();
       configuration.usePlainText = this.usePlainText;
       configuration.optimizerVersion = this.optimizerVersion;
+      configuration.readonly = this.readonly;
+      configuration.autocommit = this.autocommit;
 
       return configuration;
     }

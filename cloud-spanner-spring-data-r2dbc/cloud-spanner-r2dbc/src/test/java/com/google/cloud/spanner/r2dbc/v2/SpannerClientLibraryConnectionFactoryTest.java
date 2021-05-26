@@ -73,6 +73,83 @@ class SpannerClientLibraryConnectionFactoryTest {
   }
 
   @Test
+  void createConnectionDefaultsToAutocommitOn() {
+    SpannerClientLibraryConnectionFactory cf = new SpannerClientLibraryConnectionFactory(
+        this.configBuilder.build()
+    );
+    StepVerifier.create(Mono.from(cf.create()).map(conn -> conn.isAutoCommit()))
+        .expectNext(true)
+        .verifyComplete();
+  }
+
+  @Test
+  void createConnectionWithAutocommitExplicitlyOn() {
+    SpannerClientLibraryConnectionFactory cf = new SpannerClientLibraryConnectionFactory(
+        this.configBuilder
+            .setAutocommit(true)
+            .build()
+    );
+    StepVerifier.create(Mono.from(cf.create()).map(conn -> conn.isAutoCommit()))
+        .expectNext(true)
+        .verifyComplete();
+  }
+
+  @Test
+  void createConnectionWithAutocommitExplicitlyOff() {
+    SpannerClientLibraryConnectionFactory cf = new SpannerClientLibraryConnectionFactory(
+        this.configBuilder
+            .setAutocommit(false)
+            .build()
+    );
+    StepVerifier.create(Mono.from(cf.create()).map(conn -> conn.isAutoCommit()))
+        .expectNext(false)
+        .verifyComplete();
+  }
+
+  @Test
+  void createConnectionDefaultsToReadonlyOff() {
+    SpannerClientLibraryConnectionFactory cf = new SpannerClientLibraryConnectionFactory(
+        this.configBuilder.build()
+    );
+    StepVerifier.create(
+        Mono.from(cf.create())
+            .map(conn -> ((SpannerClientLibraryConnection) conn).isInReadonlyTransaction())
+    )
+        .expectNext(false)
+        .verifyComplete();
+  }
+
+  @Test
+  void createConnectionWithReadonlyExplicitlyOn() {
+    SpannerClientLibraryConnectionFactory cf = new SpannerClientLibraryConnectionFactory(
+        this.configBuilder
+            .setReadonly(true)
+            .build()
+    );
+    StepVerifier.create(
+        Mono.from(cf.create())
+          .map(conn -> ((SpannerClientLibraryConnection) conn).isInReadonlyTransaction())
+    )
+        .expectNext(true)
+        .verifyComplete();
+  }
+
+  @Test
+  void createConnectionWithReadonlyExplicitlyOff() {
+    SpannerClientLibraryConnectionFactory cf = new SpannerClientLibraryConnectionFactory(
+        this.configBuilder
+            .setReadonly(false)
+            .build()
+    );
+    StepVerifier.create(
+        Mono.from(cf.create())
+            .map(conn -> ((SpannerClientLibraryConnection) conn).isInReadonlyTransaction())
+    )
+        .expectNext(false)
+        .verifyComplete();
+  }
+
+  @Test
   void connectionFactoryClosingResultsInSpannerClientClosure() {
     SpannerConnectionConfiguration mockConfig = mock(SpannerConnectionConfiguration.class);
     SpannerOptions mockSpannerOptions = mock(SpannerOptions.class);

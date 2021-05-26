@@ -42,4 +42,6 @@ public interface SpannerConnection {
    * @return {@link Mono} signaling readonly transaction is ready for use
    */
   Mono<Void> beginReadonlyTransaction();
+
+  boolean isInReadonlyTransaction();
 }

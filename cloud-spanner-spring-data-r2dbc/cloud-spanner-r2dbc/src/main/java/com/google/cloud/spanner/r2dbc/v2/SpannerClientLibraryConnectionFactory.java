@@ -46,11 +46,21 @@ public class SpannerClientLibraryConnectionFactory implements ConnectionFactory,
 
   @Override
   public Publisher<? extends Connection> create() {
-
-    return Mono.just(
+    Mono<SpannerClientLibraryConnection> connection = Mono.just(
         new SpannerClientLibraryConnection(
-          new DatabaseClientReactiveAdapter(this.spannerClient, this.config),
-          this.config));
+            new DatabaseClientReactiveAdapter(this.spannerClient, this.config))
+    );
+
+    if (this.config.isReadonly()) {
+      connection = connection.delayUntil(conn -> conn.beginReadonlyTransaction());
+    }
+
+    // Autocommit is on by default; turn off if needed.
+    if (!this.config.isAutocommit()) {
+      connection = connection.delayUntil(conn -> conn.setAutoCommit(false));
+    }
+
+    return connection;
   }
 
   @Override

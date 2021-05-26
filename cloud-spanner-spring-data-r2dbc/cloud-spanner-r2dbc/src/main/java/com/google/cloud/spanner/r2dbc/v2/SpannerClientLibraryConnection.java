@@ -17,7 +17,6 @@
 package com.google.cloud.spanner.r2dbc.v2;
 
 import com.google.cloud.spanner.TimestampBound;
-import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
 import com.google.cloud.spanner.r2dbc.api.SpannerConnection;
 import com.google.cloud.spanner.r2dbc.statement.StatementParser;
 import com.google.cloud.spanner.r2dbc.statement.StatementType;
@@ -38,10 +37,8 @@ class SpannerClientLibraryConnection implements Connection, SpannerConnection {
    * Cloud Spanner implementation of R2DBC Connection SPI.
    *
    * @param clientLibraryAdapter adapter to Cloud Spanner database client
-   * @param config driver configuration extracted from URL or passed directly to connection factory.
    */
-  public SpannerClientLibraryConnection(DatabaseClientReactiveAdapter clientLibraryAdapter,
-      SpannerConnectionConfiguration config) {
+  public SpannerClientLibraryConnection(DatabaseClientReactiveAdapter clientLibraryAdapter) {
     this.clientLibraryAdapter = clientLibraryAdapter;
   }
 
@@ -141,5 +138,9 @@ class SpannerClientLibraryConnection implements Connection, SpannerConnection {
   @Override
   public Publisher<Void> close() {
     return this.clientLibraryAdapter.close();
+  }
+
+  public boolean isInReadonlyTransaction() {
+    return this.clientLibraryAdapter.isInReadonlyTransaction();
   }
 }

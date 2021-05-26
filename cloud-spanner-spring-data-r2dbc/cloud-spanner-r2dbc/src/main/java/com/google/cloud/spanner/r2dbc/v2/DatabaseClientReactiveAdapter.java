@@ -310,6 +310,10 @@ class DatabaseClientReactiveAdapter {
     return this.queryOptions;
   }
 
+  boolean isInReadonlyTransaction() {
+    return this.txnManager.isInReadonlyTransaction();
+  }
+
   @VisibleForTesting
   void setTxnManager(DatabaseClientTransactionManager txnManager) {
     this.txnManager = txnManager;

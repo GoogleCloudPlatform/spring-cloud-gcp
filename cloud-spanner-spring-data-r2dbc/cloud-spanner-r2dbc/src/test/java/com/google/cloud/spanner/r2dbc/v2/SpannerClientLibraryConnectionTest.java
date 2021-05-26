@@ -22,7 +22,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.spanner.TimestampBound;
-import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -30,7 +29,6 @@ import reactor.test.StepVerifier;
 
 class SpannerClientLibraryConnectionTest {
 
-  SpannerConnectionConfiguration mockConfig;
   DatabaseClientReactiveAdapter mockAdapter;
 
   SpannerClientLibraryConnection connection;
@@ -38,9 +36,8 @@ class SpannerClientLibraryConnectionTest {
   /** Sets up mocks. */
   @BeforeEach
   public void setUpMocks() {
-    this.mockConfig = mock(SpannerConnectionConfiguration.class);
     this.mockAdapter = mock(DatabaseClientReactiveAdapter.class);
-    this.connection = new SpannerClientLibraryConnection(this.mockAdapter, this.mockConfig);
+    this.connection = new SpannerClientLibraryConnection(this.mockAdapter);
   }
 
   @Test

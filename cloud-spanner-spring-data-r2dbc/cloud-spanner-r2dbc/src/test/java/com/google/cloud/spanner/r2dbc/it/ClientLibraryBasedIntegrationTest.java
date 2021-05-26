@@ -695,6 +695,38 @@ class ClientLibraryBasedIntegrationTest {
 
   }
 
+  @Test
+  void urlConnectionWithExplicitAutocommitOff() {
+    String baseUrl = String.format(
+        "r2dbc:spanner://spanner.googleapis.com:443/projects/%s/instances/%s/databases/%s",
+        ServiceOptions.getDefaultProjectId(),
+        DatabaseProperties.INSTANCE,
+        DatabaseProperties.DATABASE);
+
+    ConnectionFactory cf = ConnectionFactories.get(baseUrl
+        + "?client-implementation=client-library&autocommit=false");
+    StepVerifier.create(
+        Mono.from(cf.create()).map(conn -> conn.isAutoCommit())
+    ).expectNext(false)
+        .verifyComplete();
+  }
+
+  @Test
+  void urlConnectionWithExplicitReadonlyOn() {
+    String baseUrl = String.format(
+        "r2dbc:spanner://spanner.googleapis.com:443/projects/%s/instances/%s/databases/%s",
+        ServiceOptions.getDefaultProjectId(),
+        DatabaseProperties.INSTANCE,
+        DatabaseProperties.DATABASE);
+
+    ConnectionFactory cf = ConnectionFactories.get(baseUrl
+        + "?client-implementation=client-library&readonly=true");
+    StepVerifier.create(
+        Mono.from(cf.create()).map(conn -> ((SpannerConnection) conn).isInReadonlyTransaction())
+    ).expectNext(true)
+        .verifyComplete();
+  }
+
   private Publisher<Long> getFirstNumber(Result result) {
     return result.map((row, meta) -> (Long) row.get(1));
   }

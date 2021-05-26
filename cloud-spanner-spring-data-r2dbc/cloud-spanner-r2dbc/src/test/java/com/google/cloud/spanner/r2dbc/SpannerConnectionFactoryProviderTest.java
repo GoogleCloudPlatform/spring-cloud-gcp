@@ -16,6 +16,7 @@
 
 package com.google.cloud.spanner.r2dbc;
 
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.AUTOCOMMIT;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.CREDENTIALS;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.DRIVER_NAME;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.GOOGLE_CREDENTIALS;
@@ -23,6 +24,7 @@ import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.IN
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.OPTIMIZER_VERSION;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PARTIAL_RESULT_SET_FETCH_SIZE;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PROJECT;
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.READONLY;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.URL;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
@@ -72,6 +74,8 @@ class SpannerConnectionFactoryProviderTest {
           .option(GOOGLE_CREDENTIALS, mock(GoogleCredentials.class))
           .build();
 
+  ConnectionFactoryOptions.Builder optionsBuilder;
+
   SpannerConnectionFactoryProvider spannerConnectionFactoryProvider;
 
   Client mockClient;
@@ -94,6 +98,10 @@ class SpannerConnectionFactoryProviderTest {
 
     this.mockCredentials = mock(GoogleCredentials.class);
 
+    this.optionsBuilder = ConnectionFactoryOptions.builder()
+        .option(DRIVER, "spanner")
+        .option(DATABASE, "projects/p/instances/i/databases/d")
+        .option(GOOGLE_CREDENTIALS, this.mockCredentials);
   }
 
   @Test
@@ -201,13 +209,7 @@ class SpannerConnectionFactoryProviderTest {
     SpannerConnectionFactoryProvider customSpannerConnectionFactoryProvider
         = new SpannerConnectionFactoryProvider();
 
-    ConnectionFactoryOptions options =
-        ConnectionFactoryOptions.builder()
-            .option(DRIVER, DRIVER_NAME)
-            .option(PROJECT, "project-id")
-            .option(INSTANCE, "an-instance")
-            .option(DATABASE, "db")
-            .option(GOOGLE_CREDENTIALS, mock(GoogleCredentials.class))
+    ConnectionFactoryOptions options = this.optionsBuilder
             .option(Option.valueOf("client-implementation"), "client-library")
             .build();
 
@@ -304,10 +306,7 @@ class SpannerConnectionFactoryProviderTest {
 
   @Test
   void passOptimizerVersion() {
-    ConnectionFactoryOptions options = ConnectionFactoryOptions.builder()
-        .option(DATABASE, "projects/p/instances/i/databases/d")
-        .option(DRIVER, "spanner")
-        .option(GOOGLE_CREDENTIALS, this.mockCredentials)
+    ConnectionFactoryOptions options = this.optionsBuilder
         .option(OPTIMIZER_VERSION, "2")
         .build();
 
@@ -316,6 +315,47 @@ class SpannerConnectionFactoryProviderTest {
 
     assertEquals("2", config.getOptimizerVersion());
   }
+
+  @Test
+  void readonlyFalseByDefault() {
+    SpannerConnectionConfiguration config =
+        this.spannerConnectionFactoryProvider.createConfiguration(this.optionsBuilder.build());
+
+    assertEquals(false, config.isReadonly());
+  }
+
+  @Test
+  void passReadonlyTrueOption() {
+    ConnectionFactoryOptions options = this.optionsBuilder
+        .option(READONLY, true)
+        .build();
+
+    SpannerConnectionConfiguration config =
+        this.spannerConnectionFactoryProvider.createConfiguration(options);
+
+    assertEquals(true, config.isReadonly());
+  }
+
+  @Test
+  void autocommitTrueByDefault() {
+    SpannerConnectionConfiguration config =
+        this.spannerConnectionFactoryProvider.createConfiguration(this.optionsBuilder.build());
+
+    assertEquals(true, config.isAutocommit());
+  }
+
+  @Test
+  void passAutocommitFalseOption() {
+    ConnectionFactoryOptions options = this.optionsBuilder
+        .option(AUTOCOMMIT, false)
+        .build();
+
+    SpannerConnectionConfiguration config =
+        this.spannerConnectionFactoryProvider.createConfiguration(options);
+
+    assertEquals(false, config.isAutocommit());
+  }
+
 
   private PartialResultSet makeBook(String odyssey) {
     return PartialResultSet.newBuilder()

@@ -16,6 +16,8 @@
 
 package com.google.cloud.spanner.r2dbc;
 
+import static com.google.cloud.spanner.connection.ConnectionOptions.AUTOCOMMIT_PROPERTY_NAME;
+import static com.google.cloud.spanner.connection.ConnectionOptions.READONLY_PROPERTY_NAME;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration.FQDN_PATTERN_PARSE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
@@ -79,6 +81,11 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
    */
   public static final Option<GoogleCredentials> GOOGLE_CREDENTIALS =
       Option.valueOf("google_credentials");
+
+  public static final Option<Boolean> AUTOCOMMIT = Option.valueOf(AUTOCOMMIT_PROPERTY_NAME);
+
+  public static final Option<Boolean> READONLY = Option.valueOf(READONLY_PROPERTY_NAME);
+
 
   /**
    * Option specifying the location of the GCP credentials file. Same as GOOGLE_CREDENTIALS,
@@ -186,7 +193,25 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
       config.setOptimizerVersion(options.getValue(OPTIMIZER_VERSION));
     }
 
+    if (options.hasOption(AUTOCOMMIT)) {
+      config.setAutocommit(getBooleanFlag(options.getValue(AUTOCOMMIT)));
+    }
+
+    if (options.hasOption(READONLY)) {
+      config.setReadonly(getBooleanFlag(options.getValue(READONLY)));
+    }
+
     return config.build();
+  }
+
+  private boolean getBooleanFlag(Object value) {
+    Assert.requireNonNull(value, "Non-null option value expected");
+    if (value instanceof Boolean) {
+      return ((Boolean) value).booleanValue();
+    } else if (value instanceof String) {
+      return Boolean.valueOf((String) value);
+    }
+    throw new IllegalStateException("Flag type expected to be Boolean or String for " + value);
   }
 
   /**
