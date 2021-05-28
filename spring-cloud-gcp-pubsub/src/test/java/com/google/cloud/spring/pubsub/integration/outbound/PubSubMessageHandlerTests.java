@@ -256,6 +256,8 @@ public class PubSubMessageHandlerTests {
 		AtomicReference<String> successfulId = new AtomicReference<>();
 		AtomicReference<String> failedId = new AtomicReference<>();
 		CountDownLatch latch = new CountDownLatch(1);
+
+
 		this.adapter.setEnhancedCallback(new PubSubMessageHandler.PublishCallback() {
 
 			@Override

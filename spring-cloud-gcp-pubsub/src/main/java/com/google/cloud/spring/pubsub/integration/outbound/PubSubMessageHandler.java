@@ -34,11 +34,13 @@ import org.springframework.integration.MessageTimeoutException;
 import org.springframework.integration.expression.ExpressionUtils;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.integration.handler.AbstractMessageHandler;
+import org.springframework.integration.handler.AbstractReplyProducingMessageHandler;
 import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandlingException;
 import org.springframework.util.Assert;
 import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureAdapter;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 /**
@@ -51,7 +53,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
  * @author Mike Eltsufin
  * @author Artem Bilan
  */
-public class PubSubMessageHandler extends AbstractMessageHandler {
+public class PubSubMessageHandler extends AbstractReplyProducingMessageHandler {
 
 	private static final long DEFAULT_PUBLISH_TIMEOUT = 10000;
 
@@ -76,6 +78,7 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 		Assert.hasText(topic, "Pub/Sub topic can't be null or empty.");
 		this.pubSubPublisherOperations = pubSubPublisherOperations;
 		this.topicExpression = new LiteralExpression(topic);
+		this.setAsync(true);
 	}
 
 	public boolean isSync() {
@@ -90,6 +93,9 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 	 */
 	public void setSync(boolean sync) {
 		this.sync = sync;
+		// well, this is awkward now, since AbstractMessageProducingHandler has the opposite flag.
+		// we'd have to deprecate the old one to avoid confusion.
+		this.setAsync(!sync);
 	}
 
 	public Expression getPublishTimeoutExpression() {
@@ -182,7 +188,7 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 	}
 
 	@Override
-	protected void handleMessageInternal(Message<?> message) {
+	protected ListenableFuture<MessageWithId> handleRequestMessage(Message<?> message) {
 		Object payload = message.getPayload();
 		String topic =
 				message.getHeaders().containsKey(GcpPubSubHeaders.TOPIC)
@@ -201,6 +207,7 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 		}
 
 		if (this.enhancedCallback != null) {
+			// todo: use converter
 			pubsubFuture.addCallback(new ListenableFutureCallback<String>() {
 				@Override
 				public void onFailure(Throwable throwable) {
@@ -214,7 +221,15 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 			});
 		}
 
-		if (this.sync) {
+		if (!this.sync) {
+			return new ListenableFutureAdapter<MessageWithId, String>(pubsubFuture) {
+				@Override
+				protected MessageWithId adapt(String publishedId) throws ExecutionException {
+					return new MessageWithId(message, publishedId);
+				}
+			};
+		} else {
+			// blocking option, which should be factored out of here
 			Long timeout = this.publishTimeoutExpression.getValue(this.evaluationContext, message, Long.class);
 			try {
 				if (timeout == null || timeout < 0) {
@@ -234,12 +249,13 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 			catch (TimeoutException te) {
 				throw new MessageTimeoutException(message, "Timeout waiting for response from Pub/Sub publisher", te);
 			}
+			// response is optional by default
+			return null;
 		}
 	}
 
 	@Override
-	protected void onInit() {
-		super.onInit();
+	protected void doInit() {
 		this.evaluationContext = ExpressionUtils.createStandardEvaluationContext(getBeanFactory());
 	}
 
@@ -249,5 +265,24 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 
 		void onFailure(Throwable cause, Object payload, Map<String, String> headers);
 
+	}
+
+	// yes, this is a terrible name
+	public static class MessageWithId {
+		private Message message;
+		private String publishedId;
+
+		private MessageWithId(Message message, String publishedId) {
+			this.message = message;
+			this.publishedId = publishedId;
+		}
+
+		public Message getMessage() {
+			return this.message;
+		}
+
+		public String getPublishedId() {
+			return publishedId;
+		}
 	}
 }
