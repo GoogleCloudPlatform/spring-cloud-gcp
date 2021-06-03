@@ -16,9 +16,16 @@
 
 package com.google.cloud.spring.pubsub.integration.outbound;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherOperations;
 import com.google.cloud.spring.pubsub.integration.PubSubHeaderMapper;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
+
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
@@ -32,12 +39,6 @@ import org.springframework.messaging.MessageHandlingException;
 import org.springframework.util.Assert;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Outbound channel adapter to publish messages to Google Cloud Pub/Sub.
@@ -239,12 +240,12 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 		this.evaluationContext = ExpressionUtils.createStandardEvaluationContext(getBeanFactory());
 	}
 
-	public static interface SuccessCallback {
+	public interface SuccessCallback {
 
 		void onSuccess(String ackId, Message<?> message);
 	}
 
-	public static interface FailureCallback {
+	public interface FailureCallback {
 
 		void onFailure(Throwable cause, Message<?> message);
 	}
