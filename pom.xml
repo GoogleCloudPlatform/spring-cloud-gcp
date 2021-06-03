@@ -37,7 +37,7 @@
 	<properties>
 		<app-engine-maven-plugin.version>2.4.0</app-engine-maven-plugin.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.6.0</errorprone.version>
+		<errorprone.version>2.7.1</errorprone.version>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
 		<java-cfenv.version>2.3.0</java-cfenv.version>
 		<javadoc.failOnError>false</javadoc.failOnError>
@@ -50,9 +50,9 @@
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 		<maven-failsafe-plugin.version>2.22.1</maven-failsafe-plugin.version>
 		<maven-flatten-plugin.version>1.2.7</maven-flatten-plugin.version>
-		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>3.3.0</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -62,8 +62,8 @@
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
 		<skip.surefire.tests>${skipTests}</skip.surefire.tests>
 		<skipTests>false</skipTests>
-		<spring-cloud-build.version>3.0.2</spring-cloud-build.version>
-		<spring-cloud-dependencies.version>2020.0.2</spring-cloud-dependencies.version>
+		<spring-cloud-build.version>3.0.3</spring-cloud-build.version>
+		<spring-cloud-dependencies.version>2020.0.3</spring-cloud-dependencies.version>
 		<spring-javaformat-checkstyle.version>0.0.28</spring-javaformat-checkstyle.version>
 		<zipkin-gcp.version>1.0.2</zipkin-gcp.version>
 	</properties>
@@ -142,7 +142,7 @@
 		<dependency>
 			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
-			<version>4.0.3</version>
+			<version>4.1.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -429,7 +429,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.6</version>
+						<version>0.8.7</version>
 						<executions>
 							<execution>
 								<goals>

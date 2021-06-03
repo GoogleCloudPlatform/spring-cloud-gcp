@@ -16,8 +16,12 @@
 
 package com.google.cloud.spring.autoconfigure.spanner;
 
+import java.io.IOException;
+
+import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.SpannerOptions;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -36,7 +40,7 @@ import org.springframework.util.Assert;
  * @since 1.2.3
  */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureBefore(GcpSpannerAutoConfiguration.class)
+@AutoConfigureBefore({ GcpSpannerAutoConfiguration.class, GcpContextAutoConfiguration.class })
 @EnableConfigurationProperties(GcpSpannerProperties.class)
 @ConditionalOnProperty(prefix = "spring.cloud.gcp.spanner.emulator", name = "enabled", havingValue = "true")
 public class GcpSpannerEmulatorAutoConfiguration {
@@ -44,6 +48,8 @@ public class GcpSpannerEmulatorAutoConfiguration {
 	private final GcpSpannerProperties properties;
 
 	private final String projectId;
+
+	private final CredentialsProvider credentialsProvider;
 
 	public GcpSpannerEmulatorAutoConfiguration(GcpSpannerProperties properties,
 			GcpProjectIdProvider projectIdProvider) {
@@ -53,15 +59,23 @@ public class GcpSpannerEmulatorAutoConfiguration {
 				: projectIdProvider.getProjectId();
 
 		this.properties = properties;
+
+		this.credentialsProvider = NoCredentials::getInstance;
 	}
 
 	@Bean
 	@ConditionalOnMissingBean
-	public SpannerOptions spannerOptions() {
+	public CredentialsProvider credentialsProvider() {
+		return this.credentialsProvider;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public SpannerOptions spannerOptions() throws IOException {
 		Assert.notNull(this.properties.getEmulatorHost(), "`spring.cloud.gcp.spanner.emulator-host` must be set.");
 		return SpannerOptions.newBuilder()
 				.setProjectId(this.projectId)
-				.setCredentials(NoCredentials.getInstance())
+				.setCredentials(this.credentialsProvider.getCredentials())
 				.setEmulatorHost(this.properties.getEmulatorHost()).build();
 	}
 }
