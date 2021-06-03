@@ -141,10 +141,20 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 		this.publishCallback = publishCallback;
 	}
 
+	/**
+	 * Set callback (can be a lambda) for processing the published message ID and the original {@code Message} after the
+	 * message was successfully published.
+	 * @param cb callback accepting a {@code String} message ID and the original {@code Message}.
+	 */
 	public void setSuccessCallback(SuccessCallback cb) {
 		this.successCallback = cb;
 	}
 
+	/**
+	 * Set callback (can be a lambda) for processing the root cause exception and the original {@code Message} in case
+	 * of failure.
+	 * @param cb callback accepting a {@code Throwable} and a {@code Message}.
+	 */
 	public void setFailureCallback(FailureCallback cb) {
 		this.failureCallback = cb;
 	}
