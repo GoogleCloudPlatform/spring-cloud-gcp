@@ -262,8 +262,10 @@ The provided `PubSubTemplate` contains all the necessary configuration to publis
 A publish timeout can be configured for synchronous publishing.
 If none is provided, the adapter waits indefinitely for a response.
 
-It is possible to set user-defined callbacks for the `publish()` call in `PubSubMessageHandler` through the `setPublishFutureCallback()` method.
-These are useful to process the message ID, in case of success, or the error if any was thrown.
+It is possible to set user-defined callbacks for the `publish()` call in `PubSubMessageHandler` through the `setSuccessCallback()` and `setFailureCallback()` methods (either one or both may be set).
+These give access to the Pub/Sub publish message ID in case of success, or the root cause exception in case of error.
+Both callbacks include the original message as the second argument.
+The old `setPublishFutureCallback()` methods that only gave access to message ID or root cause exception is deprecated and will be removed in a future release.
 
 [source,java,indent=0]
 ----
