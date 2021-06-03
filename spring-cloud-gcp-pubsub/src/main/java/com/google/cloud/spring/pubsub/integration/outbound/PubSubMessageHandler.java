@@ -265,11 +265,19 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 		this.evaluationContext = ExpressionUtils.createStandardEvaluationContext(getBeanFactory());
 	}
 
+	/**
+	 * Implement this callback to post-process a successfully published message.
+	 */
+	@FunctionalInterface
 	public interface SuccessCallback {
 
 		void onSuccess(String ackId, Message<?> message);
 	}
 
+	/**
+	 * Implement this callback to post-process a message that failed to publish to Cloud Pub/Sub.
+	 */
+	@FunctionalInterface
 	public interface FailureCallback {
 
 		void onFailure(Throwable cause, Message<?> message);
