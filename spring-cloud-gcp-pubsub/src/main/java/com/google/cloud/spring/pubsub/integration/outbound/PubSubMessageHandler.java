@@ -16,17 +16,9 @@
 
 package com.google.cloud.spring.pubsub.integration.outbound;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherOperations;
-import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
 import com.google.cloud.spring.pubsub.integration.PubSubHeaderMapper;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
-
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
@@ -34,14 +26,18 @@ import org.springframework.integration.MessageTimeoutException;
 import org.springframework.integration.expression.ExpressionUtils;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.integration.handler.AbstractMessageHandler;
-import org.springframework.integration.handler.AbstractReplyProducingMessageHandler;
 import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandlingException;
 import org.springframework.util.Assert;
 import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureAdapter;
 import org.springframework.util.concurrent.ListenableFutureCallback;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Outbound channel adapter to publish messages to Google Cloud Pub/Sub.
@@ -53,7 +49,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
  * @author Mike Eltsufin
  * @author Artem Bilan
  */
-public class PubSubMessageHandler extends AbstractReplyProducingMessageHandler {
+public class PubSubMessageHandler extends AbstractMessageHandler {
 
 	private static final long DEFAULT_PUBLISH_TIMEOUT = 10000;
 
@@ -69,7 +65,9 @@ public class PubSubMessageHandler extends AbstractReplyProducingMessageHandler {
 
 	private ListenableFutureCallback<String> publishCallback;
 
-	private PublishCallback enhancedCallback;
+	private SuccessCallback successCallback;
+
+	private FailureCallback failureCallback;
 
 	private HeaderMapper<Map<String, String>> headerMapper = new PubSubHeaderMapper();
 
@@ -78,7 +76,6 @@ public class PubSubMessageHandler extends AbstractReplyProducingMessageHandler {
 		Assert.hasText(topic, "Pub/Sub topic can't be null or empty.");
 		this.pubSubPublisherOperations = pubSubPublisherOperations;
 		this.topicExpression = new LiteralExpression(topic);
-		this.setAsync(true);
 	}
 
 	public boolean isSync() {
@@ -93,9 +90,6 @@ public class PubSubMessageHandler extends AbstractReplyProducingMessageHandler {
 	 */
 	public void setSync(boolean sync) {
 		this.sync = sync;
-		// well, this is awkward now, since AbstractMessageProducingHandler has the opposite flag.
-		// we'd have to deprecate the old one to avoid confusion.
-		this.setAsync(!sync);
 	}
 
 	public Expression getPublishTimeoutExpression() {
@@ -139,13 +133,18 @@ public class PubSubMessageHandler extends AbstractReplyProducingMessageHandler {
 	/**
 	 * Set the callback to be activated when the publish call resolves.
 	 * @param publishCallback callback for the publish future
+	 * @deprecated Use {@code setSuccessCallback()} and {@code setFailureCallback()} instead.
 	 */
 	public void setPublishCallback(ListenableFutureCallback<String> publishCallback) {
 		this.publishCallback = publishCallback;
 	}
 
-	public void setEnhancedCallback(PublishCallback cb) {
-		this.enhancedCallback = cb;
+	public void setSuccessCallback(SuccessCallback cb) {
+		this.successCallback = cb;
+	}
+
+	public void setFailureCallback(FailureCallback cb) {
+		this.failureCallback = cb;
 	}
 
 	public Expression getTopicExpression() {
@@ -188,7 +187,7 @@ public class PubSubMessageHandler extends AbstractReplyProducingMessageHandler {
 	}
 
 	@Override
-	protected ListenableFuture<MessageWithId> handleRequestMessage(Message<?> message) {
+	protected void handleMessageInternal(Message<?> message) {
 		Object payload = message.getPayload();
 		String topic =
 				message.getHeaders().containsKey(GcpPubSubHeaders.TOPIC)
@@ -206,29 +205,11 @@ public class PubSubMessageHandler extends AbstractReplyProducingMessageHandler {
 			pubsubFuture.addCallback(this.publishCallback);
 		}
 
-		if (this.enhancedCallback != null) {
-			// todo: use converter
-			pubsubFuture.addCallback(new ListenableFutureCallback<String>() {
-				@Override
-				public void onFailure(Throwable throwable) {
-					PubSubMessageHandler.this.enhancedCallback.onFailure(throwable, payload, headers);
-				}
-
-				@Override
-				public void onSuccess(String messageId) {
-					PubSubMessageHandler.this.enhancedCallback.onSuccess(messageId, payload, headers);
-				}
-			});
+		if (this.successCallback != null || this.failureCallback != null) {
+			pubsubFuture.addCallback(new PubSubPublishCallback(message));
 		}
 
-		if (!this.sync) {
-			return new ListenableFutureAdapter<MessageWithId, String>(pubsubFuture) {
-				@Override
-				protected MessageWithId adapt(String publishedId) throws ExecutionException {
-					return new MessageWithId(message, publishedId);
-				}
-			};
-		} else {
+		if (this.sync) {
 			// blocking option, which should be factored out of here
 			Long timeout = this.publishTimeoutExpression.getValue(this.evaluationContext, message, Long.class);
 			try {
@@ -249,40 +230,45 @@ public class PubSubMessageHandler extends AbstractReplyProducingMessageHandler {
 			catch (TimeoutException te) {
 				throw new MessageTimeoutException(message, "Timeout waiting for response from Pub/Sub publisher", te);
 			}
-			// response is optional by default
-			return null;
 		}
 	}
 
 	@Override
-	protected void doInit() {
+	protected void onInit() {
+		super.onInit();
 		this.evaluationContext = ExpressionUtils.createStandardEvaluationContext(getBeanFactory());
 	}
 
-	public static interface PublishCallback {
+	public static interface SuccessCallback {
 
-		void onSuccess(String ackId, Object payload, Map<String, String> headers);
-
-		void onFailure(Throwable cause, Object payload, Map<String, String> headers);
-
+		void onSuccess(String ackId, Message<?> message);
 	}
 
-	// yes, this is a terrible name
-	public static class MessageWithId {
-		private Message message;
-		private String publishedId;
+	public static interface FailureCallback {
 
-		private MessageWithId(Message message, String publishedId) {
+		void onFailure(Throwable cause, Message<?> message);
+	}
+
+	private class PubSubPublishCallback implements ListenableFutureCallback<String> {
+		private Message<?> message;
+
+		PubSubPublishCallback(Message<?> message) {
 			this.message = message;
-			this.publishedId = publishedId;
 		}
 
-		public Message getMessage() {
-			return this.message;
+		@Override
+		public void onFailure(Throwable throwable) {
+			if (PubSubMessageHandler.this.failureCallback != null) {
+				PubSubMessageHandler.this.failureCallback.onFailure(throwable, message);
+			}
 		}
 
-		public String getPublishedId() {
-			return publishedId;
+		@Override
+		public void onSuccess(String messageId) {
+			if (PubSubMessageHandler.this.successCallback != null) {
+				PubSubMessageHandler.this.successCallback.onSuccess(messageId, message);
+			}
 		}
 	}
+
 }
