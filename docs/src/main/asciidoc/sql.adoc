@@ -71,6 +71,7 @@ Used to authenticate and authorize new connections to a Google Cloud SQL instanc
 | `spring.cloud.gcp.sql.credentials.encoded-key` | Base64-encoded contents of OAuth2 account private key in JSON format.
 Used to authenticate and authorize new connections to a Google Cloud SQL instance. | No
 | Default credentials provided by the Spring GCP Boot starter
+| `spring.cloud.gcp.sql.enableIamAuth` | Specifies whether to enable IAM database authentication (PostgreSQL only). | No | `False`
 | `spring.datasource.username` | Database username | No | MySQL: `root`; PostgreSQL: `postgres`
 | `spring.datasource.password` | Database password | No | `null`
 | `spring.datasource.driver-class-name` | JDBC driver to use. | No | MySQL: `com.mysql.cj.jdbc.Driver`; PostgreSQL: `org.postgresql.Driver`
@@ -89,6 +90,17 @@ You can select the type of connection pool (e.g., Tomcat, HikariCP, etc.) by htt
 
 Using the created `DataSource` in conjunction with Spring JDBC provides you with a fully configured and operational `JdbcTemplate` object that you can use to interact with your SQL database.
 You can connect to your database with as little as a database and instance names.
+
+==== Cloud SQL IAM database authentication
+
+Currently, Cloud SQL only supports https://cloud.google.com/sql/docs/postgres/authentication:[IAM database authentication for PostgreSQL].
+It allows you to connect to the database using an IAM account, rather than a predefined database username and password.
+You will need to do the following to enable it:
+
+. In your database instance settings, turn on the `cloudsql.iam_authentication` flag.
+. Add the IAM user or service account to the list of database users.
+. In the application settings, set `spring.cloud.gcp.sql.enableIamAuth` to `true`.
+Note that this will also set the `sslmode` to `disabled`, as it's required for IAM authentication to work.
 
 ==== Troubleshooting tips
 
