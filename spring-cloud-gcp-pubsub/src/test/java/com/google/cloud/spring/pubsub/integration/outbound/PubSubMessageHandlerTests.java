@@ -16,13 +16,14 @@
 
 package com.google.cloud.spring.pubsub.integration.outbound;
 
+import java.time.Duration;
 import java.util.Collections;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.pubsub.core.PubSubOperations;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
+import org.awaitility.Awaitility;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,6 +41,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.util.concurrent.SettableListenableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -245,34 +247,55 @@ public class PubSubMessageHandlerTests {
 	}
 
 	@Test
-	public void publishEnhancedCallbackSuccess() throws Exception {
+	public void publishWithSuccessCallback() throws Exception {
 
-		this.message = new GenericMessage<byte[]>("testPayload".getBytes(),
-				new MapBuilder<String, Object>()
-						.put("message_id", "123")
-						.build());
+		SettableListenableFuture<String> future = new SettableListenableFuture<>();
+		future.set("published12345");
+		when(this.pubSubTemplate.publish(eq("testTopic"), eq("testPayload"), anyMap())).thenReturn(future);
 
-		AtomicReference<String> successfulId = new AtomicReference<>();
-		AtomicReference<String> failedId = new AtomicReference<>();
-		CountDownLatch latch = new CountDownLatch(1);
+		Message<String> aMessage = new GenericMessage<String>("testPayload", Collections.singletonMap("message_id", "123"));
 
+		AtomicReference<String> messageIdRef = new AtomicReference<>();
+		AtomicReference<String> ackIdRef = new AtomicReference<>();
 
 		this.adapter.setSuccessCallback((ackId, message) -> {
-				successfulId.set(message.getHeaders().get("message_id", String.class));
-				latch.countDown();
+			messageIdRef.set(message.getHeaders().get("message_id", String.class));
+			ackIdRef.set(ackId);
 		});
 
-		this.adapter.setFailureCallback((cause, message) -> {
-				failedId.set(message.getHeaders().get("message_id", String.class));
-				latch.countDown();
-		});
+		this.adapter.handleMessage(aMessage);
+		Awaitility.await().atMost(Duration.ofSeconds(1))
+				.untilAtomic(messageIdRef, notNullValue());
 
-		this.adapter.handleMessage(this.message);
-		latch.await();
-
-		assertThat(successfulId).hasValue("123");
-		assertThat(failedId).hasValue(null);
+		assertThat(messageIdRef).hasValue("123");
+		assertThat(ackIdRef).hasValue("published12345");
 	}
 
+	@Test
+	public void publishWithFailureCallback() throws Exception {
+
+		SettableListenableFuture<String> future = new SettableListenableFuture<>();
+		future.setException(new RuntimeException("boom!"));
+		when(this.pubSubTemplate.publish(eq("testTopic"), eq("testPayload"), anyMap())).thenReturn(future);
+
+		Message<String> aMessage = new GenericMessage("testPayload", Collections.singletonMap("message_id", "123"));
+
+		AtomicReference<Throwable> failureCauseRef = new AtomicReference<>();
+		AtomicReference<String> messageIdRef = new AtomicReference<>();
+
+		this.adapter.setFailureCallback((exception, message) -> {
+			failureCauseRef.set(exception);
+			messageIdRef.set(message.getHeaders().get("message_id", String.class));
+		});
+
+		this.adapter.handleMessage(aMessage);
+		Awaitility.await().atMost(Duration.ofSeconds(1))
+				.untilAtomic(messageIdRef, notNullValue());
+
+		assertThat(messageIdRef).hasValue("123");
+		Throwable cause = failureCauseRef.get();
+		assertThat(cause).isInstanceOf(RuntimeException.class).hasMessage("boom!");
+
+	}
 
 }

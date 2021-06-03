@@ -136,6 +136,7 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 	 * @param publishCallback callback for the publish future
 	 * @deprecated Use {@code setSuccessCallback()} and {@code setFailureCallback()} instead.
 	 */
+	@Deprecated
 	public void setPublishCallback(ListenableFutureCallback<String> publishCallback) {
 		this.publishCallback = publishCallback;
 	}
@@ -190,17 +191,12 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 	@Override
 	protected void handleMessageInternal(Message<?> message) {
 		Object payload = message.getPayload();
-		String topic =
-				message.getHeaders().containsKey(GcpPubSubHeaders.TOPIC)
-						? message.getHeaders().get(GcpPubSubHeaders.TOPIC, String.class)
-						: this.topicExpression.getValue(this.evaluationContext, message, String.class);
-
-		ListenableFuture<String> pubsubFuture;
+		String topic = calculateTopic(message);
 
 		Map<String, String> headers = new HashMap<>();
 		this.headerMapper.fromHeaders(message.getHeaders(), headers);
 
-		pubsubFuture = this.pubSubPublisherOperations.publish(topic, payload, headers);
+		ListenableFuture<String> pubsubFuture = this.pubSubPublisherOperations.publish(topic, payload, headers);
 
 		if (this.publishCallback != null) {
 			pubsubFuture.addCallback(this.publishCallback);
@@ -211,26 +207,45 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 		}
 
 		if (this.sync) {
-			// blocking option, which should be factored out of here
 			Long timeout = this.publishTimeoutExpression.getValue(this.evaluationContext, message, Long.class);
-			try {
-				if (timeout == null || timeout < 0) {
-					pubsubFuture.get();
-				}
-				else {
-					pubsubFuture.get(timeout, TimeUnit.MILLISECONDS);
-				}
+			blockOnPublishFuture(pubsubFuture, message, timeout);
+		}
+	}
+
+	/**
+	 * Returns Pub/Sub destination topic in following order of precedence:
+	 * <ul>
+	 * <li>Message header {@code GcpPubSubHeaders.TOPIC}
+	 * <li>Handler-global topic name or evaluated expression.
+	 * </ul>
+	 * @param message message to extract headers from
+	 * @return Pub/Sub topic destination for given message
+	 */
+	private String calculateTopic(Message<?> message) {
+		if (message.getHeaders().containsKey(GcpPubSubHeaders.TOPIC)) {
+			return message.getHeaders().get(GcpPubSubHeaders.TOPIC, String.class);
+		}
+		return this.topicExpression.getValue(this.evaluationContext, message, String.class);
+	}
+
+	private void blockOnPublishFuture(ListenableFuture<String> pubsubFuture, Message<?> message, Long timeout) {
+		try {
+			if (timeout == null || timeout < 0) {
+				pubsubFuture.get();
 			}
-			catch (InterruptedException ie) {
-				Thread.currentThread().interrupt();
-				throw new MessageHandlingException(message, ie);
+			else {
+				pubsubFuture.get(timeout, TimeUnit.MILLISECONDS);
 			}
-			catch (ExecutionException ee) {
-				throw new MessageHandlingException(message, ee.getCause());
-			}
-			catch (TimeoutException te) {
-				throw new MessageTimeoutException(message, "Timeout waiting for response from Pub/Sub publisher", te);
-			}
+		}
+		catch (InterruptedException ie) {
+			Thread.currentThread().interrupt();
+			throw new MessageHandlingException(message, ie);
+		}
+		catch (ExecutionException ee) {
+			throw new MessageHandlingException(message, ee.getCause());
+		}
+		catch (TimeoutException te) {
+			throw new MessageTimeoutException(message, "Timeout waiting for response from Pub/Sub publisher", te);
 		}
 	}
 
@@ -250,6 +265,10 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 		void onFailure(Throwable cause, Message<?> message);
 	}
 
+	/**
+	 * Publish callback that invokes the parent {@code PubSubMessageHandler}'s success or failure callback, if
+	 * available.
+	 */
 	private class PubSubPublishCallback implements ListenableFutureCallback<String> {
 		private Message<?> message;
 
