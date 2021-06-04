@@ -17,13 +17,16 @@
 package com.google.cloud.spring.autoconfigure.spanner;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.auth.Credentials;
+import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.SpannerTransactionManager;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import org.junit.Test;
+import org.threeten.bp.Duration;
 
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -105,6 +108,24 @@ public class GcpSpannerAutoConfigurationTests {
 				.withClassLoader(
 						new FilteredClassLoader("org.springframework.data.rest.webmvc.spi"))
 				.run(context -> assertThat(context.getBeansOfType(BackendIdConverter.class)).isEmpty());
+	}
+
+	@Test
+	public void testSpannerCustomizerProvided() {
+		Duration duration = Duration.ofSeconds(42);
+		this.contextRunner.withBean(SpannerOptionsCustomizer.class, () -> {
+			return builder -> {
+				builder.getSpannerStubSettingsBuilder()
+						.executeSqlSettings()
+						.setRetrySettings(RetrySettings.newBuilder().setMaxRetryDelay(duration).build());
+			};
+		}).run(context -> {
+			SpannerOptions spannerOptions = context.getBean(SpannerOptions.class);
+			assertThat(spannerOptions).isNotNull();
+			assertThat(
+					spannerOptions.getSpannerStubSettings().executeSqlSettings().getRetrySettings().getMaxRetryDelay()
+			).isEqualTo(duration);
+		});
 	}
 
 	/**
