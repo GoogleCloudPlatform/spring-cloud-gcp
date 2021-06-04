@@ -53,9 +53,15 @@ public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider
 		String jdbcUrl = String.format(this.databaseType.getJdbcUrlTemplate(),
 				this.properties.getDatabaseName(),
 				this.properties.getInstanceConnectionName());
+
 		if (StringUtils.hasText(properties.getIpTypes())) {
 			jdbcUrl += "&ipTypes=" + properties.getIpTypes();
 		}
+
+		if (properties.isEnableIamAuth()) {
+			jdbcUrl += "&enableIamAuth=true&sslmode=disable";
+		}
+
 		return jdbcUrl;
 	}
 }
