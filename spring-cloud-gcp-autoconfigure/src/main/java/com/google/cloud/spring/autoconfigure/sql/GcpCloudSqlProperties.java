@@ -40,6 +40,9 @@ public class GcpCloudSqlProperties {
 	/** Overrides the GCP OAuth2 credentials specified in the Core module. */
 	private Credentials credentials = new Credentials();
 
+	/** Specifies whether to enable IAM database authentication (PostgreSQL only). */
+	private boolean enableIamAuth;
+
 	public String getDatabaseName() {
 		return this.databaseName;
 	}
@@ -70,5 +73,13 @@ public class GcpCloudSqlProperties {
 
 	public void setCredentials(Credentials credentials) {
 		this.credentials = credentials;
+	}
+
+	public boolean isEnableIamAuth() {
+		return enableIamAuth;
+	}
+
+	public void setEnableIamAuth(boolean enableIamAuth) {
+		this.enableIamAuth = enableIamAuth;
 	}
 }
