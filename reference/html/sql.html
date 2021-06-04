@@ -272,6 +272,12 @@ Used to authenticate and authorize new connections to a Google Cloud SQL instanc
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default credentials provided by the Spring GCP Boot starter</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.enableIamAuth</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies whether to enable IAM database authentication (PostgreSQL only).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>False</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.username</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Database username</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
@@ -317,6 +323,29 @@ You can select the type of connection pool (e.g., Tomcat, HikariCP, etc.) by <a 
 <div class="paragraph">
 <p>Using the created <code>DataSource</code> in conjunction with Spring JDBC provides you with a fully configured and operational <code>JdbcTemplate</code> object that you can use to interact with your SQL database.
 You can connect to your database with as little as a database and instance names.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_cloud_sql_iam_database_authentication"><a class="link" href="#_cloud_sql_iam_database_authentication">Cloud SQL IAM database authentication</a></h4>
+<div class="paragraph">
+<p>Currently, Cloud SQL only supports <a href="https://cloud.google.com/sql/docs/postgres/authentication:">IAM database authentication for PostgreSQL</a>.
+It allows you to connect to the database using an IAM account, rather than a predefined database username and password.
+You will need to do the following to enable it:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In your database instance settings, turn on the <code>cloudsql.iam_authentication</code> flag.</p>
+</li>
+<li>
+<p>Add the IAM user or service account to the list of database users.</p>
+</li>
+<li>
+<p>In the application settings, set <code>spring.cloud.gcp.sql.enableIamAuth</code> to <code>true</code>.
+(Note that this will also set the database protocol <code>sslmode</code> to <code>disabled</code>, as it&#8217;s required for IAM authentication to work.
+However, it doesn&#8217;t compromise the security of the communication because the connection is always encrypted.)</p>
+</li>
+</ol>
 </div>
 </div>
 <div class="sect3">
