@@ -66,6 +66,10 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 
 	private ListenableFutureCallback<String> publishCallback;
 
+	private SuccessCallback successCallback;
+
+	private FailureCallback failureCallback;
+
 	private HeaderMapper<Map<String, String>> headerMapper = new PubSubHeaderMapper();
 
 	public PubSubMessageHandler(PubSubPublisherOperations pubSubPublisherOperations, String topic) {
@@ -130,9 +134,29 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 	/**
 	 * Set the callback to be activated when the publish call resolves.
 	 * @param publishCallback callback for the publish future
+	 * @deprecated Use {@link #setSuccessCallback} and {@link #setFailureCallback} instead.
 	 */
+	@Deprecated
 	public void setPublishCallback(ListenableFutureCallback<String> publishCallback) {
 		this.publishCallback = publishCallback;
+	}
+
+	/**
+	 * Set callback (can be a lambda) for processing the published message ID and the original {@code Message} after the
+	 * message was successfully published.
+	 * @param successCallback callback accepting a {@code String} message ID and the original {@code Message}.
+	 */
+	public void setSuccessCallback(SuccessCallback successCallback) {
+		this.successCallback = successCallback;
+	}
+
+	/**
+	 * Set callback (can be a lambda) for processing the root cause exception and the original {@code Message} in case
+	 * of failure.
+	 * @param failureCallback callback accepting a {@code Throwable} and a {@code Message}.
+	 */
+	public void setFailureCallback(FailureCallback failureCallback) {
+		this.failureCallback = failureCallback;
 	}
 
 	public Expression getTopicExpression() {
@@ -177,42 +201,61 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 	@Override
 	protected void handleMessageInternal(Message<?> message) {
 		Object payload = message.getPayload();
-		String topic =
-				message.getHeaders().containsKey(GcpPubSubHeaders.TOPIC)
-						? message.getHeaders().get(GcpPubSubHeaders.TOPIC, String.class)
-						: this.topicExpression.getValue(this.evaluationContext, message, String.class);
-
-		ListenableFuture<String> pubsubFuture;
+		String topic = calculateTopic(message);
 
 		Map<String, String> headers = new HashMap<>();
 		this.headerMapper.fromHeaders(message.getHeaders(), headers);
 
-		pubsubFuture = this.pubSubPublisherOperations.publish(topic, payload, headers);
+		ListenableFuture<String> pubsubFuture = this.pubSubPublisherOperations.publish(topic, payload, headers);
 
 		if (this.publishCallback != null) {
 			pubsubFuture.addCallback(this.publishCallback);
 		}
 
+		if (this.successCallback != null || this.failureCallback != null) {
+			pubsubFuture.addCallback(new PubSubPublishCallback(message));
+		}
+
 		if (this.sync) {
 			Long timeout = this.publishTimeoutExpression.getValue(this.evaluationContext, message, Long.class);
-			try {
-				if (timeout == null || timeout < 0) {
-					pubsubFuture.get();
-				}
-				else {
-					pubsubFuture.get(timeout, TimeUnit.MILLISECONDS);
-				}
+			blockOnPublishFuture(pubsubFuture, message, timeout);
+		}
+	}
+
+	/**
+	 * Returns Pub/Sub destination topic in following order of precedence:
+	 * <ul>
+	 * <li>Message header {@code GcpPubSubHeaders.TOPIC}
+	 * <li>Handler-global topic name or evaluated expression.
+	 * </ul>
+	 * @param message message to extract headers from
+	 * @return Pub/Sub topic destination for given message
+	 */
+	private String calculateTopic(Message<?> message) {
+		if (message.getHeaders().containsKey(GcpPubSubHeaders.TOPIC)) {
+			return message.getHeaders().get(GcpPubSubHeaders.TOPIC, String.class);
+		}
+		return this.topicExpression.getValue(this.evaluationContext, message, String.class);
+	}
+
+	private void blockOnPublishFuture(ListenableFuture<String> pubsubFuture, Message<?> message, Long timeout) {
+		try {
+			if (timeout == null || timeout < 0) {
+				pubsubFuture.get();
 			}
-			catch (InterruptedException ie) {
-				Thread.currentThread().interrupt();
-				throw new MessageHandlingException(message, ie);
+			else {
+				pubsubFuture.get(timeout, TimeUnit.MILLISECONDS);
 			}
-			catch (ExecutionException ee) {
-				throw new MessageHandlingException(message, ee.getCause());
-			}
-			catch (TimeoutException te) {
-				throw new MessageTimeoutException(message, "Timeout waiting for response from Pub/Sub publisher", te);
-			}
+		}
+		catch (InterruptedException ie) {
+			Thread.currentThread().interrupt();
+			throw new MessageHandlingException(message, ie);
+		}
+		catch (ExecutionException ee) {
+			throw new MessageHandlingException(message, ee.getCause());
+		}
+		catch (TimeoutException te) {
+			throw new MessageTimeoutException(message, "Timeout waiting for response from Pub/Sub publisher", te);
 		}
 	}
 
@@ -220,6 +263,50 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 	protected void onInit() {
 		super.onInit();
 		this.evaluationContext = ExpressionUtils.createStandardEvaluationContext(getBeanFactory());
+	}
+
+	/**
+	 * Implement this callback to post-process a successfully published message.
+	 */
+	@FunctionalInterface
+	public interface SuccessCallback {
+
+		void onSuccess(String ackId, Message<?> message);
+	}
+
+	/**
+	 * Implement this callback to post-process a message that failed to publish to Cloud Pub/Sub.
+	 */
+	@FunctionalInterface
+	public interface FailureCallback {
+
+		void onFailure(Throwable cause, Message<?> message);
+	}
+
+	/**
+	 * Publish callback that invokes the parent {@code PubSubMessageHandler}'s success or failure callback, if
+	 * available.
+	 */
+	private class PubSubPublishCallback implements ListenableFutureCallback<String> {
+		private Message<?> message;
+
+		PubSubPublishCallback(Message<?> message) {
+			this.message = message;
+		}
+
+		@Override
+		public void onFailure(Throwable throwable) {
+			if (PubSubMessageHandler.this.failureCallback != null) {
+				PubSubMessageHandler.this.failureCallback.onFailure(throwable, message);
+			}
+		}
+
+		@Override
+		public void onSuccess(String messageId) {
+			if (PubSubMessageHandler.this.successCallback != null) {
+				PubSubMessageHandler.this.successCallback.onSuccess(messageId, message);
+			}
+		}
 	}
 
 }

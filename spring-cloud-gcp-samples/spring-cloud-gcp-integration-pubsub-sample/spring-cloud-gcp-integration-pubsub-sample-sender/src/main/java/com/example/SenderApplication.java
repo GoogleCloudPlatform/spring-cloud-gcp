@@ -27,7 +27,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.MessageHandler;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
 /**
  * Spring Integration Channel Adapters for Google Cloud Pub/Sub code sample.
@@ -48,17 +47,13 @@ public class SenderApplication {
 	public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
 		PubSubMessageHandler adapter =
 				new PubSubMessageHandler(pubsubTemplate, "exampleTopic");
-		adapter.setPublishCallback(new ListenableFutureCallback<String>() {
-			@Override
-			public void onFailure(Throwable ex) {
-				LOGGER.info("There was an error sending the message.");
-			}
+		adapter.setFailureCallback(
+				(exception, message) -> LOGGER.info("There was an error sending the message: " + message.getPayload()));
 
-			@Override
-			public void onSuccess(String result) {
-				LOGGER.info("Message was sent successfully.");
-			}
-		});
+		adapter.setSuccessCallback(
+				(messageId, message) -> LOGGER.info(
+						"Message was sent successfully;\n\tpublish ID = " + messageId
+								+ "\n\tmessage=" + message.getPayload()));
 
 		return adapter;
 	}
