@@ -251,6 +251,19 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
+	public void testIamAuth() {
+		this.contextRunner.withPropertyValues(
+				"spring.cloud.gcp.sql.instance-connection-name=world:asia:japan",
+				"spring.cloud.gcp.sql.enableIamAuth=true")
+				.run(context -> {
+					DataSourceProperties dataSourceProperties =
+							context.getBean(DataSourceProperties.class);
+					assertThat(dataSourceProperties.getUrl()).contains(
+							"&enableIamAuth=true&sslmode=disable");
+				});
+	}
+
+	@Test
 	public void testPlaceholdersNotResolved() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=world:asia:japan",
