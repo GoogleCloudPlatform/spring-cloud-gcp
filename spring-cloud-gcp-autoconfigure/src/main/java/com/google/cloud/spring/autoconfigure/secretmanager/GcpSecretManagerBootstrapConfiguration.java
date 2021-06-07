@@ -36,6 +36,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
@@ -62,8 +63,26 @@ public class GcpSecretManagerBootstrapConfiguration {
 				? properties::getProjectId
 				: new DefaultGcpProjectIdProvider();
 
-		// Registers {@link ByteString} type converters to convert to String and byte[].
-		configurableEnvironment.getConversionService().addConverter(
+//		// Registers {@link ByteString} type converters to convert to String and byte[].
+//		// Needed for Spring version 2.4.x
+//		configurableEnvironment.getConversionService().addConverter(
+//				new Converter<ByteString, String>() {
+//					@Override
+//					public String convert(ByteString source) {
+//						return source.toStringUtf8();
+//					}
+//				});
+//
+//		configurableEnvironment.getConversionService().addConverter(
+//				new Converter<ByteString, byte[]>() {
+//					@Override
+//					public byte[] convert(ByteString source) {
+//						return source.toByteArray();
+//					}
+//				});
+
+		// This is needed for Spring version >= 2.5.0
+		((DefaultConversionService) DefaultConversionService.getSharedInstance()).addConverter(
 				new Converter<ByteString, String>() {
 					@Override
 					public String convert(ByteString source) {
@@ -71,7 +90,7 @@ public class GcpSecretManagerBootstrapConfiguration {
 					}
 				});
 
-		configurableEnvironment.getConversionService().addConverter(
+		((DefaultConversionService) DefaultConversionService.getSharedInstance()).addConverter(
 				new Converter<ByteString, byte[]>() {
 					@Override
 					public byte[] convert(ByteString source) {
