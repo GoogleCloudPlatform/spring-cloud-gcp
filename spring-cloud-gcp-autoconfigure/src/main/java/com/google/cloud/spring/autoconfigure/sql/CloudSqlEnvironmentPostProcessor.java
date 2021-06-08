@@ -36,6 +36,7 @@ import org.springframework.boot.context.properties.bind.PropertySourcesPlacehold
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ClassUtils;
@@ -70,19 +71,9 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
 			}
 
 			// Bind properties without resolving Secret Manager placeholders
-			Binder binder = new Binder(ConfigurationPropertySources.get(environment), new PlaceholdersResolver() {
-				PlaceholdersResolver resolver = new PropertySourcesPlaceholdersResolver(environment);
-
-				@Override
-				public Object resolvePlaceholders(Object value) {
-					if (value.toString().contains("sm://")) {
-						return value;
-					}
-					else {
-						return resolver.resolvePlaceholders(value);
-					}
-				}
-			}, null, null, null);
+			Binder binder = new Binder(ConfigurationPropertySources.get(environment),
+					new NonSecretsManagerPropertiesPlaceholdersResolver(environment),
+					null, null, null);
 
 			String cloudSqlPropertiesPrefix = GcpCloudSqlProperties.class.getAnnotation(ConfigurationProperties.class).value();
 			GcpCloudSqlProperties sqlProperties = binder
@@ -203,4 +194,21 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
 		}
 	}
 
+	private static class NonSecretsManagerPropertiesPlaceholdersResolver implements PlaceholdersResolver {
+		private PlaceholdersResolver resolver;
+
+		NonSecretsManagerPropertiesPlaceholdersResolver(Environment environment) {
+			this.resolver = new PropertySourcesPlaceholdersResolver(environment);
+		}
+
+		@Override
+		public Object resolvePlaceholders(Object value) {
+			if (value.toString().contains("sm://")) {
+				return value;
+			}
+			else {
+				return resolver.resolvePlaceholders(value);
+			}
+		}
+	}
 }
