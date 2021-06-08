@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.spanner;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.auth.Credentials;
+import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
@@ -126,7 +127,11 @@ public class GcpSpannerAutoConfigurationTests {
 					spannerOptions.getSpannerStubSettings().executeSqlSettings().getRetrySettings().getMaxRetryDelay()
 			).isEqualTo(duration);
 			// unchanged options stay at their default values
-			assertThat(spannerOptions.getNumChannels()).isEqualTo(SpannerOptions.getDefaultInstance().getNumChannels());
+			SpannerOptions defaultSpannerOptions = SpannerOptions.newBuilder()
+					.setProjectId("unused")
+					.setCredentials(NoCredentials.getInstance())
+					.build();
+			assertThat(spannerOptions.getNumChannels()).isEqualTo(defaultSpannerOptions.getNumChannels());
 		});
 	}
 
