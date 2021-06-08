@@ -30,21 +30,27 @@ public class GcpSecretManagerEnvironmentPostProcessor implements EnvironmentPost
 
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-		// Registers {@link ByteString} type converters to convert to String and byte[].
-		environment.getConversionService().addConverter(
-				new Converter<ByteString, String>() {
-					@Override
-					public String convert(ByteString source) {
-						return source.toStringUtf8();
-					}
-				});
+		boolean isSecretManagerEnabled =
+				Boolean.parseBoolean(
+						environment.getProperty("spring.cloud.gcp.secretmanager.enabled", "true"));
 
-		environment.getConversionService().addConverter(
-				new Converter<ByteString, byte[]>() {
-					@Override
-					public byte[] convert(ByteString source) {
-						return source.toByteArray();
-					}
-				});
+		if (isSecretManagerEnabled) {
+			// Registers {@link ByteString} type converters to convert to String and byte[].
+			environment.getConversionService().addConverter(
+					new Converter<ByteString, String>() {
+						@Override
+						public String convert(ByteString source) {
+							return source.toStringUtf8();
+						}
+					});
+
+			environment.getConversionService().addConverter(
+					new Converter<ByteString, byte[]>() {
+						@Override
+						public byte[] convert(ByteString source) {
+							return source.toByteArray();
+						}
+					});
+		}
 	}
 }
