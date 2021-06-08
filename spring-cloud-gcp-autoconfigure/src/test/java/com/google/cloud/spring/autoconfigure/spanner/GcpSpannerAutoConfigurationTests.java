@@ -125,6 +125,8 @@ public class GcpSpannerAutoConfigurationTests {
 			assertThat(
 					spannerOptions.getSpannerStubSettings().executeSqlSettings().getRetrySettings().getMaxRetryDelay()
 			).isEqualTo(duration);
+			// unchanged options stay at their default values
+			assertThat(spannerOptions.getNumChannels()).isEqualTo(SpannerOptions.getDefaultInstance().getNumChannels());
 		});
 	}
 
