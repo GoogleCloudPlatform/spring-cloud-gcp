@@ -92,6 +92,8 @@ The schema for the tables will be "ON DELETE NO ACTION" if `false`. | No | `true
 | `spring.cloud.gcp.spanner.emulator-host` |  The host and port of the Spanner emulator; can be overridden to specify connecting to an already-running https://cloud.google.com/spanner/docs/emulator#installing_and_running_the_emulator[Spanner emulator] instance. | No | `localhost:9010`
 |===
 
+NOTE: For further customization of the client library `SpannerOptions`, provide a bean implementing `SpannerOptionsCustomizer`, with a single method that accepts a `SpannerOptions.Builder` and modifies it as necessary.
+
 ==== Repository settings
 
 Spring Data Repositories can be configured via the `@EnableSpannerRepositories` annotation on your main `@Configuration` class.
