@@ -31,9 +31,12 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.context.properties.bind.PlaceholdersResolver;
+import org.springframework.boot.context.properties.bind.PropertySourcesPlaceholdersResolver;
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ClassUtils;
@@ -67,8 +70,10 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
 				LOGGER.info("post-processing Cloud SQL properties for + " + databaseType.name());
 			}
 
-			// Bind properties without resolving placeholders
-			Binder binder = new Binder(ConfigurationPropertySources.get(environment), null, null, null, null);
+			// Bind properties without resolving Secret Manager placeholders
+			Binder binder = new Binder(ConfigurationPropertySources.get(environment),
+					new NonSecretsManagerPropertiesPlaceholdersResolver(environment),
+					null, null, null);
 
 			String cloudSqlPropertiesPrefix = GcpCloudSqlProperties.class.getAnnotation(ConfigurationProperties.class).value();
 			GcpCloudSqlProperties sqlProperties = binder
@@ -189,4 +194,21 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
 		}
 	}
 
+	private static class NonSecretsManagerPropertiesPlaceholdersResolver implements PlaceholdersResolver {
+		private PlaceholdersResolver resolver;
+
+		NonSecretsManagerPropertiesPlaceholdersResolver(Environment environment) {
+			this.resolver = new PropertySourcesPlaceholdersResolver(environment);
+		}
+
+		@Override
+		public Object resolvePlaceholders(Object value) {
+			if (value.toString().contains("sm://")) {
+				return value;
+			}
+			else {
+				return resolver.resolvePlaceholders(value);
+			}
+		}
+	}
 }
