@@ -264,7 +264,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testPlaceholdersNotResolved() {
+	public void testSecretManagerPlaceholdersNotResolved() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=world:asia:japan",
 				"spring.cloud.gcp.sql.database-name=${sm://my-db}")
@@ -273,6 +273,22 @@ public class CloudSqlEnvironmentPostProcessorTests {
 							.get("CLOUD_SQL_DATA_SOURCE_URL")
 							.getProperty("spring.datasource.url"))
 							.isEqualTo("jdbc:mysql://google/${sm://my-db}?"
+									+ "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
+									+ "&cloudSqlInstance=world:asia:japan");
+				});
+	}
+
+	@Test
+	public void testEnvPlaceholdersResolved() {
+		this.contextRunner.withPropertyValues(
+				"DB_NAME=mydb",
+				"spring.cloud.gcp.sql.instance-connection-name=world:asia:japan",
+				"spring.cloud.gcp.sql.database-name=${DB_NAME:not_available}")
+				.run(context -> {
+					assertThat(context.getEnvironment().getPropertySources()
+							.get("CLOUD_SQL_DATA_SOURCE_URL")
+							.getProperty("spring.datasource.url"))
+							.isEqualTo("jdbc:mysql://google/mydb?"
 									+ "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
 									+ "&cloudSqlInstance=world:asia:japan");
 				});
