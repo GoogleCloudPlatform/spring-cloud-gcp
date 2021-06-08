@@ -4337,6 +4337,18 @@ The schema for the tables will be "ON DELETE NO ACTION" if <code>false</code>.</
 </tr>
 </tbody>
 </table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For further customization of the client library <code>SpannerOptions</code>, provide a bean implementing <code>SpannerOptionsCustomizer</code>, with a single method that accepts a <code>SpannerOptions.Builder</code> and modifies it as necessary.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="repository-settings"><a class="anchor" href="#repository-settings"></a><a class="link" href="#repository-settings">13.1.2. Repository settings</a></h4>
