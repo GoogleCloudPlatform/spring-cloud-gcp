@@ -27,7 +27,6 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerPropertySourceLocator;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
-import com.google.protobuf.ByteString;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -35,7 +34,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
@@ -61,23 +59,6 @@ public class GcpSecretManagerBootstrapConfiguration {
 		this.gcpProjectIdProvider = properties.getProjectId() != null
 				? properties::getProjectId
 				: new DefaultGcpProjectIdProvider();
-
-		// Registers {@link ByteString} type converters to convert to String and byte[].
-		configurableEnvironment.getConversionService().addConverter(
-				new Converter<ByteString, String>() {
-					@Override
-					public String convert(ByteString source) {
-						return source.toStringUtf8();
-					}
-				});
-
-		configurableEnvironment.getConversionService().addConverter(
-				new Converter<ByteString, byte[]>() {
-					@Override
-					public byte[] convert(ByteString source) {
-						return source.toByteArray();
-					}
-				});
 	}
 
 	@Bean
