@@ -2761,7 +2761,7 @@ If none is provided, the adapter waits indefinitely for a response.</p>
 <p>It is possible to set user-defined callbacks for the <code>publish()</code> call in <code>PubSubMessageHandler</code> through the <code>setSuccessCallback()</code> and <code>setFailureCallback()</code> methods (either one or both may be set).
 These give access to the Pub/Sub publish message ID in case of success, or the root cause exception in case of error.
 Both callbacks include the original message as the second argument.
-The old <code>setPublishFutureCallback()</code> method that only gave access to message ID or root cause exception is deprecated and will be removed in a future release.</p>
+The old <code>setPublishCallback()</code> method that only gave access to message ID or root cause exception is deprecated and will be removed in a future release.</p>
 </div>
 <div class="listingblock">
 <div class="content">
