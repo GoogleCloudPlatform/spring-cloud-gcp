@@ -23,7 +23,7 @@ For a detailed view of what has changed, refer to the https://github.com/GoogleC
 
 === Notable version changes
 * Upgraded to libraries BOM 20.6.0
-* Added version tracking for `com.google.cloud.sql:jdbc-socket-factory-core` (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/466[#466])
+* Added version management for `com.google.cloud.sql:jdbc-socket-factory-core` (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/466[#466])
 
 Thanks to our community contributors, @herder and @melburne!
 
