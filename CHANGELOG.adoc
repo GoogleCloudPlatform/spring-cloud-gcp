@@ -7,11 +7,16 @@ For a detailed view of what has changed, refer to the https://github.com/GoogleC
 
 == 2.0.3 (2021-06-08)
 
+=== General
+* Upgraded to GCP Libraries BOM 20.6.0
+* Added version management for `com.google.cloud.sql:jdbc-socket-factory-core` (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/466[#466])
+
 === Cloud Pub/Sub
 * Exposed publisher endpoint for message ordering (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/421[#421])
 * Pub/Sub Health Indicator timeout increased to 2 seconds (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/420[#420]).
 * Gated Cloud Pub/Sub emulator autoconfiguration Pub/Sub module being present and enabled (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/446[#446])
 * `PubSubMessageHandler` now passes the original message to new success/failure callbacks, allowing applications to track message publish status (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/482[#482]).
+ The old `PubSubMessageHandler.setPublishCallback()` method is now deprecated.
 
 === Cloud Spanner
 * Stopped Cloud Spanner emulator autoconfiguration from triggering default credentials creation (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/457[#457]).
@@ -20,10 +25,6 @@ For a detailed view of what has changed, refer to the https://github.com/GoogleC
 === Cloud SQL
 * Added IAM authentication option for PostgreSQL (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/488[#488]).
 * Enabled placeholder interpretation in Cloud SQL properties (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/495[#495]).
-
-=== Notable version changes
-* Upgraded to libraries BOM 20.6.0
-* Added version management for `com.google.cloud.sql:jdbc-socket-factory-core` (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/466[#466])
 
 Thanks to our community contributors, @herder and @melburne!
 
