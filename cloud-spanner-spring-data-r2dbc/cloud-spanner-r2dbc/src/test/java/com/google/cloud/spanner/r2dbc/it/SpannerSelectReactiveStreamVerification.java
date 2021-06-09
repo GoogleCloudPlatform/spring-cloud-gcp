@@ -66,7 +66,7 @@ class SpannerSelectReactiveStreamVerification extends
   }
 
   public SpannerSelectReactiveStreamVerification() {
-    super(new TestEnvironment());
+    super(new TestEnvironment(200));
   }
 
   @Override

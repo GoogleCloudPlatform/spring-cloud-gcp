@@ -68,7 +68,7 @@ class SpannerDmlReactiveStreamVerification extends
   }
 
   public SpannerDmlReactiveStreamVerification() {
-    super(new TestEnvironment());
+    super(new TestEnvironment(200));
   }
 
   @Override

@@ -26,6 +26,7 @@ import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PA
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PROJECT;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.READONLY;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.URL;
+import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.USE_PLAIN_TEXT;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,6 +52,7 @@ import com.google.spanner.v1.StructType;
 import com.google.spanner.v1.StructType.Field;
 import com.google.spanner.v1.Type;
 import com.google.spanner.v1.TypeCode;
+import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
@@ -72,6 +74,7 @@ class SpannerConnectionFactoryProviderTest {
           .option(INSTANCE, "an-instance")
           .option(DATABASE, "db")
           .option(GOOGLE_CREDENTIALS, mock(GoogleCredentials.class))
+          .option(USE_PLAIN_TEXT, true) // prevent looking for default credentials
           .build();
 
   ConnectionFactoryOptions.Builder optionsBuilder;
@@ -113,6 +116,49 @@ class SpannerConnectionFactoryProviderTest {
   }
 
   @Test
+  void testCreateFactoryWithOldDriverNameWillReturnCorrectFactory() {
+    ConnectionFactory spannerConnectionFactory =
+        ConnectionFactories.get("r2dbc:spanner://spanner.googleapis.com:443/projects/"
+            + "myproject/instances/myinstance/databases/mydatabase?usePlainText=true");
+    assertThat(spannerConnectionFactory)
+        .isNotNull()
+        .isInstanceOf(SpannerConnectionFactory.class);
+  }
+
+  @Test
+  void testCreateFactoryWithDriverNameWillReturnCorrectFactory() {
+    ConnectionFactory spannerConnectionFactory =
+        ConnectionFactories.get("r2dbc:cloudspanner://spanner.googleapis.com:443/projects/"
+            + "myproject/instances/myinstance/databases/mydatabase?usePlainText=true");
+    assertThat(spannerConnectionFactory)
+        .isNotNull()
+        .isInstanceOf(SpannerConnectionFactory.class);
+  }
+
+  @Test
+  void testCreateFactoryV2WithOldDriverNameWillReturnCorrectFactory() {
+    ConnectionFactory spannerConnectionFactory =
+        ConnectionFactories.get(
+            "r2dbc:spanner://spanner.googleapis.com:443/projects/"
+                + "myproject/instances/myinstance/databases/mydatabase"
+                + "?client-implementation=client-library&usePlainText=true");
+    assertThat(spannerConnectionFactory)
+        .isNotNull()
+        .isInstanceOf(SpannerClientLibraryConnectionFactory.class);
+  }
+
+  @Test
+  void testCreateFactoryV2WithDriverNameWillReturnCorrectFactory() {
+    ConnectionFactory spannerConnectionFactory =
+        ConnectionFactories.get("r2dbc:cloudspanner://spanner.googleapis.com:443/projects/"
+            + "myproject/instances/myinstance/databases/mydatabase"
+            + "?client-implementation=client-library&usePlainText=true");
+    assertThat(spannerConnectionFactory)
+        .isNotNull()
+        .isInstanceOf(SpannerClientLibraryConnectionFactory.class);
+  }
+
+  @Test
   void testCreateFactoryWithUrl() {
     ConnectionFactoryOptions optionsWithUrl =
         ConnectionFactoryOptions.builder()
@@ -124,8 +170,9 @@ class SpannerConnectionFactoryProviderTest {
 
     ConnectionFactory spannerConnectionFactory =
         this.spannerConnectionFactoryProvider.create(optionsWithUrl);
-    assertThat(spannerConnectionFactory).isNotNull();
-    assertThat(spannerConnectionFactory).isInstanceOf(SpannerConnectionFactory.class);
+    assertThat(spannerConnectionFactory)
+        .isNotNull()
+        .isInstanceOf(SpannerConnectionFactory.class);
   }
 
   @Test

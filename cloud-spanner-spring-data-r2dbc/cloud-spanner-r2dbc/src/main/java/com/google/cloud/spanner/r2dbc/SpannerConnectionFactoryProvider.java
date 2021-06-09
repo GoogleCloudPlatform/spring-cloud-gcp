@@ -46,7 +46,15 @@ import java.util.Set;
 public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvider {
 
   /** R2DBC driver name for Google Cloud Spanner. */
-  public static final String DRIVER_NAME = "spanner";
+  public static final String DRIVER_NAME = "cloudspanner";
+
+  /**
+   * Abbreviated name standing for Cloud Spanner.
+   *
+   * @deprecated {@code DRIVER_NAME} should be used instead.
+   */
+  @Deprecated
+  public static final String SHORT_DRIVER_NAME = "spanner";
 
   /** Option name for GCP Project. */
   public static final Option<String> PROJECT = Option.valueOf("project");
@@ -131,7 +139,7 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
     Assert.requireNonNull(connectionFactoryOptions, "connectionFactoryOptions must not be null");
     String driver = connectionFactoryOptions.getValue(DRIVER);
 
-    return DRIVER_NAME.equals(driver);
+    return DRIVER_NAME.equals(driver) || SHORT_DRIVER_NAME.equals(driver);
   }
 
   @Override
