@@ -103,7 +103,7 @@ All uploaded javadocs will be published under the following URL:
 https://googleapis.dev/java/spring-cloud-gcp/{BRANCH_VERSION_NAME}/index.html
 ----
 +
-Example: If you published the javadocs for version `2.0.5-SNAPSHOT`, then the URL would be: https://googleapis.dev/java/spring-cloud-gcp/2.0.5-SNAPSHOT/index.html
+Example: If you published the javadocs for version `2.0.4`, then the URL would be: https://googleapis.dev/java/spring-cloud-gcp/2.0.4/index.html
 
 
 == Updating Spring Documentation
