@@ -38,6 +38,10 @@ public interface UserRepository extends FirestoreReactiveRepository<User> {
 
 	Flux<User> findByAgeNot(Integer age);
 
+	Flux<User> findByName(String name);
+
+	Flux<User> findByNameAndAge(String name, Integer age);
+
 	Flux<User> findByHomeAddressCountry(String country);
 
 	Flux<User> findByFavoriteDrink(String drink);

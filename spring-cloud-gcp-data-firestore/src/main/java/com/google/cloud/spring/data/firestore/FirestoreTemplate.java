@@ -66,7 +66,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	private static final int FIRESTORE_WRITE_MAX_SIZE = 500;
 
-	private static final String NAME_FIELD = "__name__";
+	public static final String NAME_FIELD = "__name__";
 
 	private static final StructuredQuery.Projection ID_PROJECTION = StructuredQuery.Projection.newBuilder()
 			.addFields(StructuredQuery.FieldReference.newBuilder().setFieldPath(NAME_FIELD).build())

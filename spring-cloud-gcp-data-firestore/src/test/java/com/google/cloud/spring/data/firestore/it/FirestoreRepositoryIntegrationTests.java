@@ -170,6 +170,23 @@ public class FirestoreRepositoryIntegrationTests {
 	//end::repository_part_tree[]
 
 	@Test
+	//tag::repository_part_tree[]
+	public void partTreeRepositoryMethodTest_findByIdAndAge() {
+		User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
+		u1.favoriteDrink = "tea";
+		User u2 = new User("Squall", 17, null, null, new Address("2 Second st., London", "UK"));
+		u2.favoriteDrink = "wine";
+		Flux<User> users = Flux.fromArray(new User[] {u1, u2});
+
+		this.userRepository.saveAll(users).blockLast();
+
+		assertThat(this.userRepository.count().block()).isEqualTo(2);
+		assertThat(this.userRepository.findByName("Cloud").collectList().block()).containsExactly(u1);
+//		assertThat(this.userRepository.findByNameAndAge("Cloud",22).collectList().block()).containsExactly(u1);
+	}
+	//end::repository_part_tree[]
+
+	@Test
 	public void pageableQueryTest() {
 		Flux<User> users = Flux.fromStream(IntStream.range(1, 11).boxed())
 				.map(n -> new User("blah-person" + n, n));
