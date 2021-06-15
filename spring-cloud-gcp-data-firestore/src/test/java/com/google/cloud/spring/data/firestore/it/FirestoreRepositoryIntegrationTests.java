@@ -16,15 +16,35 @@
 
 package com.google.cloud.spring.data.firestore.it;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.IntStream;
 
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.FieldPath;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.FirestoreOptions;
+import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.spring.core.GcpScope;
 import com.google.cloud.spring.data.firestore.entities.User;
 import com.google.cloud.spring.data.firestore.entities.User.Address;
 import com.google.cloud.spring.data.firestore.entities.UserRepository;
 import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
+import com.google.firestore.v1.FirestoreGrpc;
+import com.google.firestore.v1.RunQueryRequest;
+import com.google.firestore.v1.RunQueryResponse;
+import com.google.firestore.v1.StructuredQuery;
+import com.google.firestore.v1.Value;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.auth.MoreCallCredentials;
+import io.grpc.stub.StreamObserver;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,315 +72,379 @@ import static org.mockito.Mockito.verify;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = FirestoreIntegrationTestsConfiguration.class)
 public class FirestoreRepositoryIntegrationTests {
-	//tag::autowire[]
-	@Autowired
-	UserRepository userRepository;
-	//end::autowire[]
-
-	//tag::autowire_tx_manager[]
-	@Autowired
-	ReactiveFirestoreTransactionManager txManager;
-	//end::autowire_tx_manager[]
-
-	//tag::autowire_user_service[]
-	@Autowired
-	UserService userService;
-	//end::autowire_user_service[]
-
-	@Autowired
-	ReactiveFirestoreTransactionManager transactionManager;
-
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat("Firestore-sample tests are disabled. "
-				+ "Please use '-Dit.firestore=true' to enable them. ",
-				System.getProperty("it.firestore"), is("true"));
-	}
-
-	@Before
-	public void cleanTestEnvironment() {
-		this.userRepository.deleteAll().block();
-		reset(this.transactionManager);
-	}
-
-	@Test
-	public void countTest() {
-		Flux<User> users = Flux.fromStream(IntStream.range(1, 10).boxed())
-				.map(n -> new User("blah-person" + n, n));
-
-		this.userRepository.saveAll(users).blockLast();
-
-		long count = this.userRepository.countByAgeIsGreaterThan(5).block();
-		assertThat(count).isEqualTo(4);
-	}
-
-	@Test
-	//tag::repository_built_in[]
-	public void writeReadDeleteTest() {
-		List<User.Address> addresses = Arrays.asList(new User.Address("123 Alice st", "US"),
-				new User.Address("1 Alice ave", "US"));
-		User.Address homeAddress = new User.Address("10 Alice blvd", "UK");
-		User alice = new User("Alice", 29, null, addresses, homeAddress);
-		User bob = new User("Bob", 60);
-
-		this.userRepository.save(alice).block();
-		this.userRepository.save(bob).block();
-
-		assertThat(this.userRepository.count().block()).isEqualTo(2);
-		assertThat(this.userRepository.findAll().map(User::getName).collectList().block())
-				.containsExactlyInAnyOrder("Alice", "Bob");
-
-		User aliceLoaded = this.userRepository.findById("Alice").block();
-		assertThat(aliceLoaded.getAddresses()).isEqualTo(addresses);
-		assertThat(aliceLoaded.getHomeAddress()).isEqualTo(homeAddress);
-	}
-	//end::repository_built_in[]
-
-	@Test
-	public void transactionalOperatorTest() {
-		//tag::repository_transactional_operator[]
-		DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
-		transactionDefinition.setReadOnly(false);
-		TransactionalOperator operator = TransactionalOperator.create(this.txManager, transactionDefinition);
-		//end::repository_transactional_operator[]
-
-		//tag::repository_operations_in_a_transaction[]
-		User alice = new User("Alice", 29);
-		User bob = new User("Bob", 60);
-
-		this.userRepository.save(alice)
-				.then(this.userRepository.save(bob))
-				.as(operator::transactional)
-				.block();
-
-		this.userRepository.findAll()
-				.flatMap(a -> {
-					a.setAge(a.getAge() - 1);
-					return this.userRepository.save(a);
-				})
-				.as(operator::transactional).collectList().block();
-
-		assertThat(this.userRepository.findAll().map(User::getAge).collectList().block())
-				.containsExactlyInAnyOrder(28, 59);
-		//end::repository_operations_in_a_transaction[]
-	}
-
-	@Test
-	//tag::repository_part_tree[]
-	public void partTreeRepositoryMethodTest() {
-		User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
-		u1.favoriteDrink = "tea";
-		User u2 = new User("Squall", 17, null, null, new Address("2 Second st., London", "UK"));
-		u2.favoriteDrink = "wine";
-		Flux<User> users = Flux.fromArray(new User[] {u1, u2});
-
-		this.userRepository.saveAll(users).blockLast();
-
-		assertThat(this.userRepository.count().block()).isEqualTo(2);
-		assertThat(this.userRepository.findBy(PageRequest.of(0, 10)).collectList().block()).containsExactly(u1, u2);
-		assertThat(this.userRepository.findByAge(22).collectList().block()).containsExactly(u1);
-		assertThat(this.userRepository.findByAgeNot(22).collectList().block()).containsExactly(u2);
-		assertThat(this.userRepository.findByHomeAddressCountry("USA").collectList().block()).containsExactly(u1);
-		assertThat(this.userRepository.findByFavoriteDrink("wine").collectList().block()).containsExactly(u2);
-		assertThat(this.userRepository.findByAgeGreaterThanAndAgeLessThan(20, 30).collectList().block())
-				.containsExactly(u1);
-		assertThat(this.userRepository.findByAgeGreaterThan(10).collectList().block()).containsExactlyInAnyOrder(u1,
-				u2);
-	}
-	//end::repository_part_tree[]
-
-	@Test
-	//tag::repository_part_tree[]
-	public void partTreeRepositoryMethodTest_findByIdAndAge() {
-		User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
-		u1.favoriteDrink = "tea";
-		User u2 = new User("Squall", 17, null, null, new Address("2 Second st., London", "UK"));
-		u2.favoriteDrink = "wine";
-		Flux<User> users = Flux.fromArray(new User[] {u1, u2});
-
-		this.userRepository.saveAll(users).blockLast();
-
-		assertThat(this.userRepository.count().block()).isEqualTo(2);
-		assertThat(this.userRepository.findByName("Cloud").collectList().block()).containsExactly(u1);
-//		assertThat(this.userRepository.findByNameAndAge("Cloud",22).collectList().block()).containsExactly(u1);
-	}
-	//end::repository_part_tree[]
-
-	@Test
-	public void pageableQueryTest() {
-		Flux<User> users = Flux.fromStream(IntStream.range(1, 11).boxed())
-				.map(n -> new User("blah-person" + n, n));
-		this.userRepository.saveAll(users).blockLast();
-
-		PageRequest pageRequest = PageRequest.of(2, 3, Sort.by(Order.desc("age")));
-		List<String> pagedUsers = this.userRepository.findByAgeGreaterThan(0, pageRequest)
-				.map(User::getName)
-				.collectList()
-				.block();
-
-		assertThat(pagedUsers).containsExactlyInAnyOrder(
-				"blah-person4", "blah-person3", "blah-person2");
-	}
-
-	@Test
-	public void sortQueryTest() {
-		Flux<User> users = Flux.fromStream(IntStream.range(1, 11).boxed())
-				.map(n -> new User("blah-person" + n, n));
-		this.userRepository.saveAll(users).blockLast();
-
-		List<String> pagedUsers = this.userRepository
-				.findByAgeGreaterThan(7, Sort.by(Order.asc("age")))
-				.map(User::getName)
-				.collectList()
-				.block();
-
-		assertThat(pagedUsers).containsExactlyInAnyOrder(
-				"blah-person8", "blah-person9", "blah-person10");
-	}
-
-	@Test
-	public void inFilterQueryTest() {
-		User u1 = new User("Cloud", 22);
-		User u2 = new User("Squall", 17);
-		Flux<User> users = Flux.fromArray(new User[] {u1, u2});
-
-		this.userRepository.saveAll(users).blockLast();
-
-		List<String> pagedUsers = this.userRepository.findByAgeIn(Arrays.asList(22, 23, 24))
-				.map(User::getName)
-				.collectList()
-				.block();
-
-		assertThat(pagedUsers).containsExactly("Cloud");
-
-		pagedUsers = this.userRepository.findByAgeIn(Arrays.asList(17, 22))
-				.map(User::getName)
-				.collectList()
-				.block();
-
-		assertThat(pagedUsers).containsExactly("Cloud", "Squall");
-
-		pagedUsers = this.userRepository.findByAgeIn(Arrays.asList(18, 23))
-				.map(User::getName)
-				.collectList()
-				.block();
-
-		assertThat(pagedUsers).isEmpty();
-
-		pagedUsers = this.userRepository.findByAgeNotIn(Arrays.asList(17, 22, 33))
-				.map(User::getName)
-				.collectList()
-				.block();
-
-		assertThat(pagedUsers).isEmpty();
-
-		pagedUsers = this.userRepository.findByAgeNotIn(Arrays.asList(10, 20, 30))
-				.map(User::getName)
-				.collectList()
-				.block();
-
-		assertThat(pagedUsers).containsExactlyInAnyOrder("Cloud", "Squall");
-
-		pagedUsers = this.userRepository.findByAgeNotIn(Arrays.asList(17, 33))
-				.map(User::getName)
-				.collectList()
-				.block();
-
-		assertThat(pagedUsers).containsExactly("Cloud");
-	}
-
-	@Test
-	public void containsFilterQueryTest() {
-		User u1 = new User("Cloud", 22, Arrays.asList("cat", "dog"));
-		User u2 = new User("Squall", 17, Collections.singletonList("pony"));
-		Flux<User> users = Flux.fromArray(new User[] {u1, u2});
-
-		this.userRepository.saveAll(users).blockLast();
-
-		List<String> pagedUsers = this.userRepository.findByPetsContains(Arrays.asList("cat", "dog"))
-				.map(User::getName)
-				.collectList()
-				.block();
-
-		assertThat(pagedUsers).containsExactly("Cloud");
-
-		pagedUsers = this.userRepository.findByPetsContains(Arrays.asList("cat", "pony"))
-				.map(User::getName)
-				.collectList()
-				.block();
-
-		assertThat(pagedUsers).containsExactlyInAnyOrder("Cloud", "Squall");
-
-		pagedUsers = this.userRepository.findByAgeAndPetsContains(17, Arrays.asList("cat", "pony"))
-				.map(User::getName)
-				.collectList()
-				.block();
-
-		assertThat(pagedUsers).containsExactlyInAnyOrder("Squall");
-
-		pagedUsers = this.userRepository.findByPetsContainsAndAgeIn("cat", Arrays.asList(22, 23))
-				.map(User::getName)
-				.collectList()
-				.block();
-
-		assertThat(pagedUsers).containsExactlyInAnyOrder("Cloud");
-	}
-
-	@Test
-	public void declarativeTransactionRollbackTest() {
-		this.userService.deleteUsers().onErrorResume(throwable -> Mono.empty()).block();
-
-		verify(this.transactionManager, times(0)).commit(any());
-		verify(this.transactionManager, times(1)).rollback(any());
-		verify(this.transactionManager, times(1)).getReactiveTransaction(any());
-	}
-
-	@Test
-	public void declarativeTransactionCommitTest() {
-		User alice = new User("Alice", 29);
-		User bob = new User("Bob", 60);
-
-		this.userRepository.save(alice).then(this.userRepository.save(bob)).block();
-
-		this.userService.updateUsers().block();
-
-		verify(this.transactionManager, times(1)).commit(any());
-		verify(this.transactionManager, times(0)).rollback(any());
-		verify(this.transactionManager, times(1)).getReactiveTransaction(any());
-
-		assertThat(this.userRepository.findAll().map(User::getAge).collectList().block())
-				.containsExactlyInAnyOrder(28, 59);
-	}
-
-	@Test
-	public void transactionPropagationTest() {
-		User alice = new User("Alice", 29);
-		User bob = new User("Bob", 60);
-
-		this.userRepository.save(alice).then(this.userRepository.save(bob)).block();
-
-		this.userService.updateUsersTransactionPropagation().block();
-
-		verify(this.transactionManager, times(1)).commit(any());
-		verify(this.transactionManager, times(0)).rollback(any());
-		verify(this.transactionManager, times(1)).getReactiveTransaction(any());
-
-		assertThat(this.userRepository.findAll().map(User::getAge).collectList().block())
-				.containsExactlyInAnyOrder(28, 59);
-	}
-
-	@Test
-	public void testDoubleSub() {
-		User alice = new User("Alice", 29);
-		User bob = new User("Bob", 60);
-		this.userRepository.save(alice).then(this.userRepository.save(bob)).block();
-
-		Mono<User> aUser = this.userRepository.findByAge(29).next();
-
-		Flux<String> stringFlux = userRepository.findAll()
-				.flatMap(user ->
-						aUser.flatMap(user1 -> Mono.just(user.getName() + " " + user1.getName())));
-		List<String> list = stringFlux.collectList().block();
-		assertThat(list).contains("Alice Alice", "Bob Alice");
-	}
+    //tag::autowire[]
+    @Autowired
+    UserRepository userRepository;
+    //end::autowire[]
+
+    //tag::autowire_tx_manager[]
+    @Autowired
+    ReactiveFirestoreTransactionManager txManager;
+    //end::autowire_tx_manager[]
+
+    //tag::autowire_user_service[]
+    @Autowired
+    UserService userService;
+    //end::autowire_user_service[]
+
+    @Autowired
+    ReactiveFirestoreTransactionManager transactionManager;
+
+    @BeforeClass
+    public static void checkToRun() {
+        assumeThat("Firestore-sample tests are disabled. "
+                        + "Please use '-Dit.firestore=true' to enable them. ",
+                System.getProperty("it.firestore"), is("true"));
+    }
+
+    @Before
+    public void cleanTestEnvironment() {
+        this.userRepository.deleteAll().block();
+        reset(this.transactionManager);
+    }
+
+    @Test
+    public void countTest() {
+        Flux<User> users = Flux.fromStream(IntStream.range(1, 10).boxed())
+                .map(n -> new User("blah-person" + n, n));
+
+        this.userRepository.saveAll(users).blockLast();
+
+        long count = this.userRepository.countByAgeIsGreaterThan(5).block();
+        assertThat(count).isEqualTo(4);
+    }
+
+    @Test
+    //tag::repository_built_in[]
+    public void writeReadDeleteTest() {
+        List<User.Address> addresses = Arrays.asList(new User.Address("123 Alice st", "US"),
+                new User.Address("1 Alice ave", "US"));
+        User.Address homeAddress = new User.Address("10 Alice blvd", "UK");
+        User alice = new User("Alice", 29, null, addresses, homeAddress);
+        User bob = new User("Bob", 60);
+
+        this.userRepository.save(alice).block();
+        this.userRepository.save(bob).block();
+
+        assertThat(this.userRepository.count().block()).isEqualTo(2);
+        assertThat(this.userRepository.findAll().map(User::getName).collectList().block())
+                .containsExactlyInAnyOrder("Alice", "Bob");
+
+        User aliceLoaded = this.userRepository.findById("Alice").block();
+        assertThat(aliceLoaded.getAddresses()).isEqualTo(addresses);
+        assertThat(aliceLoaded.getHomeAddress()).isEqualTo(homeAddress);
+    }
+    //end::repository_built_in[]
+
+    @Test
+    public void transactionalOperatorTest() {
+        //tag::repository_transactional_operator[]
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setReadOnly(false);
+        TransactionalOperator operator = TransactionalOperator.create(this.txManager, transactionDefinition);
+        //end::repository_transactional_operator[]
+
+        //tag::repository_operations_in_a_transaction[]
+        User alice = new User("Alice", 29);
+        User bob = new User("Bob", 60);
+
+        this.userRepository.save(alice)
+                .then(this.userRepository.save(bob))
+                .as(operator::transactional)
+                .block();
+
+        this.userRepository.findAll()
+                .flatMap(a -> {
+                    a.setAge(a.getAge() - 1);
+                    return this.userRepository.save(a);
+                })
+                .as(operator::transactional).collectList().block();
+
+        assertThat(this.userRepository.findAll().map(User::getAge).collectList().block())
+                .containsExactlyInAnyOrder(28, 59);
+        //end::repository_operations_in_a_transaction[]
+    }
+
+    @Test
+    //tag::repository_part_tree[]
+    public void partTreeRepositoryMethodTest() {
+        User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
+        u1.favoriteDrink = "tea";
+        User u2 = new User("Squall", 17, null, null, new Address("2 Second st., London", "UK"));
+        u2.favoriteDrink = "wine";
+        Flux<User> users = Flux.fromArray(new User[]{u1, u2});
+
+        this.userRepository.saveAll(users).blockLast();
+
+        assertThat(this.userRepository.count().block()).isEqualTo(2);
+        assertThat(this.userRepository.findBy(PageRequest.of(0, 10)).collectList().block()).containsExactly(u1, u2);
+        assertThat(this.userRepository.findByAge(22).collectList().block()).containsExactly(u1);
+        assertThat(this.userRepository.findByAgeNot(22).collectList().block()).containsExactly(u2);
+        assertThat(this.userRepository.findByHomeAddressCountry("USA").collectList().block()).containsExactly(u1);
+        assertThat(this.userRepository.findByFavoriteDrink("wine").collectList().block()).containsExactly(u2);
+        assertThat(this.userRepository.findByAgeGreaterThanAndAgeLessThan(20, 30).collectList().block())
+                .containsExactly(u1);
+        assertThat(this.userRepository.findByAgeGreaterThan(10).collectList().block()).containsExactlyInAnyOrder(u1,
+                u2);
+    }
+    //end::repository_part_tree[]
+
+    @Test
+    //tag::repository_part_tree[]
+    public void partTreeRepositoryMethodTest_findByIdAndAge() {
+        User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
+        u1.favoriteDrink = "tea";
+        User u2 = new User("Squall", 17, null, null, new Address("2 Second st., London", "UK"));
+        u2.favoriteDrink = "wine";
+        Flux<User> users = Flux.fromArray(new User[]{u1, u2});
+
+        this.userRepository.saveAll(users).blockLast();
+
+        assertThat(this.userRepository.count().block()).isEqualTo(2);
+        assertThat(this.userRepository.findById("Cloud").block()).isEqualTo(u1);
+//		assertThat(this.userRepository.findByName("Cloud").collectList().block()).containsExactly(u1);
+        assertThat(this.userRepository.findByNameAndAge("Cloud", 22).collectList().block()).containsExactly(u1);
+    }
+    //end::repository_part_tree[]
+
+    @Test
+    //tag::repository_part_tree[]
+    public void partTreeRepositoryMethodTest_queryById() throws ExecutionException, InterruptedException {
+        Firestore firestore = FirestoreOptions.getDefaultInstance().getService();
+        DocumentReference documentReference = firestore.collection("test-collection").add(Collections.singletonMap("color", "blue")).get();
+//		QuerySnapshot query1 = firestore.collection("test-collection").whereEqualTo(documentReference.getId(), documentReference.toString()).get().get();
+        QuerySnapshot query2 = firestore.collection("test-collection").whereEqualTo(FieldPath.documentId(), documentReference.getId()).get().get();
+//		assertThat(query1.getDocuments().size()).isEqualTo(1);
+        assertThat(query2.getDocuments().size()).isEqualTo(1);
+    }
+    //end::repository_part_tree[]
+
+    @Test
+    //tag::repository_part_tree[]
+    public void partTreeRepositoryMethodTest_queryById_ownId() throws ExecutionException, InterruptedException, IOException {
+        Firestore firestore = FirestoreOptions.getDefaultInstance().getService();
+//		WriteResult result = firestore.collection("test-collection").document("myId1").create(Collections.singletonMap("color","red")).get();
+        StructuredQuery.Filter.Builder filter = StructuredQuery.Filter.newBuilder();
+        StructuredQuery.FieldReference fieldReference = StructuredQuery.FieldReference.newBuilder()
+                .setFieldPath("__name__").build();
+        // projects/mpeddada-test-2/databases/(default)/documents/test-collection/BU6iMzioJwbGKeLJmVmn
+        StructuredQuery.FieldFilter fieldFilter = filter.getFieldFilterBuilder().setField(fieldReference).setOp(StructuredQuery.FieldFilter.Operator.EQUAL)
+                .setValue(Value.newBuilder().setReferenceValue("projects/mpeddada-test-2/databases/(default)/documents/test-collection/myId1")).build();
+        StructuredQuery.Builder builder = StructuredQuery.newBuilder();
+        builder.setWhere(StructuredQuery.Filter.newBuilder().setFieldFilter(fieldFilter));
+
+        RunQueryRequest.Builder requestBuilder = RunQueryRequest.newBuilder()
+                .setParent("projects/mpeddada-test-2/databases/(default)/documents")
+                .setStructuredQuery(builder.build());
+        ManagedChannel managedChannel = ManagedChannelBuilder
+                .forTarget("dns:///" + "firestore.googleapis.com:443")
+                .build();
+        FirestoreGrpc.FirestoreStub firestoreStub = FirestoreGrpc.newStub(managedChannel).withCallCredentials(
+                MoreCallCredentials.from(GoogleCredentialsProvider.newBuilder().setScopesToApply(
+                        Collections.singletonList(GcpScope.DATASTORE.getUrl())).build().getCredentials()));
+        CountDownLatch latch = new CountDownLatch(1);
+        StreamObserver<RunQueryResponse> obs = new StreamObserver<RunQueryResponse>() {
+            @Override
+            public void onNext(RunQueryResponse o) {
+                System.out.println(o.getDocument());
+                latch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                System.out.println(throwable.getMessage());
+                latch.countDown();
+            }
+
+            @Override
+            public void onCompleted() {
+
+            }
+        };
+        firestoreStub.runQuery(requestBuilder.build(), obs);
+        latch.await();
+//		QuerySnapshot query1 = firestore.collection("test-collection").whereEqualTo(documentReference.getId(), documentReference.toString()).get().get();
+//		QuerySnapshot query2 = firestore.collection("test-collection").whereEqualTo(FieldPath.documentId(), "myId1").get().get();
+//		assertThat(query1.getDocuments().size()).isEqualTo(1);
+//		assertThat(query2.getDocuments().size()).isEqualTo(1);
+    }
+
+    //end::repository_part_tree[]
+    @Test
+    public void pageableQueryTest() {
+        Flux<User> users = Flux.fromStream(IntStream.range(1, 11).boxed())
+                .map(n -> new User("blah-person" + n, n));
+        this.userRepository.saveAll(users).blockLast();
+
+        PageRequest pageRequest = PageRequest.of(2, 3, Sort.by(Order.desc("age")));
+        List<String> pagedUsers = this.userRepository.findByAgeGreaterThan(0, pageRequest)
+                .map(User::getName)
+                .collectList()
+                .block();
+
+        assertThat(pagedUsers).containsExactlyInAnyOrder(
+                "blah-person4", "blah-person3", "blah-person2");
+    }
+
+    @Test
+    public void sortQueryTest() {
+        Flux<User> users = Flux.fromStream(IntStream.range(1, 11).boxed())
+                .map(n -> new User("blah-person" + n, n));
+        this.userRepository.saveAll(users).blockLast();
+
+        List<String> pagedUsers = this.userRepository
+                .findByAgeGreaterThan(7, Sort.by(Order.asc("age")))
+                .map(User::getName)
+                .collectList()
+                .block();
+
+        assertThat(pagedUsers).containsExactlyInAnyOrder(
+                "blah-person8", "blah-person9", "blah-person10");
+    }
+
+    @Test
+    public void inFilterQueryTest() {
+        User u1 = new User("Cloud", 22);
+        User u2 = new User("Squall", 17);
+        Flux<User> users = Flux.fromArray(new User[]{u1, u2});
+
+        this.userRepository.saveAll(users).blockLast();
+
+        List<String> pagedUsers = this.userRepository.findByAgeIn(Arrays.asList(22, 23, 24))
+                .map(User::getName)
+                .collectList()
+                .block();
+
+        assertThat(pagedUsers).containsExactly("Cloud");
+
+        pagedUsers = this.userRepository.findByAgeIn(Arrays.asList(17, 22))
+                .map(User::getName)
+                .collectList()
+                .block();
+
+        assertThat(pagedUsers).containsExactly("Cloud", "Squall");
+
+        pagedUsers = this.userRepository.findByAgeIn(Arrays.asList(18, 23))
+                .map(User::getName)
+                .collectList()
+                .block();
+
+        assertThat(pagedUsers).isEmpty();
+
+        pagedUsers = this.userRepository.findByAgeNotIn(Arrays.asList(17, 22, 33))
+                .map(User::getName)
+                .collectList()
+                .block();
+
+        assertThat(pagedUsers).isEmpty();
+
+        pagedUsers = this.userRepository.findByAgeNotIn(Arrays.asList(10, 20, 30))
+                .map(User::getName)
+                .collectList()
+                .block();
+
+        assertThat(pagedUsers).containsExactlyInAnyOrder("Cloud", "Squall");
+
+        pagedUsers = this.userRepository.findByAgeNotIn(Arrays.asList(17, 33))
+                .map(User::getName)
+                .collectList()
+                .block();
+
+        assertThat(pagedUsers).containsExactly("Cloud");
+    }
+
+    @Test
+    public void containsFilterQueryTest() {
+        User u1 = new User("Cloud", 22, Arrays.asList("cat", "dog"));
+        User u2 = new User("Squall", 17, Collections.singletonList("pony"));
+        Flux<User> users = Flux.fromArray(new User[]{u1, u2});
+
+        this.userRepository.saveAll(users).blockLast();
+
+        List<String> pagedUsers = this.userRepository.findByPetsContains(Arrays.asList("cat", "dog"))
+                .map(User::getName)
+                .collectList()
+                .block();
+
+        assertThat(pagedUsers).containsExactly("Cloud");
+
+        pagedUsers = this.userRepository.findByPetsContains(Arrays.asList("cat", "pony"))
+                .map(User::getName)
+                .collectList()
+                .block();
+
+        assertThat(pagedUsers).containsExactlyInAnyOrder("Cloud", "Squall");
+
+        pagedUsers = this.userRepository.findByAgeAndPetsContains(17, Arrays.asList("cat", "pony"))
+                .map(User::getName)
+                .collectList()
+                .block();
+
+        assertThat(pagedUsers).containsExactlyInAnyOrder("Squall");
+
+        pagedUsers = this.userRepository.findByPetsContainsAndAgeIn("cat", Arrays.asList(22, 23))
+                .map(User::getName)
+                .collectList()
+                .block();
+
+        assertThat(pagedUsers).containsExactlyInAnyOrder("Cloud");
+    }
+
+    @Test
+    public void declarativeTransactionRollbackTest() {
+        this.userService.deleteUsers().onErrorResume(throwable -> Mono.empty()).block();
+
+        verify(this.transactionManager, times(0)).commit(any());
+        verify(this.transactionManager, times(1)).rollback(any());
+        verify(this.transactionManager, times(1)).getReactiveTransaction(any());
+    }
+
+    @Test
+    public void declarativeTransactionCommitTest() {
+        User alice = new User("Alice", 29);
+        User bob = new User("Bob", 60);
+
+        this.userRepository.save(alice).then(this.userRepository.save(bob)).block();
+
+        this.userService.updateUsers().block();
+
+        verify(this.transactionManager, times(1)).commit(any());
+        verify(this.transactionManager, times(0)).rollback(any());
+        verify(this.transactionManager, times(1)).getReactiveTransaction(any());
+
+        assertThat(this.userRepository.findAll().map(User::getAge).collectList().block())
+                .containsExactlyInAnyOrder(28, 59);
+    }
+
+    @Test
+    public void transactionPropagationTest() {
+        User alice = new User("Alice", 29);
+        User bob = new User("Bob", 60);
+
+        this.userRepository.save(alice).then(this.userRepository.save(bob)).block();
+
+        this.userService.updateUsersTransactionPropagation().block();
+
+        verify(this.transactionManager, times(1)).commit(any());
+        verify(this.transactionManager, times(0)).rollback(any());
+        verify(this.transactionManager, times(1)).getReactiveTransaction(any());
+
+        assertThat(this.userRepository.findAll().map(User::getAge).collectList().block())
+                .containsExactlyInAnyOrder(28, 59);
+    }
+
+    @Test
+    public void testDoubleSub() {
+        User alice = new User("Alice", 29);
+        User bob = new User("Bob", 60);
+        this.userRepository.save(alice).then(this.userRepository.save(bob)).block();
+
+        Mono<User> aUser = this.userRepository.findByAge(29).next();
+
+        Flux<String> stringFlux = userRepository.findAll()
+                .flatMap(user ->
+                        aUser.flatMap(user1 -> Mono.just(user.getName() + " " + user1.getName())));
+        List<String> list = stringFlux.collectList().block();
+        assertThat(list).contains("Alice Alice", "Bob Alice");
+    }
 }

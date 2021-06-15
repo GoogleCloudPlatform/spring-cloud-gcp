@@ -24,15 +24,19 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.data.firestore.FirestoreDataException;
 import com.google.cloud.spring.data.firestore.FirestoreReactiveOperations;
+import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntity;
 import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentProperty;
 import com.google.firestore.v1.StructuredQuery;
 import com.google.firestore.v1.StructuredQuery.FieldReference;
+import com.google.firestore.v1.Value;
 import com.google.protobuf.Int32Value;
 
 import org.springframework.data.domain.Pageable;
@@ -216,9 +220,18 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 							"Too few parameters are provided for query method: " + getQueryMethod().getName());
 				}
 				Object value = it.next();
-				filter.getFieldFilterBuilder().setField(fieldReference)
-						.setOp(getOperator(part, value))
-						.setValue(this.classMapper.toFirestoreValue(value));
+				if (fieldReference.getFieldPath().equals(FieldPath.documentId().toString())){
+					FirestoreTemplate firestoreTemplate = (FirestoreTemplate)this.reactiveOperations;
+					DocumentReference valueForId = firestoreTemplate.getDocumentReference(persistentEntity.collectionName(), (String)value);
+					filter.getFieldFilterBuilder().setField(fieldReference)
+							.setOp(getOperator(part, valueForId))
+							.setValue(Value.newBuilder().setStringValue(valueForId.getPath()));
+				}
+				else {
+					filter.getFieldFilterBuilder().setField(fieldReference)
+							.setOp(getOperator(part, value))
+							.setValue(this.classMapper.toFirestoreValue(value));
+				}
 			}
 			compositeFilter.addFilters(filter.build());
 		});
