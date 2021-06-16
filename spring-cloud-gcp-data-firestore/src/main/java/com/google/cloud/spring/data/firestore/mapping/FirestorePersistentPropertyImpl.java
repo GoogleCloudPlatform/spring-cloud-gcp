@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.data.firestore.mapping;
 
-
 import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.PropertyName;
@@ -31,42 +30,41 @@ import org.springframework.data.mapping.model.SimpleTypeHolder;
  * Persistent property metadata implementation for Firestore.
  *
  * @author Dmitry Solomakha
- *
  * @since 1.2
  */
 public class FirestorePersistentPropertyImpl
-		extends AnnotationBasedPersistentProperty<FirestorePersistentProperty>
-		implements FirestorePersistentProperty {
+        extends AnnotationBasedPersistentProperty<FirestorePersistentProperty>
+        implements FirestorePersistentProperty {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param property the property to store
-	 * @param owner the entity to which this property belongs
-	 * @param simpleTypeHolder the type holder
-	 */
-	FirestorePersistentPropertyImpl(Property property,
-			PersistentEntity<?, FirestorePersistentProperty> owner,
-			SimpleTypeHolder simpleTypeHolder) {
-		super(property, owner, simpleTypeHolder);
-	}
+    /**
+     * Constructor.
+     *
+     * @param property         the property to store
+     * @param owner            the entity to which this property belongs
+     * @param simpleTypeHolder the type holder
+     */
+    FirestorePersistentPropertyImpl(Property property,
+                                    PersistentEntity<?, FirestorePersistentProperty> owner,
+                                    SimpleTypeHolder simpleTypeHolder) {
+        super(property, owner, simpleTypeHolder);
+    }
 
 
-	@Override
-	protected Association<FirestorePersistentProperty> createAssociation() {
-		return new Association<>(this, null);
-	}
+    @Override
+    protected Association<FirestorePersistentProperty> createAssociation() {
+        return new Association<>(this, null);
+    }
 
-	@Override
-	public boolean isIdProperty() {
-		return findAnnotation(DocumentId.class) != null;
-	}
+    @Override
+    public boolean isIdProperty() {
+        return findAnnotation(DocumentId.class) != null;
+    }
 
-	public String getFieldName() {
-		if (isIdProperty()){
-			return "__name__";
-		}
-		PropertyName annotation = findAnnotation(PropertyName.class);
-		return annotation != null ? annotation.value() : super.getName();
-	}
+    public String getFieldName() {
+        if (isIdProperty()) {
+            return FieldPath.documentId().toString();
+        }
+        PropertyName annotation = findAnnotation(PropertyName.class);
+        return annotation != null ? annotation.value() : super.getName();
+    }
 }

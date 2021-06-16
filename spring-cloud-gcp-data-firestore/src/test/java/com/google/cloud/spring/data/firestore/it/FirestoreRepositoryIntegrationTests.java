@@ -170,7 +170,7 @@ public class FirestoreRepositoryIntegrationTests {
     public void partTreeRepositoryMethodTest() {
         User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
         u1.favoriteDrink = "tea";
-        User u2 = new User("Squall", 17, null, null, new Address("2 Second st., London", "UK"));
+        User u2 = new User("Squall", 17, Arrays.asList("cat", "dog") , null, new Address("2 Second st., London", "UK"));
         u2.favoriteDrink = "wine";
         Flux<User> users = Flux.fromArray(new User[]{u1, u2});
 
@@ -186,88 +186,10 @@ public class FirestoreRepositoryIntegrationTests {
                 .containsExactly(u1);
         assertThat(this.userRepository.findByAgeGreaterThan(10).collectList().block()).containsExactlyInAnyOrder(u1,
                 u2);
-    }
-    //end::repository_part_tree[]
-
-    @Test
-    //tag::repository_part_tree[]
-    public void partTreeRepositoryMethodTest_findByIdAndAge() {
-        User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
-        u1.favoriteDrink = "tea";
-        User u2 = new User("Squall", 17, null, null, new Address("2 Second st., London", "UK"));
-        u2.favoriteDrink = "wine";
-        Flux<User> users = Flux.fromArray(new User[]{u1, u2});
-
-        this.userRepository.saveAll(users).blockLast();
-
-        assertThat(this.userRepository.count().block()).isEqualTo(2);
-        assertThat(this.userRepository.findById("Cloud").block()).isEqualTo(u1);
-//		assertThat(this.userRepository.findByName("Cloud").collectList().block()).containsExactly(u1);
         assertThat(this.userRepository.findByNameAndAge("Cloud", 22).collectList().block()).containsExactly(u1);
+        assertThat(this.userRepository.findByNameAndPetsContains("Squall", Collections.singletonList("cat")).collectList().block()).containsExactly(u2);
     }
     //end::repository_part_tree[]
-
-    @Test
-    //tag::repository_part_tree[]
-    public void partTreeRepositoryMethodTest_queryById() throws ExecutionException, InterruptedException {
-        Firestore firestore = FirestoreOptions.getDefaultInstance().getService();
-        DocumentReference documentReference = firestore.collection("test-collection").add(Collections.singletonMap("color", "blue")).get();
-//		QuerySnapshot query1 = firestore.collection("test-collection").whereEqualTo(documentReference.getId(), documentReference.toString()).get().get();
-        QuerySnapshot query2 = firestore.collection("test-collection").whereEqualTo(FieldPath.documentId(), documentReference.getId()).get().get();
-//		assertThat(query1.getDocuments().size()).isEqualTo(1);
-        assertThat(query2.getDocuments().size()).isEqualTo(1);
-    }
-    //end::repository_part_tree[]
-
-    @Test
-    //tag::repository_part_tree[]
-    public void partTreeRepositoryMethodTest_queryById_ownId() throws ExecutionException, InterruptedException, IOException {
-        Firestore firestore = FirestoreOptions.getDefaultInstance().getService();
-//		WriteResult result = firestore.collection("test-collection").document("myId1").create(Collections.singletonMap("color","red")).get();
-        StructuredQuery.Filter.Builder filter = StructuredQuery.Filter.newBuilder();
-        StructuredQuery.FieldReference fieldReference = StructuredQuery.FieldReference.newBuilder()
-                .setFieldPath("__name__").build();
-        // projects/mpeddada-test-2/databases/(default)/documents/test-collection/BU6iMzioJwbGKeLJmVmn
-        StructuredQuery.FieldFilter fieldFilter = filter.getFieldFilterBuilder().setField(fieldReference).setOp(StructuredQuery.FieldFilter.Operator.EQUAL)
-                .setValue(Value.newBuilder().setReferenceValue("projects/mpeddada-test-2/databases/(default)/documents/test-collection/myId1")).build();
-        StructuredQuery.Builder builder = StructuredQuery.newBuilder();
-        builder.setWhere(StructuredQuery.Filter.newBuilder().setFieldFilter(fieldFilter));
-
-        RunQueryRequest.Builder requestBuilder = RunQueryRequest.newBuilder()
-                .setParent("projects/mpeddada-test-2/databases/(default)/documents")
-                .setStructuredQuery(builder.build());
-        ManagedChannel managedChannel = ManagedChannelBuilder
-                .forTarget("dns:///" + "firestore.googleapis.com:443")
-                .build();
-        FirestoreGrpc.FirestoreStub firestoreStub = FirestoreGrpc.newStub(managedChannel).withCallCredentials(
-                MoreCallCredentials.from(GoogleCredentialsProvider.newBuilder().setScopesToApply(
-                        Collections.singletonList(GcpScope.DATASTORE.getUrl())).build().getCredentials()));
-        CountDownLatch latch = new CountDownLatch(1);
-        StreamObserver<RunQueryResponse> obs = new StreamObserver<RunQueryResponse>() {
-            @Override
-            public void onNext(RunQueryResponse o) {
-                System.out.println(o.getDocument());
-                latch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                System.out.println(throwable.getMessage());
-                latch.countDown();
-            }
-
-            @Override
-            public void onCompleted() {
-
-            }
-        };
-        firestoreStub.runQuery(requestBuilder.build(), obs);
-        latch.await();
-//		QuerySnapshot query1 = firestore.collection("test-collection").whereEqualTo(documentReference.getId(), documentReference.toString()).get().get();
-//		QuerySnapshot query2 = firestore.collection("test-collection").whereEqualTo(FieldPath.documentId(), "myId1").get().get();
-//		assertThat(query1.getDocuments().size()).isEqualTo(1);
-//		assertThat(query2.getDocuments().size()).isEqualTo(1);
-    }
 
     //end::repository_part_tree[]
     @Test
