@@ -25,6 +25,7 @@ import java.util.function.Function;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Internal;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
@@ -68,7 +69,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	private static final int FIRESTORE_WRITE_MAX_SIZE = 500;
 
-	public static final String NAME_FIELD = "__name__";
+    public static final String NAME_FIELD = FieldPath.documentId().toString();
 
 	private static final StructuredQuery.Projection ID_PROJECTION = StructuredQuery.Projection.newBuilder()
 			.addFields(StructuredQuery.FieldReference.newBuilder().setFieldPath(NAME_FIELD).build())

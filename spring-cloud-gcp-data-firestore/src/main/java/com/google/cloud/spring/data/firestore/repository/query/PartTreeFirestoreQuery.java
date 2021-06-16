@@ -222,10 +222,11 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 				Object value = it.next();
 				if (fieldReference.getFieldPath().equals(FieldPath.documentId().toString())){
 					FirestoreTemplate firestoreTemplate = (FirestoreTemplate)this.reactiveOperations;
-					DocumentReference valueForId = firestoreTemplate.getDocumentReference(persistentEntity.collectionName(), (String)value);
+					DocumentReference documentReference = firestoreTemplate.getDocumentReference(persistentEntity.collectionName(), (String)value);
 					filter.getFieldFilterBuilder().setField(fieldReference)
-							.setOp(getOperator(part, valueForId))
-							.setValue(Value.newBuilder().setReferenceValue(firestoreTemplate.buildResourceName(persistentEntity, valueForId.getId())));
+							.setOp(getOperator(part, documentReference))
+							.setValue(Value.newBuilder().setReferenceValue(
+									firestoreTemplate.buildResourceName(persistentEntity, documentReference.getId())));
 				}
 				else {
 					filter.getFieldFilterBuilder().setField(fieldReference)

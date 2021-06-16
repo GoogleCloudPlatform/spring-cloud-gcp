@@ -18,6 +18,8 @@ package com.google.cloud.spring.data.firestore.repository.query;
 
 import java.util.function.Consumer;
 
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.spring.data.firestore.FirestoreDataException;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.entities.User;
@@ -25,6 +27,7 @@ import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.firestore.v1.StructuredQuery;
+import com.google.firestore.v1.Value;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import reactor.core.publisher.Flux;
@@ -43,10 +46,12 @@ import static org.mockito.Mockito.when;
 public class PartTreeFirestoreQueryTests {
 	private FirestoreClassMapper classMapper = new FirestoreDefaultClassMapper(new FirestoreMappingContext());
 
-	private static final User DUMMY_USER = new User("Hello", 23);
+	private static final User TEST_USER = new User("Hello", 23);
 	private static final Consumer<InvocationOnMock> NOOP = invocation -> { };
 
 	private FirestoreTemplate firestoreTemplate = mock(FirestoreTemplate.class);
+
+	private DocumentReference documentReference = mock(DocumentReference.class);
 
 	private FirestoreQueryMethod queryMethod = mock(FirestoreQueryMethod.class);
 
@@ -70,8 +75,9 @@ public class PartTreeFirestoreQueryTests {
 			compositeFilter.addFilters(filterAge.build());
 
 			StructuredQuery.Filter.Builder filterName = StructuredQuery.Filter.newBuilder();
+			String documentIdFieldName = FieldPath.documentId().toString();
 			filterName.getUnaryFilterBuilder().setField(StructuredQuery.FieldReference.newBuilder()
-					.setFieldPath("name").build())
+					.setFieldPath(documentIdFieldName).build())
 					.setOp(StructuredQuery.UnaryFilter.Operator.IS_NULL);
 
 			compositeFilter.addFilters(filterName.build());
@@ -91,6 +97,46 @@ public class PartTreeFirestoreQueryTests {
 		});
 
 		partTreeFirestoreQuery.execute(new Object[] { 22, "USA" });
+	}
+
+	@Test
+	public void testPartTreeQuery_queryById() {
+		when(this.firestoreTemplate.getDocumentReference("usersCollection", "Hello")).thenReturn(this.documentReference);
+		when(this.firestoreTemplate.buildResourceName(any(), any())).thenReturn("full/reference/path/to/document");
+
+		PartTreeFirestoreQuery partTreeFirestoreQuery = createPartTreeQuery("findByAgeAndName", invocation -> {
+			StructuredQuery.Builder actualBuilder = invocation.getArgument(0);
+			Class clazz = invocation.getArgument(1);
+
+			StructuredQuery.Builder builder = StructuredQuery.newBuilder();
+
+			StructuredQuery.CompositeFilter.Builder compositeFilter = StructuredQuery.CompositeFilter.newBuilder();
+			compositeFilter.setOp(StructuredQuery.CompositeFilter.Operator.AND);
+
+			StructuredQuery.Filter.Builder filterAge = StructuredQuery.Filter.newBuilder();
+			filterAge.getFieldFilterBuilder().setField(StructuredQuery.FieldReference.newBuilder()
+					.setFieldPath("age").build())
+					.setOp(StructuredQuery.FieldFilter.Operator.EQUAL)
+					.setValue(this.classMapper.toFirestoreValue(22));
+
+			compositeFilter.addFilters(filterAge.build());
+
+			StructuredQuery.Filter.Builder filterName = StructuredQuery.Filter.newBuilder();
+			String documentIdFieldName = FieldPath.documentId().toString();
+
+			filterName.getFieldFilterBuilder().setField(StructuredQuery.FieldReference.newBuilder()
+					.setFieldPath(documentIdFieldName).build())
+					.setOp(StructuredQuery.FieldFilter.Operator.EQUAL)
+					.setValue(Value.newBuilder().setReferenceValue("full/reference/path/to/document"));
+
+			compositeFilter.addFilters(filterName.build());
+
+			builder.setWhere(StructuredQuery.Filter.newBuilder().setCompositeFilter(compositeFilter.build()));
+			assertThat(actualBuilder.build()).isEqualTo(builder.build());
+
+			assertThat(clazz).isEqualTo(User.class);
+		});
+		partTreeFirestoreQuery.execute(new Object[] { 22, "Hello" });
 	}
 
 	@Test
@@ -158,7 +204,7 @@ public class PartTreeFirestoreQueryTests {
 	private PartTreeFirestoreQuery createPartTreeQuery(String methodName, Consumer<InvocationOnMock> validator) {
 		when(this.firestoreTemplate.execute(any(), any())).thenAnswer(invocation -> {
 			validator.accept(invocation);
-			return Flux.just(DUMMY_USER);
+			return Flux.just(TEST_USER);
 		});
 
 		return setUpPartTreeFirestoreQuery(methodName);

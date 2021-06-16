@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.data.firestore.mapping;
 
+import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.firestore.annotation.DocumentId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,7 +55,7 @@ public class FirestorePersistentPropertyImplTest {
 
         FirestorePersistentPropertyImpl firestorePersistentProperty = new FirestorePersistentPropertyImpl(mockProperty,
                 mockPersistentEntity, mockSimpleTypeHolder);
-        assertThat(firestorePersistentProperty.getFieldName()).isEqualTo("__name__");
+        assertThat(firestorePersistentProperty.getFieldName()).isEqualTo(FieldPath.documentId().toString());
     }
 
     static class TestEntity {
