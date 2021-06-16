@@ -432,7 +432,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 		return buildResourceName(persistentEntity, idVal.toString());
 	}
 
-	private String buildResourceName(FirestorePersistentEntity<?> persistentEntity, String s) {
+	public String buildResourceName(FirestorePersistentEntity<?> persistentEntity, String s) {
 		return this.parent + "/" + persistentEntity.collectionName() + "/" + s;
 	}
 
