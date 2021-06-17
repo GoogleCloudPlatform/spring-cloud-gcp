@@ -16,35 +16,15 @@
 
 package com.google.cloud.spring.data.firestore.it;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.IntStream;
 
-import com.google.api.gax.core.GoogleCredentialsProvider;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.FieldPath;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.FirestoreOptions;
-import com.google.cloud.firestore.QuerySnapshot;
-import com.google.cloud.firestore.WriteResult;
-import com.google.cloud.spring.core.GcpScope;
 import com.google.cloud.spring.data.firestore.entities.User;
 import com.google.cloud.spring.data.firestore.entities.User.Address;
 import com.google.cloud.spring.data.firestore.entities.UserRepository;
 import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
-import com.google.firestore.v1.FirestoreGrpc;
-import com.google.firestore.v1.RunQueryRequest;
-import com.google.firestore.v1.RunQueryResponse;
-import com.google.firestore.v1.StructuredQuery;
-import com.google.firestore.v1.Value;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-import io.grpc.auth.MoreCallCredentials;
-import io.grpc.stub.StreamObserver;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -170,7 +150,7 @@ public class FirestoreRepositoryIntegrationTests {
 	public void partTreeRepositoryMethodTest() {
 		User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
 		u1.favoriteDrink = "tea";
-		User u2 = new User("Squall", 17, null, null, new Address("2 Second st., London", "UK"));
+		User u2 = new User("Squall", 17, Arrays.asList("cat", "dog"), null, new Address("2 Second st., London", "UK"));
 		u2.favoriteDrink = "wine";
 		Flux<User> users = Flux.fromArray(new User[] {u1, u2});
 
@@ -186,6 +166,14 @@ public class FirestoreRepositoryIntegrationTests {
 				.containsExactly(u1);
 		assertThat(this.userRepository.findByAgeGreaterThan(10).collectList().block()).containsExactlyInAnyOrder(u1,
 				u2);
+    	assertThat(this.userRepository.findByNameAndAge("Cloud", 22).collectList().block())
+        	.containsExactly(u1);
+    	assertThat(
+            	this.userRepository
+                	.findByNameAndPetsContains("Squall", Collections.singletonList("cat"))
+                	.collectList()
+                	.block())
+        	.containsExactly(u2);
 	}
 	//end::repository_part_tree[]
 
