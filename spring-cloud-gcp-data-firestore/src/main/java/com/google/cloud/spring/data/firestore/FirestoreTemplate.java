@@ -93,16 +93,21 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	private int writeBufferSize = FIRESTORE_WRITE_MAX_SIZE;
 
-	/**
-	 * Constructor for FirestoreTemplate.
-	 * @param firestoreStub Firestore gRPC stub
-	 * @param parent the parent resource. For example:
-	 *     projects/{project_id}/databases/{database_id}/documents
-	 * @param classMapper a {@link FirestoreClassMapper} used for conversion
-	 * @param mappingContext Mapping Context
-	 */
-	public FirestoreTemplate(FirestoreStub firestoreStub, String parent, FirestoreClassMapper classMapper,
-							 FirestoreMappingContext mappingContext, Firestore firestore) {
+  /**
+   * Constructor for FirestoreTemplate.
+   *
+   * @param firestoreStub Firestore gRPC stub
+   * @param parent the parent resource. For example:
+   *     projects/{project_id}/databases/{database_id}/documents
+   * @param classMapper a {@link FirestoreClassMapper} used for conversion
+   * @param mappingContext Mapping Context
+   */
+  public FirestoreTemplate(
+      FirestoreStub firestoreStub,
+      String parent,
+      FirestoreClassMapper classMapper,
+      FirestoreMappingContext mappingContext,
+      Firestore firestore) {
 		this.firestoreStub = firestoreStub;
 		this.parent = parent;
 		this.databasePath = Util.extractDatabasePath(parent);
