@@ -220,9 +220,9 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 							"Too few parameters are provided for query method: " + getQueryMethod().getName());
 				}
 				Object value = it.next();
-				if (fieldReference.getFieldPath().equals(FieldPath.documentId().toString())){
-					FirestoreTemplate firestoreTemplate = (FirestoreTemplate)this.reactiveOperations;
-					DocumentReference documentReference = firestoreTemplate.getDocumentReference(persistentEntity.collectionName(), (String)value);
+				if (fieldReference.getFieldPath().equals(FieldPath.documentId().toString())) {
+					FirestoreTemplate firestoreTemplate = (FirestoreTemplate) this.reactiveOperations;
+					DocumentReference documentReference = firestoreTemplate.getDocumentReference(persistentEntity.collectionName(), (String) value);
 					filter.getFieldFilterBuilder().setField(fieldReference)
 							.setOp(getOperator(part, documentReference))
 							.setValue(Value.newBuilder().setReferenceValue(

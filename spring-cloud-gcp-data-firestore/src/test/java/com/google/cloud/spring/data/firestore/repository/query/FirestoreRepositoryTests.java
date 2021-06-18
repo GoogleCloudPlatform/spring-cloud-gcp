@@ -70,7 +70,7 @@ public class FirestoreRepositoryTests {
 				Order.newBuilder()
 						.setDirection(Direction.ASCENDING)
 						.setField(
-								FieldReference.newBuilder().setFieldPath("name"))
+								FieldReference.newBuilder().setFieldPath("__name__"))
 						.build());
 	}
 

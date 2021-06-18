@@ -69,7 +69,10 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	private static final int FIRESTORE_WRITE_MAX_SIZE = 500;
 
-    public static final String NAME_FIELD = FieldPath.documentId().toString();
+	/**
+	 * The special property name to use when querying a document ID.
+	 */
+	public static final String NAME_FIELD = FieldPath.documentId().toString();
 
 	private static final StructuredQuery.Projection ID_PROJECTION = StructuredQuery.Projection.newBuilder()
 			.addFields(StructuredQuery.FieldReference.newBuilder().setFieldPath(NAME_FIELD).build())
@@ -93,21 +96,21 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	private int writeBufferSize = FIRESTORE_WRITE_MAX_SIZE;
 
-  /**
-   * Constructor for FirestoreTemplate.
-   *
-   * @param firestoreStub Firestore gRPC stub
-   * @param parent the parent resource. For example:
-   *     projects/{project_id}/databases/{database_id}/documents
-   * @param classMapper a {@link FirestoreClassMapper} used for conversion
-   * @param mappingContext Mapping Context
-   */
-  public FirestoreTemplate(
-      FirestoreStub firestoreStub,
-      String parent,
-      FirestoreClassMapper classMapper,
-      FirestoreMappingContext mappingContext,
-      Firestore firestore) {
+	/**
+	 * Constructor for FirestoreTemplate.
+	 *
+	 * @param firestoreStub Firestore gRPC stub
+	 * @param parent the parent resource. For example: projects/{project_id}/databases/{database_id}/documents
+	 * @param classMapper a {@link FirestoreClassMapper} used for conversion
+	 * @param mappingContext Mapping Context
+	 * @param firestore firestore
+	 */
+	public FirestoreTemplate(
+			FirestoreStub firestoreStub,
+			String parent,
+			FirestoreClassMapper classMapper,
+			FirestoreMappingContext mappingContext,
+			Firestore firestore) {
 		this.firestoreStub = firestoreStub;
 		this.parent = parent;
 		this.databasePath = Util.extractDatabasePath(parent);
@@ -455,7 +458,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 		return this.classMapper;
 	}
 
-	public DocumentReference getDocumentReference(String collection, String documentId){
+	public DocumentReference getDocumentReference(String collection, String documentId) {
 		return this.firestore.collection(collection).document(documentId);
 	}
 }

@@ -166,14 +166,9 @@ public class FirestoreRepositoryIntegrationTests {
 				.containsExactly(u1);
 		assertThat(this.userRepository.findByAgeGreaterThan(10).collectList().block()).containsExactlyInAnyOrder(u1,
 				u2);
-    	assertThat(this.userRepository.findByNameAndAge("Cloud", 22).collectList().block())
-        	.containsExactly(u1);
-    	assertThat(
-            	this.userRepository
-                	.findByNameAndPetsContains("Squall", Collections.singletonList("cat"))
-                	.collectList()
-                	.block())
-        	.containsExactly(u2);
+		assertThat(this.userRepository.findByNameAndAge("Cloud", 22).collectList().block())
+				.containsExactly(u1);
+		assertThat(this.userRepository.findByNameAndPetsContains("Squall", Collections.singletonList("cat")).collectList().block()).containsExactly(u2);
 	}
 	//end::repository_part_tree[]
 
