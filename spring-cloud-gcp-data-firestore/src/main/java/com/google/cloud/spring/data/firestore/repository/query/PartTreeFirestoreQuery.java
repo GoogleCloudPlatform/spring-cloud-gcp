@@ -226,7 +226,7 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 					filter.getFieldFilterBuilder().setField(fieldReference)
 							.setOp(getOperator(part, documentReference))
 							.setValue(Value.newBuilder().setReferenceValue(
-									firestoreTemplate.buildResourceName(persistentEntity, documentReference.getId())));
+									firestoreTemplate.buildResourceName(persistentEntity, FieldPath.documentId().toString())));
 				}
 				else {
 					filter.getFieldFilterBuilder().setField(fieldReference)

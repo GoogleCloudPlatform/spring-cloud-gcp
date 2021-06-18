@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.data.firestore.repository.query;
 
+import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.entities.User;
 import com.google.cloud.spring.data.firestore.entities.UserRepository;
@@ -70,7 +71,7 @@ public class FirestoreRepositoryTests {
 				Order.newBuilder()
 						.setDirection(Direction.ASCENDING)
 						.setField(
-								FieldReference.newBuilder().setFieldPath("__name__"))
+								FieldReference.newBuilder().setFieldPath(FieldPath.documentId().toString()))
 						.build());
 	}
 

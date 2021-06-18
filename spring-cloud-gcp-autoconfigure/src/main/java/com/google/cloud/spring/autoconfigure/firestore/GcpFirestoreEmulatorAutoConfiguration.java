@@ -57,9 +57,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(GcpFirestoreProperties.class)
 public class GcpFirestoreEmulatorAutoConfiguration {
 	private final String hostPort;
-
 	private final String projectId;
-
 	private final String rootPath;
 
 	GcpFirestoreEmulatorAutoConfiguration(GcpFirestoreProperties properties) {
@@ -131,7 +129,8 @@ public class GcpFirestoreEmulatorAutoConfiguration {
 					firestoreStub,
 					rootPath + "/documents",
 					classMapper,
-					firestoreMappingContext, firestore);
+					firestoreMappingContext,
+					firestore);
 		}
 
 		@Bean
