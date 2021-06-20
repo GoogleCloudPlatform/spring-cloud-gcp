@@ -1,0 +1,2 @@
+com.google.cloud.spring.support.nativex.SpringDataFirestoreDocumentsComponentProcessor
+com.google.cloud.spring.support.nativex.FirestoreRepositoryComponentProcessor
