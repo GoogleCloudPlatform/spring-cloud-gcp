@@ -24,9 +24,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.cloud.Timestamp;
-import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.FieldPath;
-import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Internal;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
@@ -65,18 +63,19 @@ import org.springframework.util.Assert;
  * @since 1.2
  */
 public class FirestoreTemplate implements FirestoreReactiveOperations {
+	private FirestoreClassMapper classMapper;
 
 	private static final int FIRESTORE_WRITE_MAX_SIZE = 500;
 
-	private static final String NOT_FOUND_DOCUMENT_MESSAGE = "NOT_FOUND: Document";
+	private static final String NAME_FIELD = FieldPath.documentId().toString();
 
-	private final String nameField = FieldPath.documentId().toString();
-
-	private final StructuredQuery.Projection idProjection = StructuredQuery.Projection.newBuilder()
-			.addFields(StructuredQuery.FieldReference.newBuilder().setFieldPath(nameField).build())
+	private static final StructuredQuery.Projection ID_PROJECTION = StructuredQuery.Projection.newBuilder()
+			.addFields(StructuredQuery.FieldReference.newBuilder().setFieldPath(NAME_FIELD).build())
 			.build();
 
-	private final DocumentMask nameOnlyMask = DocumentMask.newBuilder().addFieldPaths(nameField).build();
+	private static final DocumentMask NAME_ONLY_MASK = DocumentMask.newBuilder().addFieldPaths(NAME_FIELD).build();
+
+	private static final String NOT_FOUND_DOCUMENT_MESSAGE = "NOT_FOUND: Document";
 
 	private final FirestoreStub firestoreStub;
 
@@ -85,10 +84,6 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 	private final String databasePath;
 
 	private final FirestoreMappingContext mappingContext;
-
-	private final Firestore firestore;
-
-	private final FirestoreClassMapper classMapper;
 
 	private Duration writeBufferTimeout = Duration.ofMillis(500);
 
@@ -102,38 +97,31 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 	 *     projects/{project_id}/databases/{database_id}/documents
 	 * @param classMapper a {@link FirestoreClassMapper} used for conversion
 	 * @param mappingContext Mapping Context
-	 * @param firestore Firestore service
 	 */
 	public FirestoreTemplate(
 			FirestoreStub firestoreStub,
 			String parent,
 			FirestoreClassMapper classMapper,
-			FirestoreMappingContext mappingContext,
-			Firestore firestore) {
+			FirestoreMappingContext mappingContext) {
 		this.firestoreStub = firestoreStub;
 		this.parent = parent;
 		this.databasePath = Util.extractDatabasePath(parent);
 		this.classMapper = classMapper;
 		this.mappingContext = mappingContext;
-		this.firestore = firestore;
-	}
-
-	public Duration getWriteBufferTimeout() {
-		return this.writeBufferTimeout;
 	}
 
 	/**
-	 * Sets the {@link Duration} for how long to wait for the entity buffer to fill before
-	 * sending the buffered entities to Firestore for insert/update/delete operations.
-	 * @param bufferTimeout duration to wait for entity buffer to fill before sending to
-	 *     Firestore. (default = 500ms)
+	 * Sets the {@link Duration} for how long to wait for the entity buffer to fill before sending
+	 * the buffered entities to Firestore for insert/update/delete operations.
+	 * @param bufferTimeout duration to wait for entity buffer to fill before sending to Firestore.
+	 * 		(default = 500ms)
 	 */
 	public void setWriteBufferTimeout(Duration bufferTimeout) {
 		this.writeBufferTimeout = bufferTimeout;
 	}
 
-	public int getWriteBufferSize() {
-		return this.writeBufferSize;
+	public Duration getWriteBufferTimeout() {
+		return this.writeBufferTimeout;
 	}
 
 	/**
@@ -148,10 +136,14 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 		this.writeBufferSize = bufferWriteSize;
 	}
 
+	public int getWriteBufferSize() {
+		return this.writeBufferSize;
+	}
+
 	@Override
 	public <T> Mono<Boolean> existsById(Publisher<String> idPublisher, Class<T> entityClass) {
 		return Flux.from(idPublisher).next()
-				.flatMap(id -> getDocument(id, entityClass, nameOnlyMask))
+				.flatMap(id -> getDocument(id, entityClass, NAME_ONLY_MASK))
 				.map(d -> true)
 				.switchIfEmpty(Mono.just(false))
 				.onErrorMap(
@@ -179,9 +171,8 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>
-	 * The buffer size and buffer timeout settings for {@link #saveAll} can be modified by
-	 * calling {@link #setWriteBufferSize} and {@link #setWriteBufferTimeout}.
+	 * <p>The buffer size and buffer timeout settings for {@link #saveAll} can be modified by calling
+	 * {@link #setWriteBufferSize} and {@link #setWriteBufferTimeout}.
 	 */
 	@Override
 	public <T> Flux<T> saveAll(Publisher<T> instances) {
@@ -215,15 +206,14 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	@Override
 	public <T> Mono<Long> count(Class<T> entityClass, StructuredQuery.Builder queryBuilder) {
-		return findAllDocuments(entityClass, idProjection, queryBuilder).count();
+		return findAllDocuments(entityClass, ID_PROJECTION, queryBuilder).count();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>
-	 * The buffer size and buffer timeout settings for {@link #saveAll} can be modified by
-	 * calling {@link #setWriteBufferSize} and {@link #setWriteBufferTimeout}.
+	 * <p>The buffer size and buffer timeout settings for {@link #saveAll} can be modified by calling
+	 * {@link #setWriteBufferSize} and {@link #setWriteBufferTimeout}.
 	 */
 	@Override
 	public <T> Mono<Long> deleteAll(Class<T> clazz) {
@@ -276,7 +266,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	private FirestoreReactiveOperations withParent(String resourceName) {
 		FirestoreTemplate firestoreTemplate = new FirestoreTemplate(this.firestoreStub, resourceName, this.classMapper,
-				this.mappingContext, this.firestore);
+				this.mappingContext);
 		firestoreTemplate.setWriteBufferSize(this.writeBufferSize);
 		firestoreTemplate.setWriteBufferTimeout(this.writeBufferTimeout);
 
@@ -459,9 +449,5 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	public FirestoreClassMapper getClassMapper() {
 		return this.classMapper;
-	}
-
-	public DocumentReference getDocumentReference(String collection, String documentId) {
-		return this.firestore.collection(collection).document(documentId);
 	}
 }

@@ -24,7 +24,6 @@ import java.util.Map;
 
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.auth.Credentials;
-import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreAutoConfiguration.FirestoreReactiveAutoConfiguration;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
@@ -123,14 +122,12 @@ public class GcpFirestoreEmulatorAutoConfiguration {
 		@Bean
 		@ConditionalOnMissingBean
 		public FirestoreTemplate firestoreTemplate(FirestoreGrpc.FirestoreStub firestoreStub,
-				FirestoreClassMapper classMapper, FirestoreMappingContext firestoreMappingContext,
-				Firestore firestore) {
+				FirestoreClassMapper classMapper, FirestoreMappingContext firestoreMappingContext) {
 			return new FirestoreTemplate(
 					firestoreStub,
 					rootPath + "/documents",
 					classMapper,
-					firestoreMappingContext,
-					firestore);
+					firestoreMappingContext);
 		}
 
 		@Bean

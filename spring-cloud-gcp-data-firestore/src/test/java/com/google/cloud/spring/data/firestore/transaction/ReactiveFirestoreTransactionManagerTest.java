@@ -213,7 +213,7 @@ public class ReactiveFirestoreTransactionManagerTest {
 
 		FirestoreMappingContext mappingContext = new FirestoreMappingContext();
 		FirestoreTemplate template = new FirestoreTemplate(this.firestoreStub, this.parent,
-				new FirestoreDefaultClassMapper(mappingContext), mappingContext, null);
+				new FirestoreDefaultClassMapper(mappingContext), mappingContext);
 
 		StepVerifier.setDefaultTimeout(Duration.ofSeconds(5));
 		return template;

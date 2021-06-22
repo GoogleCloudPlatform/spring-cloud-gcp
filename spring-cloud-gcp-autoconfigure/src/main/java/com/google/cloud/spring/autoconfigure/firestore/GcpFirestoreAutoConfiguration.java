@@ -138,9 +138,9 @@ public class GcpFirestoreAutoConfiguration {
 		@Bean
 		@ConditionalOnMissingBean
 		public FirestoreTemplate firestoreTemplate(FirestoreGrpc.FirestoreStub firestoreStub,
-				FirestoreClassMapper classMapper, FirestoreMappingContext firestoreMappingContext, Firestore firestore) {
+				FirestoreClassMapper classMapper, FirestoreMappingContext firestoreMappingContext) {
 			return new FirestoreTemplate(firestoreStub, GcpFirestoreAutoConfiguration.this.firestoreRootPath,
-					classMapper, firestoreMappingContext, firestore);
+					classMapper, firestoreMappingContext);
 		}
 
 		@Bean

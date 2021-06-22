@@ -18,7 +18,6 @@ package com.google.cloud.spring.data.firestore.repository.query;
 
 import java.util.function.Consumer;
 
-import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.spring.data.firestore.FirestoreDataException;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
@@ -44,15 +43,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class PartTreeFirestoreQueryTests {
+	private FirestoreClassMapper classMapper = new FirestoreDefaultClassMapper(new FirestoreMappingContext());
+
 	private static final User TEST_USER = new User("Hello", 23);
 
 	private static final Consumer<InvocationOnMock> NOOP = invocation -> { };
 
-	private FirestoreClassMapper classMapper = new FirestoreDefaultClassMapper(new FirestoreMappingContext());
-
 	private FirestoreTemplate firestoreTemplate = mock(FirestoreTemplate.class);
-
-	private DocumentReference documentReference = mock(DocumentReference.class);
 
 	private FirestoreQueryMethod queryMethod = mock(FirestoreQueryMethod.class);
 
@@ -101,8 +98,6 @@ public class PartTreeFirestoreQueryTests {
 
 	@Test
 	public void testPartTreeQuery_queryById() {
-		when(this.firestoreTemplate.getDocumentReference("usersCollection", "Hello"))
-				.thenReturn(this.documentReference);
 		when(this.firestoreTemplate.buildResourceName(any(), any())).thenReturn("full/reference/path/to/document");
 
 		PartTreeFirestoreQuery partTreeFirestoreQuery = createPartTreeQuery("findByAgeAndName", invocation -> {

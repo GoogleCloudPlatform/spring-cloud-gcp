@@ -67,7 +67,7 @@ public class FirestoreTemplateTests {
 	public void setup() {
 		FirestoreMappingContext mappingContext = new FirestoreMappingContext();
 		this.firestoreTemplate = new FirestoreTemplate(this.firestoreStub, this.parent,
-				new FirestoreDefaultClassMapper(mappingContext), mappingContext, null);
+				new FirestoreDefaultClassMapper(mappingContext), mappingContext);
 	}
 
 	@Test

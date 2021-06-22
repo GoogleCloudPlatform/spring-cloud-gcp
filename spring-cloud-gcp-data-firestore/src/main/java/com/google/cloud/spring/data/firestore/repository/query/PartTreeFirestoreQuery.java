@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.data.firestore.FirestoreDataException;
@@ -220,17 +219,16 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 							"Too few parameters are provided for query method: " + getQueryMethod().getName());
 				}
 				Object value = it.next();
+				StructuredQuery.FieldFilter.Builder queryFilterBuilder = filter.getFieldFilterBuilder()
+						.setField(fieldReference).setOp(getOperator(part, value));
 				if (fieldReference.getFieldPath().equals(FieldPath.documentId().toString())) {
 					FirestoreTemplate firestoreTemplate = (FirestoreTemplate) this.reactiveOperations;
-					DocumentReference documentReference = firestoreTemplate.getDocumentReference(persistentEntity.collectionName(), (String) value);
-					filter.getFieldFilterBuilder().setField(fieldReference)
-							.setOp(getOperator(part, documentReference))
+					queryFilterBuilder
 							.setValue(Value.newBuilder().setReferenceValue(
-									firestoreTemplate.buildResourceName(persistentEntity, documentReference.getId())));
+									firestoreTemplate.buildResourceName(persistentEntity, (String) value)));
 				}
 				else {
-					filter.getFieldFilterBuilder().setField(fieldReference)
-							.setOp(getOperator(part, value))
+					queryFilterBuilder
 							.setValue(this.classMapper.toFirestoreValue(value));
 				}
 			}
@@ -257,7 +255,6 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 	public QueryMethod getQueryMethod() {
 		return this.queryMethod;
 	}
-
 
 	private StructuredQuery.FieldFilter.Operator getOperator(Part part, Object value) {
 		OperatorSelector operatorSelector = PART_TO_FILTER_OP.get(part.getType());

@@ -19,7 +19,6 @@ package com.google.cloud.spring.data.firestore.it;
 import java.io.IOException;
 
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.entities.UserRepository;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
@@ -72,7 +71,7 @@ public class FirestoreIntegrationTestsConfiguration {
 	@Bean
 	public FirestoreTemplate firestoreTemplate(FirestoreGrpc.FirestoreStub firestoreStub,
 			FirestoreClassMapper classMapper, FirestoreMappingContext firestoreMappingContext) {
-		return new FirestoreTemplate(firestoreStub, this.defaultParent, classMapper, firestoreMappingContext, FirestoreOptions.getDefaultInstance().getService());
+		return new FirestoreTemplate(firestoreStub, this.defaultParent, classMapper, firestoreMappingContext);
 	}
 
 	@Bean
