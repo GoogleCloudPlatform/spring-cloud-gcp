@@ -165,8 +165,8 @@ public interface FirestoreReactiveOperations {
 	FirestoreReactiveOperations withParent(String id, Class<?> entityClass);
 
 	/**
-	 * Builds the full reference path to a resource such as a document or a sub-collection. By
-	 * default, FirestoreReactiveOperations uses the root collection as the parent
+	 * Builds the full reference path to a resource such as a document or a sub-collection.
+	 * This method uses the root collection as the parent
 	 * (projects/{project_id}/databases/{database_id}/documents/{collection_name}/)
 	 * @param persistentEntity a Firestore persistent entity
 	 * @param resource the resource name or path to the resource.
