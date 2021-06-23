@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.data.firestore.mapping;
 
-import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.PropertyName;
 
@@ -25,6 +24,8 @@ import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.model.AnnotationBasedPersistentProperty;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
+
+import static com.google.cloud.spring.data.firestore.FirestoreTemplate.NAME_FIELD;
 
 /**
  * Persistent property metadata implementation for Firestore.
@@ -50,6 +51,7 @@ public class FirestorePersistentPropertyImpl
 		super(property, owner, simpleTypeHolder);
 	}
 
+
 	@Override
 	protected Association<FirestorePersistentProperty> createAssociation() {
 		return new Association<>(this, null);
@@ -62,7 +64,7 @@ public class FirestorePersistentPropertyImpl
 
 	public String getFieldName() {
 		if (isIdProperty()) {
-			return FieldPath.documentId().toString();
+			return NAME_FIELD;
 		}
 		PropertyName annotation = findAnnotation(PropertyName.class);
 		return annotation != null ? annotation.value() : super.getName();

@@ -24,11 +24,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.data.firestore.FirestoreDataException;
 import com.google.cloud.spring.data.firestore.FirestoreReactiveOperations;
-import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntity;
@@ -51,6 +49,7 @@ import org.springframework.data.repository.query.ReturnedType;
 import org.springframework.data.repository.query.parser.Part;
 import org.springframework.data.repository.query.parser.PartTree;
 
+import static com.google.cloud.spring.data.firestore.FirestoreTemplate.NAME_FIELD;
 import static org.springframework.data.repository.query.parser.Part.Type.CONTAINING;
 import static org.springframework.data.repository.query.parser.Part.Type.GREATER_THAN;
 import static org.springframework.data.repository.query.parser.Part.Type.GREATER_THAN_EQUAL;
@@ -219,16 +218,17 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 							"Too few parameters are provided for query method: " + getQueryMethod().getName());
 				}
 				Object value = it.next();
-				StructuredQuery.FieldFilter.Builder queryFilterBuilder = filter.getFieldFilterBuilder()
+				StructuredQuery.FieldFilter.Builder fieldFilterBuilder = filter.getFieldFilterBuilder()
 						.setField(fieldReference).setOp(getOperator(part, value));
-				if (fieldReference.getFieldPath().equals(FieldPath.documentId().toString())) {
-					FirestoreTemplate firestoreTemplate = (FirestoreTemplate) this.reactiveOperations;
-					queryFilterBuilder
+				if (fieldReference.getFieldPath().equals(NAME_FIELD)) {
+
+					// In Firestore, a field that is used as a document ID can only be of String type
+					fieldFilterBuilder
 							.setValue(Value.newBuilder().setReferenceValue(
-									firestoreTemplate.buildResourceName(persistentEntity, (String) value)));
+									this.reactiveOperations.buildResourceName(persistentEntity, (String) value)));
 				}
 				else {
-					queryFilterBuilder
+					fieldFilterBuilder
 							.setValue(this.classMapper.toFirestoreValue(value));
 				}
 			}

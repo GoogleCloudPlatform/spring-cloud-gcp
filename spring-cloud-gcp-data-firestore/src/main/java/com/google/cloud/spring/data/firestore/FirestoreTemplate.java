@@ -67,7 +67,10 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	private static final int FIRESTORE_WRITE_MAX_SIZE = 500;
 
-	private static final String NAME_FIELD = FieldPath.documentId().toString();
+	/**
+	 * Constant representing the special property to use when querying by a document ID.
+	 */
+	public static final String NAME_FIELD = FieldPath.documentId().toString();
 
 	private static final StructuredQuery.Projection ID_PROJECTION = StructuredQuery.Projection.newBuilder()
 			.addFields(StructuredQuery.FieldReference.newBuilder().setFieldPath(NAME_FIELD).build())
@@ -264,6 +267,11 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 		return withParent(buildResourceName(parent));
 	}
 
+	@Override
+	public String buildResourceName(FirestorePersistentEntity<?> persistentEntity, String resource) {
+		return this.parent + "/" + persistentEntity.collectionName() + "/" + resource;
+	}
+
 	private FirestoreReactiveOperations withParent(String resourceName) {
 		FirestoreTemplate firestoreTemplate = new FirestoreTemplate(this.firestoreStub, resourceName, this.classMapper,
 				this.mappingContext);
@@ -432,10 +440,6 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 			persistentEntity.getPropertyAccessor(entity).setProperty(idProperty, idVal);
 		}
 		return buildResourceName(persistentEntity, idVal.toString());
-	}
-
-	public String buildResourceName(FirestorePersistentEntity<?> persistentEntity, String s) {
-		return this.parent + "/" + persistentEntity.collectionName() + "/" + s;
 	}
 
 	private Object getIdValue(Object entity) {

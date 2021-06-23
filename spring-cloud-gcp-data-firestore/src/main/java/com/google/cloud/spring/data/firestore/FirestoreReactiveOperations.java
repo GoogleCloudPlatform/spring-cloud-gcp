@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.data.firestore;
 
+import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntity;
 import com.google.firestore.v1.StructuredQuery;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
@@ -162,4 +163,14 @@ public interface FirestoreReactiveOperations {
 	 * @since 2.0.1
 	 */
 	FirestoreReactiveOperations withParent(String id, Class<?> entityClass);
+
+	/**
+	 * Builds the full reference path to a resource such as a document or a sub-collection. By
+	 * default, FirestoreReactiveOperations uses the root collection as the parent
+	 * (projects/{project_id}/databases/{database_id}/documents/{collection_name}/)
+	 * @param persistentEntity a Firestore persistent entity
+	 * @param resource the resource name or path to the resource.
+	 * @return a {@link String} representing the reference path.
+	 */
+	String buildResourceName(FirestorePersistentEntity<?> persistentEntity, String resource);
 }
