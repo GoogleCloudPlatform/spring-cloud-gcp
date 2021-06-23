@@ -17,9 +17,7 @@
 package com.example;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import org.junit.Before;
@@ -31,14 +29,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
@@ -47,6 +42,16 @@ import static org.junit.Assume.assumeThat;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = FirestoreSampleApplication.class)
 @TestPropertySource("classpath:application-test.properties")
 public class FirestoreSampleApplicationIntegrationTests {
+	private static final User ALPHA_USER = new User("Alpha", 49, singletonList(new Pet("rat", "Snowflake")));
+	private static final List<PhoneNumber> ALPHA_PHONE_NUMBERS = Arrays.asList(
+			new PhoneNumber("555666777"),
+			new PhoneNumber("777666555")
+	);
+	private static final User BETA_USER = new User("Beta", 23, emptyList());
+	private static final User DELTA_USER = new User("Delta", 49, Arrays.asList(
+			new Pet("fish", "Dory"),
+			new Pet("spider", "Man")
+	));
 
 	@Autowired
 	FirestoreTemplate firestoreTemplate;
@@ -54,68 +59,55 @@ public class FirestoreSampleApplicationIntegrationTests {
 	@Autowired
 	TestRestTemplate restTemplate;
 
+	private TestUserClient testUserClient;
+
 	@BeforeClass
 	public static void prepare() {
 		assumeThat("Firestore Spring Data tests are "
-				+ "disabled. Please use '-Dit.firestore=true' to enable them. ",
+						+ "disabled. Please use '-Dit.firestore=true' to enable them. ",
 				System.getProperty("it.firestore"), is("true"));
 	}
 
 	@Before
 	public void cleanupEnvironment() {
+		testUserClient = new TestUserClient(restTemplate.getRestTemplate());
 		firestoreTemplate.deleteAll(User.class).block();
 	}
 
 	@Test
 	public void saveUserTest() {
-		restTemplate.getForEntity("/users/removePhonesForUser?name=Alpha", String.class);
-		User[] users = restTemplate.getForObject("/users", User[].class);
+		testUserClient.removePhonesForUser("Alpha");
+		List<User> users = testUserClient.listUsers();
 		assertThat(users).isEmpty();
 
-		sendPostRequestForUser("Alpha", 49, "rat-Snowflake", "555666777,777666555");
-		sendPostRequestForUser("Beta", 23, "", "");
-		sendPostRequestForUser("Delta", 49, "fish-Dory,spider-Man", "");
+		testUserClient.saveUser(ALPHA_USER, ALPHA_PHONE_NUMBERS);
+		testUserClient.saveUser(BETA_USER, emptyList());
+		testUserClient.saveUser(DELTA_USER, emptyList());
 
-		User[] allUsers = restTemplate.getForObject("/users", User[].class);
-		List<String> names = Arrays.stream(allUsers).map(User::getName).collect(Collectors.toList());
-		assertThat(names).containsExactlyInAnyOrder("Alpha", "Beta", "Delta");
+		List<User> allUsers = testUserClient.listUsers();
+		assertThat(allUsers)
+				.map(User::getName)
+				.containsExactlyInAnyOrder("Alpha", "Beta", "Delta");
 
-		User[] users49 = restTemplate.getForObject("/users/age?age=49", User[].class);
+		List<User> users49 = testUserClient.findUsersByAge(49);
 		assertThat(users49).containsExactlyInAnyOrder(
-				new User("Alpha", 49,
-						Collections.singletonList(new Pet("rat", "Snowflake"))),
-				new User("Delta", 49,
-						Arrays.asList(new Pet("fish", "Dory"),
-								new Pet("spider", "Man")))
-				);
-		PhoneNumber[] phoneNumbers = restTemplate.getForObject("/users/phones?name=Alpha", PhoneNumber[].class);
-		assertThat(Arrays.stream(phoneNumbers).map(PhoneNumber::getNumber))
+				ALPHA_USER,
+				DELTA_USER
+		);
+		List<PhoneNumber> phoneNumbers = testUserClient.listPhoneNumbers("Alpha");
+		assertThat(phoneNumbers)
+				.map(PhoneNumber::getNumber)
 				.containsExactlyInAnyOrder("555666777", "777666555");
 
-		restTemplate.getForEntity("/users/removeUser?name=Alpha", String.class);
-		phoneNumbers = restTemplate.getForObject("/users/phones?name=Alpha", PhoneNumber[].class);
-		assertThat(Arrays.stream(phoneNumbers).map(PhoneNumber::getNumber))
+		testUserClient.removeUserByName("Alpha");
+		phoneNumbers = testUserClient.listPhoneNumbers("Alpha");
+		assertThat(phoneNumbers)
+				.map(PhoneNumber::getNumber)
 				.containsExactlyInAnyOrder("555666777", "777666555");
 
-		restTemplate.getForEntity("/users/removePhonesForUser?name=Alpha", String.class);
-		phoneNumbers = restTemplate.getForObject("/users/phones?name=Alpha", PhoneNumber[].class);
-		assertThat(Arrays.stream(phoneNumbers).map(PhoneNumber::getNumber)).isEmpty();
-	}
-
-	/**
-	 * Sends a POST request to the server which will create a new User in Firestore.
-	 */
-	private void sendPostRequestForUser(String name, int age, String pets, String phoneNums) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		map.add("name", name);
-		map.add("age", age);
-		map.add("pets", pets);
-		map.add("phones", phoneNums);
-
-		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
-		this.restTemplate.postForEntity("/users/saveUser", request, String.class);
+		testUserClient.removePhonesForUser("Alpha");
+		phoneNumbers = testUserClient.listPhoneNumbers("Alpha");
+		assertThat(phoneNumbers)
+				.isEmpty();
 	}
 }

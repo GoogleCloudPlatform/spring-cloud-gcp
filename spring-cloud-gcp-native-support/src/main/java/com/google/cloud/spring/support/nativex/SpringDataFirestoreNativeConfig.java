@@ -37,8 +37,6 @@ import org.springframework.nativex.type.NativeConfiguration;
 		types = @TypeHint(types = {
 				FirestoreRepositoryFactoryBean.class,
 				SimpleFirestoreReactiveRepository.class,
-
-
 				GcpDatastoreEmulatorAutoConfiguration.class
 		}, typeNames = {
 				"com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext"

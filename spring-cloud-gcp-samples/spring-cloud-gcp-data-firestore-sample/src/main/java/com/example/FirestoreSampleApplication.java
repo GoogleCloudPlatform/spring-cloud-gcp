@@ -16,9 +16,13 @@
 
 package com.example;
 
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.NoCredentialsProvider;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -36,6 +40,12 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
  */
 @SpringBootApplication
 public class FirestoreSampleApplication {
+
+	@Bean
+	@ConditionalOnProperty(value = "spring.cloud.gcp.firestore.emulator.enabled", havingValue = "true")
+	public CredentialsProvider googleCredentials() {
+		return NoCredentialsProvider.create();
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(FirestoreSampleApplication.class, args);
