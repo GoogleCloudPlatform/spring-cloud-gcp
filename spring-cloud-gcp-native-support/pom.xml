@@ -19,11 +19,11 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-autoconfigure</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.experimental</groupId>
             <artifactId>spring-aot</artifactId>
-            <version>${spring-native.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
