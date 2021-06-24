@@ -150,7 +150,7 @@ public class FirestoreRepositoryIntegrationTests {
 	public void partTreeRepositoryMethodTest() {
 		User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
 		u1.favoriteDrink = "tea";
-		User u2 = new User("Squall", 17, null, null, new Address("2 Second st., London", "UK"));
+		User u2 = new User("Squall", 17, Arrays.asList("cat", "dog"), null, new Address("2 Second st., London", "UK"));
 		u2.favoriteDrink = "wine";
 		Flux<User> users = Flux.fromArray(new User[] {u1, u2});
 
@@ -166,6 +166,9 @@ public class FirestoreRepositoryIntegrationTests {
 				.containsExactly(u1);
 		assertThat(this.userRepository.findByAgeGreaterThan(10).collectList().block()).containsExactlyInAnyOrder(u1,
 				u2);
+		assertThat(this.userRepository.findByNameAndAge("Cloud", 22).collectList().block())
+				.containsExactly(u1);
+		assertThat(this.userRepository.findByNameAndPetsContains("Squall", Collections.singletonList("cat")).collectList().block()).containsExactly(u2);
 	}
 	//end::repository_part_tree[]
 
