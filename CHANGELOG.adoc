@@ -5,6 +5,11 @@ https://spring.io/projects/spring-cloud-gcp[Spring Cloud GCP] is a set of integr
 This document provides a high-level overview of the changes introduced in Spring Cloud GCP by release.
 For a detailed view of what has changed, refer to the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main[commit history] on GitHub.
 
+== 2.0.4.BUILD-SNAPSHOT
+
+=== Firestore
+* Fixed: Unable to query by document ID. (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/506[#506])
+
 == 2.0.3 (2021-06-08)
 
 === General

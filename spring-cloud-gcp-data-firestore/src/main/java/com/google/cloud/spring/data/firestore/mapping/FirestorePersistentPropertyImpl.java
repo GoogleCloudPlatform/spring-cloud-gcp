@@ -25,6 +25,8 @@ import org.springframework.data.mapping.model.AnnotationBasedPersistentProperty;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 
+import static com.google.cloud.spring.data.firestore.FirestoreTemplate.NAME_FIELD;
+
 /**
  * Persistent property metadata implementation for Firestore.
  *
@@ -61,6 +63,9 @@ public class FirestorePersistentPropertyImpl
 	}
 
 	public String getFieldName() {
+		if (isIdProperty()) {
+			return NAME_FIELD;
+		}
 		PropertyName annotation = findAnnotation(PropertyName.class);
 		return annotation != null ? annotation.value() : super.getName();
 	}
