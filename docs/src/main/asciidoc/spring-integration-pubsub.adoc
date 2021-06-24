@@ -151,9 +151,9 @@ public MessageChannel pubsubInputChannel() {
 @Bean
 public PubSubInboundChannelAdapter messageChannelAdapter(
     @Qualifier("pubsubInputChannel") MessageChannel inputChannel,
-    SubscriberFactory subscriberFactory) {
+    PubSubTemplate pubsubTemplate) {
     PubSubInboundChannelAdapter adapter =
-        new PubSubInboundChannelAdapter(subscriberFactory, "subscriptionName");
+        new PubSubInboundChannelAdapter(pubsubTemplate, "subscriptionName");
     adapter.setOutputChannel(inputChannel);
     adapter.setAckMode(AckMode.AUTO_ACK);
     adapter.setErrorChannelName("pubsubErrors");
