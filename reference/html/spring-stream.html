@@ -312,6 +312,27 @@ spring.cloud.stream.bindings.events.group=consumerGroup1</code></pre>
 </ul>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_endpoint_customization"><a class="link" href="#_endpoint_customization">Endpoint Customization</a></h4>
+<div class="paragraph">
+<p>You may customize channel routing by defining a <code>ConsumerEndpointCustomizer</code> in your autoconfiguration. This is useful if you want to customize the default configurations provided by the Pub/Sub Spring Cloud Stream Binder.</p>
+</div>
+<div class="paragraph">
+<p>The example below demonstrates how to use a <code>ConsumerEndpointCustomizer</code> to override the default error channel configured by the binder.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public ConsumerEndpointCustomizer&lt;PubSubInboundChannelAdapter&gt; messageChannelAdapter() {
+    return (endpoint, destinationName, group) -&gt; {
+        NamedComponent namedComponent = (NamedComponent) endpoint.getOutputChannel();
+        String channelName = namedComponent.getBeanName();
+        endpoint.setErrorChannelName(channelName + ".errors");
+    };
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_binding_with_functions"><a class="link" href="#_binding_with_functions">Binding with Functions</a></h3>
