@@ -88,6 +88,7 @@ public class PubSubMessageChannelBinder
 		ErrorInfrastructure errorInfrastructure = registerErrorInfrastructure(destination, group, properties);
 		adapter.setErrorChannel(errorInfrastructure.getErrorChannel());
 		adapter.setAckMode(properties.getExtension().getAckMode());
+		adapter.setBeanFactory(getBeanFactory());
 
 		return adapter;
 	}
