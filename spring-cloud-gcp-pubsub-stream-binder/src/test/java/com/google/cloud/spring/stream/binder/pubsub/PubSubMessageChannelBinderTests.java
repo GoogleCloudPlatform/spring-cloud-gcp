@@ -24,6 +24,7 @@ import com.google.auth.Credentials;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubMessageSource;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
@@ -58,6 +59,7 @@ import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.context.annotation.Bean;
+import org.springframework.integration.core.MessageProducer;
 import org.springframework.messaging.MessageChannel;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -197,6 +199,32 @@ public class PubSubMessageChannelBinderTests {
 							producerBindings.get("output")).getPropertyValue(
 							"val$producerMessageHandler.beanName"))
 							.isEqualTo("setByCustomizer:output");
+				});
+	}
+
+	@Test
+	public void testConsumerEndpointCreation() {
+		baseContext
+				.withPropertyValues(
+						"spring.cloud.stream.bindings.input.group=testGroup",
+						"spring.cloud.stream.gcp.pubsub.default.consumer.ackMode=MANUAL"
+				)
+				.run(ctx -> {
+					PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
+					PubSubExtendedBindingProperties props = ctx.getBean("pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
+
+					assertThat(binder).isNotNull();
+					MessageProducer messageProducer = binder
+							.createConsumerEndpoint(consumerDestination, "testGroup",
+									new ExtendedConsumerProperties<>(props.getExtendedConsumerProperties("test"))
+							);
+
+					assertThat(messageProducer).isInstanceOf(PubSubInboundChannelAdapter.class);
+					PubSubInboundChannelAdapter inboundChannelAdapter = (PubSubInboundChannelAdapter) messageProducer;
+					assertThat(inboundChannelAdapter.getAckMode()).isSameAs(AckMode.MANUAL);
+					inboundChannelAdapter.start();
+					inboundChannelAdapter.setErrorChannelName("test-subscription.errors");
+					assertThat(inboundChannelAdapter.getErrorChannel()).isNotNull();
 				});
 	}
 
