@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -202,6 +203,25 @@ public class FirestoreRepositoryIntegrationTests {
 
 		assertThat(pagedUsers).containsExactlyInAnyOrder(
 				"blah-person8", "blah-person9", "blah-person10");
+	}
+
+	@Test
+	public void testOrderByDocumentId() {
+		User alice = new User("Alice", 99);
+		User bob = new User("Bob", 99);
+		User zelda = new User("Zelda", 99);
+		this.userRepository.save(alice)
+				.then(this.userRepository.save(bob))
+				.then(this.userRepository.save(zelda))
+				.block();
+
+		StepVerifier.create(
+				this.userRepository.findByAge(99, Sort.by(Order.desc("name"))).map(User::getName))
+				.expectNext("Zelda", "Bob", "Alice")
+				.verifyComplete();
+		StepVerifier.create(
+				this.userRepository.findByAgeOrderByNameDesc(99).map(User::getName)).expectNext("Zelda", "Bob", "Alice")
+				.verifyComplete();
 	}
 
 	@Test

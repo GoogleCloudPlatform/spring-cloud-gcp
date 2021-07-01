@@ -144,7 +144,7 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 				builder.setLimit(Int32Value.newBuilder().setValue(pageable.getPageSize()));
 			}
 
-			Sort sort = paramAccessor.getSort();
+			Sort sort = paramAccessor.getSort().isSorted() ? paramAccessor.getSort() : this.tree.getSort();
 			if (sort.isSorted()) {
 				builder.addAllOrderBy(createFirestoreSortOrders(sort));
 			}
