@@ -180,7 +180,7 @@ public class SpannerTemplateTests {
 
 		when(context.executeUpdate(DML)).thenReturn(333L);
 
-		verifyBeforeAndAfterEvents(new BeforeExecuteDmlEvent(DML), new AfterExecuteDmlEvent(DML, 333L),
+		verifyBeforeAndAfterEvents(new BeforeExecuteDmlEvent(DML), new AfterExecuteDmlEvent(DML, 333L, 0),
 				() -> this.spannerTemplate.executeDmlStatement(DML),
 				x -> {
 				});
@@ -190,7 +190,7 @@ public class SpannerTemplateTests {
 	@Test
 	public void executePartitionedDmlTest() {
 		when(this.databaseClient.executePartitionedUpdate(DML)).thenReturn(333L);
-		verifyBeforeAndAfterEvents(new BeforeExecuteDmlEvent(DML), new AfterExecuteDmlEvent(DML, 333L),
+		verifyBeforeAndAfterEvents(new BeforeExecuteDmlEvent(DML), new AfterExecuteDmlEvent(DML, 333L, 0),
 				() -> this.spannerTemplate.executePartitionedDmlStatement(DML),
 				x -> x.verify(this.databaseClient, times(1)).executePartitionedUpdate(DML));
 	}
@@ -390,7 +390,7 @@ public class SpannerTemplateTests {
 		when(this.readContext.read(any(), any(), any())).thenReturn(null);
 		Key key = Key.of("key");
 		KeySet keys = KeySet.newBuilder().addKey(key).build();
-		verifyAfterEvents(new AfterReadEvent(Collections.emptyList(), keys, null),
+		verifyAfterEvents(new AfterReadEvent(Collections.emptyList(), keys, null, System.currentTimeMillis()),
 				() -> assertThat(this.spannerTemplate.read(TestEntity.class, key)).isNull(), x -> {
 				});
 		verify(this.databaseClient, times(1)).singleUse();
@@ -400,7 +400,7 @@ public class SpannerTemplateTests {
 	public void queryTest() {
 		when(this.readContext.read(any(), any(), any())).thenReturn(null);
 		Statement query = Statement.of("test");
-		verifyAfterEvents(new AfterQueryEvent(Collections.emptyList(), query, null),
+		verifyAfterEvents(new AfterQueryEvent(Collections.emptyList(), query, null, System.currentTimeMillis()),
 				() -> assertThat(this.spannerTemplate.query(TestEntity.class, query, null)).isEmpty(), x -> {
 				});
 		verify(this.databaseClient, times(1)).singleUse();
@@ -412,7 +412,7 @@ public class SpannerTemplateTests {
 		when(resultSet.next()).thenReturn(false);
 		Statement query = Statement.of("test");
 		when(this.readContext.executeQuery(query)).thenReturn(resultSet);
-		verifyAfterEvents(new AfterQueryEvent(Collections.emptyList(), query, null),
+		verifyAfterEvents(new AfterQueryEvent(Collections.emptyList(), query, null, System.currentTimeMillis()),
 				() -> assertThat(this.spannerTemplate.query(x -> null, query, null)).isEmpty(), x -> {
 				});
 	}
@@ -487,7 +487,7 @@ public class SpannerTemplateTests {
 		when(this.databaseClient.singleUse(TimestampBound.ofMinReadTimestamp(Timestamp.ofTimeMicroseconds(333L))))
 				.thenReturn(this.readContext);
 
-		verifyAfterEvents(new AfterReadEvent(Collections.emptyList(), keySet, options),
+		verifyAfterEvents(new AfterReadEvent(Collections.emptyList(), keySet, options, System.currentTimeMillis()),
 				() -> this.spannerTemplate.read(TestEntity.class, keySet, options), x -> {
 					verify(this.objectMapper, times(1)).mapToList(same(results),
 							eq(TestEntity.class), isNull(), eq(false));
@@ -534,7 +534,7 @@ public class SpannerTemplateTests {
 				.thenReturn(mutations);
 
 		verifyBeforeAndAfterEvents(new BeforeSaveEvent(Collections.singletonList(entity), null),
-				new AfterSaveEvent(mutations, Collections.singletonList(entity), null),
+				new AfterSaveEvent(mutations, Collections.singletonList(entity), null, System.currentTimeMillis()),
 				() -> this.spannerTemplate.insert(entity), x -> x.verify(this.databaseClient, times(1))
 						.write(mutations));
 	}
@@ -550,7 +550,7 @@ public class SpannerTemplateTests {
 				.thenReturn(Collections.singletonList(mutation));
 
 		verifyBeforeAndAfterEvents(new BeforeSaveEvent(entities, null),
-				new AfterSaveEvent(mutations, entities, null),
+				new AfterSaveEvent(mutations, entities, null, System.currentTimeMillis()),
 				() -> this.spannerTemplate.insertAll(entities), x -> x.verify(this.databaseClient, times(1))
 						.write(mutations));
 	}
@@ -564,7 +564,7 @@ public class SpannerTemplateTests {
 				.thenReturn(mutations);
 
 		verifyBeforeAndAfterEvents(new BeforeSaveEvent(Collections.singletonList(entity), null),
-				new AfterSaveEvent(mutations, Collections.singletonList(entity), null),
+				new AfterSaveEvent(mutations, Collections.singletonList(entity), null, System.currentTimeMillis()),
 				() -> this.spannerTemplate.update(entity), x -> x.verify(this.databaseClient, times(1))
 						.write(mutations));
 	}
@@ -580,7 +580,7 @@ public class SpannerTemplateTests {
 				.thenReturn(Collections.singletonList(mutation));
 
 		verifyBeforeAndAfterEvents(new BeforeSaveEvent(entities, null),
-				new AfterSaveEvent(mutations, entities, null),
+				new AfterSaveEvent(mutations, entities, null, System.currentTimeMillis()),
 				() -> this.spannerTemplate.updateAll(entities), x -> x.verify(this.databaseClient, times(1))
 						.write(mutations));
 	}
@@ -597,7 +597,7 @@ public class SpannerTemplateTests {
 						.thenReturn(mutations);
 
 		verifyBeforeAndAfterEvents(new BeforeSaveEvent(Collections.singletonList(entity), cols),
-				new AfterSaveEvent(mutations, Collections.singletonList(entity), cols),
+				new AfterSaveEvent(mutations, Collections.singletonList(entity), cols, System.currentTimeMillis()),
 				() -> this.spannerTemplate.update(entity, "a", "b"), x -> x.verify(this.databaseClient, times(1))
 						.write(mutations));
 	}
@@ -613,7 +613,7 @@ public class SpannerTemplateTests {
 				.thenReturn(mutations);
 
 		verifyBeforeAndAfterEvents(new BeforeSaveEvent(Collections.singletonList(entity), cols),
-				new AfterSaveEvent(mutations, Collections.singletonList(entity), cols),
+				new AfterSaveEvent(mutations, Collections.singletonList(entity), cols, System.currentTimeMillis()),
 				() -> this.spannerTemplate.update(entity, cols), x -> x.verify(this.databaseClient, times(1))
 						.write(mutations));
 	}
@@ -628,7 +628,7 @@ public class SpannerTemplateTests {
 				.thenReturn(mutations);
 
 		verifyBeforeAndAfterEvents(new BeforeSaveEvent(Collections.singletonList(entity), null),
-				new AfterSaveEvent(mutations, Collections.singletonList(entity), null),
+				new AfterSaveEvent(mutations, Collections.singletonList(entity), null, System.currentTimeMillis()),
 				() -> this.spannerTemplate.upsert(entity), x -> x.verify(this.databaseClient, times(1))
 						.write(mutations));
 	}
@@ -644,7 +644,7 @@ public class SpannerTemplateTests {
 				.thenReturn(Collections.singletonList(mutation));
 
 		verifyBeforeAndAfterEvents(new BeforeSaveEvent(entities, null),
-				new AfterSaveEvent(mutations, entities, null),
+				new AfterSaveEvent(mutations, entities, null, System.currentTimeMillis()),
 				() -> this.spannerTemplate.upsertAll(entities), x -> x.verify(this.databaseClient, times(1))
 						.write(mutations));
 	}
@@ -661,7 +661,7 @@ public class SpannerTemplateTests {
 						.thenReturn(Collections.singletonList(mutation));
 
 		verifyBeforeAndAfterEvents(new BeforeSaveEvent(Collections.singletonList(entity), cols),
-				new AfterSaveEvent(mutations, Collections.singletonList(entity), cols),
+				new AfterSaveEvent(mutations, Collections.singletonList(entity), cols, System.currentTimeMillis()),
 				() -> this.spannerTemplate.upsert(entity, "a", "b"), x -> x.verify(this.databaseClient, times(1))
 						.write(mutations));
 	}
@@ -677,7 +677,7 @@ public class SpannerTemplateTests {
 				.thenReturn(Collections.singletonList(mutation));
 
 		verifyBeforeAndAfterEvents(new BeforeSaveEvent(Collections.singletonList(entity), cols),
-				new AfterSaveEvent(mutations, Collections.singletonList(entity), cols),
+				new AfterSaveEvent(mutations, Collections.singletonList(entity), cols, System.currentTimeMillis()),
 				() -> this.spannerTemplate.upsert(entity, cols), x -> x.verify(this.databaseClient, times(1))
 						.write(mutations));
 	}
@@ -692,7 +692,7 @@ public class SpannerTemplateTests {
 				.thenReturn(mutation);
 
 		verifyBeforeAndAfterEvents(new BeforeDeleteEvent(mutations, null, keys, TestEntity.class),
-				new AfterDeleteEvent(mutations, null, keys, TestEntity.class),
+				new AfterDeleteEvent(mutations, null, keys, TestEntity.class, System.currentTimeMillis()),
 				() -> this.spannerTemplate.delete(TestEntity.class, key), x -> x.verify(this.databaseClient, times(1))
 						.write(Collections.singletonList(mutation)));
 	}
@@ -705,7 +705,7 @@ public class SpannerTemplateTests {
 		when(this.mutationFactory.delete(entity)).thenReturn(mutation);
 
 		verifyBeforeAndAfterEvents(new BeforeDeleteEvent(mutations, Collections.singletonList(entity), null, null),
-				new AfterDeleteEvent(mutations, Collections.singletonList(entity), null, null),
+				new AfterDeleteEvent(mutations, Collections.singletonList(entity), null, null, System.currentTimeMillis()),
 				() -> this.spannerTemplate.delete(entity), x -> x.verify(this.databaseClient, times(1))
 						.write(Collections.singletonList(mutation)));
 	}
@@ -719,7 +719,7 @@ public class SpannerTemplateTests {
 		when(this.mutationFactory.delete(entity)).thenReturn(mutation);
 
 		verifyBeforeAndAfterEvents(new BeforeDeleteEvent(mutations, entities, null, null),
-				new AfterDeleteEvent(mutations, entities, null, null),
+				new AfterDeleteEvent(mutations, entities, null, null, System.currentTimeMillis()),
 				() -> this.spannerTemplate.deleteAll(Arrays.asList(entity, entity, entity)),
 				x -> x.verify(this.databaseClient, times(1))
 						.write(mutations));
@@ -735,7 +735,7 @@ public class SpannerTemplateTests {
 				.thenReturn(mutation);
 
 		verifyBeforeAndAfterEvents(new BeforeDeleteEvent(mutations, null, keys, TestEntity.class),
-				new AfterDeleteEvent(mutations, null, keys, TestEntity.class),
+				new AfterDeleteEvent(mutations, null, keys, TestEntity.class, System.currentTimeMillis()),
 				() -> this.spannerTemplate.delete(TestEntity.class, keys), x -> x.verify(this.databaseClient, times(1))
 						.write(Collections.singletonList(mutation)));
 	}
@@ -818,7 +818,7 @@ public class SpannerTemplateTests {
 		// Verify that only a single event containing only the parent p is published.
 		// the recursive resolution of children should NOT give events since there is only one
 		// user-call.
-		verifyAfterEvents(new AfterReadEvent(Collections.singletonList(p), KeySet.all(), null), () -> {
+		verifyAfterEvents(new AfterReadEvent(Collections.singletonList(p), KeySet.all(), null, System.currentTimeMillis()), () -> {
 			ParentEntity resultWithoutChildren = this.spannerTemplate
 					.readAll(ParentEntity.class,
 							new SpannerReadOptions()

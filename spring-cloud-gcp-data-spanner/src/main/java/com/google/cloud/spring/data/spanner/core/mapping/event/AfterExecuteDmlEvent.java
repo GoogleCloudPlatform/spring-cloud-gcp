@@ -29,15 +29,17 @@ import com.google.cloud.spanner.Statement;
 public class AfterExecuteDmlEvent extends ExecuteDmlEvent {
 
 	private final long numberOfRowsAffected;
+	private final long queryStartTime;
 
 	/**
 	 * Constructor.
 	 * @param statement the DML statement that was executed.
 	 * @param numberOfRowsAffected the number of rows affected.
 	 */
-	public AfterExecuteDmlEvent(Statement statement, long numberOfRowsAffected) {
+	public AfterExecuteDmlEvent(Statement statement, long numberOfRowsAffected, long queryStartTime) {
 		super(statement);
 		this.numberOfRowsAffected = numberOfRowsAffected;
+		this.queryStartTime = queryStartTime;
 	}
 
 	/**
@@ -46,6 +48,14 @@ public class AfterExecuteDmlEvent extends ExecuteDmlEvent {
 	 */
 	public long getNumberOfRowsAffected() {
 		return this.numberOfRowsAffected;
+	}
+
+	/**
+	 * Get the query execution time.
+	 * @return query execution time in milliseconds.
+	 */
+	public long getQueryExecutionTime() {
+		return  getTimestamp() - this.queryStartTime;
 	}
 
 	@Override

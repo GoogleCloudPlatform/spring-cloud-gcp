@@ -143,10 +143,11 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 	public long executeDmlStatement(Statement statement) {
 		Assert.notNull(statement, "A non-null statement is required.");
 		maybeEmitEvent(new BeforeExecuteDmlEvent(statement));
+		long queryStartTime = System.currentTimeMillis();
 		long rowsAffected = doWithOrWithoutTransactionContext(x -> x.executeUpdate(statement),
 				() -> this.databaseClientProvider.get().readWriteTransaction()
 						.run(transactionContext -> transactionContext.executeUpdate(statement)));
-		maybeEmitEvent(new AfterExecuteDmlEvent(statement, rowsAffected));
+		maybeEmitEvent(new AfterExecuteDmlEvent(statement, rowsAffected, queryStartTime));
 		return rowsAffected;
 	}
 
@@ -154,10 +155,11 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 	public long executePartitionedDmlStatement(Statement statement) {
 		Assert.notNull(statement, "A non-null statement is required.");
 		maybeEmitEvent(new BeforeExecuteDmlEvent(statement));
+		long queryStartTime = System.currentTimeMillis();
 		long rowsAffected = doWithOrWithoutTransactionContext(x -> {
 			throw new SpannerDataException("Cannot execute partitioned DML in a transaction.");
 		}, () -> this.databaseClientProvider.get().executePartitionedUpdate(statement));
-		maybeEmitEvent(new AfterExecuteDmlEvent(statement, rowsAffected));
+		maybeEmitEvent(new AfterExecuteDmlEvent(statement, rowsAffected, queryStartTime));
 		return rowsAffected;
 	}
 
@@ -174,10 +176,10 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 				this.mappingContext.getPersistentEntityOrFail(entityClass);
 
 		KeySet keys = KeySet.singleKey(key);
-
+		long queryStartTime = System.currentTimeMillis();
 		try (ResultSet resultSet = executeRead(persistentEntity.tableName(), keys,
 				Collections.singleton(persistentEntity.getPrimaryKeyColumnName()), null)) {
-			maybeEmitEvent(new AfterReadEvent(Collections.emptyList(), keys, null));
+			maybeEmitEvent(new AfterReadEvent(Collections.emptyList(), keys, null, queryStartTime));
 			return resultSet.next();
 		}
 	}
@@ -198,6 +200,7 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 		SpannerPersistentEntity<T> persistentEntity =
 				(SpannerPersistentEntity<T>) this.mappingContext.getPersistentEntityOrFail(entityClass);
 
+		long queryStartTime = System.currentTimeMillis();
 		List<T> entities;
 		if (persistentEntity.hasEagerlyLoadedProperties() || persistentEntity.hasWhere()) {
 			entities = executeReadQueryAndResolveChildren(keys, persistentEntity,
@@ -209,7 +212,7 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 					(options != null) ? options.getIncludeProperties() : null,
 					options != null && options.isAllowPartialRead());
 		}
-		maybeEmitEvent(new AfterReadEvent(entities, keys, options));
+		maybeEmitEvent(new AfterReadEvent(entities, keys, options, queryStartTime));
 		return entities;
 	}
 
@@ -236,19 +239,21 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 	public <A> List<A> query(Function<Struct, A> rowFunc, Statement statement,
 			SpannerQueryOptions options) {
 		ArrayList<A> result = new ArrayList<>();
+		long queryStartTime = System.currentTimeMillis();
 		try (ResultSet resultSet = executeQuery(statement, options)) {
 			while (resultSet.next()) {
 				result.add(rowFunc.apply(resultSet.getCurrentRowAsStruct()));
 			}
 		}
-		maybeEmitEvent(new AfterQueryEvent(result, statement, options));
+		maybeEmitEvent(new AfterQueryEvent(result, statement, options, queryStartTime));
 		return result;
 	}
 
 	@Override
 	public <T> List<T> query(Class<T> entityClass, Statement statement, SpannerQueryOptions options) {
+		long queryStartTime = System.currentTimeMillis();
 		List<T> entities = queryAndResolveChildren(entityClass, statement, options);
-		maybeEmitEvent(new AfterQueryEvent(entities, statement, options));
+		maybeEmitEvent(new AfterQueryEvent(entities, statement, options, queryStartTime));
 		return entities;
 	}
 
@@ -342,8 +347,9 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 			Set<String> includeProperties) {
 		maybeEmitEvent(new BeforeSaveEvent(entities, includeProperties));
 		List<Mutation> mutations = mutationsSupplier.get();
+		long queryStartTime = System.currentTimeMillis();
 		applyMutations(mutations);
-		maybeEmitEvent(new AfterSaveEvent(mutations, entities, includeProperties));
+		maybeEmitEvent(new AfterSaveEvent(mutations, entities, includeProperties, queryStartTime));
 	}
 
 	@Override
@@ -360,8 +366,9 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 
 	private void applyDeleteMutations(Iterable<?> objects, List<Mutation> mutations) {
 		maybeEmitEvent(new BeforeDeleteEvent(mutations, objects, null, null));
+		long queryStartTime = System.currentTimeMillis();
 		applyMutations(mutations);
-		maybeEmitEvent(new AfterDeleteEvent(mutations, objects, null, null));
+		maybeEmitEvent(new AfterDeleteEvent(mutations, objects, null, null, queryStartTime));
 	}
 
 	@Override
@@ -378,8 +385,9 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 
 	private void applyDeleteMutations(Class<?> entityClass, KeySet keys, List<Mutation> mutations) {
 		maybeEmitEvent(new BeforeDeleteEvent(mutations, null, keys, entityClass));
+		long queryStartTime = System.currentTimeMillis();
 		applyMutations(mutations);
-		maybeEmitEvent(new AfterDeleteEvent(mutations, null, keys, entityClass));
+		maybeEmitEvent(new AfterDeleteEvent(mutations, null, keys, entityClass, queryStartTime));
 	}
 
 	@Override

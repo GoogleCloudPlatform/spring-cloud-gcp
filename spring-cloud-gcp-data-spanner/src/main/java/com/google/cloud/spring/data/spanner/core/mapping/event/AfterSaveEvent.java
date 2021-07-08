@@ -27,6 +27,8 @@ import com.google.cloud.spanner.Mutation;
  * @author Chengyuan Zhao
  */
 public class AfterSaveEvent extends SaveEvent {
+	private final long queryStartTime;
+
 	/**
 	 * Constructor.
 	 *
@@ -35,7 +37,16 @@ public class AfterSaveEvent extends SaveEvent {
 	 *     {@code null} depending on the original request.
 	 * @param includeProperties the set of properties to include in the save operation.
 	 */
-	public AfterSaveEvent(List<Mutation> source, Iterable targetEntities, Set<String> includeProperties) {
+	public AfterSaveEvent(List<Mutation> source, Iterable targetEntities, Set<String> includeProperties, long queryStartTime) {
 		super(source, targetEntities, includeProperties);
+		this.queryStartTime = queryStartTime;
+	}
+
+	/**
+	 * Get the query execution time.
+	 * @return query execution time in milliseconds.
+	 */
+	public long getQueryExecutionTime() {
+		return getTimestamp() - this.queryStartTime;
 	}
 }

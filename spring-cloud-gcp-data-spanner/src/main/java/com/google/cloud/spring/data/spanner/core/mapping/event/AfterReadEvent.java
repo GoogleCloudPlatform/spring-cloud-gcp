@@ -32,6 +32,8 @@ public class AfterReadEvent extends LoadEvent {
 
 	private final KeySet keySet;
 
+	private final long queryStartTime;
+
 	/**
 	 * Constructor.
 	 * @param source The entities that were read from Cloud Spanner.This is never
@@ -41,10 +43,11 @@ public class AfterReadEvent extends LoadEvent {
 	 *     {@code null} if the read operation wasn't a key-based read.
 	 */
 	public AfterReadEvent(Iterable source,
-			KeySet keySet, SpannerReadOptions spannerReadOptions) {
+			KeySet keySet, SpannerReadOptions spannerReadOptions, long queryStartTime) {
 		super(source);
 		this.spannerReadOptions = spannerReadOptions;
 		this.keySet = keySet;
+		this.queryStartTime = queryStartTime;
 	}
 
 	/**
@@ -53,6 +56,14 @@ public class AfterReadEvent extends LoadEvent {
 	 */
 	public SpannerReadOptions getSpannerReadOptions() {
 		return this.spannerReadOptions;
+	}
+
+	/**
+	 * Get the query execution time.
+	 * @return query execution time in milliseconds.
+	 */
+	public long getQueryExecutionTime() {
+		return getTimestamp() - this.queryStartTime;
 	}
 
 	/**

@@ -28,6 +28,8 @@ import com.google.cloud.spanner.Mutation;
  */
 public class AfterDeleteEvent extends DeleteEvent {
 
+	private final long queryStartTime;
+
 	/**
 	 * Constructor.
 	 *
@@ -39,7 +41,16 @@ public class AfterDeleteEvent extends DeleteEvent {
 	 * @param targetType the target entity type that needs to be deleted. This may be
 	 *     {@code null} depending on the
 	 */
-	public AfterDeleteEvent(List<Mutation> source, Iterable targetEntities, KeySet targetKeys, Class targetType) {
+	public AfterDeleteEvent(List<Mutation> source, Iterable targetEntities, KeySet targetKeys, Class targetType, long queryStartTime) {
 		super(source, targetEntities, targetKeys, targetType);
+		this.queryStartTime = queryStartTime;
+	}
+
+	/**
+	 * Get the query execution time.
+	 * @return query execution time in milliseconds.
+	 */
+	public long getQueryExecutionTime() {
+		return  getTimestamp() - this.queryStartTime;
 	}
 }
