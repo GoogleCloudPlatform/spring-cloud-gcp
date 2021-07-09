@@ -180,7 +180,7 @@ public class SpannerTemplateTests {
 
 		when(context.executeUpdate(DML)).thenReturn(333L);
 
-		verifyBeforeAndAfterEvents(new BeforeExecuteDmlEvent(DML), new AfterExecuteDmlEvent(DML, 333L, 0),
+		verifyBeforeAndAfterEvents(new BeforeExecuteDmlEvent(DML), new AfterExecuteDmlEvent(DML, 333L, 0L),
 				() -> this.spannerTemplate.executeDmlStatement(DML),
 				x -> {
 				});
@@ -190,7 +190,7 @@ public class SpannerTemplateTests {
 	@Test
 	public void executePartitionedDmlTest() {
 		when(this.databaseClient.executePartitionedUpdate(DML)).thenReturn(333L);
-		verifyBeforeAndAfterEvents(new BeforeExecuteDmlEvent(DML), new AfterExecuteDmlEvent(DML, 333L, 0),
+		verifyBeforeAndAfterEvents(new BeforeExecuteDmlEvent(DML), new AfterExecuteDmlEvent(DML, 333L, 0L),
 				() -> this.spannerTemplate.executePartitionedDmlStatement(DML),
 				x -> x.verify(this.databaseClient, times(1)).executePartitionedUpdate(DML));
 	}

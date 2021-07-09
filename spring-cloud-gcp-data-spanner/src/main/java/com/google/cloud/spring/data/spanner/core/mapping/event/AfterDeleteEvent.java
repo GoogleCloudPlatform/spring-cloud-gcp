@@ -26,9 +26,9 @@ import com.google.cloud.spanner.Mutation;
  *
  * @author Chengyuan Zhao
  */
-public class AfterDeleteEvent extends DeleteEvent {
+public class AfterDeleteEvent extends DeleteEvent implements AfterEventQueryTiming {
 
-	private final long queryStartTime;
+	private Long queryStartTime;
 
 	/**
 	 * Constructor.
@@ -41,8 +41,24 @@ public class AfterDeleteEvent extends DeleteEvent {
 	 * @param targetType the target entity type that needs to be deleted. This may be
 	 *     {@code null} depending on the
 	 */
-	public AfterDeleteEvent(List<Mutation> source, Iterable targetEntities, KeySet targetKeys, Class targetType, long queryStartTime) {
+	public AfterDeleteEvent(List<Mutation> source, Iterable targetEntities, KeySet targetKeys, Class targetType) {
 		super(source, targetEntities, targetKeys, targetType);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param source the mutations for the event initially occurred. (never {@code null})
+	 * @param targetEntities the target entities that need to be deleted. This may be
+	 *     {@code null} depending on the type of delete request.
+	 * @param targetKeys the target keys that need to be deleted. This may be {@code null}
+	 *	 depending on the type of delete request.
+	 * @param targetType the target entity type that needs to be deleted. This may be
+	 *     {@code null} depending on the.
+	 * @param queryStartTime query start time.
+	 */
+	public AfterDeleteEvent(List<Mutation> source, Iterable targetEntities, KeySet targetKeys, Class targetType, Long queryStartTime) {
+		this(source, targetEntities, targetKeys, targetType);
 		this.queryStartTime = queryStartTime;
 	}
 
@@ -50,7 +66,7 @@ public class AfterDeleteEvent extends DeleteEvent {
 	 * Get the query execution time.
 	 * @return query execution time in milliseconds.
 	 */
-	public long getQueryExecutionTime() {
-		return  getTimestamp() - this.queryStartTime;
+	public Long getQueryExecutionTime() {
+		return this.queryStartTime == null ? null : (getTimestamp() - this.queryStartTime);
 	}
 }

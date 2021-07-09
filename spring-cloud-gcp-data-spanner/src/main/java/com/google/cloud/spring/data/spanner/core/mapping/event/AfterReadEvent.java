@@ -26,13 +26,13 @@ import com.google.cloud.spring.data.spanner.core.SpannerReadOptions;
  *
  * @author Chengyuan Zhao
  */
-public class AfterReadEvent extends LoadEvent {
+public class AfterReadEvent extends LoadEvent implements AfterEventQueryTiming {
 
 	private final SpannerReadOptions spannerReadOptions;
 
 	private final KeySet keySet;
 
-	private final long queryStartTime;
+	private Long queryStartTime;
 
 	/**
 	 * Constructor.
@@ -43,10 +43,24 @@ public class AfterReadEvent extends LoadEvent {
 	 *     {@code null} if the read operation wasn't a key-based read.
 	 */
 	public AfterReadEvent(Iterable source,
-			KeySet keySet, SpannerReadOptions spannerReadOptions, long queryStartTime) {
+			KeySet keySet, SpannerReadOptions spannerReadOptions) {
 		super(source);
 		this.spannerReadOptions = spannerReadOptions;
 		this.keySet = keySet;
+	}
+
+	/**
+	 * Constructor.
+	 * @param source The entities that were read from Cloud Spanner.This is never
+	 *     {@code null}.
+	 * @param keySet the keys that were read.
+	 * @param spannerReadOptions the options that were used to conduct the read. This may be
+	 *     {@code null} if the read operation wasn't a key-based read.
+	 * @param queryStartTime query start time.
+	 */
+	public AfterReadEvent(Iterable source,
+			KeySet keySet, SpannerReadOptions spannerReadOptions, Long queryStartTime) {
+		this(source, keySet, spannerReadOptions);
 		this.queryStartTime = queryStartTime;
 	}
 
@@ -62,8 +76,8 @@ public class AfterReadEvent extends LoadEvent {
 	 * Get the query execution time.
 	 * @return query execution time in milliseconds.
 	 */
-	public long getQueryExecutionTime() {
-		return getTimestamp() - this.queryStartTime;
+	public Long getQueryExecutionTime() {
+		return this.queryStartTime == null ? null : (getTimestamp() - this.queryStartTime);
 	}
 
 	/**

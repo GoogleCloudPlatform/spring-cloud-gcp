@@ -26,19 +26,29 @@ import com.google.cloud.spanner.Statement;
  *
  * @author Chengyuan Zhao
  */
-public class AfterExecuteDmlEvent extends ExecuteDmlEvent {
+public class AfterExecuteDmlEvent extends ExecuteDmlEvent implements AfterEventQueryTiming {
 
 	private final long numberOfRowsAffected;
-	private final long queryStartTime;
+	private Long queryStartTime;
 
 	/**
 	 * Constructor.
 	 * @param statement the DML statement that was executed.
 	 * @param numberOfRowsAffected the number of rows affected.
 	 */
-	public AfterExecuteDmlEvent(Statement statement, long numberOfRowsAffected, long queryStartTime) {
+	public AfterExecuteDmlEvent(Statement statement, long numberOfRowsAffected) {
 		super(statement);
 		this.numberOfRowsAffected = numberOfRowsAffected;
+	}
+
+	/**
+	 * Constructor.
+	 * @param statement the DML statement that was executed.
+	 * @param numberOfRowsAffected the number of rows affected.
+	 * @param queryStartTime the query start time.
+	 */
+	public AfterExecuteDmlEvent(Statement statement, long numberOfRowsAffected, Long queryStartTime) {
+		this(statement, numberOfRowsAffected);
 		this.queryStartTime = queryStartTime;
 	}
 
@@ -54,8 +64,8 @@ public class AfterExecuteDmlEvent extends ExecuteDmlEvent {
 	 * Get the query execution time.
 	 * @return query execution time in milliseconds.
 	 */
-	public long getQueryExecutionTime() {
-		return  getTimestamp() - this.queryStartTime;
+	public Long getQueryExecutionTime() {
+		return this.queryStartTime == null ? null : (getTimestamp() - this.queryStartTime);
 	}
 
 	@Override

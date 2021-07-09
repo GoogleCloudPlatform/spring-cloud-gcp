@@ -30,13 +30,13 @@ public class AfterExecuteDmlEventTest {
 
 	@Test
 	public void equalsHashcodeTest() {
-		AfterExecuteDmlEvent afterExecuteDmlEventa1 = new AfterExecuteDmlEvent(Statement.of("a"), 1L, 0);
-		AfterExecuteDmlEvent afterExecuteDmlEventa1x = new AfterExecuteDmlEvent(Statement.of("a"), 1L, 0);
+		AfterExecuteDmlEvent afterExecuteDmlEventa1 = new AfterExecuteDmlEvent(Statement.of("a"), 1L, 0L);
+		AfterExecuteDmlEvent afterExecuteDmlEventa1x = new AfterExecuteDmlEvent(Statement.of("a"), 1L, 0L);
 
-		AfterExecuteDmlEvent afterExecuteDmlEventa2 = new AfterExecuteDmlEvent(Statement.of("a"), 2L, 0);
+		AfterExecuteDmlEvent afterExecuteDmlEventa2 = new AfterExecuteDmlEvent(Statement.of("a"), 2L, 0L);
 
-		AfterExecuteDmlEvent afterExecuteDmlEventb1 = new AfterExecuteDmlEvent(Statement.of("b"), 1L, 0);
-		AfterExecuteDmlEvent afterExecuteDmlEventb2 = new AfterExecuteDmlEvent(Statement.of("b"), 2L, 0);
+		AfterExecuteDmlEvent afterExecuteDmlEventb1 = new AfterExecuteDmlEvent(Statement.of("b"), 1L, 0L);
+		AfterExecuteDmlEvent afterExecuteDmlEventb2 = new AfterExecuteDmlEvent(Statement.of("b"), 2L, 0L);
 
 		assertThat(afterExecuteDmlEventa1)
 				.isNotNull()
