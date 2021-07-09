@@ -133,6 +133,7 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 	@Override
 	public Object execute(Object[] parameters) {
 		StructuredQuery.Builder builder = createBuilderWithFilter(parameters);
+		Sort sort = null;
 
 		// Handle Pageable parameters.
 		if (!getQueryMethod().getParameters().isEmpty()) {
@@ -143,11 +144,14 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 				builder.setOffset((int) Math.min(Integer.MAX_VALUE, pageable.getOffset()));
 				builder.setLimit(Int32Value.newBuilder().setValue(pageable.getPageSize()));
 			}
+			sort = paramAccessor.getSort();
+		}
 
-			Sort sort = paramAccessor.getSort();
-			if (sort.isSorted()) {
-				builder.addAllOrderBy(createFirestoreSortOrders(sort));
-			}
+		if (sort == null || sort.isUnsorted()) {
+			sort = this.tree.getSort();
+		}
+		if (sort.isSorted()) {
+			builder.addAllOrderBy(createFirestoreSortOrders(sort));
 		}
 
 		if (this.tree.isCountProjection()) {
