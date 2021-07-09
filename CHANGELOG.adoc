@@ -9,6 +9,7 @@ For a detailed view of what has changed, refer to the https://github.com/GoogleC
 
 === Firestore
 * Fixed: Unable to query by document ID. (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/506[#506])
+* Added support for `OrderBy` clause in method name. (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/516[#516])
 
 == 2.0.3 (2021-06-08)
 
