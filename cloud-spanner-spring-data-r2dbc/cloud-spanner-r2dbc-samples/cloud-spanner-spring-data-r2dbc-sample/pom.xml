@@ -42,10 +42,52 @@
       <artifactId>spring-boot-starter-webflux</artifactId>
     </dependency>
 
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
+
+      <!-- This sample inherits from Spring Boot Starter, and not from the project pom,
+           so configuration separating unit from integration tests needs to be duplicated.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>${skip.surefire.tests}</skip>
+          <excludes>
+            <exclude>**/*IntegrationTest*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+
+        <configuration>
+          <includes>
+            <include>**/*IntegrationTest*</include>
+          </includes>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>integration-tests</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+
+      </plugin>
 
       <plugin>
         <artifactId>maven-deploy-plugin</artifactId>

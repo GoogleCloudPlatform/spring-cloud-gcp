@@ -16,17 +16,11 @@
 
 package com.example;
 
-import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.DRIVER_NAME;
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.INSTANCE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
-import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
-import io.r2dbc.spi.ConnectionFactories;
-import io.r2dbc.spi.ConnectionFactory;
-import io.r2dbc.spi.ConnectionFactoryOptions;
-import io.r2dbc.spi.Option;
 import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,20 +63,6 @@ public class SpringDataR2dbcApp {
     Assert.notNull(GCP_PROJECT, "Please provide gcp.project property");
 
     SpringApplication.run(SpringDataR2dbcApp.class, args);
-  }
-
-
-  @Bean
-  public static ConnectionFactory spannerConnectionFactory() {
-    ConnectionFactory connectionFactory = ConnectionFactories.get(ConnectionFactoryOptions.builder()
-        .option(Option.valueOf("project"), GCP_PROJECT)
-        .option(DRIVER, DRIVER_NAME)
-        .option(INSTANCE, SPANNER_INSTANCE)
-        .option(DATABASE, SPANNER_DATABASE)
-        .option(Option.valueOf("client-implementation"), "client-library")
-        .build());
-
-    return connectionFactory;
   }
 
   @EventListener(ApplicationReadyEvent.class)
