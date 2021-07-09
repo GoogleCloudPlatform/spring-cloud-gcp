@@ -39,7 +39,7 @@
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
 		<errorprone.version>2.7.1</errorprone.version>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
-		<java-cfenv.version>2.4.0</java-cfenv.version>
+		<java-cfenv.version>2.3.0</java-cfenv.version>
 		<javadoc.failOnError>false</javadoc.failOnError>
 		<javadoc.failOnWarnings>false</javadoc.failOnWarnings>
 		<maven-checkstyle-plugin.failOnViolation>true</maven-checkstyle-plugin.failOnViolation>
