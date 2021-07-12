@@ -65,8 +65,6 @@ public class SpannerConnectionConfiguration {
 
   private Duration ddlOperationPollInterval;
 
-  private int threadPoolSize;
-
   private boolean usePlainText;
 
   private String optimizerVersion;
@@ -137,10 +135,6 @@ public class SpannerConnectionConfiguration {
 
   public Duration getDdlOperationPollInterval() {
     return this.ddlOperationPollInterval;
-  }
-
-  public int getThreadPoolSize() {
-    return this.threadPoolSize;
   }
 
   public boolean isUsePlainText() {
@@ -233,8 +227,6 @@ public class SpannerConnectionConfiguration {
 
     private Duration ddlOperationPollInterval = Duration.ofSeconds(5);
 
-    private Integer threadPoolSize;
-
     private boolean usePlainText = false;
 
     private String optimizerVersion;
@@ -318,11 +310,6 @@ public class SpannerConnectionConfiguration {
       return this;
     }
 
-    public Builder setThreadPoolSize(int threadPoolSize) {
-      this.threadPoolSize = threadPoolSize;
-      return this;
-    }
-
     public Builder setUsePlainText(boolean usePlainText) {
       this.usePlainText = true;
       return this;
@@ -377,10 +364,6 @@ public class SpannerConnectionConfiguration {
       configuration.partialResultSetFetchSize = this.partialResultSetFetchSize;
       configuration.ddlOperationTimeout = this.ddlOperationTimeout;
       configuration.ddlOperationPollInterval = this.ddlOperationPollInterval;
-      configuration.threadPoolSize =
-          this.threadPoolSize != null
-              ? this.threadPoolSize
-              : Runtime.getRuntime().availableProcessors();
       configuration.usePlainText = this.usePlainText;
       configuration.optimizerVersion = this.optimizerVersion;
       configuration.readonly = this.readonly;

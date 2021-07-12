@@ -116,28 +116,6 @@ class SpannerConnectionConfigurationTest {
   }
 
   @Test
-  void executorThreads() {
-    SpannerConnectionConfiguration config = this.configurationBuilder
-        .setThreadPoolSize(42)
-        .setProjectId("project1")
-        .setInstanceName("an-instance")
-        .setDatabaseName("db")
-        .build();
-    assertThat(config.getThreadPoolSize()).isEqualTo(42);
-  }
-
-  @Test
-  void executorThreadsNotSet() {
-    SpannerConnectionConfiguration config = this.configurationBuilder
-        .setProjectId("project1")
-        .setInstanceName("an-instance")
-        .setDatabaseName("db")
-        .build();
-    assertThat(config.getThreadPoolSize())
-        .isEqualTo(Runtime.getRuntime().availableProcessors());
-  }
-
-  @Test
   void ddlOperationWaitSettings() {
     SpannerConnectionConfiguration config = this.configurationBuilder
         .setProjectId("project1")
@@ -155,7 +133,7 @@ class SpannerConnectionConfigurationTest {
   void databaseUrlMatchesPropertyConfiguration() {
     SpannerConnectionConfiguration urlBased =
         this.configurationBuilder
-            .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
+            .setUrl("r2dbc:cloudspanner://spanner.googleapis.com:443/"
                 + "projects/my-project/instances/my-instance/databases/my-database")
             .build();
 
@@ -172,7 +150,7 @@ class SpannerConnectionConfigurationTest {
   void databaseUrlExtracting() {
     SpannerConnectionConfiguration config =
         this.configurationBuilder
-            .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
+            .setUrl("r2dbc:cloudspanner://spanner.googleapis.com:443/"
                 + "projects/my-project/instances/my-instance/databases/my-database")
             .build();
 
@@ -184,31 +162,31 @@ class SpannerConnectionConfigurationTest {
   void invalidUrlFormats() {
     assertThatThrownBy(() ->
         this.configurationBuilder
-            .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
+            .setUrl("r2dbc:cloudspanner://spanner.googleapis.com:443/"
                 + "projects//instances/my-instance/databases/my-database"))
         .isInstanceOf(IllegalArgumentException.class);
 
     assertThatThrownBy(() ->
         this.configurationBuilder
-            .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
+            .setUrl("r2dbc:cloudspanner://spanner.googleapis.com:443/"
                 + "projects/proj/instances//databases/my-database"))
         .isInstanceOf(IllegalArgumentException.class);
 
     assertThatThrownBy(() ->
         this.configurationBuilder
-            .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
+            .setUrl("r2dbc:cloudspanner://spanner.googleapis.com:443/"
                 + "projects/a/instances/b/databases/c/d"))
         .isInstanceOf(IllegalArgumentException.class);
 
     assertThatThrownBy(() ->
         this.configurationBuilder
-            .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
+            .setUrl("r2dbc:cloudspanner://spanner.googleapis.com:443/"
                 + "projects/a/instances/b/databases/c d"))
         .isInstanceOf(IllegalArgumentException.class);
 
     assertThatThrownBy(() ->
         this.configurationBuilder
-            .setUrl("r2dbc:spanner://spanner.googleapis.com:443/"
+            .setUrl("r2dbc:cloudspanner://spanner.googleapis.com:443/"
                 + "foobar"))
         .isInstanceOf(IllegalArgumentException.class);
   }

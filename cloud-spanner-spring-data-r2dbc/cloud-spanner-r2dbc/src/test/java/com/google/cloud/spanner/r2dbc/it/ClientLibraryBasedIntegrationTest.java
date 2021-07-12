@@ -698,7 +698,7 @@ class ClientLibraryBasedIntegrationTest {
   @Test
   void urlConnectionWithExplicitAutocommitOff() {
     String baseUrl = String.format(
-        "r2dbc:spanner://spanner.googleapis.com:443/projects/%s/instances/%s/databases/%s",
+        "r2dbc:cloudspanner://spanner.googleapis.com:443/projects/%s/instances/%s/databases/%s",
         ServiceOptions.getDefaultProjectId(),
         DatabaseProperties.INSTANCE,
         DatabaseProperties.DATABASE);
@@ -714,7 +714,7 @@ class ClientLibraryBasedIntegrationTest {
   @Test
   void urlConnectionWithExplicitReadonlyOn() {
     String baseUrl = String.format(
-        "r2dbc:spanner://spanner.googleapis.com:443/projects/%s/instances/%s/databases/%s",
+        "r2dbc:cloudspanner://spanner.googleapis.com:443/projects/%s/instances/%s/databases/%s",
         ServiceOptions.getDefaultProjectId(),
         DatabaseProperties.INSTANCE,
         DatabaseProperties.DATABASE);

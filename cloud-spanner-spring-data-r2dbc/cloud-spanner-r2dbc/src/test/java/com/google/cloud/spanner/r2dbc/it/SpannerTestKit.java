@@ -71,6 +71,7 @@ public class SpannerTestKit implements TestKit<String> {
           .option(DRIVER, DRIVER_NAME)
           .option(INSTANCE, DatabaseProperties.INSTANCE)
           .option(DATABASE, DatabaseProperties.DATABASE)
+          .option(Option.valueOf("client-implementation"), "grpc")
           .build());
 
   private static final Logger logger = LoggerFactory.getLogger(SpannerTestKit.class);

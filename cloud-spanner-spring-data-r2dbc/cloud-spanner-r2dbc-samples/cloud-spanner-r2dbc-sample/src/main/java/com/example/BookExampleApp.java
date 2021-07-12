@@ -70,7 +70,7 @@ public class BookExampleApp {
             + "  ID STRING(20) NOT NULL,"
             + "  TITLE STRING(MAX) NOT NULL"
             + ") PRIMARY KEY (ID)").execute())
-        .doOnNext(x -> System.out.println("Table creation completed."))
+        .doOnSuccess(x -> System.out.println("Table creation completed."))
         .block();
   }
 

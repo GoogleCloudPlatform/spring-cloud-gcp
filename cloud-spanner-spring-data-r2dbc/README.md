@@ -1,10 +1,9 @@
 # Cloud Spanner R2DBC Driver
 
-[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
-
-An implementation of the [R2DBC](https://r2dbc.io/) driver for [Cloud Spanner](https://cloud.google.com/spanner/) is being developed in this repository.
-
-A [Spring Data R2DBC dialect for Cloud Spanner](https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/tree/main/cloud-spanner-spring-data-r2dbc) dialect is available, as well.
+This project contains:
+* An implementation of Java Reactive Relational Database Connectivity SPI [R2DBC](https://r2dbc.io/) for [Cloud Spanner](https://cloud.google.com/spanner/) based on the Cloud Spanner [client library](https://github.com/googleapis/java-spanner).
+* A [Spring Data R2DBC dialect for Cloud Spanner](https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/tree/main/cloud-spanner-spring-data-r2dbc).
+* [Sample applications](https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/tree/main/cloud-spanner-r2dbc-samples) to help you get started.
 
 ## Setup Instructions
 
@@ -37,79 +36,18 @@ The easiest way to start using the driver is to add the driver dependency throug
 
 ```
 dependencies {
-  compile group: 'com.google.cloud', name: 'cloud-spanner-r2dbc', version: '0.3.0'
+  compile group: 'com.google.cloud', name: 'cloud-spanner-r2dbc', version: '0.5.0'
 }
 ```
 
-### Authentication
-
-By default, the R2DBC driver will attempt to infer your account credentials from the environment
-in which the application is run. There are a number of different ways to conveniently provide
-account credentials to the driver.
-
-#### Using Google Cloud SDK
-
-Google Cloud SDK is a command line interface for Google Cloud Platform products and services.
-This is a convenient way of setting up authentication during local development.
-
-If you are using the SDK, the driver can automatically infer your account credentials from your
-SDK configuration.
-
-Instructions:
-
-1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/) for command line and
-    follow the [Cloud SDK quickstart](https://cloud.google.com/sdk/docs/quickstarts)
-    for your operating system.
-    
-2. Once setup, run `gcloud auth application-default login` and login with your Google account
-    credentials. 
-
-After completing the SDK configuration, the Spanner R2DBC driver will automatically pick up your
-credentials allowing you to access your Spanner database. 
-
-#### Using a Service Account
-
-A [Google Service Account](https://cloud.google.com/iam/docs/understanding-service-accounts) is a
-special type of Google Account intended to represent a non-human user that needs to authenticate
-and be authorized to access your Google Cloud resources. Each service account has an account key JSON file that you can use to provide credentials to your
-application.
-
-This is the recommended method of authentication for production use.
-
-You can learn how to create a service account and authenticate your application by following
-[these instructions](https://cloud.google.com/docs/authentication/production#obtaining_and_providing_service_account_credentials_manually).
-
-If you are unsatisfied with credentials inference methods, you may override this behavior
-by manually specifying a service account key JSON file using the `google_credentials`
-option to the `ConnectionFactory` builder.
-
-Example:
-
-```java
-import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.GOOGLE_CREDENTIALS;
-
-String pathToCredentialsKeyFile = ...;
-
-GoogleCredentials creds = GoogleCredentials.fromStream(new FileInputStream(credentialsLocation));
-ConnectionFactoryOptions options =
-    ConnectionFactoryOptions.builder()
-        .option(GOOGLE_CREDENTIALS, creds)
-        .option(..) // Other options here
-        .build();
-```
-
-#### Using Google Cloud Platform Environment
-
-If your application is running on Google Cloud Platform infrastructure including: Compute Engine,
-Kubernetes Engine, the App Engine flexible environment, or Cloud Functions, the credentials will
-be automatically inferred from the runtime environment in the Cloud. For more information, see
-the [Google Cloud Platform Authentication documentation](https://cloud.google.com/docs/authentication/production#obtaining_credentials_on_compute_engine_kubernetes_engine_app_engine_flexible_environment_and_cloud_functions).
-
 ### Usage
 
-After setting up the dependency and authentication, one can begin directly using the driver.
+After setting up the dependency and [authentication](#authentication), you can begin directly using the driver.
 
-The entry point to using the R2DBC driver is to first configure the R2DBC connection factory.
+The rest of this documentation will show examples of directly using the driver.
+In a real application, you should use one of R2DBC's user-friendly [client APIs](https://r2dbc.io/clients/) instead.
+
+To start using Cloud Spanner R2DBC driver, configure the R2DBC connection factory either programmatically, as shown below, or with a URL.
 
 ```
 import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PROJECT;
@@ -117,7 +55,7 @@ import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.IN
 
 ConnectionFactory connectionFactory =
     ConnectionFactories.get(ConnectionFactoryOptions.builder()
-        .option(DRIVER, "spanner")
+        .option(DRIVER, "cloudspanner")
         .option(PROJECT, "your-gcp-project-id")
         .option(INSTANCE, "your-spanner-instance")
         .option(DATABASE, "your-database-name")
@@ -127,36 +65,92 @@ ConnectionFactory connectionFactory =
 Publisher<? extends Connection> connectionPublisher = connectionFactory.create();
 ```
 
-The following options are available to be configured for the connection factory:
-
-| Option Name | Description                | Required | Default Value |
-|-------------|----------------------------|----------|---------------|
-| `driver`    | Must be "spanner"          | True     |               |
-| `project`   | Your GCP Project ID        | True (if `url` not provided) | |
-| `instance`  | Your Spanner Instance name | True (if `url` not provided) | |
-| `database`  | Your Spanner Database name | True (if `url` not provided) | |
-| `url`       | A Cloud Spanner R2DBC URL specifying your Spanner database. An alternative to specifying `project`, `instance`, and `database` separately. | False |
-| `google_credentials` | Optional [Google credentials](https://cloud.google.com/docs/authentication/production) override to specify for your Google Cloud account. | False | If not provided, credentials will be [inferred from your runtime environment](https://cloud.google.com/docs/authentication/production#finding_credentials_automatically).
-| `autocommit`  | Whether new connections are created in autocommit mode | False | True |
-| `readonly`  | Whether new connections start with a read-only transaction | False | False |
-| `partial_result_set_fetch_size` | Number of intermediate result sets that are buffered in transit for a read query. | False | 1 |
-| `ddl_operation_timeout` | Duration in seconds to wait for a DDL operation to complete before timing out | False | 600 seconds |
-| `ddl_operation_poll_interval` | Duration in seconds to wait between each polling request for the completion of a DDL operation | False | 5 seconds |
-
 ### Connection URLs
 
-You may specify the coordinates of your Cloud Spanner database using the `url` property instead of
-specifying the `project`, `instance`, and `database` properties separately.
+You may specify the coordinates of your Cloud Spanner database using the `ConnectionFactories.get(String)` SPI method instead of specifying the `project`, `instance`, and `database` properties individually.
 
-A Cloud Spanner R2DBC URL is constructed using the following format:
+A Cloud Spanner R2DBC URL is constructed in the following format:
 
 ```
-r2dbc:spanner://spanner.googleapis.com:443/projects/${PROJECT_NAME}/instances/${INSTANCE_NAME}/databases/${DB_NAME}
+r2dbc:cloudspanner://spanner.googleapis.com:443/projects/${PROJECT_NAME}/instances/${INSTANCE_NAME}/databases/${DB_NAME}
 ```
 
 - `${PROJECT_NAME}`: Replace with the name of your Google Cloud Platform Project ID.
 - `${INSTANCE_NAME}`: Replace with the name of your Spanner Instance.
 - `${DB_NAME}`: Replace with the name of your Spanner database.
+
+## Cleaning Up
+
+Client library-based `ConnectionFactory` must be closed as part of application shutdown process to ensure all server-side Cloud Spanner sessions are cleaned up.
+
+```
+Mono.from(((Closeable) connectionFactory).close()).subscribe();
+```
+
+### Authentication
+
+The driver allows the following options for authentication:
+
+* a `String` property `credentials` containing the local file location of the JSON credentials file.
+* a `String` OAuth token provided as `oauthToken`.
+* a `Credentials` object provided as `google_credentials`. This will only work with programmatically constructed `ConnectionFactoryOptions`.
+    Example:
+
+    ```java
+    import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.GOOGLE_CREDENTIALS;
+    
+    String pathToCredentialsKeyFile = ...;
+    
+    GoogleCredentials creds = GoogleCredentials.fromStream(new FileInputStream(credentialsLocation));
+    ConnectionFactoryOptions options =
+        ConnectionFactoryOptions.builder()
+            .option(GOOGLE_CREDENTIALS, creds)
+            .option(..) // Other options here
+            .build();
+    ```
+
+In the absence of explicit authentication options, Application Default Credentials will be automatically inferred from the environment in which the application is running, unless the connection is in plain-text, indicating the use of Cloud Spanner emulator.
+For more information, see the [Google Cloud Platform Authentication documentation](https://cloud.google.com/docs/authentication/production#automatically)
+
+
+#### Using Google Cloud SDK
+
+Google Cloud SDK is a command line interface for Google Cloud Platform products and services.
+This is a convenient way of setting up authentication during local development.
+
+If you are using the SDK, the driver can automatically infer your account credentials from your SDK configuration.
+
+Instructions:
+
+1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/) for command line and follow the [Cloud SDK quickstart](https://cloud.google.com/sdk/docs/quickstarts) for your operating system.
+    
+2. Once setup, run `gcloud auth application-default login` and login with your Google account credentials. 
+
+After completing the SDK configuration, the Cloud Spanner R2DBC driver will automatically pick up your credentials. 
+
+#### Using a Service Account
+
+A [Google Service Account](https://cloud.google.com/iam/docs/understanding-service-accounts) is a special type of Google Account intended to represent a non-human user that needs to authenticate and be authorized to access your Google Cloud resources.
+Each service account has an account key JSON file that you can use to provide credentials to your application.
+
+You can learn how to create a service account and authenticate your application by following
+[these instructions](https://cloud.google.com/docs/authentication/production#obtaining_and_providing_service_account_credentials_manually).
+
+
+## Supported connection options
+
+All connection options of primitive and String type can be passed through the connection URL in the `?key1=value1&key2=value2` format.
+Object-typed options can only be passed in programmatically.
+
+|Property name            |Type                              |Allowed in URL connection |Default |Comments|
+|-------------------------|-------|--------------------------|--------|--------|
+|`credentials`            |String |Yes                       |null    |The location of the credentials file to use for this connection
+|`oauthToken`             |String |Yes                       |null    |A valid pre-existing OAuth token to use for authentication
+|`google_credentials`     |com.google.auth.oauth2.OAuth2Credentials|No|null|A pre-authenticated authentication object that can only be supplied with programmatic connection options
+|`usePlainText`           |boolean|Yes                       |false   |Turns off SSL and credentials use (only valid when using Cloud Spanner emulator)
+|`optimizerVersion`       |String |Yes                       |null    |Determines version of Cloud Spanner https://cloud.google.com/spanner/docs/query-optimizer/query-optimizer-versions[optimizer] to use in queries
+|`autocommit`             |boolean|Yes                       |true    |Whether new connections are created in autocommit mode
+|`readonly`               |boolean|Yes                       |false   |Whether new connections start with a read-only transaction
 
 ## Mapping of Data Types
 
@@ -181,90 +175,67 @@ See [Cloud Spanner documentation](https://cloud.google.com/spanner/docs/data-typ
 
 ## Connections
 
-The R2DBC Cloud Spanner `Connection` object represents a persistent connection to a Spanner
-database.
+The R2DBC Cloud Spanner `Connection` object is a lightweight wrapper around the shared Cloud Spanner client library object combined with transaction state.
 
-When you instantiate a `Connection` object using the `ConnectionFactory`, a [Spanner session](https://cloud.google.com/spanner/docs/sessions)
-is created and encapsulated within the connection. Creating a session is typically expensive, so
-it is preferable to reuse your `Connection` object to run multiple statements rather than create
-a new `Connection` for each statement you wish to run.
+The client library takes care of reconnecting lapsed Cloud Spanner sessions.
 
-Additionally, if a `Connection` is not used for more than 1 hour, the Cloud Spanner database service
-reserves the right to drop the connection. If this occurs, a `R2dbcNonTransientException` will be
-thrown when you attempt to run queries using the connection, and you will have to recreate the
-connection in order to reattempt the query.
-
-If you definitely need to keep an idle connection alive, for example, if a significant near-term
-increase in database use is expected, you may keep a connection active by calling `validate(ValidationDepth.REMOTE)` on the `Connection` object and subscribing to the returned `Publisher`. Remote validation performs an inexpensive SQL query `SELECT 1` against the database. 
+If you'd like to ensure the current connection stays connected, you may keep a connection active by calling `validate(ValidationDepth.REMOTE)` on the `Connection` object and subscribing to the returned `Publisher`.
+Remote validation performs an inexpensive SQL query `SELECT 1` against the database. 
 
 ## Transactions
 
-In Cloud Spanner, a transaction represents a set of read and write statements that execute
-atomically at a single logical point in time across columns, rows, and tables in a database.
+In Cloud Spanner, a transaction represents a set of read and write statements that execute atomically at a single logical point in time across columns, rows, and tables in a database.
 
-Note: Transactional save points are unsupported in Cloud Spanner and are unimplemented by
-this R2DBC driver.
+Note: Transactional save points are unsupported in Cloud Spanner and are unimplemented by this R2DBC driver.
 
 ### Transaction Types
 
-Spanner offers [three transaction types](https://cloud.google.com/spanner/docs/transactions)
-in which to execute SQL statements:
+Spanner offers [three transaction types](https://cloud.google.com/spanner/docs/transactions) in which to execute SQL statements:
 
 - Read-Write: Supports reading and writing data into Cloud Spanner.
+    When you begin a transaction in the `Connection` object using `connection.beginTransaction()`, a read-write transaction is started by default, unless the connection was created or altered to run in read-only mode.
+    
+    ```java
+    Mono.from(connectionFactory.create())
+                .flatMapMany(c -> Flux.concat(
+                    c.beginTransaction(),
+                    ...
+                    c.commitTransaction(),
+                    c.close()))
+    ```
 
 - Read-Only: Provides guaranteed consistency across multiple reads but does not allow writing data.
+    Read-only transactions, including stale transactions, can be used by downcasting the `Connection` object to `com.google.cloud.spanner.r2dbc.api.SpannerConnection` and calling `beginReadonlyTransaction()` on it.
+    Invoking `beginReadonlyTransaction()` without parameters will begin a new strongly consistent readonly transaction, as does creating a new connection from a `ConnectionFactory` in read-only mode (`readonly=true`).
+    
+    To customize staleness, pass in a `TimestampBound` parameter.
+    See the [TransactionOptions documentation](https://cloud.google.com/spanner/docs/reference/rpc/google.spanner.v1#google.spanner.v1.TransactionOptions) for more information about all of the transaction type settings that are available.
+
+    ```java
+    Mono.from(connectionFactory.create())
+                .flatMapMany(c ->
+                    Flux.concat(
+                              ((SpannerConnection) conn).beginReadonlyTransaction(TimestampBound.ofExactStaleness(1, TimeUnit.SECONDS)),
+                                ...
+                              conn.commitTransaction(),
+                        )
+    ```
+    NOTE: Readonly transactions must be closed by calling `commit()` before starting a new read-write or a read-only transaction.
+
 
 - Partitioned DML: A transaction designed for bulk updates and deletes with certain restrictions.
-    See the [Partitioned DML documentation](https://cloud.google.com/spanner/docs/dml-partitioned)
-    for more information.
+    See the [Partitioned DML documentation](https://cloud.google.com/spanner/docs/dml-partitioned) for more information.
+    This driver does not support Partitioned DML transactions at the time.
 
-When you begin a transaction in the `Connection` object using `connection.beginTransaction()`,
-a read-write transaction is started.
 
-If you would like to begin a transaction and leverage the custom transaction types, you will have
-to cast the `Connection` object into `SpannerConnection` and call 
-`spannerConnection.beginTransaction(TransactionOptions options)`. The overloaded `beginTransaction`
-allows you to pass in custom `TransactionOptions` to customize your transaction.
+### Nesting transactions
+Cloud Spanner does not support nested transactions, so each transaction must be either committed or rolled back.
+For readonly transactions, either committing or rolling back will result in closing of the readonly transaction.
 
-The below example demonstrates how this might be done using Project Reactor:
-
-```java
-import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.PROJECT;
-import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.INSTANCE;
-
-ConnectionFactory connectionFactory =
-    ConnectionFactories.get(ConnectionFactoryOptions.builder()
-        .option(DRIVER, "spanner")
-        .option(PROJECT, "your-gcp-project-id")
-        .option(INSTANCE, "your-spanner-instance")
-        .option(DATABASE, "your-database-name")
-        .build());
-
-// Your TransactionOptions to customize the transaction type.
-TransactionOptions transactionOptions =
-    TransactionOptions.newBuilder()
-        .setReadOnly(
-            ReadOnly.newBuilder().setStrong(true))
-        .build();
-        
-// Create and cast the Connection to SpannerConnection.
-Mono<SpannerConnection> spannerConnection =
-    Mono.from(this.connectionFactory.create())
-        .cast(SpannerConnection.class);
-
-// Call beginTransaction and pass in the transactionOptions.
-spannerConnection
-    .delayUntil(connection -> connection.beginTransaction(transactionOptions));
-    ... continued ...
-```
-
-See the [TransactionOptions documentation](https://cloud.google.com/spanner/docs/reference/rpc/google.spanner.v1#google.spanner.v1.TransactionOptions)
-for more information about all of the transaction type settings that are available.
 
 ### Autocommit Mode
 
-The Spanner R2DBC driver can be used in autocommit mode in which statements are executed
-independently outside of a transaction.
+The Spanner R2DBC driver can be used in autocommit mode in which statements are executed independently outside of a transaction.
 
 You may immediately call `connection.createStatement(sql)` and begin executing SQL statements.
 Each statement will be executed as an independent unit of work.
@@ -274,18 +245,14 @@ Each statement will be executed as an independent unit of work.
 
 ## Statements 
 
-R2DBC statement objects are used to run statements on your Cloud Spanner database. Based on the type
-of statement, the Cloud Spanner R2DBC handles the treatment and execution of the statement
-slightly differently.
+R2DBC statement objects are used to run statements on your Cloud Spanner database. 
+The table below describes whether parameter bindings are available for each statement type.
 
-The table below describes whether parameter bindings are available for each statement type and
-the Spanner GRPC endpoint used to execute the query.
-
-| Statement Type | Allows Parameter Bindings | Cloud Spanner API Method   |
-|----------------|---------------------------|----------------------------|
-| SELECT Queries | Yes                       | [ExecuteStreamingSql](https://cloud.google.com/spanner/docs/reference/rpc/google.spanner.v1#google.spanner.v1.Spanner.ExecuteStreamingSql) |
-| DML Statements | Yes                       | [ExecuteBatchDml](https://cloud.google.com/spanner/docs/reference/rpc/google.spanner.v1#google.spanner.v1.Spanner.ExecuteBatchDml) |
-| DDL Statements | No                        | [UpdateDatabaseDdl](https://cloud.google.com/spanner/docs/reference/rpc/google.spanner.admin.database.v1#google.spanner.admin.database.v1.DatabaseAdmin.UpdateDatabaseDdl) |
+| Statement Type | Allows Parameter Bindings |
+|----------------|---------------------------|
+| SELECT Queries | Yes                       | 
+| DML Statements | Yes                       |
+| DDL Statements | No                        |
 
 ### Binding Query Parameters
 
@@ -314,55 +281,23 @@ It will produce a `Publisher` (implemented by a `Flux`) containing two `SpannerR
 Note that calling `execute` produces R2DBC `Result` objects, but this doesn't cause the query to be run on the database. 
 You must use the `map` or `getRowsUpdated` methods of the results to complete the underlying queries.
 
-### DDL Statements
 
-DDL statements in Spanner receive special treatment by Cloud Spanner. Creating and
-dropping tables can take a long time (on the order of minutes). As a result, Cloud Spanner 
-ordinarily requires that clients poll the service for the completion of these operations.
+## Backpressure
 
-The Cloud Spanner R2DBC driver automatically handles DDL statement status polling.
-
-The only two settings that users need to worry about are polling settings configurable
-through the Spanner connection factory:
-
-- `ddl_operation_timeout`: Duration in seconds to wait for a DDL operation to complete
-    before timing out.
-- `ddl_operation_poll_interval`: Duration in seconds to wait between each polling request
-    for the completion of a DDL operation.
-    
-See the above section regarding `ConnectionFactory` options for more information.
-
-## Back Pressure
-
-When you execute a **read** query in Cloud Spanner, the table rows of the result are transmitted
-back to the client in chunks called `PartialResultSets`. Every `PartialResultSet` object may
-contain any number of complete (or incomplete) table rows, and the number of rows cannot be
-determined beforehand. Consequently, the driver requests these `PartialResultSet` objects from
-upstream and holds a buffer of these objects from which the table rows of the results are extracted.
-As the buffer is depleted, more `PartialResultSets` will be streamed from Cloud Spanner and
-will replenish the buffer.
-
-In order to support backpressure under these conditions, the driver provides a setting
-`partial_result_set_fetch_size` which specifies how many PartialResultSet objects the driver
-requests from Spanner in it's first request to store in the buffer. This number is an upper
-bound that affects how it is replenished; when the client has consumed 25% of the PartialResultSets,
-it will request 25% upstream from Spanner. See the [prefetch documentation](https://projectreactor.io/docs/core/release/reference/#_operators_that_change_the_demand_from_downstream)
-for more info.
-
-The default buffer size of `PartialResultSets` is 1 and this may be increased by setting
-`partial_result_set_fetch_size`.
+Backpressure on SQL SELECT queries is supported out of the box.
+Take care to always ultimately exhaust or cancel the query result `Publisher`, since not doing so may lead to objects not being deallocated properly.
 
 ## Exception Handling
 
-The Cloud Spanner R2DBC propagates all exceptions down to the user. All exceptions thrown
-are wrapped by and propagated through two exception classes:
+The Cloud Spanner R2DBC propagates all exceptions down to the user.
+All exceptions thrown are wrapped by and propagated through two exception classes:
 
-- `R2dbcTransientException`: Errors caused by network problems or causes outside of the
-    user's control. The operations that fail due to these errors can be retried.
+- `R2dbcTransientException`: Errors caused by network problems or causes outside of the user's control.
+    The operations that fail due to these errors can be retried.
     
 - `R2dbcNonTransientException`: Errors caused by invalid operations or user error.
-    These include SQL syntax errors, invalid requests, performing invalid operations on the
-    Spanner driver, etc. These errors should not be retried.
+    These include SQL syntax errors, invalid requests, performing invalid operations on the Spanner driver, etc.
+    These errors should not be retried.
     
 The user may leverage reactive methods to retry operations which throw `R2dbcTransientException`.
 
@@ -388,8 +323,7 @@ Only DML statements are supported.
 
 The call to `execute()` produces a publisher that will publish results.
 The statements are executed in sequential order.
-For every successfully executed statement, there will be a result that contatins a number of updated rows.
-Execution stops after the first failed statement; the remaining statements are not executed. 
+For every successfully executed statement, there will be a result that contains a number of updated rows.
  
 ```java
 Flux.from(connection.createBatch()
@@ -400,47 +334,76 @@ Flux.from(connection.createBatch()
 ```
 
 ## Using Connection Pool
-For connection pooling, [r2dbc pool](https://github.com/r2dbc/r2dbc-pool) can be used. 
-Connection pools are used to cache and reuse database connections.  
-R2DBC-pool manages an adjustable number of connections, keeping them alive and verifying that they are still active.
-If necessary, connections are dropped and re-established.
-Validation query can be provided by user.  
 
-**Maven dependency**
+Client Spanner client library maintains its own low-level connection pool, making use of [r2dbc pool](https://github.com/r2dbc/r2dbc-pool) unnecessary.
+When R2DBC connections are closed, the underlying Client Spanner connection is reused internally.
 
-```xml
-<dependency>
-  <groupId>io.r2dbc</groupId>
-  <artifactId>r2dbc-pool</artifactId>
-  <version>1.0.0.BUILD-SNAPSHOT</version>
-</dependency>
-```
-**Example:**
+
+## gRPC-based driver (v1)
+
+The original, experimental version of Cloud Spanner R2DBC driver was based on direct communication to Cloud Spanner gRPC endpoints.
+
+It has been deprecated and will be removed in a future version.
+
+Until then, you may still activate the gRPC implementation by providing an option named `client-implementation` with the value of `grpc`, as in the example below.
+Keep in mind that v1 did not take advantage of Cloud Spanner client library's internal connection pooling, so you should use `r2dbc-pool` to avoid creating server-side connections for every logical R2DBC connection.
 
 ```java
-ConnectionFactory connectionFactory =
-    ConnectionFactories.get(ConnectionFactoryOptions.builder()
-        .option(DRIVER, "spanner")
-        .option(PROJECT, "your-gcp-project-id")
-        .option(INSTANCE, "your-spanner-instance")
-        .option(DATABASE, "your-database-name")
-        .build())
-
-private static final ConnectionPool pool =
-    new ConnectionPool(ConnectionPoolConfiguration.builder(connectionFactory)
-        .validationQuery("SELECT 1")
-        .maxIdleTime(Duration.ofSeconds(10))
-        .maxSize(5)
-        .build());  
-
-Mono.from(pool.create())
-    .delayUntil(c -> c.beginTransaction())
-    .delayUntil(c -> Flux.from(c -> c.createStatement("INSERT INTO test (value) VALUES (@val)")
-                                           .bind("val", "test-value").execute())
-        .flatMapSequential(r -> Mono.from(r.getRowsUpdated())))
-    .delayUntil(c -> c.commitTransaction())
-    .delayUntil(c -> c.close())
-    .block();
-
-pool.dispose();
+ConnectionFactories.get(
+          ConnectionFactoryOptions.builder()
+              ...
+              .option(Option.valueOf("client-implementation"), "grpc")
+              .build());
 ```
+
+The following options were available in v1:
+
+| Option Name | Description                | Required | Default Value |
+|-------------|----------------------------|----------|---------------|
+| `driver`    | Must be "cloudspanner"          | True     |               |
+| `project`   | Your GCP Project ID        | True (if `url` not provided) | |
+| `instance`  | Your Spanner Instance name | True (if `url` not provided) | |
+| `database`  | Your Spanner Database name | True (if `url` not provided) | |
+| `url`       | A Cloud Spanner R2DBC URL specifying your Spanner database. An alternative to specifying `project`, `instance`, and `database` separately. | False |
+| `google_credentials` | Optional [Google credentials](https://cloud.google.com/docs/authentication/production) override to specify for your Google Cloud account. | False | If not provided, credentials will be [inferred from your runtime environment](https://cloud.google.com/docs/authentication/production#finding_credentials_automatically).
+| `partial_result_set_fetch_size` | Number of intermediate result sets that are buffered in transit for a read query. | False | 1 |
+| `ddl_operation_timeout` | Duration in seconds to wait for a DDL operation to complete before timing out | False | 600 seconds |
+| `ddl_operation_poll_interval` | Duration in seconds to wait between each polling request for the completion of a DDL operation | False | 5 seconds |
+
+### DDL Statements in v1
+
+DDL statements in Spanner receive special treatment by Cloud Spanner. Creating and
+dropping tables can take a long time (on the order of minutes). As a result, Cloud Spanner 
+ordinarily requires that clients poll the service for the completion of these operations.
+
+The Cloud Spanner R2DBC driver automatically handles DDL statement status polling.
+
+The only two settings that users need to worry about are polling settings configurable
+through the Spanner connection factory:
+
+- `ddl_operation_timeout`: Duration in seconds to wait for a DDL operation to complete
+    before timing out.
+- `ddl_operation_poll_interval`: Duration in seconds to wait between each polling request
+    for the completion of a DDL operation.
+    
+See the above section regarding `ConnectionFactory` options for more information.
+
+### Backpressure in v1
+
+When you execute a **read** query in Cloud Spanner, the table rows of the result are transmitted
+back to the client in chunks called `PartialResultSets`. Every `PartialResultSet` object may
+contain any number of complete (or incomplete) table rows, and the number of rows cannot be
+determined beforehand. Consequently, the driver requests these `PartialResultSet` objects from
+upstream and holds a buffer of these objects from which the table rows of the results are extracted.
+As the buffer is depleted, more `PartialResultSets` will be streamed from Cloud Spanner and
+will replenish the buffer.
+
+In order to support backpressure under these conditions, the driver provides a setting
+`partial_result_set_fetch_size` which specifies how many PartialResultSet objects the driver
+requests from Spanner in it's first request to store in the buffer. This number is an upper
+bound that affects how it is replenished; when the client has consumed 25% of the PartialResultSets,
+it will request 25% upstream from Spanner. See the [prefetch documentation](https://projectreactor.io/docs/core/release/reference/#_operators_that_change_the_demand_from_downstream)
+for more info.
+
+The default buffer size of `PartialResultSets` is 1 and this may be increased by setting
+`partial_result_set_fetch_size`.

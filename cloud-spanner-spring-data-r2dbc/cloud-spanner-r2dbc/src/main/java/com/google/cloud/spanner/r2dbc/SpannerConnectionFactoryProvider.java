@@ -111,6 +111,8 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   private static final Option[] SECURITY_OPTIONS =
       new Option[] { OAUTH_TOKEN, CREDENTIALS, GOOGLE_CREDENTIALS};
 
+  static final String IMPLEMENTATION_VERSION = "client-implementation";
+
   private Client client;
 
   private CredentialsHelper credentialsHelper = new CredentialsHelper();
@@ -120,17 +122,17 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
 
     SpannerConnectionConfiguration config = createConfiguration(connectionFactoryOptions);
 
-    if (connectionFactoryOptions.hasOption(Option.valueOf("client-implementation"))
-        && connectionFactoryOptions.getValue(Option.valueOf("client-implementation"))
-        .equals("client-library")) {
-      return new SpannerClientLibraryConnectionFactory(config);
-
-    } else {
+    if (connectionFactoryOptions.hasOption(Option.valueOf(IMPLEMENTATION_VERSION))
+        && connectionFactoryOptions.getValue(Option.valueOf(IMPLEMENTATION_VERSION)).equals("grpc")
+    ) {
       if (this.client == null) {
         // GrpcClient should only be instantiated if/when a SpannerConnectionFactory is needed.
         this.client = new GrpcClient(config.getCredentials());
       }
       return new SpannerConnectionFactory(this.client, config);
+    } else {
+      // Client Library implementation is now the default.
+      return new SpannerClientLibraryConnectionFactory(config);
     }
   }
 
@@ -189,10 +191,6 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
     }
 
     // V2 properties
-    if (options.hasOption(THREAD_POOL_SIZE)) {
-      config.setThreadPoolSize(options.getValue(THREAD_POOL_SIZE));
-    }
-
     if (options.hasOption(USE_PLAIN_TEXT)) {
       config.setUsePlainText(true);
     }

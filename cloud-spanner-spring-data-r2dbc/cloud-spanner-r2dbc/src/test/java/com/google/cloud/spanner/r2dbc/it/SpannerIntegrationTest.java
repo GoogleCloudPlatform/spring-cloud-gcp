@@ -77,6 +77,7 @@ class SpannerIntegrationTest {
           .option(DRIVER, DRIVER_NAME)
           .option(INSTANCE, DatabaseProperties.INSTANCE)
           .option(DATABASE, DatabaseProperties.DATABASE)
+          .option(Option.valueOf("client-implementation"), "grpc")
           .build());
 
   private SpannerStub spanner;
