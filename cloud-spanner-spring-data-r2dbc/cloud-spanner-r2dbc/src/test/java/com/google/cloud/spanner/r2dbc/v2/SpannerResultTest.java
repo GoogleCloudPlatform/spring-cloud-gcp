@@ -19,7 +19,6 @@ package com.google.cloud.spanner.r2dbc.v2;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.cloud.spanner.Struct;
-import com.google.cloud.spanner.r2dbc.SpannerResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
@@ -28,7 +27,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 /**
- * Test for {@link SpannerResult}.
+ * Test for {@link SpannerClientLibraryResult}.
  */
 class SpannerResultTest {
 
@@ -57,14 +56,8 @@ class SpannerResultTest {
 
   @Test
   void nullResultSetTest() {
-    assertThatThrownBy(() -> new SpannerResult(null, Mono.empty()))
+    assertThatThrownBy(() -> new SpannerClientLibraryResult(null, 0))
         .hasMessage("A non-null flux of rows is required.");
-  }
-
-  @Test
-  void nullRowsTest() {
-    assertThatThrownBy(() -> new SpannerResult(Flux.empty(), null))
-        .hasMessage("A non-null mono of rows updated is required.");
   }
 
   @Test

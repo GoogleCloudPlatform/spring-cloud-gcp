@@ -16,7 +16,6 @@
 
 package com.google.cloud.spanner.r2dbc.v2;
 
-import com.google.cloud.spanner.r2dbc.SpannerResult;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
 import reactor.core.publisher.Flux;
@@ -68,7 +67,8 @@ class SpannerClientLibraryDdlStatement implements Statement {
 
   @Override
   public Mono<? extends Result> execute() {
-    return this.clientLibraryAdapter.runDdlStatement(this.query)
-        .map(unusedVoid -> new SpannerResult(Flux.empty(), Mono.just(0)));
+    return this.clientLibraryAdapter
+        .runDdlStatement(this.query)
+        .thenReturn(new SpannerClientLibraryResult(Flux.empty(), 0));
   }
 }

@@ -70,7 +70,6 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
               .option(DRIVER, DRIVER_NAME)
               .option(INSTANCE, DatabaseProperties.INSTANCE)
               .option(DATABASE, DatabaseProperties.DATABASE)
-              .option(Option.valueOf("client-implementation"), "client-library")
               .build());
 
   private static final Logger logger = LoggerFactory.getLogger(SpannerClientLibraryTestKit.class);

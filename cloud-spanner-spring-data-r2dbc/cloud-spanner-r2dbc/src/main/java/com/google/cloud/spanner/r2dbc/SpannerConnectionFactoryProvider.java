@@ -25,8 +25,6 @@ import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.OAuth2Credentials;
 import com.google.cloud.NoCredentials;
-import com.google.cloud.spanner.r2dbc.client.Client;
-import com.google.cloud.spanner.r2dbc.client.GrpcClient;
 import com.google.cloud.spanner.r2dbc.util.Assert;
 import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryConnectionFactory;
 import com.google.common.annotations.VisibleForTesting;
@@ -34,14 +32,11 @@ import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.ConnectionFactoryProvider;
 import io.r2dbc.spi.Option;
-import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * An implementation of {@link ConnectionFactoryProvider} for creating {@link
- * SpannerConnectionFactory}s.
- *
+ * An implementation of {@link ConnectionFactoryProvider} for Cloud Spanner. *
  */
 public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvider {
 
@@ -67,20 +62,6 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
    */
   public static final Option<String> URL = Option.valueOf("url");
 
-  public static final Option<Integer> THREAD_POOL_SIZE = Option.valueOf("thread_pool_size");
-
-  /** Number of partial result sets to buffer during a read query operation. */
-  public static final Option<Integer> PARTIAL_RESULT_SET_FETCH_SIZE =
-      Option.valueOf("partial_result_set_fetch_size");
-
-  /** Duration to wait for a DDL operation before timing out. */
-  public static final Option<Duration> DDL_OPERATION_TIMEOUT =
-      Option.valueOf("ddl_operation_timeout");
-
-  /** Duration to wait between each poll checking for the completion of DDL operations. */
-  public static final Option<Duration> DDL_OPERATION_POLL_INTERVAL =
-      Option.valueOf("ddl_operation_poll_interval");
-
   // TODO: GH-292
   public static final Option<String> OPTIMIZER_VERSION =
       Option.valueOf("optimizerVersion");
@@ -93,7 +74,6 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   public static final Option<Boolean> AUTOCOMMIT = Option.valueOf(AUTOCOMMIT_PROPERTY_NAME);
 
   public static final Option<Boolean> READONLY = Option.valueOf(READONLY_PROPERTY_NAME);
-
 
   /**
    * Option specifying the location of the GCP credentials file. Same as GOOGLE_CREDENTIALS,
@@ -111,29 +91,13 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   private static final Option[] SECURITY_OPTIONS =
       new Option[] { OAUTH_TOKEN, CREDENTIALS, GOOGLE_CREDENTIALS};
 
-  static final String IMPLEMENTATION_VERSION = "client-implementation";
-
-  private Client client;
-
   private CredentialsHelper credentialsHelper = new CredentialsHelper();
 
   @Override
   public ConnectionFactory create(ConnectionFactoryOptions connectionFactoryOptions) {
 
     SpannerConnectionConfiguration config = createConfiguration(connectionFactoryOptions);
-
-    if (connectionFactoryOptions.hasOption(Option.valueOf(IMPLEMENTATION_VERSION))
-        && connectionFactoryOptions.getValue(Option.valueOf(IMPLEMENTATION_VERSION)).equals("grpc")
-    ) {
-      if (this.client == null) {
-        // GrpcClient should only be instantiated if/when a SpannerConnectionFactory is needed.
-        this.client = new GrpcClient(config.getCredentials());
-      }
-      return new SpannerConnectionFactory(this.client, config);
-    } else {
-      // Client Library implementation is now the default.
-      return new SpannerClientLibraryConnectionFactory(config);
-    }
+    return new SpannerClientLibraryConnectionFactory(config);
   }
 
   @Override
@@ -147,11 +111,6 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   @Override
   public String getDriver() {
     return DRIVER_NAME;
-  }
-
-  @VisibleForTesting
-  void setClient(Client client) {
-    this.client = client;
   }
 
   @VisibleForTesting
@@ -176,19 +135,6 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
     }
 
     config.setCredentials(extractCredentials(options));
-
-    // V1 properties
-    if (options.hasOption(PARTIAL_RESULT_SET_FETCH_SIZE)) {
-      config.setPartialResultSetFetchSize(options.getValue(PARTIAL_RESULT_SET_FETCH_SIZE));
-    }
-
-    if (options.hasOption(DDL_OPERATION_TIMEOUT)) {
-      config.setDdlOperationTimeout(options.getValue(DDL_OPERATION_TIMEOUT));
-    }
-
-    if (options.hasOption(DDL_OPERATION_POLL_INTERVAL)) {
-      config.setDdlOperationPollInterval(options.getValue(DDL_OPERATION_POLL_INTERVAL));
-    }
 
     // V2 properties
     if (options.hasOption(USE_PLAIN_TEXT)) {

@@ -23,8 +23,6 @@ import static org.mockito.Mockito.when;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
-import com.google.cloud.spanner.r2dbc.SpannerConnectionFactory;
-import com.google.cloud.spanner.r2dbc.client.Client;
 import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryConnectionFactory;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryMetadata;
@@ -32,16 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.r2dbc.core.binding.BindMarkersFactory;
 
 class SpannerBindMarkerFactoryProviderTest {
-
-  @Test
-  void spannerBindMarkersFoundForV1ConnectionFactory() {
-    SpannerBindMarkerFactoryProvider provider = new SpannerBindMarkerFactoryProvider();
-    SpannerConnectionFactory cf = new SpannerConnectionFactory(
-        mock(Client.class), mock(SpannerConnectionConfiguration.class));
-
-    BindMarkersFactory factory = provider.getBindMarkers(cf);
-    assertThat(factory).isSameAs(SpannerR2dbcDialect.NAMED);
-  }
 
   @Test
   void spannerBindMarkersFoundForV2ConnectionFactory() {

@@ -16,6 +16,7 @@
 
 package com.google.cloud.spanner.r2dbc.v2;
 
+import com.google.cloud.spanner.r2dbc.util.Assert;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
@@ -34,7 +35,7 @@ class SpannerClientLibraryResult implements Result {
 
   public SpannerClientLibraryResult(
       Flux<SpannerClientLibraryRow> resultRows, int numRowsUpdated) {
-    this.resultRows = resultRows;
+    this.resultRows = Assert.requireNonNull(resultRows, "A non-null flux of rows is required.");
     this.numRowsUpdated = numRowsUpdated;
   }
 
@@ -45,9 +46,6 @@ class SpannerClientLibraryResult implements Result {
 
   @Override
   public <T> Publisher<T> map(BiFunction<Row, RowMetadata, ? extends T> mappingFunction) {
-    if (this.resultRows == null) {
-      return Flux.empty();
-    }
 
     return this.resultRows.map(row -> {
       if (this.rowMetadata == null) {

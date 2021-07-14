@@ -158,7 +158,6 @@ class TestDatabaseHelper {
                 .option(DRIVER, DRIVER_NAME)
                 .option(INSTANCE, DatabaseProperties.INSTANCE)
                 .option(DATABASE, DatabaseProperties.DATABASE)
-                .option(Option.valueOf("client-implementation"), "client-library")
                 .build());
 
     TestDatabaseHelper helper = new TestDatabaseHelper(cf);

@@ -50,7 +50,6 @@ class SpannerDmlReactiveStreamVerification extends
             .option(DRIVER, DRIVER_NAME)
             .option(INSTANCE, DatabaseProperties.INSTANCE)
             .option(DATABASE, DatabaseProperties.DATABASE)
-            .option(Option.valueOf("client-implementation"), "client-library")
             .build());
 
     dbHelper = new TestDatabaseHelper(connectionFactory);
@@ -68,7 +67,7 @@ class SpannerDmlReactiveStreamVerification extends
   }
 
   public SpannerDmlReactiveStreamVerification() {
-    super(new TestEnvironment(200));
+    super(new TestEnvironment(400));
   }
 
   @Override

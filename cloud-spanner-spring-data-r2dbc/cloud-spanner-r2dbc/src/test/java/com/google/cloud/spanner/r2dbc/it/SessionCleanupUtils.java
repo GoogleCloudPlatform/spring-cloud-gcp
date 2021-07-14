@@ -18,7 +18,6 @@ package com.google.cloud.spanner.r2dbc.it;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.ServiceOptions;
-import com.google.cloud.spanner.r2dbc.client.GrpcClient;
 import com.google.cloud.spanner.r2dbc.util.ObservableReactiveUtil;
 import com.google.protobuf.Empty;
 import com.google.spanner.v1.DatabaseName;
@@ -26,7 +25,11 @@ import com.google.spanner.v1.DeleteSessionRequest;
 import com.google.spanner.v1.ListSessionsRequest;
 import com.google.spanner.v1.ListSessionsResponse;
 import com.google.spanner.v1.Session;
+import com.google.spanner.v1.SpannerGrpc;
 import com.google.spanner.v1.SpannerGrpc.SpannerStub;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.auth.MoreCallCredentials;
 import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +42,18 @@ import java.util.stream.Collectors;
  */
 class SessionCleanupUtils {
 
-  static GrpcClient client;
   static SpannerStub spannerStub;
 
   public static void main(String[] args) throws Exception {
-    client = new GrpcClient(GoogleCredentials.getApplicationDefault());
-    spannerStub = client.getSpanner();
+
+    ManagedChannel channel = ManagedChannelBuilder
+        .forTarget("dns:///spanner.googleapis.com:443")
+        .build();
+
+    // Async stub for general Spanner SQL queries
+    spannerStub = SpannerGrpc.newStub(channel)
+        .withCallCredentials(MoreCallCredentials.from(GoogleCredentials.getApplicationDefault()));
+
 
     // Uncomment if necessary to clear already-accumulated sessions.
     //deleteAllSessions();

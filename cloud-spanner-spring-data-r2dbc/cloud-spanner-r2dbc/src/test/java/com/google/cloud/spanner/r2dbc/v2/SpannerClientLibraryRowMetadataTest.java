@@ -21,8 +21,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Type.StructField;
-import com.google.cloud.spanner.r2dbc.SpannerRowMetadata;
-import com.google.spanner.v1.ResultSetMetadata;
 import io.r2dbc.spi.ColumnMetadata;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -105,7 +103,8 @@ class SpannerClientLibraryRowMetadataTest {
 
   @Test
   void getColumnNamesReturnsEmptyCollectionWhenNoColumns() {
-    SpannerRowMetadata metadata = new SpannerRowMetadata(ResultSetMetadata.getDefaultInstance());
+    SpannerClientLibraryRowMetadata metadata =
+        new SpannerClientLibraryRowMetadata(Collections.EMPTY_LIST);
 
     assertThat(metadata.getColumnNames()).isEmpty();
   }
