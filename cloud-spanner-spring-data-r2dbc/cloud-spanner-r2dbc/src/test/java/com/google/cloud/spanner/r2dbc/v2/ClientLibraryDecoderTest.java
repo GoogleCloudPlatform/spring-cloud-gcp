@@ -24,13 +24,18 @@ import com.google.cloud.ByteArray;
 import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Struct;
+import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Value;
 import com.google.cloud.spanner.r2dbc.ConversionFailureException;
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -154,4 +159,23 @@ class ClientLibraryDecoderTest {
           .isInstanceOf(exception.getClass()).hasMessage(exception.getMessage());
     }
   }
+
+  @Test
+  void defaultJavaType() {
+    assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.bool())).isEqualTo(Boolean.class);
+    assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.bytes())).isEqualTo(ByteBuffer.class);
+    assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.date())).isEqualTo(LocalDate.class);
+    assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.float64())).isEqualTo(Double.class);
+    assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.int64())).isEqualTo(Long.class);
+    assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.string())).isEqualTo(String.class);
+    assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.timestamp()))
+        .isEqualTo(LocalDateTime.class);
+    assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.int64())).isEqualTo(Long.class);
+    assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.numeric())).isEqualTo(BigDecimal.class);
+
+    // unknown type
+    assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.struct())).isEqualTo(Object.class);
+  }
+
+
 }

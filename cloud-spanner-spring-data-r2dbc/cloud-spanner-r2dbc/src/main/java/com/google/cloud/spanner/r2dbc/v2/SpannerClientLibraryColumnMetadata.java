@@ -43,6 +43,11 @@ class SpannerClientLibraryColumnMetadata implements ColumnMetadata {
   }
 
   @Override
+  public Class<?> getJavaType() {
+    return ClientLibraryDecoder.getDefaultJavaType(this.structField.getType());
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;

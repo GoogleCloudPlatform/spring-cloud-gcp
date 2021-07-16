@@ -19,6 +19,11 @@ package com.google.cloud.spanner.r2dbc.v2;
 import com.google.cloud.spanner.AbstractStructReader;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Type;
+import java.lang.reflect.Array;
+import java.math.BigDecimal;
+import java.nio.ByteBuffer;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -97,5 +102,22 @@ class ClientLibraryDecoder {
       return (T) value;
     }
     return SpannerClientLibraryConverters.convert(value, type);
+  }
+
+  static Class<?> getDefaultJavaType(Type spannerType) {
+    switch (spannerType.getCode()) {
+      case BOOL: return Boolean.class;
+      case INT64: return Long.class;
+      case FLOAT64: return Double.class;
+      case STRING: return String.class;
+      case BYTES: return ByteBuffer.class;
+      case TIMESTAMP: return LocalDateTime.class;
+      case DATE: return LocalDate.class;
+      case NUMERIC: return BigDecimal.class;
+      case ARRAY: return Array.newInstance(getDefaultJavaType(spannerType.getArrayElementType()), 0)
+          .getClass();
+      default:
+        return Object.class;
+    }
   }
 }
