@@ -277,12 +277,20 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   }
 
   @Override
-  @Disabled (DISABLE_UNSUPPORTED_FUNCTIONALITY)
   @Test
   public void batch() {
-    /*
-    batch DML support is not supported currently.
-     */
+    // Only DML statements are accepted by ExecuteBatchDml endpoint
+    Flux.usingWhen(getConnectionFactory().create(),
+        connection -> Flux.from(connection
+            .createBatch()
+            .add(expand(TestStatement.INSERT_VALUE200))
+            .add(expand(TestStatement.INSERT_VALUE100)) // updated from SELECT
+            .execute())
+            .flatMap(Result::getRowsUpdated),
+        Connection::close)
+        .then()
+        .as(StepVerifier::create)
+        .verifyComplete();
   }
 
   @Override

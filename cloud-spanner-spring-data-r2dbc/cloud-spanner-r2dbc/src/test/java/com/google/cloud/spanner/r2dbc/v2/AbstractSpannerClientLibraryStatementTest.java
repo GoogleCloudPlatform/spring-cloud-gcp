@@ -28,7 +28,6 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Value;
 import com.google.spanner.v1.ExecuteSqlRequest.QueryOptions;
 import java.util.List;
-import java.util.stream.LongStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -44,9 +43,15 @@ class AbstractSpannerClientLibraryStatementTest {
   @BeforeEach
   public void setUpAdapterResponse() {
     this.mockAdapter = mock(DatabaseClientReactiveAdapter.class);
-    when(this.mockAdapter.runDmlStatement(any(Statement.class))).thenReturn(Mono.just(19L));
+    when(this.mockAdapter.runDmlStatement(any(Statement.class)))
+        .thenReturn(Mono.just(new SpannerClientLibraryResult(Flux.empty(), 19)));
 
-    when(this.mockAdapter.runBatchDml(anyList())).thenReturn(Mono.just(new long[] {7L, 11L, 13L}));
+    when(this.mockAdapter.runBatchDml(anyList()))
+        .thenReturn(Flux.just(
+            new SpannerClientLibraryResult(Flux.empty(), 7),
+            new SpannerClientLibraryResult(Flux.empty(), 11),
+            new SpannerClientLibraryResult(Flux.empty(), 13)
+        ));
     when(this.mockAdapter.getQueryOptions()).thenReturn(QueryOptions.getDefaultInstance());
   }
 
@@ -200,26 +205,12 @@ class AbstractSpannerClientLibraryStatementTest {
 
     @Override
     public Mono<SpannerClientLibraryResult> executeSingle(Statement statement) {
-      return this.clientLibraryAdapter
-          .runDmlStatement(statement)
-          .map(
-              numRows ->
-                  new SpannerClientLibraryResult(Flux.empty(), numRows.intValue()));
+      return this.clientLibraryAdapter.runDmlStatement(statement);
     }
 
     @Override
     public Flux<SpannerClientLibraryResult> executeMultiple(List<Statement> statements) {
-      return this.clientLibraryAdapter
-          .runBatchDml(statements)
-          .flatMapMany(
-              rowCountArray ->
-                  Flux.fromStream(
-                      LongStream.of(rowCountArray)
-                          .boxed()
-                          .map(
-                              rowCount ->
-                                  new SpannerClientLibraryResult(
-                                      Flux.empty(), rowCount.intValue()))));
+      return this.clientLibraryAdapter.runBatchDml(statements);
     }
   }
 }

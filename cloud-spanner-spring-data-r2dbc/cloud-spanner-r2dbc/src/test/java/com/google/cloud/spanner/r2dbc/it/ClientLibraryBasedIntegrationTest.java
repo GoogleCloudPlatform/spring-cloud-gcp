@@ -686,6 +686,36 @@ class ClientLibraryBasedIntegrationTest {
         .verifyComplete();
   }
 
+  @Test
+  void testBatchDml() {
+
+    String uuid1 = "batch1-" + this.random.nextInt();
+    String uuid2 = "batch2-" + this.random.nextInt();
+
+    StepVerifier.create(
+        Mono.from(connectionFactory.create())
+          .flatMapMany(conn -> conn.createBatch()
+              .add(makeInsertQuery(uuid1, 29, 10.2))
+              .add(makeInsertQuery(uuid2, 29, 10.5))
+              .add("UPDATE BOOKS SET CATEGORY=17 WHERE CATEGORY=29")
+              .execute()
+          ).flatMap(r -> r.getRowsUpdated())
+    ).expectNext(1, 1, 2)
+        .verifyComplete();
+
+    verifyIds(uuid1, uuid2);
+
+    StepVerifier.create(
+        Mono.from(connectionFactory.create())
+            .flatMapMany(c -> c.createStatement(
+                "SELECT CATEGORY FROM BOOKS")
+                .execute()
+            ).flatMap(rs -> rs.map((row, rmeta) -> row.get("CATEGORY", Integer.class))))
+        .expectNext(17, 17)
+        .as("Category updated")
+        .verifyComplete();
+  }
+
   private Publisher<Long> getFirstNumber(Result result) {
     return result.map((row, meta) -> (Long) row.get(1));
   }

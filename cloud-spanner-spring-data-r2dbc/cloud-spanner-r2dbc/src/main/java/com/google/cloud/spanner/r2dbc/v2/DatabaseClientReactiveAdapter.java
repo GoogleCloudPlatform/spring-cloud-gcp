@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -206,8 +208,10 @@ class DatabaseClientReactiveAdapter {
    *
    * @return reactive pipeline for running a DML statement
    */
-  Mono<Long> runDmlStatement(Statement statement) {
-    return runBatchDmlInternal(ctx -> ctx.executeUpdateAsync(statement));
+  Mono<SpannerClientLibraryResult> runDmlStatement(Statement statement) {
+    return runBatchDmlInternal(ctx -> ctx.executeUpdateAsync(statement))
+        .map(numRowsUpdated ->
+            new SpannerClientLibraryResult(Flux.empty(), longToInt(numRowsUpdated)));
   }
 
   /**
@@ -217,8 +221,22 @@ class DatabaseClientReactiveAdapter {
    *
    * @return reactive pipeline for running the provided DML statements
    */
-  Mono<long[]> runBatchDml(List<Statement> statements) {
-    return runBatchDmlInternal(ctx -> ctx.batchUpdateAsync(statements));
+  Flux<SpannerClientLibraryResult> runBatchDml(List<Statement> statements) {
+    return runBatchDmlInternal(ctx -> ctx.batchUpdateAsync(statements))
+        .flatMapIterable(
+            numRowsArray -> LongStream.of(numRowsArray).boxed().collect(Collectors.toList()))
+        .map(numRows ->
+            new SpannerClientLibraryResult(Flux.empty(), longToInt(numRows))
+        );
+  }
+
+  private int longToInt(Long numRows) {
+    if (numRows > Integer.MAX_VALUE) {
+      LOGGER.warn("Number of updated rows exceeds maximum integer value; actual rows updated = {}; "
+          + "returning max int value", numRows);
+      return Integer.MAX_VALUE;
+    }
+    return numRows.intValue();
   }
 
   private <T> Mono<T> runBatchDmlInternal(

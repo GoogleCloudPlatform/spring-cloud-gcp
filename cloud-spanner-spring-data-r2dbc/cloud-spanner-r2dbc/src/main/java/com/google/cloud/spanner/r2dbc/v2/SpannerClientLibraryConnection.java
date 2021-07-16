@@ -64,7 +64,7 @@ class SpannerClientLibraryConnection implements Connection, SpannerConnection {
 
   @Override
   public Batch createBatch() {
-    throw new UnsupportedOperationException();
+    return new SpannerBatch(this.clientLibraryAdapter);
   }
 
   @Override

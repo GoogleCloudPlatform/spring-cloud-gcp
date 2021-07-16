@@ -27,10 +27,12 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.AsyncResultSet;
 import com.google.cloud.spanner.AsyncResultSet.CursorState;
+import com.google.cloud.spanner.AsyncRunner;
 import com.google.cloud.spanner.AsyncTransactionManager.TransactionContextFuture;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
@@ -40,6 +42,7 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.r2dbc.SpannerConnectionConfiguration;
+import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.Futures;
 import com.google.spanner.v1.ExecuteSqlRequest.QueryOptions;
 import java.util.concurrent.ExecutorService;
@@ -64,6 +67,7 @@ class DatabaseClientReactiveAdapterTest {
   private AsyncResultSet mockResultSet;
   private ReadContext mockReadContext;
   TransactionContextFuture mockTxnContextFuture;
+  AsyncRunner mockAsyncRunner;
 
   private DatabaseClientReactiveAdapter adapter;
 
@@ -83,6 +87,7 @@ class DatabaseClientReactiveAdapterTest {
     this.mockReadContext = mock(ReadContext.class);
     this.mockResultSet = mock(AsyncResultSet.class);
     this.mockTxnContextFuture = mock(TransactionContextFuture.class);
+    this.mockAsyncRunner = mock(AsyncRunner.class);
 
     when(this.mockSpannerClient.getDatabaseClient(any())).thenReturn(this.mockDbClient);
     when(this.mockSpannerClient.getDatabaseAdminClient()).thenReturn(this.mockDbAdminClient);
@@ -101,6 +106,7 @@ class DatabaseClientReactiveAdapterTest {
     when(this.mockTxnContextFuture.isDone()).thenReturn(true);
 
     when(this.mockDbClient.singleUse()).thenReturn(this.mockReadContext);
+    when(this.mockDbClient.runAsync()).thenReturn(this.mockAsyncRunner);
 
     // Normally client library ResultSet implementation would invoke R2DBC driver's callback
     // as many times as needed. Here, the mock result set simulates this by running callback once.
@@ -264,5 +270,36 @@ class DatabaseClientReactiveAdapterTest {
 
     verify(this.mockTxnManager).clearTransactionManager();
     verifyNoMoreInteractions(this.mockTxnManager);
+  }
+
+  @Test
+  void runBatchDml() {
+    ApiFuture<long[]> rowCountFuture = ApiFutures.immediateFuture(new long[] { 42L, 81L});
+
+    when(this.mockAsyncRunner.runAsync(any(), any()))
+        .thenAnswer(args -> rowCountFuture);
+
+    StepVerifier.create(
+      this.adapter.runBatchDml(
+          ImmutableList.of(Statement.of("UPDATE something"), Statement.of("UPDATE something else")))
+        .flatMap(result -> result.getRowsUpdated())
+    ).expectNext(42, 81)
+        .verifyComplete();
+  }
+
+  @Test
+  void runBatchDml_rowCountAboveMaxIntIsTruncated() {
+    ApiFuture<long[]> rowCountFuture =
+        ApiFutures.immediateFuture(new long[] { Integer.MAX_VALUE + 1L });
+
+    when(this.mockAsyncRunner.runAsync(any(), any()))
+        .thenAnswer(args -> rowCountFuture);
+
+    StepVerifier.create(
+        this.adapter.runBatchDml(
+            ImmutableList.of(Statement.of("UPDATE something")))
+            .flatMap(result -> result.getRowsUpdated())
+    ).expectNext(Integer.MAX_VALUE)
+        .verifyComplete();
   }
 }

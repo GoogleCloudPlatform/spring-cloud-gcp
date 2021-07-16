@@ -17,6 +17,7 @@
 package com.google.cloud.spanner.r2dbc.v2;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +39,8 @@ class SpannerClientLibraryDmlStatementTest {
 
   @Test
   void executeSingleNoRowsUpdated() {
-    when(this.mockAdapter.runDmlStatement(any(Statement.class))).thenReturn(Mono.just(0L));
+    when(this.mockAdapter.runDmlStatement(any(Statement.class)))
+        .thenReturn(Mono.just(new SpannerClientLibraryResult(Flux.empty(), 0)));
 
     SpannerClientLibraryDmlStatement dmlStatement =
         new SpannerClientLibraryDmlStatement(this.mockAdapter, "irrelevant sql");
@@ -52,14 +54,21 @@ class SpannerClientLibraryDmlStatementTest {
 
   @Test
   void executeMultiple() {
-    when(this.mockAdapter.runDmlStatement(any(Statement.class))).thenReturn(Mono.just(0L));
+    when(this.mockAdapter.runBatchDml(anyList()))
+        .thenReturn(Flux.just(
+            new SpannerClientLibraryResult(Flux.empty(), 2),
+            new SpannerClientLibraryResult(Flux.empty(), 5)
+        ));
 
     SpannerClientLibraryDmlStatement dmlStatement =
         new SpannerClientLibraryDmlStatement(this.mockAdapter, "irrelevant sql");
+    dmlStatement
+        .bind("col1", "val1").add()
+        .bind("col1", "val2").add();
 
     StepVerifier.create(
             Flux.from(dmlStatement.execute()).flatMap(result -> result.getRowsUpdated()))
-        .expectNext(0)
+        .expectNext(2, 5)
         .verifyComplete();
   }
 }
