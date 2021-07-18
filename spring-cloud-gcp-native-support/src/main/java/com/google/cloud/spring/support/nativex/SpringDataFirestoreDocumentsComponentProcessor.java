@@ -31,12 +31,21 @@ import org.springframework.nativex.type.TypeProcessor;
  * @see <a href="https://github.com/spring-projects-experimental/spring-native/blob/832991d57686627b06792d55555cb9497475b3c5/spring-native-configuration/src/main/java/org/springframework/data/JpaComponentProcessor.java#L34">JpaComponentProcessor</a>
  */
 public class SpringDataFirestoreDocumentsComponentProcessor implements ComponentProcessor {
+
+	private static final String FIRESTORE_DOCUMENT_FQN = "com.google.cloud.spring.data.firestore.Document";
+
 	private final TypeProcessor typeProcessor =
 			TypeProcessor.namedProcessor("SpringDataFirestoreDocumentsComponentProcessor");
 
 	@Override
 	public boolean handle(NativeContext imageContext, String componentType, List<String> classifiers) {
-		return classifiers.contains("com.google.cloud.spring.data.firestore.Document");
+		if (classifiers.contains(FIRESTORE_DOCUMENT_FQN)) {
+			return true;
+		}
+		Type type = imageContext.getTypeSystem().resolveName(componentType);
+		return type.getAnnotations() //
+				.stream() //
+				.anyMatch(it -> it.getDottedName().equals(FIRESTORE_DOCUMENT_FQN));
 	}
 
 	@Override
