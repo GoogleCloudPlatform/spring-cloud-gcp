@@ -149,7 +149,7 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 		if (isPageQuery() || isSliceQuery()) {
 			result = buildPageOrSlice(parameters, parsedQueryWithTagsAndValues, found);
 		}
-		else if (this.queryMethod.isCollectionQuery()) {
+		else if (this.queryMethod.isCollectionQuery() || this.queryMethod.isStreamQuery()) {
 			result = convertCollectionResult(returnedItemType, found);
 		}
 		else {
@@ -199,6 +199,9 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 	}
 
 	private Object convertCollectionResult(Class returnedItemType, Iterable rawResult) {
+		if (this.queryMethod.isStreamQuery()) {
+			return StreamSupport.stream(rawResult.spliterator(), false);
+		}
 		Object result = this.datastoreOperations.getDatastoreEntityConverter()
 				.getConversions().convertOnRead(
 						rawResult, this.queryMethod.getCollectionReturnType(), returnedItemType);
