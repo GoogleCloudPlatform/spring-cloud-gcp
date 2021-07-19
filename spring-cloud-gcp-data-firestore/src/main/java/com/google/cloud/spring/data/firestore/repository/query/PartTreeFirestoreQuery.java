@@ -33,6 +33,7 @@ import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntity;
 import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentProperty;
 import com.google.firestore.v1.StructuredQuery;
 import com.google.firestore.v1.StructuredQuery.FieldReference;
+import com.google.firestore.v1.Value;
 import com.google.protobuf.Int32Value;
 
 import org.springframework.data.domain.Pageable;
@@ -48,6 +49,7 @@ import org.springframework.data.repository.query.ReturnedType;
 import org.springframework.data.repository.query.parser.Part;
 import org.springframework.data.repository.query.parser.PartTree;
 
+import static com.google.cloud.spring.data.firestore.FirestoreTemplate.NAME_FIELD;
 import static org.springframework.data.repository.query.parser.Part.Type.CONTAINING;
 import static org.springframework.data.repository.query.parser.Part.Type.GREATER_THAN;
 import static org.springframework.data.repository.query.parser.Part.Type.GREATER_THAN_EQUAL;
@@ -131,6 +133,7 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 	@Override
 	public Object execute(Object[] parameters) {
 		StructuredQuery.Builder builder = createBuilderWithFilter(parameters);
+		Sort sort = null;
 
 		// Handle Pageable parameters.
 		if (!getQueryMethod().getParameters().isEmpty()) {
@@ -141,11 +144,14 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 				builder.setOffset((int) Math.min(Integer.MAX_VALUE, pageable.getOffset()));
 				builder.setLimit(Int32Value.newBuilder().setValue(pageable.getPageSize()));
 			}
+			sort = paramAccessor.getSort();
+		}
 
-			Sort sort = paramAccessor.getSort();
-			if (sort.isSorted()) {
-				builder.addAllOrderBy(createFirestoreSortOrders(sort));
-			}
+		if (sort == null || sort.isUnsorted()) {
+			sort = this.tree.getSort();
+		}
+		if (sort.isSorted()) {
+			builder.addAllOrderBy(createFirestoreSortOrders(sort));
 		}
 
 		if (this.tree.isCountProjection()) {
@@ -216,9 +222,19 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 							"Too few parameters are provided for query method: " + getQueryMethod().getName());
 				}
 				Object value = it.next();
-				filter.getFieldFilterBuilder().setField(fieldReference)
-						.setOp(getOperator(part, value))
-						.setValue(this.classMapper.toFirestoreValue(value));
+				StructuredQuery.FieldFilter.Builder fieldFilterBuilder = filter.getFieldFilterBuilder()
+						.setField(fieldReference).setOp(getOperator(part, value));
+				if (fieldReference.getFieldPath().equals(NAME_FIELD)) {
+
+					// In Firestore, a field that is used as a document ID can only be of String type
+					fieldFilterBuilder
+							.setValue(Value.newBuilder().setReferenceValue(
+									this.reactiveOperations.buildResourceName(persistentEntity, (String) value)));
+				}
+				else {
+					fieldFilterBuilder
+							.setValue(this.classMapper.toFirestoreValue(value));
+				}
 			}
 			compositeFilter.addFilters(filter.build());
 		});
@@ -243,7 +259,6 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
 	public QueryMethod getQueryMethod() {
 		return this.queryMethod;
 	}
-
 
 	private StructuredQuery.FieldFilter.Operator getOperator(Part part, Object value) {
 		OperatorSelector operatorSelector = PART_TO_FILTER_OP.get(part.getType());

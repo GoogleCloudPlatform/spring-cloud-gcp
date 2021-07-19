@@ -106,6 +106,25 @@ These resources will be created:
 * A topic named `myEvents`
 * A subscription named `myEvents.consumerGroup1`
 
+
+==== Endpoint Customization
+
+You may customize channel routing by defining a `ConsumerEndpointCustomizer` in your autoconfiguration. This is useful if you want to customize the default configurations provided by the Pub/Sub Spring Cloud Stream Binder.
+
+The example below demonstrates how to use a `ConsumerEndpointCustomizer` to override the default error channel configured by the binder.
+
+[source,java]
+----
+@Bean
+public ConsumerEndpointCustomizer<PubSubInboundChannelAdapter> messageChannelAdapter() {
+    return (endpoint, destinationName, group) -> {
+        NamedComponent namedComponent = (NamedComponent) endpoint.getOutputChannel();
+        String channelName = namedComponent.getBeanName();
+        endpoint.setErrorChannelName(channelName + ".errors");
+    };
+}
+----
+
 === Binding with Functions
 
 Since version 3.0, Spring Cloud Stream supports a functional programming model natively.
