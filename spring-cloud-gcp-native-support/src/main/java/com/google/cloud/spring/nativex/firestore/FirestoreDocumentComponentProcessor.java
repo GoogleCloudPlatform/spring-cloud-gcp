@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.support.nativex;
+package com.google.cloud.spring.nativex.firestore;
 
 import java.util.List;
 
@@ -30,12 +30,12 @@ import org.springframework.nativex.type.TypeProcessor;
  *
  * @see <a href="https://github.com/spring-projects-experimental/spring-native/blob/832991d57686627b06792d55555cb9497475b3c5/spring-native-configuration/src/main/java/org/springframework/data/JpaComponentProcessor.java#L34">JpaComponentProcessor</a>
  */
-public class SpringDataFirestoreDocumentsComponentProcessor implements ComponentProcessor {
+public class FirestoreDocumentComponentProcessor implements ComponentProcessor {
 
 	private static final String FIRESTORE_DOCUMENT_FQN = "com.google.cloud.spring.data.firestore.Document";
 
 	private final TypeProcessor typeProcessor =
-			TypeProcessor.namedProcessor("SpringDataFirestoreDocumentsComponentProcessor");
+			TypeProcessor.namedProcessor("FirestoreDocumentComponentProcessor");
 
 	@Override
 	public boolean handle(NativeContext imageContext, String componentType, List<String> classifiers) {
@@ -43,9 +43,9 @@ public class SpringDataFirestoreDocumentsComponentProcessor implements Component
 			return true;
 		}
 		Type type = imageContext.getTypeSystem().resolveName(componentType);
-		return type.getAnnotations() //
-				.stream() //
-				.anyMatch(it -> it.getDottedName().equals(FIRESTORE_DOCUMENT_FQN));
+		return type.getAnnotations()
+				.stream()
+				.anyMatch(tag -> tag.getDottedName().equals(FIRESTORE_DOCUMENT_FQN));
 	}
 
 	@Override

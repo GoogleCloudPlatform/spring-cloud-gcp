@@ -44,6 +44,8 @@ import org.springframework.web.client.RestTemplate;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assume.assumeThat;
 
 /**
  * Tests created native docker image when maven "native" profile is active. A firestore is run in docker using
@@ -52,7 +54,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Testcontainers
 @Tag("native")
-public class FirestoreSampleApplicationNativeSupportIntegrationTest {
+public class FirestoreSampleApplicationNativeIntegrationTests {
 	private static final User ALPHA_USER = new User("Alpha", 49, singletonList(new Pet("rat", "Snowflake")));
 	private static final List<PhoneNumber> ALPHA_PHONE_NUMBERS = Arrays.asList(
 			new PhoneNumber("555666777"),
@@ -67,12 +69,16 @@ public class FirestoreSampleApplicationNativeSupportIntegrationTest {
 
 	@Container
 	private static final FirestoreEmulatorContainer emulator = new FirestoreEmulatorContainer(
-			DockerImageName.parse("gcr.io/google.com/cloudsdktool/cloud-sdk:316.0.0-emulators")
-	);
+			DockerImageName.parse("gcr.io/google.com/cloudsdktool/cloud-sdk:316.0.0-emulators"));
+
 	private static Firestore firestore;
 
 	@BeforeAll
 	static void beforeAll() {
+		assumeThat("Firestore Native tests are "
+						+ "disabled. Please use '-Dit.native=true' to enable them. ",
+				System.getProperty("it.native"), is("true"));
+
 		FirestoreOptions options = FirestoreOptions.getDefaultInstance().toBuilder()
 				.setHost(emulator.getEmulatorEndpoint())
 				.setCredentials(NoCredentials.getInstance())

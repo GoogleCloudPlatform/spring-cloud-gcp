@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.support.nativex;
+package com.google.cloud.spring.nativex.firestore;
 
 import java.util.Collections;
 import java.util.ServiceLoader;
@@ -34,30 +34,30 @@ import static org.springframework.nativex.hint.AccessBits.DECLARED_CONSTRUCTORS;
 import static org.springframework.nativex.hint.AccessBits.DECLARED_FIELDS;
 import static org.springframework.nativex.hint.AccessBits.DECLARED_METHODS;
 
-class SpringCloudGcpNativeSupportIntegrationTest {
+public class NativeSupportTest {
 
 	private final NativeTestContext nativeContext = new NativeTestContext();
 	private final TypeSystem typeSystem = nativeContext.getTypeSystem();
 
-	private final SpringDataFirestoreDocumentsComponentProcessor documentsComponentProcessor =
-			new SpringDataFirestoreDocumentsComponentProcessor();
+	private final FirestoreDocumentComponentProcessor documentsComponentProcessor =
+			new FirestoreDocumentComponentProcessor();
 	private final FirestoreRepositoryComponentProcessor repositoryComponentProcessor =
 			new FirestoreRepositoryComponentProcessor();
 
 	@Test
 	void shouldConfigureComponentProcessorJavaSpi() {
 		assertThat(ServiceLoader.load(ComponentProcessor.class))
-				.anyMatch(SpringDataFirestoreDocumentsComponentProcessor.class::isInstance)
+				.anyMatch(FirestoreDocumentComponentProcessor.class::isInstance)
 				.anyMatch(FirestoreRepositoryComponentProcessor.class::isInstance);
 	}
 
 	@Test
 	void shouldConfigureNativeConfigurationJavaSpi() {
 		assertThat(ServiceLoader.load(NativeConfiguration.class))
-				.anyMatch(SpringDataFirestoreNativeConfig.class::isInstance);
+				.anyMatch(FirestoreNativeConfig.class::isInstance);
 	}
 
-		@Test
+	@Test
 	void shouldHandleComponentIndexedFirestoreDocuments() {
 		assertThat(
 				documentsComponentProcessor.handle(

@@ -57,15 +57,18 @@
     </dependency>
 
     <dependency>
+      <!-- JUnit5 is required for Test Containers. -->
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId> <!-- Used in integration tests -->
-      <scope>test</scope>
-    </dependency>
+
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>gcloud</artifactId>
@@ -87,20 +90,23 @@
   <profiles>
     <profile>
       <id>native</id>
+      <activation>
+          <property>
+            <name>it.native</name>
+            <value>true</value>
+          </property>
+      </activation>
       <properties>
         <integration-test.tags.include>native</integration-test.tags.include>
-        <integration-test.tags.exclude/>
-        <!-- Customize Spring Boot classifier, useful in order to avoid a clash between Spring Boot repackaging and native-image-maven-plugin -->
-        <classifier/>
-        <!-- Customize native-image arguments with this property -->
         <native.build.args>
-          --enable-http
-          --enable-https
+          --no-fallback
+          --no-server
         </native.build.args>
 
-        <!-- `tiny` builder allows small footprint and reduced surface attack, you can also use `base` (the default) or `full` builders to have more tooling available in the image for an improved developer experience -->
+        <!-- Paketo buildpacks used for building native image -->
         <builder>paketobuildpacks/builder:tiny</builder>
       </properties>
+
       <dependencies>
         <dependency>
           <groupId>org.springframework.experimental</groupId>
@@ -118,6 +124,7 @@
           <optional>true</optional>
         </dependency>
       </dependencies>
+
       <build>
         <plugins>
           <plugin>
@@ -149,6 +156,18 @@
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+              <classifier>${classifier}</classifier>
+              <image>
+                <builder>${builder}</builder>
+                <name>${project.artifactId}:test</name>
+                <env>
+                  <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+                  <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>${native.build.args}</BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
+                </env>
+                <pullPolicy>IF_NOT_PRESENT</pullPolicy>
+              </image>
+            </configuration>
             <executions>
               <execution>
                 <id>build-docker-image-before-integration-tests</id>
@@ -156,18 +175,6 @@
                 <goals>
                   <goal>build-image</goal>
                 </goals>
-                <configuration>
-                  <classifier>${classifier}</classifier>
-                  <image>
-                    <builder>${builder}</builder>
-                    <name>${project.artifactId}:test</name>
-                    <env>
-                      <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
-                      <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>${native.build.args}</BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
-                    </env>
-                    <pullPolicy>IF_NOT_PRESENT</pullPolicy>
-                  </image>
-                </configuration>
               </execution>
             </executions>
           </plugin>

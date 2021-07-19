@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.support.nativex;
+package com.google.cloud.spring.nativex.firestore;
 
-import java.util.Collections;
-import java.util.Set;
+import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
+import reactor.core.publisher.Flux;
 
-import org.springframework.data.SpringDataComponentProcessor;
+import org.springframework.stereotype.Repository;
 
-/**
- * Extend {@link SpringDataComponentProcessor} to add required native support for Firestore Repositories.
- */
-public class FirestoreRepositoryComponentProcessor extends SpringDataComponentProcessor {
-	@Override
-	protected Set<String> storeSpecificRepositoryDeclarationNames() {
-		return Collections.singleton(
-				"com.google.cloud.spring.data.firestore.FirestoreReactiveRepository"
-		);
-	}
+@Repository
+public interface TestDocumentRepository extends FirestoreReactiveRepository<TestDocument> {
+	Flux<TestDocument> findAllByName(String name);
 }

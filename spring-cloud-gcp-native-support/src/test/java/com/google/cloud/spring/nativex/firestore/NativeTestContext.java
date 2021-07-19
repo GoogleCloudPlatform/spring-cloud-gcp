@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.support.nativex;
+package com.google.cloud.spring.nativex.firestore;
 
 import java.io.File;
 import java.util.Arrays;

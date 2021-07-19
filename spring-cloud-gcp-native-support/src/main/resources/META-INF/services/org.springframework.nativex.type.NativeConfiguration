@@ -1,1 +1,1 @@
-com.google.cloud.spring.support.nativex.SpringDataFirestoreNativeConfig
+com.google.cloud.spring.nativex.firestore.FirestoreNativeConfig

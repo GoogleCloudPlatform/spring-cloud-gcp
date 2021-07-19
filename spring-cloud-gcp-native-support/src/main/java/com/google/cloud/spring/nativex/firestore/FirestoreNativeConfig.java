@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.support.nativex;
+package com.google.cloud.spring.nativex.firestore;
 
 import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreEmulatorAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.firestore.FirestoreRepositoriesAutoConfiguration;
@@ -33,14 +33,17 @@ import org.springframework.nativex.type.NativeConfiguration;
  *
  * @see <a href="https://github.com/spring-projects-experimental/spring-native/blob/e659ad5488418b77492a04e028142daf02f7f3ef/spring-native-configuration/src/main/java/org/springframework/boot/autoconfigure/data/jpa/JpaRepositoriesHints.java">JpaRepositoriesHints</a>
  */
-@NativeHint(trigger = FirestoreRepositoriesAutoConfiguration.class,
+@NativeHint(
+		trigger = FirestoreRepositoriesAutoConfiguration.class,
 		types = @TypeHint(types = {
 				FirestoreRepositoryFactoryBean.class,
 				SimpleFirestoreReactiveRepository.class,
 				GcpDatastoreEmulatorAutoConfiguration.class
 		}, typeNames = {
 				"com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext"
-		}, access = AccessBits.CLASS | AccessBits.DECLARED_METHODS | AccessBits.DECLARED_CONSTRUCTORS
+		}, access = AccessBits.CLASS
+				| AccessBits.DECLARED_METHODS
+				| AccessBits.DECLARED_CONSTRUCTORS
 				| AccessBits.RESOURCE),
 		jdkProxies = @JdkProxyHint(typeNames = {
 				"com.google.cloud.spring.data.firestore.FirestoreReactiveRepository",
@@ -49,5 +52,5 @@ import org.springframework.nativex.type.NativeConfiguration;
 				"org.springframework.core.DecoratingProxy"
 		})
 )
-public class SpringDataFirestoreNativeConfig implements NativeConfiguration {
+public class FirestoreNativeConfig implements NativeConfiguration {
 }
