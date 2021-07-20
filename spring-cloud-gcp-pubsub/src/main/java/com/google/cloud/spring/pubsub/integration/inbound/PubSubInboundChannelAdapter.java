@@ -29,7 +29,6 @@ import org.apache.commons.logging.LogFactory;
 
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.integration.mapping.HeaderMapper;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.util.Assert;
 
 /**
