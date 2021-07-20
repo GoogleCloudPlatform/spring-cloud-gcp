@@ -44,12 +44,12 @@ jobs:
       - uses: actions/checkout@v2
 
       - uses: actions/setup-java@v1
-        if: matrix.it != native
+        if: matrix.it != 'native'
         with:
           java-version: 11
 
       - uses: rinx/setup-graalvm-ce@v0.0.5
-        if: matrix.it == native
+        if: matrix.it == 'native'
         with:
           graalvm-version: "21.0.0"
           java-version: "java11"
