@@ -77,8 +77,7 @@ class NativeSupportTest {
 						typeSystem.resolve(TestDocument.class).getDottedName(),
 						Collections.emptyList()
 				)
-		)
-				.isTrue();
+		).isTrue();
 	}
 
 	@Test
