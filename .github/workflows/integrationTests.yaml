@@ -55,7 +55,6 @@ jobs:
           java-version: "java11"
           native-image: "true"
 
-
       - uses: actions/cache@v2
         id: mvn-cache
         with:

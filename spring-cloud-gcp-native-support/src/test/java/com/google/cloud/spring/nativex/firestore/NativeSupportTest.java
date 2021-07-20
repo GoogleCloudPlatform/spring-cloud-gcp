@@ -34,7 +34,7 @@ import static org.springframework.nativex.hint.AccessBits.DECLARED_CONSTRUCTORS;
 import static org.springframework.nativex.hint.AccessBits.DECLARED_FIELDS;
 import static org.springframework.nativex.hint.AccessBits.DECLARED_METHODS;
 
-public class NativeSupportTest {
+class NativeSupportTest {
 
 	private final NativeTestContext nativeContext = new NativeTestContext();
 	private final TypeSystem typeSystem = nativeContext.getTypeSystem();
