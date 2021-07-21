@@ -123,7 +123,7 @@
     {
       "name": "management.health.pubsub.enabled",
       "type": "java.lang.Boolean",
-      "description": "The health indicator will verify whether Cloud Pub/Sub is up and accessible by your application.",
+      "description": "Whether to enable the Pub/Sub health indicator when used with Spring Boot Actuator.",
       "defaultValue": true
     }
   ]
