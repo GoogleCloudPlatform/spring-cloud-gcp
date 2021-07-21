@@ -119,7 +119,12 @@
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud Core components.",
       "defaultValue": true
+    },
+    {
+      "name": "management.health.pubsub.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable the Pub/Sub health indicator when used with Spring Boot Actuator.",
+      "defaultValue": true
     }
   ]
 }
-
