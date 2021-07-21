@@ -29,7 +29,6 @@ import org.apache.commons.logging.LogFactory;
 
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.integration.mapping.HeaderMapper;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.util.Assert;
 
 /**
@@ -148,17 +147,4 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 			}
 		}
 	}
-
-	/**
-	 * Workaround for GH-2615; prevents successful completion when exception received with closed context.
-	 * @return error channel configured in parent class
-	 */
-	@Override
-	public MessageChannel getErrorChannel() {
-		if (!this.isRunning()) {
-			return null;
-		}
-		return super.getErrorChannel();
-	}
-
 }
