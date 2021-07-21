@@ -121,11 +121,10 @@
       "defaultValue": true
     },
     {
-      "name": "management.health.pubsub",
+      "name": "management.health.pubsub.enabled",
       "type": "java.lang.Boolean",
       "description": "The health indicator will verify whether Cloud Pub/Sub is up and accessible by your application.",
       "defaultValue": true
     }
   ]
 }
-
