@@ -119,6 +119,12 @@
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud Core components.",
       "defaultValue": true
+    },
+    {
+      "name": "management.health.pubsub",
+      "type": "java.lang.Boolean",
+      "description": "The health indicator will verify whether Cloud Pub/Sub is up and accessible by your application.",
+      "defaultValue": true
     }
   ]
 }
