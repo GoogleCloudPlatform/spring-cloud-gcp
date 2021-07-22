@@ -29,4 +29,4 @@ NOTE: You can also view all staged artifacts at http://oss.sonatype.org. To get 
 
 . https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/releases[Create] a new release on GitHub.
 
-. Increment the project base version. For example, from `1.0.0-SNAPSHOT` to `1.1.0-SNAPSHOT`.
+. Increment the project base version. For example, from `0.7.0-SNAPSHOT` to `0.8.0-SNAPSHOT`.

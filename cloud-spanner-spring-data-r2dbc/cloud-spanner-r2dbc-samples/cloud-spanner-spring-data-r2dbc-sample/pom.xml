@@ -14,7 +14,7 @@
 
   <artifactId>cloud-spanner-spring-data-r2dbc-sample</artifactId>
   <groupId>com.google.cloud</groupId>
-  <version>0.6.0-SNAPSHOT</version>
+  <version>0.7.0-SNAPSHOT</version>
 
   <properties>
     <sonar.skip>true</sonar.skip>

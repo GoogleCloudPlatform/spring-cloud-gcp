@@ -9,7 +9,7 @@
   <parent>
     <groupId>com.google.cloud</groupId>
     <artifactId>cloud-spanner-r2dbc-parent</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
+    <version>0.7.0-SNAPSHOT</version>
   </parent>
 
   <name>Google Cloud Spanner R2DBC Driver</name>
