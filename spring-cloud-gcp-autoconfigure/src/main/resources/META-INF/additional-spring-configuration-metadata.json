@@ -100,7 +100,7 @@
       "name": "spring.cloud.gcp.trace.pubsub.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure trace instrumentation of Pub/Sub components.",
-      "defaultValue": true
+      "defaultValue": false
     },
     {
       "name": "spring.cloud.gcp.storage.enabled",

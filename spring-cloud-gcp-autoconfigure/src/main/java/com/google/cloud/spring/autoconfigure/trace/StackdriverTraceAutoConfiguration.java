@@ -76,7 +76,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ GcpTraceProperties.class })
-// TODO: we need to ensure that either property can disable it, not either property can enable it
 @ConditionalOnProperty(value = { "spring.sleuth.enabled", "spring.cloud.gcp.trace.enabled" }, matchIfMissing = true)
 @ConditionalOnClass(StackdriverSender.class)
 @AutoConfigureBefore(BraveAutoConfiguration.class)

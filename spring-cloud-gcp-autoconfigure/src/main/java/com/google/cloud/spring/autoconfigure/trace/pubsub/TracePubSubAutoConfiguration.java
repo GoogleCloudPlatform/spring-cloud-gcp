@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,13 +36,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnMessagingEnabled
 @ConditionalOnBean(Tracing.class)
-@ConditionalOnProperty(value = "spring.cloud.gcp.trace.pubsub.enabled", matchIfMissing = true)
+@ConditionalOnProperty(value = "spring.cloud.gcp.trace.pubsub.enabled", matchIfMissing = false)
 @ConditionalOnClass({ PublisherFactory.class, MessagingTracing.class })
 @AutoConfigureAfter({ BraveAutoConfiguration.class, BraveMessagingAutoConfiguration.class })
 public class TracePubSubAutoConfiguration {
 
 	@Bean
-	// for tests
 	@ConditionalOnMissingBean
 	static TracePubSubBeanPostProcessor tracePubSubBeanPostProcessor(BeanFactory beanFactory) {
 		return new TracePubSubBeanPostProcessor(beanFactory);
