@@ -51,8 +51,8 @@ public class ExampleController {
 	public String work(HttpServletRequest request) {
 		String meetUrl = request.getRequestURL().toString() + "/meet";
 		this.workService.visitMeetEndpoint(meetUrl);
-		// this.workService.sendMessage("All work is done.");
-		this.workService.sendMessageDirect("All work is done.");
+		this.workService.sendMessageSpringIntegration("All work is done via SI.");
+		this.workService.sendMessagePubSubTemplate("All work is done via PubSubTemplate.");
 		return "finished";
 	}
 

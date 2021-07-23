@@ -17,36 +17,26 @@
 package com.google.cloud.spring.autoconfigure.trace;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
 
-import brave.Tracing;
 import brave.TracingCustomizer;
 import brave.baggage.BaggagePropagation;
 import brave.handler.SpanHandler;
 import brave.http.HttpRequestParser;
 import brave.http.HttpTracingCustomizer;
-import brave.messaging.MessagingRequest;
-import brave.messaging.MessagingTracing;
-import brave.messaging.MessagingTracingCustomizer;
 import brave.propagation.B3Propagation;
 import brave.propagation.Propagation;
 import brave.propagation.stackdriver.StackdriverTracePropagation;
-import brave.sampler.SamplerFunction;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.FixedExecutorProvider;
-import com.google.cloud.spring.autoconfigure.trace.pubsub.TracePubSubBeanPostProcessor;
-import com.google.cloud.spring.autoconfigure.trace.pubsub.brave.PubSubTracing;
 import com.google.cloud.spring.autoconfigure.trace.sleuth.StackdriverHttpRequestParser;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
-import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import io.grpc.CallOptions;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -63,20 +53,14 @@ import zipkin2.reporter.brave.ZipkinSpanHandler;
 import zipkin2.reporter.stackdriver.StackdriverEncoder;
 import zipkin2.reporter.stackdriver.StackdriverSender;
 
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-
 import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
 import org.springframework.cloud.sleuth.autoconfig.brave.instrument.web.BraveHttpConfiguration;
-import org.springframework.cloud.sleuth.brave.instrument.messaging.ConditionalOnMessagingEnabled;
-import org.springframework.cloud.sleuth.brave.instrument.messaging.ConsumerSampler;
-import org.springframework.cloud.sleuth.brave.instrument.messaging.ProducerSampler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -92,10 +76,13 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ GcpTraceProperties.class })
+// TODO: we need to ensure that either property can disable it, not either property can enable it
 @ConditionalOnProperty(value = { "spring.sleuth.enabled", "spring.cloud.gcp.trace.enabled" }, matchIfMissing = true)
 @ConditionalOnClass(StackdriverSender.class)
 @AutoConfigureBefore(BraveAutoConfiguration.class)
 public class StackdriverTraceAutoConfiguration {
+
+	private static final Log LOGGER = LogFactory.getLog(StackdriverTraceAutoConfiguration.class);
 
 	/**
 	 * Stackdriver reporter bean name. Name of the bean matters for supporting multiple tracing
@@ -118,8 +105,6 @@ public class StackdriverTraceAutoConfiguration {
 	 * Stackdriver customizer bean name. Name of the bean matters for supporting multiple tracing systems.
 	 */
 	public static final String CUSTOMIZER_BEAN_NAME = "stackdriverTracingCustomizer";
-
-	private static final Log LOGGER = LogFactory.getLog(StackdriverTraceAutoConfiguration.class);
 
 	private GcpProjectIdProvider finalProjectIdProvider;
 
@@ -145,9 +130,9 @@ public class StackdriverTraceAutoConfiguration {
 	@ConditionalOnMissingBean(name = CUSTOMIZER_BEAN_NAME)
 	public TracingCustomizer stackdriverTracingCustomizer(@Qualifier(SPAN_HANDLER_BEAN_NAME) SpanHandler spanHandler) {
 		return builder -> builder
-				.supportsJoin(false)
-				.traceId128Bit(true)
-				.addSpanHandler(spanHandler);
+					.supportsJoin(false)
+					.traceId128Bit(true)
+					.addSpanHandler(spanHandler);
 	}
 
 	@Bean(SPAN_HANDLER_BEAN_NAME)
