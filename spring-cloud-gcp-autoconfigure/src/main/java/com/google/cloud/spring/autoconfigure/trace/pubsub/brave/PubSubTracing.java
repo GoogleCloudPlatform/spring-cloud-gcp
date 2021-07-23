@@ -35,7 +35,6 @@ import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.PublisherInterface;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.pubsub.v1.PubsubMessage;
-import com.google.pubsub.v1.PubsubMessage.Builder;
 import com.google.pubsub.v1.PullResponse;
 import com.google.pubsub.v1.ReceivedMessage;
 
@@ -43,11 +42,13 @@ import com.google.pubsub.v1.ReceivedMessage;
 public final class PubSubTracing {
 	/** Used for local message processors in {@link PubSubTracing#nextSpan(PubsubMessage.Builder)}. */
 	static final Getter<PubsubMessage.Builder, String> GETTER = new Getter<PubsubMessage.Builder, String>() {
-		@Override public String get(PubsubMessage.Builder request, String key) {
+		@Override
+		public String get(PubsubMessage.Builder request, String key) {
 			return request.getAttributesOrDefault(key, null);
 		}
 
-		@Override public String toString() {
+		@Override
+		public String toString() {
 			return "PubsubMessage.Builder::getAttributesOrThrow";
 		}
 	};
@@ -185,7 +186,7 @@ public final class PubSubTracing {
 		}
 	}
 
-	/** When an upstream context was not present, lookup keys are unlikely added */
+	/** When an upstream context was not present, lookup keys are unlikely added. */
 	static void addTags(PubsubMessage.Builder message, SpanCustomizer result) {
 
 		// TODO: anything to do here?
