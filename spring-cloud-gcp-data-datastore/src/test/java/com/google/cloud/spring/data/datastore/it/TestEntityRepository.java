@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
@@ -133,6 +134,11 @@ public interface TestEntityRepository extends DatastoreRepository<TestEntity, Lo
 	Slice<TestEntity> findByColor(String color, Pageable pageable);
 
 	Optional<TestEntity> findFirstByColor(String color);
+
+	Stream<TestEntity> findStreamByColor(String color);
+
+	@Query("select * from  test_entities_ci where color = @color")
+	Stream<TestEntity> findByColorStream(@Param("color") String color);
 
 	@Nullable
 	TestEntity getByColor(String color);
