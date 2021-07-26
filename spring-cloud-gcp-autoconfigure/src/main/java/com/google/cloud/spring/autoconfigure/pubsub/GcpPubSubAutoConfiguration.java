@@ -46,6 +46,7 @@ import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
+import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
@@ -311,7 +312,7 @@ public class GcpPubSubAutoConfiguration {
 		batchingSettings.ifAvailable(factory::setBatchingSettings);
 		factory.setEnableMessageOrdering(gcpPubSubProperties.getPublisher().getEnableMessageOrdering());
 		factory.setEndpoint(gcpPubSubProperties.getPublisher().getEndpoint());
-		return factory;
+		return new CachingPublisherFactory(factory);
 	}
 
 	@Bean
