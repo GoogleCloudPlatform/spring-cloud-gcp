@@ -68,14 +68,15 @@ final class TracingPublisher implements PublisherInterface {
 		if (!span.isNoop()) {
 			span.kind(PRODUCER).name("publish");
 			if (topic != null) {
-				span.tag("pubsub.topic", topic); // TODO: shouldn't have to do this manually because topic is in PubSubProducerRequest
+				span.tag(PubSubTags.PUBSUB_TOPIC_TAG, topic);
 			}
 			if (pubSubTracing.remoteServiceName != null) {
 				span.remoteServiceName(pubSubTracing.remoteServiceName);
 			}
 			// incur timestamp overhead only once
 			long timestamp = pubSubTracing.tracing.clock(span.context()).currentTimeMicroseconds();
-			// the span is just an instant, since we can't track how long it takes to publish and carry that forward
+			// the span is just an instant, since we don't yet track how long it takes to publish and carry that forward
+			// TODO: register a listener on the publish future
 			span.start(timestamp).finish(timestamp);
 		}
 

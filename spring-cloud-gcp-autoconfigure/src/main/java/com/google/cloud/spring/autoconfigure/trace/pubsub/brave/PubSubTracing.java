@@ -188,8 +188,9 @@ public final class PubSubTracing {
 
 	/** When an upstream context was not present, lookup keys are unlikely added. */
 	static void addTags(PubsubMessage.Builder message, SpanCustomizer result) {
-
-		// TODO: anything to do here?
+		if (message.getMessageId() != null && !"".equals(message.getMessageId())) {
+			result.tag(PubSubTags.PUBSUB_MESSAGE_ID_TAG, message.getMessageId());
+		}
 	}
 
 
@@ -266,7 +267,7 @@ public final class PubSubTracing {
 	}
 
 	private void setConsumerSpan(Span span, String subscriptionName) {
-		span.tag("pubsub.subscription", subscriptionName);
+		span.tag(PubSubTags.PUBSUB_SUBSCRIPTION_TAG, subscriptionName);
 		span.name("pull").kind(Span.Kind.CONSUMER);
 		if (remoteServiceName != null) {
 			span.remoteServiceName(remoteServiceName);

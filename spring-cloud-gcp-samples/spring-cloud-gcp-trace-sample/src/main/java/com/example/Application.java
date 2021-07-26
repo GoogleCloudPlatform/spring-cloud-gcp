@@ -110,7 +110,7 @@ public class Application implements WebMvcConfigurer {
 		PubSubInboundChannelAdapter adapter =
 				new PubSubInboundChannelAdapter(pubSubTemplate, "traceSubscription");
 		adapter.setOutputChannel(inputChannel);
-		adapter.setAckMode(AckMode.MANUAL);
+		adapter.setAckMode(AckMode.AUTO_ACK);
 		adapter.setPayloadType(String.class);
 		return adapter;
 	}
@@ -119,6 +119,5 @@ public class Application implements WebMvcConfigurer {
 	public void messageReceiver(String payload,
 			@Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
 		LOGGER.info("Message arrived! Payload: " + payload);
-		message.ack();
 	}
 }

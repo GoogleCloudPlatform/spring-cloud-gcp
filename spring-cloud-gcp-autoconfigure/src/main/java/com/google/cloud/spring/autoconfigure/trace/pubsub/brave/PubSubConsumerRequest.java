@@ -42,7 +42,7 @@ final class PubSubConsumerRequest extends ConsumerRequest {
 
 				@Override
 				public String toString() {
-					return "PubsubMessage::getAttribute";
+					return "PubsubMessage.Builder::getAttribute";
 				}
 			};
 
@@ -70,7 +70,7 @@ final class PubSubConsumerRequest extends ConsumerRequest {
 
 	PubSubConsumerRequest(PubsubMessage.Builder delegate, @Nullable String subscription) {
 		if (delegate == null) {
-			throw new NullPointerException("delegate == null");
+			throw new NullPointerException("PubsubMessage.Builder delegate == null");
 		}
 		this.delegate = delegate;
 		this.subscription = subscription;

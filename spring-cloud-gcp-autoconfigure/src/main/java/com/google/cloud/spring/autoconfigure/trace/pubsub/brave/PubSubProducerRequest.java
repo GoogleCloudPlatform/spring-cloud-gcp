@@ -43,7 +43,7 @@ final class PubSubProducerRequest extends ProducerRequest {
 
 				@Override
 				public String toString() {
-					return "PubsubMessage::getAttribute";
+					return "PubsubMessage.Builder::getAttribute";
 				}
 			};
 
