@@ -1040,14 +1040,14 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 	}
 
 	@Test
-	public void returnStreamPartTreeTest(){
+	public void returnStreamPartTreeTest() {
 		this.testEntityRepository.saveAll(this.allTestEntities);
 		Stream<TestEntity> resultStream = this.testEntityRepository.findStreamByColor("red");
 		assertThat(resultStream).hasSize(3).contains(testEntityA, testEntityC, testEntityD);
 	}
 
 	@Test
-	public void returnStreamGqlTest(){
+	public void returnStreamGqlTest() {
 		this.testEntityRepository.saveAll(this.allTestEntities);
 		Stream<TestEntity> resultStream = this.testEntityRepository.findByColorStream("red");
 		assertThat(resultStream).hasSize(3).contains(testEntityA, testEntityC, testEntityD);

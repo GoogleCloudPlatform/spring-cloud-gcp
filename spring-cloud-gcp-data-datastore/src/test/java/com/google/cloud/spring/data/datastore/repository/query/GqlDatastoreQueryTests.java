@@ -469,7 +469,8 @@ public class GqlDatastoreQueryTests {
 			assertThat(statement.getQueryString()).isEqualTo("unusedGqlString");
 
 			Cursor cursor = Cursor.copyFrom("abc".getBytes());
-			DatastoreResultsIterable datastoreResultsIterable = new DatastoreResultsIterable(Arrays.asList(tradeA, tradeB), cursor);
+			DatastoreResultsIterable datastoreResultsIterable = new DatastoreResultsIterable(
+					Arrays.asList(tradeA, tradeB), cursor);
 			return datastoreResultsIterable;
 		}).when(this.datastoreTemplate).queryKeysOrEntities(any(), eq(Trade.class));
 
