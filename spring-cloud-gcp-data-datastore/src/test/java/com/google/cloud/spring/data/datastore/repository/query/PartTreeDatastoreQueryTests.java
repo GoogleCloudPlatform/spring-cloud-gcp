@@ -900,7 +900,9 @@ public class PartTreeDatastoreQueryTests {
 		return null;
 	}
 
-	public Stream<Trade> findStreamByAction(String action) { return  null;}
+	public Stream<Trade> findStreamByAction(String action) {
+		return null;
+	}
 
 	@Nullable
 	public Trade findByActionNullable(String action) {
