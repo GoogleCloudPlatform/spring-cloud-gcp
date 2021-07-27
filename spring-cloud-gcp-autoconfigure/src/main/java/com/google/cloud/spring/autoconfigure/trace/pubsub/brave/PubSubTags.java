@@ -21,4 +21,7 @@ final class PubSubTags {
 	static final String PUBSUB_MESSAGE_ID_TAG = "pubsub.message.id";
 	static final String PUBSUB_TOPIC_TAG = "pubsub.topic";
 	static final String PUBSUB_SUBSCRIPTION_TAG = "pubsub.subscription";
+
+	private PubSubTags() {
+	}
 }
