@@ -524,6 +524,12 @@ public class User {
 
 	Flux&lt;User&gt; findByAge(Integer age);
 
+	Flux&lt;User&gt; findByAge(Integer age, Sort sort);
+
+	Flux&lt;User&gt; findByAgeOrderByNameDesc(Integer age);
+
+	Flux&lt;User&gt; findAllByOrderByAge();
+
 	Flux&lt;User&gt; findByAgeNot(Integer age);
 
 	Flux&lt;User&gt; findByNameAndAge(String name, Integer age);

@@ -1158,10 +1158,20 @@ public class DatastoreTemplateExample {
 </div>
 </div>
 <div class="paragraph">
-<p>These methods, respectively, allow querying for:
-* entities mapped by a given entity class using all the same mapping and converting features
-* arbitrary types produced by a given mapping function
-* only the Cloud Datastore keys of the entities found by the query</p>
+<p>These methods, respectively, allow querying for:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>entities mapped by a given entity class using all the same mapping and converting features</p>
+</li>
+<li>
+<p>arbitrary types produced by a given mapping function</p>
+</li>
+<li>
+<p>only the Cloud Datastore keys of the entities found by the query</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
@@ -1417,6 +1427,8 @@ Filtering parameters can be of types supported by your configured custom convert
   Slice&lt;TestEntity&gt; findBySymbol(String symbol, Pageable pageable);
 
   List&lt;TestEntity&gt; findBySymbol(String symbol, Sort sort);
+
+  Stream&lt;TestEntity&gt; findBySymbol(String symbol);
 }</code></pre>
 </div>
 </div>
@@ -1601,6 +1613,9 @@ It enables dynamic query generation based on a user-provided object. See <a href
 
   @Query("SELECT * FROM traders WHERE name = @trader_name")
   List&lt;Trader&gt; tradersByName(@Param("trader_name") String traderName);
+
+  @Query("SELECT * FROM traders WHERE name = @trader_name")
+  Stream&lt;Trader&gt; tradersStreamByName(@Param("trader_name") String traderName);
 
   @Query("SELECT * FROM  test_entities_ci WHERE name = @trader_name")
   TestEntity getOneTestEntity(@Param("trader_name") String traderName);
