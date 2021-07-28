@@ -1042,14 +1042,14 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 	@Test
 	public void returnStreamPartTreeTest() {
 		this.testEntityRepository.saveAll(this.allTestEntities);
-		Stream<TestEntity> resultStream = this.testEntityRepository.findStreamByColor("red");
+		Stream<TestEntity> resultStream = this.testEntityRepository.findPartTreeStreamByColor("red");
 		assertThat(resultStream).hasSize(3).contains(testEntityA, testEntityC, testEntityD);
 	}
 
 	@Test
 	public void returnStreamGqlTest() {
 		this.testEntityRepository.saveAll(this.allTestEntities);
-		Stream<TestEntity> resultStream = this.testEntityRepository.findByColorStream("red");
+		Stream<TestEntity> resultStream = this.testEntityRepository.findGqlStreamByColor("red");
 		assertThat(resultStream).hasSize(3).contains(testEntityA, testEntityC, testEntityD);
 	}
 }

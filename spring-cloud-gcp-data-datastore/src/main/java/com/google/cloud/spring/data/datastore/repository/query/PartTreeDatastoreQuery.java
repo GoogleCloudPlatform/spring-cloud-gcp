@@ -444,7 +444,13 @@ public class PartTreeDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 
 			structuredQueryBuilder.setKind(PartTreeDatastoreQuery.this.datastorePersistentEntity.kindName());
 
-			singularResult = (!isCountingQuery && collectionType == null && !isStreamQuery) && !PartTreeDatastoreQuery.this.tree.isDelete();
+			if (isCountingQuery || collectionType != null || isStreamQuery
+					|| PartTreeDatastoreQuery.this.tree.isDelete()) {
+				singularResult = false;
+			}
+			else {
+				singularResult = true;
+			}
 		}
 
 		boolean isReturnedTypeIsNumber() {

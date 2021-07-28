@@ -450,14 +450,10 @@ public class GqlDatastoreQueryTests {
 
 	@Test
 	public void streamResultTest() {
-		Mockito.<Class>when(this.queryMethod.getReturnedObjectType())
-				.thenReturn(Trade.class);
+		Mockito.<Class>when(this.queryMethod.getReturnedObjectType()).thenReturn(Trade.class);
 		Parameters parameters = mock(Parameters.class);
-
-		when(this.queryMethod.getParameters())
-				.thenReturn(parameters);
-		when(parameters.getNumberOfParameters())
-				.thenReturn(0);
+		when(this.queryMethod.getParameters()).thenReturn(parameters);
+		when(parameters.getNumberOfParameters()).thenReturn(0);
 		when(this.queryMethod.isStreamQuery()).thenReturn(true);
 
 		Trade tradeA = new Trade();

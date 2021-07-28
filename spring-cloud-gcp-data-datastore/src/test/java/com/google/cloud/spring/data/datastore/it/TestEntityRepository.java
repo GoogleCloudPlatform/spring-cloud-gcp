@@ -135,10 +135,10 @@ public interface TestEntityRepository extends DatastoreRepository<TestEntity, Lo
 
 	Optional<TestEntity> findFirstByColor(String color);
 
-	Stream<TestEntity> findStreamByColor(String color);
+	Stream<TestEntity> findPartTreeStreamByColor(String color);
 
 	@Query("select * from  test_entities_ci where color = @color")
-	Stream<TestEntity> findByColorStream(@Param("color") String color);
+	Stream<TestEntity> findGqlStreamByColor(@Param("color") String color);
 
 	@Nullable
 	TestEntity getByColor(String color);
