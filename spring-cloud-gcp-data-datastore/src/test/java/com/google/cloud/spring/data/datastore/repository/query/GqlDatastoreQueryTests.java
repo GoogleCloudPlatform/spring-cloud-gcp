@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.google.cloud.datastore.Cursor;
 import com.google.cloud.datastore.DoubleValue;
@@ -445,6 +446,35 @@ public class GqlDatastoreQueryTests {
 
 		verify(this.datastoreTemplate, times(1))
 				.queryKeysOrEntities(any(), eq(Trade.class));
+	}
+
+	@Test
+	public void streamResultTest() {
+		Mockito.<Class>when(this.queryMethod.getReturnedObjectType()).thenReturn(Trade.class);
+		Parameters parameters = mock(Parameters.class);
+		when(this.queryMethod.getParameters()).thenReturn(parameters);
+		when(parameters.getNumberOfParameters()).thenReturn(0);
+		when(this.queryMethod.isStreamQuery()).thenReturn(true);
+
+		Trade tradeA = new Trade();
+		tradeA.id = "a";
+		Trade tradeB = new Trade();
+		tradeB.id = "b";
+		doAnswer(invocation -> {
+			GqlQuery statement = invocation.getArgument(0);
+			assertThat(statement.getQueryString()).isEqualTo("unusedGqlString");
+
+			Cursor cursor = Cursor.copyFrom("abc".getBytes());
+			DatastoreResultsIterable datastoreResultsIterable = new DatastoreResultsIterable(
+					Arrays.asList(tradeA, tradeB), cursor);
+			return datastoreResultsIterable;
+		}).when(this.datastoreTemplate).queryKeysOrEntities(any(), eq(Trade.class));
+
+		GqlDatastoreQuery gqlDatastoreQuery = createQuery("unusedGqlString", false, false);
+
+		Object result = gqlDatastoreQuery.execute(new Parameters[0]);
+		assertThat(result).isInstanceOf(Stream.class);
+		assertThat((Stream) result).hasSize(2).containsExactly(tradeA, tradeB);
 	}
 
 	private Parameters buildParameters(Object[] params, String[] paramNames) {

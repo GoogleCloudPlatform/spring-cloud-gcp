@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -239,5 +240,12 @@ public class DatastoreSampleApplicationIntegrationTests {
 		return singerMaps.stream().map(som -> new Singer(null,
 				(String) som.get("firstName"), (String) som.get("lastName"), null))
 				.collect(Collectors.toList());
+	}
+
+	@Test
+	public void testQueryReturnStream() {
+		Stream<Singer> streamResult = singerRepository.findSingersByLastName("Doe");
+		assertThat(streamResult).isInstanceOf(Stream.class);
+		streamResult.map(Singer::getLastName).forEach(x -> assertThat(x).isEqualTo("Doe"));
 	}
 }
