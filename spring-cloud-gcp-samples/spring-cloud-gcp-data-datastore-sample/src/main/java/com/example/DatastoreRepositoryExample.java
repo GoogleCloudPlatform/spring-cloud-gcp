@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -98,6 +99,10 @@ public class DatastoreRepositoryExample {
 		this.singerRepository
 				.findAllById(Arrays.asList("singer1", "singer2", "singer3"))
 				.forEach(x -> System.out.println("retrieved singer: " + x));
+
+		System.out.println("Query results can also be returned as Stream: ");
+		Stream<Singer> streamResult = singerRepository.findSingersByLastName("Doe");
+		streamResult.forEach(System.out::println);
 
 		//Query by example: find all singers with the last name "Doe"
 		Iterable<Singer> singers = this.singerRepository.findAll(
