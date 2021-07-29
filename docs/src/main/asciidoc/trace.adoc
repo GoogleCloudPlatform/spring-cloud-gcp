@@ -1,3 +1,4 @@
+[#cloud-trace]
 == Cloud Trace
 
 Google Cloud Platform provides a managed distributed tracing service called https://cloud.google.com/trace/[Cloud Trace], and https://cloud.spring.io/spring-cloud-sleuth/[Spring Cloud Sleuth] can be used with it to easily instrument Spring Boot applications for observability.
@@ -7,7 +8,7 @@ However, on GCP, instead of running and maintaining your own Zipkin instance and
 
 This Spring Cloud GCP starter can forward Spring Cloud Sleuth traces to Cloud Trace without an intermediary Zipkin server.
 
-Maven coordinates, using <<getting-started.adoc#_bill_of_materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
 
 [source,xml]
 ----
