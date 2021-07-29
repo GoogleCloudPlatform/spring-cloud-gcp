@@ -101,7 +101,7 @@ public class DatastoreRepositoryExample {
 				.forEach(x -> System.out.println("retrieved singer: " + x));
 
 		System.out.println("Query results can also be returned as Stream: ");
-		Stream<Singer> streamResult = singerRepository.findSingersByLastName("Doe");
+		Stream<Singer> streamResult = singerRepository.findStreamOfSingersByLastName("Doe");
 		streamResult.forEach(System.out::println);
 
 		//Query by example: find all singers with the last name "Doe"
