@@ -1,3 +1,4 @@
+[#cloud-logging]
 == Cloud Logging
 
 Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:

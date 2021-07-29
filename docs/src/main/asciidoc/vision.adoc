@@ -1,3 +1,4 @@
+[#cloud-vision]
 == Cloud Vision
 
 The https://cloud.google.com/vision/[Google Cloud Vision API] allows users to leverage machine learning algorithms for processing images and documents including: image classification, face detection, text extraction, optical character recognition, and others.

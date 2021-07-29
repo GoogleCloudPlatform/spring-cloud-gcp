@@ -66,19 +66,19 @@ A summary of these artifacts are provided below.
 
 | Cloud Spanner
 | Provides integrations with Google Cloud Spanner
-| <<spanner.adoc#_spring_data_cloud_spanner, com.google.cloud:spring-cloud-gcp-starter-data-spanner>>
+| <<spanner.adoc#spring-data-cloud-spanner, com.google.cloud:spring-cloud-gcp-starter-data-spanner>>
 
 | Cloud Datastore
 | Provides integrations with Google Cloud Datastore
-| <<datastore.adoc#_spring_data_cloud_datastore, com.google.cloud:spring-cloud-gcp-starter-data-datastore>>
+| <<datastore.adoc#spring-data-cloud-datastore, com.google.cloud:spring-cloud-gcp-starter-data-datastore>>
 
 | Cloud Pub/Sub
 | Provides integrations with Google Cloud Pub/Sub
-| <<pubsub.adoc#_google_cloud_pubsub, com.google.cloud:spring-cloud-gcp-starter-pubsub>>
+| <<pubsub.adoc#cloud-pubsub, com.google.cloud:spring-cloud-gcp-starter-pubsub>>
 
 | Logging
 | Enables Cloud Logging
-| <<logging.adoc#_cloud_logging, com.google.cloud:spring-cloud-gcp-starter-logging>>
+| <<logging.adoc#cloud-logging, com.google.cloud:spring-cloud-gcp-starter-logging>>
 
 | SQL - MySQL
 | Cloud SQL integrations with MySQL
@@ -102,7 +102,7 @@ A summary of these artifacts are provided below.
 
 | Vision
 | Provides integrations with Google Cloud Vision
-| <<vision.adoc#_google_cloud_vision, com.google.cloud:spring-cloud-gcp-starter-vision>>
+| <<vision.adoc#cloud-vision, com.google.cloud:spring-cloud-gcp-starter-vision>>
 
 | Security - IAP
 | Provides a security layer over applications deployed to Google Cloud
