@@ -108,6 +108,7 @@ public class DatastoreSampleApplicationIntegrationTests {
 	public void runTests() throws Exception {
 		basicTest();
 		testCompoundKeyRestResource();
+		testQueryReturnStream();
 	}
 
 	public void basicTest() throws Exception {
@@ -242,9 +243,8 @@ public class DatastoreSampleApplicationIntegrationTests {
 				.collect(Collectors.toList());
 	}
 
-	@Test
 	public void testQueryReturnStream() {
-		Stream<Singer> streamResult = singerRepository.findSingersByLastName("Doe");
+		Stream<Singer> streamResult = singerRepository.findStreamOfSingersByLastName("Doe");
 		assertThat(streamResult).isInstanceOf(Stream.class);
 		streamResult.map(Singer::getLastName).forEach(x -> assertThat(x).isEqualTo("Doe"));
 	}

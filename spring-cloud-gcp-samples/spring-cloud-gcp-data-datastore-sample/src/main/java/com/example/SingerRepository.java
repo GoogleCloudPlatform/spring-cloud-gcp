@@ -41,5 +41,5 @@ public interface SingerRepository extends DatastoreRepository<Singer, String> {
 
 	List<Singer> findByFirstBand(Band band);
 
-	Stream<Singer> findSingersByLastName(String name);
+	Stream<Singer> findStreamOfSingersByLastName(String name);
 }
