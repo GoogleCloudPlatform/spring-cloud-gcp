@@ -1,3 +1,4 @@
+[#cloud-sql]
 == Cloud SQL
 
 Spring Cloud GCP adds integrations with

@@ -1,3 +1,4 @@
+[#cloud-storage]
 == Cloud Storage
 
 https://cloud.google.com/storage/docs[Google Cloud Storage] allows storing any types of files in single or multiple regions.

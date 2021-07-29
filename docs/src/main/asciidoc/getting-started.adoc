@@ -82,23 +82,23 @@ A summary of these artifacts are provided below.
 
 | SQL - MySQL
 | Cloud SQL integrations with MySQL
-| <<sql.adoc#_spring_jdbc, com.google.cloud:spring-cloud-gcp-starter-sql-mysql>>
+| <<sql.adoc#cloud-sql, com.google.cloud:spring-cloud-gcp-starter-sql-mysql>>
 
 | SQL - PostgreSQL
 | Cloud SQL integrations with PostgreSQL
-| <<sql.adoc#_spring_jdbc, com.google.cloud:spring-cloud-gcp-starter-sql-postgresql>>
+| <<sql.adoc#cloud-sql, com.google.cloud:spring-cloud-gcp-starter-sql-postgresql>>
 
 | Storage
 | Provides integrations with Google Cloud Storage and Spring Resource
-| <<storage.adoc#_spring_resources, com.google.cloud:spring-cloud-gcp-starter-storage>>
+| <<storage.adoc#cloud-storage, com.google.cloud:spring-cloud-gcp-starter-storage>>
 
 | Config
 | Enables usage of Google Runtime Configuration API as a Spring Cloud Config server
-| <<config.adoc#_spring_cloud_config, com.google.cloud:spring-cloud-gcp-starter-config>>
+| <<config.adoc#cloud-runtime-configuration-api, com.google.cloud:spring-cloud-gcp-starter-config>>
 
 | Trace
 | Enables instrumentation with Google Cloud Trace
-| <<trace.adoc#_spring_cloud_sleuth, com.google.cloud:spring-cloud-gcp-starter-trace>>
+| <<trace.adoc#cloud-trace, com.google.cloud:spring-cloud-gcp-starter-trace>>
 
 | Vision
 | Provides integrations with Google Cloud Vision
@@ -106,7 +106,7 @@ A summary of these artifacts are provided below.
 
 | Security - IAP
 | Provides a security layer over applications deployed to Google Cloud
-| <<security-iap.adoc#_cloud_identity_aware_proxy_iap_authentication, com.google.cloud:spring-cloud-gcp-starter-security-iap>>
+| <<security-iap.adoc#cloud-iap, com.google.cloud:spring-cloud-gcp-starter-security-iap>>
 
 |===
 
