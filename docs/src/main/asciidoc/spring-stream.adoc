@@ -1,3 +1,4 @@
+[#spring-cloud-stream]
 == Spring Cloud Stream
 
 Spring Cloud GCP provides a https://cloud.spring.io/spring-cloud-stream/[Spring Cloud Stream] binder to Google Cloud Pub/Sub.

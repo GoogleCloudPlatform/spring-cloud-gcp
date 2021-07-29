@@ -12,6 +12,7 @@ The following resources are provided to help you setup the libraries for your pr
 
 You may also consult our https://github.com/GoogleCloudPlatform/spring-cloud-gcp[Github project] to examine the code or build directly from source.
 
+[#bill-of-materials]
 ==== Bill of Materials
 
 The Spring Cloud GCP Bill of Materials (BOM) contains the versions of all the dependencies it uses.
