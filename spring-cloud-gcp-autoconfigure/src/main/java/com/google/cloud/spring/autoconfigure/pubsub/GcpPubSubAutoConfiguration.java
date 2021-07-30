@@ -220,8 +220,7 @@ public class GcpPubSubAutoConfiguration {
 			@Qualifier("subscriberApiClock") ObjectProvider<ApiClock> apiClock,
 			@Qualifier("subscriberRetrySettings") ObjectProvider<RetrySettings> retrySettings,
 			@Qualifier("subscriberTransportChannelProvider") TransportChannelProvider subscriberTransportChannelProvider) {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider);
-		factory.setExecutorProvider(executorProvider);
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider, this.gcpPubSubProperties);
 		factory.setCredentialsProvider(this.finalCredentialsProvider);
 		factory.setHeaderProvider(this.headerProvider);
 		factory.setChannelProvider(subscriberTransportChannelProvider);

@@ -16,6 +16,9 @@
 
 package com.google.cloud.spring.pubsub.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
 
 /**
@@ -26,6 +29,8 @@ import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
  * @author Chengyuan Zhao
  */
 public class PubSubEventSpecificProperties {
+
+	private final Map<String, Properties> properties = new HashMap<>();
 
 	/**
 	 * Contains settings specific to the subscriber factory.
@@ -43,6 +48,33 @@ public class PubSubEventSpecificProperties {
 
 	public Publisher getPublisher() {
 		return this.publisher;
+	}
+
+	public Map<String, Properties> getProperties() {
+		return this.properties;
+	}
+
+	public Subscriber getSubscriber(String name) {
+		if (!this.properties.containsKey(name)) {
+			Properties property = new Properties();
+			property.setSubscriber(this.subscriber);
+			this.properties.put(name, property);
+		}
+
+		return this.properties.get(name).getSubscriber();
+	}
+
+	public static class Properties {
+
+		Subscriber subscriber = new Subscriber();
+
+		public Subscriber getSubscriber() {
+			return this.subscriber;
+		}
+
+		public void setSubscriber(Subscriber subscriber) {
+			this.subscriber = subscriber;
+		}
 	}
 
 	/**

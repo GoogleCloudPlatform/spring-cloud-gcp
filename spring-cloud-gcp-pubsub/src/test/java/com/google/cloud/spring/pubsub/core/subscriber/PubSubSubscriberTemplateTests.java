@@ -188,7 +188,7 @@ public class PubSubSubscriberTemplateTests {
 				.addReceivedMessages(ReceivedMessage.newBuilder().setMessage(this.pubsubMessage)).build());
 
 		// create objects under test
-		when(this.subscriberFactory.createSubscriberStub()).thenReturn(this.subscriberStub);
+		when(this.subscriberFactory.createSubscriberStub(any())).thenReturn(this.subscriberStub);
 		when(this.subscriberStub.pullCallable()).thenReturn(this.pullCallable);
 		when(this.pullCallable.call(any(PullRequest.class))).thenReturn(PullResponse.newBuilder()
 				.addReceivedMessages(ReceivedMessage.newBuilder().setMessage(this.pubsubMessage)).build());
@@ -300,6 +300,18 @@ public class PubSubSubscriberTemplateTests {
 		verify(this.ackReplyConsumer).nack();
 
 		assertThat(testListenableFutureCallback.getThrowable()).isNull();
+	}
+
+	@Test
+	public void destroyingBeanClosesSubscriberStub() {
+		this.pubSubSubscriberTemplate.pull(
+				"sub2", 1, true);
+
+		verify(this.subscriberFactory).createSubscriberStub("sub2");
+
+		verify(this.subscriberStub, times(0)).close();
+		this.pubSubSubscriberTemplate.destroy();
+		verify(this.subscriberStub, times(1)).close();
 	}
 
 	@Test

@@ -22,6 +22,7 @@ import com.google.api.core.ApiClock;
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.HeaderProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
@@ -31,9 +32,11 @@ import com.google.cloud.pubsub.v1.stub.GrpcSubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.core.PubSubEventSpecificProperties;
 import com.google.pubsub.v1.PullRequest;
 import org.threeten.bp.Duration;
 
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.Assert;
 
 /**
@@ -48,8 +51,6 @@ import org.springframework.util.Assert;
 public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private final String projectId;
-
-	private ExecutorProvider executorProvider;
 
 	private TransportChannelProvider channelProvider;
 
@@ -71,6 +72,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private RetrySettings subscriberStubRetrySettings;
 
+	private PubSubEventSpecificProperties pubSubEventSpecificProperties;
+
 	/**
 	 * Default {@link DefaultSubscriberFactory} constructor.
 	 * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
@@ -80,20 +83,26 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 		this.projectId = projectIdProvider.getProjectId();
 		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
+		this.pubSubEventSpecificProperties = new PubSubEventSpecificProperties();
+	}
+
+	/**
+	 * Default {@link DefaultSubscriberFactory} constructor.
+	 * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
+	 * @param pubSubEventSpecificProperties contains the subscriber properties to configure
+	 */
+	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider, PubSubEventSpecificProperties pubSubEventSpecificProperties) {
+		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
+
+		this.projectId = projectIdProvider.getProjectId();
+		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
+
+		this.pubSubEventSpecificProperties = pubSubEventSpecificProperties;
 	}
 
 	@Override
 	public String getProjectId() {
 		return this.projectId;
-	}
-
-	/**
-	 * Set the provider for the subscribers' executor. Useful to specify the number of threads to be
-	 * used by each executor.
-	 * @param executorProvider the executor provider to set
-	 */
-	public void setExecutorProvider(ExecutorProvider executorProvider) {
-		this.executorProvider = executorProvider;
 	}
 
 	/**
@@ -183,13 +192,15 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(
 				PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId), receiver);
 
+		PubSubEventSpecificProperties.Subscriber subscriberProperties = this.pubSubEventSpecificProperties
+				.getSubscriber(subscriptionName);
+
 		if (this.channelProvider != null) {
 			subscriberBuilder.setChannelProvider(this.channelProvider);
 		}
 
-		if (this.executorProvider != null) {
-			subscriberBuilder.setExecutorProvider(this.executorProvider);
-		}
+		subscriberBuilder.setExecutorProvider(getExecutorProvider(subscriberProperties));
+
 
 		if (this.credentialsProvider != null) {
 			subscriberBuilder.setCredentialsProvider(this.credentialsProvider);
@@ -242,8 +253,11 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	@Override
-	public SubscriberStub createSubscriberStub() {
+	public SubscriberStub createSubscriberStub(String subscriptionName) {
 		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
+
+		PubSubEventSpecificProperties.Subscriber subscriberProperties = this.pubSubEventSpecificProperties
+				.getSubscriber(subscriptionName);
 
 		if (this.credentialsProvider != null) {
 			subscriberStubSettings.setCredentialsProvider(this.credentialsProvider);
@@ -253,9 +267,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.setEndpoint(this.pullEndpoint);
 		}
 
-		if (this.executorProvider != null) {
-			subscriberStubSettings.setExecutorProvider(this.executorProvider);
-		}
+		subscriberStubSettings.setExecutorProvider(getExecutorProvider(subscriberProperties));
 
 		if (this.headerProvider != null) {
 			subscriberStubSettings.setHeaderProvider(this.headerProvider);
@@ -282,4 +294,13 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 	}
 
+	public ExecutorProvider getExecutorProvider(PubSubEventSpecificProperties.Subscriber subscriber) {
+		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+		scheduler.setPoolSize(subscriber.getExecutorThreads());
+		scheduler.setThreadNamePrefix("gcp-pubsub-subscriber");
+		scheduler.setDaemon(true);
+		scheduler.initialize();
+
+		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
+	}
 }

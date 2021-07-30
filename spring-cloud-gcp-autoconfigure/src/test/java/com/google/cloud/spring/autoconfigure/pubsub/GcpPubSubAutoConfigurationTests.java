@@ -96,6 +96,52 @@ public class GcpPubSubAutoConfigurationTests {
 		});
 	}
 
+	@Test
+	public void executorThreads_globalConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.executor-threads=3")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			assertThat(gcpPubSubProperties.getSubscriber().getExecutorThreads()).isEqualTo(3);
+		});
+	}
+
+	@Test
+	public void executorThreads_selectiveConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.properties.name.subscriber.executor-threads=3")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			assertThat(gcpPubSubProperties.getSubscriber("name").getExecutorThreads()).isEqualTo(3);
+		});
+	}
+
+	@Test
+	public void executorThreads_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.executor-threads=5",
+						"spring.cloud.gcp.pubsub.properties.name.subscriber.executor-threads=3")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			assertThat(gcpPubSubProperties.getSubscriber("name").getExecutorThreads()).isEqualTo(3);
+			assertThat(gcpPubSubProperties.getSubscriber("other").getExecutorThreads()).isEqualTo(5);
+		});
+	}
+
 	static class TestConfig {
 
 		@Bean

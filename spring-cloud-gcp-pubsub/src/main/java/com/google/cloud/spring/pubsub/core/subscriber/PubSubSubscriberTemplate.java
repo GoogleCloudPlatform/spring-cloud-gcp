@@ -18,6 +18,7 @@ package com.google.cloud.spring.pubsub.core.subscriber;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -86,8 +87,6 @@ public class PubSubSubscriberTemplate
 
 	private final SubscriberFactory subscriberFactory;
 
-	private final SubscriberStub subscriberStub;
-
 	private PubSubMessageConverter pubSubMessageConverter = new SimplePubSubMessageConverter();
 
 	private final ExecutorService defaultAckExecutor = Executors.newSingleThreadExecutor();
@@ -95,6 +94,8 @@ public class PubSubSubscriberTemplate
 	private Executor ackExecutor = this.defaultAckExecutor;
 
 	private Executor asyncPullExecutor = Runnable::run;
+
+	private Map<String, SubscriberStub> collectionOfSubscriberStub = new HashMap<>();
 
 	/**
 	 * Default {@link PubSubSubscriberTemplate} constructor.
@@ -106,7 +107,7 @@ public class PubSubSubscriberTemplate
 		Assert.notNull(subscriberFactory, "The subscriberFactory can't be null.");
 
 		this.subscriberFactory = subscriberFactory;
-		this.subscriberStub = this.subscriberFactory.createSubscriberStub();
+//		this.subscriberStub = this.subscriberFactory.createSubscriberStub();
 	}
 
 	/**
@@ -190,13 +191,13 @@ public class PubSubSubscriberTemplate
 	 * Pulls messages synchronously, on demand, using the pull request in argument.
 	 *
 	 * @param pullRequest pull request containing the subscription name
+	 * @param subscriberStub subscriber stub
 	 * @return the list of {@link AcknowledgeablePubsubMessage} containing the ack ID, subscription
 	 * and acknowledger
 	 */
-	private List<AcknowledgeablePubsubMessage> pull(PullRequest pullRequest) {
+	private List<AcknowledgeablePubsubMessage> pull(PullRequest pullRequest, SubscriberStub subscriberStub) {
 		Assert.notNull(pullRequest, "The pull request can't be null.");
-
-		PullResponse pullResponse = this.subscriberStub.pullCallable().call(pullRequest);
+		PullResponse pullResponse = subscriberStub.pullCallable().call(pullRequest);
 		return toAcknowledgeablePubsubMessageList(
 				pullResponse.getReceivedMessagesList(),
 				pullRequest.getSubscription());
@@ -206,14 +207,14 @@ public class PubSubSubscriberTemplate
 	 * Pulls messages asynchronously, on demand, using the pull request in argument.
 	 *
 	 * @param pullRequest pull request containing the subscription name
+	 * @param subscriberStub subscriber stub
 	 * @return the ListenableFuture for the asynchronous execution, returning
 	 * the list of {@link AcknowledgeablePubsubMessage} containing the ack ID, subscription
 	 * and acknowledger
 	 */
-	private ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(PullRequest pullRequest) {
+	private ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(PullRequest pullRequest, SubscriberStub subscriberStub) {
 		Assert.notNull(pullRequest, "The pull request can't be null.");
-
-		ApiFuture<PullResponse> pullFuture = this.subscriberStub.pullCallable().futureCall(pullRequest);
+		ApiFuture<PullResponse> pullFuture = subscriberStub.pullCallable().futureCall(pullRequest);
 
 		final SettableListenableFuture<List<AcknowledgeablePubsubMessage>> settableFuture = new SettableListenableFuture<>();
 		ApiFutures.addCallback(pullFuture, new ApiFutureCallback<PullResponse>() {
@@ -250,13 +251,18 @@ public class PubSubSubscriberTemplate
 	@Override
 	public List<AcknowledgeablePubsubMessage> pull(
 			String subscription, Integer maxMessages, Boolean returnImmediately) {
+		SubscriberStub subscriberStub = this.subscriberFactory.createSubscriberStub(subscription);
+		collectionOfSubscriberStub.putIfAbsent(subscription, subscriberStub);
+
 		return pull(this.subscriberFactory.createPullRequest(subscription, maxMessages,
-				returnImmediately));
+				returnImmediately), subscriberStub);
 	}
 
 	@Override
 	public ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(String subscription, Integer maxMessages, Boolean returnImmediately) {
-		return pullAsync(this.subscriberFactory.createPullRequest(subscription, maxMessages, returnImmediately));
+		SubscriberStub subscriberStub = this.subscriberFactory.createSubscriberStub(subscription);
+		collectionOfSubscriberStub.putIfAbsent(subscription, subscriberStub);
+		return pullAsync(this.subscriberFactory.createPullRequest(subscription, maxMessages, returnImmediately), subscriberStub);
 	}
 
 	@Override
@@ -292,8 +298,8 @@ public class PubSubSubscriberTemplate
 			Boolean returnImmediately) {
 		PullRequest pullRequest = this.subscriberFactory.createPullRequest(
 				subscription, maxMessages, returnImmediately);
-
-		List<AcknowledgeablePubsubMessage> ackableMessages = pull(pullRequest);
+		SubscriberStub subscriberStub = this.subscriberFactory.createSubscriberStub(subscription);
+		List<AcknowledgeablePubsubMessage> ackableMessages = pull(pullRequest, subscriberStub);
 
 		if (!ackableMessages.isEmpty()) {
 			ack(ackableMessages);
@@ -308,10 +314,12 @@ public class PubSubSubscriberTemplate
 			Boolean returnImmediately) {
 		PullRequest pullRequest = this.subscriberFactory.createPullRequest(
 				subscription, maxMessages, returnImmediately);
+		SubscriberStub subscriberStub = this.subscriberFactory.createSubscriberStub(subscription);
+		collectionOfSubscriberStub.putIfAbsent(subscription, subscriberStub);
 
 		final SettableListenableFuture<List<PubsubMessage>> settableFuture = new SettableListenableFuture<>();
 
-		this.pullAsync(pullRequest).addCallback(
+		this.pullAsync(pullRequest, subscriberStub).addCallback(
 				ackableMessages -> {
 					if (!ackableMessages.isEmpty()) {
 						ack(ackableMessages);
@@ -405,7 +413,9 @@ public class PubSubSubscriberTemplate
 	@Override
 	public void destroy() {
 		this.defaultAckExecutor.shutdown();
-		this.subscriberStub.close();
+		for (SubscriberStub stub : collectionOfSubscriberStub.values()) {
+			stub.close();
+		}
 	}
 
 	private ApiFuture<Empty> ack(String subscriptionName, Collection<String> ackIds) {
@@ -413,7 +423,9 @@ public class PubSubSubscriberTemplate
 				.addAllAckIds(ackIds)
 				.setSubscription(subscriptionName)
 				.build();
-		return this.subscriberStub.acknowledgeCallable().futureCall(acknowledgeRequest);
+		SubscriberStub subscriberStub = this.subscriberFactory.createSubscriberStub(subscriptionName);
+		collectionOfSubscriberStub.putIfAbsent(subscriptionName, subscriberStub);
+		return subscriberStub.acknowledgeCallable().futureCall(acknowledgeRequest);
 	}
 
 	private ApiFuture<Empty> modifyAckDeadline(
@@ -423,8 +435,9 @@ public class PubSubSubscriberTemplate
 				.addAllAckIds(ackIds)
 				.setSubscription(subscriptionName)
 				.build();
-
-		return this.subscriberStub.modifyAckDeadlineCallable().futureCall(modifyAckDeadlineRequest);
+		SubscriberStub subscriberStub = this.subscriberFactory.createSubscriberStub(subscriptionName);
+		collectionOfSubscriberStub.putIfAbsent(subscriptionName, subscriberStub);
+		return subscriberStub.modifyAckDeadlineCallable().futureCall(modifyAckDeadlineRequest);
 	}
 
 	/**
