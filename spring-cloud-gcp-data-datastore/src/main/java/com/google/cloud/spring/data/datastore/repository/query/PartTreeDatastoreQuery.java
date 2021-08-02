@@ -186,13 +186,18 @@ public class PartTreeDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 	}
 
 	private Object runQuery(Object[] parameters, Class returnedElementType, Class<?> collectionType, boolean requiresCount) {
-		ExecutionOptions options = new ExecutionOptions(returnedElementType, collectionType, requiresCount);
+		ExecutionOptions options = new ExecutionOptions(returnedElementType, collectionType, requiresCount,
+				getQueryMethod().isStreamQuery());
 
 		DatastoreResultsIterable rawResults = getDatastoreOperations()
 				.queryKeysOrEntities(
 						applyQueryBody(parameters, options.getQueryBuilder(),
 								requiresCount, options.isSingularResult(), null),
 						this.entityType);
+
+		if (getQueryMethod().isStreamQuery()) {
+			return StreamSupport.stream(rawResults.spliterator(), false);
+		}
 
 		Object result = StreamSupport.stream(rawResults.spliterator(), false)
 				.map(options.isReturnedTypeIsNumber() ? Function.identity() : this::processRawObjectForProjection)
@@ -422,7 +427,7 @@ public class PartTreeDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 
 		private boolean singularResult;
 
-		ExecutionOptions(Class returnedElementType, Class<?> collectionType, boolean requiresCount) {
+		ExecutionOptions(Class returnedElementType, Class<?> collectionType, boolean requiresCount, boolean isStreamQuery) {
 
 			returnedTypeIsNumber = Number.class.isAssignableFrom(returnedElementType)
 					|| returnedElementType == int.class || returnedElementType == long.class;
@@ -439,7 +444,13 @@ public class PartTreeDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 
 			structuredQueryBuilder.setKind(PartTreeDatastoreQuery.this.datastorePersistentEntity.kindName());
 
-			singularResult = (!isCountingQuery && collectionType == null) && !PartTreeDatastoreQuery.this.tree.isDelete();
+			if (isCountingQuery || collectionType != null || isStreamQuery
+					|| PartTreeDatastoreQuery.this.tree.isDelete()) {
+				singularResult = false;
+			}
+			else {
+				singularResult = true;
+			}
 		}
 
 		boolean isReturnedTypeIsNumber() {

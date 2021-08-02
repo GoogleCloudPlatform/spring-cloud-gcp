@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import com.google.cloud.datastore.Blob;
 import com.google.cloud.datastore.DatastoreException;
@@ -1036,6 +1037,20 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 						this.datastoreTemplate.findById(1L, CompanyWithBooleanPrimitive.class);
 		assertThat(companyWithBooleanPrimitive.name).isEqualTo(company.name);
 		assertThat(companyWithBooleanPrimitive.active).isFalse();
+	}
+
+	@Test
+	public void returnStreamPartTreeTest() {
+		this.testEntityRepository.saveAll(this.allTestEntities);
+		Stream<TestEntity> resultStream = this.testEntityRepository.findPartTreeStreamByColor("red");
+		assertThat(resultStream).hasSize(3).contains(testEntityA, testEntityC, testEntityD);
+	}
+
+	@Test
+	public void returnStreamGqlTest() {
+		this.testEntityRepository.saveAll(this.allTestEntities);
+		Stream<TestEntity> resultStream = this.testEntityRepository.findGqlStreamByColor("red");
+		assertThat(resultStream).hasSize(3).contains(testEntityA, testEntityC, testEntityD);
 	}
 }
 

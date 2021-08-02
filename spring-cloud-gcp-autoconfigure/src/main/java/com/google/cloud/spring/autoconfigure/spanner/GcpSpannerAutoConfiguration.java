@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.spanner;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.google.api.gax.core.CredentialsProvider;
@@ -51,6 +52,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 
 /**
@@ -122,8 +124,11 @@ public class GcpSpannerAutoConfiguration {
 		}
 
 		@Bean
+		@Scope("prototype")
 		@ConditionalOnMissingBean
-		public SpannerOptions spannerOptions(SessionPoolOptions sessionPoolOptions) {
+		public SpannerOptions.Builder spannerOptionsBuilder(
+				SessionPoolOptions sessionPoolOptions,
+				Optional<SpannerOptionsCustomizer> customizer) {
 			Builder builder = SpannerOptions.newBuilder()
 					.setProjectId(this.projectId)
 					.setHeaderProvider(new UserAgentHeaderProvider(this.getClass()))
@@ -135,6 +140,15 @@ public class GcpSpannerAutoConfiguration {
 				builder.setPrefetchChunks(this.prefetchChunks);
 			}
 			builder.setSessionPoolOption(sessionPoolOptions);
+
+			customizer.ifPresent(c -> c.apply(builder));
+
+			return builder;
+		}
+
+		@Bean
+		@ConditionalOnMissingBean
+		public SpannerOptions spannerOptions(SpannerOptions.Builder builder) {
 			return builder.build();
 		}
 

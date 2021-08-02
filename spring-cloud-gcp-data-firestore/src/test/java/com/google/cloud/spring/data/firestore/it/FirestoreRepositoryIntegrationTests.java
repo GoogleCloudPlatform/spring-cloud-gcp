@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -150,7 +151,7 @@ public class FirestoreRepositoryIntegrationTests {
 	public void partTreeRepositoryMethodTest() {
 		User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
 		u1.favoriteDrink = "tea";
-		User u2 = new User("Squall", 17, null, null, new Address("2 Second st., London", "UK"));
+		User u2 = new User("Squall", 17, Arrays.asList("cat", "dog"), null, new Address("2 Second st., London", "UK"));
 		u2.favoriteDrink = "wine";
 		Flux<User> users = Flux.fromArray(new User[] {u1, u2});
 
@@ -166,6 +167,9 @@ public class FirestoreRepositoryIntegrationTests {
 				.containsExactly(u1);
 		assertThat(this.userRepository.findByAgeGreaterThan(10).collectList().block()).containsExactlyInAnyOrder(u1,
 				u2);
+		assertThat(this.userRepository.findByNameAndAge("Cloud", 22).collectList().block())
+				.containsExactly(u1);
+		assertThat(this.userRepository.findByNameAndPetsContains("Squall", Collections.singletonList("cat")).collectList().block()).containsExactly(u2);
 	}
 	//end::repository_part_tree[]
 
@@ -199,6 +203,30 @@ public class FirestoreRepositoryIntegrationTests {
 
 		assertThat(pagedUsers).containsExactlyInAnyOrder(
 				"blah-person8", "blah-person9", "blah-person10");
+	}
+
+	@Test
+	public void testOrderBy() {
+		User alice = new User("Alice", 99);
+		User bob = new User("Bob", 99);
+		User zelda = new User("Zelda", 99);
+		User claire = new User("Claire", 80);
+		User dave = new User("Dave", 70);
+
+		Flux<User> users = Flux.fromArray(new User[] { alice, bob, zelda, claire, dave });
+		this.userRepository.saveAll(users).blockLast();
+
+		StepVerifier.create(
+				this.userRepository.findByAge(99, Sort.by(Order.desc("name"))).map(User::getName))
+				.expectNext("Zelda", "Bob", "Alice")
+				.verifyComplete();
+		StepVerifier.create(
+				this.userRepository.findByAgeOrderByNameDesc(99).map(User::getName)).expectNext("Zelda", "Bob", "Alice")
+				.verifyComplete();
+		StepVerifier.create(
+				this.userRepository.findAllByOrderByAge().map(User::getName))
+				.expectNext("Dave", "Claire", "Alice", "Bob", "Zelda")
+				.verifyComplete();
 	}
 
 	@Test

@@ -21,10 +21,12 @@ import javax.annotation.PreDestroy;
 import com.google.api.gax.grpc.GrpcTransportChannel;
 import com.google.api.gax.rpc.FixedTransportChannelProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -39,7 +41,8 @@ import org.springframework.context.annotation.Configuration;
  * @author Mike Eltsufin
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = "spring.cloud.gcp.pubsub", name = "emulator-host")
+@ConditionalOnClass({ManagedChannel.class, PubSubTemplate.class})
+@ConditionalOnProperty(prefix = "spring.cloud.gcp.pubsub", name = "enabled", matchIfMissing = true)
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)
 @EnableConfigurationProperties(GcpPubSubProperties.class)
 public class GcpPubSubEmulatorAutoConfiguration {
@@ -47,6 +50,7 @@ public class GcpPubSubEmulatorAutoConfiguration {
 
 	@Bean(name = {"subscriberTransportChannelProvider", "publisherTransportChannelProvider"})
 	@ConditionalOnMissingBean(name = {"subscriberTransportChannelProvider", "publisherTransportChannelProvider"})
+	@ConditionalOnProperty(prefix = "spring.cloud.gcp.pubsub", name = "emulator-host")
 	public TransportChannelProvider transportChannelProvider(GcpPubSubProperties gcpPubSubProperties) {
 		this.channel = ManagedChannelBuilder
 				.forTarget("dns:///" + gcpPubSubProperties.getEmulatorHost())

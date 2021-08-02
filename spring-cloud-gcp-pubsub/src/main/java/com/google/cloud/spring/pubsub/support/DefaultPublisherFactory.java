@@ -17,8 +17,6 @@
 package com.google.cloud.spring.pubsub.support;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.api.gax.batching.BatchingSettings;
 import com.google.api.gax.core.CredentialsProvider;
@@ -35,7 +33,8 @@ import org.springframework.util.Assert;
 /**
  * The default {@link PublisherFactory} implementation.
  *
- * <p>Creates {@link Publisher}s for topics once, caches and reuses them.
+ * <p>Creates {@link Publisher}s for topics.
+ * Use {@link CachingPublisherFactory} to cache them.
  *
  * @author João André Martins
  * @author Chengyuan Zhao
@@ -43,11 +42,6 @@ import org.springframework.util.Assert;
 public class DefaultPublisherFactory implements PublisherFactory {
 
 	private final String projectId;
-
-	/**
-	 * {@link Publisher} cache, enforces only one {@link Publisher} per PubSub topic exists.
-	 */
-	private final ConcurrentHashMap<String, Publisher> publishers = new ConcurrentHashMap<>();
 
 	private ExecutorProvider executorProvider;
 
@@ -148,20 +142,18 @@ public class DefaultPublisherFactory implements PublisherFactory {
 
 	@Override
 	public Publisher createPublisher(String topic) {
-		return this.publishers.computeIfAbsent(topic, key -> {
-			try {
-				Publisher.Builder publisherBuilder =
-						Publisher.newBuilder(PubSubTopicUtils.toTopicName(topic, this.projectId));
+		try {
+			Publisher.Builder publisherBuilder =
+					Publisher.newBuilder(PubSubTopicUtils.toTopicName(topic, this.projectId));
 
-				applyPublisherSettings(publisherBuilder);
+			applyPublisherSettings(publisherBuilder);
 
-				return publisherBuilder.build();
-			}
-			catch (IOException ioe) {
-				throw new PubSubException("An error creating the Google Cloud Pub/Sub publisher " +
-						"occurred.", ioe);
-			}
-		});
+			return publisherBuilder.build();
+		}
+		catch (IOException ioe) {
+			throw new PubSubException("An error creating the Google Cloud Pub/Sub publisher " +
+					"occurred.", ioe);
+		}
 	}
 
 	void applyPublisherSettings(Publisher.Builder publisherBuilder) {
@@ -198,7 +190,4 @@ public class DefaultPublisherFactory implements PublisherFactory {
 		}
 	}
 
-	Map<String, Publisher> getCache() {
-		return this.publishers;
-	}
 }

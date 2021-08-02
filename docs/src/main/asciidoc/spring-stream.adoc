@@ -1,10 +1,11 @@
+[#spring-cloud-stream]
 == Spring Cloud Stream
 
 Spring Cloud GCP provides a https://cloud.spring.io/spring-cloud-stream/[Spring Cloud Stream] binder to Google Cloud Pub/Sub.
 
 The provided binder relies on the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-pubsub/src/main/java/com/google/cloud/spring/pubsub/integration[Spring Integration Channel Adapters for Google Cloud Pub/Sub].
 
-Maven coordinates, using <<getting-started.adoc#_bill_of_materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
 
 [source,xml]
 ----
@@ -105,6 +106,25 @@ These resources will be created:
 
 * A topic named `myEvents`
 * A subscription named `myEvents.consumerGroup1`
+
+
+==== Endpoint Customization
+
+You may customize channel routing by defining a `ConsumerEndpointCustomizer` in your autoconfiguration. This is useful if you want to customize the default configurations provided by the Pub/Sub Spring Cloud Stream Binder.
+
+The example below demonstrates how to use a `ConsumerEndpointCustomizer` to override the default error channel configured by the binder.
+
+[source,java]
+----
+@Bean
+public ConsumerEndpointCustomizer<PubSubInboundChannelAdapter> messageChannelAdapter() {
+    return (endpoint, destinationName, group) -> {
+        NamedComponent namedComponent = (NamedComponent) endpoint.getOutputChannel();
+        String channelName = namedComponent.getBeanName();
+        endpoint.setErrorChannelName(channelName + ".errors");
+    };
+}
+----
 
 === Binding with Functions
 

@@ -87,6 +87,7 @@ public class TransactionalTemplateService {
 	}
 
 	@Transactional
+	@SuppressWarnings("ReturnValueIgnored")
 	public ReferenceEntry findByIdLazyAndLoad(long id) {
 		ReferenceEntry entry = this.datastoreTemplate.findById(id, ReferenceEntry.class);
 		entry.children.size();

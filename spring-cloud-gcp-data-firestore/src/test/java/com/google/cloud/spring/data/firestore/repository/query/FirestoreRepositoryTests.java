@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.data.firestore.repository.query;
 
+import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.entities.User;
 import com.google.cloud.spring.data.firestore.entities.UserRepository;
@@ -39,6 +40,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -49,6 +51,7 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = FirestoreRepositoryTestsConfiguration.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class FirestoreRepositoryTests {
 
 	@Autowired
@@ -58,11 +61,27 @@ public class FirestoreRepositoryTests {
 	private FirestoreTemplate template;
 
 	@Test
-	public void testSortQuery() {
+	public void testSortQuery_sortParameter() {
 		userRepository.findByAgeGreaterThan(0, Sort.by("name")).blockLast();
 
 		ArgumentCaptor<StructuredQuery.Builder> captor =
 				ArgumentCaptor.forClass(StructuredQuery.Builder.class);
+		verify(this.template).execute(captor.capture(), eq(User.class));
+
+		StructuredQuery.Builder result = captor.getValue();
+		assertThat(result.getOrderByList()).containsExactly(
+				Order.newBuilder()
+						.setDirection(Direction.ASCENDING)
+						.setField(
+								FieldReference.newBuilder().setFieldPath(FieldPath.documentId().toString()))
+						.build());
+	}
+
+	@Test
+	public void testSortQuery_methodName_sortByAge() {
+		userRepository.findAllByOrderByAge().blockLast();
+
+		ArgumentCaptor<StructuredQuery.Builder> captor = ArgumentCaptor.forClass(StructuredQuery.Builder.class);
 		verify(template).execute(captor.capture(), eq(User.class));
 
 		StructuredQuery.Builder result = captor.getValue();
@@ -70,7 +89,24 @@ public class FirestoreRepositoryTests {
 				Order.newBuilder()
 						.setDirection(Direction.ASCENDING)
 						.setField(
-								FieldReference.newBuilder().setFieldPath("name"))
+								FieldReference.newBuilder().setFieldPath("age"))
+						.build());
+	}
+
+
+	@Test
+	public void testSortQuery_methodName_sortByDocumentId() {
+		userRepository.findByAgeOrderByNameDesc(0).blockLast();
+
+		ArgumentCaptor<StructuredQuery.Builder> captor = ArgumentCaptor.forClass(StructuredQuery.Builder.class);
+		verify(template).execute(captor.capture(), eq(User.class));
+
+		StructuredQuery.Builder result = captor.getValue();
+		assertThat(result.getOrderByList()).containsExactly(
+				Order.newBuilder()
+						.setDirection(Direction.DESCENDING)
+						.setField(
+								FieldReference.newBuilder().setFieldPath(FieldPath.documentId().toString()))
 						.build());
 	}
 

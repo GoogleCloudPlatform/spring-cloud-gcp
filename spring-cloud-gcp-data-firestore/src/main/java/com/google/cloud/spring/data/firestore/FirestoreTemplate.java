@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.cloud.Timestamp;
+import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.firestore.Internal;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
@@ -66,7 +67,10 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	private static final int FIRESTORE_WRITE_MAX_SIZE = 500;
 
-	private static final String NAME_FIELD = "__name__";
+	/**
+	 * Constant representing the special property to use when querying by a document ID.
+	 */
+	public static final String NAME_FIELD = FieldPath.documentId().toString();
 
 	private static final StructuredQuery.Projection ID_PROJECTION = StructuredQuery.Projection.newBuilder()
 			.addFields(StructuredQuery.FieldReference.newBuilder().setFieldPath(NAME_FIELD).build())
@@ -76,7 +80,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	private static final String NOT_FOUND_DOCUMENT_MESSAGE = "NOT_FOUND: Document";
 
-	private final FirestoreStub firestore;
+	private final FirestoreStub firestoreStub;
 
 	private final String parent;
 
@@ -90,15 +94,19 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
 	/**
 	 * Constructor for FirestoreTemplate.
-	 * @param firestore Firestore gRPC stub
+	 *
+	 * @param firestoreStub Firestore gRPC stub
 	 * @param parent the parent resource. For example:
 	 *     projects/{project_id}/databases/{database_id}/documents
 	 * @param classMapper a {@link FirestoreClassMapper} used for conversion
 	 * @param mappingContext Mapping Context
 	 */
-	public FirestoreTemplate(FirestoreStub firestore, String parent, FirestoreClassMapper classMapper,
+	public FirestoreTemplate(
+			FirestoreStub firestoreStub,
+			String parent,
+			FirestoreClassMapper classMapper,
 			FirestoreMappingContext mappingContext) {
-		this.firestore = firestore;
+		this.firestoreStub = firestoreStub;
 		this.parent = parent;
 		this.databasePath = Util.extractDatabasePath(parent);
 		this.classMapper = classMapper;
@@ -175,8 +183,9 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 			Optional<TransactionContext> transactionContext = ctx.getOrEmpty(TransactionContext.class);
 			if (transactionContext.isPresent()) {
 				ReactiveFirestoreResourceHolder holder = (ReactiveFirestoreResourceHolder) transactionContext.get()
-						.getResources().get(this.firestore);
-				//In a transaction, all write operations should be sent in the commit request, so we just collect them
+						.getResources().get(this.firestoreStub);
+				// In a transaction, all write operations should be sent in the commit request, so we just
+				// collect them
 				return Flux.from(instances).doOnNext(t -> {
 					holder.getWrites().add(createUpdateWrite(t));
 					holder.getEntities().add(t);
@@ -258,9 +267,14 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 		return withParent(buildResourceName(parent));
 	}
 
+	@Override
+	public String buildResourceName(FirestorePersistentEntity<?> persistentEntity, String resource) {
+		return this.parent + "/" + persistentEntity.collectionName() + "/" + resource;
+	}
+
 	private FirestoreReactiveOperations withParent(String resourceName) {
-		FirestoreTemplate firestoreTemplate =
-				new FirestoreTemplate(this.firestore, resourceName, this.classMapper, this.mappingContext);
+		FirestoreTemplate firestoreTemplate = new FirestoreTemplate(this.firestoreStub, resourceName, this.classMapper,
+				this.mappingContext);
 		firestoreTemplate.setWriteBufferSize(this.writeBufferSize);
 		firestoreTemplate.setWriteBufferTimeout(this.writeBufferTimeout);
 
@@ -276,7 +290,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 			Optional<TransactionContext> transactionContext = ctx.getOrEmpty(TransactionContext.class);
 			if (transactionContext.isPresent()) {
 				ReactiveFirestoreResourceHolder holder = (ReactiveFirestoreResourceHolder) transactionContext.get()
-						.getResources().get(this.firestore);
+						.getResources().get(this.firestoreStub);
 				List<Write> writes = holder.getWrites();
 				//In a transaction, all write operations should be sent in the commit request, so we just collect them
 				return Flux.from(documentNames).doOnNext(t -> writes.add(createDeleteWrite(t)));
@@ -295,7 +309,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 					batch.forEach(e -> builder.addWrites(converterToWrite.apply(e)));
 
 					return ObservableReactiveUtil
-							.<CommitResponse>unaryCall(obs -> this.firestore.commit(builder.build(), obs))
+							.<CommitResponse>unaryCall(obs -> this.firestoreStub.commit(builder.build(), obs))
 							.flatMapMany(
 									response -> {
 										if (setUpdateTime) {
@@ -335,7 +349,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 			doIfTransaction(ctx, resourceHolder -> requestBuilder.setTransaction(resourceHolder.getTransactionId()));
 
 			return ObservableReactiveUtil
-					.<RunQueryResponse>streamingCall(obs -> this.firestore.runQuery(requestBuilder.build(), obs))
+					.<RunQueryResponse>streamingCall(obs -> this.firestoreStub.runQuery(requestBuilder.build(), obs))
 					.filter(RunQueryResponse::hasDocument)
 					.map(RunQueryResponse::getDocument);
 		});
@@ -353,7 +367,8 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 				builder.setMask(documentMask);
 			}
 
-			return ObservableReactiveUtil.<Document>unaryCall(obs -> this.firestore.getDocument(builder.build(), obs))
+			return ObservableReactiveUtil
+					.<Document>unaryCall(obs -> this.firestoreStub.getDocument(builder.build(), obs))
 					.onErrorResume(throwable -> throwable.getMessage().startsWith(NOT_FOUND_DOCUMENT_MESSAGE),
 							throwable -> Mono.empty());
 		});
@@ -363,7 +378,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 		Optional<TransactionContext> transactionContext = ctx.getOrEmpty(TransactionContext.class);
 		transactionContext.ifPresent(transactionCtx -> {
 			ReactiveFirestoreResourceHolder holder = (ReactiveFirestoreResourceHolder) transactionCtx.getResources()
-					.get(this.firestore);
+					.get(this.firestoreStub);
 			if (!holder.getWrites().isEmpty()) {
 				throw new FirestoreDataException(
 						"Read operations are only allowed before write operations in a transaction");
@@ -425,10 +440,6 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 			persistentEntity.getPropertyAccessor(entity).setProperty(idProperty, idVal);
 		}
 		return buildResourceName(persistentEntity, idVal.toString());
-	}
-
-	private String buildResourceName(FirestorePersistentEntity<?> persistentEntity, String s) {
-		return this.parent + "/" + persistentEntity.collectionName() + "/" + s;
 	}
 
 	private Object getIdValue(Object entity) {

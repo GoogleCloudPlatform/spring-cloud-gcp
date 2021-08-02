@@ -6,7 +6,7 @@
 		<!-- Your own application should inherit from spring-boot-starter-parent -->
 		<artifactId>spring-cloud-gcp-kotlin-samples</artifactId>
 		<groupId>com.google.cloud</groupId>
-		<version>2.0.3-SNAPSHOT</version>
+		<version>2.0.4-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -14,7 +14,7 @@
 	<name>Spring Cloud GCP Code Sample - Kotlin App Sample</name>
 
 	<properties>
-		<kotlin.version>1.4.31</kotlin.version>
+		<kotlin.version>1.5.21</kotlin.version>
 	</properties>
 
 	<!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
@@ -88,7 +88,7 @@
 		<dependency>
 			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
-			<version>4.0.3</version>
+			<version>4.1.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
