@@ -52,6 +52,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private final String projectId;
 
+	private ExecutorProvider executorProvider;
+
 	private TransportChannelProvider channelProvider;
 
 	private CredentialsProvider credentialsProvider;
@@ -83,7 +85,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 		this.projectId = projectIdProvider.getProjectId();
 		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
-		this.pubSubEventSpecificProperties = new PubSubEventSpecificProperties();
 	}
 
 	/**
@@ -103,6 +104,15 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	@Override
 	public String getProjectId() {
 		return this.projectId;
+	}
+
+	/**
+	 * Set the provider for the subscribers' executor. Useful to specify the number of threads
+	 * to be used by each executor.
+	 * @param executorProvider the executor provider to set
+	 */
+	public void setExecutorProvider(ExecutorProvider executorProvider) {
+		this.executorProvider = executorProvider;
 	}
 
 	/**
@@ -294,7 +304,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 	}
 
-	public ExecutorProvider getExecutorProvider(PubSubEventSpecificProperties.Subscriber subscriber) {
+	/**
+	 * Creates {@link ExecutorProvider} given subscriber properties.
+	 * @param subscriber subscriber properties
+	 * @return executor provider
+	 */
+	private ExecutorProvider getExecutorProvider(PubSubEventSpecificProperties.Subscriber subscriber) {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
 		scheduler.setPoolSize(subscriber.getExecutorThreads());
 		scheduler.setThreadNamePrefix("gcp-pubsub-subscriber");

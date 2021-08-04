@@ -131,6 +131,7 @@ public class GcpPubSubAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(name = "pubsubSubscriberThreadPool")
+	@Deprecated
 	public ThreadPoolTaskScheduler pubsubSubscriberThreadPool() {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
 		scheduler.setPoolSize(this.gcpPubSubProperties.getSubscriber().getExecutorThreads());
@@ -141,6 +142,7 @@ public class GcpPubSubAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(name = "subscriberExecutorProvider")
+	@Deprecated
 	public ExecutorProvider subscriberExecutorProvider(
 			@Qualifier("pubsubSubscriberThreadPool") ThreadPoolTaskScheduler scheduler) {
 		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
@@ -212,7 +214,6 @@ public class GcpPubSubAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public SubscriberFactory defaultSubscriberFactory(
-			@Qualifier("subscriberExecutorProvider") ExecutorProvider executorProvider,
 			@Qualifier("subscriberSystemExecutorProvider")
 			ObjectProvider<ExecutorProvider> systemExecutorProvider,
 			@Qualifier("subscriberFlowControlSettings")

@@ -18,6 +18,7 @@ package com.google.cloud.spring.pubsub.support;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.pubsub.v1.Subscriber;
+import com.google.cloud.spring.pubsub.core.PubSubEventSpecificProperties;
 import com.google.pubsub.v1.PullRequest;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,6 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests for the subscriber factory.
@@ -40,6 +42,9 @@ public class DefaultSubscriberFactoryTests {
 	@Mock
 	private CredentialsProvider credentialsProvider;
 
+	@Mock
+	private PubSubEventSpecificProperties pubSubEventSpecificProperties;
+
 	/**
 	 * used to check exception messages and types.
 	 */
@@ -48,7 +53,9 @@ public class DefaultSubscriberFactoryTests {
 
 	@Test
 	public void testNewSubscriber() {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust");
+		when(pubSubEventSpecificProperties.getSubscriber("midnight cowboy"))
+				.thenReturn(new PubSubEventSpecificProperties.Subscriber());
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubEventSpecificProperties);
 		factory.setCredentialsProvider(this.credentialsProvider);
 
 		Subscriber subscriber = factory.createSubscriber("midnight cowboy", (message, consumer) -> { });
