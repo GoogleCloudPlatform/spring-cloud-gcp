@@ -23,6 +23,7 @@ import com.google.auth.Credentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -37,14 +38,9 @@ import static org.mockito.Mockito.mock;
  *
  * @author Gary Wong
  */
-public class GcpFirestoreEmulatorAutoConfigurationTests {
+class GcpFirestoreEmulatorAutoConfigurationTests {
 
-	ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withPropertyValues(
-					"spring.cloud.gcp.firestore.projectId=test-project",
-					"spring.cloud.gcp.firestore.emulator.enabled=true",
-					"spring.cloud.gcp.firestore.host-port=localhost:8080"
-			)
+	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(
 					GcpContextAutoConfiguration.class,
 					GcpFirestoreEmulatorAutoConfiguration.class,
@@ -52,8 +48,12 @@ public class GcpFirestoreEmulatorAutoConfigurationTests {
 			.withUserConfiguration(GcpFirestoreEmulatorAutoConfigurationTests.TestConfiguration.class);
 
 	@Test
-	public void testEmulatorConfig() {
-		this.contextRunner.run(context -> {
+	void testEmulatorEnabledConfig() {
+		this.contextRunner.withPropertyValues(
+				"spring.cloud.gcp.firestore.projectId=test-project",
+				"spring.cloud.gcp.firestore.emulator.enabled=true",
+				"spring.cloud.gcp.firestore.host-port=localhost:8080"
+		).run(context -> {
 			CredentialsProvider defaultCredentialsProvider = context.getBean(CredentialsProvider.class);
 			assertThat(defaultCredentialsProvider).isNotInstanceOf(NoCredentialsProvider.class);
 
@@ -62,6 +62,25 @@ public class GcpFirestoreEmulatorAutoConfigurationTests {
 
 			InstantiatingGrpcChannelProvider channelProvider = (InstantiatingGrpcChannelProvider) datastoreOptions.getTransportChannelProvider();
 			assertThat(channelProvider.getEndpoint()).isEqualTo("localhost:8080");
+		});
+	}
+
+	@Test
+	void testDefaultConfig() {
+		this.contextRunner.withPropertyValues(
+				"spring.cloud.gcp.firestore.projectId=test-project"
+		).run(context -> {
+			GcpFirestoreProperties gcpFirestoreProperties = context.getBean(GcpFirestoreProperties.class);
+			assertThat(gcpFirestoreProperties.getEmulator().isEnabled()).isFalse();
+
+			CredentialsProvider defaultCredentialsProvider = context.getBean(CredentialsProvider.class);
+			assertThat(defaultCredentialsProvider).isNotInstanceOf(DefaultCredentialsProvider.class);
+
+			FirestoreOptions datastoreOptions = context.getBean(Firestore.class).getOptions();
+			assertThat(datastoreOptions.getProjectId()).isEqualTo("test-project");
+
+			InstantiatingGrpcChannelProvider channelProvider = (InstantiatingGrpcChannelProvider) datastoreOptions.getTransportChannelProvider();
+			assertThat(channelProvider.getEndpoint()).isEqualTo("firestore.googleapis.com:443");
 		});
 	}
 
