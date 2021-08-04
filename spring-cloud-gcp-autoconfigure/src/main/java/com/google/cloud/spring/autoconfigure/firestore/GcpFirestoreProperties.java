@@ -78,6 +78,11 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
 	}
 
 	public static class FirestoreEmulatorProperties {
+
+		/**
+		 * Enables autoconfiguration to use the Firestore emulator.
+		 * If this is set to true, then you should set the spring.cloud.gcp.firestore.host-port to the host:port of your locally running emulator instance
+		 */
 		private boolean enabled = false;
 
 		public boolean isEnabled() {
