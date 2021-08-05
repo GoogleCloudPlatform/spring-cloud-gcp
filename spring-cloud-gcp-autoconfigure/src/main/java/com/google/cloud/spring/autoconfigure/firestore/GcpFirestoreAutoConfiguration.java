@@ -116,6 +116,10 @@ public class GcpFirestoreAutoConfiguration {
 		return firestoreOptions.getService();
 	}
 
+	CredentialsProvider getCredentialsProvider() {
+		return credentialsProvider;
+	}
+
 	/**
 	 * The Firestore reactive template and data repositories support auto-configuration.
 	 */
@@ -167,4 +171,5 @@ public class GcpFirestoreAutoConfiguration {
 					.build();
 		}
 	}
+
 }

@@ -57,6 +57,9 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
 			CredentialsProvider defaultCredentialsProvider = context.getBean(CredentialsProvider.class);
 			assertThat(defaultCredentialsProvider).isNotInstanceOf(NoCredentialsProvider.class);
 
+			GcpFirestoreAutoConfiguration firestoreAutoConfiguration = context.getBean(GcpFirestoreAutoConfiguration.class);
+			assertThat(firestoreAutoConfiguration.getCredentialsProvider()).isInstanceOf(NoCredentialsProvider.class);
+
 			FirestoreOptions datastoreOptions = context.getBean(Firestore.class).getOptions();
 			assertThat(datastoreOptions.getProjectId()).isEqualTo("test-project");
 
