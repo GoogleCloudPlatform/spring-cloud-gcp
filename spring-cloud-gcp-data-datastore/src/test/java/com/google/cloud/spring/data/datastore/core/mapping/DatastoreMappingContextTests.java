@@ -16,12 +16,14 @@
 
 package com.google.cloud.spring.data.datastore.core.mapping;
 
+import com.google.cloud.Timestamp;
 import org.junit.Test;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.data.util.TypeInformation;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -67,6 +69,14 @@ public class DatastoreMappingContextTests {
 		assertThatThrownBy(() -> context.getDatastorePersistentEntity(Integer.class))
 				.isInstanceOf(DatastoreDataException.class)
 				.hasMessage("Unable to find a DatastorePersistentEntity for: class java.lang.Integer");
+	}
+
+	@Test
+	public void testGetInvalidEntityTimeStamp() {
+		DatastorePersistentEntityImpl mockEntity = mock(
+				DatastorePersistentEntityImpl.class);
+		DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
+		assertThat(context.hasPersistentEntityFor(Timestamp.class)).isFalse();
 	}
 
 	private DatastoreMappingContext createDatastoreMappingContextWith(
