@@ -1067,8 +1067,10 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 		Timestamp endDate = Timestamp.parseTimestamp("2020-08-06T00:00:00Z");
 
 		List<TestEntity> results = this.testEntityRepository.getAllBetweenDates(startDate, endDate);
-		assertThat(results).isNotEmpty();
 		assertThat(results).containsExactly(this.allTestEntities.get(0), this.allTestEntities.get(2));
+
+		List<TestEntity> results2 = this.testEntityRepository.findByDatetimeGreaterThan(endDate);
+		assertThat(results2).containsExactly(this.allTestEntities.get(1));
 	}
 }
 

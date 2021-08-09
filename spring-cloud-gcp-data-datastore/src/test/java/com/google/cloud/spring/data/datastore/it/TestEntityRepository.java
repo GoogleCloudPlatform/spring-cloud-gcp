@@ -141,8 +141,10 @@ public interface TestEntityRepository extends DatastoreRepository<TestEntity, Lo
 	@Query("select * from  test_entities_ci where color = @color")
 	Stream<TestEntity> findGqlStreamByColor(@Param("color") String color);
 
-	@Query("select * from  test_entities_ci where datetime >= @startDate AND datetime <= @endDate")
-	List<TestEntity> getAllBetweenDates(@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
+	@Query("select * from  test_entities_ci where datetime >= @startTime AND datetime <= @endTime")
+	List<TestEntity> getAllBetweenDates(@Param("startTime") Timestamp startTime, @Param("endTime") Timestamp endTime);
+
+	List<TestEntity> findByDatetimeGreaterThan(Timestamp oldestTime);
 
 	@Nullable
 	TestEntity getByColor(String color);
