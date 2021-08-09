@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.it.TestEntity.Shape;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
@@ -139,6 +140,9 @@ public interface TestEntityRepository extends DatastoreRepository<TestEntity, Lo
 
 	@Query("select * from  test_entities_ci where color = @color")
 	Stream<TestEntity> findGqlStreamByColor(@Param("color") String color);
+
+	@Query("select * from  test_entities_ci where datetime >= @startDate AND datetime <= @endDate")
+	List<TestEntity> getAllBetweenDates(@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 
 	@Nullable
 	TestEntity getByColor(String color);
