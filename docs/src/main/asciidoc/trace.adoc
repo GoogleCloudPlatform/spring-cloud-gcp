@@ -79,6 +79,7 @@ All configurations are optional:
 | `spring.cloud.gcp.trace.max-outbound-size` | Maximum size for outbound messages | No |
 | `spring.cloud.gcp.trace.wait-for-ready` | https://github.com/grpc/grpc/blob/main/doc/wait-for-ready.md[Waits for the channel to be ready] in case of a transient failure | No | `false`
 | `spring.cloud.gcp.trace.messageTimeout` | Timeout in seconds before pending spans will be sent in batches to GCP Cloud Trace. (previously `spring.zipkin.messageTimeout`) | No | 1
+| `spring.cloud.gcp.trace.pubsub.enabled` | (Experimental) Auto-configure Pub/Sub instrumentation for Trace. | No | `false`
 |===
 
 You can use core Spring Cloud Sleuth properties to control Sleuth’s sampling rate, etc.
@@ -151,6 +152,20 @@ You can then search and filter traces based on these additional tags in the Clou
 Integration with Cloud Logging is available through the link:logging.adoc[Cloud Logging Support].
 If the Trace integration is used together with the Logging one, the request logs will be associated to the corresponding traces.
 The trace logs can be viewed by going to the https://console.cloud.google.com/traces/traces[Google Cloud Console Trace List], selecting a trace and pressing the `Logs -> View` link in the `Details` section.
+
+=== Pub/Sub Trace Instrumentation (Experimental)
+
+You can enable trace instrumentation and propagation for Pub/Sub messages by using the `spring.cloud.gcp.trace.pubsub.enabled` property.
+It's set to `false` by default, but when set to `true`, trace spans will be created and propagated to Cloud Trace whenever the application sends or receives messages through `PubSubTemplate` or any other integration that builds on top of `PubSubTemplate`, such as the Spring Integration channel adapters, and the Spring Cloud Stream Binder.
+
+[source]
+----
+# Enable Pub/Sub tracing using this property
+spring.cloud.gcp.trace.pubsub.enabled=true
+
+# You can disable Spring Integration instrumentation by Sleuth as it's unnecessary
+spring.sleuth.integration.enabled=false
+----
 
 === Sample
 
