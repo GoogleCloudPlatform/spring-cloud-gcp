@@ -72,7 +72,7 @@ public class DatastoreMappingContextTests {
 	}
 
 	@Test
-	public void testGetInvalidEntityTimeStamp() {
+	public void testGetInvalidEntityTimestamp() {
 		DatastorePersistentEntityImpl mockEntity = mock(
 				DatastorePersistentEntityImpl.class);
 		DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
