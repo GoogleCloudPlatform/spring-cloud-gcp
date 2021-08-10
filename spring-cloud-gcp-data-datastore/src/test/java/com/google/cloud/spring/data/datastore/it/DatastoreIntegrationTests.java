@@ -1055,22 +1055,26 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 	}
 
 	@Test
-	public void queryTimeStampGqlTest() {
+	public void queryByTimestampTest() {
 		Timestamp date1 = Timestamp.parseTimestamp("2020-08-04T00:00:00Z");
 		Timestamp date2 = Timestamp.parseTimestamp("2021-08-04T00:00:00Z");
-		this.allTestEntities.get(0).setDatetime(date1);
-		this.allTestEntities.get(1).setDatetime(date2);
-		this.allTestEntities.get(2).setDatetime(date1);
+		TestEntity testEntity1 = new TestEntity(1L, "red", 1L, date1);
+		TestEntity testEntity2 = new TestEntity(2L, "blue", 2L, date2);
+		TestEntity testEntity3 = new TestEntity(3L, "red", 1L, date1);
+		TestEntity testEntity4 = new TestEntity(4L, "red", 1L, null);
 
-		this.testEntityRepository.saveAll(this.allTestEntities);
+		this.testEntityRepository.saveAll(Arrays.asList(testEntity1,
+				testEntity2,
+				testEntity3,
+				testEntity4));
 		Timestamp startDate = Timestamp.parseTimestamp("2020-07-04T00:00:00Z");
 		Timestamp endDate = Timestamp.parseTimestamp("2020-08-06T00:00:00Z");
 
 		List<TestEntity> results = this.testEntityRepository.getAllBetweenDates(startDate, endDate);
-		assertThat(results).containsExactly(this.allTestEntities.get(0), this.allTestEntities.get(2));
+		assertThat(results).containsExactly(testEntity1, testEntity3);
 
 		List<TestEntity> results2 = this.testEntityRepository.findByDatetimeGreaterThan(endDate);
-		assertThat(results2).containsExactly(this.allTestEntities.get(1));
+		assertThat(results2).containsExactly(testEntity2);
 	}
 }
 

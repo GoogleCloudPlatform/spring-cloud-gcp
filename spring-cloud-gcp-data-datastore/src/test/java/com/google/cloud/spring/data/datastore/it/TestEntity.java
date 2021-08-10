@@ -67,6 +67,13 @@ public class TestEntity {
 		this.embeddedEntity = embeddedEntity;
 	}
 
+	public TestEntity(Long id, String color, Long size, Timestamp datetime) {
+		this.id = id;
+		this.color = color;
+		this.size = size;
+		this.datetime = datetime;
+	}
+
 	public Shape getShape() {
 		return this.shape;
 	}
