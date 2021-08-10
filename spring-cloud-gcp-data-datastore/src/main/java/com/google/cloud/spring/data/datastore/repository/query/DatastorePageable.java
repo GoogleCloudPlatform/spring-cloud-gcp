@@ -24,7 +24,7 @@ import org.springframework.data.domain.Pageable;
 /**
  * A pageable implementation for Cloud Datastore that uses the cursor for efficient reads.
  *
- * The static methods can take either paged or unpaged {@code Pageable}, while instance methods only deal with a paged
+ * The static methods can take either paged or unpaged {@link Pageable}, while instance methods only deal with a paged
  * self object.
  *
  * @author Dmitry Solomakha
@@ -46,24 +46,24 @@ public class DatastorePageable extends PageRequest {
 	}
 
 	/**
-	 * Creates a {@code DatastorePageable} wrapper for a paged request, but passes unpaged requests back unchanged.
+	 * Creates a {@link DatastorePageable} wrapper for a paged request, but passes unpaged requests back unchanged.
 	 *
-	 * @param pageable The source {@code Pageable} that can be paged or unpaged
+	 * @param pageable The source {@link Pageable} that can be paged or unpaged
 	 * @param cursor Current cursor; null if not applicable
 	 * @param totalCount Total result count
-	 * @return an instance of {@code DatastorePageable} or the original unpaged {@code Pageable}.
+	 * @return an instance of {@link DatastorePageable} or the original unpaged {@link Pageable}.
 	 */
 	public static Pageable from(Pageable pageable, Cursor cursor, Long totalCount) {
 		return from(pageable, cursor == null ? null : cursor.toUrlSafe(), totalCount);
 	}
 
 	/**
-	 * Creates a {@code DatastorePageable} wrapper for a paged request, but passes unpaged requests back unchanged.
+	 * Creates a {@link DatastorePageable} wrapper for a paged request, but passes unpaged requests back unchanged.
 	 *
-	 * @param pageable The source {@code Pageable} that can be paged or unpaged
+	 * @param pageable The source {@link Pageable} that can be paged or unpaged
 	 * @param urlSafeCursor Current cursor as ; null if not applicable
 	 * @param totalCount Current cursor; null if not applicable
-	 * @return an instance of {@code DatastorePageable} or the original unpaged {@code Pageable}.
+	 * @return an instance of {@link DatastorePageable} or the original unpaged {@link Pageable}.
 	 */
 	public static Pageable from(Pageable pageable, String urlSafeCursor, Long totalCount) {
 		if (pageable.isUnpaged()) {
