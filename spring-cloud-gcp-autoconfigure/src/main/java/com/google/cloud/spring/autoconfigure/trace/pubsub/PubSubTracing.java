@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.trace.pubsub.brave;
+package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -39,7 +39,7 @@ import com.google.pubsub.v1.PullResponse;
 import com.google.pubsub.v1.ReceivedMessage;
 
 /** Use this class to decorate your Pub/Sub publisher / subscriber and enable Tracing. */
-public final class PubSubTracing {
+final class PubSubTracing {
 	/** Used for local message processors in {@link PubSubTracing#nextSpan(PubsubMessage.Builder)}. */
 	static final Getter<PubsubMessage.Builder, String> GETTER = new Getter<PubsubMessage.Builder, String>() {
 		@Override
@@ -236,10 +236,7 @@ public final class PubSubTracing {
 				if (!span.isNoop()) {
 					setConsumerSpan(span, subscriptionName);
 
-					// incur timestamp overhead only once
-					if (timestamp == 0L) {
-						timestamp = tracing.clock(span.context()).currentTimeMicroseconds();
-					}
+					timestamp = tracing.clock(span.context()).currentTimeMicroseconds();
 					span.start(timestamp);
 				}
 				batchSpan[0] = span;
@@ -251,10 +248,7 @@ public final class PubSubTracing {
 			if (!span.isNoop()) {
 				setConsumerSpan(span, subscriptionName);
 
-				// incur timestamp overhead only once
-				if (timestamp == 0L) {
-					timestamp = tracing.clock(span.context()).currentTimeMicroseconds();
-				}
+				timestamp = tracing.clock(span.context()).currentTimeMicroseconds();
 				span.start(timestamp);
 				span.finish(timestamp); // span won't be shared by other messages
 			}

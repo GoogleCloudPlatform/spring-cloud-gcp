@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.trace.pubsub.brave;
+package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import com.google.pubsub.v1.PubsubMessage;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PubSubConsumerTest {
+public class PubSubProducerTest {
 	PubsubMessage.Builder message = PubsubMessage.newBuilder();
 
-	PubSubConsumerRequest request = new PubSubConsumerRequest(message, "mySubscription");
+	PubSubProducerRequest request = new PubSubProducerRequest(message, "myTopic");
 
 	@Test
 	public void operation() {
-		assertThat(request.operation()).isEqualTo("receive");
+		assertThat(request.operation()).isEqualTo("send");
 	}
 
 	@Test
-	public void subscription() {
-		assertThat(request.channelKind()).isEqualTo("subscription");
-		assertThat(request.channelName()).isEqualTo("mySubscription");
+	public void topic() {
+		assertThat(request.channelKind()).isEqualTo("topic");
+		assertThat(request.channelName()).isEqualTo("myTopic");
 	}
 }

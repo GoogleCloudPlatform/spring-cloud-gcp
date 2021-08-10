@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.trace.pubsub.brave;
+package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -23,23 +23,23 @@ import brave.propagation.Propagation;
 import brave.test.propagation.PropagationSetterTest;
 import com.google.pubsub.v1.PubsubMessage;
 
-public class PubSubProducerRequestSetterTest extends PropagationSetterTest<PubSubProducerRequest> {
-	PubSubProducerRequest request = new PubSubProducerRequest(
-			PubsubMessage.newBuilder(), "myTopic"
+public class PubSubConsumerRequestSetterTest extends PropagationSetterTest<PubSubConsumerRequest> {
+	PubSubConsumerRequest request = new PubSubConsumerRequest(
+			PubsubMessage.newBuilder(), "mySubscription"
 	);
 
 	@Override
-	protected PubSubProducerRequest request() {
+	protected PubSubConsumerRequest request() {
 		return request;
 	}
 
 	@Override
-	protected Propagation.Setter<PubSubProducerRequest, String> setter() {
-		return PubSubProducerRequest.SETTER;
+	protected Propagation.Setter<PubSubConsumerRequest, String> setter() {
+		return PubSubConsumerRequest.SETTER;
 	}
 
 	@Override
-	protected Iterable<String> read(PubSubProducerRequest request, String key) {
+	protected Iterable<String> read(PubSubConsumerRequest request, String key) {
 		return StreamSupport.stream(request.delegate.getAttributesMap().entrySet().spliterator(), false)
 				.filter(entry -> entry.getKey().equals(key))
 				.map(entry -> entry.getValue())

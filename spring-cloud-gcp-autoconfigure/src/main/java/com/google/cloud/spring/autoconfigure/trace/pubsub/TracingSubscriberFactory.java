@@ -19,7 +19,6 @@ package com.google.cloud.spring.autoconfigure.trace.pubsub;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
-import com.google.cloud.spring.autoconfigure.trace.pubsub.brave.PubSubTracing;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.pubsub.v1.PullRequest;
 

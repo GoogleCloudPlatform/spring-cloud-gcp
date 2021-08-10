@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import com.google.cloud.pubsub.v1.PublisherInterface;
-import com.google.cloud.spring.autoconfigure.trace.pubsub.brave.PubSubTracing;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
 
 final class TracingPublisherFactory implements PublisherFactory {

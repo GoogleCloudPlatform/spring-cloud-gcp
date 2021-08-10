@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.trace.pubsub.brave;
+package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.trace.pubsub.brave;
+package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class TracingSubscriberStubTest extends PubSubTest {
+public class TracingSubscriberStubTest extends PubSubTestBase {
 	SubscriberStub mockSubscriberStub = mock(SubscriberStub.class);
 
 	TracingSubscriberStub tracingSubscriberStub =

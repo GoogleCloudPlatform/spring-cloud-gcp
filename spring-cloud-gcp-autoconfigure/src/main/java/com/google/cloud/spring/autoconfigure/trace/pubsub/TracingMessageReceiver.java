@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.trace.pubsub.brave;
+package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import brave.Span;
 import brave.Tracer;
@@ -67,12 +67,12 @@ final class TracingMessageReceiver implements MessageReceiver {
 		}
 
 		Tracer.SpanInScope ws = pubSubTracing.tracer.withSpanInScope(listenerSpan);
-		Throwable error = null;
+		Exception error = null;
 		try {
 			// pass instrumented message the actual receiver
 			delegate.receiveMessage(messageBuilder.build(), ackReplyConsumer);
 		}
-		catch (Throwable t) {
+		catch (Exception t) {
 			error = t;
 			throw t;
 		}

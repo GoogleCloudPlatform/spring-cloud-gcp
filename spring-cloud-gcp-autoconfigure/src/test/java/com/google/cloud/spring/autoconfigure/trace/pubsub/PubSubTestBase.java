@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.trace.pubsub.brave;
+package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import brave.Tracing;
 import brave.baggage.BaggageField;
@@ -31,7 +31,7 @@ import org.junit.After;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PubSubTest {
+public class PubSubTestBase {
 	static final String TEST_TOPIC = "myTopic";
 
 	static final String TEST_SUBSCRIPTION = "mySubscription";

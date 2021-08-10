@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.trace.pubsub.brave;
+package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import brave.Span;
 import brave.propagation.B3SingleFormat;
@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PubSubTracingTest extends PubSubTest {
+public class PubSubTracingTest extends PubSubTestBase {
 	@Test
 	public void nextSpan_prefers_b3_header() {
 		consumerMessage.putAttributes("b3", B3SingleFormat.writeB3SingleFormat(incoming));

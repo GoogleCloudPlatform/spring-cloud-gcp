@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.trace.pubsub.brave;
+package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import brave.Span.Kind;
 import brave.internal.Nullable;
-import brave.messaging.ConsumerRequest;
+import brave.messaging.ProducerRequest;
 import brave.propagation.Propagation.RemoteGetter;
 import brave.propagation.Propagation.RemoteSetter;
 import com.google.pubsub.v1.PubsubMessage;
 
 /**
  * Adds support for injecting and extracting context headers in {@link PubsubMessage.Builder},
- * for the consumer side (receiving).
+ * for the producer side (publishing).
  */
-final class PubSubConsumerRequest extends ConsumerRequest {
-	static final RemoteGetter<PubSubConsumerRequest> GETTER =
-			new RemoteGetter<PubSubConsumerRequest>() {
+final class PubSubProducerRequest extends ProducerRequest {
+
+	static final RemoteGetter<PubSubProducerRequest> GETTER =
+			new RemoteGetter<PubSubProducerRequest>() {
 				@Override
 				public Kind spanKind() {
-					return Kind.CONSUMER;
+					return Kind.PRODUCER;
 				}
 
 				@Override
-				public String get(PubSubConsumerRequest request, String name) {
+				public String get(PubSubProducerRequest request, String name) {
 					return request.delegate.getAttributesOrDefault(name, null);
 				}
 
@@ -46,15 +47,15 @@ final class PubSubConsumerRequest extends ConsumerRequest {
 				}
 			};
 
-	static final RemoteSetter<PubSubConsumerRequest> SETTER =
-			new RemoteSetter<PubSubConsumerRequest>() {
+	static final RemoteSetter<PubSubProducerRequest> SETTER =
+			new RemoteSetter<PubSubProducerRequest>() {
 				@Override
 				public Kind spanKind() {
-					return Kind.CONSUMER;
+					return Kind.PRODUCER;
 				}
 
 				@Override
-				public void put(PubSubConsumerRequest request, String name, String value) {
+				public void put(PubSubProducerRequest request, String name, String value) {
 					request.delegate.putAttributes(name, value);
 				}
 
@@ -66,42 +67,38 @@ final class PubSubConsumerRequest extends ConsumerRequest {
 
 	final PubsubMessage.Builder delegate;
 
-	final String subscription;
+	final String topic;
 
-	PubSubConsumerRequest(PubsubMessage.Builder delegate, @Nullable String subscription) {
+	PubSubProducerRequest(PubsubMessage.Builder delegate, @Nullable String topic) {
 		if (delegate == null) {
-			throw new NullPointerException("PubsubMessage.Builder delegate == null");
+			throw new NullPointerException("delegate == null");
 		}
 		this.delegate = delegate;
-		this.subscription = subscription;
+		this.topic = topic;
+	}
+
+	@Override
+	public String operation() {
+		return "send";
+	}
+
+	@Override
+	public String channelKind() {
+		return "topic";
+	}
+
+	@Override
+	public String channelName() {
+		return topic;
 	}
 
 	@Override
 	public Kind spanKind() {
-		return Kind.CONSUMER;
+		return Kind.PRODUCER;
 	}
 
 	@Override
 	public Object unwrap() {
 		return delegate;
-	}
-
-	@Override
-	public String operation() {
-		return "receive";
-	}
-
-	@Override
-	public String channelKind() {
-		return "subscription";
-	}
-
-	@Override
-	public String channelName() {
-		return subscription;
-	}
-
-	public String messageId() {
-		return delegate.getMessageId();
 	}
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.trace.pubsub.brave;
+package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import brave.handler.MutableSpan;
 import brave.propagation.CurrentTraceContext.Scope;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class TracingPublisherTest extends PubSubTest {
+public class TracingPublisherTest extends PubSubTestBase {
 
 	PublisherInterface mockPublisher = mock(PublisherInterface.class);
 

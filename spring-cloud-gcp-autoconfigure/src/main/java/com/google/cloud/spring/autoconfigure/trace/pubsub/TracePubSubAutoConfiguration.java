@@ -18,7 +18,6 @@ package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import brave.Tracing;
 import brave.messaging.MessagingTracing;
-import com.google.cloud.spring.autoconfigure.trace.pubsub.brave.PubSubTracing;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
 
 import org.springframework.beans.factory.BeanFactory;
@@ -39,7 +38,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(value = "spring.cloud.gcp.trace.pubsub.enabled", matchIfMissing = false)
 @ConditionalOnClass({ PublisherFactory.class, MessagingTracing.class })
 @AutoConfigureAfter({ BraveAutoConfiguration.class, BraveMessagingAutoConfiguration.class })
-public class TracePubSubAutoConfiguration {
+class TracePubSubAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
