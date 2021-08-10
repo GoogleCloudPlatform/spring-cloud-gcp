@@ -107,7 +107,6 @@ public class PubSubSubscriberTemplate
 		Assert.notNull(subscriberFactory, "The subscriberFactory can't be null.");
 
 		this.subscriberFactory = subscriberFactory;
-//		this.subscriberStub = this.subscriberFactory.createSubscriberStub();
 	}
 
 	/**
