@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import brave.handler.MutableSpan;
 import com.google.api.core.AbstractApiFuture;
@@ -34,6 +35,8 @@ import static brave.Span.Kind.CONSUMER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class TracingSubscriberStubTest extends PubSubTestBase {
@@ -137,5 +140,162 @@ public class TracingSubscriberStubTest extends PubSubTestBase {
 			return tracingSubscriberStub.pullCallable()
 					.call(PullRequest.newBuilder().setSubscription(TEST_SUBSCRIPTION).build())
 					.getReceivedMessagesList();
+	}
+
+
+	@Test
+	public void	test_createSubscriptionCallable() {
+		tracingSubscriberStub.createSubscriptionCallable();
+		verify(mockSubscriberStub, times(1)).createSubscriptionCallable();
+	}
+
+	@Test
+	public void test_getSubscriptionCallable() {
+		tracingSubscriberStub.getSubscriptionCallable();
+		verify(mockSubscriberStub, times(1)).getSubscriptionCallable();
+	}
+
+	@Test
+	public void test_updateSubscriptionCallable() {
+		tracingSubscriberStub.updateSubscriptionCallable();
+		verify(mockSubscriberStub, times(1)).updateSubscriptionCallable();
+	}
+
+	@Test
+	public void test_listSubscriptionsPagedCallable() {
+		tracingSubscriberStub.listSubscriptionsPagedCallable();
+		verify(mockSubscriberStub, times(1)).listSubscriptionsPagedCallable();
+	}
+
+	@Test
+	public void test_listSubscriptionsCallable() {
+		tracingSubscriberStub.listSubscriptionsCallable();
+		verify(mockSubscriberStub, times(1)).listSubscriptionsCallable();
+	}
+
+	@Test
+	public void test_deleteSubscriptionCallable() {
+		tracingSubscriberStub.deleteSubscriptionCallable();
+		verify(mockSubscriberStub, times(1)).deleteSubscriptionCallable();
+	}
+
+	@Test
+	public void test_getSnapshotCallable() {
+		tracingSubscriberStub.getSnapshotCallable();
+		verify(mockSubscriberStub, times(1)).getSnapshotCallable();
+	}
+
+	@Test
+	public void test_modifyAckDeadlineCallable() {
+		tracingSubscriberStub.modifyAckDeadlineCallable();
+		verify(mockSubscriberStub, times(1)).modifyAckDeadlineCallable();
+	}
+
+	@Test
+	public void test_acknowledgeCallable() {
+		tracingSubscriberStub.acknowledgeCallable();
+		verify(mockSubscriberStub, times(1)).acknowledgeCallable();
+	}
+
+	@Test
+	public void test_streamingPullCallable() {
+		tracingSubscriberStub.streamingPullCallable();
+		verify(mockSubscriberStub, times(1)).streamingPullCallable();
+	}
+
+	@Test
+	public void test_modifyPushConfigCallable() {
+		tracingSubscriberStub.modifyPushConfigCallable();
+		verify(mockSubscriberStub, times(1)).modifyPushConfigCallable();
+	}
+
+	@Test
+	public void test_listSnapshotsPagedCallable() {
+		tracingSubscriberStub.listSnapshotsPagedCallable();
+		verify(mockSubscriberStub, times(1)).listSnapshotsPagedCallable();
+	}
+
+	@Test
+	public void test_listSnapshotsCallable() {
+		tracingSubscriberStub.listSnapshotsCallable();
+		verify(mockSubscriberStub, times(1)).listSnapshotsCallable();
+	}
+
+	@Test
+	public void test_createSnapshotCallable() {
+		tracingSubscriberStub.createSnapshotCallable();
+		verify(mockSubscriberStub, times(1)).createSnapshotCallable();
+	}
+
+	@Test
+	public void test_updateSnapshotCallable() {
+		tracingSubscriberStub.updateSnapshotCallable();
+		verify(mockSubscriberStub, times(1)).updateSnapshotCallable();
+	}
+
+	@Test
+	public void test_deleteSnapshotCallable() {
+		tracingSubscriberStub.deleteSnapshotCallable();
+		verify(mockSubscriberStub, times(1)).deleteSnapshotCallable();
+	}
+
+	@Test
+	public void test_seekCallable() {
+		tracingSubscriberStub.seekCallable();
+		verify(mockSubscriberStub, times(1)).seekCallable();
+	}
+
+	@Test
+	public void test_setIamPolicyCallable() {
+		tracingSubscriberStub.setIamPolicyCallable();
+		verify(mockSubscriberStub, times(1)).setIamPolicyCallable();
+	}
+
+	@Test
+	public void test_getIamPolicyCallable() {
+		tracingSubscriberStub.getIamPolicyCallable();
+		verify(mockSubscriberStub, times(1)).getIamPolicyCallable();
+	}
+
+	@Test
+	public void test_testIamPermissionsCallable() {
+		tracingSubscriberStub.testIamPermissionsCallable();
+		verify(mockSubscriberStub, times(1)).testIamPermissionsCallable();
+	}
+
+	@Test
+	public void test_close() {
+		tracingSubscriberStub.close();
+		verify(mockSubscriberStub, times(1)).close();
+	}
+
+	@Test
+	public void test_shutdown() {
+		tracingSubscriberStub.shutdown();
+		verify(mockSubscriberStub, times(1)).shutdown();
+	}
+
+	@Test
+	public void test_isShutdown() {
+		tracingSubscriberStub.isShutdown();
+		verify(mockSubscriberStub, times(1)).isShutdown();
+	}
+
+	@Test
+	public void test_isTerminated() {
+		tracingSubscriberStub.isTerminated();
+		verify(mockSubscriberStub, times(1)).isTerminated();
+	}
+
+	@Test
+	public void test_shutdownNow() {
+		tracingSubscriberStub.shutdownNow();
+		verify(mockSubscriberStub, times(1)).shutdownNow();
+	}
+
+	@Test
+	public void test_awaitTermination() throws InterruptedException {
+		tracingSubscriberStub.awaitTermination(1L, TimeUnit.MINUTES);
+		verify(mockSubscriberStub, times(1)).awaitTermination(1L, TimeUnit.MINUTES);
 	}
 }
