@@ -24,6 +24,9 @@ import org.springframework.data.domain.Pageable;
 /**
  * A pageable implementation for Cloud Datastore that uses the cursor for efficient reads.
  *
+ * The static methods can take either paged or unpaged {@code Pageable}, while instance methods only deal with a paged
+ * self object.
+ *
  * @author Dmitry Solomakha
  * @author Chengyuan Zhao
  */
@@ -42,10 +45,26 @@ public class DatastorePageable extends PageRequest {
 		this(pageable, cursor.toUrlSafe(), totalCount);
 	}
 
+	/**
+	 * Creates a {@code DatastorePageable} wrapper for a paged request, but passes unpaged requests back unchanged.
+	 *
+	 * @param pageable The source {@code Pageable} that can be paged or unpaged
+	 * @param cursor Current cursor; null if not applicable
+	 * @param totalCount Total result count
+	 * @return an instance of {@code DatastorePageable} or the original unpaged {@code Pageable}.
+	 */
 	public static Pageable from(Pageable pageable, Cursor cursor, Long totalCount) {
 		return from(pageable, cursor == null ? null : cursor.toUrlSafe(), totalCount);
 	}
 
+	/**
+	 * Creates a {@code DatastorePageable} wrapper for a paged request, but passes unpaged requests back unchanged.
+	 *
+	 * @param pageable The source {@code Pageable} that can be paged or unpaged
+	 * @param urlSafeCursor Current cursor as ; null if not applicable
+	 * @param totalCount Current cursor; null if not applicable
+	 * @return an instance of {@code DatastorePageable} or the original unpaged {@code Pageable}.
+	 */
 	public static Pageable from(Pageable pageable, String urlSafeCursor, Long totalCount) {
 		if (pageable.isUnpaged()) {
 			return pageable;
@@ -58,8 +77,10 @@ public class DatastorePageable extends PageRequest {
 	}
 
 	@Override
-	public Pageable next() {
-		return from(super.next(), this.urlSafeCursor, this.totalCount);
+	public PageRequest next() {
+		Pageable nextPage = PageRequest.of(getPageNumber() + 1, getPageSize(), getSort());
+		// Cast is safe because from() either returns the original PageRequest or a DatastorePageable.
+		return (PageRequest) from(nextPage, this.urlSafeCursor, this.totalCount);
 	}
 
 	public Cursor toCursor() {
