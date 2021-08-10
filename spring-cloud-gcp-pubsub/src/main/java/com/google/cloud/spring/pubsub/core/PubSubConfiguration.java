@@ -25,7 +25,7 @@ import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
  * @author Mike Eltsufin
  * @author Chengyuan Zhao
  */
-public class PubSubEventSpecificProperties {
+public class PubSubConfiguration {
 
 	/**
 	 * Contains settings specific to the subscriber factory.
