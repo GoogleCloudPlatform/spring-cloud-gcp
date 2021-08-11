@@ -30,7 +30,7 @@ import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
  */
 public class PubSubConfiguration {
 
-	private final Map<String, Properties> properties = new HashMap<>();
+	private final Map<String, PubSubProperties> properties = new HashMap<>();
 
 	/**
 	 * Contains settings specific to the subscriber factory.
@@ -50,31 +50,18 @@ public class PubSubConfiguration {
 		return this.publisher;
 	}
 
-	public Map<String, Properties> getProperties() {
+	public Map<String, PubSubProperties> getProperties() {
 		return this.properties;
 	}
 
 	public Subscriber getSubscriber(String name) {
 		if (!this.properties.containsKey(name)) {
-			Properties property = new Properties();
+			PubSubProperties property = new PubSubProperties();
 			property.setSubscriber(this.subscriber);
 			this.properties.put(name, property);
 		}
 
 		return this.properties.get(name).getSubscriber();
-	}
-
-	public static class Properties {
-
-		Subscriber subscriber = new Subscriber();
-
-		public Subscriber getSubscriber() {
-			return this.subscriber;
-		}
-
-		public void setSubscriber(Subscriber subscriber) {
-			this.subscriber = subscriber;
-		}
 	}
 
 	/**

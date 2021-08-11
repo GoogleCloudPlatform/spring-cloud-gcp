@@ -66,6 +66,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.Batching;
+import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.FlowControl;
+import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.Retry;
+
 /**
  * Auto-config for Pub/Sub.
  *
@@ -89,6 +93,8 @@ public class GcpPubSubAutoConfiguration {
 	private final CredentialsProvider finalCredentialsProvider;
 
 	private final HeaderProvider headerProvider = new UserAgentHeaderProvider(this.getClass());
+
+	private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
 	public GcpPubSubAutoConfiguration(GcpPubSubProperties gcpPubSubProperties,
 			GcpProjectIdProvider gcpProjectIdProvider,
@@ -129,6 +135,9 @@ public class GcpPubSubAutoConfiguration {
 		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
 	}
 
+	/**
+	 * @deprecated Directly use the application.properties file to configure properties.
+	 */
 	@Bean
 	@ConditionalOnMissingBean(name = "pubsubSubscriberThreadPool")
 	@Deprecated
@@ -140,6 +149,9 @@ public class GcpPubSubAutoConfiguration {
 		return scheduler;
 	}
 
+	/**
+	 * @deprecated Directly use the application.properties file to configure properties.
+	 */
 	@Bean
 	@ConditionalOnMissingBean(name = "subscriberExecutorProvider")
 	@Deprecated
@@ -201,7 +213,7 @@ public class GcpPubSubAutoConfiguration {
 	}
 
 	private FlowControlSettings buildFlowControlSettings(
-			GcpPubSubProperties.FlowControl flowControl) {
+			FlowControl flowControl) {
 		FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
 
 		boolean shouldBuild = ifSet(flowControl.getLimitExceededBehavior(), builder::setLimitExceededBehavior);
@@ -250,7 +262,7 @@ public class GcpPubSubAutoConfiguration {
 	public BatchingSettings publisherBatchSettings() {
 		BatchingSettings.Builder builder = BatchingSettings.newBuilder();
 
-		GcpPubSubProperties.Batching batching = this.gcpPubSubProperties.getPublisher()
+		Batching batching = this.gcpPubSubProperties.getPublisher()
 				.getBatching();
 
 		FlowControlSettings flowControlSettings = buildFlowControlSettings(batching.getFlowControl());
@@ -272,7 +284,7 @@ public class GcpPubSubAutoConfiguration {
 		return buildRetrySettings(this.gcpPubSubProperties.getPublisher().getRetry());
 	}
 
-	private RetrySettings buildRetrySettings(GcpPubSubProperties.Retry retryProperties) {
+	private RetrySettings buildRetrySettings(Retry retryProperties) {
 		Builder builder = RetrySettings.newBuilder();
 
 		boolean shouldBuild = ifSet(retryProperties.getInitialRetryDelaySeconds(), x -> builder.setInitialRetryDelay(Duration.ofSeconds(x)));
@@ -383,5 +395,4 @@ public class GcpPubSubAutoConfiguration {
 				.setKeepAliveTime(Duration.ofMinutes(this.gcpPubSubProperties.getKeepAliveIntervalMinutes()))
 				.build();
 	}
-
 }

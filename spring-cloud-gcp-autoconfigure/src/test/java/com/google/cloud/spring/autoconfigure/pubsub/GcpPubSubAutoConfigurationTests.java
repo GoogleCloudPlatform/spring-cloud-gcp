@@ -115,13 +115,13 @@ public class GcpPubSubAutoConfigurationTests {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
-						"spring.cloud.gcp.pubsub.properties.name.subscriber.executor-threads=3")
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.executor-threads=3")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
 			GcpPubSubProperties gcpPubSubProperties = ctx
 					.getBean(GcpPubSubProperties.class);
-			assertThat(gcpPubSubProperties.getSubscriber("name").getExecutorThreads()).isEqualTo(3);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name").getExecutorThreads()).isEqualTo(3);
 		});
 	}
 
@@ -131,13 +131,13 @@ public class GcpPubSubAutoConfigurationTests {
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
 						"spring.cloud.gcp.pubsub.subscriber.executor-threads=5",
-						"spring.cloud.gcp.pubsub.properties.name.subscriber.executor-threads=3")
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.executor-threads=3")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
 			GcpPubSubProperties gcpPubSubProperties = ctx
 					.getBean(GcpPubSubProperties.class);
-			assertThat(gcpPubSubProperties.getSubscriber("name").getExecutorThreads()).isEqualTo(3);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name").getExecutorThreads()).isEqualTo(3);
 			assertThat(gcpPubSubProperties.getSubscriber("other").getExecutorThreads()).isEqualTo(5);
 		});
 	}

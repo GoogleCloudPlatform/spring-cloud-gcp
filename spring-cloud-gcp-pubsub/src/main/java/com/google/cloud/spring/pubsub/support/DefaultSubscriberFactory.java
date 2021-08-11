@@ -32,7 +32,7 @@ import com.google.cloud.pubsub.v1.stub.GrpcSubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import com.google.cloud.spring.pubsub.core.PubSubEventSpecificProperties;
+import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.pubsub.v1.PullRequest;
 import org.threeten.bp.Duration;
 
@@ -51,8 +51,6 @@ import org.springframework.util.Assert;
 public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private final String projectId;
-
-	private ExecutorProvider executorProvider;
 
 	private TransportChannelProvider channelProvider;
 
@@ -74,11 +72,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private RetrySettings subscriberStubRetrySettings;
 
-	private PubSubEventSpecificProperties pubSubEventSpecificProperties;
+	private PubSubConfiguration pubSubConfiguration;
 
 	/**
 	 * Default {@link DefaultSubscriberFactory} constructor.
-	 * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
+	 * @param projectIdProvider provides the default GCP project ID for selecting the
+	 *     subscriptions
 	 */
 	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
 		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
@@ -90,15 +89,15 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	/**
 	 * Default {@link DefaultSubscriberFactory} constructor.
 	 * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
-	 * @param pubSubEventSpecificProperties contains the subscriber properties to configure
+	 * @param pubSubConfiguration contains the subscriber properties to configure
 	 */
-	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider, PubSubEventSpecificProperties pubSubEventSpecificProperties) {
+	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider, PubSubConfiguration pubSubConfiguration) {
 		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
 
 		this.projectId = projectIdProvider.getProjectId();
 		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
 
-		this.pubSubEventSpecificProperties = pubSubEventSpecificProperties;
+		this.pubSubConfiguration = pubSubConfiguration;
 	}
 
 	@Override
@@ -106,14 +105,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		return this.projectId;
 	}
 
-	/**
-	 * Set the provider for the subscribers' executor. Useful to specify the number of threads
-	 * to be used by each executor.
-	 * @param executorProvider the executor provider to set
-	 */
-	public void setExecutorProvider(ExecutorProvider executorProvider) {
-		this.executorProvider = executorProvider;
-	}
 
 	/**
 	 * Set the provider for the subscribers' transport channel.
@@ -202,7 +193,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(
 				PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId), receiver);
 
-		PubSubEventSpecificProperties.Subscriber subscriberProperties = this.pubSubEventSpecificProperties
+		PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
 				.getSubscriber(subscriptionName);
 
 		if (this.channelProvider != null) {
@@ -266,7 +257,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	public SubscriberStub createSubscriberStub(String subscriptionName) {
 		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
 
-		PubSubEventSpecificProperties.Subscriber subscriberProperties = this.pubSubEventSpecificProperties
+		PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
 				.getSubscriber(subscriptionName);
 
 		if (this.credentialsProvider != null) {
@@ -309,7 +300,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 * @param subscriber subscriber properties
 	 * @return executor provider
 	 */
-	private ExecutorProvider getExecutorProvider(PubSubEventSpecificProperties.Subscriber subscriber) {
+	private ExecutorProvider getExecutorProvider(PubSubConfiguration.Subscriber subscriber) {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
 		scheduler.setPoolSize(subscriber.getExecutorThreads());
 		scheduler.setThreadNamePrefix("gcp-pubsub-subscriber");
