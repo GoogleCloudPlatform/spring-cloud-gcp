@@ -155,7 +155,7 @@ The trace logs can be viewed by going to the https://console.cloud.google.com/tr
 
 === Pub/Sub Trace Instrumentation (Experimental)
 
-You can enable trace instrumentation and propagation for Pub/Sub messages by using the `spring.cloud.gcp.trace.pubsub.enabled` property.
+You can enable trace instrumentation and propagation for Pub/Sub messages by using the `spring.cloud.gcp.trace.pubsub.enabled=true` property.
 It's set to `false` by default, but when set to `true`, trace spans will be created and propagated to Cloud Trace whenever the application sends or receives messages through `PubSubTemplate` or any other integration that builds on top of `PubSubTemplate`, such as the Spring Integration channel adapters, and the Spring Cloud Stream Binder.
 
 [source]
