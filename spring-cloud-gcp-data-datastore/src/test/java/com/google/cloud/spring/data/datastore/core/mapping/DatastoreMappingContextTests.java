@@ -23,7 +23,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.data.util.TypeInformation;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -72,11 +71,11 @@ public class DatastoreMappingContextTests {
 	}
 
 	@Test
-	public void testGetInvalidEntityTimestamp() {
-		DatastorePersistentEntityImpl mockEntity = mock(
-				DatastorePersistentEntityImpl.class);
-		DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
-		assertThat(context.hasPersistentEntityFor(Timestamp.class)).isFalse();
+	public void testGetSimpleTypeTimestamp() {
+		DatastoreMappingContext context = new DatastoreMappingContext();
+		assertThatThrownBy(() -> context.getDatastorePersistentEntity(Timestamp.class))
+				.isInstanceOf(DatastoreDataException.class)
+				.hasMessage("Unable to find a DatastorePersistentEntity for: class com.google.cloud.Timestamp");
 	}
 
 	private DatastoreMappingContext createDatastoreMappingContextWith(
