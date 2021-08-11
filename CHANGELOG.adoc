@@ -5,11 +5,36 @@ https://spring.io/projects/spring-cloud-gcp[Spring Cloud GCP] is a set of integr
 This document provides a high-level overview of the changes introduced in Spring Cloud GCP by release.
 For a detailed view of what has changed, refer to the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main[commit history] on GitHub.
 
-== 2.0.4.BUILD-SNAPSHOT
+== 2.0.5.BUILD-SNAPSHOT
+
+== 2.0.4
+
+=== General
+
+* Updated `gcp-libraries-bom.version` to 20.9.0.
+
+=== Datastore
+
+* Added support for `Stream` return type in both GQL and method name-based queries (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/551[#551]).
+* Made `DatastorePageable` compatible with Spring Data 2.5.x (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/569[#569]).
 
 === Firestore
-* Fixed: Unable to query by document ID. (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/506[#506])
-* Added support for `OrderBy` clause in method name. (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/516[#516])
+
+* Fixed: Unable to query by document ID. (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/506[#506]).
+* Fixed: Attempting to infer environment credentials when using emulator. (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/555[#555]).
+* Added support for `OrderBy` clause in method name. (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/516[#516]).
+
+=== Pub/Sub
+* Fixed: bean factory propagation in consumer binding (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/515[#515]).
+* Removed workaround in `PubSubInboundChannelAdapter` ensuring error propagation during application shutdown.
+This should be a no-op to users, as Spring Integration starting with v5.4.3 and Spring Cloud Stream starting with v3.1.1 use `requireSubscribers=true` on the default error channels, causing any errors reaching error channels with no subscribers to propagate an exception.
+* Added IDE discovery for `management.health.pubsub.enabled` property (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/543[#543])
+
+=== Secret Manager
+* Fixed: `ByteString` value conversion compatibility with Spring Boot 2.5.x (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/496[#496]).
+
+Thanks to our community contributors, @artemptushkin, @garywg04 and @alos!
+
 
 == 2.0.3 (2021-06-08)
 
