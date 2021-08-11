@@ -28,7 +28,7 @@ import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
  * @author Mike Eltsufin
  * @author Chengyuan Zhao
  */
-public class PubSubEventSpecificProperties {
+public class PubSubConfiguration {
 
 	private final Map<String, Properties> properties = new HashMap<>();
 
