@@ -39,6 +39,8 @@ import org.threeten.bp.Duration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.Assert;
 
+import javax.annotation.PreDestroy;
+
 /**
  * The default {@link SubscriberFactory} implementation.
  *
@@ -51,6 +53,12 @@ import org.springframework.util.Assert;
 public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private final String projectId;
+
+	/**
+	 * @deprecated deprecated
+	 */
+	@Deprecated
+	private ExecutorProvider executorProvider;
 
 	private TransportChannelProvider channelProvider;
 
@@ -74,16 +82,20 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private PubSubConfiguration pubSubConfiguration;
 
+	private ThreadPoolTaskScheduler threadPoolTaskScheduler;
+
 	/**
 	 * Default {@link DefaultSubscriberFactory} constructor.
 	 * @param projectIdProvider provides the default GCP project ID for selecting the
 	 *     subscriptions
 	 */
+	@Deprecated
 	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
-		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
-
-		this.projectId = projectIdProvider.getProjectId();
-		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
+//		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
+//
+//		this.projectId = projectIdProvider.getProjectId();
+//		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
+		this(projectIdProvider, new PubSubConfiguration());
 	}
 
 	/**
@@ -105,6 +117,17 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		return this.projectId;
 	}
 
+
+	/**
+	 * Set the provider for the subscribers' executor. Useful to specify the number of threads to be
+	 * used by each executor.
+	 * @param executorProvider the executor provider to set
+	 * @deprecated deprecated using application.properties
+	 */
+	@Deprecated
+	public void setExecutorProvider(ExecutorProvider executorProvider) {
+		this.executorProvider = executorProvider;
+	}
 
 	/**
 	 * Set the provider for the subscribers' transport channel.
@@ -301,12 +324,30 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 * @return executor provider
 	 */
 	private ExecutorProvider getExecutorProvider(PubSubConfiguration.Subscriber subscriber) {
-		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.setPoolSize(subscriber.getExecutorThreads());
-		scheduler.setThreadNamePrefix("gcp-pubsub-subscriber");
-		scheduler.setDaemon(true);
-		scheduler.initialize();
+		if (this.executorProvider != null){
+			return this.executorProvider;
+		}
+		this.threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+		this.threadPoolTaskScheduler.setPoolSize(subscriber.getExecutorThreads());
+		this.threadPoolTaskScheduler.setThreadNamePrefix("gcp-pubsub-subscriber");
+		this.threadPoolTaskScheduler.setDaemon(true);
+		this.threadPoolTaskScheduler.initialize();
 
-		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
+		return FixedExecutorProvider.create(this.threadPoolTaskScheduler.getScheduledExecutor());
 	}
+
+	public ThreadPoolTaskScheduler getThreadPoolTaskScheduler(){
+		return this.threadPoolTaskScheduler;
+	}
+
+	@PreDestroy
+	public void clearScheduler(){
+		this.threadPoolTaskScheduler.shutdown();
+		System.out.println("DESTROY");
+	}
+
+	public void close() {
+		System.out.println("CLOSE");
+	}
+
 }

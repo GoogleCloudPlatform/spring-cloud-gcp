@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.pubsub;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
@@ -65,6 +66,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+
+import javax.annotation.PreDestroy;
 
 import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.Batching;
 import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.FlowControl;
@@ -149,16 +152,16 @@ public class GcpPubSubAutoConfiguration {
 		return scheduler;
 	}
 
-	/**
-	 * @deprecated Directly use the application.properties file to configure properties.
-	 */
-	@Bean
-	@ConditionalOnMissingBean(name = "subscriberExecutorProvider")
-	@Deprecated
-	public ExecutorProvider subscriberExecutorProvider(
-			@Qualifier("pubsubSubscriberThreadPool") ThreadPoolTaskScheduler scheduler) {
-		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
-	}
+//	/**
+//	 * @deprecated Directly use the application.properties file to configure properties.
+//	 */
+//	@Bean
+//	@ConditionalOnMissingBean(name = "subscriberExecutorProvider")
+//	@Deprecated
+//	public ExecutorProvider subscriberExecutorProvider(
+//			@Qualifier("pubsubSubscriberThreadPool") ThreadPoolTaskScheduler scheduler) {
+//		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
+//	}
 
 	@Bean
 	@ConditionalOnMissingBean
@@ -226,6 +229,7 @@ public class GcpPubSubAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public SubscriberFactory defaultSubscriberFactory(
+			@Qualifier("subscriberExecutorProvider") Optional<ExecutorProvider> executorProvider,
 			@Qualifier("subscriberSystemExecutorProvider")
 			ObjectProvider<ExecutorProvider> systemExecutorProvider,
 			@Qualifier("subscriberFlowControlSettings")
@@ -234,6 +238,12 @@ public class GcpPubSubAutoConfiguration {
 			@Qualifier("subscriberRetrySettings") ObjectProvider<RetrySettings> retrySettings,
 			@Qualifier("subscriberTransportChannelProvider") TransportChannelProvider subscriberTransportChannelProvider) {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider, this.gcpPubSubProperties);
+		this.threadPoolTaskScheduler = factory.getThreadPoolTaskScheduler();
+//		if (executorProvider.isPresent()){
+//			// log a message saying this will be deprecated soon
+//			factory.setExecutorProvider(executorProvider);
+//		}
+
 		factory.setCredentialsProvider(this.finalCredentialsProvider);
 		factory.setHeaderProvider(this.headerProvider);
 		factory.setChannelProvider(subscriberTransportChannelProvider);
@@ -394,5 +404,12 @@ public class GcpPubSubAutoConfiguration {
 		return PublisherStubSettings.defaultGrpcTransportProviderBuilder()
 				.setKeepAliveTime(Duration.ofMinutes(this.gcpPubSubProperties.getKeepAliveIntervalMinutes()))
 				.build();
+	}
+
+	@PreDestroy
+	public void clearExecutor(){
+		if (this.threadPoolTaskScheduler != null){
+			this.threadPoolTaskScheduler.shutdown();
+		}
 	}
 }
