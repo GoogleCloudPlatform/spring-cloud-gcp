@@ -71,7 +71,8 @@ public class DatastoreMappingContextTests {
 	}
 
 	@Test
-	public void testGetSimpleTypeTimestamp() {
+	public void testTimestampNotAnEntity() {
+		// Datastore native types like Timestamp should be considered simple type and no an entity
 		DatastoreMappingContext context = new DatastoreMappingContext();
 		assertThatThrownBy(() -> context.getDatastorePersistentEntity(Timestamp.class))
 				.isInstanceOf(DatastoreDataException.class)
