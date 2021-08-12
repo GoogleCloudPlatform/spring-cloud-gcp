@@ -29,12 +29,10 @@ import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerPropertySourceLocator;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
-import com.google.protobuf.ByteString;
 
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 @Configuration
@@ -46,26 +44,8 @@ public class SecretManagerTestConfiguration {
 
 	public SecretManagerTestConfiguration(
 			ConfigurableEnvironment configurableEnvironment) throws IOException {
-
 		this.projectIdProvider = new DefaultGcpProjectIdProvider();
 		this.credentialsProvider = new DefaultCredentialsProvider(Credentials::new);
-
-		// Registers {@link ByteString} type converters to convert to String and byte[].
-		configurableEnvironment.getConversionService().addConverter(
-				new Converter<ByteString, String>() {
-					@Override
-					public String convert(ByteString source) {
-						return source.toStringUtf8();
-					}
-				});
-
-		configurableEnvironment.getConversionService().addConverter(
-				new Converter<ByteString, byte[]>() {
-					@Override
-					public byte[] convert(ByteString source) {
-						return source.toByteArray();
-					}
-				});
 	}
 
 	@Bean

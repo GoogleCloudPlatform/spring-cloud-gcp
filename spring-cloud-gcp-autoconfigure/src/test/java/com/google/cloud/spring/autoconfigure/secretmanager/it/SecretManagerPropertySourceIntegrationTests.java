@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.secretmanager.it;
+package com.google.cloud.spring.autoconfigure.secretmanager.it;
 
+import java.util.Collections;
+
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.cloud.ServiceOptions;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
+import com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManagerBootstrapConfiguration;
+import com.google.cloud.spring.core.GcpScope;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import io.grpc.StatusRuntimeException;
 import org.junit.BeforeClass;
@@ -35,28 +43,35 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 public class SecretManagerPropertySourceIntegrationTests {
 
 	private ConfigurableApplicationContext context =
-			new SpringApplicationBuilder(TestConfiguration.class)
+			new SpringApplicationBuilder(GcpSecretManagerBootstrapConfiguration.class)
+					.child(TestConfiguration.class)
 					.web(WebApplicationType.NONE)
-					.properties("spring.cloud.bootstrap.enabled=true")
+					.properties("spring.cloud.bootstrap.enabled=true", "spring.autoconfigure.exclude=CloudSqlEnvironmentPostProcessor",
+							"spring.cloud.gcp.sql.databaseName=test-database",
+							"spring.cloud.gcp.sql.instance-connection-name=tubular-bells:singapore:test-instance",
+							"spring.datasource.password=",
+							"debug=true")
 					.run();
 
 	private static final String TEST_SECRET_ID = "spring-cloud-gcp-it-secret";
 
 	@BeforeClass
-	public static void prepare() {
+	public static void prepare() throws Exception {
 		assumeThat(System.getProperty("it.secretmanager"))
 				.as("Secret manager integration tests are disabled. "
 						+ "Please use '-Dit.secretmanager=true' to enable them.")
 				.isEqualTo("true");
 
 		// Create the test secret if it does not already currently exist.
-		ConfigurableApplicationContext setupContext =
-				new SpringApplicationBuilder(SecretManagerTestConfiguration.class)
-						.web(WebApplicationType.NONE)
-						.run();
+		SecretManagerServiceSettings settings = SecretManagerServiceSettings.newBuilder()
+				.setCredentialsProvider(
+						GoogleCredentialsProvider.newBuilder()
+								.setScopesToApply(Collections.singletonList(GcpScope.CLOUD_PLATFORM.getUrl()))
+								.build())
+				.build();
 
-		SecretManagerTemplate template =
-				setupContext.getBeanFactory().getBean(SecretManagerTemplate.class);
+		SecretManagerTemplate template = new SecretManagerTemplate(SecretManagerServiceClient.create(settings),
+				() -> ServiceOptions.getDefaultProjectId());
 		if (!template.secretExists(TEST_SECRET_ID)) {
 			template.createSecret(TEST_SECRET_ID, "the secret data.");
 		}

@@ -74,13 +74,14 @@ public class GcpSecretManagerBootstrapConfiguration {
 				.setCredentialsProvider(googleCredentials)
 				.setHeaderProvider(new UserAgentHeaderProvider(GcpSecretManagerBootstrapConfiguration.class))
 				.build();
-
+		System.out.println("*** Creating secretManagerClient");
 		return SecretManagerServiceClient.create(settings);
 	}
 
 	@Bean
 	@ConditionalOnMissingBean
 	public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
+		System.out.println("*** Creating secretManagerTemplate");
 		return new SecretManagerTemplate(client, this.gcpProjectIdProvider);
 	}
 
