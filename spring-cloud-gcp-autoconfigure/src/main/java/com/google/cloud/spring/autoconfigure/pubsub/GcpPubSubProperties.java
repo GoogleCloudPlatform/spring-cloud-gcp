@@ -16,11 +16,13 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub;
 
+import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import com.google.cloud.spring.core.GcpScope;
-import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 
+import com.google.cloud.spring.pubsub.core.PublisherProperties;
+import com.google.cloud.spring.pubsub.core.SubscriberProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -32,7 +34,23 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  * @author Chengyuan Zhao
  */
 @ConfigurationProperties("spring.cloud.gcp.pubsub")
-public class GcpPubSubProperties extends PubSubConfiguration implements CredentialsSupplier {
+public class GcpPubSubProperties implements CredentialsSupplier {
+
+	SubscriberProperties sub = new SubscriberProperties();
+
+	PublisherProperties pub = new PublisherProperties();
+
+	SubscriberProperties.Subscriber subscriber = new SubscriberProperties.Subscriber();
+
+	PublisherProperties.Publisher publisher = new PublisherProperties.Publisher();
+
+	public SubscriberProperties.Subscriber getSubscriber(){
+		return this.subscriber;
+	}
+
+	public PublisherProperties.Publisher getPublisher(){
+		return this.publisher;
+	}
 
 	/**
 	 * Overrides the GCP project ID specified in the Core module.

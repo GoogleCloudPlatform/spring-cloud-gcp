@@ -42,8 +42,11 @@ import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
+import com.google.cloud.spring.pubsub.core.Batching;
+import com.google.cloud.spring.pubsub.core.FlowControl;
 import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.core.Retry;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
@@ -199,7 +202,7 @@ public class GcpPubSubAutoConfiguration {
 	}
 
 	private FlowControlSettings buildFlowControlSettings(
-			GcpPubSubProperties.FlowControl flowControl) {
+			FlowControl flowControl) {
 		FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
 
 		boolean shouldBuild = ifSet(flowControl.getLimitExceededBehavior(), builder::setLimitExceededBehavior);
@@ -250,7 +253,7 @@ public class GcpPubSubAutoConfiguration {
 	public BatchingSettings publisherBatchSettings() {
 		BatchingSettings.Builder builder = BatchingSettings.newBuilder();
 
-		GcpPubSubProperties.Batching batching = this.gcpPubSubProperties.getPublisher()
+		Batching batching = this.gcpPubSubProperties.getPublisher()
 				.getBatching();
 
 		FlowControlSettings flowControlSettings = buildFlowControlSettings(batching.getFlowControl());
@@ -272,7 +275,7 @@ public class GcpPubSubAutoConfiguration {
 		return buildRetrySettings(this.gcpPubSubProperties.getPublisher().getRetry());
 	}
 
-	private RetrySettings buildRetrySettings(GcpPubSubProperties.Retry retryProperties) {
+	private RetrySettings buildRetrySettings(Retry retryProperties) {
 		Builder builder = RetrySettings.newBuilder();
 
 		boolean shouldBuild = ifSet(retryProperties.getInitialRetryDelaySeconds(), x -> builder.setInitialRetryDelay(Duration.ofSeconds(x)));
