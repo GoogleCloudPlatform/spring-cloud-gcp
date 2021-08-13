@@ -33,12 +33,12 @@ public class PubSubConfiguration {
 	private final Map<String, PubSubProperties> properties = new HashMap<>();
 
 	/**
-	 * Contains settings specific to the subscriber factory.
+	 * Contains default subscriber settings.
 	 */
 	private final Subscriber subscriber = new Subscriber();
 
 	/**
-	 * Contains settings specific to the publisher factory.
+	 * Contains default publisher settings.
 	 */
 	private final Publisher publisher = new Publisher();
 

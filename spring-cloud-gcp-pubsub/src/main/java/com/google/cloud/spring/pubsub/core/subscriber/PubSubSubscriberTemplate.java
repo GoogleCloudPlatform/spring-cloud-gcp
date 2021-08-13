@@ -290,6 +290,7 @@ public class PubSubSubscriberTemplate
 			Boolean returnImmediately) {
 		PullRequest pullRequest = this.subscriberFactory.createPullRequest(
 				subscription, maxMessages, returnImmediately);
+
 		List<AcknowledgeablePubsubMessage> ackableMessages = pull(pullRequest);
 
 		if (!ackableMessages.isEmpty()) {
@@ -305,8 +306,6 @@ public class PubSubSubscriberTemplate
 			Boolean returnImmediately) {
 		PullRequest pullRequest = this.subscriberFactory.createPullRequest(
 				subscription, maxMessages, returnImmediately);
-		SubscriberStub subscriberStub = this.subscriberFactory.createSubscriberStub(subscription);
-		subscriptionNameToStubMap.putIfAbsent(subscription, subscriberStub);
 
 		final SettableListenableFuture<List<PubsubMessage>> settableFuture = new SettableListenableFuture<>();
 
@@ -415,8 +414,7 @@ public class PubSubSubscriberTemplate
 				.addAllAckIds(ackIds)
 				.setSubscription(subscriptionName)
 				.build();
-		SubscriberStub subscriberStub = this.subscriberFactory.createSubscriberStub(subscriptionName);
-		subscriptionNameToStubMap.putIfAbsent(subscriptionName, subscriberStub);
+		SubscriberStub subscriberStub = getSubscriberStub(subscriptionName);
 		return subscriberStub.acknowledgeCallable().futureCall(acknowledgeRequest);
 	}
 
@@ -427,8 +425,7 @@ public class PubSubSubscriberTemplate
 				.addAllAckIds(ackIds)
 				.setSubscription(subscriptionName)
 				.build();
-		SubscriberStub subscriberStub = this.subscriberFactory.createSubscriberStub(subscriptionName);
-		subscriptionNameToStubMap.putIfAbsent(subscriptionName, subscriberStub);
+		SubscriberStub subscriberStub = getSubscriberStub(subscriptionName);
 		return subscriberStub.modifyAckDeadlineCallable().futureCall(modifyAckDeadlineRequest);
 	}
 
@@ -561,7 +558,6 @@ public class PubSubSubscriberTemplate
 					'}';
 		}
 	}
-
 
 	private static class PushedAcknowledgeablePubsubMessage extends AbstractBasicAcknowledgeablePubsubMessage {
 

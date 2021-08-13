@@ -35,7 +35,6 @@ import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.pubsub.v1.PullRequest;
 import org.threeten.bp.Duration;
 
@@ -223,7 +222,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberBuilder.setChannelProvider(this.channelProvider);
 		}
 
-		subscriberBuilder.setExecutorProvider(getExecutorProvider(subscriberProperties));
+		subscriberBuilder.setExecutorProvider(getExecutorProvider(subscriberProperties, subscriptionName));
 
 
 		if (this.credentialsProvider != null) {
@@ -291,7 +290,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.setEndpoint(this.pullEndpoint);
 		}
 
-		subscriberStubSettings.setExecutorProvider(getExecutorProvider(subscriberProperties));
+		subscriberStubSettings.setExecutorProvider(getExecutorProvider(subscriberProperties, subscriptionName));
 
 		if (this.headerProvider != null) {
 			subscriberStubSettings.setHeaderProvider(this.headerProvider);
@@ -323,22 +322,18 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 * @param subscriber subscriber properties
 	 * @return executor provider
 	 */
-	@VisibleForTesting
-	public ExecutorProvider getExecutorProvider(PubSubConfiguration.Subscriber subscriber) {
+	public ExecutorProvider getExecutorProvider(PubSubConfiguration.Subscriber subscriber, String subscriptionName) {
 		if (this.executorProvider != null) {
 			return this.executorProvider;
 		}
 		this.threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
 		this.threadPoolTaskScheduler.setPoolSize(subscriber.getExecutorThreads());
-		this.threadPoolTaskScheduler.setThreadNamePrefix("gcp-pubsub-subscriber");
+		String threadNamePrefix = "gcp-pubsub-subscriber" + "-" + subscriptionName;
+		this.threadPoolTaskScheduler.setThreadNamePrefix(threadNamePrefix);
 		this.threadPoolTaskScheduler.setDaemon(true);
 		this.threadPoolTaskScheduler.initialize();
 
 		return FixedExecutorProvider.create(this.threadPoolTaskScheduler.getScheduledExecutor());
-	}
-
-	public ThreadPoolTaskScheduler getThreadPoolTaskScheduler() {
-		return this.threadPoolTaskScheduler;
 	}
 
 	@PreDestroy

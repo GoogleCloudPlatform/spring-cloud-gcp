@@ -21,8 +21,6 @@ import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
-import javax.annotation.PreDestroy;
-
 import com.google.api.core.ApiClock;
 import com.google.api.gax.batching.BatchingSettings;
 import com.google.api.gax.batching.FlowControlSettings;
@@ -95,8 +93,6 @@ public class GcpPubSubAutoConfiguration {
 	private final CredentialsProvider finalCredentialsProvider;
 
 	private final HeaderProvider headerProvider = new UserAgentHeaderProvider(this.getClass());
-
-	private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -239,10 +235,9 @@ public class GcpPubSubAutoConfiguration {
 			@Qualifier("subscriberRetrySettings") ObjectProvider<RetrySettings> retrySettings,
 			@Qualifier("subscriberTransportChannelProvider") TransportChannelProvider subscriberTransportChannelProvider) {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider, this.gcpPubSubProperties);
-		this.threadPoolTaskScheduler = factory.getThreadPoolTaskScheduler();
 		if (executorProvider.isPresent()) {
 			logger.warn(
-					"The subscriberExecutorProvider bean is being deprecated. Please configure it directly from application.properties.");
+					"The subscriberExecutorProvider bean is being deprecated. Please use application.properties to configure properties");
 			factory.setExecutorProvider(executorProvider.get());
 		}
 
@@ -408,10 +403,4 @@ public class GcpPubSubAutoConfiguration {
 				.build();
 	}
 
-	@PreDestroy
-	public void clearExecutor() {
-		if (this.threadPoolTaskScheduler != null) {
-			this.threadPoolTaskScheduler.shutdown();
-		}
-	}
 }
