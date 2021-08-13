@@ -136,6 +136,7 @@ $(globalSwitch);
 <li><a href="#_overriding_the_auto_configuration">Overriding the auto-configuration</a></li>
 <li><a href="#_customizing_spans">Customizing spans</a></li>
 <li><a href="#_integration_with_logging">Integration with Logging</a></li>
+<li><a href="#_pubsub_trace_instrumentation_experimental">Pub/Sub Trace Instrumentation (Experimental)</a></li>
 <li><a href="#_sample">Sample</a></li>
 </ul>
 </li>
@@ -335,6 +336,12 @@ This field forces the decision of whether or not to trace the request; if omitte
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.pubsub.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Experimental) Auto-configure Pub/Sub instrumentation for Trace.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -437,6 +444,22 @@ public class Application implements WebMvcConfigurer {
 <p>Integration with Cloud Logging is available through the <a href="logging.adoc">Cloud Logging Support</a>.
 If the Trace integration is used together with the Logging one, the request logs will be associated to the corresponding traces.
 The trace logs can be viewed by going to the <a href="https://console.cloud.google.com/traces/traces">Google Cloud Console Trace List</a>, selecting a trace and pressing the <code>Logs &#8594; View</code> link in the <code>Details</code> section.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pubsub_trace_instrumentation_experimental"><a class="link" href="#_pubsub_trace_instrumentation_experimental">Pub/Sub Trace Instrumentation (Experimental)</a></h3>
+<div class="paragraph">
+<p>You can enable trace instrumentation and propagation for Pub/Sub messages by using the <code>spring.cloud.gcp.trace.pubsub.enabled=true</code> property.
+It&#8217;s set to <code>false</code> by default, but when set to <code>true</code>, trace spans will be created and propagated to Cloud Trace whenever the application sends or receives messages through <code>PubSubTemplate</code> or any other integration that builds on top of <code>PubSubTemplate</code>, such as the Spring Integration channel adapters, and the Spring Cloud Stream Binder.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># Enable Pub/Sub tracing using this property
+spring.cloud.gcp.trace.pubsub.enabled=true
+
+# You can disable Spring Integration instrumentation by Sleuth as it's unnecessary
+spring.sleuth.integration.enabled=false</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
