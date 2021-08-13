@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.pubsub.support;
+package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
-import com.google.cloud.pubsub.v1.PublisherInterface;
 
-/**
- * The publisher factory interface that can create publishers.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- */
-public interface PublisherFactory {
+final class PubSubTags {
+	static final String PUBSUB_MESSAGE_ID_TAG = "pubsub.message.id";
+	static final String PUBSUB_TOPIC_TAG = "pubsub.topic";
+	static final String PUBSUB_SUBSCRIPTION_TAG = "pubsub.subscription";
 
-	PublisherInterface createPublisher(String topic);
+	private PubSubTags() {
+	}
 }

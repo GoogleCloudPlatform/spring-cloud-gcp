@@ -13,6 +13,7 @@ com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreEmulatorAutoConfigur
 com.google.cloud.spring.autoconfigure.datastore.health.DatastoreHealthIndicatorAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.storage.GcpStorageAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration,\
+com.google.cloud.spring.autoconfigure.trace.pubsub.TracePubSubAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.datastore.DatastoreRepositoriesAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.spanner.SpannerRepositoriesAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.security.IapAuthenticationAutoConfiguration,\
