@@ -18,6 +18,7 @@ package com.google.cloud.spring.data.datastore.it;
 
 import java.util.Objects;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Blob;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 
@@ -42,6 +43,8 @@ public class TestEntity {
 
 	private Blob blobField;
 
+	private Timestamp datetime;
+
 	EmbeddedEntity embeddedEntity;
 
 	public TestEntity() {
@@ -62,6 +65,13 @@ public class TestEntity {
 		this.shape = shape;
 		this.blobField = blobField;
 		this.embeddedEntity = embeddedEntity;
+	}
+
+	public TestEntity(Long id, String color, Long size, Timestamp datetime) {
+		this.id = id;
+		this.color = color;
+		this.size = size;
+		this.datetime = datetime;
 	}
 
 	public Shape getShape() {
@@ -104,6 +114,14 @@ public class TestEntity {
 		this.size = size;
 	}
 
+	public Timestamp getDatetime() {
+		return datetime;
+	}
+
+	public void setDatetime(Timestamp datetime) {
+		this.datetime = datetime;
+	}
+
 	/**
 	 * An enum that tests conversion and storage.
 	 */
@@ -141,6 +159,7 @@ public class TestEntity {
 				", shape=" + shape +
 				", blobField=" + blobField +
 				", embeddedEntity=" + embeddedEntity +
+				", datetime=" + datetime +
 				'}';
 	}
 }

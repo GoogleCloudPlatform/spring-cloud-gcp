@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreNativeTypes;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.mapping.context.AbstractMappingContext;
@@ -54,6 +56,10 @@ public class DatastoreMappingContext extends
 	// Maps a given class to the set of other classes with which it shares the same Datastore
 	// Kind and that are subclasses of the given class.
 	private static final Map<Class, Set<Class>> discriminationFamilies = new ConcurrentHashMap<>();
+
+	public DatastoreMappingContext() {
+		this.setSimpleTypeHolder(DatastoreNativeTypes.HOLDER);
+	}
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) {

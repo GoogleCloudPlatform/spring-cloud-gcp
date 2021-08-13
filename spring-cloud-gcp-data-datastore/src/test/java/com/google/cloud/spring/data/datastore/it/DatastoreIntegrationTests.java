@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Blob;
 import com.google.cloud.datastore.DatastoreException;
 import com.google.cloud.datastore.DatastoreReaderWriter;
@@ -1051,6 +1052,29 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 		this.testEntityRepository.saveAll(this.allTestEntities);
 		Stream<TestEntity> resultStream = this.testEntityRepository.findGqlStreamByColor("red");
 		assertThat(resultStream).hasSize(3).contains(testEntityA, testEntityC, testEntityD);
+	}
+
+	@Test
+	public void queryByTimestampTest() {
+		Timestamp date1 = Timestamp.parseTimestamp("2020-08-04T00:00:00Z");
+		Timestamp date2 = Timestamp.parseTimestamp("2021-08-04T00:00:00Z");
+		TestEntity testEntity1 = new TestEntity(1L, "red", 1L, date1);
+		TestEntity testEntity2 = new TestEntity(2L, "blue", 2L, date2);
+		TestEntity testEntity3 = new TestEntity(3L, "red", 1L, date1);
+		TestEntity testEntity4 = new TestEntity(4L, "red", 1L, null);
+
+		this.testEntityRepository.saveAll(Arrays.asList(testEntity1,
+				testEntity2,
+				testEntity3,
+				testEntity4));
+		Timestamp startDate = Timestamp.parseTimestamp("2020-07-04T00:00:00Z");
+		Timestamp endDate = Timestamp.parseTimestamp("2020-08-06T00:00:00Z");
+
+		List<TestEntity> results = this.testEntityRepository.getAllBetweenDates(startDate, endDate);
+		assertThat(results).containsExactly(testEntity1, testEntity3);
+
+		List<TestEntity> results2 = this.testEntityRepository.findByDatetimeGreaterThan(endDate);
+		assertThat(results2).containsExactly(testEntity2);
 	}
 }
 
