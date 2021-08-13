@@ -45,6 +45,9 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
 	 */
 	private String hostPort = "firestore.googleapis.com:443";
 
+	@NestedConfigurationProperty
+	private FirestoreEmulatorProperties emulator = new FirestoreEmulatorProperties();
+
 	@Override
 	public Credentials getCredentials() {
 		return this.credentials;
@@ -64,5 +67,30 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
 
 	public void setHostPort(String hostPort) {
 		this.hostPort = hostPort;
+	}
+
+	public FirestoreEmulatorProperties getEmulator() {
+		return emulator;
+	}
+
+	public void setEmulator(FirestoreEmulatorProperties emulator) {
+		this.emulator = emulator;
+	}
+
+	public static class FirestoreEmulatorProperties {
+
+		/**
+		 * Enables autoconfiguration to use the Firestore emulator.
+		 * If this is set to true, then you should set the spring.cloud.gcp.firestore.host-port to the host:port of your locally running emulator instance
+		 */
+		private boolean enabled = false;
+
+		public boolean isEnabled() {
+			return enabled;
+		}
+
+		public void setEnabled(boolean enabled) {
+			this.enabled = enabled;
+		}
 	}
 }

@@ -21,13 +21,13 @@ package com.google.cloud.spring.pubsub.core;
  */
 class PubSubProperties {
 
-	SubscriberProperties.Subscriber subscriber = new SubscriberProperties.Subscriber();
+	PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
 
-	public SubscriberProperties.Subscriber getSubscriber() {
+	public PubSubConfiguration.Subscriber getSubscriber() {
 		return this.subscriber;
 	}
 
-	public void setSubscriber(SubscriberProperties.Subscriber subscriber) {
+	public void setSubscriber(PubSubConfiguration.Subscriber subscriber) {
 		this.subscriber = subscriber;
 	}
 }

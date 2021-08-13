@@ -210,4 +210,9 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 	private static Long getOrComputeTotalCount(Pageable pageable, LongSupplier countCall) {
 		return pageable instanceof DatastorePageable ? ((DatastorePageable) pageable).getTotalCount() : countCall.getAsLong();
 	}
+
+	// TODO: Restore @Override when not supporting Spring Boot 2.4 anymore
+	public void deleteAllById(Iterable<? extends I> iterable) {
+		throw new UnsupportedOperationException();
+	}
 }

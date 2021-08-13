@@ -96,7 +96,7 @@ We offer `SNAPSHOT` versions of the project that always reflect the latest code 
 </repositories>
 ----
 
-For example, the version `2.0.4-SNAPSHOT` is available from this repository.
+For example, the version `2.0.5-SNAPSHOT` is available from this repository.
 
 == Spring Boot Starters
 

@@ -17,7 +17,9 @@
 package com.google.cloud.spring.pubsub.support;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.ExecutorProvider;
 import com.google.cloud.pubsub.v1.Subscriber;
+import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.pubsub.v1.PullRequest;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,7 +44,7 @@ public class DefaultSubscriberFactoryTests {
 	private CredentialsProvider credentialsProvider;
 
 	@Mock
-	private SubscriberProperties pubSubConfiguration;
+	private PubSubConfiguration pubSubConfiguration;
 
 	/**
 	 * used to check exception messages and types.
@@ -53,7 +55,7 @@ public class DefaultSubscriberFactoryTests {
 	@Test
 	public void testNewSubscriber() {
 		when(pubSubConfiguration.getSubscriber("midnight cowboy"))
-				.thenReturn(new SubscriberProperties.Subscriber());
+				.thenReturn(new PubSubConfiguration.Subscriber());
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfiguration);
 		factory.setCredentialsProvider(this.credentialsProvider);
 
@@ -67,19 +69,19 @@ public class DefaultSubscriberFactoryTests {
 	public void testNewDefaultSubscriberFactory_nullProjectProvider() {
 		this.expectedException.expect(IllegalArgumentException.class);
 		this.expectedException.expectMessage("The project ID provider can't be null.");
-		new DefaultSubscriberFactory(null);
+		new DefaultSubscriberFactory(null, null);
 	}
 
 	@Test
 	public void testNewDefaultSubscriberFactory_nullProject() {
 		this.expectedException.expect(IllegalArgumentException.class);
 		this.expectedException.expectMessage("The project ID can't be null or empty.");
-		new DefaultSubscriberFactory(() -> null);
+		new DefaultSubscriberFactory(() -> null, null);
 	}
 
 	@Test
 	public void testCreatePullRequest_greaterThanZeroMaxMessages() {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project");
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", null);
 		factory.setCredentialsProvider(this.credentialsProvider);
 
 		this.expectedException.expect(IllegalArgumentException.class);
@@ -89,7 +91,7 @@ public class DefaultSubscriberFactoryTests {
 
 	@Test
 	public void testCreatePullRequest_nonNullMaxMessages() {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project");
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", null);
 		factory.setCredentialsProvider(this.credentialsProvider);
 
 		PullRequest request = factory.createPullRequest("test", null, true);

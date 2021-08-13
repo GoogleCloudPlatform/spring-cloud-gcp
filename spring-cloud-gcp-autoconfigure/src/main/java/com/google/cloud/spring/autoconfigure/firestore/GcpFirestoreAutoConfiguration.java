@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.firestore;
 import java.io.IOException;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
@@ -81,9 +82,15 @@ public class GcpFirestoreAutoConfiguration {
 				? gcpFirestoreProperties.getProjectId()
 				: projectIdProvider.getProjectId();
 
-		this.credentialsProvider = (gcpFirestoreProperties.getCredentials().hasKey()
-				? new DefaultCredentialsProvider(gcpFirestoreProperties)
-				: credentialsProvider);
+		if (gcpFirestoreProperties.getEmulator().isEnabled()) {
+			// if the emulator is enabled, create CredentialsProvider for this particular case.
+			this.credentialsProvider = NoCredentialsProvider.create();
+		}
+		else {
+			this.credentialsProvider = (gcpFirestoreProperties.getCredentials().hasKey()
+					? new DefaultCredentialsProvider(gcpFirestoreProperties)
+					: credentialsProvider);
+		}
 
 		this.hostPort = gcpFirestoreProperties.getHostPort();
 		this.firestoreRootPath = String.format(ROOT_PATH_FORMAT, this.projectId);
@@ -107,6 +114,10 @@ public class GcpFirestoreAutoConfiguration {
 	@ConditionalOnMissingBean
 	public Firestore firestore(FirestoreOptions firestoreOptions) {
 		return firestoreOptions.getService();
+	}
+
+	CredentialsProvider getCredentialsProvider() {
+		return credentialsProvider;
 	}
 
 	/**
@@ -160,4 +171,5 @@ public class GcpFirestoreAutoConfiguration {
 					.build();
 		}
 	}
+
 }

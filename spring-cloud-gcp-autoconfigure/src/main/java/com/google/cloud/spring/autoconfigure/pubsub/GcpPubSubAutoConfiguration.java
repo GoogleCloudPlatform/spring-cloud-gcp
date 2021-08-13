@@ -21,6 +21,8 @@ import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
+import javax.annotation.PreDestroy;
+
 import com.google.api.core.ApiClock;
 import com.google.api.gax.batching.BatchingSettings;
 import com.google.api.gax.batching.FlowControlSettings;
@@ -43,6 +45,7 @@ import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
+import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
@@ -53,6 +56,8 @@ import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.threeten.bp.Duration;
 
 import org.springframework.beans.factory.ObjectProvider;
@@ -66,12 +71,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-
-import javax.annotation.PreDestroy;
-
-//import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.Batching;
-//import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.FlowControl;
-//import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.Retry;
 
 /**
  * Auto-config for Pub/Sub.
@@ -98,6 +97,8 @@ public class GcpPubSubAutoConfiguration {
 	private final HeaderProvider headerProvider = new UserAgentHeaderProvider(this.getClass());
 
 	private ThreadPoolTaskScheduler threadPoolTaskScheduler;
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public GcpPubSubAutoConfiguration(GcpPubSubProperties gcpPubSubProperties,
 			GcpProjectIdProvider gcpProjectIdProvider,
@@ -152,16 +153,16 @@ public class GcpPubSubAutoConfiguration {
 		return scheduler;
 	}
 
-//	/**
-//	 * @deprecated Directly use the application.properties file to configure properties.
-//	 */
-//	@Bean
-//	@ConditionalOnMissingBean(name = "subscriberExecutorProvider")
-//	@Deprecated
-//	public ExecutorProvider subscriberExecutorProvider(
-//			@Qualifier("pubsubSubscriberThreadPool") ThreadPoolTaskScheduler scheduler) {
-//		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
-//	}
+	/**
+	 * @deprecated Directly use the application.properties file to configure properties.
+	 */
+	@Bean
+	@ConditionalOnMissingBean(name = "subscriberExecutorProvider")
+	@Deprecated
+	public ExecutorProvider subscriberExecutorProvider(
+			@Qualifier("pubsubSubscriberThreadPool") ThreadPoolTaskScheduler scheduler) {
+		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
+	}
 
 	@Bean
 	@ConditionalOnMissingBean
@@ -216,7 +217,7 @@ public class GcpPubSubAutoConfiguration {
 	}
 
 	private FlowControlSettings buildFlowControlSettings(
-			FlowControl flowControl) {
+			PubSubConfiguration.FlowControl flowControl) {
 		FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
 
 		boolean shouldBuild = ifSet(flowControl.getLimitExceededBehavior(), builder::setLimitExceededBehavior);
@@ -237,12 +238,13 @@ public class GcpPubSubAutoConfiguration {
 			@Qualifier("subscriberApiClock") ObjectProvider<ApiClock> apiClock,
 			@Qualifier("subscriberRetrySettings") ObjectProvider<RetrySettings> retrySettings,
 			@Qualifier("subscriberTransportChannelProvider") TransportChannelProvider subscriberTransportChannelProvider) {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider, this.gcpPubSubProperties.getSubscriberProperties());
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider, this.gcpPubSubProperties);
 		this.threadPoolTaskScheduler = factory.getThreadPoolTaskScheduler();
-//		if (executorProvider.isPresent()){
-//			// log a message saying this will be deprecated soon
-//			factory.setExecutorProvider(executorProvider);
-//		}
+		if (executorProvider.isPresent()) {
+			logger.warn(
+					"The subscriberExecutorProvider bean is being deprecated. Please configure it directly from application.properties.");
+			factory.setExecutorProvider(executorProvider.get());
+		}
 
 		factory.setCredentialsProvider(this.finalCredentialsProvider);
 		factory.setHeaderProvider(this.headerProvider);
@@ -272,7 +274,7 @@ public class GcpPubSubAutoConfiguration {
 	public BatchingSettings publisherBatchSettings() {
 		BatchingSettings.Builder builder = BatchingSettings.newBuilder();
 
-		Batching batching = this.gcpPubSubProperties.getPublisher()
+		PubSubConfiguration.Batching batching = this.gcpPubSubProperties.getPublisher()
 				.getBatching();
 
 		FlowControlSettings flowControlSettings = buildFlowControlSettings(batching.getFlowControl());
@@ -294,7 +296,7 @@ public class GcpPubSubAutoConfiguration {
 		return buildRetrySettings(this.gcpPubSubProperties.getPublisher().getRetry());
 	}
 
-	private RetrySettings buildRetrySettings(Retry retryProperties) {
+	private RetrySettings buildRetrySettings(PubSubConfiguration.Retry retryProperties) {
 		Builder builder = RetrySettings.newBuilder();
 
 		boolean shouldBuild = ifSet(retryProperties.getInitialRetryDelaySeconds(), x -> builder.setInitialRetryDelay(Duration.ofSeconds(x)));
@@ -407,8 +409,8 @@ public class GcpPubSubAutoConfiguration {
 	}
 
 	@PreDestroy
-	public void clearExecutor(){
-		if (this.threadPoolTaskScheduler != null){
+	public void clearExecutor() {
+		if (this.threadPoolTaskScheduler != null) {
 			this.threadPoolTaskScheduler.shutdown();
 		}
 	}

@@ -1,5 +1,6 @@
 :spring-data-commons-ref: https://docs.spring.io/spring-data/data-commons/docs/current/reference/html
 
+[#spring-data-cloud-datastore]
 == Spring Data Cloud Datastore
 
 NOTE: This integration is fully compatible with https://cloud.google.com/datastore/docs/[Firestore in Datastore Mode], but not with Firestore in Native Mode.
@@ -7,7 +8,7 @@ NOTE: This integration is fully compatible with https://cloud.google.com/datasto
 https://projects.spring.io/spring-data/[Spring Data] is an abstraction for storing and retrieving POJOs in numerous storage technologies.
 Spring Cloud GCP adds Spring Data support for https://cloud.google.com/firestore/[Google Cloud Firestore] in Datastore mode.
 
-Maven coordinates for this module only, using <<getting-started.adoc#_bill_of_materials, Spring Cloud GCP BOM>>:
+Maven coordinates for this module only, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
 
 [source,xml]
 ----
@@ -739,6 +740,7 @@ In addition to retrieving entities by their IDs, you can also submit queries.
 ----
 
 These methods, respectively, allow querying for:
+
 * entities mapped by a given entity class using all the same mapping and converting features
 * arbitrary types produced by a given mapping function
 * only the Cloud Datastore keys of the entities found by the query
@@ -949,6 +951,8 @@ public interface TradeRepository extends DatastoreRepository<Trade, String[]> {
   Slice<TestEntity> findBySymbol(String symbol, Pageable pageable);
 
   List<TestEntity> findBySymbol(String symbol, Sort sort);
+
+  Stream<TestEntity> findBySymbol(String symbol);
 }
 ----
 
@@ -1038,6 +1042,9 @@ public interface TraderRepository extends DatastoreRepository<Trader, String> {
 
   @Query("SELECT * FROM traders WHERE name = @trader_name")
   List<Trader> tradersByName(@Param("trader_name") String traderName);
+
+  @Query("SELECT * FROM traders WHERE name = @trader_name")
+  Stream<Trader> tradersStreamByName(@Param("trader_name") String traderName);
 
   @Query("SELECT * FROM  test_entities_ci WHERE name = @trader_name")
   TestEntity getOneTestEntity(@Param("trader_name") String traderName);

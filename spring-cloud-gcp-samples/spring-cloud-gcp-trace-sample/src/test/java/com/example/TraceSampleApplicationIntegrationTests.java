@@ -35,6 +35,7 @@ import com.google.devtools.cloudtrace.v1.GetTraceRequest;
 import com.google.devtools.cloudtrace.v1.Trace;
 import com.google.devtools.cloudtrace.v1.TraceServiceGrpc;
 import com.google.devtools.cloudtrace.v1.TraceServiceGrpc.TraceServiceBlockingStub;
+import com.google.devtools.cloudtrace.v1.TraceSpan;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
@@ -147,16 +148,31 @@ public class TraceSampleApplicationIntegrationTests {
 
 			log.debug("Getting trace...");
 			Trace trace = this.traceServiceStub.getTrace(getTraceRequest);
-			log.debug("Found trace!");
+			log.debug("Found trace! " + trace.getTraceId() + " with " + trace.getSpansCount() + " spans.");
 
 			assertThat(trace.getTraceId()).isEqualTo(uuidString);
-			assertThat(trace.getSpansCount()).isEqualTo(8);
+			assertThat(trace.getSpansCount()).isEqualTo(25);
 			log.debug("Trace spans match.");
 
 			// verify custom tags
 			assertThat(trace.getSpans(0).getLabelsMap().get("environment")).isEqualTo("QA");
 			assertThat(trace.getSpans(0).getLabelsMap().get("session-id")).isNotNull();
 			log.debug("Trace labels match.");
+
+			assertThat(trace.getSpansList().stream().map(TraceSpan::getName).distinct())
+					.containsExactly(
+							"get /",
+							"visit-meet-endpoint",
+							"get",
+							"get /meet",
+							"send-message-spring-integration",
+							"send",
+							"handle",
+							"publish",
+							"send-message-pub-sub-template",
+							"next-message",
+							"on-message");
+			log.debug("Trace span names match.");
 
 			List<LogEntry> logEntries = new ArrayList<>();
 			log.debug("Finding logs with filter: " + logFilter);
@@ -186,6 +202,10 @@ public class TraceSampleApplicationIntegrationTests {
 			log.debug("Found 'starting' line");
 			assertThat(logContents).contains("finished busy work");
 			log.debug("Found 'finishing' line");
+			assertThat(logContents).contains("Message arrived! Payload: All work is done via PubSubTemplate.");
+			log.debug("Found 'PubSubTemplate' line");
+			assertThat(logContents).contains("Message arrived! Payload: All work is done via SI.");
+			log.debug("Found 'SI' line");
 		});
 	}
 }

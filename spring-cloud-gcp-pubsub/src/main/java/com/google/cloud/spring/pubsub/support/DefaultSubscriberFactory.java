@@ -18,6 +18,8 @@ package com.google.cloud.spring.pubsub.support;
 
 import java.io.IOException;
 
+import javax.annotation.PreDestroy;
+
 import com.google.api.core.ApiClock;
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.core.CredentialsProvider;
@@ -32,13 +34,13 @@ import com.google.cloud.pubsub.v1.stub.GrpcSubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.pubsub.v1.PullRequest;
 import org.threeten.bp.Duration;
 
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.Assert;
-
-import javax.annotation.PreDestroy;
 
 /**
  * The default {@link SubscriberFactory} implementation.
@@ -54,7 +56,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	private final String projectId;
 
 	/**
-	 * @deprecated deprecated
+	 * @deprecated Directly use application.properties to configure ExecutorProvider instead
+	 * of Spring-managed beans
 	 */
 	@Deprecated
 	private ExecutorProvider executorProvider;
@@ -79,7 +82,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private RetrySettings subscriberStubRetrySettings;
 
-	private SubscriberProperties subscriberProperties;
+	private PubSubConfiguration pubSubConfiguration;
 
 	private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
@@ -87,28 +90,25 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 * Default {@link DefaultSubscriberFactory} constructor.
 	 * @param projectIdProvider provides the default GCP project ID for selecting the
 	 *     subscriptions
+	 * @deprecated Use the new {@link DefaultSubscriberFactory (GcpProjectIdProvider,PubSubConfiguration)} instead
 	 */
 	@Deprecated
 	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
-//		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
-//
-//		this.projectId = projectIdProvider.getProjectId();
-//		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
-		this(projectIdProvider, new SubscriberProperties());
+		this(projectIdProvider, new PubSubConfiguration());
 	}
 
 	/**
 	 * Default {@link DefaultSubscriberFactory} constructor.
 	 * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
-	 * @param subscriberProperties contains the subscriber properties to configure
+	 * @param pubSubConfiguration contains the subscriber properties to configure
 	 */
-	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider, SubscriberProperties subscriberProperties) {
+	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider, PubSubConfiguration pubSubConfiguration) {
 		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
 
 		this.projectId = projectIdProvider.getProjectId();
 		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
 
-		this.subscriberProperties = subscriberProperties;
+		this.pubSubConfiguration = pubSubConfiguration;
 	}
 
 	@Override
@@ -118,10 +118,11 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 
 	/**
-	 * Set the provider for the subscribers' executor. Useful to specify the number of threads to be
-	 * used by each executor.
+	 * Set the provider for the subscribers' executor. Useful to specify the number of threads
+	 * to be used by each executor.
 	 * @param executorProvider the executor provider to set
-	 * @deprecated deprecated using application.properties
+	 * @deprecated Directly use application.properties to configure ExecutorProvider instead
+	 * of Spring-managed beans
 	 */
 	@Deprecated
 	public void setExecutorProvider(ExecutorProvider executorProvider) {
@@ -215,7 +216,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(
 				PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId), receiver);
 
-		SubscriberProperties.Subscriber subscriberProperties = this.subscriberProperties
+		PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
 				.getSubscriber(subscriptionName);
 
 		if (this.channelProvider != null) {
@@ -279,7 +280,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	public SubscriberStub createSubscriberStub(String subscriptionName) {
 		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
 
-		SubscriberProperties.Subscriber subscriberProperties = this.subscriberProperties
+		PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
 				.getSubscriber(subscriptionName);
 
 		if (this.credentialsProvider != null) {
@@ -322,8 +323,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 * @param subscriber subscriber properties
 	 * @return executor provider
 	 */
-	private ExecutorProvider getExecutorProvider(SubscriberProperties.Subscriber subscriber) {
-		if (this.executorProvider != null){
+	@VisibleForTesting
+	public ExecutorProvider getExecutorProvider(PubSubConfiguration.Subscriber subscriber) {
+		if (this.executorProvider != null) {
 			return this.executorProvider;
 		}
 		this.threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
@@ -335,18 +337,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		return FixedExecutorProvider.create(this.threadPoolTaskScheduler.getScheduledExecutor());
 	}
 
-	public ThreadPoolTaskScheduler getThreadPoolTaskScheduler(){
+	public ThreadPoolTaskScheduler getThreadPoolTaskScheduler() {
 		return this.threadPoolTaskScheduler;
 	}
 
 	@PreDestroy
-	public void clearScheduler(){
+	public void clearScheduler() {
 		this.threadPoolTaskScheduler.shutdown();
-		System.out.println("DESTROY");
 	}
-
-	public void close() {
-		System.out.println("CLOSE");
-	}
-
 }

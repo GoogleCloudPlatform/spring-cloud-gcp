@@ -120,4 +120,10 @@ public class SimpleFirestoreReactiveRepository<T> implements FirestoreReactiveRe
 	public Mono<Void> deleteAll() {
 		return this.firestoreTemplate.deleteAll(this.type);
 	}
+
+	// TODO: Restore @Override when not supporting Spring Boot 2.4 anymore
+	//@Override
+	public Mono<Void> deleteAllById(Iterable<? extends String> ids) {
+		throw new UnsupportedOperationException();
+	}
 }

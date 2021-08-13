@@ -203,7 +203,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	/**
 	 * Spring config for tests.
 	 */
-	static class MockConfiguration {
+	public static class MockConfiguration {
 
 		// We'll fake a successful call to GCP for the validation of our "credentials"
 		@Bean
