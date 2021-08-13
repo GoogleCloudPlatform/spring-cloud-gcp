@@ -69,9 +69,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import javax.annotation.PreDestroy;
 
-import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.Batching;
-import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.FlowControl;
-import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.Retry;
+//import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.Batching;
+//import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.FlowControl;
+//import static com.google.cloud.spring.pubsub.core.PubSubConfiguration.Retry;
 
 /**
  * Auto-config for Pub/Sub.
@@ -237,7 +237,7 @@ public class GcpPubSubAutoConfiguration {
 			@Qualifier("subscriberApiClock") ObjectProvider<ApiClock> apiClock,
 			@Qualifier("subscriberRetrySettings") ObjectProvider<RetrySettings> retrySettings,
 			@Qualifier("subscriberTransportChannelProvider") TransportChannelProvider subscriberTransportChannelProvider) {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider, this.gcpPubSubProperties);
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider, this.gcpPubSubProperties.getSubscriberProperties());
 		this.threadPoolTaskScheduler = factory.getThreadPoolTaskScheduler();
 //		if (executorProvider.isPresent()){
 //			// log a message saying this will be deprecated soon

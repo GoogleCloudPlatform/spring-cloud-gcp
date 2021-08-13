@@ -32,7 +32,6 @@ import com.google.cloud.pubsub.v1.stub.GrpcSubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.pubsub.v1.PullRequest;
 import org.threeten.bp.Duration;
 
@@ -80,7 +79,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private RetrySettings subscriberStubRetrySettings;
 
-	private PubSubConfiguration pubSubConfiguration;
+	private SubscriberProperties subscriberProperties;
 
 	private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
@@ -95,21 +94,21 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 //
 //		this.projectId = projectIdProvider.getProjectId();
 //		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
-		this(projectIdProvider, new PubSubConfiguration());
+		this(projectIdProvider, new SubscriberProperties());
 	}
 
 	/**
 	 * Default {@link DefaultSubscriberFactory} constructor.
 	 * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
-	 * @param pubSubConfiguration contains the subscriber properties to configure
+	 * @param subscriberProperties contains the subscriber properties to configure
 	 */
-	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider, PubSubConfiguration pubSubConfiguration) {
+	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider, SubscriberProperties subscriberProperties) {
 		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
 
 		this.projectId = projectIdProvider.getProjectId();
 		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
 
-		this.pubSubConfiguration = pubSubConfiguration;
+		this.subscriberProperties = subscriberProperties;
 	}
 
 	@Override
@@ -216,7 +215,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(
 				PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId), receiver);
 
-		PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
+		SubscriberProperties.Subscriber subscriberProperties = this.subscriberProperties
 				.getSubscriber(subscriptionName);
 
 		if (this.channelProvider != null) {
@@ -280,7 +279,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	public SubscriberStub createSubscriberStub(String subscriptionName) {
 		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
 
-		PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
+		SubscriberProperties.Subscriber subscriberProperties = this.subscriberProperties
 				.getSubscriber(subscriptionName);
 
 		if (this.credentialsProvider != null) {
@@ -323,7 +322,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 * @param subscriber subscriber properties
 	 * @return executor provider
 	 */
-	private ExecutorProvider getExecutorProvider(PubSubConfiguration.Subscriber subscriber) {
+	private ExecutorProvider getExecutorProvider(SubscriberProperties.Subscriber subscriber) {
 		if (this.executorProvider != null){
 			return this.executorProvider;
 		}

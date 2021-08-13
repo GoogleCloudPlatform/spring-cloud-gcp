@@ -18,7 +18,6 @@ package com.google.cloud.spring.pubsub.support;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.pubsub.v1.Subscriber;
-import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.pubsub.v1.PullRequest;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,7 +42,7 @@ public class DefaultSubscriberFactoryTests {
 	private CredentialsProvider credentialsProvider;
 
 	@Mock
-	private PubSubConfiguration pubSubConfiguration;
+	private SubscriberProperties pubSubConfiguration;
 
 	/**
 	 * used to check exception messages and types.
@@ -54,7 +53,7 @@ public class DefaultSubscriberFactoryTests {
 	@Test
 	public void testNewSubscriber() {
 		when(pubSubConfiguration.getSubscriber("midnight cowboy"))
-				.thenReturn(new PubSubConfiguration.Subscriber());
+				.thenReturn(new SubscriberProperties.Subscriber());
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfiguration);
 		factory.setCredentialsProvider(this.credentialsProvider);
 
