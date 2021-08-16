@@ -55,12 +55,9 @@ public class PubSubConfiguration {
 	}
 
 	public Subscriber getSubscriber(String name) {
-		if (!this.properties.containsKey(name)) {
-			PubSubProperties property = new PubSubProperties();
-			property.setSubscriber(this.subscriber);
-			this.properties.put(name, property);
-		}
-
+		PubSubProperties property = new PubSubProperties();
+		property.setSubscriber(this.subscriber);
+		this.properties.putIfAbsent(name, property);
 		return this.properties.get(name).getSubscriber();
 	}
 

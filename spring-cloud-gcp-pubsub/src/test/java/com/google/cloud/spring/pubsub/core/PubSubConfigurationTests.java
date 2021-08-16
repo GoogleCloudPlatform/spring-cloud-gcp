@@ -112,6 +112,16 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
+	public void testSubscriberMapProperties_default() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+
+		assertThat(pubSubConfiguration.getSubscriber("subscription-name").getExecutorThreads())
+				.isEqualTo(4);
+		assertThat(pubSubConfiguration.getProperties().get("subscription-name").getSubscriber().getExecutorThreads())
+				.isEqualTo(4);
+	}
+
+	@Test
 	public void testDefaultPublisherProperties() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Publisher publisher = pubSubConfiguration.getPublisher();
