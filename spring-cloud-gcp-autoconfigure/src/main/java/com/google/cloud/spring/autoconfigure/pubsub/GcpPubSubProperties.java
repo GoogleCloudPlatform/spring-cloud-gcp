@@ -35,23 +35,26 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 public class GcpPubSubProperties extends PubSubConfiguration implements CredentialsSupplier {
 
 	/**
-	 * Overrides the GCP OAuth2 credentials specified in the Core module.
-	 */
-	@NestedConfigurationProperty
-	private final Credentials credentials = new Credentials(GcpScope.PUBSUB.getUrl());
-	/**
 	 * Overrides the GCP project ID specified in the Core module.
 	 */
 	private String projectId;
+
 	/**
 	 * The host and port of the local running emulator. If provided, this will setup the
 	 * client to connect against a running pub/sub emulator.
 	 */
 	private String emulatorHost;
+
 	/**
 	 * How often to ping the server to keep the channel alive.
 	 */
 	private int keepAliveIntervalMinutes = 5;
+
+	/**
+	 * Overrides the GCP OAuth2 credentials specified in the Core module.
+	 */
+	@NestedConfigurationProperty
+	private final Credentials credentials = new Credentials(GcpScope.PUBSUB.getUrl());
 
 	public String getProjectId() {
 		return this.projectId;
