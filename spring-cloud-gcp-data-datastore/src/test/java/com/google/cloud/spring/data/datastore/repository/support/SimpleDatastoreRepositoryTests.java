@@ -354,7 +354,8 @@ public class SimpleDatastoreRepositoryTests {
 
 	@Test
 	public void deleteAllByIdUnimplemented() {
-		assertThatThrownBy(() -> this.simpleDatastoreRepository.deleteAllById(new ArrayList<>()))
-				.isInstanceOf(UnsupportedOperationException.class);
+		List<String> keys = Arrays.asList("1", "2");
+		this.simpleDatastoreRepository.deleteAllById(keys);
+		verify(this.datastoreTemplate).deleteAllById(keys, Object.class);
 	}
 }
