@@ -16,21 +16,26 @@
 
 package com.google.cloud.spring.data.firestore;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.Test;
+import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class SimpleFirestoreReactiveRepositoryTests {
 
 	@Test
-	public void deleteAllByIdUnimplemented() {
+	public void deleteAllById() {
 		FirestoreTemplate mockTemplate = mock(FirestoreTemplate.class);
 		SimpleFirestoreReactiveRepository<String> repository =
 				new SimpleFirestoreReactiveRepository<>(mockTemplate, String.class);
-		assertThatThrownBy(() -> repository.deleteAllById(new ArrayList<>()))
-				.isInstanceOf(UnsupportedOperationException.class);
+		Publisher<String> ids = Flux.fromIterable(Arrays.asList("1", "2"));
+		repository.deleteAllById(ids);
+		verify(mockTemplate).deleteById(same(ids), eq(String.class));
 	}
 }

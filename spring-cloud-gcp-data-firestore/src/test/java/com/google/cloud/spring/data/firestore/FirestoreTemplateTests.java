@@ -215,6 +215,23 @@ public class FirestoreTemplateTests {
 		verify(this.firestoreStub, times(1)).commit(eq(builder.build()), any());
 	}
 
+	@Test
+	public void deleteByIdTest() {
+		mockCommitMethod();
+		Flux<String> idPublisher = Flux.just("e1", "e2");
+		StepVerifier.create(
+				this.firestoreTemplate
+						.deleteById(idPublisher, TestEntity.class))
+				.verifyComplete();
+
+		CommitRequest.Builder builder = CommitRequest.newBuilder()
+				.setDatabase("projects/my-project/databases/(default)");
+
+		builder.addWrites(Write.newBuilder().setDelete(parent + "/testEntities/e1").build());
+		builder.addWrites(Write.newBuilder().setDelete(parent + "/testEntities/e2").build());
+
+		verify(this.firestoreStub, times(1)).commit(eq(builder.build()), any());
+	}
 
 	private void mockCommitMethod() {
 		doAnswer(invocation -> {
