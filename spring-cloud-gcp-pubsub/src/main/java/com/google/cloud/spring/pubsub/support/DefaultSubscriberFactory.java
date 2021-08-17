@@ -17,6 +17,7 @@
 package com.google.cloud.spring.pubsub.support;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 import javax.annotation.PreDestroy;
 
@@ -304,9 +305,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.setClock(this.apiClock);
 		}
 
-		if (this.subscriberStubRetrySettings != null) {
-			subscriberStubSettings.pullSettings().setRetrySettings(
-					this.subscriberStubRetrySettings);
+		RetrySettings retrySettings = getRetrySettings(subscriberProperties);
+		if (retrySettings != null) {
+			subscriberStubSettings.pullSettings().setRetrySettings(retrySettings);
 		}
 
 		try {
@@ -334,6 +335,45 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		this.threadPoolTaskScheduler.initialize();
 
 		return FixedExecutorProvider.create(this.threadPoolTaskScheduler.getScheduledExecutor());
+	}
+
+	/**
+	 * Creates {@link RetrySettings}, given subscriber properties. Returns null if none of the
+	 * retry settings are set. Note that if retry settings are set using a Spring-managed bean
+	 * then subscription-specific settings in application.properties are ignored.
+	 * @param subscriber subscriber properties
+	 * @return retry settings for subscriber
+	 */
+	public RetrySettings getRetrySettings(PubSubConfiguration.Subscriber subscriber) {
+		if (this.subscriberStubRetrySettings != null) {
+			return this.subscriberStubRetrySettings;
+		}
+
+		RetrySettings.Builder builder = RetrySettings.newBuilder();
+		PubSubConfiguration.Retry retryProperties = subscriber.getRetry();
+		boolean shouldBuild = ifSet(retryProperties.getInitialRetryDelaySeconds(),
+				x -> builder.setInitialRetryDelay(Duration.ofSeconds(x)));
+		shouldBuild |= ifSet(retryProperties.getInitialRpcTimeoutSeconds(),
+				x -> builder.setInitialRpcTimeout(Duration.ofSeconds(x)));
+		shouldBuild |= ifSet(retryProperties.getMaxAttempts(), builder::setMaxAttempts);
+		shouldBuild |= ifSet(retryProperties.getMaxRetryDelaySeconds(),
+				x -> builder.setMaxRetryDelay(Duration.ofSeconds(x)));
+		shouldBuild |= ifSet(retryProperties.getMaxRpcTimeoutSeconds(),
+				x -> builder.setMaxRpcTimeout(Duration.ofSeconds(x)));
+		shouldBuild |= ifSet(retryProperties.getRetryDelayMultiplier(), builder::setRetryDelayMultiplier);
+		shouldBuild |= ifSet(retryProperties.getTotalTimeoutSeconds(),
+				x -> builder.setTotalTimeout(Duration.ofSeconds(x)));
+		shouldBuild |= ifSet(retryProperties.getRpcTimeoutMultiplier(), builder::setRpcTimeoutMultiplier);
+
+		return shouldBuild ? builder.build() : null;
+	}
+
+	private <T> boolean ifSet(T property, Consumer<T> consumer) {
+		if (property != null) {
+			consumer.accept(property);
+			return true;
+		}
+		return false;
 	}
 
 	@PreDestroy

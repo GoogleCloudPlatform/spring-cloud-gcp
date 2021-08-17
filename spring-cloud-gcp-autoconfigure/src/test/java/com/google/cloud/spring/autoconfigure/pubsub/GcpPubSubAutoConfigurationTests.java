@@ -21,6 +21,7 @@ import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Test;
 
@@ -49,8 +50,10 @@ public class GcpPubSubAutoConfigurationTests {
 			GcpPubSubProperties props = ctx.getBean(GcpPubSubProperties.class);
 			assertThat(props.getKeepAliveIntervalMinutes()).isEqualTo(5);
 
-			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider", TransportChannelProvider.class);
-			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider", TransportChannelProvider.class);
+			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider",
+					TransportChannelProvider.class);
+			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider",
+					TransportChannelProvider.class);
 			assertThat(((InstantiatingGrpcChannelProvider) subscriberTcp).getKeepAliveTime().toMinutes())
 					.isEqualTo(5);
 			assertThat(((InstantiatingGrpcChannelProvider) publisherTcp).getKeepAliveTime().toMinutes())
@@ -139,6 +142,124 @@ public class GcpPubSubAutoConfigurationTests {
 					.getBean(GcpPubSubProperties.class);
 			assertThat(gcpPubSubProperties.getSubscriber("subscription-name").getExecutorThreads()).isEqualTo(3);
 			assertThat(gcpPubSubProperties.getSubscriber("other").getExecutorThreads()).isEqualTo(5);
+		});
+	}
+
+	@Test
+	public void retrySettings_globalConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.retry.total-timeout-seconds=1",
+						"spring.cloud.gcp.pubsub.subscriber.retry.initial-retry-delay-seconds=2",
+						"spring.cloud.gcp.pubsub.subscriber.retry.retry-delay-multiplier=3",
+						"spring.cloud.gcp.pubsub.subscriber.retry.max-retry-delay-seconds=4",
+						"spring.cloud.gcp.pubsub.subscriber.retry.max-attempts=5",
+						"spring.cloud.gcp.pubsub.subscriber.retry.jittered=true",
+						"spring.cloud.gcp.pubsub.subscriber.retry.initial-rpc-timeout-seconds=6",
+						"spring.cloud.gcp.pubsub.subscriber.retry.rpc-timeout-multiplier=7",
+						"spring.cloud.gcp.pubsub.subscriber.retry.max-rpc-timeout-seconds=8")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			PubSubConfiguration.Retry retrySettings = gcpPubSubProperties.getSubscriber().getRetry();
+			assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(1L);
+			assertThat(retrySettings.getInitialRetryDelaySeconds()).isEqualTo(2L);
+			assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(3);
+			assertThat(retrySettings.getMaxRetryDelaySeconds()).isEqualTo(4);
+			assertThat(retrySettings.getMaxAttempts()).isEqualTo(5);
+			assertThat(retrySettings.getJittered()).isTrue();
+			assertThat(retrySettings.getInitialRpcTimeoutSeconds()).isEqualTo(6);
+			assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(7);
+			assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(8);
+		});
+	}
+
+	@Test
+	public void retrySettings_selectiveConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.total-timeout-seconds=1",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.initial-retry-delay-seconds=2",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.retry-delay-multiplier=3",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.max-retry-delay-seconds=4",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.max-attempts=5",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.jittered=true",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.initial-rpc-timeout-seconds=6",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.rpc-timeout-multiplier=7",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.max-rpc-timeout-seconds=8")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			PubSubConfiguration.Retry retrySettings = gcpPubSubProperties.getSubscriber("subscription-name").getRetry();
+			assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(1L);
+			assertThat(retrySettings.getInitialRetryDelaySeconds()).isEqualTo(2L);
+			assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(3);
+			assertThat(retrySettings.getMaxRetryDelaySeconds()).isEqualTo(4);
+			assertThat(retrySettings.getMaxAttempts()).isEqualTo(5);
+			assertThat(retrySettings.getJittered()).isTrue();
+			assertThat(retrySettings.getInitialRpcTimeoutSeconds()).isEqualTo(6);
+			assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(7);
+			assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(8);
+		});
+	}
+
+	@Test
+	public void retrySettings_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.retry.total-timeout-seconds=10",
+						"spring.cloud.gcp.pubsub.subscriber.retry.initial-retry-delay-seconds=10",
+						"spring.cloud.gcp.pubsub.subscriber.retry.retry-delay-multiplier=10",
+						"spring.cloud.gcp.pubsub.subscriber.retry.max-retry-delay-seconds=10",
+						"spring.cloud.gcp.pubsub.subscriber.retry.max-attempts=10",
+						"spring.cloud.gcp.pubsub.subscriber.retry.initial-rpc-timeout-seconds=10",
+						"spring.cloud.gcp.pubsub.subscriber.retry.rpc-timeout-multiplier=10",
+						"spring.cloud.gcp.pubsub.subscriber.retry.max-rpc-timeout-seconds=10",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.total-timeout-seconds=1",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.initial-retry-delay-seconds=2",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.retry-delay-multiplier=3",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.max-retry-delay-seconds=4",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.max-attempts=5",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.initial-rpc-timeout-seconds=6",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.rpc-timeout-multiplier=7",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.retry.max-rpc-timeout-seconds=8")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+
+			// Validate settings for subscribers that have subscription-specific retry settings
+			// property set
+			PubSubConfiguration.Retry retrySettings = gcpPubSubProperties.getSubscriber("subscription-name").getRetry();
+			assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(1L);
+			assertThat(retrySettings.getInitialRetryDelaySeconds()).isEqualTo(2L);
+			assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(3);
+			assertThat(retrySettings.getMaxRetryDelaySeconds()).isEqualTo(4);
+			assertThat(retrySettings.getMaxAttempts()).isEqualTo(5);
+			assertThat(retrySettings.getInitialRpcTimeoutSeconds()).isEqualTo(6);
+			assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(7);
+			assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(8);
+
+			// Validate settings for subscribers that do not have subscription-specific retry settings
+			// property set
+			PubSubConfiguration.Retry retrySettingsForOtherSubscriber = gcpPubSubProperties.getSubscriber("other")
+					.getRetry();
+			assertThat(retrySettingsForOtherSubscriber.getTotalTimeoutSeconds()).isEqualTo(10L);
+			assertThat(retrySettingsForOtherSubscriber.getInitialRetryDelaySeconds()).isEqualTo(10L);
+			assertThat(retrySettingsForOtherSubscriber.getRetryDelayMultiplier()).isEqualTo(10);
+			assertThat(retrySettingsForOtherSubscriber.getMaxRetryDelaySeconds()).isEqualTo(10);
+			assertThat(retrySettingsForOtherSubscriber.getMaxAttempts()).isEqualTo(10);
+			assertThat(retrySettingsForOtherSubscriber.getInitialRpcTimeoutSeconds()).isEqualTo(10);
+			assertThat(retrySettingsForOtherSubscriber.getRpcTimeoutMultiplier()).isEqualTo(10);
+			assertThat(retrySettingsForOtherSubscriber.getMaxRpcTimeoutSeconds()).isEqualTo(10);
 		});
 	}
 

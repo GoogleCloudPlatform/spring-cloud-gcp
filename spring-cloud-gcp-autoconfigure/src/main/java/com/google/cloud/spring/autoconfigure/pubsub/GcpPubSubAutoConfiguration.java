@@ -199,8 +199,12 @@ public class GcpPubSubAutoConfiguration {
 		return new PubSubTemplate(pubSubPublisherTemplate, pubSubSubscriberTemplate);
 	}
 
+	/**
+	 * @deprecated Directly use the application.properties file to configure properties.
+	 */
 	@Bean
 	@ConditionalOnMissingBean(name = "subscriberRetrySettings")
+	@Deprecated
 	public RetrySettings subscriberRetrySettings() {
 		return buildRetrySettings(this.gcpPubSubProperties.getSubscriber().getRetry());
 	}
@@ -240,14 +244,17 @@ public class GcpPubSubAutoConfiguration {
 					"The subscriberExecutorProvider bean is being deprecated. Please use application.properties to configure properties");
 			factory.setExecutorProvider(executorProvider.get());
 		}
-
 		factory.setCredentialsProvider(this.finalCredentialsProvider);
 		factory.setHeaderProvider(this.headerProvider);
 		factory.setChannelProvider(subscriberTransportChannelProvider);
 		systemExecutorProvider.ifAvailable(factory::setSystemExecutorProvider);
 		flowControlSettings.ifAvailable(factory::setFlowControlSettings);
 		apiClock.ifAvailable(factory::setApiClock);
-		retrySettings.ifAvailable(factory::setSubscriberStubRetrySettings);
+		if (retrySettings.getIfAvailable() != null) {
+			logger.warn(
+					"The subscriberRetrySettings bean is being deprecated. Please use application.properties to configure properties");
+			factory.setSubscriberStubRetrySettings(retrySettings.getIfAvailable());
+		}
 		if (this.gcpPubSubProperties.getSubscriber().getMaxAckExtensionPeriod() != null) {
 			factory.setMaxAckExtensionPeriod(Duration.ofSeconds(
 					this.gcpPubSubProperties.getSubscriber().getMaxAckExtensionPeriod()));
