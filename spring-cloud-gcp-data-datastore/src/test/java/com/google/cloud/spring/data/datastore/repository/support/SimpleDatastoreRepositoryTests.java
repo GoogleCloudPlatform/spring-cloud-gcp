@@ -38,7 +38,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -353,7 +352,7 @@ public class SimpleDatastoreRepositoryTests {
 	}
 
 	@Test
-	public void deleteAllByIdUnimplemented() {
+	public void deleteAllById() {
 		List<String> keys = Arrays.asList("1", "2");
 		this.simpleDatastoreRepository.deleteAllById(keys);
 		verify(this.datastoreTemplate).deleteAllById(keys, Object.class);
