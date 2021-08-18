@@ -238,8 +238,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberBuilder.setSystemExecutorProvider(this.systemExecutorProvider);
 		}
 
-		if (this.flowControlSettings != null) {
-			subscriberBuilder.setFlowControlSettings(this.flowControlSettings);
+		FlowControlSettings flowControlSettings = getFlowControlSettings(subscriberProperties.getFlowControl());
+		if (flowControlSettings != null) {
+			subscriberBuilder.setFlowControlSettings(flowControlSettings);
 		}
 
 		if (this.maxAckExtensionPeriod != null) {
@@ -305,7 +306,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.setClock(this.apiClock);
 		}
 
-		RetrySettings retrySettings = getRetrySettings(subscriberProperties);
+		RetrySettings retrySettings = getRetrySettings(subscriberProperties.getRetry());
 		if (retrySettings != null) {
 			subscriberStubSettings.pullSettings().setRetrySettings(retrySettings);
 		}
@@ -338,19 +339,18 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	/**
-	 * Creates {@link RetrySettings}, given subscriber properties. Returns null if none of the
+	 * Creates {@link RetrySettings}, given subscriber retry properties. Returns null if none of the
 	 * retry settings are set. Note that if retry settings are set using a Spring-managed bean
 	 * then subscription-specific settings in application.properties are ignored.
-	 * @param subscriber subscriber properties
+	 * @param retryProperties subscriber retry properties
 	 * @return retry settings for subscriber
 	 */
-	public RetrySettings getRetrySettings(PubSubConfiguration.Subscriber subscriber) {
+	public RetrySettings getRetrySettings(PubSubConfiguration.Retry retryProperties) {
 		if (this.subscriberStubRetrySettings != null) {
 			return this.subscriberStubRetrySettings;
 		}
 
 		RetrySettings.Builder builder = RetrySettings.newBuilder();
-		PubSubConfiguration.Retry retryProperties = subscriber.getRetry();
 		boolean shouldBuild = ifSet(retryProperties.getInitialRetryDelaySeconds(),
 				x -> builder.setInitialRetryDelay(Duration.ofSeconds(x)));
 		shouldBuild |= ifSet(retryProperties.getInitialRpcTimeoutSeconds(),
@@ -374,6 +374,27 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Creates {@link FlowControlSettings}, given subscriber flow control settings. Returns
+	 * null if none of the flow control settings are set. Note that if flow control settings
+	 * are set using a Spring-managed bean then subscription-specific settings in
+	 * application.properties are ignored.
+	 * @param flowControl flow control settings
+	 * @return flow control settings for subscriber
+	 */
+	FlowControlSettings getFlowControlSettings(
+			PubSubConfiguration.FlowControl flowControl) {
+		if (this.flowControlSettings != null) {
+			return this.flowControlSettings;
+		}
+		FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
+		boolean shouldBuild = ifSet(flowControl.getLimitExceededBehavior(), builder::setLimitExceededBehavior);
+		shouldBuild |= ifSet(flowControl.getMaxOutstandingElementCount(), builder::setMaxOutstandingElementCount);
+		shouldBuild |= ifSet(flowControl.getMaxOutstandingRequestBytes(), builder::setMaxOutstandingRequestBytes);
+
+		return shouldBuild ? builder.build() : null;
 	}
 
 	@PreDestroy

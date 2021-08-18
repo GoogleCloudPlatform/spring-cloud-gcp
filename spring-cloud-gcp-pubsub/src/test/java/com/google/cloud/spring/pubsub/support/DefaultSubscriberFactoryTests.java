@@ -16,7 +16,10 @@
 
 package com.google.cloud.spring.pubsub.support;
 
+import com.google.api.gax.batching.FlowControlSettings;
+import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.pubsub.v1.PullRequest;
@@ -26,6 +29,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.threeten.bp.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -44,6 +48,12 @@ public class DefaultSubscriberFactoryTests {
 
 	@Mock
 	private PubSubConfiguration pubSubConfiguration;
+
+	@Mock
+	private PubSubConfiguration.Retry retry;
+
+	@Mock
+	private PubSubConfiguration.FlowControl flowControl;
 
 	/**
 	 * used to check exception messages and types.
@@ -95,5 +105,48 @@ public class DefaultSubscriberFactoryTests {
 
 		PullRequest request = factory.createPullRequest("test", null, true);
 		assertThat(request.getMaxMessages()).isEqualTo(Integer.MAX_VALUE);
+	}
+
+	@Test
+	public void testGetRetrySettings() {
+		RetrySettings expectedRetrySettings = RetrySettings.newBuilder()
+				.setTotalTimeout(Duration.ofSeconds(10))
+				.setInitialRetryDelay(Duration.ofSeconds(10))
+				.setRetryDelayMultiplier(10.0)
+				.setInitialRpcTimeout(Duration.ofSeconds(10))
+				.setMaxRetryDelay(Duration.ofSeconds(10))
+				.setMaxAttempts(10)
+				.setRpcTimeoutMultiplier(10.0)
+				.setMaxRpcTimeout(Duration.ofSeconds(10))
+				.build();
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", null);
+		factory.setSubscriberStubRetrySettings(expectedRetrySettings);
+
+		RetrySettings actualRetrySettings = factory.getRetrySettings(retry);
+
+		assertThat(actualRetrySettings.getTotalTimeout()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getInitialRetryDelay()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getRetryDelayMultiplier()).isEqualTo(10.0);
+		assertThat(actualRetrySettings.getInitialRpcTimeout()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getMaxRetryDelay()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getMaxAttempts()).isEqualTo(10);
+		assertThat(actualRetrySettings.getRpcTimeoutMultiplier()).isEqualTo(10.0);
+		assertThat(actualRetrySettings.getMaxRpcTimeout()).isEqualTo(Duration.ofSeconds(10));
+	}
+
+	@Test
+	public void testGetFlowControlSettings() {
+		FlowControlSettings expectedFlowSettings = FlowControlSettings.newBuilder()
+				.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Block).setMaxOutstandingElementCount(10L)
+				.setMaxOutstandingRequestBytes(10L)
+				.build();
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", null);
+		factory.setFlowControlSettings(expectedFlowSettings);
+
+		FlowControlSettings actualFlowSettings = factory.getFlowControlSettings(flowControl);
+
+		assertThat(actualFlowSettings.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Block);
+		assertThat(actualFlowSettings.getMaxOutstandingElementCount()).isEqualTo(10L);
+		assertThat(actualFlowSettings.getMaxOutstandingRequestBytes()).isEqualTo(10L);
 	}
 }

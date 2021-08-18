@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub;
 
+import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
@@ -72,8 +73,10 @@ public class GcpPubSubAutoConfigurationTests {
 			GcpPubSubProperties props = ctx.getBean(GcpPubSubProperties.class);
 			assertThat(props.getKeepAliveIntervalMinutes()).isEqualTo(2);
 
-			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider", TransportChannelProvider.class);
-			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider", TransportChannelProvider.class);
+			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider",
+					TransportChannelProvider.class);
+			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider",
+					TransportChannelProvider.class);
 			assertThat(((InstantiatingGrpcChannelProvider) subscriberTcp).getKeepAliveTime().toMinutes())
 					.isEqualTo(2);
 			assertThat(((InstantiatingGrpcChannelProvider) publisherTcp).getKeepAliveTime().toMinutes())
@@ -89,11 +92,13 @@ public class GcpPubSubAutoConfigurationTests {
 
 		contextRunner.run(ctx -> {
 
-			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider", TransportChannelProvider.class);
+			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider",
+					TransportChannelProvider.class);
 			assertThat(FieldUtils.readField(subscriberTcp, "maxInboundMessageSize", true))
 					.isEqualTo(20 << 20);
 
-			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider", TransportChannelProvider.class);
+			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider",
+					TransportChannelProvider.class);
 			assertThat(FieldUtils.readField(publisherTcp, "maxInboundMessageSize", true))
 					.isEqualTo(Integer.MAX_VALUE);
 		});
@@ -260,6 +265,84 @@ public class GcpPubSubAutoConfigurationTests {
 			assertThat(retrySettingsForOtherSubscriber.getInitialRpcTimeoutSeconds()).isEqualTo(10);
 			assertThat(retrySettingsForOtherSubscriber.getRpcTimeoutMultiplier()).isEqualTo(10);
 			assertThat(retrySettingsForOtherSubscriber.getMaxRpcTimeoutSeconds()).isEqualTo(10);
+		});
+	}
+
+	@Test
+	public void flowControlSettings_globalConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.flow-control.max-outstanding-element-Count=11",
+						"spring.cloud.gcp.pubsub.subscriber.flow-control.max-outstanding-request-Bytes=12",
+						"spring.cloud.gcp.pubsub.subscriber.flow-control.limit-exceeded-behavior=Ignore")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			PubSubConfiguration.FlowControl flowControl = gcpPubSubProperties.getSubscriber().getFlowControl();
+			assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
+			assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
+			assertThat(flowControl.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Ignore);
+		});
+	}
+
+	@Test
+	public void flowControlSettings_selectiveConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.flow-control.max-outstanding-element-Count=11",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.flow-control.max-outstanding-request-Bytes=12",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.flow-control.limit-exceeded-behavior=Ignore")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			PubSubConfiguration.FlowControl flowControl = gcpPubSubProperties.getSubscriber("subscription-name")
+					.getFlowControl();
+			assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
+			assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
+			assertThat(flowControl.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Ignore);
+		});
+	}
+
+	@Test
+	public void flowControlSettings_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.flow-control.max-outstanding-element-Count=10",
+						"spring.cloud.gcp.pubsub.subscriber.flow-control.max-outstanding-request-Bytes=10",
+						"spring.cloud.gcp.pubsub.subscriber.flow-control.limit-exceeded-behavior=Block",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.flow-control.max-outstanding-element-Count=11",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.flow-control.max-outstanding-request-Bytes=12",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.flow-control.limit-exceeded-behavior=Ignore")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+
+			// Validate settings for subscribers that have subscription-specific flow control settings
+			// property set
+			PubSubConfiguration.FlowControl flowControl = gcpPubSubProperties.getSubscriber("subscription-name")
+					.getFlowControl();
+			assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
+			assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
+			assertThat(flowControl.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Ignore);
+
+			// Validate settings for subscribers that do not have subscription-specific flow control
+			// settings
+			// property set
+			PubSubConfiguration.FlowControl flowControlForOtherSubscriber = gcpPubSubProperties.getSubscriber("other")
+					.getFlowControl();
+			assertThat(flowControlForOtherSubscriber.getMaxOutstandingElementCount()).isEqualTo(10L);
+			assertThat(flowControlForOtherSubscriber.getMaxOutstandingRequestBytes()).isEqualTo(10L);
+			assertThat(flowControlForOtherSubscriber.getLimitExceededBehavior())
+					.isEqualTo(FlowController.LimitExceededBehavior.Block);
 		});
 	}
 

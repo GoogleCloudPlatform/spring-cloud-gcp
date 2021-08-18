@@ -209,8 +209,12 @@ public class GcpPubSubAutoConfiguration {
 		return buildRetrySettings(this.gcpPubSubProperties.getSubscriber().getRetry());
 	}
 
+	/**
+	 * @deprecated Directly use the application.properties file to configure properties.
+	 */
 	@Bean
 	@ConditionalOnMissingBean(name = "subscriberFlowControlSettings")
+	@Deprecated
 	public FlowControlSettings subscriberFlowControlSettings() {
 		return buildFlowControlSettings(
 				this.gcpPubSubProperties.getSubscriber().getFlowControl());
@@ -248,7 +252,11 @@ public class GcpPubSubAutoConfiguration {
 		factory.setHeaderProvider(this.headerProvider);
 		factory.setChannelProvider(subscriberTransportChannelProvider);
 		systemExecutorProvider.ifAvailable(factory::setSystemExecutorProvider);
-		flowControlSettings.ifAvailable(factory::setFlowControlSettings);
+		if (flowControlSettings.getIfAvailable() != null) {
+			logger.warn(
+					"The subscriberFlowControlSettings bean is being deprecated. Please use application.properties to configure properties");
+			factory.setFlowControlSettings(flowControlSettings.getIfAvailable());
+		}
 		apiClock.ifAvailable(factory::setApiClock);
 		if (retrySettings.getIfAvailable() != null) {
 			logger.warn(
