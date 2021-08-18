@@ -16,24 +16,44 @@
 
 package com.google.cloud.spring.data.spanner;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import com.google.cloud.spanner.Key;
+import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.repository.support.SimpleSpannerRepository;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class SimpleSpannerRepositoryTests {
 
 	@Test
 	public void deleteAllByIdUnimplemented() {
 		SpannerTemplate mockTemplate = mock(SpannerTemplate.class);
+		SpannerMappingContext spannerMappingContext = mock(SpannerMappingContext.class);
 		SimpleSpannerRepository<Book, String> repository = new SimpleSpannerRepository<>(mockTemplate, Book.class);
 
-		assertThatThrownBy(() -> repository.deleteAllById(new ArrayList<>()))
-				.isInstanceOf(UnsupportedOperationException.class);
+		ConverterAwareMappingSpannerEntityProcessor processor = new ConverterAwareMappingSpannerEntityProcessor(
+				spannerMappingContext);
+		when(mockTemplate.getSpannerEntityProcessor()).thenReturn(processor);
+
+		List<String> keys = Arrays.asList("1", "2");
+
+		KeySet.Builder builder = KeySet.newBuilder();
+		Key key1 = processor.convertToKey("1");
+		Key key2 = processor.convertToKey("2");
+		builder.addKey(key1);
+		builder.addKey(key2);
+		KeySet keySet = builder.build();
+
+		repository.deleteAllById(keys);
+		verify(mockTemplate).delete(Book.class, keySet);
 	}
 
 	static class Book {
