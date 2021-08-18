@@ -263,19 +263,6 @@ public class GcpPubSubAutoConfiguration {
 					"The subscriberRetrySettings bean is being deprecated. Please use application.properties to configure properties");
 			factory.setSubscriberStubRetrySettings(retrySettings.getIfAvailable());
 		}
-		if (this.gcpPubSubProperties.getSubscriber().getMaxAckExtensionPeriod() != null) {
-			factory.setMaxAckExtensionPeriod(Duration.ofSeconds(
-					this.gcpPubSubProperties.getSubscriber().getMaxAckExtensionPeriod()));
-		}
-		if (this.gcpPubSubProperties.getSubscriber().getParallelPullCount() != null) {
-			factory.setParallelPullCount(
-					this.gcpPubSubProperties.getSubscriber().getParallelPullCount());
-		}
-		if (this.gcpPubSubProperties.getSubscriber()
-				.getPullEndpoint() != null) {
-			factory.setPullEndpoint(
-					this.gcpPubSubProperties.getSubscriber().getPullEndpoint());
-		}
 		return factory;
 	}
 

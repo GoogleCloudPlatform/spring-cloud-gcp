@@ -151,6 +151,70 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
+	public void pullConfig_globalConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=7",
+						"spring.cloud.gcp.pubsub.subscriber.parallel-pull-count=12",
+						"spring.cloud.gcp.pubsub.subscriber.pull-endpoint=my-endpoint")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			assertThat(gcpPubSubProperties.getSubscriber().getMaxAckExtensionPeriod()).isEqualTo(7L);
+			assertThat(gcpPubSubProperties.getSubscriber().getParallelPullCount()).isEqualTo(12);
+			assertThat(gcpPubSubProperties.getSubscriber().getPullEndpoint()).isEqualTo("my-endpoint");
+		});
+	}
+
+	@Test
+	public void pullConfig_selectiveConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.max-ack-extension-period=7",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.parallel-pull-count=12",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.pull-endpoint=my-endpoint")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name").getMaxAckExtensionPeriod()).isEqualTo(7L);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name").getParallelPullCount()).isEqualTo(12);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name").getPullEndpoint())
+					.isEqualTo("my-endpoint");
+		});
+	}
+
+	@Test
+	public void pullConfig_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=5",
+						"spring.cloud.gcp.pubsub.subscriber.parallel-pull-count=10",
+						"spring.cloud.gcp.pubsub.subscriber.pull-endpoint=other-endpoint",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.max-ack-extension-period=7",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.parallel-pull-count=12",
+						"spring.cloud.gcp.pubsub.properties.subscription-name.subscriber.pull-endpoint=my-endpoint")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name").getMaxAckExtensionPeriod()).isEqualTo(7L);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name").getParallelPullCount()).isEqualTo(12);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name").getPullEndpoint())
+					.isEqualTo("my-endpoint");
+			assertThat(gcpPubSubProperties.getSubscriber("other").getMaxAckExtensionPeriod()).isEqualTo(5L);
+			assertThat(gcpPubSubProperties.getSubscriber("other").getParallelPullCount()).isEqualTo(10);
+			assertThat(gcpPubSubProperties.getSubscriber("other").getPullEndpoint()).isEqualTo("other-endpoint");
+		});
+	}
+
+	@Test
 	public void retrySettings_globalConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))

@@ -72,12 +72,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private FlowControlSettings flowControlSettings;
 
-	private Duration maxAckExtensionPeriod;
-
-	private Integer parallelPullCount;
-
-	private String pullEndpoint;
-
 	private ApiClock apiClock;
 
 	private RetrySettings subscriberStubRetrySettings;
@@ -90,7 +84,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 * Default {@link DefaultSubscriberFactory} constructor.
 	 * @param projectIdProvider provides the default GCP project ID for selecting the
 	 *     subscriptions
-	 * @deprecated Use the new {@link DefaultSubscriberFactory (GcpProjectIdProvider,PubSubConfiguration)} instead
+	 * @deprecated Use the new {@link DefaultSubscriberFactory
+	 * (GcpProjectIdProvider,PubSubConfiguration)} instead
 	 */
 	@Deprecated
 	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
@@ -99,7 +94,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	/**
 	 * Default {@link DefaultSubscriberFactory} constructor.
-	 * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
+	 * @param projectIdProvider provides the default GCP project ID for selecting the
+	 *     subscriptions
 	 * @param pubSubConfiguration contains the subscriber properties to configure
 	 */
 	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider, PubSubConfiguration pubSubConfiguration) {
@@ -162,36 +158,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	/**
-	 * Set the flow control for the subscribers, including the behaviour for when the flow limits
-	 * are hit.
+	 * Set the flow control for the subscribers, including the behaviour for when the flow
+	 * limits are hit.
 	 * @param flowControlSettings the flow control settings to set
 	 */
 	public void setFlowControlSettings(FlowControlSettings flowControlSettings) {
 		this.flowControlSettings = flowControlSettings;
-	}
-
-	/**
-	 * Set the maximum period the ack timeout is extended by.
-	 * @param maxAckExtensionPeriod the max ack extension period to set
-	 */
-	public void setMaxAckExtensionPeriod(Duration maxAckExtensionPeriod) {
-		this.maxAckExtensionPeriod = maxAckExtensionPeriod;
-	}
-
-	/**
-	 * Set the number of pull workers.
-	 * @param parallelPullCount the parallel pull count to set
-	 */
-	public void setParallelPullCount(Integer parallelPullCount) {
-		this.parallelPullCount = parallelPullCount;
-	}
-
-	/**
-	 * Set the endpoint for synchronous pulling messages.
-	 * @param pullEndpoint the pull endpoint to set
-	 */
-	public void setPullEndpoint(String pullEndpoint) {
-		this.pullEndpoint = pullEndpoint;
 	}
 
 	/**
@@ -204,8 +176,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	/**
 	 * Set the retry settings for the generated subscriber stubs.
-	 * @param subscriberStubRetrySettings parameters for retrying pull requests when they fail,
-	 * including jitter logic, timeout, and exponential backoff
+	 * @param subscriberStubRetrySettings parameters for retrying pull requests when they
+	 *     fail, including jitter logic, timeout, and exponential backoff
 	 */
 	public void setSubscriberStubRetrySettings(RetrySettings subscriberStubRetrySettings) {
 		this.subscriberStubRetrySettings = subscriberStubRetrySettings;
@@ -238,17 +210,20 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberBuilder.setSystemExecutorProvider(this.systemExecutorProvider);
 		}
 
-		FlowControlSettings flowControlSettings = getFlowControlSettings(subscriberProperties.getFlowControl());
-		if (flowControlSettings != null) {
-			subscriberBuilder.setFlowControlSettings(flowControlSettings);
+		FlowControlSettings flowControl = getFlowControlSettings(subscriberProperties.getFlowControl());
+		if (flowControl != null) {
+			subscriberBuilder.setFlowControlSettings(flowControl);
 		}
 
-		if (this.maxAckExtensionPeriod != null) {
-			subscriberBuilder.setMaxAckExtensionPeriod(this.maxAckExtensionPeriod);
+		// Set the maximum period the ack timeout is extended by.
+		if (subscriberProperties.getMaxAckExtensionPeriod() != null) {
+			subscriberBuilder
+					.setMaxAckExtensionPeriod(Duration.ofSeconds(subscriberProperties.getMaxAckExtensionPeriod()));
 		}
 
-		if (this.parallelPullCount != null) {
-			subscriberBuilder.setParallelPullCount(this.parallelPullCount);
+		// Set the number of pull workers.
+		if (subscriberProperties.getParallelPullCount() != null) {
+			subscriberBuilder.setParallelPullCount(subscriberProperties.getParallelPullCount());
 		}
 
 		return subscriberBuilder.build();
@@ -288,10 +263,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.setCredentialsProvider(this.credentialsProvider);
 		}
 
-		if (this.pullEndpoint != null) {
-			subscriberStubSettings.setEndpoint(this.pullEndpoint);
+		// Set the endpoint for synchronous pulling messages.
+		if (subscriberProperties.getPullEndpoint() != null) {
+			subscriberStubSettings.setEndpoint(subscriberProperties.getPullEndpoint());
 		}
 
+		// Set the endpoint for synchronous pulling messages.
 		subscriberStubSettings.setExecutorProvider(getExecutorProvider(subscriberProperties, subscriptionName));
 
 		if (this.headerProvider != null) {
@@ -339,13 +316,14 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	/**
-	 * Creates {@link RetrySettings}, given subscriber retry properties. Returns null if none of the
-	 * retry settings are set. Note that if retry settings are set using a Spring-managed bean
-	 * then subscription-specific settings in application.properties are ignored.
+	 * Creates {@link RetrySettings}, given subscriber retry properties. Returns null if none
+	 * of the retry settings are set. Note that if retry settings are set using a
+	 * Spring-managed bean then subscription-specific settings in application.properties are
+	 * ignored.
 	 * @param retryProperties subscriber retry properties
 	 * @return retry settings for subscriber
 	 */
-	public RetrySettings getRetrySettings(PubSubConfiguration.Retry retryProperties) {
+	RetrySettings getRetrySettings(PubSubConfiguration.Retry retryProperties) {
 		if (this.subscriberStubRetrySettings != null) {
 			return this.subscriberStubRetrySettings;
 		}
