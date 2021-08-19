@@ -117,7 +117,7 @@ public class PubSubConfigurationTests {
 
 		assertThat(pubSubConfiguration.getSubscriber("subscription-name").getExecutorThreads())
 				.isEqualTo(4);
-		assertThat(pubSubConfiguration.getProperties().get("subscription-name").getSubscriber().getExecutorThreads())
+		assertThat(pubSubConfiguration.getSubscription().get("subscription-name").getExecutorThreads())
 				.isEqualTo(4);
 	}
 
