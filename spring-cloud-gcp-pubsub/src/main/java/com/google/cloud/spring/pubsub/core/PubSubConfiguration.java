@@ -67,17 +67,20 @@ public class PubSubConfiguration {
 	public static class Publisher {
 
 		/**
+		 * Number of threads used by every publisher.
+		 */
+		private int executorThreads = 4;
+
+		/**
 		 * Retry properties.
 		 */
 		private final Retry retry = new Retry();
+
 		/**
 		 * Batching properties.
 		 */
 		private final Batching batching = new Batching();
-		/**
-		 * Number of threads used by every publisher.
-		 */
-		private int executorThreads = 4;
+
 		/**
 		 * Enable message ordering setting.
 		 */
@@ -127,33 +130,39 @@ public class PubSubConfiguration {
 	public static class Subscriber {
 
 		/**
-		 * Retry settings for subscriber factory.
-		 */
-		private final Retry retry = new Retry();
-		/**
-		 * Flow control settings for subscriber factory.
-		 */
-		private final FlowControl flowControl = new FlowControl();
-		/**
 		 * Number of threads used by every subscriber.
 		 */
 		private int executorThreads = 4;
+
 		/**
 		 * Number of threads used for batch acknowledgement.
 		 */
 		private int maxAcknowledgementThreads = 4;
+
 		/**
 		 * The optional pull endpoint setting for the subscriber factory.
 		 */
 		private String pullEndpoint;
+
 		/**
 		 * The optional max ack extension period in seconds for the subscriber factory.
 		 */
 		private Long maxAckExtensionPeriod = 0L;
+
 		/**
 		 * The optional parallel pull count setting for the subscriber factory.
 		 */
 		private Integer parallelPullCount;
+
+		/**
+		 * Retry settings for subscriber factory.
+		 */
+		private final Retry retry = new Retry();
+
+		/**
+		 * Flow control settings for subscriber factory.
+		 */
+		private final FlowControl flowControl = new FlowControl();
 
 		public Retry getRetry() {
 			return this.retry;
@@ -199,6 +208,7 @@ public class PubSubConfiguration {
 			this.executorThreads = executorThreads;
 		}
 
+
 		public int getMaxAcknowledgementThreads() {
 			return this.maxAcknowledgementThreads;
 		}
@@ -214,35 +224,35 @@ public class PubSubConfiguration {
 	public static class Retry {
 
 		/**
-		 * TotalTimeout has ultimate control over how long the logic should keep trying the remote
-		 * call until it gives up completely. The higher the total timeout, the more retries can
-		 * be attempted.
+		 * TotalTimeout has ultimate control over how long the logic should keep trying the remote call
+		 * until it gives up completely. The higher the total timeout, the more retries can be
+		 * attempted.
 		 */
 		private Long totalTimeoutSeconds;
 
 		/**
-		 * InitialRetryDelay controls the delay before the first retry. Subsequent retries will
-		 * use this value adjusted according to the RetryDelayMultiplier.
+		 * InitialRetryDelay controls the delay before the first retry. Subsequent retries will use this
+		 * value adjusted according to the RetryDelayMultiplier.
 		 */
 		private Long initialRetryDelaySeconds;
 
 		/**
-		 * RetryDelayMultiplier controls the change in retry delay. The retry delay of the
-		 * previous call is multiplied by the RetryDelayMultiplier to calculate the retry delay
-		 * for the next call.
+		 * RetryDelayMultiplier controls the change in retry delay. The retry delay of the previous call
+		 * is multiplied by the RetryDelayMultiplier to calculate the retry delay for the next call.
 		 */
 		private Double retryDelayMultiplier;
 
 		/**
-		 * MaxRetryDelay puts a limit on the value of the retry delay, so that the
-		 * RetryDelayMultiplier can't increase the retry delay higher than this amount.
+		 * MaxRetryDelay puts a limit on the value of the retry delay, so that the RetryDelayMultiplier
+		 * can't increase the retry delay higher than this amount.
 		 */
 		private Long maxRetryDelaySeconds;
 
 		/**
-		 * MaxAttempts defines the maximum number of attempts to perform. If this value is greater
-		 * than 0, and the number of attempts reaches this limit, the logic will give up retrying
-		 * even if the total retry time is still lower than TotalTimeout.
+		 * MaxAttempts defines the maximum number of attempts to perform.
+		 * If this value is greater than 0, and the number of attempts reaches this limit,
+		 * the logic will give up retrying even if the total retry time is still lower
+		 * than TotalTimeout.
 		 */
 		private Integer maxAttempts;
 
@@ -252,21 +262,20 @@ public class PubSubConfiguration {
 		private Boolean jittered;
 
 		/**
-		 * InitialRpcTimeout controls the timeout for the initial RPC. Subsequent calls will use
-		 * this value adjusted according to the RpcTimeoutMultiplier.
+		 * InitialRpcTimeout controls the timeout for the initial RPC. Subsequent calls will use this
+		 * value adjusted according to the RpcTimeoutMultiplier.
 		 */
 		private Long initialRpcTimeoutSeconds;
 
 		/**
-		 * RpcTimeoutMultiplier controls the change in RPC timeout. The timeout of the previous
-		 * call is multiplied by the RpcTimeoutMultiplier to calculate the timeout for the next
-		 * call.
+		 * RpcTimeoutMultiplier controls the change in RPC timeout. The timeout of the previous call is
+		 * multiplied by the RpcTimeoutMultiplier to calculate the timeout for the next call.
 		 */
 		private Double rpcTimeoutMultiplier;
 
 		/**
-		 * MaxRpcTimeout puts a limit on the value of the RPC timeout, so that the
-		 * RpcTimeoutMultiplier can't increase the RPC timeout higher than this amount.
+		 * MaxRpcTimeout puts a limit on the value of the RPC timeout, so that the RpcTimeoutMultiplier
+		 * can't increase the RPC timeout higher than this amount.
 		 */
 		private Long maxRpcTimeoutSeconds;
 
@@ -416,9 +425,8 @@ public class PubSubConfiguration {
 		private Long requestByteThreshold;
 
 		/**
-		 * The delay threshold to use for batching. After this amount of time has elapsed
-		 * (counting from the first element added), the elements will be wrapped up in a batch and
-		 * sent.
+		 * The delay threshold to use for batching. After this amount of time has elapsed (counting
+		 * from the first element added), the elements will be wrapped up in a batch and sent.
 		 */
 		private Long delayThresholdSeconds;
 
