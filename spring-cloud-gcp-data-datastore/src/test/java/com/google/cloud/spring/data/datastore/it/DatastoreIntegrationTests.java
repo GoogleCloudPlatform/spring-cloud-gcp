@@ -56,6 +56,7 @@ import com.google.cloud.spring.data.datastore.entities.Store;
 import com.google.cloud.spring.data.datastore.it.TestEntity.Shape;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.query.Query;
+import com.google.cloud.spring.data.datastore.repository.support.SimpleDatastoreRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -78,6 +79,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.AopTestUtils;
 import org.springframework.transaction.TransactionSystemException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -542,6 +544,17 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 		assertThat(this.testEntityRepository.findAllById(Arrays.asList(1L, 2L))).hasSize(2);
 		this.testEntityRepository.delete(this.testEntityA);
 		assertThat(this.testEntityRepository.findById(1L)).isNotPresent();
+	}
+
+	@Test
+	public void deleteAllByIdTest() {
+		assertThat(this.testEntityRepository.findAllById(Arrays.asList(1L, 2L))).hasSize(2);
+		// cast to SimpleDatastoreRepository for method be reachable with Spring Boot 2.4
+		SimpleDatastoreRepository simpleRepository = AopTestUtils
+				.getTargetObject(this.testEntityRepository);
+		simpleRepository.deleteAllById(Arrays.asList(1L, 2L));
+		assertThat(this.testEntityRepository.findById(1L)).isNotPresent();
+		assertThat(this.testEntityRepository.findById(2L)).isNotPresent();
 	}
 
 	@Test
