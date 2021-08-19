@@ -30,6 +30,7 @@ import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
+import com.google.cloud.spring.data.spanner.repository.support.SimpleSpannerRepository;
 import com.google.cloud.spring.data.spanner.test.AbstractSpannerIntegrationTest;
 import com.google.cloud.spring.data.spanner.test.domain.SubTrade;
 import com.google.cloud.spring.data.spanner.test.domain.SubTradeComponent;
@@ -58,6 +59,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.AopTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -203,6 +205,24 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 		assertThat(this.tradeRepository.count()).isEqualTo(5L);
 		this.tradeRepository.deleteBySymbolAndAction("ABCD", "SELL");
 		assertThat(this.tradeRepository.count()).isZero();
+	}
+
+	@Test
+	public void queryMethodsTest_deleteAllById() {
+		List<Trade> trades = insertTrades("trader1", "BUY", 5);
+
+		Trade someTrade1 = trades.get(0);
+		Trade someTrade2 = trades.get(1);
+		Key key1 = this.spannerSchemaUtils.getKey(someTrade1);
+		Key key2 = this.spannerSchemaUtils.getKey(someTrade2);
+
+		assertThat(this.tradeRepository.count()).isEqualTo(5);
+
+		SimpleSpannerRepository repo = AopTestUtils.getTargetObject(this.tradeRepository);
+		repo.deleteAllById(Arrays.asList(key1, key2));
+
+		assertThat(this.tradeRepository.findAll()).doesNotContainAnyElementsOf(Arrays.asList(someTrade1, someTrade2))
+				.containsExactlyInAnyOrderElementsOf(trades.subList(2, 5));
 	}
 
 	@Test
