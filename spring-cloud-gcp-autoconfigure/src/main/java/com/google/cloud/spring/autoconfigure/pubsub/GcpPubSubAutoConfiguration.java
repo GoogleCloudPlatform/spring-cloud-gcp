@@ -85,6 +85,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @ConditionalOnClass(PubSubTemplate.class)
 @EnableConfigurationProperties(GcpPubSubProperties.class)
 public class GcpPubSubAutoConfiguration {
+	private static final Logger logger = LoggerFactory.getLogger(GcpPubSubAutoConfiguration.class);
 
 	private final GcpPubSubProperties gcpPubSubProperties;
 
@@ -93,8 +94,6 @@ public class GcpPubSubAutoConfiguration {
 	private final CredentialsProvider finalCredentialsProvider;
 
 	private final HeaderProvider headerProvider = new UserAgentHeaderProvider(this.getClass());
-
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public GcpPubSubAutoConfiguration(GcpPubSubProperties gcpPubSubProperties,
 			GcpProjectIdProvider gcpProjectIdProvider,
@@ -132,31 +131,6 @@ public class GcpPubSubAutoConfiguration {
 	@ConditionalOnMissingBean(name = "publisherExecutorProvider")
 	public ExecutorProvider publisherExecutorProvider(
 			@Qualifier("pubsubPublisherThreadPool") ThreadPoolTaskScheduler scheduler) {
-		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
-	}
-
-	/**
-	 * @deprecated Directly use the application.properties file to configure properties.
-	 */
-	@Bean
-	@ConditionalOnMissingBean(name = "pubsubSubscriberThreadPool")
-	@Deprecated
-	public ThreadPoolTaskScheduler pubsubSubscriberThreadPool() {
-		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.setPoolSize(this.gcpPubSubProperties.getSubscriber().getExecutorThreads());
-		scheduler.setThreadNamePrefix("gcp-pubsub-subscriber");
-		scheduler.setDaemon(true);
-		return scheduler;
-	}
-
-	/**
-	 * @deprecated Directly use the application.properties file to configure properties.
-	 */
-	@Bean
-	@ConditionalOnMissingBean(name = "subscriberExecutorProvider")
-	@Deprecated
-	public ExecutorProvider subscriberExecutorProvider(
-			@Qualifier("pubsubSubscriberThreadPool") ThreadPoolTaskScheduler scheduler) {
 		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
 	}
 

@@ -93,7 +93,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 */
 	@Deprecated
 	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
-		this(projectIdProvider, new PubSubConfiguration());
+		this(projectIdProvider, null);
 	}
 
 	/**
@@ -215,15 +215,14 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(
 				PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId), receiver);
 
-		PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
-				.getSubscriber(subscriptionName);
-
 		if (this.channelProvider != null) {
 			subscriberBuilder.setChannelProvider(this.channelProvider);
 		}
 
-		subscriberBuilder.setExecutorProvider(getExecutorProvider(subscriberProperties, subscriptionName));
-
+		ExecutorProvider executor = getExecutorProvider(subscriptionName);
+		if (executorProvider != null) {
+			subscriberBuilder.setExecutorProvider(executor);
+		}
 
 		if (this.credentialsProvider != null) {
 			subscriberBuilder.setCredentialsProvider(this.credentialsProvider);
@@ -279,9 +278,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	public SubscriberStub createSubscriberStub(String subscriptionName) {
 		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
 
-		PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
-				.getSubscriber(subscriptionName);
-
 		if (this.credentialsProvider != null) {
 			subscriberStubSettings.setCredentialsProvider(this.credentialsProvider);
 		}
@@ -290,7 +286,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.setEndpoint(this.pullEndpoint);
 		}
 
-		subscriberStubSettings.setExecutorProvider(getExecutorProvider(subscriberProperties, subscriptionName));
+		ExecutorProvider executor = getExecutorProvider(subscriptionName);
+		if (executorProvider != null) {
+			subscriberStubSettings.setExecutorProvider(executor);
+		}
 
 		if (this.headerProvider != null) {
 			subscriberStubSettings.setHeaderProvider(this.headerProvider);
@@ -318,22 +317,34 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	/**
-	 * Creates {@link ExecutorProvider} given subscriber properties.
-	 * @param subscriber subscriber properties
+	 * Creates {@link ExecutorProvider} given Pub/Sub properties.
 	 * @return executor provider
 	 */
-	public ExecutorProvider getExecutorProvider(PubSubConfiguration.Subscriber subscriber, String subscriptionName) {
+	ExecutorProvider getExecutorProvider(String subscriptionName) {
 		if (this.executorProvider != null) {
 			return this.executorProvider;
 		}
-		this.threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
-		this.threadPoolTaskScheduler.setPoolSize(subscriber.getExecutorThreads());
-		String threadNamePrefix = "gcp-pubsub-subscriber" + "-" + subscriptionName;
-		this.threadPoolTaskScheduler.setThreadNamePrefix(threadNamePrefix);
-		this.threadPoolTaskScheduler.setDaemon(true);
-		this.threadPoolTaskScheduler.initialize();
+		if (this.pubSubConfiguration != null) {
+			PubSubConfiguration.Subscriber subscriber = this.pubSubConfiguration.getSubscriber(subscriptionName);
+			this.threadPoolTaskScheduler = createThreadPoolTaskScheduler(subscriber, subscriptionName);
+			this.threadPoolTaskScheduler.initialize();
+			return FixedExecutorProvider.create(this.threadPoolTaskScheduler.getScheduledExecutor());
+		}
+		return null;
+	}
 
-		return FixedExecutorProvider.create(this.threadPoolTaskScheduler.getScheduledExecutor());
+	/**
+	 * Creates {@link ThreadPoolTaskScheduler} given subscriber properties.
+	 * @return thread pool scheduler
+	 */
+	ThreadPoolTaskScheduler createThreadPoolTaskScheduler(PubSubConfiguration.Subscriber subscriber,
+			String subscriptionName) {
+		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+		scheduler.setPoolSize(subscriber.getExecutorThreads());
+		String threadNamePrefix = "gcp-pubsub-subscriber" + "-" + subscriptionName;
+		scheduler.setThreadNamePrefix(threadNamePrefix);
+		scheduler.setDaemon(true);
+		return scheduler;
 	}
 
 	@PreDestroy
