@@ -317,7 +317,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	/**
-	 * Creates {@link ExecutorProvider} given Pub/Sub properties.
+	 * Creates {@link ExecutorProvider}. If a custom executor provider is set then the
+	 * subscriber properties configured through the application.properties file will be ignored.
+	 * @param subscriptionName subscription name
 	 * @return executor provider
 	 */
 	ExecutorProvider getExecutorProvider(String subscriptionName) {
@@ -335,6 +337,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	/**
 	 * Creates {@link ThreadPoolTaskScheduler} given subscriber properties.
+	 * @param subscriptionName subscription name
 	 * @return thread pool scheduler
 	 */
 	ThreadPoolTaskScheduler createThreadPoolTaskScheduler(PubSubConfiguration.Subscriber subscriber,

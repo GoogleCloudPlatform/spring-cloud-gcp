@@ -83,6 +83,18 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
+	public void testNewSubscriber_constructorWithPubSubConfiguration_pubSubConfigurationIsNull() {
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", null);
+		factory.setCredentialsProvider(this.credentialsProvider);
+
+		Subscriber subscriber = factory.createSubscriber("midnight cowboy", (message, consumer) -> {
+		});
+
+		assertThat(subscriber.getSubscriptionNameString())
+				.isEqualTo("projects/angeldust/subscriptions/midnight cowboy");
+	}
+
+	@Test
 	public void testNewDefaultSubscriberFactory_nullProjectProvider() {
 		this.expectedException.expect(IllegalArgumentException.class);
 		this.expectedException.expectMessage("The project ID provider can't be null.");
@@ -142,12 +154,13 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
-	public void testGetThreadScheduler() {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", null);
+	public void testCreateThreadPoolTaskScheduler() {
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 		when(mockSubscriber.getExecutorThreads()).thenReturn(6);
 
 		ThreadPoolTaskScheduler threadPoolTaskScheduler = factory
 				.createThreadPoolTaskScheduler(mockSubscriber, "subscription-name");
+
 		assertThat(
 				threadPoolTaskScheduler.getThreadNamePrefix())
 						.isEqualTo("gcp-pubsub-subscriber-subscription-name");
