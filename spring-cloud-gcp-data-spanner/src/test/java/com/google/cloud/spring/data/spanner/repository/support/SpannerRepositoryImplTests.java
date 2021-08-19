@@ -31,6 +31,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentCaptor;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -262,6 +263,20 @@ public class SpannerRepositoryImplTests {
 				.deleteById(A_KEY);
 		verify(this.template, times(1)).delete(Object.class, A_KEY);
 		verify(this.template, times(1)).delete(Object.class, A_KEY);
+	}
+
+	@Test
+	public void deleteAllByIdTest() {
+		List<String> unconvertedKey = Arrays.asList("key1", "key2");
+
+		when(this.entityProcessor.convertToKey("key1")).thenReturn(Key.of("key1"));
+		when(this.entityProcessor.convertToKey("key2")).thenReturn(Key.of("key2"));
+
+		new SimpleSpannerRepository<Object, String>(this.template, Object.class)
+				.deleteAllById(unconvertedKey);
+		ArgumentCaptor<KeySet> argumentCaptor = ArgumentCaptor.forClass(KeySet.class);
+		verify(this.template).delete(eq(Object.class), argumentCaptor.capture());
+		assertThat(argumentCaptor.getValue().getKeys()).containsExactlyInAnyOrder(Key.of("key2"), Key.of("key1"));
 	}
 
 	@Test
