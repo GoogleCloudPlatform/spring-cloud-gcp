@@ -220,7 +220,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 
 		ExecutorProvider executor = getExecutorProvider(subscriptionName);
-		if (executorProvider != null) {
+		if (executor != null) {
 			subscriberBuilder.setExecutorProvider(executor);
 		}
 
@@ -287,7 +287,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 
 		ExecutorProvider executor = getExecutorProvider(subscriptionName);
-		if (executorProvider != null) {
+		if (executor != null) {
 			subscriberStubSettings.setExecutorProvider(executor);
 		}
 
