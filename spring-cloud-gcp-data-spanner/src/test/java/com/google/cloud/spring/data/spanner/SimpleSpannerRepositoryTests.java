@@ -36,20 +36,18 @@ public class SimpleSpannerRepositoryTests {
 	@Test
 	public void deleteAllByIdUnimplemented() {
 		SpannerTemplate mockTemplate = mock(SpannerTemplate.class);
-		SpannerMappingContext spannerMappingContext = mock(SpannerMappingContext.class);
+		SpannerMappingContext mockSpannerMappingContext = mock(SpannerMappingContext.class);
 		SimpleSpannerRepository<Book, String> repository = new SimpleSpannerRepository<>(mockTemplate, Book.class);
 
 		ConverterAwareMappingSpannerEntityProcessor processor = new ConverterAwareMappingSpannerEntityProcessor(
-				spannerMappingContext);
+				mockSpannerMappingContext);
 		when(mockTemplate.getSpannerEntityProcessor()).thenReturn(processor);
 
 		List<String> keys = Arrays.asList("1", "2");
 
 		KeySet.Builder builder = KeySet.newBuilder();
-		Key key1 = processor.convertToKey("1");
-		Key key2 = processor.convertToKey("2");
-		builder.addKey(key1);
-		builder.addKey(key2);
+		builder.addKey(Key.of("1"));
+		builder.addKey(Key.of("2"));
 		KeySet keySet = builder.build();
 
 		repository.deleteAllById(keys);
