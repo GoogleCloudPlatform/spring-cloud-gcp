@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.pubsub.core.publisher;
 
+import com.google.pubsub.v1.ProjectTopicName;
 import java.util.Map;
 
 import com.google.pubsub.v1.PubsubMessage;
@@ -65,4 +66,30 @@ public interface PubSubPublisherOperations {
 	 */
 	ListenableFuture<String> publish(String topic, PubsubMessage pubsubMessage);
 
+	/**
+	 * Send a message to Pub/Sub.
+	 * @param projectTopicName the project topic to publish to
+	 * @param payload an object that will be serialized and sent
+	 * @param headers the headers to publish
+	 * @param <T> the type of the payload to publish
+	 * @return the listenable future of the call
+	 */
+	<T> ListenableFuture<String> publish(ProjectTopicName projectTopicName, T payload, Map<String, String> headers);
+
+	/**
+	 * Send a message to Pub/Sub.
+	 * @param projectTopicName the project topic to publish to
+	 * @param payload an object that will be serialized and sent
+	 * @param <T> the type of the payload to publish
+	 * @return the listenable future of the call
+	 */
+	<T> ListenableFuture<String> publish(ProjectTopicName projectTopicName, T payload);
+
+	/**
+	 * Send a message to Pub/Sub.
+	 * @param projectTopicName the project topic to publish to
+	 * @param pubsubMessage a Google Cloud Pub/Sub API message
+	 * @return the listenable future of the call
+	 */
+	ListenableFuture<String> publish(ProjectTopicName projectTopicName, PubsubMessage pubsubMessage);
 }

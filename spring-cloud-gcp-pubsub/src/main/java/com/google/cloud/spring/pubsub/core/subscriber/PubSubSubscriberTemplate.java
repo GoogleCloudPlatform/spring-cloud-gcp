@@ -348,6 +348,70 @@ public class PubSubSubscriberTemplate
 		return settableFuture;
 	}
 
+	@Override
+	public Subscriber subscribe(ProjectSubscriptionName projectSubscriptionName,
+			Consumer<BasicAcknowledgeablePubsubMessage> messageConsumer) {
+		return subscribe(projectSubscriptionName.toString(), messageConsumer);
+	}
+
+	@Override
+	public <T> Subscriber subscribeAndConvert(ProjectSubscriptionName projectSubscriptionName,
+			Consumer<ConvertedBasicAcknowledgeablePubsubMessage<T>> convertedBasicAcknowledgeablePubsubMessageConsumer,
+			Class<T> payloadType) {
+		return subscribeAndConvert(projectSubscriptionName.toString(), convertedBasicAcknowledgeablePubsubMessageConsumer, payloadType);
+	}
+
+	@Override
+	public List<PubsubMessage> pullAndAck(ProjectSubscriptionName projectSubscriptionName,
+			Integer maxMessages, Boolean returnImmediately) {
+		return pullAndAck(projectSubscriptionName.toString(), maxMessages, returnImmediately);
+	}
+
+	@Override
+	public ListenableFuture<List<PubsubMessage>> pullAndAckAsync(
+			ProjectSubscriptionName projectSubscriptionName, Integer maxMessages,
+			Boolean returnImmediately) {
+		return pullAndAckAsync(projectSubscriptionName, maxMessages, returnImmediately);
+	}
+
+	@Override
+	public List<AcknowledgeablePubsubMessage> pull(ProjectSubscriptionName projectSubscriptionName,
+			Integer maxMessages, Boolean returnImmediately) {
+		return pull(projectSubscriptionName, maxMessages, returnImmediately);
+	}
+
+	@Override
+	public ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(
+			ProjectSubscriptionName projectSubscriptionName, Integer maxMessages,
+			Boolean returnImmediately) {
+		return pullAsync(projectSubscriptionName, maxMessages, returnImmediately);
+	}
+
+	@Override
+	public <T> List<ConvertedAcknowledgeablePubsubMessage<T>> pullAndConvert(
+			ProjectSubscriptionName projectSubscriptionName, Integer maxMessages,
+			Boolean returnImmediately, Class<T> payloadType) {
+		return pullAndConvert(projectSubscriptionName, maxMessages, returnImmediately, payloadType);
+	}
+
+	@Override
+	public <T> ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(
+			ProjectSubscriptionName projectSubscriptionName, Integer maxMessages,
+			Boolean returnImmediately, Class<T> payloadType) {
+		return pullAndConvertAsync(projectSubscriptionName, maxMessages, returnImmediately, payloadType);
+	}
+
+	@Override
+	public PubsubMessage pullNext(ProjectSubscriptionName projectSubscriptionName) {
+		return pullNext(projectSubscriptionName.toString());
+	}
+
+	@Override
+	public ListenableFuture<PubsubMessage> pullNextAsync(
+			ProjectSubscriptionName projectSubscriptionName) {
+		return pullNextAsync(projectSubscriptionName);
+	}
+
 	public SubscriberFactory getSubscriberFactory() {
 		return this.subscriberFactory;
 	}

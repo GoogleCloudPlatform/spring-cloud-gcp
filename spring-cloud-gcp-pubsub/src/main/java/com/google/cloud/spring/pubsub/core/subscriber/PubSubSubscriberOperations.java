@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.pubsub.core.subscriber;
 
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
@@ -179,6 +180,133 @@ public interface PubSubSubscriberOperations {
 	 * @since 1.2.3
 	 */
 	ListenableFuture<PubsubMessage> pullNextAsync(String subscription);
+
+	/**
+	 * Add a callback method to an existing subscription.
+	 * <p>The created {@link Subscriber} is returned so it can be stopped.
+	 * @param projectSubscriptionName the project subscription to subscribe to
+	 * @param messageConsumer the callback method triggered when new messages arrive
+	 * @return subscriber listening to new messages
+	 * @since 1.1
+	 */
+	Subscriber subscribe(ProjectSubscriptionName projectSubscriptionName, Consumer<BasicAcknowledgeablePubsubMessage> messageConsumer);
+
+	/**
+	 * Add a callback method to an existing subscription that receives Pub/Sub messages converted to the requested
+	 * payload type.
+	 * <p>The created {@link Subscriber} is returned so it can be stopped.
+	 * @param projectSubscriptionName the project subscription to subscribe to
+	 * @param messageConsumer the callback method triggered when new messages arrive
+	 * @param payloadType the type to which the payload of the Pub/Sub message should be converted
+	 * @param <T> the type of the payload
+	 * @return subscriber listening to new messages
+	 * @since 1.1
+	 */
+	<T> Subscriber subscribeAndConvert(ProjectSubscriptionName projectSubscriptionName,
+			Consumer<ConvertedBasicAcknowledgeablePubsubMessage<T>> messageConsumer, Class<T> payloadType);
+
+	/**
+	 * Pull and auto-acknowledge a number of messages from a Google Cloud Pub/Sub subscription.
+	 * @param projectSubscriptionName the project subscription to subscribe to
+	 * @param maxMessages the maximum number of pulled messages. If this value is null then
+	 * up to Integer.MAX_VALUE messages will be requested.
+	 * @param returnImmediately returns immediately even if subscription doesn't contain enough
+	 * messages to satisfy {@code maxMessages}.
+	 * Setting this parameter to {@code true} is not recommended as it may result in long delays in message delivery.
+	 * @return the list of received messages
+	 */
+	List<PubsubMessage> pullAndAck(ProjectSubscriptionName projectSubscriptionName, Integer maxMessages, Boolean returnImmediately);
+
+	/**
+	 * Asynchronously pull and auto-acknowledge a number of messages from a Google Cloud Pub/Sub subscription.
+	 * @param projectSubscriptionName the project subscription to subscribe to
+	 * @param maxMessages the maximum number of pulled messages. If this value is null then
+	 * up to Integer.MAX_VALUE messages will be requested.
+	 * @param returnImmediately returns immediately even if subscription doesn't contain enough
+	 * messages to satisfy {@code maxMessages}.
+	 * Setting this parameter to {@code true} is not recommended as it may result in long delays in message delivery.
+	 * @return the ListenableFuture for the asynchronous execution, returning the list of
+	 * received acknowledgeable messages
+	 * @since 1.2.3
+	 */
+	ListenableFuture<List<PubsubMessage>> pullAndAckAsync(ProjectSubscriptionName projectSubscriptionName, Integer maxMessages, Boolean returnImmediately);
+
+	/**
+	 * Pull a number of messages from a Google Cloud Pub/Sub subscription.
+	 * @param projectSubscriptionName the project subscription to subscribe to
+	 * @param maxMessages the maximum number of pulled messages. If this value is null then
+	 * up to Integer.MAX_VALUE messages will be requested.
+	 * @param returnImmediately returns immediately even if subscription doesn't contain enough
+	 * messages to satisfy {@code maxMessages}.
+	 * Setting this parameter to {@code true} is not recommended as it may result in long delays in message delivery.
+	 * @return the list of received acknowledgeable messages
+	 */
+	List<AcknowledgeablePubsubMessage> pull(ProjectSubscriptionName projectSubscriptionName, Integer maxMessages, Boolean returnImmediately);
+
+	/**
+	 * Asynchronously pull a number of messages from a Google Cloud Pub/Sub subscription.
+	 * @param projectSubscriptionName the project subscription to subscribe to
+	 * @param maxMessages the maximum number of pulled messages. If this value is null then
+	 * up to Integer.MAX_VALUE messages will be requested.
+	 * @param returnImmediately returns immediately even if subscription doesn't contain enough
+	 * messages to satisfy {@code maxMessages}.
+	 * Setting this parameter to {@code true} is not recommended as it may result in long delays in message delivery.
+	 * @return the ListenableFuture for the asynchronous execution, returning the list of
+	 * received acknowledgeable messages
+	 * @since 1.2.3
+	 */
+	ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(ProjectSubscriptionName projectSubscriptionName, Integer maxMessages, Boolean returnImmediately);
+
+	/**
+	 * Pull a number of messages from a Google Cloud Pub/Sub subscription and convert them to Spring messages with
+	 * the desired payload type.
+	 * @param projectSubscriptionName the project subscription to subscribe to
+	 * @param maxMessages the maximum number of pulled messages. If this value is null then
+	 * up to Integer.MAX_VALUE messages will be requested.
+	 * @param returnImmediately returns immediately even if subscription doesn't contain enough
+	 * messages to satisfy {@code maxMessages}.
+	 * Setting this parameter to {@code true} is not recommended as it may result in long delays in message delivery.
+	 * @param payloadType the type to which the payload of the Pub/Sub messages should be converted
+	 * @param <T> the type of the payload
+	 * @return the list of received acknowledgeable messages
+	 * @since 1.1
+	 */
+	<T> List<ConvertedAcknowledgeablePubsubMessage<T>> pullAndConvert(ProjectSubscriptionName projectSubscriptionName, Integer maxMessages,
+			Boolean returnImmediately, Class<T> payloadType);
+
+	/**
+	 * Asynchronously pull a number of messages from a Google Cloud Pub/Sub subscription and convert them to Spring messages with
+	 * the desired payload type.
+	 * @param projectSubscriptionName the project subscription to subscribe to
+	 * @param maxMessages the maximum number of pulled messages. If this value is null then
+	 * up to Integer.MAX_VALUE messages will be requested.
+	 * @param returnImmediately returns immediately even if subscription doesn't contain enough
+	 * messages to satisfy {@code maxMessages}.
+	 * Setting this parameter to {@code true} is not recommended as it may result in long delays in message delivery.
+	 * @param payloadType the type to which the payload of the Pub/Sub messages should be converted
+	 * @param <T> the type of the payload
+	 * @return the ListenableFuture for the asynchronous execution, returning the list of
+	 *  received acknowledgeable messages
+	 * @since 1.2.3
+	 */
+	<T> ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(ProjectSubscriptionName projectSubscriptionName,
+			Integer maxMessages, Boolean returnImmediately, Class<T> payloadType);
+
+	/**
+	 * Pull and auto-acknowledge a message from a Google Cloud Pub/Sub subscription.
+	 * @param projectSubscriptionName the project subscription to subscribe to
+	 * @return a received message, or {@code null} if none exists in the subscription
+	 */
+	PubsubMessage pullNext(ProjectSubscriptionName projectSubscriptionName);
+
+	/**
+	 * Asynchronously pull and auto-acknowledge a message from a Google Cloud Pub/Sub subscription.
+	 * @param projectSubscriptionName the project subscription to subscribe to
+	 * @return the ListenableFuture for the asynchronous execution, returning a received message,
+	 * or {@code null} if none exists in the subscription
+	 * @since 1.2.3
+	 */
+	ListenableFuture<PubsubMessage> pullNextAsync(ProjectSubscriptionName projectSubscriptionName);
 
 	/**
 	 * Acknowledge a batch of messages. The messages must have the same project id.

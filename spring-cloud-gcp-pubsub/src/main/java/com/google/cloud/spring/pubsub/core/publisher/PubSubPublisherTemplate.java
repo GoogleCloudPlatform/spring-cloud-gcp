@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.pubsub.core.publisher;
 
+import com.google.pubsub.v1.ProjectTopicName;
 import java.util.Map;
 
 import com.google.api.core.ApiFuture;
@@ -124,6 +125,23 @@ public class PubSubPublisherTemplate implements PubSubPublisherOperations {
 		}, directExecutor());
 
 		return settableFuture;
+	}
+
+	@Override
+	public <T> ListenableFuture<String> publish(ProjectTopicName projectTopicName, T payload,
+			Map<String, String> headers) {
+		return publish(projectTopicName.toString(), payload, headers);
+	}
+
+	@Override
+	public <T> ListenableFuture<String> publish(ProjectTopicName projectTopicName, T payload) {
+		return publish(projectTopicName.toString(), payload);
+	}
+
+	@Override
+	public ListenableFuture<String> publish(ProjectTopicName projectTopicName,
+			PubsubMessage pubsubMessage) {
+		return publish(projectTopicName.toString(), pubsubMessage);
 	}
 
 	public PublisherFactory getPublisherFactory() {

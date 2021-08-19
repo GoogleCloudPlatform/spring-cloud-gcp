@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.pubsub.core;
 
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.ProjectTopicName;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -129,6 +131,23 @@ public class PubSubTemplate implements PubSubOperations {
 	}
 
 	@Override
+	public <T> ListenableFuture<String> publish(ProjectTopicName projectTopicName, T payload,
+			Map<String, String> headers) {
+		return publish(projectTopicName.toString(), payload, headers);
+	}
+
+	@Override
+	public <T> ListenableFuture<String> publish(ProjectTopicName projectTopicName, T payload) {
+		return publish(projectTopicName.toString(), payload);
+	}
+
+	@Override
+	public ListenableFuture<String> publish(ProjectTopicName projectTopicName,
+			PubsubMessage pubsubMessage) {
+		return publish(projectTopicName.toString(), pubsubMessage);
+	}
+
+	@Override
 	public Subscriber subscribe(String subscription, Consumer<BasicAcknowledgeablePubsubMessage> messageConsumer) {
 		return this.pubSubSubscriberTemplate.subscribe(subscription, messageConsumer);
 	}
@@ -184,6 +203,70 @@ public class PubSubTemplate implements PubSubOperations {
 	@Override
 	public ListenableFuture<PubsubMessage> pullNextAsync(String subscription) {
 		return this.pubSubSubscriberTemplate.pullNextAsync(subscription);
+	}
+
+	@Override
+	public Subscriber subscribe(ProjectSubscriptionName projectSubscriptionName,
+			Consumer<BasicAcknowledgeablePubsubMessage> messageConsumer) {
+		return subscribe(projectSubscriptionName.toString(), messageConsumer);
+	}
+
+	@Override
+	public <T> Subscriber subscribeAndConvert(ProjectSubscriptionName projectSubscriptionName,
+			Consumer<ConvertedBasicAcknowledgeablePubsubMessage<T>> convertedBasicAcknowledgeablePubsubMessageConsumer,
+			Class<T> payloadType) {
+		return subscribeAndConvert(projectSubscriptionName.toString(), convertedBasicAcknowledgeablePubsubMessageConsumer, payloadType);
+	}
+
+	@Override
+	public List<PubsubMessage> pullAndAck(ProjectSubscriptionName projectSubscriptionName,
+			Integer maxMessages, Boolean returnImmediately) {
+		return pullAndAck(projectSubscriptionName.toString(), maxMessages, returnImmediately);
+	}
+
+	@Override
+	public ListenableFuture<List<PubsubMessage>> pullAndAckAsync(
+			ProjectSubscriptionName projectSubscriptionName, Integer maxMessages,
+			Boolean returnImmediately) {
+		return pullAndAckAsync(projectSubscriptionName.toString(), maxMessages, returnImmediately);
+	}
+
+	@Override
+	public List<AcknowledgeablePubsubMessage> pull(ProjectSubscriptionName projectSubscriptionName,
+			Integer maxMessages, Boolean returnImmediately) {
+		return pull(projectSubscriptionName.toString(), maxMessages, returnImmediately);
+	}
+
+	@Override
+	public ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(
+			ProjectSubscriptionName projectSubscriptionName, Integer maxMessages,
+			Boolean returnImmediately) {
+		return pullAsync(projectSubscriptionName.toString(), maxMessages, returnImmediately);
+	}
+
+	@Override
+	public <T> List<ConvertedAcknowledgeablePubsubMessage<T>> pullAndConvert(
+			ProjectSubscriptionName projectSubscriptionName, Integer maxMessages,
+			Boolean returnImmediately, Class<T> payloadType) {
+		return pullAndConvert(projectSubscriptionName.toString(), maxMessages, returnImmediately, payloadType);
+	}
+
+	@Override
+	public <T> ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(
+			ProjectSubscriptionName projectSubscriptionName, Integer maxMessages,
+			Boolean returnImmediately, Class<T> payloadType) {
+		return pullAndConvertAsync(projectSubscriptionName, maxMessages, returnImmediately, payloadType);
+	}
+
+	@Override
+	public PubsubMessage pullNext(ProjectSubscriptionName projectSubscriptionName) {
+		return pullNext(projectSubscriptionName.toString());
+	}
+
+	@Override
+	public ListenableFuture<PubsubMessage> pullNextAsync(
+			ProjectSubscriptionName projectSubscriptionName) {
+		return pullNextAsync(projectSubscriptionName.toString());
 	}
 
 	@Override
