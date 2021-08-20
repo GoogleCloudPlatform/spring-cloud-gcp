@@ -304,12 +304,15 @@ public class PubSubSubscriberTemplateTests {
 
 	@Test
 	public void destroyingBeanClosesSubscriberStub() {
+		this.pubSubSubscriberTemplate = new PubSubSubscriberTemplate(subscriberFactory);
+
 		this.pubSubSubscriberTemplate.pull(
 				"sub2", 1, true);
 
 		verify(this.subscriberFactory).createSubscriberStub("sub2");
 
 		verify(this.subscriberStub, times(0)).close();
+
 		this.pubSubSubscriberTemplate.destroy();
 		verify(this.subscriberStub, times(1)).close();
 	}

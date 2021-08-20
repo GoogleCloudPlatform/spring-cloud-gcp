@@ -112,13 +112,42 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberMapProperties_default() {
+	public void testSubscriberMapProperties_defaultOrGlobal_addToMap() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 
-		assertThat(pubSubConfiguration.getSubscriber("subscription-name").getExecutorThreads())
-				.isEqualTo(4);
-		assertThat(pubSubConfiguration.getSubscription().get("subscription-name").getExecutorThreads())
-				.isEqualTo(4);
+		assertThat(pubSubConfiguration.getSubscription()).hasSize(0);
+		assertThat(pubSubConfiguration.getSubscriber("subscription-name").getExecutorThreads()).isEqualTo(4);
+		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
+		assertThat(pubSubConfiguration.getSubscription().get("subscription-name").getExecutorThreads()).isEqualTo(4);
+	}
+
+	@Test
+	public void testSubscriberMapProperties_returnCustom() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+		subscriber.setExecutorThreads(8);
+
+		pubSubConfiguration.getSubscription().put("subscription-name", subscriber);
+
+		assertThat(pubSubConfiguration.getSubscriber("subscription-name").getExecutorThreads()).isEqualTo(8);
+		assertThat(pubSubConfiguration.getSubscription().get("subscription-name").getExecutorThreads()).isEqualTo(8);
+	}
+
+	@Test
+	public void testSubscriberMapProperties_isNotCustomIfAbsentFromMap() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+
+		assertThat(pubSubConfiguration.getSubscription()).doesNotContainKey("subscription-name");
+		assertThat(pubSubConfiguration.getSubscriber("subscription-name").isCustom()).isFalse();
+	}
+
+	@Test
+	public void testSubscriberMapProperties_isCustomIfPresentInMap() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		pubSubConfiguration.getSubscription().put("subscription-name", new PubSubConfiguration.Subscriber());
+
+		assertThat(pubSubConfiguration.getSubscription()).containsKey("subscription-name");
+		assertThat(pubSubConfiguration.getSubscriber("subscription-name").isCustom()).isTrue();
 	}
 
 	@Test
@@ -211,5 +240,4 @@ public class PubSubConfigurationTests {
 		assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(12.0);
 		assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(8L);
 	}
-
 }

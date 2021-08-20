@@ -17,10 +17,12 @@
 package com.google.cloud.spring.autoconfigure.pubsub;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Test;
 
@@ -93,6 +95,21 @@ public class GcpPubSubAutoConfigurationTests {
 			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider", TransportChannelProvider.class);
 			assertThat(FieldUtils.readField(publisherTcp, "maxInboundMessageSize", true))
 					.isEqualTo(Integer.MAX_VALUE);
+		});
+	}
+
+	@Test
+	public void customExecutorProviderUsedWhenProvided() {
+		ExecutorProvider executorProvider = mock(ExecutorProvider.class);
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withUserConfiguration(TestConfig.class)
+				.withBean("subscriberExecutorProvider", ExecutorProvider.class, () -> executorProvider);
+
+		contextRunner.run(ctx -> {
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			assertThat(subscriberFactory.getExecutorProvider("name")).isSameAs(executorProvider);
 		});
 	}
 

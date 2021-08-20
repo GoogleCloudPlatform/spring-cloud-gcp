@@ -17,6 +17,8 @@
 package com.google.cloud.spring.pubsub.support;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PreDestroy;
 
@@ -83,7 +85,11 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private PubSubConfiguration pubSubConfiguration;
 
-	private ThreadPoolTaskScheduler threadPoolTaskScheduler;
+	private ConcurrentHashMap<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap = new ConcurrentHashMap<>();
+
+	private ConcurrentHashMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
+
+	private ExecutorProvider defaultExecutorProvider;
 
 	/**
 	 * Default {@link DefaultSubscriberFactory} constructor.
@@ -115,10 +121,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		return this.projectId;
 	}
 
-
 	/**
-	 * Set the provider for the subscribers' executor. Useful to specify the number of threads
-	 * to be used by each executor.
+	 * Set the provider for the subscribers' executor. Useful to specify the number of threads to be
+	 * used by each executor.
 	 * @param executorProvider the executor provider to set
 	 * @deprecated Directly use application.properties to configure ExecutorProvider instead
 	 * of Spring-managed beans
@@ -318,21 +323,51 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	/**
 	 * Creates {@link ExecutorProvider}. If a custom executor provider is set then the
-	 * subscriber properties configured through the application.properties file will be ignored.
+	 * subscriber properties configured through the application.properties file will be
+	 * ignored.
 	 * @param subscriptionName subscription name
 	 * @return executor provider
 	 */
-	ExecutorProvider getExecutorProvider(String subscriptionName) {
+	public ExecutorProvider getExecutorProvider(String subscriptionName) {
 		if (this.executorProvider != null) {
 			return this.executorProvider;
 		}
 		if (this.pubSubConfiguration != null) {
 			PubSubConfiguration.Subscriber subscriber = this.pubSubConfiguration.getSubscriber(subscriptionName);
-			this.threadPoolTaskScheduler = createThreadPoolTaskScheduler(subscriber, subscriptionName);
-			this.threadPoolTaskScheduler.initialize();
-			return FixedExecutorProvider.create(this.threadPoolTaskScheduler.getScheduledExecutor());
+			return getExecutorProviderFromConfigurations(subscriber, subscriptionName);
 		}
 		return null;
+	}
+
+	/**
+	 * Creates {@link ExecutorProvider} for subscriber when Pub/Sub configurations (either
+	 * global/default or subscription-specific) are present.
+	 * @param subscriber subscriber properties
+	 * @param subscriptionName subscription name
+	 * @return executor provider
+	 */
+	ExecutorProvider getExecutorProviderFromConfigurations(PubSubConfiguration.Subscriber subscriber,
+			String subscriptionName) {
+		Boolean isCustom = subscriber.isCustom();
+		if (Boolean.TRUE.equals(isCustom)) {
+			return createExecutorProvider(subscriber, subscriptionName);
+		}
+
+		if (this.defaultExecutorProvider != null) {
+			return this.defaultExecutorProvider;
+		}
+		this.defaultExecutorProvider = createExecutorProvider(subscriber, subscriptionName);
+		return this.defaultExecutorProvider;
+	}
+
+	ExecutorProvider createExecutorProvider(PubSubConfiguration.Subscriber subscriber, String subscriptionName) {
+		if (this.executorProviderMap.containsKey(subscriptionName)) {
+			return this.executorProviderMap.get(subscriptionName);
+		}
+		ThreadPoolTaskScheduler scheduler = createThreadPoolTaskScheduler(subscriber, subscriptionName);
+		scheduler.initialize();
+		ExecutorProvider executor = FixedExecutorProvider.create(scheduler.getScheduledExecutor());
+		return this.executorProviderMap.computeIfAbsent(subscriptionName, k -> executor);
 	}
 
 	/**
@@ -342,16 +377,29 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 */
 	ThreadPoolTaskScheduler createThreadPoolTaskScheduler(PubSubConfiguration.Subscriber subscriber,
 			String subscriptionName) {
+		if (this.threadPoolTaskSchedulerMap.containsKey(subscriptionName)) {
+			return threadPoolTaskSchedulerMap.get(subscriptionName);
+		}
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
 		scheduler.setPoolSize(subscriber.getExecutorThreads());
 		String threadNamePrefix = "gcp-pubsub-subscriber" + "-" + subscriptionName;
 		scheduler.setThreadNamePrefix(threadNamePrefix);
 		scheduler.setDaemon(true);
-		return scheduler;
+		return this.threadPoolTaskSchedulerMap.computeIfAbsent(subscriptionName, k -> scheduler);
+	}
+
+	Map<String, ThreadPoolTaskScheduler> getThreadPoolTaskSchedulerMap() {
+		return this.threadPoolTaskSchedulerMap;
+	}
+
+	Map<String, ExecutorProvider> getExecutorProviderMap() {
+		return this.executorProviderMap;
 	}
 
 	@PreDestroy
 	public void clearScheduler() {
-		this.threadPoolTaskScheduler.shutdown();
+		for (ThreadPoolTaskScheduler scheduler : threadPoolTaskSchedulerMap.values()) {
+			scheduler.shutdown();
+		}
 	}
 }

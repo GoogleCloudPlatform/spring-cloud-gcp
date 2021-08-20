@@ -66,7 +66,7 @@ public interface SubscriberFactory {
 
 	/**
 	 * Create a {@link SubscriberStub} that is needed to execute {@link PullRequest}s.
-	 * @param subscriptionName the name of the subscription
+	 * @param subscriptionName the subscription name
 	 * @return the {@link SubscriberStub} used for executing {@link PullRequest}s
 	 */
 	SubscriberStub createSubscriberStub(String subscriptionName);

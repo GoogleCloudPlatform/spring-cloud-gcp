@@ -56,9 +56,12 @@ public class PubSubConfiguration {
 
 	public Subscriber getSubscriber(String name) {
 		if (this.subscription.containsKey(name)) {
+			this.subscription.get(name).custom = true;
 			return this.subscription.get(name);
 		}
-		return this.subscription.computeIfAbsent(name, k -> this.subscriber);
+		Subscriber subscriberProperties = this.subscription.computeIfAbsent(name, k -> this.subscriber);
+		subscriberProperties.custom = false;
+		return subscriberProperties;
 	}
 
 	/**
@@ -130,6 +133,11 @@ public class PubSubConfiguration {
 	public static class Subscriber {
 
 		/**
+		 * Custom determines if the configuration is subscription-specific.
+		 */
+		private Boolean custom = false;
+
+		/**
 		 * Number of threads used by every subscriber.
 		 */
 		private int executorThreads = 4;
@@ -163,6 +171,10 @@ public class PubSubConfiguration {
 		 * Flow control settings for subscriber factory.
 		 */
 		private final FlowControl flowControl = new FlowControl();
+
+		public Boolean isCustom() {
+			return custom;
+		}
 
 		public Retry getRetry() {
 			return this.retry;

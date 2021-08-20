@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.pubsub.support;
 
+import java.util.Map;
+
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.cloud.pubsub.v1.Subscriber;
@@ -31,6 +33,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -49,7 +53,17 @@ public class DefaultSubscriberFactoryTests {
 	@Mock
 	private PubSubConfiguration mockPubSubConfiguration;
 	@Mock
-	private PubSubConfiguration.Subscriber mockSubscriber;
+	private PubSubConfiguration.Subscriber mockDefaultSubscriber1;
+	@Mock
+	private PubSubConfiguration.Subscriber mockDefaultSubscriber2;
+	@Mock
+	private PubSubConfiguration.Subscriber mockCustomSubscriber1;
+	@Mock
+	private PubSubConfiguration.Subscriber mockCustomSubscriber2;
+	@Mock
+	private ThreadPoolTaskScheduler mockScheduler1;
+	@Mock
+	private ThreadPoolTaskScheduler mockScheduler2;
 
 	/**
 	 * used to check exception messages and types.
@@ -128,21 +142,77 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
-	public void testGetExecutorProvider_customProvided() {
+	public void testGetExecutorProvider_userProvidedBean() {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", null);
 		factory.setExecutorProvider(mockExecutorProvider);
 
 		assertThat(factory.getExecutorProvider("name"))
-				.isEqualTo(mockExecutorProvider);
+				.isSameAs(mockExecutorProvider);
 	}
 
 	@Test
-	public void testGetExecutorProvider_customNotProvided() {
+	public void testGetExecutorProvider_allSubscribersWithDefaultConfig_oneCreated() {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
-		when(mockPubSubConfiguration.getSubscriber("name")).thenReturn(new PubSubConfiguration.Subscriber());
+		when(mockPubSubConfiguration.getSubscriber("defaultSubscription1")).thenReturn(mockDefaultSubscriber1);
+		when(mockDefaultSubscriber1.getExecutorThreads()).thenReturn(4);
+		when(mockPubSubConfiguration.getSubscriber("defaultSubscription2")).thenReturn(mockDefaultSubscriber2);
 
-		assertThat(factory.getExecutorProvider("name"))
-				.isNotNull();
+		ExecutorProvider executorProviderForSub1 = factory.getExecutorProvider("defaultSubscription1");
+		ExecutorProvider executorProviderForSub2 = factory.getExecutorProvider("defaultSubscription2");
+
+		// Verify that only one executor provider and one scheduler are created
+		assertThat(executorProviderForSub1).isNotNull();
+		assertThat(executorProviderForSub2).isNotNull();
+		assertThat(factory.getExecutorProviderMap()).hasSize(1);
+		assertThat(factory.getThreadPoolTaskSchedulerMap()).hasSize(1);
+	}
+
+	@Test
+	public void testGetExecutorProvider_allSubscribersWithCustomConfigs_manyCreated() {
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
+		when(mockPubSubConfiguration.getSubscriber("customSubscription1")).thenReturn(mockCustomSubscriber1);
+		when(mockCustomSubscriber1.isCustom()).thenReturn(true);
+		when(mockCustomSubscriber1.getExecutorThreads()).thenReturn(4);
+		when(mockPubSubConfiguration.getSubscriber("customSubscription2")).thenReturn(mockCustomSubscriber2);
+		when(mockCustomSubscriber2.isCustom()).thenReturn(true);
+		when(mockCustomSubscriber2.getExecutorThreads()).thenReturn(4);
+
+		ExecutorProvider executorProviderForSub1 = factory.getExecutorProvider("customSubscription1");
+		ExecutorProvider executorProviderForSub2 = factory.getExecutorProvider("customSubscription2");
+
+		// Verify that two executor providers and two schedulers are created
+		assertThat(executorProviderForSub1).isNotNull();
+		assertThat(executorProviderForSub2).isNotNull();
+		assertThat(factory.getExecutorProviderMap()).hasSize(2);
+		assertThat(factory.getThreadPoolTaskSchedulerMap()).hasSize(2);
+	}
+
+	@Test
+	public void testGetExecutorProvider_subscribersWithDefaultAndCustomConfigs() {
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
+
+		// One subscriber with subscription-specific subscriber properties
+		when(mockPubSubConfiguration.getSubscriber("customSubscription1")).thenReturn(mockCustomSubscriber1);
+		when(mockCustomSubscriber1.isCustom()).thenReturn(true);
+		when(mockCustomSubscriber1.getExecutorThreads()).thenReturn(4);
+
+		// Two subscribers with default/global subscriber properties
+		when(mockPubSubConfiguration.getSubscriber("defaultSubscription1")).thenReturn(mockDefaultSubscriber1);
+		when(mockDefaultSubscriber1.isCustom()).thenReturn(false);
+		when(mockDefaultSubscriber1.getExecutorThreads()).thenReturn(4);
+		when(mockPubSubConfiguration.getSubscriber("defaultSubscription2")).thenReturn(mockDefaultSubscriber2);
+		when(mockDefaultSubscriber2.isCustom()).thenReturn(false);
+
+		ExecutorProvider executorProviderForCustom1 = factory.getExecutorProvider("customSubscription1");
+		ExecutorProvider executorProviderForDefault1 = factory.getExecutorProvider("defaultSubscription1");
+		ExecutorProvider executorProviderForDefault2 = factory.getExecutorProvider("defaultSubscription2");
+
+		// Verify that only two executor providers and two schedulers are created
+		assertThat(executorProviderForCustom1).isNotNull();
+		assertThat(executorProviderForDefault1).isNotNull();
+		assertThat(executorProviderForDefault2).isNotNull();
+		assertThat(factory.getExecutorProviderMap()).hasSize(2);
+		assertThat(factory.getThreadPoolTaskSchedulerMap()).hasSize(2);
 	}
 
 	@Test
@@ -156,10 +226,10 @@ public class DefaultSubscriberFactoryTests {
 	@Test
 	public void testCreateThreadPoolTaskScheduler() {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
-		when(mockSubscriber.getExecutorThreads()).thenReturn(6);
+		when(mockCustomSubscriber1.getExecutorThreads()).thenReturn(6);
 
 		ThreadPoolTaskScheduler threadPoolTaskScheduler = factory
-				.createThreadPoolTaskScheduler(mockSubscriber, "subscription-name");
+				.createThreadPoolTaskScheduler(mockCustomSubscriber1, "subscription-name");
 
 		assertThat(
 				threadPoolTaskScheduler.getThreadNamePrefix())
@@ -171,4 +241,18 @@ public class DefaultSubscriberFactoryTests {
 				threadPoolTaskScheduler.isDaemon())
 						.isTrue();
 	}
+
+	@Test
+	public void shutdownScheduler() {
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
+		Map<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap = factory.getThreadPoolTaskSchedulerMap();
+		threadPoolTaskSchedulerMap.put("sub1", mockScheduler1);
+		threadPoolTaskSchedulerMap.put("sub2", mockScheduler2);
+
+		factory.clearScheduler();
+
+		verify(mockScheduler1, times(1)).shutdown();
+		verify(mockScheduler2, times(1)).shutdown();
+	}
+
 }
