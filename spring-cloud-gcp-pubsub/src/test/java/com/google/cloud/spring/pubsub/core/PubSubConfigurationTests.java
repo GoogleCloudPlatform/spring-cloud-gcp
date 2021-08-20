@@ -115,7 +115,7 @@ public class PubSubConfigurationTests {
 	public void testSubscriberMapProperties_defaultOrGlobal_addToMap() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 
-		assertThat(pubSubConfiguration.getSubscription()).hasSize(0);
+		assertThat(pubSubConfiguration.getSubscription()).isEmpty();
 		assertThat(pubSubConfiguration.getSubscriber("subscription-name").getExecutorThreads()).isEqualTo(4);
 		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
 		assertThat(pubSubConfiguration.getSubscription().get("subscription-name").getExecutorThreads()).isEqualTo(4);
