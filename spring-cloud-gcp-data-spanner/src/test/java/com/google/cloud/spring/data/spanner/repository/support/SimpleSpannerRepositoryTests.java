@@ -49,7 +49,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Chengyuan Zhao
  */
-public class SpannerRepositoryImplTests {
+public class SimpleSpannerRepositoryTests {
 
 	private SpannerTemplate template;
 
@@ -267,12 +267,12 @@ public class SpannerRepositoryImplTests {
 
 	@Test
 	public void deleteAllByIdTest() {
-		List<Key> unconvertedKey = Arrays.asList(Key.of("key1"), Key.of("key2"));
+		List<String> unconvertedKey = Arrays.asList("key1", "key2");
 
-		when(this.entityProcessor.convertToKey(Key.of("key1"))).thenReturn(Key.of("key1"));
-		when(this.entityProcessor.convertToKey(Key.of("key2"))).thenReturn(Key.of("key2"));
+		when(this.entityProcessor.convertToKey("key1")).thenReturn(Key.of("key1"));
+		when(this.entityProcessor.convertToKey("key2")).thenReturn(Key.of("key2"));
 
-		new SimpleSpannerRepository<Object, Key>(this.template, Object.class)
+		new SimpleSpannerRepository<Object, String>(this.template, Object.class)
 				.deleteAllById(unconvertedKey);
 		ArgumentCaptor<KeySet> argumentCaptor = ArgumentCaptor.forClass(KeySet.class);
 		verify(this.template).delete(eq(Object.class), argumentCaptor.capture());
