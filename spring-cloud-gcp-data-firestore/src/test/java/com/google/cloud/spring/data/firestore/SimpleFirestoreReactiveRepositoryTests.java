@@ -32,8 +32,8 @@ public class SimpleFirestoreReactiveRepositoryTests {
 	@Test
 	public void deleteAllById() {
 		FirestoreTemplate mockTemplate = mock(FirestoreTemplate.class);
-		SimpleFirestoreReactiveRepository<String> repository =
-				new SimpleFirestoreReactiveRepository<>(mockTemplate, String.class);
+		SimpleFirestoreReactiveRepository<String> repository = new SimpleFirestoreReactiveRepository<>(mockTemplate,
+				String.class);
 		Publisher<String> ids = Flux.fromIterable(Arrays.asList("1", "2"));
 		repository.deleteAllById(ids);
 		verify(mockTemplate).deleteById(same(ids), eq(String.class));

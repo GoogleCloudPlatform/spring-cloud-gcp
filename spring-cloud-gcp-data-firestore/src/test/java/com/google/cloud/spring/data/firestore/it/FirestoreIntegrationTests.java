@@ -278,7 +278,7 @@ public class FirestoreIntegrationTests {
 		bob.setUpdateTime(null);
 		this.firestoreTemplate.save(bob).block();
 
-		this.firestoreTemplate.deleteById(Flux.just("Bob", "Saitama", "Alice"),User.class).block();
+		this.firestoreTemplate.deleteById(Flux.just("Bob", "Saitama", "Alice"), User.class).block();
 		assertThat(this.firestoreTemplate.count(User.class).block()).isZero();
 
 		//tag::subcollection[]
