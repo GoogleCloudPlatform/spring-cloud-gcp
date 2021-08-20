@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import com.google.cloud.spring.data.firestore.SimpleFirestoreReactiveRepository;
 import com.google.cloud.spring.data.firestore.entities.User;
 import com.google.cloud.spring.data.firestore.entities.User.Address;
 import com.google.cloud.spring.data.firestore.entities.UserRepository;
@@ -29,6 +30,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.util.AopTestUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -114,6 +116,11 @@ public class FirestoreRepositoryIntegrationTests {
 		User aliceLoaded = this.userRepository.findById("Alice").block();
 		assertThat(aliceLoaded.getAddresses()).isEqualTo(addresses);
 		assertThat(aliceLoaded.getHomeAddress()).isEqualTo(homeAddress);
+
+		// cast to SimpleFirestoreReactiveRepository for method be reachable with Spring Boot 2.4
+		SimpleFirestoreReactiveRepository repository = AopTestUtils.getTargetObject(this.userRepository);
+		repository.deleteAllById(Arrays.asList("Alice", "Bob")).block();
+		assertThat(this.userRepository.count().block()).isEqualTo(0);
 	}
 	//end::repository_built_in[]
 

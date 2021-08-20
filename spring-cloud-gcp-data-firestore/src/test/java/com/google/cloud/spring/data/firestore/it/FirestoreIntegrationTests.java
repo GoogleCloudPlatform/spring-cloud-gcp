@@ -273,6 +273,14 @@ public class FirestoreIntegrationTests {
 		assertThat(this.firestoreTemplate.deleteAll(User.class).block()).isEqualTo(2);
 		assertThat(this.firestoreTemplate.findAll(User.class).collectList().block()).isEmpty();
 
+		alice.setUpdateTime(null);
+		this.firestoreTemplate.save(alice).block();
+		bob.setUpdateTime(null);
+		this.firestoreTemplate.save(bob).block();
+
+		this.firestoreTemplate.deleteById(Flux.just("Bob", "Saitama", "Alice"),User.class).block();
+		assertThat(this.firestoreTemplate.count(User.class).block()).isZero();
+
 		//tag::subcollection[]
 		FirestoreReactiveOperations bobTemplate = this.firestoreTemplate.withParent(new User("Bob", 60));
 
