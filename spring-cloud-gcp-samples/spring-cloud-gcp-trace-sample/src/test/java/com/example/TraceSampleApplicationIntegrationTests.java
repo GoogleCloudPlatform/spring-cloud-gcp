@@ -148,9 +148,17 @@ public class TraceSampleApplicationIntegrationTests {
 
 			log.debug("Getting trace...");
 			Trace trace = this.traceServiceStub.getTrace(getTraceRequest);
-			log.debug("Found trace! " + trace.getTraceId() + " with " + trace.getSpansCount() + " spans.");
+			log.info("Found trace! " + trace.getTraceId() + " with " + trace.getSpansCount() + " spans ("
+					+ trace.getSpansList().stream().map(TraceSpan::getName).collect(Collectors.toList())
+					+ ").");
 
 			assertThat(trace.getTraceId()).isEqualTo(uuidString);
+			/* The 25 expected spans are:
+			 *   get /, visit-meet-endpoint, get, get /meet, get, get /meet, get, get /meet,
+			 *   send-message-spring-integration, send, handle, handle, publish, send-message-pub-sub-template, publish,
+			 *   next-message, on-message, next-message, on-message, send, send, handle, handle, handle, handle
+			 */
+
 			assertThat(trace.getSpansCount()).isEqualTo(25);
 			log.debug("Trace spans match.");
 
