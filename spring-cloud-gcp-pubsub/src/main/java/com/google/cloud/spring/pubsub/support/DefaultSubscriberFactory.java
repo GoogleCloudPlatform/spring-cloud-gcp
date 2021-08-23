@@ -348,8 +348,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 */
 	ExecutorProvider getExecutorProviderFromConfigurations(PubSubConfiguration.Subscriber subscriber,
 			String subscriptionName) {
-		Boolean isCustom = subscriber.isCustom();
-		if (Boolean.TRUE.equals(isCustom)) {
+		if (!subscriber.isGlobal()) {
 			return createExecutorProvider(subscriber, subscriptionName);
 		}
 

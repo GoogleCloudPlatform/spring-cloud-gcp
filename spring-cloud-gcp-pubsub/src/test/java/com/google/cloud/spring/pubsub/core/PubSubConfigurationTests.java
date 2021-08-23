@@ -134,20 +134,20 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberMapProperties_isNotCustomIfAbsentFromMap() {
+	public void testSubscriberMapProperties_isGlobalIfAbsentFromMap() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 
 		assertThat(pubSubConfiguration.getSubscription()).doesNotContainKey("subscription-name");
-		assertThat(pubSubConfiguration.getSubscriber("subscription-name").isCustom()).isFalse();
+		assertThat(pubSubConfiguration.getSubscriber("subscription-name").isGlobal()).isTrue();
 	}
 
 	@Test
-	public void testSubscriberMapProperties_isCustomIfPresentInMap() {
+	public void testSubscriberMapProperties_isNotGlobalIfPresentInMap() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		pubSubConfiguration.getSubscription().put("subscription-name", new PubSubConfiguration.Subscriber());
 
 		assertThat(pubSubConfiguration.getSubscription()).containsKey("subscription-name");
-		assertThat(pubSubConfiguration.getSubscriber("subscription-name").isCustom()).isTrue();
+		assertThat(pubSubConfiguration.getSubscriber("subscription-name").isGlobal()).isFalse();
 	}
 
 	@Test

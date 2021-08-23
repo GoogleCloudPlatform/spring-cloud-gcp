@@ -56,11 +56,10 @@ public class PubSubConfiguration {
 
 	public Subscriber getSubscriber(String name) {
 		if (this.subscription.containsKey(name)) {
-			this.subscription.get(name).custom = true;
 			return this.subscription.get(name);
 		}
 		Subscriber subscriberProperties = this.subscription.computeIfAbsent(name, k -> this.subscriber);
-		subscriberProperties.custom = false;
+		subscriberProperties.global = true;
 		return subscriberProperties;
 	}
 
@@ -133,9 +132,9 @@ public class PubSubConfiguration {
 	public static class Subscriber {
 
 		/**
-		 * Custom determines if the configuration is subscription-specific.
+		 * Custom determines if the configuration is global or the default.
 		 */
-		private Boolean custom = false;
+		private boolean global = false;
 
 		/**
 		 * Number of threads used by every subscriber.
@@ -172,8 +171,8 @@ public class PubSubConfiguration {
 		 */
 		private final FlowControl flowControl = new FlowControl();
 
-		public Boolean isCustom() {
-			return custom;
+		public boolean isGlobal() {
+			return global;
 		}
 
 		public Retry getRetry() {

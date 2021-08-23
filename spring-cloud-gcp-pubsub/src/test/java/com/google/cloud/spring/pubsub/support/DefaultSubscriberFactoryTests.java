@@ -155,7 +155,9 @@ public class DefaultSubscriberFactoryTests {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 		when(mockPubSubConfiguration.getSubscriber("defaultSubscription1")).thenReturn(mockDefaultSubscriber1);
 		when(mockDefaultSubscriber1.getExecutorThreads()).thenReturn(4);
+		when(mockDefaultSubscriber1.isGlobal()).thenReturn(true);
 		when(mockPubSubConfiguration.getSubscriber("defaultSubscription2")).thenReturn(mockDefaultSubscriber2);
+		when(mockDefaultSubscriber2.isGlobal()).thenReturn(true);
 
 		ExecutorProvider executorProviderForSub1 = factory.getExecutorProvider("defaultSubscription1");
 		ExecutorProvider executorProviderForSub2 = factory.getExecutorProvider("defaultSubscription2");
@@ -171,10 +173,8 @@ public class DefaultSubscriberFactoryTests {
 	public void testGetExecutorProvider_allSubscribersWithCustomConfigs_manyCreated() {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 		when(mockPubSubConfiguration.getSubscriber("customSubscription1")).thenReturn(mockCustomSubscriber1);
-		when(mockCustomSubscriber1.isCustom()).thenReturn(true);
 		when(mockCustomSubscriber1.getExecutorThreads()).thenReturn(4);
 		when(mockPubSubConfiguration.getSubscriber("customSubscription2")).thenReturn(mockCustomSubscriber2);
-		when(mockCustomSubscriber2.isCustom()).thenReturn(true);
 		when(mockCustomSubscriber2.getExecutorThreads()).thenReturn(4);
 
 		ExecutorProvider executorProviderForSub1 = factory.getExecutorProvider("customSubscription1");
@@ -193,15 +193,14 @@ public class DefaultSubscriberFactoryTests {
 
 		// One subscriber with subscription-specific subscriber properties
 		when(mockPubSubConfiguration.getSubscriber("customSubscription1")).thenReturn(mockCustomSubscriber1);
-		when(mockCustomSubscriber1.isCustom()).thenReturn(true);
 		when(mockCustomSubscriber1.getExecutorThreads()).thenReturn(4);
 
 		// Two subscribers with default/global subscriber properties
 		when(mockPubSubConfiguration.getSubscriber("defaultSubscription1")).thenReturn(mockDefaultSubscriber1);
-		when(mockDefaultSubscriber1.isCustom()).thenReturn(false);
+		when(mockDefaultSubscriber1.isGlobal()).thenReturn(true);
 		when(mockDefaultSubscriber1.getExecutorThreads()).thenReturn(4);
 		when(mockPubSubConfiguration.getSubscriber("defaultSubscription2")).thenReturn(mockDefaultSubscriber2);
-		when(mockDefaultSubscriber2.isCustom()).thenReturn(false);
+		when(mockDefaultSubscriber2.isGlobal()).thenReturn(true);
 
 		ExecutorProvider executorProviderForCustom1 = factory.getExecutorProvider("customSubscription1");
 		ExecutorProvider executorProviderForDefault1 = factory.getExecutorProvider("defaultSubscription1");
