@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import com.google.cloud.datastore.Cursor;
 import com.google.cloud.datastore.EntityQuery;
@@ -846,6 +847,21 @@ public class PartTreeDatastoreQueryTests {
 		assertThat((Optional) this.partTreeDatastoreQuery.execute(params)).isNotPresent();
 	}
 
+	@Test
+	public void streamResultTest() throws NoSuchMethodException {
+		Trade tradeA = new Trade();
+		tradeA.id = "a";
+		Trade tradeB = new Trade();
+		tradeB.id = "b";
+		queryWithMockResult("findStreamByAction", Arrays.asList(tradeA, tradeB),
+				getClass().getMethod("findStreamByAction", String.class));
+		when(this.queryMethod.isStreamQuery()).thenReturn(true);
+		Object[] params = new Object[] { "BUY", };
+		Object result = this.partTreeDatastoreQuery.execute(params);
+		assertThat(result).isInstanceOf(Stream.class);
+		assertThat((Stream) result).hasSize(2).contains(tradeA, tradeB);
+	}
+
 	private void queryWithMockResult(String queryName, List results, Method m,
 			ProjectionInformation projectionInformation) {
 		queryWithMockResult(queryName, results, m, false, projectionInformation);
@@ -881,6 +897,10 @@ public class PartTreeDatastoreQueryTests {
 	}
 
 	public Trade findByAction(String action) {
+		return null;
+	}
+
+	public Stream<Trade> findStreamByAction(String action) {
 		return null;
 	}
 

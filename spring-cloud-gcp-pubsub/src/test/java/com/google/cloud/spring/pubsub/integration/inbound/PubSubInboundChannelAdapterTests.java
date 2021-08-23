@@ -143,7 +143,7 @@ public class PubSubInboundChannelAdapterTests {
 		this.adapter.setAckMode(AckMode.AUTO);
 		this.adapter.setOutputChannel(this.mockMessageChannel);
 
-		PublishSubscribeChannel errorChannel = new PublishSubscribeChannel();
+		PublishSubscribeChannel errorChannel = new PublishSubscribeChannel(true);
 		// Simulating what FinalRethrowingErrorMessageHandler would do.
 		MessageHandler errorHandler = message -> {
 			throw new RuntimeException("error channel fails, too");

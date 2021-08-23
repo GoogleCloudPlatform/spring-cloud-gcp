@@ -10,14 +10,17 @@ Similar content is also available in the https://codelabs.developers.google.com/
 
 image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample/README.adoc]
 
-1. Create a Google Cloud Platform Project
-2. https://cloud.google.com/docs/authentication/getting-started#creating_the_service_account[Create a service account] with Trace Append permission.
+. Create a Google Cloud Platform Project
+. https://cloud.google.com/docs/authentication/getting-started#creating_the_service_account[Create a service account] with Trace Append permission.
 Furnish a new JSON key and then set the credentials using the `GOOGLE_APPLICATION_CREDENTIALS` environment variable or link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter/README.adoc[using GCP Starter Core properties].
 +
 Alternatively, if you have the https://cloud.google.com/sdk/[Google Cloud SDK] installed and initialized and are logged in with https://developers.google.com/identity/protocols/application-default-credentials[application default credentials], you can skip this step since Spring Cloud GCP will auto-discover those settings for you.
+. Enable the https://console.cloud.google.com/apis/api/cloudtrace.googleapis.com/overview[Stackdriver Trace API]
+. Go to the Google Cloud Console Pub/Sub topics page and create a topic called `traceTopic`.
++
+Still in the same page, locate the newly created topic, click the button with the three vertical dots at the end of the topic’s line and click "New subscription". Create a new subscription called `traceSubscription` with all default parameters.
 
-3. Enable the https://console.cloud.google.com/apis/api/cloudtrace.googleapis.com/overview[Stackdriver Trace API]
-4. Run `$ mvn clean install` from the root directory of the project.
+. Run `$ mvn clean install` from the root directory of the project.
 
 == Run the Example
 Run the following command in the same directory as this sample (spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample):
