@@ -119,8 +119,8 @@ public class FirestoreRepositoryIntegrationTests {
 
 		// cast to SimpleFirestoreReactiveRepository for method be reachable with Spring Boot 2.4
 		SimpleFirestoreReactiveRepository repository = AopTestUtils.getTargetObject(this.userRepository);
-		repository.deleteAllById(Arrays.asList("Alice", "Bob")).block();
-		assertThat(this.userRepository.count().block()).isEqualTo(0);
+		StepVerifier.create(repository.deleteAllById(Arrays.asList("Alice", "Bob")).then(this.userRepository.count()))
+				.expectNext(0L).verifyComplete();
 	}
 	//end::repository_built_in[]
 
