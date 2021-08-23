@@ -51,7 +51,7 @@ jobs:
         uses: rinx/setup-graalvm-ce@v0.0.5
         if: matrix.it == 'native'
         with:
-          graalvm-version: "21.1.0"
+          graalvm-version: "21.2.0"
           java-version: "java11"
           native-image: "true"
       - uses: actions/cache@v2
