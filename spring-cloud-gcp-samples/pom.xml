@@ -24,7 +24,7 @@
 		<!-- Checkstyle version settings. Keep in sync with ../pom.xml -->
 		<spring-cloud-build-tools.version>3.0.1</spring-cloud-build-tools.version>
 		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
-		<app-engine-maven-plugin.version>2.4.0</app-engine-maven-plugin.version>
+		<app-engine-maven-plugin.version>2.4.1</app-engine-maven-plugin.version>
 		<spring-native.version>0.10.0</spring-native.version>
 		<google-cloud-graalvm-support.version>0.4.0</google-cloud-graalvm-support.version>
 		<testcontainers.version>1.15.3</testcontainers.version>
