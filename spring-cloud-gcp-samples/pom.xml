@@ -25,10 +25,14 @@
 		<spring-cloud-build-tools.version>3.0.1</spring-cloud-build-tools.version>
 		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
 		<app-engine-maven-plugin.version>2.4.1</app-engine-maven-plugin.version>
-
+		<spring-native.version>0.10.0</spring-native.version>
+		<google-cloud-graalvm-support.version>0.6.0</google-cloud-graalvm-support.version>
+		<testcontainers.version>1.15.3</testcontainers.version>
 		<skip.surefire.tests>false</skip.surefire.tests>
 		<skip.failsafe.tests>false</skip.failsafe.tests>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
+		<integration-test.tags.include/>
+		<integration-test.tags.exclude/>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<maven.sources.skip>true</maven.sources.skip>
@@ -96,6 +100,17 @@
 		</profile>
 	</profiles>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>testcontainers-bom</artifactId>
+				<version>${testcontainers.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 		<!-- Needed for running JUnit 4 tests when depending on Spring Boot Ilford. -->
 		<dependency>
@@ -135,6 +150,8 @@
 						<includes>
 							<include>${integration-test.pattern}</include>
 						</includes>
+						<groups>${integration-test.tags.include}</groups>
+						<excludedGroups>${integration-test.tags.exclude}</excludedGroups>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -190,6 +207,8 @@
 							<failOnViolation>true</failOnViolation>
 							<suppressionsLocation>../src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
 							<violationSeverity>warning</violationSeverity>
+							<!-- exclude generated Spring AOT classes -->
+							<excludes>org/springframework/**/*.*</excludes>
 						</configuration>
 						<goals>
 							<goal>check</goal>
@@ -210,6 +229,14 @@
 			</snapshots>
 		</repository>
 		<repository>
+			<id>spring-release</id>
+			<name>Spring release</name>
+			<url>https://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
 			<id>spring-milestones</id>
 			<name>Spring Milestones</name>
 			<url>https://repo.spring.io/milestone</url>
@@ -223,6 +250,14 @@
 			<url>https://repo.spring.io/snapshot</url>
 			<snapshots>
 				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-release</id>
+			<name>Spring release</name>
+			<url>https://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>false</enabled>
 			</snapshots>
 		</pluginRepository>
 		<pluginRepository>
