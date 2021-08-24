@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import com.google.cloud.spring.data.firestore.SimpleFirestoreReactiveRepository;
 import com.google.cloud.spring.data.firestore.entities.User;
 import com.google.cloud.spring.data.firestore.entities.User.Address;
 import com.google.cloud.spring.data.firestore.entities.UserRepository;
@@ -39,6 +40,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.AopTestUtils;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
@@ -114,6 +116,11 @@ public class FirestoreRepositoryIntegrationTests {
 		User aliceLoaded = this.userRepository.findById("Alice").block();
 		assertThat(aliceLoaded.getAddresses()).isEqualTo(addresses);
 		assertThat(aliceLoaded.getHomeAddress()).isEqualTo(homeAddress);
+
+		// cast to SimpleFirestoreReactiveRepository for method be reachable with Spring Boot 2.4
+		SimpleFirestoreReactiveRepository repository = AopTestUtils.getTargetObject(this.userRepository);
+		StepVerifier.create(repository.deleteAllById(Arrays.asList("Alice", "Bob")).then(this.userRepository.count()))
+				.expectNext(0L).verifyComplete();
 	}
 	//end::repository_built_in[]
 

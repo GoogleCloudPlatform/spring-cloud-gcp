@@ -16,21 +16,33 @@
 
 package com.google.cloud.spring.data.firestore;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class SimpleFirestoreReactiveRepositoryTests {
 
 	@Test
-	public void deleteAllByIdUnimplemented() {
+	public void deleteAllById() {
 		FirestoreTemplate mockTemplate = mock(FirestoreTemplate.class);
-		SimpleFirestoreReactiveRepository<String> repository =
-				new SimpleFirestoreReactiveRepository<>(mockTemplate, String.class);
-		assertThatThrownBy(() -> repository.deleteAllById(new ArrayList<>()))
-				.isInstanceOf(UnsupportedOperationException.class);
+		SimpleFirestoreReactiveRepository<String> repository = new SimpleFirestoreReactiveRepository<>(mockTemplate,
+				String.class);
+		Iterable<String> idList = Arrays.asList("1", "2");
+		// only testing that the request is passed through to FirestoreTemplate as expected
+		repository.deleteAllById(idList);
+
+		ArgumentCaptor<Publisher> argumentCaptor = ArgumentCaptor.forClass(Publisher.class);
+		verify(mockTemplate).deleteById(argumentCaptor.capture(), eq(String.class));
+		List<String> arguments = (List<String>) ((Flux) argumentCaptor.getValue()).collectList().block();
+		assertThat(arguments).containsExactlyInAnyOrder("1", "2");
 	}
 }
