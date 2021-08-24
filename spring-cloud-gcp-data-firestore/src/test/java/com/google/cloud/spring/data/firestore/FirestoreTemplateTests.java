@@ -230,7 +230,7 @@ public class FirestoreTemplateTests {
 		builder.addWrites(Write.newBuilder().setDelete(parent + "/testEntities/e1").build());
 		builder.addWrites(Write.newBuilder().setDelete(parent + "/testEntities/e2").build());
 
-		verify(this.firestoreStub, times(1)).commit(eq(builder.build()), any());
+		verify(this.firestoreStub).commit(eq(builder.build()), any());
 	}
 
 	private void mockCommitMethod() {

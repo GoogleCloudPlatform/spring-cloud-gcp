@@ -37,6 +37,7 @@ public class SimpleFirestoreReactiveRepositoryTests {
 		SimpleFirestoreReactiveRepository<String> repository = new SimpleFirestoreReactiveRepository<>(mockTemplate,
 				String.class);
 		Iterable<String> idList = Arrays.asList("1", "2");
+		// only testing that the request is passed through to FirestoreTemplate as expected
 		repository.deleteAllById(idList);
 
 		ArgumentCaptor<Publisher> argumentCaptor = ArgumentCaptor.forClass(Publisher.class);
