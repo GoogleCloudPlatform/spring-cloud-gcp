@@ -166,8 +166,12 @@ public class SimpleSpannerRepository<T, I> implements SpannerRepository<T, I> {
 
 	// TODO: Restore @Override when not supporting Spring Boot 2.4 anymore
 	//@Override
-	public void deleteAllById(Iterable<? extends I> is) {
-		throw new UnsupportedOperationException();
+	public void deleteAllById(Iterable<? extends I> ids) {
+		KeySet.Builder builder = KeySet.newBuilder();
+		for (Object id : ids) {
+			builder.addKey(toKey(id));
+		}
+		this.spannerTemplate.delete(this.entityType, builder.build());
 	}
 
 	private Key toKey(Object id) {
