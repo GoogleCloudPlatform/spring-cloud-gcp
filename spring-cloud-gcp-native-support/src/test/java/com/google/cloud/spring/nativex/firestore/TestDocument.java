@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-package com.example;
+package com.google.cloud.spring.nativex.firestore;
 
-import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
-import reactor.core.publisher.Flux;
+import java.util.List;
 
-import org.springframework.stereotype.Repository;
+import com.google.cloud.firestore.annotation.DocumentId;
+import com.google.cloud.spring.data.firestore.Document;
+import lombok.Data;
+import lombok.Value;
 
-/**
- * Demonstrates Spring Data Repository support in Firestore.
- *
- * @author Daniel Zou
- */
-@Repository
-public interface UserRepository extends FirestoreReactiveRepository<User> {
+@Document(collectionName = "usersCollection")
+@Data
+public class TestDocument {
+	@DocumentId
+	private String id;
+	private String name;
+	private List<Address> addresses;
 
-	Flux<User> findByAge(int age);
+	@Value
+	public static class Address {
+		String streetAddress;
+		String country;
+	}
 }

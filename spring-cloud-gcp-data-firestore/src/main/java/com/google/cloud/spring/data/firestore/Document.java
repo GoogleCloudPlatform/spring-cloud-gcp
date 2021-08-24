@@ -23,6 +23,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.stereotype.Indexed;
+
 /**
  * Annotation for a class that represents a Firestore Document.
  *
@@ -33,6 +35,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Indexed
 public @interface Document {
 
 	/**
