@@ -284,6 +284,19 @@ public class FirestoreIntegrationTests {
 		//end::subcollection[]
 	}
 
+	@Test
+	public void deleteAllByIdTest() {
+		User alice = new User("Alice", 29);
+		User bob = new User("Bob", 60);
+
+		this.firestoreTemplate.save(alice).block();
+		this.firestoreTemplate.save(bob).block();
+
+		StepVerifier.create(
+				this.firestoreTemplate.deleteById(Flux.just("Bob", "Saitama", "Alice"), User.class)
+						.then(this.firestoreTemplate.count(User.class)))
+				.expectNext(0L).verifyComplete();
+	}
 
 	@Test
 	public void saveTest() {
