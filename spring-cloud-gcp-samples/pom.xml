@@ -27,7 +27,7 @@
 		<app-engine-maven-plugin.version>2.4.1</app-engine-maven-plugin.version>
 		<spring-native.version>0.10.0</spring-native.version>
 		<google-cloud-graalvm-support.version>0.6.0</google-cloud-graalvm-support.version>
-		<testcontainers.version>1.15.3</testcontainers.version>
+		<testcontainers.version>1.16.0</testcontainers.version>
 		<skip.surefire.tests>false</skip.surefire.tests>
 		<skip.failsafe.tests>false</skip.failsafe.tests>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
