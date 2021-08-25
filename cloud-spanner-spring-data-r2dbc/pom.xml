@@ -90,7 +90,7 @@
     <r2dbc.version>0.8.5.RELEASE</r2dbc.version>
     <reactor.version>2020.0.10</reactor.version>
 
-    <mockito.version>3.12.1</mockito.version>
+    <mockito.version>3.12.3</mockito.version>
     <slf4j.version>1.7.32</slf4j.version>
 
     <assertj.version>3.20.2</assertj.version>
