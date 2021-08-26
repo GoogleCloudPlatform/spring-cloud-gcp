@@ -19,6 +19,8 @@ package com.google.cloud.spring.autoconfigure.pubsub.it;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubProperties;
+import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import org.apache.commons.logging.Log;
@@ -32,11 +34,10 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-
 public class PubSubAutoConfigurationIntegrationTests {
 
 	private static final Log LOGGER = LogFactory.getLog(PubSubTemplateIntegrationTests.class);
-
+	private static GcpProjectIdProvider projectIdProvider;
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=0",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.executor-threads=3",
@@ -47,10 +48,12 @@ public class PubSubAutoConfigurationIntegrationTests {
 	@BeforeClass
 	public static void enableTests() {
 		assumeThat(System.getProperty("it.pubsub")).isEqualTo("true");
+		projectIdProvider = new DefaultGcpProjectIdProvider();
 	}
 
 	@Test
 	public void testPull() {
+
 		this.contextRunner.run(context -> {
 			PubSubAdmin pubSubAdmin = context.getBean(PubSubAdmin.class);
 			String topicName = "test-topic";
@@ -71,7 +74,8 @@ public class PubSubAutoConfigurationIntegrationTests {
 			pubSubTemplate.pull(subscriptionName, 4, false);
 
 			GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
-			assertThat(gcpPubSubProperties.getSubscriber("test-sub-1").getExecutorThreads()).isEqualTo(3);
+			assertThat(gcpPubSubProperties.getSubscriber(subscriptionName, projectIdProvider.getProjectId())
+					.getExecutorThreads()).isEqualTo(3);
 
 			pubSubAdmin.deleteSubscription(subscriptionName);
 			pubSubAdmin.deleteTopic(topicName);
@@ -106,7 +110,8 @@ public class PubSubAutoConfigurationIntegrationTests {
 			});
 
 			GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
-			assertThat(gcpPubSubProperties.getSubscriber("test-sub-2").getExecutorThreads()).isEqualTo(1);
+			assertThat(gcpPubSubProperties.getSubscriber(subscriptionName, projectIdProvider.getProjectId())
+					.getExecutorThreads()).isEqualTo(1);
 
 			pubSubAdmin.deleteSubscription(subscriptionName);
 			pubSubAdmin.deleteTopic(topicName);

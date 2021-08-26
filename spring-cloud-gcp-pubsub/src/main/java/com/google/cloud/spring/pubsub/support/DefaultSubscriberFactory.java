@@ -37,7 +37,6 @@ import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
-import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PullRequest;
 import org.threeten.bp.Duration;
 
@@ -283,7 +282,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	@Override
 	public SubscriberStub createSubscriberStub(String subscriptionName) {
 		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
-		String parsedSubscriptionName = ProjectSubscriptionName.parse(subscriptionName).getSubscription();
 
 		if (this.credentialsProvider != null) {
 			subscriberStubSettings.setCredentialsProvider(this.credentialsProvider);
@@ -293,7 +291,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.setEndpoint(this.pullEndpoint);
 		}
 
-		ExecutorProvider executor = getExecutorProvider(parsedSubscriptionName);
+		ExecutorProvider executor = getExecutorProvider(subscriptionName);
 		if (executor != null) {
 			subscriberStubSettings.setExecutorProvider(executor);
 		}
@@ -335,7 +333,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			return this.executorProvider;
 		}
 		if (this.pubSubConfiguration != null) {
-			PubSubConfiguration.Subscriber subscriber = this.pubSubConfiguration.getSubscriber(subscriptionName);
+			PubSubConfiguration.Subscriber subscriber = this.pubSubConfiguration.getSubscriber(subscriptionName,
+					this.projectId);
 			return getExecutorProviderFromConfigurations(subscriber, subscriptionName);
 		}
 		return null;

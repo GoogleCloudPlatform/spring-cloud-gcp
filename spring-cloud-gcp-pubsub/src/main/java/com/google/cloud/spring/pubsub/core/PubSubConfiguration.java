@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
+import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 
 /**
  * Properties for Publisher or Subscriber specific configurations.
@@ -54,11 +56,27 @@ public class PubSubConfiguration {
 		return this.subscription;
 	}
 
-	public Subscriber getSubscriber(String name) {
-		if (this.subscription.containsKey(name)) {
-			return this.subscription.get(name);
+	public Subscriber getSubscriber(String name, String projectId) {
+		ProjectSubscriptionName fullyQualifiedName = PubSubSubscriptionUtils.toProjectSubscriptionName(name, projectId);
+		String fullyQualifiedSubscriptionKey = fullyQualifiedName.toString();
+
+		if (this.subscription.containsKey(fullyQualifiedSubscriptionKey)) {
+			return this.subscription.get(fullyQualifiedSubscriptionKey);
 		}
-		Subscriber subscriberProperties = this.subscription.computeIfAbsent(name, k -> this.subscriber);
+
+		String subscriptionName = fullyQualifiedName.getSubscription();
+		String projectIdFromFullName = fullyQualifiedName.getProject();
+
+		// Check that subscription name is present in map and the current project Id matches
+		// the one parsed from the fully qualified name
+		if (this.subscription.containsKey(subscriptionName) && projectIdFromFullName.equals(projectId)) {
+			this.subscription.putIfAbsent(fullyQualifiedSubscriptionKey, this.subscription.get(subscriptionName));
+			this.subscription.remove(subscriptionName);
+			return this.subscription.get(fullyQualifiedSubscriptionKey);
+		}
+
+		Subscriber subscriberProperties = this.subscription.computeIfAbsent(fullyQualifiedSubscriptionKey,
+				k -> this.subscriber);
 		subscriberProperties.global = true;
 		return subscriberProperties;
 	}
