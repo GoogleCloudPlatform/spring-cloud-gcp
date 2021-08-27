@@ -28,6 +28,7 @@ import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
+import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
@@ -88,8 +89,8 @@ public class PubSubTestBinder extends AbstractTestBinder<PubSubMessageChannelBin
 		catch (IOException ioe) {
 			throw new RuntimeException("Couldn't build test binder.", ioe);
 		}
-
-		DefaultSubscriberFactory subscriberFactory = new DefaultSubscriberFactory(projectIdProvider);
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		DefaultSubscriberFactory subscriberFactory = new DefaultSubscriberFactory(projectIdProvider, pubSubConfiguration);
 		subscriberFactory.setChannelProvider(transportChannelProvider);
 		subscriberFactory.setCredentialsProvider(NoCredentialsProvider.create());
 

@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -86,8 +87,6 @@ public class PubSubSubscriberTemplate
 
 	private final SubscriberFactory subscriberFactory;
 
-	private final SubscriberStub subscriberStub;
-
 	private PubSubMessageConverter pubSubMessageConverter = new SimplePubSubMessageConverter();
 
 	private final ExecutorService defaultAckExecutor = Executors.newSingleThreadExecutor();
@@ -95,6 +94,8 @@ public class PubSubSubscriberTemplate
 	private Executor ackExecutor = this.defaultAckExecutor;
 
 	private Executor asyncPullExecutor = Runnable::run;
+
+	private ConcurrentHashMap<String, SubscriberStub> subscriptionNameToStubMap = new ConcurrentHashMap<>();
 
 	/**
 	 * Default {@link PubSubSubscriberTemplate} constructor.
@@ -106,7 +107,6 @@ public class PubSubSubscriberTemplate
 		Assert.notNull(subscriberFactory, "The subscriberFactory can't be null.");
 
 		this.subscriberFactory = subscriberFactory;
-		this.subscriberStub = this.subscriberFactory.createSubscriberStub();
 	}
 
 	/**
@@ -195,8 +195,7 @@ public class PubSubSubscriberTemplate
 	 */
 	private List<AcknowledgeablePubsubMessage> pull(PullRequest pullRequest) {
 		Assert.notNull(pullRequest, "The pull request can't be null.");
-
-		PullResponse pullResponse = this.subscriberStub.pullCallable().call(pullRequest);
+		PullResponse pullResponse = getSubscriberStub(pullRequest.getSubscription()).pullCallable().call(pullRequest);
 		return toAcknowledgeablePubsubMessageList(
 				pullResponse.getReceivedMessagesList(),
 				pullRequest.getSubscription());
@@ -212,8 +211,7 @@ public class PubSubSubscriberTemplate
 	 */
 	private ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(PullRequest pullRequest) {
 		Assert.notNull(pullRequest, "The pull request can't be null.");
-
-		ApiFuture<PullResponse> pullFuture = this.subscriberStub.pullCallable().futureCall(pullRequest);
+		ApiFuture<PullResponse> pullFuture = getSubscriberStub(pullRequest.getSubscription()).pullCallable().futureCall(pullRequest);
 
 		final SettableListenableFuture<List<AcknowledgeablePubsubMessage>> settableFuture = new SettableListenableFuture<>();
 		ApiFutures.addCallback(pullFuture, new ApiFutureCallback<PullResponse>() {
@@ -405,7 +403,10 @@ public class PubSubSubscriberTemplate
 	@Override
 	public void destroy() {
 		this.defaultAckExecutor.shutdown();
-		this.subscriberStub.close();
+		for (SubscriberStub stub : subscriptionNameToStubMap.values()) {
+			stub.close();
+		}
+
 	}
 
 	private ApiFuture<Empty> ack(String subscriptionName, Collection<String> ackIds) {
@@ -413,7 +414,8 @@ public class PubSubSubscriberTemplate
 				.addAllAckIds(ackIds)
 				.setSubscription(subscriptionName)
 				.build();
-		return this.subscriberStub.acknowledgeCallable().futureCall(acknowledgeRequest);
+		SubscriberStub subscriberStub = getSubscriberStub(subscriptionName);
+		return subscriberStub.acknowledgeCallable().futureCall(acknowledgeRequest);
 	}
 
 	private ApiFuture<Empty> modifyAckDeadline(
@@ -423,8 +425,8 @@ public class PubSubSubscriberTemplate
 				.addAllAckIds(ackIds)
 				.setSubscription(subscriptionName)
 				.build();
-
-		return this.subscriberStub.modifyAckDeadlineCallable().futureCall(modifyAckDeadlineRequest);
+		SubscriberStub subscriberStub = getSubscriberStub(subscriptionName);
+		return subscriberStub.modifyAckDeadlineCallable().futureCall(modifyAckDeadlineRequest);
 	}
 
 	/**
@@ -484,6 +486,13 @@ public class PubSubSubscriberTemplate
 		});
 
 		return settableListenableFuture;
+	}
+
+	private SubscriberStub getSubscriberStub(String subscription) {
+		if (subscriptionNameToStubMap.containsKey(subscription)) {
+			return subscriptionNameToStubMap.get(subscription);
+		}
+		return subscriptionNameToStubMap.computeIfAbsent(subscription, this.subscriberFactory::createSubscriberStub);
 	}
 
 	private abstract static class AbstractBasicAcknowledgeablePubsubMessage

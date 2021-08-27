@@ -48,7 +48,7 @@ final class TracingSubscriberFactory implements SubscriberFactory {
 	}
 
 	@Override
-	public SubscriberStub createSubscriberStub() {
-		return pubSubTracing.subscriberStub(delegate.createSubscriberStub());
+	public SubscriberStub createSubscriberStub(String subscriptionName) {
+		return pubSubTracing.subscriberStub(delegate.createSubscriberStub(subscriptionName));
 	}
 }

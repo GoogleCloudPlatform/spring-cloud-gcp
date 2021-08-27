@@ -17,11 +17,16 @@
 package com.google.cloud.spring.pubsub.support;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.PreDestroy;
 
 import com.google.api.core.ApiClock;
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.HeaderProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
@@ -31,9 +36,11 @@ import com.google.cloud.pubsub.v1.stub.GrpcSubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.pubsub.v1.PullRequest;
 import org.threeten.bp.Duration;
 
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.Assert;
 
 /**
@@ -49,6 +56,11 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private final String projectId;
 
+	/**
+	 * @deprecated Directly use application.properties to configure ExecutorProvider instead
+	 * of Spring-managed beans
+	 */
+	@Deprecated
 	private ExecutorProvider executorProvider;
 
 	private TransportChannelProvider channelProvider;
@@ -71,15 +83,37 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private RetrySettings subscriberStubRetrySettings;
 
+	private PubSubConfiguration pubSubConfiguration;
+
+	private ConcurrentHashMap<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap = new ConcurrentHashMap<>();
+
+	private ConcurrentHashMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
+
+	private ExecutorProvider defaultExecutorProvider;
+
+	/**
+	 * Default {@link DefaultSubscriberFactory} constructor.
+	 * @param projectIdProvider provides the default GCP project ID for selecting the
+	 *     subscriptions
+	 * @deprecated Use the new {@link DefaultSubscriberFactory (GcpProjectIdProvider,PubSubConfiguration)} instead
+	 */
+	@Deprecated
+	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
+		this(projectIdProvider, null);
+	}
+
 	/**
 	 * Default {@link DefaultSubscriberFactory} constructor.
 	 * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
+	 * @param pubSubConfiguration contains the subscriber properties to configure
 	 */
-	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
+	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider, PubSubConfiguration pubSubConfiguration) {
 		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
 
 		this.projectId = projectIdProvider.getProjectId();
 		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
+
+		this.pubSubConfiguration = pubSubConfiguration;
 	}
 
 	@Override
@@ -91,7 +125,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 * Set the provider for the subscribers' executor. Useful to specify the number of threads to be
 	 * used by each executor.
 	 * @param executorProvider the executor provider to set
+	 * @deprecated Directly use application.properties to configure ExecutorProvider instead
+	 * of Spring-managed beans
 	 */
+	@Deprecated
 	public void setExecutorProvider(ExecutorProvider executorProvider) {
 		this.executorProvider = executorProvider;
 	}
@@ -187,8 +224,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberBuilder.setChannelProvider(this.channelProvider);
 		}
 
-		if (this.executorProvider != null) {
-			subscriberBuilder.setExecutorProvider(this.executorProvider);
+		ExecutorProvider executor = getExecutorProvider(subscriptionName);
+		if (executor != null) {
+			subscriberBuilder.setExecutorProvider(executor);
 		}
 
 		if (this.credentialsProvider != null) {
@@ -242,7 +280,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	@Override
-	public SubscriberStub createSubscriberStub() {
+	public SubscriberStub createSubscriberStub(String subscriptionName) {
 		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
 
 		if (this.credentialsProvider != null) {
@@ -253,8 +291,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.setEndpoint(this.pullEndpoint);
 		}
 
-		if (this.executorProvider != null) {
-			subscriberStubSettings.setExecutorProvider(this.executorProvider);
+		ExecutorProvider executor = getExecutorProvider(subscriptionName);
+		if (executor != null) {
+			subscriberStubSettings.setExecutorProvider(executor);
 		}
 
 		if (this.headerProvider != null) {
@@ -282,4 +321,85 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 	}
 
+	/**
+	 * Creates {@link ExecutorProvider}. If a custom executor provider is set then the
+	 * subscriber properties configured through the application.properties file will be
+	 * ignored.
+	 * @param subscriptionName subscription name
+	 * @return executor provider
+	 */
+	public ExecutorProvider getExecutorProvider(String subscriptionName) {
+		if (this.executorProvider != null) {
+			return this.executorProvider;
+		}
+		if (this.pubSubConfiguration != null) {
+			PubSubConfiguration.Subscriber subscriber = this.pubSubConfiguration.getSubscriber(subscriptionName,
+					this.projectId);
+			return getExecutorProviderFromConfigurations(subscriber, subscriptionName);
+		}
+		return null;
+	}
+
+	/**
+	 * Creates {@link ExecutorProvider} for subscriber when Pub/Sub configurations (either
+	 * global/default or subscription-specific) are present.
+	 * @param subscriber subscriber properties
+	 * @param subscriptionName subscription name
+	 * @return executor provider
+	 */
+	ExecutorProvider getExecutorProviderFromConfigurations(PubSubConfiguration.Subscriber subscriber,
+			String subscriptionName) {
+		if (!subscriber.isGlobal()) {
+			return createExecutorProvider(subscriber, subscriptionName);
+		}
+
+		if (this.defaultExecutorProvider != null) {
+			return this.defaultExecutorProvider;
+		}
+		this.defaultExecutorProvider = createExecutorProvider(subscriber, subscriptionName);
+		return this.defaultExecutorProvider;
+	}
+
+	ExecutorProvider createExecutorProvider(PubSubConfiguration.Subscriber subscriber, String subscriptionName) {
+		if (this.executorProviderMap.containsKey(subscriptionName)) {
+			return this.executorProviderMap.get(subscriptionName);
+		}
+		ThreadPoolTaskScheduler scheduler = createThreadPoolTaskScheduler(subscriber, subscriptionName);
+		scheduler.initialize();
+		ExecutorProvider executor = FixedExecutorProvider.create(scheduler.getScheduledExecutor());
+		return this.executorProviderMap.computeIfAbsent(subscriptionName, k -> executor);
+	}
+
+	/**
+	 * Creates {@link ThreadPoolTaskScheduler} given subscriber properties.
+	 * @param subscriptionName subscription name
+	 * @return thread pool scheduler
+	 */
+	ThreadPoolTaskScheduler createThreadPoolTaskScheduler(PubSubConfiguration.Subscriber subscriber,
+			String subscriptionName) {
+		if (this.threadPoolTaskSchedulerMap.containsKey(subscriptionName)) {
+			return threadPoolTaskSchedulerMap.get(subscriptionName);
+		}
+		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+		scheduler.setPoolSize(subscriber.getExecutorThreads());
+		String threadNamePrefix = "gcp-pubsub-subscriber" + "-" + subscriptionName;
+		scheduler.setThreadNamePrefix(threadNamePrefix);
+		scheduler.setDaemon(true);
+		return this.threadPoolTaskSchedulerMap.computeIfAbsent(subscriptionName, k -> scheduler);
+	}
+
+	Map<String, ThreadPoolTaskScheduler> getThreadPoolTaskSchedulerMap() {
+		return this.threadPoolTaskSchedulerMap;
+	}
+
+	Map<String, ExecutorProvider> getExecutorProviderMap() {
+		return this.executorProviderMap;
+	}
+
+	@PreDestroy
+	public void clearScheduler() {
+		for (ThreadPoolTaskScheduler scheduler : threadPoolTaskSchedulerMap.values()) {
+			scheduler.shutdown();
+		}
+	}
 }
