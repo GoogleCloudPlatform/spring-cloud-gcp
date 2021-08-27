@@ -17,10 +17,12 @@
 package com.google.cloud.spring.autoconfigure.pubsub;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Test;
 
@@ -49,8 +51,10 @@ public class GcpPubSubAutoConfigurationTests {
 			GcpPubSubProperties props = ctx.getBean(GcpPubSubProperties.class);
 			assertThat(props.getKeepAliveIntervalMinutes()).isEqualTo(5);
 
-			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider", TransportChannelProvider.class);
-			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider", TransportChannelProvider.class);
+			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider",
+					TransportChannelProvider.class);
+			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider",
+					TransportChannelProvider.class);
 			assertThat(((InstantiatingGrpcChannelProvider) subscriberTcp).getKeepAliveTime().toMinutes())
 					.isEqualTo(5);
 			assertThat(((InstantiatingGrpcChannelProvider) publisherTcp).getKeepAliveTime().toMinutes())
@@ -69,8 +73,10 @@ public class GcpPubSubAutoConfigurationTests {
 			GcpPubSubProperties props = ctx.getBean(GcpPubSubProperties.class);
 			assertThat(props.getKeepAliveIntervalMinutes()).isEqualTo(2);
 
-			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider", TransportChannelProvider.class);
-			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider", TransportChannelProvider.class);
+			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider",
+					TransportChannelProvider.class);
+			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider",
+					TransportChannelProvider.class);
 			assertThat(((InstantiatingGrpcChannelProvider) subscriberTcp).getKeepAliveTime().toMinutes())
 					.isEqualTo(2);
 			assertThat(((InstantiatingGrpcChannelProvider) publisherTcp).getKeepAliveTime().toMinutes())
@@ -86,13 +92,84 @@ public class GcpPubSubAutoConfigurationTests {
 
 		contextRunner.run(ctx -> {
 
-			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider", TransportChannelProvider.class);
+			TransportChannelProvider subscriberTcp = ctx.getBean("subscriberTransportChannelProvider",
+					TransportChannelProvider.class);
 			assertThat(FieldUtils.readField(subscriberTcp, "maxInboundMessageSize", true))
 					.isEqualTo(20 << 20);
 
-			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider", TransportChannelProvider.class);
+			TransportChannelProvider publisherTcp = ctx.getBean("publisherTransportChannelProvider",
+					TransportChannelProvider.class);
 			assertThat(FieldUtils.readField(publisherTcp, "maxInboundMessageSize", true))
 					.isEqualTo(Integer.MAX_VALUE);
+		});
+	}
+
+	@Test
+	public void customExecutorProviderUsedWhenProvided() {
+		ExecutorProvider executorProvider = mock(ExecutorProvider.class);
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withUserConfiguration(TestConfig.class)
+				.withBean("subscriberExecutorProvider", ExecutorProvider.class, () -> executorProvider);
+
+		contextRunner.run(ctx -> {
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			assertThat(subscriberFactory.getExecutorProvider("name")).isSameAs(executorProvider);
+		});
+	}
+
+	@Test
+	public void executorThreads_globalConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.executor-threads=7")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			assertThat(gcpPubSubProperties.getSubscriber().getExecutorThreads()).isEqualTo(7);
+		});
+	}
+
+	@Test
+	public void executorThreads_selectiveConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=7")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId())
+					.getExecutorThreads()).isEqualTo(7);
+		});
+	}
+
+	@Test
+	public void executorThreads_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.executor-threads=5",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=3")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId())
+					.getExecutorThreads()).isEqualTo(3);
+			assertThat(gcpPubSubProperties.getSubscription())
+					.containsKey("projects/fake project/subscriptions/subscription-name");
+			assertThat(
+					gcpPubSubProperties.getSubscriber("other", projectIdProvider.getProjectId()).getExecutorThreads())
+							.isEqualTo(5);
 		});
 	}
 
