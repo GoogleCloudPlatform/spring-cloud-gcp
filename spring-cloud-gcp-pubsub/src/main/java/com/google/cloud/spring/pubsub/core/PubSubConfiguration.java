@@ -16,7 +16,12 @@
 
 package com.google.cloud.spring.pubsub.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
+import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 
 /**
  * Properties for Publisher or Subscriber specific configurations.
@@ -27,13 +32,15 @@ import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
  */
 public class PubSubConfiguration {
 
+	private final Map<String, Subscriber> subscription = new HashMap<>();
+
 	/**
-	 * Contains settings specific to the subscriber factory.
+	 * Contains default subscriber settings.
 	 */
 	private final Subscriber subscriber = new Subscriber();
 
 	/**
-	 * Contains settings specific to the publisher factory.
+	 * Contains default publisher settings.
 	 */
 	private final Publisher publisher = new Publisher();
 
@@ -43,6 +50,35 @@ public class PubSubConfiguration {
 
 	public Publisher getPublisher() {
 		return this.publisher;
+	}
+
+	public Map<String, Subscriber> getSubscription() {
+		return this.subscription;
+	}
+
+	public Subscriber getSubscriber(String name, String projectId) {
+		ProjectSubscriptionName fullyQualifiedName = PubSubSubscriptionUtils.toProjectSubscriptionName(name, projectId);
+		String fullyQualifiedSubscriptionKey = fullyQualifiedName.toString();
+
+		if (this.subscription.containsKey(fullyQualifiedSubscriptionKey)) {
+			return this.subscription.get(fullyQualifiedSubscriptionKey);
+		}
+
+		String subscriptionName = fullyQualifiedName.getSubscription();
+		String projectIdFromFullName = fullyQualifiedName.getProject();
+
+		// Check that subscription name is present in map and the current project Id matches
+		// the one parsed from the fully qualified name
+		if (this.subscription.containsKey(subscriptionName) && projectIdFromFullName.equals(projectId)) {
+			this.subscription.putIfAbsent(fullyQualifiedSubscriptionKey, this.subscription.get(subscriptionName));
+			this.subscription.remove(subscriptionName);
+			return this.subscription.get(fullyQualifiedSubscriptionKey);
+		}
+
+		Subscriber subscriberProperties = this.subscription.computeIfAbsent(fullyQualifiedSubscriptionKey,
+				k -> this.subscriber);
+		subscriberProperties.global = true;
+		return subscriberProperties;
 	}
 
 	/**
@@ -114,6 +150,11 @@ public class PubSubConfiguration {
 	public static class Subscriber {
 
 		/**
+		 * Custom determines if the configuration is global or the default.
+		 */
+		private boolean global = false;
+
+		/**
 		 * Number of threads used by every subscriber.
 		 */
 		private int executorThreads = 4;
@@ -147,6 +188,10 @@ public class PubSubConfiguration {
 		 * Flow control settings for subscriber factory.
 		 */
 		private final FlowControl flowControl = new FlowControl();
+
+		public boolean isGlobal() {
+			return global;
+		}
 
 		public Retry getRetry() {
 			return this.retry;
