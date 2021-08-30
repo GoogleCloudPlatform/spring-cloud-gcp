@@ -148,7 +148,8 @@ public class TraceSampleApplicationIntegrationTests {
 
 			log.debug("Getting trace...");
 			Trace trace = this.traceServiceStub.getTrace(getTraceRequest);
-			log.info("Found trace! " + trace.getTraceId() + " with " + trace.getSpansCount() + " spans ("
+			log.info("Found trace! " + trace.getTraceId()
+					+ " with " + trace.getSpansCount() + " spans ("
 					+ trace.getSpansList().stream().map(TraceSpan::getName).collect(Collectors.toList())
 					+ ").");
 
