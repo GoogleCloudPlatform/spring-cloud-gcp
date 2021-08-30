@@ -157,6 +157,12 @@ public class TraceSampleApplicationIntegrationTests {
 			 *   get /, visit-meet-endpoint, get, get /meet, get, get /meet, get, get /meet,
 			 *   send-message-spring-integration, send, handle, handle, publish, send-message-pub-sub-template, publish,
 			 *   next-message, on-message, next-message, on-message, send, send, handle, handle, handle, handle
+			 *
+			 * Example of a bad run (notice that the last line only has one "send". Two are expected!).
+			 * 	Found trace! 148bcda619bd448ea6a718ca0f662bd2 with 24 spans (
+			 *  [get /, visit-meet-endpoint, get, get /meet, get, get /meet, get, get /meet,
+			 * 	send-message-spring-integration, send, handle, handle, publish, send-message-pub-sub-template, publish,
+			 * 	next-message, on-message, handle, handle, next-message, on-message, send, handle, handle]).
 			 */
 
 			assertThat(trace.getSpansCount()).isEqualTo(25);
@@ -206,6 +212,9 @@ public class TraceSampleApplicationIntegrationTests {
 							.getDataAsMap().get("message"))
 					.collect(Collectors.toList());
 
+			log.info("\n========================= [START OF LOG CONTENTS] =========================\n"
+					+ logContents.toString()
+					+ "\n========================= [END OF LOG CONTENTS]   =========================\n");
 			assertThat(logContents).contains("starting busy work");
 			log.debug("Found 'starting' line");
 			assertThat(logContents).contains("finished busy work");
