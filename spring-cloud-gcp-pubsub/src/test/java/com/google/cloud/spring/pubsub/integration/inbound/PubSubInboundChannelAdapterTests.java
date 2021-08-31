@@ -197,6 +197,13 @@ public class PubSubInboundChannelAdapterTests {
 	}
 
 	@Test
+	public void testSetHealthRegistry_SuccessWhenProjectIdIsPresent() {
+		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
+		adapter.setProjectId("project-id");
+		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
+	}
+
+	@Test
 	@SuppressWarnings("unchecked")
 	public void customMessageBuilderFactoryUsedWhenAvailable() {
 
