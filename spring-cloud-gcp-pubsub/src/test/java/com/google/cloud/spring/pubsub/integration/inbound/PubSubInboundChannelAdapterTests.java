@@ -18,6 +18,7 @@ package com.google.cloud.spring.pubsub.integration.inbound;
 
 import java.util.function.Consumer;
 
+import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
@@ -187,6 +188,12 @@ public class PubSubInboundChannelAdapterTests {
 
 		assertThat(output.getOut()).contains("failed; message neither acked nor nacked");
 		assertThat(output.getOut()).contains(EXCEPTION_MESSAGE);
+	}
+
+	@Test
+	public void testSetHealthRegistry_failWhenProjectIdIsNotPresent() {
+		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
+		assertThatThrownBy(() -> adapter.setHealthTrackerRegistry(healthTrackerRegistry)).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
