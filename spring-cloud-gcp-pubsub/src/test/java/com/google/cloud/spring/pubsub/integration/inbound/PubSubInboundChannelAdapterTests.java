@@ -43,6 +43,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.GenericMessage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -201,6 +202,26 @@ public class PubSubInboundChannelAdapterTests {
 		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
 		adapter.setProjectId("project-id");
 		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
+	}
+
+	@Test
+	public void testMessageProcessed_successWhenRegistrySet() {
+		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
+		adapter.setProjectId("project-id");
+		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
+		adapter.doStart();
+
+		verify(healthTrackerRegistry, times(1)).registerTracker(any());
+
+		this.mockMessageChannel.send(new GenericMessage<>("test-message"));
+
+		verify(healthTrackerRegistry, times(1)).processedMessage(any());
+	}
+
+	@Test
+	public void testAddingSubscription_successWhenSubscriberAdded() {
+		when(this.mockMessageChannel.send(any())).thenThrow(new RuntimeException(EXCEPTION_MESSAGE));
+
 	}
 
 	@Test
