@@ -85,6 +85,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @ConditionalOnClass(PubSubTemplate.class)
 @EnableConfigurationProperties(GcpPubSubProperties.class)
 public class GcpPubSubAutoConfiguration {
+	private static final Logger logger = LoggerFactory.getLogger(GcpPubSubAutoConfiguration.class);
 
 	private final GcpPubSubProperties gcpPubSubProperties;
 
@@ -93,8 +94,6 @@ public class GcpPubSubAutoConfiguration {
 	private final CredentialsProvider finalCredentialsProvider;
 
 	private final HeaderProvider headerProvider = new UserAgentHeaderProvider(this.getClass());
-
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public GcpPubSubAutoConfiguration(GcpPubSubProperties gcpPubSubProperties,
 			GcpProjectIdProvider gcpProjectIdProvider,
@@ -132,31 +131,6 @@ public class GcpPubSubAutoConfiguration {
 	@ConditionalOnMissingBean(name = "publisherExecutorProvider")
 	public ExecutorProvider publisherExecutorProvider(
 			@Qualifier("pubsubPublisherThreadPool") ThreadPoolTaskScheduler scheduler) {
-		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
-	}
-
-	/**
-	 * @deprecated Directly use the application.properties file to configure properties.
-	 */
-	@Bean
-	@ConditionalOnMissingBean(name = "pubsubSubscriberThreadPool")
-	@Deprecated
-	public ThreadPoolTaskScheduler pubsubSubscriberThreadPool() {
-		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.setPoolSize(this.gcpPubSubProperties.getSubscriber().getExecutorThreads());
-		scheduler.setThreadNamePrefix("gcp-pubsub-subscriber");
-		scheduler.setDaemon(true);
-		return scheduler;
-	}
-
-	/**
-	 * @deprecated Directly use the application.properties file to configure properties.
-	 */
-	@Bean
-	@ConditionalOnMissingBean(name = "subscriberExecutorProvider")
-	@Deprecated
-	public ExecutorProvider subscriberExecutorProvider(
-			@Qualifier("pubsubSubscriberThreadPool") ThreadPoolTaskScheduler scheduler) {
 		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
 	}
 
@@ -199,27 +173,6 @@ public class GcpPubSubAutoConfiguration {
 		return new PubSubTemplate(pubSubPublisherTemplate, pubSubSubscriberTemplate);
 	}
 
-	/**
-	 * @deprecated Directly use the application.properties file to configure properties.
-	 */
-	@Bean
-	@ConditionalOnMissingBean(name = "subscriberRetrySettings")
-	@Deprecated
-	public RetrySettings subscriberRetrySettings() {
-		return buildRetrySettings(this.gcpPubSubProperties.getSubscriber().getRetry());
-	}
-
-	/**
-	 * @deprecated Directly use the application.properties file to configure properties.
-	 */
-	@Bean
-	@ConditionalOnMissingBean(name = "subscriberFlowControlSettings")
-	@Deprecated
-	public FlowControlSettings subscriberFlowControlSettings() {
-		return buildFlowControlSettings(
-				this.gcpPubSubProperties.getSubscriber().getFlowControl());
-	}
-
 	private FlowControlSettings buildFlowControlSettings(
 			PubSubConfiguration.FlowControl flowControl) {
 		FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
@@ -248,6 +201,7 @@ public class GcpPubSubAutoConfiguration {
 					"The subscriberExecutorProvider bean is being deprecated. Please use application.properties to configure properties");
 			factory.setExecutorProvider(executorProvider.get());
 		}
+
 		factory.setCredentialsProvider(this.finalCredentialsProvider);
 		factory.setHeaderProvider(this.headerProvider);
 		factory.setChannelProvider(subscriberTransportChannelProvider);

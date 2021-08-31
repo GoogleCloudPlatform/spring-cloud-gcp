@@ -37,7 +37,7 @@
 	<properties>
 		<app-engine-maven-plugin.version>2.4.1</app-engine-maven-plugin.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.8.1</errorprone.version>
+		<errorprone.version>2.9.0</errorprone.version>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
 		<java-cfenv.version>2.4.0</java-cfenv.version>
 		<javadoc.failOnError>false</javadoc.failOnError>
@@ -66,6 +66,7 @@
 		<spring-cloud-dependencies.version>2020.0.3</spring-cloud-dependencies.version>
 		<spring-javaformat-checkstyle.version>0.0.28</spring-javaformat-checkstyle.version>
 		<zipkin-gcp.version>1.0.2</zipkin-gcp.version>
+		<spring-native.version>0.10.3</spring-native.version>
 	</properties>
 
 	<dependencyManagement>
@@ -135,6 +136,17 @@
 				<artifactId>java-cfenv-test-support</artifactId>
 				<version>${java-cfenv.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.springframework.experimental</groupId>
+				<artifactId>spring-native-configuration</artifactId>
+				<version>${spring-native.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.experimental</groupId>
+				<artifactId>spring-aot</artifactId>
+				<version>${spring-native.version}</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -338,6 +350,7 @@
 				<module>spring-cloud-gcp-security-firebase</module>
 				<module>spring-cloud-gcp-vision</module>
 				<module>spring-cloud-gcp-kms</module>
+				<module>spring-cloud-gcp-native-support</module>
 
 				<!-- Docs and Samples -->
 				<module>docs</module>

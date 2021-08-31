@@ -18,6 +18,8 @@ package com.google.cloud.spring.pubsub.support;
 
 import java.io.IOException;
 import java.util.function.Consumer;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PreDestroy;
 
@@ -70,32 +72,44 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private ExecutorProvider systemExecutorProvider;
 
+	/**
+	 * @deprecated Directly use application.properties to configure FlowControl instead
+	 * of Spring-managed beans
+	 */
+	@Deprecated
 	private FlowControlSettings flowControlSettings;
 
 	private ApiClock apiClock;
 
+	/**
+	 * @deprecated Directly use application.properties to configure Retry settings instead
+	 * of Spring-managed beans
+	 */
+	@Deprecated
 	private RetrySettings subscriberStubRetrySettings;
 
 	private PubSubConfiguration pubSubConfiguration;
 
-	private ThreadPoolTaskScheduler threadPoolTaskScheduler;
+	private ConcurrentHashMap<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap = new ConcurrentHashMap<>();
+
+	private ConcurrentHashMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
+
+	private ExecutorProvider defaultExecutorProvider;
 
 	/**
 	 * Default {@link DefaultSubscriberFactory} constructor.
 	 * @param projectIdProvider provides the default GCP project ID for selecting the
 	 *     subscriptions
-	 * @deprecated Use the new {@link DefaultSubscriberFactory
-	 * (GcpProjectIdProvider,PubSubConfiguration)} instead
+	 * @deprecated Use the new {@link DefaultSubscriberFactory (GcpProjectIdProvider,PubSubConfiguration)} instead
 	 */
 	@Deprecated
 	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
-		this(projectIdProvider, new PubSubConfiguration());
+		this(projectIdProvider, null);
 	}
 
 	/**
 	 * Default {@link DefaultSubscriberFactory} constructor.
-	 * @param projectIdProvider provides the default GCP project ID for selecting the
-	 *     subscriptions
+	 * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
 	 * @param pubSubConfiguration contains the subscriber properties to configure
 	 */
 	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider, PubSubConfiguration pubSubConfiguration) {
@@ -112,10 +126,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		return this.projectId;
 	}
 
-
 	/**
-	 * Set the provider for the subscribers' executor. Useful to specify the number of threads
-	 * to be used by each executor.
+	 * Set the provider for the subscribers' executor. Useful to specify the number of threads to be
+	 * used by each executor.
 	 * @param executorProvider the executor provider to set
 	 * @deprecated Directly use application.properties to configure ExecutorProvider instead
 	 * of Spring-managed beans
@@ -158,10 +171,13 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	/**
-	 * Set the flow control for the subscribers, including the behaviour for when the flow
-	 * limits are hit.
+	 * Set the flow control for the subscribers, including the behaviour for when the flow limits
+	 * are hit.
 	 * @param flowControlSettings the flow control settings to set
+	 * @deprecated Directly use application.properties to configure FlowControl instead
+	 * of Spring-managed beans
 	 */
+	@Deprecated
 	public void setFlowControlSettings(FlowControlSettings flowControlSettings) {
 		this.flowControlSettings = flowControlSettings;
 	}
@@ -176,9 +192,11 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	/**
 	 * Set the retry settings for the generated subscriber stubs.
-	 * @param subscriberStubRetrySettings parameters for retrying pull requests when they
-	 *     fail, including jitter logic, timeout, and exponential backoff
+	 * @param subscriberStubRetrySettings parameters for retrying pull requests when they fail,
+	 * including jitter logic, timeout, and exponential backoff
+	 * @deprecated Directly use application.properties to configure Retry instead of Spring-managed beans
 	 */
+	@Deprecated
 	public void setSubscriberStubRetrySettings(RetrySettings subscriberStubRetrySettings) {
 		this.subscriberStubRetrySettings = subscriberStubRetrySettings;
 	}
@@ -188,15 +206,14 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(
 				PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId), receiver);
 
-		PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
-				.getSubscriber(subscriptionName);
-
 		if (this.channelProvider != null) {
 			subscriberBuilder.setChannelProvider(this.channelProvider);
 		}
 
-		subscriberBuilder.setExecutorProvider(getExecutorProvider(subscriberProperties, subscriptionName));
-
+		ExecutorProvider executor = getExecutorProvider(subscriptionName);
+		if (executor != null) {
+			subscriberBuilder.setExecutorProvider(executor);
+		}
 
 		if (this.credentialsProvider != null) {
 			subscriberBuilder.setCredentialsProvider(this.credentialsProvider);
@@ -210,20 +227,28 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberBuilder.setSystemExecutorProvider(this.systemExecutorProvider);
 		}
 
-		FlowControlSettings flowControl = getFlowControlSettings(subscriberProperties.getFlowControl());
+		FlowControlSettings flowControl = getFlowControlSettings(subscriptionName);
 		if (flowControl != null) {
 			subscriberBuilder.setFlowControlSettings(flowControl);
 		}
 
 		// Set the maximum period the ack timeout is extended by.
-		if (subscriberProperties.getMaxAckExtensionPeriod() != null) {
-			subscriberBuilder
-					.setMaxAckExtensionPeriod(Duration.ofSeconds(subscriberProperties.getMaxAckExtensionPeriod()));
+		if (this.pubSubConfiguration != null) {
+			PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
+					.getSubscriber(subscriptionName, projectId);
+			if (subscriberProperties != null) {
+				subscriberBuilder
+						.setMaxAckExtensionPeriod(Duration.ofSeconds(subscriberProperties.getMaxAckExtensionPeriod()));
+			}
 		}
 
 		// Set the number of pull workers.
-		if (subscriberProperties.getParallelPullCount() != null) {
-			subscriberBuilder.setParallelPullCount(subscriberProperties.getParallelPullCount());
+		if (this.pubSubConfiguration != null) {
+			PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
+					.getSubscriber(subscriptionName, projectId);
+			if (subscriberProperties.getParallelPullCount() != null) {
+				subscriberBuilder.setParallelPullCount(subscriberProperties.getParallelPullCount());
+			}
 		}
 
 		return subscriberBuilder.build();
@@ -256,20 +281,23 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	public SubscriberStub createSubscriberStub(String subscriptionName) {
 		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
 
-		PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
-				.getSubscriber(subscriptionName);
-
 		if (this.credentialsProvider != null) {
 			subscriberStubSettings.setCredentialsProvider(this.credentialsProvider);
 		}
 
 		// Set the endpoint for synchronous pulling messages.
-		if (subscriberProperties.getPullEndpoint() != null) {
-			subscriberStubSettings.setEndpoint(subscriberProperties.getPullEndpoint());
+		if (this.pubSubConfiguration != null) {
+			PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
+					.getSubscriber(subscriptionName, projectId);
+			if (subscriberProperties != null) {
+				subscriberStubSettings.setEndpoint(subscriberProperties.getPullEndpoint());
+			}
 		}
 
-		// Set the endpoint for synchronous pulling messages.
-		subscriberStubSettings.setExecutorProvider(getExecutorProvider(subscriberProperties, subscriptionName));
+		ExecutorProvider executor = getExecutorProvider(subscriptionName);
+		if (executor != null) {
+			subscriberStubSettings.setExecutorProvider(executor);
+		}
 
 		if (this.headerProvider != null) {
 			subscriberStubSettings.setHeaderProvider(this.headerProvider);
@@ -283,7 +311,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.setClock(this.apiClock);
 		}
 
-		RetrySettings retrySettings = getRetrySettings(subscriberProperties.getRetry());
+		RetrySettings retrySettings = getRetrySettings(subscriptionName);
 		if (retrySettings != null) {
 			subscriberStubSettings.pullSettings().setRetrySettings(retrySettings);
 		}
@@ -297,53 +325,66 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	/**
-	 * Creates {@link ExecutorProvider} given subscriber properties.
-	 * @param subscriber subscriber properties
-	 * @return executor provider
-	 */
-	public ExecutorProvider getExecutorProvider(PubSubConfiguration.Subscriber subscriber, String subscriptionName) {
-		if (this.executorProvider != null) {
-			return this.executorProvider;
-		}
-		this.threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
-		this.threadPoolTaskScheduler.setPoolSize(subscriber.getExecutorThreads());
-		String threadNamePrefix = "gcp-pubsub-subscriber" + "-" + subscriptionName;
-		this.threadPoolTaskScheduler.setThreadNamePrefix(threadNamePrefix);
-		this.threadPoolTaskScheduler.setDaemon(true);
-		this.threadPoolTaskScheduler.initialize();
-
-		return FixedExecutorProvider.create(this.threadPoolTaskScheduler.getScheduledExecutor());
-	}
-
-	/**
 	 * Creates {@link RetrySettings}, given subscriber retry properties. Returns null if none
 	 * of the retry settings are set. Note that if retry settings are set using a
 	 * Spring-managed bean then subscription-specific settings in application.properties are
 	 * ignored.
-	 * @param retryProperties subscriber retry properties
+	 * @param subscriptionName subscription name
 	 * @return retry settings for subscriber
 	 */
-	RetrySettings getRetrySettings(PubSubConfiguration.Retry retryProperties) {
+	RetrySettings getRetrySettings(String subscriptionName) {
 		if (this.subscriberStubRetrySettings != null) {
 			return this.subscriberStubRetrySettings;
 		}
 
-		RetrySettings.Builder builder = RetrySettings.newBuilder();
-		boolean shouldBuild = ifSet(retryProperties.getInitialRetryDelaySeconds(),
-				x -> builder.setInitialRetryDelay(Duration.ofSeconds(x)));
-		shouldBuild |= ifSet(retryProperties.getInitialRpcTimeoutSeconds(),
-				x -> builder.setInitialRpcTimeout(Duration.ofSeconds(x)));
-		shouldBuild |= ifSet(retryProperties.getMaxAttempts(), builder::setMaxAttempts);
-		shouldBuild |= ifSet(retryProperties.getMaxRetryDelaySeconds(),
-				x -> builder.setMaxRetryDelay(Duration.ofSeconds(x)));
-		shouldBuild |= ifSet(retryProperties.getMaxRpcTimeoutSeconds(),
-				x -> builder.setMaxRpcTimeout(Duration.ofSeconds(x)));
-		shouldBuild |= ifSet(retryProperties.getRetryDelayMultiplier(), builder::setRetryDelayMultiplier);
-		shouldBuild |= ifSet(retryProperties.getTotalTimeoutSeconds(),
-				x -> builder.setTotalTimeout(Duration.ofSeconds(x)));
-		shouldBuild |= ifSet(retryProperties.getRpcTimeoutMultiplier(), builder::setRpcTimeoutMultiplier);
+		if (this.pubSubConfiguration != null){
+			PubSubConfiguration.Retry retryProperties = this.pubSubConfiguration
+					.getSubscriber(subscriptionName, projectId).getRetry();
+			RetrySettings.Builder builder = RetrySettings.newBuilder();
+			boolean shouldBuild = ifSet(retryProperties.getInitialRetryDelaySeconds(),
+					x -> builder.setInitialRetryDelay(Duration.ofSeconds(x)));
+			shouldBuild |= ifSet(retryProperties.getInitialRpcTimeoutSeconds(),
+					x -> builder.setInitialRpcTimeout(Duration.ofSeconds(x)));
+			shouldBuild |= ifSet(retryProperties.getMaxAttempts(), builder::setMaxAttempts);
+			shouldBuild |= ifSet(retryProperties.getMaxRetryDelaySeconds(),
+					x -> builder.setMaxRetryDelay(Duration.ofSeconds(x)));
+			shouldBuild |= ifSet(retryProperties.getMaxRpcTimeoutSeconds(),
+					x -> builder.setMaxRpcTimeout(Duration.ofSeconds(x)));
+			shouldBuild |= ifSet(retryProperties.getRetryDelayMultiplier(), builder::setRetryDelayMultiplier);
+			shouldBuild |= ifSet(retryProperties.getTotalTimeoutSeconds(),
+					x -> builder.setTotalTimeout(Duration.ofSeconds(x)));
+			shouldBuild |= ifSet(retryProperties.getRpcTimeoutMultiplier(), builder::setRpcTimeoutMultiplier);
 
-		return shouldBuild ? builder.build() : null;
+			return shouldBuild ? builder.build() : null;
+		}
+		return null;
+	}
+
+	/**
+	 * Creates {@link FlowControlSettings}, given subscriber flow control settings. Returns
+	 * null if none of the flow control settings are set. Note that if flow control settings
+	 * are set using a Spring-managed bean then subscription-specific settings in
+	 * application.properties are ignored.
+	 * @param subscriptionName subscription name
+	 * @return flow control settings for subscriber
+	 */
+	FlowControlSettings getFlowControlSettings(
+			String subscriptionName) {
+		if (this.flowControlSettings != null) {
+			return this.flowControlSettings;
+		}
+		if (this.pubSubConfiguration != null) {
+			PubSubConfiguration.Subscriber subscriber = this.pubSubConfiguration.getSubscriber(subscriptionName,
+					this.projectId);
+			PubSubConfiguration.FlowControl flowControl = subscriber.getFlowControl();
+			FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
+			boolean shouldBuild = ifSet(flowControl.getLimitExceededBehavior(), builder::setLimitExceededBehavior);
+			shouldBuild |= ifSet(flowControl.getMaxOutstandingElementCount(), builder::setMaxOutstandingElementCount);
+			shouldBuild |= ifSet(flowControl.getMaxOutstandingRequestBytes(), builder::setMaxOutstandingRequestBytes);
+
+			return shouldBuild ? builder.build() : null;
+		}
+		return null;
 	}
 
 	private <T> boolean ifSet(T property, Consumer<T> consumer) {
@@ -353,30 +394,86 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 		return false;
 	}
+	
+	/**
+	 * Creates {@link ExecutorProvider}. If a custom executor provider is set then the
+	 * subscriber properties configured through the application.properties file will be
+	 * ignored.
+	 * @param subscriptionName subscription name
+	 * @return executor provider
+	 */
+	public ExecutorProvider getExecutorProvider(String subscriptionName) {
+		if (this.executorProvider != null) {
+			return this.executorProvider;
+		}
+		if (this.pubSubConfiguration != null) {
+			PubSubConfiguration.Subscriber subscriber = this.pubSubConfiguration.getSubscriber(subscriptionName,
+					this.projectId);
+			return getExecutorProviderFromConfigurations(subscriber, subscriptionName);
+		}
+		return null;
+	}
 
 	/**
-	 * Creates {@link FlowControlSettings}, given subscriber flow control settings. Returns
-	 * null if none of the flow control settings are set. Note that if flow control settings
-	 * are set using a Spring-managed bean then subscription-specific settings in
-	 * application.properties are ignored.
-	 * @param flowControl flow control settings
-	 * @return flow control settings for subscriber
+	 * Creates {@link ExecutorProvider} for subscriber when Pub/Sub configurations (either
+	 * global/default or subscription-specific) are present.
+	 * @param subscriber subscriber properties
+	 * @param subscriptionName subscription name
+	 * @return executor provider
 	 */
-	FlowControlSettings getFlowControlSettings(
-			PubSubConfiguration.FlowControl flowControl) {
-		if (this.flowControlSettings != null) {
-			return this.flowControlSettings;
+	ExecutorProvider getExecutorProviderFromConfigurations(PubSubConfiguration.Subscriber subscriber,
+			String subscriptionName) {
+		if (!subscriber.isGlobal()) {
+			return createExecutorProvider(subscriber, subscriptionName);
 		}
-		FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
-		boolean shouldBuild = ifSet(flowControl.getLimitExceededBehavior(), builder::setLimitExceededBehavior);
-		shouldBuild |= ifSet(flowControl.getMaxOutstandingElementCount(), builder::setMaxOutstandingElementCount);
-		shouldBuild |= ifSet(flowControl.getMaxOutstandingRequestBytes(), builder::setMaxOutstandingRequestBytes);
 
-		return shouldBuild ? builder.build() : null;
+		if (this.defaultExecutorProvider != null) {
+			return this.defaultExecutorProvider;
+		}
+		this.defaultExecutorProvider = createExecutorProvider(subscriber, subscriptionName);
+		return this.defaultExecutorProvider;
 	}
 
-	@PreDestroy
-	public void clearScheduler() {
-		this.threadPoolTaskScheduler.shutdown();
+	ExecutorProvider createExecutorProvider(PubSubConfiguration.Subscriber subscriber, String subscriptionName) {
+		if (this.executorProviderMap.containsKey(subscriptionName)) {
+			return this.executorProviderMap.get(subscriptionName);
+		}
+		ThreadPoolTaskScheduler scheduler = createThreadPoolTaskScheduler(subscriber, subscriptionName);
+		scheduler.initialize();
+		ExecutorProvider executor = FixedExecutorProvider.create(scheduler.getScheduledExecutor());
+		return this.executorProviderMap.computeIfAbsent(subscriptionName, k -> executor);
 	}
-}
+
+	/**
+	 * Creates {@link ThreadPoolTaskScheduler} given subscriber properties.
+	 * @param subscriptionName subscription name
+	 * @return thread pool scheduler
+	 */
+	ThreadPoolTaskScheduler createThreadPoolTaskScheduler(PubSubConfiguration.Subscriber subscriber,
+			String subscriptionName) {
+		if (this.threadPoolTaskSchedulerMap.containsKey(subscriptionName)) {
+			return threadPoolTaskSchedulerMap.get(subscriptionName);
+		}
+		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+		scheduler.setPoolSize(subscriber.getExecutorThreads());
+		String threadNamePrefix = "gcp-pubsub-subscriber" + "-" + subscriptionName;
+		scheduler.setThreadNamePrefix(threadNamePrefix);
+		scheduler.setDaemon(true);
+		return this.threadPoolTaskSchedulerMap.computeIfAbsent(subscriptionName, k -> scheduler);
+	}
+
+	Map<String, ThreadPoolTaskScheduler> getThreadPoolTaskSchedulerMap() {
+		return this.threadPoolTaskSchedulerMap;
+	}
+
+	Map<String, ExecutorProvider> getExecutorProviderMap() {
+		return this.executorProviderMap;
+	}
+
+		@PreDestroy
+		public void clearScheduler () {
+			for (ThreadPoolTaskScheduler scheduler : threadPoolTaskSchedulerMap.values()) {
+				scheduler.shutdown();
+			}
+		}
+	}

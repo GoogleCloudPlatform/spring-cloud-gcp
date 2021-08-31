@@ -24,6 +24,7 @@ import com.google.pubsub.v1.PullRequest;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -74,7 +75,7 @@ public class TracingSubscriberFactoryTest {
 	public void test_createSubscriberStub() {
 		SubscriberStub mockSubscriberStub = mock(SubscriberStub.class);
 		TracingSubscriberStub mockTracingSubscriberStub = mock(TracingSubscriberStub.class);
-		when(mockDelegate.createSubscriberStub("subscription-name")).thenReturn(mockSubscriberStub);
+		when(mockDelegate.createSubscriberStub(any())).thenReturn(mockSubscriberStub);
 		when(mockPubSubTracing.subscriberStub(mockSubscriberStub)).thenReturn(mockTracingSubscriberStub);
 
 		assertThat(tracingSubscriberFactory.createSubscriberStub("subscription-name")).isEqualTo(mockTracingSubscriberStub);

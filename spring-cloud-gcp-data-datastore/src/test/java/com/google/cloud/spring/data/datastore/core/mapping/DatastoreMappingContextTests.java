@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.data.datastore.core.mapping;
 
+import com.google.cloud.Timestamp;
 import org.junit.Test;
 
 import org.springframework.context.ApplicationContext;
@@ -67,6 +68,15 @@ public class DatastoreMappingContextTests {
 		assertThatThrownBy(() -> context.getDatastorePersistentEntity(Integer.class))
 				.isInstanceOf(DatastoreDataException.class)
 				.hasMessage("Unable to find a DatastorePersistentEntity for: class java.lang.Integer");
+	}
+
+	@Test
+	public void testTimestampNotAnEntity() {
+		// Datastore native types like Timestamp should be considered simple type and no an entity
+		DatastoreMappingContext context = new DatastoreMappingContext();
+		assertThatThrownBy(() -> context.getDatastorePersistentEntity(Timestamp.class))
+				.isInstanceOf(DatastoreDataException.class)
+				.hasMessage("Unable to find a DatastorePersistentEntity for: class com.google.cloud.Timestamp");
 	}
 
 	private DatastoreMappingContext createDatastoreMappingContextWith(

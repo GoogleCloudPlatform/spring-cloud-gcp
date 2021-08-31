@@ -112,13 +112,93 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberMapProperties_default() {
+	public void testSubscriberMapProperties_defaultOrGlobal_addToMap() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 
-		assertThat(pubSubConfiguration.getSubscriber("subscription-name").getExecutorThreads())
+		assertThat(pubSubConfiguration.getSubscription()).isEmpty();
+		assertThat(pubSubConfiguration.getSubscriber("subscription-name", "projectId").getExecutorThreads())
 				.isEqualTo(4);
-		assertThat(pubSubConfiguration.getProperties().get("subscription-name").getSubscriber().getExecutorThreads())
-				.isEqualTo(4);
+		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
+		assertThat(pubSubConfiguration.getSubscription().get("projects/projectId/subscriptions/subscription-name")
+				.getExecutorThreads()).isEqualTo(4);
+	}
+
+	@Test
+	public void testSubscriberMapProperties_subscriptionName_returnCustom() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+		subscriber.setExecutorThreads(8);
+
+		pubSubConfiguration.getSubscription().put("subscription-name", subscriber);
+
+		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
+		assertThat(pubSubConfiguration.getSubscriber("subscription-name", "projectId").getExecutorThreads())
+				.isEqualTo(8);
+		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
+		assertThat(pubSubConfiguration.getSubscription().get("projects/projectId/subscriptions/subscription-name")
+				.getExecutorThreads()).isEqualTo(8);
+	}
+
+	@Test
+	public void testSubscriberMapProperties_fullNamePresentInMap_returnCustom() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+		subscriber.setExecutorThreads(8);
+
+		pubSubConfiguration.getSubscription().put("projects/projectId/subscriptions/subscription-name", subscriber);
+
+		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
+		assertThat(pubSubConfiguration.getSubscriber("projects/projectId/subscriptions/subscription-name", "projectId")
+				.getExecutorThreads()).isEqualTo(8);
+		assertThat(pubSubConfiguration.getSubscription().get("projects/projectId/subscriptions/subscription-name")
+				.getExecutorThreads()).isEqualTo(8);
+	}
+
+	@Test
+	public void testSubscriberMapProperties_fullNamePresentInMap_projectIdIgnored_returnCustom() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+		subscriber.setExecutorThreads(8);
+
+		pubSubConfiguration.getSubscription().put("projects/otherProjectId/subscriptions/subscription-name",
+				subscriber);
+
+		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
+		assertThat(pubSubConfiguration
+				.getSubscriber("projects/otherProjectId/subscriptions/subscription-name", "projectId")
+				.getExecutorThreads()).isEqualTo(8);
+		assertThat(pubSubConfiguration.getSubscription().get("projects/otherProjectId/subscriptions/subscription-name")
+				.getExecutorThreads()).isEqualTo(8);
+	}
+
+	@Test
+	public void testSubscriberMapProperties_fullNameWithDifferentProjectId_returnDefault() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+
+		assertThat(pubSubConfiguration.getSubscription()).isEmpty();
+		assertThat(pubSubConfiguration
+				.getSubscriber("projects/otherProjectId/subscriptions/subscription-name", "projectId")
+				.getExecutorThreads()).isEqualTo(4);
+		assertThat(pubSubConfiguration.getSubscription().get("projects/otherProjectId/subscriptions/subscription-name")
+				.getExecutorThreads()).isEqualTo(4);
+	}
+
+	@Test
+	public void testSubscriberMapProperties_isGlobalIfAbsentFromMap() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+
+		assertThat(pubSubConfiguration.getSubscription()).doesNotContainKey("subscription-name");
+		assertThat(pubSubConfiguration.getSubscriber("subscription-name", "projectId").isGlobal()).isTrue();
+	}
+
+	@Test
+	public void testSubscriberMapProperties_isNotGlobalIfPresentInMap() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		pubSubConfiguration.getSubscription().put("subscription-name", new PubSubConfiguration.Subscriber());
+
+		assertThat(pubSubConfiguration.getSubscription()).containsKey("subscription-name");
+		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
+		assertThat(pubSubConfiguration.getSubscriber("subscription-name", "projectId").isGlobal()).isFalse();
 	}
 
 	@Test
@@ -211,5 +291,4 @@ public class PubSubConfigurationTests {
 		assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(12.0);
 		assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(8L);
 	}
-
 }
