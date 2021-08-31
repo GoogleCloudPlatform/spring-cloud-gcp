@@ -26,6 +26,8 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
  */
 public interface HealthTrackerRegistry {
 
+	HealthTracker registerTracker(ProjectSubscriptionName projectSubscriptionName);
+
 	void processedMessage(ProjectSubscriptionName projectSubscriptionName);
 
 	void addListener(Subscriber subscriber);
