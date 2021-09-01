@@ -220,8 +220,12 @@ public class PubSubInboundChannelAdapterTests {
 
 	@Test
 	public void testAddingSubscription_successWhenSubscriberAdded() {
-		when(this.mockMessageChannel.send(any())).thenThrow(new RuntimeException(EXCEPTION_MESSAGE));
+		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
+		adapter.setProjectId("project-id");
+		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
+		adapter.doStart();
 
+		verify(healthTrackerRegistry, times(1)).addListener(any());
 	}
 
 	@Test
