@@ -489,15 +489,10 @@ public class PubSubSubscriberTemplate
 	}
 
 	private SubscriberStub getSubscriberStub(String subscription) {
-<<<<<<< HEAD
-		subscriptionNameToStubMap.putIfAbsent(subscription, this.subscriberFactory.createSubscriberStub(subscription));
-		return subscriptionNameToStubMap.get(subscription);
-=======
 		if (subscriptionNameToStubMap.containsKey(subscription)) {
 			return subscriptionNameToStubMap.get(subscription);
 		}
 		return subscriptionNameToStubMap.computeIfAbsent(subscription, this.subscriberFactory::createSubscriberStub);
->>>>>>> 1cf4710e61c4b837db16366bc8bcc683243be265
 	}
 
 	private abstract static class AbstractBasicAcknowledgeablePubsubMessage

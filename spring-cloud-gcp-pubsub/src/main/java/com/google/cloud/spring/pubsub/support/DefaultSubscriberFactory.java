@@ -17,9 +17,9 @@
 package com.google.cloud.spring.pubsub.support;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import javax.annotation.PreDestroy;
 
@@ -236,9 +236,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (this.pubSubConfiguration != null) {
 			PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
 					.getSubscriber(subscriptionName, projectId);
-			if (subscriberProperties != null) {
+			Long maxAckExtensionPeriod = subscriberProperties.getMaxAckExtensionPeriod();
+			if (maxAckExtensionPeriod != null) {
 				subscriberBuilder
-						.setMaxAckExtensionPeriod(Duration.ofSeconds(subscriberProperties.getMaxAckExtensionPeriod()));
+						.setMaxAckExtensionPeriod(Duration.ofSeconds(maxAckExtensionPeriod));
 			}
 		}
 
@@ -246,8 +247,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (this.pubSubConfiguration != null) {
 			PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
 					.getSubscriber(subscriptionName, projectId);
-			if (subscriberProperties.getParallelPullCount() != null) {
-				subscriberBuilder.setParallelPullCount(subscriberProperties.getParallelPullCount());
+			Integer pullCount = subscriberProperties.getParallelPullCount();
+			if (pullCount != null) {
+				subscriberBuilder.setParallelPullCount(pullCount);
 			}
 		}
 
@@ -289,8 +291,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (this.pubSubConfiguration != null) {
 			PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
 					.getSubscriber(subscriptionName, projectId);
-			if (subscriberProperties != null) {
-				subscriberStubSettings.setEndpoint(subscriberProperties.getPullEndpoint());
+			String pullEndpoint = subscriberProperties.getPullEndpoint();
+			if (pullEndpoint != null) {
+				subscriberStubSettings.setEndpoint(pullEndpoint);
 			}
 		}
 
@@ -324,77 +327,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 	}
 
-	/**
-	 * Creates {@link RetrySettings}, given subscriber retry properties. Returns null if none
-	 * of the retry settings are set. Note that if retry settings are set using a
-	 * Spring-managed bean then subscription-specific settings in application.properties are
-	 * ignored.
-	 * @param subscriptionName subscription name
-	 * @return retry settings for subscriber
-	 */
-	RetrySettings getRetrySettings(String subscriptionName) {
-		if (this.subscriberStubRetrySettings != null) {
-			return this.subscriberStubRetrySettings;
-		}
-
-		if (this.pubSubConfiguration != null){
-			PubSubConfiguration.Retry retryProperties = this.pubSubConfiguration
-					.getSubscriber(subscriptionName, projectId).getRetry();
-			RetrySettings.Builder builder = RetrySettings.newBuilder();
-			boolean shouldBuild = ifSet(retryProperties.getInitialRetryDelaySeconds(),
-					x -> builder.setInitialRetryDelay(Duration.ofSeconds(x)));
-			shouldBuild |= ifSet(retryProperties.getInitialRpcTimeoutSeconds(),
-					x -> builder.setInitialRpcTimeout(Duration.ofSeconds(x)));
-			shouldBuild |= ifSet(retryProperties.getMaxAttempts(), builder::setMaxAttempts);
-			shouldBuild |= ifSet(retryProperties.getMaxRetryDelaySeconds(),
-					x -> builder.setMaxRetryDelay(Duration.ofSeconds(x)));
-			shouldBuild |= ifSet(retryProperties.getMaxRpcTimeoutSeconds(),
-					x -> builder.setMaxRpcTimeout(Duration.ofSeconds(x)));
-			shouldBuild |= ifSet(retryProperties.getRetryDelayMultiplier(), builder::setRetryDelayMultiplier);
-			shouldBuild |= ifSet(retryProperties.getTotalTimeoutSeconds(),
-					x -> builder.setTotalTimeout(Duration.ofSeconds(x)));
-			shouldBuild |= ifSet(retryProperties.getRpcTimeoutMultiplier(), builder::setRpcTimeoutMultiplier);
-
-			return shouldBuild ? builder.build() : null;
-		}
-		return null;
-	}
-
-	/**
-	 * Creates {@link FlowControlSettings}, given subscriber flow control settings. Returns
-	 * null if none of the flow control settings are set. Note that if flow control settings
-	 * are set using a Spring-managed bean then subscription-specific settings in
-	 * application.properties are ignored.
-	 * @param subscriptionName subscription name
-	 * @return flow control settings for subscriber
-	 */
-	FlowControlSettings getFlowControlSettings(
-			String subscriptionName) {
-		if (this.flowControlSettings != null) {
-			return this.flowControlSettings;
-		}
-		if (this.pubSubConfiguration != null) {
-			PubSubConfiguration.Subscriber subscriber = this.pubSubConfiguration.getSubscriber(subscriptionName,
-					this.projectId);
-			PubSubConfiguration.FlowControl flowControl = subscriber.getFlowControl();
-			FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
-			boolean shouldBuild = ifSet(flowControl.getLimitExceededBehavior(), builder::setLimitExceededBehavior);
-			shouldBuild |= ifSet(flowControl.getMaxOutstandingElementCount(), builder::setMaxOutstandingElementCount);
-			shouldBuild |= ifSet(flowControl.getMaxOutstandingRequestBytes(), builder::setMaxOutstandingRequestBytes);
-
-			return shouldBuild ? builder.build() : null;
-		}
-		return null;
-	}
-
-	private <T> boolean ifSet(T property, Consumer<T> consumer) {
-		if (property != null) {
-			consumer.accept(property);
-			return true;
-		}
-		return false;
-	}
-	
 	/**
 	 * Creates {@link ExecutorProvider}. If a custom executor provider is set then the
 	 * subscriber properties configured through the application.properties file will be
@@ -470,10 +402,80 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		return this.executorProviderMap;
 	}
 
-		@PreDestroy
-		public void clearScheduler () {
-			for (ThreadPoolTaskScheduler scheduler : threadPoolTaskSchedulerMap.values()) {
-				scheduler.shutdown();
-			}
+	/**
+	 * Creates {@link RetrySettings}, given subscriber retry properties. Returns null if none
+	 * of the retry settings are set. Note that if retry settings are set using a
+	 * Spring-managed bean then subscription-specific settings in application.properties are
+	 * ignored.
+	 * @param subscriptionName subscription name
+	 * @return retry settings for subscriber
+	 */
+	public RetrySettings getRetrySettings(String subscriptionName) {
+		if (this.subscriberStubRetrySettings != null) {
+			return this.subscriberStubRetrySettings;
+		}
+
+		if (this.pubSubConfiguration != null) {
+			PubSubConfiguration.Retry retryProperties = this.pubSubConfiguration.getSubscriber(subscriptionName,
+					this.projectId).getRetry();
+			RetrySettings.Builder builder = RetrySettings.newBuilder();
+			boolean shouldBuild = ifSet(retryProperties.getInitialRetryDelaySeconds(),
+					x -> builder.setInitialRetryDelay(Duration.ofSeconds(x)));
+			shouldBuild |= ifSet(retryProperties.getInitialRpcTimeoutSeconds(),
+					x -> builder.setInitialRpcTimeout(Duration.ofSeconds(x)));
+			shouldBuild |= ifSet(retryProperties.getMaxAttempts(), builder::setMaxAttempts);
+			shouldBuild |= ifSet(retryProperties.getMaxRetryDelaySeconds(),
+					x -> builder.setMaxRetryDelay(Duration.ofSeconds(x)));
+			shouldBuild |= ifSet(retryProperties.getMaxRpcTimeoutSeconds(),
+					x -> builder.setMaxRpcTimeout(Duration.ofSeconds(x)));
+			shouldBuild |= ifSet(retryProperties.getRetryDelayMultiplier(), builder::setRetryDelayMultiplier);
+			shouldBuild |= ifSet(retryProperties.getTotalTimeoutSeconds(),
+					x -> builder.setTotalTimeout(Duration.ofSeconds(x)));
+			shouldBuild |= ifSet(retryProperties.getRpcTimeoutMultiplier(), builder::setRpcTimeoutMultiplier);
+
+			return shouldBuild ? builder.build() : null;
+		}
+		return null;
+	}
+
+	/**
+	 * Creates {@link FlowControlSettings}, given subscriber flow control settings. Returns
+	 * null if none of the flow control settings are set. Note that if flow control settings
+	 * are set using a Spring-managed bean then subscription-specific settings in
+	 * application.properties are ignored.
+	 * @param subscriptionName subscription name
+	 * @return flow control settings for subscriber
+	 */
+	public FlowControlSettings getFlowControlSettings(
+			String subscriptionName) {
+		if (this.flowControlSettings != null) {
+			return this.flowControlSettings;
+		}
+		if (this.pubSubConfiguration != null) {
+			PubSubConfiguration.FlowControl flowControl = this.pubSubConfiguration.getSubscriber(subscriptionName,
+					this.projectId).getFlowControl();
+			FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
+			boolean shouldBuild = ifSet(flowControl.getLimitExceededBehavior(), builder::setLimitExceededBehavior);
+			shouldBuild |= ifSet(flowControl.getMaxOutstandingElementCount(), builder::setMaxOutstandingElementCount);
+			shouldBuild |= ifSet(flowControl.getMaxOutstandingRequestBytes(), builder::setMaxOutstandingRequestBytes);
+
+			return shouldBuild ? builder.build() : null;
+		}
+		return null;
+	}
+
+	private <T> boolean ifSet(T property, Consumer<T> consumer) {
+		if (property != null) {
+			consumer.accept(property);
+			return true;
+		}
+		return false;
+	}
+
+	@PreDestroy
+	public void clearScheduler() {
+		for (ThreadPoolTaskScheduler scheduler : threadPoolTaskSchedulerMap.values()) {
+			scheduler.shutdown();
 		}
 	}
+}

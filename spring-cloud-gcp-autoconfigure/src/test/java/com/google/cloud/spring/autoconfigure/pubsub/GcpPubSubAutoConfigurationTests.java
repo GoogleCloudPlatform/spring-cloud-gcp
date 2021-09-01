@@ -16,10 +16,12 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub;
 
+import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
@@ -197,25 +199,27 @@ public class GcpPubSubAutoConfigurationTests {
 		});
 	}
 
-
 	@Test
 	public void pullConfig_selectiveConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.max-ack-extension-period=7",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.parallel-pull-count=12",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.pull-endpoint=my-endpoint")
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.max-ack-extension-period=7",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.parallel-pull-count=12",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.pull-endpoint=my-endpoint")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
 			GcpPubSubProperties gcpPubSubProperties = ctx
 					.getBean(GcpPubSubProperties.class);
 			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
-			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId()).getMaxAckExtensionPeriod()).isEqualTo(7L);
-			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId()).getParallelPullCount()).isEqualTo(12);
-			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId()).getPullEndpoint())
-					.isEqualTo("my-endpoint");
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId())
+					.getMaxAckExtensionPeriod()).isEqualTo(7L);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId())
+					.getParallelPullCount()).isEqualTo(12);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId())
+					.getPullEndpoint())
+							.isEqualTo("my-endpoint");
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/subscription-name");
 		});
@@ -229,22 +233,29 @@ public class GcpPubSubAutoConfigurationTests {
 						"spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=5",
 						"spring.cloud.gcp.pubsub.subscriber.parallel-pull-count=10",
 						"spring.cloud.gcp.pubsub.subscriber.pull-endpoint=other-endpoint",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.max-ack-extension-period=7",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.parallel-pull-count=12",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.pull-endpoint=my-endpoint")
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.max-ack-extension-period=7",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.parallel-pull-count=12",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.pull-endpoint=my-endpoint")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
 			GcpPubSubProperties gcpPubSubProperties = ctx
 					.getBean(GcpPubSubProperties.class);
 			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
-			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId()).getMaxAckExtensionPeriod()).isEqualTo(7L);
-			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId()).getParallelPullCount()).isEqualTo(12);
-			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId()).getPullEndpoint())
-					.isEqualTo("my-endpoint");
-			assertThat(gcpPubSubProperties.getSubscriber("other", projectIdProvider.getProjectId()).getMaxAckExtensionPeriod()).isEqualTo(5L);
-			assertThat(gcpPubSubProperties.getSubscriber("other", projectIdProvider.getProjectId()).getParallelPullCount()).isEqualTo(10);
-			assertThat(gcpPubSubProperties.getSubscriber("other", projectIdProvider.getProjectId()).getPullEndpoint()).isEqualTo("other-endpoint");
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId())
+					.getMaxAckExtensionPeriod()).isEqualTo(7L);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId())
+					.getParallelPullCount()).isEqualTo(12);
+			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId())
+					.getPullEndpoint())
+							.isEqualTo("my-endpoint");
+			assertThat(gcpPubSubProperties.getSubscriber("other", projectIdProvider.getProjectId())
+					.getMaxAckExtensionPeriod()).isEqualTo(5L);
+			assertThat(
+					gcpPubSubProperties.getSubscriber("other", projectIdProvider.getProjectId()).getParallelPullCount())
+							.isEqualTo(10);
+			assertThat(gcpPubSubProperties.getSubscriber("other", projectIdProvider.getProjectId()).getPullEndpoint())
+					.isEqualTo("other-endpoint");
 
 			assertThat(gcpPubSubProperties.getSubscription())
 					.hasSize(2);
@@ -252,6 +263,21 @@ public class GcpPubSubAutoConfigurationTests {
 					.containsKey("projects/fake project/subscriptions/subscription-name");
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/other");
+		});
+	}
+
+	@Test
+	public void customRetrySettingsUsedWhenProvided() {
+		RetrySettings retrySettings = mock(RetrySettings.class);
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withUserConfiguration(TestConfig.class)
+				.withBean("subscriberRetrySettings", RetrySettings.class, () -> retrySettings);
+
+		contextRunner.run(ctx -> {
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			assertThat(subscriberFactory.getRetrySettings("name")).isSameAs(retrySettings);
 		});
 	}
 
@@ -292,22 +318,23 @@ public class GcpPubSubAutoConfigurationTests {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.total-timeout-seconds=1",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.initial-retry-delay-seconds=2",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.retry-delay-multiplier=3",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.max-retry-delay-seconds=4",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.max-attempts=5",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.jittered=true",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.initial-rpc-timeout-seconds=6",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.rpc-timeout-multiplier=7",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.max-rpc-timeout-seconds=8")
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.total-timeout-seconds=1",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.initial-retry-delay-seconds=2",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.retry-delay-multiplier=3",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.max-retry-delay-seconds=4",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.max-attempts=5",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.jittered=true",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.initial-rpc-timeout-seconds=6",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.rpc-timeout-multiplier=7",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.max-rpc-timeout-seconds=8")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
 			GcpPubSubProperties gcpPubSubProperties = ctx
 					.getBean(GcpPubSubProperties.class);
 			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
-			PubSubConfiguration.Retry retrySettings = gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId()).getRetry();
+			PubSubConfiguration.Retry retrySettings = gcpPubSubProperties
+					.getSubscriber("subscription-name", projectIdProvider.getProjectId()).getRetry();
 			assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(1L);
 			assertThat(retrySettings.getInitialRetryDelaySeconds()).isEqualTo(2L);
 			assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(3);
@@ -338,14 +365,14 @@ public class GcpPubSubAutoConfigurationTests {
 						"spring.cloud.gcp.pubsub.subscriber.retry.initial-rpc-timeout-seconds=10",
 						"spring.cloud.gcp.pubsub.subscriber.retry.rpc-timeout-multiplier=10",
 						"spring.cloud.gcp.pubsub.subscriber.retry.max-rpc-timeout-seconds=10",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.total-timeout-seconds=1",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.initial-retry-delay-seconds=2",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.retry-delay-multiplier=3",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.max-retry-delay-seconds=4",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.max-attempts=5",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.initial-rpc-timeout-seconds=6",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.rpc-timeout-multiplier=7",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.retry.max-rpc-timeout-seconds=8")
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.total-timeout-seconds=1",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.initial-retry-delay-seconds=2",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.retry-delay-multiplier=3",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.max-retry-delay-seconds=4",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.max-attempts=5",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.initial-rpc-timeout-seconds=6",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.rpc-timeout-multiplier=7",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.max-rpc-timeout-seconds=8")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
@@ -355,7 +382,8 @@ public class GcpPubSubAutoConfigurationTests {
 
 			// Validate settings for subscribers that have subscription-specific retry settings
 			// property set
-			PubSubConfiguration.Retry retrySettings = gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId()).getRetry();
+			PubSubConfiguration.Retry retrySettings = gcpPubSubProperties
+					.getSubscriber("subscription-name", projectIdProvider.getProjectId()).getRetry();
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/subscription-name");
 			assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(1L);
@@ -369,7 +397,8 @@ public class GcpPubSubAutoConfigurationTests {
 
 			// Validate settings for subscribers that do not have subscription-specific retry settings
 			// property set
-			PubSubConfiguration.Retry retrySettingsForOtherSubscriber = gcpPubSubProperties.getSubscriber("other", projectIdProvider.getProjectId())
+			PubSubConfiguration.Retry retrySettingsForOtherSubscriber = gcpPubSubProperties
+					.getSubscriber("other", projectIdProvider.getProjectId())
 					.getRetry();
 			assertThat(retrySettingsForOtherSubscriber.getTotalTimeoutSeconds()).isEqualTo(10L);
 			assertThat(retrySettingsForOtherSubscriber.getInitialRetryDelaySeconds()).isEqualTo(10L);
@@ -386,6 +415,21 @@ public class GcpPubSubAutoConfigurationTests {
 					.containsKey("projects/fake project/subscriptions/subscription-name");
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/other");
+		});
+	}
+
+	@Test
+	public void customFlowControlUsedWhenProvided() {
+		FlowControlSettings flowControlSettings = mock(FlowControlSettings.class);
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withUserConfiguration(TestConfig.class)
+				.withBean("subscriberFlowControlSettings", FlowControlSettings.class, () -> flowControlSettings);
+
+		contextRunner.run(ctx -> {
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			assertThat(subscriberFactory.getFlowControlSettings("name")).isSameAs(flowControlSettings);
 		});
 	}
 
@@ -414,19 +458,20 @@ public class GcpPubSubAutoConfigurationTests {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.flow-control.max-outstanding-element-Count=11",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.flow-control.max-outstanding-request-Bytes=12",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.flow-control.limit-exceeded-behavior=Ignore")
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.flow-control.max-outstanding-element-Count=11",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.flow-control.max-outstanding-request-Bytes=12",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.flow-control.limit-exceeded-behavior=Ignore")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
 			GcpPubSubProperties gcpPubSubProperties = ctx
 					.getBean(GcpPubSubProperties.class);
 			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
-			
-			PubSubConfiguration.FlowControl flowControl = gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId())
+
+			PubSubConfiguration.FlowControl flowControl = gcpPubSubProperties
+					.getSubscriber("subscription-name", projectIdProvider.getProjectId())
 					.getFlowControl();
-			
+
 			assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
 			assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
 			assertThat(flowControl.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Ignore);
@@ -446,9 +491,9 @@ public class GcpPubSubAutoConfigurationTests {
 						"spring.cloud.gcp.pubsub.subscriber.flow-control.max-outstanding-element-Count=10",
 						"spring.cloud.gcp.pubsub.subscriber.flow-control.max-outstanding-request-Bytes=10",
 						"spring.cloud.gcp.pubsub.subscriber.flow-control.limit-exceeded-behavior=Block",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.flow-control.max-outstanding-element-Count=11",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.flow-control.max-outstanding-request-Bytes=12",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.subscriber.flow-control.limit-exceeded-behavior=Ignore")
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.flow-control.max-outstanding-element-Count=11",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.flow-control.max-outstanding-request-Bytes=12",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.flow-control.limit-exceeded-behavior=Ignore")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
@@ -466,8 +511,7 @@ public class GcpPubSubAutoConfigurationTests {
 			assertThat(flowControl.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Ignore);
 
 			// Validate settings for subscribers that do not have subscription-specific flow control
-			// settings
-			// property set
+			// settings property set
 			PubSubConfiguration.FlowControl flowControlForOtherSubscriber = gcpPubSubProperties
 					.getSubscriber("other", projectIdProvider.getProjectId())
 					.getFlowControl();
@@ -477,9 +521,11 @@ public class GcpPubSubAutoConfigurationTests {
 					.isEqualTo(FlowController.LimitExceededBehavior.Block);
 
 			assertThat(gcpPubSubProperties.getSubscription())
-					.hasSize(1);
+					.hasSize(2);
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/subscription-name");
+			assertThat(gcpPubSubProperties.getSubscription())
+					.containsKey("projects/fake project/subscriptions/other");
 		});
 	}
 

@@ -16,15 +16,13 @@
 
 package com.google.cloud.spring.pubsub.support;
 
+import java.util.Map;
+
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.api.gax.retrying.RetrySettings;
-import com.google.cloud.pubsub.v1.Subscriber;
-import java.util.Map;
-
-import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
@@ -72,15 +70,6 @@ public class DefaultSubscriberFactoryTests {
 	@Mock
 	private ThreadPoolTaskScheduler mockScheduler2;
 
-	@Mock
-	private PubSubConfiguration pubSubConfiguration;
-
-	@Mock
-	private PubSubConfiguration.Retry mockRetry;
-
-	@Mock
-	private PubSubConfiguration.FlowControl flowControl;
-
 	/**
 	 * used to check exception messages and types.
 	 */
@@ -89,7 +78,7 @@ public class DefaultSubscriberFactoryTests {
 
 	@Test
 	public void testNewSubscriber() {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfiguration);
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust");
 		factory.setCredentialsProvider(this.credentialsProvider);
 
 		Subscriber subscriber = factory.createSubscriber("midnight cowboy", (message, consumer) -> {
@@ -142,7 +131,7 @@ public class DefaultSubscriberFactoryTests {
 
 	@Test
 	public void testCreatePullRequest_greaterThanZeroMaxMessages() {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", null);
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project");
 		factory.setCredentialsProvider(this.credentialsProvider);
 
 		this.expectedException.expect(IllegalArgumentException.class);
@@ -152,7 +141,7 @@ public class DefaultSubscriberFactoryTests {
 
 	@Test
 	public void testCreatePullRequest_nonNullMaxMessages() {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", null);
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project");
 		factory.setCredentialsProvider(this.credentialsProvider);
 
 		PullRequest request = factory.createPullRequest("test", null, true);
@@ -312,7 +301,7 @@ public class DefaultSubscriberFactoryTests {
 		retrySettings.setTotalTimeoutSeconds(10L);
 		when(mockDefaultSubscriber1.getRetry()).thenReturn(retrySettings);
 
-		RetrySettings actualRetrySettings = factory.getRetrySettings("defaultSubscriber");
+		RetrySettings actualRetrySettings = factory.getRetrySettings("defaultSubscription1");
 
 		assertThat(actualRetrySettings.getTotalTimeout()).isEqualTo(Duration.ofSeconds(10));
 	}
@@ -354,6 +343,8 @@ public class DefaultSubscriberFactoryTests {
 		FlowControlSettings actualFlowSettings = factory.getFlowControlSettings("defaultSubscription1");
 
 		assertThat(actualFlowSettings.getMaxOutstandingRequestBytes()).isEqualTo(10L);
+		assertThat(actualFlowSettings.getMaxOutstandingElementCount()).isNull();
+		assertThat(actualFlowSettings.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Block);
 	}
 
 	@Test

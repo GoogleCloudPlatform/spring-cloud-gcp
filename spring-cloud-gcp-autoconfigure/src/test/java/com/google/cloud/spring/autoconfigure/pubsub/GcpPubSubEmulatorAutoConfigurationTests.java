@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.pubsub;
 
 import com.google.api.gax.batching.BatchingSettings;
-import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
@@ -27,6 +26,7 @@ import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.pubsub.v1.TopicAdminSettings;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import org.assertj.core.data.Offset;
 import org.junit.Test;
 import org.threeten.bp.Duration;
@@ -118,19 +118,19 @@ public class GcpPubSubEmulatorAutoConfigurationTests {
 
 	@Test
 	public void testSubscriberRetrySettings() {
-		this.contextRunner.run(context -> {
-			RetrySettings settings = context.getBean("subscriberRetrySettings",
-					RetrySettings.class);
-			assertThat(settings.getTotalTimeout()).isEqualTo(Duration.ofSeconds(1));
-			assertThat(settings.getInitialRetryDelay()).isEqualTo(Duration.ofSeconds(2));
-			assertThat(settings.getRetryDelayMultiplier()).isEqualTo(3, DELTA);
-			assertThat(settings.getMaxRetryDelay()).isEqualTo(Duration.ofSeconds(4));
-			assertThat(settings.getMaxAttempts()).isEqualTo(5);
-			assertThat(settings.isJittered()).isTrue();
-			assertThat(settings.getInitialRpcTimeout()).isEqualTo(Duration.ofSeconds(6));
-			assertThat(settings.getRpcTimeoutMultiplier()).isEqualTo(7, DELTA);
-			assertThat(settings.getMaxRpcTimeout()).isEqualTo(Duration.ofSeconds(8));
-		});
+		this.contextRunner
+				.run(context -> {
+					GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
+					PubSubConfiguration.Retry settings = gcpPubSubProperties.getSubscriber().getRetry();
+					assertThat(settings.getTotalTimeoutSeconds()).isEqualTo(1L);
+					assertThat(settings.getInitialRetryDelaySeconds()).isEqualTo(2L);
+					assertThat(settings.getRetryDelayMultiplier()).isEqualTo(3, DELTA);
+					assertThat(settings.getMaxRetryDelaySeconds()).isEqualTo(4L);
+					assertThat(settings.getMaxAttempts()).isEqualTo(5);
+					assertThat(settings.getInitialRpcTimeoutSeconds()).isEqualTo(6L);
+					assertThat(settings.getRpcTimeoutMultiplier()).isEqualTo(7, DELTA);
+					assertThat(settings.getMaxRpcTimeoutSeconds()).isEqualTo(8L);
+				});
 	}
 
 	@Test
@@ -152,13 +152,14 @@ public class GcpPubSubEmulatorAutoConfigurationTests {
 
 	@Test
 	public void testSubscriberFlowControlSettings() {
-		this.contextRunner.run(context -> {
-			FlowControlSettings settings = context
-					.getBean("subscriberFlowControlSettings", FlowControlSettings.class);
-			assertThat(settings.getMaxOutstandingElementCount()).isEqualTo(17);
-			assertThat(settings.getMaxOutstandingRequestBytes()).isEqualTo(18);
-			assertThat(settings.getLimitExceededBehavior()).isEqualTo(LimitExceededBehavior.Ignore);
-		});
+		this.contextRunner
+				.run(context -> {
+					GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
+					PubSubConfiguration.FlowControl settings = gcpPubSubProperties.getSubscriber().getFlowControl();
+					assertThat(settings.getMaxOutstandingElementCount()).isEqualTo(17);
+					assertThat(settings.getMaxOutstandingRequestBytes()).isEqualTo(18);
+					assertThat(settings.getLimitExceededBehavior()).isEqualTo(LimitExceededBehavior.Ignore);
+				});
 	}
 
 	@Test
