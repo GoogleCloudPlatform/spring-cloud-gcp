@@ -28,6 +28,8 @@ public interface HealthTrackerRegistry {
 
 	HealthTracker registerTracker(ProjectSubscriptionName projectSubscriptionName);
 
+	boolean isTracked(ProjectSubscriptionName projectSubscriptionName);
+
 	void processedMessage(ProjectSubscriptionName projectSubscriptionName);
 
 	void addListener(Subscriber subscriber);

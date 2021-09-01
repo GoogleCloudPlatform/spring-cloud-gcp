@@ -77,6 +77,20 @@ public class HealthTrackerRegistryImplTests {
 	}
 
 	@Test
+	public void testIsTracked() {
+		String projectId = "project-id";
+		String subscriptionId = "subscription-id";
+
+		ProjectSubscriptionName subscription = ProjectSubscriptionName.of(projectId, subscriptionId);
+
+		assertThat(healthTrackerRegistry.isTracked(subscription)).isEqualTo(false);
+
+		HealthTracker healthTracker = healthTrackerRegistry.registerTracker(subscription);
+
+		assertThat(healthTrackerRegistry.isTracked(subscription)).isEqualTo(true);
+	}
+
+	@Test
 	public void testProcessedMessage() {
 		String projectId = "project-id";
 		String subscription = "bad-subscription";

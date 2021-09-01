@@ -78,6 +78,11 @@ public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
 	}
 
 	@Override
+	public boolean isTracked(ProjectSubscriptionName projectSubscriptionName) {
+		return healthTrackers.containsKey(projectSubscriptionName);
+	}
+
+	@Override
 	public void processedMessage(ProjectSubscriptionName subscription) {
 		if (!healthTrackers.containsKey(subscription)) {
 			LOGGER.warn("No HealthTracker register for subscription " + subscription.toString());
