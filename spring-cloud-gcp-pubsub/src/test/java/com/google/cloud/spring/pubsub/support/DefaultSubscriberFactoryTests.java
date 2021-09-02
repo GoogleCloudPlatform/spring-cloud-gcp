@@ -151,21 +151,25 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
-	public void testCreateSubscriber_flowControlSettings() {
+	public void testCreateSubscriber_validateSetProperties() {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
 		factory.setCredentialsProvider(this.credentialsProvider);
 		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
 
 		subscriber.getFlowControl().setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore);
+		subscriber.setMaxAckExtensionPeriod(2L);
+		subscriber.setParallelPullCount(2);
 		when(mockPubSubConfiguration.getSubscriber("defaultSubscription", "project"))
 				.thenReturn(subscriber);
 
-		Subscriber createdSubscriber = factory.createSubscriber("defaultSubscription", (message, consumer) -> {
+		Subscriber expectedSubscriber = factory.createSubscriber("defaultSubscription", (message, consumer) -> {
 		});
 
-		assertThat(createdSubscriber.getFlowControlSettings().getLimitExceededBehavior())
+		assertThat(expectedSubscriber.getFlowControlSettings().getLimitExceededBehavior())
 				.isEqualTo(FlowController.LimitExceededBehavior.Ignore);
+		assertThat(expectedSubscriber).hasFieldOrPropertyWithValue("maxAckExtensionPeriod", Duration.ofSeconds(2L))
+				.hasFieldOrPropertyWithValue("numPullers", 2);
 
 		factory.getThreadPoolTaskSchedulerMap().get("defaultSubscription").shutdown();
 	}
