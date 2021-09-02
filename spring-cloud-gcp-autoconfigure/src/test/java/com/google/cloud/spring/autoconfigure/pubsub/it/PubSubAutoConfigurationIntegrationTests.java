@@ -45,10 +45,6 @@ public class PubSubAutoConfigurationIntegrationTests {
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withPropertyValues(
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.executor-threads=3",
-					"spring.cloud.gcp.pubsub.subscription.test-sub-2.executor-threads=1",
-					"spring.cloud.gcp.pubsub.subscription.test-sub-2.flow-control.max-outstanding-element-Count=1",
-					"spring.cloud.gcp.pubsub.subscription.test-sub-2.flow-control.max-outstanding-request-Bytes=1",
-					"spring.cloud.gcp.pubsub.subscription.test-sub-2.flow-control.limit-exceeded-behavior=Ignore",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.total-timeout-seconds=600",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.initial-retry-delay-seconds=100",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.retry-delay-multiplier=1.3",
@@ -57,8 +53,12 @@ public class PubSubAutoConfigurationIntegrationTests {
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.initial-rpc-timeout-seconds=600",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.rpc-timeout-multiplier=1",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.max-rpc-timeout-seconds=600",
+					"spring.cloud.gcp.pubsub.subscription.test-sub-2.executor-threads=1",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-2.max-ack-extension-period=0",
-					"spring.cloud.gcp.pubsub.subscription.test-sub-2.parallel-pull-count=1")
+					"spring.cloud.gcp.pubsub.subscription.test-sub-2.parallel-pull-count=1",
+					"spring.cloud.gcp.pubsub.subscription.test-sub-2.flow-control.max-outstanding-element-Count=1",
+					"spring.cloud.gcp.pubsub.subscription.test-sub-2.flow-control.max-outstanding-request-Bytes=1",
+					"spring.cloud.gcp.pubsub.subscription.test-sub-2.flow-control.limit-exceeded-behavior=Ignore")
 			.withConfiguration(AutoConfigurations.of(GcpContextAutoConfiguration.class,
 					GcpPubSubAutoConfiguration.class));
 

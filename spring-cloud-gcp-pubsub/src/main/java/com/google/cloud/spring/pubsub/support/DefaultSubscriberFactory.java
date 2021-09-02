@@ -237,10 +237,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
 					.getSubscriber(subscriptionName, projectId);
 			Long maxAckExtensionPeriod = subscriberProperties.getMaxAckExtensionPeriod();
-			if (maxAckExtensionPeriod > 0L) {
-				subscriberBuilder
-						.setMaxAckExtensionPeriod(Duration.ofSeconds(maxAckExtensionPeriod));
-			}
+			subscriberBuilder
+					.setMaxAckExtensionPeriod(Duration.ofSeconds(maxAckExtensionPeriod));
 		}
 
 		// Set the number of pull workers.
