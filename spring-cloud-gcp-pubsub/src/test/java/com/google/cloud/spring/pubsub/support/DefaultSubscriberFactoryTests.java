@@ -101,6 +101,8 @@ public class DefaultSubscriberFactoryTests {
 
 		assertThat(subscriber.getSubscriptionNameString())
 				.isEqualTo("projects/angeldust/subscriptions/midnight cowboy");
+
+		factory.getThreadPoolTaskSchedulerMap().get("midnight cowboy").shutdown();
 	}
 
 	@Test
@@ -146,6 +148,26 @@ public class DefaultSubscriberFactoryTests {
 
 		PullRequest request = factory.createPullRequest("test", null, true);
 		assertThat(request.getMaxMessages()).isEqualTo(Integer.MAX_VALUE);
+	}
+
+	@Test
+	public void testCreateSubscriber_flowControlSettings() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+		factory.setCredentialsProvider(this.credentialsProvider);
+		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+
+		subscriber.getFlowControl().setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore);
+		when(mockPubSubConfiguration.getSubscriber("defaultSubscription", "project"))
+				.thenReturn(subscriber);
+
+		Subscriber createdSubscriber = factory.createSubscriber("defaultSubscription", (message, consumer) -> {
+		});
+
+		assertThat(createdSubscriber.getFlowControlSettings().getLimitExceededBehavior())
+				.isEqualTo(FlowController.LimitExceededBehavior.Ignore);
+
+		factory.getThreadPoolTaskSchedulerMap().get("defaultSubscription").shutdown();
 	}
 
 	@Test
@@ -299,11 +321,26 @@ public class DefaultSubscriberFactoryTests {
 				.thenReturn(mockDefaultSubscriber1);
 		PubSubConfiguration.Retry retrySettings = new PubSubConfiguration.Retry();
 		retrySettings.setTotalTimeoutSeconds(10L);
+		retrySettings.setInitialRetryDelaySeconds(10L);
+		retrySettings.setRetryDelayMultiplier(10.0);
+		retrySettings.setMaxRetryDelaySeconds(10L);
+		retrySettings.setMaxAttempts(10);
+		retrySettings.setInitialRpcTimeoutSeconds(10L);
+		retrySettings.setRpcTimeoutMultiplier(10.0);
+		retrySettings.setMaxRpcTimeoutSeconds(10L);
+
 		when(mockDefaultSubscriber1.getRetry()).thenReturn(retrySettings);
 
 		RetrySettings actualRetrySettings = factory.getRetrySettings("defaultSubscription1");
 
 		assertThat(actualRetrySettings.getTotalTimeout()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getInitialRetryDelay()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getRetryDelayMultiplier()).isEqualTo(10.0);
+		assertThat(actualRetrySettings.getInitialRpcTimeout()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getMaxRetryDelay()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getMaxAttempts()).isEqualTo(10);
+		assertThat(actualRetrySettings.getRpcTimeoutMultiplier()).isEqualTo(10.0);
+		assertThat(actualRetrySettings.getMaxRpcTimeout()).isEqualTo(Duration.ofSeconds(10));
 	}
 
 	@Test
