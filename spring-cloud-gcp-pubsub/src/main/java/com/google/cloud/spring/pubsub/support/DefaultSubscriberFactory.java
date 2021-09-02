@@ -222,8 +222,15 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	@Override
 	public Subscriber createSubscriber(String subscriptionName, MessageReceiver receiver) {
-		Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(
-				PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId), receiver);
+		boolean shouldAddToHealthCheck = shouldAddToHealthCheck(subscriptionName);
+
+		ProjectSubscriptionName projectSubscriptionName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId);
+
+		if (shouldAddToHealthCheck) {
+			receiver = healthTrackerRegistry.wrap(projectSubscriptionName, receiver);
+		}
+
+		Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(projectSubscriptionName, receiver);
 
 		if (this.channelProvider != null) {
 			subscriberBuilder.setChannelProvider(this.channelProvider);
@@ -263,7 +270,13 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberBuilder.setParallelPullCount(pullCount);
 		}
 
-		return subscriberBuilder.build();
+		Subscriber subscriber = subscriberBuilder.build();
+
+		if (shouldAddToHealthCheck) {
+			healthTrackerRegistry.addListener(subscriber);
+		}
+
+		return subscriber;
 	}
 
 	@Override
