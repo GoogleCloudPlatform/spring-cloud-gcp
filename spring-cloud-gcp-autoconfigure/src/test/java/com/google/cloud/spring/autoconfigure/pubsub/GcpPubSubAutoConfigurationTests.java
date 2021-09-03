@@ -129,7 +129,11 @@ public class GcpPubSubAutoConfigurationTests {
 		contextRunner.run(ctx -> {
 			GcpPubSubProperties gcpPubSubProperties = ctx
 					.getBean(GcpPubSubProperties.class);
+			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
 			assertThat(gcpPubSubProperties.getSubscriber().getExecutorThreads()).isEqualTo(7);
+			assertThat(
+					gcpPubSubProperties.computeSubscriberExecutorThreads("subscription-name", projectIdProvider.getProjectId()))
+							.isEqualTo(7);
 		});
 	}
 
@@ -145,8 +149,9 @@ public class GcpPubSubAutoConfigurationTests {
 			GcpPubSubProperties gcpPubSubProperties = ctx
 					.getBean(GcpPubSubProperties.class);
 			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
-			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId())
-					.getExecutorThreads()).isEqualTo(7);
+			assertThat(
+					gcpPubSubProperties.computeSubscriberExecutorThreads("subscription-name", projectIdProvider.getProjectId()))
+							.isEqualTo(7);
 		});
 	}
 
@@ -163,12 +168,37 @@ public class GcpPubSubAutoConfigurationTests {
 			GcpPubSubProperties gcpPubSubProperties = ctx
 					.getBean(GcpPubSubProperties.class);
 			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
-			assertThat(gcpPubSubProperties.getSubscriber("subscription-name", projectIdProvider.getProjectId())
-					.getExecutorThreads()).isEqualTo(3);
+			assertThat(
+					gcpPubSubProperties.computeSubscriberExecutorThreads("subscription-name", projectIdProvider.getProjectId()))
+							.isEqualTo(3);
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/subscription-name");
 			assertThat(
-					gcpPubSubProperties.getSubscriber("other", projectIdProvider.getProjectId()).getExecutorThreads())
+					gcpPubSubProperties.computeSubscriberExecutorThreads("other", projectIdProvider.getProjectId()))
+							.isEqualTo(5);
+		});
+	}
+
+	@Test
+	public void executorThreads_globalAndDifferentSelectiveConfigurationSet_pickGlobal() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.executor-threads=5",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.parallel-pull-count=3")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
+			assertThat(
+					gcpPubSubProperties.computeSubscriberExecutorThreads("subscription-name", projectIdProvider.getProjectId()))
+							.isEqualTo(5);
+			assertThat(gcpPubSubProperties.getSubscription())
+					.containsKey("projects/fake project/subscriptions/subscription-name");
+			assertThat(
+					gcpPubSubProperties.computeSubscriberExecutorThreads("other", projectIdProvider.getProjectId()))
 							.isEqualTo(5);
 		});
 	}

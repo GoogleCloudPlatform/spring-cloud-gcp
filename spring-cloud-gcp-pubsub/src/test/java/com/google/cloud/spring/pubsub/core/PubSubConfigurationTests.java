@@ -30,7 +30,7 @@ public class PubSubConfigurationTests {
 		PubSubConfiguration.FlowControl flowControl = subscriber.getFlowControl();
 		PubSubConfiguration.Retry retrySettings = subscriber.getRetry();
 
-		assertThat(subscriber.getExecutorThreads()).isEqualTo(4);
+		assertThat(subscriber.getExecutorThreads()).isNull();
 		assertThat(subscriber.getMaxAcknowledgementThreads()).isEqualTo(4);
 		assertThat(subscriber.getParallelPullCount()).isNull();
 		assertThat(subscriber.getMaxAckExtensionPeriod()).isZero();
@@ -117,10 +117,10 @@ public class PubSubConfigurationTests {
 
 		assertThat(pubSubConfiguration.getSubscription()).isEmpty();
 		assertThat(pubSubConfiguration.getSubscriber("subscription-name", "projectId").getExecutorThreads())
-				.isEqualTo(4);
+				.isNull();
 		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
 		assertThat(pubSubConfiguration.getSubscription().get("projects/projectId/subscriptions/subscription-name")
-				.getExecutorThreads()).isEqualTo(4);
+				.getExecutorThreads()).isNull();
 	}
 
 	@Test
@@ -178,9 +178,26 @@ public class PubSubConfigurationTests {
 		assertThat(pubSubConfiguration.getSubscription()).isEmpty();
 		assertThat(pubSubConfiguration
 				.getSubscriber("projects/otherProjectId/subscriptions/subscription-name", "projectId")
-				.getExecutorThreads()).isEqualTo(4);
+				.getExecutorThreads()).isNull();
 		assertThat(pubSubConfiguration.getSubscription().get("projects/otherProjectId/subscriptions/subscription-name")
-				.getExecutorThreads()).isEqualTo(4);
+				.getExecutorThreads()).isNull();
+	}
+
+	@Test
+	public void testComputeExecutorThreads_returnCustom() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+		subscriber.setExecutorThreads(8);
+
+		pubSubConfiguration.getSubscription().put("projects/otherProjectId/subscriptions/subscription-name",
+				subscriber);
+
+		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
+		assertThat(pubSubConfiguration
+				.getSubscriber("projects/otherProjectId/subscriptions/subscription-name", "projectId")
+				.getExecutorThreads()).isEqualTo(8);
+		assertThat(pubSubConfiguration.getSubscription().get("projects/otherProjectId/subscriptions/subscription-name")
+				.getExecutorThreads()).isEqualTo(8);
 	}
 
 	@Test
