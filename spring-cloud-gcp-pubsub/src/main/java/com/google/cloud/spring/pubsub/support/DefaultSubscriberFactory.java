@@ -79,6 +79,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	@Deprecated
 	private FlowControlSettings flowControlSettings;
 
+	private Duration maxAckExtensionPeriod;
+
+	private Integer parallelPullCount;
+
+	private String pullEndpoint;
+
 	private ApiClock apiClock;
 
 	/**
@@ -183,6 +189,30 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	/**
+	 * Set the maximum period the ack timeout is extended by.
+	 * @param maxAckExtensionPeriod the max ack extension period to set
+	 */
+	public void setMaxAckExtensionPeriod(Duration maxAckExtensionPeriod) {
+		this.maxAckExtensionPeriod = maxAckExtensionPeriod;
+	}
+
+	/**
+	 * Set the number of pull workers.
+	 * @param parallelPullCount the parallel pull count to set
+	 */
+	public void setParallelPullCount(Integer parallelPullCount) {
+		this.parallelPullCount = parallelPullCount;
+	}
+
+	/**
+	 * Set the endpoint for synchronous pulling messages.
+	 * @param pullEndpoint the pull endpoint to set
+	 */
+	public void setPullEndpoint(String pullEndpoint) {
+		this.pullEndpoint = pullEndpoint;
+	}
+
+	/**
 	 * Set the clock to use for the retry logic in synchronous pulling.
 	 * @param apiClock the api clock to set
 	 */
@@ -231,14 +261,11 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (flowControl != null) {
 			subscriberBuilder.setFlowControlSettings(flowControl);
 		}
-
-		// Set the maximum period the ack timeout is extended by.
-		if (this.pubSubConfiguration != null) {
-			PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
-					.getSubscriber(subscriptionName, projectId);
-			Long maxAckExtensionPeriod = subscriberProperties.getMaxAckExtensionPeriod();
+		
+		Duration ackExtensionPeriod = getMaxAckExtensionPeriod(subscriptionName);
+		if (ackExtensionPeriod != null){
 			subscriberBuilder
-					.setMaxAckExtensionPeriod(Duration.ofSeconds(maxAckExtensionPeriod));
+					.setMaxAckExtensionPeriod(ackExtensionPeriod);
 		}
 
 		// Set the number of pull workers.
@@ -468,6 +495,18 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			return true;
 		}
 		return false;
+	}
+
+	Duration getMaxAckExtensionPeriod(String subscriptionName) {
+		if (this.maxAckExtensionPeriod != null) {
+			return this.maxAckExtensionPeriod;
+		}
+		if (this.pubSubConfiguration != null) {
+			PubSubConfiguration.Subscriber subscriberProperties = this.pubSubConfiguration
+					.getSubscriber(subscriptionName, projectId);
+			return Duration.ofSeconds(subscriberProperties.getMaxAckExtensionPeriod());
+		}
+		return null;
 	}
 
 	@PreDestroy
