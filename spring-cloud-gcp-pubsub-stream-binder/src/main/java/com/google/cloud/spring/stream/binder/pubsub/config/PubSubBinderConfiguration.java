@@ -20,6 +20,7 @@ import java.util.Collections;
 
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
 import com.google.cloud.spring.stream.binder.pubsub.PubSubMessageChannelBinder;
@@ -64,12 +65,18 @@ public class PubSubBinderConfiguration {
 			PubSubTemplate pubSubTemplate,
 			PubSubExtendedBindingProperties pubSubExtendedBindingProperties,
 			@Nullable ProducerMessageHandlerCustomizer<PubSubMessageHandler> producerCustomizer,
-			@Nullable ConsumerEndpointCustomizer<PubSubInboundChannelAdapter> consumerCustomizer
+			@Nullable ConsumerEndpointCustomizer<PubSubInboundChannelAdapter> consumerCustomizer,
+			@Nullable HealthTrackerRegistry healthTrackerRegistry
 	) {
 		PubSubMessageChannelBinder binder = new PubSubMessageChannelBinder(null, pubSubChannelProvisioner, pubSubTemplate,
 				pubSubExtendedBindingProperties);
 		binder.setProducerMessageHandlerCustomizer(producerCustomizer);
 		binder.setConsumerEndpointCustomizer(consumerCustomizer);
+
+		if (healthTrackerRegistry != null) {
+			binder.setHealthTrackerRegistry(healthTrackerRegistry);
+		}
+
 		return binder;
 	}
 
