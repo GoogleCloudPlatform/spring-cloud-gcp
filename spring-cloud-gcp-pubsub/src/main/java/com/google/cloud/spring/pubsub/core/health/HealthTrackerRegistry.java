@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.pubsub.core.health;
 
+import java.util.Collection;
+
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.ProjectSubscriptionName;
@@ -43,5 +45,7 @@ public interface HealthTrackerRegistry {
 	void processedMessage(ProjectSubscriptionName projectSubscriptionName);
 
 	void addListener(Subscriber subscriber);
+
+	Collection<HealthTracker> healthTrackers();
 
 }

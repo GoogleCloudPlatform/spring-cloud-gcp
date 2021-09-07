@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.pubsub.core.health;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.api.core.ApiService;
@@ -74,6 +75,20 @@ public class HealthTrackerRegistryImplTests {
 		HealthTracker healthTracker = healthTrackerRegistry.registerTracker(subscription);
 
 		assertThat(healthTracker.subscription()).isEqualTo(subscription);
+	}
+
+	@Test
+	public void testHealthTrackers() {
+		String projectId = "project-id";
+		String subscriptionId = "subscription-id";
+
+		ProjectSubscriptionName subscription = ProjectSubscriptionName.of(projectId, subscriptionId);
+
+		HealthTracker healthTracker = healthTrackerRegistry.registerTracker(subscription);
+		Collection<HealthTracker> healthTrackers = healthTrackerRegistry.healthTrackers();
+
+		assertThat(healthTrackers.size()).isEqualTo(1);
+		assertThat(healthTrackers.iterator().next()).isEqualTo(healthTracker);
 	}
 
 	@Test

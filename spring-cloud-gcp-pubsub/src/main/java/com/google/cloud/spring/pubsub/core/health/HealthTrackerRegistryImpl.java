@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.pubsub.core.health;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.api.core.ApiService;
@@ -110,6 +111,10 @@ public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
 		};
 
 		subscriber.addListener(listener, executorProvider.getExecutor());
+	}
+
+	public Collection<HealthTracker> healthTrackers() {
+		return healthTrackers.values();
 	}
 
 }
