@@ -16,15 +16,15 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
+
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.api.gax.core.ExecutorProvider;
+import com.google.cloud.monitoring.v3.MetricServiceClient;
+import com.google.cloud.spring.pubsub.core.health.HealthTracker;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistryImpl;
 import com.google.pubsub.v1.ProjectSubscriptionName;
-
-import com.google.cloud.monitoring.v3.MetricServiceClient;
-import com.google.cloud.spring.pubsub.core.health.HealthTracker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
