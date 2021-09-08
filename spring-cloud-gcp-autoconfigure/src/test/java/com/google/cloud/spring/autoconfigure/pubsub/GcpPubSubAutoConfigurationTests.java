@@ -203,6 +203,28 @@ public class GcpPubSubAutoConfigurationTests {
 		});
 	}
 
+	@Test
+	public void executorThreads_noConfigurationSet_pickDefault() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
+			assertThat(
+					gcpPubSubProperties.computeSubscriberExecutorThreads("subscription-name",
+							projectIdProvider.getProjectId()))
+									.isEqualTo(4);
+			assertThat(gcpPubSubProperties.getSubscription())
+					.containsKey("projects/fake project/subscriptions/subscription-name");
+			assertThat(
+					gcpPubSubProperties.computeSubscriberExecutorThreads("other", projectIdProvider.getProjectId()))
+							.isEqualTo(4);
+		});
+	}
+
 	static class TestConfig {
 
 		@Bean

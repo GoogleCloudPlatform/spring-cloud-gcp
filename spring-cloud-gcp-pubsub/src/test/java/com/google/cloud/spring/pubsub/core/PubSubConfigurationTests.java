@@ -172,19 +172,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberMapProperties_fullNameWithDifferentProjectId_returnDefault() {
-		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
-
-		assertThat(pubSubConfiguration.getSubscription()).isEmpty();
-		assertThat(pubSubConfiguration
-				.getSubscriber("projects/otherProjectId/subscriptions/subscription-name", "projectId")
-				.getExecutorThreads()).isNull();
-		assertThat(pubSubConfiguration.getSubscription().get("projects/otherProjectId/subscriptions/subscription-name")
-				.getExecutorThreads()).isNull();
-	}
-
-	@Test
-	public void testComputeExecutorThreads_returnCustom() {
+	public void testComputeExecutorThreads_fullNameWithDifferentProjectId_returnCustom() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
 		subscriber.setExecutorThreads(8);
@@ -194,10 +182,18 @@ public class PubSubConfigurationTests {
 
 		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
 		assertThat(pubSubConfiguration
-				.getSubscriber("projects/otherProjectId/subscriptions/subscription-name", "projectId")
-				.getExecutorThreads()).isEqualTo(8);
-		assertThat(pubSubConfiguration.getSubscription().get("projects/otherProjectId/subscriptions/subscription-name")
-				.getExecutorThreads()).isEqualTo(8);
+				.computeSubscriberExecutorThreads("projects/otherProjectId/subscriptions/subscription-name",
+						"projectId")).isEqualTo(8);
+	}
+
+	@Test
+	public void testComputeExecutorThreads_fullNameWithDifferentProjectId_returnDefault() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+
+		assertThat(pubSubConfiguration.getSubscription()).isEmpty();
+		assertThat(pubSubConfiguration
+				.computeSubscriberExecutorThreads("projects/otherProjectId/subscriptions/subscription-name",
+						"projectId")).isEqualTo(4);
 	}
 
 	@Test
