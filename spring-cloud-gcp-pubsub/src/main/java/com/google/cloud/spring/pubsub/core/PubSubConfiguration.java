@@ -37,9 +37,9 @@ public class PubSubConfiguration {
 	private final Map<String, Subscriber> subscription = new HashMap<>();
 
 	/**
-	 * Contains default subscriber settings.
+	 * Contains global and default subscriber settings.
 	 */
-	private final Subscriber subscriber = new Subscriber();
+	private final Subscriber globalSubscriber = new Subscriber();
 
 	/**
 	 * Contains default publisher settings.
@@ -47,7 +47,7 @@ public class PubSubConfiguration {
 	private final Publisher publisher = new Publisher();
 
 	public Subscriber getSubscriber() {
-		return this.subscriber;
+		return this.globalSubscriber;
 	}
 
 	public Publisher getPublisher() {
@@ -78,7 +78,7 @@ public class PubSubConfiguration {
 		}
 
 		Subscriber subscriberProperties = this.subscription.computeIfAbsent(fullyQualifiedSubscriptionKey,
-				k -> this.subscriber);
+				k -> this.globalSubscriber);
 		subscriberProperties.global = true;
 		return subscriberProperties;
 	}
@@ -96,7 +96,7 @@ public class PubSubConfiguration {
 		if (numThreads != null) {
 			return numThreads;
 		}
-		Integer globalExecutorThreads = subscriber.getExecutorThreads();
+		Integer globalExecutorThreads = this.globalSubscriber.getExecutorThreads();
 		return globalExecutorThreads != null ? globalExecutorThreads : DEFAULT_EXECUTOR_THREADS;
 	}
 
