@@ -219,9 +219,6 @@ public class GcpPubSubAutoConfigurationTests {
 									.isEqualTo(4);
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/subscription-name");
-			assertThat(
-					gcpPubSubProperties.computeSubscriberExecutorThreads("other", projectIdProvider.getProjectId()))
-							.isEqualTo(4);
 		});
 	}
 
