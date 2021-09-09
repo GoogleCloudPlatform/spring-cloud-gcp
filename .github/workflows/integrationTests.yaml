@@ -54,6 +54,8 @@ jobs:
           graalvm: '21.2.0'
           java: 'java11'
           arch: 'amd64'
+      - name: Install GraalVM Native Image
+        if: matrix.it == 'native'
         run: gu install native-image
       - uses: actions/cache@v2
         id: mvn-cache
