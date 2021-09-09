@@ -48,12 +48,13 @@ jobs:
         with:
           java-version: 11
       - name: Setup GraalVM
-        uses: rinx/setup-graalvm-ce@v0.0.5
+        uses: DeLaGuardo/setup-graalvm@4.0
         if: matrix.it == 'native'
         with:
-          graalvm-version: "21.2.0"
-          java-version: "java11"
-          native-image: "true"
+          graalvm: '21.2.0'
+          java: 'java11'
+          arch: 'amd64'
+        run: gu install native-image
       - uses: actions/cache@v2
         id: mvn-cache
         with:
