@@ -334,7 +334,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 		if (this.pubSubConfiguration != null) {
 			PubSubConfiguration.Subscriber subscriber = this.pubSubConfiguration.getSubscriber(subscriptionName,
-					this.projectId);
+					projectId);
 			return getExecutorProviderFromConfigurations(subscriber, subscriptionName);
 		}
 		return null;
@@ -350,21 +350,21 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	ExecutorProvider getExecutorProviderFromConfigurations(PubSubConfiguration.Subscriber subscriber,
 			String subscriptionName) {
 		if (!subscriber.isGlobal()) {
-			return createExecutorProvider(subscriber, subscriptionName);
+			return createExecutorProvider(subscriptionName);
 		}
 
 		if (this.defaultExecutorProvider != null) {
 			return this.defaultExecutorProvider;
 		}
-		this.defaultExecutorProvider = createExecutorProvider(subscriber, subscriptionName);
+		this.defaultExecutorProvider = createExecutorProvider(subscriptionName);
 		return this.defaultExecutorProvider;
 	}
 
-	ExecutorProvider createExecutorProvider(PubSubConfiguration.Subscriber subscriber, String subscriptionName) {
+	ExecutorProvider createExecutorProvider(String subscriptionName) {
 		if (this.executorProviderMap.containsKey(subscriptionName)) {
 			return this.executorProviderMap.get(subscriptionName);
 		}
-		ThreadPoolTaskScheduler scheduler = createThreadPoolTaskScheduler(subscriber, subscriptionName);
+		ThreadPoolTaskScheduler scheduler = createThreadPoolTaskScheduler(subscriptionName);
 		scheduler.initialize();
 		ExecutorProvider executor = FixedExecutorProvider.create(scheduler.getScheduledExecutor());
 		return this.executorProviderMap.computeIfAbsent(subscriptionName, k -> executor);
@@ -375,13 +375,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 * @param subscriptionName subscription name
 	 * @return thread pool scheduler
 	 */
-	ThreadPoolTaskScheduler createThreadPoolTaskScheduler(PubSubConfiguration.Subscriber subscriber,
-			String subscriptionName) {
+	ThreadPoolTaskScheduler createThreadPoolTaskScheduler(String subscriptionName) {
 		if (this.threadPoolTaskSchedulerMap.containsKey(subscriptionName)) {
 			return threadPoolTaskSchedulerMap.get(subscriptionName);
 		}
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.setPoolSize(subscriber.getExecutorThreads());
+		scheduler.setPoolSize(this.pubSubConfiguration.computeSubscriberExecutorThreads(subscriptionName, projectId));
 		String threadNamePrefix = "gcp-pubsub-subscriber" + "-" + subscriptionName;
 		scheduler.setThreadNamePrefix(threadNamePrefix);
 		scheduler.setDaemon(true);

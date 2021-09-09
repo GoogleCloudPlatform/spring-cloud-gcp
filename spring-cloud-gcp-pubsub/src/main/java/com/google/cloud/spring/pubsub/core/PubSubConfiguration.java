@@ -32,12 +32,14 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
  */
 public class PubSubConfiguration {
 
+	private static final int DEFAULT_EXECUTOR_THREADS = 4;
+
 	private final Map<String, Subscriber> subscription = new HashMap<>();
 
 	/**
-	 * Contains default subscriber settings.
+	 * Contains global and default subscriber settings.
 	 */
-	private final Subscriber subscriber = new Subscriber();
+	private final Subscriber globalSubscriber = new Subscriber();
 
 	/**
 	 * Contains default publisher settings.
@@ -45,7 +47,7 @@ public class PubSubConfiguration {
 	private final Publisher publisher = new Publisher();
 
 	public Subscriber getSubscriber() {
-		return this.subscriber;
+		return this.globalSubscriber;
 	}
 
 	public Publisher getPublisher() {
@@ -76,9 +78,26 @@ public class PubSubConfiguration {
 		}
 
 		Subscriber subscriberProperties = this.subscription.computeIfAbsent(fullyQualifiedSubscriptionKey,
-				k -> this.subscriber);
+				k -> this.globalSubscriber);
 		subscriberProperties.global = true;
 		return subscriberProperties;
+	}
+
+	/**
+	 * Computes the number of executor threads. The subscription-specific property takes
+	 * precedence if both global and subscription-specific properties are set. If none are set
+	 * then the default (4) is returned.
+	 * @param subscriptionName subscription name
+	 * @param projectId project id
+	 * @return number of executor threads
+	 */
+	public int computeSubscriberExecutorThreads(String subscriptionName, String projectId) {
+		Integer numThreads = getSubscriber(subscriptionName, projectId).getExecutorThreads();
+		if (numThreads != null) {
+			return numThreads;
+		}
+		Integer globalExecutorThreads = this.globalSubscriber.getExecutorThreads();
+		return globalExecutorThreads != null ? globalExecutorThreads : DEFAULT_EXECUTOR_THREADS;
 	}
 
 	/**
@@ -157,7 +176,7 @@ public class PubSubConfiguration {
 		/**
 		 * Number of threads used by every subscriber.
 		 */
-		private int executorThreads = 4;
+		private Integer executorThreads;
 
 		/**
 		 * Number of threads used for batch acknowledgement.
@@ -225,7 +244,7 @@ public class PubSubConfiguration {
 			this.parallelPullCount = parallelPullCount;
 		}
 
-		public int getExecutorThreads() {
+		public Integer getExecutorThreads() {
 			return this.executorThreads;
 		}
 
