@@ -60,8 +60,9 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
 		MetricServiceClient metricServiceClient,
 		@Value("${spring.cloud.gcp.pubsub.subscription.lagThreshold}") Integer lagThreshold,
 		@Value("${spring.cloud.gcp.pubsub.subscription.backlogThreshold}") Integer backlogThreshold,
+		@Value("${spring.cloud.gcp.pubsub.subscription.lookUpInternal: 1}") Integer lookUpInternal,
 		@Qualifier("subscriberExecutorProvider") ExecutorProvider executorProvider) {
-		return new HealthTrackerRegistryImpl(metricServiceClient, lagThreshold, backlogThreshold, executorProvider);
+		return new HealthTrackerRegistryImpl(metricServiceClient, lagThreshold, backlogThreshold, lookUpInternal, executorProvider);
 	}
 
 	@Bean

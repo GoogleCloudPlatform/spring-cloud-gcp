@@ -30,7 +30,6 @@ public interface HealthTracker {
 	 */
 	String UNDELIVERED_FILTER_TEMPLATE =
 		"metric.type=\"pubsub.googleapis.com/subscription/num_undelivered_messages\" " +
-			"resource.type=\"pubsub_subscription\" " +
 			"resource.label.subscription_id=\"%s\"";
 
 	void processedMessage();

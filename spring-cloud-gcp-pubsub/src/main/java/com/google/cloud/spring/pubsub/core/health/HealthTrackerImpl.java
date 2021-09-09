@@ -16,17 +16,19 @@
 
 package com.google.cloud.spring.pubsub.core.health;
 
+
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.monitoring.v3.ListTimeSeriesResponse;
+import com.google.monitoring.v3.ProjectName;
 import com.google.monitoring.v3.TimeInterval;
 import com.google.monitoring.v3.TimeSeries;
 import com.google.protobuf.util.Timestamps;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 
-import static com.google.monitoring.v3.ListTimeSeriesRequest.TimeSeriesView.FULL;
+import static com.google.monitoring.v3.ListTimeSeriesRequest.TimeSeriesView.HEADERS;
 
 /**
  * @author Emmanouil Gkatziouras
@@ -41,18 +43,21 @@ public class HealthTrackerImpl implements HealthTracker {
 	private final String undeliveredFilter;
 	private final Integer lagThreshold;
 	private final Integer backlogThreshold;
+	private final Integer lookUpInternal;
 
 	private final AtomicLong processedAt = new AtomicLong(System.currentTimeMillis());
 
 	public HealthTrackerImpl(ProjectSubscriptionName projectSubscriptionName,
 		MetricServiceClient metricServiceClient,
 		Integer lagThreshold,
-		Integer backlogThreshold) {
+		Integer backlogThreshold,
+		Integer lookUpInternal) {
 		this.projectSubscriptionName = projectSubscriptionName;
 		this.metricServiceClient = metricServiceClient;
 		this.undeliveredFilter = undeliveredFilter(projectSubscriptionName.getSubscription());
 		this.lagThreshold = lagThreshold;
 		this.backlogThreshold = backlogThreshold;
+		this.lookUpInternal = lookUpInternal;
 	}
 
 	@Override
@@ -104,10 +109,10 @@ public class HealthTrackerImpl implements HealthTracker {
 		TimeInterval timeInterval = timeInterval(currentMillis);
 
 		ListTimeSeriesResponse timeSeriesResponse = metricServiceClient.listTimeSeries(
-			"projects/" + projectSubscriptionName.getProject(),
+			ProjectName.of(projectSubscriptionName.getProject()),
 			undeliveredFilter,
 			timeInterval,
-			FULL
+			HEADERS
 		).getPage().getResponse();
 
 		if (timeSeriesResponse.getTimeSeriesCount() > 0) {
@@ -125,7 +130,7 @@ public class HealthTrackerImpl implements HealthTracker {
 		TimeInterval timeInterval;
 
 		timeInterval = TimeInterval.newBuilder()
-			.setStartTime(Timestamps.fromMillis(currentMillis - lagThreshold))
+			.setStartTime(Timestamps.fromMillis(currentMillis - lookUpInternal * 60 * 1000))
 			.setEndTime(Timestamps.fromMillis(currentMillis))
 			.build();
 

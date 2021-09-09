@@ -56,12 +56,13 @@ public class HealthTrackerRegistryImplTests {
 
 	private static final int DEFAULT_LAG_THRESHOLD = 100;
 	private static final int DEFAULT_BACKLOG_THRESHOLD = 100;
+	private static final int MINUTE_INTERNAL = 1;
 
 	private ConcurrentHashMap<ProjectSubscriptionName, HealthTracker> healthTrackers = new ConcurrentHashMap<>();
 
 	@Before
 	public void setUp() throws Exception {
-		healthTrackerRegistry = new HealthTrackerRegistryImpl(metricServiceClient, DEFAULT_LAG_THRESHOLD, DEFAULT_BACKLOG_THRESHOLD, executorProvider, healthTrackers);
+		healthTrackerRegistry = new HealthTrackerRegistryImpl(metricServiceClient, DEFAULT_LAG_THRESHOLD, DEFAULT_BACKLOG_THRESHOLD, MINUTE_INTERNAL, executorProvider, healthTrackers);
 		healthTrackers.clear();
 	}
 

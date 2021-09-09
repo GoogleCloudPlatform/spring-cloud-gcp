@@ -21,6 +21,7 @@ import com.google.cloud.monitoring.v3.MetricServiceClient.ListTimeSeriesPage;
 import com.google.cloud.monitoring.v3.MetricServiceClient.ListTimeSeriesPagedResponse;
 import com.google.monitoring.v3.ListTimeSeriesResponse;
 import com.google.monitoring.v3.Point;
+import com.google.monitoring.v3.ProjectName;
 import com.google.monitoring.v3.TimeSeries;
 import com.google.monitoring.v3.TypedValue;
 import com.google.pubsub.v1.ProjectSubscriptionName;
@@ -44,6 +45,7 @@ public class HealthTrackerImplTests {
 	private static final String SUBSCRIPTION_ID = "subscription-id";
 	private static final int LAG_THRESHOLD = 1;
 	private static final int BACKLOG_THRESHOLD = 200;
+	private static final int MINUTE_INTERNAL = 1;
 
 	@Mock
 	private MetricServiceClient metricServiceClient;
@@ -54,7 +56,7 @@ public class HealthTrackerImplTests {
 	public void setUp() throws Exception {
 		metricServiceClient = mock(MetricServiceClient.class);
 		healthTracker = new HealthTrackerImpl(ProjectSubscriptionName.of(PROJECT_ID, SUBSCRIPTION_ID), metricServiceClient,
-			LAG_THRESHOLD, BACKLOG_THRESHOLD);
+			LAG_THRESHOLD, BACKLOG_THRESHOLD, MINUTE_INTERNAL);
 	}
 
 	@Test
@@ -84,7 +86,7 @@ public class HealthTrackerImplTests {
 		ListTimeSeriesPage listTimeSeriesPage = mock(ListTimeSeriesPage.class);
 		when(listTimeSeriesPagedResponse.getPage()).thenReturn(listTimeSeriesPage);
 		when(listTimeSeriesPage.getResponse()).thenReturn(timeSeriesResponse);
-		doReturn(listTimeSeriesPagedResponse).when(metricServiceClient).listTimeSeries(anyString(), anyString(), any(), any());
+		doReturn(listTimeSeriesPagedResponse).when(metricServiceClient).listTimeSeries(any(ProjectName.class), anyString(), any(), any());
 
 		long messagesOverThreshold = healthTracker.messagesOverThreshold();
 		assertThat(messagesOverThreshold).isLessThan(0);
@@ -104,7 +106,8 @@ public class HealthTrackerImplTests {
 		ListTimeSeriesPage listTimeSeriesPage = mock(ListTimeSeriesPage.class);
 		when(listTimeSeriesPagedResponse.getPage()).thenReturn(listTimeSeriesPage);
 		when(listTimeSeriesPage.getResponse()).thenReturn(timeSeriesResponse);
-		doReturn(listTimeSeriesPagedResponse).when(metricServiceClient).listTimeSeries(anyString(), anyString(), any(), any());
+		doReturn(listTimeSeriesPagedResponse).when(metricServiceClient).listTimeSeries(any(
+			ProjectName.class), anyString(), any(), any());
 
 		long messagesOverThreshold = healthTracker.messagesOverThreshold();
 		assertThat(messagesOverThreshold).isEqualTo(1);
