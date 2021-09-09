@@ -87,9 +87,7 @@ public class DefaultSubscriberFactoryTests {
 	@Test
 	public void testNewSubscriber_constructorWithPubSubConfiguration() {
 		GcpProjectIdProvider projectIdProvider = () -> "angeldust";
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
-		when(mockPubSubConfiguration.getSubscriber("midnight cowboy", projectIdProvider.getProjectId()))
-				.thenReturn(new PubSubConfiguration.Subscriber());
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
 		factory.setCredentialsProvider(this.credentialsProvider);
 
 		Subscriber subscriber = factory.createSubscriber("midnight cowboy", (message, consumer) -> {
@@ -157,10 +155,13 @@ public class DefaultSubscriberFactoryTests {
 	public void testGetExecutorProvider_allSubscribersWithDefaultConfig_oneCreated() {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
-		when(mockPubSubConfiguration.getSubscriber("defaultSubscription1", projectIdProvider.getProjectId())).thenReturn(mockDefaultSubscriber1);
-		when(mockDefaultSubscriber1.getExecutorThreads()).thenReturn(4);
+		when(mockPubSubConfiguration.getSubscriber("defaultSubscription1", projectIdProvider.getProjectId()))
+				.thenReturn(mockDefaultSubscriber1);
+		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("defaultSubscription1", projectIdProvider.getProjectId()))
+				.thenReturn(4);
 		when(mockDefaultSubscriber1.isGlobal()).thenReturn(true);
-		when(mockPubSubConfiguration.getSubscriber("defaultSubscription2", projectIdProvider.getProjectId())).thenReturn(mockDefaultSubscriber2);
+		when(mockPubSubConfiguration.getSubscriber("defaultSubscription2", projectIdProvider.getProjectId()))
+				.thenReturn(mockDefaultSubscriber2);
 		when(mockDefaultSubscriber2.isGlobal()).thenReturn(true);
 
 		ExecutorProvider executorProviderForSub1 = factory.getExecutorProvider("defaultSubscription1");
@@ -177,10 +178,14 @@ public class DefaultSubscriberFactoryTests {
 	public void testGetExecutorProvider_allSubscribersWithCustomConfigs_manyCreated() {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
-		when(mockPubSubConfiguration.getSubscriber("customSubscription1", projectIdProvider.getProjectId())).thenReturn(mockCustomSubscriber1);
-		when(mockCustomSubscriber1.getExecutorThreads()).thenReturn(4);
-		when(mockPubSubConfiguration.getSubscriber("customSubscription2", projectIdProvider.getProjectId())).thenReturn(mockCustomSubscriber2);
-		when(mockCustomSubscriber2.getExecutorThreads()).thenReturn(4);
+		when(mockPubSubConfiguration.getSubscriber("customSubscription1", projectIdProvider.getProjectId()))
+				.thenReturn(mockCustomSubscriber1);
+		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("customSubscription1", projectIdProvider.getProjectId()))
+				.thenReturn(4);
+		when(mockPubSubConfiguration.getSubscriber("customSubscription2", projectIdProvider.getProjectId()))
+				.thenReturn(mockCustomSubscriber2);
+		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("customSubscription2", projectIdProvider.getProjectId()))
+				.thenReturn(4);
 
 		ExecutorProvider executorProviderForSub1 = factory.getExecutorProvider("customSubscription1");
 		ExecutorProvider executorProviderForSub2 = factory.getExecutorProvider("customSubscription2");
@@ -198,14 +203,19 @@ public class DefaultSubscriberFactoryTests {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
 
 		// One subscriber with subscription-specific subscriber properties
-		when(mockPubSubConfiguration.getSubscriber("customSubscription1", projectIdProvider.getProjectId())).thenReturn(mockCustomSubscriber1);
-		when(mockCustomSubscriber1.getExecutorThreads()).thenReturn(4);
+		when(mockPubSubConfiguration.getSubscriber("customSubscription1", projectIdProvider.getProjectId()))
+				.thenReturn(mockCustomSubscriber1);
+		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("customSubscription1", projectIdProvider.getProjectId()))
+				.thenReturn(4);
 
 		// Two subscribers with default/global subscriber properties
-		when(mockPubSubConfiguration.getSubscriber("defaultSubscription1", projectIdProvider.getProjectId())).thenReturn(mockDefaultSubscriber1);
+		when(mockPubSubConfiguration.getSubscriber("defaultSubscription1", projectIdProvider.getProjectId()))
+				.thenReturn(mockDefaultSubscriber1);
+		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("defaultSubscription1", projectIdProvider.getProjectId()))
+				.thenReturn(4);
 		when(mockDefaultSubscriber1.isGlobal()).thenReturn(true);
-		when(mockDefaultSubscriber1.getExecutorThreads()).thenReturn(4);
-		when(mockPubSubConfiguration.getSubscriber("defaultSubscription2", projectIdProvider.getProjectId())).thenReturn(mockDefaultSubscriber2);
+		when(mockPubSubConfiguration.getSubscriber("defaultSubscription2", projectIdProvider.getProjectId()))
+				.thenReturn(mockDefaultSubscriber2);
 		when(mockDefaultSubscriber2.isGlobal()).thenReturn(true);
 
 		ExecutorProvider executorProviderForCustom1 = factory.getExecutorProvider("customSubscription1");
@@ -230,11 +240,13 @@ public class DefaultSubscriberFactoryTests {
 
 	@Test
 	public void testCreateThreadPoolTaskScheduler() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
-		when(mockCustomSubscriber1.getExecutorThreads()).thenReturn(6);
+		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("subscription-name", projectIdProvider.getProjectId()))
+				.thenReturn(6);
 
 		ThreadPoolTaskScheduler threadPoolTaskScheduler = factory
-				.createThreadPoolTaskScheduler(mockCustomSubscriber1, "subscription-name");
+				.createThreadPoolTaskScheduler("subscription-name");
 
 		assertThat(
 				threadPoolTaskScheduler.getThreadNamePrefix())

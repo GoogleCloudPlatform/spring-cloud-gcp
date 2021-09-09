@@ -74,8 +74,7 @@ public class PubSubAutoConfigurationIntegrationTests {
 			pubSubTemplate.pull(subscriptionName, 4, false);
 
 			GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
-			assertThat(gcpPubSubProperties.getSubscriber(subscriptionName, projectIdProvider.getProjectId())
-					.getExecutorThreads()).isEqualTo(3);
+			assertThat(gcpPubSubProperties.computeSubscriberExecutorThreads(subscriptionName, projectIdProvider.getProjectId())).isEqualTo(3);
 
 			pubSubAdmin.deleteSubscription(subscriptionName);
 			pubSubAdmin.deleteTopic(topicName);
@@ -110,8 +109,7 @@ public class PubSubAutoConfigurationIntegrationTests {
 			});
 
 			GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
-			assertThat(gcpPubSubProperties.getSubscriber(subscriptionName, projectIdProvider.getProjectId())
-					.getExecutorThreads()).isEqualTo(1);
+			assertThat(gcpPubSubProperties.computeSubscriberExecutorThreads(subscriptionName, projectIdProvider.getProjectId())).isEqualTo(1);
 
 			pubSubAdmin.deleteSubscription(subscriptionName);
 			pubSubAdmin.deleteTopic(topicName);
