@@ -92,11 +92,8 @@ public class PubSubAutoConfigurationIntegrationTests {
 
 			// Validate auto-config properties
 			GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
-			PubSubConfiguration.Subscriber subscriberProperties = gcpPubSubProperties.getSubscriber(subscriptionName,
-					projectIdProvider.getProjectId());
-			PubSubConfiguration.Retry retrySettings = subscriberProperties.getRetry();
-
-			assertThat(subscriberProperties.getExecutorThreads()).isEqualTo(3);
+			PubSubConfiguration.Retry retrySettings = gcpPubSubProperties
+					.computeSubscriberRetrySettings(subscriptionName, projectIdProvider.getProjectId());
 			assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(600L);
 			assertThat(retrySettings.getInitialRetryDelaySeconds()).isEqualTo(100L);
 			assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(1.3);
@@ -105,6 +102,8 @@ public class PubSubAutoConfigurationIntegrationTests {
 			assertThat(retrySettings.getInitialRpcTimeoutSeconds()).isEqualTo(600L);
 			assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(1);
 			assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(600L);
+			assertThat(gcpPubSubProperties.computeSubscriberExecutorThreads(subscriptionName,
+					projectIdProvider.getProjectId())).isEqualTo(3);
 
 			pubSubAdmin.deleteSubscription(subscriptionName);
 			pubSubAdmin.deleteTopic(topicName);
@@ -140,16 +139,17 @@ public class PubSubAutoConfigurationIntegrationTests {
 
 			// Validate auto-config properties
 			GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
-			PubSubConfiguration.Subscriber subscriberProperties = gcpPubSubProperties.getSubscriber(subscriptionName,
-					projectIdProvider.getProjectId());
-			PubSubConfiguration.FlowControl flowControl = subscriberProperties.getFlowControl();
-
-			assertThat(subscriberProperties.getExecutorThreads()).isEqualTo(1);
-			assertThat(subscriberProperties.getMaxAckExtensionPeriod()).isZero();
-			assertThat(subscriberProperties.getParallelPullCount()).isEqualTo(1);
+			PubSubConfiguration.FlowControl flowControl = gcpPubSubProperties
+					.computeSubscriberFlowControlSettings(subscriptionName, projectIdProvider.getProjectId());
 			assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(1L);
 			assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(1L);
 			assertThat(flowControl.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Ignore);
+			assertThat(gcpPubSubProperties.computeMaxAckExtensionPeriod(subscriptionName,
+					projectIdProvider.getProjectId())).isZero();
+			assertThat(gcpPubSubProperties.computeParallelPullCount(subscriptionName, projectIdProvider.getProjectId()))
+					.isEqualTo(1);
+			assertThat(gcpPubSubProperties.computeSubscriberExecutorThreads(subscriptionName,
+					projectIdProvider.getProjectId())).isEqualTo(1);
 
 			pubSubAdmin.deleteSubscription(subscriptionName);
 			pubSubAdmin.deleteTopic(topicName);

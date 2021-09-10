@@ -30,10 +30,10 @@ public class PubSubConfigurationTests {
 		PubSubConfiguration.FlowControl flowControl = subscriber.getFlowControl();
 		PubSubConfiguration.Retry retrySettings = subscriber.getRetry();
 
-		assertThat(subscriber.getExecutorThreads()).isEqualTo(4);
+		assertThat(subscriber.getExecutorThreads()).isNull();
 		assertThat(subscriber.getMaxAcknowledgementThreads()).isEqualTo(4);
 		assertThat(subscriber.getParallelPullCount()).isNull();
-		assertThat(subscriber.getMaxAckExtensionPeriod()).isZero();
+		assertThat(subscriber.getMaxAckExtensionPeriod()).isNull();
 		assertThat(subscriber.getPullEndpoint()).isNull();
 		assertThat(flowControl.getLimitExceededBehavior())
 				.isNull();
@@ -85,6 +85,113 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
+	public void testComputeFlowControlSettings_returnCustom() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+		PubSubConfiguration.FlowControl selectiveFlowControl = subscriber.getFlowControl();
+
+		selectiveFlowControl.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore);
+		selectiveFlowControl.setMaxOutstandingElementCount(1L);
+		selectiveFlowControl.setMaxOutstandingRequestBytes(2L);
+
+		pubSubConfiguration.getSubscription().put("projects/projectId/subscriptions/subscription-name",
+				subscriber);
+		PubSubConfiguration.FlowControl result = pubSubConfiguration.computeSubscriberFlowControlSettings(
+				"subscription-name",
+				"projectId");
+
+		assertThat(result.getLimitExceededBehavior())
+				.isEqualTo(FlowController.LimitExceededBehavior.Ignore);
+		assertThat(result.getMaxOutstandingElementCount()).isEqualTo(1L);
+		assertThat(result.getMaxOutstandingRequestBytes()).isEqualTo(2L);
+	}
+
+	@Test
+	public void testComputeFlowControlSettings_returnGlobal() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
+		PubSubConfiguration.FlowControl globalFlowControl = globalSubscriber.getFlowControl();
+
+		globalFlowControl.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore);
+		globalFlowControl.setMaxOutstandingElementCount(1L);
+		globalFlowControl.setMaxOutstandingRequestBytes(2L);
+
+		PubSubConfiguration.FlowControl result = pubSubConfiguration.computeSubscriberFlowControlSettings(
+				"subscription-name",
+				"projectId");
+
+		assertThat(result.getLimitExceededBehavior())
+				.isEqualTo(FlowController.LimitExceededBehavior.Ignore);
+		assertThat(result.getMaxOutstandingElementCount()).isEqualTo(1L);
+		assertThat(result.getMaxOutstandingRequestBytes()).isEqualTo(2L);
+	}
+
+	@Test
+	public void testComputeParallelPullCount_returnCustom() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+		subscriber.setParallelPullCount(2);
+		pubSubConfiguration.getSubscription().put("projects/projectId/subscriptions/subscription-name",
+				subscriber);
+		Integer result = pubSubConfiguration.computeParallelPullCount(
+				"subscription-name",
+				"projectId");
+
+		assertThat(result).isEqualTo(2);
+	}
+
+	@Test
+	public void testComputeParallelPullCount_returnGlobal() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
+		globalSubscriber.setParallelPullCount(2);
+
+		Integer result = pubSubConfiguration.computeParallelPullCount(
+				"subscription-name",
+				"projectId");
+
+		assertThat(result).isEqualTo(2);
+	}
+
+	@Test
+	public void testComputeMaxAckExtensionPeriod_returnCustom() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+		subscriber.setMaxAckExtensionPeriod(1L);
+		pubSubConfiguration.getSubscription().put("projects/projectId/subscriptions/subscription-name",
+				subscriber);
+		Long result = pubSubConfiguration.computeMaxAckExtensionPeriod(
+				"subscription-name",
+				"projectId");
+
+		assertThat(result).isEqualTo(1);
+	}
+
+	@Test
+	public void testComputeMaxAckExtensionPeriod_returnGlobal() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
+		globalSubscriber.setMaxAckExtensionPeriod(2L);
+
+		Long result = pubSubConfiguration.computeMaxAckExtensionPeriod(
+				"subscription-name",
+				"projectId");
+
+		assertThat(result).isEqualTo(2);
+	}
+
+	@Test
+	public void testComputeMaxAckExtensionPeriod_returnDefault() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+
+		Long result = pubSubConfiguration.computeMaxAckExtensionPeriod(
+				"subscription-name",
+				"projectId");
+
+		assertThat(result).isEqualTo(0);
+	}
+
+	@Test
 	public void testSubscriberRetrySettings() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = pubSubConfiguration.getSubscriber();
@@ -112,15 +219,78 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
+	public void testComputeSubscriberRetrySettings_returnCustom() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+		PubSubConfiguration.Retry retry = subscriber.getRetry();
+
+		retry.setTotalTimeoutSeconds(10L);
+		retry.setInitialRetryDelaySeconds(15L);
+		retry.setRetryDelayMultiplier(12.0);
+		retry.setMaxRetryDelaySeconds(10L);
+		retry.setMaxAttempts(13);
+		retry.setJittered(true);
+		retry.setInitialRpcTimeoutSeconds(11L);
+		retry.setRpcTimeoutMultiplier(14.0);
+		retry.setMaxRpcTimeoutSeconds(9L);
+
+		pubSubConfiguration.getSubscription().put("projects/projectId/subscriptions/subscription-name",
+				subscriber);
+		PubSubConfiguration.Retry result = pubSubConfiguration.computeSubscriberRetrySettings(
+				"subscription-name",
+				"projectId");
+
+		assertThat(result.getTotalTimeoutSeconds()).isEqualTo(10L);
+		assertThat(result.getInitialRetryDelaySeconds()).isEqualTo(15L);
+		assertThat(result.getRetryDelayMultiplier()).isEqualTo(12.0);
+		assertThat(result.getMaxRetryDelaySeconds()).isEqualTo(10L);
+		assertThat(result.getMaxAttempts()).isEqualTo(13);
+		assertThat(result.getJittered()).isTrue();
+		assertThat(result.getInitialRpcTimeoutSeconds()).isEqualTo(11L);
+		assertThat(result.getRpcTimeoutMultiplier()).isEqualTo(14.0);
+		assertThat(result.getMaxRpcTimeoutSeconds()).isEqualTo(9L);
+	}
+
+	@Test
+	public void testComputeSubscriberRetrySettings_returnGlobal() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
+		PubSubConfiguration.Retry retry = globalSubscriber.getRetry();
+
+		retry.setTotalTimeoutSeconds(10L);
+		retry.setInitialRetryDelaySeconds(15L);
+		retry.setRetryDelayMultiplier(12.0);
+		retry.setMaxRetryDelaySeconds(10L);
+		retry.setMaxAttempts(13);
+		retry.setJittered(true);
+		retry.setInitialRpcTimeoutSeconds(11L);
+		retry.setRpcTimeoutMultiplier(14.0);
+		retry.setMaxRpcTimeoutSeconds(9L);
+
+		PubSubConfiguration.Retry result = pubSubConfiguration.computeSubscriberRetrySettings(
+				"subscription-name",
+				"projectId");
+
+		assertThat(result.getTotalTimeoutSeconds()).isEqualTo(10L);
+		assertThat(result.getInitialRetryDelaySeconds()).isEqualTo(15L);
+		assertThat(result.getRetryDelayMultiplier()).isEqualTo(12.0);
+		assertThat(result.getMaxRetryDelaySeconds()).isEqualTo(10L);
+		assertThat(result.getMaxAttempts()).isEqualTo(13);
+		assertThat(result.getInitialRpcTimeoutSeconds()).isEqualTo(11L);
+		assertThat(result.getRpcTimeoutMultiplier()).isEqualTo(14.0);
+		assertThat(result.getMaxRpcTimeoutSeconds()).isEqualTo(9L);
+	}
+
+	@Test
 	public void testSubscriberMapProperties_defaultOrGlobal_addToMap() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 
 		assertThat(pubSubConfiguration.getSubscription()).isEmpty();
 		assertThat(pubSubConfiguration.getSubscriber("subscription-name", "projectId").getExecutorThreads())
-				.isEqualTo(4);
+				.isNull();
 		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
 		assertThat(pubSubConfiguration.getSubscription().get("projects/projectId/subscriptions/subscription-name")
-				.getExecutorThreads()).isEqualTo(4);
+				.getExecutorThreads()).isNull();
 	}
 
 	@Test
@@ -172,15 +342,28 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberMapProperties_fullNameWithDifferentProjectId_returnDefault() {
+	public void testComputeExecutorThreads_returnCustom() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+		subscriber.setExecutorThreads(8);
+
+		pubSubConfiguration.getSubscription().put("projects/projectId/subscriptions/subscription-name",
+				subscriber);
+
+		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
+		assertThat(pubSubConfiguration
+				.computeSubscriberExecutorThreads("subscription-name",
+						"projectId")).isEqualTo(8);
+	}
+
+	@Test
+	public void testComputeExecutorThreads_returnDefault() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 
 		assertThat(pubSubConfiguration.getSubscription()).isEmpty();
 		assertThat(pubSubConfiguration
-				.getSubscriber("projects/otherProjectId/subscriptions/subscription-name", "projectId")
-				.getExecutorThreads()).isEqualTo(4);
-		assertThat(pubSubConfiguration.getSubscription().get("projects/otherProjectId/subscriptions/subscription-name")
-				.getExecutorThreads()).isEqualTo(4);
+				.computeSubscriberExecutorThreads("subscription-name",
+						"projectId")).isEqualTo(4);
 	}
 
 	@Test
