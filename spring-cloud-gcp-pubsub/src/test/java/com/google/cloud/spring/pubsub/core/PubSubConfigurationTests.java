@@ -154,6 +154,33 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
+	public void testComputePullEndpoint_returnCustom() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+		subscriber.setPullEndpoint("endpoint");
+		pubSubConfiguration.getSubscription().put("projects/projectId/subscriptions/subscription-name",
+				subscriber);
+		String result = pubSubConfiguration.computePullEndpoint(
+				"subscription-name",
+				"projectId");
+
+		assertThat(result).isEqualTo("endpoint");
+	}
+
+	@Test
+	public void testComputePullEndpoint_returnGlobal() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
+		globalSubscriber.setPullEndpoint("endpoint");
+
+		String result = pubSubConfiguration.computePullEndpoint(
+				"subscription-name",
+				"projectId");
+
+		assertThat(result).isEqualTo("endpoint");
+	}
+
+	@Test
 	public void testComputeMaxAckExtensionPeriod_returnCustom() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
