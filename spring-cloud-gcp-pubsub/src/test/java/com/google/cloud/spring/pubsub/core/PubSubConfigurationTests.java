@@ -188,7 +188,7 @@ public class PubSubConfigurationTests {
 				"subscription-name",
 				"projectId");
 
-		assertThat(result).isEqualTo(0);
+		assertThat(result).isZero();
 	}
 
 	@Test

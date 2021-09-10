@@ -286,9 +286,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 
 		// Set the endpoint for synchronous pulling messages.
-		String pullEndpoint = getPullEndpoint(subscriptionName);
-		if (pullEndpoint != null) {
-			subscriberStubSettings.setEndpoint(pullEndpoint);
+		String endpoint = getPullEndpoint(subscriptionName);
+		if (endpoint != null) {
+			subscriberStubSettings.setEndpoint(endpoint);
 		}
 
 		ExecutorProvider executor = getExecutorProvider(subscriptionName);
