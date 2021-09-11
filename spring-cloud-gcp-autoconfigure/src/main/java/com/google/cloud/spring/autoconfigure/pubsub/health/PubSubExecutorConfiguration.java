@@ -26,6 +26,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+/**
+ * @author Emmanouil Gkatziouras
+ *
+ * @since 2.0.1
+ */
 @Configuration
 public class PubSubExecutorConfiguration {
 
