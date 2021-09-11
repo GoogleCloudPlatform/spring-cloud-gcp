@@ -28,7 +28,7 @@ import com.google.monitoring.v3.TimeSeries;
 import com.google.protobuf.util.Timestamps;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 
-import static com.google.monitoring.v3.ListTimeSeriesRequest.TimeSeriesView.HEADERS;
+import static com.google.monitoring.v3.ListTimeSeriesRequest.TimeSeriesView.FULL;
 
 /**
  * @author Emmanouil Gkatziouras
@@ -112,7 +112,7 @@ public class HealthTrackerImpl implements HealthTracker {
 			ProjectName.of(projectSubscriptionName.getProject()),
 			undeliveredFilter,
 			timeInterval,
-			HEADERS
+			FULL
 		).getPage().getResponse();
 
 		if (timeSeriesResponse.getTimeSeriesCount() > 0) {
