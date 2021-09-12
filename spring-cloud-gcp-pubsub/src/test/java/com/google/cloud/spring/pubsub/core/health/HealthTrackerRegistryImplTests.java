@@ -147,6 +147,21 @@ public class HealthTrackerRegistryImplTests {
 		assertThat(healthTrackers.containsKey(subscriptionName)).isEqualTo(false);
 	}
 
+
+	@Test
+	public void testAddListenerNoHealthTracker() {
+		String projectId = "project-id";
+		String subscriptionId = "non-registered-subscription-id";
+
+		ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(projectId, subscriptionId);
+
+		Subscriber subscriber = mock(Subscriber.class);
+
+		healthTrackerRegistry.addListener(subscriber);
+
+		verify(subscriber,times(0)).addListener(any(), any());
+	}
+
 	@Test
 	public void testWrap() {
 		String projectId = "project-id";
