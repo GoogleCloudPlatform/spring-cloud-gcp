@@ -156,6 +156,7 @@ public class HealthTrackerRegistryImplTests {
 		ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(projectId, subscriptionId);
 
 		Subscriber subscriber = mock(Subscriber.class);
+		when(subscriber.getSubscriptionNameString()).thenReturn(subscriptionName.toString());
 
 		healthTrackerRegistry.addListener(subscriber);
 
