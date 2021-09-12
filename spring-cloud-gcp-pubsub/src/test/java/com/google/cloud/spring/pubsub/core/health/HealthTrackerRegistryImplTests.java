@@ -161,4 +161,14 @@ public class HealthTrackerRegistryImplTests {
 		assertThat(healthTrackers.containsKey(subscriptionName)).isEqualTo(true);
 	}
 
+	@Test
+	public void testProcessedMessageNoHealthTracker() {
+		String projectId = "project-id";
+		String subscriptionId = "non-registered-subscription-id";
+
+		ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(projectId, subscriptionId);
+
+		healthTrackerRegistry.processedMessage(subscriptionName);
+	}
+
 }
