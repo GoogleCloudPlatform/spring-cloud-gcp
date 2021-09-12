@@ -93,6 +93,22 @@ public class HealthTrackerImplTests {
 	}
 
 	@Test
+	public void noMessagesOverThresholdNoProcessingNoBacklogMessages() throws InterruptedException {
+		Thread.sleep(1001);
+		ListTimeSeriesPagedResponse listTimeSeriesPagedResponse = mock(ListTimeSeriesPagedResponse.class);
+
+		ListTimeSeriesResponse timeSeriesResponse = ListTimeSeriesResponse.newBuilder().build();
+
+		ListTimeSeriesPage listTimeSeriesPage = mock(ListTimeSeriesPage.class);
+		when(listTimeSeriesPagedResponse.getPage()).thenReturn(listTimeSeriesPage);
+		when(listTimeSeriesPage.getResponse()).thenReturn(timeSeriesResponse);
+		doReturn(listTimeSeriesPagedResponse).when(metricServiceClient).listTimeSeries(any(ProjectName.class), anyString(), any(), any());
+
+		long messagesOverThreshold = healthTracker.messagesOverThreshold();
+		assertThat(messagesOverThreshold).isEqualTo(0);
+	}
+
+	@Test
 	public void messagesOverThresholdNoProcessing() throws InterruptedException {
 		Thread.sleep(1001);
 		ListTimeSeriesPagedResponse listTimeSeriesPagedResponse = mock(ListTimeSeriesPagedResponse.class);
