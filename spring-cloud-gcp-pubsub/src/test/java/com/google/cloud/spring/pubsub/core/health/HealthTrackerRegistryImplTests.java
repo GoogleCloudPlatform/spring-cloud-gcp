@@ -159,7 +159,7 @@ public class HealthTrackerRegistryImplTests {
 
 		healthTrackerRegistry.addListener(subscriber);
 
-		verify(subscriber,times(0)).addListener(any(), any());
+		verify(subscriber, times(0)).addListener(any(), any());
 	}
 
 	@Test
