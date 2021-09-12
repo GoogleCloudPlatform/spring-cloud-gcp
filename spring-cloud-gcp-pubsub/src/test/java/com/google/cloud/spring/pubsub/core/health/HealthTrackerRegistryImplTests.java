@@ -154,7 +154,7 @@ public class HealthTrackerRegistryImplTests {
 
 		ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(projectId, subscriptionId);
 
-		MessageReceiver receiver = (a,b) -> {};
+		MessageReceiver receiver = mock(MessageReceiver.class);
 
 		healthTrackerRegistry.wrap(subscriptionName, receiver);
 
