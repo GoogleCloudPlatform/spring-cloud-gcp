@@ -40,6 +40,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+/**
+ * @author Emmanouil Gkatziouras
+ *
+ * @since 2.0.5
+ */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({HealthIndicator.class})
 @ConditionalOnProperty({"spring.cloud.gcp.pubsub.subscriber.lagThreshold", "spring.cloud.gcp.pubsub.subscriber.backlogThreshold"})

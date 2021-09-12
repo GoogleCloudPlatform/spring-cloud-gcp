@@ -39,6 +39,7 @@ import org.springframework.util.Assert;
  * @author Mike Eltsufin
  * @author Doug Hoard
  * @author Taylor Burke
+ * @author Emmanouil Gkatziouras
  */
 public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 

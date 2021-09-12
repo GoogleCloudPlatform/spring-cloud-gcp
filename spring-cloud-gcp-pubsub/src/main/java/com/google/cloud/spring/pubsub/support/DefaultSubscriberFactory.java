@@ -52,6 +52,7 @@ import org.springframework.util.Assert;
  * @author Doug Hoard
  * @author Chengyuan Zhao
  * @author Maurice Zeijen
+ * @author Emmanouil Gkatziouras
  */
 public class DefaultSubscriberFactory implements SubscriberFactory {
 

@@ -21,7 +21,7 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 /**
  * @author Emmanouil Gkatziouras
  *
- * @since 2.0.1
+ * @since 2.0.5
  */
 public interface HealthTracker {
 

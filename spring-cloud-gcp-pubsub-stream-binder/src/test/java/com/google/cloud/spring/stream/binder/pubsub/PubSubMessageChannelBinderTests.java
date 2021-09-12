@@ -72,6 +72,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Mike Eltsufin
  * @author Elena Felder
+ * @author Emmanouil Gkatziouras
  *
  * @since 1.1
  */

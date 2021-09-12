@@ -33,7 +33,7 @@ import org.springframework.util.Assert;
 /**
  * @author Emmanouil Gkatziouras
  *
- * @since 2.0.1
+ * @since 2.0.5
  */
 public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
 

@@ -32,7 +32,7 @@ import static com.google.monitoring.v3.ListTimeSeriesRequest.TimeSeriesView.FULL
 
 /**
  * @author Emmanouil Gkatziouras
- * @since 2.0.1
+ * @since 2.0.5
  */
 public class HealthTrackerImpl implements HealthTracker {
 

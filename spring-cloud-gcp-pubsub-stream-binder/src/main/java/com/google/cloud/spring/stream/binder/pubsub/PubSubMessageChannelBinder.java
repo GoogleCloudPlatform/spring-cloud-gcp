@@ -44,6 +44,7 @@ import org.springframework.messaging.MessageHandler;
  * @author Mike Eltsufin
  * @author Artem Bilan
  * @author Daniel Zou
+ * @author Emmanouil Gkatziouras
  */
 public class PubSubMessageChannelBinder
 		extends AbstractMessageChannelBinder<ExtendedConsumerProperties<PubSubConsumerProperties>,

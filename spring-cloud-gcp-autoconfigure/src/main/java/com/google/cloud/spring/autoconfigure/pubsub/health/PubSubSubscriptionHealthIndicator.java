@@ -25,7 +25,7 @@ import org.springframework.boot.actuate.health.Health.Builder;
 /**
  * @author Emmanouil Gkatziouras
  *
- * @since 2.0.1
+ * @since 2.0.5
  */
 public class PubSubSubscriptionHealthIndicator extends AbstractHealthIndicator {
 
