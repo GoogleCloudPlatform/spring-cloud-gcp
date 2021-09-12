@@ -42,7 +42,7 @@ public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
 	private final MetricServiceClient metricServiceClient;
 	private final Integer lagThreshold;
 	private final Integer backlogThreshold;
-	private final Integer lookUpInternal;
+	private final Integer lookUpInterval;
 	private final ExecutorProvider executorProvider;
 
 	private final ConcurrentHashMap<ProjectSubscriptionName, HealthTracker> healthTrackers;
@@ -53,23 +53,23 @@ public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
 		MetricServiceClient metricServiceClient,
 		Integer lagThreshold,
 		Integer backlogThreshold,
-		Integer lookUpInternal,
+		Integer lookUpInterval,
 		ExecutorProvider executorProvider) {
-		this(metricServiceClient, lagThreshold, backlogThreshold, lookUpInternal, executorProvider, new ConcurrentHashMap<>());
+		this(metricServiceClient, lagThreshold, backlogThreshold, lookUpInterval, executorProvider, new ConcurrentHashMap<>());
 	}
 
 	public HealthTrackerRegistryImpl(
 		MetricServiceClient metricServiceClient,
 		Integer lagThreshold,
 		Integer backlogThreshold,
-		Integer lookUpInternal,
+		Integer lookUpInterval,
 		ExecutorProvider executorProvider,
 		ConcurrentHashMap<ProjectSubscriptionName, HealthTracker> healthTrackers) {
 		Assert.notNull(metricServiceClient, "MetricServiceClient can't be null");
 		this.metricServiceClient = metricServiceClient;
 		this.lagThreshold = lagThreshold;
 		this.backlogThreshold = backlogThreshold;
-		this.lookUpInternal = lookUpInternal;
+		this.lookUpInterval = lookUpInterval;
 		this.healthTrackers = healthTrackers;
 		this.executorProvider = executorProvider;
 	}
@@ -77,7 +77,7 @@ public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
 	@Override
 	public HealthTracker registerTracker(ProjectSubscriptionName projectSubscriptionName) {
 		HealthTracker healthTracker = new HealthTrackerImpl(projectSubscriptionName,
-			metricServiceClient, lagThreshold, backlogThreshold, lookUpInternal);
+			metricServiceClient, lagThreshold, backlogThreshold, lookUpInterval);
 		healthTrackers.put(projectSubscriptionName, healthTracker);
 		return healthTracker;
 	}

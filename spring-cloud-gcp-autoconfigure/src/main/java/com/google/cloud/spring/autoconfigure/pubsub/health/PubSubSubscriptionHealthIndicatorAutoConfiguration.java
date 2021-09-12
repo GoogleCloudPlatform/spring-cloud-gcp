@@ -29,7 +29,6 @@ import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistryImpl;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.health.CompositeHealthContributorConfiguration;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -43,7 +42,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({HealthIndicator.class})
-@ConditionalOnProperty({"spring.cloud.gcp.pubsub.subscription.lagThreshold", "spring.cloud.gcp.pubsub.subscription.backlogThreshold"})
+@ConditionalOnProperty({"spring.cloud.gcp.pubsub.subscriber.lagThreshold", "spring.cloud.gcp.pubsub.subscriber.backlogThreshold"})
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)
 @EnableConfigurationProperties(GcpPubSubProperties.class)
 public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
@@ -83,11 +82,11 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
 	@ConditionalOnMissingBean(name = "healthTrackerRegistry")
 	public HealthTrackerRegistry healthTrackerRegistry(
 		MetricServiceClient metricServiceClient,
-		@Value("${spring.cloud.gcp.pubsub.subscription.lagThreshold}") Integer lagThreshold,
-		@Value("${spring.cloud.gcp.pubsub.subscription.backlogThreshold}") Integer backlogThreshold,
-		@Value("${spring.cloud.gcp.pubsub.subscription.lookUpInternal: 1}") Integer lookUpInternal,
 		@Qualifier("subscriberExecutorProvider") ExecutorProvider executorProvider) {
-		return new HealthTrackerRegistryImpl(metricServiceClient, lagThreshold, backlogThreshold, lookUpInternal, executorProvider);
+		return new HealthTrackerRegistryImpl(metricServiceClient,
+			gcpPubSubProperties.getSubscriber().getLagThreshold(),
+			gcpPubSubProperties.getSubscriber().getBacklogThreshold(),
+			gcpPubSubProperties.getSubscriber().getLookUpInterval(), executorProvider);
 	}
 
 	@Bean

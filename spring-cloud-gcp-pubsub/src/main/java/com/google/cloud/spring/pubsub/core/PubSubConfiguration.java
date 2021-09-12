@@ -294,6 +294,12 @@ public class PubSubConfiguration {
 		 */
 		private Integer parallelPullCount;
 
+		private Integer lagThreshold;
+
+		private Integer backlogThreshold;
+
+		private Integer lookUpInterval = 1;
+
 		/**
 		 * Retry settings for subscriber factory.
 		 */
@@ -351,6 +357,30 @@ public class PubSubConfiguration {
 
 		public void setParallelPullCount(Integer parallelPullCount) {
 			this.parallelPullCount = parallelPullCount;
+		}
+
+		public Integer getLagThreshold() {
+			return lagThreshold;
+		}
+
+		public void setLagThreshold(Integer lagThreshold) {
+			this.lagThreshold = lagThreshold;
+		}
+
+		public Integer getBacklogThreshold() {
+			return backlogThreshold;
+		}
+
+		public void setBacklogThreshold(Integer backlogThreshold) {
+			this.backlogThreshold = backlogThreshold;
+		}
+
+		public Integer getLookUpInterval() {
+			return lookUpInterval;
+		}
+
+		public void setLookUpInterval(Integer lookUpInterval) {
+			this.lookUpInterval = lookUpInterval;
 		}
 
 		public Integer getExecutorThreads() {
