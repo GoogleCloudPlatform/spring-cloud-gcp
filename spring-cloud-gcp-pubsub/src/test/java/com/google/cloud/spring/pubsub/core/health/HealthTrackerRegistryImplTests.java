@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.pubsub.core.health;
 
+
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,6 +24,7 @@ import com.google.api.core.ApiService;
 import com.google.api.core.ApiService.State;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
+import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import org.junit.Before;
@@ -143,6 +145,20 @@ public class HealthTrackerRegistryImplTests {
 		listener.terminated(State.FAILED);
 
 		assertThat(healthTrackers.containsKey(subscriptionName)).isEqualTo(false);
+	}
+
+	@Test
+	public void testWrap() {
+		String projectId = "project-id";
+		String subscriptionId = "subscription-id";
+
+		ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(projectId, subscriptionId);
+
+		MessageReceiver receiver = (a,b) -> {};
+
+		healthTrackerRegistry.wrap(subscriptionName, receiver);
+
+		assertThat(healthTrackers.containsKey(subscriptionName)).isEqualTo(true);
 	}
 
 }
