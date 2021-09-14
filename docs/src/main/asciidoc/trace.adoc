@@ -164,7 +164,7 @@ It's set to `false` by default, but when set to `true`, trace spans will be crea
 # Enable Pub/Sub tracing using this property
 spring.cloud.gcp.trace.pubsub.enabled=true
 
-# You can disable Spring Integration instrumentation by Sleuth as it's unnecessary
+# You should disable Spring Integration instrumentation by Sleuth as it's unnecessary
 spring.sleuth.integration.enabled=false
 ----
 
