@@ -47,8 +47,6 @@ public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
 
 	private final ConcurrentHashMap<ProjectSubscriptionName, HealthTracker> healthTrackers;
 
-	private static final String SUBSCRIPTION_FAILED_MESSAGE = "Subscription backlog reached threshold. Check your process and if scaling is needed.";
-
 	public HealthTrackerRegistryImpl(
 		MetricServiceClient metricServiceClient,
 		Integer lagThreshold,
