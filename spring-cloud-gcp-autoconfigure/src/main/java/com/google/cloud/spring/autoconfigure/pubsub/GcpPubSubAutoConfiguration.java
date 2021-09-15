@@ -173,19 +173,6 @@ public class GcpPubSubAutoConfiguration {
 		return new PubSubTemplate(pubSubPublisherTemplate, pubSubSubscriberTemplate);
 	}
 
-	@Bean
-	@ConditionalOnMissingBean(name = "subscriberRetrySettings")
-	public RetrySettings subscriberRetrySettings() {
-		return buildRetrySettings(this.gcpPubSubProperties.getSubscriber().getRetry());
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(name = "subscriberFlowControlSettings")
-	public FlowControlSettings subscriberFlowControlSettings() {
-		return buildFlowControlSettings(
-				this.gcpPubSubProperties.getSubscriber().getFlowControl());
-	}
-
 	private FlowControlSettings buildFlowControlSettings(
 			PubSubConfiguration.FlowControl flowControl) {
 		FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
@@ -219,21 +206,16 @@ public class GcpPubSubAutoConfiguration {
 		factory.setHeaderProvider(this.headerProvider);
 		factory.setChannelProvider(subscriberTransportChannelProvider);
 		systemExecutorProvider.ifAvailable(factory::setSystemExecutorProvider);
-		flowControlSettings.ifAvailable(factory::setFlowControlSettings);
+		if (flowControlSettings.getIfAvailable() != null) {
+			logger.warn(
+					"The subscriberFlowControlSettings bean is being deprecated. Please use application.properties to configure properties");
+			factory.setFlowControlSettings(flowControlSettings.getIfAvailable());
+		}
 		apiClock.ifAvailable(factory::setApiClock);
-		retrySettings.ifAvailable(factory::setSubscriberStubRetrySettings);
-		if (this.gcpPubSubProperties.getSubscriber().getMaxAckExtensionPeriod() != null) {
-			factory.setMaxAckExtensionPeriod(Duration.ofSeconds(
-					this.gcpPubSubProperties.getSubscriber().getMaxAckExtensionPeriod()));
-		}
-		if (this.gcpPubSubProperties.getSubscriber().getParallelPullCount() != null) {
-			factory.setParallelPullCount(
-					this.gcpPubSubProperties.getSubscriber().getParallelPullCount());
-		}
-		if (this.gcpPubSubProperties.getSubscriber()
-				.getPullEndpoint() != null) {
-			factory.setPullEndpoint(
-					this.gcpPubSubProperties.getSubscriber().getPullEndpoint());
+		if (retrySettings.getIfAvailable() != null) {
+			logger.warn(
+					"The subscriberRetrySettings bean is being deprecated. Please use application.properties to configure properties");
+			factory.setSubscriberStubRetrySettings(retrySettings.getIfAvailable());
 		}
 		return factory;
 	}
