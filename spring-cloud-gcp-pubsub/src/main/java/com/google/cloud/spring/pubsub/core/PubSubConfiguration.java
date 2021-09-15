@@ -34,6 +34,8 @@ public class PubSubConfiguration {
 
 	private static final int DEFAULT_EXECUTOR_THREADS = 4;
 
+	private static final Long DEFAULT_MAX_ACK_EXTENSION_PERIOD = 0L;
+
 	private final Map<String, Subscriber> subscription = new HashMap<>();
 
 	/**
@@ -98,6 +100,113 @@ public class PubSubConfiguration {
 		}
 		Integer globalExecutorThreads = this.globalSubscriber.getExecutorThreads();
 		return globalExecutorThreads != null ? globalExecutorThreads : DEFAULT_EXECUTOR_THREADS;
+	}
+
+	/**
+	 * Computes flow control settings to use. The subscription-specific property takes
+	 * precedence if both global and subscription-specific properties are set. If
+	 * subscription-specific settings are not set then global settings are picked.
+	 * @param subscriptionName subscription name
+	 * @param projectId project id
+	 * @return flow control settings
+	 */
+	public FlowControl computeSubscriberFlowControlSettings(String subscriptionName, String projectId) {
+		FlowControl flowControl = getSubscriber(subscriptionName, projectId).getFlowControl();
+		FlowControl globalFlowControl = this.globalSubscriber.getFlowControl();
+		if (flowControl.getMaxOutstandingRequestBytes() == null) {
+			flowControl.setMaxOutstandingRequestBytes(globalFlowControl.getMaxOutstandingRequestBytes());
+		}
+		if (flowControl.getMaxOutstandingElementCount() == null) {
+			flowControl.setMaxOutstandingElementCount(globalFlowControl.getMaxOutstandingElementCount());
+		}
+		if (flowControl.getLimitExceededBehavior() == null) {
+			flowControl.setLimitExceededBehavior(globalFlowControl.getLimitExceededBehavior());
+		}
+		return flowControl;
+	}
+
+	/**
+	 * Computes parallel pull count. The subscription-specific property takes precedence if
+	 * both global and subscription-specific properties are set. If subscription-specific
+	 * configuration is not set then the global configuration is picked.
+	 * @param subscriptionName subscription name
+	 * @param projectId project id
+	 * @return parallel pull count
+	 */
+	public Integer computeParallelPullCount(String subscriptionName, String projectId) {
+		Integer parallelPullCount = getSubscriber(subscriptionName, projectId).getParallelPullCount();
+		return parallelPullCount != null ? parallelPullCount : this.globalSubscriber.getParallelPullCount();
+	}
+
+	/**
+	 * Computes the max extension period. The subscription-specific property takes precedence
+	 * if both global and subscription-specific properties are set. If none are set then the
+	 * default (0) is returned.
+	 * @param subscriptionName subscription name
+	 * @param projectId project id
+	 * @return max extension period
+	 */
+	public Long computeMaxAckExtensionPeriod(String subscriptionName, String projectId) {
+		Long maxAckExtensionPeriod = getSubscriber(subscriptionName, projectId).getMaxAckExtensionPeriod();
+		if (maxAckExtensionPeriod != null) {
+			return maxAckExtensionPeriod;
+		}
+		Long globalMaxAckExtensionPeriod = this.globalSubscriber.getMaxAckExtensionPeriod();
+		return globalMaxAckExtensionPeriod != null ? globalMaxAckExtensionPeriod : DEFAULT_MAX_ACK_EXTENSION_PERIOD;
+	}
+
+	/**
+	 * Returns the pull endpoint. The subscription-specific property takes precedence if both
+	 * global and subscription-specific properties are set. If subscription-specific
+	 * configuration is not set then the global configuration is picked.
+	 * @param subscriptionName subscription name
+	 * @param projectId project id
+	 * @return pull endpoint
+	 */
+	public String computePullEndpoint(String subscriptionName, String projectId) {
+		String pullEndpoint = getSubscriber(subscriptionName, projectId).getPullEndpoint();
+		return pullEndpoint != null ? pullEndpoint : this.globalSubscriber.getPullEndpoint();
+	}
+
+	/**
+	 * Computes the retry settings. The subscription-specific property takes precedence if
+	 * both global and subscription-specific properties are set. If subscription-specific
+	 * settings are not set then the global settings are picked.
+	 * @param subscriptionName subscription name
+	 * @param projectId project id
+	 * @return retry settings
+	 */
+	public Retry computeSubscriberRetrySettings(String subscriptionName, String projectId) {
+		Retry retry = getSubscriber(subscriptionName, projectId).getRetry();
+		Retry globalRetry = this.globalSubscriber.getRetry();
+		if (retry.getTotalTimeoutSeconds() == null) {
+			retry.setTotalTimeoutSeconds(globalRetry.getTotalTimeoutSeconds());
+		}
+		if (retry.getInitialRetryDelaySeconds() == null) {
+			retry.setInitialRetryDelaySeconds(globalRetry.getInitialRetryDelaySeconds());
+		}
+		if (retry.getRetryDelayMultiplier() == null) {
+			retry.setRetryDelayMultiplier(globalRetry.getRetryDelayMultiplier());
+		}
+		if (retry.getMaxRetryDelaySeconds() == null) {
+			retry.setMaxRetryDelaySeconds(globalRetry.getMaxRetryDelaySeconds());
+		}
+		if (retry.getMaxAttempts() == null) {
+			retry.setMaxAttempts(globalRetry.getMaxAttempts());
+		}
+		if (retry.getJittered() == null) {
+			retry.setJittered(globalRetry.getJittered());
+		}
+		if (retry.getInitialRpcTimeoutSeconds() == null) {
+			retry.setInitialRpcTimeoutSeconds(globalRetry.getInitialRpcTimeoutSeconds());
+		}
+		if (retry.getRpcTimeoutMultiplier() == null) {
+			retry.setRpcTimeoutMultiplier(globalRetry.getRpcTimeoutMultiplier());
+		}
+		if (retry.getMaxRpcTimeoutSeconds() == null) {
+			retry.setMaxRpcTimeoutSeconds(globalRetry.getMaxRpcTimeoutSeconds());
+		}
+		return retry;
 	}
 
 	/**
@@ -191,7 +300,7 @@ public class PubSubConfiguration {
 		/**
 		 * The optional max ack extension period in seconds for the subscriber factory.
 		 */
-		private Long maxAckExtensionPeriod = 0L;
+		private Long maxAckExtensionPeriod;
 
 		/**
 		 * The optional parallel pull count setting for the subscriber factory.

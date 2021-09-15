@@ -18,8 +18,11 @@ package com.google.cloud.spring.pubsub.support;
 
 import java.util.Map;
 
+import com.google.api.gax.batching.FlowControlSettings;
+import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
@@ -30,6 +33,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.threeten.bp.Duration;
 
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -95,6 +99,8 @@ public class DefaultSubscriberFactoryTests {
 
 		assertThat(subscriber.getSubscriptionNameString())
 				.isEqualTo("projects/angeldust/subscriptions/midnight cowboy");
+
+		factory.getThreadPoolTaskSchedulerMap().get("midnight cowboy").shutdown();
 	}
 
 	@Test
@@ -272,4 +278,218 @@ public class DefaultSubscriberFactoryTests {
 		verify(mockScheduler2, times(1)).shutdown();
 	}
 
+	@Test
+	public void testGetRetrySettings_userProvidedBean() {
+		RetrySettings expectedRetrySettings = RetrySettings.newBuilder()
+				.setTotalTimeout(Duration.ofSeconds(10))
+				.setInitialRetryDelay(Duration.ofSeconds(10))
+				.setRetryDelayMultiplier(10.0)
+				.setInitialRpcTimeout(Duration.ofSeconds(10))
+				.setMaxRetryDelay(Duration.ofSeconds(10))
+				.setMaxAttempts(10)
+				.setRpcTimeoutMultiplier(10.0)
+				.setMaxRpcTimeout(Duration.ofSeconds(10))
+				.build();
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", null);
+		factory.setSubscriberStubRetrySettings(expectedRetrySettings);
+
+		RetrySettings actualRetrySettings = factory.getRetrySettings("defaultSubscriber");
+
+		assertThat(actualRetrySettings.getTotalTimeout()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getInitialRetryDelay()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getRetryDelayMultiplier()).isEqualTo(10.0);
+		assertThat(actualRetrySettings.getInitialRpcTimeout()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getMaxRetryDelay()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getMaxAttempts()).isEqualTo(10);
+		assertThat(actualRetrySettings.getRpcTimeoutMultiplier()).isEqualTo(10.0);
+		assertThat(actualRetrySettings.getMaxRpcTimeout()).isEqualTo(Duration.ofSeconds(10));
+	}
+
+	@Test
+	public void testGetRetrySettings_configurationIsPresent() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+		PubSubConfiguration.Retry retrySettings = new PubSubConfiguration.Retry();
+		retrySettings.setTotalTimeoutSeconds(10L);
+		retrySettings.setInitialRetryDelaySeconds(10L);
+		retrySettings.setRetryDelayMultiplier(10.0);
+		retrySettings.setMaxRetryDelaySeconds(10L);
+		retrySettings.setMaxAttempts(10);
+		retrySettings.setInitialRpcTimeoutSeconds(10L);
+		retrySettings.setRpcTimeoutMultiplier(10.0);
+		retrySettings.setMaxRpcTimeoutSeconds(10L);
+		when(mockPubSubConfiguration.computeSubscriberRetrySettings("defaultSubscription1",
+				projectIdProvider.getProjectId()))
+						.thenReturn(retrySettings);
+
+		RetrySettings actualRetrySettings = factory.getRetrySettings("defaultSubscription1");
+		assertThat(actualRetrySettings.getTotalTimeout()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getInitialRetryDelay()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getRetryDelayMultiplier()).isEqualTo(10.0);
+		assertThat(actualRetrySettings.getInitialRpcTimeout()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getMaxRetryDelay()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getMaxAttempts()).isEqualTo(10);
+		assertThat(actualRetrySettings.getRpcTimeoutMultiplier()).isEqualTo(10.0);
+		assertThat(actualRetrySettings.getMaxRpcTimeout()).isEqualTo(Duration.ofSeconds(10));
+	}
+
+	@Test
+	public void testGetRetrySettings_configurationIsNull() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
+
+		assertThat(factory.getRetrySettings("defaultSubscription1")).isNull();
+	}
+
+	@Test
+	public void testCreateSubscriber_validateSetProperties() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+		factory.setCredentialsProvider(this.credentialsProvider);
+		PubSubConfiguration.FlowControl flowControl = new PubSubConfiguration.FlowControl();
+		flowControl.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore);
+		when(mockPubSubConfiguration.computeSubscriberFlowControlSettings("defaultSubscription",
+				projectIdProvider.getProjectId())).thenReturn(flowControl);
+		when(mockPubSubConfiguration.computeMaxAckExtensionPeriod("defaultSubscription",
+				projectIdProvider.getProjectId()))
+				.thenReturn(2L);
+		when(mockPubSubConfiguration.computeParallelPullCount("defaultSubscription", projectIdProvider.getProjectId()))
+				.thenReturn(2);
+		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("defaultSubscription",
+				projectIdProvider.getProjectId()))
+				.thenReturn(4);
+		when(mockPubSubConfiguration.getSubscriber("defaultSubscription", projectIdProvider.getProjectId()))
+				.thenReturn(mockDefaultSubscriber1);
+
+		Subscriber expectedSubscriber = factory.createSubscriber("defaultSubscription", (message, consumer) -> {
+		});
+
+		assertThat(expectedSubscriber.getFlowControlSettings().getLimitExceededBehavior())
+				.isEqualTo(FlowController.LimitExceededBehavior.Ignore);
+		assertThat(expectedSubscriber).hasFieldOrPropertyWithValue("maxAckExtensionPeriod", Duration.ofSeconds(2L))
+				.hasFieldOrPropertyWithValue("numPullers", 2);
+
+		factory.getThreadPoolTaskSchedulerMap().get("defaultSubscription").shutdown();
+	}
+
+	@Test
+	public void testGetFlowControlSettings_userProvidedBean() {
+		FlowControlSettings expectedFlowSettings = FlowControlSettings.newBuilder()
+				.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Block).setMaxOutstandingElementCount(10L)
+				.setMaxOutstandingRequestBytes(10L)
+				.build();
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", null);
+		factory.setFlowControlSettings(expectedFlowSettings);
+
+		FlowControlSettings actualFlowSettings = factory.getFlowControlSettings("defaultSubscription1");
+
+		assertThat(actualFlowSettings.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Block);
+		assertThat(actualFlowSettings.getMaxOutstandingElementCount()).isEqualTo(10L);
+		assertThat(actualFlowSettings.getMaxOutstandingRequestBytes()).isEqualTo(10L);
+	}
+
+	@Test
+	public void testGetFlowControlSettings_configurationIsPresent() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+		PubSubConfiguration.FlowControl flowControl = new PubSubConfiguration.FlowControl();
+		flowControl.setMaxOutstandingRequestBytes(10L);
+		when(mockPubSubConfiguration.computeSubscriberFlowControlSettings("defaultSubscription1",
+				projectIdProvider.getProjectId())).thenReturn(flowControl);
+
+		FlowControlSettings actualFlowSettings = factory.getFlowControlSettings("defaultSubscription1");
+
+		assertThat(actualFlowSettings.getMaxOutstandingRequestBytes()).isEqualTo(10L);
+		assertThat(actualFlowSettings.getMaxOutstandingElementCount()).isNull();
+		assertThat(actualFlowSettings.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Block);
+	}
+
+	@Test
+	public void testGetFlowControlSettings_configurationIsNull() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
+
+		assertThat(factory.getFlowControlSettings("defaultSubscription1")).isNull();
+	}
+
+	@Test
+	public void testGetMaxAckExtensionPeriod_userSetValue() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
+		factory.setMaxAckExtensionPeriod(Duration.ofSeconds(1));
+
+		assertThat(factory.getMaxAckExtensionPeriod("subscription-name")).isEqualTo(Duration.ofSeconds(1));
+	}
+
+	@Test
+	public void testGetMaxAckExtensionPeriod_configurationIsPresent() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+		when(mockPubSubConfiguration.computeMaxAckExtensionPeriod("subscription-name",
+				projectIdProvider.getProjectId())).thenReturn(1L);
+
+		assertThat(factory.getMaxAckExtensionPeriod("subscription-name")).isEqualTo(Duration.ofSeconds(1));
+	}
+
+	@Test
+	public void testGetMaxAckExtensionPeriod_configurationIsNull() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
+
+		assertThat(factory.getMaxAckExtensionPeriod("subscription-name")).isNull();
+	}
+
+	@Test
+	public void testGetParallelPullCount_userSetValue() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
+		factory.setParallelPullCount(1);
+
+		assertThat(factory.getPullCount("subscription-name")).isEqualTo(1);
+	}
+
+	@Test
+	public void testGetParallelPullCount_configurationIsPresent() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+		when(mockPubSubConfiguration.computeParallelPullCount("subscription-name",
+				projectIdProvider.getProjectId())).thenReturn(1);
+
+		assertThat(factory.getPullCount("subscription-name")).isEqualTo(1);
+	}
+
+	@Test
+	public void testGetParallelPullCount_configurationIsNull() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
+
+		assertThat(factory.getPullCount("subscription-name")).isNull();
+	}
+
+	@Test
+	public void testGetPullEndpoint_userSetValue() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
+		factory.setPullEndpoint("my-endpoint");
+
+		assertThat(factory.getPullEndpoint("subscription-name")).isEqualTo("my-endpoint");
+	}
+
+	@Test
+	public void testGetPullEndpoint_configurationIsPresent() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+		when(mockPubSubConfiguration.computePullEndpoint("subscription-name",
+				projectIdProvider.getProjectId())).thenReturn("my-endpoint");
+
+		assertThat(factory.getPullEndpoint("subscription-name")).isEqualTo("my-endpoint");
+	}
+
+	@Test
+	public void testGetPullEndpoint_configurationIsNull() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
+
+		assertThat(factory.getPullEndpoint("subscription-name")).isNull();
+	}
 }
