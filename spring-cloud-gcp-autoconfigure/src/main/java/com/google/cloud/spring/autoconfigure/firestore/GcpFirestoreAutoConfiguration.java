@@ -31,7 +31,6 @@ import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
-import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
 import com.google.firestore.v1.FirestoreGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -152,14 +151,6 @@ public class GcpFirestoreAutoConfiguration {
 				FirestoreClassMapper classMapper, FirestoreMappingContext firestoreMappingContext) {
 			return new FirestoreTemplate(firestoreStub, GcpFirestoreAutoConfiguration.this.firestoreRootPath,
 					classMapper, firestoreMappingContext);
-		}
-
-		@Bean
-		@ConditionalOnMissingBean
-		public ReactiveFirestoreTransactionManager firestoreTransactionManager(
-				FirestoreGrpc.FirestoreStub firestoreStub, FirestoreClassMapper classMapper) {
-			return new ReactiveFirestoreTransactionManager(firestoreStub,
-					GcpFirestoreAutoConfiguration.this.firestoreRootPath, classMapper);
 		}
 
 		@Bean
