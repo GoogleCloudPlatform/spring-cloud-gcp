@@ -604,6 +604,11 @@ You can refer to nested fields using <a href="https://docs.spring.io/spring-data
 		User aliceLoaded = this.userRepository.findById("Alice").block();
 		assertThat(aliceLoaded.getAddresses()).isEqualTo(addresses);
 		assertThat(aliceLoaded.getHomeAddress()).isEqualTo(homeAddress);
+
+		// cast to SimpleFirestoreReactiveRepository for method be reachable with Spring Boot 2.4
+		SimpleFirestoreReactiveRepository repository = AopTestUtils.getTargetObject(this.userRepository);
+		StepVerifier.create(repository.deleteAllById(Arrays.asList("Alice", "Bob")).then(this.userRepository.count()))
+				.expectNext(0L).verifyComplete();
 	}
 }</code></pre>
 </div>
