@@ -18,6 +18,7 @@ package com.google.cloud.spring.pubsub.core.health;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import com.google.api.core.ApiService;
 import com.google.api.core.ApiService.State;
@@ -45,7 +46,7 @@ public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
 	private final Integer lookUpInterval;
 	private final ExecutorProvider executorProvider;
 
-	private final ConcurrentHashMap<ProjectSubscriptionName, HealthTracker> healthTrackers;
+	private final ConcurrentMap<ProjectSubscriptionName, HealthTracker> healthTrackers;
 
 	public HealthTrackerRegistryImpl(
 		MetricServiceClient metricServiceClient,
@@ -62,7 +63,7 @@ public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
 		Integer backlogThreshold,
 		Integer lookUpInterval,
 		ExecutorProvider executorProvider,
-		ConcurrentHashMap<ProjectSubscriptionName, HealthTracker> healthTrackers) {
+		ConcurrentMap<ProjectSubscriptionName, HealthTracker> healthTrackers) {
 		Assert.notNull(metricServiceClient, "MetricServiceClient can't be null");
 		this.metricServiceClient = metricServiceClient;
 		this.lagThreshold = lagThreshold;

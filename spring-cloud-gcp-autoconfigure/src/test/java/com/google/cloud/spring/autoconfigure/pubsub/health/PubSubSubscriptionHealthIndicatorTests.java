@@ -80,7 +80,7 @@ public class PubSubSubscriptionHealthIndicatorTests {
 
 		Health health = builder.build();
 		assertThat(health.getStatus()).isEqualTo(Status.DOWN);
-		assertThat(health.getDetails().get(badSubscription.toString())).isEqualTo(messagesInBacklog);
+		assertThat(health.getDetails()).containsEntry(badSubscription.toString(), messagesInBacklog);
 	}
 
 	@Test

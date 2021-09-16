@@ -69,7 +69,7 @@ public class HealthTrackerImplTests {
 	public void noMessagesOverThresholdAfterProcessing() {
 		healthTracker.processedMessage();
 		long messagesOverThreshold = healthTracker.messagesOverThreshold();
-		assertThat(messagesOverThreshold).isEqualTo(0);
+		assertThat(messagesOverThreshold).isZero();
 	}
 
 	@Test
@@ -89,7 +89,7 @@ public class HealthTrackerImplTests {
 		doReturn(listTimeSeriesPagedResponse).when(metricServiceClient).listTimeSeries(any(ProjectName.class), anyString(), any(), any());
 
 		long messagesOverThreshold = healthTracker.messagesOverThreshold();
-		assertThat(messagesOverThreshold).isLessThan(0);
+		assertThat(messagesOverThreshold).isNegative();
 	}
 
 	@Test
@@ -105,7 +105,7 @@ public class HealthTrackerImplTests {
 		doReturn(listTimeSeriesPagedResponse).when(metricServiceClient).listTimeSeries(any(ProjectName.class), anyString(), any(), any());
 
 		long messagesOverThreshold = healthTracker.messagesOverThreshold();
-		assertThat(messagesOverThreshold).isEqualTo(0);
+		assertThat(messagesOverThreshold).isZero();
 	}
 
 	@Test
