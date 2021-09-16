@@ -154,19 +154,11 @@ public class TraceSampleApplicationIntegrationTests {
 					+ ").");
 
 			assertThat(trace.getTraceId()).isEqualTo(uuidString);
-			/* The 25 expected spans are:
-			 *   get /, visit-meet-endpoint, get, get /meet, get, get /meet, get, get /meet,
-			 *   send-message-spring-integration, send, handle, handle, publish, send-message-pub-sub-template, publish,
-			 *   next-message, on-message, next-message, on-message, send, send, handle, handle, handle, handle
-			 *
-			 * Example of a bad run (notice that the last line only has one "send". Two are expected!).
-			 * 	Found trace! 148bcda619bd448ea6a718ca0f662bd2 with 24 spans (
-			 *  [get /, visit-meet-endpoint, get, get /meet, get, get /meet, get, get /meet,
-			 * 	send-message-spring-integration, send, handle, handle, publish, send-message-pub-sub-template, publish,
-			 * 	next-message, on-message, handle, handle, next-message, on-message, send, handle, handle]).
-			 */
-			// TODO: replace with =25 after fixing https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/597
-			assertThat(trace.getSpansCount()).isGreaterThanOrEqualTo(24);
+			// The 16 expected spans are:
+			// get /, visit-meet-endpoint, get, get /meet, get, get /meet, get, get /meet,
+			// send-message-spring-integration, publish, send-message-pub-sub-template, publish,
+			// next-message, on-message, next-message, on-message
+			assertThat(trace.getSpansCount()).isGreaterThanOrEqualTo(16);
 			log.debug("Trace spans match.");
 
 			// verify custom tags
@@ -181,8 +173,6 @@ public class TraceSampleApplicationIntegrationTests {
 							"get",
 							"get /meet",
 							"send-message-spring-integration",
-							"send",
-							"handle",
 							"publish",
 							"send-message-pub-sub-template",
 							"next-message",
