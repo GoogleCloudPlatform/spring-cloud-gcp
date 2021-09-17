@@ -186,10 +186,17 @@ public class SpannerSchemaUtils {
 					spannerPersistentProperty.isGenerateSchemaNotNull(),
 					spannerPersistentProperty.isCommitTimestamp());
 		}
-		spannerJavaType = spannerEntityProcessor
+		if (spannerColumnType != null && spannerColumnType.equals(Type.Code.JSON)) {
+			spannerJavaType = null;
+		}
+		else {
+			spannerJavaType = spannerEntityProcessor
 					.getCorrespondingSpannerJavaType(columnType, false);
+		}
 
-		if (spannerJavaType == null) {
+		boolean javaTypeIsArray = spannerJavaType == null ? false : spannerJavaType.isArray();
+
+		if (spannerJavaType == null && (spannerColumnType == null || !spannerColumnType.equals(Type.Code.JSON))) {
 			throw new SpannerDataException(
 					"The currently configured custom type converters cannot "
 							+ "convert the given type to a Cloud Spanner-compatible column type: "
@@ -207,7 +214,7 @@ public class SpannerSchemaUtils {
 							+ "type :" + columnType);
 		}
 
-		return columnName + getTypeDdlString(spannerColumnType, spannerJavaType.isArray(),
+		return columnName + getTypeDdlString(spannerColumnType, javaTypeIsArray,
 				spannerPersistentProperty.getMaxColumnLength(),
 				spannerPersistentProperty.isGenerateSchemaNotNull(),
 				spannerPersistentProperty.isCommitTimestamp());
