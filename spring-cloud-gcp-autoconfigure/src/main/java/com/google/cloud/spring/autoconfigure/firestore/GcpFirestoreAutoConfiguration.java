@@ -50,6 +50,7 @@ import org.springframework.context.annotation.Configuration;
  * Provides classes to use with Cloud Firestore.
  *
  * @author Dmitry Solomakha
+ * @author Biju Kunjummen
  *
  * @since 1.2
  */
@@ -59,8 +60,6 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass({ Firestore.class })
 @EnableConfigurationProperties(GcpFirestoreProperties.class)
 public class GcpFirestoreAutoConfiguration {
-
-	private static final String ROOT_PATH_FORMAT = "projects/%s/databases/(default)/documents";
 
 	private static final UserAgentHeaderProvider USER_AGENT_HEADER_PROVIDER =
 			new UserAgentHeaderProvider(GcpFirestoreAutoConfiguration.class);
@@ -77,9 +76,7 @@ public class GcpFirestoreAutoConfiguration {
 			GcpProjectIdProvider projectIdProvider,
 			CredentialsProvider credentialsProvider) throws IOException {
 
-		this.projectId = (gcpFirestoreProperties.getProjectId() != null)
-				? gcpFirestoreProperties.getProjectId()
-				: projectIdProvider.getProjectId();
+		this.projectId = gcpFirestoreProperties.getResolvedProjectId(projectIdProvider);
 
 		if (gcpFirestoreProperties.getEmulator().isEnabled()) {
 			// if the emulator is enabled, create CredentialsProvider for this particular case.
@@ -92,7 +89,7 @@ public class GcpFirestoreAutoConfiguration {
 		}
 
 		this.hostPort = gcpFirestoreProperties.getHostPort();
-		this.firestoreRootPath = String.format(ROOT_PATH_FORMAT, this.projectId);
+		this.firestoreRootPath = gcpFirestoreProperties.getFirestoreRootPath(projectIdProvider);
 	}
 
 	@Bean

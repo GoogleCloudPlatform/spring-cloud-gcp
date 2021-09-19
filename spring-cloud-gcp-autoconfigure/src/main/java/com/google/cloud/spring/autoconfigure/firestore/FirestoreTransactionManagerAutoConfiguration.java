@@ -20,7 +20,9 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
 import com.google.firestore.v1.FirestoreGrpc;
+import reactor.core.publisher.Flux;
 
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -33,31 +35,21 @@ import org.springframework.context.annotation.Configuration;
  * Auto-configuration for {@link ReactiveFirestoreTransactionManager}.
  *
  * @author Biju Kunjummen
- * @since 2.0.4
+ * @since 2.0.5
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass(ReactiveFirestoreTransactionManager.class)
+@ConditionalOnClass({ ReactiveFirestoreTransactionManager.class, FirestoreGrpc.FirestoreStub.class, Flux.class })
 @ConditionalOnProperty(value = "spring.cloud.gcp.firestore.enabled", matchIfMissing = true)
 @AutoConfigureBefore(TransactionAutoConfiguration.class)
+@AutoConfigureAfter(GcpFirestoreAutoConfiguration.class)
 public class FirestoreTransactionManagerAutoConfiguration {
-
-	private static final String ROOT_PATH_FORMAT = "projects/%s/databases/(default)/documents";
-
-	private final String firestoreRootPath;
-
-	FirestoreTransactionManagerAutoConfiguration(GcpFirestoreProperties gcpFirestoreProperties,
-			GcpProjectIdProvider projectIdProvider) {
-		String projectId = (gcpFirestoreProperties.getProjectId() != null)
-				? gcpFirestoreProperties.getProjectId()
-				: projectIdProvider.getProjectId();
-
-		this.firestoreRootPath = String.format(ROOT_PATH_FORMAT, projectId);
-	}
-
 	@Bean
 	@ConditionalOnMissingBean
 	public ReactiveFirestoreTransactionManager firestoreTransactionManager(
-			FirestoreGrpc.FirestoreStub firestoreStub, FirestoreClassMapper classMapper) {
+			FirestoreGrpc.FirestoreStub firestoreStub, FirestoreClassMapper classMapper,
+			GcpFirestoreProperties gcpFirestoreProperties,
+			GcpProjectIdProvider projectIdProvider) {
+		String firestoreRootPath = gcpFirestoreProperties.getFirestoreRootPath(projectIdProvider);
 		return new ReactiveFirestoreTransactionManager(firestoreStub, firestoreRootPath, classMapper);
 	}
 }
