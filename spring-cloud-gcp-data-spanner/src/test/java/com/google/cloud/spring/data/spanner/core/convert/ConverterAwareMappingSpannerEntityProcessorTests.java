@@ -34,12 +34,14 @@ import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Value;
 import com.google.cloud.spring.data.spanner.core.convert.TestEntities.TestEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.gson.Gson;
 import org.assertj.core.data.Offset;
 import org.junit.Before;
 import org.junit.Test;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -74,6 +76,38 @@ public class ConverterAwareMappingSpannerEntityProcessorTests {
 			};
 		}
 	};
+
+	/**
+	 * A converter from the Object to Spanner json.
+	 */
+	// @formatter:off
+	public static final Converter<Custom, Value> OBJECT_TO_SPANNER_JSON_CONVERTER =
+			new Converter<Custom, Value>() {
+				// @formatter:on
+				@Nullable
+				@Override
+				public Value convert(Custom jsonObject) {
+					Gson gson = new Gson();
+					String jsonString = gson.toJson(jsonObject);
+					return Value.json(jsonString);
+				}
+			};
+	/**
+	 * A converter from Spanner json to Object.
+	 */
+	// @formatter:off
+	public static final Converter<Value, Custom> SPANNER_JSON_TO_OBJECT_CONVERTER =
+			new Converter<Value, Custom>() {
+				// @formatter:on
+				@Nullable
+				@Override
+				public Custom convert(Value jsonValue) {
+					Gson gson = new Gson();
+					Class propertyClass = TestEntity.class; // need to change
+					return gson.fromJson(jsonValue.getJson(), Custom.class);
+//					return jsonValue.getJson();
+				}
+			};
 
 	private SpannerEntityProcessor spannerEntityProcessor;
 
@@ -150,6 +184,25 @@ public class ConverterAwareMappingSpannerEntityProcessorTests {
 		verifyCanConvert(converter, LocalDate.class, Date.class);
 		verifyCanConvert(converter, Instant.class, Timestamp.class);
 		verifyCanConvert(converter, JavaType.class, SpannerType.class);
+	}
+
+	@Test
+	public void canConvertCustomJsonConverter() {
+		ConverterAwareMappingSpannerEntityProcessor converter = new ConverterAwareMappingSpannerEntityProcessor(
+				new SpannerMappingContext(),
+				Arrays.asList(JAVA_TO_SPANNER, OBJECT_TO_SPANNER_JSON_CONVERTER),
+				Arrays.asList(SPANNER_TO_JAVA, SPANNER_JSON_TO_OBJECT_CONVERTER));
+
+		verifyCanConvert(converter, java.util.Date.class, Timestamp.class);
+		verifyCanConvert(converter, LocalDate.class, Date.class);
+		verifyCanConvert(converter, Instant.class, Timestamp.class);
+		verifyCanConvert(converter, JavaType.class, SpannerType.class);
+		verifyCanConvert(converter, Custom.class, Value.class);
+		verifyCanConvert(converter, Timestamp.class, String.class);
+//		SpannerWriteConverter writeConverter = converter.getWriteConverter();
+//		SpannerReadConverter readConverter = converter.getReadConverter();
+//		assertThat(writeConverter.canConvert(Timestamp.class, String.class)).isFalse();
+//		assertThat(writeConverter.canConvert(String.class, Timestamp.class)).isFalse();
 	}
 
 	@Test
@@ -364,6 +417,9 @@ public class ConverterAwareMappingSpannerEntityProcessorTests {
 	private interface JavaType {
 	}
 
+	private class Custom {
+
+	}
 	/**
 	 * A mock results class for mocked queries.
 	 */

@@ -295,4 +295,30 @@ public class TestEntities {
 		}
 	}
 
+	/**
+	 * A test class with Json field
+	 */
+	@Table(name = "custom_test_table")
+	static class TestEntityJson {
+		@PrimaryKey
+		String id;
+
+		String stringField;
+
+		@Column(name = "")
+		boolean booleanField;
+
+		@Column(spannerType = TypeCode.JSON)
+		Params params;
+	}
+
+	static class Params {
+		String p1;
+		String p2;
+
+		public Params(String p1, String p2) {
+			this.p1 = p1;
+			this.p2 = p2;
+		}
+	}
 }
