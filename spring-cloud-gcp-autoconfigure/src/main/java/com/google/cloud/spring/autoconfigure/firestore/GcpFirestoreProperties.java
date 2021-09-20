@@ -18,6 +18,7 @@ package com.google.cloud.spring.autoconfigure.firestore;
 
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpScope;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -27,14 +28,17 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  * Properties for configuring Cloud Datastore.
  *
  * @author Dmitry Solomakha
- *
+ * @author Biju Kunjummen
  * @since 1.2
  */
 @ConfigurationProperties("spring.cloud.gcp.firestore")
 public class GcpFirestoreProperties implements CredentialsSupplier {
+	private static final String ROOT_PATH_FORMAT = "projects/%s/databases/(default)/documents";
 
-	/** Overrides the GCP OAuth2 credentials specified in the Core module.
-	 * Uses same URL as Datastore*/
+	/**
+	 * Overrides the GCP OAuth2 credentials specified in the Core module.
+	 * Uses same URL as Datastore
+	 */
 	@NestedConfigurationProperty
 	private final Credentials credentials = new Credentials(GcpScope.DATASTORE.getUrl());
 
@@ -57,6 +61,12 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
 		return this.projectId;
 	}
 
+	public String getResolvedProjectId(GcpProjectIdProvider projectIdProvider) {
+		return (getProjectId() != null)
+				? getProjectId()
+				: projectIdProvider.getProjectId();
+	}
+
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
@@ -75,6 +85,10 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
 
 	public void setEmulator(FirestoreEmulatorProperties emulator) {
 		this.emulator = emulator;
+	}
+
+	public String getFirestoreRootPath(GcpProjectIdProvider projectIdProvider) {
+		return String.format(ROOT_PATH_FORMAT, this.getResolvedProjectId(projectIdProvider));
 	}
 
 	public static class FirestoreEmulatorProperties {

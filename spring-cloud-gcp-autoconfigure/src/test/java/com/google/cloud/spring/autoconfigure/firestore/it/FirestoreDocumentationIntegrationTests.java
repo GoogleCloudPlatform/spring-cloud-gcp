@@ -24,6 +24,7 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.firestore.FirestoreTransactionManagerAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreAutoConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,12 +39,12 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 
 /**
  * @author Dmitry Solomakha
- *
  * @since 1.2
  */
 public class FirestoreDocumentationIntegrationTests {
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(GcpContextAutoConfiguration.class,
+					FirestoreTransactionManagerAutoConfiguration.class,
 					GcpFirestoreAutoConfiguration.class));
 
 	@BeforeClass
@@ -114,14 +115,14 @@ class FirestoreExample {
 
 	//tag::read[]
 	User readDocumentToObject() throws ExecutionException, InterruptedException {
-			ApiFuture<DocumentSnapshot> documentFuture =
-					this.firestore.document("users/joe").get();
+		ApiFuture<DocumentSnapshot> documentFuture =
+				this.firestore.document("users/joe").get();
 
-			User user = documentFuture.get().toObject(User.class);
+		User user = documentFuture.get().toObject(User.class);
 
-			LOGGER.info("read: " + user);
+		LOGGER.info("read: " + user);
 
-			return user;
+		return user;
 	}
 	//end::read[]
 }

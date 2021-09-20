@@ -41,7 +41,8 @@ public class GcpFirestoreEmulatorAutoConfigurationIntegrationTests {
 					.withConfiguration(AutoConfigurations.of(
 							GcpFirestoreEmulatorAutoConfiguration.class,
 							GcpContextAutoConfiguration.class,
-							GcpFirestoreAutoConfiguration.class));
+							GcpFirestoreAutoConfiguration.class,
+							FirestoreTransactionManagerAutoConfiguration.class));
 
 	@BeforeClass
 	public static void checkToRun() {
