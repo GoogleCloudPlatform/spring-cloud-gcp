@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -94,6 +95,36 @@ public class SpannerRepositoryIntegrationTests {
 		this.spannerRepositoryExample.createTablesIfNotExists();
 		this.tradeRepository.deleteAll();
 		this.traderRepository.deleteAll();
+	}
+	void createTablesIfNotExists() {
+//		if (!this.spannerDatabaseAdminTemplate.tableExists("trades")) {
+//			this.spannerDatabaseAdminTemplate.executeDdlStrings(
+//					Arrays.asList(
+//							this.spannerSchemaUtils.getCreateTableDdlString(Trade.class)),
+//					true);
+//		}
+
+		if (!this.spannerDatabaseAdminTemplate.tableExists("traders")) {
+			this.spannerDatabaseAdminTemplate.executeDdlStrings(Arrays.asList(
+					this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)), true);
+		} else {
+			this.spannerDatabaseAdminTemplate.executeDdlStrings(Arrays.asList(
+					this.spannerSchemaUtils.getDropTableDdlString(Trader.class)), false);
+			this.spannerDatabaseAdminTemplate.executeDdlStrings(Arrays.asList(
+					this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)), true);
+		}
+	}
+	@Test
+	public void testPlayground() {
+
+//		createTablesIfNotExists();
+		this.traderRepository.deleteAll();
+//		this.tradeRepository.deleteAll();
+		TraderDetails details = new TraderDetails("address line", 5L , true);
+		this.traderRepository.save(new Trader("demo_trader1", "John", "Doe", details));
+
+		System.out.println(this.traderRepository.findById("demo_trader1").get().getTraderId());
+		System.out.println(this.traderRepository.findById("demo_trader1").get().getDetails());
 	}
 
 	@Test
