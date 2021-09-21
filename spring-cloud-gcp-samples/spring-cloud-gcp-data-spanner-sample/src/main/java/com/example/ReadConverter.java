@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ReadingConverter
-public class ReadConverter implements Converter<Value, TraderDetails> {
+public class ReadConverter implements Converter<String, TraderDetails> {
     @Override
-    public TraderDetails convert(Value jsonValue) {
+    public TraderDetails convert(String jsonString) {
         Gson gson = new Gson();
-        return gson.fromJson(jsonValue.getJson(), TraderDetails.class);
+        return gson.fromJson(jsonString, TraderDetails.class);
     }
 }
