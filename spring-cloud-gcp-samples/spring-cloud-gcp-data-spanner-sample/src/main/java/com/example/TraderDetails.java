@@ -1,5 +1,7 @@
 package com.example;
 
+import com.google.cloud.spring.data.spanner.core.mapping.NotMapped;
+
 public class TraderDetails {
     private String address;
 
