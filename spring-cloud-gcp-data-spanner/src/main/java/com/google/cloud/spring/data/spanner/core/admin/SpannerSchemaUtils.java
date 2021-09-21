@@ -187,7 +187,7 @@ public class SpannerSchemaUtils {
 					spannerPersistentProperty.isCommitTimestamp());
 		}
 		if (spannerColumnType != null && spannerColumnType.equals(Type.Code.JSON)) {
-			spannerJavaType = null;
+			spannerJavaType = columnType;
 		}
 		else {
 			spannerJavaType = spannerEntityProcessor
@@ -196,7 +196,7 @@ public class SpannerSchemaUtils {
 
 		boolean javaTypeIsArray = spannerJavaType == null ? false : spannerJavaType.isArray();
 
-		if (spannerJavaType == null && (spannerColumnType == null || !spannerColumnType.equals(Type.Code.JSON))) {
+		if (spannerJavaType == null) {
 			throw new SpannerDataException(
 					"The currently configured custom type converters cannot "
 							+ "convert the given type to a Cloud Spanner-compatible column type: "
