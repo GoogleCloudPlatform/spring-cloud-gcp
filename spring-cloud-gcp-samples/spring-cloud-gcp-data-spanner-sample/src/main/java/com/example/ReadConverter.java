@@ -1,12 +1,9 @@
 package com.example;
-import com.google.cloud.spanner.Value;
-import com.google.gson.Gson;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.convert.ReadingConverter;
-import org.springframework.stereotype.Component;
 
-@Component
-@ReadingConverter
+import com.google.gson.Gson;
+
+import org.springframework.core.convert.converter.Converter;
+
 public class ReadConverter implements Converter<String, TraderDetails> {
     @Override
     public TraderDetails convert(String jsonString) {

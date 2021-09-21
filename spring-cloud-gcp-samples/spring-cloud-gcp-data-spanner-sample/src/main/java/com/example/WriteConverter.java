@@ -1,12 +1,10 @@
 package com.example;
+
 import com.google.cloud.spanner.Value;
 import com.google.gson.Gson;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.convert.WritingConverter;
-import org.springframework.stereotype.Component;
 
-@Component
-@WritingConverter
+import org.springframework.core.convert.converter.Converter;
+
 public class WriteConverter implements Converter<TraderDetails, Value> {
     @Override
     public Value convert(TraderDetails details) {
