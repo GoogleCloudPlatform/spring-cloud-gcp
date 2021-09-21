@@ -114,6 +114,10 @@ public class StructAccessor {
 
 	Object getSingleValue(String colName) {
 		Type colType = this.struct.getColumnType(colName);
+		if (colType.equals(Type.json())){
+			BiFunction<Struct, String, String> readFunction =  AbstractStructReader::getJson;
+			return readFunction.apply(this.struct, colName);
+		}
 		Class sourceType = getSingleItemTypeCode(colType);
 		BiFunction readFunction = singleItemReadMethodMapping.get(sourceType);
 		if (readFunction == null) {
@@ -126,6 +130,10 @@ public class StructAccessor {
 
 	public Object getSingleValue(int colIndex) {
 		Type colType = this.struct.getColumnType(colIndex);
+		if (colType.equals(Type.json())){
+			BiFunction<Struct, Integer, String> readFunction =  AbstractStructReader::getJson;
+			return readFunction.apply(this.struct, colIndex);
+		}
 		Class sourceType = getSingleItemTypeCode(colType);
 		BiFunction readFunction = singleItemReadMethodMappingIntCol.get(sourceType);
 		if (readFunction == null) {

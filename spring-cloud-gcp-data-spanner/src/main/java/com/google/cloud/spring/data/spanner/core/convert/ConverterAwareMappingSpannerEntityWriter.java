@@ -106,6 +106,7 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 		map.put(long[].class,
 				(BiFunction<ValueBinder, long[], ?>) ValueBinder::toInt64Array);
 		map.put(Struct.class, (BiFunction<ValueBinder, Struct, ?>) ValueBinder::to);
+		map.put(Value.class, (BiFunction<ValueBinder, Value, ?>) ValueBinder::to);
 
 		singleItemTypeValueBinderMethodMap = Collections.unmodifiableMap(map);
 	}
