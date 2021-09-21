@@ -33,6 +33,7 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Mutation.WriteBuilder;
 import com.google.cloud.spanner.Struct;
+import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Value;
 import com.google.cloud.spanner.ValueBinder;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
@@ -392,6 +393,14 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 			if (property.isCommitTimestamp()) {
 				valueSet = attemptSetSingleItemValue(Value.COMMIT_TIMESTAMP, Timestamp.class, valueBinder,
 						Timestamp.class, this.writeConverter);
+			}
+			else if (property.getAnnotatedColumnItemType() != null &&
+					property.getAnnotatedColumnItemType().equals(Type.Code.JSON)) {
+
+				valueSet = attemptSetSingleItemValue(propertyValue, propertyType,
+						valueBinder,
+						Value.class,
+						this.writeConverter);
 			}
 			// use the user's annotated column type if possible
 			else if (property.getAnnotatedColumnItemType() != null) {

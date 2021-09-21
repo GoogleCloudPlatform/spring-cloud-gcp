@@ -61,10 +61,10 @@ public class TempTests {
 //		createTablesIfNotExists();
 //		this.tradeRepository.deleteAll();
         TraderDetails details = new TraderDetails("address line", 5L , true);
-        this.testEntityRepository.save(new TestEntity("id1", "John"));
-//        this.testEntityRepository.save(new TestEntity("id1", "John", details));
+//        this.testEntityRepository.save(new TestEntity("id1", "John"));
+        this.testEntityRepository.save(new TestEntity("id1", "John", details));
 
         System.out.println(this.testEntityRepository.findById("id1").get().getName());
-//        System.out.println(this.testEntityRepository.findById("id1").get().getDetails());
+        System.out.println(this.testEntityRepository.findById("id1").get().getDetails());
     }
 }
