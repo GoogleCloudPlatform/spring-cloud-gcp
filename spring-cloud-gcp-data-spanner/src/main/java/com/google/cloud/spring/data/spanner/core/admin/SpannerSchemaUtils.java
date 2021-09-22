@@ -194,8 +194,6 @@ public class SpannerSchemaUtils {
 					.getCorrespondingSpannerJavaType(columnType, false);
 		}
 
-		boolean javaTypeIsArray = spannerJavaType == null ? false : spannerJavaType.isArray();
-
 		if (spannerJavaType == null) {
 			throw new SpannerDataException(
 					"The currently configured custom type converters cannot "
@@ -214,7 +212,7 @@ public class SpannerSchemaUtils {
 							+ "type :" + columnType);
 		}
 
-		return columnName + getTypeDdlString(spannerColumnType, javaTypeIsArray,
+		return columnName + getTypeDdlString(spannerColumnType, spannerJavaType.isArray(),
 				spannerPersistentProperty.getMaxColumnLength(),
 				spannerPersistentProperty.isGenerateSchemaNotNull(),
 				spannerPersistentProperty.isCommitTimestamp());
