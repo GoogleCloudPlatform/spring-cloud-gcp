@@ -50,9 +50,9 @@ public class TempTests {
 
 
     @Before
-    @After
+//    @After
     public void cleanupAndSetupTables() {
-//        this.testEntityRepository.deleteAll();
+        this.testEntityRepository.deleteAll();
     }
 
     @Test
