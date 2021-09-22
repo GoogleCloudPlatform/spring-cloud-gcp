@@ -115,8 +115,7 @@ public class StructAccessor {
 	Object getSingleValue(String colName) {
 		Type colType = this.struct.getColumnType(colName);
 		if (colType.equals(Type.json())){
-			BiFunction<Struct, String, String> readFunction =  AbstractStructReader::getJson;
-			return readFunction.apply(this.struct, colName);
+			return this.struct.getJson(colName);
 		}
 		Class sourceType = getSingleItemTypeCode(colType);
 		BiFunction readFunction = singleItemReadMethodMapping.get(sourceType);
