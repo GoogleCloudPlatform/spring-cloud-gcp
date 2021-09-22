@@ -130,10 +130,10 @@ public class StructAccessor {
 
 	public Object getSingleValue(int colIndex) {
 		Type colType = this.struct.getColumnType(colIndex);
-		if (colType.equals(Type.json())){
-			BiFunction<Struct, Integer, String> readFunction =  AbstractStructReader::getJson;
-			return readFunction.apply(this.struct, colIndex);
-		}
+//		if (colType.equals(Type.json())){
+//			BiFunction<Struct, Integer, String> readFunction =  AbstractStructReader::getJson;
+//			return readFunction.apply(this.struct, colIndex);
+//		}
 		Class sourceType = getSingleItemTypeCode(colType);
 		BiFunction readFunction = singleItemReadMethodMappingIntCol.get(sourceType);
 		if (readFunction == null) {
@@ -179,7 +179,7 @@ public class StructAccessor {
 				: SpannerTypeMapper.getSimpleJavaClassFor(code);
 	}
 
-	<T> T getSingleJsonValue(String colName, Class<T> colType) {
+	  public <T> T getSingleJsonValue(String colName, Class<T> colType) {
 		String jsonString = this.struct.getJson(colName);
 		Gson gson = new Gson();
 		return gson.fromJson(jsonString, colType);
