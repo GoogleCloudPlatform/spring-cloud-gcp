@@ -29,7 +29,6 @@ import com.google.cloud.ByteArray;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Value;
 
-import com.google.gson.Gson;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -241,65 +240,6 @@ public final class SpannerConverters {
 						}
 					};
 
-//	/**
-//	 * A converter from the Object to Spanner json.
-//	 */
-//	// @formatter:off
-//	public static final Converter<Object, Value> OBJECT_TO_SPANNER_JSON_CONVERTER =
-//			new Converter<Object, Value>() {
-//				// @formatter:on
-//				@Nullable
-//				@Override
-//				public Value convert(Object jsonObject) {
-//					Gson gson = new Gson();
-//					String jsonString = gson.toJson(jsonObject);
-//					return Value.json(jsonString);
-//				}
-//			};
-//	/**
-//	 * A converter from Spanner json to Object.
-//	 */
-//	// @formatter:off
-//	public static final Converter<Value, ?> SPANNER_JSON_TO_OBJECT_CONVERTER =
-//			new Converter<Value, Object>() {
-//				class TestEntity {
-//				}
-//
-//				// @formatter:on
-//				@Nullable
-//				@Override
-//				public Object convert(Value jsonValue) {
-//					Gson gson = new Gson();
-//					Class propertyClass = TestEntity.class; // need to change
-//					return gson.fromJson(jsonValue.getJson(), propertyClass);
-////					return jsonValue.getJson();
-//				}
-//			};
-
-	// @formatter:off
-	public static final Converter<Timestamp, String> TIMESTAMP_STRING_CONVERTER =
-			new Converter<Timestamp, String>() {
-				// @formatter:on
-				@Nullable
-				@Override
-				public String convert(Timestamp timestamp) {
-					return "fake time stamp";
-				}
-			};
-
-
-	// @formatter:off
-	public static final Converter<String, Timestamp> STRING_TIMESTAMP_CONVERTER =
-			new Converter<String, Timestamp>() {
-				// @formatter:on
-				@Nullable
-				@Override
-				public Timestamp convert(String string) {
-					return Timestamp.now();
-				}
-			};
-
-
 	/** Converters from common types to those used by Spanner. */
 	public static final Collection<Converter> DEFAULT_SPANNER_WRITE_CONVERTERS = Collections.unmodifiableCollection(
 			Arrays.asList(
@@ -309,8 +249,7 @@ public final class SpannerConverters {
 					JAVA_TO_SPANNER_TIMESTAMP_CONVERTER,
 					JAVA_SQL_TO_SPANNER_DATE_CONVERTER,
 					LOCAL_DATE_TIMESTAMP_CONVERTER,
-					LOCAL_DATE_TIME_TIMESTAMP_CONVERTER,
-					TIMESTAMP_STRING_CONVERTER));
+					LOCAL_DATE_TIME_TIMESTAMP_CONVERTER));
 
 	/** Converters from common types to those used by Spanner. */
 	public static final Collection<Converter> DEFAULT_SPANNER_READ_CONVERTERS = Collections.unmodifiableCollection(
@@ -321,8 +260,7 @@ public final class SpannerConverters {
 					SPANNER_TO_JAVA_TIMESTAMP_CONVERTER,
 					SPANNER_TO_JAVA_SQL_DATE_CONVERTER,
 					TIMESTAMP_LOCAL_DATE_CONVERTER,
-					TIMESTAMP_LOCAL_DATE_TIME_CONVERTER,
-					STRING_TIMESTAMP_CONVERTER));
+					TIMESTAMP_LOCAL_DATE_TIME_CONVERTER));
 
 	/**
 	 * A utility function to convert a {@link java.sql.Timestamp} value to the {@link Timestamp}.
