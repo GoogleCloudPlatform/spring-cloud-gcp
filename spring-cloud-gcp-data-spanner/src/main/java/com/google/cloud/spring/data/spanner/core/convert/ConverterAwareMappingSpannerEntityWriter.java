@@ -40,6 +40,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
+import com.google.gson.Gson;
 
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.util.Assert;
@@ -106,7 +107,6 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 		map.put(long[].class,
 				(BiFunction<ValueBinder, long[], ?>) ValueBinder::toInt64Array);
 		map.put(Struct.class, (BiFunction<ValueBinder, Struct, ?>) ValueBinder::to);
-		map.put(Value.class, (BiFunction<ValueBinder, Value, ?>) ValueBinder::to);
 
 		singleItemTypeValueBinderMethodMap = Collections.unmodifiableMap(map);
 	}
@@ -341,6 +341,24 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 		return true;
 	}
 
+	private static <T> boolean attemptSetSingleJsonItemValue(Object value,
+														 ValueBinder<WriteBuilder> valueBinder) {
+		// Spanner does not allow null binding for Value.class.
+		if (value == null) {
+			throw new SpannerDataException(String.format(
+					"Json annotated type is not Nullable"));
+		}
+		// We're just checking for the bind to have succeeded, we don't need to chain the result.
+		Object ignored = valueBinder.to(jsonToValueConverter(value));
+		return true;
+	}
+
+	private static Value jsonToValueConverter(Object value) {
+		Gson gson = new Gson();
+		String jsonString = gson.toJson(value);
+		return Value.json(jsonString);
+	}
+
 	/**
 	 * <p>
 	 * For each property this method "set"s the column name and finds the corresponding "to"
@@ -395,13 +413,11 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 				valueSet = attemptSetSingleItemValue(Value.COMMIT_TIMESTAMP, Timestamp.class, valueBinder,
 						Timestamp.class, this.writeConverter);
 			}
+			// annotated json column
 			else if (property.getAnnotatedColumnItemType() != null &&
 					property.getAnnotatedColumnItemType().equals(Type.Code.JSON)) {
-
-				valueSet = attemptSetSingleItemValue(propertyValue, propertyType,
-						valueBinder,
-						Value.class,
-						this.writeConverter);
+				valueSet = attemptSetSingleJsonItemValue(propertyValue,
+						valueBinder);
 			}
 			// use the user's annotated column type if possible
 			else if (property.getAnnotatedColumnItemType() != null) {
