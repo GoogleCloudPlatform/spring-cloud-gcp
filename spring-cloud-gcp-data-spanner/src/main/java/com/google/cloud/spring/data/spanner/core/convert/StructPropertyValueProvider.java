@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.cloud.spanner.Struct;
+import com.google.cloud.spanner.Type;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
 
@@ -104,6 +105,11 @@ class StructPropertyValueProvider implements PropertyValueProvider<SpannerPersis
 	private <T> T readSingleWithConversion(
 			SpannerPersistentProperty spannerPersistentProperty) {
 		String colName = spannerPersistentProperty.getColumnName();
+		Type.Code spannerColumnType = spannerPersistentProperty.getAnnotatedColumnItemType();
+		if (spannerColumnType != null && spannerColumnType.equals(Type.Code.JSON)) {
+			Object value = this.structAccessor.getSingleJsonValue(colName, spannerPersistentProperty.getType());
+			return (T) value;
+		}
 		Object value = this.structAccessor.getSingleValue(colName);
 		return (value != null) ? convertOrRead((Class<T>) spannerPersistentProperty.getType(), value) : null;
 	}
