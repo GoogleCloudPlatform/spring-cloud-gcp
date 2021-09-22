@@ -303,13 +303,13 @@ public class TestEntities {
 		@PrimaryKey
 		String id;
 
-		String stringField;
-
-		@Column(name = "")
-		boolean booleanField;
-
 		@Column(spannerType = TypeCode.JSON)
 		Params params;
+
+		public TestEntityJson(String id,  Params params) {
+			this.id = id;
+			this.params = params;
+		}
 	}
 
 	static class Params {
