@@ -87,7 +87,7 @@
 
     <google-cloud-bom.version>23.0.0</google-cloud-bom.version>
 
-    <r2dbc.version>0.8.5.RELEASE</r2dbc.version>
+    <r2dbc.version>0.8.6.RELEASE</r2dbc.version>
     <reactor.version>2020.0.11</reactor.version>
 
     <mockito.version>3.12.4</mockito.version>
