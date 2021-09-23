@@ -341,19 +341,9 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 		return true;
 	}
 
-	private static <T> boolean attemptSetSingleJsonItemValue(Object value,
-														 ValueBinder<WriteBuilder> valueBinder) {
-		// Spanner does not allow null binding for Value.class.
-		if (value == null) {
-			throw new SpannerDataException(String.format(
-					"Json annotated type is not Nullable"));
-		}
-		// We're just checking for the bind to have succeeded, we don't need to chain the result.
-		Object ignored = valueBinder.to(jsonToValueConverter(value));
-		return true;
-	}
 
 	private static Value jsonToValueConverter(Object value) {
+		if (value == null) return Value.json(null);
 		Gson gson = new Gson();
 		String jsonString = gson.toJson(value);
 		return Value.json(jsonString);
@@ -413,11 +403,11 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 				valueSet = attemptSetSingleItemValue(Value.COMMIT_TIMESTAMP, Timestamp.class, valueBinder,
 						Timestamp.class, this.writeConverter);
 			}
-			// annotated json column
+			// annotated json column, bind directly
 			else if (property.getAnnotatedColumnItemType() != null &&
 					property.getAnnotatedColumnItemType().equals(Type.Code.JSON)) {
-				valueSet = attemptSetSingleJsonItemValue(propertyValue,
-						valueBinder);
+				valueBinder.to(jsonToValueConverter(propertyValue));
+				valueSet = true;
 			}
 			// use the user's annotated column type if possible
 			else if (property.getAnnotatedColumnItemType() != null) {
