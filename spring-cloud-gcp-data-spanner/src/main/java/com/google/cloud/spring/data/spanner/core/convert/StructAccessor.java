@@ -143,6 +143,7 @@ public class StructAccessor {
 			// supported.
 			return null;
 		}
+		if (this.struct.isNull(colIndex)) return null;
 		return readFunction.apply(this.struct, colIndex);
 	}
 
@@ -180,6 +181,7 @@ public class StructAccessor {
 	}
 
 	  public <T> T getSingleJsonValue(String colName, Class<T> colType) {
+		if (this.struct.isNull(colName)) return null;
 		String jsonString = this.struct.getJson(colName);
 		Gson gson = new Gson();
 		return gson.fromJson(jsonString, colType);
