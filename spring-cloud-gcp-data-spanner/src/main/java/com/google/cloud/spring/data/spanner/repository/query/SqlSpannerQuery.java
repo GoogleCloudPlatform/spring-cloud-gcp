@@ -33,15 +33,13 @@ import java.util.stream.StreamSupport;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Struct.Builder;
-import com.google.cloud.spanner.Type;
 import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.convert.StructAccessor;
-import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
-import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntityImpl;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -241,15 +239,12 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
 					spannerQueryOptions);
 		}
 		// check if is json field
-		SpannerPersistentEntity<?> persistentEntity = this.spannerMappingContext.getPersistentEntity(this.entityType);
-		Iterable<SpannerPersistentProperty> persistentProperties = persistentEntity
-				.getPersistentProperties(Column.class);
-		for (SpannerPersistentProperty p : persistentProperties) {
-			if (p.getAnnotatedColumnItemType() == null || !p.getAnnotatedColumnItemType().equals(Type.Code.JSON))
-				continue;
-			if (p.getType().equals(returnedType)) {
+		SpannerPersistentEntityImpl<?> persistentEntity = (SpannerPersistentEntityImpl<?>) this.spannerMappingContext.getPersistentEntity(this.entityType);
+		if (persistentEntity != null) {
+			String jsonFieldName = persistentEntity.getJsonPropertiesClassToName().getOrDefault(returnedType, null);
+			if (jsonFieldName != null) {
 				return this.spannerTemplate.query(
-						struct -> new StructAccessor(struct).getSingleJsonValue(p.getName(), returnedType), statement,
+						struct -> new StructAccessor(struct).getSingleJsonValue(jsonFieldName, returnedType), statement,
 						spannerQueryOptions);
 			}
 		}

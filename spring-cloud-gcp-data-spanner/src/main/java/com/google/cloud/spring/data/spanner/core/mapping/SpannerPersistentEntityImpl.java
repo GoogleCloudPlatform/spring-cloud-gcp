@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import com.google.cloud.spanner.Key;
+import com.google.cloud.spanner.Type;
 import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
 import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
@@ -95,6 +96,8 @@ public class SpannerPersistentEntityImpl<T>
 	private boolean hasEagerlyLoadedProperties = false;
 
 	private final String where;
+
+	private final Map<Class<?>, String> jsonPropertiesClassToName = new HashMap<>();
 
 	/**
 	 * Creates a {@link SpannerPersistentEntityImpl}.
@@ -179,6 +182,10 @@ public class SpannerPersistentEntityImpl<T>
 										+ this.primaryKeyParts.get(order).getColumnName()
 										+ " in " + getType().getSimpleName() + ".");
 					});
+		}
+
+		if(property.getAnnotatedColumnItemType() != null && property.getAnnotatedColumnItemType().equals(Type.Code.JSON)) {
+			this.jsonPropertiesClassToName.put(property.getType(), property.getColumnName());
 		}
 	}
 
@@ -396,6 +403,10 @@ public class SpannerPersistentEntityImpl<T>
 	@Override
 	public Set<String> columns() {
 		return Collections.unmodifiableSet(this.columnNames);
+	}
+
+	public Map<Class<?>, String> getJsonPropertiesClassToName() {
+		return jsonPropertiesClassToName;
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext)
