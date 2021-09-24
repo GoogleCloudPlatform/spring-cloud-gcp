@@ -512,6 +512,7 @@ public class SqlSpannerQueryTests {
 
 		sqlSpannerQuery.execute(params);
 
+		verify(this.spannerTemplate).query((Function<Struct, Object>) any(), any(), any());
 	}
 
 	private static class SymbolAction {
