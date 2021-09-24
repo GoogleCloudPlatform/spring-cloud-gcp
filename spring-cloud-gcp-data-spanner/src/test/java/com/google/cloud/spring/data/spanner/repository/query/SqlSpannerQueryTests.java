@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.Statement;
@@ -32,6 +33,7 @@ import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerReadConverter;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerWriteConverter;
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
@@ -110,6 +112,7 @@ public class SqlSpannerQueryTests {
 		Method method = Object.class.getMethod("toString");
 		when(this.queryMethod.getMethod()).thenReturn(method);
 		when(this.spannerEntityProcessor.getWriteConverter()).thenReturn(new SpannerWriteConverter());
+		when(this.spannerEntityProcessor.getReadConverter()).thenReturn(new SpannerReadConverter());
 		this.spannerTemplate = spy(new SpannerTemplate(() -> this.databaseClient,
 				this.spannerMappingContext, this.spannerEntityProcessor,
 				mock(SpannerMutationFactory.class), new SpannerSchemaUtils(
@@ -485,8 +488,8 @@ public class SqlSpannerQueryTests {
 		SqlSpannerQuery sqlSpannerQuery = createQuery(sql, long.class, false);
 
 		doAnswer(invocation -> {
-			Statement statement = invocation.getArgument(0);
-			SpannerQueryOptions queryOptions = invocation.getArgument(1);
+			Statement statement = invocation.getArgument(1);
+			SpannerQueryOptions queryOptions = invocation.getArgument(2);
 			assertThat(queryOptions.isAllowPartialRead()).isTrue();
 
 			assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
@@ -496,8 +499,8 @@ public class SqlSpannerQueryTests {
 			assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
 			assertThat(paramMap.get("trader_id").getString()).isEqualTo(params[1]);
 
-			return null;
-		}).when(this.spannerTemplate).executeQuery(any(), any());
+			return Arrays.asList(2L);
+		}).when(this.spannerTemplate).query((Function<Struct, Object>) any(), any(), any());
 
 		// This dummy method was created so the metadata for the ARRAY param inner type is
 		// provided.
@@ -505,9 +508,10 @@ public class SqlSpannerQueryTests {
 		when(this.queryMethod.getMethod()).thenReturn(method);
 		Mockito.<Parameters>when(this.queryMethod.getParameters()).thenReturn(new DefaultParameters(method));
 
+		when(sqlSpannerQuery.getReturnedSimpleConvertableItemType()).thenReturn(long.class);
+
 		sqlSpannerQuery.execute(params);
 
-		verify(this.spannerTemplate, times(1)).executeQuery(any(), any());
 	}
 
 	private static class SymbolAction {
