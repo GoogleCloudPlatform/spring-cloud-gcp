@@ -58,9 +58,6 @@ public class Trader {
 	@Column(spannerType = TypeCode.JSON)
 	private TraderDetails details;
 
-//	@Column(spannerType =TypeCode.ARRAY)
-//	private List<String> paramList;
-
 	public Trader() {
 	}
 
