@@ -22,6 +22,9 @@ import com.google.cloud.spring.data.spanner.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * A sample repository.
  *
@@ -32,4 +35,8 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface TraderRepository extends SpannerRepository<Trader, String> {
 	@Query("SELECT count(1) from traders where JSON_VALUE(details, '$.active') = @active")
 	long getCountActive(@Param("active") String active);
+
+
+	@Query("SELECT details from traders where JSON_VALUE(details, '$.active') = @active")
+	List<TraderDetails> getTraderDetailsByActive(@Param("active") String active);
 }

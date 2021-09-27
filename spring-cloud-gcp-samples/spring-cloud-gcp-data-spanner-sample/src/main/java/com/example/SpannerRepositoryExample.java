@@ -18,6 +18,7 @@ package com.example;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
@@ -136,6 +137,11 @@ public class SpannerRepositoryExample {
 		long count = this.traderRepository.getCountActive("true");
 		LOGGER.info("A query method can query on the properties of JSON values");
 		LOGGER.info("Count of records with optionalDetails.active = true is " + count + ". ");
+
+		List<TraderDetails> details = this.traderRepository.getTraderDetailsByActive("true");
+		LOGGER.info("A query method can return a list of the JSON field values in POJO.");
+		LOGGER.info("Details with active = true: ");
+		details.forEach(x -> LOGGER.info(x.toString()));
 	}
 
 	void createTablesIfNotExists() {
