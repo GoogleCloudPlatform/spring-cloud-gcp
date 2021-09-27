@@ -16,6 +16,7 @@
 
 package com.example;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import com.google.cloud.spanner.Key;
@@ -109,23 +110,28 @@ public class SpannerRepositoryExample {
 
 		LOGGER.info("Try http://localhost:8080/trades in the browser to see all trades.");
 
-		LOGGER.info("Delete all traders and start over with JSON fields.");
-		LOGGER.info("JSON field should be annotated with \"@Column(spannerType = TypeCode.JSON)\" in data class.");
-		this.traderRepository.deleteAll();
+		LOGGER.info("Press Enter to continue with sample with JSON field.");
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		Trader trader1 = new Trader("demo_trader1", "John", "Doe",
+		LOGGER.info("JSON field should be annotated with \"@Column(spannerType = TypeCode.JSON)\" in data class.");
+
+		Trader trader1 = new Trader("demo_trader_json1", "John", "Doe",
 				new TraderDetails("fake address 1", 5L, true));
-		Trader trader2 = new Trader("demo_trader2", "Mary", "Jane",
+		Trader trader2 = new Trader("demo_trader_json2", "Mary", "Jane",
 				new TraderDetails("fake address 2", 8L, true));
-		Trader trader3 = new Trader("demo_trader3", "Scott", "Smith",
+		Trader trader3 = new Trader("demo_trader_json3", "Scott", "Smith",
 				new TraderDetails("fake address 3", 8L, false));
 
 		this.traderRepository.save(trader1);
 		this.traderRepository.save(trader2);
 		this.traderRepository.save(trader3);
 
-		LOGGER.info("Find demo_trader1 by Id and print out JSON field 'optionalDetails' as string: " +
-				this.traderRepository.findById("demo_trader1").get().getDetails());
+		LOGGER.info("Find trader by Id and print out JSON field 'optionalDetails' as string: " +
+				this.traderRepository.findById("demo_trader_json1").get().getDetails());
 
 		long count = this.traderRepository.getCountActive("true");
 		LOGGER.info("A query method can query on the properties of JSON values");
