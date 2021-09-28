@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.spanner.core.mapping;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.cloud.spanner.Key;
 import com.google.spanner.v1.TypeCode;
@@ -330,6 +331,21 @@ public class SpannerPersistentEntityImplTests {
 				.getPersistentEntity(ParentInRelationshipMismatchedKeyName.class);
 	}
 
+	@Test
+	public void testGetJsonPropertiesMap() {
+		SpannerPersistentEntityImpl<EntityWithJsonField> entityWithJsonField = (SpannerPersistentEntityImpl<EntityWithJsonField>) this.spannerMappingContext
+				.getPersistentEntity(EntityWithJsonField.class);
+
+		Map<Class<?>, String> map = entityWithJsonField.getJsonPropertiesClassToName();
+
+		assertThat(map).hasSize(1).containsKey(JsonEntity.class).containsValue("jsonField");
+
+		SpannerPersistentEntityImpl<TestEntity> entityWithNoJsonField = (SpannerPersistentEntityImpl<TestEntity>) this.spannerMappingContext
+				.getPersistentEntity(TestEntity.class);
+
+		assertThat(entityWithNoJsonField.getJsonPropertiesClassToName()).isEmpty();
+	}
+
 	private static class ParentInRelationship {
 		@PrimaryKey
 		String id;
@@ -502,4 +518,17 @@ public class SpannerPersistentEntityImplTests {
 		@PrimaryKey(keyOrder = 3)
 		Double id3;
 	}
+
+	private static class EntityWithJsonField {
+		@PrimaryKey
+		String id;
+
+		@Column(spannerType = TypeCode.JSON)
+		JsonEntity jsonField;
+	}
+
+	private static class JsonEntity {
+
+	}
+
 }
