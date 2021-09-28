@@ -16,7 +16,6 @@
 
 package com.example;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -110,14 +109,6 @@ public class SpannerRepositoryExample {
 		LOGGER.info(this.traderRepository.findById("demo_trader1").get().getTrades());
 
 		LOGGER.info("Try http://localhost:8080/trades in the browser to see all trades.");
-
-		LOGGER.info("Press Enter to continue with sample with JSON field.");
-		try {
-			System.in.read();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
 
 		LOGGER.info("JSON field should be annotated with \"@Column(spannerType = TypeCode.JSON)\" in data class.");
 

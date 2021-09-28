@@ -152,7 +152,8 @@ public class SpannerRepositoryIntegrationTests {
 		this.spannerRepositoryExample.runExample();
 		List<String> traderIds = new ArrayList<>();
 		this.traderRepository.findAll().forEach(t -> traderIds.add(t.getTraderId()));
-		assertThat(traderIds).containsExactlyInAnyOrder("demo_trader1", "demo_trader2", "demo_trader3");
+		assertThat(traderIds).containsExactlyInAnyOrder("demo_trader1", "demo_trader2", "demo_trader3",
+				"demo_trader_json1", "demo_trader_json2", "demo_trader_json3");
 
 		assertThat(this.tradeRepository.findAll()).hasSize(8);
 
