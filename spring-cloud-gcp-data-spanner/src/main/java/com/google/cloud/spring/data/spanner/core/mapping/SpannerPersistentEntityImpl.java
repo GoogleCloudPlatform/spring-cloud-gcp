@@ -184,7 +184,8 @@ public class SpannerPersistentEntityImpl<T>
 					});
 		}
 
-		if(property.getAnnotatedColumnItemType() != null && property.getAnnotatedColumnItemType().equals(Type.Code.JSON)) {
+		if (property.getAnnotatedColumnItemType() != null
+				&& property.getAnnotatedColumnItemType().equals(Type.Code.JSON)) {
 			this.jsonPropertiesClassToName.put(property.getType(), property.getColumnName());
 		}
 	}

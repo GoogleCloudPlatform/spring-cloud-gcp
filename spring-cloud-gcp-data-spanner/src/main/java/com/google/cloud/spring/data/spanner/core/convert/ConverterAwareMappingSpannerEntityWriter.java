@@ -343,7 +343,9 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 
 
 	private static Value jsonToValueConverter(Object value) {
-		if (value == null) return Value.json(null);
+		if (value == null) {
+			return Value.json(null);
+		}
 		Gson gson = new Gson();
 		String jsonString = gson.toJson(value);
 		return Value.json(jsonString);

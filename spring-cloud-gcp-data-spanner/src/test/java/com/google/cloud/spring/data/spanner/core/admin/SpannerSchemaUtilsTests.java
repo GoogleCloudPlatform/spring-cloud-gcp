@@ -137,7 +137,7 @@ public class SpannerSchemaUtilsTests {
 	@Test
 	public void createDdlNumeric() {
 		assertColumnDdl(BigDecimal.class, null,
-				"bigDecimal",null, OptionalLong.empty(),
+				"bigDecimal", null, OptionalLong.empty(),
 				"bigDecimal NUMERIC");
 	}
 

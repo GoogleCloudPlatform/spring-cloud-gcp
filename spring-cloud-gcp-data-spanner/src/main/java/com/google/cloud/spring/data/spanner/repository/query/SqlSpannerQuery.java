@@ -239,14 +239,14 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
 					spannerQueryOptions);
 		}
 		// check if is json field
-		SpannerPersistentEntityImpl<?> persistentEntity = (SpannerPersistentEntityImpl<?>) this.spannerMappingContext.getPersistentEntity(this.entityType);
+		SpannerPersistentEntityImpl<?> persistentEntity = (SpannerPersistentEntityImpl<?>) this.spannerMappingContext
+				.getPersistentEntity(this.entityType);
 		String jsonFieldName = persistentEntity.getJsonPropertiesClassToName().getOrDefault(returnedType, null);
 		if (jsonFieldName != null) {
 			return this.spannerTemplate.query(
 					struct -> new StructAccessor(struct).getSingleJsonValue(jsonFieldName, returnedType), statement,
 					spannerQueryOptions);
 		}
-
 
 		return this.spannerTemplate.query(this.entityType,
 				statement,

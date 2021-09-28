@@ -296,7 +296,7 @@ public class TestEntities {
 	}
 
 	/**
-	 * A test class with Json field
+	 * A test class with Json field.
 	 */
 	@Table(name = "custom_test_table")
 	static class TestEntityJson {
@@ -306,7 +306,7 @@ public class TestEntities {
 		@Column(spannerType = TypeCode.JSON)
 		Params params;
 
-		public TestEntityJson(String id,  Params params) {
+		TestEntityJson(String id, Params params) {
 			this.id = id;
 			this.params = params;
 		}
@@ -314,9 +314,10 @@ public class TestEntities {
 
 	static class Params {
 		String p1;
+
 		String p2;
 
-		public Params(String p1, String p2) {
+		Params(String p1, String p2) {
 			this.p1 = p1;
 			this.p2 = p2;
 		}
