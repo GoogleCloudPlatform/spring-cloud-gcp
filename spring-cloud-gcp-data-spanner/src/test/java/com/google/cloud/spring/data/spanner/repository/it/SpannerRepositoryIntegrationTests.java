@@ -530,7 +530,8 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 
 		String traderId = trade1.getTraderId();
 		Optional<Details> optionalDetails = this.tradeRepository.getOptionalDetailsById(traderId);
-		assertThat(optionalDetails.get()).isEqualTo(new Details("abc", "def"));
+		assertThat(optionalDetails).isEqualTo(Optional.of(new Details("abc", "def")));
+
 	}
 
 	@Test
