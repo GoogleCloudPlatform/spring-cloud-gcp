@@ -44,12 +44,26 @@
 		</encoder>
 	</appender>
 
+	<appender name="CONSOLE_JSON_CUSTOM_MDC_FIELD" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout class="com.google.cloud.spring.logging.StackdriverJsonLayout">
+				<projectId>${projectId}</projectId>
+				<traceIdMDCField>trace_id</traceIdMDCField>
+				<spanIdMDCField>span_id</spanIdMDCField>
+			</layout>
+		</encoder>
+	</appender>
+
 	<logger name="StackdriverJsonLayoutServiceCtxLoggerTests" level="WARN">
 		<appender-ref ref="CONSOLE_JSON_SERVICE_CTX"/>
 	</logger>
 
 	<logger name="StackdriverJsonLayoutServiceCtxLoggerTestsMissingClass" level="WARN">
 		<appender-ref ref="CONSOLE_JSON_SERVICE_CTX_MISSING"/>
+	</logger>
+
+	<logger name="StackdriverJsonLayoutCustomMDCFieldTests" level="WARN">
+		<appender-ref ref="CONSOLE_JSON_CUSTOM_MDC_FIELD"/>
 	</logger>
 
 	<statusListener class="ch.qos.logback.core.status.NopStatusListener" />
