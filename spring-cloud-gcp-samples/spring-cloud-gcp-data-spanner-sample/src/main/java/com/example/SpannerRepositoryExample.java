@@ -114,7 +114,8 @@ public class SpannerRepositoryExample {
 		LOGGER.info("Press Enter to continue with sample with JSON field.");
 		try {
 			System.in.read();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 

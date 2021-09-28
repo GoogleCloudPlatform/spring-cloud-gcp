@@ -16,14 +16,13 @@
 
 package com.example;
 
+import java.util.List;
+
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import com.google.cloud.spring.data.spanner.repository.query.Query;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * A sample repository.
