@@ -108,6 +108,8 @@ public class StructAccessor {
 
 	private Set<String> columnNamesIndex;
 
+	private static final Gson gson = new Gson();
+
 	public StructAccessor(Struct struct) {
 		this.struct = struct;
 		this.columnNamesIndex = indexColumnNames();
@@ -180,7 +182,6 @@ public class StructAccessor {
 			return null;
 		}
 		String jsonString = this.struct.getJson(colName);
-		Gson gson = new Gson();
 		return gson.fromJson(jsonString, colType);
 	}
 }
