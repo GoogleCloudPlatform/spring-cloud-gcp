@@ -244,13 +244,13 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 			SpannerCustomConverter spannerCustomConverter) {
 		// directly try to set using the property's original Java type
 		boolean valueSet = attemptSetSingleItemValue(propertyValue, propertyType,
-				valueBinder, propertyType, spannerCustomConverter);
+				valueBinder, propertyType, spannerCustomConverter, null);
 
 		// Finally try and find any conversion that works
 		if (!valueSet) {
 			for (Class<?> targetType : singleItemTypeValueBinderMethodMap.keySet()) {
 				valueSet = attemptSetSingleItemValue(propertyValue, propertyType,
-						valueBinder, targetType, spannerCustomConverter);
+						valueBinder, targetType, spannerCustomConverter, null);
 				if (valueSet) {
 					break;
 				}
@@ -326,7 +326,12 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 
 	@SuppressWarnings("unchecked")
 	private static <T> boolean attemptSetSingleItemValue(Object value, Class<?> sourceType,
-			ValueBinder<WriteBuilder> valueBinder, Class<T> targetType, SpannerCustomConverter writeConverter) {
+			ValueBinder<WriteBuilder> valueBinder, Class<T> targetType,
+			SpannerCustomConverter writeConverter, Type.Code annotatedColumnItemType) {
+		if (annotatedColumnItemType == Type.Code.JSON) {
+			valueBinder.to(jsonToValueConverter(value));
+			return true;
+		}
 		if (!writeConverter.canConvert(sourceType, targetType)) {
 			return false;
 		}
@@ -404,19 +409,14 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 			// time
 			if (property.isCommitTimestamp()) {
 				valueSet = attemptSetSingleItemValue(Value.COMMIT_TIMESTAMP, Timestamp.class, valueBinder,
-						Timestamp.class, this.writeConverter);
-			}
-			// annotated json column, bind directly
-			else if (property.getAnnotatedColumnItemType() == Type.Code.JSON) {
-				valueBinder.to(jsonToValueConverter(propertyValue));
-				valueSet = true;
+						Timestamp.class, this.writeConverter, null);
 			}
 			// use the user's annotated column type if possible
 			else if (property.getAnnotatedColumnItemType() != null) {
 				valueSet = attemptSetSingleItemValue(propertyValue, propertyType,
 						valueBinder,
 						SpannerTypeMapper.getSimpleJavaClassFor(property.getAnnotatedColumnItemType()),
-						this.writeConverter);
+						this.writeConverter, property.getAnnotatedColumnItemType());
 			}
 			else {
 				valueSet = attemptBindSingleValue(propertyValue, propertyType, valueBinder, this.writeConverter);
