@@ -111,6 +111,13 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 
 		Optional<String> empty = tradeRepository.fetchSymbolById(trade.getId() + "doesNotExist");
 		assertThat(empty).isNotPresent();
+
+		Trade tradeWithNullSymbol = Trade.aTrade(null, 0);
+		tradeWithNullSymbol.setSymbol(null);
+		this.spannerOperations.insert(tradeWithNullSymbol);
+
+		Optional<String> empty2 = tradeRepository.fetchSymbolById(tradeWithNullSymbol.getId());
+		assertThat(empty2).isNotPresent();
 	}
 
 	@Test
@@ -522,15 +529,21 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 		trade1.setOptionalDetails(new Details("abc", "def"));
 		Trade trade2 = Trade.aTrade();
 		trade2.setOptionalDetails(new Details("some context", null));
-		this.tradeRepository.save(trade2);
+		Trade trade3 = Trade.aTrade();
 		this.tradeRepository.save(trade1);
+		this.tradeRepository.save(trade2);
+		this.tradeRepository.save(trade3);
 
-		assertThat(this.tradeRepository.findAll()).contains(trade1, trade2);
+		assertThat(this.tradeRepository.findAll()).contains(trade1, trade2, trade3);
 		assertThat(this.tradeRepository.getByDetailP1("abc")).hasSize(1).contains(trade1);
 
 		String traderId = trade1.getTraderId();
 		Optional<Details> optionalDetails = this.tradeRepository.getOptionalDetailsById(traderId);
 		assertThat(optionalDetails).isEqualTo(Optional.of(new Details("abc", "def")));
+
+		String traderId3 = trade3.getTraderId();
+		Optional<Details> empty = this.tradeRepository.getOptionalDetailsById(traderId3);
+		assertThat(empty).isNotPresent();
 
 	}
 
