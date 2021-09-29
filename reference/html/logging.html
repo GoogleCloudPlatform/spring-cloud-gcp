@@ -400,14 +400,24 @@ The following properties are available:</p>
 </div></div></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceIdMDCField</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The MDC field name for retrieving a trace id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spanIdMDCField</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spanId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the MDC field name for retrieving a span id</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeTraceId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Should the <code>traceId</code> be included</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the trace id be included</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeSpanId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Should the <code>spanId</code> be included</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the span id be included</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeLevel</code></p></td>
@@ -488,6 +498,8 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
       &lt;layout class="com.google.cloud.spring.logging.StackdriverJsonLayout"&gt;
         &lt;projectId&gt;${projectId}&lt;/projectId&gt;
 
+        &lt;!--&lt;traceIdMDCField&gt;traceId&lt;/traceIdMDCField&gt;--&gt;
+        &lt;!--&lt;spanIdMDCField&gt;spanId&lt;/spanIdMDCField&gt;--&gt;
         &lt;!--&lt;includeTraceId&gt;true&lt;/includeTraceId&gt;--&gt;
         &lt;!--&lt;includeSpanId&gt;true&lt;/includeSpanId&gt;--&gt;
         &lt;!--&lt;includeLevel&gt;true&lt;/includeLevel&gt;--&gt;
