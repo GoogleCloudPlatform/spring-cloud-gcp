@@ -70,6 +70,8 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 	static final Map<Class<?>, BiConsumer<ValueBinder<?>, Iterable>>
 			iterablePropertyTypeToMethodMap = createIterableTypeMapping();
 
+	private static final Gson gson = new Gson();
+
 	@SuppressWarnings("unchecked")
 	private static Map<Class<?>, BiConsumer<ValueBinder<?>, Iterable>> createIterableTypeMapping() {
 		Map<Class<?>, BiConsumer<ValueBinder<?>, Iterable>> map = new LinkedHashMap<>();
@@ -346,7 +348,6 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 		if (value == null) {
 			return Value.json(null);
 		}
-		Gson gson = new Gson();
 		String jsonString = gson.toJson(value);
 		return Value.json(jsonString);
 	}
@@ -406,8 +407,7 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 						Timestamp.class, this.writeConverter);
 			}
 			// annotated json column, bind directly
-			else if (property.getAnnotatedColumnItemType() != null &&
-					property.getAnnotatedColumnItemType().equals(Type.Code.JSON)) {
+			else if (property.getAnnotatedColumnItemType() == Type.Code.JSON) {
 				valueBinder.to(jsonToValueConverter(propertyValue));
 				valueSet = true;
 			}
