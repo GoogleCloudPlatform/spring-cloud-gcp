@@ -238,7 +238,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
 					struct -> new StructAccessor(struct).getSingleValue(0), statement,
 					spannerQueryOptions);
 		}
-		// check if is json field
+		// check if returnedType is a field annotated as json
 		String jsonFieldName = getJsonFieldNameIfExists(returnedType);
 		if (jsonFieldName != null) {
 			return this.spannerTemplate.query(

@@ -27,6 +27,7 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionRunner;
+import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Value;
 import com.google.cloud.spring.data.spanner.core.SpannerMutationFactory;
 import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
@@ -41,11 +42,13 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.core.mapping.Where;
+import com.google.spanner.v1.TypeCode;
 import org.assertj.core.data.Offset;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import org.springframework.data.domain.PageRequest;
@@ -56,6 +59,8 @@ import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
+import org.springframework.data.repository.query.ResultProcessor;
+import org.springframework.data.repository.query.ReturnedType;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -515,6 +520,83 @@ public class SqlSpannerQueryTests {
 		verify(this.spannerTemplate).query((Function<Struct, Object>) any(), any(), any());
 	}
 
+	@Test
+	public void sqlReturnTypeIsJsonFieldTest() throws NoSuchMethodException {
+		String sql = "SELECT details from singer where gender = @gender";
+
+		Object[] params = new Object[] { "GENDER" };
+		String[] paramNames = new String[] { "gender" };
+
+		when(queryMethod.isCollectionQuery()).thenReturn(true);
+		ResultProcessor resultProcessor = mock(ResultProcessor.class);
+		ReturnedType returnedType = mock(ReturnedType.class);
+		when(this.queryMethod.getResultProcessor()).thenReturn(resultProcessor);
+		when(resultProcessor.getReturnedType()).thenReturn(returnedType);
+		when(returnedType.getReturnedType()).thenReturn((Class) Detail.class);
+
+		EvaluationContext evaluationContext = new StandardEvaluationContext();
+
+		evaluationContext.setVariable(paramNames[0], params[0]);
+		when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
+				.thenReturn(evaluationContext);
+
+		SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Singer.class, false);
+
+		doAnswer(invocation -> {
+			Statement statement = invocation.getArgument(1);
+			assertThat(statement.getSql()).isEqualTo(sql);
+			Map<String, Value> paramMap = statement.getParameters();
+			assertThat(paramMap.get("gender").getString()).isEqualTo(params[0]);
+
+			return null;
+		}).when(this.spannerTemplate).query((Function<Struct, Object>) any(), any(), any());
+
+		// This dummy method was created so the metadata for the ARRAY param inner type is
+		// provided.
+		Method method = QueryHolder.class.getMethod("dummyMethod6", String.class);
+		when(this.queryMethod.getMethod()).thenReturn(method);
+		Mockito.<Parameters>when(this.queryMethod.getParameters()).thenReturn(new DefaultParameters(method));
+
+		sqlSpannerQuery.execute(params);
+		// capturing the row function and verifying it's the correct one with mock data
+		ArgumentCaptor<Function<Struct, Object>> argumentCaptor = ArgumentCaptor.forClass(Function.class);
+		verify(this.spannerTemplate).query(argumentCaptor.capture(), any(), any());
+		Function<Struct, Object> rowFunc = argumentCaptor.getValue();
+
+		Struct row = mock(Struct.class);
+		when(row.getType()).thenReturn(
+				Type.struct(Arrays.asList(Type.StructField.of("details", Type.json()))));
+
+		when(row.getJson("details")).thenReturn("{\"p1\":\"address line\",\"p2\":\"5\"}");
+
+		Object result = rowFunc.apply(row);
+
+		assertThat(result).isInstanceOf(Detail.class);
+		assertThat(((Detail) result).p1).isEqualTo("address line");
+		assertThat(((Detail) result).p2).isEqualTo("5");
+	}
+
+	private static class Singer {
+		@PrimaryKey
+		String id;
+
+		String gender;
+
+		@Column(spannerType = TypeCode.JSON)
+		Detail details;
+	}
+
+	private class Detail {
+		String p1;
+
+		String p2;
+
+		Detail(String p1, String p2) {
+			this.p1 = p1;
+			this.p2 = p2;
+		}
+	}
+
 	private static class SymbolAction {
 		String symbol;
 
@@ -603,6 +685,10 @@ public class SqlSpannerQueryTests {
 		}
 
 		public List<Child> dummyMethod5(String id, String trader_id, Sort param3) {
+			return null;
+		}
+
+		public Detail dummyMethod6(String gender) {
 			return null;
 		}
 
