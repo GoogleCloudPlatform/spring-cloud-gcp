@@ -32,6 +32,9 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
  */
 public class PubSubConfiguration {
 
+	/**
+	 * Default number of executor threads.
+	 */
 	public static final int DEFAULT_EXECUTOR_THREADS = 4;
 
 	private static final Long DEFAULT_MAX_ACK_EXTENSION_PERIOD = 0L;

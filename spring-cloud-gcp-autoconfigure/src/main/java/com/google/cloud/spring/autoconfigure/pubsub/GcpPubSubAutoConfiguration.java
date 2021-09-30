@@ -56,7 +56,6 @@ import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.threeten.bp.Duration;
 
 import org.springframework.beans.factory.ObjectProvider;
@@ -68,6 +67,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -80,7 +80,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  * @author Daniel Zou
  * @author Maurice Zeijen
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(GcpContextAutoConfiguration.class)
 @ConditionalOnProperty(value = "spring.cloud.gcp.pubsub.enabled", matchIfMissing = true)
 @ConditionalOnClass(PubSubTemplate.class)
@@ -97,8 +97,8 @@ public class GcpPubSubAutoConfiguration {
 	private final HeaderProvider headerProvider = new UserAgentHeaderProvider(this.getClass());
 
 	public GcpPubSubAutoConfiguration(GcpPubSubProperties gcpPubSubProperties,
-									  GcpProjectIdProvider gcpProjectIdProvider,
-									  CredentialsProvider credentialsProvider) throws IOException {
+			GcpProjectIdProvider gcpProjectIdProvider,
+			CredentialsProvider credentialsProvider) throws IOException {
 		this.gcpPubSubProperties = gcpPubSubProperties;
 		this.finalProjectIdProvider = (gcpPubSubProperties.getProjectId() != null)
 				? gcpPubSubProperties::getProjectId
@@ -109,7 +109,8 @@ public class GcpPubSubAutoConfiguration {
 			this.finalCredentialsProvider = gcpPubSubProperties.getCredentials().hasKey()
 					? new DefaultCredentialsProvider(gcpPubSubProperties)
 					: credentialsProvider;
-		} else {
+		}
+		else {
 			// Since we cannot create a general NoCredentialsProvider if the emulator host is enabled
 			// (because it would also be used for the other components), we have to create one here
 			// for this particular case.
@@ -137,7 +138,7 @@ public class GcpPubSubAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public PubSubPublisherTemplate pubSubPublisherTemplate(PublisherFactory publisherFactory,
-														   ObjectProvider<PubSubMessageConverter> pubSubMessageConverter) {
+			ObjectProvider<PubSubMessageConverter> pubSubMessageConverter) {
 		PubSubPublisherTemplate pubSubPublisherTemplate = new PubSubPublisherTemplate(publisherFactory);
 		pubSubMessageConverter.ifUnique(pubSubPublisherTemplate::setMessageConverter);
 		return pubSubPublisherTemplate;
@@ -156,9 +157,9 @@ public class GcpPubSubAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public PubSubSubscriberTemplate pubSubSubscriberTemplate(SubscriberFactory subscriberFactory,
-															 ObjectProvider<PubSubMessageConverter> pubSubMessageConverter,
-															 @Qualifier("pubSubAsynchronousPullExecutor") ObjectProvider<Executor> asyncPullExecutor,
-															 @Qualifier("pubSubAcknowledgementExecutor") Executor ackExecutor) {
+			ObjectProvider<PubSubMessageConverter> pubSubMessageConverter,
+			@Qualifier("pubSubAsynchronousPullExecutor") ObjectProvider<Executor> asyncPullExecutor,
+			@Qualifier("pubSubAcknowledgementExecutor") Executor ackExecutor) {
 		PubSubSubscriberTemplate pubSubSubscriberTemplate = new PubSubSubscriberTemplate(subscriberFactory);
 		pubSubMessageConverter.ifUnique(pubSubSubscriberTemplate::setMessageConverter);
 		pubSubSubscriberTemplate.setAckExecutor(ackExecutor);
@@ -169,7 +170,7 @@ public class GcpPubSubAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public PubSubTemplate pubSubTemplate(PubSubPublisherTemplate pubSubPublisherTemplate,
-										 PubSubSubscriberTemplate pubSubSubscriberTemplate) {
+			PubSubSubscriberTemplate pubSubSubscriberTemplate) {
 		return new PubSubTemplate(pubSubPublisherTemplate, pubSubSubscriberTemplate);
 	}
 
@@ -298,7 +299,7 @@ public class GcpPubSubAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public PubSubAdmin pubSubAdmin(TopicAdminClient topicAdminClient,
-								   SubscriptionAdminClient subscriptionAdminClient) {
+			SubscriptionAdminClient subscriptionAdminClient) {
 		return new PubSubAdmin(this.finalProjectIdProvider, topicAdminClient,
 				subscriptionAdminClient);
 	}
@@ -309,7 +310,8 @@ public class GcpPubSubAutoConfiguration {
 			TopicAdminSettings topicAdminSettings) {
 		try {
 			return TopicAdminClient.create(topicAdminSettings);
-		} catch (IOException ioe) {
+		}
+		catch (IOException ioe) {
 			throw new PubSubException("An error occurred while creating TopicAdminClient.", ioe);
 		}
 	}
@@ -324,7 +326,8 @@ public class GcpPubSubAutoConfiguration {
 					.setHeaderProvider(this.headerProvider)
 					.setTransportChannelProvider(publisherTransportChannelProvider)
 					.build();
-		} catch (IOException ioe) {
+		}
+		catch (IOException ioe) {
 			throw new PubSubException("An error occurred while creating TopicAdminSettings.", ioe);
 		}
 	}
@@ -340,7 +343,8 @@ public class GcpPubSubAutoConfiguration {
 							.setHeaderProvider(this.headerProvider)
 							.setTransportChannelProvider(subscriberTransportChannelProvider)
 							.build());
-		} catch (IOException ioe) {
+		}
+		catch (IOException ioe) {
 			throw new PubSubException("An error occurred while creating SubscriptionAdminClient.", ioe);
 		}
 	}

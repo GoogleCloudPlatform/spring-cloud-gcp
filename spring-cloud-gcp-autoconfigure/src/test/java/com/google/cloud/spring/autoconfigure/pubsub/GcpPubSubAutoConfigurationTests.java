@@ -137,7 +137,7 @@ public class GcpPubSubAutoConfigurationTests {
 			assertThat(gcpPubSubProperties.getSubscriber().getExecutorThreads()).isEqualTo(7);
 
 			// Verify that global thread pool task scheduler is used
-			DefaultSubscriberFactory factory = (DefaultSubscriberFactory)ctx.getBean("defaultSubscriberFactory");
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
 			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("other");
 			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
 		});
@@ -155,7 +155,7 @@ public class GcpPubSubAutoConfigurationTests {
 		contextRunner.run(ctx -> {
 
 			// Verify that subscription-specific thread pool task scheduler is used
-			DefaultSubscriberFactory factory = (DefaultSubscriberFactory)ctx.getBean("defaultSubscriberFactory");
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
 			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
 			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-subscription-name");
 		});
@@ -174,7 +174,7 @@ public class GcpPubSubAutoConfigurationTests {
 		contextRunner.run(ctx -> {
 
 			// Verify that subscription-specific thread pool task scheduler is used
-			DefaultSubscriberFactory factory = (DefaultSubscriberFactory)ctx.getBean("defaultSubscriberFactory");
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
 			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
 			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-subscription-name");
 		});
@@ -193,7 +193,7 @@ public class GcpPubSubAutoConfigurationTests {
 		contextRunner.run(ctx -> {
 
 			// Verify that global thread pool task scheduler is used
-			DefaultSubscriberFactory factory = (DefaultSubscriberFactory)ctx.getBean("defaultSubscriberFactory");
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
 			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
 			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
 		});

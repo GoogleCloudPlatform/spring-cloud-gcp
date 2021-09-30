@@ -25,7 +25,6 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
-import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.BeforeClass;
@@ -68,20 +67,6 @@ public class PubSubAutoConfigurationIntegrationTests {
 	public static void enableTests() {
 		assumeThat(System.getProperty("it.pubsub")).isEqualTo("true");
 		projectIdProvider = new DefaultGcpProjectIdProvider();
-	}
-
-	@Test
-	public void testBeanRegistration() {
-		this.contextRunner.run(context -> {
-			ThreadPoolTaskScheduler scheduler = (ThreadPoolTaskScheduler) context.getBean("threadPoolScheduler_test-sub-1");
-			assertThat(scheduler).isNotNull();
-		});
-//		AnnotationConfigApplicationContext context =
-//				new AnnotationConfigApplicationContext(ThreadPoolTaskScheduler.class);
-//		this.contextRunner.run(context -> {
-//			ThreadPoolTaskScheduler threadPoolTaskScheduler = (ThreadPoolTaskScheduler) context.getBean("threadPoolScheduler_test-sub-1");
-//			assertThat(threadPoolTaskScheduler).isNotNull();
-//		});
 	}
 
 	@Test

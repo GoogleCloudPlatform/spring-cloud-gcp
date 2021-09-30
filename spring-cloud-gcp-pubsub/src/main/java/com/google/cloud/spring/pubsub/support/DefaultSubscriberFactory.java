@@ -38,9 +38,6 @@ import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.pubsub.v1.PullRequest;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.threeten.bp.Duration;
 
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -369,6 +366,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			return this.executorProviderMap.get(subscriptionName);
 		}
 		ThreadPoolTaskScheduler scheduler = fetchThreadPoolTaskScheduler(subscriptionName);
+		scheduler.initialize();
 		ExecutorProvider executor = FixedExecutorProvider.create(scheduler.getScheduledExecutor());
 		return this.executorProviderMap.computeIfAbsent(subscriptionName, k -> executor);
 	}
@@ -491,11 +489,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		return null;
 	}
 
-	public void setThreadPoolTaskSchedulerMap(ConcurrentMap<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap){
+	public void setThreadPoolTaskSchedulerMap(
+			ConcurrentMap<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap) {
 		this.threadPoolTaskSchedulerMap = threadPoolTaskSchedulerMap;
 	}
 
-	public void setGlobalScheduler(ThreadPoolTaskScheduler threadPoolTaskScheduler){
+	public void setGlobalScheduler(ThreadPoolTaskScheduler threadPoolTaskScheduler) {
 		this.globalScheduler = threadPoolTaskScheduler;
 	}
 }
