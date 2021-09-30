@@ -128,9 +128,6 @@ public class StructAccessor {
 	}
 
 	public Object getSingleValue(int colIndex) {
-		if (this.struct.isNull(colIndex)) {
-			return null;
-		}
 		Type colType = this.struct.getColumnType(colIndex);
 		Class sourceType = getSingleItemTypeCode(colType);
 		BiFunction readFunction = singleItemReadMethodMappingIntCol.get(sourceType);

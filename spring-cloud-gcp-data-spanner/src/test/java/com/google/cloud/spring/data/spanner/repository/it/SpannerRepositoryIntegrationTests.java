@@ -111,13 +111,6 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 
 		Optional<String> empty = tradeRepository.fetchSymbolById(trade.getId() + "doesNotExist");
 		assertThat(empty).isNotPresent();
-
-		Trade tradeWithNullSymbol = Trade.aTrade(null, 0);
-		tradeWithNullSymbol.setSymbol(null);
-		this.spannerOperations.insert(tradeWithNullSymbol);
-
-		Optional<String> empty2 = tradeRepository.fetchSymbolById(tradeWithNullSymbol.getId());
-		assertThat(empty2).isNotPresent();
 	}
 
 	@Test
