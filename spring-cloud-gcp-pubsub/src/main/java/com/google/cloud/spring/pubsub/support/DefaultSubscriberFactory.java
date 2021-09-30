@@ -19,9 +19,8 @@ package com.google.cloud.spring.pubsub.support;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
-
-import javax.annotation.PreDestroy;
 
 import com.google.api.core.ApiClock;
 import com.google.api.gax.batching.FlowControlSettings;
@@ -39,6 +38,9 @@ import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.pubsub.v1.PullRequest;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.threeten.bp.Duration;
 
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -81,7 +83,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private PubSubConfiguration pubSubConfiguration;
 
-	private ConcurrentHashMap<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap = new ConcurrentHashMap<>();
+	private ConcurrentMap<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap = new ConcurrentHashMap<>();
+
+	private ThreadPoolTaskScheduler globalScheduler;
 
 	private ConcurrentHashMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
 
@@ -364,31 +368,22 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (this.executorProviderMap.containsKey(subscriptionName)) {
 			return this.executorProviderMap.get(subscriptionName);
 		}
-		ThreadPoolTaskScheduler scheduler = createThreadPoolTaskScheduler(subscriptionName);
-		scheduler.initialize();
+		ThreadPoolTaskScheduler scheduler = fetchThreadPoolTaskScheduler(subscriptionName);
 		ExecutorProvider executor = FixedExecutorProvider.create(scheduler.getScheduledExecutor());
 		return this.executorProviderMap.computeIfAbsent(subscriptionName, k -> executor);
 	}
 
 	/**
-	 * Creates {@link ThreadPoolTaskScheduler} given subscriber properties.
+	 * Returns {@link ThreadPoolTaskScheduler} given subscription name.
 	 * @param subscriptionName subscription name
 	 * @return thread pool scheduler
 	 */
-	ThreadPoolTaskScheduler createThreadPoolTaskScheduler(String subscriptionName) {
-		if (this.threadPoolTaskSchedulerMap.containsKey(subscriptionName)) {
-			return threadPoolTaskSchedulerMap.get(subscriptionName);
+	public ThreadPoolTaskScheduler fetchThreadPoolTaskScheduler(String subscriptionName) {
+		String fullyQualifiedName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId).toString();
+		if (this.threadPoolTaskSchedulerMap.containsKey(fullyQualifiedName)) {
+			return threadPoolTaskSchedulerMap.get(fullyQualifiedName);
 		}
-		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.setPoolSize(this.pubSubConfiguration.computeSubscriberExecutorThreads(subscriptionName, projectId));
-		String threadNamePrefix = "gcp-pubsub-subscriber" + "-" + subscriptionName;
-		scheduler.setThreadNamePrefix(threadNamePrefix);
-		scheduler.setDaemon(true);
-		return this.threadPoolTaskSchedulerMap.computeIfAbsent(subscriptionName, k -> scheduler);
-	}
-
-	Map<String, ThreadPoolTaskScheduler> getThreadPoolTaskSchedulerMap() {
-		return this.threadPoolTaskSchedulerMap;
+		return this.globalScheduler;
 	}
 
 	Map<String, ExecutorProvider> getExecutorProviderMap() {
@@ -496,11 +491,11 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		return null;
 	}
 
+	public void setThreadPoolTaskSchedulerMap(ConcurrentMap<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap){
+		this.threadPoolTaskSchedulerMap = threadPoolTaskSchedulerMap;
+	}
 
-	@PreDestroy
-	public void clearScheduler() {
-		for (ThreadPoolTaskScheduler scheduler : threadPoolTaskSchedulerMap.values()) {
-			scheduler.shutdown();
-		}
+	public void setGlobalScheduler(ThreadPoolTaskScheduler threadPoolTaskScheduler){
+		this.globalScheduler = threadPoolTaskScheduler;
 	}
 }

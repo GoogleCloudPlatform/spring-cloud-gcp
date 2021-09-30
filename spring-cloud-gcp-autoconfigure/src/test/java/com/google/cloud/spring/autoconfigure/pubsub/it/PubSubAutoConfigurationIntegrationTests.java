@@ -25,6 +25,7 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.BeforeClass;
@@ -32,6 +33,7 @@ import org.junit.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
@@ -53,7 +55,7 @@ public class PubSubAutoConfigurationIntegrationTests {
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.initial-rpc-timeout-seconds=600",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.rpc-timeout-multiplier=1",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.max-rpc-timeout-seconds=600",
-					"spring.cloud.gcp.pubsub.subscription.test-sub-2.executor-threads=1",
+					"spring.cloud.gcp.pubsub.subscription.test-sub-2.executor-threads=2",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-2.max-ack-extension-period=0",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-2.parallel-pull-count=1",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-2.flow-control.max-outstanding-element-Count=1",
@@ -66,6 +68,20 @@ public class PubSubAutoConfigurationIntegrationTests {
 	public static void enableTests() {
 		assumeThat(System.getProperty("it.pubsub")).isEqualTo("true");
 		projectIdProvider = new DefaultGcpProjectIdProvider();
+	}
+
+	@Test
+	public void testBeanRegistration() {
+		this.contextRunner.run(context -> {
+			ThreadPoolTaskScheduler scheduler = (ThreadPoolTaskScheduler) context.getBean("threadPoolScheduler_test-sub-1");
+			assertThat(scheduler).isNotNull();
+		});
+//		AnnotationConfigApplicationContext context =
+//				new AnnotationConfigApplicationContext(ThreadPoolTaskScheduler.class);
+//		this.contextRunner.run(context -> {
+//			ThreadPoolTaskScheduler threadPoolTaskScheduler = (ThreadPoolTaskScheduler) context.getBean("threadPoolScheduler_test-sub-1");
+//			assertThat(threadPoolTaskScheduler).isNotNull();
+//		});
 	}
 
 	@Test
@@ -102,8 +118,12 @@ public class PubSubAutoConfigurationIntegrationTests {
 			assertThat(retrySettings.getInitialRpcTimeoutSeconds()).isEqualTo(600L);
 			assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(1);
 			assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(600L);
-			assertThat(gcpPubSubProperties.computeSubscriberExecutorThreads(subscriptionName,
-					projectIdProvider.getProjectId())).isEqualTo(3);
+			ThreadPoolTaskScheduler scheduler = (ThreadPoolTaskScheduler) context
+					.getBean("threadPoolScheduler_test-sub-1");
+			assertThat(scheduler).isNotNull();
+			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-test-sub-1");
+			assertThat(scheduler.isDaemon()).isEqualTo(true);
+			assertThat((ThreadPoolTaskScheduler) context.getBean("globalThreadPoolScheduler")).isNotNull();
 
 			pubSubAdmin.deleteSubscription(subscriptionName);
 			pubSubAdmin.deleteTopic(topicName);
@@ -148,8 +168,11 @@ public class PubSubAutoConfigurationIntegrationTests {
 					projectIdProvider.getProjectId())).isZero();
 			assertThat(gcpPubSubProperties.computeParallelPullCount(subscriptionName, projectIdProvider.getProjectId()))
 					.isEqualTo(1);
-			assertThat(gcpPubSubProperties.computeSubscriberExecutorThreads(subscriptionName,
-					projectIdProvider.getProjectId())).isEqualTo(1);
+			ThreadPoolTaskScheduler scheduler = (ThreadPoolTaskScheduler) context.getBean("threadPoolScheduler_test-sub-2");
+			assertThat(scheduler).isNotNull();
+			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-test-sub-2");
+			assertThat(scheduler.isDaemon()).isEqualTo(true);
+			assertThat((ThreadPoolTaskScheduler) context.getBean("globalThreadPoolScheduler")).isNotNull();
 
 			pubSubAdmin.deleteSubscription(subscriptionName);
 			pubSubAdmin.deleteTopic(topicName);

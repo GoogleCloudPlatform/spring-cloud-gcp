@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -133,11 +134,12 @@ public class GcpPubSubAutoConfigurationTests {
 		contextRunner.run(ctx -> {
 			GcpPubSubProperties gcpPubSubProperties = ctx
 					.getBean(GcpPubSubProperties.class);
-			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
 			assertThat(gcpPubSubProperties.getSubscriber().getExecutorThreads()).isEqualTo(7);
-			assertThat(
-					gcpPubSubProperties.computeSubscriberExecutorThreads("subscription-name", projectIdProvider.getProjectId()))
-							.isEqualTo(7);
+
+			// Verify that global thread pool task scheduler is used
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory)ctx.getBean("defaultSubscriberFactory");
+			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("other");
+			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
 		});
 	}
 
@@ -146,16 +148,16 @@ public class GcpPubSubAutoConfigurationTests {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
+						"spring.cloud.gcp.projectId=fake project",
 						"spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=7")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
-			GcpPubSubProperties gcpPubSubProperties = ctx
-					.getBean(GcpPubSubProperties.class);
-			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
-			assertThat(
-					gcpPubSubProperties.computeSubscriberExecutorThreads("subscription-name", projectIdProvider.getProjectId()))
-							.isEqualTo(7);
+
+			// Verify that subscription-specific thread pool task scheduler is used
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory)ctx.getBean("defaultSubscriberFactory");
+			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
+			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-subscription-name");
 		});
 	}
 
@@ -164,28 +166,17 @@ public class GcpPubSubAutoConfigurationTests {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
+						"spring.cloud.gcp.projectId=fake project",
 						"spring.cloud.gcp.pubsub.subscriber.executor-threads=5",
 						"spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=3")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
-			GcpPubSubProperties gcpPubSubProperties = ctx
-					.getBean(GcpPubSubProperties.class);
-			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
-			assertThat(
-					gcpPubSubProperties.computeSubscriberExecutorThreads("subscription-name", projectIdProvider.getProjectId()))
-							.isEqualTo(3);
-			assertThat(gcpPubSubProperties.getSubscription())
-					.containsKey("projects/fake project/subscriptions/subscription-name");
-			assertThat(
-					gcpPubSubProperties.computeSubscriberExecutorThreads("other", projectIdProvider.getProjectId()))
-							.isEqualTo(5);
-			assertThat(gcpPubSubProperties.getSubscription())
-					.hasSize(2);
-			assertThat(gcpPubSubProperties.getSubscription())
-					.containsKey("projects/fake project/subscriptions/subscription-name");
-			assertThat(gcpPubSubProperties.getSubscription())
-					.containsKey("projects/fake project/subscriptions/other");
+
+			// Verify that subscription-specific thread pool task scheduler is used
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory)ctx.getBean("defaultSubscriberFactory");
+			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
+			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-subscription-name");
 		});
 	}
 
@@ -194,41 +185,17 @@ public class GcpPubSubAutoConfigurationTests {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
+						"spring.cloud.gcp.projectId=fake project",
 						"spring.cloud.gcp.pubsub.subscriber.executor-threads=5",
 						"spring.cloud.gcp.pubsub.subscription.subscription-name.parallel-pull-count=3")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
-			GcpPubSubProperties gcpPubSubProperties = ctx
-					.getBean(GcpPubSubProperties.class);
-			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
-			assertThat(
-					gcpPubSubProperties.computeSubscriberExecutorThreads("subscription-name", projectIdProvider.getProjectId()))
-					.isEqualTo(5);
-			assertThat(gcpPubSubProperties.getSubscription())
-					.containsKey("projects/fake project/subscriptions/subscription-name");
-			assertThat(
-					gcpPubSubProperties.computeSubscriberExecutorThreads("other", projectIdProvider.getProjectId()))
-					.isEqualTo(5);
-		});
-	}
 
-	@Test
-	public void executorThreads_noConfigurationSet_pickDefault() {
-		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
-				.withUserConfiguration(TestConfig.class);
-
-		contextRunner.run(ctx -> {
-			GcpPubSubProperties gcpPubSubProperties = ctx
-					.getBean(GcpPubSubProperties.class);
-			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
-			assertThat(
-					gcpPubSubProperties.computeSubscriberExecutorThreads("subscription-name",
-							projectIdProvider.getProjectId()))
-					.isEqualTo(4);
-			assertThat(gcpPubSubProperties.getSubscription())
-					.containsKey("projects/fake project/subscriptions/subscription-name");
+			// Verify that global thread pool task scheduler is used
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory)ctx.getBean("defaultSubscriberFactory");
+			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
+			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
 		});
 	}
 
