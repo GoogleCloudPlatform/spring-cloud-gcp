@@ -32,21 +32,22 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
  * @author Chengyuan Zhao
  */
 @RepositoryRestResource(collectionResourceRel = "trades", path = "trades")
-public interface TradeRepository extends SpannerRepository<Trade, Key> {
+public interface TradeRepository extends SpannerRepository<com.example.Trade, Key> {
 
-	List<Trade> findTop3DistinctByActionAndSymbolOrTraderIdOrderBySymbolDesc(
+	List<com.example.Trade> findTop3DistinctByActionAndSymbolOrTraderIdOrderBySymbolDesc(
 			String action, String symbol, String traderId);
 
-	List<Trade> findByAction(String action);
+	List<com.example.Trade> findByAction(String action);
 
 	@Query("SELECT * FROM trades limit 1")
-	Trade getAnyOneTrade();
+	com.example.Trade getAnyOneTrade();
 
 	@Query("SELECT trade_id from trades where action = @action")
 	List<String> getTradeIds(@Param("action") String action);
 
 	int countByAction(String action);
 
-	// This method uses the query from the properties file instead of one generated based on name.
+	// This method uses the query from the properties file instead of one generated based on
+	// name.
 	List<Trade> fetchByActionNamedQuery(@Param("tag0") String action);
 }

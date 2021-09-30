@@ -26,7 +26,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
 
 /**
  * Application to execute the sample app for Spanner.
@@ -34,40 +33,24 @@ import org.springframework.context.annotation.Profile;
  * @author Daniel Zou
  */
 @SpringBootApplication
-public class SpannerExampleDriver {
+public class SpannerTemplateExampleDriver {
 
-	private static final Log LOGGER = LogFactory.getLog(SpannerExampleDriver.class);
-
-	@Autowired
-	private SpannerRepositoryExample spannerRepositoryExample;
+	private static final Log LOGGER = LogFactory.getLog(SpannerTemplateExampleDriver.class);
 
 	@Autowired
 	private SpannerTemplateExample spannerTemplateExample;
 
 	public static void main(String[] args) {
 		System.out.println(Arrays.toString(args));
-		SpringApplication.run(SpannerExampleDriver.class, args);
+		SpringApplication.run(SpannerTemplateExampleDriver.class, args);
 	}
 
 	@Bean
-	@Profile("!test")
-	ApplicationRunner applicationRunner() {
+	ApplicationRunner applicationRunner1() {
 		return args -> {
-			if (!args.containsOption("spanner_repository") && !args.containsOption("spanner_template")) {
-				throw new IllegalArgumentException("To run the Spanner example, please specify "
-						+ " -Dspring-boot.run.arguments=--spanner_repository to run the Spanner repository"
-						+ " example or -Dspring-boot.run.arguments=--spanner_template to"
-						+ " run the Spanner template example.");
-			}
+			LOGGER.info("Running the Spanner Template Example.");
+			this.spannerTemplateExample.runExample();
 
-			if (args.containsOption("spanner_repository")) {
-				LOGGER.info("Running the Spanner Repository Example.");
-				this.spannerRepositoryExample.runExample();
-			}
-			else if (args.containsOption("spanner_template")) {
-				LOGGER.info("Running the Spanner Template Example.");
-				this.spannerTemplateExample.runExample();
-			}
 		};
 	}
 }

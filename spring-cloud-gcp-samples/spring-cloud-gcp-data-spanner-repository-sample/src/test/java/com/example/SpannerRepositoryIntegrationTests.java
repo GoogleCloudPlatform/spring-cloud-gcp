@@ -60,7 +60,8 @@ import static org.junit.Assume.assumeThat;
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @TestPropertySource("classpath:application-test.properties")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { SpannerExampleDriver.class })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {
+		SpannerRepositoryExampleDriver.class })
 public class SpannerRepositoryIntegrationTests {
 	@LocalServerPort
 	private int port;
@@ -123,7 +124,8 @@ public class SpannerRepositoryIntegrationTests {
 				HttpMethod.PUT,
 				new HttpEntity<>("{\"firstName\": \"John\", \"lastName\": \"Smith\", \"createdOn\": " +
 						"\"2000-Jan-02 03:04:05 UTC\", \"modifiedOn\": [\"2000-Jan-02 03:04:05 UTC\"]}", headers),
-				new ParameterizedTypeReference<Trader>() { });
+				new ParameterizedTypeReference<Trader>() {
+				});
 
 		ZonedDateTime expectedUtcDate = ZonedDateTime.of(2000, 1, 2, 3, 4, 5, 0, ZoneOffset.UTC);
 		Timestamp expectedTimestamp = new Timestamp(expectedUtcDate.toEpochSecond() * 1000L);

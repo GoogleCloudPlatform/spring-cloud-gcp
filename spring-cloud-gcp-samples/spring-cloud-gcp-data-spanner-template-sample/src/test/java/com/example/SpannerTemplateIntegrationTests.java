@@ -30,7 +30,6 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -44,9 +43,9 @@ import static org.junit.Assume.assumeThat;
  * @author Daniel Zou
  */
 @RunWith(SpringRunner.class)
-@ActiveProfiles("test")
+
 @TestPropertySource("classpath:application-test.properties")
-@SpringBootTest(classes = { SpannerExampleDriver.class })
+@SpringBootTest(classes = { SpannerTemplateExampleDriver.class })
 public class SpannerTemplateIntegrationTests {
 	@Autowired
 	private SpannerOperations spannerOperations;

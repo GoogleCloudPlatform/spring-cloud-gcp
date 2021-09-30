@@ -9,7 +9,13 @@
 	</parent>
 
 	<artifactId>spring-cloud-gcp-integration-pubsub-sample</artifactId>
-	<groupId>com.google.cloud</groupId>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-spanner</artifactId>
+        </dependency>
+    </dependencies>
+    <groupId>com.google.cloud</groupId>
 
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>pom</packaging>
@@ -24,7 +30,14 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-		</dependencies>
+            <dependency>
+                <groupId>com.google.cloud</groupId>
+                <artifactId>libraries-bom</artifactId>
+                <version>20.6.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
 	</dependencyManagement>
 
 	<modules>
