@@ -32,4 +32,4 @@ NOTE: You can also view all staged artifacts at http://oss.sonatype.org. To get 
 . Send a pull request to update Cloud Spanner version in the 0.8.x (GA) branch of [R2DBC BOM](https://github.com/r2dbc/r2dbc-bom/blob/main/pom.xml).
 Make sure to [sign your commit](https://github.com/apps/dco) (add `-s` flag when committing).
 
-. Increment the project base version. For example, from `0.7.0-SNAPSHOT` to `0.8.0-SNAPSHOT`.
+. Increment the project base version. For example, from `1.1.0-SNAPSHOT` to `1.2.0-SNAPSHOT`.
