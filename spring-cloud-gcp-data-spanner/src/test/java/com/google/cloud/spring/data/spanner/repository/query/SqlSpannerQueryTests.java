@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.google.cloud.spanner.DatabaseClient;
+import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TransactionContext;
@@ -492,9 +493,19 @@ public class SqlSpannerQueryTests {
 
 		SqlSpannerQuery sqlSpannerQuery = createQuery(sql, long.class, false);
 
+		Struct row = mock(Struct.class);
+		when(row.getType()).thenReturn(
+				Type.struct(Arrays.asList(Type.StructField.of("STRUCT", Type.int64()))));
+		when(row.getLong(0)).thenReturn(3L);
+		when(row.getColumnType(0)).thenReturn(Type.int64());
+
+		ResultSet resultSet = mock(ResultSet.class);
+		when(resultSet.next()).thenReturn(true).thenReturn(false);
+		when(resultSet.getCurrentRowAsStruct()).thenReturn(row);
+
 		doAnswer(invocation -> {
-			Statement statement = invocation.getArgument(1);
-			SpannerQueryOptions queryOptions = invocation.getArgument(2);
+			Statement statement = invocation.getArgument(0);
+			SpannerQueryOptions queryOptions = invocation.getArgument(1);
 			assertThat(queryOptions.isAllowPartialRead()).isTrue();
 
 			assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
@@ -503,9 +514,8 @@ public class SqlSpannerQueryTests {
 
 			assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
 			assertThat(paramMap.get("trader_id").getString()).isEqualTo(params[1]);
-
-			return Arrays.asList(2L);
-		}).when(this.spannerTemplate).query((Function<Struct, Object>) any(), any(), any());
+			return resultSet;
+		}).when(this.spannerTemplate).executeQuery(any(), any());
 
 		// This dummy method was created so the metadata for the ARRAY param inner type is
 		// provided.
@@ -518,6 +528,7 @@ public class SqlSpannerQueryTests {
 		sqlSpannerQuery.execute(params);
 
 		verify(this.spannerTemplate).query((Function<Struct, Object>) any(), any(), any());
+		verify(this.spannerTemplate).executeQuery(any(), any());
 	}
 
 	@Test
