@@ -533,10 +533,10 @@ public class SqlSpannerQueryTests {
 
 	@Test
 	public void sqlReturnTypeIsJsonFieldTest() throws NoSuchMethodException {
-		String sql = "SELECT details from singer where gender = @gender";
+		String sql = "SELECT details from singer where stageName = @stageName";
 
-		Object[] params = new Object[] { "GENDER" };
-		String[] paramNames = new String[] { "gender" };
+		Object[] params = new Object[] { "STAGENAME" };
+		String[] paramNames = new String[] { "stageName" };
 
 		when(queryMethod.isCollectionQuery()).thenReturn(true);
 		ResultProcessor resultProcessor = mock(ResultProcessor.class);
@@ -557,7 +557,7 @@ public class SqlSpannerQueryTests {
 			Statement statement = invocation.getArgument(1);
 			assertThat(statement.getSql()).isEqualTo(sql);
 			Map<String, Value> paramMap = statement.getParameters();
-			assertThat(paramMap.get("gender").getString()).isEqualTo(params[0]);
+			assertThat(paramMap.get("stageName").getString()).isEqualTo(params[0]);
 
 			return null;
 		}).when(this.spannerTemplate).query((Function<Struct, Object>) any(), any(), any());
@@ -591,7 +591,7 @@ public class SqlSpannerQueryTests {
 		@PrimaryKey
 		String id;
 
-		String gender;
+		String stageName;
 
 		@Column(spannerType = TypeCode.JSON)
 		Detail details;
@@ -699,7 +699,7 @@ public class SqlSpannerQueryTests {
 			return null;
 		}
 
-		public Detail dummyMethod6(String gender) {
+		public Detail dummyMethod6(String stageName) {
 			return null;
 		}
 

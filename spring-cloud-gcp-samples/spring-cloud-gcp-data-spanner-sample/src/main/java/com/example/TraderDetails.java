@@ -21,13 +21,13 @@ import java.util.Objects;
 public class TraderDetails {
 	private String address;
 
-	private Long yoe;
+	private Long tradesPerDay;
 
 	private Boolean active;
 
-	public TraderDetails(String address, Long yoe, Boolean active) {
+	public TraderDetails(String address, Long tradesPerDay, Boolean active) {
 		this.address = address;
-		this.yoe = yoe;
+		this.tradesPerDay = tradesPerDay;
 		this.active = active;
 	}
 
@@ -40,19 +40,19 @@ public class TraderDetails {
 			return false;
 		}
 		TraderDetails that = (TraderDetails) o;
-		return active == that.active && Objects.equals(address, that.address) && Objects.equals(yoe, that.yoe);
+		return active == that.active && Objects.equals(address, that.address) && Objects.equals(tradesPerDay, that.tradesPerDay);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(address, yoe, active);
+		return Objects.hash(address, tradesPerDay, active);
 	}
 
 	@Override
 	public String toString() {
 		return "TraderDetails{" +
 				"address='" + address + '\'' +
-				", yoe=" + yoe +
+				", average number of trades per day=" + tradesPerDay +
 				", active=" + active +
 				'}';
 	}
