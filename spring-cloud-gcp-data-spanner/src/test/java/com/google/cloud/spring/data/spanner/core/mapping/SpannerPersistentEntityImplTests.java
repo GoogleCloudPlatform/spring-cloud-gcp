@@ -17,7 +17,6 @@
 package com.google.cloud.spring.data.spanner.core.mapping;
 
 import java.util.List;
-import java.util.Map;
 
 import com.google.cloud.spanner.Key;
 import com.google.spanner.v1.TypeCode;
@@ -332,18 +331,18 @@ public class SpannerPersistentEntityImplTests {
 	}
 
 	@Test
-	public void testGetJsonPropertiesMap() {
+	public void testGetJsonPropertyName() {
 		SpannerPersistentEntityImpl<EntityWithJsonField> entityWithJsonField = (SpannerPersistentEntityImpl<EntityWithJsonField>) this.spannerMappingContext
 				.getPersistentEntity(EntityWithJsonField.class);
 
-		Map<Class<?>, String> map = entityWithJsonField.getJsonPropertiesClassToName();
-
-		assertThat(map).hasSize(1).containsKey(JsonEntity.class).containsValue("jsonField");
+		assertThat(entityWithJsonField.getJsonPropertyName(JsonEntity.class)).isEqualTo("jsonField");
+		assertThat(entityWithJsonField.getJsonPropertyName(String.class)).isNull();
 
 		SpannerPersistentEntityImpl<TestEntity> entityWithNoJsonField = (SpannerPersistentEntityImpl<TestEntity>) this.spannerMappingContext
 				.getPersistentEntity(TestEntity.class);
 
-		assertThat(entityWithNoJsonField.getJsonPropertiesClassToName()).isEmpty();
+		assertThat(entityWithNoJsonField.getJsonPropertyName(String.class)).isNull();
+		assertThat(entityWithNoJsonField.getJsonPropertyName(long.class)).isNull();
 	}
 
 	private static class ParentInRelationship {

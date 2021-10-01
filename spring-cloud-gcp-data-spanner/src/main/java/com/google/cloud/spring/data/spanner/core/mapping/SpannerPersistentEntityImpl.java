@@ -405,8 +405,9 @@ public class SpannerPersistentEntityImpl<T>
 		return Collections.unmodifiableSet(this.columnNames);
 	}
 
-	public Map<Class<?>, String> getJsonPropertiesClassToName() {
-		return jsonPropertiesClassToName;
+	// Lookup whether a particular class is a JSON entity property
+	public String getJsonPropertyName(Class<?> type) {
+		return this.jsonPropertiesClassToName.getOrDefault(type, null);
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext)

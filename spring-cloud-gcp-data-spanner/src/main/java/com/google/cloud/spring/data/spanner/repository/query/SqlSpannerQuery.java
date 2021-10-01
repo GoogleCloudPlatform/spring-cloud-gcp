@@ -257,7 +257,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
 		if (persistentEntity == null) {
 			return null;
 		}
-		return persistentEntity.getJsonPropertiesClassToName().getOrDefault(returnedType, null);
+		return persistentEntity.getJsonPropertyName(returnedType);
 	}
 
 	private Statement buildStatementFromQueryAndTags(QueryTagValue queryTagValue) {
