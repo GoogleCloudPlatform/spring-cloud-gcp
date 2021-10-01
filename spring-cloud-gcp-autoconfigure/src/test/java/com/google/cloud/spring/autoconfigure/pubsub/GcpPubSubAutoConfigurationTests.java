@@ -297,6 +297,7 @@ public class GcpPubSubAutoConfigurationTests {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
+						"spring.cloud.gcp.projectId=fake project",
 						"spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=5",
 						"spring.cloud.gcp.pubsub.subscriber.parallel-pull-count=10",
 						"spring.cloud.gcp.pubsub.subscriber.pull-endpoint=other-endpoint",
@@ -481,6 +482,7 @@ public class GcpPubSubAutoConfigurationTests {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
+						"spring.cloud.gcp.projectId=fake project",
 						"spring.cloud.gcp.pubsub.subscriber.retry.total-timeout-seconds=10",
 						"spring.cloud.gcp.pubsub.subscriber.retry.initial-retry-delay-seconds=10",
 						"spring.cloud.gcp.pubsub.subscriber.retry.retry-delay-multiplier=10",
