@@ -9,7 +9,7 @@
   <parent>
     <groupId>com.google.cloud</groupId>
     <artifactId>cloud-spanner-r2dbc-samples</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <name>Google Cloud Spanner R2DBC Sample via direct SPI</name>
