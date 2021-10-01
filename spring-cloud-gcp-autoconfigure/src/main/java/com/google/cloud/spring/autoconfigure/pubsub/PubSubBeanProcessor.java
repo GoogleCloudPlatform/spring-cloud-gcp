@@ -37,6 +37,9 @@ import org.springframework.boot.context.properties.source.ConfigurationPropertyS
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+/**
+ * Class to register ThreadPoolTaskScheduler beans.
+ */
 public class PubSubBeanProcessor implements BeanDefinitionRegistryPostProcessor {
 
 	private ConfigurableEnvironment environment;
@@ -51,7 +54,7 @@ public class PubSubBeanProcessor implements BeanDefinitionRegistryPostProcessor 
 
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
-		Binder binder = new Binder(ConfigurationPropertySources.get(environment));
+		Binder binder = new Binder(ConfigurationPropertySources.get(this.environment));
 		String cloudPropertiesPrefix = GcpProperties.class.getAnnotation(ConfigurationProperties.class)
 				.value();
 		GcpProperties gcpProperties = binder.bind(cloudPropertiesPrefix, GcpProperties.class)
@@ -64,7 +67,7 @@ public class PubSubBeanProcessor implements BeanDefinitionRegistryPostProcessor 
 		GcpPubSubProperties pubSubProperties = binder.bind(cloudPubSubPropertiesPrefix, GcpPubSubProperties.class)
 				.orElse(new GcpPubSubProperties());
 
-		// Register selectively configured beans
+		// Register selective threadPoolTaskScheduler beans
 		Map<String, PubSubConfiguration.Subscriber> subscriberMap = pubSubProperties.getSubscription();
 		for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription : subscriberMap.entrySet()) {
 			String subscriptionName = subscription.getKey();
@@ -81,7 +84,7 @@ public class PubSubBeanProcessor implements BeanDefinitionRegistryPostProcessor 
 			}
 		}
 
-		// Register a global bean
+		// Register global threadPoolTaskScheduler configuration bean
 		PubSubConfiguration.Subscriber globalSubscriber = pubSubProperties.getSubscriber();
 		Integer globalExecutorThreads = globalSubscriber.getExecutorThreads();
 		Integer numThreads = globalExecutorThreads != null ? globalExecutorThreads
@@ -97,6 +100,14 @@ public class PubSubBeanProcessor implements BeanDefinitionRegistryPostProcessor 
 		// Do nothing.
 	}
 
+	/**
+	 * Creates a {@link ThreadPoolTaskScheduler} and registers it as a bean.
+	 * @param executorThreads number of executor threads
+	 * @param threadName thread name
+	 * @param beanName bean name
+	 * @param beanDefinitionRegistry bean registry
+	 * @return a {@link ThreadPoolTaskScheduler}
+	 */
 	private ThreadPoolTaskScheduler createAndRegisterSchedulerBean(Integer executorThreads, String threadName,
 			String beanName,
 			BeanDefinitionRegistry beanDefinitionRegistry) {

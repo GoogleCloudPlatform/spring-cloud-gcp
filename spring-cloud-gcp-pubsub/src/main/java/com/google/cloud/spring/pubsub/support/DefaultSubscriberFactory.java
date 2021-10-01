@@ -372,7 +372,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	/**
-	 * Returns {@link ThreadPoolTaskScheduler} given subscription name.
+	 * Returns {@link ThreadPoolTaskScheduler} given a subscription name.
 	 * @param subscriptionName subscription name
 	 * @return thread pool scheduler
 	 */

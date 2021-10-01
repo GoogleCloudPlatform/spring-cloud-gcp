@@ -27,7 +27,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests for Pub/Sub bean processor.
+ * Tests for {@link PubSubBeanProcessor}.
  *
  */
 public class PubSubBeanProcessorTests {

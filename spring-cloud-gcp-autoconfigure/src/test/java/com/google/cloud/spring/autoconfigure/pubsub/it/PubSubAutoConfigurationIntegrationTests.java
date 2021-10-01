@@ -54,7 +54,7 @@ public class PubSubAutoConfigurationIntegrationTests {
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.initial-rpc-timeout-seconds=600",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.rpc-timeout-multiplier=1",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.max-rpc-timeout-seconds=600",
-					"spring.cloud.gcp.pubsub.subscription.test-sub-2.executor-threads=2",
+					"spring.cloud.gcp.pubsub.subscription.test-sub-2.executor-threads=1",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-2.max-ack-extension-period=0",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-2.parallel-pull-count=1",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-2.flow-control.max-outstanding-element-Count=1",

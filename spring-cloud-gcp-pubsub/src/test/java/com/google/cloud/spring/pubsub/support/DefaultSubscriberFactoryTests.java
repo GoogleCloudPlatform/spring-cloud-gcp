@@ -160,7 +160,7 @@ public class DefaultSubscriberFactoryTests {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
 
-		factory.setGlobalScheduler(mockScheduler);
+		factory.setGlobalScheduler(mockGlobalScheduler);
 		when(mockPubSubConfiguration.getSubscriber("defaultSubscription1", projectIdProvider.getProjectId()))
 				.thenReturn(mockDefaultSubscriber1);
 		when(mockDefaultSubscriber1.isGlobal()).thenReturn(true);
@@ -171,7 +171,7 @@ public class DefaultSubscriberFactoryTests {
 		ExecutorProvider executorProviderForSub1 = factory.getExecutorProvider("defaultSubscription1");
 		ExecutorProvider executorProviderForSub2 = factory.getExecutorProvider("defaultSubscription2");
 
-		// Verify that only one executor provider and one scheduler are created
+		// Verify that only one executor provider is created
 		assertThat(executorProviderForSub1).isNotNull();
 		assertThat(executorProviderForSub2).isNotNull();
 		assertThat(factory.getExecutorProviderMap()).hasSize(1);
@@ -182,7 +182,7 @@ public class DefaultSubscriberFactoryTests {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 
-		factory.setGlobalScheduler(mockScheduler);
+		factory.setGlobalScheduler(mockGlobalScheduler);
 		when(mockPubSubConfiguration.getSubscriber("customSubscription1", projectIdProvider.getProjectId()))
 				.thenReturn(mockCustomSubscriber1);
 		when(mockPubSubConfiguration.getSubscriber("customSubscription2", projectIdProvider.getProjectId()))
@@ -191,7 +191,7 @@ public class DefaultSubscriberFactoryTests {
 		ExecutorProvider executorProviderForSub1 = factory.getExecutorProvider("customSubscription1");
 		ExecutorProvider executorProviderForSub2 = factory.getExecutorProvider("customSubscription2");
 
-		// Verify that two executor providers and two schedulers are created
+		// Verify that two executor providers are created
 		assertThat(executorProviderForSub1).isNotNull();
 		assertThat(executorProviderForSub2).isNotNull();
 		assertThat(factory.getExecutorProviderMap()).hasSize(2);
@@ -202,7 +202,7 @@ public class DefaultSubscriberFactoryTests {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 
-		factory.setGlobalScheduler(mockScheduler);
+		factory.setGlobalScheduler(mockGlobalScheduler);
 
 		// One subscriber with subscription-specific subscriber properties
 		when(mockPubSubConfiguration.getSubscriber("customSubscription1", projectIdProvider.getProjectId()))
@@ -220,7 +220,7 @@ public class DefaultSubscriberFactoryTests {
 		ExecutorProvider executorProviderForDefault1 = factory.getExecutorProvider("defaultSubscription1");
 		ExecutorProvider executorProviderForDefault2 = factory.getExecutorProvider("defaultSubscription2");
 
-		// Verify that only two executor providers and two schedulers are created
+		// Verify that only two executor providers are created
 		assertThat(executorProviderForCustom1).isNotNull();
 		assertThat(executorProviderForDefault1).isNotNull();
 		assertThat(executorProviderForDefault2).isNotNull();
@@ -290,10 +290,10 @@ public class DefaultSubscriberFactoryTests {
 	public void testFetchThreadPoolTaskScheduler_notPresentInMap_pickGlobal() {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 
-		factory.setGlobalScheduler(mockScheduler);
-		when(mockScheduler.getThreadNamePrefix()).thenReturn("my-thread-name");
-		when(mockScheduler.getPoolSize()).thenReturn(2);
-		when(mockScheduler.isDaemon()).thenReturn(true);
+		factory.setGlobalScheduler(mockGlobalScheduler);
+		when(mockGlobalScheduler.getThreadNamePrefix()).thenReturn("my-thread-name");
+		when(mockGlobalScheduler.getPoolSize()).thenReturn(2);
+		when(mockGlobalScheduler.isDaemon()).thenReturn(true);
 
 		ThreadPoolTaskScheduler threadPoolTaskScheduler = factory
 				.fetchThreadPoolTaskScheduler("subscription-name");
