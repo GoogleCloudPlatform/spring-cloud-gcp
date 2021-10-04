@@ -564,9 +564,9 @@ public class SqlSpannerQueryTests {
 
 		// This dummy method was created so the metadata for the ARRAY param inner type is
 		// provided.
-		Method method = QueryHolder.class.getMethod("dummyMethod6", String.class);
-		when(this.queryMethod.getMethod()).thenReturn(method);
-		Mockito.<Parameters>when(this.queryMethod.getParameters()).thenReturn(new DefaultParameters(method));
+		Method arrayParameterTriggeringMethod = QueryHolder.class.getMethod("dummyMethod6", String.class);
+		when(this.queryMethod.getMethod()).thenReturn(arrayParameterTriggeringMethod);
+		Mockito.<Parameters>when(this.queryMethod.getParameters()).thenReturn(new DefaultParameters(arrayParameterTriggeringMethod));
 
 		sqlSpannerQuery.execute(params);
 		// capturing the row function and verifying it's the correct one with mock data
