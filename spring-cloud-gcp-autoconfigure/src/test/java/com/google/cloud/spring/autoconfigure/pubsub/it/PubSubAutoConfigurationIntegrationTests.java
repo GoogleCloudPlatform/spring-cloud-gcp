@@ -107,7 +107,7 @@ public class PubSubAutoConfigurationIntegrationTests {
 					.getBean("threadPoolScheduler_test-sub-1");
 			assertThat(scheduler).isNotNull();
 			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-test-sub-1");
-			assertThat(scheduler.isDaemon()).isEqualTo(true);
+			assertThat(scheduler.isDaemon()).isTrue();
 			assertThat((ThreadPoolTaskScheduler) context.getBean("globalThreadPoolScheduler")).isNotNull();
 
 			pubSubAdmin.deleteSubscription(subscriptionName);
@@ -156,7 +156,7 @@ public class PubSubAutoConfigurationIntegrationTests {
 			ThreadPoolTaskScheduler scheduler = (ThreadPoolTaskScheduler) context.getBean("threadPoolScheduler_test-sub-2");
 			assertThat(scheduler).isNotNull();
 			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-test-sub-2");
-			assertThat(scheduler.isDaemon()).isEqualTo(true);
+			assertThat(scheduler.isDaemon()).isTrue();
 			assertThat((ThreadPoolTaskScheduler) context.getBean("globalThreadPoolScheduler")).isNotNull();
 
 			pubSubAdmin.deleteSubscription(subscriptionName);
