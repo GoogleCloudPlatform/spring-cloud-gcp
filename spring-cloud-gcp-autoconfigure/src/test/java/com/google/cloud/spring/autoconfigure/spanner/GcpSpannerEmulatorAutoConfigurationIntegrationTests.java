@@ -17,11 +17,13 @@
 package com.google.cloud.spring.autoconfigure.spanner;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.threeten.bp.Duration;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -77,5 +79,29 @@ public class GcpSpannerEmulatorAutoConfigurationIntegrationTests {
 					SpannerOptions spannerOptions = context.getBean(SpannerOptions.class);
 					assertThat(spannerOptions.getEndpoint()).isEqualTo("spanner.googleapis.com:443");
 				});
+	}
+
+	@Test
+	public void testEmulatorSpannerCustomizerProvided() {
+		Duration duration = Duration.ofSeconds(42);
+		this.contextRunner.withBean(SpannerOptionsCustomizer.class, () -> {
+			return builder -> {
+				builder.getSpannerStubSettingsBuilder()
+						.executeSqlSettings()
+						.setRetrySettings(RetrySettings.newBuilder().setMaxRetryDelay(duration).build());
+			};
+		}).run(context -> {
+			SpannerOptions spannerOptions = context.getBean(SpannerOptions.class);
+			assertThat(spannerOptions).isNotNull();
+			assertThat(
+					spannerOptions.getSpannerStubSettings().executeSqlSettings().getRetrySettings().getMaxRetryDelay()
+			).isEqualTo(duration);
+			// unchanged options stay at their default values
+			SpannerOptions defaultSpannerOptions = SpannerOptions.newBuilder()
+					.setProjectId("unused")
+					.setCredentials(NoCredentials.getInstance())
+					.build();
+			assertThat(spannerOptions.getNumChannels()).isEqualTo(defaultSpannerOptions.getNumChannels());
+		});
 	}
 }

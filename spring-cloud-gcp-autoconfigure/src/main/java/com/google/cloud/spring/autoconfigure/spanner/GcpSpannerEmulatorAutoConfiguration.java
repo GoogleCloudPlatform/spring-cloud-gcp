@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.spanner;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.NoCredentials;
@@ -71,9 +72,13 @@ public class GcpSpannerEmulatorAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public SpannerOptions spannerOptions() throws IOException {
-		Assert.notNull(this.properties.getEmulatorHost(), "`spring.cloud.gcp.spanner.emulator-host` must be set.");
-		return SpannerOptions.newBuilder()
+	public SpannerOptions spannerOptions(Optional<SpannerOptionsCustomizer> customizer)
+			throws IOException {
+		Assert.notNull(this.properties.getEmulatorHost(),
+				"`spring.cloud.gcp.spanner.emulator-host` must be set.");
+		SpannerOptions.Builder builder = SpannerOptions.newBuilder();
+		customizer.ifPresent(c -> c.apply(builder));
+		return builder
 				.setProjectId(this.projectId)
 				.setCredentials(this.credentialsProvider.getCredentials())
 				.setEmulatorHost(this.properties.getEmulatorHost()).build();
