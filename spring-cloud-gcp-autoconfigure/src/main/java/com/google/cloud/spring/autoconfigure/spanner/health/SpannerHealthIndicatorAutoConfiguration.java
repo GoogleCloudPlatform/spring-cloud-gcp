@@ -16,9 +16,11 @@
 
 package com.google.cloud.spring.autoconfigure.spanner.health;
 
+import java.util.Map;
+
 import com.google.cloud.spring.autoconfigure.spanner.GcpSpannerAutoConfiguration;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
-import java.util.Map;
+
 import org.springframework.boot.actuate.autoconfigure.health.CompositeHealthContributorConfiguration;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.autoconfigure.health.HealthContributorAutoConfiguration;
@@ -41,34 +43,34 @@ import org.springframework.util.Assert;
  * @author ikeyat
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass({SpannerTemplate.class, HealthIndicator.class})
-@ConditionalOnBean(value = SpannerTemplate.class)
+@ConditionalOnClass({ SpannerTemplate.class, HealthIndicator.class })
+@ConditionalOnBean(SpannerTemplate.class)
 @ConditionalOnEnabledHealthIndicator("spanner")
 @AutoConfigureBefore(HealthContributorAutoConfiguration.class)
 @AutoConfigureAfter(GcpSpannerAutoConfiguration.class)
 @EnableConfigurationProperties(SpannerHealthIndicatorProperties.class)
 public class SpannerHealthIndicatorAutoConfiguration extends
-    CompositeHealthContributorConfiguration<SpannerHealthIndicator, SpannerTemplate> {
+		CompositeHealthContributorConfiguration<SpannerHealthIndicator, SpannerTemplate> {
 
-  private SpannerHealthIndicatorProperties spannerHealthProperties;
+	private SpannerHealthIndicatorProperties spannerHealthProperties;
 
-  public SpannerHealthIndicatorAutoConfiguration(
-      SpannerHealthIndicatorProperties spannerHealthProperties) {
-    this.spannerHealthProperties = spannerHealthProperties;
-  }
+	public SpannerHealthIndicatorAutoConfiguration(
+			SpannerHealthIndicatorProperties spannerHealthProperties) {
+		this.spannerHealthProperties = spannerHealthProperties;
+	}
 
-  @Bean
-  @ConditionalOnMissingBean(name = {"spannerHealthIndicator", "spannerHealthContributor"})
-  public HealthContributor spannerHealthContributor(Map<String, SpannerTemplate> spannerTemplates) {
-    Assert.notNull(spannerTemplates, "SpannerTemplates must be provided");
-    return createContributor(spannerTemplates);
-  }
+	@Bean
+	@ConditionalOnMissingBean(name = { "spannerHealthIndicator", "spannerHealthContributor" })
+	public HealthContributor spannerHealthContributor(Map<String, SpannerTemplate> spannerTemplates) {
+		Assert.notNull(spannerTemplates, "SpannerTemplates must be provided");
+		return createContributor(spannerTemplates);
+	}
 
-  @Override
-  protected SpannerHealthIndicator createIndicator(SpannerTemplate spannerTemplate) {
-    SpannerHealthIndicator indicator = new SpannerHealthIndicator(
-        spannerTemplate,
-        this.spannerHealthProperties.getQuery());
-    return indicator;
-  }
+	@Override
+	protected SpannerHealthIndicator createIndicator(SpannerTemplate spannerTemplate) {
+		SpannerHealthIndicator indicator = new SpannerHealthIndicator(
+				spannerTemplate,
+				this.spannerHealthProperties.getQuery());
+		return indicator;
+	}
 }

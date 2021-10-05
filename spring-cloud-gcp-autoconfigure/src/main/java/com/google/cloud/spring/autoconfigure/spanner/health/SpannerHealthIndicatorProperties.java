@@ -26,13 +26,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("spring.cloud.gcp.spanner.health")
 public class SpannerHealthIndicatorProperties {
 
-  private String query = "SELECT 1";
+	private String query = "SELECT 1";
 
-  public String getQuery() {
-    return query;
-  }
+	public String getQuery() {
+		return query;
+	}
 
-  public void setQuery(String query) {
-    this.query = query;
-  }
+	public void setQuery(String query) {
+		this.query = query;
+	}
 }

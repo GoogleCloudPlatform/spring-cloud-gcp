@@ -20,6 +20,7 @@ import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health.Builder;
 
@@ -34,28 +35,28 @@ import org.springframework.boot.actuate.health.Health.Builder;
  */
 public class SpannerHealthIndicator extends AbstractHealthIndicator {
 
-  private String validationQuery;
+	private String validationQuery;
 
-  private SpannerTemplate spannerTemplate;
+	private SpannerTemplate spannerTemplate;
 
-  /**
-   * SpannerHealthIndicator constructor.
-   *
-   * @param spannerTemplate spannerTemplate to execute query
-   * @param validationQuery query to execute
-   */
-  public SpannerHealthIndicator(final SpannerTemplate spannerTemplate, String validationQuery) {
-    super("Spanner health check failed");
-    this.spannerTemplate = spannerTemplate;
-    this.validationQuery = validationQuery;
-  }
+	/**
+	 * SpannerHealthIndicator constructor.
+	 *
+	 * @param spannerTemplate spannerTemplate to execute query
+	 * @param validationQuery query to execute
+	 */
+	public SpannerHealthIndicator(final SpannerTemplate spannerTemplate, String validationQuery) {
+		super("Spanner health check failed");
+		this.spannerTemplate = spannerTemplate;
+		this.validationQuery = validationQuery;
+	}
 
-  @Override
-  protected void doHealthCheck(Builder builder) throws Exception {
-    ResultSet resultSet = spannerTemplate.executeQuery(Statement.of(validationQuery), null);
-    // Touch the record
-    resultSet.next();
-    builder.up();
-  }
+	@Override
+	protected void doHealthCheck(Builder builder) throws Exception {
+		ResultSet resultSet = spannerTemplate.executeQuery(Statement.of(validationQuery), null);
+		// Touch the record
+		resultSet.next();
+		builder.up();
+	}
 
 }
