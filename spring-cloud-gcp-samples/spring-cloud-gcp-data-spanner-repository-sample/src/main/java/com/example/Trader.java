@@ -52,7 +52,7 @@ public class Trader {
 	private List<java.sql.Timestamp> modifiedOn;
 
 	@Interleaved(lazy = true)
-	private List<com.example.Trade> trades;
+	private List<Trade> trades;
 
 	public Trader() {
 	}
@@ -95,11 +95,11 @@ public class Trader {
 		this.lastName = lastName;
 	}
 
-	public List<com.example.Trade> getTrades() {
+	public List<Trade> getTrades() {
 		return trades;
 	}
 
-	public void setTrades(List<com.example.Trade> trades) {
+	public void setTrades(List<Trade> trades) {
 		this.trades = trades;
 	}
 
