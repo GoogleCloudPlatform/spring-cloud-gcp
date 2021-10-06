@@ -480,7 +480,7 @@ Natively supported types:
 
 ==== JSON fields
 
-Spanner supports `JSON` type for columns. `JSON` columns are mapped to custom POJOS annotated with `TypeCode.JSON` as `spannerType` in `Column`. Read, write and query with custom SQL query are supported for JSON annotated fields.
+Spanner supports `JSON` type for columns. `JSON` columns are mapped to custom POJOS annotated with `@Column(spannerType = TypeCode.JSON)`. Read, write and query with custom SQL query are supported for JSON annotated fields.
 
 [source,java]
 ----
