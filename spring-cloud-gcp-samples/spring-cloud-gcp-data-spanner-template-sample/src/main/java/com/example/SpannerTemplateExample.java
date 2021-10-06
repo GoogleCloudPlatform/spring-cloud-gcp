@@ -27,7 +27,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+//import org.springframework.stereotype.Component;
 
 /**
  * Example usage of the Spanner Template.
@@ -36,7 +40,8 @@ import org.springframework.stereotype.Component;
  * @author Mike Eltsufin
  * @author Chengyuan Zhao
  */
-@Component
+
+@SpringBootApplication
 public class SpannerTemplateExample {
 	private static final Log LOGGER = LogFactory.getLog(SpannerTemplateExample.class);
 
@@ -90,5 +95,17 @@ public class SpannerTemplateExample {
 			this.spannerDatabaseAdminTemplate.executeDdlStrings(Arrays.asList(
 					this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)), true);
 		}
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(SpannerTemplateExample.class, args);
+	}
+
+	@Bean
+	ApplicationRunner applicationRunner() {
+		return args -> {
+			LOGGER.info("Running the Spanner Template Example.");
+			runExample();
+		};
 	}
 }
