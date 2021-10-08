@@ -329,7 +329,7 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 			ValueBinder<WriteBuilder> valueBinder, Class<T> targetType,
 			SpannerCustomConverter writeConverter, Type.Code annotatedColumnItemType) {
 		if (annotatedColumnItemType == Type.Code.JSON) {
-			valueBinder.to(jsonToValueConverter(value));
+			valueBinder.to(covertJsonToValue(value));
 			return true;
 		}
 		if (!writeConverter.canConvert(sourceType, targetType)) {
@@ -349,7 +349,7 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 	}
 
 
-	private static Value jsonToValueConverter(Object value) {
+	private static Value covertJsonToValue(Object value) {
 		if (value == null) {
 			return Value.json(null);
 		}
