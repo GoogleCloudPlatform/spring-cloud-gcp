@@ -55,11 +55,11 @@ public class Trader {
 	@Interleaved(lazy = true)
 	private List<Trade> trades;
 
-	@Column(spannerType = TypeCode.JSON)
-	private TraderDetails details;
+	@Column(name = "work_address", spannerType = TypeCode.JSON)
+	private Address workAddress;
 
-	@Column(spannerType = TypeCode.JSON)
-	private TraderDetails unusedDetails;
+	@Column(name = "home_address", spannerType = TypeCode.JSON)
+	private Address homeAddress;
 
 	public Trader() {
 	}
@@ -70,11 +70,11 @@ public class Trader {
 		this.lastName = lastName;
 	}
 
-	public Trader(String traderId, String firstName, String lastName, TraderDetails details) {
+	public Trader(String traderId, String firstName, String lastName, Address workAddress) {
 		this.traderId = traderId;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.details = details;
+		this.workAddress = workAddress;
 	}
 
 	public Trader(String traderId, String firstName, String lastName, Timestamp createdOn, List<Timestamp> modifiedOn) {
@@ -117,16 +117,16 @@ public class Trader {
 		this.trades = trades;
 	}
 
-	public TraderDetails getDetails() {
-		return details;
+	public Address getWorkAddress() {
+		return workAddress;
 	}
 
-	public void setUnusedDetails(TraderDetails unusedDetails) {
-		this.unusedDetails = unusedDetails;
+	public void setHomeAddress(Address homeAddress) {
+		this.homeAddress = homeAddress;
 	}
 
-	public TraderDetails getUnusedDetails() {
-		return unusedDetails;
+	public Address getHomeAddress() {
+		return homeAddress;
 	}
 
 	@Override

@@ -113,30 +113,30 @@ public class SpannerRepositoryExample {
 		LOGGER.info("JSON field should be annotated with \"@Column(spannerType = TypeCode.JSON)\" in data class.");
 
 		Trader trader1 = new Trader("demo_trader_json1", "John", "Doe",
-				new TraderDetails("fake address 1", 5L, true));
+				new Address(5L, "fake address 1", true));
 		Trader trader2 = new Trader("demo_trader_json2", "Mary", "Jane",
-				new TraderDetails("fake address 2", 8L, true));
+				new Address(8L, "fake address 2", true));
 		Trader trader3 = new Trader("demo_trader_json3", "Scott", "Smith",
-				new TraderDetails("fake address 3", 8L, false));
-		trader3.setUnusedDetails(new TraderDetails("fake address 3 in unused detail", 8L, false));
+				new Address(8L, "fake address 3", false));
+		trader3.setHomeAddress(new Address(8L, "fake address 3 in unused detail", false));
 
 		this.traderRepository.save(trader1);
 		this.traderRepository.save(trader2);
 		this.traderRepository.save(trader3);
 
-		LOGGER.info("Find trader by Id and print out JSON field 'optionalDetails' as string: " +
-				this.traderRepository.findById("demo_trader_json1").get().getDetails());
+		LOGGER.info("Find trader by Id and print out JSON field 'workAddress' as string: " +
+				this.traderRepository.findById("demo_trader_json1").get().getWorkAddress());
 
 		LOGGER.info("Find trader by Id and print out JSON field 'unusedDetails' as string: " +
-				this.traderRepository.findById("demo_trader_json3").get().getUnusedDetails());
+				this.traderRepository.findById("demo_trader_json3").get().getHomeAddress());
 
 		long count = this.traderRepository.getCountActive("true");
 		LOGGER.info("A query method can query on the properties of JSON values");
-		LOGGER.info("Count of records with optionalDetails.active = true is " + count + ". ");
+		LOGGER.info("Count of records with workAddress.active = true is " + count + ". ");
 
-		List<TraderDetails> details = this.traderRepository.getTraderDetailsByActive("true");
+		List<Address> details = this.traderRepository.getTraderWorkAddressByActive("true");
 		LOGGER.info("A query method can return a list of the JSON field values in POJO.");
-		LOGGER.info("Details with active = true: ");
+		LOGGER.info("Work addresses with active = true: ");
 		details.forEach(x -> LOGGER.info(x.toString()));
 	}
 

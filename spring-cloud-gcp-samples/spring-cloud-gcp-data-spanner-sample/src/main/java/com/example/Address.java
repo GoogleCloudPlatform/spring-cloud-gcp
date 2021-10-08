@@ -18,16 +18,16 @@ package com.example;
 
 import java.util.Objects;
 
-public class TraderDetails {
-	private String address;
+public class Address {
+	private String streetName;
 
-	private Long tradesPerDay;
+	private Long streetNumber;
 
 	private Boolean active;
 
-	public TraderDetails(String address, Long tradesPerDay, Boolean active) {
-		this.address = address;
-		this.tradesPerDay = tradesPerDay;
+	public Address(Long streetNumber, String streetName, Boolean active) {
+		this.streetName = streetName;
+		this.streetNumber = streetNumber;
 		this.active = active;
 	}
 
@@ -39,20 +39,20 @@ public class TraderDetails {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		TraderDetails that = (TraderDetails) o;
-		return active == that.active && Objects.equals(address, that.address) && Objects.equals(tradesPerDay, that.tradesPerDay);
+		Address that = (Address) o;
+		return active == that.active && Objects.equals(streetName, that.streetName) && Objects.equals(streetNumber, that.streetNumber);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(address, tradesPerDay, active);
+		return Objects.hash(streetName, streetNumber, active);
 	}
 
 	@Override
 	public String toString() {
-		return "TraderDetails{" +
-				"address='" + address + '\'' +
-				", average number of trades per day=" + tradesPerDay +
+		return "Address{" +
+				"number =" + streetNumber +
+				", street Name='" + streetName + '\'' +
 				", active=" + active +
 				'}';
 	}

@@ -97,16 +97,6 @@ public class SpannerRepositoryIntegrationTests {
 	}
 
 	@Test
-	public void testPlayground() {
-
-		TraderDetails details = new TraderDetails("address line", 5L, true);
-		this.traderRepository.save(new Trader("demo_trader1", "John", "Doe", details));
-
-		System.out.println(this.traderRepository.findById("demo_trader1").get().getTraderId());
-		System.out.println(this.traderRepository.findById("demo_trader1").get().getDetails());
-	}
-
-	@Test
 	public void testRestEndpoint() {
 		this.spannerRepositoryExample.runExample();
 
@@ -174,5 +164,17 @@ public class SpannerRepositoryIntegrationTests {
 		assertThat(buyTradeIds).hasSize(5);
 
 		assertThat(this.traderRepository.findById("demo_trader1").get().getTrades()).hasSize(3);
+	}
+
+	@Test
+	public void testJsonFieldReadWrite() {
+
+		Address workAddress = new Address(5L, "address line", true);
+		Trader trader = new Trader("demo_trader1", "John", "Doe", workAddress);
+		this.traderRepository.save(trader);
+
+		Trader traderFound = this.traderRepository.findById("demo_trader1").get();
+		assertThat(traderFound.getTraderId()).isEqualTo(trader.getTraderId());
+		assertThat(traderFound.getWorkAddress()).isEqualTo(workAddress);
 	}
 }

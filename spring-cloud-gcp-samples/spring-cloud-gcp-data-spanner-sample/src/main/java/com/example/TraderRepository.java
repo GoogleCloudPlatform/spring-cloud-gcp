@@ -32,10 +32,10 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
  */
 @RepositoryRestResource(collectionResourceRel = "traders", path = "traders")
 public interface TraderRepository extends SpannerRepository<Trader, String> {
-	@Query("SELECT count(1) from traders where JSON_VALUE(details, '$.active') = @active")
+	@Query("SELECT count(1) from traders where JSON_VALUE(work_address, '$.active') = @active")
 	long getCountActive(@Param("active") String active);
 
 
-	@Query("SELECT details from traders where JSON_VALUE(details, '$.active') = @active")
-	List<TraderDetails> getTraderDetailsByActive(@Param("active") String active);
+	@Query("SELECT work_address from traders where JSON_VALUE(work_address, '$.active') = @active")
+	List<Address> getTraderWorkAddressByActive(@Param("active") String active);
 }
