@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Andreas Berger
  * @author Mike Eltsufin
  * @author Stefan Dieringer
+ * @author Kazuki Shimizu
  */
 public class StackdriverJsonLayoutLoggerTests {
 
@@ -131,6 +132,34 @@ public class StackdriverJsonLayoutLoggerTests {
 		assertThat(serviceContextMap)
 				.containsEntry("service", "service")
 				.containsEntry("version", "version");
+	}
+
+	@Test
+	public void testCustomMDCFieldForTraceIdAndSpanId() {
+		Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutCustomMDCFieldTests");
+
+		mdc.remove(StackdriverTraceConstants.MDC_FIELD_TRACE_ID);
+		mdc.remove(StackdriverTraceConstants.MDC_FIELD_SPAN_ID);
+		mdc.put("trace_id", "12345678901234561234567890123456");
+		mdc.put("span_id", "span123");
+
+		logger.warn("test");
+		Map<String, String> data = getLogMetadata();
+
+		assertThat(data)
+				.isNotNull()
+				.containsEntry("foo", "bar")
+				.containsEntry(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test")
+				.containsEntry(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARNING")
+				.containsEntry(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutCustomMDCFieldTests")
+				.containsEntry(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE, "projects/test-project/traces/12345678901234561234567890123456")
+				.containsEntry(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, "span123")
+				.containsKey(StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE)
+				.containsKey(StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE)
+				.doesNotContainKey("trace_id")
+				.doesNotContainKey("span_id")
+				.doesNotContainKey(StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT)
+				.doesNotContainKey(JsonLayout.TIMESTAMP_ATTR_NAME);
 	}
 
 	@Test
