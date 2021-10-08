@@ -84,6 +84,9 @@ public class Trade {
 	@Column(spannerType = TypeCode.JSON)
 	private Details optionalDetails;
 
+	@Column(spannerType = TypeCode.JSON)
+	private Details backupDetails;
+
 	/**
 	 * Partial constructor. Intentionally tests a field that is left null sometimes.
 	 * @param symbol the symbol.
@@ -296,5 +299,9 @@ public class Trade {
 
 	public void setOptionalDetails(Details optionalDetails) {
 		this.optionalDetails = optionalDetails;
+	}
+
+	public void setBackupDetails(Details backupDetails) {
+		this.backupDetails = backupDetails;
 	}
 }

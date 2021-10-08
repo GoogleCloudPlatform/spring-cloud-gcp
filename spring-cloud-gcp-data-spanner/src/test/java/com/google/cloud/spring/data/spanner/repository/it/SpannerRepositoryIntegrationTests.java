@@ -520,6 +520,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 	public void testWithJsonField() {
 		Trade trade1 = Trade.aTrade();
 		trade1.setOptionalDetails(new Details("abc", "def"));
+		trade1.setBackupDetails(new Details("backup context", "backup context continued"));
 		Trade trade2 = Trade.aTrade();
 		trade2.setOptionalDetails(new Details("some context", null));
 		Trade trade3 = Trade.aTrade();

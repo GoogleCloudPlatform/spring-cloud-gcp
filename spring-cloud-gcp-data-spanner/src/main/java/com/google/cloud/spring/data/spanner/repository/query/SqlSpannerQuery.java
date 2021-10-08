@@ -239,10 +239,10 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
 					spannerQueryOptions);
 		}
 		// check if returnedType is a field annotated as json
-		String jsonFieldName = getJsonFieldNameIfExists(returnedType);
-		if (jsonFieldName != null) {
+		boolean isJsonField = isJsonFieldType(returnedType);
+		if (isJsonField) {
 			return this.spannerTemplate.query(
-					struct -> new StructAccessor(struct).getSingleJsonValue(jsonFieldName, returnedType), statement,
+					struct -> new StructAccessor(struct).getSingleJsonValue(0, returnedType), statement,
 					spannerQueryOptions);
 		}
 
@@ -251,13 +251,13 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
 				spannerQueryOptions);
 	}
 
-	private String getJsonFieldNameIfExists(Class<?> returnedType) {
+	private boolean isJsonFieldType(Class<?> returnedType) {
 		SpannerPersistentEntityImpl<?> persistentEntity = (SpannerPersistentEntityImpl<?>) this.spannerMappingContext
 				.getPersistentEntity(this.entityType);
 		if (persistentEntity == null) {
-			return null;
+			return false;
 		}
-		return persistentEntity.getJsonPropertyName(returnedType);
+		return persistentEntity.isJsonProperty(returnedType);
 	}
 
 	private Statement buildStatementFromQueryAndTags(QueryTagValue queryTagValue) {

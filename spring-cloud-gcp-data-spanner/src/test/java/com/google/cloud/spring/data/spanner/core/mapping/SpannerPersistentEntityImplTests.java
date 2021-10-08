@@ -335,14 +335,14 @@ public class SpannerPersistentEntityImplTests {
 		SpannerPersistentEntityImpl<EntityWithJsonField> entityWithJsonField = (SpannerPersistentEntityImpl<EntityWithJsonField>) this.spannerMappingContext
 				.getPersistentEntity(EntityWithJsonField.class);
 
-		assertThat(entityWithJsonField.getJsonPropertyName(JsonEntity.class)).isEqualTo("jsonField");
-		assertThat(entityWithJsonField.getJsonPropertyName(String.class)).isNull();
+		assertThat(entityWithJsonField.isJsonProperty(JsonEntity.class)).isTrue();
+		assertThat(entityWithJsonField.isJsonProperty(String.class)).isFalse();
 
 		SpannerPersistentEntityImpl<TestEntity> entityWithNoJsonField = (SpannerPersistentEntityImpl<TestEntity>) this.spannerMappingContext
 				.getPersistentEntity(TestEntity.class);
 
-		assertThat(entityWithNoJsonField.getJsonPropertyName(String.class)).isNull();
-		assertThat(entityWithNoJsonField.getJsonPropertyName(long.class)).isNull();
+		assertThat(entityWithNoJsonField.isJsonProperty(String.class)).isFalse();
+		assertThat(entityWithNoJsonField.isJsonProperty(long.class)).isFalse();
 	}
 
 	private static class ParentInRelationship {

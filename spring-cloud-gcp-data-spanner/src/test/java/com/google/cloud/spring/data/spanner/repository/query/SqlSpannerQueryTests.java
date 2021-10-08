@@ -577,8 +577,8 @@ public class SqlSpannerQueryTests {
 		Struct row = mock(Struct.class);
 		when(row.getType()).thenReturn(
 				Type.struct(Arrays.asList(Type.StructField.of("details", Type.json()))));
-
-		when(row.getJson("details")).thenReturn("{\"p1\":\"address line\",\"p2\":\"5\"}");
+		when(row.getColumnType(0)).thenReturn(Type.json());
+		when(row.getJson(0)).thenReturn("{\"p1\":\"address line\",\"p2\":\"5\"}");
 
 		Object result = rowFunc.apply(row);
 

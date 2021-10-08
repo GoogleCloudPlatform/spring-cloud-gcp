@@ -174,11 +174,22 @@ public class StructAccessor {
 				: SpannerTypeMapper.getSimpleJavaClassFor(code);
 	}
 
-	public <T> T getSingleJsonValue(String colName, Class<T> colType) {
+	<T> T getSingleJsonValue(String colName, Class<T> colType) {
 		if (this.struct.isNull(colName)) {
 			return null;
 		}
 		String jsonString = this.struct.getJson(colName);
+		return gson.fromJson(jsonString, colType);
+	}
+
+	public <T> T getSingleJsonValue(int colIndex, Class<T> colType) {
+		if (this.struct.getColumnType(colIndex).getCode() != Code.JSON) {
+			throw new SpannerDataException("Column of index " + colIndex + " not an JSON type.");
+		}
+		if (this.struct.isNull(colIndex)) {
+			return null;
+		}
+		String jsonString = this.struct.getJson(colIndex);
 		return gson.fromJson(jsonString, colType);
 	}
 }

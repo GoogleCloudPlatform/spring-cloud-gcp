@@ -118,6 +118,7 @@ public class SpannerRepositoryExample {
 				new TraderDetails("fake address 2", 8L, true));
 		Trader trader3 = new Trader("demo_trader_json3", "Scott", "Smith",
 				new TraderDetails("fake address 3", 8L, false));
+		trader3.setUnusedDetails(new TraderDetails("fake address 3 in unused detail", 8L, false));
 
 		this.traderRepository.save(trader1);
 		this.traderRepository.save(trader2);
@@ -125,6 +126,9 @@ public class SpannerRepositoryExample {
 
 		LOGGER.info("Find trader by Id and print out JSON field 'optionalDetails' as string: " +
 				this.traderRepository.findById("demo_trader_json1").get().getDetails());
+
+		LOGGER.info("Find trader by Id and print out JSON field 'unusedDetails' as string: " +
+				this.traderRepository.findById("demo_trader_json3").get().getUnusedDetails());
 
 		long count = this.traderRepository.getCountActive("true");
 		LOGGER.info("A query method can query on the properties of JSON values");

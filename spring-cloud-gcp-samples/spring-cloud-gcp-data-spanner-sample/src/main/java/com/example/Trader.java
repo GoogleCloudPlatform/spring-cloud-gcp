@@ -58,6 +58,9 @@ public class Trader {
 	@Column(spannerType = TypeCode.JSON)
 	private TraderDetails details;
 
+	@Column(spannerType = TypeCode.JSON)
+	private TraderDetails unusedDetails;
+
 	public Trader() {
 	}
 
@@ -116,6 +119,14 @@ public class Trader {
 
 	public TraderDetails getDetails() {
 		return details;
+	}
+
+	public void setUnusedDetails(TraderDetails unusedDetails) {
+		this.unusedDetails = unusedDetails;
+	}
+
+	public TraderDetails getUnusedDetails() {
+		return unusedDetails;
 	}
 
 	@Override

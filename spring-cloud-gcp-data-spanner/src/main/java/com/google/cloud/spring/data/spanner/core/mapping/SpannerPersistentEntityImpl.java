@@ -97,7 +97,7 @@ public class SpannerPersistentEntityImpl<T>
 
 	private final String where;
 
-	private final Map<Class<?>, String> jsonPropertiesClassToName = new HashMap<>();
+	private final Set<Class<?>> jsonProperties = new HashSet<>();
 
 	/**
 	 * Creates a {@link SpannerPersistentEntityImpl}.
@@ -185,7 +185,7 @@ public class SpannerPersistentEntityImpl<T>
 		}
 
 		if (property.getAnnotatedColumnItemType() == Type.Code.JSON) {
-			this.jsonPropertiesClassToName.put(property.getType(), property.getColumnName());
+			this.jsonProperties.add(property.getType());
 		}
 	}
 
@@ -405,9 +405,9 @@ public class SpannerPersistentEntityImpl<T>
 		return Collections.unmodifiableSet(this.columnNames);
 	}
 
-	// Get the property name of a particular class if it is a JSON entity property
-	public String getJsonPropertyName(Class<?> type) {
-		return this.jsonPropertiesClassToName.getOrDefault(type, null);
+	// Lookup whether a particular class is a JSON entity property
+	public boolean isJsonProperty(Class<?> type) {
+		return this.jsonProperties.contains(type);
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext)
