@@ -84,13 +84,14 @@ public class GcpSpannerEmulatorAutoConfigurationIntegrationTests {
 	@Test
 	public void testEmulatorSpannerCustomizerProvided() {
 		Duration duration = Duration.ofSeconds(42);
-		this.contextRunner.withBean(SpannerOptionsCustomizer.class, () -> {
-			return builder -> {
-				builder.getSpannerStubSettingsBuilder()
-						.executeSqlSettings()
-						.setRetrySettings(RetrySettings.newBuilder().setMaxRetryDelay(duration).build());
-			};
-		}).run(context -> {
+		this.contextRunner.withPropertyValues("spring.cloud.gcp.spanner.emulator.enabled=true")
+				.withBean(SpannerOptionsCustomizer.class, () -> {
+					return builder -> {
+						builder.getSpannerStubSettingsBuilder()
+								.executeSqlSettings()
+								.setRetrySettings(RetrySettings.newBuilder().setMaxRetryDelay(duration).build());
+					};
+				}).run(context -> {
 			SpannerOptions spannerOptions = context.getBean(SpannerOptions.class);
 			assertThat(spannerOptions).isNotNull();
 			assertThat(

@@ -77,10 +77,11 @@ public class GcpSpannerEmulatorAutoConfiguration {
 		Assert.notNull(this.properties.getEmulatorHost(),
 				"`spring.cloud.gcp.spanner.emulator-host` must be set.");
 		SpannerOptions.Builder builder = SpannerOptions.newBuilder();
-		customizer.ifPresent(c -> c.apply(builder));
-		return builder
+		builder
 				.setProjectId(this.projectId)
 				.setCredentials(this.credentialsProvider.getCredentials())
-				.setEmulatorHost(this.properties.getEmulatorHost()).build();
+				.setEmulatorHost(this.properties.getEmulatorHost());
+		customizer.ifPresent(c -> c.apply(builder));
+		return builder.build();
 	}
 }
