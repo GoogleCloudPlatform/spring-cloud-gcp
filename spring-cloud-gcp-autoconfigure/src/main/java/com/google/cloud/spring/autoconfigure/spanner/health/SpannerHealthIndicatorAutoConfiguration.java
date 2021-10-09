@@ -68,9 +68,8 @@ public class SpannerHealthIndicatorAutoConfiguration extends
 
 	@Override
 	protected SpannerHealthIndicator createIndicator(SpannerTemplate spannerTemplate) {
-		SpannerHealthIndicator indicator = new SpannerHealthIndicator(
+		return new SpannerHealthIndicator(
 				spannerTemplate,
 				this.spannerHealthProperties.getQuery());
-		return indicator;
 	}
 }
