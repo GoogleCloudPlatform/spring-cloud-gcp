@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Eddú Meléndez
  */
-public class GcpSpannerEmulatorAutoConfigurationIntegrationTests {
+public class GcpSpannerEmulatorAutoConfigurationTests {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(GcpSpannerEmulatorAutoConfiguration.class,
