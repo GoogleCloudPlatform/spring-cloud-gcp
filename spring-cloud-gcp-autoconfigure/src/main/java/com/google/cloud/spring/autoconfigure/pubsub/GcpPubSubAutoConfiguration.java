@@ -190,14 +190,13 @@ public class GcpPubSubAutoConfiguration {
 	public SubscriberFactory defaultSubscriberFactory(
 			@Qualifier("pubSubBeanProcessor") PubSubBeanProcessor pubSubBeanProcessor,
 			@Qualifier("subscriberExecutorProvider") Optional<ExecutorProvider> executorProvider,
-			@Qualifier("subscriberSystemExecutorProvider")
-					ObjectProvider<ExecutorProvider> systemExecutorProvider,
-			@Qualifier("subscriberFlowControlSettings")
-					ObjectProvider<FlowControlSettings> flowControlSettings,
+			@Qualifier("subscriberSystemExecutorProvider") ObjectProvider<ExecutorProvider> systemExecutorProvider,
+			@Qualifier("subscriberFlowControlSettings") ObjectProvider<FlowControlSettings> flowControlSettings,
 			@Qualifier("subscriberApiClock") ObjectProvider<ApiClock> apiClock,
 			@Qualifier("subscriberRetrySettings") ObjectProvider<RetrySettings> retrySettings,
 			@Qualifier("subscriberTransportChannelProvider") TransportChannelProvider subscriberTransportChannelProvider) {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider, this.gcpPubSubProperties);
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider,
+				this.gcpPubSubProperties);
 
 		factory.setThreadPoolTaskSchedulerMap(pubSubBeanProcessor.getThreadPoolSchedulerMap());
 		factory.setGlobalScheduler(pubSubBeanProcessor.getGlobalScheduler());

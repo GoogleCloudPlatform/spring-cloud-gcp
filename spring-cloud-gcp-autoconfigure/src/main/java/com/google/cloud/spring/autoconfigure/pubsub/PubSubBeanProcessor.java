@@ -33,7 +33,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -54,7 +53,7 @@ public class PubSubBeanProcessor implements BeanDefinitionRegistryPostProcessor 
 
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
-		Binder binder = new Binder(ConfigurationPropertySources.get(this.environment));
+		Binder binder = Binder.get(this.environment);
 		String cloudPropertiesPrefix = GcpProperties.class.getAnnotation(ConfigurationProperties.class)
 				.value();
 		GcpProperties gcpProperties = binder.bind(cloudPropertiesPrefix, GcpProperties.class)
@@ -66,9 +65,31 @@ public class PubSubBeanProcessor implements BeanDefinitionRegistryPostProcessor 
 				.value();
 		GcpPubSubProperties pubSubProperties = binder.bind(cloudPubSubPropertiesPrefix, GcpPubSubProperties.class)
 				.orElse(new GcpPubSubProperties());
-
-		// Register selective threadPoolTaskScheduler beans
+		Integer globalExecutorThreads = pubSubProperties.getSubscriber().getExecutorThreads();
+		Integer numThreads = globalExecutorThreads != null ? globalExecutorThreads
+				: PubSubConfiguration.DEFAULT_EXECUTOR_THREADS;
+		this.globalScheduler = createAndRegisterSchedulerBean(numThreads, "global-gcp-pubsub-subscriber",
+				"globalThreadPoolScheduler", beanDefinitionRegistry);
 		Map<String, PubSubConfiguration.Subscriber> subscriberMap = pubSubProperties.getSubscription();
+		registerSelectiveSchedulerBean(subscriberMap, beanDefinitionRegistry, projectIdProvider);
+	}
+
+	@Override
+	public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory)
+			throws BeansException {
+		// Do nothing.
+	}
+
+	/**
+	 * Creates and registers {@link ThreadPoolTaskScheduler} for subscription-specific
+	 * configurations.
+	 * @param subscriberMap subscriber properties map
+	 * @param beanDefinitionRegistry bean registry
+	 * @param projectIdProvider project Id provider.
+	 */
+	private void registerSelectiveSchedulerBean(
+			Map<String, PubSubConfiguration.Subscriber> subscriberMap,
+			BeanDefinitionRegistry beanDefinitionRegistry, GcpProjectIdProvider projectIdProvider) {
 		for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription : subscriberMap.entrySet()) {
 			String subscriptionName = subscription.getKey();
 			PubSubConfiguration.Subscriber selectiveSubscriber = subscriberMap.get(subscriptionName);
@@ -83,21 +104,6 @@ public class PubSubBeanProcessor implements BeanDefinitionRegistryPostProcessor 
 				this.threadPoolTaskSchedulerMap.putIfAbsent(fullyQualifiedName, selectiveScheduler);
 			}
 		}
-
-		// Register global threadPoolTaskScheduler configuration bean
-		PubSubConfiguration.Subscriber globalSubscriber = pubSubProperties.getSubscriber();
-		Integer globalExecutorThreads = globalSubscriber.getExecutorThreads();
-		Integer numThreads = globalExecutorThreads != null ? globalExecutorThreads
-				: PubSubConfiguration.DEFAULT_EXECUTOR_THREADS;
-		this.globalScheduler = createAndRegisterSchedulerBean(numThreads, "global-gcp-pubsub-subscriber",
-				"globalThreadPoolScheduler", beanDefinitionRegistry);
-
-	}
-
-	@Override
-	public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory)
-			throws BeansException {
-		// Do nothing.
 	}
 
 	/**
@@ -133,11 +139,11 @@ public class PubSubBeanProcessor implements BeanDefinitionRegistryPostProcessor 
 		return scheduler;
 	}
 
-	public ConcurrentMap<String, ThreadPoolTaskScheduler> getThreadPoolSchedulerMap() {
+	ConcurrentMap<String, ThreadPoolTaskScheduler> getThreadPoolSchedulerMap() {
 		return this.threadPoolTaskSchedulerMap;
 	}
 
-	public ThreadPoolTaskScheduler getGlobalScheduler() {
+	ThreadPoolTaskScheduler getGlobalScheduler() {
 		return this.globalScheduler;
 	}
 }
