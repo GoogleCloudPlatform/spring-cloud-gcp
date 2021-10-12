@@ -32,6 +32,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.repository.support.SimpleSpannerRepository;
 import com.google.cloud.spring.data.spanner.test.AbstractSpannerIntegrationTest;
+import com.google.cloud.spring.data.spanner.test.domain.Details;
 import com.google.cloud.spring.data.spanner.test.domain.SubTrade;
 import com.google.cloud.spring.data.spanner.test.domain.SubTradeComponent;
 import com.google.cloud.spring.data.spanner.test.domain.SubTradeComponentRepository;
@@ -513,6 +514,31 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 		assertThatThrownBy(() -> this.tradeRepository.getByAction("non-existing-action"))
 				.isInstanceOf(EmptyResultDataAccessException.class)
 				.hasMessageMatching("Result must not be null!");
+	}
+
+	@Test
+	public void testWithJsonField() {
+		Trade trade1 = Trade.aTrade();
+		trade1.setOptionalDetails(new Details("abc", "def"));
+		trade1.setBackupDetails(new Details("backup context", "backup context continued"));
+		Trade trade2 = Trade.aTrade();
+		trade2.setOptionalDetails(new Details("some context", null));
+		Trade trade3 = Trade.aTrade();
+		this.tradeRepository.save(trade1);
+		this.tradeRepository.save(trade2);
+		this.tradeRepository.save(trade3);
+
+		assertThat(this.tradeRepository.findAll()).contains(trade1, trade2, trade3);
+		assertThat(this.tradeRepository.getByDetailP1("abc")).hasSize(1).contains(trade1);
+
+		String traderId = trade1.getTraderId();
+		Optional<Details> optionalDetails = this.tradeRepository.getOptionalDetailsById(traderId);
+		assertThat(optionalDetails).isEqualTo(Optional.of(new Details("abc", "def")));
+
+		String traderId3 = trade3.getTraderId();
+		Optional<Details> empty = this.tradeRepository.getOptionalDetailsById(traderId3);
+		assertThat(empty).isNotPresent();
+
 	}
 
 	@Test
