@@ -115,14 +115,14 @@ public class SpannerRepositoryExample {
 	}
 
 	void createTablesIfNotExists() {
-		if (!this.spannerDatabaseAdminTemplate.tableExists("trades")) {
+		if (!this.spannerDatabaseAdminTemplate.tableExists("trades_repository")) {
 			this.spannerDatabaseAdminTemplate.executeDdlStrings(
 					Arrays.asList(
 							this.spannerSchemaUtils.getCreateTableDdlString(Trade.class)),
 					true);
 		}
 
-		if (!this.spannerDatabaseAdminTemplate.tableExists("traders")) {
+		if (!this.spannerDatabaseAdminTemplate.tableExists("traders_repository")) {
 			this.spannerDatabaseAdminTemplate.executeDdlStrings(Arrays.asList(
 					this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)), true);
 		}

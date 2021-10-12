@@ -1449,6 +1449,8 @@ spring.cloud.gcp.spanner.emulator-host=${EMULATOR_HOSTPORT}
 
 === Sample
 
-A https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample[sample application for Spanner Template] is available.
+Both the samples are listed below :
 
-A https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-repository-sample[sample application for Spanner Repository] is available.
+1. https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample[ Sample application for Spanner Template]
+
+2. https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-repository-sample[ Sample application for Spanner Repository]

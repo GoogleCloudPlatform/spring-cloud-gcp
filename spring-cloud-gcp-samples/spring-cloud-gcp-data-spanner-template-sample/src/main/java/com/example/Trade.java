@@ -29,7 +29,8 @@ import com.google.cloud.spring.data.spanner.core.mapping.Table;
  * @author Chengyuan Zhao
  * @author Mike Eltsufin
  */
-@Table(name = "trades")
+@Table(name = "trades_template")
+
 public class Trade {
 
 	@PrimaryKey(keyOrder = 2)

@@ -31,7 +31,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.Table;
  *
  * @author Mike Eltsufin
  */
-@Table(name = "traders")
+@Table(name = "traders_repository")
 public class Trader {
 	@PrimaryKey
 	@Column(name = "trader_id")

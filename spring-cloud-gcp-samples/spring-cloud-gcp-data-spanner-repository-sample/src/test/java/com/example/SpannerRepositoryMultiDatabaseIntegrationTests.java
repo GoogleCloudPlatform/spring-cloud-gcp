@@ -75,7 +75,7 @@ public class SpannerRepositoryMultiDatabaseIntegrationTests {
 	}
 
 	private void createTable() {
-		if (!this.spannerDatabaseAdminTemplate.tableExists("traders")) {
+		if (!this.spannerDatabaseAdminTemplate.tableExists("traders_repository")) {
 			this.spannerDatabaseAdminTemplate.executeDdlStrings(
 					this.spannerSchemaUtils.getCreateTableDdlStringsForInterleavedHierarchy(Trader.class),
 					true);

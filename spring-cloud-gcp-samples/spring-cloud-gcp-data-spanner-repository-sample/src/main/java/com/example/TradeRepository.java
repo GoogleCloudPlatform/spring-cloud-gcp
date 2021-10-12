@@ -31,7 +31,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
  * @author Ray Tsang
  * @author Chengyuan Zhao
  */
-@RepositoryRestResource(collectionResourceRel = "trades", path = "trades")
+@RepositoryRestResource(collectionResourceRel = "trades_repository", path = "trades")
 public interface TradeRepository extends SpannerRepository<Trade, Key> {
 
 	List<Trade> findTop3DistinctByActionAndSymbolOrTraderIdOrderBySymbolDesc(
@@ -39,10 +39,10 @@ public interface TradeRepository extends SpannerRepository<Trade, Key> {
 
 	List<Trade> findByAction(String action);
 
-	@Query("SELECT * FROM trades limit 1")
+	@Query("SELECT * FROM trades_repository limit 1")
 	Trade getAnyOneTrade();
 
-	@Query("SELECT trade_id from trades where action = @action")
+	@Query("SELECT trade_id from trades_repository where action = @action")
 	List<String> getTradeIds(@Param("action") String action);
 
 	int countByAction(String action);
