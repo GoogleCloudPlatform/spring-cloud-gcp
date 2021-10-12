@@ -330,6 +330,21 @@ public class SpannerPersistentEntityImplTests {
 				.getPersistentEntity(ParentInRelationshipMismatchedKeyName.class);
 	}
 
+	@Test
+	public void testGetJsonPropertyName() {
+		SpannerPersistentEntityImpl<EntityWithJsonField> entityWithJsonField = (SpannerPersistentEntityImpl<EntityWithJsonField>) this.spannerMappingContext
+				.getPersistentEntity(EntityWithJsonField.class);
+
+		assertThat(entityWithJsonField.isJsonProperty(JsonEntity.class)).isTrue();
+		assertThat(entityWithJsonField.isJsonProperty(String.class)).isFalse();
+
+		SpannerPersistentEntityImpl<TestEntity> entityWithNoJsonField = (SpannerPersistentEntityImpl<TestEntity>) this.spannerMappingContext
+				.getPersistentEntity(TestEntity.class);
+
+		assertThat(entityWithNoJsonField.isJsonProperty(String.class)).isFalse();
+		assertThat(entityWithNoJsonField.isJsonProperty(long.class)).isFalse();
+	}
+
 	private static class ParentInRelationship {
 		@PrimaryKey
 		String id;
@@ -502,4 +517,17 @@ public class SpannerPersistentEntityImplTests {
 		@PrimaryKey(keyOrder = 3)
 		Double id3;
 	}
+
+	private static class EntityWithJsonField {
+		@PrimaryKey
+		String id;
+
+		@Column(spannerType = TypeCode.JSON)
+		JsonEntity jsonField;
+	}
+
+	private static class JsonEntity {
+
+	}
+
 }

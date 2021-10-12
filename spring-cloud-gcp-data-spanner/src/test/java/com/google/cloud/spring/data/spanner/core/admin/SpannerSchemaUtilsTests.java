@@ -22,6 +22,7 @@ import java.util.OptionalLong;
 
 import com.google.cloud.ByteArray;
 import com.google.cloud.spanner.Key;
+import com.google.cloud.spanner.Type;
 import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
@@ -77,7 +78,7 @@ public class SpannerSchemaUtilsTests {
 				+ "primitiveIntField INT64 , bigIntField INT64 , bytes BYTES(MAX) , "
 				+ "bytesList ARRAY<BYTES(111)> , integerList ARRAY<INT64> , "
 				+ "doubles ARRAY<FLOAT64> , commitTimestamp TIMESTAMP OPTIONS (allow_commit_timestamp=true) , "
-				+ "bigDecimalField NUMERIC , bigDecimals ARRAY<NUMERIC> ) " +
+				+ "bigDecimalField NUMERIC , bigDecimals ARRAY<NUMERIC> , jsonCol JSON ) " +
 				"PRIMARY KEY ( id , id_2 , id3 )";
 
 		assertThat(this.spannerSchemaUtils.getCreateTableDdlString(TestEntity.class))
@@ -87,74 +88,81 @@ public class SpannerSchemaUtilsTests {
 	@Test
 	public void createDdlString() {
 		assertColumnDdl(String.class, null,
-				"id", OptionalLong.empty(),
+				"id", null, OptionalLong.empty(),
 				"id STRING(MAX)");
 	}
 
 	@Test
 	public void createDdlStringCustomLength() {
 		assertColumnDdl(String.class, null,
-				"id", OptionalLong.of(333L),
+				"id", null, OptionalLong.of(333L),
 				"id STRING(333)");
 	}
 
 	@Test
 	public void createDdlBytesMax() {
 		assertColumnDdl(ByteArray.class, null,
-				"bytes", OptionalLong.empty(),
+				"bytes", null, OptionalLong.empty(),
 				"bytes BYTES(MAX)");
 	}
 
 	@Test
 	public void createDdlBytesCustomLength() {
 		assertColumnDdl(ByteArray.class, null,
-				"bytes", OptionalLong.of(333L),
+				"bytes", null, OptionalLong.of(333L),
 				"bytes BYTES(333)");
 	}
 
 	@Test
 	public void ddlForListOfByteArray() {
 		assertColumnDdl(List.class, ByteArray.class,
-				"bytesList", OptionalLong.of(111L),
+				"bytesList", null, OptionalLong.of(111L),
 				"bytesList ARRAY<BYTES(111)>");
 	}
 
 	@Test
 	public void ddlForDoubleArray() {
 		assertColumnDdl(double[].class, null,
-				"doubles", OptionalLong.of(111L),
+				"doubles", null, OptionalLong.of(111L),
 				"doubles ARRAY<FLOAT64>");
 	}
 
 	@Test
 	public void ddlForNumericList() {
 		assertColumnDdl(List.class, BigDecimal.class,
-				"bigDecimals", OptionalLong.empty(),
+				"bigDecimals", null, OptionalLong.empty(),
 				"bigDecimals ARRAY<NUMERIC>");
 	}
 
 	@Test
 	public void createDdlNumeric() {
 		assertColumnDdl(BigDecimal.class, null,
-				"bigDecimal", OptionalLong.empty(),
+				"bigDecimal", null, OptionalLong.empty(),
 				"bigDecimal NUMERIC");
 	}
 
 	@Test
 	public void ddlForListOfListOfIntegers() {
 		assertColumnDdl(List.class, Integer.class,
-				"integerList", OptionalLong.empty(),
+				"integerList", null, OptionalLong.empty(),
 				"integerList ARRAY<INT64>");
 	}
 
 	@Test
 	public void ddlForListOfListOfDoubles() {
 		assertColumnDdl(List.class, Double.class,
-				"doubleList", OptionalLong.empty(),
+				"doubleList", null, OptionalLong.empty(),
 				"doubleList ARRAY<FLOAT64>");
 	}
 
-	private void assertColumnDdl(Class clazz, Class innerClazz, String name,
+	@Test
+	public void createDdlForJson() {
+		assertColumnDdl(JsonColumn.class, null,
+				"jsonCol", Type.Code.JSON, OptionalLong.empty(),
+				"jsonCol JSON");
+	}
+
+	private void assertColumnDdl(Class clazz, Class innerClazz, String name, Type.Code code,
 			OptionalLong length, String expectedDDL) {
 		SpannerPersistentProperty spannerPersistentProperty = mock(SpannerPersistentProperty.class);
 
@@ -165,6 +173,9 @@ public class SpannerSchemaUtilsTests {
 
 		when(spannerPersistentProperty.getColumnName()).thenReturn(name);
 		when(spannerPersistentProperty.getMaxColumnLength()).thenReturn(length);
+
+		when(spannerPersistentProperty
+				.getAnnotatedColumnItemType()).thenReturn(code);
 		assertThat(
 				this.spannerSchemaUtils.getColumnDdlString(
 						spannerPersistentProperty, this.spannerEntityProcessor))
@@ -261,6 +272,13 @@ public class SpannerSchemaUtilsTests {
 		BigDecimal bigDecimalField;
 
 		List<BigDecimal> bigDecimals;
+
+		@Column(spannerType = TypeCode.JSON)
+		JsonColumn jsonCol;
+	}
+	private static class JsonColumn {
+		String param1;
+		String param2;
 	}
 
 	private static class EmbeddedColumns {

@@ -20,18 +20,22 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.google.cloud.spanner.DatabaseClient;
+import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionRunner;
+import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Value;
 import com.google.cloud.spring.data.spanner.core.SpannerMutationFactory;
 import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerReadConverter;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerWriteConverter;
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
@@ -39,11 +43,13 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.core.mapping.Where;
+import com.google.spanner.v1.TypeCode;
 import org.assertj.core.data.Offset;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import org.springframework.data.domain.PageRequest;
@@ -54,6 +60,8 @@ import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
+import org.springframework.data.repository.query.ResultProcessor;
+import org.springframework.data.repository.query.ReturnedType;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -110,6 +118,7 @@ public class SqlSpannerQueryTests {
 		Method method = Object.class.getMethod("toString");
 		when(this.queryMethod.getMethod()).thenReturn(method);
 		when(this.spannerEntityProcessor.getWriteConverter()).thenReturn(new SpannerWriteConverter());
+		when(this.spannerEntityProcessor.getReadConverter()).thenReturn(new SpannerReadConverter());
 		this.spannerTemplate = spy(new SpannerTemplate(() -> this.databaseClient,
 				this.spannerMappingContext, this.spannerEntityProcessor,
 				mock(SpannerMutationFactory.class), new SpannerSchemaUtils(
@@ -484,6 +493,16 @@ public class SqlSpannerQueryTests {
 
 		SqlSpannerQuery sqlSpannerQuery = createQuery(sql, long.class, false);
 
+		Struct row = mock(Struct.class);
+		when(row.getType()).thenReturn(
+				Type.struct(Arrays.asList(Type.StructField.of("STRUCT", Type.int64()))));
+		when(row.getLong(0)).thenReturn(3L);
+		when(row.getColumnType(0)).thenReturn(Type.int64());
+
+		ResultSet resultSet = mock(ResultSet.class);
+		when(resultSet.next()).thenReturn(true).thenReturn(false);
+		when(resultSet.getCurrentRowAsStruct()).thenReturn(row);
+
 		doAnswer(invocation -> {
 			Statement statement = invocation.getArgument(0);
 			SpannerQueryOptions queryOptions = invocation.getArgument(1);
@@ -495,8 +514,7 @@ public class SqlSpannerQueryTests {
 
 			assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
 			assertThat(paramMap.get("trader_id").getString()).isEqualTo(params[1]);
-
-			return null;
+			return resultSet;
 		}).when(this.spannerTemplate).executeQuery(any(), any());
 
 		// This dummy method was created so the metadata for the ARRAY param inner type is
@@ -505,9 +523,89 @@ public class SqlSpannerQueryTests {
 		when(this.queryMethod.getMethod()).thenReturn(method);
 		Mockito.<Parameters>when(this.queryMethod.getParameters()).thenReturn(new DefaultParameters(method));
 
+		when(sqlSpannerQuery.getReturnedSimpleConvertableItemType()).thenReturn(long.class);
+
 		sqlSpannerQuery.execute(params);
 
-		verify(this.spannerTemplate, times(1)).executeQuery(any(), any());
+		verify(this.spannerTemplate).query((Function<Struct, Object>) any(), any(), any());
+		verify(this.spannerTemplate).executeQuery(any(), any());
+	}
+
+	@Test
+	public void sqlReturnTypeIsJsonFieldTest() throws NoSuchMethodException {
+		String sql = "SELECT details from singer where stageName = @stageName";
+
+		Object[] params = new Object[] { "STAGENAME" };
+		String[] paramNames = new String[] { "stageName" };
+
+		when(queryMethod.isCollectionQuery()).thenReturn(true);
+		ResultProcessor resultProcessor = mock(ResultProcessor.class);
+		ReturnedType returnedType = mock(ReturnedType.class);
+		when(this.queryMethod.getResultProcessor()).thenReturn(resultProcessor);
+		when(resultProcessor.getReturnedType()).thenReturn(returnedType);
+		when(returnedType.getReturnedType()).thenReturn((Class) Detail.class);
+
+		EvaluationContext evaluationContext = new StandardEvaluationContext();
+
+		evaluationContext.setVariable(paramNames[0], params[0]);
+		when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
+				.thenReturn(evaluationContext);
+
+		SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Singer.class, false);
+
+		doAnswer(invocation -> {
+			Statement statement = invocation.getArgument(1);
+			assertThat(statement.getSql()).isEqualTo(sql);
+			Map<String, Value> paramMap = statement.getParameters();
+			assertThat(paramMap.get("stageName").getString()).isEqualTo(params[0]);
+
+			return null;
+		}).when(this.spannerTemplate).query((Function<Struct, Object>) any(), any(), any());
+
+		// This dummy method was created so the metadata for the ARRAY param inner type is
+		// provided.
+		Method arrayParameterTriggeringMethod = QueryHolder.class.getMethod("dummyMethod6", String.class);
+		when(this.queryMethod.getMethod()).thenReturn(arrayParameterTriggeringMethod);
+		Mockito.<Parameters>when(this.queryMethod.getParameters()).thenReturn(new DefaultParameters(arrayParameterTriggeringMethod));
+
+		sqlSpannerQuery.execute(params);
+		// capturing the row function and verifying it's the correct one with mock data
+		ArgumentCaptor<Function<Struct, Object>> argumentCaptor = ArgumentCaptor.forClass(Function.class);
+		verify(this.spannerTemplate).query(argumentCaptor.capture(), any(), any());
+		Function<Struct, Object> rowFunc = argumentCaptor.getValue();
+
+		Struct row = mock(Struct.class);
+		when(row.getType()).thenReturn(
+				Type.struct(Arrays.asList(Type.StructField.of("details", Type.json()))));
+		when(row.getColumnType(0)).thenReturn(Type.json());
+		when(row.getJson(0)).thenReturn("{\"p1\":\"address line\",\"p2\":\"5\"}");
+
+		Object result = rowFunc.apply(row);
+
+		assertThat(result).isInstanceOf(Detail.class);
+		assertThat(((Detail) result).p1).isEqualTo("address line");
+		assertThat(((Detail) result).p2).isEqualTo("5");
+	}
+
+	private static class Singer {
+		@PrimaryKey
+		String id;
+
+		String stageName;
+
+		@Column(spannerType = TypeCode.JSON)
+		Detail details;
+	}
+
+	private class Detail {
+		String p1;
+
+		String p2;
+
+		Detail(String p1, String p2) {
+			this.p1 = p1;
+			this.p2 = p2;
+		}
 	}
 
 	private static class SymbolAction {
@@ -598,6 +696,10 @@ public class SqlSpannerQueryTests {
 		}
 
 		public List<Child> dummyMethod5(String id, String trader_id, Sort param3) {
+			return null;
+		}
+
+		public Detail dummyMethod6(String stageName) {
 			return null;
 		}
 

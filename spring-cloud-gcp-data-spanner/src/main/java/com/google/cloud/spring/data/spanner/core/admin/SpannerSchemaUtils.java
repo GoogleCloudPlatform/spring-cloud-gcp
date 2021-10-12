@@ -186,8 +186,13 @@ public class SpannerSchemaUtils {
 					spannerPersistentProperty.isGenerateSchemaNotNull(),
 					spannerPersistentProperty.isCommitTimestamp());
 		}
-		spannerJavaType = spannerEntityProcessor
+		if (spannerColumnType == Type.Code.JSON) {
+			spannerJavaType = columnType;
+		}
+		else {
+			spannerJavaType = spannerEntityProcessor
 					.getCorrespondingSpannerJavaType(columnType, false);
+		}
 
 		if (spannerJavaType == null) {
 			throw new SpannerDataException(

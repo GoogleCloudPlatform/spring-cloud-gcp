@@ -27,6 +27,7 @@ import com.google.cloud.spring.data.spanner.core.SpannerReadOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.test.AbstractSpannerIntegrationTest;
+import com.google.cloud.spring.data.spanner.test.domain.Details;
 import com.google.cloud.spring.data.spanner.test.domain.Trade;
 import org.awaitility.Awaitility;
 import org.junit.Rule;
@@ -102,6 +103,35 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
 		assertThat(trades).containsExactlyInAnyOrder(trade, trade2);
 
 		this.spannerOperations.deleteAll(Arrays.asList(trade, trade2));
+		assertThat(this.spannerOperations.count(Trade.class)).isZero();
+	}
+
+	@Test
+	public void insertAndDeleteWithJsonField() {
+
+		this.spannerOperations.delete(Trade.class, KeySet.all());
+		assertThat(this.spannerOperations.count(Trade.class)).isZero();
+
+		Trade trade1 = Trade.aTrade();
+		trade1.setOptionalDetails(new Details("abc", "def"));
+		Trade trade2 = Trade.aTrade();
+		trade2.setOptionalDetails(new Details("some context", null));
+
+		this.spannerOperations.insert(trade1);
+		this.spannerOperations.insert(trade2);
+		assertThat(this.spannerOperations.count(Trade.class)).isEqualTo(2L);
+
+		List<Trade> trades = this.spannerOperations.queryAll(Trade.class, new SpannerPageableQueryOptions());
+
+		assertThat(trades).containsExactlyInAnyOrder(trade1, trade2);
+
+		Trade retrievedTrade = this.spannerOperations.read(Trade.class,
+				Key.of(trade1.getId(), trade1.getTraderId()));
+		assertThat(retrievedTrade).isEqualTo(trade1);
+		assertThat(retrievedTrade.getOptionalDetails()).isInstanceOf(Details.class);
+		assertThat(retrievedTrade.getOptionalDetails()).isEqualTo(new Details("abc", "def"));
+
+		this.spannerOperations.deleteAll(Arrays.asList(trade1, trade2));
 		assertThat(this.spannerOperations.count(Trade.class)).isZero();
 	}
 
