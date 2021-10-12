@@ -4924,10 +4924,36 @@ public class Agreement {
 </div>
 </div>
 <div class="sect3">
-<h4 id="lists"><a class="anchor" href="#lists"></a><a class="link" href="#lists">13.2.8. Lists</a></h4>
+<h4 id="json-fields"><a class="anchor" href="#json-fields"></a><a class="link" href="#json-fields">13.2.8. JSON fields</a></h4>
+<div class="paragraph">
+<p>Spanner supports <code>JSON</code> type for columns. <code>JSON</code> columns are mapped to custom POJOs annotated with <code>@Column(spannerType = TypeCode.JSON)</code>. Read, write and query with custom SQL query are supported for JSON annotated fields.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "traders")
+public class Trader {
+
+    @PrimaryKey
+    @Column(name = "trader_id")
+    String traderId;
+
+    @Column(spannerType = TypeCode.JSON)
+    Details details;
+}
+
+public class Details {
+    String name;
+    String affiliation;
+    Boolean isActive;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="lists"><a class="anchor" href="#lists"></a><a class="link" href="#lists">13.2.9. Lists</a></h4>
 <div class="paragraph">
 <p>Spanner supports <code>ARRAY</code> types for columns.
-<code>ARRAY</code> columns are mapped to <code>List</code> fields in POJOS.</p>
+<code>ARRAY</code> columns are mapped to <code>List</code> fields in POJOs.</p>
 </div>
 <div class="paragraph">
 <p>Example:</p>
@@ -4942,7 +4968,7 @@ public class Agreement {
 </div>
 </div>
 <div class="sect3">
-<h4 id="lists-of-structs"><a class="anchor" href="#lists-of-structs"></a><a class="link" href="#lists-of-structs">13.2.9. Lists of Structs</a></h4>
+<h4 id="lists-of-structs"><a class="anchor" href="#lists-of-structs"></a><a class="link" href="#lists-of-structs">13.2.10. Lists of Structs</a></h4>
 <div class="paragraph">
 <p>Cloud Spanner queries can <a href="https://cloud.google.com/spanner/docs/query-syntax#using-structs-with-select">construct STRUCT values</a> that appear as columns in the result.
 Cloud Spanner requires STRUCT values appear in ARRAYs at the root level: <code>SELECT ARRAY(SELECT STRUCT(1 as val1, 2 as val2)) as pair FROM Users</code>.</p>
@@ -4965,7 +4991,7 @@ Cloud Spanner requires STRUCT values appear in ARRAYs at the root level: <code>S
 </div>
 </div>
 <div class="sect3">
-<h4 id="custom-types"><a class="anchor" href="#custom-types"></a><a class="link" href="#custom-types">13.2.10. Custom types</a></h4>
+<h4 id="custom-types"><a class="anchor" href="#custom-types"></a><a class="link" href="#custom-types">13.2.11. Custom types</a></h4>
 <div class="paragraph">
 <p>Custom converters can be used to extend the type support for user defined types.</p>
 </div>
@@ -5092,7 +5118,7 @@ public class ConverterConfiguration {
 </div>
 </div>
 <div class="sect3">
-<h4 id="custom-converter-for-struct-array-columns"><a class="anchor" href="#custom-converter-for-struct-array-columns"></a><a class="link" href="#custom-converter-for-struct-array-columns">13.2.11. Custom Converter for Struct Array Columns</a></h4>
+<h4 id="custom-converter-for-struct-array-columns"><a class="anchor" href="#custom-converter-for-struct-array-columns"></a><a class="link" href="#custom-converter-for-struct-array-columns">13.2.12. Custom Converter for Struct Array Columns</a></h4>
 <div class="paragraph">
 <p>If a <code>Converter&lt;Struct, A&gt;</code> is provided, then properties of type <code>List&lt;A&gt;</code> can be used in your entity types.</p>
 </div>

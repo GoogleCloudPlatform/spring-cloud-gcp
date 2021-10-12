@@ -881,10 +881,36 @@ public class Agreement {
 </div>
 </div>
 <div class="sect3">
+<h4 id="_json_fields"><a class="link" href="#_json_fields">JSON fields</a></h4>
+<div class="paragraph">
+<p>Spanner supports <code>JSON</code> type for columns. <code>JSON</code> columns are mapped to custom POJOs annotated with <code>@Column(spannerType = TypeCode.JSON)</code>. Read, write and query with custom SQL query are supported for JSON annotated fields.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "traders")
+public class Trader {
+
+	@PrimaryKey
+	@Column(name = "trader_id")
+	String traderId;
+
+	@Column(spannerType = TypeCode.JSON)
+	Details details;
+}
+
+public class Details {
+    String name;
+    String affiliation;
+    Boolean isActive;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_lists"><a class="link" href="#_lists">Lists</a></h4>
 <div class="paragraph">
 <p>Spanner supports <code>ARRAY</code> types for columns.
-<code>ARRAY</code> columns are mapped to <code>List</code> fields in POJOS.</p>
+<code>ARRAY</code> columns are mapped to <code>List</code> fields in POJOs.</p>
 </div>
 <div class="paragraph">
 <p>Example:</p>
