@@ -478,10 +478,35 @@ Natively supported types:
 * `java.time.LocalDateTime`
 
 
+==== JSON fields
+
+Spanner supports `JSON` type for columns. `JSON` columns are mapped to custom POJOs annotated with `@Column(spannerType = TypeCode.JSON)`. Read, write and query with custom SQL query are supported for JSON annotated fields.
+
+[source,java]
+----
+@Table(name = "traders")
+public class Trader {
+
+	@PrimaryKey
+	@Column(name = "trader_id")
+	String traderId;
+
+	@Column(spannerType = TypeCode.JSON)
+	Details details;
+}
+
+public class Details {
+    String name;
+    String affiliation;
+    Boolean isActive;
+}
+----
+
+
 ==== Lists
 
 Spanner supports `ARRAY` types for columns.
-`ARRAY` columns are mapped to `List` fields in POJOS.
+`ARRAY` columns are mapped to `List` fields in POJOs.
 
 Example:
 

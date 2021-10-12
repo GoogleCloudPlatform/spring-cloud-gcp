@@ -25,6 +25,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.spanner.v1.TypeCode;
 
 /**
  * A sample entity.
@@ -54,6 +55,12 @@ public class Trader {
 	@Interleaved(lazy = true)
 	private List<Trade> trades;
 
+	@Column(name = "work_address", spannerType = TypeCode.JSON)
+	private Address workAddress;
+
+	@Column(name = "home_address", spannerType = TypeCode.JSON)
+	private Address homeAddress;
+
 	public Trader() {
 	}
 
@@ -61,6 +68,13 @@ public class Trader {
 		this.traderId = traderId;
 		this.firstName = firstName;
 		this.lastName = lastName;
+	}
+
+	public Trader(String traderId, String firstName, String lastName, Address workAddress) {
+		this.traderId = traderId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.workAddress = workAddress;
 	}
 
 	public Trader(String traderId, String firstName, String lastName, Timestamp createdOn, List<Timestamp> modifiedOn) {
@@ -101,6 +115,18 @@ public class Trader {
 
 	public void setTrades(List<Trade> trades) {
 		this.trades = trades;
+	}
+
+	public Address getWorkAddress() {
+		return workAddress;
+	}
+
+	public void setHomeAddress(Address homeAddress) {
+		this.homeAddress = homeAddress;
+	}
+
+	public Address getHomeAddress() {
+		return homeAddress;
 	}
 
 	@Override

@@ -306,4 +306,22 @@ public class ConverterAwareMappingSpannerEntityReaderTests {
 				.read(TestEntities.TestEntityWithListWithZeroTypeArgs.class, struct);
 	}
 
+	@Test
+	public void readJsonFieldTest() {
+		Struct row = mock(Struct.class);
+		when(row.getString("id")).thenReturn("1234");
+		when(row.getType()).thenReturn(Type.struct(Arrays.asList(Type.StructField.of("id", Type.string()),
+				Type.StructField.of("params", Type.json()))));
+		when(row.getColumnType("id")).thenReturn(Type.string());
+
+		when(row.getJson("params")).thenReturn("{\"p1\":\"address line\",\"p2\":\"5\"}");
+
+		TestEntities.TestEntityJson result = this.spannerEntityReader.read(TestEntities.TestEntityJson.class, row);
+
+		assertThat(result.id).isEqualTo("1234");
+
+		assertThat(result.params.p1).isEqualTo("address line");
+		assertThat(result.params.p2).isEqualTo("5");
+	}
+
 }

@@ -36,6 +36,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.core.mapping.Where;
+import com.google.spanner.v1.TypeCode;
 
 /**
  * A test domain object using many features.
@@ -79,6 +80,12 @@ public class Trade {
 	private BigDecimal bigDecimalField;
 
 	private List<BigDecimal> bigDecimals;
+
+	@Column(spannerType = TypeCode.JSON)
+	private Details optionalDetails;
+
+	@Column(spannerType = TypeCode.JSON)
+	private Details backupDetails;
 
 	/**
 	 * Partial constructor. Intentionally tests a field that is left null sometimes.
@@ -284,5 +291,17 @@ public class Trade {
 
 	public void setBigDecimals(List<BigDecimal> bigDecimals) {
 		this.bigDecimals = bigDecimals;
+	}
+
+	public Details getOptionalDetails() {
+		return optionalDetails;
+	}
+
+	public void setOptionalDetails(Details optionalDetails) {
+		this.optionalDetails = optionalDetails;
+	}
+
+	public void setBackupDetails(Details backupDetails) {
+		this.backupDetails = backupDetails;
 	}
 }

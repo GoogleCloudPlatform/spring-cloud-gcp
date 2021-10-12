@@ -1,0 +1,47 @@
+/*
+ * Copyright 2017-2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.spring.data.spanner.test.domain;
+
+import java.util.Objects;
+
+public class Details {
+	String p1;
+
+	String p2;
+
+	public Details(String p1, String p2) {
+		this.p1 = p1;
+		this.p2 = p2;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Details details = (Details) o;
+		return Objects.equals(p1, details.p1) && Objects.equals(p2, details.p2);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(p1, p2);
+	}
+}
