@@ -344,6 +344,39 @@ public class ConverterAwareMappingSpannerEntityWriterTests {
 	}
 
 	@Test
+	public void writeJsonTest() {
+		TestEntities.Params parameters = new TestEntities.Params("some value", "some other value");
+		TestEntities.TestEntityJson testEntity = new TestEntities.TestEntityJson("id1", parameters);
+
+		WriteBuilder writeBuilder = mock(WriteBuilder.class);
+		ValueBinder<WriteBuilder> valueBinder = mock(ValueBinder.class);
+
+		when(writeBuilder.set("id")).thenReturn(valueBinder);
+		when(writeBuilder.set("params")).thenReturn(valueBinder);
+
+		this.spannerEntityWriter.write(testEntity, writeBuilder::set);
+
+		verify(valueBinder).to(testEntity.id);
+		verify(valueBinder).to(Value.json("{\"p1\":\"some value\",\"p2\":\"some other value\"}"));
+	}
+
+	@Test
+	public void writeNullJsonTest() {
+		TestEntities.TestEntityJson testEntity = new TestEntities.TestEntityJson("id1", null);
+
+		WriteBuilder writeBuilder = mock(WriteBuilder.class);
+		ValueBinder<WriteBuilder> valueBinder = mock(ValueBinder.class);
+
+		when(writeBuilder.set("id")).thenReturn(valueBinder);
+		when(writeBuilder.set("params")).thenReturn(valueBinder);
+
+		this.spannerEntityWriter.write(testEntity, writeBuilder::set);
+
+		verify(valueBinder).to(testEntity.id);
+		verify(valueBinder).to(Value.json(null));
+	}
+
+	@Test
 	public void writeUnsupportedTypeIterableTest() {
 		this.expectedEx.expect(SpannerDataException.class);
 		this.expectedEx.expectMessage("Unsupported mapping for type: interface java.util.List");

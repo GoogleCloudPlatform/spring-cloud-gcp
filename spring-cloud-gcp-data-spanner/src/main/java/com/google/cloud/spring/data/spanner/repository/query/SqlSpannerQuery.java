@@ -39,6 +39,7 @@ import com.google.cloud.spring.data.spanner.core.convert.StructAccessor;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntityImpl;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -232,13 +233,31 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
 
 		Statement statement = buildStatementFromQueryAndTags(queryTagValue);
 
-		return (getReturnedSimpleConvertableItemType() != null)
-				? this.spannerTemplate.query(
-						struct -> new StructAccessor(struct).getSingleValue(0), statement,
-						spannerQueryOptions)
-				: this.spannerTemplate.query(this.entityType,
-						statement,
+		if (getReturnedSimpleConvertableItemType() != null) {
+			return this.spannerTemplate.query(
+					struct -> new StructAccessor(struct).getSingleValue(0), statement,
+					spannerQueryOptions);
+		}
+		// check if returnedType is a field annotated as json
+		boolean isJsonField = isJsonFieldType(returnedType);
+		if (isJsonField) {
+			return this.spannerTemplate.query(
+					struct -> new StructAccessor(struct).getSingleJsonValue(0, returnedType), statement,
+					spannerQueryOptions);
+		}
+
+		return this.spannerTemplate.query(this.entityType,
+				statement,
 				spannerQueryOptions);
+	}
+
+	private boolean isJsonFieldType(Class<?> returnedType) {
+		SpannerPersistentEntityImpl<?> persistentEntity = (SpannerPersistentEntityImpl<?>) this.spannerMappingContext
+				.getPersistentEntity(this.entityType);
+		if (persistentEntity == null) {
+			return false;
+		}
+		return persistentEntity.isJsonProperty(returnedType);
 	}
 
 	private Statement buildStatementFromQueryAndTags(QueryTagValue queryTagValue) {

@@ -143,7 +143,8 @@ public class SpannerRepositoryIntegrationTests {
 		this.spannerRepositoryExample.runExample();
 		List<String> traderIds = new ArrayList<>();
 		this.traderRepository.findAll().forEach(t -> traderIds.add(t.getTraderId()));
-		assertThat(traderIds).containsExactlyInAnyOrder("demo_trader1", "demo_trader2", "demo_trader3");
+		assertThat(traderIds).containsExactlyInAnyOrder("demo_trader1", "demo_trader2", "demo_trader3",
+				"demo_trader_json1", "demo_trader_json2", "demo_trader_json3");
 
 		assertThat(this.tradeRepository.findAll()).hasSize(8);
 
@@ -164,5 +165,17 @@ public class SpannerRepositoryIntegrationTests {
 		assertThat(buyTradeIds).hasSize(5);
 
 		assertThat(this.traderRepository.findById("demo_trader1").get().getTrades()).hasSize(3);
+	}
+
+	@Test
+	public void testJsonFieldReadWrite() {
+
+		Address workAddress = new Address(5L, "address line", true);
+		Trader trader = new Trader("demo_trader1", "John", "Doe", workAddress);
+		this.traderRepository.save(trader);
+
+		Trader traderFound = this.traderRepository.findById("demo_trader1").get();
+		assertThat(traderFound.getTraderId()).isEqualTo(trader.getTraderId());
+		assertThat(traderFound.getWorkAddress()).isEqualTo(workAddress);
 	}
 }

@@ -32,6 +32,7 @@ import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Type.Code;
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
+import com.google.gson.Gson;
 
 /**
  * A convenience wrapper class around Struct to make reading columns easier without
@@ -107,6 +108,8 @@ public class StructAccessor {
 
 	private Set<String> columnNamesIndex;
 
+	private static final Gson gson = new Gson();
+
 	public StructAccessor(Struct struct) {
 		this.struct = struct;
 		this.columnNamesIndex = indexColumnNames();
@@ -169,5 +172,24 @@ public class StructAccessor {
 		return code.equals(Code.ARRAY)
 				? SpannerTypeMapper.getArrayJavaClassFor(colType.getArrayElementType().getCode())
 				: SpannerTypeMapper.getSimpleJavaClassFor(code);
+	}
+
+	<T> T getSingleJsonValue(String colName, Class<T> colType) {
+		if (this.struct.isNull(colName)) {
+			return null;
+		}
+		String jsonString = this.struct.getJson(colName);
+		return gson.fromJson(jsonString, colType);
+	}
+
+	public <T> T getSingleJsonValue(int colIndex, Class<T> colType) {
+		if (this.struct.getColumnType(colIndex).getCode() != Code.JSON) {
+			throw new SpannerDataException("Column of index " + colIndex + " not an JSON type.");
+		}
+		if (this.struct.isNull(colIndex)) {
+			return null;
+		}
+		String jsonString = this.struct.getJson(colIndex);
+		return gson.fromJson(jsonString, colType);
 	}
 }

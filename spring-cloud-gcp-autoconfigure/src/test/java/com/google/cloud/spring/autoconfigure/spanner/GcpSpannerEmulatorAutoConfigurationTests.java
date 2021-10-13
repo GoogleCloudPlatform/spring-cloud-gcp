@@ -17,36 +17,27 @@
 package com.google.cloud.spring.autoconfigure.spanner;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.threeten.bp.Duration;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * @author Eddú Meléndez
  */
-public class GcpSpannerEmulatorAutoConfigurationIntegrationTests {
+public class GcpSpannerEmulatorAutoConfigurationTests {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(GcpSpannerEmulatorAutoConfiguration.class,
 					GcpSpannerAutoConfiguration.class, GcpContextAutoConfiguration.class))
 			.withPropertyValues("spring.cloud.gcp.spanner.project-id=test-project");
-
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Spanner integration tests are disabled. "
-						+ "Please use '-Dit.spanner=true' to enable them. ",
-				System.getProperty("it.spanner"), is("true"));
-	}
 
 	@Test
 	public void testEmulatorAutoConfigurationEnabled() {
@@ -73,9 +64,35 @@ public class GcpSpannerEmulatorAutoConfigurationIntegrationTests {
 	@Test
 	public void testEmulatorAutoConfigurationDisabled() {
 		this.contextRunner
+				.withUserConfiguration(GcpSpannerAutoConfigurationTests.TestConfiguration.class)
 				.run(context -> {
 					SpannerOptions spannerOptions = context.getBean(SpannerOptions.class);
 					assertThat(spannerOptions.getEndpoint()).isEqualTo("spanner.googleapis.com:443");
 				});
+	}
+
+	@Test
+	public void testEmulatorSpannerCustomizerProvided() {
+		Duration duration = Duration.ofSeconds(42);
+		this.contextRunner.withPropertyValues("spring.cloud.gcp.spanner.emulator.enabled=true")
+				.withBean(SpannerOptionsCustomizer.class, () -> {
+					return builder -> {
+						builder.getSpannerStubSettingsBuilder()
+								.executeSqlSettings()
+								.setRetrySettings(RetrySettings.newBuilder().setMaxRetryDelay(duration).build());
+					};
+				}).run(context -> {
+			SpannerOptions spannerOptions = context.getBean(SpannerOptions.class);
+			assertThat(spannerOptions).isNotNull();
+			assertThat(
+					spannerOptions.getSpannerStubSettings().executeSqlSettings().getRetrySettings().getMaxRetryDelay()
+			).isEqualTo(duration);
+			// unchanged options stay at their default values
+			SpannerOptions defaultSpannerOptions = SpannerOptions.newBuilder()
+					.setProjectId("unused")
+					.setCredentials(NoCredentials.getInstance())
+					.build();
+			assertThat(spannerOptions.getNumChannels()).isEqualTo(defaultSpannerOptions.getNumChannels());
+		});
 	}
 }
