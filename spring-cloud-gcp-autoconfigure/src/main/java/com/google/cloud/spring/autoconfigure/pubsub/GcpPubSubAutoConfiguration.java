@@ -64,7 +64,6 @@ import org.slf4j.LoggerFactory;
 import org.threeten.bp.Duration;
 
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -106,15 +105,15 @@ public class GcpPubSubAutoConfiguration {
 
 	private final ConcurrentHashMap<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap = new ConcurrentHashMap<>();
 
-	@Autowired
-	ApplicationContext context;
+	private final ApplicationContext applicationContext;
 
 	private ThreadPoolTaskScheduler globalScheduler;
 
 	public GcpPubSubAutoConfiguration(GcpPubSubProperties gcpPubSubProperties,
 			GcpProjectIdProvider gcpProjectIdProvider,
-			CredentialsProvider credentialsProvider) throws IOException {
+			CredentialsProvider credentialsProvider, ApplicationContext applicationContext) throws IOException {
 		this.gcpPubSubProperties = gcpPubSubProperties;
+		this.applicationContext = applicationContext;
 		this.finalProjectIdProvider = (gcpPubSubProperties.getProjectId() != null)
 				? gcpPubSubProperties::getProjectId
 				: gcpProjectIdProvider;
@@ -380,7 +379,7 @@ public class GcpPubSubAutoConfiguration {
 
 	@PostConstruct
 	public void registerSubscriberThreadPoolSchedulerBeans() {
-		GenericApplicationContext context = (GenericApplicationContext) this.context;
+		GenericApplicationContext context = (GenericApplicationContext) this.applicationContext;
 		Integer globalExecutorThreads = this.gcpPubSubProperties.getSubscriber().getExecutorThreads();
 		Integer numThreads = globalExecutorThreads != null ? globalExecutorThreads
 				: PubSubConfiguration.DEFAULT_EXECUTOR_THREADS;
