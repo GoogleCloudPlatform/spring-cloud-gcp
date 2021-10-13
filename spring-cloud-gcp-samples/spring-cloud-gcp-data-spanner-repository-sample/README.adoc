@@ -1,6 +1,9 @@
 = Spring Cloud GCP Cloud Spanner Starter Example using Spring Data repositories
 
+Refer this Spring Data Documentation for concepts overview: https://docs.spring.io/spring-data/data-commons/docs/2.5.x/reference/html/#repositories.core-concepts[click here]
+
 This code sample demonstrates how to read and write POJOs from Google Cloud Spanner using the Spring Data Cloud Spanner module link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-spanner[Spring Cloud GCP Cloud Spanner Starter].
+
 
 == Running the example
 
@@ -36,7 +39,7 @@ $ export SPANNER_EMULATOR_HOST=localhost:9010
 
 Run `$ mvn clean install` from the root directory of the project.
 
-Run the `SpannerRepositoryExample`  Spring Boot console apps.
+Run the `SpannerRepositoryExample`  Spring Boot console app.
 This causes the app to generate sample `Trade` objects filled with some demo data and persists them to the Cloud Spanner table created earlier.
 These POJOs are then retrieved and their contents are printed in the browser.
 
