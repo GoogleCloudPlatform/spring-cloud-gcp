@@ -369,31 +369,6 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputeExecutorThreads_returnCustom() {
-		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
-		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
-		subscriber.setExecutorThreads(8);
-
-		pubSubConfiguration.getSubscription().put("projects/projectId/subscriptions/subscription-name",
-				subscriber);
-
-		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
-		assertThat(pubSubConfiguration
-				.computeSubscriberExecutorThreads("subscription-name",
-						"projectId")).isEqualTo(8);
-	}
-
-	@Test
-	public void testComputeExecutorThreads_returnDefault() {
-		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
-
-		assertThat(pubSubConfiguration.getSubscription()).isEmpty();
-		assertThat(pubSubConfiguration
-				.computeSubscriberExecutorThreads("subscription-name",
-						"projectId")).isEqualTo(4);
-	}
-
-	@Test
 	public void testSubscriberMapProperties_isGlobalIfAbsentFromMap() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 
