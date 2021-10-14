@@ -16,8 +16,8 @@
 
 package com.google.cloud.spring.pubsub.core;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
 import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
@@ -32,11 +32,14 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
  */
 public class PubSubConfiguration {
 
-	private static final int DEFAULT_EXECUTOR_THREADS = 4;
+	/**
+	 * Default number of executor threads.
+	 */
+	public static final int DEFAULT_EXECUTOR_THREADS = 4;
 
 	private static final Long DEFAULT_MAX_ACK_EXTENSION_PERIOD = 0L;
 
-	private final Map<String, Subscriber> subscription = new HashMap<>();
+	private final ConcurrentHashMap<String, Subscriber> subscription = new ConcurrentHashMap<>();
 
 	/**
 	 * Contains global and default subscriber settings.
@@ -56,7 +59,7 @@ public class PubSubConfiguration {
 		return this.publisher;
 	}
 
-	public Map<String, Subscriber> getSubscription() {
+	public ConcurrentMap<String, Subscriber> getSubscription() {
 		return this.subscription;
 	}
 
@@ -83,23 +86,6 @@ public class PubSubConfiguration {
 				k -> this.globalSubscriber);
 		subscriberProperties.global = true;
 		return subscriberProperties;
-	}
-
-	/**
-	 * Computes the number of executor threads. The subscription-specific property takes
-	 * precedence if both global and subscription-specific properties are set. If none are set
-	 * then the default (4) is returned.
-	 * @param subscriptionName subscription name
-	 * @param projectId project id
-	 * @return number of executor threads
-	 */
-	public int computeSubscriberExecutorThreads(String subscriptionName, String projectId) {
-		Integer numThreads = getSubscriber(subscriptionName, projectId).getExecutorThreads();
-		if (numThreads != null) {
-			return numThreads;
-		}
-		Integer globalExecutorThreads = this.globalSubscriber.getExecutorThreads();
-		return globalExecutorThreads != null ? globalExecutorThreads : DEFAULT_EXECUTOR_THREADS;
 	}
 
 	/**
