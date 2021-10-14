@@ -17,9 +17,13 @@
 package com.google.cloud.spring.autoconfigure.pubsub;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
+
+import javax.annotation.PostConstruct;
 
 import com.google.api.core.ApiClock;
 import com.google.api.gax.batching.BatchingSettings;
@@ -51,6 +55,7 @@ import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
+import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
@@ -60,13 +65,16 @@ import org.threeten.bp.Duration;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -95,10 +103,17 @@ public class GcpPubSubAutoConfiguration {
 
 	private final HeaderProvider headerProvider = new UserAgentHeaderProvider(this.getClass());
 
+	private final ConcurrentHashMap<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap = new ConcurrentHashMap<>();
+
+	private final ApplicationContext applicationContext;
+
+	private ThreadPoolTaskScheduler globalScheduler;
+
 	public GcpPubSubAutoConfiguration(GcpPubSubProperties gcpPubSubProperties,
 			GcpProjectIdProvider gcpProjectIdProvider,
-			CredentialsProvider credentialsProvider) throws IOException {
+			CredentialsProvider credentialsProvider, ApplicationContext applicationContext) throws IOException {
 		this.gcpPubSubProperties = gcpPubSubProperties;
+		this.applicationContext = applicationContext;
 		this.finalProjectIdProvider = (gcpPubSubProperties.getProjectId() != null)
 				? gcpPubSubProperties::getProjectId
 				: gcpProjectIdProvider;
@@ -188,14 +203,17 @@ public class GcpPubSubAutoConfiguration {
 	@ConditionalOnMissingBean
 	public SubscriberFactory defaultSubscriberFactory(
 			@Qualifier("subscriberExecutorProvider") Optional<ExecutorProvider> executorProvider,
-			@Qualifier("subscriberSystemExecutorProvider")
-			ObjectProvider<ExecutorProvider> systemExecutorProvider,
-			@Qualifier("subscriberFlowControlSettings")
-					ObjectProvider<FlowControlSettings> flowControlSettings,
+			@Qualifier("subscriberSystemExecutorProvider") ObjectProvider<ExecutorProvider> systemExecutorProvider,
+			@Qualifier("subscriberFlowControlSettings") ObjectProvider<FlowControlSettings> flowControlSettings,
 			@Qualifier("subscriberApiClock") ObjectProvider<ApiClock> apiClock,
 			@Qualifier("subscriberRetrySettings") ObjectProvider<RetrySettings> retrySettings,
 			@Qualifier("subscriberTransportChannelProvider") TransportChannelProvider subscriberTransportChannelProvider) {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider, this.gcpPubSubProperties);
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider,
+				this.gcpPubSubProperties);
+
+		factory.setThreadPoolTaskSchedulerMap(this.threadPoolTaskSchedulerMap);
+		factory.setGlobalScheduler(this.globalScheduler);
+
 		if (executorProvider.isPresent()) {
 			logger.warn(
 					"The subscriberExecutorProvider bean is being deprecated. Please use application.properties to configure properties");
@@ -359,4 +377,74 @@ public class GcpPubSubAutoConfiguration {
 				.build();
 	}
 
+	@PostConstruct
+	public void registerSubscriberThreadPoolSchedulerBeans() {
+		GenericApplicationContext context = (GenericApplicationContext) this.applicationContext;
+		Integer globalExecutorThreads = this.gcpPubSubProperties.getSubscriber().getExecutorThreads();
+		Integer numThreads = globalExecutorThreads != null ? globalExecutorThreads
+				: PubSubConfiguration.DEFAULT_EXECUTOR_THREADS;
+		this.globalScheduler = createAndRegisterSchedulerBean(numThreads, "global-gcp-pubsub-subscriber",
+				"globalPubSubSubscriberThreadPoolScheduler", context);
+		Map<String, PubSubConfiguration.Subscriber> subscriberMap = this.gcpPubSubProperties.getSubscription();
+		registerSelectiveSchedulerBean(subscriberMap, context, this.finalProjectIdProvider);
+	}
+
+	/**
+	 * Creates and registers {@link ThreadPoolTaskScheduler} for subscription-specific
+	 * configurations.
+	 * @param subscriberMap subscriber properties map
+	 * @param context application context
+	 * @param projectIdProvider project Id provider.
+	 */
+	private void registerSelectiveSchedulerBean(
+			Map<String, PubSubConfiguration.Subscriber> subscriberMap,
+			GenericApplicationContext context, GcpProjectIdProvider projectIdProvider) {
+		for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription : subscriberMap.entrySet()) {
+			String subscriptionName = subscription.getKey();
+			PubSubConfiguration.Subscriber selectiveSubscriber = subscriberMap.get(subscriptionName);
+			Integer selectiveExecutorThreads = selectiveSubscriber.getExecutorThreads();
+			if (selectiveExecutorThreads != null) {
+				String threadName = "gcp-pubsub-subscriber-" + subscriptionName;
+				String beanName = "threadPoolScheduler_" + subscriptionName;
+				ThreadPoolTaskScheduler selectiveScheduler = createAndRegisterSchedulerBean(selectiveExecutorThreads,
+						threadName, beanName, context);
+				String fullyQualifiedName = PubSubSubscriptionUtils
+						.toProjectSubscriptionName(subscriptionName, projectIdProvider.getProjectId()).toString();
+				this.threadPoolTaskSchedulerMap.putIfAbsent(fullyQualifiedName, selectiveScheduler);
+			}
+		}
+	}
+
+	/**
+	 * Creates a {@link ThreadPoolTaskScheduler} and registers it as a bean.
+	 * @param executorThreads number of executor threads
+	 * @param threadName thread name
+	 * @param beanName bean name
+	 * @param context application context
+	 * @return a {@link ThreadPoolTaskScheduler}
+	 */
+	private ThreadPoolTaskScheduler createAndRegisterSchedulerBean(Integer executorThreads, String threadName,
+			String beanName,
+			GenericApplicationContext context) {
+		ThreadPoolTaskScheduler scheduler = createThreadPoolTaskScheduler(executorThreads, threadName);
+		context.registerBeanDefinition(beanName,
+				BeanDefinitionBuilder.genericBeanDefinition(ThreadPoolTaskScheduler.class, () -> scheduler)
+						.getBeanDefinition());
+		return scheduler;
+	}
+
+	/**
+	 * Creates {@link ThreadPoolTaskScheduler} given the number of executor threads and a
+	 * thread name.
+	 * @param executorThreads number of executor threads
+	 * @param threadName thread name prefix to set for the scheduler
+	 * @return thread pool scheduler
+	 */
+	ThreadPoolTaskScheduler createThreadPoolTaskScheduler(Integer executorThreads, String threadName) {
+		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+		scheduler.setPoolSize(executorThreads);
+		scheduler.setThreadNamePrefix(threadName);
+		scheduler.setDaemon(true);
+		return scheduler;
+	}
 }

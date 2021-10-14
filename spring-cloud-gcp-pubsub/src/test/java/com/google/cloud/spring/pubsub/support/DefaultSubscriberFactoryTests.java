@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.pubsub.support;
 
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
@@ -38,8 +38,6 @@ import org.threeten.bp.Duration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -66,9 +64,9 @@ public class DefaultSubscriberFactoryTests {
 	@Mock
 	private PubSubConfiguration.Subscriber mockCustomSubscriber2;
 	@Mock
-	private ThreadPoolTaskScheduler mockScheduler1;
+	private ThreadPoolTaskScheduler mockScheduler;
 	@Mock
-	private ThreadPoolTaskScheduler mockScheduler2;
+	private ThreadPoolTaskScheduler mockGlobalScheduler;
 
 	/**
 	 * used to check exception messages and types.
@@ -93,6 +91,7 @@ public class DefaultSubscriberFactoryTests {
 		GcpProjectIdProvider projectIdProvider = () -> "angeldust";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
 		factory.setCredentialsProvider(this.credentialsProvider);
+		factory.setGlobalScheduler(mockScheduler);
 
 		Subscriber subscriber = factory.createSubscriber("midnight cowboy", (message, consumer) -> {
 		});
@@ -100,7 +99,6 @@ public class DefaultSubscriberFactoryTests {
 		assertThat(subscriber.getSubscriptionNameString())
 				.isEqualTo("projects/angeldust/subscriptions/midnight cowboy");
 
-		factory.getThreadPoolTaskSchedulerMap().get("midnight cowboy").shutdown();
 	}
 
 	@Test
@@ -161,10 +159,10 @@ public class DefaultSubscriberFactoryTests {
 	public void testGetExecutorProvider_allSubscribersWithDefaultConfig_oneCreated() {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+
+		factory.setGlobalScheduler(mockGlobalScheduler);
 		when(mockPubSubConfiguration.getSubscriber("defaultSubscription1", projectIdProvider.getProjectId()))
 				.thenReturn(mockDefaultSubscriber1);
-		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("defaultSubscription1", projectIdProvider.getProjectId()))
-				.thenReturn(4);
 		when(mockDefaultSubscriber1.isGlobal()).thenReturn(true);
 		when(mockPubSubConfiguration.getSubscriber("defaultSubscription2", projectIdProvider.getProjectId()))
 				.thenReturn(mockDefaultSubscriber2);
@@ -173,52 +171,46 @@ public class DefaultSubscriberFactoryTests {
 		ExecutorProvider executorProviderForSub1 = factory.getExecutorProvider("defaultSubscription1");
 		ExecutorProvider executorProviderForSub2 = factory.getExecutorProvider("defaultSubscription2");
 
-		// Verify that only one executor provider and one scheduler are created
+		// Verify that only one executor provider is created
 		assertThat(executorProviderForSub1).isNotNull();
 		assertThat(executorProviderForSub2).isNotNull();
 		assertThat(factory.getExecutorProviderMap()).hasSize(1);
-		assertThat(factory.getThreadPoolTaskSchedulerMap()).hasSize(1);
 	}
 
 	@Test
 	public void testGetExecutorProvider_allSubscribersWithCustomConfigs_manyCreated() {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
+
+		factory.setGlobalScheduler(mockGlobalScheduler);
 		when(mockPubSubConfiguration.getSubscriber("customSubscription1", projectIdProvider.getProjectId()))
 				.thenReturn(mockCustomSubscriber1);
-		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("customSubscription1", projectIdProvider.getProjectId()))
-				.thenReturn(4);
 		when(mockPubSubConfiguration.getSubscriber("customSubscription2", projectIdProvider.getProjectId()))
 				.thenReturn(mockCustomSubscriber2);
-		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("customSubscription2", projectIdProvider.getProjectId()))
-				.thenReturn(4);
 
 		ExecutorProvider executorProviderForSub1 = factory.getExecutorProvider("customSubscription1");
 		ExecutorProvider executorProviderForSub2 = factory.getExecutorProvider("customSubscription2");
 
-		// Verify that two executor providers and two schedulers are created
+		// Verify that two executor providers are created
 		assertThat(executorProviderForSub1).isNotNull();
 		assertThat(executorProviderForSub2).isNotNull();
 		assertThat(factory.getExecutorProviderMap()).hasSize(2);
-		assertThat(factory.getThreadPoolTaskSchedulerMap()).hasSize(2);
 	}
 
 	@Test
 	public void testGetExecutorProvider_subscribersWithDefaultAndCustomConfigs() {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
+
+		factory.setGlobalScheduler(mockGlobalScheduler);
 
 		// One subscriber with subscription-specific subscriber properties
 		when(mockPubSubConfiguration.getSubscriber("customSubscription1", projectIdProvider.getProjectId()))
 				.thenReturn(mockCustomSubscriber1);
-		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("customSubscription1", projectIdProvider.getProjectId()))
-				.thenReturn(4);
 
 		// Two subscribers with default/global subscriber properties
 		when(mockPubSubConfiguration.getSubscriber("defaultSubscription1", projectIdProvider.getProjectId()))
 				.thenReturn(mockDefaultSubscriber1);
-		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("defaultSubscription1", projectIdProvider.getProjectId()))
-				.thenReturn(4);
 		when(mockDefaultSubscriber1.isGlobal()).thenReturn(true);
 		when(mockPubSubConfiguration.getSubscriber("defaultSubscription2", projectIdProvider.getProjectId()))
 				.thenReturn(mockDefaultSubscriber2);
@@ -228,12 +220,11 @@ public class DefaultSubscriberFactoryTests {
 		ExecutorProvider executorProviderForDefault1 = factory.getExecutorProvider("defaultSubscription1");
 		ExecutorProvider executorProviderForDefault2 = factory.getExecutorProvider("defaultSubscription2");
 
-		// Verify that only two executor providers and two schedulers are created
+		// Verify that only two executor providers are created
 		assertThat(executorProviderForCustom1).isNotNull();
 		assertThat(executorProviderForDefault1).isNotNull();
 		assertThat(executorProviderForDefault2).isNotNull();
 		assertThat(factory.getExecutorProviderMap()).hasSize(2);
-		assertThat(factory.getThreadPoolTaskSchedulerMap()).hasSize(2);
 	}
 
 	@Test
@@ -245,37 +236,77 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
-	public void testCreateThreadPoolTaskScheduler() {
-		GcpProjectIdProvider projectIdProvider = () -> "project";
+	public void testFetchThreadPoolTaskScheduler_presentInMap() {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
-		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("subscription-name", projectIdProvider.getProjectId()))
-				.thenReturn(6);
+
+		ConcurrentHashMap<String, ThreadPoolTaskScheduler> threadPoolSchedulerMap = new ConcurrentHashMap<>();
+		threadPoolSchedulerMap.put("projects/project/subscriptions/subscription-name", mockScheduler);
+		factory.setThreadPoolTaskSchedulerMap(threadPoolSchedulerMap);
+		when(mockScheduler.getThreadNamePrefix()).thenReturn("my-thread-name");
+		when(mockScheduler.getPoolSize()).thenReturn(2);
+		when(mockScheduler.isDaemon()).thenReturn(true);
 
 		ThreadPoolTaskScheduler threadPoolTaskScheduler = factory
-				.createThreadPoolTaskScheduler("subscription-name");
+				.fetchThreadPoolTaskScheduler("subscription-name");
 
 		assertThat(
 				threadPoolTaskScheduler.getThreadNamePrefix())
-						.isEqualTo("gcp-pubsub-subscriber-subscription-name");
+						.isEqualTo("my-thread-name");
 		assertThat(
 				threadPoolTaskScheduler.getPoolSize())
-						.isEqualTo(6);
+						.isEqualTo(2);
 		assertThat(
 				threadPoolTaskScheduler.isDaemon())
 						.isTrue();
 	}
 
 	@Test
-	public void shutdownScheduler() {
+	public void testFetchThreadPoolTaskScheduler_fullyQualifiedNameNotInMap_pickGlobal() {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
-		Map<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap = factory.getThreadPoolTaskSchedulerMap();
-		threadPoolTaskSchedulerMap.put("sub1", mockScheduler1);
-		threadPoolTaskSchedulerMap.put("sub2", mockScheduler2);
 
-		factory.clearScheduler();
+		ConcurrentHashMap<String, ThreadPoolTaskScheduler> threadPoolSchedulerMap = new ConcurrentHashMap<>();
+		threadPoolSchedulerMap.put("projects/project/subscriptions/subscription-name", mockScheduler);
+		factory.setThreadPoolTaskSchedulerMap(threadPoolSchedulerMap);
+		factory.setGlobalScheduler(mockGlobalScheduler);
+		when(mockGlobalScheduler.getThreadNamePrefix()).thenReturn("global-thread-name");
+		when(mockGlobalScheduler.getPoolSize()).thenReturn(2);
+		when(mockGlobalScheduler.isDaemon()).thenReturn(true);
 
-		verify(mockScheduler1, times(1)).shutdown();
-		verify(mockScheduler2, times(1)).shutdown();
+		ThreadPoolTaskScheduler threadPoolTaskScheduler = factory
+				.fetchThreadPoolTaskScheduler("projects/project1/subscriptions/subscription-name");
+
+		assertThat(
+				threadPoolTaskScheduler.getThreadNamePrefix())
+						.isEqualTo("global-thread-name");
+		assertThat(
+				threadPoolTaskScheduler.getPoolSize())
+						.isEqualTo(2);
+		assertThat(
+				threadPoolTaskScheduler.isDaemon())
+						.isTrue();
+	}
+
+	@Test
+	public void testFetchThreadPoolTaskScheduler_notPresentInMap_pickGlobal() {
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
+
+		factory.setGlobalScheduler(mockGlobalScheduler);
+		when(mockGlobalScheduler.getThreadNamePrefix()).thenReturn("my-thread-name");
+		when(mockGlobalScheduler.getPoolSize()).thenReturn(2);
+		when(mockGlobalScheduler.isDaemon()).thenReturn(true);
+
+		ThreadPoolTaskScheduler threadPoolTaskScheduler = factory
+				.fetchThreadPoolTaskScheduler("subscription-name");
+
+		assertThat(
+				threadPoolTaskScheduler.getThreadNamePrefix())
+						.isEqualTo("my-thread-name");
+		assertThat(
+				threadPoolTaskScheduler.getPoolSize())
+						.isEqualTo(2);
+		assertThat(
+				threadPoolTaskScheduler.isDaemon())
+						.isTrue();
 	}
 
 	@Test
@@ -346,6 +377,7 @@ public class DefaultSubscriberFactoryTests {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
 		factory.setCredentialsProvider(this.credentialsProvider);
+		factory.setGlobalScheduler(mockScheduler);
 		PubSubConfiguration.FlowControl flowControl = new PubSubConfiguration.FlowControl();
 		flowControl.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore);
 		when(mockPubSubConfiguration.computeSubscriberFlowControlSettings("defaultSubscription",
@@ -355,9 +387,6 @@ public class DefaultSubscriberFactoryTests {
 				.thenReturn(2L);
 		when(mockPubSubConfiguration.computeParallelPullCount("defaultSubscription", projectIdProvider.getProjectId()))
 				.thenReturn(2);
-		when(mockPubSubConfiguration.computeSubscriberExecutorThreads("defaultSubscription",
-				projectIdProvider.getProjectId()))
-				.thenReturn(4);
 		when(mockPubSubConfiguration.getSubscriber("defaultSubscription", projectIdProvider.getProjectId()))
 				.thenReturn(mockDefaultSubscriber1);
 
@@ -368,8 +397,6 @@ public class DefaultSubscriberFactoryTests {
 				.isEqualTo(FlowController.LimitExceededBehavior.Ignore);
 		assertThat(expectedSubscriber).hasFieldOrPropertyWithValue("maxAckExtensionPeriod", Duration.ofSeconds(2L))
 				.hasFieldOrPropertyWithValue("numPullers", 2);
-
-		factory.getThreadPoolTaskSchedulerMap().get("defaultSubscription").shutdown();
 	}
 
 	@Test
