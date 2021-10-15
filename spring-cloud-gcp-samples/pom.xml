@@ -46,7 +46,8 @@
 		<module>spring-cloud-gcp-sql-mysql-sample</module>
 		<module>spring-cloud-gcp-integration-pubsub-sample</module>
 		<module>spring-cloud-gcp-storage-resource-sample</module>
-		<module>spring-cloud-gcp-data-spanner-sample</module>
+		<module>spring-cloud-gcp-data-spanner-repository-sample</module>
+		<module>spring-cloud-gcp-data-spanner-template-sample</module>
 		<module>spring-cloud-gcp-data-datastore-sample</module>
 		<module>spring-cloud-gcp-data-datastore-basic-sample</module>
 		<module>spring-cloud-gcp-pubsub-sample</module>
