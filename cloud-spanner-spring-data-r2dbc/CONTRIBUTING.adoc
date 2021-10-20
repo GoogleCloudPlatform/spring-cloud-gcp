@@ -34,17 +34,19 @@ The following properties can be passed to maven with `-D` flag:
 
 All submissions, including submissions by project members, require review. We
 use GitHub pull requests for this purpose. Consult
-[GitHub Help](https://help.github.com/articles/about-pull-requests/) for more
+https://help.github.com/articles/about-pull-requests/[GitHub Help] for more
 information on using pull requests.
 
 ## Style
 
 When submitting code, please follow
-[Java Google code style](https://google.github.io/styleguide/javaguide.html) guidelines.
+https://google.github.io/styleguide/javaguide.html[Java Google code style] guidelines.
 If you are developing with Eclipse or Intellij, the easiest way is to import the Java style
-configurations found [here](https://github.com/google/styleguide).
+configurations found https://github.com/google/styleguide[here].
+
+You can also use the https://github.com/google/google-java-format[google-java-format] tool to automatically reformat your source code to adhere to the style guide. It is available as a command-line tool or IntelliJ plugin.
 
 ## Community Guidelines
 
-This project follows [Google's Open Source Community
-Guidelines](https://opensource.google.com/conduct/).
+This project follows https://opensource.google.com/conduct/[Google's Open Source Community
+Guidelines].
