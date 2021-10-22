@@ -194,9 +194,9 @@ public class DefaultSubscriberFactoryTests {
 		factory.setThreadPoolTaskSchedulerMap(threadPoolSchedulerMap);
 		factory.setGlobalScheduler(mockGlobalScheduler);
 
-		ExecutorProvider executorProviderForCustom1 = factory.getExecutorProvider("customSubscription1");
 		ExecutorProvider executorProviderForDefault1 = factory.getExecutorProvider("defaultSubscription1");
 		ExecutorProvider executorProviderForDefault2 = factory.getExecutorProvider("defaultSubscription2");
+		ExecutorProvider executorProviderForCustom1 = factory.getExecutorProvider("customSubscription1");
 
 		// Verify that only two executor providers are created
 		assertThat(executorProviderForCustom1).isNotNull();

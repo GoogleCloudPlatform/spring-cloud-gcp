@@ -389,6 +389,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		String fullyQualifiedName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId)
 				.toString();
 		if (this.threadPoolTaskSchedulerMap.containsKey(fullyQualifiedName)) {
+			this.isGlobalScheduler = false;
 			return threadPoolTaskSchedulerMap.get(fullyQualifiedName);
 		}
 		this.isGlobalScheduler = true;
