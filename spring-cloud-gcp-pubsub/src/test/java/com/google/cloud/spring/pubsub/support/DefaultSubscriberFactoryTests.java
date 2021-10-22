@@ -91,7 +91,6 @@ public class DefaultSubscriberFactoryTests {
 		GcpProjectIdProvider projectIdProvider = () -> "angeldust";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
 		factory.setCredentialsProvider(this.credentialsProvider);
-		factory.setGlobalScheduler(mockScheduler);
 
 		Subscriber subscriber = factory.createSubscriber("midnight cowboy", (message, consumer) -> {
 		});
@@ -159,14 +158,7 @@ public class DefaultSubscriberFactoryTests {
 	public void testGetExecutorProvider_allSubscribersWithDefaultConfig_oneCreated() {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
-
 		factory.setGlobalScheduler(mockGlobalScheduler);
-		when(mockPubSubConfiguration.getSubscriber("defaultSubscription1", projectIdProvider.getProjectId()))
-				.thenReturn(mockDefaultSubscriber1);
-		when(mockDefaultSubscriber1.isGlobal()).thenReturn(true);
-		when(mockPubSubConfiguration.getSubscriber("defaultSubscription2", projectIdProvider.getProjectId()))
-				.thenReturn(mockDefaultSubscriber2);
-		when(mockDefaultSubscriber2.isGlobal()).thenReturn(true);
 
 		ExecutorProvider executorProviderForSub1 = factory.getExecutorProvider("defaultSubscription1");
 		ExecutorProvider executorProviderForSub2 = factory.getExecutorProvider("defaultSubscription2");
@@ -179,14 +171,11 @@ public class DefaultSubscriberFactoryTests {
 
 	@Test
 	public void testGetExecutorProvider_allSubscribersWithCustomConfigs_manyCreated() {
-		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
-
-		factory.setGlobalScheduler(mockGlobalScheduler);
-		when(mockPubSubConfiguration.getSubscriber("customSubscription1", projectIdProvider.getProjectId()))
-				.thenReturn(mockCustomSubscriber1);
-		when(mockPubSubConfiguration.getSubscriber("customSubscription2", projectIdProvider.getProjectId()))
-				.thenReturn(mockCustomSubscriber2);
+		ConcurrentHashMap<String, ThreadPoolTaskScheduler> threadPoolSchedulerMap = new ConcurrentHashMap<>();
+		threadPoolSchedulerMap.put("projects/project/subscriptions/customSubscription1", mockScheduler);
+		threadPoolSchedulerMap.put("projects/project/subscriptions/customSubscription2", mockScheduler);
+		factory.setThreadPoolTaskSchedulerMap(threadPoolSchedulerMap);
 
 		ExecutorProvider executorProviderForSub1 = factory.getExecutorProvider("customSubscription1");
 		ExecutorProvider executorProviderForSub2 = factory.getExecutorProvider("customSubscription2");
@@ -199,22 +188,11 @@ public class DefaultSubscriberFactoryTests {
 
 	@Test
 	public void testGetExecutorProvider_subscribersWithDefaultAndCustomConfigs() {
-		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
-
+		ConcurrentHashMap<String, ThreadPoolTaskScheduler> threadPoolSchedulerMap = new ConcurrentHashMap<>();
+		threadPoolSchedulerMap.put("projects/project/subscriptions/customSubscription1", mockScheduler);
+		factory.setThreadPoolTaskSchedulerMap(threadPoolSchedulerMap);
 		factory.setGlobalScheduler(mockGlobalScheduler);
-
-		// One subscriber with subscription-specific subscriber properties
-		when(mockPubSubConfiguration.getSubscriber("customSubscription1", projectIdProvider.getProjectId()))
-				.thenReturn(mockCustomSubscriber1);
-
-		// Two subscribers with default/global subscriber properties
-		when(mockPubSubConfiguration.getSubscriber("defaultSubscription1", projectIdProvider.getProjectId()))
-				.thenReturn(mockDefaultSubscriber1);
-		when(mockDefaultSubscriber1.isGlobal()).thenReturn(true);
-		when(mockPubSubConfiguration.getSubscriber("defaultSubscription2", projectIdProvider.getProjectId()))
-				.thenReturn(mockDefaultSubscriber2);
-		when(mockDefaultSubscriber2.isGlobal()).thenReturn(true);
 
 		ExecutorProvider executorProviderForCustom1 = factory.getExecutorProvider("customSubscription1");
 		ExecutorProvider executorProviderForDefault1 = factory.getExecutorProvider("defaultSubscription1");
@@ -228,11 +206,24 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
-	public void testGetExecutorProvider_pubSubConfigurationIsNull() {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", null);
+	public void testGetExecutorProvider_schedulerNotPresent_isNull() {
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 
-		assertThat(factory.getExecutorProvider("name"))
-				.isNull();
+		ExecutorProvider executorProvider = factory.getExecutorProvider("subscription-name");
+
+		assertThat(factory.fetchThreadPoolTaskScheduler("subscription-name")).isNull();
+		assertThat(executorProvider).isNull();
+	}
+
+	@Test
+	public void testGetExecutorProvider_subscriptionNameIsNull_created() {
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
+		factory.setGlobalScheduler(mockGlobalScheduler);
+
+		ExecutorProvider executorProvider = factory.getExecutorProvider(null);
+
+		assertThat(executorProvider).isNotNull();
+		assertThat(factory.getExecutorProviderMap()).isEmpty();
 	}
 
 	@Test
@@ -310,6 +301,29 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
+	public void testFetchThreadPoolTaskScheduler_subscriptionNameIsNull_pickGlobal() {
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
+
+		factory.setGlobalScheduler(mockGlobalScheduler);
+		when(mockGlobalScheduler.getThreadNamePrefix()).thenReturn("my-thread-name");
+		when(mockGlobalScheduler.getPoolSize()).thenReturn(2);
+		when(mockGlobalScheduler.isDaemon()).thenReturn(true);
+
+		ThreadPoolTaskScheduler threadPoolTaskScheduler = factory
+				.fetchThreadPoolTaskScheduler(null);
+
+		assertThat(
+				threadPoolTaskScheduler.getThreadNamePrefix())
+				.isEqualTo("my-thread-name");
+		assertThat(
+				threadPoolTaskScheduler.getPoolSize())
+				.isEqualTo(2);
+		assertThat(
+				threadPoolTaskScheduler.isDaemon())
+				.isTrue();
+	}
+
+	@Test
 	public void testGetRetrySettings_userProvidedBean() {
 		RetrySettings expectedRetrySettings = RetrySettings.newBuilder()
 				.setTotalTimeout(Duration.ofSeconds(10))
@@ -373,6 +387,33 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
+	public void testGetRetrySettings_subscriptionNameIsNull() {
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
+		PubSubConfiguration.Retry retrySettings = new PubSubConfiguration.Retry();
+		retrySettings.setTotalTimeoutSeconds(10L);
+		retrySettings.setInitialRetryDelaySeconds(10L);
+		retrySettings.setRetryDelayMultiplier(10.0);
+		retrySettings.setMaxRetryDelaySeconds(10L);
+		retrySettings.setMaxAttempts(10);
+		retrySettings.setInitialRpcTimeoutSeconds(10L);
+		retrySettings.setRpcTimeoutMultiplier(10.0);
+		retrySettings.setMaxRpcTimeoutSeconds(10L);
+		when(mockPubSubConfiguration.getSubscriber()).thenReturn(mockDefaultSubscriber1);
+		when(mockDefaultSubscriber1.getRetry()).thenReturn(retrySettings);
+
+		RetrySettings actualRetrySettings = factory.getRetrySettings(null);
+
+		assertThat(actualRetrySettings.getTotalTimeout()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getInitialRetryDelay()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getRetryDelayMultiplier()).isEqualTo(10.0);
+		assertThat(actualRetrySettings.getInitialRpcTimeout()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getMaxRetryDelay()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getMaxAttempts()).isEqualTo(10);
+		assertThat(actualRetrySettings.getRpcTimeoutMultiplier()).isEqualTo(10.0);
+		assertThat(actualRetrySettings.getMaxRpcTimeout()).isEqualTo(Duration.ofSeconds(10));
+	}
+
+	@Test
 	public void testCreateSubscriber_validateSetProperties() {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
@@ -387,8 +428,6 @@ public class DefaultSubscriberFactoryTests {
 				.thenReturn(2L);
 		when(mockPubSubConfiguration.computeParallelPullCount("defaultSubscription", projectIdProvider.getProjectId()))
 				.thenReturn(2);
-		when(mockPubSubConfiguration.getSubscriber("defaultSubscription", projectIdProvider.getProjectId()))
-				.thenReturn(mockDefaultSubscriber1);
 
 		Subscriber expectedSubscriber = factory.createSubscriber("defaultSubscription", (message, consumer) -> {
 		});
@@ -518,5 +557,15 @@ public class DefaultSubscriberFactoryTests {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
 
 		assertThat(factory.getPullEndpoint("subscription-name")).isNull();
+	}
+
+	@Test
+	public void testGetPullEndpoint_subscriptionNameIsNull() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+		when(mockPubSubConfiguration.getSubscriber()).thenReturn(mockDefaultSubscriber1);
+		when(mockDefaultSubscriber1.getPullEndpoint()).thenReturn("my-endpoint");
+
+		assertThat(factory.getPullEndpoint(null)).isEqualTo("my-endpoint");
 	}
 }

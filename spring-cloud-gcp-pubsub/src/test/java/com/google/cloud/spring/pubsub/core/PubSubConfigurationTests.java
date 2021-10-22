@@ -369,24 +369,6 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberMapProperties_isGlobalIfAbsentFromMap() {
-		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
-
-		assertThat(pubSubConfiguration.getSubscription()).doesNotContainKey("subscription-name");
-		assertThat(pubSubConfiguration.getSubscriber("subscription-name", "projectId").isGlobal()).isTrue();
-	}
-
-	@Test
-	public void testSubscriberMapProperties_isNotGlobalIfPresentInMap() {
-		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
-		pubSubConfiguration.getSubscription().put("subscription-name", new PubSubConfiguration.Subscriber());
-
-		assertThat(pubSubConfiguration.getSubscription()).containsKey("subscription-name");
-		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
-		assertThat(pubSubConfiguration.getSubscriber("subscription-name", "projectId").isGlobal()).isFalse();
-	}
-
-	@Test
 	public void testDefaultPublisherProperties() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Publisher publisher = pubSubConfiguration.getPublisher();

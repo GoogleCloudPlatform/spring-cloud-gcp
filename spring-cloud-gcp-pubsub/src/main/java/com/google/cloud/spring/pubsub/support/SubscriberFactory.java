@@ -65,6 +65,15 @@ public interface SubscriberFactory {
 			Boolean returnImmediately);
 
 	/**
+	 * Create a {@link SubscriberStub} that is needed to execute {@link PullRequest}s. This
+	 * method will not set subscription-specific settings.
+	 * @return the {@link SubscriberStub} used for executing {@link PullRequest}s.
+	 * @deprecated Use the new {@code createSubscriberStub(subscriptionName)} instead.
+	 */
+	@Deprecated
+	SubscriberStub createSubscriberStub();
+
+	/**
 	 * Create a {@link SubscriberStub} that is needed to execute {@link PullRequest}s.
 	 * @param subscriptionName the subscription name
 	 * @return the {@link SubscriberStub} used for executing {@link PullRequest}s

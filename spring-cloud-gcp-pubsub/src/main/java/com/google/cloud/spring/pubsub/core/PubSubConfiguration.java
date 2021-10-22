@@ -84,7 +84,6 @@ public class PubSubConfiguration {
 
 		Subscriber subscriberProperties = this.subscription.computeIfAbsent(fullyQualifiedSubscriptionKey,
 				k -> this.globalSubscriber);
-		subscriberProperties.global = true;
 		return subscriberProperties;
 	}
 
@@ -264,11 +263,6 @@ public class PubSubConfiguration {
 	public static class Subscriber {
 
 		/**
-		 * Custom determines if the configuration is global or the default.
-		 */
-		private boolean global = false;
-
-		/**
 		 * Number of threads used by every subscriber.
 		 */
 		private Integer executorThreads;
@@ -302,10 +296,6 @@ public class PubSubConfiguration {
 		 * Flow control settings for subscriber factory.
 		 */
 		private final FlowControl flowControl = new FlowControl();
-
-		public boolean isGlobal() {
-			return global;
-		}
 
 		public Retry getRetry() {
 			return this.retry;
