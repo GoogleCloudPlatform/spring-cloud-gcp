@@ -24,10 +24,13 @@ import com.google.auth.Credentials;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
+import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubMessageSource;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
+import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.cloud.spring.stream.binder.pubsub.config.PubSubBinderConfiguration;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
@@ -106,6 +109,9 @@ public class PubSubMessageChannelBinderTests {
 	@Mock
 	MessageChannel errorChannel;
 
+	@Mock
+	HealthTrackerRegistry healthTrackerRegistry;
+
 	ApplicationContextRunner baseContext = new ApplicationContextRunner()
 			.withBean(PubSubTemplate.class, () -> pubSubTemplate)
 			.withBean(PubSubAdmin.class, () -> pubSubAdmin)
@@ -172,6 +178,32 @@ public class PubSubMessageChannelBinderTests {
 					PubSubMessageSource source = binder.createPubSubMessageSource(consumerDestination,
 							new ExtendedConsumerProperties<>(props.getExtendedConsumerProperties("test")));
 					assertThat(source.getMaxFetchSize()).isEqualTo(20);
+				});
+	}
+
+	@Test
+	public void testCreateConsumerWithRegistry() {
+		SubscriberFactory subscriberFactory = mock(SubscriberFactory.class);
+		when(subscriberFactory.getProjectId()).thenReturn("test-project-id");
+		PubSubSubscriberTemplate subSubscriberTemplate = mock(PubSubSubscriberTemplate.class);
+		when(subSubscriberTemplate.getSubscriberFactory()).thenReturn(subscriberFactory);
+		when(pubSubTemplate.getPubSubSubscriberTemplate()).thenReturn(subSubscriberTemplate);
+
+		baseContext
+				.run(ctx -> {
+					PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
+					PubSubExtendedBindingProperties props = ctx.getBean("pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
+					binder.setHealthTrackerRegistry(healthTrackerRegistry);
+
+					MessageProducer messageProducer = binder
+							.createConsumerEndpoint(consumerDestination, "testGroup",
+									new ExtendedConsumerProperties<>(props.getExtendedConsumerProperties("test"))
+							);
+
+					assertThat(messageProducer).isInstanceOf(PubSubInboundChannelAdapter.class);
+					PubSubInboundChannelAdapter inboundChannelAdapter = (PubSubInboundChannelAdapter) messageProducer;
+					assertThat(inboundChannelAdapter.getAckMode()).isSameAs(AckMode.AUTO);
+					assertThat(inboundChannelAdapter.healthCheckEnabled()).isEqualTo(true);
 				});
 	}
 

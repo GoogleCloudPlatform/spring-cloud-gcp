@@ -34,6 +34,8 @@ import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
+import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PullRequest;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Before;
@@ -51,6 +53,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -80,6 +86,10 @@ public class DefaultSubscriberFactoryTests {
 	private ThreadPoolTaskScheduler mockScheduler;
 	@Mock
 	private ThreadPoolTaskScheduler mockGlobalScheduler;
+	@Mock
+	private HealthTrackerRegistry healthTrackerRegistry;
+	@Mock
+	private ExecutorProvider executorProvider;
 
 	@Mock
 	TransportChannel mockTransportChannel;
@@ -586,4 +596,43 @@ public class DefaultSubscriberFactoryTests {
 				.isInstanceOf(RuntimeException.class)
 				.hasMessage("Error creating the SubscriberStub");
 	}
+
+
+	@Test
+	public void testNewSubscriber_shouldNotAddToHealthCheck() {
+		ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of("angeldust", "midnight cowboy");
+
+		when(healthTrackerRegistry.isTracked(subscriptionName)).thenReturn(true);
+
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust");
+		factory.setCredentialsProvider(this.credentialsProvider);
+		factory.setHealthTrackerRegistry(healthTrackerRegistry);
+
+		Subscriber subscriber = factory.createSubscriber("midnight cowboy", (message, consumer) -> { });
+		assertThat(subscriber.getSubscriptionNameString())
+				.isEqualTo("projects/angeldust/subscriptions/midnight cowboy");
+
+		verify(healthTrackerRegistry, times(1)).isTracked(subscriptionName);
+		verify(healthTrackerRegistry, times(0)).wrap(eq(subscriptionName), any());
+	}
+
+	@Test
+	public void testNewSubscriber_shouldAddToHealthCheck() {
+		ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of("angeldust", "midnight cowboy");
+
+		when(healthTrackerRegistry.isTracked(subscriptionName)).thenReturn(false);
+
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust");
+		factory.setCredentialsProvider(this.credentialsProvider);
+		factory.setHealthTrackerRegistry(healthTrackerRegistry);
+
+		Subscriber subscriber = factory.createSubscriber("midnight cowboy", (message, consumer) -> { });
+		assertThat(subscriber.getSubscriptionNameString())
+				.isEqualTo("projects/angeldust/subscriptions/midnight cowboy");
+
+		verify(healthTrackerRegistry).isTracked(subscriptionName);
+		verify(healthTrackerRegistry).wrap(any(), any());
+		verify(healthTrackerRegistry).addListener(any());
+	}
+
 }
