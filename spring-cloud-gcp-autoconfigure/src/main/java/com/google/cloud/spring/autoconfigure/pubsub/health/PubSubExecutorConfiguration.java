@@ -22,6 +22,7 @@ import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubProperties;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -56,12 +57,14 @@ public class PubSubExecutorConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(name = "pubsubSubscriberThreadPool")
+	@ConditionalOnProperty("spring.cloud.gcp.pubsub.subscriber.executorThreads")
 	public ThreadPoolTaskScheduler pubsubSubscriberThreadPool() {
 		return threadPool("gcp-pubsub-subscriber", this.gcpPubSubProperties.getSubscriber().getExecutorThreads());
 	}
 
 	@Bean
 	@ConditionalOnMissingBean(name = "subscriberExecutorProvider")
+	@ConditionalOnProperty("spring.cloud.gcp.pubsub.subscriber.executorThreads")
 	public ExecutorProvider subscriberExecutorProvider(
 		@Qualifier("pubsubSubscriberThreadPool") ThreadPoolTaskScheduler scheduler) {
 		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
