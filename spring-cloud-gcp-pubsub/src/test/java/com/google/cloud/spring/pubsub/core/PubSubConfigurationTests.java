@@ -34,6 +34,9 @@ public class PubSubConfigurationTests {
 		assertThat(subscriber.getExecutorThreads()).isNull();
 		assertThat(subscriber.getMaxAcknowledgementThreads()).isEqualTo(4);
 		assertThat(subscriber.getParallelPullCount()).isNull();
+		assertThat(subscriber.getLagThreshold()).isNull();
+		assertThat(subscriber.getBacklogThreshold()).isNull();
+		assertThat(subscriber.getLookUpInterval()).isEqualTo(1);
 		assertThat(subscriber.getMaxAckExtensionPeriod()).isNull();
 		assertThat(subscriber.getPullEndpoint()).isNull();
 		assertThat(flowControl.getLimitExceededBehavior())
@@ -60,6 +63,9 @@ public class PubSubConfigurationTests {
 		subscriber.setExecutorThreads(1);
 		subscriber.setMaxAcknowledgementThreads(3);
 		subscriber.setParallelPullCount(1);
+		subscriber.setLagThreshold(3);
+		subscriber.setBacklogThreshold(4);
+		subscriber.setLookUpInterval(6);
 		subscriber.setMaxAckExtensionPeriod(1L);
 		subscriber.setPullEndpoint("fake-endpoint");
 		subscriber.setRetryableCodes(new Code[] { Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL });
@@ -67,6 +73,9 @@ public class PubSubConfigurationTests {
 		assertThat(subscriber.getExecutorThreads()).isEqualTo(1);
 		assertThat(subscriber.getMaxAcknowledgementThreads()).isEqualTo(3);
 		assertThat(subscriber.getParallelPullCount()).isEqualTo(1);
+		assertThat(subscriber.getLagThreshold()).isEqualTo(3);
+		assertThat(subscriber.getBacklogThreshold()).isEqualTo(4);
+		assertThat(subscriber.getLookUpInterval()).isEqualTo(6);
 		assertThat(subscriber.getMaxAckExtensionPeriod()).isEqualTo(1L);
 		assertThat(subscriber.getPullEndpoint()).isEqualTo("fake-endpoint");
 		assertThat(subscriber.getRetryableCodes()).containsExactly(Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE,
