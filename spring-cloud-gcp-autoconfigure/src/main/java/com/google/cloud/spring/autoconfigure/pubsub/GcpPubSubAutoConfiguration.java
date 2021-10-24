@@ -30,7 +30,6 @@ import com.google.api.gax.batching.BatchingSettings;
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
-import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.retrying.RetrySettings.Builder;
@@ -43,6 +42,7 @@ import com.google.cloud.pubsub.v1.TopicAdminSettings;
 import com.google.cloud.pubsub.v1.stub.PublisherStubSettings;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.pubsub.health.PubSubExecutorConfiguration;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
@@ -74,6 +74,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -90,6 +91,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(GcpContextAutoConfiguration.class)
 @ConditionalOnProperty(value = "spring.cloud.gcp.pubsub.enabled", matchIfMissing = true)
+@Import(PubSubExecutorConfiguration.class)
 @ConditionalOnClass(PubSubTemplate.class)
 @EnableConfigurationProperties(GcpPubSubProperties.class)
 public class GcpPubSubAutoConfiguration {
@@ -130,23 +132,6 @@ public class GcpPubSubAutoConfiguration {
 			// for this particular case.
 			this.finalCredentialsProvider = NoCredentialsProvider.create();
 		}
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(name = "pubsubPublisherThreadPool")
-	public ThreadPoolTaskScheduler pubsubPublisherThreadPool() {
-		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.setPoolSize(this.gcpPubSubProperties.getPublisher().getExecutorThreads());
-		scheduler.setThreadNamePrefix("gcp-pubsub-publisher");
-		scheduler.setDaemon(true);
-		return scheduler;
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(name = "publisherExecutorProvider")
-	public ExecutorProvider publisherExecutorProvider(
-			@Qualifier("pubsubPublisherThreadPool") ThreadPoolTaskScheduler scheduler) {
-		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
 	}
 
 	@Bean
