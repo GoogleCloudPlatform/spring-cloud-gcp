@@ -31,7 +31,7 @@ public class PubSubConfigurationTests {
 		PubSubConfiguration.FlowControl flowControl = subscriber.getFlowControl();
 		PubSubConfiguration.Retry retrySettings = subscriber.getRetry();
 
-		assertThat(subscriber.getExecutorThreads()).isEqualTo(4);
+		assertThat(subscriber.getExecutorThreads()).isNull();
 		assertThat(subscriber.getMaxAcknowledgementThreads()).isEqualTo(4);
 		assertThat(subscriber.getParallelPullCount()).isNull();
 		assertThat(subscriber.getLagThreshold()).isNull();
@@ -328,7 +328,7 @@ public class PubSubConfigurationTests {
 
 		assertThat(pubSubConfiguration.getSubscription()).isEmpty();
 		assertThat(pubSubConfiguration.getSubscriber("subscription-name", "projectId").getExecutorThreads())
-				.isEqualTo(4);
+				.isNull();
 		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
 		assertThat(pubSubConfiguration.getSubscription().get("projects/projectId/subscriptions/subscription-name")
 				.getExecutorThreads()).isNull();

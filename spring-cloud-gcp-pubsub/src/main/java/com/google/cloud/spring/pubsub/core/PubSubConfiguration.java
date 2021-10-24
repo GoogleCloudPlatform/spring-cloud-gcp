@@ -273,7 +273,7 @@ public class PubSubConfiguration {
 		/**
 		 * Number of threads used by every subscriber.
 		 */
-		private Integer executorThreads = 4;
+		private Integer executorThreads;
 
 		/**
 		 * Number of threads used for batch acknowledgement.
