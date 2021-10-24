@@ -31,7 +31,7 @@ public class PubSubConfigurationTests {
 		PubSubConfiguration.FlowControl flowControl = subscriber.getFlowControl();
 		PubSubConfiguration.Retry retrySettings = subscriber.getRetry();
 
-		assertThat(subscriber.getExecutorThreads()).isNull();
+		assertThat(subscriber.getExecutorThreads()).isEqualTo(4);
 		assertThat(subscriber.getMaxAcknowledgementThreads()).isEqualTo(4);
 		assertThat(subscriber.getParallelPullCount()).isNull();
 		assertThat(subscriber.getLagThreshold()).isNull();
