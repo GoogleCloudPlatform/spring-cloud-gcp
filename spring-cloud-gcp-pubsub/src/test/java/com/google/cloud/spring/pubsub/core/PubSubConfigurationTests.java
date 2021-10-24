@@ -328,7 +328,7 @@ public class PubSubConfigurationTests {
 
 		assertThat(pubSubConfiguration.getSubscription()).isEmpty();
 		assertThat(pubSubConfiguration.getSubscriber("subscription-name", "projectId").getExecutorThreads())
-				.isNull();
+				.isEqualTo(4);
 		assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
 		assertThat(pubSubConfiguration.getSubscription().get("projects/projectId/subscriptions/subscription-name")
 				.getExecutorThreads()).isNull();
