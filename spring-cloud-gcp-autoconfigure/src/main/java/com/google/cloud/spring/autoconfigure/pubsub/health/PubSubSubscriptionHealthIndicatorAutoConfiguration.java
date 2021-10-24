@@ -20,7 +20,6 @@ package com.google.cloud.spring.autoconfigure.pubsub.health;
 import java.io.IOException;
 
 import com.google.api.gax.core.ExecutorProvider;
-import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubProperties;
@@ -38,7 +37,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author Emmanouil Gkatziouras
@@ -48,6 +47,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({HealthIndicator.class})
 @ConditionalOnProperty({"spring.cloud.gcp.pubsub.subscriber.lagThreshold", "spring.cloud.gcp.pubsub.subscriber.backlogThreshold"})
+@Import(PubSubExecutorConfiguration.class)
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)
 @EnableConfigurationProperties(GcpPubSubProperties.class)
 public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
@@ -58,23 +58,6 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
 	public PubSubSubscriptionHealthIndicatorAutoConfiguration(
 		GcpPubSubProperties gcpPubSubProperties) {
 		this.gcpPubSubProperties = gcpPubSubProperties;
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(name = "pubsubSubscriberThreadPool")
-	public ThreadPoolTaskScheduler pubsubSubscriberThreadPool() {
-		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.setPoolSize(this.gcpPubSubProperties.getSubscriber().getExecutorThreads());
-		scheduler.setThreadNamePrefix("gcp-pubsub-subscriber");
-		scheduler.setDaemon(true);
-		return scheduler;
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(name = "subscriberExecutorProvider")
-	public ExecutorProvider subscriberExecutorProvider(
-		@Qualifier("pubsubSubscriberThreadPool") ThreadPoolTaskScheduler scheduler) {
-		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
 	}
 
 	@Bean

@@ -44,11 +44,7 @@ public class PubSubExecutorConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(name = "pubsubPublisherThreadPool")
 	public ThreadPoolTaskScheduler pubsubPublisherThreadPool() {
-		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.setPoolSize(this.gcpPubSubProperties.getPublisher().getExecutorThreads());
-		scheduler.setThreadNamePrefix("gcp-pubsub-publisher");
-		scheduler.setDaemon(true);
-		return scheduler;
+		return threadPool("gcp-pubsub-publisher", this.gcpPubSubProperties.getPublisher().getExecutorThreads());
 	}
 
 	@Bean
@@ -61,11 +57,7 @@ public class PubSubExecutorConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(name = "pubsubSubscriberThreadPool")
 	public ThreadPoolTaskScheduler pubsubSubscriberThreadPool() {
-		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.setPoolSize(this.gcpPubSubProperties.getSubscriber().getExecutorThreads());
-		scheduler.setThreadNamePrefix("gcp-pubsub-subscriber");
-		scheduler.setDaemon(true);
-		return scheduler;
+		return threadPool("gcp-pubsub-subscriber", this.gcpPubSubProperties.getSubscriber().getExecutorThreads());
 	}
 
 	@Bean
@@ -75,5 +67,12 @@ public class PubSubExecutorConfiguration {
 		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
 	}
 
+	private ThreadPoolTaskScheduler threadPool(String threadNamePrefix, int poolSize) {
+		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+		scheduler.setPoolSize(poolSize);
+		scheduler.setThreadNamePrefix(threadNamePrefix);
+		scheduler.setDaemon(true);
+		return scheduler;
+	}
 
 }
