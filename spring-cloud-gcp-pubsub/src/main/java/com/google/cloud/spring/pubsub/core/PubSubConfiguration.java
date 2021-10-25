@@ -82,9 +82,8 @@ public class PubSubConfiguration {
 			return this.subscription.get(fullyQualifiedSubscriptionKey);
 		}
 
-		Subscriber subscriberProperties = this.subscription.computeIfAbsent(fullyQualifiedSubscriptionKey,
+		return this.subscription.computeIfAbsent(fullyQualifiedSubscriptionKey,
 				k -> this.globalSubscriber);
-		return subscriberProperties;
 	}
 
 	/**
