@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.pubsub;
 
 import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
+import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import com.google.cloud.spring.core.GcpScope;
@@ -205,12 +206,25 @@ public class GcpPubSubProperties implements CredentialsSupplier {
 		private final Retry retry = new Retry();
 
 		/**
+		 * RPC status codes that should be retried when pulling messages.
+		 */
+		private Code[] retryableCodes = null;
+
+		/**
 		 * Flow control settings for subscriber factory.
 		 */
 		private final FlowControl flowControl = new FlowControl();
 
 		public Retry getRetry() {
 			return this.retry;
+		}
+
+		public Code[] getRetryableCodes() {
+			return retryableCodes;
+		}
+
+		public void setRetryableCodes(Code[] retryableCodes) {
+			this.retryableCodes = retryableCodes;
 		}
 
 		public FlowControl getFlowControl() {
