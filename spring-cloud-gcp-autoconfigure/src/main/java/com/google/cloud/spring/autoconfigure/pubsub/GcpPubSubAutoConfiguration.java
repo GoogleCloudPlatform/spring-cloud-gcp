@@ -229,6 +229,9 @@ public class GcpPubSubAutoConfiguration {
 		flowControlSettings.ifAvailable(factory::setFlowControlSettings);
 		apiClock.ifAvailable(factory::setApiClock);
 		retrySettings.ifAvailable(factory::setSubscriberStubRetrySettings);
+		if (this.gcpPubSubProperties.getSubscriber().getRetryableCodes() != null) {
+			factory.setRetryableCodes(gcpPubSubProperties.getSubscriber().getRetryableCodes());
+		}
 		if (this.gcpPubSubProperties.getSubscriber().getMaxAckExtensionPeriod() != null) {
 			factory.setMaxAckExtensionPeriod(Duration.ofSeconds(
 					this.gcpPubSubProperties.getSubscriber().getMaxAckExtensionPeriod()));
