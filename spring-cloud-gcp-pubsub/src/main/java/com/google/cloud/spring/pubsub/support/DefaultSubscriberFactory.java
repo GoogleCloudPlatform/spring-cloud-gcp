@@ -88,8 +88,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private ExecutorProvider defaultExecutorProvider;
 
-	private boolean isGlobalScheduler = false;
-
 	/**
 	 * Default {@link DefaultSubscriberFactory} constructor.
 	 * @param projectIdProvider provides the default GCP project ID for selecting the
@@ -350,7 +348,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 */
 	ExecutorProvider getExecutorProviderFromConfigurations(String subscriptionName) {
 		ThreadPoolTaskScheduler scheduler = fetchThreadPoolTaskScheduler(subscriptionName);
-		if (!this.isGlobalScheduler) {
+		if (!isGlobalScheduler(subscriptionName)) {
 			return createExecutorProvider(subscriptionName, scheduler);
 		}
 
@@ -383,17 +381,29 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 */
 	public ThreadPoolTaskScheduler fetchThreadPoolTaskScheduler(String subscriptionName) {
 		if (subscriptionName == null) {
-			this.isGlobalScheduler = true;
 			return this.globalScheduler;
 		}
 		String fullyQualifiedName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId)
 				.toString();
 		if (this.threadPoolTaskSchedulerMap.containsKey(fullyQualifiedName)) {
-			this.isGlobalScheduler = false;
 			return threadPoolTaskSchedulerMap.get(fullyQualifiedName);
 		}
-		this.isGlobalScheduler = true;
 		return this.globalScheduler;
+	}
+
+	/**
+	 * Returns {@code true} if subscription name is null or subscription-specific scheduler is
+	 * not present.
+	 * @param subscriptionName subscription name
+	 * @return boolean determining whether global scheduler should be used or not
+	 */
+	boolean isGlobalScheduler(String subscriptionName) {
+		if (subscriptionName == null) {
+			return true;
+		}
+		String fullyQualifiedName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId)
+				.toString();
+		return !this.threadPoolTaskSchedulerMap.containsKey(fullyQualifiedName);
 	}
 
 	Map<String, ExecutorProvider> getExecutorProviderMap() {
