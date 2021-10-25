@@ -142,6 +142,21 @@ public class GcpPubSubAutoConfigurationTests {
 		});
 	}
 
+	@Test
+	public void retryableCodes_many() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withUserConfiguration(TestConfig.class)
+				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.retryableCodes=UNKNOWN,ABORTED,UNAVAILABLE,INTERNAL");
+
+		contextRunner.run(ctx -> {
+
+			DefaultSubscriberFactory defaultSubscriberFactory = ctx.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			assertThat(FieldUtils.readField(defaultSubscriberFactory, "retryableCodes", true))
+					.isEqualTo(new Code[] { Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL });
+		});
+	}
+
 	static class TestConfig {
 
 		@Bean
