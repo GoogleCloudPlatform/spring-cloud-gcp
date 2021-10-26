@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.pubsub.support;
 
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.api.gax.batching.FlowControlSettings;
@@ -25,6 +26,7 @@ import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.pubsub.v1.Subscriber;
+import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.pubsub.v1.PullRequest;
@@ -523,12 +525,17 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
-	public void testSetRetryableCodes() throws IllegalAccessException {
+	public void testSetRetryableCodes() throws IllegalAccessException, IOException {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
 		factory.setRetryableCodes(new Code[] { Code.INTERNAL });
 
 		assertThat(FieldUtils.readField(factory, "retryableCodes", true))
 				.isEqualTo(new Code[] { Code.INTERNAL });
+
+		SubscriberStubSettings settings = factory.buildSubscriberStubSettings("someSubscription");
+		assertThat(settings.pullSettings().getRetryableCodes())
+				.containsExactly(Code.INTERNAL);
+
 	}
 }

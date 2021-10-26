@@ -291,6 +291,16 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	@Override
 	public SubscriberStub createSubscriberStub(String subscriptionName) {
+		try {
+			SubscriberStubSettings subscriberStubSettings = buildSubscriberStubSettings(subscriptionName);
+			return GrpcSubscriberStub.create(subscriberStubSettings);
+		}
+		catch (IOException ex) {
+			throw new RuntimeException("Error creating the SubscriberStub", ex);
+		}
+	}
+
+	SubscriberStubSettings buildSubscriberStubSettings(String subscriptionName) throws IOException {
 		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
 
 		if (this.credentialsProvider != null) {
@@ -330,12 +340,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 					this.retryableCodes);
 		}
 
-		try {
-			return GrpcSubscriberStub.create(subscriberStubSettings.build());
-		}
-		catch (IOException ex) {
-			throw new RuntimeException("Error creating the SubscriberStub", ex);
-		}
+		return subscriberStubSettings.build();
 	}
 
 	/**
