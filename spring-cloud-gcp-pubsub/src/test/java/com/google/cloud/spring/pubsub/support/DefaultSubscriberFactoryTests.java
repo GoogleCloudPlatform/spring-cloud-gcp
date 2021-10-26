@@ -24,13 +24,19 @@ import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiCallContext;
+import com.google.api.gax.rpc.FixedTransportChannelProvider;
 import com.google.api.gax.rpc.StatusCode.Code;
+import com.google.api.gax.rpc.TransportChannel;
+import com.google.cloud.NoCredentials;
 import com.google.cloud.pubsub.v1.Subscriber;
+import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.pubsub.v1.PullRequest;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -42,6 +48,9 @@ import org.threeten.bp.Duration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -72,11 +81,23 @@ public class DefaultSubscriberFactoryTests {
 	@Mock
 	private ThreadPoolTaskScheduler mockGlobalScheduler;
 
+	@Mock
+	TransportChannel mockTransportChannel;
+	@Mock
+	ApiCallContext mockApiCallContext;
+
 	/**
 	 * used to check exception messages and types.
 	 */
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
+
+	@Before
+	public void setUp() {
+		when(this.mockTransportChannel.getEmptyCallContext()).thenReturn(this.mockApiCallContext);
+		when(this.mockApiCallContext.withCredentials(any())).thenReturn(this.mockApiCallContext);
+		when(this.mockApiCallContext.withTransportChannel(any())).thenReturn(this.mockApiCallContext);
+	}
 
 	@Test
 	public void testNewSubscriber() {
@@ -537,5 +558,32 @@ public class DefaultSubscriberFactoryTests {
 		assertThat(settings.pullSettings().getRetryableCodes())
 				.containsExactly(Code.INTERNAL);
 
+	}
+
+	@Test
+	public void createSubscriberStubSucceeds() {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
+		factory.setChannelProvider(FixedTransportChannelProvider.create(this.mockTransportChannel));
+		factory.setCredentialsProvider(() -> NoCredentials.getInstance());
+
+		SubscriberStub stub = factory.createSubscriberStub("unusedSubscription");
+		assertThat(stub.isShutdown()).isFalse();
+	}
+
+	@Test
+	public void createSubscriberStubFailsOnBadCredentials() throws IOException {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
+		factory.setChannelProvider(FixedTransportChannelProvider.create(this.mockTransportChannel));
+
+		CredentialsProvider mockCredentialsProvider = mock(CredentialsProvider.class);
+		factory.setCredentialsProvider(mockCredentialsProvider);
+
+		when(mockCredentialsProvider.getCredentials()).thenThrow(new IOException("boom"));
+
+		assertThatThrownBy(() -> factory.createSubscriberStub("unusedSubscription"))
+				.isInstanceOf(RuntimeException.class)
+				.hasMessage("Error creating the SubscriberStub");
 	}
 }
