@@ -40,122 +40,87 @@
 	background-color: #7a2519;
 	color: #ffffff;
 }
-
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
 <script type="text/javascript">
 function addBlockSwitches() {
-	for (var primary of document.querySelectorAll('.primary')) {
-		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
-		switchItem.item.classList.add("selected");
-		var title = primary.querySelector('.title')
-		title.remove();
-	}
-	for (var secondary of document.querySelectorAll('.secondary')) {
-		var primary = findPrimary(secondary);
-		if (primary === null) {
-			console.error("Found secondary block with no primary sibling");
-		}
-		else {
-			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
-			switchItem.content.classList.add("hidden");
-			primary.append(switchItem.content);
-			secondary.remove();
-		}
-	}
-}
-
-function createElementFromHtml(html) {
-	var template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstChild;
+	$('.primary').each(function() {
+		primary = $(this);
+		createSwitchItem(primary, createBlockSwitch(primary)).item.addClass("selected");
+		primary.children('.title').remove();
+	});
+	$('.secondary').each(function(idx, node) {
+		secondary = $(node);
+		primary = findPrimary(secondary);
+		switchItem = createSwitchItem(secondary, primary.children('.switch'));
+		switchItem.content.addClass('hidden');
+		findPrimary(secondary).append(switchItem.content);
+		secondary.remove();
+	});
 }
 
 function createBlockSwitch(primary) {
-    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
-    primary.prepend(blockSwitch)
+	blockSwitch = $('<div class="switch"></div>');
+	primary.prepend(blockSwitch);
 	return blockSwitch;
 }
 
 function findPrimary(secondary) {
-	var candidate = secondary.previousElementSibling;
-	while (candidate != null && !candidate.classList.contains('primary')) {
-		candidate = candidate.previousElementSibling;
+	candidate = secondary.prev();
+	while (!candidate.is('.primary')) {
+		candidate = candidate.prev();
 	}
 	return candidate;
 }
 
 function createSwitchItem(block, blockSwitch) {
-	var blockName = block.querySelector('.title').textContent;
-	var content = block.querySelectorAll('.content').item(0);
-	var colist = nextSibling(block, '.colist');
-	if (colist != null) {
-		content.append(colist);
-	}
-	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
-	item.dataset.blockName = blockName;
-	content.dataset.blockName = blockName;
+	blockName = block.children('.title').text();
+	content = block.children('.content').first().append(block.next('.colist'));
+	item = $('<div class="switch--item">' + blockName + '</div>');
 	blockSwitch.append(item);
 	return {'item': item, 'content': content};
 }
 
-function nextSibling(element, selector) {
-	var sibling = element.nextElementSibling;
-	while (sibling) {
-		if (sibling.matches(selector)) {
-			return sibling;
-		}
-		sibling = sibling.nextElementSibling;
-	}
-}
-
 function globalSwitch() {
-	document.querySelectorAll(".switch--item").forEach(function(item) {
-		var blockId = blockIdForSwitchItem(item);
-		var handler = function(event) {
-			selectedText = event.target.textContent;
+	$('.switch--item').each(function() {
+		var blockId = blockIdForSwitchItem($(this));
+		$(this).off('click');
+		$(this).on('click', function() {
+			selectedText = $(this).text()
 			window.localStorage.setItem(blockId, selectedText);
-			for (var switchItem of document.querySelectorAll(".switch--item")) {
-				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
-					select(switchItem);
-				}
-			}
-		}
-		item.addEventListener("click", handler);
-		if (item.textContent === window.localStorage.getItem(blockId)) {
-			select(item);
+			$(".switch--item").filter(function() {
+				return blockIdForSwitchItem($(this)) === blockId;
+			}).filter(function() {
+				return $(this).text() === selectedText;
+			}).each(function() {
+				select($(this))
+			});
+		});
+		if ($(this).text() === window.localStorage.getItem(blockId)) {
+			select($(this))
 		}
 	});
 }
 
-function select(selected) {
-	for (var child of selected.parentNode.children) {
-		child.classList.remove("selected");
-	}
-	selected.classList.add("selected");
-	for (var child of selected.parentNode.parentNode.children) {
-		if (child.classList.contains("content")) {
-			if (selected.dataset.blockName === child.dataset.blockName) {
-				child.classList.remove("hidden");
-			}
-			else {
-				child.classList.add("hidden");
-			}
-		}
-	}	
-}
-
 function blockIdForSwitchItem(item) {
 	idComponents = []
-	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
-		idComponents.push(switchItem.textContent.toLowerCase());
-	}
+	idComponents.push(item.text().toLowerCase());
+	item.siblings(".switch--item").each(function(index, sibling) {
+		idComponents.push($(sibling).text().toLowerCase());
+	});
 	return idComponents.sort().join("-")
 }
 
-window.onload = function() {
-	addBlockSwitches();
-	globalSwitch();
-};
+function select(selected) {
+	selected.addClass('selected');
+	selected.siblings().removeClass('selected');
+	selectedContent = selected.parent().siblings(".content").eq(selected.index())
+	selectedContent.removeClass('hidden');
+	selectedContent.siblings().addClass('hidden');
+}
+
+$(addBlockSwitches);
+$(globalSwitch);
 
 </script>
 
@@ -251,8 +216,7 @@ window.onload = function() {
 <li><a href="#overriding-the-auto-configuration">10.3. Overriding the auto-configuration</a></li>
 <li><a href="#customizing-spans">10.4. Customizing spans</a></li>
 <li><a href="#integration-with-logging">10.5. Integration with Logging</a></li>
-<li><a href="#pubsub-trace-instrumentation-experimental">10.6. Pub/Sub Trace Instrumentation (Experimental)</a></li>
-<li><a href="#sample-5">10.7. Sample</a></li>
+<li><a href="#sample-5">10.6. Sample</a></li>
 </ul>
 </li>
 <li><a href="#cloud-logging">11. Cloud Logging</a>
@@ -389,7 +353,7 @@ window.onload = function() {
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>2.0.5-SNAPSHOT</strong></p>
+<p><strong>2.0.5</strong></p>
 </div>
 </div>
 </div>
@@ -479,7 +443,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
        &lt;dependency&gt;
            &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
            &lt;artifactId&gt;spring-cloud-gcp-dependencies&lt;/artifactId&gt;
-           &lt;version&gt;2.0.5-SNAPSHOT&lt;/version&gt;
+           &lt;version&gt;2.0.5&lt;/version&gt;
            &lt;type&gt;pom&lt;/type&gt;
            &lt;scope&gt;import&lt;/scope&gt;
        &lt;/dependency&gt;
@@ -493,7 +457,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:2.0.5-SNAPSHOT")
+    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:2.0.5")
 }</code></pre>
 </div>
 </div>
@@ -649,35 +613,35 @@ The table below highlights several samples of the most commonly used integration
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cloud Spanner</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-repository-sample">spring-cloud-gcp-data-spanner-repository-sample</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-sample">spring-cloud-gcp-data-spanner-sample</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample">spring-cloud-gcp-data-spanner-template-sample</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Datastore</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-sample">spring-cloud-gcp-data-datastore-sample</a></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cloud SQL (w/ MySQL)</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-sample">spring-cloud-gcp-sql-mysql-sample</a></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cloud Storage</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-storage-resource-sample">spring-cloud-gcp-storage-resource-sample</a></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cloud Logging</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-logging-sample">spring-cloud-gcp-logging-sample</a></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Trace</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample">spring-cloud-gcp-trace-sample</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Cloud Vision</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cloud Vision</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-vision-api-sample">spring-cloud-gcp-vision-api-sample</a></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cloud Security - IAP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-security-iap-sample">spring-cloud-gcp-security-iap-sample</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1745,6 +1709,12 @@ They do <strong>not</strong> control message redelivery; only message acknowledg
 <td class="tableblock halign-left valign-top"><p class="tableblock">Determines frequency of keepalive gRPC ping</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>5 minutes</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscriber.retryableCodes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RPC status codes that should be retried when pulling messages.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNKNOWN,ABORTED,UNAVAILABLE</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher].retry.total-timeout-seconds</code></p></td>
@@ -3631,12 +3601,6 @@ This field forces the decision of whether or not to trace the request; if omitte
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.pubsub.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">(Experimental) Auto-configure Pub/Sub instrumentation for Trace.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -3742,23 +3706,7 @@ The trace logs can be viewed by going to the <a href="https://console.cloud.goog
 </div>
 </div>
 <div class="sect2">
-<h3 id="pubsub-trace-instrumentation-experimental"><a class="anchor" href="#pubsub-trace-instrumentation-experimental"></a><a class="link" href="#pubsub-trace-instrumentation-experimental">10.6. Pub/Sub Trace Instrumentation (Experimental)</a></h3>
-<div class="paragraph">
-<p>You can enable trace instrumentation and propagation for Pub/Sub messages by using the <code>spring.cloud.gcp.trace.pubsub.enabled=true</code> property.
-It&#8217;s set to <code>false</code> by default, but when set to <code>true</code>, trace spans will be created and propagated to Cloud Trace whenever the application sends or receives messages through <code>PubSubTemplate</code> or any other integration that builds on top of <code>PubSubTemplate</code>, such as the Spring Integration channel adapters, and the Spring Cloud Stream Binder.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code># Enable Pub/Sub tracing using this property
-spring.cloud.gcp.trace.pubsub.enabled=true
-
-# You should disable Spring Integration instrumentation by Sleuth as it's unnecessary when Pub/Sub tracing is enabled
-spring.sleuth.integration.enabled=false</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="sample-5"><a class="anchor" href="#sample-5"></a><a class="link" href="#sample-5">10.7. Sample</a></h3>
+<h3 id="sample-5"><a class="anchor" href="#sample-5"></a><a class="link" href="#sample-5">10.6. Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample">sample application</a> and a <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-cloud-gcp-trace/index.html">codelab</a> are available.</p>
 </div>
@@ -3990,24 +3938,14 @@ The following properties are available:</p>
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceIdMDCField</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The MDC field name for retrieving a trace id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spanIdMDCField</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spanId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the MDC field name for retrieving a span id</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeTraceId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Should the trace id be included</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the <code>traceId</code> be included</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeSpanId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Should the span id be included</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the <code>spanId</code> be included</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeLevel</code></p></td>
@@ -4088,8 +4026,6 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
       &lt;layout class="com.google.cloud.spring.logging.StackdriverJsonLayout"&gt;
         &lt;projectId&gt;${projectId}&lt;/projectId&gt;
 
-        &lt;!--&lt;traceIdMDCField&gt;traceId&lt;/traceIdMDCField&gt;--&gt;
-        &lt;!--&lt;spanIdMDCField&gt;spanId&lt;/spanIdMDCField&gt;--&gt;
         &lt;!--&lt;includeTraceId&gt;true&lt;/includeTraceId&gt;--&gt;
         &lt;!--&lt;includeSpanId&gt;true&lt;/includeSpanId&gt;--&gt;
         &lt;!--&lt;includeLevel&gt;true&lt;/includeLevel&gt;--&gt;
@@ -4317,12 +4253,6 @@ The following configuration options are available:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.spanner.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enables the Cloud Spanner client</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.spanner.instance-id</code></p></td>
@@ -4930,36 +4860,10 @@ public class Agreement {
 </div>
 </div>
 <div class="sect3">
-<h4 id="json-fields"><a class="anchor" href="#json-fields"></a><a class="link" href="#json-fields">13.2.8. JSON fields</a></h4>
-<div class="paragraph">
-<p>Spanner supports <code>JSON</code> type for columns. <code>JSON</code> columns are mapped to custom POJOs annotated with <code>@Column(spannerType = TypeCode.JSON)</code>. Read, write and query with custom SQL query are supported for JSON annotated fields.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "traders")
-public class Trader {
-
-    @PrimaryKey
-    @Column(name = "trader_id")
-    String traderId;
-
-    @Column(spannerType = TypeCode.JSON)
-    Details details;
-}
-
-public class Details {
-    String name;
-    String affiliation;
-    Boolean isActive;
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="lists"><a class="anchor" href="#lists"></a><a class="link" href="#lists">13.2.9. Lists</a></h4>
+<h4 id="lists"><a class="anchor" href="#lists"></a><a class="link" href="#lists">13.2.8. Lists</a></h4>
 <div class="paragraph">
 <p>Spanner supports <code>ARRAY</code> types for columns.
-<code>ARRAY</code> columns are mapped to <code>List</code> fields in POJOs.</p>
+<code>ARRAY</code> columns are mapped to <code>List</code> fields in POJOS.</p>
 </div>
 <div class="paragraph">
 <p>Example:</p>
@@ -4974,7 +4878,7 @@ public class Details {
 </div>
 </div>
 <div class="sect3">
-<h4 id="lists-of-structs"><a class="anchor" href="#lists-of-structs"></a><a class="link" href="#lists-of-structs">13.2.10. Lists of Structs</a></h4>
+<h4 id="lists-of-structs"><a class="anchor" href="#lists-of-structs"></a><a class="link" href="#lists-of-structs">13.2.9. Lists of Structs</a></h4>
 <div class="paragraph">
 <p>Cloud Spanner queries can <a href="https://cloud.google.com/spanner/docs/query-syntax#using-structs-with-select">construct STRUCT values</a> that appear as columns in the result.
 Cloud Spanner requires STRUCT values appear in ARRAYs at the root level: <code>SELECT ARRAY(SELECT STRUCT(1 as val1, 2 as val2)) as pair FROM Users</code>.</p>
@@ -4997,7 +4901,7 @@ Cloud Spanner requires STRUCT values appear in ARRAYs at the root level: <code>S
 </div>
 </div>
 <div class="sect3">
-<h4 id="custom-types"><a class="anchor" href="#custom-types"></a><a class="link" href="#custom-types">13.2.11. Custom types</a></h4>
+<h4 id="custom-types"><a class="anchor" href="#custom-types"></a><a class="link" href="#custom-types">13.2.10. Custom types</a></h4>
 <div class="paragraph">
 <p>Custom converters can be used to extend the type support for user defined types.</p>
 </div>
@@ -5124,7 +5028,7 @@ public class ConverterConfiguration {
 </div>
 </div>
 <div class="sect3">
-<h4 id="custom-converter-for-struct-array-columns"><a class="anchor" href="#custom-converter-for-struct-array-columns"></a><a class="link" href="#custom-converter-for-struct-array-columns">13.2.12. Custom Converter for Struct Array Columns</a></h4>
+<h4 id="custom-converter-for-struct-array-columns"><a class="anchor" href="#custom-converter-for-struct-array-columns"></a><a class="link" href="#custom-converter-for-struct-array-columns">13.2.11. Custom Converter for Struct Array Columns</a></h4>
 <div class="paragraph">
 <p>If a <code>Converter&lt;Struct, A&gt;</code> is provided, then properties of type <code>List&lt;A&gt;</code> can be used in your entity types.</p>
 </div>
@@ -6324,17 +6228,7 @@ spring.cloud.gcp.spanner.emulator-host=${EMULATOR_HOSTPORT}</pre>
 <div class="sect2">
 <h3 id="sample-8"><a class="anchor" href="#sample-8"></a><a class="link" href="#sample-8">13.11. Sample</a></h3>
 <div class="paragraph">
-<p>There are two sample applications available:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample"> Sample application using Spanner Template directly</a></p>
-</li>
-<li>
-<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-repository-sample"> Sample application using higher-level Spanner Repository capabilities</a></p>
-</li>
-</ol>
+<p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-sample">sample application</a> is available.</p>
 </div>
 </div>
 </div>
@@ -8717,11 +8611,6 @@ You can refer to nested fields using <a href="https://docs.spring.io/spring-data
         User aliceLoaded = this.userRepository.findById("Alice").block();
         assertThat(aliceLoaded.getAddresses()).isEqualTo(addresses);
         assertThat(aliceLoaded.getHomeAddress()).isEqualTo(homeAddress);
-
-        // cast to SimpleFirestoreReactiveRepository for method be reachable with Spring Boot 2.4
-        SimpleFirestoreReactiveRepository repository = AopTestUtils.getTargetObject(this.userRepository);
-        StepVerifier.create(repository.deleteAllById(Arrays.asList("Alice", "Bob")).then(this.userRepository.count()))
-                .expectNext(0L).verifyComplete();
     }
 }</code></pre>
 </div>
@@ -9151,14 +9040,14 @@ Firestore firestore;
    }
 
    User readDocumentToObject() throws ExecutionException, InterruptedException {
-       ApiFuture&lt;DocumentSnapshot&gt; documentFuture =
-               this.firestore.document("users/joe").get();
+           ApiFuture&lt;DocumentSnapshot&gt; documentFuture =
+                   this.firestore.document("users/joe").get();
 
-       User user = documentFuture.get().toObject(User.class);
+           User user = documentFuture.get().toObject(User.class);
 
-       LOGGER.info("read: " + user);
+           LOGGER.info("read: " + user);
 
-       return user;
+           return user;
    }</code></pre>
 </div>
 </div>
@@ -10371,7 +10260,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-config&lt;/artifactId&gt;
-    &lt;version&gt;2.0.5-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;2.0.5&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -10383,7 +10272,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 <pre class="highlight"><code>dependencies {
     compile group: 'org.springframework.cloud',
     name: 'spring-cloud-gcp-starter-config',
-    version: '2.0.5-SNAPSHOT'
+    version: '2.0.5'
 }</code></pre>
 </div>
 </div>
@@ -10833,7 +10722,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
     &lt;dependency&gt;
       &lt;groupId&gt;com.google.cloud&lt;/groupId&gt; <i class="conum" data-value="2"></i><b>(2)</b>
       &lt;artifactId&gt;spring-cloud-gcp-dependencies&lt;/artifactId&gt;
-      &lt;version&gt;2.0.4&lt;/version&gt;
+      &lt;version&gt;2.0.3&lt;/version&gt;
       &lt;type&gt;pom&lt;/type&gt;
       &lt;scope&gt;import&lt;/scope&gt;
     &lt;/dependency&gt;
