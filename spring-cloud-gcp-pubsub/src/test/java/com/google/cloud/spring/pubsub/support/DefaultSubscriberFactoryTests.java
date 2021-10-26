@@ -23,10 +23,12 @@ import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.pubsub.v1.PullRequest;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -518,5 +520,15 @@ public class DefaultSubscriberFactoryTests {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
 
 		assertThat(factory.getPullEndpoint("subscription-name")).isNull();
+	}
+
+	@Test
+	public void testSetRetryableCodes() throws IllegalAccessException {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, null);
+		factory.setRetryableCodes(new Code[] { Code.INTERNAL });
+
+		assertThat(FieldUtils.readField(factory, "retryableCodes", true))
+				.isEqualTo(new Code[] { Code.INTERNAL });
 	}
 }
