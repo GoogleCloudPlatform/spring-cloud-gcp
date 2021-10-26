@@ -303,6 +303,7 @@ public class PubSubConfiguration {
 		 * Flow control settings for subscriber factory.
 		 */
 		private final FlowControl flowControl = new FlowControl();
+
 		/**
 		 * RPC status codes that should be retried when pulling messages.
 		 */
