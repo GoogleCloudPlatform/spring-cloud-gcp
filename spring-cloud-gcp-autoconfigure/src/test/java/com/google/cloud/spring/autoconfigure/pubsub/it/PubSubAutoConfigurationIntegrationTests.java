@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.pubsub.it;
 
 import com.google.api.gax.batching.FlowController;
+import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubProperties;
@@ -39,12 +40,13 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 
 public class PubSubAutoConfigurationIntegrationTests {
 
-	private static final Log LOGGER = LogFactory.getLog(PubSubTemplateIntegrationTests.class);
+	private static final Log LOGGER = LogFactory.getLog(PubSubAutoConfigurationIntegrationTests.class);
 
 	private static GcpProjectIdProvider projectIdProvider;
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withPropertyValues(
+					"spring.cloud.gcp.pubsub.subscriber.retryableCodes=INTERNAL",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.executor-threads=3",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.total-timeout-seconds=600",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.initial-retry-delay-seconds=100",
@@ -110,6 +112,8 @@ public class PubSubAutoConfigurationIntegrationTests {
 			assertThat(scheduler.isDaemon()).isTrue();
 			assertThat((ThreadPoolTaskScheduler) context.getBean("globalPubSubSubscriberThreadPoolScheduler"))
 					.isNotNull();
+			assertThat(gcpPubSubProperties.getSubscriber().getRetryableCodes())
+					.isEqualTo(new Code[] { Code.INTERNAL });
 
 			pubSubAdmin.deleteSubscription(subscriptionName);
 			pubSubAdmin.deleteTopic(topicName);

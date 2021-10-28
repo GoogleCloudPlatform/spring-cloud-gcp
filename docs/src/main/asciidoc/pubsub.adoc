@@ -97,6 +97,7 @@ They do *not* control message redelivery; only message acknowledgement deadline 
 |===
 | Name | Description | Required | Default value
 | `spring.cloud.gcp.pubsub.keepAliveIntervalMinutes` | Determines frequency of keepalive gRPC ping | No | `5 minutes`
+| `spring.cloud.gcp.pubsub.subscriber.retryableCodes` | RPC status codes that should be retried when pulling messages. | No | UNKNOWN,ABORTED,UNAVAILABLE
 | `spring.cloud.gcp.pubsub.[subscriber,publisher].retry.total-timeout-seconds`|
 TotalTimeout has ultimate control over how long the logic should keep trying the remote call until it gives up completely.
 The higher the total timeout, the more retries can be attempted. | No | 0
