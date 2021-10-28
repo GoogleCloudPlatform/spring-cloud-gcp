@@ -1747,6 +1747,12 @@ They do <strong>not</strong> control message redelivery; only message acknowledg
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>5 minutes</code></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscriber.retryableCodes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RPC status codes that should be retried when pulling messages.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNKNOWN,ABORTED,UNAVAILABLE</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher].retry.total-timeout-seconds</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">TotalTimeout has ultimate control over how long the logic should keep trying the remote call until it gives up completely.
 The higher the total timeout, the more retries can be attempted.</p></td>
