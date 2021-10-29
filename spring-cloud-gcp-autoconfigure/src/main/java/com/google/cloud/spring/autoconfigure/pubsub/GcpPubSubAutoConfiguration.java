@@ -235,6 +235,9 @@ public class GcpPubSubAutoConfiguration {
 					"The subscriberRetrySettings bean is being deprecated. Please use application.properties to configure properties");
 			factory.setSubscriberStubRetrySettings(retrySettings.getIfAvailable());
 		}
+		if (this.gcpPubSubProperties.getSubscriber().getRetryableCodes() != null) {
+			factory.setRetryableCodes(gcpPubSubProperties.getSubscriber().getRetryableCodes());
+		}
 		return factory;
 	}
 

@@ -65,6 +65,7 @@ The following configuration options are available:
 
 |===
 | Name | Description | Required | Default value
+| `spring.cloud.gcp.spanner.enabled` | Enables the Cloud Spanner client | No | `true`
 | `spring.cloud.gcp.spanner.instance-id` | Cloud Spanner instance to use | Yes |
 | `spring.cloud.gcp.spanner.database` |
 Cloud Spanner database to use | Yes |

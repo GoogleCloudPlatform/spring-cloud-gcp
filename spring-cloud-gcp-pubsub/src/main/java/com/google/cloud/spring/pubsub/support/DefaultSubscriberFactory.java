@@ -29,6 +29,7 @@ import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.HeaderProvider;
+import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
@@ -87,6 +88,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	private ConcurrentHashMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
 
 	private ExecutorProvider defaultExecutorProvider;
+
+	private Code[] retryableCodes;
 
 	/**
 	 * Default {@link DefaultSubscriberFactory} constructor.
@@ -209,6 +212,14 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		this.subscriberStubRetrySettings = subscriberStubRetrySettings;
 	}
 
+	/**
+	 * Set the retryable codes for subscriber pull settings.
+	 * @param retryableCodes pull RPC response codes that should be retried.
+	 */
+	public void setRetryableCodes(Code[] retryableCodes) {
+		this.retryableCodes = retryableCodes;
+	}
+
 	@Override
 	public Subscriber createSubscriber(String subscriptionName, MessageReceiver receiver) {
 		Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(
@@ -285,6 +296,16 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	@Override
 	public SubscriberStub createSubscriberStub(String subscriptionName) {
+		try {
+			SubscriberStubSettings subscriberStubSettings = buildSubscriberStubSettings(subscriptionName);
+			return GrpcSubscriberStub.create(subscriberStubSettings);
+		}
+		catch (IOException ex) {
+			throw new RuntimeException("Error creating the SubscriberStub", ex);
+		}
+	}
+
+	SubscriberStubSettings buildSubscriberStubSettings(String subscriptionName) throws IOException {
 		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
 
 		if (this.credentialsProvider != null) {
@@ -318,12 +339,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.pullSettings().setRetrySettings(retrySettings);
 		}
 
-		try {
-			return GrpcSubscriberStub.create(subscriberStubSettings.build());
+		if (this.retryableCodes != null) {
+			subscriberStubSettings.pullSettings().setRetryableCodes(
+					this.retryableCodes);
 		}
-		catch (IOException ex) {
-			throw new RuntimeException("Error creating the SubscriberStub", ex);
-		}
+
+		return subscriberStubSettings.build();
 	}
 
 	/**

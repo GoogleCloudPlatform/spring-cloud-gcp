@@ -17,6 +17,7 @@
 package com.google.cloud.spring.pubsub.core;
 
 import com.google.api.gax.batching.FlowController;
+import com.google.api.gax.rpc.StatusCode.Code;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,6 +49,7 @@ public class PubSubConfigurationTests {
 		assertThat(retrySettings.getInitialRpcTimeoutSeconds()).isNull();
 		assertThat(retrySettings.getRpcTimeoutMultiplier()).isNull();
 		assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isNull();
+		assertThat(subscriber.getRetryableCodes()).isNull();
 	}
 
 	@Test
@@ -60,12 +62,15 @@ public class PubSubConfigurationTests {
 		subscriber.setParallelPullCount(1);
 		subscriber.setMaxAckExtensionPeriod(1L);
 		subscriber.setPullEndpoint("fake-endpoint");
+		subscriber.setRetryableCodes(new Code[] { Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL });
 
 		assertThat(subscriber.getExecutorThreads()).isEqualTo(1);
 		assertThat(subscriber.getMaxAcknowledgementThreads()).isEqualTo(3);
 		assertThat(subscriber.getParallelPullCount()).isEqualTo(1);
 		assertThat(subscriber.getMaxAckExtensionPeriod()).isEqualTo(1L);
 		assertThat(subscriber.getPullEndpoint()).isEqualTo("fake-endpoint");
+		assertThat(subscriber.getRetryableCodes()).containsExactly(Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE,
+				Code.INTERNAL);
 	}
 
 	@Test

@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
+import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 
@@ -82,8 +83,10 @@ public class PubSubConfiguration {
 			return this.subscription.get(fullyQualifiedSubscriptionKey);
 		}
 
-		return this.subscription.computeIfAbsent(fullyQualifiedSubscriptionKey,
+		Subscriber subscriberProperties = this.subscription.computeIfAbsent(fullyQualifiedSubscriptionKey,
 				k -> this.globalSubscriber);
+		subscriberProperties.global = true;
+		return subscriberProperties;
 	}
 
 	/**
@@ -262,6 +265,11 @@ public class PubSubConfiguration {
 	public static class Subscriber {
 
 		/**
+		 * Custom determines if the configuration is global or the default.
+		 */
+		private boolean global = false;
+
+		/**
 		 * Number of threads used by every subscriber.
 		 */
 		private Integer executorThreads;
@@ -296,8 +304,21 @@ public class PubSubConfiguration {
 		 */
 		private final FlowControl flowControl = new FlowControl();
 
+		/**
+		 * RPC status codes that should be retried when pulling messages.
+		 */
+		private Code[] retryableCodes = null;
+
 		public Retry getRetry() {
 			return this.retry;
+		}
+
+		public Code[] getRetryableCodes() {
+			return retryableCodes;
+		}
+
+		public void setRetryableCodes(Code[] retryableCodes) {
+			this.retryableCodes = retryableCodes;
 		}
 
 		public FlowControl getFlowControl() {
