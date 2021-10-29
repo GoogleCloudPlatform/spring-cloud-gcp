@@ -85,7 +85,6 @@ public class PubSubConfiguration {
 
 		Subscriber subscriberProperties = this.subscription.computeIfAbsent(fullyQualifiedSubscriptionKey,
 				k -> this.globalSubscriber);
-		subscriberProperties.global = true;
 		return subscriberProperties;
 	}
 
@@ -263,11 +262,6 @@ public class PubSubConfiguration {
 	 * Subscriber settings.
 	 */
 	public static class Subscriber {
-
-		/**
-		 * Custom determines if the configuration is global or the default.
-		 */
-		private boolean global = false;
 
 		/**
 		 * Number of threads used by every subscriber.

@@ -362,8 +362,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	/**
-	 * Creates {@link ExecutorProvider} from provided threadPoolTaskScheduler (either global
-	 * or subscription-specific).
+	 * Creates {@link ExecutorProvider} given a subscription name.
 	 * @param subscriptionName subscription name
 	 * @return executor provider
 	 */
@@ -398,8 +397,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	/**
 	 * Returns {@link ThreadPoolTaskScheduler} given a subscription name. If subscription name
-	 * is null or no subscription-specific scheduler for the subscription name is found then
-	 * return a global threadPoolTaskScheduler.
+	 * is null or subscription-specific scheduler for the subscription name is not found then
+	 * return a global threadPoolTaskScheduler, otherwise, return the subscription-specific scheduler.
 	 * @param subscriptionName subscription name
 	 * @return thread pool scheduler
 	 */
