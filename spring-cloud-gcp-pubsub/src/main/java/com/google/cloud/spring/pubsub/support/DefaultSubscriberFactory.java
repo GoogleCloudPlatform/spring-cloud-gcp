@@ -348,10 +348,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 */
 	ExecutorProvider getExecutorProviderFromConfigurations(String subscriptionName) {
 		ThreadPoolTaskScheduler scheduler = fetchThreadPoolTaskScheduler(subscriptionName);
-		if (!isGlobalScheduler(subscriptionName)) {
+		if (scheduler == null) {
+			return null;
+		}
+		if (!scheduler.equals(this.globalScheduler)) {
 			return createExecutorProvider(subscriptionName, scheduler);
 		}
-
 		if (this.defaultExecutorProvider != null) {
 			return this.defaultExecutorProvider;
 		}
@@ -360,16 +362,17 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	ExecutorProvider createExecutorProvider(String subscriptionName, ThreadPoolTaskScheduler scheduler) {
-		if (scheduler == null) {
-			return null;
-		}
 		if (subscriptionName != null && this.executorProviderMap.containsKey(subscriptionName)) {
 			return this.executorProviderMap.get(subscriptionName);
 		}
-		scheduler.initialize();
-		ExecutorProvider executor = FixedExecutorProvider.create(scheduler.getScheduledExecutor());
-		return subscriptionName != null ? this.executorProviderMap.computeIfAbsent(subscriptionName, k -> executor)
-				: executor;
+		else {
+			scheduler.initialize();
+			ExecutorProvider executor = FixedExecutorProvider.create(scheduler.getScheduledExecutor());
+			if (subscriptionName == null) {
+				return executor;
+			}
+			return this.executorProviderMap.computeIfAbsent(subscriptionName, k -> executor);
+		}
 	}
 
 	/**
@@ -389,21 +392,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			return threadPoolTaskSchedulerMap.get(fullyQualifiedName);
 		}
 		return this.globalScheduler;
-	}
-
-	/**
-	 * Returns {@code true} if subscription name is null or subscription-specific scheduler is
-	 * not present.
-	 * @param subscriptionName subscription name
-	 * @return boolean determining whether global scheduler should be used or not
-	 */
-	boolean isGlobalScheduler(String subscriptionName) {
-		if (subscriptionName == null) {
-			return true;
-		}
-		String fullyQualifiedName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId)
-				.toString();
-		return !this.threadPoolTaskSchedulerMap.containsKey(fullyQualifiedName);
 	}
 
 	Map<String, ExecutorProvider> getExecutorProviderMap() {

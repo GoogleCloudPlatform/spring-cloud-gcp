@@ -324,28 +324,6 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
-	public void testIsGlobalScheduler_subscriptionNameIsNull_isGlobal() {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
-		assertThat(factory.isGlobalScheduler(null)).isTrue();
-	}
-
-	@Test
-	public void testIsGlobalScheduler_schedulerNotPresentInMap_isGlobal() {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
-		assertThat(factory.isGlobalScheduler("subscription-name")).isTrue();
-	}
-
-	@Test
-	public void testIsGlobalScheduler_schedulerPresentInMap_isNotGlobal() {
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
-		ConcurrentHashMap<String, ThreadPoolTaskScheduler> threadPoolSchedulerMap = new ConcurrentHashMap<>();
-		threadPoolSchedulerMap.put("projects/project/subscriptions/subscription-name", mockScheduler);
-		factory.setThreadPoolTaskSchedulerMap(threadPoolSchedulerMap);
-
-		assertThat(factory.isGlobalScheduler("subscription-name")).isFalse();
-	}
-
-	@Test
 	public void testGetRetrySettings_userProvidedBean() {
 		RetrySettings expectedRetrySettings = RetrySettings.newBuilder()
 				.setTotalTimeout(Duration.ofSeconds(10))
