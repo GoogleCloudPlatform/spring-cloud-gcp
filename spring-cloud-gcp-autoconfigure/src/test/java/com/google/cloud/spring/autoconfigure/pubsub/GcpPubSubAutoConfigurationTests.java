@@ -216,7 +216,7 @@ public class GcpPubSubAutoConfigurationTests {
 
 		contextRunner.run(ctx -> {
 
-			// Verify that subscription-specific thread pool task scheduler is ucustomFlowControlUsedWhenProvidedsed
+			// Verify that subscription-specific thread pool task scheduler is used
 			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
 			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
 			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-subscription-name");
