@@ -29,6 +29,7 @@ import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistryImpl;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.autoconfigure.health.CompositeHealthContributorConfiguration;
+import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -68,7 +69,7 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
 	}
 
 	@Bean
-	@ConditionalOnMissingBean("healthTrackerRegistry")
+	@ConditionalOnMissingBean(name = "healthTrackerRegistry")
 	public HealthTrackerRegistry healthTrackerRegistry(
 		MetricServiceClient metricServiceClient,
 		@Qualifier("subscriberExecutorProvider") ExecutorProvider executorProvider) {
@@ -79,7 +80,7 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
 	}
 
 	@Bean
-	@ConditionalOnMissingBean("pubSubSubscriptionHealthIndicator")
+	@ConditionalOnMissingBean(name = "pubSubSubscriptionHealthIndicator")
 	public PubSubSubscriptionHealthIndicator pubSubSubscriptionHealthIndicator(HealthTrackerRegistry healthTrackerRegistry) {
 		return new PubSubSubscriptionHealthIndicator(healthTrackerRegistry);
 	}
