@@ -68,7 +68,7 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(name = "healthTrackerRegistry")
+	@ConditionalOnMissingBean("healthTrackerRegistry")
 	public HealthTrackerRegistry healthTrackerRegistry(
 		MetricServiceClient metricServiceClient,
 		@Qualifier("subscriberExecutorProvider") ExecutorProvider executorProvider) {
@@ -79,7 +79,7 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(name = {"pubSubSubscriptionHealthIndicator"})
+	@ConditionalOnMissingBean("pubSubSubscriptionHealthIndicator")
 	public PubSubSubscriptionHealthIndicator pubSubSubscriptionHealthIndicator(HealthTrackerRegistry healthTrackerRegistry) {
 		return new PubSubSubscriptionHealthIndicator(healthTrackerRegistry);
 	}
