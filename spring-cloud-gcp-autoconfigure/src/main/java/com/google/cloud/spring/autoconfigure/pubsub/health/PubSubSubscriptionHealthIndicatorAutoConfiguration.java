@@ -46,6 +46,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({HealthIndicator.class})
+@ConditionalOnEnabledHealthIndicator("pubsub-subscriber")
 @ConditionalOnProperty({"spring.cloud.gcp.pubsub.subscriber.lagThreshold", "spring.cloud.gcp.pubsub.subscriber.backlogThreshold"})
 @Import(PubSubExecutorConfiguration.class)
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)
