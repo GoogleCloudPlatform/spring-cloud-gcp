@@ -184,7 +184,6 @@ public class PubSubMessageChannelBinderTests {
 	@Test
 	public void testCreateConsumerWithRegistry() {
 		SubscriberFactory subscriberFactory = mock(SubscriberFactory.class);
-		when(subscriberFactory.getProjectId()).thenReturn("test-project-id");
 		PubSubSubscriberTemplate subSubscriberTemplate = mock(PubSubSubscriberTemplate.class);
 		when(subSubscriberTemplate.getSubscriberFactory()).thenReturn(subscriberFactory);
 		when(pubSubTemplate.getPubSubSubscriberTemplate()).thenReturn(subSubscriberTemplate);
