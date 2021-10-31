@@ -24,6 +24,7 @@ import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubProperties;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistryImpl;
@@ -57,8 +58,14 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
 
 	private final GcpPubSubProperties gcpPubSubProperties;
 
+	private final String projectId;
+
 	public PubSubSubscriptionHealthIndicatorAutoConfiguration(
-		GcpPubSubProperties gcpPubSubProperties) {
+		GcpPubSubProperties gcpPubSubProperties,
+		GcpProjectIdProvider projectIdProvider) {
+		this.projectId = (gcpPubSubProperties.getProjectId() != null)
+				? gcpPubSubProperties.getProjectId()
+				: projectIdProvider.getProjectId();
 		this.gcpPubSubProperties = gcpPubSubProperties;
 	}
 
@@ -81,7 +88,7 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
 	public HealthTrackerRegistry healthTrackerRegistry(
 		MetricServiceClient metricServiceClient,
 		@Qualifier("healthCheckExecutorProvider") ExecutorProvider executorProvider) {
-		return new HealthTrackerRegistryImpl(metricServiceClient,
+		return new HealthTrackerRegistryImpl(projectId, metricServiceClient,
 			gcpPubSubProperties.getHealth().getLagThreshold(),
 			gcpPubSubProperties.getHealth().getBacklogThreshold(),
 			gcpPubSubProperties.getHealth().getLookUpInterval(), executorProvider);

@@ -46,6 +46,7 @@ public class PubSubSubscriptionHealthIndicatorTests {
 
 	private PubSubSubscriptionHealthIndicator healthIndicator;
 
+	private static final String DEFAULT_PROJECT_ID = "project-id";
 	private static final int DEFAULT_LAG_THRESHOLD = 100;
 	private static final int DEFAULT_BACKLOG_THRESHOLD = 100;
 	private static final int MINUTE_INTERNAL = 1;
@@ -55,7 +56,7 @@ public class PubSubSubscriptionHealthIndicatorTests {
 	@Before
 	public void setUp() throws Exception {
 		ExecutorProvider executorProvider = mock(ExecutorProvider.class);
-		HealthTrackerRegistry trackerRegistry = new HealthTrackerRegistryImpl(metricServiceClient, DEFAULT_LAG_THRESHOLD, DEFAULT_BACKLOG_THRESHOLD, MINUTE_INTERNAL, executorProvider, healthTrackers);
+		HealthTrackerRegistry trackerRegistry = new HealthTrackerRegistryImpl(DEFAULT_PROJECT_ID, metricServiceClient, DEFAULT_LAG_THRESHOLD, DEFAULT_BACKLOG_THRESHOLD, MINUTE_INTERNAL, executorProvider, healthTrackers);
 		healthIndicator = new PubSubSubscriptionHealthIndicator(trackerRegistry);
 		healthTrackers.clear();
 	}

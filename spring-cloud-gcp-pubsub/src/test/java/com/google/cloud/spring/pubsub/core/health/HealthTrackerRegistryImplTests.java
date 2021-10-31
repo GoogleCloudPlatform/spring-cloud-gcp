@@ -56,6 +56,7 @@ public class HealthTrackerRegistryImplTests {
 
 	private HealthTrackerRegistry healthTrackerRegistry;
 
+	private static final String DEFAULT_PROJECT_ID = "project-id";
 	private static final int DEFAULT_LAG_THRESHOLD = 100;
 	private static final int DEFAULT_BACKLOG_THRESHOLD = 100;
 	private static final int MINUTE_INTERNAL = 1;
@@ -64,18 +65,30 @@ public class HealthTrackerRegistryImplTests {
 
 	@Before
 	public void setUp() throws Exception {
-		healthTrackerRegistry = new HealthTrackerRegistryImpl(metricServiceClient, DEFAULT_LAG_THRESHOLD, DEFAULT_BACKLOG_THRESHOLD, MINUTE_INTERNAL, executorProvider, healthTrackers);
+		healthTrackerRegistry = new HealthTrackerRegistryImpl(DEFAULT_PROJECT_ID, metricServiceClient, DEFAULT_LAG_THRESHOLD, DEFAULT_BACKLOG_THRESHOLD, MINUTE_INTERNAL, executorProvider, healthTrackers);
 		healthTrackers.clear();
 	}
 
 	@Test
-	public void testRegisterTracker() {
+	public void testRegisterTrackerGivenProjectSubscriptionName() {
 		String projectId = "project-id";
 		String subscriptionId = "subscription-id";
 
 		ProjectSubscriptionName subscription = ProjectSubscriptionName.of(projectId, subscriptionId);
 
 		HealthTracker healthTracker = healthTrackerRegistry.registerTracker(subscription);
+
+		assertThat(healthTracker.subscription()).isEqualTo(subscription);
+	}
+
+	@Test
+	public void testRegisterTrackerGivenSubscriptionName() {
+		String projectId = "project-id";
+		String subscriptionId = "subscription-id";
+
+		ProjectSubscriptionName subscription = ProjectSubscriptionName.of(projectId, subscriptionId);
+
+		HealthTracker healthTracker = healthTrackerRegistry.registerTracker(subscriptionId);
 
 		assertThat(healthTracker.subscription()).isEqualTo(subscription);
 	}

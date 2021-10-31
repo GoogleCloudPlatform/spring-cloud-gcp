@@ -25,6 +25,7 @@ import com.google.api.core.ApiService.State;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.cloud.pubsub.v1.Subscriber;
+import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,6 +41,7 @@ public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
 
 	private static final Log LOGGER = LogFactory.getLog(HealthTrackerRegistryImpl.class);
 
+	private final String projectId;
 	private final MetricServiceClient metricServiceClient;
 	private final Integer lagThreshold;
 	private final Integer backlogThreshold;
@@ -49,15 +51,17 @@ public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
 	private final ConcurrentMap<ProjectSubscriptionName, HealthTracker> healthTrackers;
 
 	public HealthTrackerRegistryImpl(
+		String projectId,
 		MetricServiceClient metricServiceClient,
 		Integer lagThreshold,
 		Integer backlogThreshold,
 		Integer lookUpInterval,
 		ExecutorProvider executorProvider) {
-		this(metricServiceClient, lagThreshold, backlogThreshold, lookUpInterval, executorProvider, new ConcurrentHashMap<>());
+		this(projectId, metricServiceClient, lagThreshold, backlogThreshold, lookUpInterval, executorProvider, new ConcurrentHashMap<>());
 	}
 
 	public HealthTrackerRegistryImpl(
+		String projectId,
 		MetricServiceClient metricServiceClient,
 		Integer lagThreshold,
 		Integer backlogThreshold,
@@ -65,12 +69,19 @@ public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
 		ExecutorProvider executorProvider,
 		ConcurrentMap<ProjectSubscriptionName, HealthTracker> healthTrackers) {
 		Assert.notNull(metricServiceClient, "MetricServiceClient can't be null");
+		this.projectId = projectId;
 		this.metricServiceClient = metricServiceClient;
 		this.lagThreshold = lagThreshold;
 		this.backlogThreshold = backlogThreshold;
 		this.lookUpInterval = lookUpInterval;
 		this.healthTrackers = healthTrackers;
 		this.executorProvider = executorProvider;
+	}
+
+	@Override
+	public HealthTracker registerTracker(String subscriptionName) {
+		ProjectSubscriptionName projectSubscriptionName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId);
+		return registerTracker(projectSubscriptionName);
 	}
 
 	@Override

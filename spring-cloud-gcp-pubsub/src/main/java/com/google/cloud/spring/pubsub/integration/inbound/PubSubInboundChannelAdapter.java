@@ -24,7 +24,6 @@ import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.PubSubHeaderMapper;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
-import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import org.apache.commons.logging.Log;
@@ -62,8 +61,6 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 
 	private HealthTrackerRegistry healthTrackerRegistry;
 
-	private String projectId;
-
 	public PubSubInboundChannelAdapter(PubSubSubscriberOperations pubSubSubscriberOperations, String subscriptionName) {
 		Assert.notNull(pubSubSubscriberOperations, "Pub/Sub subscriber template can't be null.");
 		Assert.notNull(subscriptionName, "Pub/Sub subscription name can't be null.");
@@ -82,12 +79,7 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 
 	public void setHealthTrackerRegistry(
 			HealthTrackerRegistry healthTrackerRegistry) {
-		Assert.notNull(projectId, "HealthTrackerRegistry requires a projectId");
 		this.healthTrackerRegistry = healthTrackerRegistry;
-	}
-
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
 	}
 
 	public Class<?> getPayloadType() {
@@ -174,8 +166,7 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 
 	private void addToHealthRegistry() {
 		if (healthCheckEnabled()) {
-			ProjectSubscriptionName projectSubscriptionName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId);
-			healthTrackerRegistry.registerTracker(projectSubscriptionName);
+			healthTrackerRegistry.registerTracker(subscriptionName);
 		}
 	}
 

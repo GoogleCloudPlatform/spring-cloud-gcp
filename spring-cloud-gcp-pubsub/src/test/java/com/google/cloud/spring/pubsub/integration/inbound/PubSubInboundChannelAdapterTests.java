@@ -192,26 +192,18 @@ public class PubSubInboundChannelAdapterTests {
 	}
 
 	@Test
-	public void testSetHealthRegistry_failWhenProjectIdIsNotPresent() {
+	public void testSetHealthRegistry_Success() {
 		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
-		assertThatThrownBy(() -> adapter.setHealthTrackerRegistry(healthTrackerRegistry)).isInstanceOf(IllegalArgumentException.class);
-	}
-
-	@Test
-	public void testSetHealthRegistry_SuccessWhenProjectIdIsPresent() {
-		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
-		adapter.setProjectId("project-id");
 		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
 	}
 
 	@Test
 	public void testMessageProcessed_successWhenRegistrySet() {
 		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
-		adapter.setProjectId("project-id");
 		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
 		adapter.doStart();
 
-		verify(healthTrackerRegistry, times(1)).registerTracker(any());
+		verify(healthTrackerRegistry, times(1)).registerTracker(any(String.class));
 
 		this.mockMessageChannel.send(new GenericMessage<>("test-message"));
 
@@ -221,7 +213,6 @@ public class PubSubInboundChannelAdapterTests {
 	@Test
 	public void testAddingSubscription_successWhenSubscriberAdded() {
 		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
-		adapter.setProjectId("project-id");
 		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
 		adapter.doStart();
 
