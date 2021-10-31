@@ -296,7 +296,7 @@ public class PubSubConfiguration {
 		private Integer parallelPullCount;
 
 		/**
-		 * The subscriber health check thresholds
+		 * The subscriber health check thresholds.
  		 */
 		private Threshold threshold = new Threshold();
 
