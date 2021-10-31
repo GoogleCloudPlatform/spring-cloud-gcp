@@ -20,6 +20,7 @@ package com.google.cloud.spring.autoconfigure.pubsub.health;
 import java.io.IOException;
 
 import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubProperties;
@@ -38,7 +39,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
  * @author Emmanouil Gkatziouras
@@ -48,8 +49,7 @@ import org.springframework.context.annotation.Import;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({HealthIndicator.class, MetricServiceClient.class})
 @ConditionalOnEnabledHealthIndicator("pubsub-subscriber")
-@ConditionalOnProperty({"spring.cloud.gcp.pubsub.subscriber.lagThreshold", "spring.cloud.gcp.pubsub.subscriber.backlogThreshold"})
-@Import(PubSubExecutorConfiguration.class)
+@ConditionalOnProperty({"spring.cloud.gcp.pubsub.health.lagThreshold", "spring.cloud.gcp.pubsub.health.backlogThreshold"})
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)
 @EnableConfigurationProperties(GcpPubSubProperties.class)
 public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
@@ -69,14 +69,22 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
 	}
 
 	@Bean
+	@ConditionalOnMissingBean(name = "healthCheckExecutorProvider")
+	@ConditionalOnProperty("spring.cloud.gcp.pubsub.health.executorThreads")
+	public ExecutorProvider healthCheckExecutorProvider(
+			@Qualifier("pubsubSubscriberThreadPool") ThreadPoolTaskScheduler scheduler) {
+		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
+	}
+
+	@Bean
 	@ConditionalOnMissingBean(name = "healthTrackerRegistry")
 	public HealthTrackerRegistry healthTrackerRegistry(
 		MetricServiceClient metricServiceClient,
-		@Qualifier("subscriberExecutorProvider") ExecutorProvider executorProvider) {
+		@Qualifier("healthCheckExecutorProvider") ExecutorProvider executorProvider) {
 		return new HealthTrackerRegistryImpl(metricServiceClient,
-			gcpPubSubProperties.getSubscriber().getThreshold().getLagThreshold(),
-			gcpPubSubProperties.getSubscriber().getThreshold().getBacklogThreshold(),
-			gcpPubSubProperties.getSubscriber().getThreshold().getLookUpInterval(), executorProvider);
+			gcpPubSubProperties.getHealth().getLagThreshold(),
+			gcpPubSubProperties.getHealth().getBacklogThreshold(),
+			gcpPubSubProperties.getHealth().getLookUpInterval(), executorProvider);
 	}
 
 	@Bean

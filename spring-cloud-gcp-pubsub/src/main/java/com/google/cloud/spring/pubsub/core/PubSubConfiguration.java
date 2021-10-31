@@ -53,12 +53,21 @@ public class PubSubConfiguration {
 	 */
 	private final Publisher publisher = new Publisher();
 
+	/**
+	 * Contains default health settings.
+	 */
+	private final Health health = new Health();
+
 	public Subscriber getSubscriber() {
 		return this.globalSubscriber;
 	}
 
 	public Publisher getPublisher() {
 		return this.publisher;
+	}
+
+	public Health getHealth() {
+		return health;
 	}
 
 	public ConcurrentMap<String, Subscriber> getSubscription() {
@@ -296,11 +305,6 @@ public class PubSubConfiguration {
 		private Integer parallelPullCount;
 
 		/**
-		 * The subscriber health check thresholds.
- 		 */
-		private Threshold threshold = new Threshold();
-
-		/**
 		 * Retry settings for subscriber factory.
 		 */
 		private final Retry retry = new Retry();
@@ -359,14 +363,6 @@ public class PubSubConfiguration {
 			this.parallelPullCount = parallelPullCount;
 		}
 
-		public Threshold getThreshold() {
-			return threshold;
-		}
-
-		public void setThreshold(Threshold threshold) {
-			this.threshold = threshold;
-		}
-
 		public Integer getExecutorThreads() {
 			return this.executorThreads;
 		}
@@ -387,39 +383,56 @@ public class PubSubConfiguration {
 			this.maxAcknowledgementThreads = maxAcknowledgementThreads;
 		}
 
-		public static class Threshold {
+	}
 
-			private Integer lagThreshold;
+	/**
+	 * Health Check settings.
+	 */
+	public static class Health {
 
-			private Integer backlogThreshold;
+		private Integer lagThreshold;
 
-			private Integer lookUpInterval = 1;
+		private Integer backlogThreshold;
 
-			public Integer getLagThreshold() {
-				return lagThreshold;
-			}
+		private Integer lookUpInterval = 1;
 
-			public void setLagThreshold(Integer lagThreshold) {
-				this.lagThreshold = lagThreshold;
-			}
+		/**
+		 * Number of threads used by every publisher.
+		 */
+		private int executorThreads = 4;
 
-			public Integer getBacklogThreshold() {
-				return backlogThreshold;
-			}
-
-			public void setBacklogThreshold(Integer backlogThreshold) {
-				this.backlogThreshold = backlogThreshold;
-			}
-
-			public Integer getLookUpInterval() {
-				return lookUpInterval;
-			}
-
-			public void setLookUpInterval(Integer lookUpInterval) {
-				this.lookUpInterval = lookUpInterval;
-			}
-
+		public Integer getLagThreshold() {
+			return lagThreshold;
 		}
+
+		public void setLagThreshold(Integer lagThreshold) {
+			this.lagThreshold = lagThreshold;
+		}
+
+		public Integer getBacklogThreshold() {
+			return backlogThreshold;
+		}
+
+		public void setBacklogThreshold(Integer backlogThreshold) {
+			this.backlogThreshold = backlogThreshold;
+		}
+
+		public Integer getLookUpInterval() {
+			return lookUpInterval;
+		}
+
+		public void setLookUpInterval(Integer lookUpInterval) {
+			this.lookUpInterval = lookUpInterval;
+		}
+
+		public int getExecutorThreads() {
+			return executorThreads;
+		}
+
+		public void setExecutorThreads(int executorThreads) {
+			this.executorThreads = executorThreads;
+		}
+
 	}
 
 	/**

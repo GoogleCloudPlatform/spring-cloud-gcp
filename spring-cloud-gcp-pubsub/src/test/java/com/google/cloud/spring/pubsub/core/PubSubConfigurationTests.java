@@ -25,6 +25,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PubSubConfigurationTests {
 
 	@Test
+	public void testDefaultHealthProperties() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Health health = pubSubConfiguration.getHealth();
+
+		assertThat(health.getLagThreshold()).isNull();
+		assertThat(health.getBacklogThreshold()).isNull();
+		assertThat(health.getLookUpInterval()).isEqualTo(1);
+		assertThat(health.getExecutorThreads()).isEqualTo(4);
+	}
+
+	@Test
 	public void testDefaultSubscriberProperties() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = pubSubConfiguration.getSubscriber();
@@ -34,9 +45,7 @@ public class PubSubConfigurationTests {
 		assertThat(subscriber.getExecutorThreads()).isNull();
 		assertThat(subscriber.getMaxAcknowledgementThreads()).isEqualTo(4);
 		assertThat(subscriber.getParallelPullCount()).isNull();
-		assertThat(subscriber.getThreshold().getLagThreshold()).isNull();
-		assertThat(subscriber.getThreshold().getBacklogThreshold()).isNull();
-		assertThat(subscriber.getThreshold().getLookUpInterval()).isEqualTo(1);
+
 		assertThat(subscriber.getMaxAckExtensionPeriod()).isNull();
 		assertThat(subscriber.getPullEndpoint()).isNull();
 		assertThat(flowControl.getLimitExceededBehavior())
@@ -63,11 +72,7 @@ public class PubSubConfigurationTests {
 		subscriber.setExecutorThreads(1);
 		subscriber.setMaxAcknowledgementThreads(3);
 		subscriber.setParallelPullCount(1);
-		PubSubConfiguration.Subscriber.Threshold threshold = new PubSubConfiguration.Subscriber.Threshold();
-		threshold.setLagThreshold(3);
-		threshold.setBacklogThreshold(4);
-		threshold.setLookUpInterval(6);
-		subscriber.setThreshold(threshold);
+
 		subscriber.setMaxAckExtensionPeriod(1L);
 		subscriber.setPullEndpoint("fake-endpoint");
 		subscriber.setRetryableCodes(new Code[] { Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL });
@@ -75,13 +80,27 @@ public class PubSubConfigurationTests {
 		assertThat(subscriber.getExecutorThreads()).isEqualTo(1);
 		assertThat(subscriber.getMaxAcknowledgementThreads()).isEqualTo(3);
 		assertThat(subscriber.getParallelPullCount()).isEqualTo(1);
-		assertThat(subscriber.getThreshold().getLagThreshold()).isEqualTo(3);
-		assertThat(subscriber.getThreshold().getBacklogThreshold()).isEqualTo(4);
-		assertThat(subscriber.getThreshold().getLookUpInterval()).isEqualTo(6);
+
 		assertThat(subscriber.getMaxAckExtensionPeriod()).isEqualTo(1L);
 		assertThat(subscriber.getPullEndpoint()).isEqualTo("fake-endpoint");
 		assertThat(subscriber.getRetryableCodes()).containsExactly(Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE,
 				Code.INTERNAL);
+	}
+
+	@Test
+	public void testHealthProperties() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Health health = pubSubConfiguration.getHealth();
+
+		health.setLagThreshold(3);
+		health.setBacklogThreshold(4);
+		health.setLookUpInterval(6);
+		health.setExecutorThreads(5);
+
+		assertThat(pubSubConfiguration.getHealth().getLagThreshold()).isEqualTo(3);
+		assertThat(pubSubConfiguration.getHealth().getBacklogThreshold()).isEqualTo(4);
+		assertThat(pubSubConfiguration.getHealth().getLookUpInterval()).isEqualTo(6);
+		assertThat(pubSubConfiguration.getHealth().getExecutorThreads()).isEqualTo(5);
 	}
 
 	@Test
