@@ -50,6 +50,7 @@ import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
@@ -206,6 +207,7 @@ public class GcpPubSubAutoConfiguration {
 			@Qualifier("subscriberFlowControlSettings") ObjectProvider<FlowControlSettings> flowControlSettings,
 			@Qualifier("subscriberApiClock") ObjectProvider<ApiClock> apiClock,
 			@Qualifier("subscriberRetrySettings") ObjectProvider<RetrySettings> retrySettings,
+			@Qualifier("healthTrackerRegistry") ObjectProvider<HealthTrackerRegistry> healthTrackerRegistry,
 			@Qualifier("subscriberTransportChannelProvider") TransportChannelProvider subscriberTransportChannelProvider) {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider,
 				this.gcpPubSubProperties);
@@ -237,6 +239,9 @@ public class GcpPubSubAutoConfiguration {
 		if (this.gcpPubSubProperties.getSubscriber().getRetryableCodes() != null) {
 			factory.setRetryableCodes(gcpPubSubProperties.getSubscriber().getRetryableCodes());
 		}
+
+		healthTrackerRegistry.ifAvailable(factory::setHealthTrackerRegistry);
+
 		return factory;
 	}
 
