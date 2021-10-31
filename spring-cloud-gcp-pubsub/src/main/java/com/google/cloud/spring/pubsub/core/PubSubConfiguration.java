@@ -295,11 +295,10 @@ public class PubSubConfiguration {
 		 */
 		private Integer parallelPullCount;
 
-		private Integer lagThreshold;
-
-		private Integer backlogThreshold;
-
-		private Integer lookUpInterval = 1;
+		/**
+		 * The subscriber health check thresholds
+ 		 */
+		private Threshold threshold = new Threshold();
 
 		/**
 		 * Retry settings for subscriber factory.
@@ -360,28 +359,12 @@ public class PubSubConfiguration {
 			this.parallelPullCount = parallelPullCount;
 		}
 
-		public Integer getLagThreshold() {
-			return lagThreshold;
+		public Threshold getThreshold() {
+			return threshold;
 		}
 
-		public void setLagThreshold(Integer lagThreshold) {
-			this.lagThreshold = lagThreshold;
-		}
-
-		public Integer getBacklogThreshold() {
-			return backlogThreshold;
-		}
-
-		public void setBacklogThreshold(Integer backlogThreshold) {
-			this.backlogThreshold = backlogThreshold;
-		}
-
-		public Integer getLookUpInterval() {
-			return lookUpInterval;
-		}
-
-		public void setLookUpInterval(Integer lookUpInterval) {
-			this.lookUpInterval = lookUpInterval;
+		public void setThreshold(Threshold threshold) {
+			this.threshold = threshold;
 		}
 
 		public Integer getExecutorThreads() {
@@ -396,13 +379,46 @@ public class PubSubConfiguration {
 			this.executorThreads = executorThreads;
 		}
 
-
 		public int getMaxAcknowledgementThreads() {
 			return this.maxAcknowledgementThreads;
 		}
 
 		public void setMaxAcknowledgementThreads(int maxAcknowledgementThreads) {
 			this.maxAcknowledgementThreads = maxAcknowledgementThreads;
+		}
+
+		public static class Threshold {
+
+			private Integer lagThreshold;
+
+			private Integer backlogThreshold;
+
+			private Integer lookUpInterval = 1;
+
+			public Integer getLagThreshold() {
+				return lagThreshold;
+			}
+
+			public void setLagThreshold(Integer lagThreshold) {
+				this.lagThreshold = lagThreshold;
+			}
+
+			public Integer getBacklogThreshold() {
+				return backlogThreshold;
+			}
+
+			public void setBacklogThreshold(Integer backlogThreshold) {
+				this.backlogThreshold = backlogThreshold;
+			}
+
+			public Integer getLookUpInterval() {
+				return lookUpInterval;
+			}
+
+			public void setLookUpInterval(Integer lookUpInterval) {
+				this.lookUpInterval = lookUpInterval;
+			}
+
 		}
 	}
 

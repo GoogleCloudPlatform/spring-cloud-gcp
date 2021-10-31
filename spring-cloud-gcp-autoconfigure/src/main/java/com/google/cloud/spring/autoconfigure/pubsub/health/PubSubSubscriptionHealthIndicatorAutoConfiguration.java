@@ -74,9 +74,9 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
 		MetricServiceClient metricServiceClient,
 		@Qualifier("subscriberExecutorProvider") ExecutorProvider executorProvider) {
 		return new HealthTrackerRegistryImpl(metricServiceClient,
-			gcpPubSubProperties.getSubscriber().getLagThreshold(),
-			gcpPubSubProperties.getSubscriber().getBacklogThreshold(),
-			gcpPubSubProperties.getSubscriber().getLookUpInterval(), executorProvider);
+			gcpPubSubProperties.getSubscriber().getThreshold().getLagThreshold(),
+			gcpPubSubProperties.getSubscriber().getThreshold().getBacklogThreshold(),
+			gcpPubSubProperties.getSubscriber().getThreshold().getLookUpInterval(), executorProvider);
 	}
 
 	@Bean
