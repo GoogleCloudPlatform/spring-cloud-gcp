@@ -96,10 +96,6 @@ public class PubSubMessageChannelBinder
 
 
 		if (healthTrackerRegistry != null) {
-
-			String projectId = pubSubTemplate.getPubSubSubscriberTemplate().getSubscriberFactory().getProjectId();
-
-			adapter.setProjectId(projectId);
 			adapter.setHealthTrackerRegistry(healthTrackerRegistry);
 		}
 
