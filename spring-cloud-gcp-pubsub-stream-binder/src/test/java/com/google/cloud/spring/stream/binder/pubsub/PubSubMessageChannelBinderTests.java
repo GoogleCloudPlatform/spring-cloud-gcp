@@ -25,12 +25,10 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
-import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubMessageSource;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
-import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.cloud.spring.stream.binder.pubsub.config.PubSubBinderConfiguration;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
@@ -183,11 +181,6 @@ public class PubSubMessageChannelBinderTests {
 
 	@Test
 	public void testCreateConsumerWithRegistry() {
-		SubscriberFactory subscriberFactory = mock(SubscriberFactory.class);
-		PubSubSubscriberTemplate subSubscriberTemplate = mock(PubSubSubscriberTemplate.class);
-		when(subSubscriberTemplate.getSubscriberFactory()).thenReturn(subscriberFactory);
-		when(pubSubTemplate.getPubSubSubscriberTemplate()).thenReturn(subSubscriberTemplate);
-
 		baseContext
 				.run(ctx -> {
 					PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
