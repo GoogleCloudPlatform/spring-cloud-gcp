@@ -195,9 +195,15 @@ public class HealthTrackerRegistryImplTests {
 		String projectId = "project-id";
 		String subscriptionId = "non-registered-subscription-id";
 
+		ConcurrentHashMap<ProjectSubscriptionName, HealthTracker> healthTrackers = mock(ConcurrentHashMap.class);
+
+		healthTrackerRegistry = new HealthTrackerRegistryImpl(DEFAULT_PROJECT_ID, metricServiceClient, DEFAULT_LAG_THRESHOLD, DEFAULT_BACKLOG_THRESHOLD, MINUTE_INTERNAL, executorProvider, healthTrackers);
+
 		ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(projectId, subscriptionId);
 
 		healthTrackerRegistry.processedMessage(subscriptionName);
+
+		verify(healthTrackers).containsKey(subscriptionName);
 	}
 
 }
