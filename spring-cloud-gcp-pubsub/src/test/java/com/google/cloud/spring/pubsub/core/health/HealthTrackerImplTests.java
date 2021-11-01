@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.pubsub.core.health;
 
+import java.util.concurrent.locks.LockSupport;
+
 import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.cloud.monitoring.v3.MetricServiceClient.ListTimeSeriesPage;
 import com.google.cloud.monitoring.v3.MetricServiceClient.ListTimeSeriesPagedResponse;
@@ -74,7 +76,7 @@ public class HealthTrackerImplTests {
 
 	@Test
 	public void noMessagesOverThresholdNoProcessing() throws InterruptedException {
-		Thread.sleep(1001);
+		LockSupport.parkNanos(1001 * 1000000);
 		ListTimeSeriesPagedResponse listTimeSeriesPagedResponse = mock(ListTimeSeriesPagedResponse.class);
 
 		TimeSeries timeSeries = TimeSeries.newBuilder().addPoints(Point.newBuilder().setValue(
@@ -94,7 +96,7 @@ public class HealthTrackerImplTests {
 
 	@Test
 	public void noMessagesOverThresholdNoProcessingNoBacklogMessages() throws InterruptedException {
-		Thread.sleep(1001);
+		LockSupport.parkNanos(1001 * 1000000);
 		ListTimeSeriesPagedResponse listTimeSeriesPagedResponse = mock(ListTimeSeriesPagedResponse.class);
 
 		ListTimeSeriesResponse timeSeriesResponse = ListTimeSeriesResponse.newBuilder().build();
@@ -110,7 +112,7 @@ public class HealthTrackerImplTests {
 
 	@Test
 	public void messagesOverThresholdNoProcessing() throws InterruptedException {
-		Thread.sleep(1001);
+		LockSupport.parkNanos(1001 * 1000000);
 		ListTimeSeriesPagedResponse listTimeSeriesPagedResponse = mock(ListTimeSeriesPagedResponse.class);
 
 		TimeSeries timeSeries = TimeSeries.newBuilder().addPoints(Point.newBuilder().setValue(
