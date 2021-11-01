@@ -41,6 +41,8 @@ import org.springframework.util.Assert;
  * SpannerHealthIndicator}.
  *
  * @author ikeyat
+ *
+ * @since 2.0.6
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ SpannerTemplate.class, HealthIndicator.class })

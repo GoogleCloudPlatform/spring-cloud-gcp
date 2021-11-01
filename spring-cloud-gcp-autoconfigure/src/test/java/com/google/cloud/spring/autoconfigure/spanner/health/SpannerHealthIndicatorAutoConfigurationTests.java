@@ -35,6 +35,8 @@ import static org.mockito.Mockito.mock;
  * Tests for Spanner health check auto-config.
  *
  * @author ikeyat
+ *
+ * @since 2.0.6
  */
 public class SpannerHealthIndicatorAutoConfigurationTests {
 

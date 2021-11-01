@@ -32,6 +32,8 @@ import org.springframework.boot.actuate.health.Health.Builder;
  * <p>If there is no error, this health indicator will signal "up".
  *
  * @author ikeyat
+ *
+ * @since 2.0.6
  */
 public class SpannerHealthIndicator extends AbstractHealthIndicator {
 
