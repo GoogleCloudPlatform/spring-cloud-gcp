@@ -18,6 +18,7 @@ package com.google.cloud.spring.autoconfigure.spanner.health;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
+import com.google.cloud.spanner.Statement;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.spanner.GcpSpannerAutoConfiguration;
 import org.junit.Test;
@@ -55,7 +56,7 @@ public class SpannerHealthIndicatorAutoConfigurationTests {
 		this.contextRunner.run(context -> {
 			SpannerHealthIndicator indicator = context.getBean(SpannerHealthIndicator.class);
 			assertThat(indicator).isNotNull();
-			assertThat(indicator).hasFieldOrPropertyWithValue("validationQuery", DEFAULT_QUERY);
+			assertThat(indicator).hasFieldOrPropertyWithValue("validationStatement", Statement.of(DEFAULT_QUERY));
 		});
 	}
 
@@ -66,7 +67,7 @@ public class SpannerHealthIndicatorAutoConfigurationTests {
 				.run(context -> {
 					SpannerHealthIndicator indicator = context.getBean(SpannerHealthIndicator.class);
 					assertThat(indicator).isNotNull();
-					assertThat(indicator).hasFieldOrPropertyWithValue("validationQuery", CUSTOM_QUERY);
+					assertThat(indicator).hasFieldOrPropertyWithValue("validationStatement", Statement.of(CUSTOM_QUERY));
 				});
 	}
 

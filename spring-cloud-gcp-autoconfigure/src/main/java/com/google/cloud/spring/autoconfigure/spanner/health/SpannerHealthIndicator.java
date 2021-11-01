@@ -37,7 +37,7 @@ import org.springframework.boot.actuate.health.Health.Builder;
  */
 public class SpannerHealthIndicator extends AbstractHealthIndicator {
 
-	private String validationQuery;
+	private Statement validationStatement;
 
 	private SpannerTemplate spannerTemplate;
 
@@ -50,12 +50,12 @@ public class SpannerHealthIndicator extends AbstractHealthIndicator {
 	public SpannerHealthIndicator(final SpannerTemplate spannerTemplate, String validationQuery) {
 		super("Spanner health check failed");
 		this.spannerTemplate = spannerTemplate;
-		this.validationQuery = validationQuery;
+		this.validationStatement = Statement.of(validationQuery);
 	}
 
 	@Override
 	protected void doHealthCheck(Builder builder) throws Exception {
-		ResultSet resultSet = spannerTemplate.executeQuery(Statement.of(validationQuery), null);
+		ResultSet resultSet = spannerTemplate.executeQuery(validationStatement, null);
 		// Touch the record
 		resultSet.next();
 		builder.up();
