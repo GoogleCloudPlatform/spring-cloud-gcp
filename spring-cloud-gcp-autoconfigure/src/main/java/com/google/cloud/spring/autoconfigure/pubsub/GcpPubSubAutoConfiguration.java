@@ -140,7 +140,8 @@ public class GcpPubSubAutoConfiguration {
 		scheduler.setPoolSize(this.gcpPubSubProperties.getPublisher().getExecutorThreads());
 		scheduler.setThreadNamePrefix("gcp-pubsub-publisher");
 		scheduler.setDaemon(true);
-		return scheduler;	}
+		return scheduler;
+	}
 
 	@Bean
 	@ConditionalOnMissingBean(name = "publisherExecutorProvider")
