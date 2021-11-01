@@ -77,7 +77,6 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
 
 	@Bean
 	@ConditionalOnMissingBean(name = "pubSubHealthThreadPool")
-	@ConditionalOnProperty("spring.cloud.gcp.pubsub.health.executorThreads")
 	public ThreadPoolTaskScheduler pubSubHealthThreadPool() {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
 		scheduler.setPoolSize(gcpPubSubProperties.getHealth().getExecutorThreads());
@@ -88,7 +87,6 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
 
 	@Bean
 	@ConditionalOnMissingBean(name = "healthCheckExecutorProvider")
-	@ConditionalOnProperty("spring.cloud.gcp.pubsub.health.executorThreads")
 	public ExecutorProvider healthCheckExecutorProvider(
 			@Qualifier("pubSubHealthThreadPool") ThreadPoolTaskScheduler scheduler) {
 		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
