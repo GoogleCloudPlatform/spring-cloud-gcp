@@ -195,7 +195,7 @@ public class PubSubMessageChannelBinderTests {
 					assertThat(messageProducer).isInstanceOf(PubSubInboundChannelAdapter.class);
 					PubSubInboundChannelAdapter inboundChannelAdapter = (PubSubInboundChannelAdapter) messageProducer;
 					assertThat(inboundChannelAdapter.getAckMode()).isSameAs(AckMode.AUTO);
-					assertThat(inboundChannelAdapter.healthCheckEnabled()).isEqualTo(true);
+					assertThat(inboundChannelAdapter.healthCheckEnabled()).isTrue();
 				});
 	}
 

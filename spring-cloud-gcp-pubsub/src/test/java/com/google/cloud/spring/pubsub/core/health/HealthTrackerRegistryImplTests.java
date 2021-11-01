@@ -103,7 +103,7 @@ public class HealthTrackerRegistryImplTests {
 		HealthTracker healthTracker = healthTrackerRegistry.registerTracker(subscription);
 		Collection<HealthTracker> healthTrackers = healthTrackerRegistry.healthTrackers();
 
-		assertThat(healthTrackers.size()).isEqualTo(1);
+		assertThat(healthTrackers).hasSize(1);
 		assertThat(healthTrackers.iterator().next()).isEqualTo(healthTracker);
 	}
 
@@ -114,11 +114,11 @@ public class HealthTrackerRegistryImplTests {
 
 		ProjectSubscriptionName subscription = ProjectSubscriptionName.of(projectId, subscriptionId);
 
-		assertThat(healthTrackerRegistry.isTracked(subscription)).isEqualTo(false);
+		assertThat(healthTrackerRegistry.isTracked(subscription)).isFalse();
 
 		HealthTracker healthTracker = healthTrackerRegistry.registerTracker(subscription);
 
-		assertThat(healthTrackerRegistry.isTracked(subscription)).isEqualTo(true);
+		assertThat(healthTrackerRegistry.isTracked(subscription)).isTrue();
 	}
 
 	@Test
@@ -151,13 +151,13 @@ public class HealthTrackerRegistryImplTests {
 
 		verify(subscriber, times(1)).addListener(captor.capture(), any());
 
-		assertThat(healthTrackers.containsKey(subscriptionName)).isEqualTo(true);
+		assertThat(healthTrackers.containsKey(subscriptionName)).isTrue();
 		assertThat(healthTrackers.get(subscriptionName)).isEqualTo(healthTracker);
 
 		ApiService.Listener listener = captor.getValue();
 		listener.terminated(State.FAILED);
 
-		assertThat(healthTrackers.containsKey(subscriptionName)).isEqualTo(false);
+		assertThat(healthTrackers.containsKey(subscriptionName)).isFalse();
 	}
 
 
@@ -187,7 +187,7 @@ public class HealthTrackerRegistryImplTests {
 
 		healthTrackerRegistry.wrap(subscriptionName, receiver);
 
-		assertThat(healthTrackers.containsKey(subscriptionName)).isEqualTo(true);
+		assertThat(healthTrackers.containsKey(subscriptionName)).isTrue();
 	}
 
 	@Test
