@@ -45,7 +45,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 /**
  * @author Emmanouil Gkatziouras
  *
- * @since 2.0.5
+ * @since 2.0.6
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({HealthIndicator.class, MetricServiceClient.class})
