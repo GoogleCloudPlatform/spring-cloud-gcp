@@ -195,6 +195,8 @@ public class PubSubInboundChannelAdapterTests {
 	public void testSetHealthRegistry_Success() {
 		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
 		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
+		adapter.doStart();
+		verify(healthTrackerRegistry).registerTracker("testSubscription");
 	}
 
 	@Test
