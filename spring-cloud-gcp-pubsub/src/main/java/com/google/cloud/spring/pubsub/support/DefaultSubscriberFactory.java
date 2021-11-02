@@ -291,7 +291,13 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	@Override
 	public SubscriberStub createSubscriberStub() {
-		return createSubscriberStub(null);
+		try {
+			SubscriberStubSettings subscriberStubSettings = buildGlobalSubscriberStubSettings();
+			return GrpcSubscriberStub.create(subscriberStubSettings);
+		}
+		catch (IOException ex) {
+			throw new RuntimeException("Error creating the SubscriberStub", ex);
+		}
 	}
 
 	@Override
@@ -305,12 +311,59 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 	}
 
-	SubscriberStubSettings buildSubscriberStubSettings(String subscriptionName) throws IOException {
-		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
+	SubscriberStubSettings buildGlobalSubscriberStubSettings() throws IOException {
+		SubscriberStubSettings.Builder subscriberStubSettings = buildStubSettingsWithoutConfigurations();
 
-		if (this.credentialsProvider != null) {
-			subscriberStubSettings.setCredentialsProvider(this.credentialsProvider);
+		if (this.pullEndpoint != null) {
+			subscriberStubSettings.setEndpoint(this.pullEndpoint);
 		}
+		else {
+			setGlobalPullEndpoint(subscriberStubSettings);
+		}
+
+		ExecutorProvider executor = this.executorProvider != null ? this.executorProvider
+				: createGlobalExecutorProvider();
+		if (executor != null) {
+			subscriberStubSettings.setBackgroundExecutorProvider(executor);
+		}
+
+		if (this.subscriberStubRetrySettings != null) {
+			subscriberStubSettings.pullSettings().setRetrySettings(this.subscriberStubRetrySettings);
+		}
+		else {
+			setGlobalRetrySettings(subscriberStubSettings);
+		}
+
+		if (this.retryableCodes != null) {
+			subscriberStubSettings.pullSettings().setRetryableCodes(
+					this.retryableCodes);
+		}
+
+		return subscriberStubSettings.build();
+	}
+
+	private void setGlobalPullEndpoint(SubscriberStubSettings.Builder subscriberStubSettings) {
+		if (this.pubSubConfiguration == null) {
+			return;
+		}
+		String endpoint = this.pubSubConfiguration.getSubscriber().getPullEndpoint();
+		if (endpoint != null) {
+			subscriberStubSettings.setEndpoint(endpoint);
+		}
+	}
+
+	private void setGlobalRetrySettings(SubscriberStubSettings.Builder subscriberStubSettings) {
+		if (this.pubSubConfiguration == null) {
+			return;
+		}
+		PubSubConfiguration.Retry retry = this.pubSubConfiguration.getSubscriber().getRetry();
+		if (retry != null) {
+			subscriberStubSettings.pullSettings().setRetrySettings(buildRetrySettings(retry));
+		}
+	}
+
+	SubscriberStubSettings buildSubscriberStubSettings(String subscriptionName) throws IOException {
+		SubscriberStubSettings.Builder subscriberStubSettings = buildStubSettingsWithoutConfigurations();
 
 		String endpoint = getPullEndpoint(subscriptionName);
 		if (endpoint != null) {
@@ -319,7 +372,28 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 		ExecutorProvider executor = getExecutorProvider(subscriptionName);
 		if (executor != null) {
-			subscriberStubSettings.setExecutorProvider(executor);
+			subscriberStubSettings.setBackgroundExecutorProvider(executor);
+		}
+
+		RetrySettings retrySettings = getRetrySettings(subscriptionName);
+		if (retrySettings != null) {
+			subscriberStubSettings.pullSettings().setRetrySettings(retrySettings);
+		}
+
+		if (this.retryableCodes != null) {
+			subscriberStubSettings.pullSettings().setRetryableCodes(
+					this.retryableCodes);
+		}
+
+		return subscriberStubSettings.build();
+	}
+
+	SubscriberStubSettings.Builder buildStubSettingsWithoutConfigurations() {
+
+		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
+
+		if (this.credentialsProvider != null) {
+			subscriberStubSettings.setCredentialsProvider(this.credentialsProvider);
 		}
 
 		if (this.headerProvider != null) {
@@ -334,17 +408,13 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.setClock(this.apiClock);
 		}
 
-		RetrySettings retrySettings = getRetrySettings(subscriptionName);
-		if (retrySettings != null) {
-			subscriberStubSettings.pullSettings().setRetrySettings(retrySettings);
-		}
-
 		if (this.retryableCodes != null) {
 			subscriberStubSettings.pullSettings().setRetryableCodes(
 					this.retryableCodes);
 		}
 
-		return subscriberStubSettings.build();
+		return subscriberStubSettings;
+
 	}
 
 	/**
@@ -374,38 +444,38 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (!scheduler.equals(this.globalScheduler)) {
 			return createExecutorProvider(subscriptionName, scheduler);
 		}
+		return createGlobalExecutorProvider();
+	}
+
+	ExecutorProvider createGlobalExecutorProvider() {
+		if (this.globalScheduler == null) {
+			return null;
+		}
 		if (this.defaultExecutorProvider != null) {
 			return this.defaultExecutorProvider;
 		}
-		this.defaultExecutorProvider = createExecutorProvider(subscriptionName, scheduler);
+		this.globalScheduler.initialize();
+		this.defaultExecutorProvider = FixedExecutorProvider.create(this.globalScheduler.getScheduledExecutor());
 		return this.defaultExecutorProvider;
 	}
 
 	ExecutorProvider createExecutorProvider(String subscriptionName, ThreadPoolTaskScheduler scheduler) {
-		if (subscriptionName != null && this.executorProviderMap.containsKey(subscriptionName)) {
+		if (this.executorProviderMap.containsKey(subscriptionName)) {
 			return this.executorProviderMap.get(subscriptionName);
 		}
-		else {
-			scheduler.initialize();
-			ExecutorProvider executor = FixedExecutorProvider.create(scheduler.getScheduledExecutor());
-			if (subscriptionName == null) {
-				return executor;
-			}
-			return this.executorProviderMap.computeIfAbsent(subscriptionName, k -> executor);
-		}
+		scheduler.initialize();
+		ExecutorProvider executor = FixedExecutorProvider.create(scheduler.getScheduledExecutor());
+		return this.executorProviderMap.computeIfAbsent(subscriptionName, k -> executor);
 	}
 
 	/**
-	 * Returns {@link ThreadPoolTaskScheduler} given a subscription name. If subscription name
-	 * is null or subscription-specific scheduler for the subscription name is not found then
-	 * return a global threadPoolTaskScheduler, otherwise, return the subscription-specific scheduler.
+	 * Returns {@link ThreadPoolTaskScheduler} given a subscription name. If
+	 * subscription-specific scheduler for the subscription name is not found then return a
+	 * global threadPoolTaskScheduler, otherwise, return the subscription-specific scheduler.
 	 * @param subscriptionName subscription name
 	 * @return thread pool scheduler
 	 */
 	public ThreadPoolTaskScheduler fetchThreadPoolTaskScheduler(String subscriptionName) {
-		if (subscriptionName == null) {
-			return this.globalScheduler;
-		}
 		String fullyQualifiedName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId)
 				.toString();
 		if (this.threadPoolTaskSchedulerMap.containsKey(fullyQualifiedName)) {
@@ -416,6 +486,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	Map<String, ExecutorProvider> getExecutorProviderMap() {
 		return this.executorProviderMap;
+	}
+
+	ExecutorProvider getDefaultExecutorProvider() {
+		return this.defaultExecutorProvider;
 	}
 
 	/**
@@ -432,14 +506,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 
 		if (this.pubSubConfiguration != null) {
-			PubSubConfiguration.Retry retryProperties;
-			if (subscriptionName == null) {
-				retryProperties = this.pubSubConfiguration.getSubscriber().getRetry();
-			}
-			else {
-				retryProperties = this.pubSubConfiguration
-						.computeSubscriberRetrySettings(subscriptionName, this.projectId);
-			}
+			PubSubConfiguration.Retry retryProperties = this.pubSubConfiguration
+					.computeSubscriberRetrySettings(subscriptionName, this.projectId);
 			return buildRetrySettings(retryProperties);
 		}
 		return null;
@@ -523,9 +591,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			return this.pullEndpoint;
 		}
 		if (this.pubSubConfiguration != null) {
-			if (subscriptionName == null) {
-				return this.pubSubConfiguration.getSubscriber().getPullEndpoint();
-			}
 			return this.pubSubConfiguration.computePullEndpoint(subscriptionName, projectId);
 		}
 		return null;

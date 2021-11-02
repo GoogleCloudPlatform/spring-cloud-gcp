@@ -66,7 +66,7 @@ public interface SubscriberFactory {
 
 	/**
 	 * Create a {@link SubscriberStub} that is needed to execute {@link PullRequest}s. This
-	 * method will not set subscription-specific settings.
+	 * method will only set global settings.
 	 * @return the {@link SubscriberStub} used for executing {@link PullRequest}s.
 	 * @deprecated Use the new {@code createSubscriberStub(subscriptionName)} instead.
 	 */
