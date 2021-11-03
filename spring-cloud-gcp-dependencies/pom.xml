@@ -30,7 +30,7 @@
 
 	<properties>
 		<gcp-libraries-bom.version>24.0.0</gcp-libraries-bom.version>
-		<cloud-sql-socket-factory.version>1.3.4</cloud-sql-socket-factory.version>
+		<cloud-sql-socket-factory.version>1.4.0</cloud-sql-socket-factory.version>
 		<guava.version>31.0.1-jre</guava.version>
 	</properties>
 
