@@ -38,6 +38,7 @@ import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
+import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.pubsub.v1.PullRequest;
 import org.threeten.bp.Duration;
 
@@ -99,7 +100,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 */
 	@Deprecated
 	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
-		this(projectIdProvider, null);
+		this(projectIdProvider, new PubSubConfiguration());
 	}
 
 	/**
@@ -113,6 +114,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		this.projectId = projectIdProvider.getProjectId();
 		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
 
+		Assert.notNull(pubSubConfiguration, "The pub/sub configuration can't be null.");
 		this.pubSubConfiguration = pubSubConfiguration;
 	}
 
@@ -292,22 +294,20 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	@Override
 	public SubscriberStub createSubscriberStub() {
 		try {
-			SubscriberStubSettings subscriberStubSettings = buildGlobalSubscriberStubSettings();
-			return GrpcSubscriberStub.create(subscriberStubSettings);
+			return GrpcSubscriberStub.create(buildGlobalSubscriberStubSettings());
 		}
 		catch (IOException ex) {
-			throw new RuntimeException("Error creating the SubscriberStub", ex);
+			throw new PubSubException("Error creating the SubscriberStub", ex);
 		}
 	}
 
 	@Override
 	public SubscriberStub createSubscriberStub(String subscriptionName) {
 		try {
-			SubscriberStubSettings subscriberStubSettings = buildSubscriberStubSettings(subscriptionName);
-			return GrpcSubscriberStub.create(subscriberStubSettings);
+			return GrpcSubscriberStub.create(buildSubscriberStubSettings(subscriptionName));
 		}
 		catch (IOException ex) {
-			throw new RuntimeException("Error creating the SubscriberStub", ex);
+			throw new PubSubException("Error creating the SubscriberStub", ex);
 		}
 	}
 
@@ -318,7 +318,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.setEndpoint(this.pullEndpoint);
 		}
 		else {
-			setGlobalPullEndpoint(subscriberStubSettings);
+			applyGlobalPullEndpoint(subscriberStubSettings);
 		}
 
 		ExecutorProvider executor = this.executorProvider != null ? this.executorProvider
@@ -331,7 +331,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.pullSettings().setRetrySettings(this.subscriberStubRetrySettings);
 		}
 		else {
-			setGlobalRetrySettings(subscriberStubSettings);
+			applyGlobalRetrySettings(subscriberStubSettings);
 		}
 
 		if (this.retryableCodes != null) {
@@ -342,23 +342,18 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		return subscriberStubSettings.build();
 	}
 
-	private void setGlobalPullEndpoint(SubscriberStubSettings.Builder subscriberStubSettings) {
-		if (this.pubSubConfiguration == null) {
-			return;
-		}
+	private void applyGlobalPullEndpoint(SubscriberStubSettings.Builder subscriberStubSettings) {
 		String endpoint = this.pubSubConfiguration.getSubscriber().getPullEndpoint();
 		if (endpoint != null) {
 			subscriberStubSettings.setEndpoint(endpoint);
 		}
 	}
 
-	private void setGlobalRetrySettings(SubscriberStubSettings.Builder subscriberStubSettings) {
-		if (this.pubSubConfiguration == null) {
-			return;
-		}
+	private void applyGlobalRetrySettings(SubscriberStubSettings.Builder subscriberStubSettings) {
 		PubSubConfiguration.Retry retry = this.pubSubConfiguration.getSubscriber().getRetry();
-		if (retry != null) {
-			subscriberStubSettings.pullSettings().setRetrySettings(buildRetrySettings(retry));
+		RetrySettings retrySettings = buildRetrySettings(retry);
+		if (retrySettings != null) {
+			subscriberStubSettings.pullSettings().setRetrySettings(retrySettings);
 		}
 	}
 
@@ -414,7 +409,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 
 		return subscriberStubSettings;
-
 	}
 
 	/**
@@ -505,12 +499,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			return this.subscriberStubRetrySettings;
 		}
 
-		if (this.pubSubConfiguration != null) {
-			PubSubConfiguration.Retry retryProperties = this.pubSubConfiguration
-					.computeSubscriberRetrySettings(subscriptionName, this.projectId);
-			return buildRetrySettings(retryProperties);
-		}
-		return null;
+		PubSubConfiguration.Retry retryProperties = this.pubSubConfiguration
+				.computeSubscriberRetrySettings(subscriptionName, this.projectId);
+		return buildRetrySettings(retryProperties);
 	}
 
 	public RetrySettings buildRetrySettings(PubSubConfiguration.Retry retryProperties) {
@@ -544,17 +535,14 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (this.flowControlSettings != null) {
 			return this.flowControlSettings;
 		}
-		if (this.pubSubConfiguration != null) {
-			PubSubConfiguration.FlowControl flowControl = this.pubSubConfiguration.computeSubscriberFlowControlSettings(subscriptionName,
-					this.projectId);
-			FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
-			boolean shouldBuild = ifSet(flowControl.getLimitExceededBehavior(), builder::setLimitExceededBehavior);
-			shouldBuild |= ifSet(flowControl.getMaxOutstandingElementCount(), builder::setMaxOutstandingElementCount);
-			shouldBuild |= ifSet(flowControl.getMaxOutstandingRequestBytes(), builder::setMaxOutstandingRequestBytes);
+		PubSubConfiguration.FlowControl flowControl = this.pubSubConfiguration.computeSubscriberFlowControlSettings(subscriptionName,
+				this.projectId);
+		FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
+		boolean shouldBuild = ifSet(flowControl.getLimitExceededBehavior(), builder::setLimitExceededBehavior);
+		shouldBuild |= ifSet(flowControl.getMaxOutstandingElementCount(), builder::setMaxOutstandingElementCount);
+		shouldBuild |= ifSet(flowControl.getMaxOutstandingRequestBytes(), builder::setMaxOutstandingRequestBytes);
 
-			return shouldBuild ? builder.build() : null;
-		}
-		return null;
+		return shouldBuild ? builder.build() : null;
 	}
 
 	private <T> boolean ifSet(T property, Consumer<T> consumer) {
@@ -569,31 +557,22 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (this.maxAckExtensionPeriod != null) {
 			return this.maxAckExtensionPeriod;
 		}
-		if (this.pubSubConfiguration != null) {
-			return Duration
-					.ofSeconds(this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId));
-		}
-		return null;
+		return Duration
+				.ofSeconds(this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId));
 	}
 
 	Integer getPullCount(String subscriptionName) {
 		if (this.parallelPullCount != null) {
 			return this.parallelPullCount;
 		}
-		if (this.pubSubConfiguration != null) {
-			return this.pubSubConfiguration.computeParallelPullCount(subscriptionName, projectId);
-		}
-		return null;
+		return this.pubSubConfiguration.computeParallelPullCount(subscriptionName, projectId);
 	}
 
 	String getPullEndpoint(String subscriptionName) {
 		if (this.pullEndpoint != null) {
 			return this.pullEndpoint;
 		}
-		if (this.pubSubConfiguration != null) {
-			return this.pubSubConfiguration.computePullEndpoint(subscriptionName, projectId);
-		}
-		return null;
+		return this.pubSubConfiguration.computePullEndpoint(subscriptionName, projectId);
 	}
 
 	public void setThreadPoolTaskSchedulerMap(
