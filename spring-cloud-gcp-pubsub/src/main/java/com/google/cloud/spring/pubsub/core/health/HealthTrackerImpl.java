@@ -51,13 +51,13 @@ public class HealthTrackerImpl implements HealthTracker {
 		MetricServiceClient metricServiceClient,
 		Integer lagThreshold,
 		Integer backlogThreshold,
-		Integer lookUpInternal) {
+		Integer lookUpInterval) {
 		this.projectSubscriptionName = projectSubscriptionName;
 		this.metricServiceClient = metricServiceClient;
 		this.undeliveredFilter = undeliveredFilter(projectSubscriptionName.getSubscription());
 		this.lagThreshold = lagThreshold;
 		this.backlogThreshold = backlogThreshold;
-		this.lookUpInternal = lookUpInternal;
+		this.lookUpInternal = lookUpInterval;
 	}
 
 	@Override
