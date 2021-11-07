@@ -56,7 +56,7 @@ public interface HealthTracker {
 
 	/**
 	 * Creates a GCP Monitoring filter to query the message backlog of a Pub/Sub subscription.
-	 * @param subscriptionId
+	 * @param subscriptionId the subscription id to add to the filter.
 	 * @return Monitoring Pub/Sub Subscription filter for undelivered messages.
 	 */
 	default String undeliveredFilter(String subscriptionId) {
