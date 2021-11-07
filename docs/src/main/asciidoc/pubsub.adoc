@@ -185,7 +185,7 @@ The `pubsub-subscriber` indicator will then roll up to the overall application s
 ----
 
 The health indicator validates a subscriber's health by checking the subscription's message backlog and the last processed message.
-A subscription's backlog is retrieving using Google Cloud's Monitoring Metrics. The metric used is the `num_undelivered_messages` for a subscription.
+A subscription's backlog is retrieved using Google Cloud's Monitoring Metrics. The metric used is the `num_undelivered_messages` for a subscription.
 
 If a message has been recently processed in a reasonable time threshold, then the subscriber is healthy.
 If the backlog of messages for a subscription is big but the subscriber consumes messages then subscriber is still healthy.
