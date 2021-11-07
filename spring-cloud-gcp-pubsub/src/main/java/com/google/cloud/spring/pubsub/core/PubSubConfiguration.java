@@ -391,19 +391,20 @@ public class PubSubConfiguration {
 	public static class Health {
 
 		/**
-		 * Threshold over message processing lag.
+		 * Threshold in seconds over message processing lag.
 		 * If messages have recently processed with the lagThreshold from now, the subscriber is healthy.
 		 */
 		private Integer lagThreshold;
 
 		/**
-		 * Subscription message backlog threshold.
+		 * The threshold number of messages for a subscription backlog .
 		 * Backlog size over this threshold in combination with non recently processed messages, is an indicator of an unhealthy subscription.
+		 * This maps to a subscribption's num_undelivered_messages metric on GCP Monitoring.
 		 */
 		private Integer backlogThreshold;
 
 		/**
-		 * The optional interval for subscription backlog lookup.
+		 * The optional interval in seconds for subscription backlog lookup.
 		 */
 		private Integer lookUpInterval = 1;
 
