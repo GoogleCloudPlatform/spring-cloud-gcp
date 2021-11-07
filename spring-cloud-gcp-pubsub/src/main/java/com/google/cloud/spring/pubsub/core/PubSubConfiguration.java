@@ -397,7 +397,7 @@ public class PubSubConfiguration {
 		private Integer lagThreshold;
 
 		/**
-		 * The threshold number of messages for a subscription backlog .
+		 * The threshold number of messages for a subscription backlog.
 		 * Backlog size over this threshold in combination with non recently processed messages, is an indicator of an unhealthy subscription.
 		 * This maps to a subscribption's num_undelivered_messages metric on GCP Monitoring.
 		 */
@@ -409,7 +409,7 @@ public class PubSubConfiguration {
 		private Integer lookUpInterval = 1;
 
 		/**
-		 * Number of threads used by every publisher.
+		 * Number of threads used for Health Check Executors.
 		 */
 		private int executorThreads = 4;
 
