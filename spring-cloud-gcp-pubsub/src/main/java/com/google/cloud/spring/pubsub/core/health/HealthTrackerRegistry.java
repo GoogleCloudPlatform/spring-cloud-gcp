@@ -23,17 +23,42 @@ import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 
 /**
+ * A registry for the {@link HealthTracker} health trackers created per {@link ProjectSubscriptionName}.
+ *
  * @author Emmanouil Gkatziouras
  *
  * @since 2.0.6
  */
 public interface HealthTrackerRegistry {
+
+	/**
+	 * Create a tracker for given subscription name  and add tracker to registry.
+	 * @param subscriptionName the subscription name to create a {@link ProjectSubscriptionName} using the default project-Id.
+	 * @return the {@link HealthTracker} that has been created and registered.
+	 */
 	HealthTracker registerTracker(String subscriptionName);
 
+	/**
+	 * Create a tracker for given {@link ProjectSubscriptionName} and add tracker to registry.
+	 * @param projectSubscriptionName the full subscription name
+	 * @return the {@link HealthTracker} that has been created  and registered.
+	 */
 	HealthTracker registerTracker(ProjectSubscriptionName projectSubscriptionName);
 
+	/**
+	 * Check if a {@link ProjectSubscriptionName} has a {@link HealthTracker} registered.
+	 * @param projectSubscriptionName the full subscription name.
+	 * @return true if {@link HealthTracker} is registered.
+	 */
 	boolean isTracked(ProjectSubscriptionName projectSubscriptionName);
 
+	/**
+	 * Wrap a message receiver for a {@link ProjectSubscriptionName}.
+	 * A {@link HealthTracker} will be created and registered. On a new message received the registered {@link HealthTracker} will record its processing.
+	 * @param subscriptionName the full {@link ProjectSubscriptionName} name to monitor.
+	 * @param messageReceiver the {@link MessageReceiver} to wrap.
+	 * @return messageReceiver the wrapped {@link MessageReceiver}.
+	 */
 	default MessageReceiver wrap(ProjectSubscriptionName subscriptionName, MessageReceiver messageReceiver) {
 		HealthTracker healthTracker = registerTracker(subscriptionName);
 
@@ -43,10 +68,23 @@ public interface HealthTrackerRegistry {
 		};
 	}
 
+	/**
+	 * Propagate that a message has been processed to the corresponding {@link HealthTracker} if registered.
+	 * @param projectSubscriptionName the full {@link ProjectSubscriptionName} name to monitor.
+	 */
 	void processedMessage(ProjectSubscriptionName projectSubscriptionName);
 
+	/**
+	 * Attaches a listener to a Pub/Sub subscriber provided a {@link HealthTracker} is registered for that subscription.
+	 * On subscriber termination, the corresponding {@link HealthTracker} shall be removed from the registry.
+	 * @param subscriber the subscriber to attach a listener.
+	 */
 	void addListener(Subscriber subscriber);
 
+	/**
+	 * Retrieve all the health trackers registered.
+	 * @return
+	 */
 	Collection<HealthTracker> healthTrackers();
 
 }
