@@ -1904,6 +1904,97 @@ So, take care not to configure a subscription that has a business impact, or ins
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="cloud-pubsub-subscription-health-indicator"><a class="anchor" href="#cloud-pubsub-subscription-health-indicator"></a><a class="link" href="#cloud-pubsub-subscription-health-indicator">6.2.2. Cloud Pub/Sub Subscription Health Indicator</a></h4>
+<div class="paragraph">
+<p>If you are using Spring Boot Actuator, you can take advantage of the Cloud Pub/Sub subscription health indicator called <code>pubsub-subscriber</code>.
+The subscription health indicator will verify whether Pub/Sub subscriptions are actively processing messages from the subscription&#8217;s backlog.
+To enable it, you need to add the <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready">Spring Boot Actuator</a> to your project and the <a href="https://cloud.google.com/monitoring/docs/reference/libraries">GCP Monitoring</a>.
+Also you need to set the following properties <code>spring.cloud.gcp.pubsub.health.lagThreshold</code>, <code>spring.cloud.gcp.pubsub.health.backlogThreshold</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>pubsub-subscriber</code> indicator will then roll up to the overall application status visible at <a href="http://localhost:8080/actuator/health" class="bare">localhost:8080/actuator/health</a> (use the <code>management.endpoint.health.show-details</code> property to view per-indicator details).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;google-cloud-monitoring&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The health indicator validates a subscriber&#8217;s health by checking the subscription&#8217;s message backlog and the last processed message.
+A subscription&#8217;s backlog is retrieved using Google Cloud&#8217;s Monitoring Metrics. The metric used is the <code>num_undelivered_messages</code> for a subscription.</p>
+</div>
+<div class="paragraph">
+<p>If a message has been recently processed in a reasonable time threshold, then the subscriber is healthy.
+If the backlog of messages for a subscription is big but the subscriber consumes messages then subscriber is still healthy.
+If there hasn&#8217;t been any processing of recent messages but the backlog increases, then the subscriber is unhealthy.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The health indicator will not behave entirely as expected if Dead Letter Queueing is enabled on the subscription being checked, num_undelivered_messages will drop down by itself after DLQ threshold is reached.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>management.health.pubsub-subscriber.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the Pub/Sub Subscription health indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> with Spring Boot Actuator, <code>false</code> otherwise</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.lagThreshold</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Threshold in seconds over message processing lag</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provided</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.backlogThreshold</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The threshold number of messages for a subscription backlog</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provided</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.lookUpInterval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional interval in seconds for subscription backlog lookup</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.executorThreads</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of threads used for Health Check Executors</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="pubsub-operations-template"><a class="anchor" href="#pubsub-operations-template"></a><a class="link" href="#pubsub-operations-template">6.3. Pub/Sub Operations &amp; Template</a></h3>
