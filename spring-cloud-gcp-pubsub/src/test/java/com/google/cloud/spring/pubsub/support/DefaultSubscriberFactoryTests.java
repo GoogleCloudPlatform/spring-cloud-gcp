@@ -91,10 +91,9 @@ public class DefaultSubscriberFactoryTests {
 
 	@Mock
 	private ThreadPoolTaskScheduler mockGlobalScheduler;
+
 	@Mock
 	private HealthTrackerRegistry healthTrackerRegistry;
-	@Mock
-	private ExecutorProvider executorProvider;
 
 	/**
 	 * used to check exception messages and types.
