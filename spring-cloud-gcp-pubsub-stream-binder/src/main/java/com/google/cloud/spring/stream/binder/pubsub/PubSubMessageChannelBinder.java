@@ -17,6 +17,7 @@
 package com.google.cloud.spring.stream.binder.pubsub;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubMessageSource;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
@@ -43,6 +44,7 @@ import org.springframework.messaging.MessageHandler;
  * @author Mike Eltsufin
  * @author Artem Bilan
  * @author Daniel Zou
+ * @author Emmanouil Gkatziouras
  */
 public class PubSubMessageChannelBinder
 		extends AbstractMessageChannelBinder<ExtendedConsumerProperties<PubSubConsumerProperties>,
@@ -57,6 +59,8 @@ public class PubSubMessageChannelBinder
 
 	private final PubSubChannelProvisioner pubSubChannelProvisioner;
 
+	private HealthTrackerRegistry healthTrackerRegistry;
+
 	public PubSubMessageChannelBinder(String[] headersToEmbed,
 			PubSubChannelProvisioner provisioningProvider, PubSubTemplate pubSubTemplate,
 			PubSubExtendedBindingProperties pubSubExtendedBindingProperties) {
@@ -65,6 +69,11 @@ public class PubSubMessageChannelBinder
 		this.pubSubTemplate = pubSubTemplate;
 		this.pubSubExtendedBindingProperties = pubSubExtendedBindingProperties;
 		this.pubSubChannelProvisioner = provisioningProvider;
+	}
+
+	public void setHealthTrackerRegistry(
+		HealthTrackerRegistry healthTrackerRegistry) {
+		this.healthTrackerRegistry = healthTrackerRegistry;
 	}
 
 	@Override
@@ -84,6 +93,11 @@ public class PubSubMessageChannelBinder
 
 		PubSubInboundChannelAdapter adapter = new PubSubInboundChannelAdapter(this.pubSubTemplate,
 				destination.getName());
+
+
+		if (healthTrackerRegistry != null) {
+			adapter.setHealthTrackerRegistry(healthTrackerRegistry);
+		}
 
 		ErrorInfrastructure errorInfrastructure = registerErrorInfrastructure(destination, group, properties);
 		adapter.setErrorChannel(errorInfrastructure.getErrorChannel());
