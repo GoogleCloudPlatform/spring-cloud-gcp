@@ -23,6 +23,8 @@ import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
+import com.google.cloud.spring.stream.binder.pubsub.PubSubMessageChannelBinder;
 import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
 import org.junit.Test;
 
@@ -30,6 +32,7 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -125,6 +128,26 @@ public class PubSubBinderConfigurationTests {
 		baseContext.run(ctx -> assertThat(ctx).doesNotHaveBean(PubSubChannelProvisioner.class));
 	}
 
+	@Test
+	public void test_healthRegistryEnabled() {
+		ApplicationContextRunner baseContext = new ApplicationContextRunner()
+				.withPropertyValues(
+						// including 'core' for completeness, but it's not super relevant to the test.
+						"spring.cloud.gcp.core.enabled=true",
+						"spring.cloud.gcp.pubsub.enabled=true",
+						"spring.cloud.gcp.pubsub.binder.enabled=true")
+				.withConfiguration(AutoConfigurations.of(
+						GcpContextAutoConfiguration.class,
+						GcpPubSubAutoConfiguration.class,
+						PubSubBinderConfiguration.class))
+				.withUserConfiguration(TestConfigurationWithRegistry.class);
+		baseContext.run(ctx -> {
+			HealthTrackerRegistry healthTrackerRegistry = ctx.getBean(HealthTrackerRegistry.class);
+			PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
+			assertThat(healthTrackerRegistry).isEqualTo(ReflectionTestUtils.getField(binder, "healthTrackerRegistry"));
+		});
+	}
+
 	private static class TestConfiguration {
 		@Bean
 		public CredentialsProvider googleCredentials() {
@@ -137,4 +160,15 @@ public class PubSubBinderConfigurationTests {
 			return () -> "test-project";
 		}
 	}
+
+	private static class TestConfigurationWithRegistry extends TestConfiguration {
+
+		@Bean
+		public HealthTrackerRegistry healthTrackerRegistry() {
+			return mock(HealthTrackerRegistry.class);
+		}
+
+	}
+
+
 }

@@ -24,6 +24,7 @@ import com.google.auth.Credentials;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubMessageSource;
@@ -72,6 +73,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Mike Eltsufin
  * @author Elena Felder
+ * @author Emmanouil Gkatziouras
  *
  * @since 1.1
  */
@@ -104,6 +106,9 @@ public class PubSubMessageChannelBinderTests {
 
 	@Mock
 	MessageChannel errorChannel;
+
+	@Mock
+	HealthTrackerRegistry healthTrackerRegistry;
 
 	ApplicationContextRunner baseContext = new ApplicationContextRunner()
 			.withBean(PubSubTemplate.class, () -> pubSubTemplate)
@@ -171,6 +176,26 @@ public class PubSubMessageChannelBinderTests {
 					PubSubMessageSource source = binder.createPubSubMessageSource(consumerDestination,
 							new ExtendedConsumerProperties<>(props.getExtendedConsumerProperties("test")));
 					assertThat(source.getMaxFetchSize()).isEqualTo(20);
+				});
+	}
+
+	@Test
+	public void testCreateConsumerWithRegistry() {
+		baseContext
+				.run(ctx -> {
+					PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
+					PubSubExtendedBindingProperties props = ctx.getBean("pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
+					binder.setHealthTrackerRegistry(healthTrackerRegistry);
+
+					MessageProducer messageProducer = binder
+							.createConsumerEndpoint(consumerDestination, "testGroup",
+									new ExtendedConsumerProperties<>(props.getExtendedConsumerProperties("test"))
+							);
+
+					assertThat(messageProducer).isInstanceOf(PubSubInboundChannelAdapter.class);
+					PubSubInboundChannelAdapter inboundChannelAdapter = (PubSubInboundChannelAdapter) messageProducer;
+					assertThat(inboundChannelAdapter.getAckMode()).isSameAs(AckMode.AUTO);
+					assertThat(inboundChannelAdapter.healthCheckEnabled()).isTrue();
 				});
 	}
 

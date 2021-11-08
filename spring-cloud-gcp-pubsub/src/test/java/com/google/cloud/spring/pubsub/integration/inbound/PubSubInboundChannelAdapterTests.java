@@ -18,6 +18,7 @@ package com.google.cloud.spring.pubsub.integration.inbound;
 
 import java.util.function.Consumer;
 
+import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
@@ -42,6 +43,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.GenericMessage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -187,6 +189,36 @@ public class PubSubInboundChannelAdapterTests {
 
 		assertThat(output.getOut()).contains("failed; message neither acked nor nacked");
 		assertThat(output.getOut()).contains(EXCEPTION_MESSAGE);
+	}
+
+	@Test
+	public void testSetHealthRegistry_Success() {
+		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
+		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
+		adapter.doStart();
+		verify(healthTrackerRegistry).registerTracker("testSubscription");
+	}
+
+	@Test
+	public void testMessageProcessed_successWhenRegistrySet() {
+		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
+		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
+		adapter.doStart();
+
+		verify(healthTrackerRegistry, times(1)).registerTracker(any(String.class));
+
+		this.mockMessageChannel.send(new GenericMessage<>("test-message"));
+
+		verify(healthTrackerRegistry, times(1)).processedMessage(any());
+	}
+
+	@Test
+	public void testAddingSubscription_successWhenSubscriberAdded() {
+		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
+		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
+		adapter.doStart();
+
+		verify(healthTrackerRegistry, times(1)).addListener(any());
 	}
 
 	@Test

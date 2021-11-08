@@ -19,11 +19,13 @@ package com.google.cloud.spring.pubsub.integration.inbound;
 import java.util.Map;
 
 import com.google.cloud.pubsub.v1.Subscriber;
+import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.PubSubHeaderMapper;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -39,6 +41,7 @@ import org.springframework.util.Assert;
  * @author Mike Eltsufin
  * @author Doug Hoard
  * @author Taylor Burke
+ * @author Emmanouil Gkatziouras
  */
 public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 
@@ -56,6 +59,8 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 
 	private Class<?> payloadType = byte[].class;
 
+	private HealthTrackerRegistry healthTrackerRegistry;
+
 	public PubSubInboundChannelAdapter(PubSubSubscriberOperations pubSubSubscriberOperations, String subscriptionName) {
 		Assert.notNull(pubSubSubscriberOperations, "Pub/Sub subscriber template can't be null.");
 		Assert.notNull(subscriptionName, "Pub/Sub subscription name can't be null.");
@@ -70,6 +75,11 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 	public void setAckMode(AckMode ackMode) {
 		Assert.notNull(ackMode, "The acknowledgement mode can't be null.");
 		this.ackMode = ackMode;
+	}
+
+	public void setHealthTrackerRegistry(
+			HealthTrackerRegistry healthTrackerRegistry) {
+		this.healthTrackerRegistry = healthTrackerRegistry;
 	}
 
 	public Class<?> getPayloadType() {
@@ -104,8 +114,12 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 	protected void doStart() {
 		super.doStart();
 
+		addToHealthRegistry();
+
 		this.subscriber = this.pubSubSubscriberOperations.subscribeAndConvert(
 				this.subscriptionName, this::consumeMessage, this.payloadType);
+
+		addListeners();
 	}
 
 	@Override
@@ -131,6 +145,8 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 					.copyHeaders(messageHeaders)
 					.build());
 
+			processedMessage(message.getProjectSubscriptionName());
+
 			if (this.ackMode == AckMode.AUTO_ACK || this.ackMode == AckMode.AUTO) {
 				message.ack();
 			}
@@ -147,4 +163,27 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 			}
 		}
 	}
+
+	private void addToHealthRegistry() {
+		if (healthCheckEnabled()) {
+			healthTrackerRegistry.registerTracker(subscriptionName);
+		}
+	}
+
+	private void addListeners() {
+		if (healthCheckEnabled()) {
+			healthTrackerRegistry.addListener(subscriber);
+		}
+	}
+
+	private void processedMessage(ProjectSubscriptionName projectSubscriptionName) {
+		if (healthCheckEnabled()) {
+			healthTrackerRegistry.processedMessage(projectSubscriptionName);
+		}
+	}
+
+	public boolean healthCheckEnabled() {
+		return healthTrackerRegistry != null;
+	}
+
 }
