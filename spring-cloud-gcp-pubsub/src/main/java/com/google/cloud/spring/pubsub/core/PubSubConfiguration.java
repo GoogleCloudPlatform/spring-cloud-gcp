@@ -93,10 +93,8 @@ public class PubSubConfiguration {
 			return this.subscription.get(fullyQualifiedSubscriptionKey);
 		}
 
-		Subscriber subscriberProperties = this.subscription.computeIfAbsent(fullyQualifiedSubscriptionKey,
+		return this.subscription.computeIfAbsent(fullyQualifiedSubscriptionKey,
 				k -> this.globalSubscriber);
-		subscriberProperties.global = true;
-		return subscriberProperties;
 	}
 
 	/**
@@ -275,11 +273,6 @@ public class PubSubConfiguration {
 	public static class Subscriber {
 
 		/**
-		 * Custom determines if the configuration is global or the default.
-		 */
-		private boolean global = false;
-
-		/**
 		 * Number of threads used by every subscriber.
 		 */
 		private Integer executorThreads;
@@ -318,10 +311,6 @@ public class PubSubConfiguration {
 		 * RPC status codes that should be retried when pulling messages.
 		 */
 		private Code[] retryableCodes = null;
-
-		public boolean isGlobal() {
-			return global;
-		}
 
 		public Retry getRetry() {
 			return this.retry;
