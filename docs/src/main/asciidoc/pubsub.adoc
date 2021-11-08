@@ -163,6 +163,46 @@ So, take care not to configure a subscription that has a business impact, or ins
 | `spring.cloud.gcp.pubsub.health.acknowledge-messages` | Whether to acknowledge messages pulled from the optionally specified subscription | No | `false`
 |===
 
+==== Cloud Pub/Sub Subscription Health Indicator
+
+If you are using Spring Boot Actuator, you can take advantage of the Cloud Pub/Sub subscription health indicator called `pubsub-subscriber`.
+The subscription health indicator will verify whether Pub/Sub subscriptions are actively processing messages from the subscription's backlog.
+To enable it, you need to add the https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready[Spring Boot Actuator] to your project and the https://cloud.google.com/monitoring/docs/reference/libraries[GCP Monitoring].
+Also you need to set the following properties `spring.cloud.gcp.pubsub.health.lagThreshold`, `spring.cloud.gcp.pubsub.health.backlogThreshold`.
+
+The `pubsub-subscriber` indicator will then roll up to the overall application status visible at http://localhost:8080/actuator/health (use the `management.endpoint.health.show-details` property to view per-indicator details).
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>google-cloud-monitoring</artifactId>
+</dependency>
+----
+
+The health indicator validates a subscriber's health by checking the subscription's message backlog and the last processed message.
+A subscription's backlog is retrieved using Google Cloud's Monitoring Metrics. The metric used is the `num_undelivered_messages` for a subscription.
+
+If a message has been recently processed in a reasonable time threshold, then the subscriber is healthy.
+If the backlog of messages for a subscription is big but the subscriber consumes messages then subscriber is still healthy.
+If there hasn't been any processing of recent messages but the backlog increases, then the subscriber is unhealthy.
+
+NOTE: The health indicator will not behave entirely as expected if Dead Letter Queueing is enabled on the subscription being checked, num_undelivered_messages will drop down by itself after DLQ threshold is reached.
+
+|===
+| Name | Description | Required | Default value
+| `management.health.pubsub-subscriber.enabled` | Whether to enable the Pub/Sub Subscription health indicator | No | `true` with Spring Boot Actuator, `false` otherwise
+| `spring.cloud.gcp.pubsub.health.lagThreshold` | Threshold in seconds over message processing lag | Yes | Provided
+| `spring.cloud.gcp.pubsub.health.backlogThreshold` | The threshold number of messages for a subscription backlog | Yes | Provided
+| `spring.cloud.gcp.pubsub.health.lookUpInterval` | The optional interval in seconds for subscription backlog lookup | No | `1`
+| `spring.cloud.gcp.pubsub.health.executorThreads` | Number of threads used for Health Check Executors | No | `4`
+|===
+
+
 === Pub/Sub Operations & Template
 
 `PubSubOperations` is an abstraction that allows Spring users to use Google Cloud Pub/Sub without depending on any Google Cloud Pub/Sub API semantics.
