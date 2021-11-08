@@ -259,6 +259,13 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Monitoring -->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-monitoring</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Config -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

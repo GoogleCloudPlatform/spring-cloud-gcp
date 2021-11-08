@@ -30,6 +30,7 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
  * @author João André Martins
  * @author Mike Eltsufin
  * @author Chengyuan Zhao
+ * @author Emmanouil Gkatziouras
  */
 public class PubSubConfiguration {
 
@@ -52,12 +53,21 @@ public class PubSubConfiguration {
 	 */
 	private final Publisher publisher = new Publisher();
 
+	/**
+	 * Contains default health settings.
+	 */
+	private final Health health = new Health();
+
 	public Subscriber getSubscriber() {
 		return this.globalSubscriber;
 	}
 
 	public Publisher getPublisher() {
 		return this.publisher;
+	}
+
+	public Health getHealth() {
+		return health;
 	}
 
 	public ConcurrentMap<String, Subscriber> getSubscription() {
@@ -354,7 +364,6 @@ public class PubSubConfiguration {
 			this.executorThreads = executorThreads;
 		}
 
-
 		public int getMaxAcknowledgementThreads() {
 			return this.maxAcknowledgementThreads;
 		}
@@ -362,6 +371,69 @@ public class PubSubConfiguration {
 		public void setMaxAcknowledgementThreads(int maxAcknowledgementThreads) {
 			this.maxAcknowledgementThreads = maxAcknowledgementThreads;
 		}
+
+	}
+
+	/**
+	 * Health Check settings.
+	 */
+	public static class Health {
+
+		/**
+		 * Threshold in seconds over message processing lag.
+		 * If messages have recently processed with the lagThreshold from now, the subscriber is healthy.
+		 */
+		private Integer lagThreshold;
+
+		/**
+		 * The threshold number of messages for a subscription backlog.
+		 * Backlog size over this threshold in combination with non recently processed messages, is an indicator of an unhealthy subscription.
+		 * This maps to a subscribption's num_undelivered_messages metric on GCP Monitoring.
+		 */
+		private Integer backlogThreshold;
+
+		/**
+		 * The optional interval in seconds for subscription backlog lookup.
+		 */
+		private Integer lookUpInterval = 1;
+
+		/**
+		 * Number of threads used for Health Check Executors.
+		 */
+		private int executorThreads = 4;
+
+		public Integer getLagThreshold() {
+			return lagThreshold;
+		}
+
+		public void setLagThreshold(Integer lagThreshold) {
+			this.lagThreshold = lagThreshold;
+		}
+
+		public Integer getBacklogThreshold() {
+			return backlogThreshold;
+		}
+
+		public void setBacklogThreshold(Integer backlogThreshold) {
+			this.backlogThreshold = backlogThreshold;
+		}
+
+		public Integer getLookUpInterval() {
+			return lookUpInterval;
+		}
+
+		public void setLookUpInterval(Integer lookUpInterval) {
+			this.lookUpInterval = lookUpInterval;
+		}
+
+		public int getExecutorThreads() {
+			return executorThreads;
+		}
+
+		public void setExecutorThreads(int executorThreads) {
+			this.executorThreads = executorThreads;
+		}
+
 	}
 
 	/**

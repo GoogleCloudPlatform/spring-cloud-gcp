@@ -39,6 +39,8 @@ import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubException;
+import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PullRequest;
 import org.threeten.bp.Duration;
 
@@ -53,6 +55,7 @@ import org.springframework.util.Assert;
  * @author Doug Hoard
  * @author Chengyuan Zhao
  * @author Maurice Zeijen
+ * @author Emmanouil Gkatziouras
  */
 public class DefaultSubscriberFactory implements SubscriberFactory {
 
@@ -79,6 +82,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	private ApiClock apiClock;
 
 	private RetrySettings subscriberStubRetrySettings;
+
+	private HealthTrackerRegistry healthTrackerRegistry;
 
 	private PubSubConfiguration pubSubConfiguration;
 
@@ -222,10 +227,25 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		this.retryableCodes = retryableCodes;
 	}
 
+	/**
+	 * Set the health tracker chain for the generated subscriptions.
+	 * @param healthTrackerRegistry parameter for registering health trackers when creating subscriptions
+	 */
+	public void setHealthTrackerRegistry(HealthTrackerRegistry healthTrackerRegistry) {
+		this.healthTrackerRegistry = healthTrackerRegistry;
+	}
+
 	@Override
 	public Subscriber createSubscriber(String subscriptionName, MessageReceiver receiver) {
-		Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(
-				PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId), receiver);
+		ProjectSubscriptionName projectSubscriptionName = PubSubSubscriptionUtils
+				.toProjectSubscriptionName(subscriptionName, this.projectId);
+
+		boolean shouldAddToHealthCheck = shouldAddToHealthCheck(subscriptionName);
+		if (shouldAddToHealthCheck) {
+			receiver = healthTrackerRegistry.wrap(projectSubscriptionName, receiver);
+		}
+
+		Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(projectSubscriptionName, receiver);
 
 		if (this.channelProvider != null) {
 			subscriberBuilder.setChannelProvider(this.channelProvider);
@@ -265,7 +285,13 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberBuilder.setParallelPullCount(pullCount);
 		}
 
-		return subscriberBuilder.build();
+		Subscriber subscriber = subscriberBuilder.build();
+
+		if (shouldAddToHealthCheck) {
+			healthTrackerRegistry.addListener(subscriber);
+		}
+
+		return subscriber;
 	}
 
 	@Override
@@ -583,4 +609,14 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	public void setGlobalScheduler(ThreadPoolTaskScheduler threadPoolTaskScheduler) {
 		this.globalScheduler = threadPoolTaskScheduler;
 	}
+
+	private boolean shouldAddToHealthCheck(String subscriptionName) {
+		if (healthTrackerRegistry == null) {
+			return false;
+		}
+
+		ProjectSubscriptionName projectSubscriptionName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId);
+		return !healthTrackerRegistry.isTracked(projectSubscriptionName);
+	}
+
 }

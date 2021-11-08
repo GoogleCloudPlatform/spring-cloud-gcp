@@ -19,6 +19,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-monitoring</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.google.cloud</groupId>
 			<artifactId>spring-cloud-gcp-core</artifactId>
 		</dependency>
 		<dependency>
