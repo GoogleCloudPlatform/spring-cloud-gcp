@@ -38,6 +38,7 @@ import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
+import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PullRequest;
@@ -104,7 +105,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	 */
 	@Deprecated
 	public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
-		this(projectIdProvider, null);
+		this(projectIdProvider, new PubSubConfiguration());
 	}
 
 	/**
@@ -118,6 +119,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		this.projectId = projectIdProvider.getProjectId();
 		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
 
+		Assert.notNull(pubSubConfiguration, "The pub/sub configuration can't be null.");
 		this.pubSubConfiguration = pubSubConfiguration;
 	}
 
@@ -235,10 +237,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	@Override
 	public Subscriber createSubscriber(String subscriptionName, MessageReceiver receiver) {
+		ProjectSubscriptionName projectSubscriptionName = PubSubSubscriptionUtils
+				.toProjectSubscriptionName(subscriptionName, this.projectId);
+
 		boolean shouldAddToHealthCheck = shouldAddToHealthCheck(subscriptionName);
-
-		ProjectSubscriptionName projectSubscriptionName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId);
-
 		if (shouldAddToHealthCheck) {
 			receiver = healthTrackerRegistry.wrap(projectSubscriptionName, receiver);
 		}
@@ -316,24 +318,74 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	@Override
-	public SubscriberStub createSubscriberStub(String subscriptionName) {
+	public SubscriberStub createSubscriberStub() {
 		try {
-			SubscriberStubSettings subscriberStubSettings = buildSubscriberStubSettings(subscriptionName);
-			return GrpcSubscriberStub.create(subscriberStubSettings);
+			return GrpcSubscriberStub.create(buildGlobalSubscriberStubSettings());
 		}
 		catch (IOException ex) {
-			throw new RuntimeException("Error creating the SubscriberStub", ex);
+			throw new PubSubException("Error creating the SubscriberStub", ex);
+		}
+	}
+
+	@Override
+	public SubscriberStub createSubscriberStub(String subscriptionName) {
+		try {
+			return GrpcSubscriberStub.create(buildSubscriberStubSettings(subscriptionName));
+		}
+		catch (IOException ex) {
+			throw new PubSubException("Error creating the SubscriberStub", ex);
+		}
+	}
+
+	SubscriberStubSettings buildGlobalSubscriberStubSettings() throws IOException {
+		SubscriberStubSettings.Builder subscriberStubSettings = buildStubSettingsWithoutConfigurations();
+
+		if (this.pullEndpoint != null) {
+			subscriberStubSettings.setEndpoint(this.pullEndpoint);
+		}
+		else {
+			applyGlobalPullEndpoint(subscriberStubSettings);
+		}
+
+		ExecutorProvider executor = this.executorProvider != null ? this.executorProvider
+				: createGlobalExecutorProvider();
+		if (executor != null) {
+			subscriberStubSettings.setBackgroundExecutorProvider(executor);
+		}
+
+		if (this.subscriberStubRetrySettings != null) {
+			subscriberStubSettings.pullSettings().setRetrySettings(this.subscriberStubRetrySettings);
+		}
+		else {
+			applyGlobalRetrySettings(subscriberStubSettings);
+		}
+
+		if (this.retryableCodes != null) {
+			subscriberStubSettings.pullSettings().setRetryableCodes(
+					this.retryableCodes);
+		}
+
+		return subscriberStubSettings.build();
+	}
+
+	private void applyGlobalPullEndpoint(SubscriberStubSettings.Builder subscriberStubSettings) {
+		String endpoint = this.pubSubConfiguration.getSubscriber().getPullEndpoint();
+		if (endpoint != null) {
+			subscriberStubSettings.setEndpoint(endpoint);
+		}
+	}
+
+	private void applyGlobalRetrySettings(SubscriberStubSettings.Builder subscriberStubSettings) {
+		PubSubConfiguration.Retry retry = this.pubSubConfiguration.getSubscriber().getRetry();
+		RetrySettings retrySettings = buildRetrySettings(retry);
+		if (retrySettings != null) {
+			subscriberStubSettings.pullSettings().setRetrySettings(retrySettings);
 		}
 	}
 
 	SubscriberStubSettings buildSubscriberStubSettings(String subscriptionName) throws IOException {
-		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
+		SubscriberStubSettings.Builder subscriberStubSettings = buildStubSettingsWithoutConfigurations();
 
-		if (this.credentialsProvider != null) {
-			subscriberStubSettings.setCredentialsProvider(this.credentialsProvider);
-		}
-
-		// Set the endpoint for synchronous pulling messages.
 		String endpoint = getPullEndpoint(subscriptionName);
 		if (endpoint != null) {
 			subscriberStubSettings.setEndpoint(endpoint);
@@ -341,19 +393,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 		ExecutorProvider executor = getExecutorProvider(subscriptionName);
 		if (executor != null) {
-			subscriberStubSettings.setExecutorProvider(executor);
-		}
-
-		if (this.headerProvider != null) {
-			subscriberStubSettings.setHeaderProvider(this.headerProvider);
-		}
-
-		if (this.channelProvider != null) {
-			subscriberStubSettings.setTransportChannelProvider(this.channelProvider);
-		}
-
-		if (this.apiClock != null) {
-			subscriberStubSettings.setClock(this.apiClock);
+			subscriberStubSettings.setBackgroundExecutorProvider(executor);
 		}
 
 		RetrySettings retrySettings = getRetrySettings(subscriptionName);
@@ -369,6 +409,34 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		return subscriberStubSettings.build();
 	}
 
+	SubscriberStubSettings.Builder buildStubSettingsWithoutConfigurations() {
+
+		SubscriberStubSettings.Builder subscriberStubSettings = SubscriberStubSettings.newBuilder();
+
+		if (this.credentialsProvider != null) {
+			subscriberStubSettings.setCredentialsProvider(this.credentialsProvider);
+		}
+
+		if (this.headerProvider != null) {
+			subscriberStubSettings.setHeaderProvider(this.headerProvider);
+		}
+
+		if (this.channelProvider != null) {
+			subscriberStubSettings.setTransportChannelProvider(this.channelProvider);
+		}
+
+		if (this.apiClock != null) {
+			subscriberStubSettings.setClock(this.apiClock);
+		}
+
+		if (this.retryableCodes != null) {
+			subscriberStubSettings.pullSettings().setRetryableCodes(
+					this.retryableCodes);
+		}
+
+		return subscriberStubSettings;
+	}
+
 	/**
 	 * Creates {@link ExecutorProvider}. If a custom executor provider is set then the
 	 * subscriber properties configured through the application.properties file will be
@@ -380,51 +448,56 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (this.executorProvider != null) {
 			return this.executorProvider;
 		}
-		if (this.pubSubConfiguration != null) {
-			PubSubConfiguration.Subscriber subscriber = this.pubSubConfiguration.getSubscriber(subscriptionName,
-					projectId);
-			return getExecutorProviderFromConfigurations(subscriber, subscriptionName);
-		}
-		return null;
+		return getExecutorProviderFromConfigurations(subscriptionName);
 	}
 
 	/**
-	 * Creates {@link ExecutorProvider} for subscriber when Pub/Sub configurations (either
-	 * global/default or subscription-specific) are present.
-	 * @param subscriber subscriber properties
+	 * Creates {@link ExecutorProvider} given a subscription name.
 	 * @param subscriptionName subscription name
 	 * @return executor provider
 	 */
-	ExecutorProvider getExecutorProviderFromConfigurations(PubSubConfiguration.Subscriber subscriber,
-			String subscriptionName) {
-		if (!subscriber.isGlobal()) {
-			return createExecutorProvider(subscriptionName);
+	ExecutorProvider getExecutorProviderFromConfigurations(String subscriptionName) {
+		ThreadPoolTaskScheduler scheduler = fetchThreadPoolTaskScheduler(subscriptionName);
+		if (scheduler == null) {
+			return null;
 		}
+		if (!scheduler.equals(this.globalScheduler)) {
+			return createExecutorProvider(subscriptionName, scheduler);
+		}
+		return createGlobalExecutorProvider();
+	}
 
+	ExecutorProvider createGlobalExecutorProvider() {
+		if (this.globalScheduler == null) {
+			return null;
+		}
 		if (this.defaultExecutorProvider != null) {
 			return this.defaultExecutorProvider;
 		}
-		this.defaultExecutorProvider = createExecutorProvider(subscriptionName);
+		this.globalScheduler.initialize();
+		this.defaultExecutorProvider = FixedExecutorProvider.create(this.globalScheduler.getScheduledExecutor());
 		return this.defaultExecutorProvider;
 	}
 
-	ExecutorProvider createExecutorProvider(String subscriptionName) {
+	ExecutorProvider createExecutorProvider(String subscriptionName, ThreadPoolTaskScheduler scheduler) {
 		if (this.executorProviderMap.containsKey(subscriptionName)) {
 			return this.executorProviderMap.get(subscriptionName);
 		}
-		ThreadPoolTaskScheduler scheduler = fetchThreadPoolTaskScheduler(subscriptionName);
 		scheduler.initialize();
 		ExecutorProvider executor = FixedExecutorProvider.create(scheduler.getScheduledExecutor());
 		return this.executorProviderMap.computeIfAbsent(subscriptionName, k -> executor);
 	}
 
 	/**
-	 * Returns {@link ThreadPoolTaskScheduler} given a subscription name.
+	 * Returns {@link ThreadPoolTaskScheduler} given a subscription name. If
+	 * subscription-specific scheduler for the subscription name is not found then return a
+	 * global threadPoolTaskScheduler, otherwise, return the subscription-specific scheduler.
 	 * @param subscriptionName subscription name
 	 * @return thread pool scheduler
 	 */
 	public ThreadPoolTaskScheduler fetchThreadPoolTaskScheduler(String subscriptionName) {
-		String fullyQualifiedName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId).toString();
+		String fullyQualifiedName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId)
+				.toString();
 		if (this.threadPoolTaskSchedulerMap.containsKey(fullyQualifiedName)) {
 			return threadPoolTaskSchedulerMap.get(fullyQualifiedName);
 		}
@@ -433,6 +506,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	Map<String, ExecutorProvider> getExecutorProviderMap() {
 		return this.executorProviderMap;
+	}
+
+	ExecutorProvider getDefaultExecutorProvider() {
+		return this.defaultExecutorProvider;
 	}
 
 	/**
@@ -448,27 +525,27 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			return this.subscriberStubRetrySettings;
 		}
 
-		if (this.pubSubConfiguration != null) {
-			PubSubConfiguration.Retry retryProperties = this.pubSubConfiguration
-					.computeSubscriberRetrySettings(subscriptionName, this.projectId);
-			RetrySettings.Builder builder = RetrySettings.newBuilder();
-			boolean shouldBuild = ifSet(retryProperties.getInitialRetryDelaySeconds(),
-					x -> builder.setInitialRetryDelay(Duration.ofSeconds(x)));
-			shouldBuild |= ifSet(retryProperties.getInitialRpcTimeoutSeconds(),
-					x -> builder.setInitialRpcTimeout(Duration.ofSeconds(x)));
-			shouldBuild |= ifSet(retryProperties.getMaxAttempts(), builder::setMaxAttempts);
-			shouldBuild |= ifSet(retryProperties.getMaxRetryDelaySeconds(),
-					x -> builder.setMaxRetryDelay(Duration.ofSeconds(x)));
-			shouldBuild |= ifSet(retryProperties.getMaxRpcTimeoutSeconds(),
-					x -> builder.setMaxRpcTimeout(Duration.ofSeconds(x)));
-			shouldBuild |= ifSet(retryProperties.getRetryDelayMultiplier(), builder::setRetryDelayMultiplier);
-			shouldBuild |= ifSet(retryProperties.getTotalTimeoutSeconds(),
-					x -> builder.setTotalTimeout(Duration.ofSeconds(x)));
-			shouldBuild |= ifSet(retryProperties.getRpcTimeoutMultiplier(), builder::setRpcTimeoutMultiplier);
+		PubSubConfiguration.Retry retryProperties = this.pubSubConfiguration
+				.computeSubscriberRetrySettings(subscriptionName, this.projectId);
+		return buildRetrySettings(retryProperties);
+	}
 
-			return shouldBuild ? builder.build() : null;
-		}
-		return null;
+	public RetrySettings buildRetrySettings(PubSubConfiguration.Retry retryProperties) {
+		RetrySettings.Builder builder = RetrySettings.newBuilder();
+		boolean shouldBuild = ifSet(retryProperties.getInitialRetryDelaySeconds(),
+				x -> builder.setInitialRetryDelay(Duration.ofSeconds(x)));
+		shouldBuild |= ifSet(retryProperties.getInitialRpcTimeoutSeconds(),
+				x -> builder.setInitialRpcTimeout(Duration.ofSeconds(x)));
+		shouldBuild |= ifSet(retryProperties.getMaxAttempts(), builder::setMaxAttempts);
+		shouldBuild |= ifSet(retryProperties.getMaxRetryDelaySeconds(),
+				x -> builder.setMaxRetryDelay(Duration.ofSeconds(x)));
+		shouldBuild |= ifSet(retryProperties.getMaxRpcTimeoutSeconds(),
+				x -> builder.setMaxRpcTimeout(Duration.ofSeconds(x)));
+		shouldBuild |= ifSet(retryProperties.getRetryDelayMultiplier(), builder::setRetryDelayMultiplier);
+		shouldBuild |= ifSet(retryProperties.getTotalTimeoutSeconds(),
+				x -> builder.setTotalTimeout(Duration.ofSeconds(x)));
+		shouldBuild |= ifSet(retryProperties.getRpcTimeoutMultiplier(), builder::setRpcTimeoutMultiplier);
+		return shouldBuild ? builder.build() : null;
 	}
 
 	/**
@@ -484,17 +561,14 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (this.flowControlSettings != null) {
 			return this.flowControlSettings;
 		}
-		if (this.pubSubConfiguration != null) {
-			PubSubConfiguration.FlowControl flowControl = this.pubSubConfiguration.computeSubscriberFlowControlSettings(subscriptionName,
-					this.projectId);
-			FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
-			boolean shouldBuild = ifSet(flowControl.getLimitExceededBehavior(), builder::setLimitExceededBehavior);
-			shouldBuild |= ifSet(flowControl.getMaxOutstandingElementCount(), builder::setMaxOutstandingElementCount);
-			shouldBuild |= ifSet(flowControl.getMaxOutstandingRequestBytes(), builder::setMaxOutstandingRequestBytes);
+		PubSubConfiguration.FlowControl flowControl = this.pubSubConfiguration.computeSubscriberFlowControlSettings(subscriptionName,
+				this.projectId);
+		FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
+		boolean shouldBuild = ifSet(flowControl.getLimitExceededBehavior(), builder::setLimitExceededBehavior);
+		shouldBuild |= ifSet(flowControl.getMaxOutstandingElementCount(), builder::setMaxOutstandingElementCount);
+		shouldBuild |= ifSet(flowControl.getMaxOutstandingRequestBytes(), builder::setMaxOutstandingRequestBytes);
 
-			return shouldBuild ? builder.build() : null;
-		}
-		return null;
+		return shouldBuild ? builder.build() : null;
 	}
 
 	private <T> boolean ifSet(T property, Consumer<T> consumer) {
@@ -509,31 +583,22 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (this.maxAckExtensionPeriod != null) {
 			return this.maxAckExtensionPeriod;
 		}
-		if (this.pubSubConfiguration != null) {
-			return Duration
-					.ofSeconds(this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId));
-		}
-		return null;
+		return Duration
+				.ofSeconds(this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId));
 	}
 
 	Integer getPullCount(String subscriptionName) {
 		if (this.parallelPullCount != null) {
 			return this.parallelPullCount;
 		}
-		if (this.pubSubConfiguration != null) {
-			return this.pubSubConfiguration.computeParallelPullCount(subscriptionName, projectId);
-		}
-		return null;
+		return this.pubSubConfiguration.computeParallelPullCount(subscriptionName, projectId);
 	}
 
 	String getPullEndpoint(String subscriptionName) {
 		if (this.pullEndpoint != null) {
 			return this.pullEndpoint;
 		}
-		if (this.pubSubConfiguration != null) {
-			return this.pubSubConfiguration.computePullEndpoint(subscriptionName, projectId);
-		}
-		return null;
+		return this.pubSubConfiguration.computePullEndpoint(subscriptionName, projectId);
 	}
 
 	public void setThreadPoolTaskSchedulerMap(
