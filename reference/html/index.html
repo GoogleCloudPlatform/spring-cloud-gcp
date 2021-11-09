@@ -279,8 +279,9 @@ window.onload = function() {
 <li><a href="#events">13.7. Events</a></li>
 <li><a href="#auditing">13.8. Auditing</a></li>
 <li><a href="#multi-instance-usage">13.9. Multi-Instance Usage</a></li>
-<li><a href="#cloud-spanner-emulator">13.10. Cloud Spanner Emulator</a></li>
-<li><a href="#sample-8">13.11. Sample</a></li>
+<li><a href="#spring-boot-actuator-support-2">13.10. Spring Boot Actuator Support</a></li>
+<li><a href="#cloud-spanner-emulator">13.11. Cloud Spanner Emulator</a></li>
+<li><a href="#sample-8">13.12. Sample</a></li>
 </ul>
 </li>
 <li><a href="#spring-data-cloud-datastore">14. Spring Data Cloud Datastore</a>
@@ -293,7 +294,7 @@ window.onload = function() {
 <li><a href="#events-2">14.6. Events</a></li>
 <li><a href="#auditing-2">14.7. Auditing</a></li>
 <li><a href="#partitioning-data-by-namespace">14.8. Partitioning Data by Namespace</a></li>
-<li><a href="#spring-boot-actuator-support-2">14.9. Spring Boot Actuator Support</a></li>
+<li><a href="#spring-boot-actuator-support-3">14.9. Spring Boot Actuator Support</a></li>
 <li><a href="#sample-9">14.10. Sample</a></li>
 </ul>
 </li>
@@ -6393,7 +6394,74 @@ By providing a custom implementation of this bean (for example, supplying a thre
 </div>
 </div>
 <div class="sect2">
-<h3 id="cloud-spanner-emulator"><a class="anchor" href="#cloud-spanner-emulator"></a><a class="link" href="#cloud-spanner-emulator">13.10. Cloud Spanner Emulator</a></h3>
+<h3 id="spring-boot-actuator-support-2"><a class="anchor" href="#spring-boot-actuator-support-2"></a><a class="link" href="#spring-boot-actuator-support-2">13.10. Spring Boot Actuator Support</a></h3>
+<div class="sect3">
+<h4 id="cloud-spanner-health-indicator"><a class="anchor" href="#cloud-spanner-health-indicator"></a><a class="link" href="#cloud-spanner-health-indicator">13.10.1. Cloud Spanner Health Indicator</a></h4>
+<div class="paragraph">
+<p>If you are using Spring Boot Actuator, you can take advantage of the Cloud Spanner health indicator called <code>spanner</code>.
+The health indicator will verify whether Cloud Spanner is up and accessible by your application.
+To enable it, all you need to do is add the <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready">Spring Boot Actuator</a> to your project.</p>
+</div>
+<div class="paragraph">
+<p>The <code>spanner</code> indicator will then roll up to the overall application status visible at <a href="http://localhost:8080/actuator/health" class="bare">localhost:8080/actuator/health</a> (use the <code>management.endpoint.health.show-details</code> property to view per-indicator details).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If your application already has actuator and Cloud Spanner starters, this health indicator is enabled by default.
+To disable the Cloud Spanner indicator, set <code>management.health.spanner.enabled</code> to <code>false</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The health indicator validates the connection to Spanner by executing a query.
+A query to validate can be configured via <code>spring.cloud.gcp.spanner.health.query</code> property.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>management.health.spanner.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the Spanner health indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> with Spring Boot Actuator, <code>false</code> otherwise</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.spanner.health.query</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A query to validate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SELECT 1</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cloud-spanner-emulator"><a class="anchor" href="#cloud-spanner-emulator"></a><a class="link" href="#cloud-spanner-emulator">13.11. Cloud Spanner Emulator</a></h3>
 <div class="paragraph">
 <p>The <a href="https://cloud.google.com/sdk">Cloud SDK</a> provides a local, in-memory emulator for Cloud Spanner, which you can use to develop and test your application. As the emulator stores data only in memory, it will not persist data across runs. It is intended to help you use Cloud Spanner for local development and testing, not for production deployments.</p>
 </div>
@@ -6419,7 +6487,7 @@ spring.cloud.gcp.spanner.emulator-host=${EMULATOR_HOSTPORT}</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-8"><a class="anchor" href="#sample-8"></a><a class="link" href="#sample-8">13.11. Sample</a></h3>
+<h3 id="sample-8"><a class="anchor" href="#sample-8"></a><a class="link" href="#sample-8">13.12. Sample</a></h3>
 <div class="paragraph">
 <p>There are two sample applications available:</p>
 </div>
@@ -8332,7 +8400,7 @@ Every read, write, query, and transaction you perform will utilize the namespace
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-boot-actuator-support-2"><a class="anchor" href="#spring-boot-actuator-support-2"></a><a class="link" href="#spring-boot-actuator-support-2">14.9. Spring Boot Actuator Support</a></h3>
+<h3 id="spring-boot-actuator-support-3"><a class="anchor" href="#spring-boot-actuator-support-3"></a><a class="link" href="#spring-boot-actuator-support-3">14.9. Spring Boot Actuator Support</a></h3>
 <div class="sect3">
 <h4 id="cloud-datastore-health-indicator"><a class="anchor" href="#cloud-datastore-health-indicator"></a><a class="link" href="#cloud-datastore-health-indicator">14.9.1. Cloud Datastore Health Indicator</a></h4>
 <div class="paragraph">
