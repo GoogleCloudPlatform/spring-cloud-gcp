@@ -1453,6 +1453,35 @@ Database administrative operations, such as creating tables using `SpannerDataba
 
 If you would like to configure every aspect of each connection (such as pool size and retry settings), you can supply a bean for `Supplier<DatabaseClient>`.
 
+=== Spring Boot Actuator Support
+
+==== Cloud Spanner Health Indicator
+
+If you are using Spring Boot Actuator, you can take advantage of the Cloud Spanner health indicator called `spanner`.
+The health indicator will verify whether Cloud Spanner is up and accessible by your application.
+To enable it, all you need to do is add the https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready[Spring Boot Actuator] to your project.
+
+The `spanner` indicator will then roll up to the overall application status visible at http://localhost:8080/actuator/health (use the `management.endpoint.health.show-details` property to view per-indicator details).
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+----
+
+NOTE: If your application already has actuator and Cloud Spanner starters, this health indicator is enabled by default.
+To disable the Cloud Spanner indicator, set `management.health.spanner.enabled` to `false`.
+
+The health indicator validates the connection to Spanner by executing a query.
+A query to validate can be configured via `spring.cloud.gcp.spanner.health.query` property.
+
+|===
+| Name | Description | Required | Default value
+| `management.health.spanner.enabled` | Whether to enable the Spanner health indicator | No | `true` with Spring Boot Actuator, `false` otherwise
+| `spring.cloud.gcp.spanner.health.query` | A query to validate  | No | `SELECT 1`
+|===
 
 === Cloud Spanner Emulator
 
