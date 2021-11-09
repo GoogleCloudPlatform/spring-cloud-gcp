@@ -6,6 +6,7 @@ com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubReactiveAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.spanner.GcpSpannerAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.spanner.GcpSpannerEmulatorAutoConfiguration,\
+com.google.cloud.spring.autoconfigure.spanner.health.SpannerHealthIndicatorAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.spanner.SpannerTransactionManagerAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreAutoConfiguration,\
