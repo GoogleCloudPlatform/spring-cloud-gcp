@@ -629,6 +629,7 @@ public class GcpPubSubAutoConfigurationTests {
 			DefaultSubscriberFactory subscriberFactory = ctx
 					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
 			assertThat(subscriberFactory.getFlowControlSettings("name")).isSameAs(flowControlSettings);
+			assertThat(ctx.containsBean("globalSubscriberFlowControlSettings")).isFalse();
 		});
 	}
 
