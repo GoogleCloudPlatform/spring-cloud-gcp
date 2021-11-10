@@ -645,10 +645,21 @@ public class GcpPubSubAutoConfigurationTests {
 		contextRunner.run(ctx -> {
 			GcpPubSubProperties gcpPubSubProperties = ctx
 					.getBean(GcpPubSubProperties.class);
-			PubSubConfiguration.FlowControl flowControl = gcpPubSubProperties.getSubscriber().getFlowControl();
-			assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
-			assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
-			assertThat(flowControl.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Ignore);
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			PubSubConfiguration.FlowControl flowControlFromConfiguration = gcpPubSubProperties.getSubscriber()
+					.getFlowControl();
+			FlowControlSettings expectedFlowControlSettings = FlowControlSettings.newBuilder()
+					.setMaxOutstandingElementCount(11L).setMaxOutstandingRequestBytes(12L)
+					.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore).build();
+
+			assertThat(flowControlFromConfiguration.getMaxOutstandingElementCount()).isEqualTo(11L);
+			assertThat(flowControlFromConfiguration.getMaxOutstandingRequestBytes()).isEqualTo(12L);
+			assertThat(flowControlFromConfiguration.getLimitExceededBehavior())
+					.isEqualTo(FlowController.LimitExceededBehavior.Ignore);
+			assertThat(subscriberFactory.getFlowControlSettings("name")).isEqualTo(expectedFlowControlSettings);
+			assertThat(ctx.getBean("globalSubscriberFlowControlSettings", FlowControlSettings.class))
+					.isEqualTo(expectedFlowControlSettings);
 		});
 	}
 
@@ -670,15 +681,23 @@ public class GcpPubSubAutoConfigurationTests {
 			PubSubConfiguration.FlowControl flowControl = gcpPubSubProperties
 					.getSubscriber("subscription-name", projectIdProvider.getProjectId())
 					.getFlowControl();
-
 			assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
 			assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
 			assertThat(flowControl.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Ignore);
-
 			assertThat(gcpPubSubProperties.getSubscription())
 					.hasSize(1);
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/subscription-name");
+
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			FlowControlSettings expectedFlowControlForSubscriptionName = FlowControlSettings.newBuilder()
+					.setMaxOutstandingElementCount(11L)
+					.setMaxOutstandingRequestBytes(12L)
+					.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore).build();
+			assertThat(subscriberFactory.getFlowControlSettings("subscription-name")).isEqualTo(expectedFlowControlForSubscriptionName);
+			assertThat(ctx.getBean("subscriberFlowControlSettings-subscription-name", FlowControlSettings.class))
+					.isEqualTo(expectedFlowControlForSubscriptionName);
 		});
 	}
 
@@ -703,8 +722,7 @@ public class GcpPubSubAutoConfigurationTests {
 			// Validate settings for subscribers that have subscription-specific flow control settings
 			// property set
 			PubSubConfiguration.FlowControl flowControl = gcpPubSubProperties
-					.getSubscriber("subscription-name", projectIdProvider.getProjectId())
-					.getFlowControl();
+					.computeSubscriberFlowControlSettings("subscription-name", projectIdProvider.getProjectId());
 			assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
 			assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
 			assertThat(flowControl.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Ignore);
@@ -712,19 +730,36 @@ public class GcpPubSubAutoConfigurationTests {
 			// Validate settings for subscribers that do not have subscription-specific flow control
 			// settings property set
 			PubSubConfiguration.FlowControl flowControlForOtherSubscriber = gcpPubSubProperties
-					.getSubscriber("other", projectIdProvider.getProjectId())
-					.getFlowControl();
+					.computeSubscriberFlowControlSettings("other", projectIdProvider.getProjectId());
 			assertThat(flowControlForOtherSubscriber.getMaxOutstandingElementCount()).isEqualTo(10L);
 			assertThat(flowControlForOtherSubscriber.getMaxOutstandingRequestBytes()).isEqualTo(10L);
 			assertThat(flowControlForOtherSubscriber.getLimitExceededBehavior())
 					.isEqualTo(FlowController.LimitExceededBehavior.Block);
-
 			assertThat(gcpPubSubProperties.getSubscription())
 					.hasSize(2);
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/subscription-name");
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/other");
+
+			// Verify that beans for selective and global flow control settings are created.
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			FlowControlSettings expectedFlowControlForSubscriptionName = FlowControlSettings.newBuilder()
+					.setMaxOutstandingElementCount(11L)
+					.setMaxOutstandingRequestBytes(12L)
+					.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore).build();
+			FlowControlSettings expectedFlowControlForOther = FlowControlSettings.newBuilder()
+					.setMaxOutstandingElementCount(10L)
+					.setMaxOutstandingRequestBytes(10L)
+					.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Block).build();
+			assertThat(subscriberFactory.getFlowControlSettings("subscription-name"))
+					.isEqualTo(expectedFlowControlForSubscriptionName);
+			assertThat(ctx.getBean("subscriberFlowControlSettings-subscription-name", FlowControlSettings.class))
+					.isEqualTo(expectedFlowControlForSubscriptionName);
+			assertThat(subscriberFactory.getFlowControlSettings("other")).isEqualTo(expectedFlowControlForOther);
+			assertThat(ctx.getBean("globalSubscriberFlowControlSettings", FlowControlSettings.class))
+					.isEqualTo(expectedFlowControlForOther);
 		});
 	}
 
@@ -749,11 +784,22 @@ public class GcpPubSubAutoConfigurationTests {
 			assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
 			assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
 			assertThat(flowControl.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Ignore);
-
 			assertThat(gcpPubSubProperties.getSubscription())
 					.hasSize(1);
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/subscription-name");
+
+			// Verify that bean for global flow control settings is created.
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			FlowControlSettings expectedFlowControlForSubscriptionName = FlowControlSettings.newBuilder()
+					.setMaxOutstandingElementCount(11L)
+					.setMaxOutstandingRequestBytes(12L)
+					.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore).build();
+			assertThat(subscriberFactory.getFlowControlSettings("subscription-name"))
+					.isEqualTo(expectedFlowControlForSubscriptionName);
+			assertThat(ctx.getBean("globalSubscriberFlowControlSettings", FlowControlSettings.class))
+					.isEqualTo(expectedFlowControlForSubscriptionName);
 		});
 	}
 
@@ -778,6 +824,22 @@ public class GcpPubSubAutoConfigurationTests {
 			assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
 			assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
 			assertThat(flowControl.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Ignore);
+
+			// Verify that beans for selective and global flow control settings are created.
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			FlowControlSettings expectedFlowControlForSubscriptionName = FlowControlSettings.newBuilder()
+					.setMaxOutstandingElementCount(11L)
+					.setMaxOutstandingRequestBytes(12L)
+					.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore).build();
+			FlowControlSettings expectedGlobalSettings = FlowControlSettings.newBuilder()
+					.setMaxOutstandingElementCount(11L).build();
+			assertThat(subscriberFactory.getFlowControlSettings("subscription-name"))
+					.isEqualTo(expectedFlowControlForSubscriptionName);
+			assertThat(ctx.getBean("subscriberFlowControlSettings-subscription-name", FlowControlSettings.class))
+					.isEqualTo(expectedFlowControlForSubscriptionName);
+			assertThat(ctx.getBean("globalSubscriberFlowControlSettings", FlowControlSettings.class))
+					.isEqualTo(expectedGlobalSettings);
 		});
 	}
 
