@@ -333,4 +333,18 @@ public class SpannerCompositeKeyProperty implements SpannerPersistentProperty {
 	public Method getWither() {
 		return null;
 	}
+
+	@Override
+	public Iterable<? extends TypeInformation<?>> getPersistentEntityTypeInformation() {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * Returns null for consistency with isAssociation().
+	 * @return always null
+	 */
+	@Override
+	public TypeInformation<?> getAssociationTargetTypeInformation() {
+		return null;
+	}
 }
