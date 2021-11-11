@@ -5,7 +5,7 @@
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>2.0.6-SNAPSHOT</version>
+	<version>3.0.0-SNAPSHOT</version>
 
 	<name>Spring Cloud GCP</name>
 	<description>Spring Cloud GCP</description>
@@ -62,8 +62,8 @@
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
 		<skip.surefire.tests>${skipTests}</skip.surefire.tests>
 		<skipTests>false</skipTests>
-		<spring-cloud-build.version>3.0.4</spring-cloud-build.version>
-		<spring-cloud-dependencies.version>2020.0.4</spring-cloud-dependencies.version>
+		<spring-cloud-build.version>3.1.0-RC1</spring-cloud-build.version>
+		<spring-cloud-dependencies.version>2021.0.0-RC1</spring-cloud-dependencies.version>
 		<spring-javaformat-checkstyle.version>0.0.29</spring-javaformat-checkstyle.version>
 		<zipkin-gcp.version>1.0.2</zipkin-gcp.version>
 		<spring-native.version>0.10.5</spring-native.version>

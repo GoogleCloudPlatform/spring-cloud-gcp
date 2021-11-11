@@ -88,15 +88,13 @@ We offer `SNAPSHOT` versions of the project that always reflect the latest code 
 <repositories>
     <repository>
         <id>snapshots-repo</id>
-        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        <url>https://google.oss.sonatype.org/content/repositories/snapshots</url>
         <snapshots>
             <enabled>true</enabled>
         </snapshots>
     </repository>
 </repositories>
 ----
-
-For example, the version `2.0.6-SNAPSHOT` is available from this repository.
 
 == Spring Boot Starters
 

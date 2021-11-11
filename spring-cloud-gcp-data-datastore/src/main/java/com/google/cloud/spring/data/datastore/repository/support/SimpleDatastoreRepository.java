@@ -215,4 +215,6 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 	public void deleteAllById(Iterable<? extends I> iterable) {
 		this.datastoreTemplate.deleteAllById(iterable, entityType);
 	}
+
+
 }
