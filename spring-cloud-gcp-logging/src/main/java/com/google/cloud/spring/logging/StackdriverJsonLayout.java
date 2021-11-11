@@ -302,7 +302,9 @@ public class StackdriverJsonLayout extends JsonLayout {
 	}
 
 	private String formatMessage(ILoggingEvent event) {
-		StringBuilder message = new StringBuilder(event.getFormattedMessage());
+		//the formatted message might be null, don't initialize StringBuilder with it, but append it afterwards
+		StringBuilder message = new StringBuilder();
+		message.append(event.getFormattedMessage());
 		if (!this.includeExceptionInMessage) {
 			return message.toString();
 		}

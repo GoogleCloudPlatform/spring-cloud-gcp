@@ -135,6 +135,29 @@ public class StackdriverJsonLayoutLoggerTests {
 	}
 
 	@Test
+	public void testNullMessage() {
+		Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutServiceCtxLoggerTests");
+
+		try {
+			throw new NullPointerException();
+		}
+		catch (NullPointerException e) {
+			logger.error(e.getMessage(), e);
+		}
+
+		// before issue 687, the log data would be silently swallowed and 'data' was null
+		Map<String, String> data = getLogMetadata();
+		assertThat(data)
+				.isNotNull()
+				.containsEntry(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "ERROR")
+				.containsKey(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME);
+
+		String loggedMessage = data.get(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME);
+		assertThat(loggedMessage)
+				.startsWith("null" + System.lineSeparator() + "java.lang.NullPointerException: null");
+	}
+
+	@Test
 	public void testCustomMDCFieldForTraceIdAndSpanId() {
 		Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutCustomMDCFieldTests");
 
