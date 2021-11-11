@@ -41,6 +41,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.util.Assert;
 
 /**
@@ -216,5 +217,8 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		this.datastoreTemplate.deleteAllById(iterable, entityType);
 	}
 
-
+	@Override
+	public <S extends T, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+		throw new UnsupportedOperationException();
+	}
 }
