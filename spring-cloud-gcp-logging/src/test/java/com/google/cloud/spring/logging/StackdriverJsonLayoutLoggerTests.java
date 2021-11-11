@@ -140,7 +140,8 @@ public class StackdriverJsonLayoutLoggerTests {
 
 		try {
 			throw new NullPointerException();
-		} catch (NullPointerException e) {
+		}
+		catch (NullPointerException e) {
 			logger.error(e.getMessage(), e);
 		}
 
