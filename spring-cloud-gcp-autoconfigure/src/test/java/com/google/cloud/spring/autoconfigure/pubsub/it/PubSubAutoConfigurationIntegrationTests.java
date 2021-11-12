@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.it;
 
+import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
@@ -151,6 +152,11 @@ public class PubSubAutoConfigurationIntegrationTests {
 			GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
 			PubSubConfiguration.FlowControl flowControl = gcpPubSubProperties
 					.computeSubscriberFlowControlSettings(subscriptionName, projectIdProvider.getProjectId());
+			FlowControlSettings flowControlSettings = FlowControlSettings.newBuilder().setMaxOutstandingElementCount(1L)
+					.setMaxOutstandingRequestBytes(1L)
+					.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore).build();
+			assertThat((FlowControlSettings) context.getBean("subscriberFlowControlSettings-test-sub-2"))
+					.isEqualTo(flowControlSettings);
 			assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(1L);
 			assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(1L);
 			assertThat(flowControl.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Ignore);
