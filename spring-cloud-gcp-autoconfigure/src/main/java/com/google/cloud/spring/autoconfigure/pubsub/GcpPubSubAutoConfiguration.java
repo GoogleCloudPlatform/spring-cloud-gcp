@@ -106,9 +106,13 @@ public class GcpPubSubAutoConfiguration {
 
 	private final ConcurrentHashMap<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap = new ConcurrentHashMap<>();
 
+	private final ConcurrentHashMap<String, FlowControlSettings> subscriberFlowControlSettingsMap = new ConcurrentHashMap<>();
+
 	private final ApplicationContext applicationContext;
 
 	private ThreadPoolTaskScheduler globalScheduler;
+
+	private FlowControlSettings globalFlowControlSettings;
 
 	public GcpPubSubAutoConfiguration(GcpPubSubProperties gcpPubSubProperties,
 			GcpProjectIdProvider gcpProjectIdProvider,
@@ -231,6 +235,8 @@ public class GcpPubSubAutoConfiguration {
 					"The subscriberFlowControlSettings bean is being deprecated. Please use application.properties to configure properties");
 			factory.setFlowControlSettings(flowControlSettings.getIfAvailable());
 		}
+		factory.setFlowControlSettingsMap(this.subscriberFlowControlSettingsMap);
+		factory.setGlobalFlowControlSettings(this.globalFlowControlSettings);
 		apiClock.ifAvailable(factory::setApiClock);
 		if (retrySettings.getIfAvailable() != null) {
 			logger.warn(
@@ -386,27 +392,43 @@ public class GcpPubSubAutoConfiguration {
 	}
 
 	@PostConstruct
-	public void registerSubscriberThreadPoolSchedulerBeans() {
+	public void registerSubscriberSettings() {
 		GenericApplicationContext context = (GenericApplicationContext) this.applicationContext;
+		registerSubscriberThreadPoolSchedulerBeans(context);
+		registerSubscriberFlowControlSettingsBeans(context);
+	}
+
+	private void registerSubscriberThreadPoolSchedulerBeans(GenericApplicationContext context) {
 		Integer globalExecutorThreads = this.gcpPubSubProperties.getSubscriber().getExecutorThreads();
 		Integer numThreads = globalExecutorThreads != null ? globalExecutorThreads
 				: PubSubConfiguration.DEFAULT_EXECUTOR_THREADS;
 		this.globalScheduler = createAndRegisterSchedulerBean(numThreads, "global-gcp-pubsub-subscriber",
 				"globalPubSubSubscriberThreadPoolScheduler", context);
-		Map<String, PubSubConfiguration.Subscriber> subscriberMap = this.gcpPubSubProperties.getSubscription();
-		registerSelectiveSchedulerBean(subscriberMap, context, this.finalProjectIdProvider);
+		registerSelectiveSchedulerBeans(context);
+	}
+
+	private void registerSubscriberFlowControlSettingsBeans(GenericApplicationContext context) {
+		if (context.containsBean("subscriberFlowControlSettings")) {
+			return;
+		}
+		this.globalFlowControlSettings = buildFlowControlSettings(
+				this.gcpPubSubProperties.getSubscriber().getFlowControl());
+		if (this.globalFlowControlSettings != null) {
+			context.registerBeanDefinition("globalSubscriberFlowControlSettings",
+					BeanDefinitionBuilder
+							.genericBeanDefinition(FlowControlSettings.class, () -> this.globalFlowControlSettings)
+							.getBeanDefinition());
+		}
+		createAndRegisterSelectiveFlowControlSettings(context);
 	}
 
 	/**
 	 * Creates and registers {@link ThreadPoolTaskScheduler} for subscription-specific
 	 * configurations.
-	 * @param subscriberMap subscriber properties map
 	 * @param context application context
-	 * @param projectIdProvider project Id provider.
 	 */
-	private void registerSelectiveSchedulerBean(
-			Map<String, PubSubConfiguration.Subscriber> subscriberMap,
-			GenericApplicationContext context, GcpProjectIdProvider projectIdProvider) {
+	private void registerSelectiveSchedulerBeans(GenericApplicationContext context) {
+		Map<String, PubSubConfiguration.Subscriber> subscriberMap = this.gcpPubSubProperties.getSubscription();
 		for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription : subscriberMap.entrySet()) {
 			String subscriptionName = subscription.getKey();
 			PubSubConfiguration.Subscriber selectiveSubscriber = subscriberMap.get(subscriptionName);
@@ -417,7 +439,7 @@ public class GcpPubSubAutoConfiguration {
 				ThreadPoolTaskScheduler selectiveScheduler = createAndRegisterSchedulerBean(selectiveExecutorThreads,
 						threadName, beanName, context);
 				String fullyQualifiedName = PubSubSubscriptionUtils
-						.toProjectSubscriptionName(subscriptionName, projectIdProvider.getProjectId()).toString();
+						.toProjectSubscriptionName(subscriptionName, this.finalProjectIdProvider.getProjectId()).toString();
 				this.threadPoolTaskSchedulerMap.putIfAbsent(fullyQualifiedName, selectiveScheduler);
 			}
 		}
@@ -448,11 +470,31 @@ public class GcpPubSubAutoConfiguration {
 	 * @param threadName thread name prefix to set for the scheduler
 	 * @return thread pool scheduler
 	 */
-	ThreadPoolTaskScheduler createThreadPoolTaskScheduler(Integer executorThreads, String threadName) {
+	private ThreadPoolTaskScheduler createThreadPoolTaskScheduler(Integer executorThreads, String threadName) {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
 		scheduler.setPoolSize(executorThreads);
 		scheduler.setThreadNamePrefix(threadName);
 		scheduler.setDaemon(true);
 		return scheduler;
+	}
+
+	private void createAndRegisterSelectiveFlowControlSettings(GenericApplicationContext context) {
+		Map<String, PubSubConfiguration.Subscriber> subscriberMap = this.gcpPubSubProperties.getSubscription();
+		for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription : subscriberMap.entrySet()) {
+			String subscriptionName = subscription.getKey();
+			PubSubConfiguration.FlowControl flowControl = this.gcpPubSubProperties.computeSubscriberFlowControlSettings(
+					subscriptionName,
+					this.finalProjectIdProvider.getProjectId());
+			FlowControlSettings flowControlSettings = buildFlowControlSettings(flowControl);
+			if (flowControlSettings != null && !flowControlSettings.equals(this.globalFlowControlSettings)) {
+				String fullyQualifiedName = PubSubSubscriptionUtils
+						.toProjectSubscriptionName(subscriptionName, this.finalProjectIdProvider.getProjectId()).toString();
+				this.subscriberFlowControlSettingsMap.putIfAbsent(fullyQualifiedName, flowControlSettings);
+				String beanName = "subscriberFlowControlSettings-" + subscriptionName;
+				context.registerBeanDefinition(beanName,
+						BeanDefinitionBuilder.genericBeanDefinition(FlowControlSettings.class, () -> flowControlSettings)
+								.getBeanDefinition());
+			}
+		}
 	}
 }

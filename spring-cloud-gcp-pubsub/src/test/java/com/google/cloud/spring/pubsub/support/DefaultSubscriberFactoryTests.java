@@ -469,10 +469,9 @@ public class DefaultSubscriberFactoryTests {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
 		factory.setCredentialsProvider(this.credentialsProvider);
 		factory.setGlobalScheduler(mockScheduler);
-		PubSubConfiguration.FlowControl flowControl = new PubSubConfiguration.FlowControl();
-		flowControl.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore);
-		when(mockPubSubConfiguration.computeSubscriberFlowControlSettings("defaultSubscription",
-				projectIdProvider.getProjectId())).thenReturn(flowControl);
+		FlowControlSettings flowControlSettings = FlowControlSettings.newBuilder()
+				.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore).build();
+		factory.setGlobalFlowControlSettings(flowControlSettings);
 		when(mockPubSubConfiguration.computeMaxAckExtensionPeriod("defaultSubscription",
 				projectIdProvider.getProjectId()))
 				.thenReturn(2L);
@@ -505,27 +504,35 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
-	public void testGetFlowControlSettings_configurationIsPresent() {
-		GcpProjectIdProvider projectIdProvider = () -> "project";
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
-		PubSubConfiguration.FlowControl flowControl = new PubSubConfiguration.FlowControl();
-		flowControl.setMaxOutstandingRequestBytes(10L);
-		when(mockPubSubConfiguration.computeSubscriberFlowControlSettings("defaultSubscription1",
-				projectIdProvider.getProjectId())).thenReturn(flowControl);
+	public void testGetFlowControlSettings_presentInMap_pickSubscriptionSpecific() {
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
+
+		ConcurrentHashMap<String, FlowControlSettings> settingsMap = new ConcurrentHashMap<>();
+		FlowControlSettings expectedFlowSettings = FlowControlSettings.newBuilder()
+				.setMaxOutstandingRequestBytes(10L)
+				.build();
+		settingsMap.put("projects/project/subscriptions/defaultSubscription1", expectedFlowSettings);
+		factory.setFlowControlSettingsMap(settingsMap);
 
 		FlowControlSettings actualFlowSettings = factory.getFlowControlSettings("defaultSubscription1");
-
 		assertThat(actualFlowSettings.getMaxOutstandingRequestBytes()).isEqualTo(10L);
 		assertThat(actualFlowSettings.getMaxOutstandingElementCount()).isNull();
 		assertThat(actualFlowSettings.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Block);
 	}
 
 	@Test
-	public void testGetFlowControlSettings_newConfiguration() {
-		GcpProjectIdProvider projectIdProvider = () -> "project";
-		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
+	public void testGetFlowControlSettings_notPresentInMap_pickGlobal() {
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 
-		assertThat(factory.getFlowControlSettings("defaultSubscription1")).isNull();
+		FlowControlSettings expectedFlowSettings = FlowControlSettings.newBuilder()
+				.setMaxOutstandingRequestBytes(10L)
+				.build();
+		factory.setGlobalFlowControlSettings(expectedFlowSettings);
+
+		FlowControlSettings actualFlowSettings = factory.getFlowControlSettings("defaultSubscription1");
+		assertThat(actualFlowSettings.getMaxOutstandingRequestBytes()).isEqualTo(10L);
+		assertThat(actualFlowSettings.getMaxOutstandingElementCount()).isNull();
+		assertThat(actualFlowSettings.getLimitExceededBehavior()).isEqualTo(FlowController.LimitExceededBehavior.Block);
 	}
 
 	@Test

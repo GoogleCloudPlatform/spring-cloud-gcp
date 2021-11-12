@@ -91,6 +91,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private ThreadPoolTaskScheduler globalScheduler;
 
+	private ConcurrentMap<String, FlowControlSettings> flowControlSettingsMap = new ConcurrentHashMap<>();
+
+	private FlowControlSettings globalFlowControlSettings;
+
 	private ConcurrentHashMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
 
 	private ExecutorProvider defaultExecutorProvider;
@@ -549,26 +553,23 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	/**
-	 * Creates {@link FlowControlSettings}, given subscriber flow control settings. Returns
-	 * null if none of the flow control settings are set. Note that if flow control settings
-	 * are set using a Spring-managed bean then subscription-specific settings in
-	 * application.properties are ignored.
+	 * Fetches subscriber {@link FlowControlSettings}. User-provided bean takes precedence
+	 * over properties from application.properties. Returns subscription-specific flow control
+	 * settings if present, otherwise, returns global subscriber settings.
 	 * @param subscriptionName subscription name
 	 * @return flow control settings for subscriber
 	 */
 	public FlowControlSettings getFlowControlSettings(
 			String subscriptionName) {
+		String fullyQualifiedName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId)
+				.toString();
 		if (this.flowControlSettings != null) {
 			return this.flowControlSettings;
 		}
-		PubSubConfiguration.FlowControl flowControl = this.pubSubConfiguration.computeSubscriberFlowControlSettings(subscriptionName,
-				this.projectId);
-		FlowControlSettings.Builder builder = FlowControlSettings.newBuilder();
-		boolean shouldBuild = ifSet(flowControl.getLimitExceededBehavior(), builder::setLimitExceededBehavior);
-		shouldBuild |= ifSet(flowControl.getMaxOutstandingElementCount(), builder::setMaxOutstandingElementCount);
-		shouldBuild |= ifSet(flowControl.getMaxOutstandingRequestBytes(), builder::setMaxOutstandingRequestBytes);
-
-		return shouldBuild ? builder.build() : null;
+		if (flowControlSettingsMap.containsKey(fullyQualifiedName)) {
+			return this.flowControlSettingsMap.get(fullyQualifiedName);
+		}
+		return this.globalFlowControlSettings;
 	}
 
 	private <T> boolean ifSet(T property, Consumer<T> consumer) {
@@ -608,6 +609,14 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	public void setGlobalScheduler(ThreadPoolTaskScheduler threadPoolTaskScheduler) {
 		this.globalScheduler = threadPoolTaskScheduler;
+	}
+
+	public void setFlowControlSettingsMap(ConcurrentMap<String, FlowControlSettings> flowControlSettingsMap) {
+		this.flowControlSettingsMap = flowControlSettingsMap;
+	}
+
+	public void setGlobalFlowControlSettings(FlowControlSettings flowControlSettings) {
+		this.globalFlowControlSettings = flowControlSettings;
 	}
 
 	private boolean shouldAddToHealthCheck(String subscriptionName) {
