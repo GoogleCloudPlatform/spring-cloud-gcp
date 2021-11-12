@@ -35,8 +35,8 @@ import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Value;
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
 import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -64,7 +64,7 @@ public class SpannerDatabaseAdminTemplateTests {
 
 	private List<String> ddlList;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		this.databaseAdminClient = mock(DatabaseAdminClient.class);
 		this.databaseClient = mock(DatabaseClient.class);
