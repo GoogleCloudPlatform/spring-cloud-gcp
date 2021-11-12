@@ -25,6 +25,7 @@ import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.auth.Credentials;
+import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
@@ -843,6 +844,22 @@ public class GcpPubSubAutoConfigurationTests {
 					.isEqualTo(expectedGlobalSettings);
 		});
 	}
+
+	@Test
+	public void createSubscriberStub_flowControlSettings_noPropertiesSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withUserConfiguration(TestConfig.class);
+		contextRunner.run(ctx -> {
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			Subscriber subscriber = subscriberFactory.createSubscriber("subscription-name", (message, consumer) -> {
+			});
+			assertThat(subscriber.getFlowControlSettings())
+					.isEqualTo(Subscriber.Builder.getDefaultFlowControlSettings());
+		});
+	}
+
 
 	static class TestConfig {
 
