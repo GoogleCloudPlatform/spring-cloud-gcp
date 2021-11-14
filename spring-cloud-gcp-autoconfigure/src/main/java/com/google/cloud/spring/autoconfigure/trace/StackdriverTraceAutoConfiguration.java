@@ -235,6 +235,7 @@ public class StackdriverTraceAutoConfiguration {
 
 		return StackdriverSender.newBuilder(channel)
 				.projectId(this.finalProjectIdProvider.getProjectId())
+				.serverResponseTimeoutMs(traceProperties.getServerResponseTimeoutMs())
 				.callOptions(callOptions)
 				.build();
 	}
