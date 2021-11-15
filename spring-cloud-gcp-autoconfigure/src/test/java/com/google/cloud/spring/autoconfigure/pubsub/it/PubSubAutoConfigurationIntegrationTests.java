@@ -18,6 +18,7 @@ package com.google.cloud.spring.autoconfigure.pubsub.it;
 
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
+import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
@@ -113,6 +114,8 @@ public class PubSubAutoConfigurationIntegrationTests {
 			assertThat(scheduler.isDaemon()).isTrue();
 			assertThat((ThreadPoolTaskScheduler) context.getBean("globalPubSubSubscriberThreadPoolScheduler"))
 					.isNotNull();
+			assertThat((ExecutorProvider) context.getBean("subscriberExecutorProvider-test-sub-1"))
+					.isNotNull();
 			assertThat(gcpPubSubProperties.getSubscriber().getRetryableCodes())
 					.isEqualTo(new Code[] { Code.INTERNAL });
 
@@ -169,6 +172,8 @@ public class PubSubAutoConfigurationIntegrationTests {
 			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-test-sub-2");
 			assertThat(scheduler.isDaemon()).isTrue();
 			assertThat((ThreadPoolTaskScheduler) context.getBean("globalPubSubSubscriberThreadPoolScheduler"))
+					.isNotNull();
+			assertThat((ExecutorProvider) context.getBean("subscriberExecutorProvider-test-sub-2"))
 					.isNotNull();
 
 			pubSubAdmin.deleteSubscription(subscriptionName);

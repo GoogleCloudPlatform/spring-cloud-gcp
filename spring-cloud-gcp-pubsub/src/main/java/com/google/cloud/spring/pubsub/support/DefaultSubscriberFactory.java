@@ -26,7 +26,6 @@ import com.google.api.core.ApiClock;
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
-import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.HeaderProvider;
 import com.google.api.gax.rpc.StatusCode.Code;
@@ -44,7 +43,6 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PullRequest;
 import org.threeten.bp.Duration;
 
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.Assert;
 
 /**
@@ -87,17 +85,13 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private PubSubConfiguration pubSubConfiguration;
 
-	private ConcurrentMap<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap = new ConcurrentHashMap<>();
-
-	private ThreadPoolTaskScheduler globalScheduler;
-
 	private ConcurrentMap<String, FlowControlSettings> flowControlSettingsMap = new ConcurrentHashMap<>();
 
 	private FlowControlSettings globalFlowControlSettings;
 
 	private ConcurrentHashMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
 
-	private ExecutorProvider defaultExecutorProvider;
+	private ExecutorProvider globalExecutorProvider;
 
 	private Code[] retryableCodes;
 
@@ -352,7 +346,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		}
 
 		ExecutorProvider executor = this.executorProvider != null ? this.executorProvider
-				: createGlobalExecutorProvider();
+				: this.globalExecutorProvider;
 		if (executor != null) {
 			subscriberStubSettings.setBackgroundExecutorProvider(executor);
 		}
@@ -452,68 +446,13 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (this.executorProvider != null) {
 			return this.executorProvider;
 		}
-		return getExecutorProviderFromConfigurations(subscriptionName);
-	}
-
-	/**
-	 * Creates {@link ExecutorProvider} given a subscription name.
-	 * @param subscriptionName subscription name
-	 * @return executor provider
-	 */
-	ExecutorProvider getExecutorProviderFromConfigurations(String subscriptionName) {
-		ThreadPoolTaskScheduler scheduler = fetchThreadPoolTaskScheduler(subscriptionName);
-		if (scheduler == null) {
-			return null;
-		}
-		if (!scheduler.equals(this.globalScheduler)) {
-			return createExecutorProvider(subscriptionName, scheduler);
-		}
-		return createGlobalExecutorProvider();
-	}
-
-	ExecutorProvider createGlobalExecutorProvider() {
-		if (this.globalScheduler == null) {
-			return null;
-		}
-		if (this.defaultExecutorProvider != null) {
-			return this.defaultExecutorProvider;
-		}
-		this.globalScheduler.initialize();
-		this.defaultExecutorProvider = FixedExecutorProvider.create(this.globalScheduler.getScheduledExecutor());
-		return this.defaultExecutorProvider;
-	}
-
-	ExecutorProvider createExecutorProvider(String subscriptionName, ThreadPoolTaskScheduler scheduler) {
-		if (this.executorProviderMap.containsKey(subscriptionName)) {
-			return this.executorProviderMap.get(subscriptionName);
-		}
-		scheduler.initialize();
-		ExecutorProvider executor = FixedExecutorProvider.create(scheduler.getScheduledExecutor());
-		return this.executorProviderMap.computeIfAbsent(subscriptionName, k -> executor);
-	}
-
-	/**
-	 * Returns {@link ThreadPoolTaskScheduler} given a subscription name. If
-	 * subscription-specific scheduler for the subscription name is not found then return a
-	 * global threadPoolTaskScheduler, otherwise, return the subscription-specific scheduler.
-	 * @param subscriptionName subscription name
-	 * @return thread pool scheduler
-	 */
-	public ThreadPoolTaskScheduler fetchThreadPoolTaskScheduler(String subscriptionName) {
 		String fullyQualifiedName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId)
 				.toString();
-		if (this.threadPoolTaskSchedulerMap.containsKey(fullyQualifiedName)) {
-			return threadPoolTaskSchedulerMap.get(fullyQualifiedName);
+		if (this.executorProviderMap.containsKey(fullyQualifiedName)) {
+			return this.executorProviderMap.get(fullyQualifiedName);
 		}
-		return this.globalScheduler;
-	}
+		return this.globalExecutorProvider;
 
-	Map<String, ExecutorProvider> getExecutorProviderMap() {
-		return this.executorProviderMap;
-	}
-
-	ExecutorProvider getDefaultExecutorProvider() {
-		return this.defaultExecutorProvider;
 	}
 
 	/**
@@ -602,13 +541,21 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		return this.pubSubConfiguration.computePullEndpoint(subscriptionName, projectId);
 	}
 
-	public void setThreadPoolTaskSchedulerMap(
-			ConcurrentMap<String, ThreadPoolTaskScheduler> threadPoolTaskSchedulerMap) {
-		this.threadPoolTaskSchedulerMap = threadPoolTaskSchedulerMap;
+	public void setExecutorProviderMap(
+			ConcurrentHashMap<String, ExecutorProvider> executorProviderMap) {
+		this.executorProviderMap = executorProviderMap;
 	}
 
-	public void setGlobalScheduler(ThreadPoolTaskScheduler threadPoolTaskScheduler) {
-		this.globalScheduler = threadPoolTaskScheduler;
+	public void setGlobalExecutorProvider(ExecutorProvider executorProvider) {
+		this.globalExecutorProvider = executorProvider;
+	}
+
+	public ExecutorProvider getGlobalExecutorProvider() {
+		return this.globalExecutorProvider;
+	}
+
+	public Map<String, ExecutorProvider> getExecutorProviderMap() {
+		return this.executorProviderMap;
 	}
 
 	public void setFlowControlSettingsMap(ConcurrentMap<String, FlowControlSettings> flowControlSettingsMap) {
