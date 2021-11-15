@@ -87,7 +87,7 @@ public class GcpTraceProperties implements CredentialsSupplier {
 	private int messageTimeout = 1;
 
 	/**
-	 * Timeout in seconds for server response. Ref: https://github.com/spring-cloud/spring-cloud-gcp/issues/1617.
+	 * Timeout in seconds for server response when sending traces.
 	 */
 	private Long serverResponseTimeoutMs = 5000L;
 
