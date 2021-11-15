@@ -131,6 +131,8 @@ public class StackdriverTraceAutoConfigurationTests {
 					assertThat(callOptions.getCompressor()).isNull();
 					assertThat(callOptions.getAuthority()).isNull();
 					assertThat(callOptions.isWaitForReady()).isFalse();
+					assertThat(FieldUtils.readField(sender, "serverResponseTimeoutMs", true))
+							.isEqualTo(5000L);
 		});
 	}
 
