@@ -89,7 +89,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private FlowControlSettings globalFlowControlSettings;
 
-	private ConcurrentHashMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
+	private ConcurrentMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
 
 	private ExecutorProvider globalExecutorProvider;
 
@@ -542,7 +542,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 	}
 
 	public void setExecutorProviderMap(
-			ConcurrentHashMap<String, ExecutorProvider> executorProviderMap) {
+			ConcurrentMap<String, ExecutorProvider> executorProviderMap) {
 		this.executorProviderMap = executorProviderMap;
 	}
 
