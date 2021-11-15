@@ -89,7 +89,7 @@ public class GcpTraceProperties implements CredentialsSupplier {
 	/**
 	 * Timeout in seconds for server response when sending traces.
 	 */
-	private Long serverResponseTimeoutMs = 5000L;
+	private Long serverResponseTimeoutMs;
 
 	public String getProjectId() {
 		return this.projectId;
