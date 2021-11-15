@@ -137,7 +137,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	@Test
 	public void testServerResponseTimeout() {
 		this.contextRunner
-				.withPropertyValues("spring.cloud.gcp.trace.serverResponseTimeoutMs=1000")
+				.withPropertyValues("spring.cloud.gcp.trace.server-response-timeout-ms=1000")
 				.withBean(
 						StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
 						SpanHandler.class,
