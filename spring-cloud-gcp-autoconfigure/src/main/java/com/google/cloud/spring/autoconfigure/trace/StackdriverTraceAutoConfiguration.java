@@ -52,6 +52,7 @@ import zipkin2.reporter.Sender;
 import zipkin2.reporter.brave.ZipkinSpanHandler;
 import zipkin2.reporter.stackdriver.StackdriverEncoder;
 import zipkin2.reporter.stackdriver.StackdriverSender;
+import zipkin2.reporter.stackdriver.StackdriverSender.Builder;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -73,6 +74,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  * @author Mike Eltsufin
  * @author Chengyuan Zhao
  * @author Tim Ysewyn
+ * @author Vinesh Prasanna M
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ GcpTraceProperties.class })
@@ -233,10 +235,15 @@ public class StackdriverTraceAutoConfiguration {
 			}
 		}
 
-		return StackdriverSender.newBuilder(channel)
+		final Builder builder = StackdriverSender.newBuilder(channel)
 				.projectId(this.finalProjectIdProvider.getProjectId())
-				.callOptions(callOptions)
-				.build();
+				.callOptions(callOptions);
+
+		if (traceProperties.getServerResponseTimeoutMs() != null) {
+			builder.serverResponseTimeoutMs(traceProperties.getServerResponseTimeoutMs());
+		}
+
+		return builder.build();
 	}
 
 	@Bean
