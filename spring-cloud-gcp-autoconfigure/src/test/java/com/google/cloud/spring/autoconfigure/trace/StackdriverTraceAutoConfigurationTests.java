@@ -38,11 +38,13 @@ import com.google.devtools.cloudtrace.v2.BatchWriteSpansRequest;
 import com.google.devtools.cloudtrace.v2.Span;
 import com.google.devtools.cloudtrace.v2.TraceServiceGrpc;
 import com.google.protobuf.Empty;
+import io.grpc.CallOptions;
 import io.grpc.ManagedChannel;
 import io.grpc.Server;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 import zipkin2.Call;
@@ -52,6 +54,7 @@ import zipkin2.codec.SpanBytesEncoder;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Sender;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
+import zipkin2.reporter.stackdriver.StackdriverSender;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -78,6 +81,8 @@ import static org.mockito.Mockito.when;
  * @author Mike Eltsufin
  * @author Chengyuan Zhao
  * @author Tim Ysewyn
+ * @author Elena Felder
+ * @author Vinesh Prasanna M
  */
 public class StackdriverTraceAutoConfigurationTests {
 
@@ -104,6 +109,50 @@ public class StackdriverTraceAutoConfigurationTests {
 			assertThat(context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class)).isNotNull();
 			assertThat(context.getBean(ManagedChannel.class)).isNotNull();
 		});
+	}
+
+	@Test
+	public void testDefaultConfig() {
+		this.contextRunner
+				.withBean(
+						StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
+						SpanHandler.class,
+						() ->  SpanHandler.NOOP)
+				.run(context -> {
+					assertThat(context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class))
+							.isNotNull()
+							.isInstanceOf(StackdriverSender.class);
+					final StackdriverSender sender =
+							(StackdriverSender) context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class);
+					final CallOptions callOptions = (CallOptions) FieldUtils.readField(sender, "callOptions", true);
+					assertThat(callOptions).isNotNull();
+					assertThat(callOptions.getMaxInboundMessageSize()).isNull();
+					assertThat(callOptions.getMaxOutboundMessageSize()).isNull();
+					assertThat(callOptions.getCompressor()).isNull();
+					assertThat(callOptions.getAuthority()).isNull();
+					assertThat(callOptions.isWaitForReady()).isFalse();
+					assertThat(FieldUtils.readField(sender, "serverResponseTimeoutMs", true))
+							.isEqualTo(5000L);
+		});
+	}
+
+	@Test
+	public void testServerResponseTimeout() {
+		this.contextRunner
+				.withPropertyValues("spring.cloud.gcp.trace.server-response-timeout-ms=1000")
+				.withBean(
+						StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
+						SpanHandler.class,
+						() ->  SpanHandler.NOOP)
+				.run(context -> {
+					assertThat(context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class))
+							.isNotNull()
+							.isInstanceOf(StackdriverSender.class);
+					final StackdriverSender sender =
+							(StackdriverSender) context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class);
+					assertThat(FieldUtils.readField(sender, "serverResponseTimeoutMs", true))
+							.isEqualTo(1000L);
+				});
 	}
 
 	@Test
