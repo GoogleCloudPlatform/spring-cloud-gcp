@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import brave.propagation.Propagation;
-import brave.test.propagation.PropagationSetterTest;
 import com.google.pubsub.v1.PubsubMessage;
 
 public class PubSubProducerRequestSetterTest extends PropagationSetterTest<PubSubProducerRequest> {
