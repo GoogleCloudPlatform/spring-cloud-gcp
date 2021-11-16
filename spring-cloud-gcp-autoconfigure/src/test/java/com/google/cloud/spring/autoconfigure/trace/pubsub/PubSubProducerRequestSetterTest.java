@@ -16,12 +16,16 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import brave.propagation.Propagation;
 import brave.test.propagation.PropagationSetterTest;
 import com.google.pubsub.v1.PubsubMessage;
+import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PubSubProducerRequestSetterTest extends PropagationSetterTest<PubSubProducerRequest> {
 	PubSubProducerRequest request = new PubSubProducerRequest(
@@ -44,5 +48,15 @@ public class PubSubProducerRequestSetterTest extends PropagationSetterTest<PubSu
 				.filter(entry -> entry.getKey().equals(key))
 				.map(entry -> entry.getValue())
 				.collect(Collectors.toList());
+	}
+
+	@Test
+	public void test() {
+		setter().put(request(), "X-B3-TraceId", "48485a3953bb6124");
+		Iterable<String> result = read(request(), "X-B3-TraceId");
+		assertThat(result)
+				.containsExactly("48485a3953bb6124");
+
+
 	}
 }

@@ -44,7 +44,7 @@
 		<javadoc.failOnWarnings>false</javadoc.failOnWarnings>
 		<maven-checkstyle-plugin.failOnViolation>true</maven-checkstyle-plugin.failOnViolation>
 		<maven-checkstyle-plugin.failsOnError>true</maven-checkstyle-plugin.failsOnError>
-		<maven-checkstyle-plugin.skip>false</maven-checkstyle-plugin.skip>
+		<maven-checkstyle-plugin.skip>true</maven-checkstyle-plugin.skip>
 		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
