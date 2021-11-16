@@ -57,6 +57,7 @@ public class PubSubAutoConfigurationIntegrationTests {
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.initial-rpc-timeout-seconds=600",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.rpc-timeout-multiplier=1",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retry.max-rpc-timeout-seconds=600",
+					"spring.cloud.gcp.pubsub.subscription.test-sub-1.retryableCodes=INTERNAL",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-2.executor-threads=1",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-2.max-ack-extension-period=0",
 					"spring.cloud.gcp.pubsub.subscription.test-sub-2.parallel-pull-count=1",
@@ -113,7 +114,7 @@ public class PubSubAutoConfigurationIntegrationTests {
 			assertThat(scheduler.isDaemon()).isTrue();
 			assertThat((ThreadPoolTaskScheduler) context.getBean("globalPubSubSubscriberThreadPoolScheduler"))
 					.isNotNull();
-			assertThat(gcpPubSubProperties.getSubscriber().getRetryableCodes())
+			assertThat(gcpPubSubProperties.computeRetryableCodes("test-sub-1", projectIdProvider.getProjectId()))
 					.isEqualTo(new Code[] { Code.INTERNAL });
 
 			pubSubAdmin.deleteSubscription(subscriptionName);

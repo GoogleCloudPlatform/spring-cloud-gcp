@@ -635,7 +635,7 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
-	public void testBuildSubscriberStubSettings_retryableCodes() throws IllegalAccessException, IOException {
+	public void testBuildSubscriberStubSettings_retryableCodes_pickUserProvidedValue() throws IllegalAccessException, IOException {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
 		factory.setRetryableCodes(new Code[] { Code.INTERNAL });
@@ -650,13 +650,43 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
-	public void testBuildGlobalSubscriberStubSettings_retryableCodes() throws IOException, IllegalAccessException {
+	public void testBuildSubscriberStubSettings_retryableCodes_pickConfiguration() throws IllegalAccessException, IOException {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+		when(mockPubSubConfiguration.computeSubscriberRetrySettings("someSubscription",
+				projectIdProvider.getProjectId())).thenReturn(new PubSubConfiguration.Retry());
+		when(mockPubSubConfiguration.computeRetryableCodes("someSubscription", projectIdProvider.getProjectId()))
+				.thenReturn(new Code[] { Code.INTERNAL });
+
+		assertThat(FieldUtils.readField(factory, "retryableCodes", true)).isNull();
+
+		SubscriberStubSettings settings = factory.buildSubscriberStubSettings("someSubscription");
+		assertThat(settings.pullSettings().getRetryableCodes())
+				.containsExactly(Code.INTERNAL);
+	}
+
+	@Test
+	public void testBuildGlobalSubscriberStubSettings_retryableCodes_userProvidedValue()
+			throws IOException, IllegalAccessException {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
 		factory.setRetryableCodes(new Code[] { Code.INTERNAL });
 
 		assertThat(FieldUtils.readField(factory, "retryableCodes", true))
 				.isEqualTo(new Code[] { Code.INTERNAL });
+
+		SubscriberStubSettings settings = factory.buildGlobalSubscriberStubSettings();
+		assertThat(settings.pullSettings().getRetryableCodes())
+				.containsExactly(Code.INTERNAL);
+	}
+
+	@Test
+	public void testBuildGlobalSubscriberStubSettings_retryableCodes_pickConfiguration() throws IOException {
+		GcpProjectIdProvider projectIdProvider = () -> "project";
+		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+		when(mockPubSubConfiguration.getSubscriber()).thenReturn(mockSubscriber);
+		when(mockSubscriber.getRetryableCodes()).thenReturn(new Code[] { Code.INTERNAL });
+		when(mockSubscriber.getRetry()).thenReturn(new PubSubConfiguration.Retry());
 
 		SubscriberStubSettings settings = factory.buildGlobalSubscriberStubSettings();
 		assertThat(settings.pullSettings().getRetryableCodes())

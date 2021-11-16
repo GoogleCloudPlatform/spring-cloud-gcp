@@ -364,9 +364,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			applyGlobalRetrySettings(subscriberStubSettings);
 		}
 
-		if (this.retryableCodes != null) {
-			subscriberStubSettings.pullSettings().setRetryableCodes(
-					this.retryableCodes);
+		Code[] codes = this.retryableCodes != null ? this.retryableCodes
+				: this.pubSubConfiguration.getSubscriber().getRetryableCodes();
+		if (codes != null) {
+			subscriberStubSettings.pullSettings().setRetryableCodes(codes);
 		}
 
 		return subscriberStubSettings.build();
@@ -405,9 +406,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.pullSettings().setRetrySettings(retrySettings);
 		}
 
-		if (this.retryableCodes != null) {
-			subscriberStubSettings.pullSettings().setRetryableCodes(
-					this.retryableCodes);
+		Code[] codes = getRetryableCodes(subscriptionName);
+		if (codes != null) {
+			subscriberStubSettings.pullSettings().setRetryableCodes(codes);
 		}
 
 		return subscriberStubSettings.build();
@@ -432,12 +433,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (this.apiClock != null) {
 			subscriberStubSettings.setClock(this.apiClock);
 		}
-
-		if (this.retryableCodes != null) {
-			subscriberStubSettings.pullSettings().setRetryableCodes(
-					this.retryableCodes);
-		}
-
 		return subscriberStubSettings;
 	}
 
@@ -600,6 +595,13 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			return this.pullEndpoint;
 		}
 		return this.pubSubConfiguration.computePullEndpoint(subscriptionName, projectId);
+	}
+
+	public Code[] getRetryableCodes(String subscriptionName) {
+		if (this.retryableCodes != null) {
+			return this.retryableCodes;
+		}
+		return this.pubSubConfiguration.computeRetryableCodes(subscriptionName, projectId);
 	}
 
 	public void setThreadPoolTaskSchedulerMap(
