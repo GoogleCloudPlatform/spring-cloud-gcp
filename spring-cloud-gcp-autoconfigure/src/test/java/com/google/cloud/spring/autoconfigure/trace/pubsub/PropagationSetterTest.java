@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// Copied from: https://github.com/openzipkin/brave/blob/master/brave-tests/src/main/java/brave/test/propagation/PropagationSetterTest.java
 // Brought this class internally as temporary fix
 // for assertj related test errors to unblock other upgrades.
 public abstract class PropagationSetterTest<R> {
