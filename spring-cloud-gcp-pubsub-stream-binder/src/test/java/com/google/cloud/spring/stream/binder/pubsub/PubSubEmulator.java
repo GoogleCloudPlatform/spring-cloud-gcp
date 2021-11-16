@@ -34,7 +34,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.rules.ExternalResource;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -51,7 +53,7 @@ import static org.junit.Assume.assumeTrue;
  *
  * @since 1.1
  */
-public class PubSubEmulator extends ExternalResource {
+public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback {
 
 	private static final Path EMULATOR_CONFIG_DIR = Paths.get(System.getProperty("user.home")).resolve(
 			Paths.get(".config", "gcloud", "emulators", "pubsub"));
@@ -88,7 +90,7 @@ public class PubSubEmulator extends ExternalResource {
 	 * @throws InterruptedException if process is stopped while waiting to retry.
 	 */
 	@Override
-	protected void before() throws IOException, InterruptedException {
+	public void beforeAll(ExtensionContext extensionContext) throws IOException, InterruptedException {
 
 		assumeTrue("PubSubEmulator rule disabled. Please enable with -Dit.pubsub-emulator.", this.enableTests);
 
@@ -105,7 +107,7 @@ public class PubSubEmulator extends ExternalResource {
 	 * Any failure is logged and ignored since it's not critical to the tests' operation.
 	 */
 	@Override
-	protected void after() {
+	public void afterAll(ExtensionContext extensionContext) throws Exception {
 		findAndDestroyEmulator();
 	}
 
