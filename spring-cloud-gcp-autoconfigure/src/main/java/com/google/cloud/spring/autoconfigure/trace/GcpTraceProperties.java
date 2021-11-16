@@ -86,6 +86,11 @@ public class GcpTraceProperties implements CredentialsSupplier {
 	 */
 	private int messageTimeout = 1;
 
+	/**
+	 * Timeout in seconds for server response when sending traces.
+	 */
+	private Long serverResponseTimeoutMs;
+
 	public String getProjectId() {
 		return this.projectId;
 	}
@@ -160,5 +165,13 @@ public class GcpTraceProperties implements CredentialsSupplier {
 
 	public void setMessageTimeout(int messageTimeout) {
 		this.messageTimeout = messageTimeout;
+	}
+
+	public Long getServerResponseTimeoutMs() {
+		return serverResponseTimeoutMs;
+	}
+
+	public void setServerResponseTimeoutMs(Long serverResponseTimeoutMs) {
+		this.serverResponseTimeoutMs = serverResponseTimeoutMs;
 	}
 }
