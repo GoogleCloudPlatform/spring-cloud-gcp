@@ -359,7 +359,7 @@ public class DefaultSubscriberFactoryTests {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 		factory.setSubscriberStubRetrySettings(expectedRetrySettings);
 
-		RetrySettings actualRetrySettings = factory.getRetrySettings("defaultSubscriber");
+		RetrySettings actualRetrySettings = factory.getRetrySettings("mySubscription");
 
 		assertThat(actualRetrySettings.getTotalTimeout()).isEqualTo(Duration.ofSeconds(10));
 		assertThat(actualRetrySettings.getInitialRetryDelay()).isEqualTo(Duration.ofSeconds(10));
@@ -372,23 +372,24 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
-	public void testGetRetrySettings_configurationIsPresent() {
+	public void testGetRetrySettings_presentInMap_pickSelective() {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
-		PubSubConfiguration.Retry retrySettings = new PubSubConfiguration.Retry();
-		retrySettings.setTotalTimeoutSeconds(10L);
-		retrySettings.setInitialRetryDelaySeconds(10L);
-		retrySettings.setRetryDelayMultiplier(10.0);
-		retrySettings.setMaxRetryDelaySeconds(10L);
-		retrySettings.setMaxAttempts(10);
-		retrySettings.setInitialRpcTimeoutSeconds(10L);
-		retrySettings.setRpcTimeoutMultiplier(10.0);
-		retrySettings.setMaxRpcTimeoutSeconds(10L);
-		when(mockPubSubConfiguration.computeSubscriberRetrySettings("defaultSubscription1",
-				projectIdProvider.getProjectId()))
-						.thenReturn(retrySettings);
+		RetrySettings expectedRetrySettings = RetrySettings.newBuilder().setTotalTimeout(Duration.ofSeconds(10L))
+				.setInitialRetryDelay(Duration.ofSeconds(10L))
+				.setRetryDelayMultiplier(10)
+				.setMaxRetryDelay(Duration.ofSeconds(10L))
+				.setMaxAttempts(10)
+				.setInitialRpcTimeout(Duration.ofSeconds(10L))
+				.setRpcTimeoutMultiplier(10)
+				.setMaxRpcTimeout(Duration.ofSeconds(10))
+				.build();
+		ConcurrentHashMap<String, RetrySettings> settingsMap = new ConcurrentHashMap<>();
+		settingsMap.put("projects/project/subscriptions/mySubscription", expectedRetrySettings);
+		factory.setRetrySettingsMap(settingsMap);
 
-		RetrySettings actualRetrySettings = factory.getRetrySettings("defaultSubscription1");
+		RetrySettings actualRetrySettings = factory.getRetrySettings("mySubscription");
+
 		assertThat(actualRetrySettings.getTotalTimeout()).isEqualTo(Duration.ofSeconds(10));
 		assertThat(actualRetrySettings.getInitialRetryDelay()).isEqualTo(Duration.ofSeconds(10));
 		assertThat(actualRetrySettings.getRetryDelayMultiplier()).isEqualTo(10.0);
@@ -400,24 +401,43 @@ public class DefaultSubscriberFactoryTests {
 	}
 
 	@Test
-	public void testGetRetrySettings_newConfiguration() {
+	public void testGetRetrySettings_notPresentInMap_pickGlobal() {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
+		RetrySettings expectedRetrySettings = RetrySettings.newBuilder().setTotalTimeout(Duration.ofSeconds(10L))
+				.setInitialRetryDelay(Duration.ofSeconds(10L))
+				.setRetryDelayMultiplier(10)
+				.setMaxRetryDelay(Duration.ofSeconds(10L))
+				.setMaxAttempts(10)
+				.setInitialRpcTimeout(Duration.ofSeconds(10L))
+				.setRpcTimeoutMultiplier(10)
+				.setMaxRpcTimeout(Duration.ofSeconds(10L))
+				.build();
+		factory.setGlobalRetrySettings(expectedRetrySettings);
 
-		assertThat(factory.getRetrySettings("defaultSubscription1")).isNull();
+		RetrySettings actualRetrySettings = factory.getRetrySettings("mySubscription");
+
+		assertThat(actualRetrySettings.getTotalTimeout()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getInitialRetryDelay()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getRetryDelayMultiplier()).isEqualTo(10.0);
+		assertThat(actualRetrySettings.getInitialRpcTimeout()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getMaxRetryDelay()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(actualRetrySettings.getMaxAttempts()).isEqualTo(10);
+		assertThat(actualRetrySettings.getRpcTimeoutMultiplier()).isEqualTo(10.0);
+		assertThat(actualRetrySettings.getMaxRpcTimeout()).isEqualTo(Duration.ofSeconds(10));
 	}
 
 	@Test
 	public void testBuildGlobalSubscriberStubSettings_retry_pickUserBean() throws IOException {
 		RetrySettings expectedRetrySettings = RetrySettings.newBuilder()
-				.setTotalTimeout(Duration.ofSeconds(10))
-				.setInitialRetryDelay(Duration.ofSeconds(10))
+				.setTotalTimeout(Duration.ofSeconds(10L))
+				.setInitialRetryDelay(Duration.ofSeconds(10L))
 				.setRetryDelayMultiplier(10.0)
-				.setInitialRpcTimeout(Duration.ofSeconds(10))
-				.setMaxRetryDelay(Duration.ofSeconds(10))
+				.setInitialRpcTimeout(Duration.ofSeconds(10L))
+				.setMaxRetryDelay(Duration.ofSeconds(10L))
 				.setMaxAttempts(10)
 				.setRpcTimeoutMultiplier(10.0)
-				.setMaxRpcTimeout(Duration.ofSeconds(10))
+				.setMaxRpcTimeout(Duration.ofSeconds(10L))
 				.build();
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", new PubSubConfiguration());
 		factory.setSubscriberStubRetrySettings(expectedRetrySettings);
@@ -438,17 +458,18 @@ public class DefaultSubscriberFactoryTests {
 	@Test
 	public void testBuildGlobalSubscriberStubSettings_retry_pickGlobalConfiguration() throws IOException {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
-		PubSubConfiguration.Retry retrySettings = new PubSubConfiguration.Retry();
-		retrySettings.setTotalTimeoutSeconds(10L);
-		retrySettings.setInitialRetryDelaySeconds(10L);
-		retrySettings.setRetryDelayMultiplier(10.0);
-		retrySettings.setMaxRetryDelaySeconds(10L);
-		retrySettings.setMaxAttempts(10);
-		retrySettings.setInitialRpcTimeoutSeconds(10L);
-		retrySettings.setRpcTimeoutMultiplier(10.0);
-		retrySettings.setMaxRpcTimeoutSeconds(10L);
 		when(mockPubSubConfiguration.getSubscriber()).thenReturn(mockSubscriber);
-		when(mockSubscriber.getRetry()).thenReturn(retrySettings);
+		RetrySettings expectedRetrySettings = RetrySettings.newBuilder()
+				.setTotalTimeout(Duration.ofSeconds(10L))
+				.setInitialRetryDelay(Duration.ofSeconds(10L))
+				.setRetryDelayMultiplier(10.0)
+				.setInitialRpcTimeout(Duration.ofSeconds(10L))
+				.setMaxRetryDelay(Duration.ofSeconds(10L))
+				.setMaxAttempts(10)
+				.setRpcTimeoutMultiplier(10.0)
+				.setMaxRpcTimeout(Duration.ofSeconds(10L))
+				.build();
+		factory.setGlobalRetrySettings(expectedRetrySettings);
 
 		SubscriberStubSettings subscriberStubSettings = factory.buildGlobalSubscriberStubSettings();
 		RetrySettings actualRetrySettings = subscriberStubSettings.pullSettings().getRetrySettings();
@@ -468,7 +489,6 @@ public class DefaultSubscriberFactoryTests {
 		GcpProjectIdProvider projectIdProvider = () -> "project";
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
 		factory.setCredentialsProvider(this.credentialsProvider);
-		factory.setGlobalScheduler(mockScheduler);
 		FlowControlSettings flowControlSettings = FlowControlSettings.newBuilder()
 				.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore).build();
 		factory.setGlobalFlowControlSettings(flowControlSettings);
@@ -627,7 +647,6 @@ public class DefaultSubscriberFactoryTests {
 	public void testBuildGlobalSubscriberStubSettings_pullEndpoint_pickGlobalConfiguration() throws IOException {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 		when(mockPubSubConfiguration.getSubscriber()).thenReturn(mockSubscriber);
-		when(mockSubscriber.getRetry()).thenReturn(new PubSubConfiguration.Retry());
 		when(mockSubscriber.getPullEndpoint()).thenReturn("my-endpoint");
 
 		SubscriberStubSettings subscriberStubSettings = factory.buildGlobalSubscriberStubSettings();

@@ -60,6 +60,7 @@ import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Duration;
@@ -108,11 +109,15 @@ public class GcpPubSubAutoConfiguration {
 
 	private final ConcurrentHashMap<String, FlowControlSettings> subscriberFlowControlSettingsMap = new ConcurrentHashMap<>();
 
+	private final ConcurrentHashMap<String, RetrySettings> subscriberRetrySettingsMap = new ConcurrentHashMap<>();
+
 	private final ApplicationContext applicationContext;
 
 	private ThreadPoolTaskScheduler globalScheduler;
 
 	private FlowControlSettings globalFlowControlSettings;
+
+	private RetrySettings globalRetrySettings;
 
 	public GcpPubSubAutoConfiguration(GcpPubSubProperties gcpPubSubProperties,
 			GcpProjectIdProvider gcpProjectIdProvider,
@@ -243,6 +248,8 @@ public class GcpPubSubAutoConfiguration {
 					"The subscriberRetrySettings bean is being deprecated. Please use application.properties to configure properties");
 			factory.setSubscriberStubRetrySettings(retrySettings.getIfAvailable());
 		}
+		factory.setRetrySettingsMap(this.subscriberRetrySettingsMap);
+		factory.setGlobalRetrySettings(this.globalRetrySettings);
 		if (this.gcpPubSubProperties.getSubscriber().getRetryableCodes() != null) {
 			factory.setRetryableCodes(gcpPubSubProperties.getSubscriber().getRetryableCodes());
 		}
@@ -396,6 +403,7 @@ public class GcpPubSubAutoConfiguration {
 		GenericApplicationContext context = (GenericApplicationContext) this.applicationContext;
 		registerSubscriberThreadPoolSchedulerBeans(context);
 		registerSubscriberFlowControlSettingsBeans(context);
+		registerSubscriberRetrySettingsBeans(context);
 	}
 
 	private void registerSubscriberThreadPoolSchedulerBeans(GenericApplicationContext context) {
@@ -420,6 +428,21 @@ public class GcpPubSubAutoConfiguration {
 							.getBeanDefinition());
 		}
 		createAndRegisterSelectiveFlowControlSettings(context);
+	}
+
+	private void registerSubscriberRetrySettingsBeans(GenericApplicationContext context) {
+		if (context.containsBean("subscriberRetrySettings")) {
+			return;
+		}
+		this.globalRetrySettings = buildRetrySettings(
+				this.gcpPubSubProperties.getSubscriber().getRetry());
+		if (this.globalRetrySettings != null) {
+			context.registerBeanDefinition("globalSubscriberRetrySettings",
+					BeanDefinitionBuilder
+							.genericBeanDefinition(RetrySettings.class, () -> this.globalRetrySettings)
+							.getBeanDefinition());
+		}
+		createAndRegisterSelectiveRetrySettings(context);
 	}
 
 	/**
@@ -493,6 +516,26 @@ public class GcpPubSubAutoConfiguration {
 				String beanName = "subscriberFlowControlSettings-" + subscriptionName;
 				context.registerBeanDefinition(beanName,
 						BeanDefinitionBuilder.genericBeanDefinition(FlowControlSettings.class, () -> flowControlSettings)
+								.getBeanDefinition());
+			}
+		}
+	}
+
+	private void createAndRegisterSelectiveRetrySettings(GenericApplicationContext context) {
+		Map<String, PubSubConfiguration.Subscriber> subscriberMap = this.gcpPubSubProperties.getSubscription();
+		for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription : subscriberMap.entrySet()) {
+			ProjectSubscriptionName fullyQualifiedName = PubSubSubscriptionUtils
+					.toProjectSubscriptionName(subscription.getKey(), this.finalProjectIdProvider.getProjectId());
+			String subscriptionName = fullyQualifiedName.getSubscription();
+			PubSubConfiguration.Retry retry = this.gcpPubSubProperties.computeSubscriberRetrySettings(
+					subscriptionName,
+					this.finalProjectIdProvider.getProjectId());
+			RetrySettings retrySettings = buildRetrySettings(retry);
+			if (retrySettings != null && !retrySettings.equals(this.globalRetrySettings)) {
+				this.subscriberRetrySettingsMap.putIfAbsent(fullyQualifiedName.toString(), retrySettings);
+				String beanName = "subscriberRetrySettings-" + subscriptionName;
+				context.registerBeanDefinition(beanName,
+						BeanDefinitionBuilder.genericBeanDefinition(RetrySettings.class, () -> retrySettings)
 								.getBeanDefinition());
 			}
 		}
