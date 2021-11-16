@@ -21,6 +21,7 @@ import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerPro
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import org.springframework.cloud.stream.binder.AbstractBinderTests;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
@@ -57,7 +58,8 @@ public class PubSubMessageChannelBinderEmulatorIntegrationTests extends
 	}
 
 	@Override
-	protected ExtendedProducerProperties<PubSubProducerProperties> createProducerProperties() {
+	protected ExtendedProducerProperties<PubSubProducerProperties> createProducerProperties(TestInfo testInfo) {
+		// TODO: signature change, need to validate test behavior.
 		return new ExtendedProducerProperties<>(new PubSubProducerProperties());
 	}
 
@@ -67,7 +69,8 @@ public class PubSubMessageChannelBinderEmulatorIntegrationTests extends
 	}
 
 	@Override
-	public void testClean() {
+	public void testClean(TestInfo testInfo) throws Exception {
+		// TODO: signature change, need to validate test behavior.
 		// Do nothing. Original test tests for Lifecycle logic that we don't need.
 
 		// Dummy assertion to appease SonarCloud.
