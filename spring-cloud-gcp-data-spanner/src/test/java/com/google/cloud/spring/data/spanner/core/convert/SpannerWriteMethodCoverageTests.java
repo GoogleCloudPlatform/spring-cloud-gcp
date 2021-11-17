@@ -23,7 +23,8 @@ import java.lang.reflect.ParameterizedType;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Value;
 import com.google.cloud.spanner.ValueBinder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,11 +33,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Chengyuan Zhao
  */
-public class SpannerWriteMethodCoverageTests {
+ class SpannerWriteMethodCoverageTests {
 
 	// Checks that the converter is aware of all Cloud Spanner mutation binder types
 	@Test
-	public void allKnownMappingTypesTest() throws NoSuchFieldException {
+	 void allKnownMappingTypesTest() throws NoSuchFieldException {
 		for (Method method : ValueBinder.class.getMethods()) {
 
 			String methodName = method.getName();

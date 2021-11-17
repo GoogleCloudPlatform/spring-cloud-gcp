@@ -33,8 +33,8 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.spanner.v1.TypeCode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,14 +46,14 @@ import static org.mockito.Mockito.when;
  *
  * @author Chengyuan Zhao
  */
-public class SpannerSchemaUtilsTests {
+ class SpannerSchemaUtilsTests {
 
 	private SpannerSchemaUtils spannerSchemaUtils;
 
 	private SpannerEntityProcessor spannerEntityProcessor;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	 void setUp() {
 		SpannerMappingContext spannerMappingContext = new SpannerMappingContext();
 		this.spannerSchemaUtils = new SpannerSchemaUtils(spannerMappingContext,
 				new ConverterAwareMappingSpannerEntityProcessor(spannerMappingContext),
@@ -63,14 +63,14 @@ public class SpannerSchemaUtilsTests {
 	}
 
 	@Test
-	public void getDropDdlTest() {
+	 void getDropDdlTest() {
 		assertThat(this.spannerSchemaUtils.getDropTableDdlString(TestEntity.class))
 				.isEqualTo("DROP TABLE custom_test_table");
 	}
 
 	@Test
 
-	public void getCreateDdlTest() {
+	 void getCreateDdlTest() {
 		String ddlResult = "CREATE TABLE custom_test_table ( id STRING(MAX) , id3 INT64 , "
 				+ "id_2 STRING(MAX) , bytes2 BYTES(MAX) , custom_col FLOAT64 NOT NULL , "
 				+ "other STRING(333) , "
@@ -86,77 +86,77 @@ public class SpannerSchemaUtilsTests {
 	}
 
 	@Test
-	public void createDdlString() {
+	 void createDdlString() {
 		assertColumnDdl(String.class, null,
 				"id", null, OptionalLong.empty(),
 				"id STRING(MAX)");
 	}
 
 	@Test
-	public void createDdlStringCustomLength() {
+	 void createDdlStringCustomLength() {
 		assertColumnDdl(String.class, null,
 				"id", null, OptionalLong.of(333L),
 				"id STRING(333)");
 	}
 
 	@Test
-	public void createDdlBytesMax() {
+	 void createDdlBytesMax() {
 		assertColumnDdl(ByteArray.class, null,
 				"bytes", null, OptionalLong.empty(),
 				"bytes BYTES(MAX)");
 	}
 
 	@Test
-	public void createDdlBytesCustomLength() {
+	 void createDdlBytesCustomLength() {
 		assertColumnDdl(ByteArray.class, null,
 				"bytes", null, OptionalLong.of(333L),
 				"bytes BYTES(333)");
 	}
 
 	@Test
-	public void ddlForListOfByteArray() {
+	 void ddlForListOfByteArray() {
 		assertColumnDdl(List.class, ByteArray.class,
 				"bytesList", null, OptionalLong.of(111L),
 				"bytesList ARRAY<BYTES(111)>");
 	}
 
 	@Test
-	public void ddlForDoubleArray() {
+	 void ddlForDoubleArray() {
 		assertColumnDdl(double[].class, null,
 				"doubles", null, OptionalLong.of(111L),
 				"doubles ARRAY<FLOAT64>");
 	}
 
 	@Test
-	public void ddlForNumericList() {
+	 void ddlForNumericList() {
 		assertColumnDdl(List.class, BigDecimal.class,
 				"bigDecimals", null, OptionalLong.empty(),
 				"bigDecimals ARRAY<NUMERIC>");
 	}
 
 	@Test
-	public void createDdlNumeric() {
+	 void createDdlNumeric() {
 		assertColumnDdl(BigDecimal.class, null,
 				"bigDecimal", null, OptionalLong.empty(),
 				"bigDecimal NUMERIC");
 	}
 
 	@Test
-	public void ddlForListOfListOfIntegers() {
+	 void ddlForListOfListOfIntegers() {
 		assertColumnDdl(List.class, Integer.class,
 				"integerList", null, OptionalLong.empty(),
 				"integerList ARRAY<INT64>");
 	}
 
 	@Test
-	public void ddlForListOfListOfDoubles() {
+	 void ddlForListOfListOfDoubles() {
 		assertColumnDdl(List.class, Double.class,
 				"doubleList", null, OptionalLong.empty(),
 				"doubleList ARRAY<FLOAT64>");
 	}
 
 	@Test
-	public void createDdlForJson() {
+	 void createDdlForJson() {
 		assertColumnDdl(JsonColumn.class, null,
 				"jsonCol", Type.Code.JSON, OptionalLong.empty(),
 				"jsonCol JSON");
@@ -183,7 +183,7 @@ public class SpannerSchemaUtilsTests {
 	}
 
 	@Test
-	public void getIdTest() {
+	 void getIdTest() {
 		TestEntity t = new TestEntity();
 		t.id = "aaa";
 		t.embeddedColumns = new EmbeddedColumns();
@@ -200,7 +200,7 @@ public class SpannerSchemaUtilsTests {
 	}
 
 	@Test
-	public void getCreateDdlHierarchyTest() {
+	 void getCreateDdlHierarchyTest() {
 		List<String> createStrings = this.spannerSchemaUtils
 				.getCreateTableDdlStringsForInterleavedHierarchy(ParentEntity.class);
 		assertThat(createStrings).containsExactly(
@@ -217,7 +217,7 @@ public class SpannerSchemaUtilsTests {
 	}
 
 	@Test
-	public void getDropDdlHierarchyTest() {
+	 void getDropDdlHierarchyTest() {
 		List<String> dropStrings = this.spannerSchemaUtils
 				.getDropTableDdlStringsForInterleavedHierarchy(ParentEntity.class);
 		assertThat(dropStrings).containsExactly(

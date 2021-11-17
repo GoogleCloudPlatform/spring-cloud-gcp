@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.cloud.spanner.Struct;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Chengyuan Zhao
  */
-public class SpannerStructReadMethodCoverageTests {
+ class SpannerStructReadMethodCoverageTests {
 
 	private static final Set<String> DISREGARDED_METHOD_NAMES = Collections.unmodifiableSet(new HashSet<String>(
 		Arrays.asList("getColumnIndex", "getStructList", "getColumnType", "getValue")
@@ -42,7 +42,7 @@ public class SpannerStructReadMethodCoverageTests {
 
 	// Checks that the converter is aware of all Spanner struct getter types
 	@Test
-	public void allKnownMappingTypesTest() throws NoSuchFieldException {
+	 void allKnownMappingTypesTest() throws NoSuchFieldException {
 		for (Method method : Struct.class.getMethods()) {
 			String methodName = method.getName();
 			// ignoring private methods, ones not named like a getter. Getters must also

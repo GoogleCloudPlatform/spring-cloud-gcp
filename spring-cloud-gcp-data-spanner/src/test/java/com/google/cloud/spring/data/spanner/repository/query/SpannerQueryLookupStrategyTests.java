@@ -32,8 +32,8 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.core.mapping.Where;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import org.springframework.data.repository.core.NamedQueries;
@@ -60,7 +60,7 @@ import static org.mockito.Mockito.when;
  * @author Chengyuan Zhao
  * @author Roman Solodovnichenko
  */
-public class SpannerQueryLookupStrategyTests {
+ class SpannerQueryLookupStrategyTests {
 
 	private SpannerTemplate spannerTemplate;
 
@@ -74,9 +74,9 @@ public class SpannerQueryLookupStrategyTests {
 
 	private SpelExpressionParser spelExpressionParser;
 
-	@Before
+	@BeforeEach
 	@SuppressWarnings("BadAnnotationImplementation")
-	public void initMocks() {
+	 void initMocks() {
 		this.spannerMappingContext = new SpannerMappingContext();
 		this.spannerTemplate = mock(SpannerTemplate.class);
 		this.queryMethod = mock(SpannerQueryMethod.class);
@@ -103,7 +103,7 @@ public class SpannerQueryLookupStrategyTests {
 	}
 
 	@Test
-	public void resolveSqlQueryTest() {
+	 void resolveSqlQueryTest() {
 		String queryName = "fakeNamedQueryName";
 		String query = "fake query";
 		when(this.queryMethod.getNamedQueryName()).thenReturn(queryName);
@@ -135,7 +135,7 @@ public class SpannerQueryLookupStrategyTests {
 	}
 
 	@Test
-	public void resolvePartTreeQueryTest() {
+	 void resolvePartTreeQueryTest() {
 		String queryName = "fakeNamedQueryName";
 		when(this.queryMethod.getNamedQueryName()).thenReturn(queryName);
 		NamedQueries namedQueries = mock(NamedQueries.class);
@@ -161,7 +161,7 @@ public class SpannerQueryLookupStrategyTests {
 	}
 
 	@Test
-	public void getChildrenRowsQueryTest() {
+	 void getChildrenRowsQueryTest() {
 		TestEntity t = new TestEntity();
 		t.id = "key";
 		t.id2 = "key2";
@@ -177,7 +177,7 @@ public class SpannerQueryLookupStrategyTests {
 	}
 
 	@Test
-	public void getColumnsStringForSelectTest() {
+	 void getColumnsStringForSelectTest() {
 		TestEntity t = new TestEntity();
 		t.id = "key";
 		t.id2 = "key2";
@@ -195,7 +195,7 @@ public class SpannerQueryLookupStrategyTests {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void getColumnsStringForSelectMultipleTest() {
+	 void getColumnsStringForSelectMultipleTest() {
 		final SpannerPersistentEntity<TestEntity> entity = (SpannerPersistentEntity<TestEntity>)
 				this.spannerMappingContext.getPersistentEntity(TestEntity.class);
 		Statement childrenRowsQuery = SpannerStatementQueryExecutor.buildQuery(

@@ -17,7 +17,7 @@
 package com.google.cloud.spring.data.spanner.core.mapping.event;
 
 import com.google.cloud.spanner.Statement;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,10 +26,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Chengyuan Zhao
  */
-public class BeforeExecuteDmlEventTest {
+ class BeforeExecuteDmlEventTest {
 
 	@Test
-	public void equalsHashcodeTest() {
+	 void equalsHashcodeTest() {
 		BeforeExecuteDmlEvent beforeExecuteDmlEvent = new BeforeExecuteDmlEvent(Statement.of("a"));
 		BeforeExecuteDmlEvent beforeExecuteDmlEvent1 = new BeforeExecuteDmlEvent(Statement.of("a"));
 
