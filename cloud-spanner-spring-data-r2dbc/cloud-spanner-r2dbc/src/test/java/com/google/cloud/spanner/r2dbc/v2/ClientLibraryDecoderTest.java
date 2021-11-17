@@ -128,10 +128,20 @@ class ClientLibraryDecoderTest {
             (Function<Object, Value>) (o) -> Value.numeric((BigDecimal) o)),
         arguments(
             List.class,
-            Arrays.asList(
-                BigDecimal.TEN, BigDecimal.ZERO),
-            (Function<Object, Value>) (o) -> Value.numericArray((Iterable<BigDecimal>) o))
-    );
+            Arrays.asList(BigDecimal.TEN, BigDecimal.ZERO),
+            (Function<Object, Value>) (o) -> Value.numericArray((Iterable<BigDecimal>) o)));
+  }
+
+  static Stream<Arguments> dataWithJson() {
+    return Stream.of(
+        arguments(
+            String.class,
+            "a regular string",
+            (Function<Object, Value>) (o) -> Value.string((String) o)),
+        arguments(
+            JsonWrapper.class,
+            JsonWrapper.of("{\"rating\":9,\"open\":true}"),
+            (Function<Object, Value>) (o) -> Value.json(o == null ? null : o.toString())));
   }
 
   /**
@@ -160,6 +170,13 @@ class ClientLibraryDecoderTest {
     }
   }
 
+  @ParameterizedTest
+  @MethodSource("dataWithJson")
+  void jsonStringCodecsTest(Class<?> type, Object value, Function<Object, Value> valueBuilder) {
+    codecsTest(type, value, valueBuilder, null, null);
+    codecsTest(Object.class, value, valueBuilder, null, null);
+  }
+
   @Test
   void defaultJavaType() {
     assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.bool())).isEqualTo(Boolean.class);
@@ -172,10 +189,9 @@ class ClientLibraryDecoderTest {
         .isEqualTo(LocalDateTime.class);
     assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.int64())).isEqualTo(Long.class);
     assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.numeric())).isEqualTo(BigDecimal.class);
+    assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.json())).isEqualTo(JsonWrapper.class);
 
     // unknown type
     assertThat(ClientLibraryDecoder.getDefaultJavaType(Type.struct())).isEqualTo(Object.class);
   }
-
-
 }

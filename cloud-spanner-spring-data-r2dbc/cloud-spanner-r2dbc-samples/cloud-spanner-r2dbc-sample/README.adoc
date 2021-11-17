@@ -33,8 +33,10 @@ The application output will show the sequence of operations:
  Table creation completed.
  ...
  Insert books transaction committed.
+ Insert 3rd book with JSON field transaction committed.
  ...
- Retrieved book: book1 Book One
- Retrieved book: book2 Book Two
+ Retrieved book: book1; Title: Book One
+ Retrieved book: book2; Title: Book Two
+ Retrieved book: book3; Title: Book Three; Extra Details: {"rating":9,"series":true}
 ----
 

@@ -18,8 +18,12 @@ package com.google.cloud.spanner.r2dbc.springdata;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.cloud.spanner.r2dbc.v2.JsonWrapper;
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.mapping.model.SimpleTypeHolder;
 import org.springframework.data.relational.core.dialect.LimitClause;
 import org.springframework.data.relational.core.dialect.LockClause;
 import org.springframework.data.relational.core.sql.LockMode;
@@ -65,4 +69,22 @@ class SpannerR2dbcDialectTest {
     assertThat(lock.getClausePosition()).isSameAs(LockClause.Position.AFTER_FROM_TABLE);
   }
 
+  @Test
+  void testSimpleType() {
+    SpannerR2dbcDialect dialect = new SpannerR2dbcDialect();
+    SimpleTypeHolder simpleTypeHolder = dialect.getSimpleTypeHolder();
+    assertThat(simpleTypeHolder.isSimpleType(JsonWrapper.class)).isTrue();
+  }
+
+  @Test
+  void testConverter() {
+    SpannerR2dbcDialect dialect = new SpannerR2dbcDialect();
+    Collection<Object> converters = dialect.getConverters();
+    assertTrue(
+        converters.stream()
+            .anyMatch(converter -> converter.getClass().equals(JsonToMapConverter.class)));
+    assertTrue(
+        converters.stream()
+            .anyMatch(converter -> converter.getClass().equals(MapToJsonConverter.class)));
+  }
 }

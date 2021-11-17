@@ -19,6 +19,8 @@ package com.example;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Book entity.
@@ -33,9 +35,17 @@ public class Book {
   @Column("TITLE")
   private String title;
 
-  public Book(String id, String title) {
-    this.id = id;
+  @Column("EXTRADETAILS")
+  private Map<String, String> extraDetails;
+
+  @Column("REVIEWS")
+  private Review review;
+
+  public Book(String title, Map<String, String> extraDetails, Review review) {
+    this.id = UUID.randomUUID().toString();
     this.title = title;
+    this.extraDetails = extraDetails;
+    this.review = review;
   }
 
   public String getId() {
@@ -46,4 +56,21 @@ public class Book {
     return this.title;
   }
 
+
+  public Map<String, String> getExtraDetails() {
+    return extraDetails;
+  }
+
+  public Review getReview() {
+    return review;
+  }
+
+  @Override
+  public String toString() {
+    return "Book{" +
+            "id='" + id + '\'' +
+            ", title='" + title + '\'' +
+            ", extraDetails=" +(extraDetails == null ? "" : extraDetails.toString()) +
+            '}';
+  }
 }

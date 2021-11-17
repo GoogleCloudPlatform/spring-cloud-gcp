@@ -26,6 +26,7 @@ import com.google.cloud.ByteArray;
 import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Statement.Builder;
+import com.google.cloud.spanner.Value;
 import com.google.cloud.spanner.ValueBinder;
 import com.google.cloud.spanner.r2dbc.BindingFailureException;
 import com.google.cloud.spanner.r2dbc.statement.TypedNull;
@@ -151,4 +152,13 @@ class ClientLibraryTypeBindersTest {
 
   }
 
+  @Test
+  void jsonBinderTest() {
+    ClientLibraryBinder.bind(
+        this.statementBuilder, "a", JsonWrapper.of("{\"rating\":9,\"open\":true}"));
+    ClientLibraryBinder.bind(this.statementBuilder, "b", new TypedNull(JsonWrapper.class));
+    verify(this.valueBinder).to(Value.json("{\"rating\":9,\"open\":true}"));
+    verify(this.valueBinder).to(Value.json(null));
+    verifyNoMoreInteractions(this.valueBinder);
+  }
 }

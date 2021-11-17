@@ -166,10 +166,23 @@ Cloud Spanner R2DBC Driver supports the following types:
 |`INT64`         |`java.lang.Long`     |
 |`INT64`         |`java.lang.Integer`  |
 |`STRING`        |`java.lang.String`   |
+|`JSON`          |`com.google.cloud.spanner.r2dbc.v2.JsonWrapper`   |
 |`TIMESTAMP`     |`java.time.LocalDateTime` |
-|`ARRAY`         |Array-Variant of the corresponding Java type (e.g. `Long[]` for `ARRAY<INT64>`)|
+|`ARRAY`         |Array-Variant of the corresponding Java type (e.g. `Long[]` for `ARRAY<INT64>`) `ARRAY<JSON>` is not supported.|
 
-Null values mapping is supported in both directions.
+Null values mapping is supported in both directions. 
+
+`JSON` Spanner type is supported through `JsonWrapper.class`. This is a wrapper class around String representation of the Json value. Below are the basic usages wrapping and un-wrapping string: 
+```java
+  // Create jsonWrapper object from String
+  JsonWrapper jsonWrapper = JsonWrapper.of(jsonString);
+  JsonWrapper jsonWrapper = new JsonWrapper(jsonString);
+
+  // Get underlying string from jsonWrapper object
+  String jsonString = jsonWrapper.toString();
+```
+
+If using Spring Data, default converters to/from `Map` are ready to use out-of-box for key or value type of `String`, `Boolean` and `Double`. Custom converters can be used to allow Json conversion directly to/from collections or user-defined types. Examples of using `Map` and custom class `Review` for Json field are provided in the [Spring Data sample application](https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/tree/main/cloud-spanner-r2dbc-samples/cloud-spanner-spring-data-r2dbc-sample)
 
 See [Cloud Spanner documentation](https://cloud.google.com/spanner/docs/data-types) to learn more about Spanner types.
 

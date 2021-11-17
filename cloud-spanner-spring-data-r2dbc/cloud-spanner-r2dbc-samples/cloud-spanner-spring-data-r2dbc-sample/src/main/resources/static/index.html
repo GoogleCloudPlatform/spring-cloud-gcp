@@ -8,7 +8,15 @@
       el.value += extraText;
       if (books) {
         for (let book of books) {
-          el.value += (book.title + "(" + book.id + ")\n");
+          if (!book.extraDetails && !book.review) {
+            el.value += (book.title + "(" + book.id + "); \n");
+          } else if (book.extraDetails) {
+            el.value += (book.title + "(" + book.id + ")" +
+            "; rating: " + book.extraDetails.rating + "; is series: " + book.extraDetails.series +"\n");
+          } else if (book.review) {
+            el.value += (book.title + "(" + book.id + ")" +
+            "; reviewer: " + book.review.reviewerId + "; review: " + book.review.reviewerContent +"\n");
+          }
         }
       }
       el.value +=  "\n\n";
@@ -43,9 +51,78 @@
          }
        });
 
+      return false;
+    }
+
+    function addBookJson() {
+      const newTitle = document.getElementById('newBookTitle').value;
+      const rating = document.getElementById('rating').value;
+      const series = document.getElementById('series').value;
+      if (!newTitle) {
+        appendOutput("Please provide non-empty title");
+        return false;
+      }
+      if (!rating) {
+        appendOutput("Please provide non-empty rating");
+        return false;
+      }
+      if (!series) {
+        appendOutput("Please provide non-empty series");
+        return false;
+      }
+      const bodyContent =  "{\"title\":\"" + newTitle + "\",\"extraDetails\":"
+      + "{\"rating\":\"" + rating + "\",\"series\":\"" + series + "\"},\"review\":null}";
+      fetch('/add-book-with-json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: bodyContent
+      }).then(response => {
+         if (response.ok) {
+           appendOutput("Added book.");
+         } else {
+           appendOutput("Failed to add book.");
+         }
+       });
+
 
       return false;
     }
+
+
+    function addJsonCustomClass() {
+      const newTitle = document.getElementById('newBookTitle').value;
+      const reviewer = document.getElementById('reviewer').value;
+      const review = document.getElementById('review').value;
+      if (!newTitle) {
+        appendOutput("Please provide non-empty title");
+        return false;
+      }
+      if (!reviewer) {
+        appendOutput("Please provide non-empty reviewer");
+        return false;
+      }
+      if (!review) {
+        appendOutput("Please provide non-empty review");
+        return false;
+      }
+      const bodyContent =  "{\"title\":\"" + newTitle + "\",\"extraDetails\":null,"
+      + "\"review\":{\"reviewerId\":\"" + reviewer + "\",\"reviewerContent\":\"" + review + "\"}}";
+      fetch('/add-book-with-json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: bodyContent
+      }).then(response => {
+         if (response.ok) {
+           appendOutput("Added book.");
+         } else {
+           appendOutput("Failed to add book.");
+         }
+       });
+
+
+      return false;
+    }
+
 
     function findBookById() {
       const id = document.getElementById('bookId').value;
@@ -83,11 +160,24 @@
   </div>
 
   <div class="buttonLink">
-  New Book Title: <input id="newBookTitle" name="newBookTitle"/> <a class="buttonLink" href="/" onClick="return addBook();">Add Book</a>
+    New Book Title: <input id="newBookTitle" name="newBookTitle"/> <a class="buttonLink" href="/"
+                                                                      onClick="return addBook();">Add Book With No Extra
+    Details</a>
   </div>
 
   <div class="buttonLink">
-    Search for: <input id="bookId" name="bookId"/> <a class="buttonLink" href="/" onClick="return findBookById();">Find Books</a>
+    Rating: <input id="rating" name="rating"/> Is series: <input id="series" name="series"/>
+    <a class="buttonLink" href="/" onClick="return addBookJson();">Add Book With Extra Details</a>
+  </div>
+
+  <div class="buttonLink">
+    Reviewer: <input id="reviewer" name="rating"/> Review: <input id="review" name="series"/>
+    <a class="buttonLink" href="/" onClick="return addJsonCustomClass();">Add Book With Review</a>
+  </div>
+
+  <div class="buttonLink">
+    Search for: <input id="bookId" name="bookId"/> <a class="buttonLink" href="/" onClick="return findBookById();">Find
+    Books</a>
   </div>
 </div>
 

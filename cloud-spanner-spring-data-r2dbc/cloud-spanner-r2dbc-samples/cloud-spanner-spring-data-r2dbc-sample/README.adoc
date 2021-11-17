@@ -12,4 +12,10 @@ mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dspanner.instance=[SPANNER-
 
 2. Visit http://localhost:8080/index.html
 
-3. Try the different actions available -- listing books, adding a new book, and searching for a book by its ID.
+3. Try the different actions available
+
+ - Listing all books.
+ - Adding a new book with only title.
+ - Adding a new book with extra details (a `Map` field in `Book` entity) stored as a spanner JSON column.
+ - Adding a new book with a review (a custom class field in `Book` entity) stored as a spanner JSON column
+ - Searching for a book by its ID.

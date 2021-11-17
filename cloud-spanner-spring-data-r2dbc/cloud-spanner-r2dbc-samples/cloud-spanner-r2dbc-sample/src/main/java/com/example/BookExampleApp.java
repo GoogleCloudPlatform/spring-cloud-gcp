@@ -21,11 +21,14 @@ import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.IN
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 
+import com.google.cloud.spanner.r2dbc.v2.JsonWrapper;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
+import io.r2dbc.spi.Row;
+import io.r2dbc.spi.RowMetadata;
 import io.r2dbc.spi.Statement;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -68,7 +71,8 @@ public class BookExampleApp {
   public void createTable() {
     Mono.from(this.connection.createStatement("CREATE TABLE BOOKS ("
             + "  ID STRING(20) NOT NULL,"
-            + "  TITLE STRING(MAX) NOT NULL"
+            + "  TITLE STRING(MAX) NOT NULL,"
+            + "  EXTRADETAILS JSON"
             + ") PRIMARY KEY (ID)").execute())
         .doOnSuccess(x -> System.out.println("Table creation completed."))
         .block();
@@ -89,10 +93,23 @@ public class BookExampleApp {
         .bind("id", "book2")
         .bind("title", "Book Two");
 
-    Flux.concat(this.connection.beginTransaction(),
-        Flux.from(statement.execute()).flatMapSequential(r -> Mono.from(r.getRowsUpdated())).then(),
-        this.connection.commitTransaction()
-    ).doOnComplete(() -> System.out.println("Insert books transaction committed."))
+
+    Statement statement2 = this.connection.createStatement(
+            "INSERT BOOKS "
+                    + "(ID, TITLE, EXTRADETAILS)"
+                    + " VALUES "
+                    + "(@id, @title, @extradetails)")
+            .bind("id", "book3")
+            .bind("title", "Book Three")
+            .bind("extradetails", new JsonWrapper("{\"rating\":9,\"series\":true}"));
+
+    Flux.concat(
+            this.connection.beginTransaction(),
+            Flux.concat(statement.execute(), statement2.execute())
+                .flatMapSequential(r -> Mono.from(r.getRowsUpdated()))
+                .then(),
+            this.connection.commitTransaction())
+        .doOnComplete(() -> System.out.println("Insert books transaction committed."))
         .blockLast();
   }
 
@@ -101,10 +118,10 @@ public class BookExampleApp {
    */
   public void retrieveBooks() {
     Flux.from(this.connection.createStatement("SELECT * FROM books").execute())
-        .flatMap(spannerResult -> spannerResult.map(
-            (r, meta) -> "Retrieved book: " + r.get("ID", String.class) + " " + r
-                .get("TITLE", String.class)
-        ))
+        .flatMap(
+            spannerResult ->
+                spannerResult.map(
+                    (Row r, RowMetadata meta) -> describeBook(r)))
         .doOnNext(System.out::println)
         .collectList()
         .block();
@@ -121,5 +138,23 @@ public class BookExampleApp {
     } catch (Exception e) {
       System.out.println("Table wasn't found, so no action was taken.");
     }
+  }
+
+  /**
+   * Method to describe row from table BOOK.
+   */
+  public String describeBook(Row r) {
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder
+        .append("Retrieved book: ")
+        .append(r.get("ID", String.class))
+        .append("; Title: ")
+        .append(r.get("TITLE", String.class));
+    if (r.get("EXTRADETAILS", JsonWrapper.class) != null) {
+      stringBuilder
+          .append("; Extra Details: ")
+          .append(r.get("EXTRADETAILS", JsonWrapper.class).toString());
+    }
+    return stringBuilder.toString();
   }
 }

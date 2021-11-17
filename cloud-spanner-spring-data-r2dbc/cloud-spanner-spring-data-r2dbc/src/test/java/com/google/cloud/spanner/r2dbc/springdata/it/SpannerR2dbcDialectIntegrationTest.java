@@ -27,8 +27,10 @@ import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -47,6 +49,7 @@ import reactor.test.StepVerifier;
  * `testdb` database. This can be configured by overriding the `spanner.instance` and
  * `spanner.database` system properties.
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SpannerR2dbcDialectIntegrationTest {
 
   private static final Logger logger =
@@ -75,7 +78,7 @@ class SpannerR2dbcDialectIntegrationTest {
   /**
    * Initializes the integration test environment for the Spanner R2DBC dialect.
    */
-  @BeforeEach
+  @BeforeAll
   public void initializeTestEnvironment() {
     Connection connection = Mono.from(connectionFactory.create()).block();
 
@@ -97,6 +100,15 @@ class SpannerR2dbcDialectIntegrationTest {
         .fetch()
         .rowsUpdated()
         .block();
+  }
+
+  @AfterEach
+  public void cleanupTableAfterTest() {
+    this.databaseClient
+            .sql("DELETE FROM PRESIDENT where NAME is not null")
+            .fetch()
+            .rowsUpdated()
+            .block();
   }
 
   @Test

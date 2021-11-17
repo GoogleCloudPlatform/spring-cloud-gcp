@@ -28,6 +28,7 @@ class SpannerClientLibraryConverters {
   private static List<SpannerClientLibrariesConverter<?>> createConverters() {
     ArrayList<SpannerClientLibrariesConverter<?>> converters = new ArrayList<>();
     converters.add(new LongIntegerConverter());
+    converters.add(new StringToJsonConverter());
     return converters;
   }
 

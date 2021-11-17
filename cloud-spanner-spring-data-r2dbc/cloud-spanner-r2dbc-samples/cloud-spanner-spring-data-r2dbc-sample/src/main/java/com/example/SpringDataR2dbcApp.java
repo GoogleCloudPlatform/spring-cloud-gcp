@@ -69,17 +69,24 @@ public class SpringDataR2dbcApp {
   public void setUpData() {
     LOGGER.info("Setting up test table BOOK...");
     try {
-      r2dbcClient.sql("CREATE TABLE BOOK ("
-          + "  ID STRING(36) NOT NULL,"
-          + "  TITLE STRING(MAX) NOT NULL"
-          + ") PRIMARY KEY (ID)"
-      ).fetch().rowsUpdated().block();
+      r2dbcClient
+          .sql(
+              "CREATE TABLE BOOK ("
+                  + "  ID STRING(36) NOT NULL,"
+                  + "  TITLE STRING(MAX) NOT NULL,"
+                  + "  EXTRADETAILS JSON,"
+                  + "  REVIEWS JSON,"
+                  + ") PRIMARY KEY (ID)")
+          .fetch()
+          .rowsUpdated()
+          .block();
 
     } catch (Exception e) {
       LOGGER.info("Failed to set up test table BOOK", e);
       return;
     }
     LOGGER.info("Finished setting up test table BOOK");
+    LOGGER.info("App Started..visit http://localhost:8080/index.html");
   }
 
   @EventListener({ContextClosedEvent.class})
@@ -95,7 +102,6 @@ public class SpringDataR2dbcApp {
 
     LOGGER.info("Finished deleting test table BOOK.");
   }
-
 
   @Bean
   public RouterFunction<ServerResponse> indexRouter() {

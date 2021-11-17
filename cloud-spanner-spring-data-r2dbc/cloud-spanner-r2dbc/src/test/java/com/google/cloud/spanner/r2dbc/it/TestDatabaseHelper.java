@@ -103,7 +103,8 @@ class TestDatabaseHelper {
                 + "  PUBLISHED DATE,"
                 + "  WORDS_PER_SENTENCE FLOAT64,"
                 + "  CATEGORY INT64,"
-                + "  PRICE NUMERIC"
+                + "  PRICE NUMERIC,"
+                + "  EXTRA JSON"
                 + ") PRIMARY KEY (UUID)")
             .execute())
         .block();

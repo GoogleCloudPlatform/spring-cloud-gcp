@@ -16,9 +16,15 @@
 
 package com.example;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.UUID;
+import com.google.common.base.Splitter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,11 +60,28 @@ public class WebController {
   @PostMapping("/add")
   public Mono<Void> addBook(@RequestBody String bookTitle) {
     return r2dbcEntityTemplate.insert(Book.class)
-        .using(new Book(UUID.randomUUID().toString(), bookTitle))
+        .using(new Book(bookTitle, null, null))
         .log()
         .then();
   }
 
+  @PostMapping(value = "/add-book-with-json",
+          consumes = MediaType.APPLICATION_JSON_VALUE)
+  public Mono<Void> addBookJson(@RequestBody Book book) {
+    return r2dbcEntityTemplate
+            .insert(Book.class)
+            .using(book)
+            .log()
+            .then();
+  }
+
+  /**
+   * For test cleanup.
+   */
+  @GetMapping("/delete-all")
+  public Mono<Void> deleteAll() {
+    return r2dbcRepository.findAll().flatMap(x -> r2dbcRepository.delete(x)).log().then();
+  }
 
   @GetMapping("/search/{id}")
   public Mono<Book> searchBooks(@PathVariable String id) {

@@ -53,8 +53,8 @@ class BookExampleAppIntegrationTest {
 
   @Test
   void testOutput() {
-    BookExampleApp bookExampleApp = new BookExampleApp(TEST_INSTANCE, TEST_DATABASE, ServiceOptions
-        .getDefaultProjectId());
+    BookExampleApp bookExampleApp =
+        new BookExampleApp(TEST_INSTANCE, TEST_DATABASE, ServiceOptions.getDefaultProjectId());
 
     bookExampleApp.dropTableIfPresent();
     bookExampleApp.createTable();
@@ -64,7 +64,11 @@ class BookExampleAppIntegrationTest {
 
     assertThat(baos.toString()).contains("Table creation completed.");
     assertThat(baos.toString()).contains("Insert books transaction committed.");
-    assertThat(baos.toString()).contains("Retrieved book: book1 Book One");
-    assertThat(baos.toString()).contains("Retrieved book: book2 Book Two");
+    assertThat(baos.toString()).contains("Retrieved book: book1; Title: Book One");
+    assertThat(baos.toString()).contains("Retrieved book: book2; Title: Book Two");
+    assertThat(baos.toString())
+        .contains(
+            "Retrieved book: book3; Title: Book Three; "
+                + "Extra Details: {\"rating\":9,\"series\":true}");
   }
 }
