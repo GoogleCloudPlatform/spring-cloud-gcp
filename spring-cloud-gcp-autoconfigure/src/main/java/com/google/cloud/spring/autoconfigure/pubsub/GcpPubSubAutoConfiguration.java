@@ -251,6 +251,8 @@ public class GcpPubSubAutoConfiguration {
 					"The subscriberRetrySettings bean is being deprecated. Please use application.properties to configure properties");
 			factory.setSubscriberStubRetrySettings(retrySettings.getIfAvailable());
 		}
+		factory.setRetrySettingsMap(this.subscriberRetrySettingsMap);
+		factory.setGlobalRetrySettings(this.globalRetrySettings);
 		if (this.gcpPubSubProperties.getSubscriber().getRetryableCodes() != null) {
 			factory.setRetryableCodes(gcpPubSubProperties.getSubscriber().getRetryableCodes());
 		}
@@ -556,8 +558,7 @@ public class GcpPubSubAutoConfiguration {
 	private void createAndRegisterSelectiveRetrySettings(GenericApplicationContext context) {
 		Map<String, PubSubConfiguration.Subscriber> subscriberMap = this.gcpPubSubProperties.getSubscription();
 		for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription : subscriberMap.entrySet()) {
-			ProjectSubscriptionName fullyQualifiedName = PubSubSubscriptionUtils
-					.toProjectSubscriptionName(subscription.getKey(), this.finalProjectIdProvider.getProjectId());
+			ProjectSubscriptionName fullyQualifiedName = getFullSubscriptionName(subscription.getKey());
 			String subscriptionName = fullyQualifiedName.getSubscription();
 			PubSubConfiguration.Retry retry = this.gcpPubSubProperties.computeSubscriberRetrySettings(
 					subscriptionName,

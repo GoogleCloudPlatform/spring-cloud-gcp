@@ -18,8 +18,8 @@ package com.google.cloud.spring.autoconfigure.pubsub.it;
 
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
-import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;

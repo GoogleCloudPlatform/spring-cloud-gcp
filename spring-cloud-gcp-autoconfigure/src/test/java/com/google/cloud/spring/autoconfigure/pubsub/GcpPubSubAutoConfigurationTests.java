@@ -188,7 +188,6 @@ public class GcpPubSubAutoConfigurationTests {
 		});
 	}
 
-
 	@Test
 	public void threadPoolScheduler_noConfigurationSet_globalCreated() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
@@ -485,8 +484,7 @@ public class GcpPubSubAutoConfigurationTests {
 						"spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=5",
 						"spring.cloud.gcp.pubsub.subscriber.parallel-pull-count=10",
 						"spring.cloud.gcp.pubsub.subscriber.pull-endpoint=other-endpoint",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=4"
-						)
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=4")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
@@ -774,7 +772,6 @@ public class GcpPubSubAutoConfigurationTests {
 		});
 	}
 
-
 	@Test
 	public void retrySettings_subsetOfProperties_pickGlobalWhenSelectiveNotSpecified() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
@@ -909,7 +906,8 @@ public class GcpPubSubAutoConfigurationTests {
 					.setMaxOutstandingElementCount(11L)
 					.setMaxOutstandingRequestBytes(12L)
 					.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore).build();
-			assertThat(subscriberFactory.getFlowControlSettings("subscription-name")).isEqualTo(expectedFlowControlForSubscriptionName);
+			assertThat(subscriberFactory.getFlowControlSettings("subscription-name"))
+					.isEqualTo(expectedFlowControlForSubscriptionName);
 			assertThat(ctx.getBean("subscriberFlowControlSettings-subscription-name", FlowControlSettings.class))
 					.isEqualTo(expectedFlowControlForSubscriptionName);
 		});

@@ -19,7 +19,6 @@ package com.google.cloud.spring.pubsub.support;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.Consumer;
 
 import com.google.api.core.ApiClock;
 import com.google.api.gax.batching.FlowControlSettings;
@@ -488,14 +487,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			return this.flowControlSettingsMap.get(fullyQualifiedName);
 		}
 		return this.globalFlowControlSettings;
-	}
-
-	private <T> boolean ifSet(T property, Consumer<T> consumer) {
-		if (property != null) {
-			consumer.accept(property);
-			return true;
-		}
-		return false;
 	}
 
 	Duration getMaxAckExtensionPeriod(String subscriptionName) {
