@@ -186,7 +186,7 @@ public class DefaultSubscriberFactoryTests {
 		factory.setExecutorProviderMap(executorProviderMap);
 
 		assertThat(factory
-				.getExecutorProvider("subscription-name")).isEqualTo(mockExecutorProvider);
+				.getExecutorProvider("subscription-name")).isSameAs(mockExecutorProvider);
 	}
 
 	@Test
@@ -200,7 +200,7 @@ public class DefaultSubscriberFactoryTests {
 
 		assertThat(factory
 				.getExecutorProvider("projects/project1/subscriptions/subscription-name"))
-						.isEqualTo(mockGlobalExecutorProvider);
+						.isSameAs(mockGlobalExecutorProvider);
 	}
 
 	@Test
@@ -208,7 +208,7 @@ public class DefaultSubscriberFactoryTests {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 		factory.setExecutorProvider(mockGlobalExecutorProvider);
 		assertThat(factory
-				.getExecutorProvider("subscription-name")).isEqualTo(mockGlobalExecutorProvider);
+				.getExecutorProvider("subscription-name")).isSameAs(mockGlobalExecutorProvider);
 	}
 
 	@Test

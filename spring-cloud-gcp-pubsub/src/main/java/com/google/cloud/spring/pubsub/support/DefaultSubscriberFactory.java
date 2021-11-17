@@ -17,7 +17,6 @@
 package com.google.cloud.spring.pubsub.support;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
@@ -552,10 +551,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	public ExecutorProvider getGlobalExecutorProvider() {
 		return this.globalExecutorProvider;
-	}
-
-	public Map<String, ExecutorProvider> getExecutorProviderMap() {
-		return this.executorProviderMap;
 	}
 
 	public void setFlowControlSettingsMap(ConcurrentMap<String, FlowControlSettings> flowControlSettingsMap) {
