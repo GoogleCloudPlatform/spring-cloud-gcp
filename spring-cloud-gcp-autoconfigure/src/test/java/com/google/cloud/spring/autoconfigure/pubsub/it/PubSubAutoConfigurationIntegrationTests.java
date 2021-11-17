@@ -116,6 +116,8 @@ public class PubSubAutoConfigurationIntegrationTests {
 					.isNotNull();
 			assertThat((ExecutorProvider) context.getBean("subscriberExecutorProvider-test-sub-1"))
 					.isNotNull();
+			assertThat((ExecutorProvider) context.getBean("globalSubscriberExecutorProvider"))
+					.isNotNull();
 			assertThat(gcpPubSubProperties.getSubscriber().getRetryableCodes())
 					.isEqualTo(new Code[] { Code.INTERNAL });
 
@@ -174,6 +176,8 @@ public class PubSubAutoConfigurationIntegrationTests {
 			assertThat((ThreadPoolTaskScheduler) context.getBean("globalPubSubSubscriberThreadPoolScheduler"))
 					.isNotNull();
 			assertThat((ExecutorProvider) context.getBean("subscriberExecutorProvider-test-sub-2"))
+					.isNotNull();
+			assertThat((ExecutorProvider) context.getBean("globalSubscriberExecutorProvider"))
 					.isNotNull();
 
 			pubSubAdmin.deleteSubscription(subscriptionName);

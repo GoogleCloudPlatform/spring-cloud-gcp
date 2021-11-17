@@ -200,7 +200,8 @@ public class GcpPubSubAutoConfigurationTests {
 
 			assertThat(FieldUtils.readField(globalSchedulerBean, "poolSize", true))
 					.isEqualTo(4);
-			assertThat(globalSchedulerBean).isNotNull();
+			assertThat(globalSchedulerBean.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
+			assertThat(globalSchedulerBean.isDaemon()).isTrue();
 		});
 	}
 
@@ -280,7 +281,10 @@ public class GcpPubSubAutoConfigurationTests {
 			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
 			ExecutorProvider selectiveExecutorProvider = (ExecutorProvider) ctx
 					.getBean("subscriberExecutorProvider-subscription-name");
+			ExecutorProvider globalExecutorProvider = (ExecutorProvider) ctx
+					.getBean("globalSubscriberExecutorProvider");
 
+			assertThat(globalExecutorProvider).isNotNull();
 			assertThat(selectiveExecutorProvider).isNotNull();
 			assertThat(factory.getExecutorProvider("subscription-name")).isSameAs(selectiveExecutorProvider);
 		});
@@ -348,7 +352,7 @@ public class GcpPubSubAutoConfigurationTests {
 		contextRunner.run(ctx -> {
 			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
 
-			// Verify that global thread pool task scheduler is used
+			// Verify that global executor provider is created and used
 			ExecutorProvider globalExecutorProvider = (ExecutorProvider) ctx
 					.getBean("globalSubscriberExecutorProvider");
 			assertThat(ctx.containsBean("subscriberExecutorProvider-subscription-name")).isFalse();
