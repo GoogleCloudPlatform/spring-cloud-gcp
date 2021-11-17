@@ -17,8 +17,6 @@
 package com.google.cloud.spring.autoconfigure.pubsub;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -446,8 +444,8 @@ public class GcpPubSubAutoConfiguration {
 	private void registerSelectiveSchedulerBeans(GenericApplicationContext context) {
 		Map<String, PubSubConfiguration.Subscriber> subscriberMap = this.gcpPubSubProperties.getSubscription();
 		for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription : subscriberMap.entrySet()) {
-			List<String> nameAndFullPath = getNameAndFullPath(subscription.getKey());
-			String subscriptionName = nameAndFullPath.get(0);
+			ProjectSubscriptionName fullSubscriptionName = getFullSubscriptionName(subscription.getKey());
+			String subscriptionName = fullSubscriptionName.getSubscription();
 			PubSubConfiguration.Subscriber selectiveSubscriber = subscriberMap.get(subscriptionName);
 			Integer selectiveExecutorThreads = selectiveSubscriber.getExecutorThreads();
 			if (selectiveExecutorThreads != null) {
@@ -455,8 +453,7 @@ public class GcpPubSubAutoConfiguration {
 				String beanName = "threadPoolScheduler_" + subscriptionName;
 				ThreadPoolTaskScheduler selectiveScheduler = createAndRegisterSchedulerBean(selectiveExecutorThreads,
 						threadName, beanName, context);
-				String fullyQualifiedName = nameAndFullPath.get(1);
-				this.threadPoolTaskSchedulerMap.putIfAbsent(fullyQualifiedName, selectiveScheduler);
+				this.threadPoolTaskSchedulerMap.putIfAbsent(fullSubscriptionName.toString(), selectiveScheduler);
 			}
 		}
 	}
@@ -497,15 +494,14 @@ public class GcpPubSubAutoConfiguration {
 	private void createAndRegisterSelectiveFlowControlSettings(GenericApplicationContext context) {
 		Map<String, PubSubConfiguration.Subscriber> subscriberMap = this.gcpPubSubProperties.getSubscription();
 		for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription : subscriberMap.entrySet()) {
-			List<String> nameAndFullPath = getNameAndFullPath(subscription.getKey());
-			String subscriptionName = nameAndFullPath.get(0);
-			String fullyQualifiedName = nameAndFullPath.get(1);
+			ProjectSubscriptionName fullSubscriptionName = getFullSubscriptionName(subscription.getKey());
+			String subscriptionName = fullSubscriptionName.getSubscription();
 			PubSubConfiguration.FlowControl flowControl = this.gcpPubSubProperties.computeSubscriberFlowControlSettings(
 					subscriptionName,
 					this.finalProjectIdProvider.getProjectId());
 			FlowControlSettings flowControlSettings = buildFlowControlSettings(flowControl);
 			if (flowControlSettings != null && !flowControlSettings.equals(this.globalFlowControlSettings)) {
-				this.subscriberFlowControlSettingsMap.putIfAbsent(fullyQualifiedName, flowControlSettings);
+				this.subscriberFlowControlSettingsMap.putIfAbsent(fullSubscriptionName.toString(), flowControlSettings);
 				String beanName = "subscriberFlowControlSettings-" + subscriptionName;
 				context.registerBeanDefinition(beanName,
 						BeanDefinitionBuilder.genericBeanDefinition(FlowControlSettings.class, () -> flowControlSettings)
@@ -516,13 +512,12 @@ public class GcpPubSubAutoConfiguration {
 
 	private void createAndRegisterSelectiveExecutorProvider(GenericApplicationContext context) {
 		for (Map.Entry<String, ThreadPoolTaskScheduler> schedulerSet : this.threadPoolTaskSchedulerMap.entrySet()) {
-			List<String> nameAndFullPath = getNameAndFullPath(schedulerSet.getKey());
-			String subscriptionName = nameAndFullPath.get(0);
-			String fullyQualifiedName = nameAndFullPath.get(1);
+			ProjectSubscriptionName fullSubscriptionName = getFullSubscriptionName(schedulerSet.getKey());
+			String fullyQualifiedName = fullSubscriptionName.toString();
 			if (!this.executorProviderMap.containsKey(fullyQualifiedName)) {
 				ThreadPoolTaskScheduler scheduler = schedulerSet.getValue();
 				ExecutorProvider executorProvider = createAndRegisterExecutorProvider(
-						"subscriberExecutorProvider-" + subscriptionName, scheduler, context);
+						"subscriberExecutorProvider-" + fullSubscriptionName.getSubscription(), scheduler, context);
 				this.executorProviderMap.putIfAbsent(fullyQualifiedName, executorProvider);
 			}
 		}
@@ -543,9 +538,8 @@ public class GcpPubSubAutoConfiguration {
 		return numThreads != null ? numThreads : PubSubConfiguration.DEFAULT_EXECUTOR_THREADS;
 	}
 
-	private List<String> getNameAndFullPath(String subscriptionName) {
-		ProjectSubscriptionName subscriptionReference = PubSubSubscriptionUtils
+	private ProjectSubscriptionName getFullSubscriptionName(String subscriptionName) {
+		return PubSubSubscriptionUtils
 				.toProjectSubscriptionName(subscriptionName, this.finalProjectIdProvider.getProjectId());
-		return Arrays.asList(subscriptionReference.getSubscription(), subscriptionReference.toString());
 	}
 }
