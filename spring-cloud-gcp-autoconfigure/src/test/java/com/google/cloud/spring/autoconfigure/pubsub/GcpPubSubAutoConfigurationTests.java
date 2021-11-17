@@ -778,7 +778,6 @@ public class GcpPubSubAutoConfigurationTests {
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
 						"spring.cloud.gcp.pubsub.subscriber.retry.total-timeout-seconds=10",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.total-timeout-seconds=1",
 						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.initial-retry-delay-seconds=2",
 						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.retry-delay-multiplier=3",
 						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.max-retry-delay-seconds=4",
@@ -794,7 +793,7 @@ public class GcpPubSubAutoConfigurationTests {
 			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
 			PubSubConfiguration.Retry retry = gcpPubSubProperties
 					.computeSubscriberRetrySettings("subscription-name", projectIdProvider.getProjectId());
-			assertThat(retry.getTotalTimeoutSeconds()).isEqualTo(1L);
+			assertThat(retry.getTotalTimeoutSeconds()).isEqualTo(10L);
 			assertThat(retry.getInitialRetryDelaySeconds()).isEqualTo(2L);
 			assertThat(retry.getRetryDelayMultiplier()).isEqualTo(3);
 			assertThat(retry.getMaxRetryDelaySeconds()).isEqualTo(4L);
@@ -807,7 +806,7 @@ public class GcpPubSubAutoConfigurationTests {
 			DefaultSubscriberFactory subscriberFactory = ctx
 					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
 			RetrySettings expectedRetrySettingsForSubscriptionName = RetrySettings.newBuilder()
-					.setTotalTimeout(Duration.ofSeconds(1L))
+					.setTotalTimeout(Duration.ofSeconds(10L))
 					.setInitialRetryDelay(Duration.ofSeconds(2L))
 					.setRetryDelayMultiplier(3)
 					.setMaxRetryDelay(Duration.ofSeconds(4L))
