@@ -180,14 +180,34 @@ public class GcpPubSubAutoConfigurationTests {
 				.withBean("subscriberExecutorProvider", ExecutorProvider.class, () -> executorProvider);
 
 		contextRunner.run(ctx -> {
-			DefaultSubscriberFactory subscriberFactory = ctx
+			DefaultSubscriberFactory factory = ctx
 					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
-			assertThat(subscriberFactory.getExecutorProvider("name")).isSameAs(executorProvider);
+			assertThat(factory.getExecutorProvider("name")).isSameAs(executorProvider);
+			assertThat(ctx.containsBean("globalSubscriberExecutorProvider")).isFalse();
+			assertThat(ctx.containsBean("subscriberExecutorProvider-name")).isFalse();
+		});
+	}
+
+
+	@Test
+	public void threadPoolScheduler_noConfigurationSet_globalCreated() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			ThreadPoolTaskScheduler globalSchedulerBean = (ThreadPoolTaskScheduler) ctx
+					.getBean("globalPubSubSubscriberThreadPoolScheduler");
+
+			assertThat(FieldUtils.readField(globalSchedulerBean, "poolSize", true))
+					.isEqualTo(4);
+			assertThat(globalSchedulerBean.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
+			assertThat(globalSchedulerBean.isDaemon()).isTrue();
 		});
 	}
 
 	@Test
-	public void executorThreads_globalConfigurationSet() {
+	public void subscriberThreadPoolTaskScheduler_globalConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.executor-threads=7")
@@ -196,20 +216,36 @@ public class GcpPubSubAutoConfigurationTests {
 		contextRunner.run(ctx -> {
 			GcpPubSubProperties gcpPubSubProperties = ctx
 					.getBean(GcpPubSubProperties.class);
-			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
-			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("other");
-
-			assertThat(gcpPubSubProperties.getSubscriber().getExecutorThreads()).isEqualTo(7);
-			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
-			assertThat(scheduler.getPoolSize()).isEqualTo(7);
 			ThreadPoolTaskScheduler globalSchedulerBean = (ThreadPoolTaskScheduler) ctx
 					.getBean("globalPubSubSubscriberThreadPoolScheduler");
-			assertThat(globalSchedulerBean).isNotNull();
+
+			assertThat(gcpPubSubProperties.getSubscriber().getExecutorThreads()).isEqualTo(7);
+			assertThat(globalSchedulerBean.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
+			assertThat(FieldUtils.readField(globalSchedulerBean, "poolSize", true))
+					.isEqualTo(7);
+			assertThat(globalSchedulerBean.isDaemon()).isTrue();
 		});
 	}
 
 	@Test
-	public void executorThreads_selectiveConfigurationSet() {
+	public void subscriberExecutorProvider_globalConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.executor-threads=7")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
+			ExecutorProvider globalExecutorProvider = (ExecutorProvider) ctx
+					.getBean("globalSubscriberExecutorProvider");
+
+			assertThat(globalExecutorProvider).isNotNull();
+			assertThat(factory.getExecutorProvider("other")).isSameAs(globalExecutorProvider);
+		});
+	}
+
+	@Test
+	public void threadPoolTaskScheduler_selectiveConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -218,24 +254,45 @@ public class GcpPubSubAutoConfigurationTests {
 
 		contextRunner.run(ctx -> {
 
-			// Verify that subscription-specific thread pool task scheduler is used
-			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
-			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
-			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-subscription-name");
-			assertThat(scheduler.getPoolSize()).isEqualTo(7);
-
 			// Verify that selective and global beans have been created
-			ThreadPoolTaskScheduler selectiveSchedulerBean = (ThreadPoolTaskScheduler) ctx
+			ThreadPoolTaskScheduler selectiveScheduler = (ThreadPoolTaskScheduler) ctx
 					.getBean("threadPoolScheduler_subscription-name");
-			ThreadPoolTaskScheduler globalSchedulerBean = (ThreadPoolTaskScheduler) ctx
+			ThreadPoolTaskScheduler globalScheduler = (ThreadPoolTaskScheduler) ctx
 					.getBean("globalPubSubSubscriberThreadPoolScheduler");
-			assertThat(selectiveSchedulerBean).isNotNull();
-			assertThat(globalSchedulerBean).isNotNull();
+			assertThat(selectiveScheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-subscription-name");
+			assertThat(selectiveScheduler.isDaemon()).isTrue();
+			assertThat(FieldUtils.readField(selectiveScheduler, "poolSize", true))
+					.isEqualTo(7);
+			assertThat(globalScheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
+			assertThat(FieldUtils.readField(globalScheduler, "poolSize", true))
+					.isEqualTo(4);
+			assertThat(globalScheduler.isDaemon()).isTrue();
+
 		});
 	}
 
 	@Test
-	public void executorThreads_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+	public void subscriberExecutorProvider_selectiveConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues("spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=7")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
+			ExecutorProvider selectiveExecutorProvider = (ExecutorProvider) ctx
+					.getBean("subscriberExecutorProvider-subscription-name");
+			ExecutorProvider globalExecutorProvider = (ExecutorProvider) ctx
+					.getBean("globalSubscriberExecutorProvider");
+
+			assertThat(globalExecutorProvider).isNotNull();
+			assertThat(selectiveExecutorProvider).isNotNull();
+			assertThat(factory.getExecutorProvider("subscription-name")).isSameAs(selectiveExecutorProvider);
+		});
+	}
+
+	@Test
+	public void threadPoolScheduler_globalAndSelectiveConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -245,24 +302,24 @@ public class GcpPubSubAutoConfigurationTests {
 
 		contextRunner.run(ctx -> {
 
-			// Verify that subscription-specific thread pool task scheduler is used
-			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
-			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
-			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-subscription-name");
-			assertThat(scheduler.getPoolSize()).isEqualTo(3);
-
 			// Verify that selective and global beans have been created
-			ThreadPoolTaskScheduler selectiveSchedulerBean = (ThreadPoolTaskScheduler) ctx
+			ThreadPoolTaskScheduler selectiveScheduler = (ThreadPoolTaskScheduler) ctx
 					.getBean("threadPoolScheduler_subscription-name");
-			ThreadPoolTaskScheduler globalSchedulerBean = (ThreadPoolTaskScheduler) ctx
+			ThreadPoolTaskScheduler globalScheduler = (ThreadPoolTaskScheduler) ctx
 					.getBean("globalPubSubSubscriberThreadPoolScheduler");
-			assertThat(selectiveSchedulerBean).isNotNull();
-			assertThat(globalSchedulerBean).isNotNull();
+			assertThat(selectiveScheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-subscription-name");
+			assertThat(FieldUtils.readField(selectiveScheduler, "poolSize", true))
+					.isEqualTo(3);
+			assertThat(selectiveScheduler.isDaemon()).isTrue();
+			assertThat(globalScheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
+			assertThat(FieldUtils.readField(globalScheduler, "poolSize", true))
+					.isEqualTo(5);
+			assertThat(globalScheduler.isDaemon()).isTrue();
 		});
 	}
 
 	@Test
-	public void executorThreads_globalAndDifferentSelectiveConfigurationSet_pickGlobal() {
+	public void threadPoolTaskScheduler_globalAndDifferentSelectiveConfigurationSet_onlyGlobalCreated() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -272,37 +329,58 @@ public class GcpPubSubAutoConfigurationTests {
 
 		contextRunner.run(ctx -> {
 
-			// Verify that global thread pool task scheduler is used
-			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
-			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
-			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
-			assertThat(scheduler.getPoolSize()).isEqualTo(5);
-
-			// Verify that global bean has been created
-			ThreadPoolTaskScheduler globalSchedulerBean = (ThreadPoolTaskScheduler) ctx
+			// Verify that only global thread pool task scheduler is created
+			ThreadPoolTaskScheduler globalScheduler = (ThreadPoolTaskScheduler) ctx
 					.getBean("globalPubSubSubscriberThreadPoolScheduler");
-			assertThat(globalSchedulerBean).isNotNull();
+
+			assertThat(globalScheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
+			assertThat(globalScheduler.isDaemon()).isTrue();
+			assertThat(FieldUtils.readField(globalScheduler, "poolSize", true))
+					.isEqualTo(5);
+			assertThat(ctx.containsBean("threadPoolScheduler_subscription-name")).isFalse();
 		});
 	}
 
 	@Test
-	public void executorThreads_noConfigurationSet_pickDefault() {
+	public void subscriberExecutorProvider_globalAndDifferentSelectiveConfigurationSet_onlyGlobalCreated() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.executor-threads=5",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.parallel-pull-count=3")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
-
-			// Verify that global thread pool task scheduler is used
 			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
-			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
-			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
-			assertThat(scheduler.getPoolSize()).isEqualTo(4);
 
-			// Verify that global bean has been created
-			ThreadPoolTaskScheduler globalSchedulerBean = (ThreadPoolTaskScheduler) ctx
-					.getBean("globalPubSubSubscriberThreadPoolScheduler");
-			assertThat(globalSchedulerBean).isNotNull();
+			// Verify that global executor provider is created and used
+			ExecutorProvider globalExecutorProvider = (ExecutorProvider) ctx
+					.getBean("globalSubscriberExecutorProvider");
+			assertThat(ctx.containsBean("subscriberExecutorProvider-subscription-name")).isFalse();
+			assertThat(factory.getGlobalExecutorProvider()).isSameAs(globalExecutorProvider);
+		});
+	}
+
+	@Test
+	public void subscriberExecutorProvider_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.executor-threads=5",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=3")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
+			ExecutorProvider selectiveExecutorProvider = (ExecutorProvider) ctx
+					.getBean("subscriberExecutorProvider-subscription-name");
+			ExecutorProvider globalExecutorProvider = (ExecutorProvider) ctx
+					.getBean("globalSubscriberExecutorProvider");
+
+			assertThat(selectiveExecutorProvider).isNotNull();
+			assertThat(globalExecutorProvider).isNotNull();
+			assertThat(factory.getGlobalExecutorProvider()).isNotNull();
+			assertThat(factory.getExecutorProvider("subscription-name")).isSameAs(selectiveExecutorProvider);
 		});
 	}
 

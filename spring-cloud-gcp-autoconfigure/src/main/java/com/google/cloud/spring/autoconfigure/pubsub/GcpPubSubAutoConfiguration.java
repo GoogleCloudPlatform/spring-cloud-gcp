@@ -111,6 +111,8 @@ public class GcpPubSubAutoConfiguration {
 
 	private final ConcurrentHashMap<String, RetrySettings> subscriberRetrySettingsMap = new ConcurrentHashMap<>();
 
+	private final ConcurrentHashMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
+
 	private final ApplicationContext applicationContext;
 
 	private ThreadPoolTaskScheduler globalScheduler;
@@ -118,6 +120,8 @@ public class GcpPubSubAutoConfiguration {
 	private FlowControlSettings globalFlowControlSettings;
 
 	private RetrySettings globalRetrySettings;
+
+	private ExecutorProvider globalExecutorProvider;
 
 	public GcpPubSubAutoConfiguration(GcpPubSubProperties gcpPubSubProperties,
 			GcpProjectIdProvider gcpProjectIdProvider,
@@ -222,14 +226,13 @@ public class GcpPubSubAutoConfiguration {
 		DefaultSubscriberFactory factory = new DefaultSubscriberFactory(this.finalProjectIdProvider,
 				this.gcpPubSubProperties);
 
-		factory.setThreadPoolTaskSchedulerMap(this.threadPoolTaskSchedulerMap);
-		factory.setGlobalScheduler(this.globalScheduler);
-
 		if (executorProvider.isPresent()) {
 			logger.warn(
 					"The subscriberExecutorProvider bean is being deprecated. Please use application.properties to configure properties");
 			factory.setExecutorProvider(executorProvider.get());
 		}
+		factory.setExecutorProviderMap(this.executorProviderMap);
+		factory.setGlobalExecutorProvider(this.globalExecutorProvider);
 
 		factory.setCredentialsProvider(this.finalCredentialsProvider);
 		factory.setHeaderProvider(this.headerProvider);
@@ -248,8 +251,6 @@ public class GcpPubSubAutoConfiguration {
 					"The subscriberRetrySettings bean is being deprecated. Please use application.properties to configure properties");
 			factory.setSubscriberStubRetrySettings(retrySettings.getIfAvailable());
 		}
-		factory.setRetrySettingsMap(this.subscriberRetrySettingsMap);
-		factory.setGlobalRetrySettings(this.globalRetrySettings);
 		if (this.gcpPubSubProperties.getSubscriber().getRetryableCodes() != null) {
 			factory.setRetryableCodes(gcpPubSubProperties.getSubscriber().getRetryableCodes());
 		}
@@ -402,14 +403,13 @@ public class GcpPubSubAutoConfiguration {
 	public void registerSubscriberSettings() {
 		GenericApplicationContext context = (GenericApplicationContext) this.applicationContext;
 		registerSubscriberThreadPoolSchedulerBeans(context);
+		registerExecutorProviderBeans(context);
 		registerSubscriberFlowControlSettingsBeans(context);
 		registerSubscriberRetrySettingsBeans(context);
 	}
 
 	private void registerSubscriberThreadPoolSchedulerBeans(GenericApplicationContext context) {
-		Integer globalExecutorThreads = this.gcpPubSubProperties.getSubscriber().getExecutorThreads();
-		Integer numThreads = globalExecutorThreads != null ? globalExecutorThreads
-				: PubSubConfiguration.DEFAULT_EXECUTOR_THREADS;
+		Integer numThreads = getGlobalExecutorThreads();
 		this.globalScheduler = createAndRegisterSchedulerBean(numThreads, "global-gcp-pubsub-subscriber",
 				"globalPubSubSubscriberThreadPoolScheduler", context);
 		registerSelectiveSchedulerBeans(context);
@@ -428,6 +428,17 @@ public class GcpPubSubAutoConfiguration {
 							.getBeanDefinition());
 		}
 		createAndRegisterSelectiveFlowControlSettings(context);
+	}
+
+	private void registerExecutorProviderBeans(GenericApplicationContext context) {
+		if (context.containsBean("subscriberExecutorProvider")) {
+			return;
+		}
+		if (this.globalScheduler != null) {
+			this.globalExecutorProvider = createAndRegisterExecutorProvider("globalSubscriberExecutorProvider",
+					this.globalScheduler, context);
+		}
+		createAndRegisterSelectiveExecutorProvider(context);
 	}
 
 	private void registerSubscriberRetrySettingsBeans(GenericApplicationContext context) {
@@ -453,7 +464,8 @@ public class GcpPubSubAutoConfiguration {
 	private void registerSelectiveSchedulerBeans(GenericApplicationContext context) {
 		Map<String, PubSubConfiguration.Subscriber> subscriberMap = this.gcpPubSubProperties.getSubscription();
 		for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription : subscriberMap.entrySet()) {
-			String subscriptionName = subscription.getKey();
+			ProjectSubscriptionName fullSubscriptionName = getFullSubscriptionName(subscription.getKey());
+			String subscriptionName = fullSubscriptionName.getSubscription();
 			PubSubConfiguration.Subscriber selectiveSubscriber = subscriberMap.get(subscriptionName);
 			Integer selectiveExecutorThreads = selectiveSubscriber.getExecutorThreads();
 			if (selectiveExecutorThreads != null) {
@@ -461,9 +473,7 @@ public class GcpPubSubAutoConfiguration {
 				String beanName = "threadPoolScheduler_" + subscriptionName;
 				ThreadPoolTaskScheduler selectiveScheduler = createAndRegisterSchedulerBean(selectiveExecutorThreads,
 						threadName, beanName, context);
-				String fullyQualifiedName = PubSubSubscriptionUtils
-						.toProjectSubscriptionName(subscriptionName, this.finalProjectIdProvider.getProjectId()).toString();
-				this.threadPoolTaskSchedulerMap.putIfAbsent(fullyQualifiedName, selectiveScheduler);
+				this.threadPoolTaskSchedulerMap.putIfAbsent(fullSubscriptionName.toString(), selectiveScheduler);
 			}
 		}
 	}
@@ -504,21 +514,43 @@ public class GcpPubSubAutoConfiguration {
 	private void createAndRegisterSelectiveFlowControlSettings(GenericApplicationContext context) {
 		Map<String, PubSubConfiguration.Subscriber> subscriberMap = this.gcpPubSubProperties.getSubscription();
 		for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription : subscriberMap.entrySet()) {
-			String subscriptionName = subscription.getKey();
+			ProjectSubscriptionName fullSubscriptionName = getFullSubscriptionName(subscription.getKey());
+			String subscriptionName = fullSubscriptionName.getSubscription();
 			PubSubConfiguration.FlowControl flowControl = this.gcpPubSubProperties.computeSubscriberFlowControlSettings(
 					subscriptionName,
 					this.finalProjectIdProvider.getProjectId());
 			FlowControlSettings flowControlSettings = buildFlowControlSettings(flowControl);
 			if (flowControlSettings != null && !flowControlSettings.equals(this.globalFlowControlSettings)) {
-				String fullyQualifiedName = PubSubSubscriptionUtils
-						.toProjectSubscriptionName(subscriptionName, this.finalProjectIdProvider.getProjectId()).toString();
-				this.subscriberFlowControlSettingsMap.putIfAbsent(fullyQualifiedName, flowControlSettings);
+				this.subscriberFlowControlSettingsMap.putIfAbsent(fullSubscriptionName.toString(), flowControlSettings);
 				String beanName = "subscriberFlowControlSettings-" + subscriptionName;
 				context.registerBeanDefinition(beanName,
 						BeanDefinitionBuilder.genericBeanDefinition(FlowControlSettings.class, () -> flowControlSettings)
 								.getBeanDefinition());
 			}
 		}
+	}
+
+	private void createAndRegisterSelectiveExecutorProvider(GenericApplicationContext context) {
+		for (Map.Entry<String, ThreadPoolTaskScheduler> schedulerSet : this.threadPoolTaskSchedulerMap.entrySet()) {
+			ProjectSubscriptionName fullSubscriptionName = getFullSubscriptionName(schedulerSet.getKey());
+			String fullyQualifiedName = fullSubscriptionName.toString();
+			if (!this.executorProviderMap.containsKey(fullyQualifiedName)) {
+				ThreadPoolTaskScheduler scheduler = schedulerSet.getValue();
+				ExecutorProvider executorProvider = createAndRegisterExecutorProvider(
+						"subscriberExecutorProvider-" + fullSubscriptionName.getSubscription(), scheduler, context);
+				this.executorProviderMap.putIfAbsent(fullyQualifiedName, executorProvider);
+			}
+		}
+	}
+
+	private ExecutorProvider createAndRegisterExecutorProvider(String beanName, ThreadPoolTaskScheduler scheduler,
+			GenericApplicationContext context) {
+		scheduler.initialize();
+		ExecutorProvider executor = FixedExecutorProvider.create(scheduler.getScheduledExecutor());
+		context.registerBeanDefinition(beanName,
+				BeanDefinitionBuilder.genericBeanDefinition(ExecutorProvider.class, () -> executor)
+						.getBeanDefinition());
+		return executor;
 	}
 
 	private void createAndRegisterSelectiveRetrySettings(GenericApplicationContext context) {
@@ -539,5 +571,15 @@ public class GcpPubSubAutoConfiguration {
 								.getBeanDefinition());
 			}
 		}
+	}
+
+	private Integer getGlobalExecutorThreads() {
+		Integer numThreads = this.gcpPubSubProperties.getSubscriber().getExecutorThreads();
+		return numThreads != null ? numThreads : PubSubConfiguration.DEFAULT_EXECUTOR_THREADS;
+	}
+
+	private ProjectSubscriptionName getFullSubscriptionName(String subscriptionName) {
+		return PubSubSubscriptionUtils
+				.toProjectSubscriptionName(subscriptionName, this.finalProjectIdProvider.getProjectId());
 	}
 }
