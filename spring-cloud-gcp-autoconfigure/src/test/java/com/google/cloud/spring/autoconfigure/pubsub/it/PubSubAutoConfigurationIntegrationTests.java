@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.pubsub.it;
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
@@ -32,6 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.threeten.bp.Duration;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -97,16 +99,26 @@ public class PubSubAutoConfigurationIntegrationTests {
 
 			// Validate auto-config properties
 			GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
-			PubSubConfiguration.Retry retrySettings = gcpPubSubProperties
+			RetrySettings expectedRetrySettings = RetrySettings.newBuilder()
+					.setTotalTimeout(Duration.ofSeconds(600L))
+					.setInitialRetryDelay(Duration.ofSeconds(100L))
+					.setRetryDelayMultiplier(1.3)
+					.setMaxRetryDelay(Duration.ofSeconds(600L))
+					.setMaxAttempts(1)
+					.setInitialRpcTimeout(Duration.ofSeconds(600L))
+					.setRpcTimeoutMultiplier(1)
+					.setMaxRpcTimeout(Duration.ofSeconds(600L))
+					.build();
+			PubSubConfiguration.Retry retry = gcpPubSubProperties
 					.computeSubscriberRetrySettings(subscriptionName, projectIdProvider.getProjectId());
-			assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(600L);
-			assertThat(retrySettings.getInitialRetryDelaySeconds()).isEqualTo(100L);
-			assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(1.3);
-			assertThat(retrySettings.getMaxRetryDelaySeconds()).isEqualTo(600L);
-			assertThat(retrySettings.getMaxAttempts()).isEqualTo(1);
-			assertThat(retrySettings.getInitialRpcTimeoutSeconds()).isEqualTo(600L);
-			assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(1);
-			assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(600L);
+			assertThat(retry.getTotalTimeoutSeconds()).isEqualTo(600L);
+			assertThat(retry.getInitialRetryDelaySeconds()).isEqualTo(100L);
+			assertThat(retry.getRetryDelayMultiplier()).isEqualTo(1.3);
+			assertThat(retry.getMaxRetryDelaySeconds()).isEqualTo(600L);
+			assertThat(retry.getMaxAttempts()).isEqualTo(1);
+			assertThat(retry.getInitialRpcTimeoutSeconds()).isEqualTo(600L);
+			assertThat(retry.getRpcTimeoutMultiplier()).isEqualTo(1);
+			assertThat(retry.getMaxRpcTimeoutSeconds()).isEqualTo(600L);
 			ThreadPoolTaskScheduler scheduler = (ThreadPoolTaskScheduler) context
 					.getBean("threadPoolScheduler_test-sub-1");
 			assertThat(scheduler).isNotNull();
@@ -120,6 +132,8 @@ public class PubSubAutoConfigurationIntegrationTests {
 					.isNotNull();
 			assertThat(gcpPubSubProperties.getSubscriber().getRetryableCodes())
 					.isEqualTo(new Code[] { Code.INTERNAL });
+			assertThat((RetrySettings) context.getBean("subscriberRetrySettings-test-sub-1"))
+					.isEqualTo(expectedRetrySettings);
 
 			pubSubAdmin.deleteSubscription(subscriptionName);
 			pubSubAdmin.deleteTopic(topicName);

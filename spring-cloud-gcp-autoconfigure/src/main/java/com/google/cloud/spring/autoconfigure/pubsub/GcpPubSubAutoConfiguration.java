@@ -109,6 +109,8 @@ public class GcpPubSubAutoConfiguration {
 
 	private final ConcurrentHashMap<String, FlowControlSettings> subscriberFlowControlSettingsMap = new ConcurrentHashMap<>();
 
+	private final ConcurrentHashMap<String, RetrySettings> subscriberRetrySettingsMap = new ConcurrentHashMap<>();
+
 	private final ConcurrentHashMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
 
 	private final ApplicationContext applicationContext;
@@ -116,6 +118,8 @@ public class GcpPubSubAutoConfiguration {
 	private ThreadPoolTaskScheduler globalScheduler;
 
 	private FlowControlSettings globalFlowControlSettings;
+
+	private RetrySettings globalRetrySettings;
 
 	private ExecutorProvider globalExecutorProvider;
 
@@ -247,6 +251,8 @@ public class GcpPubSubAutoConfiguration {
 					"The subscriberRetrySettings bean is being deprecated. Please use application.properties to configure properties");
 			factory.setSubscriberStubRetrySettings(retrySettings.getIfAvailable());
 		}
+		factory.setRetrySettingsMap(this.subscriberRetrySettingsMap);
+		factory.setGlobalRetrySettings(this.globalRetrySettings);
 		if (this.gcpPubSubProperties.getSubscriber().getRetryableCodes() != null) {
 			factory.setRetryableCodes(gcpPubSubProperties.getSubscriber().getRetryableCodes());
 		}
@@ -401,6 +407,7 @@ public class GcpPubSubAutoConfiguration {
 		registerSubscriberThreadPoolSchedulerBeans(context);
 		registerExecutorProviderBeans(context);
 		registerSubscriberFlowControlSettingsBeans(context);
+		registerSubscriberRetrySettingsBeans(context);
 	}
 
 	private void registerSubscriberThreadPoolSchedulerBeans(GenericApplicationContext context) {
@@ -434,6 +441,21 @@ public class GcpPubSubAutoConfiguration {
 					this.globalScheduler, context);
 		}
 		createAndRegisterSelectiveExecutorProvider(context);
+	}
+
+	private void registerSubscriberRetrySettingsBeans(GenericApplicationContext context) {
+		if (context.containsBean("subscriberRetrySettings")) {
+			return;
+		}
+		this.globalRetrySettings = buildRetrySettings(
+				this.gcpPubSubProperties.getSubscriber().getRetry());
+		if (this.globalRetrySettings != null) {
+			context.registerBeanDefinition("globalSubscriberRetrySettings",
+					BeanDefinitionBuilder
+							.genericBeanDefinition(RetrySettings.class, () -> this.globalRetrySettings)
+							.getBeanDefinition());
+		}
+		createAndRegisterSelectiveRetrySettings(context);
 	}
 
 	/**
@@ -531,6 +553,25 @@ public class GcpPubSubAutoConfiguration {
 				BeanDefinitionBuilder.genericBeanDefinition(ExecutorProvider.class, () -> executor)
 						.getBeanDefinition());
 		return executor;
+	}
+
+	private void createAndRegisterSelectiveRetrySettings(GenericApplicationContext context) {
+		Map<String, PubSubConfiguration.Subscriber> subscriberMap = this.gcpPubSubProperties.getSubscription();
+		for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription : subscriberMap.entrySet()) {
+			ProjectSubscriptionName fullyQualifiedName = getFullSubscriptionName(subscription.getKey());
+			String subscriptionName = fullyQualifiedName.getSubscription();
+			PubSubConfiguration.Retry retry = this.gcpPubSubProperties.computeSubscriberRetrySettings(
+					subscriptionName,
+					this.finalProjectIdProvider.getProjectId());
+			RetrySettings retrySettings = buildRetrySettings(retry);
+			if (retrySettings != null && !retrySettings.equals(this.globalRetrySettings)) {
+				this.subscriberRetrySettingsMap.putIfAbsent(fullyQualifiedName.toString(), retrySettings);
+				String beanName = "subscriberRetrySettings-" + subscriptionName;
+				context.registerBeanDefinition(beanName,
+						BeanDefinitionBuilder.genericBeanDefinition(RetrySettings.class, () -> retrySettings)
+								.getBeanDefinition());
+			}
+		}
 	}
 
 	private Integer getGlobalExecutorThreads() {
