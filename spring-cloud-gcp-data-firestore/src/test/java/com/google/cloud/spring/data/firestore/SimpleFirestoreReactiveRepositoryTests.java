@@ -29,10 +29,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class SimpleFirestoreReactiveRepositoryTests {
+class SimpleFirestoreReactiveRepositoryTests {
 
 	@Test
-	public void deleteAllById() {
+	void deleteAllById() {
 		FirestoreTemplate mockTemplate = mock(FirestoreTemplate.class);
 		SimpleFirestoreReactiveRepository<String> repository = new SimpleFirestoreReactiveRepository<>(mockTemplate,
 				String.class);

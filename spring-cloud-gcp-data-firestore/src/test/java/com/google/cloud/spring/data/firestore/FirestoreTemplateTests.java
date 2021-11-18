@@ -38,8 +38,8 @@ import com.google.firestore.v1.StructuredQuery;
 import com.google.firestore.v1.Value;
 import com.google.firestore.v1.Write;
 import io.grpc.stub.StreamObserver;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -63,15 +63,15 @@ public class FirestoreTemplateTests {
 
 	private static final String parent = "projects/my-project/databases/(default)/documents";
 
-	@Before
-	public void setup() {
+	@BeforeEach
+	void setup() {
 		FirestoreMappingContext mappingContext = new FirestoreMappingContext();
 		this.firestoreTemplate = new FirestoreTemplate(this.firestoreStub, this.parent,
 				new FirestoreDefaultClassMapper(mappingContext), mappingContext);
 	}
 
 	@Test
-	public void findAllTest() {
+	void findAllTest() {
 		mockRunQueryMethod();
 
 		StepVerifier.create(this.firestoreTemplate.findAll(TestEntity.class))
@@ -91,7 +91,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void saveAllTest() {
+	void saveAllTest() {
 		mockCommitMethod();
 
 		StepVerifier.create(
@@ -112,7 +112,7 @@ public class FirestoreTemplateTests {
 
 
 	@Test
-	public void updateTimeVersionSaveTest() {
+	void updateTimeVersionSaveTest() {
 		mockCommitMethod();
 
 		Timestamp expectedUpdateTime = Timestamp.ofTimeMicroseconds(123456789);
@@ -139,7 +139,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void updateTimeVersionUpdateTest() {
+	void updateTimeVersionUpdateTest() {
 		mockCommitMethod();
 
 		Timestamp expectedUpdateTime = Timestamp.ofTimeMicroseconds(123456789);
@@ -174,7 +174,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void updateTimeSaveTest() {
+	void updateTimeSaveTest() {
 		mockCommitMethod();
 
 		Timestamp expectedUpdateTime = Timestamp.ofTimeMicroseconds(123456789);
@@ -198,7 +198,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void deleteTest() {
+	void deleteTest() {
 		mockCommitMethod();
 
 		StepVerifier.create(
@@ -216,7 +216,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void deleteByIdTest() {
+	void deleteByIdTest() {
 		mockCommitMethod();
 		Flux<String> idPublisher = Flux.just("e1", "e2");
 		StepVerifier.create(
@@ -246,7 +246,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void findByIdTest() {
+	void findByIdTest() {
 		doAnswer(invocation -> {
 			StreamObserver<com.google.firestore.v1.Document> streamObserver = invocation.getArgument(1);
 			streamObserver.onNext(buildDocument("e1", 100L));
@@ -267,7 +267,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void findByIdErrorTest() {
+	void findByIdErrorTest() {
 		doAnswer(invocation -> {
 			StreamObserver<com.google.firestore.v1.Document> streamObserver = invocation.getArgument(1);
 			streamObserver.onError(new RuntimeException("Firestore error"));
@@ -289,7 +289,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void findByIdNotFoundTest() {
+	void findByIdNotFoundTest() {
 		doAnswer(invocation -> {
 			StreamObserver<com.google.firestore.v1.Document> streamObserver = invocation.getArgument(1);
 			streamObserver.onError(new RuntimeException("NOT_FOUND: Document"));
@@ -308,7 +308,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void findAllByIdTest() {
+	void findAllByIdTest() {
 		GetDocumentRequest request1 = GetDocumentRequest.newBuilder()
 				.setName(this.parent + "/testEntities/e1")
 				.build();
@@ -353,7 +353,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void countTest() {
+	void countTest() {
 		mockRunQueryMethod();
 
 		StepVerifier.create(this.firestoreTemplate.count(TestEntity.class)).expectNext(2L).verifyComplete();
@@ -377,7 +377,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void countWithQueryTest() {
+	void countWithQueryTest() {
 		mockRunQueryMethod();
 
 		StructuredQuery.Builder builder = StructuredQuery.newBuilder();
@@ -417,7 +417,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void existsByIdTest() {
+	void existsByIdTest() {
 		GetDocumentRequest request = GetDocumentRequest.newBuilder()
 				.setName(this.parent + "/testEntities/" + "e1")
 				.setMask(DocumentMask.newBuilder().addFieldPaths("__name__").build())
@@ -439,7 +439,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void existsByIdNotFoundTest() {
+	void existsByIdNotFoundTest() {
 		GetDocumentRequest request = GetDocumentRequest.newBuilder()
 				.setName(this.parent + "/testEntities/" + "e1")
 				.setMask(DocumentMask.newBuilder().addFieldPaths("__name__").build())
@@ -462,7 +462,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void withParentTest_entityReference() {
+	void withParentTest_entityReference() {
 		doAnswer(invocation -> {
 			StreamObserver<com.google.firestore.v1.Document> streamObserver = invocation.getArgument(1);
 			streamObserver.onNext(buildDocument("e1", 100L));
@@ -483,7 +483,7 @@ public class FirestoreTemplateTests {
 	}
 
 	@Test
-	public void withParentTest_idClassReference() {
+	void withParentTest_idClassReference() {
 		doAnswer(invocation -> {
 			StreamObserver<com.google.firestore.v1.Document> streamObserver = invocation.getArgument(1);
 			streamObserver.onNext(buildDocument("e1", 100L));
