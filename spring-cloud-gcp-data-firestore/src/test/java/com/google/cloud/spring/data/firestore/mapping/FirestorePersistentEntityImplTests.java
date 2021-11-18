@@ -17,7 +17,7 @@
 package com.google.cloud.spring.data.firestore.mapping;
 
 import com.google.cloud.spring.data.firestore.Document;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.data.util.ClassTypeInformation;
 
@@ -28,17 +28,17 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Daniel Zou
  */
-public class FirestorePersistentEntityImplTests {
+class FirestorePersistentEntityImplTests {
 
 	@Test
-	public void testSetCollectionName() {
+	void testSetCollectionName() {
 		FirestorePersistentEntity<Student> firestorePersistentEntity = new FirestorePersistentEntityImpl<>(
 				ClassTypeInformation.from(Student.class));
 		assertThat(firestorePersistentEntity.collectionName()).isEqualTo("student");
 	}
 
 	@Test
-	public void testInferCollectionName() {
+	void testInferCollectionName() {
 		FirestorePersistentEntity<Employee> firestorePersistentEntity = new FirestorePersistentEntityImpl<>(
 				ClassTypeInformation.from(Employee.class));
 		assertThat(firestorePersistentEntity.collectionName()).isEqualTo("employee_table");

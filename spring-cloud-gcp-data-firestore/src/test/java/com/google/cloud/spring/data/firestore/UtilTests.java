@@ -17,7 +17,7 @@
 package com.google.cloud.spring.data.firestore;
 
 import com.google.cloud.spring.data.firestore.util.Util;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,10 +25,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Dmitry Solomakha
  * @since 1.2
  */
-public class UtilTests {
+class UtilTests {
 
 	@Test
-	public void extractDatabasePathTest() {
+	void extractDatabasePathTest() {
 		String actualDbPath = "projects/MY_PROJECT/databases/MY_DB_ID";
 		String extractedDbPath = Util.extractDatabasePath(actualDbPath + "/abc/def");
 
