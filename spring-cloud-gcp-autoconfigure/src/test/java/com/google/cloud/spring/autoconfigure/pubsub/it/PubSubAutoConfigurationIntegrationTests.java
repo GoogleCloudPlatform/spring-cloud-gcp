@@ -130,7 +130,7 @@ public class PubSubAutoConfigurationIntegrationTests {
 					.isNotNull();
 			assertThat((ExecutorProvider) context.getBean("globalSubscriberExecutorProvider"))
 					.isNotNull();
-			assertThat(gcpPubSubProperties.getSubscriber().getRetryableCodes())
+			assertThat(gcpPubSubProperties.computeRetryableCodes("test-sub-1", projectIdProvider.getProjectId()))
 					.isEqualTo(new Code[] { Code.INTERNAL });
 			assertThat((RetrySettings) context.getBean("subscriberRetrySettings-test-sub-1"))
 					.isEqualTo(expectedRetrySettings);
