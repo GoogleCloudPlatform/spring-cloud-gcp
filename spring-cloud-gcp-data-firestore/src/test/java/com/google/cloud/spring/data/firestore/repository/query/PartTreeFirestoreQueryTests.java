@@ -27,7 +27,7 @@ import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMappe
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.firestore.v1.StructuredQuery;
 import com.google.firestore.v1.Value;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -42,7 +42,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class PartTreeFirestoreQueryTests {
+class PartTreeFirestoreQueryTests {
 	private FirestoreClassMapper classMapper = new FirestoreDefaultClassMapper(new FirestoreMappingContext());
 
 	private static final User TEST_USER = new User("Hello", 23);
@@ -54,7 +54,7 @@ public class PartTreeFirestoreQueryTests {
 	private FirestoreQueryMethod queryMethod = mock(FirestoreQueryMethod.class);
 
 	@Test
-	public void testPartTreeQuery() {
+	void testPartTreeQuery() {
 		PartTreeFirestoreQuery partTreeFirestoreQuery = createPartTreeQuery("findByAgeAndNameIsNullAndHomeAddress_country", invocation -> {
 			StructuredQuery.Builder actualBuilder = invocation.getArgument(0);
 			Class clazz = invocation.getArgument(1);
@@ -97,7 +97,7 @@ public class PartTreeFirestoreQueryTests {
 	}
 
 	@Test
-	public void testPartTreeQuery_queryById() {
+	void testPartTreeQuery_queryById() {
 		when(this.firestoreTemplate.buildResourceName(any(), any())).thenReturn("full/reference/path/to/document");
 
 		PartTreeFirestoreQuery partTreeFirestoreQuery = createPartTreeQuery("findByAgeAndName", invocation -> {
@@ -134,7 +134,7 @@ public class PartTreeFirestoreQueryTests {
 	}
 
 	@Test
-	public void testPartTreeQueryCount() {
+	void testPartTreeQueryCount() {
 		PartTreeFirestoreQuery partTreeFirestoreQuery = setUpPartTreeFirestoreQuery("countByAgeGreaterThan");
 
 		when(this.firestoreTemplate.count(any(), any())).thenAnswer(invocation -> {
@@ -166,7 +166,7 @@ public class PartTreeFirestoreQueryTests {
 	}
 
 	@Test
-	public void testPartTreeQueryParameterException() {
+	void testPartTreeQueryParameterException() {
 		PartTreeFirestoreQuery partTreeFirestoreQuery =
 				createPartTreeQuery("findByAge");
 		assertThatThrownBy(() -> partTreeFirestoreQuery.execute(new Object[] {}))
@@ -175,7 +175,7 @@ public class PartTreeFirestoreQueryTests {
 	}
 
 	@Test
-	public void testPartTreeQueryFilterException() {
+	void testPartTreeQueryFilterException() {
 		assertThatThrownBy(() -> createPartTreeQuery("findByAgeBetweenAndNameRegex"))
 				.isInstanceOf(FirestoreDataException.class)
 				.hasMessage("Unsupported predicate keywords: " +
@@ -185,7 +185,7 @@ public class PartTreeFirestoreQueryTests {
 	}
 
 	@Test
-	public void testPartTreeQueryOrException() {
+	void testPartTreeQueryOrException() {
 		assertThatThrownBy(() -> createPartTreeQuery("findByAgeOrName"))
 				.isInstanceOf(FirestoreDataException.class)
 				.hasMessage("Cloud Firestore doesn't support 'OR' (method name: findByAgeOrName)");
