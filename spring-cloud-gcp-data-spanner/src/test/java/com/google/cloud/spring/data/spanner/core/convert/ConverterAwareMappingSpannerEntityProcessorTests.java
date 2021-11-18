@@ -35,8 +35,8 @@ import com.google.cloud.spanner.Value;
 import com.google.cloud.spring.data.spanner.core.convert.TestEntities.TestEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import org.assertj.core.data.Offset;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
@@ -53,7 +53,7 @@ import static org.mockito.Mockito.when;
  * @author Chengyuan Zhao
  * @author Balint Pato
  */
-public class ConverterAwareMappingSpannerEntityProcessorTests {
+class ConverterAwareMappingSpannerEntityProcessorTests {
 
 	private static final Offset<Double> DELTA = Offset.offset(0.00001);
 
@@ -96,14 +96,14 @@ public class ConverterAwareMappingSpannerEntityProcessorTests {
 		}
 	};
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		this.spannerEntityProcessor = new ConverterAwareMappingSpannerEntityProcessor(
 				new SpannerMappingContext());
 	}
 
 	@Test
-	public void customTimeConverter() {
+	void customTimeConverter() {
 		ConverterAwareMappingSpannerEntityProcessor processorWithCustomConverters =
 				new ConverterAwareMappingSpannerEntityProcessor(new SpannerMappingContext(),
 						Collections.singletonList(LOCAL_DATE_TIME_WRITE_CONVERTER),
@@ -130,7 +130,7 @@ public class ConverterAwareMappingSpannerEntityProcessorTests {
 
 
 	@Test
-	public void canConvertDefaultTypesNoCustomConverters() {
+	void canConvertDefaultTypesNoCustomConverters() {
 		ConverterAwareMappingSpannerEntityProcessor converter = new ConverterAwareMappingSpannerEntityProcessor(
 				new SpannerMappingContext());
 
@@ -140,7 +140,7 @@ public class ConverterAwareMappingSpannerEntityProcessorTests {
 	}
 
 	@Test
-	public void canConvertDefaultTypesCustomConverters() {
+	void canConvertDefaultTypesCustomConverters() {
 		ConverterAwareMappingSpannerEntityProcessor converter = new ConverterAwareMappingSpannerEntityProcessor(
 				new SpannerMappingContext(),
 				Collections.singletonList(JAVA_TO_SPANNER),
@@ -153,7 +153,7 @@ public class ConverterAwareMappingSpannerEntityProcessorTests {
 	}
 
 	@Test
-	public void timestampCorrespondingType() {
+	void timestampCorrespondingType() {
 		ConverterAwareMappingSpannerEntityProcessor converter = new ConverterAwareMappingSpannerEntityProcessor(
 				new SpannerMappingContext());
 
@@ -163,7 +163,7 @@ public class ConverterAwareMappingSpannerEntityProcessorTests {
 	}
 
 	@Test
-	public void timestampIterableCorrespondingType() {
+	void timestampIterableCorrespondingType() {
 		ConverterAwareMappingSpannerEntityProcessor converter = new ConverterAwareMappingSpannerEntityProcessor(
 				new SpannerMappingContext());
 
@@ -172,8 +172,7 @@ public class ConverterAwareMappingSpannerEntityProcessorTests {
 		assertThat(spannerJavaType).isEqualTo(Timestamp.class);
 	}
 
-	private void verifyCanConvert(ConverterAwareMappingSpannerEntityProcessor converter,
-			Class<?> javaType, Class<?> spannerType) {
+	private void verifyCanConvert(ConverterAwareMappingSpannerEntityProcessor converter, Class<?> javaType, Class<?> spannerType) {
 		SpannerWriteConverter writeConverter = converter.getWriteConverter();
 		SpannerReadConverter readConverter = converter.getReadConverter();
 
@@ -182,7 +181,7 @@ public class ConverterAwareMappingSpannerEntityProcessorTests {
 	}
 
 	@Test
-	public void mapToListTest() {
+	void mapToListTest() {
 		List<Double> doubleList = Collections.singletonList(3.33);
 		List<String> stringList = Collections.singletonList("string");
 		List<Instant> instants = Arrays.asList(Instant.ofEpochSecond(111),
@@ -309,7 +308,7 @@ public class ConverterAwareMappingSpannerEntityProcessorTests {
 	}
 
 	@Test
-	public void mapToListPartialColumnsTest() {
+	void mapToListPartialColumnsTest() {
 		List<Double> doubleList = new ArrayList<>();
 		doubleList.add(3.33);
 		List<String> stringList = new ArrayList<>();
