@@ -40,7 +40,7 @@ public class DatastoreBookshelfExample {
 		SpringApplication.run(DatastoreBookshelfExample.class, args);
 	}
 
-	@ShellMethod("Saves a book to Cloud Datastore: save-book <author> <title> <year>")
+	@ShellMethod("Saves a book to Cloud Datastore: save-book <title> <author> <year>")
 	public String saveBook(String title, String author, int year) {
 		Book savedBook = this.bookRepository.save(new Book(title, author, year));
 		return savedBook.toString();
