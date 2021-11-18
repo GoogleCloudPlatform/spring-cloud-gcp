@@ -19,7 +19,6 @@ package com.google.cloud.spring.pubsub.support;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.Consumer;
 
 import com.google.api.core.ApiClock;
 import com.google.api.gax.batching.FlowControlSettings;
@@ -86,7 +85,11 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	private ConcurrentMap<String, FlowControlSettings> flowControlSettingsMap = new ConcurrentHashMap<>();
 
+	private ConcurrentMap<String, RetrySettings> retrySettingsMap = new ConcurrentHashMap<>();
+
 	private FlowControlSettings globalFlowControlSettings;
+
+	private RetrySettings globalRetrySettings;
 
 	private ConcurrentMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
 
@@ -350,11 +353,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			subscriberStubSettings.setBackgroundExecutorProvider(executor);
 		}
 
-		if (this.subscriberStubRetrySettings != null) {
-			subscriberStubSettings.pullSettings().setRetrySettings(this.subscriberStubRetrySettings);
-		}
-		else {
-			applyGlobalRetrySettings(subscriberStubSettings);
+		RetrySettings retrySettings = this.subscriberStubRetrySettings != null ? this.subscriberStubRetrySettings
+				: this.globalRetrySettings;
+		if (retrySettings != null) {
+			subscriberStubSettings.pullSettings().setRetrySettings(retrySettings);
 		}
 
 		if (this.retryableCodes != null) {
@@ -369,14 +371,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		String endpoint = this.pubSubConfiguration.getSubscriber().getPullEndpoint();
 		if (endpoint != null) {
 			subscriberStubSettings.setEndpoint(endpoint);
-		}
-	}
-
-	private void applyGlobalRetrySettings(SubscriberStubSettings.Builder subscriberStubSettings) {
-		PubSubConfiguration.Retry retry = this.pubSubConfiguration.getSubscriber().getRetry();
-		RetrySettings retrySettings = buildRetrySettings(retry);
-		if (retrySettings != null) {
-			subscriberStubSettings.pullSettings().setRetrySettings(retrySettings);
 		}
 	}
 
@@ -466,29 +460,14 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 		if (this.subscriberStubRetrySettings != null) {
 			return this.subscriberStubRetrySettings;
 		}
-
-		PubSubConfiguration.Retry retryProperties = this.pubSubConfiguration
-				.computeSubscriberRetrySettings(subscriptionName, this.projectId);
-		return buildRetrySettings(retryProperties);
+		String fullyQualifiedName = PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId)
+				.toString();
+		if (retrySettingsMap.containsKey(fullyQualifiedName)) {
+			return this.retrySettingsMap.get(fullyQualifiedName);
+		}
+		return this.globalRetrySettings;
 	}
 
-	public RetrySettings buildRetrySettings(PubSubConfiguration.Retry retryProperties) {
-		RetrySettings.Builder builder = RetrySettings.newBuilder();
-		boolean shouldBuild = ifSet(retryProperties.getInitialRetryDelaySeconds(),
-				x -> builder.setInitialRetryDelay(Duration.ofSeconds(x)));
-		shouldBuild |= ifSet(retryProperties.getInitialRpcTimeoutSeconds(),
-				x -> builder.setInitialRpcTimeout(Duration.ofSeconds(x)));
-		shouldBuild |= ifSet(retryProperties.getMaxAttempts(), builder::setMaxAttempts);
-		shouldBuild |= ifSet(retryProperties.getMaxRetryDelaySeconds(),
-				x -> builder.setMaxRetryDelay(Duration.ofSeconds(x)));
-		shouldBuild |= ifSet(retryProperties.getMaxRpcTimeoutSeconds(),
-				x -> builder.setMaxRpcTimeout(Duration.ofSeconds(x)));
-		shouldBuild |= ifSet(retryProperties.getRetryDelayMultiplier(), builder::setRetryDelayMultiplier);
-		shouldBuild |= ifSet(retryProperties.getTotalTimeoutSeconds(),
-				x -> builder.setTotalTimeout(Duration.ofSeconds(x)));
-		shouldBuild |= ifSet(retryProperties.getRpcTimeoutMultiplier(), builder::setRpcTimeoutMultiplier);
-		return shouldBuild ? builder.build() : null;
-	}
 
 	/**
 	 * Fetches subscriber {@link FlowControlSettings}. User-provided bean takes precedence
@@ -508,14 +487,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 			return this.flowControlSettingsMap.get(fullyQualifiedName);
 		}
 		return this.globalFlowControlSettings;
-	}
-
-	private <T> boolean ifSet(T property, Consumer<T> consumer) {
-		if (property != null) {
-			consumer.accept(property);
-			return true;
-		}
-		return false;
 	}
 
 	Duration getMaxAckExtensionPeriod(String subscriptionName) {
@@ -559,6 +530,14 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
 	public void setGlobalFlowControlSettings(FlowControlSettings flowControlSettings) {
 		this.globalFlowControlSettings = flowControlSettings;
+	}
+
+	public void setRetrySettingsMap(ConcurrentMap<String, RetrySettings> retrySettingsMap) {
+		this.retrySettingsMap = retrySettingsMap;
+	}
+
+	public void setGlobalRetrySettings(RetrySettings retrySettings) {
+		this.globalRetrySettings = retrySettings;
 	}
 
 	private boolean shouldAddToHealthCheck(String subscriptionName) {
