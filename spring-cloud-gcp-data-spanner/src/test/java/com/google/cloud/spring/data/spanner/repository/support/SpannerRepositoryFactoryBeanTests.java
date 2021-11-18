@@ -20,8 +20,8 @@ import com.google.cloud.spanner.Key;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
@@ -33,7 +33,8 @@ import static org.mockito.Mockito.mock;
  *
  * @author Chengyuan Zhao
  */
-public class SpannerRepositoryFactoryBeanTests {
+
+class SpannerRepositoryFactoryBeanTests {
 
 	private SpannerRepositoryFactoryBean<SpannerRepository<Object, Key>, Object, Key>
 			spannerRepositoryFactoryBean;
@@ -42,9 +43,9 @@ public class SpannerRepositoryFactoryBeanTests {
 
 	private SpannerTemplate spannerTemplate;
 
-	@Before
+	@BeforeEach
 	@SuppressWarnings("unchecked")
-	public void setUp() {
+	void setUp() {
 		this.spannerMappingContext = new SpannerMappingContext();
 		this.spannerTemplate = mock(SpannerTemplate.class);
 		this.spannerRepositoryFactoryBean = new SpannerRepositoryFactoryBean(
@@ -55,7 +56,7 @@ public class SpannerRepositoryFactoryBeanTests {
 	}
 
 	@Test
-	public void createRepositoryFactoryTest() {
+	void createRepositoryFactoryTest() {
 		RepositoryFactorySupport factory = this.spannerRepositoryFactoryBean
 				.createRepositoryFactory();
 		assertThat(factory).isInstanceOf(SpannerRepositoryFactory.class);
