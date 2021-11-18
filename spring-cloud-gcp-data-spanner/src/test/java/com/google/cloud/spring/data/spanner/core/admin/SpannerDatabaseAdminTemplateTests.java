@@ -35,8 +35,8 @@ import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Value;
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
 import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +50,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Chengyuan Zhao
  */
-public class SpannerDatabaseAdminTemplateTests {
+class SpannerDatabaseAdminTemplateTests {
 
 	private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
 
@@ -64,8 +64,8 @@ public class SpannerDatabaseAdminTemplateTests {
 
 	private List<String> ddlList;
 
-	@Before
-	public void setup() {
+	@BeforeEach
+	void setup() {
 		this.databaseAdminClient = mock(DatabaseAdminClient.class);
 		this.databaseClient = mock(DatabaseClient.class);
 		this.mockDatabasePage = mock(Page.class);
@@ -79,7 +79,7 @@ public class SpannerDatabaseAdminTemplateTests {
 	}
 
 	@Test
-	public void getTableRelationshipsTest() {
+	void getTableRelationshipsTest() {
 		ReadContext readContext = mock(ReadContext.class);
 
 		Struct s1 = Struct.newBuilder().set("table_name").to(Value.string("grandpa"))
@@ -122,7 +122,7 @@ public class SpannerDatabaseAdminTemplateTests {
 	}
 
 	@Test
-	public void executeDdlStrings_createsDatabaseIfMissing() throws Exception {
+	void executeDdlStrings_createsDatabaseIfMissing() throws Exception {
 		when(this.mockDatabasePage.getValues()).thenReturn(Arrays.asList(
 				new Database(this.databaseId, State.READY, this.databaseAdminClient)));
 
@@ -137,7 +137,7 @@ public class SpannerDatabaseAdminTemplateTests {
 	}
 
 	@Test
-	public void executeDdlStrings_doesNotCreateDatabaseIfAlreadyPresent() throws Exception {
+	void executeDdlStrings_doesNotCreateDatabaseIfAlreadyPresent() throws Exception {
 		when(this.mockDatabasePage.getValues()).thenReturn(Arrays.asList());
 
 		OperationFuture<Database, CreateDatabaseMetadata> mockFuture = mock(OperationFuture.class);

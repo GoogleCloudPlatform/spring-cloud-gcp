@@ -43,7 +43,6 @@ import org.springframework.cloud.stream.binder.AbstractTestBinder;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
  * Tests the binder for Pub/Sub.
@@ -92,8 +91,6 @@ public class PubSubTestBinder extends AbstractTestBinder<PubSubMessageChannelBin
 		}
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		DefaultSubscriberFactory subscriberFactory = new DefaultSubscriberFactory(projectIdProvider, pubSubConfiguration);
-		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		subscriberFactory.setGlobalScheduler(scheduler);
 		subscriberFactory.setChannelProvider(transportChannelProvider);
 		subscriberFactory.setCredentialsProvider(NoCredentialsProvider.create());
 

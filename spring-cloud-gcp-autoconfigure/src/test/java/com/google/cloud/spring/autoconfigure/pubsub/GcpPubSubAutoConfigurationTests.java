@@ -31,6 +31,7 @@ import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Test;
+import org.threeten.bp.Duration;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -254,14 +255,33 @@ public class GcpPubSubAutoConfigurationTests {
 				.withBean("subscriberExecutorProvider", ExecutorProvider.class, () -> executorProvider);
 
 		contextRunner.run(ctx -> {
-			DefaultSubscriberFactory subscriberFactory = ctx
+			DefaultSubscriberFactory factory = ctx
 					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
-			assertThat(subscriberFactory.getExecutorProvider("name")).isSameAs(executorProvider);
+			assertThat(factory.getExecutorProvider("name")).isSameAs(executorProvider);
+			assertThat(ctx.containsBean("globalSubscriberExecutorProvider")).isFalse();
+			assertThat(ctx.containsBean("subscriberExecutorProvider-name")).isFalse();
 		});
 	}
 
 	@Test
-	public void executorThreads_globalConfigurationSet() {
+	public void threadPoolScheduler_noConfigurationSet_globalCreated() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			ThreadPoolTaskScheduler globalSchedulerBean = (ThreadPoolTaskScheduler) ctx
+					.getBean("globalPubSubSubscriberThreadPoolScheduler");
+
+			assertThat(FieldUtils.readField(globalSchedulerBean, "poolSize", true))
+					.isEqualTo(4);
+			assertThat(globalSchedulerBean.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
+			assertThat(globalSchedulerBean.isDaemon()).isTrue();
+		});
+	}
+
+	@Test
+	public void subscriberThreadPoolTaskScheduler_globalConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.executor-threads=7")
@@ -270,20 +290,36 @@ public class GcpPubSubAutoConfigurationTests {
 		contextRunner.run(ctx -> {
 			GcpPubSubProperties gcpPubSubProperties = ctx
 					.getBean(GcpPubSubProperties.class);
-			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
-			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("other");
-
-			assertThat(gcpPubSubProperties.getSubscriber().getExecutorThreads()).isEqualTo(7);
-			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
-			assertThat(scheduler.getPoolSize()).isEqualTo(7);
 			ThreadPoolTaskScheduler globalSchedulerBean = (ThreadPoolTaskScheduler) ctx
 					.getBean("globalPubSubSubscriberThreadPoolScheduler");
-			assertThat(globalSchedulerBean).isNotNull();
+
+			assertThat(gcpPubSubProperties.getSubscriber().getExecutorThreads()).isEqualTo(7);
+			assertThat(globalSchedulerBean.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
+			assertThat(FieldUtils.readField(globalSchedulerBean, "poolSize", true))
+					.isEqualTo(7);
+			assertThat(globalSchedulerBean.isDaemon()).isTrue();
 		});
 	}
 
 	@Test
-	public void executorThreads_selectiveConfigurationSet() {
+	public void subscriberExecutorProvider_globalConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.executor-threads=7")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
+			ExecutorProvider globalExecutorProvider = (ExecutorProvider) ctx
+					.getBean("globalSubscriberExecutorProvider");
+
+			assertThat(globalExecutorProvider).isNotNull();
+			assertThat(factory.getExecutorProvider("other")).isSameAs(globalExecutorProvider);
+		});
+	}
+
+	@Test
+	public void threadPoolTaskScheduler_selectiveConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -292,24 +328,45 @@ public class GcpPubSubAutoConfigurationTests {
 
 		contextRunner.run(ctx -> {
 
-			// Verify that subscription-specific thread pool task scheduler is used
-			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
-			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
-			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-subscription-name");
-			assertThat(scheduler.getPoolSize()).isEqualTo(7);
-
 			// Verify that selective and global beans have been created
-			ThreadPoolTaskScheduler selectiveSchedulerBean = (ThreadPoolTaskScheduler) ctx
+			ThreadPoolTaskScheduler selectiveScheduler = (ThreadPoolTaskScheduler) ctx
 					.getBean("threadPoolScheduler_subscription-name");
-			ThreadPoolTaskScheduler globalSchedulerBean = (ThreadPoolTaskScheduler) ctx
+			ThreadPoolTaskScheduler globalScheduler = (ThreadPoolTaskScheduler) ctx
 					.getBean("globalPubSubSubscriberThreadPoolScheduler");
-			assertThat(selectiveSchedulerBean).isNotNull();
-			assertThat(globalSchedulerBean).isNotNull();
+			assertThat(selectiveScheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-subscription-name");
+			assertThat(selectiveScheduler.isDaemon()).isTrue();
+			assertThat(FieldUtils.readField(selectiveScheduler, "poolSize", true))
+					.isEqualTo(7);
+			assertThat(globalScheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
+			assertThat(FieldUtils.readField(globalScheduler, "poolSize", true))
+					.isEqualTo(4);
+			assertThat(globalScheduler.isDaemon()).isTrue();
+
 		});
 	}
 
 	@Test
-	public void executorThreads_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+	public void subscriberExecutorProvider_selectiveConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues("spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=7")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
+			ExecutorProvider selectiveExecutorProvider = (ExecutorProvider) ctx
+					.getBean("subscriberExecutorProvider-subscription-name");
+			ExecutorProvider globalExecutorProvider = (ExecutorProvider) ctx
+					.getBean("globalSubscriberExecutorProvider");
+
+			assertThat(globalExecutorProvider).isNotNull();
+			assertThat(selectiveExecutorProvider).isNotNull();
+			assertThat(factory.getExecutorProvider("subscription-name")).isSameAs(selectiveExecutorProvider);
+		});
+	}
+
+	@Test
+	public void threadPoolScheduler_globalAndSelectiveConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -319,24 +376,24 @@ public class GcpPubSubAutoConfigurationTests {
 
 		contextRunner.run(ctx -> {
 
-			// Verify that subscription-specific thread pool task scheduler is used
-			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
-			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
-			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-subscription-name");
-			assertThat(scheduler.getPoolSize()).isEqualTo(3);
-
 			// Verify that selective and global beans have been created
-			ThreadPoolTaskScheduler selectiveSchedulerBean = (ThreadPoolTaskScheduler) ctx
+			ThreadPoolTaskScheduler selectiveScheduler = (ThreadPoolTaskScheduler) ctx
 					.getBean("threadPoolScheduler_subscription-name");
-			ThreadPoolTaskScheduler globalSchedulerBean = (ThreadPoolTaskScheduler) ctx
+			ThreadPoolTaskScheduler globalScheduler = (ThreadPoolTaskScheduler) ctx
 					.getBean("globalPubSubSubscriberThreadPoolScheduler");
-			assertThat(selectiveSchedulerBean).isNotNull();
-			assertThat(globalSchedulerBean).isNotNull();
+			assertThat(selectiveScheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-subscription-name");
+			assertThat(FieldUtils.readField(selectiveScheduler, "poolSize", true))
+					.isEqualTo(3);
+			assertThat(selectiveScheduler.isDaemon()).isTrue();
+			assertThat(globalScheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
+			assertThat(FieldUtils.readField(globalScheduler, "poolSize", true))
+					.isEqualTo(5);
+			assertThat(globalScheduler.isDaemon()).isTrue();
 		});
 	}
 
 	@Test
-	public void executorThreads_globalAndDifferentSelectiveConfigurationSet_pickGlobal() {
+	public void threadPoolTaskScheduler_globalAndDifferentSelectiveConfigurationSet_onlyGlobalCreated() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -346,37 +403,58 @@ public class GcpPubSubAutoConfigurationTests {
 
 		contextRunner.run(ctx -> {
 
-			// Verify that global thread pool task scheduler is used
-			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
-			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
-			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
-			assertThat(scheduler.getPoolSize()).isEqualTo(5);
-
-			// Verify that global bean has been created
-			ThreadPoolTaskScheduler globalSchedulerBean = (ThreadPoolTaskScheduler) ctx
+			// Verify that only global thread pool task scheduler is created
+			ThreadPoolTaskScheduler globalScheduler = (ThreadPoolTaskScheduler) ctx
 					.getBean("globalPubSubSubscriberThreadPoolScheduler");
-			assertThat(globalSchedulerBean).isNotNull();
+
+			assertThat(globalScheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
+			assertThat(globalScheduler.isDaemon()).isTrue();
+			assertThat(FieldUtils.readField(globalScheduler, "poolSize", true))
+					.isEqualTo(5);
+			assertThat(ctx.containsBean("threadPoolScheduler_subscription-name")).isFalse();
 		});
 	}
 
 	@Test
-	public void executorThreads_noConfigurationSet_pickDefault() {
+	public void subscriberExecutorProvider_globalAndDifferentSelectiveConfigurationSet_onlyGlobalCreated() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.executor-threads=5",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.parallel-pull-count=3")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
-
-			// Verify that global thread pool task scheduler is used
 			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
-			ThreadPoolTaskScheduler scheduler = factory.fetchThreadPoolTaskScheduler("subscription-name");
-			assertThat(scheduler.getThreadNamePrefix()).isEqualTo("global-gcp-pubsub-subscriber");
-			assertThat(scheduler.getPoolSize()).isEqualTo(4);
 
-			// Verify that global bean has been created
-			ThreadPoolTaskScheduler globalSchedulerBean = (ThreadPoolTaskScheduler) ctx
-					.getBean("globalPubSubSubscriberThreadPoolScheduler");
-			assertThat(globalSchedulerBean).isNotNull();
+			// Verify that global executor provider is created and used
+			ExecutorProvider globalExecutorProvider = (ExecutorProvider) ctx
+					.getBean("globalSubscriberExecutorProvider");
+			assertThat(ctx.containsBean("subscriberExecutorProvider-subscription-name")).isFalse();
+			assertThat(factory.getGlobalExecutorProvider()).isSameAs(globalExecutorProvider);
+		});
+	}
+
+	@Test
+	public void subscriberExecutorProvider_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.executor-threads=5",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=3")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			DefaultSubscriberFactory factory = (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
+			ExecutorProvider selectiveExecutorProvider = (ExecutorProvider) ctx
+					.getBean("subscriberExecutorProvider-subscription-name");
+			ExecutorProvider globalExecutorProvider = (ExecutorProvider) ctx
+					.getBean("globalSubscriberExecutorProvider");
+
+			assertThat(selectiveExecutorProvider).isNotNull();
+			assertThat(globalExecutorProvider).isNotNull();
+			assertThat(factory.getGlobalExecutorProvider()).isNotNull();
+			assertThat(factory.getExecutorProvider("subscription-name")).isSameAs(selectiveExecutorProvider);
 		});
 	}
 
@@ -478,12 +556,10 @@ public class GcpPubSubAutoConfigurationTests {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
-						"spring.cloud.gcp.projectId=fake project",
 						"spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=5",
 						"spring.cloud.gcp.pubsub.subscriber.parallel-pull-count=10",
 						"spring.cloud.gcp.pubsub.subscriber.pull-endpoint=other-endpoint",
-						"spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=4"
-						)
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=4")
 				.withUserConfiguration(TestConfig.class);
 
 		contextRunner.run(ctx -> {
@@ -550,6 +626,21 @@ public class GcpPubSubAutoConfigurationTests {
 			assertThat(retrySettings.getInitialRpcTimeoutSeconds()).isEqualTo(6);
 			assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(7);
 			assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(8);
+
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			RetrySettings expectedRetrySettings = RetrySettings.newBuilder().setTotalTimeout(Duration.ofSeconds(1L))
+					.setInitialRetryDelay(Duration.ofSeconds(2L))
+					.setRetryDelayMultiplier(3)
+					.setMaxRetryDelay(Duration.ofSeconds(4L))
+					.setMaxAttempts(5)
+					.setInitialRpcTimeout(Duration.ofSeconds(6L))
+					.setRpcTimeoutMultiplier(7)
+					.setMaxRpcTimeout(Duration.ofSeconds(8))
+					.build();
+			assertThat(subscriberFactory.getRetrySettings("name")).isEqualTo(expectedRetrySettings);
+			assertThat(ctx.getBean("globalSubscriberRetrySettings", RetrySettings.class))
+					.isEqualTo(expectedRetrySettings);
 		});
 	}
 
@@ -575,6 +666,7 @@ public class GcpPubSubAutoConfigurationTests {
 			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
 			PubSubConfiguration.Retry retrySettings = gcpPubSubProperties
 					.computeSubscriberRetrySettings("subscription-name", projectIdProvider.getProjectId());
+
 			assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(1L);
 			assertThat(retrySettings.getInitialRetryDelaySeconds()).isEqualTo(2L);
 			assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(3);
@@ -584,11 +676,25 @@ public class GcpPubSubAutoConfigurationTests {
 			assertThat(retrySettings.getInitialRpcTimeoutSeconds()).isEqualTo(6);
 			assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(7);
 			assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(8);
-
 			assertThat(gcpPubSubProperties.getSubscription())
 					.hasSize(1);
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/subscription-name");
+
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			RetrySettings expectedRetrySettings = RetrySettings.newBuilder().setTotalTimeout(Duration.ofSeconds(1L))
+					.setInitialRetryDelay(Duration.ofSeconds(2L))
+					.setRetryDelayMultiplier(3)
+					.setMaxRetryDelay(Duration.ofSeconds(4L))
+					.setMaxAttempts(5)
+					.setInitialRpcTimeout(Duration.ofSeconds(6L))
+					.setRpcTimeoutMultiplier(7)
+					.setMaxRpcTimeout(Duration.ofSeconds(8L))
+					.build();
+			assertThat(subscriberFactory.getRetrySettings("subscription-name")).isEqualTo(expectedRetrySettings);
+			assertThat(ctx.getBean("subscriberRetrySettings-subscription-name", RetrySettings.class))
+					.isEqualTo(expectedRetrySettings);
 		});
 	}
 
@@ -635,7 +741,7 @@ public class GcpPubSubAutoConfigurationTests {
 			assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(7);
 			assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(8);
 
-			// Validate settings for subscribers that do not have subscription-specific retry settings
+			// Validate settings for subscribers that do **not** have subscription-specific retry settings
 			// property set
 			PubSubConfiguration.Retry retrySettingsForOtherSubscriber = gcpPubSubProperties
 					.getSubscriber("other", projectIdProvider.getProjectId())
@@ -648,13 +754,44 @@ public class GcpPubSubAutoConfigurationTests {
 			assertThat(retrySettingsForOtherSubscriber.getInitialRpcTimeoutSeconds()).isEqualTo(10);
 			assertThat(retrySettingsForOtherSubscriber.getRpcTimeoutMultiplier()).isEqualTo(10);
 			assertThat(retrySettingsForOtherSubscriber.getMaxRpcTimeoutSeconds()).isEqualTo(10);
-
 			assertThat(gcpPubSubProperties.getSubscription())
 					.hasSize(2);
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/subscription-name");
 			assertThat(gcpPubSubProperties.getSubscription())
 					.containsKey("projects/fake project/subscriptions/other");
+
+			// Verify that beans for selective and global retry settings are created. Also
+			// verify that selective retry setting takes precedence.
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			RetrySettings expectedRetrySettingsForSubscriptionName = RetrySettings.newBuilder()
+					.setTotalTimeout(Duration.ofSeconds(1L))
+					.setInitialRetryDelay(Duration.ofSeconds(2L))
+					.setRetryDelayMultiplier(3)
+					.setMaxRetryDelay(Duration.ofSeconds(4L))
+					.setMaxAttempts(5)
+					.setInitialRpcTimeout(Duration.ofSeconds(6L))
+					.setRpcTimeoutMultiplier(7)
+					.setMaxRpcTimeout(Duration.ofSeconds(8))
+					.build();
+			RetrySettings expectedRetrySettingsForOther = RetrySettings.newBuilder()
+					.setTotalTimeout(Duration.ofSeconds(10L))
+					.setInitialRetryDelay(Duration.ofSeconds(10L))
+					.setRetryDelayMultiplier(10)
+					.setMaxRetryDelay(Duration.ofSeconds(10L))
+					.setMaxAttempts(10)
+					.setInitialRpcTimeout(Duration.ofSeconds(10L))
+					.setRpcTimeoutMultiplier(10)
+					.setMaxRpcTimeout(Duration.ofSeconds(10))
+					.build();
+			assertThat(subscriberFactory.getRetrySettings("subscription-name"))
+					.isEqualTo(expectedRetrySettingsForSubscriptionName);
+			assertThat(ctx.getBean("subscriberRetrySettings-subscription-name", RetrySettings.class))
+					.isEqualTo(expectedRetrySettingsForSubscriptionName);
+			assertThat(subscriberFactory.getRetrySettings("other")).isEqualTo(expectedRetrySettingsForOther);
+			assertThat(ctx.getBean("globalSubscriberRetrySettings", RetrySettings.class))
+					.isEqualTo(expectedRetrySettingsForOther);
 		});
 	}
 
@@ -663,7 +800,6 @@ public class GcpPubSubAutoConfigurationTests {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
-						"spring.cloud.gcp.projectId=fake project",
 						"spring.cloud.gcp.pubsub.subscriber.retry.total-timeout-seconds=10",
 						"spring.cloud.gcp.pubsub.subscriber.retry.initial-retry-delay-seconds=10",
 						"spring.cloud.gcp.pubsub.subscriber.retry.retry-delay-multiplier=10",
@@ -680,16 +816,88 @@ public class GcpPubSubAutoConfigurationTests {
 					.getBean(GcpPubSubProperties.class);
 			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
 
-			PubSubConfiguration.Retry retrySettingsForOtherSubscriber = gcpPubSubProperties
+			PubSubConfiguration.Retry retrySettings = gcpPubSubProperties
 					.computeSubscriberRetrySettings("subscription-name", projectIdProvider.getProjectId());
-			assertThat(retrySettingsForOtherSubscriber.getTotalTimeoutSeconds()).isEqualTo(10L);
-			assertThat(retrySettingsForOtherSubscriber.getInitialRetryDelaySeconds()).isEqualTo(10L);
-			assertThat(retrySettingsForOtherSubscriber.getRetryDelayMultiplier()).isEqualTo(10);
-			assertThat(retrySettingsForOtherSubscriber.getMaxRetryDelaySeconds()).isEqualTo(10);
-			assertThat(retrySettingsForOtherSubscriber.getMaxAttempts()).isEqualTo(10);
-			assertThat(retrySettingsForOtherSubscriber.getInitialRpcTimeoutSeconds()).isEqualTo(10);
-			assertThat(retrySettingsForOtherSubscriber.getRpcTimeoutMultiplier()).isEqualTo(10);
-			assertThat(retrySettingsForOtherSubscriber.getMaxRpcTimeoutSeconds()).isEqualTo(10);
+
+			assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(10L);
+			assertThat(retrySettings.getInitialRetryDelaySeconds()).isEqualTo(10L);
+			assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(10);
+			assertThat(retrySettings.getMaxRetryDelaySeconds()).isEqualTo(10);
+			assertThat(retrySettings.getMaxAttempts()).isEqualTo(10);
+			assertThat(retrySettings.getInitialRpcTimeoutSeconds()).isEqualTo(10);
+			assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(10);
+			assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(10);
+
+			// Verify that bean for global retry settings is created.
+			RetrySettings expectedRetrySettings = RetrySettings.newBuilder().setTotalTimeout(Duration.ofSeconds(10L))
+					.setInitialRetryDelay(Duration.ofSeconds(10L))
+					.setRetryDelayMultiplier(10)
+					.setMaxRetryDelay(Duration.ofSeconds(10L))
+					.setMaxAttempts(10)
+					.setInitialRpcTimeout(Duration.ofSeconds(10L))
+					.setRpcTimeoutMultiplier(10)
+					.setMaxRpcTimeout(Duration.ofSeconds(10))
+					.build();
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			assertThat(subscriberFactory.getRetrySettings("subscription-name"))
+					.isEqualTo(expectedRetrySettings);
+			assertThat(ctx.getBean("globalSubscriberRetrySettings", RetrySettings.class))
+					.isEqualTo(expectedRetrySettings);
+		});
+	}
+
+	@Test
+	public void retrySettings_subsetOfProperties_pickGlobalWhenSelectiveNotSpecified() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.retry.total-timeout-seconds=10",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.initial-retry-delay-seconds=2",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.retry-delay-multiplier=3",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.max-retry-delay-seconds=4",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.max-attempts=5",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.initial-rpc-timeout-seconds=6",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.rpc-timeout-multiplier=7",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retry.max-rpc-timeout-seconds=8")
+				.withUserConfiguration(TestConfig.class);
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties gcpPubSubProperties = ctx
+					.getBean(GcpPubSubProperties.class);
+			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
+			PubSubConfiguration.Retry retry = gcpPubSubProperties
+					.computeSubscriberRetrySettings("subscription-name", projectIdProvider.getProjectId());
+			assertThat(retry.getTotalTimeoutSeconds()).isEqualTo(10L);
+			assertThat(retry.getInitialRetryDelaySeconds()).isEqualTo(2L);
+			assertThat(retry.getRetryDelayMultiplier()).isEqualTo(3);
+			assertThat(retry.getMaxRetryDelaySeconds()).isEqualTo(4L);
+			assertThat(retry.getMaxAttempts()).isEqualTo(5);
+			assertThat(retry.getInitialRpcTimeoutSeconds()).isEqualTo(6L);
+			assertThat(retry.getRpcTimeoutMultiplier()).isEqualTo(7);
+			assertThat(retry.getMaxRpcTimeoutSeconds()).isEqualTo(8L);
+
+			// Verify that beans for selective and global retry settings are created.
+			DefaultSubscriberFactory subscriberFactory = ctx
+					.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+			RetrySettings expectedRetrySettingsForSubscriptionName = RetrySettings.newBuilder()
+					.setTotalTimeout(Duration.ofSeconds(10L))
+					.setInitialRetryDelay(Duration.ofSeconds(2L))
+					.setRetryDelayMultiplier(3)
+					.setMaxRetryDelay(Duration.ofSeconds(4L))
+					.setMaxAttempts(5)
+					.setInitialRpcTimeout(Duration.ofSeconds(6L))
+					.setRpcTimeoutMultiplier(7)
+					.setMaxRpcTimeout(Duration.ofSeconds(8L))
+					.build();
+			RetrySettings expectedGlobalRetrySettings = RetrySettings.newBuilder()
+					.setTotalTimeout(Duration.ofSeconds(10L)).build();
+			assertThat(subscriberFactory.getRetrySettings("subscription-name"))
+					.isEqualTo(expectedRetrySettingsForSubscriptionName);
+			assertThat(ctx.getBean("subscriberRetrySettings-subscription-name", RetrySettings.class))
+					.isEqualTo(expectedRetrySettingsForSubscriptionName);
+			assertThat(ctx.getBean("globalSubscriberRetrySettings", RetrySettings.class))
+					.isEqualTo(expectedGlobalRetrySettings);
 		});
 	}
 
@@ -772,7 +980,8 @@ public class GcpPubSubAutoConfigurationTests {
 					.setMaxOutstandingElementCount(11L)
 					.setMaxOutstandingRequestBytes(12L)
 					.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore).build();
-			assertThat(subscriberFactory.getFlowControlSettings("subscription-name")).isEqualTo(expectedFlowControlForSubscriptionName);
+			assertThat(subscriberFactory.getFlowControlSettings("subscription-name"))
+					.isEqualTo(expectedFlowControlForSubscriptionName);
 			assertThat(ctx.getBean("subscriberFlowControlSettings-subscription-name", FlowControlSettings.class))
 					.isEqualTo(expectedFlowControlForSubscriptionName);
 		});
@@ -881,7 +1090,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void flowControlSettings_subProperties_pickGlobalWhenSelectiveNotSpecified() {
+	public void flowControlSettings_subsetOfProperties_pickGlobalWhenSelectiveNotSpecified() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
