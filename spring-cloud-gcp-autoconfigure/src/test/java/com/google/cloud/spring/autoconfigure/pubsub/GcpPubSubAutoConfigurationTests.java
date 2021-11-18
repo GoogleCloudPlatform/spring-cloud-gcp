@@ -183,13 +183,14 @@ public class GcpPubSubAutoConfigurationTests {
 			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
 			DefaultSubscriberFactory defaultSubscriberFactory = ctx.getBean("defaultSubscriberFactory",
 					DefaultSubscriberFactory.class);
+			Code[] expectedRetryableCodes = new Code[] { Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL };
 
 			assertThat(properties.getSubscriber().getRetryableCodes())
-					.isEqualTo(new Code[] { Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL });
+					.isEqualTo(expectedRetryableCodes);
 			assertThat(properties.computeRetryableCodes("subscription-name", projectIdProvider.getProjectId()))
-					.isEqualTo(new Code[] { Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL });
+					.isEqualTo(expectedRetryableCodes);
 			assertThat(defaultSubscriberFactory.getRetryableCodes("subscription-name"))
-					.isEqualTo(new Code[] { Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL });
+					.isEqualTo(expectedRetryableCodes);
 		});
 	}
 
@@ -207,6 +208,7 @@ public class GcpPubSubAutoConfigurationTests {
 					DefaultSubscriberFactory.class);
 			assertThat(defaultSubscriberFactory.getRetryableCodes("subscription-name"))
 					.isEqualTo(new Code[] { Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL });
+			assertThat(defaultSubscriberFactory.getRetryableCodes("other")).isNull();
 		});
 	}
 
@@ -225,6 +227,7 @@ public class GcpPubSubAutoConfigurationTests {
 					DefaultSubscriberFactory.class);
 			assertThat(defaultSubscriberFactory.getRetryableCodes("subscription-name"))
 					.isEqualTo(new Code[] { Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE });
+			assertThat(defaultSubscriberFactory.getRetryableCodes("other")).isEqualTo(new Code[] { Code.INTERNAL });
 		});
 	}
 
