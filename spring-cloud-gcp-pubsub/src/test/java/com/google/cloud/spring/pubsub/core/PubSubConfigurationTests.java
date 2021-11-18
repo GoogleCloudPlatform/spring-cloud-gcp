@@ -344,6 +344,29 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
+	public void testComputeRetryableCodes_returnsGlobal() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
+
+		globalSubscriber.setRetryableCodes(new Code[] { Code.INTERNAL });
+
+		assertThat(pubSubConfiguration.computeRetryableCodes("subscription-name", "projectId"))
+				.containsExactly(Code.INTERNAL);
+	}
+
+	@Test
+	public void testComputeRetryableCodes_returnCustom() {
+		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+		subscriber.setRetryableCodes(new Code[] { Code.INTERNAL });
+		pubSubConfiguration.getSubscription().put("projects/projectId/subscriptions/subscription-name",
+				subscriber);
+
+		assertThat(pubSubConfiguration.computeRetryableCodes("subscription-name", "projectId"))
+				.containsExactly(Code.INTERNAL);
+	}
+
+	@Test
 	public void testSubscriberMapProperties_defaultOrGlobal_addToMap() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 

@@ -123,6 +123,7 @@ public class GcpPubSubAutoConfigurationTests {
 			DefaultSubscriberFactory defaultSubscriberFactory = ctx.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
 			assertThat(FieldUtils.readField(defaultSubscriberFactory, "retryableCodes", true))
 					.isNull();
+			assertThat(defaultSubscriberFactory.getRetryableCodes("subscription-name")).isNull();
 		});
 	}
 
@@ -134,9 +135,15 @@ public class GcpPubSubAutoConfigurationTests {
 				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.retryableCodes=");
 
 		contextRunner.run(ctx -> {
+			GcpPubSubProperties properties = ctx.getBean(GcpPubSubProperties.class);
+			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
+			DefaultSubscriberFactory defaultSubscriberFactory = ctx.getBean("defaultSubscriberFactory",
+					DefaultSubscriberFactory.class);
 
-			DefaultSubscriberFactory defaultSubscriberFactory = ctx.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
-			assertThat(FieldUtils.readField(defaultSubscriberFactory, "retryableCodes", true))
+			assertThat(properties.getSubscriber().getRetryableCodes()).isEqualTo(new Code[] {});
+			assertThat(properties.computeRetryableCodes("subscription-name", projectIdProvider.getProjectId()))
+					.isEqualTo(new Code[] {});
+			assertThat(defaultSubscriberFactory.getRetryableCodes("subscription-name"))
 					.isEqualTo(new Code[] {});
 		});
 	}
@@ -149,9 +156,16 @@ public class GcpPubSubAutoConfigurationTests {
 				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.retryableCodes=INTERNAL");
 
 		contextRunner.run(ctx -> {
+			GcpPubSubProperties properties = ctx.getBean(GcpPubSubProperties.class);
+			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
+			DefaultSubscriberFactory defaultSubscriberFactory = ctx.getBean("defaultSubscriberFactory",
+					DefaultSubscriberFactory.class);
 
-			DefaultSubscriberFactory defaultSubscriberFactory = ctx.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
-			assertThat(FieldUtils.readField(defaultSubscriberFactory, "retryableCodes", true))
+			assertThat(properties.getSubscriber().getRetryableCodes())
+					.isEqualTo(new Code[] { Code.INTERNAL });
+			assertThat(properties.computeRetryableCodes("subscription-name", projectIdProvider.getProjectId()))
+					.isEqualTo(new Code[] { Code.INTERNAL });
+			assertThat(defaultSubscriberFactory.getRetryableCodes("subscription-name"))
 					.isEqualTo(new Code[] { Code.INTERNAL });
 		});
 	}
@@ -161,13 +175,77 @@ public class GcpPubSubAutoConfigurationTests {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withUserConfiguration(TestConfig.class)
-				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.retryableCodes=UNKNOWN,ABORTED,UNAVAILABLE,INTERNAL");
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.retryableCodes=UNKNOWN,ABORTED,UNAVAILABLE,INTERNAL");
+
+		contextRunner.run(ctx -> {
+			GcpPubSubProperties properties = ctx.getBean(GcpPubSubProperties.class);
+			GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
+			DefaultSubscriberFactory defaultSubscriberFactory = ctx.getBean("defaultSubscriberFactory",
+					DefaultSubscriberFactory.class);
+			Code[] expectedRetryableCodes = new Code[] { Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL };
+
+			assertThat(properties.getSubscriber().getRetryableCodes())
+					.isEqualTo(expectedRetryableCodes);
+			assertThat(properties.computeRetryableCodes("subscription-name", projectIdProvider.getProjectId()))
+					.isEqualTo(expectedRetryableCodes);
+			assertThat(defaultSubscriberFactory.getRetryableCodes("subscription-name"))
+					.isEqualTo(expectedRetryableCodes);
+		});
+	}
+
+	@Test
+	public void retryableCodes_selectiveConfigurationSet() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withUserConfiguration(TestConfig.class)
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retryableCodes=UNKNOWN,ABORTED,UNAVAILABLE,INTERNAL");
 
 		contextRunner.run(ctx -> {
 
-			DefaultSubscriberFactory defaultSubscriberFactory = ctx.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
-			assertThat(FieldUtils.readField(defaultSubscriberFactory, "retryableCodes", true))
+			DefaultSubscriberFactory defaultSubscriberFactory = ctx.getBean("defaultSubscriberFactory",
+					DefaultSubscriberFactory.class);
+			assertThat(defaultSubscriberFactory.getRetryableCodes("subscription-name"))
 					.isEqualTo(new Code[] { Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL });
+			assertThat(defaultSubscriberFactory.getRetryableCodes("other")).isNull();
+		});
+	}
+
+	@Test
+	public void retryableCodes_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withUserConfiguration(TestConfig.class)
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.retryableCodes=INTERNAL",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.retryableCodes=UNKNOWN,ABORTED,UNAVAILABLE");
+
+		contextRunner.run(ctx -> {
+
+			DefaultSubscriberFactory defaultSubscriberFactory = ctx.getBean("defaultSubscriberFactory",
+					DefaultSubscriberFactory.class);
+			assertThat(defaultSubscriberFactory.getRetryableCodes("subscription-name"))
+					.isEqualTo(new Code[] { Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE });
+			assertThat(defaultSubscriberFactory.getRetryableCodes("other")).isEqualTo(new Code[] { Code.INTERNAL });
+		});
+	}
+
+	@Test
+	public void retryableCodes_globalAndDifferentSelectiveConfigurationSet_pickGlobal() {
+		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+				.withUserConfiguration(TestConfig.class)
+				.withPropertyValues(
+						"spring.cloud.gcp.pubsub.subscriber.retryableCodes=INTERNAL",
+						"spring.cloud.gcp.pubsub.subscription.subscription-name.pull-counts=2");
+
+		contextRunner.run(ctx -> {
+
+			DefaultSubscriberFactory defaultSubscriberFactory = ctx.getBean("defaultSubscriberFactory",
+					DefaultSubscriberFactory.class);
+			assertThat(defaultSubscriberFactory.getRetryableCodes("subscription-name"))
+					.isEqualTo(new Code[] { Code.INTERNAL });
 		});
 	}
 
