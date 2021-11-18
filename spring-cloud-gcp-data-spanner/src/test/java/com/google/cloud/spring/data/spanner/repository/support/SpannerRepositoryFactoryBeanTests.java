@@ -33,7 +33,8 @@ import static org.mockito.Mockito.mock;
  *
  * @author Chengyuan Zhao
  */
- class SpannerRepositoryFactoryBeanTests {
+
+class SpannerRepositoryFactoryBeanTests {
 
 	private SpannerRepositoryFactoryBean<SpannerRepository<Object, Key>, Object, Key>
 			spannerRepositoryFactoryBean;
@@ -44,7 +45,7 @@ import static org.mockito.Mockito.mock;
 
 	@BeforeEach
 	@SuppressWarnings("unchecked")
-	 void setUp() {
+	void setUp() {
 		this.spannerMappingContext = new SpannerMappingContext();
 		this.spannerTemplate = mock(SpannerTemplate.class);
 		this.spannerRepositoryFactoryBean = new SpannerRepositoryFactoryBean(
@@ -55,7 +56,7 @@ import static org.mockito.Mockito.mock;
 	}
 
 	@Test
-	 void createRepositoryFactoryTest() {
+	void createRepositoryFactoryTest() {
 		RepositoryFactorySupport factory = this.spannerRepositoryFactoryBean
 				.createRepositoryFactory();
 		assertThat(factory).isInstanceOf(SpannerRepositoryFactory.class);

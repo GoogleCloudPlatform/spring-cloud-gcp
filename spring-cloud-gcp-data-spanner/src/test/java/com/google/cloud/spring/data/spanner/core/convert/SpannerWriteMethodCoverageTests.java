@@ -33,11 +33,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Chengyuan Zhao
  */
- class SpannerWriteMethodCoverageTests {
+class SpannerWriteMethodCoverageTests {
 
 	// Checks that the converter is aware of all Cloud Spanner mutation binder types
 	@Test
-	 void allKnownMappingTypesTest() throws NoSuchFieldException {
+	void allKnownMappingTypesTest() throws NoSuchFieldException {
 		for (Method method : ValueBinder.class.getMethods()) {
 
 			String methodName = method.getName();

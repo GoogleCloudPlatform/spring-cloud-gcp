@@ -37,7 +37,7 @@ import com.google.spanner.v1.TypeCode;
  * @author Chengyuan Zhao
  * @author Balint Pato
  */
- class TestEntities {
+class TestEntities {
 
 	/**
 	 * Test domain type holding properties with many types and key components.

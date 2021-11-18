@@ -60,7 +60,7 @@ import static org.mockito.Mockito.when;
  * @author Chengyuan Zhao
  * @author Roman Solodovnichenko
  */
- class SpannerQueryLookupStrategyTests {
+class SpannerQueryLookupStrategyTests {
 
 	private SpannerTemplate spannerTemplate;
 
@@ -76,7 +76,7 @@ import static org.mockito.Mockito.when;
 
 	@BeforeEach
 	@SuppressWarnings("BadAnnotationImplementation")
-	 void initMocks() {
+	void initMocks() {
 		this.spannerMappingContext = new SpannerMappingContext();
 		this.spannerTemplate = mock(SpannerTemplate.class);
 		this.queryMethod = mock(SpannerQueryMethod.class);
@@ -103,7 +103,7 @@ import static org.mockito.Mockito.when;
 	}
 
 	@Test
-	 void resolveSqlQueryTest() {
+	void resolveSqlQueryTest() {
 		String queryName = "fakeNamedQueryName";
 		String query = "fake query";
 		when(this.queryMethod.getNamedQueryName()).thenReturn(queryName);
@@ -135,7 +135,7 @@ import static org.mockito.Mockito.when;
 	}
 
 	@Test
-	 void resolvePartTreeQueryTest() {
+	void resolvePartTreeQueryTest() {
 		String queryName = "fakeNamedQueryName";
 		when(this.queryMethod.getNamedQueryName()).thenReturn(queryName);
 		NamedQueries namedQueries = mock(NamedQueries.class);
@@ -161,7 +161,7 @@ import static org.mockito.Mockito.when;
 	}
 
 	@Test
-	 void getChildrenRowsQueryTest() {
+	void getChildrenRowsQueryTest() {
 		TestEntity t = new TestEntity();
 		t.id = "key";
 		t.id2 = "key2";
@@ -177,7 +177,7 @@ import static org.mockito.Mockito.when;
 	}
 
 	@Test
-	 void getColumnsStringForSelectTest() {
+	void getColumnsStringForSelectTest() {
 		TestEntity t = new TestEntity();
 		t.id = "key";
 		t.id2 = "key2";
@@ -195,7 +195,7 @@ import static org.mockito.Mockito.when;
 
 	@Test
 	@SuppressWarnings("unchecked")
-	 void getColumnsStringForSelectMultipleTest() {
+	void getColumnsStringForSelectMultipleTest() {
 		final SpannerPersistentEntity<TestEntity> entity = (SpannerPersistentEntity<TestEntity>)
 				this.spannerMappingContext.getPersistentEntity(TestEntity.class);
 		Statement childrenRowsQuery = SpannerStatementQueryExecutor.buildQuery(

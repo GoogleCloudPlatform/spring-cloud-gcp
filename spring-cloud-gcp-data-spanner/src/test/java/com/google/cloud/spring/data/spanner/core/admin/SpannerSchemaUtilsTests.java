@@ -46,14 +46,14 @@ import static org.mockito.Mockito.when;
  *
  * @author Chengyuan Zhao
  */
- class SpannerSchemaUtilsTests {
+class SpannerSchemaUtilsTests {
 
 	private SpannerSchemaUtils spannerSchemaUtils;
 
 	private SpannerEntityProcessor spannerEntityProcessor;
 
 	@BeforeEach
-	 void setUp() {
+	void setUp() {
 		SpannerMappingContext spannerMappingContext = new SpannerMappingContext();
 		this.spannerSchemaUtils = new SpannerSchemaUtils(spannerMappingContext,
 				new ConverterAwareMappingSpannerEntityProcessor(spannerMappingContext),
@@ -63,14 +63,13 @@ import static org.mockito.Mockito.when;
 	}
 
 	@Test
-	 void getDropDdlTest() {
+	void getDropDdlTest() {
 		assertThat(this.spannerSchemaUtils.getDropTableDdlString(TestEntity.class))
 				.isEqualTo("DROP TABLE custom_test_table");
 	}
 
 	@Test
-
-	 void getCreateDdlTest() {
+	void getCreateDdlTest() {
 		String ddlResult = "CREATE TABLE custom_test_table ( id STRING(MAX) , id3 INT64 , "
 				+ "id_2 STRING(MAX) , bytes2 BYTES(MAX) , custom_col FLOAT64 NOT NULL , "
 				+ "other STRING(333) , "
@@ -86,84 +85,83 @@ import static org.mockito.Mockito.when;
 	}
 
 	@Test
-	 void createDdlString() {
+	void createDdlString() {
 		assertColumnDdl(String.class, null,
 				"id", null, OptionalLong.empty(),
 				"id STRING(MAX)");
 	}
 
 	@Test
-	 void createDdlStringCustomLength() {
+	void createDdlStringCustomLength() {
 		assertColumnDdl(String.class, null,
 				"id", null, OptionalLong.of(333L),
 				"id STRING(333)");
 	}
 
 	@Test
-	 void createDdlBytesMax() {
+	void createDdlBytesMax() {
 		assertColumnDdl(ByteArray.class, null,
 				"bytes", null, OptionalLong.empty(),
 				"bytes BYTES(MAX)");
 	}
 
 	@Test
-	 void createDdlBytesCustomLength() {
+	void createDdlBytesCustomLength() {
 		assertColumnDdl(ByteArray.class, null,
 				"bytes", null, OptionalLong.of(333L),
 				"bytes BYTES(333)");
 	}
 
 	@Test
-	 void ddlForListOfByteArray() {
+	void ddlForListOfByteArray() {
 		assertColumnDdl(List.class, ByteArray.class,
 				"bytesList", null, OptionalLong.of(111L),
 				"bytesList ARRAY<BYTES(111)>");
 	}
 
 	@Test
-	 void ddlForDoubleArray() {
+	void ddlForDoubleArray() {
 		assertColumnDdl(double[].class, null,
 				"doubles", null, OptionalLong.of(111L),
 				"doubles ARRAY<FLOAT64>");
 	}
 
 	@Test
-	 void ddlForNumericList() {
+	void ddlForNumericList() {
 		assertColumnDdl(List.class, BigDecimal.class,
 				"bigDecimals", null, OptionalLong.empty(),
 				"bigDecimals ARRAY<NUMERIC>");
 	}
 
 	@Test
-	 void createDdlNumeric() {
+	void createDdlNumeric() {
 		assertColumnDdl(BigDecimal.class, null,
 				"bigDecimal", null, OptionalLong.empty(),
 				"bigDecimal NUMERIC");
 	}
 
 	@Test
-	 void ddlForListOfListOfIntegers() {
+	void ddlForListOfListOfIntegers() {
 		assertColumnDdl(List.class, Integer.class,
 				"integerList", null, OptionalLong.empty(),
 				"integerList ARRAY<INT64>");
 	}
 
 	@Test
-	 void ddlForListOfListOfDoubles() {
+	void ddlForListOfListOfDoubles() {
 		assertColumnDdl(List.class, Double.class,
 				"doubleList", null, OptionalLong.empty(),
 				"doubleList ARRAY<FLOAT64>");
 	}
 
 	@Test
-	 void createDdlForJson() {
+	void createDdlForJson() {
 		assertColumnDdl(JsonColumn.class, null,
 				"jsonCol", Type.Code.JSON, OptionalLong.empty(),
 				"jsonCol JSON");
 	}
 
-	private void assertColumnDdl(Class clazz, Class innerClazz, String name, Type.Code code,
-			OptionalLong length, String expectedDDL) {
+	private void assertColumnDdl(Class clazz, Class innerClazz, String name, Type.Code code, OptionalLong length, String expectedDDL) {
 		SpannerPersistentProperty spannerPersistentProperty = mock(SpannerPersistentProperty.class);
 
 		// @formatter:off
@@ -179,11 +177,11 @@ import static org.mockito.Mockito.when;
 		assertThat(
 				this.spannerSchemaUtils.getColumnDdlString(
 						spannerPersistentProperty, this.spannerEntityProcessor))
-								.isEqualTo(expectedDDL);
+				.isEqualTo(expectedDDL);
 	}
 
 	@Test
-	 void getIdTest() {
+	void getIdTest() {
 		TestEntity t = new TestEntity();
 		t.id = "aaa";
 		t.embeddedColumns = new EmbeddedColumns();
@@ -200,7 +198,7 @@ import static org.mockito.Mockito.when;
 	}
 
 	@Test
-	 void getCreateDdlHierarchyTest() {
+	void getCreateDdlHierarchyTest() {
 		List<String> createStrings = this.spannerSchemaUtils
 				.getCreateTableDdlStringsForInterleavedHierarchy(ParentEntity.class);
 		assertThat(createStrings).containsExactly(
@@ -217,7 +215,7 @@ import static org.mockito.Mockito.when;
 	}
 
 	@Test
-	 void getDropDdlHierarchyTest() {
+	void getDropDdlHierarchyTest() {
 		List<String> dropStrings = this.spannerSchemaUtils
 				.getDropTableDdlStringsForInterleavedHierarchy(ParentEntity.class);
 		assertThat(dropStrings).containsExactly(

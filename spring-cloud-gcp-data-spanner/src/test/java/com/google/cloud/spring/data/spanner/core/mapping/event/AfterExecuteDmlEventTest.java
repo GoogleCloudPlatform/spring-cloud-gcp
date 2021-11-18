@@ -26,10 +26,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Chengyuan Zhao
  */
- class AfterExecuteDmlEventTest {
+class AfterExecuteDmlEventTest {
 
 	@Test
-	 void equalsHashcodeTest() {
+	void equalsHashcodeTest() {
 		AfterExecuteDmlEvent afterExecuteDmlEventa1 = new AfterExecuteDmlEvent(Statement.of("a"), 1L);
 		AfterExecuteDmlEvent afterExecuteDmlEventa1x = new AfterExecuteDmlEvent(Statement.of("a"), 1L);
 
