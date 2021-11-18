@@ -133,6 +133,21 @@ public class PubSubConfiguration {
 		return parallelPullCount != null ? parallelPullCount : this.globalSubscriber.getParallelPullCount();
 	}
 
+
+	/**
+	 * Retrieves collection of retryable codes from configuration. The subscription-specific
+	 * property takes precedence if both global and subscription-specific properties are set.
+	 * If subscription-specific configuration is not set then the global configuration is
+	 * picked.
+	 * @param subscriptionName subscription name
+	 * @param projectId project id
+	 * @return retryable codes
+	 */
+	public Code[] computeRetryableCodes(String subscriptionName, String projectId) {
+		Code[] retryableCodes = getSubscriber(subscriptionName, projectId).getRetryableCodes();
+		return retryableCodes != null ? retryableCodes : this.globalSubscriber.getRetryableCodes();
+	}
+
 	/**
 	 * Computes the max extension period. The subscription-specific property takes precedence
 	 * if both global and subscription-specific properties are set. If none are set then the

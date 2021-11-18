@@ -253,10 +253,6 @@ public class GcpPubSubAutoConfiguration {
 		}
 		factory.setRetrySettingsMap(this.subscriberRetrySettingsMap);
 		factory.setGlobalRetrySettings(this.globalRetrySettings);
-		if (this.gcpPubSubProperties.getSubscriber().getRetryableCodes() != null) {
-			factory.setRetryableCodes(gcpPubSubProperties.getSubscriber().getRetryableCodes());
-		}
-
 		healthTrackerRegistry.ifAvailable(factory::setHealthTrackerRegistry);
 
 		return factory;
