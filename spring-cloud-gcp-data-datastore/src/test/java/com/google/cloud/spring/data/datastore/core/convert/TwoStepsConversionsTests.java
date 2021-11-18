@@ -23,7 +23,7 @@ import java.util.Set;
 
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.core.convert.converter.Converter;
 
@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author Elena Felder
  * @since 1.1
  */
-public class TwoStepsConversionsTests {
+class TwoStepsConversionsTests {
 
 	private final DatastoreMappingContext datastoreMappingContext = new DatastoreMappingContext();
 
@@ -47,14 +47,14 @@ public class TwoStepsConversionsTests {
 			new DatastoreCustomConversions(Arrays.asList()), null, this.datastoreMappingContext);
 
 	@Test
-	public void convertOnReadReturnsNullWhenConvertingNullSimpleValue() {
+	void convertOnReadReturnsNullWhenConvertingNullSimpleValue() {
 
 		assertThat(this.twoStepsConversions.<String>convertOnRead(null, null, String.class))
 				.isNull();
 	}
 
 	@Test
-	public void convertOnReadConvertsCollectionAndElementTypesCorrectly() {
+	void convertOnReadConvertsCollectionAndElementTypesCorrectly() {
 
 		List<String> okayList = new ArrayList<>();
 		okayList.add("128");
@@ -67,7 +67,7 @@ public class TwoStepsConversionsTests {
 	}
 
 	@Test
-	public void convertOnReadConvertsSimpleElementTypesCorrectly() {
+	void convertOnReadConvertsSimpleElementTypesCorrectly() {
 
 		Integer result = this.twoStepsConversions.<Integer>convertOnRead("512", null, Integer.class);
 		assertThat(result)
@@ -76,7 +76,7 @@ public class TwoStepsConversionsTests {
 	}
 
 	@Test
-	public void convertOnReadFailsOnIncompatibleTypes() {
+	void convertOnReadFailsOnIncompatibleTypes() {
 		assertThatThrownBy(() -> {
 			this.twoStepsConversions.<String>convertOnRead(3, null, String.class);
 		}).isInstanceOf(DatastoreDataException.class)
@@ -85,7 +85,7 @@ public class TwoStepsConversionsTests {
 
 
 	@Test
-	public void convertOnReadUsesCustomConverter() {
+	void convertOnReadUsesCustomConverter() {
 		List<String> numberNames = Arrays.asList("zero", "one", "two", "three", "four", "five");
 		Converter<Long, String> converter = new Converter<Long, String>() {
 			@Override

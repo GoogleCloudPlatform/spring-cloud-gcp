@@ -19,8 +19,8 @@ package com.google.cloud.spring.data.datastore.repository.support;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.mock;
  *
  * @author Chengyuan Zhao
  */
-public class DatastoreRepositoryFactoryBeanTests {
+class DatastoreRepositoryFactoryBeanTests {
 
 	private DatastoreRepositoryFactoryBean<Object, String> datastoreRepositoryFactoryBean;
 
@@ -40,8 +40,8 @@ public class DatastoreRepositoryFactoryBeanTests {
 
 	private DatastoreTemplate datastoreTemplate = mock(DatastoreTemplate.class);
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		this.datastoreRepositoryFactoryBean = new DatastoreRepositoryFactoryBean(
 				DatastoreRepository.class);
 		this.datastoreRepositoryFactoryBean
@@ -50,7 +50,7 @@ public class DatastoreRepositoryFactoryBeanTests {
 	}
 
 	@Test
-	public void createRepositoryFactoryTest() {
+	void createRepositoryFactoryTest() {
 		RepositoryFactorySupport factory = this.datastoreRepositoryFactoryBean
 				.createRepositoryFactory();
 		assertThat(factory.getClass()).isEqualTo(DatastoreRepositoryFactory.class);

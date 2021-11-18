@@ -42,8 +42,8 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingConte
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import com.google.cloud.spring.data.datastore.core.mapping.Field;
 import org.assertj.core.data.Offset;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import org.springframework.data.annotation.Id;
@@ -74,7 +74,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Chengyuan Zhao
  */
-public class GqlDatastoreQueryTests {
+class GqlDatastoreQueryTests {
 
 	/** Constant for which if two doubles are within DELTA, they are considered equal. */
 	private static final Offset<Double> DELTA = Offset.offset(0.00001);
@@ -91,8 +91,8 @@ public class GqlDatastoreQueryTests {
 
 	private QueryMethodEvaluationContextProvider evaluationContextProvider;
 
-	@Before
-	public void initMocks() {
+	@BeforeEach
+	void initMocks() {
 		this.queryMethod = mock(DatastoreQueryMethod.class);
 		this.datastoreTemplate = mock(DatastoreTemplate.class);
 		this.datastoreEntityConverter = mock(DatastoreEntityConverter.class);
@@ -112,7 +112,7 @@ public class GqlDatastoreQueryTests {
 	}
 
 	@Test
-	public void compoundNameConventionTest() {
+	void compoundNameConventionTest() {
 
 		String gql = "SELECT * FROM "
 				+ "|com.google.cloud.spring.data.datastore."
@@ -211,7 +211,7 @@ public class GqlDatastoreQueryTests {
 	}
 
 	@Test
-	public void pageableTest() {
+	void pageableTest() {
 
 		String gql = "SELECT * FROM trades WHERE price=@price";
 
@@ -249,7 +249,7 @@ public class GqlDatastoreQueryTests {
 	}
 
 	@Test
-	public void pageableTestSort() {
+	void pageableTestSort() {
 
 		String gql = "SELECT * FROM trades WHERE price=@price";
 
@@ -286,7 +286,7 @@ public class GqlDatastoreQueryTests {
 	}
 
 	@Test
-	public void pageableTestSlice() {
+	void pageableTestSlice() {
 
 		String gql = "SELECT * FROM trades WHERE price=@price";
 
@@ -340,7 +340,7 @@ public class GqlDatastoreQueryTests {
 	}
 
 	@Test
-	public void pageableTestPage() {
+	void pageableTestPage() {
 
 		String gql = "SELECT * FROM trades WHERE price=@price";
 		String expected = "SELECT * FROM trades WHERE price=@price LIMIT @limit OFFSET @offset";
@@ -398,7 +398,7 @@ public class GqlDatastoreQueryTests {
 	}
 
 	@Test
-	public void pageableTestPageCursor() {
+	void pageableTestPageCursor() {
 		String gql = "SELECT * FROM trades WHERE price=@price";
 		String expected = "SELECT * FROM trades WHERE price=@price LIMIT @limit OFFSET @offset";
 
@@ -449,7 +449,7 @@ public class GqlDatastoreQueryTests {
 	}
 
 	@Test
-	public void streamResultTest() {
+	void streamResultTest() {
 		Mockito.<Class>when(this.queryMethod.getReturnedObjectType()).thenReturn(Trade.class);
 		Parameters parameters = mock(Parameters.class);
 		when(this.queryMethod.getParameters()).thenReturn(parameters);

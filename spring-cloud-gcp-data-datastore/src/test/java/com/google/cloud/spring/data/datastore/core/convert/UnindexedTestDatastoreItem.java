@@ -29,7 +29,7 @@ import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
  * @author Chengyuan Zhao
  */
 @Entity
-public class UnindexedTestDatastoreItem {
+class UnindexedTestDatastoreItem {
 	private long indexedField;
 
 	@Unindexed
@@ -47,59 +47,59 @@ public class UnindexedTestDatastoreItem {
 	@Unindexed
 	List<UnindexedTestDatastoreItem> unindexedItems;
 
-	public UnindexedTestDatastoreItem(long indexedField, UnindexedTestDatastoreItem embeddedItem) {
+	UnindexedTestDatastoreItem(long indexedField, UnindexedTestDatastoreItem embeddedItem) {
 		this.indexedField = indexedField;
 		this.embeddedItem = embeddedItem;
 	}
 
-	public UnindexedTestDatastoreItem() {
+	UnindexedTestDatastoreItem() {
 	}
 
-	public long getIndexedField() {
+	long getIndexedField() {
 		return this.indexedField;
 	}
 
-	public void setIndexedField(long indexedField) {
+	void setIndexedField(long indexedField) {
 		this.indexedField = indexedField;
 	}
 
-	public long getUnindexedField() {
+	long getUnindexedField() {
 		return this.unindexedField;
 	}
 
-	public void setUnindexedField(long unindexedField) {
+	void setUnindexedField(long unindexedField) {
 		this.unindexedField = unindexedField;
 	}
 
-	public List<String> getUnindexedStringListField() {
+	List<String> getUnindexedStringListField() {
 		return this.unindexedStringListField;
 	}
 
-	public void setUnindexedStringListField(List<String> unindexedStringListField) {
+	void setUnindexedStringListField(List<String> unindexedStringListField) {
 		this.unindexedStringListField = unindexedStringListField;
 	}
 
-	public Map<String, String> getUnindexedMapField() {
+	Map<String, String> getUnindexedMapField() {
 		return this.unindexedMapField;
 	}
 
-	public void setUnindexedMapField(Map<String, String> unindexedMapField) {
+	void setUnindexedMapField(Map<String, String> unindexedMapField) {
 		this.unindexedMapField = unindexedMapField;
 	}
 
-	public UnindexedTestDatastoreItem getEmbeddedItem() {
+	UnindexedTestDatastoreItem getEmbeddedItem() {
 		return embeddedItem;
 	}
 
-	public void setEmbeddedItem(UnindexedTestDatastoreItem embeddedItem) {
+	void setEmbeddedItem(UnindexedTestDatastoreItem embeddedItem) {
 		this.embeddedItem = embeddedItem;
 	}
 
-	public List<UnindexedTestDatastoreItem> getUnindexedItems() {
+	List<UnindexedTestDatastoreItem> getUnindexedItems() {
 		return unindexedItems;
 	}
 
-	public void setUnindexedItems(List<UnindexedTestDatastoreItem> unindexedItems) {
+	void setUnindexedItems(List<UnindexedTestDatastoreItem> unindexedItems) {
 		this.unindexedItems = unindexedItems;
 	}
 }
