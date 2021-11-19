@@ -116,7 +116,6 @@ public class DefaultDatastoreEntityConverterTests {
 				.set("intField", 99)
 				.set("enumField", "WHITE")
 				.set("keyField", otherKey)
-				.set("byteArrayField", Blob.copyFrom(bytes))
 				.build();
 		// Plain Java Object that the user expects to operate on.
 		TestDatastoreItem userItem = ENTITY_CONVERTER.read(TestDatastoreItem.class, datastoreEntity);
@@ -134,6 +133,18 @@ public class DefaultDatastoreEntityConverterTests {
 		assertThat(userItem.getIntField()).as("validate int field").isEqualTo(99);
 		assertThat(userItem.getEnumField()).as("validate enum field").isEqualTo(TestDatastoreItem.Color.WHITE);
 		assertThat(userItem.getKeyField()).as("validate key field").isEqualTo(otherKey);
+	}
+
+	@Test
+	public void readTestByteArray() {
+		byte[] bytes = { 1, 2, 3 };
+
+		// Datastore Entity from the backend / client library.
+		Entity datastoreEntity = getEntityBuilder()
+				.set("byteArrayField", Blob.copyFrom(bytes))
+				.build();
+		// Plain Java Object that the user expects to operate on.
+		TestDatastoreItem userItem = ENTITY_CONVERTER.read(TestDatastoreItem.class, datastoreEntity);
 
 		assertThat(userItem.getByteArrayField()).as("validate byte array field").isEqualTo(bytes);
 	}

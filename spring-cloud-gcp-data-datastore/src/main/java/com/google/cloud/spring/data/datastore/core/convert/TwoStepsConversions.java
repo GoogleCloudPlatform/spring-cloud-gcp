@@ -120,7 +120,7 @@ public class TwoStepsConversions implements ReadWriteConversions {
 	public <T> T convertOnRead(Object val, EmbeddedType embeddedType, TypeInformation targetTypeInformation) {
 		TypeInformation componentTypeInformation;
 		Class collectionType = null;
-		if (targetTypeInformation.isCollectionLike()) {
+		if (ValueUtil.isCollectionLike(targetTypeInformation.getType())) {
 			componentTypeInformation = targetTypeInformation.getComponentType();
 			collectionType = targetTypeInformation.getType();
 		}
@@ -175,9 +175,6 @@ public class TwoStepsConversions implements ReadWriteConversions {
 			catch (ConversionException | DatastoreDataException ex) {
 				throw new DatastoreDataException("Unable process elements of a collection", ex);
 			}
-		} else if (val.getClass().equals(Blob.class) && targetCollectionType == byte[].class) {
-			// Special case where a single value (Blob) becomes a collection (byte[]).
-			return (T)((Blob) val).toByteArray();
 		}
 		// Convert single value.
 		return (T) readConverter.apply(val, targetComponentType);
