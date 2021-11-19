@@ -55,13 +55,9 @@ Pub/Sub credentials | No | https://www.googleapis.com/auth/pubsub
 
 ==== Publisher/Subscriber Configuration
 
-This section describes configuration options to customize the behavior of the application's Pub/Sub publishers and subscribers.
-Subscriber settings can be either global or subscription-specific.
+This section describes configuration options to customize the behavior of the application's Pub/Sub publishers and subscribers. Subscriber settings can be either global or subscription-specific.
 
-NOTE: A custom configuration (injected through a setter in `DefaultSubscriberFactory` or a custom bean) will take precedence over auto-configuration.
-Hence, if one wishes to use per-subscription configuration for a Pub/Sub setting, there must not be a custom bean for that setting.
-When using auto-configuration, if both global and per-subscription configurations are provided, then the per-subscription configuration will be used.
-However, if a per-subscription configuration is not set then the global or default configuration will be used.
+NOTE: A custom configuration (injected through a setter in `DefaultSubscriberFactory` or a custom bean) will take precedence over auto-configuration. Hence, if one wishes to use per-subscription configuration for a Pub/Sub setting, there must not be a custom bean for that setting. When using auto-configuration, if both global and per-subscription configurations are provided, then the per-subscription configuration will be used. However, if a per-subscription configuration is not set then the global or default configuration will be used.
 
 |===
 | Name | Description | Required | Default value

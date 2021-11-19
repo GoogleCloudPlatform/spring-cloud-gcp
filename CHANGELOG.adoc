@@ -10,9 +10,7 @@ For a detailed view of what has changed, refer to the https://github.com/GoogleC
 === Pub/Sub
 
 * Added support for per-subscription configurations for Subscriber settings. (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/418[#418]).
-** A global custom bean for a setting takes precedence over any property-based auto-configuration.
-In order to use per-subscription configuration, the custom bean for that property needs to be removed.
-When using auto-configuration, per-subscription configuration takes precedence over global configuration.
+** A global custom bean for a setting takes precedence over any property-based auto-configuration. In order to use per-subscription configuration for a Subscriber setting, the custom bean for that setting needs to be removed. When using auto-configuration, per-subscription configuration takes precedence over global configuration.
 
 == 2.0.5 (2021-10-25)
 
