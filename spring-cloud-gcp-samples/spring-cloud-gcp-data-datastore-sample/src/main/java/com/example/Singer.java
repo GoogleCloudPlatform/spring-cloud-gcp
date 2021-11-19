@@ -64,6 +64,8 @@ public class Singer {
 
 	private Set<Album> albums;
 
+	private byte[] password;
+
 	public Singer() {
 	}
 
@@ -130,6 +132,14 @@ public class Singer {
 		this.albums = albums;
 	}
 
+	public byte[] getPassword() {
+		return password;
+	}
+
+	public void setPassword(byte[] password) {
+		this.password = password;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -162,6 +172,7 @@ public class Singer {
 				+ ((this.personalInstruments == null) ? ""
 						: Strings.join(this.personalInstruments.stream()
 								.map(x -> x.getType()).collect(Collectors.toList()), ','))
+				+ ((this.password == null) ? "" : ", Password (don't actually ever do this): " + new String(password) )
 				+ '}';
 	}
 

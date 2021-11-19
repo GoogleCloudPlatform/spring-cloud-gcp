@@ -103,7 +103,8 @@ public class DefaultDatastoreEntityConverterTests {
 	public void readTest() {
 		byte[] bytes = { 1, 2, 3 };
 		Key otherKey = Key.newBuilder("testproject", "test_kind", "test_name").build();
-		Entity entity = getEntityBuilder()
+		// entity as it would come back from the backend / client library.
+		Entity datastoreEntity = getEntityBuilder()
 				.set("durationField", "PT24H")
 				.set("stringField", "string value")
 				.set("boolField", true)
@@ -115,22 +116,26 @@ public class DefaultDatastoreEntityConverterTests {
 				.set("intField", 99)
 				.set("enumField", "WHITE")
 				.set("keyField", otherKey)
+				.set("byteArrayField", Blob.copyFrom(bytes))
 				.build();
-		TestDatastoreItem item = ENTITY_CONVERTER.read(TestDatastoreItem.class, entity);
+		// Plain Java Object that the user expects to operate on.
+		TestDatastoreItem userItem = ENTITY_CONVERTER.read(TestDatastoreItem.class, datastoreEntity);
 
-		assertThat(item.getDurationField()).as("validate duration field").isEqualTo(Duration.ofDays(1));
-		assertThat(item.getStringField()).as("validate string field").isEqualTo("string value");
-		assertThat(item.getBoolField()).as("validate boolean field").isTrue();
-		assertThat(item.getDoubleField()).as("validate double field").isEqualTo(3.1415D);
-		assertThat(item.getLongField()).as("validate long field").isEqualTo(123L);
-		assertThat(item.getLatLngField()).as("validate latLng field")
+		assertThat(userItem.getDurationField()).as("validate duration field").isEqualTo(Duration.ofDays(1));
+		assertThat(userItem.getStringField()).as("validate string field").isEqualTo("string value");
+		assertThat(userItem.getBoolField()).as("validate boolean field").isTrue();
+		assertThat(userItem.getDoubleField()).as("validate double field").isEqualTo(3.1415D);
+		assertThat(userItem.getLongField()).as("validate long field").isEqualTo(123L);
+		assertThat(userItem.getLatLngField()).as("validate latLng field")
 				.isEqualTo(LatLng.of(10, 20));
-		assertThat(item.getTimestampField()).as("validate timestamp field")
+		assertThat(userItem.getTimestampField()).as("validate timestamp field")
 				.isEqualTo(Timestamp.ofTimeSecondsAndNanos(30, 40));
-		assertThat(item.getBlobField()).as("validate blob field").isEqualTo(Blob.copyFrom(bytes));
-		assertThat(item.getIntField()).as("validate int field").isEqualTo(99);
-		assertThat(item.getEnumField()).as("validate enum field").isEqualTo(TestDatastoreItem.Color.WHITE);
-		assertThat(item.getKeyField()).as("validate key field").isEqualTo(otherKey);
+		assertThat(userItem.getBlobField()).as("validate blob field").isEqualTo(Blob.copyFrom(bytes));
+		assertThat(userItem.getIntField()).as("validate int field").isEqualTo(99);
+		assertThat(userItem.getEnumField()).as("validate enum field").isEqualTo(TestDatastoreItem.Color.WHITE);
+		assertThat(userItem.getKeyField()).as("validate key field").isEqualTo(otherKey);
+
+		assertThat(userItem.getByteArrayField()).as("validate byte array field").isEqualTo(bytes);
 	}
 
 	@Test
