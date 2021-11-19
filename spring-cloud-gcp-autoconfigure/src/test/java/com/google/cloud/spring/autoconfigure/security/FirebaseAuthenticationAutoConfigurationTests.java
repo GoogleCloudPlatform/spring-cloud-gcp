@@ -20,7 +20,7 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.security.firebase.FirebaseJwtTokenDecoder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -36,14 +36,14 @@ import static org.mockito.Mockito.mock;
  * @author Vinicius Carvalho
  * @since 1.2.2
  */
-public class FirebaseAuthenticationAutoConfigurationTests {
+class FirebaseAuthenticationAutoConfigurationTests {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(
 					AutoConfigurations.of(FirebaseAuthenticationAutoConfiguration.class, TestConfig.class));
 
 	@Test
-	public void testAutoConfigurationLoaded() throws Exception {
+	void testAutoConfigurationLoaded() throws Exception {
 		this.contextRunner
 				.withPropertyValues("spring.cloud.gcp.security.firebase.enabled=true")
 				.run(context -> {
@@ -53,7 +53,7 @@ public class FirebaseAuthenticationAutoConfigurationTests {
 	}
 
 	@Test
-	public void testAutoConfigurationNotLoaded() throws Exception {
+	void testAutoConfigurationNotLoaded() throws Exception {
 		this.contextRunner
 				.withPropertyValues("spring.cloud.gcp.security.firebase.enabled=false")
 				.run(context -> {

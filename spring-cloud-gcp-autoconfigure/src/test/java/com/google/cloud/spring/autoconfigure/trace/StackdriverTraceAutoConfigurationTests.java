@@ -45,7 +45,7 @@ import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 import zipkin2.Call;
 import zipkin2.CheckResult;
@@ -97,7 +97,7 @@ public class StackdriverTraceAutoConfigurationTests {
 					"spring.sleuth.sampler.probability=1.0");
 
 	@Test
-	public void test() {
+	void test() {
 		this.contextRunner
 				.withBean(
 						StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
@@ -112,7 +112,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	}
 
 	@Test
-	public void testDefaultConfig() {
+	void testDefaultConfig() {
 		this.contextRunner
 				.withBean(
 						StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
@@ -137,7 +137,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	}
 
 	@Test
-	public void testServerResponseTimeout() {
+	void testServerResponseTimeout() {
 		this.contextRunner
 				.withPropertyValues("spring.cloud.gcp.trace.server-response-timeout-ms=1000")
 				.withBean(
@@ -156,7 +156,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	}
 
 	@Test
-	public void supportsMultipleReporters() {
+	void supportsMultipleReporters() {
 		this.contextRunner
 				.withConfiguration(AutoConfigurations.of(
 						BraveAutoConfiguration.class,
@@ -201,7 +201,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	}
 
 	@Test
-	public void testAsyncReporterHealthCheck() {
+	void testAsyncReporterHealthCheck() {
 		Sender senderMock = mock(Sender.class);
 		when(senderMock.check()).thenReturn(CheckResult.OK);
 		when(senderMock.encoding()).thenReturn(SpanBytesEncoder.PROTO3.encoding());
@@ -219,7 +219,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	}
 
 	@Test
-	public void defaultSchedulerUsedWhenNoneProvided() {
+	void defaultSchedulerUsedWhenNoneProvided() {
 		this.contextRunner
 				.withBean(
 						StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
@@ -232,7 +232,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	}
 
 	@Test
-	public void customSchedulerUsedWhenAvailable() {
+	void customSchedulerUsedWhenAvailable() {
 		ThreadPoolTaskScheduler threadPoolTaskSchedulerMock = mock(ThreadPoolTaskScheduler.class);
 		ScheduledExecutorService scheduledExecutorServiceMock = mock(ScheduledExecutorService.class);
 		when(threadPoolTaskSchedulerMock.getScheduledExecutor()).thenReturn(scheduledExecutorServiceMock);

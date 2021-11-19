@@ -23,7 +23,7 @@ import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfigurationTests;
 import io.grpc.ManagedChannel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import zipkin2.reporter.Sender;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests for Trace Pub/Sub auto-config.
  */
-public class TracePubSubAutoConfigurationTest {
+class TracePubSubAutoConfigurationTest {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(
@@ -56,7 +56,7 @@ public class TracePubSubAutoConfigurationTest {
 					"spring.sleuth.sampler.probability=1.0");
 
 	@Test
-	public void test() {
+	void test() {
 		this.contextRunner
 				.run(context -> {
 					assertThat(context.getBean(HttpRequestParser.class)).isNotNull();
@@ -68,7 +68,7 @@ public class TracePubSubAutoConfigurationTest {
 
 
 	@Test
-	public void testPubSubTracingDisabledByDefault() {
+	void testPubSubTracingDisabledByDefault() {
 		this.contextRunner.run(context -> {
 			assertThat(context.getBeansOfType(TracePubSubBeanPostProcessor.class)).isEmpty();
 			assertThat(context.getBeansOfType(PubSubTracing.class)).isEmpty();
@@ -76,7 +76,7 @@ public class TracePubSubAutoConfigurationTest {
 	}
 
 	@Test
-	public void testPubSubTracingEnabled() {
+	void testPubSubTracingEnabled() {
 		this.contextRunner
 				.withPropertyValues("spring.cloud.gcp.trace.pubsub.enabled=true")
 				.run(context -> {

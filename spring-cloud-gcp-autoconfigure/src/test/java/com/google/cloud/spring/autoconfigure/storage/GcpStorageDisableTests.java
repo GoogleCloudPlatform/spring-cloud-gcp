@@ -17,7 +17,7 @@
 package com.google.cloud.spring.autoconfigure.storage;
 
 import com.google.cloud.storage.Storage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  *
  * @author Daniel Zou
  */
-public class GcpStorageDisableTests {
+class GcpStorageDisableTests {
 	private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
 
 	ApplicationContextRunner contextRunner = new ApplicationContextRunner()
@@ -41,7 +41,7 @@ public class GcpStorageDisableTests {
 			.withPropertyValues("spring.cloud.gcp.storage.enabled=false");
 
 	@Test
-	public void testStorageBeanIsNotProvided() {
+	void testStorageBeanIsNotProvided() {
 		this.contextRunner.run(context -> {
 			Throwable thrown = catchThrowable(() -> context.getBean(Storage.class));
 			assertThat(thrown).isInstanceOf(NoSuchBeanDefinitionException.class);
