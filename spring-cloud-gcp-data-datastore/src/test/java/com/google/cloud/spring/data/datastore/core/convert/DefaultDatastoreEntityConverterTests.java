@@ -103,7 +103,7 @@ public class DefaultDatastoreEntityConverterTests {
 	public void readTest() {
 		byte[] bytes = { 1, 2, 3 };
 		Key otherKey = Key.newBuilder("testproject", "test_kind", "test_name").build();
-		// entity as it would come back from the backend / client library.
+		// Datastore Entity from the backend / client library.
 		Entity datastoreEntity = getEntityBuilder()
 				.set("durationField", "PT24H")
 				.set("stringField", "string value")

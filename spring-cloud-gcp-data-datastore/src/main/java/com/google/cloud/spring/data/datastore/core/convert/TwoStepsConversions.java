@@ -152,20 +152,21 @@ public class TwoStepsConversions implements ReadWriteConversions {
 			throw new DatastoreDataException(
 					"Unexpected property embedded type: " + embeddedType);
 		}
-
 		if (ValueUtil.isCollectionLike(val.getClass())
 				&& targetCollectionType != null && targetComponentType != null) {
+			// Convert collection.
 			return convertCollectionOnRead(val, targetCollectionType, targetComponentType, readConverter);
 		} else if (val.getClass().equals(Blob.class) && targetCollectionType == byte[].class) {
+			// Special case where a single value (Blob) becomes a collection (byte[]).
 			return (T)((Blob) val).toByteArray();
 		}
+		// Convert single value.
 		return (T) readConverter.apply(val, targetComponentType);
 	}
 
 	private <T> T convertCollectionOnRead(Object val, Class targetCollectionType, TypeInformation targetComponentType, BiFunction<Object, TypeInformation<?>, ?> readConverter) {
 		try {
 			List elements;
-
 			if (val.getClass().isArray()) {
 				elements = Collections.singletonList(val);
 			}

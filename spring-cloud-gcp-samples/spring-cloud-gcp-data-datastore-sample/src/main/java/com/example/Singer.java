@@ -64,7 +64,7 @@ public class Singer {
 
 	private Set<Album> albums;
 
-	private byte[] password;
+	private byte[] message;
 
 	public Singer() {
 	}
@@ -132,12 +132,12 @@ public class Singer {
 		this.albums = albums;
 	}
 
-	public byte[] getPassword() {
-		return password;
+	public byte[] getMessage() {
+		return message;
 	}
 
-	public void setPassword(byte[] password) {
-		this.password = password;
+	public void setMessage(byte[] message) {
+		this.message = message;
 	}
 
 	@Override
@@ -172,7 +172,7 @@ public class Singer {
 				+ ((this.personalInstruments == null) ? ""
 						: Strings.join(this.personalInstruments.stream()
 								.map(x -> x.getType()).collect(Collectors.toList()), ','))
-				+ ((this.password == null) ? "" : ", Password (don't actually ever do this): " + new String(password) )
+				+ ((this.message == null) ? "" : ", Message: " + new String(message) )
 				+ '}';
 	}
 

@@ -70,7 +70,7 @@ public class DatastoreRepositoryExample {
 							new Album("b", LocalDate.of(2018, Month.FEBRUARY, 12)))));
 			Singer richardRoe = new Singer("singer3", "Richard", "Roe",
 					new HashSet<>(Arrays.asList(new Album("c", LocalDate.of(2000, Month.AUGUST, 31)))));
-			richardRoe.setPassword("insecure".getBytes(StandardCharsets.UTF_8));
+			richardRoe.setMessage("Hello, dear fans!".getBytes(StandardCharsets.UTF_8));
 
 			this.singerRepository.saveAll(Arrays.asList(janeDoe, richardRoe));
 
