@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,17 +31,17 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Mike Eltsufin
  * @author Chengyuan Zhao
  */
-public class DefaultCredentialsProviderTests {
+class DefaultCredentialsProviderTests {
 
 	@Test
-	public void testResolveScopesDefaultScopes() {
+	void testResolveScopesDefaultScopes() {
 		List<String> scopes = DefaultCredentialsProvider.resolveScopes(null);
 		assertThat(scopes.size()).isGreaterThan(1);
 		assertThat(scopes).contains(GcpScope.PUBSUB.getUrl());
 	}
 
 	@Test
-	public void testResolveScopesOverrideScopes() {
+	void testResolveScopesOverrideScopes() {
 		List<String> scopes = DefaultCredentialsProvider.resolveScopes(Collections.singletonList("myscope"));
 		assertThat(scopes)
 				.hasSize(1)
@@ -49,7 +49,7 @@ public class DefaultCredentialsProviderTests {
 	}
 
 	@Test
-	public void testResolveScopesStarterScopesPlaceholder() {
+	void testResolveScopesStarterScopesPlaceholder() {
 		List<String> scopes = DefaultCredentialsProvider.resolveScopes(Arrays.asList("DEFAULT_SCOPES", "myscope"));
 		assertThat(scopes)
 				.hasSize(GcpScope.values().length + 1)
