@@ -58,7 +58,7 @@ Pub/Sub credentials | No | https://www.googleapis.com/auth/pubsub
 This section describes configuration options to customize the behavior of the application's Pub/Sub publishers and subscribers.
 
 |===
-| Name |  Description | Required | Default value
+| Name | Description | Required | Default value
 | `spring.cloud.gcp.pubsub.subscriber.parallel-pull-count` | The number of pull workers | No | 1
 | `spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period` | The maximum period a message ack deadline will be extended, in seconds | No | 0
 | `spring.cloud.gcp.pubsub.subscriber.pull-endpoint` | The endpoint for synchronous pulling messages | No | pubsub.googleapis.com:443
@@ -90,7 +90,7 @@ This is useful in conjunction with enabling message ordering because sending mes
 Subscriber settings can also be set on a per-subscription basis. A custom configuration (set through a setter in `DefaultSubscriberFactor` or a custom bean) will take precedence over auto-configuration. When using auto-configuration, if one wishes to use per-subscription configuration for a property then they need to avoid using a custom bean for that property. If both global and per-subscription configurations are provided then the per-subscription configuration will be used. However, if subscription-specific property is not specified then the global or default configuration will be used.
 
 |===
-| Name |  Description | Required | Default value
+| Name | Description | Required | Default value
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].parallel-pull-count` | The number of pull workers. | No | 1
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].max-ack-extension-period` | The maximum period a message ack deadline will be extended, in seconds. | No | 0
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].pull-endpoint` | The endpoint for synchronous pulling messages. | No | pubsub.googleapis.com:443
