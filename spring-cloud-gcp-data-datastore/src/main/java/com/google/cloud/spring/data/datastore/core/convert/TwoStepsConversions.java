@@ -152,38 +152,35 @@ public class TwoStepsConversions implements ReadWriteConversions {
 			throw new DatastoreDataException(
 					"Unexpected property embedded type: " + embeddedType);
 		}
+
 		if (ValueUtil.isCollectionLike(val.getClass())
 				&& targetCollectionType != null && targetComponentType != null) {
 			// Convert collection.
-			return convertCollectionOnRead(val, targetCollectionType, targetComponentType, readConverter);
+			try {
+				List elements;
+				if (val.getClass().isArray()) {
+					elements = Collections.singletonList(val);
+				}
+				else {
+					elements = StreamSupport
+							.stream(((Iterable<?>) val).spliterator(), false)
+							.map(v -> {
+								Object o = (v instanceof Value) ? ((Value) v).get() : v;
+								return readConverter.apply(o, targetComponentType);
+							})
+							.collect(Collectors.toList());
+				}
+				return (T) convertCollection(elements, targetCollectionType);
+			}
+			catch (ConversionException | DatastoreDataException ex) {
+				throw new DatastoreDataException("Unable process elements of a collection", ex);
+			}
 		} else if (val.getClass().equals(Blob.class) && targetCollectionType == byte[].class) {
 			// Special case where a single value (Blob) becomes a collection (byte[]).
 			return (T)((Blob) val).toByteArray();
 		}
 		// Convert single value.
 		return (T) readConverter.apply(val, targetComponentType);
-	}
-
-	private <T> T convertCollectionOnRead(Object val, Class targetCollectionType, TypeInformation targetComponentType, BiFunction<Object, TypeInformation<?>, ?> readConverter) {
-		try {
-			List elements;
-			if (val.getClass().isArray()) {
-				elements = Collections.singletonList(val);
-			}
-			else {
-				elements = StreamSupport
-						.stream(((Iterable<?>) val).spliterator(), false)
-						.map(v -> {
-							Object o = (v instanceof Value) ? ((Value) v).get() : v;
-							return readConverter.apply(o, targetComponentType);
-						})
-						.collect(Collectors.toList());
-			}
-			return (T) convertCollection(elements, targetCollectionType);
-		}
-		catch (ConversionException | DatastoreDataException ex) {
-			throw new DatastoreDataException("Unable process elements of a collection", ex);
-		}
 	}
 
 	private <T, R> Map<T, R> convertOnReadSingleEmbeddedMap(Object value,
