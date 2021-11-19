@@ -31,9 +31,9 @@ import com.google.gson.Gson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.slf4j.MDCContextMap;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -49,7 +49,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Stefan Dieringer
  * @author Kazuki Shimizu
  */
-class StackdriverJsonLayoutLoggerTests {
+public class StackdriverJsonLayoutLoggerTests {
 
 	private static final Gson GSON = new Gson();
 
@@ -61,8 +61,8 @@ class StackdriverJsonLayoutLoggerTests {
 
 	private MDCContextMap mdc;
 
-	@BeforeEach
-	void setLoggingContext() {
+	@Before
+	public void setLoggingContext() {
 		logOutput = new ByteArrayOutputStream();
 		System.setOut(new java.io.PrintStream(logOutput));
 
@@ -73,15 +73,15 @@ class StackdriverJsonLayoutLoggerTests {
 		mdc.put("foo", "bar");
 	}
 
-	@AfterEach
-	void cleanupLoggingContext() {
+	@After
+	public void cleanupLoggingContext() {
 		// Reset the System output to System.out
 		System.setOut(CONSOLE_OUTPUT);
 		mdc.clear();
 	}
 
 	@Test
-	void testEmulatorConfig() {
+	public void testEmulatorConfig() {
 		LOGGER.warn("test");
 		Map<String, String> data = getLogMetadata();
 
@@ -102,7 +102,7 @@ class StackdriverJsonLayoutLoggerTests {
 	}
 
 	@Test
-	void testServiceContext() {
+	public void testServiceContext() {
 		Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutServiceCtxLoggerTests");
 
 		logger.warn("test");
@@ -135,7 +135,7 @@ class StackdriverJsonLayoutLoggerTests {
 	}
 
 	@Test
-	void testNullMessage() {
+	public void testNullMessage() {
 		Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutServiceCtxLoggerTests");
 
 		try {
@@ -158,7 +158,7 @@ class StackdriverJsonLayoutLoggerTests {
 	}
 
 	@Test
-	void testCustomMDCFieldForTraceIdAndSpanId() {
+	public void testCustomMDCFieldForTraceIdAndSpanId() {
 		Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutCustomMDCFieldTests");
 
 		mdc.remove(StackdriverTraceConstants.MDC_FIELD_TRACE_ID);
@@ -186,7 +186,7 @@ class StackdriverJsonLayoutLoggerTests {
 	}
 
 	@Test
-	void test64BitTraceId() {
+	public void test64BitTraceId() {
 		mdc.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "1234567890123456");
 
 		LOGGER.warn("test");
@@ -198,7 +198,7 @@ class StackdriverJsonLayoutLoggerTests {
 	}
 
 	@Test
-	void testEnhancerNoMdc() {
+	public void testEnhancerNoMdc() {
 		// Test if no MDC is set.
 		mdc.clear();
 		String traceId = "1234567890123456";
@@ -212,7 +212,7 @@ class StackdriverJsonLayoutLoggerTests {
 	}
 
 	@Test
-	void testJsonLayoutEnhancer() {
+	public void testJsonLayoutEnhancer() {
 		Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutServiceCtxLoggerTests");
 
 		Marker marker = MarkerFactory.getMarker("testMarker");
@@ -223,7 +223,7 @@ class StackdriverJsonLayoutLoggerTests {
 	}
 
 	@Test
-	void testJsonSeverityLevelMapping() {
+	public void testJsonSeverityLevelMapping() {
 		// Tests that Logback levels are mapped to correct com.google.cloud logging severities.
 		LOGGER.trace("test");
 		LOGGER.debug("test");
@@ -245,7 +245,7 @@ class StackdriverJsonLayoutLoggerTests {
 	}
 
 	@Test
-	void testJsonLayoutEnhancer_missing() {
+	public void testJsonLayoutEnhancer_missing() {
 		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 		assertThat(lc.getStatusManager().getCopyOfStatusList()
 				.stream()

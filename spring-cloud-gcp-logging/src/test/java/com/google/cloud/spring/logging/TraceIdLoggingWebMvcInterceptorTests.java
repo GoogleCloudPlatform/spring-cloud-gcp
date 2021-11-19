@@ -17,7 +17,7 @@
 package com.google.cloud.spring.logging;
 
 import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Mike Eltsufin
  */
 
-class TraceIdLoggingWebMvcInterceptorTests {
+public class TraceIdLoggingWebMvcInterceptorTests {
 
 	private static final String TEST_TRACE_ID = "105445aa7843bc8bf206b120001000";
 
@@ -41,7 +41,7 @@ class TraceIdLoggingWebMvcInterceptorTests {
 			new XCloudTraceIdExtractor());
 
 	@Test
-	void testPreHandle() throws Exception {
+	public void testPreHandle() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader(TRACE_ID_HEADER, TEST_TRACE_ID_WITH_SPAN);
 
@@ -53,7 +53,7 @@ class TraceIdLoggingWebMvcInterceptorTests {
 	}
 
 	@Test
-	void testAfterCompletion() throws Exception {
+	public void testAfterCompletion() throws Exception {
 		TraceIdLoggingEnhancer.setCurrentTraceId(TEST_TRACE_ID);
 
 		this.interceptor.afterCompletion(null, null, null, null);

@@ -21,8 +21,8 @@ import java.util.Map;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import com.google.cloud.logging.LogEntry;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.MDC;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,19 +34,19 @@ import static org.mockito.Mockito.when;
  *
  * @author Mike Eltsufin
  */
-class TraceIdLoggingEnhancerTests {
+public class TraceIdLoggingEnhancerTests {
 
 	TraceIdLoggingEnhancer enhancer = new TraceIdLoggingEnhancer();
 
-	@BeforeEach
-	void before() {
+	@Before
+	public void before() {
 		enhancer.setProjectIdProvider(() -> "gcp-project");
 		MDC.clear();
 		TraceIdLoggingEnhancer.setCurrentTraceId(null);
 	}
 
 	@Test
-	void testNoTraceIdAnywhere() {
+	public void testNoTraceIdAnywhere() {
 		LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
 
 		enhancer.enhanceLogEntry(logEntryBuilder);
@@ -58,7 +58,7 @@ class TraceIdLoggingEnhancerTests {
 	}
 
 	@Test
-	void testLoggingEventMDC() {
+	public void testLoggingEventMDC() {
 		LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
 
 		ILoggingEvent mockLoggingEvent = mock(ILoggingEvent.class);
@@ -79,7 +79,7 @@ class TraceIdLoggingEnhancerTests {
 	}
 
 	@Test
-	void testThreadLocalMDC() {
+	public void testThreadLocalMDC() {
 		LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
 
 		MDC.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid123");
@@ -94,7 +94,7 @@ class TraceIdLoggingEnhancerTests {
 	}
 
 	@Test
-	void testThreadLocalTraceId() {
+	public void testThreadLocalTraceId() {
 		TraceIdLoggingEnhancer.setCurrentTraceId("tid123");
 		LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
 

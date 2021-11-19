@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.logging;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,10 +26,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Mike Eltsufin
  * @since 1.2
  */
-class LoggingAppenderTests {
+public class LoggingAppenderTests {
 
 	@Test
-	void testGetLoggingOptions() {
+	public void testGetLoggingOptions() {
 		LoggingAppender loggingAppender = new LoggingAppender();
 		loggingAppender.setCredentialsFile("src/test/resources/fake-project-key.json");
 		assertThat(loggingAppender.getLoggingOptions().getCredentials()).isNotNull();

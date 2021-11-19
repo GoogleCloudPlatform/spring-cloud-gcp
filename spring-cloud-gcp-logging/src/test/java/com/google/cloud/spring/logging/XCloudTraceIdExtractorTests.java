@@ -17,7 +17,7 @@
 package com.google.cloud.spring.logging;
 
 import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Chengyuan Zhao
  */
 
-class XCloudTraceIdExtractorTests {
+public class XCloudTraceIdExtractorTests {
 
 	private static final String TEST_TRACE_ID = "105445aa7843bc8bf206b120001000";
 
@@ -41,7 +41,7 @@ class XCloudTraceIdExtractorTests {
 	private XCloudTraceIdExtractor extractor = new XCloudTraceIdExtractor();
 
 	@Test
-	void testExtractTraceIdFromRequest_valid() {
+	public void testExtractTraceIdFromRequest_valid() {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader(TRACE_ID_HEADER, TEST_TRACE_ID_WITH_SPAN);
 
@@ -51,7 +51,7 @@ class XCloudTraceIdExtractorTests {
 	}
 
 	@Test
-	void testExtractTraceIdFromRequest_missing() {
+	public void testExtractTraceIdFromRequest_missing() {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 
 		String traceId = this.extractor.extractTraceIdFromRequest(request);
@@ -60,7 +60,7 @@ class XCloudTraceIdExtractorTests {
 	}
 
 	@Test
-	void testExtractTraceIdFromRequest_missingSpan() {
+	public void testExtractTraceIdFromRequest_missingSpan() {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader(TRACE_ID_HEADER, TEST_TRACE_ID);
 
