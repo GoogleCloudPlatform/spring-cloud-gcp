@@ -37,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -53,7 +54,7 @@ import static org.junit.Assume.assumeTrue;
  *
  * @since 1.1
  */
-public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback {
+public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, TestInstancePostProcessor {
 
 	private static final Path EMULATOR_CONFIG_DIR = Paths.get(System.getProperty("user.home")).resolve(
 			Paths.get(".config", "gcloud", "emulators", "pubsub"));
@@ -236,7 +237,7 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback {
 	private void updateConfig(WatchService watchService) throws InterruptedException {
 		int attempts = 10;
 		while (--attempts >= 0) {
-			WatchKey key = watchService.poll(100, TimeUnit.MILLISECONDS);
+			WatchKey key = watchService.poll(1000, TimeUnit.MILLISECONDS);
 
 			if (key != null) {
 				Optional<Path> configFilePath = key.pollEvents().stream()
@@ -264,5 +265,12 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback {
 		catch (IOException ex) {
 			LOGGER.warn("Failed to clean up PID " + pid);
 		}
+	}
+
+	@Override
+	public void postProcessTestInstance(Object testInstance, ExtensionContext extensionContext) throws Exception {
+		testInstance.getClass()
+				.getMethod("setHostPort", String.class)
+				.invoke(testInstance, this.emulatorHostPort);
 	}
 }

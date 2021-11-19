@@ -42,14 +42,16 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests extends
 		AbstractBinderTests<PubSubTestBinder, ExtendedConsumerProperties<PubSubConsumerProperties>,
 				ExtendedProducerProperties<PubSubProducerProperties>> {
 
-	/**
-	 * The emulator instance, shared across tests.
-	 */
-	public static PubSubEmulator emulator = new PubSubEmulator();
+	// port set up through emulator instance
+	private String hostPort;
+
+	public void setHostPort(String hostPort) {
+		this.hostPort = hostPort;
+	}
 
 	@Override
 	protected PubSubTestBinder getBinder() {
-		return new PubSubTestBinder(emulator.getEmulatorHostPort());
+		return new PubSubTestBinder(this.hostPort);
 	}
 
 	@Override
@@ -74,14 +76,14 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests extends
 		// Do nothing. Original test tests for Lifecycle logic that we don't need.
 
 		// Dummy assertion to appease SonarCloud.
-		assertThat(emulator.getEmulatorHostPort()).isNotNull();
+		assertThat(this.hostPort).isNotNull();
 	}
 
 	@Test
 	@Disabled("Looks like there is no Kryo support in SCSt")
 	void testSendPojoReceivePojoKryoWithStreamListener() {
 		// Dummy assertion to appease SonarCloud.
-		assertThat(emulator.getEmulatorHostPort()).isNotNull();
+		assertThat(this.hostPort).isNotNull();
 	}
 
 
