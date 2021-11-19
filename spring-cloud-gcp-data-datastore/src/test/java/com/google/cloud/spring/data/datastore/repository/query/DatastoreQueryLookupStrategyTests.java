@@ -20,8 +20,8 @@ import java.util.Optional;
 
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import org.springframework.data.repository.core.NamedQueries;
@@ -45,7 +45,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Chengyuan Zhao
  */
-public class DatastoreQueryLookupStrategyTests {
+class DatastoreQueryLookupStrategyTests {
 
 	private DatastoreTemplate datastoreTemplate;
 
@@ -57,8 +57,8 @@ public class DatastoreQueryLookupStrategyTests {
 
 	private QueryMethodEvaluationContextProvider evaluationContextProvider;
 
-	@Before
-	public void initMocks() {
+	@BeforeEach
+	void initMocks() {
 		this.datastoreTemplate = mock(DatastoreTemplate.class);
 		this.datastoreMappingContext = new DatastoreMappingContext();
 		this.queryMethod = mock(DatastoreQueryMethod.class);
@@ -67,7 +67,7 @@ public class DatastoreQueryLookupStrategyTests {
 	}
 
 	@Test
-	public void resolveSqlQueryTest() {
+	void resolveSqlQueryTest() {
 		String queryName = "fakeNamedQueryName";
 		String query = "fake query";
 		when(this.queryMethod.getNamedQueryName()).thenReturn(queryName);
