@@ -107,6 +107,7 @@ public class PubSubTestBinder extends AbstractTestBinder<PubSubMessageChannelBin
 				new PubSubMessageChannelBinder(null, pubSubChannelProvisioner, pubSubTemplate,
 						new PubSubExtendedBindingProperties());
 		GenericApplicationContext context = new GenericApplicationContext();
+		context.refresh();
 		binder.setApplicationContext(context);
 		this.setBinder(binder);
 	}
