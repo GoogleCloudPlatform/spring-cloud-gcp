@@ -37,7 +37,9 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.TestInstancePostProcessor;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.ParameterResolver;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -54,7 +56,7 @@ import static org.junit.Assume.assumeTrue;
  *
  * @since 1.1
  */
-public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, TestInstancePostProcessor {
+public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, ParameterResolver {
 
 	private static final Path EMULATOR_CONFIG_DIR = Paths.get(System.getProperty("user.home")).resolve(
 			Paths.get(".config", "gcloud", "emulators", "pubsub"));
@@ -97,6 +99,22 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, Test
 
 		startEmulator();
 		determineHostPort();
+	}
+
+	/**
+	 * Set up ParameterResolver to support PubSubEmulator as parameter type.
+	 */
+	@Override
+	public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+		return parameterContext.getParameter().getType() == PubSubEmulator.class;
+	}
+
+	/**
+	 * Set up ParameterResolver to return current instance of PubSubEmulator to test.
+	 */
+	@Override
+	public PubSubEmulator resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+		return this;
 	}
 
 	/**
@@ -267,10 +285,4 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, Test
 		}
 	}
 
-	@Override
-	public void postProcessTestInstance(Object testInstance, ExtensionContext extensionContext) throws Exception {
-		testInstance.getClass()
-				.getMethod("setHostPort", String.class)
-				.invoke(testInstance, this.emulatorHostPort);
-	}
 }

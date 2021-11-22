@@ -21,6 +21,7 @@ import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerPro
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.cloud.stream.binder.AbstractBinderTests;
@@ -42,11 +43,11 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests extends
 		AbstractBinderTests<PubSubTestBinder, ExtendedConsumerProperties<PubSubConsumerProperties>,
 				ExtendedProducerProperties<PubSubProducerProperties>> {
 
-	// port set up through emulator instance
 	private String hostPort;
 
-	public void setHostPort(String hostPort) {
-		this.hostPort = hostPort;
+	// Constructor gets PubSubEmulator instance from ParameterResolver
+	public PubSubMessageChannelBinderEmulatorIntegrationTests(PubSubEmulator pubSubEmulator) {
+		this.hostPort = pubSubEmulator.getEmulatorHostPort();
 	}
 
 	@Override
