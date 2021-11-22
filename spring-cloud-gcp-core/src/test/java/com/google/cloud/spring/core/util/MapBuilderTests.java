@@ -18,7 +18,7 @@ package com.google.cloud.spring.core.util;
 
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,10 +28,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  *
  * @author Elena Felder
  */
-public class MapBuilderTests {
+class MapBuilderTests {
 
 	@Test
-	public void mapWithDistinctKeysBuildsAsExpected() {
+	void mapWithDistinctKeysBuildsAsExpected() {
 		Map<String, String> result = new MapBuilder<String, String>()
 				.put("a", "alpha")
 				.put("b", "beta")
@@ -44,13 +44,13 @@ public class MapBuilderTests {
 	}
 
 	@Test
-	public void emptyMapIsEmpty() {
+	void emptyMapIsEmpty() {
 		Map<String, String> result = new MapBuilder<String, String>().build();
 		assertThat(result).isEmpty();
 	}
 
 	@Test
-	public void mapWithNullKeyThrowsException() {
+	void mapWithNullKeyThrowsException() {
 		MapBuilder<String, String> mb = new MapBuilder<>();
 		assertThatThrownBy(() -> mb.put(null, "nope"))
 				.isInstanceOf(IllegalArgumentException.class)
@@ -58,7 +58,7 @@ public class MapBuilderTests {
 	}
 
 	@Test
-	public void mapWithNullValueThrowsException() {
+	void mapWithNullValueThrowsException() {
 		MapBuilder<String, String> mb = new MapBuilder<>();
 		assertThatThrownBy(() -> mb.put("nope", null))
 				.isInstanceOf(IllegalArgumentException.class)
@@ -66,7 +66,7 @@ public class MapBuilderTests {
 	}
 
 	@Test
-	public void mapWithDuplicateKeysThrowsException() {
+	void mapWithDuplicateKeysThrowsException() {
 		MapBuilder<String, String> mb = new MapBuilder<>();
 		mb.put("b", "beta");
 		assertThatThrownBy(() -> mb.put("b", "vita"))
