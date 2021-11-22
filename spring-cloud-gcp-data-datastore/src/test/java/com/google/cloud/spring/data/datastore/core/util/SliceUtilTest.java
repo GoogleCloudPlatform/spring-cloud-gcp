@@ -19,7 +19,7 @@ package com.google.cloud.spring.data.datastore.core.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.google.cloud.spring.data.datastore.core.util.SliceUtil.sliceAndExecute;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,9 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Dmitry Solomakha
  */
-public class SliceUtilTest {
+class SliceUtilTest {
 	@Test
-	public void sliceAndExecuteTest() {
+	void sliceAndExecuteTest() {
 		Integer[] elements = getIntegers(7);
 		List<Integer[]> slices = new ArrayList<>();
 		sliceAndExecute(elements, 3, slice -> {
@@ -39,7 +39,7 @@ public class SliceUtilTest {
 	}
 
 	@Test
-	public void sliceAndExecuteEvenTest() {
+	void sliceAndExecuteEvenTest() {
 		Integer[] elements = getIntegers(6);
 		List<Integer[]> slices = new ArrayList<>();
 		sliceAndExecute(elements, 3, slice -> {
@@ -49,7 +49,7 @@ public class SliceUtilTest {
 	}
 
 	@Test
-	public void sliceAndExecuteEmptyTest() {
+	void sliceAndExecuteEmptyTest() {
 		Integer[] elements = getIntegers(0);
 		List<Integer[]> slices = new ArrayList<>();
 		sliceAndExecute(elements, 3, slice -> {
