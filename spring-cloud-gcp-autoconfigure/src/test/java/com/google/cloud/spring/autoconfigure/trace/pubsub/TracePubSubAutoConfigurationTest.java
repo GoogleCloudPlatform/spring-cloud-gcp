@@ -20,8 +20,8 @@ import brave.handler.SpanHandler;
 import brave.http.HttpRequestParser;
 import brave.http.HttpTracingCustomizer;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.trace.MockConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
-import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfigurationTests;
 import io.grpc.ManagedChannel;
 import org.junit.jupiter.api.Test;
 import zipkin2.reporter.Sender;
@@ -47,7 +47,7 @@ class TracePubSubAutoConfigurationTest {
 					BraveAutoConfiguration.class,
 					BraveMessagingAutoConfiguration.class,
 					RefreshAutoConfiguration.class))
-			.withUserConfiguration(StackdriverTraceAutoConfigurationTests.MockConfiguration.class)
+			.withUserConfiguration(MockConfiguration.class)
 			.withBean(
 					StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
 					SpanHandler.class,

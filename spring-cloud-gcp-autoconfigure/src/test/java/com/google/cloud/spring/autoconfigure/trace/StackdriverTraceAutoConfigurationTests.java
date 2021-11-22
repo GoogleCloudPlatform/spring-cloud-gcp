@@ -18,7 +18,6 @@ package com.google.cloud.spring.autoconfigure.trace;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +28,7 @@ import brave.TracingCustomizer;
 import brave.handler.SpanHandler;
 import brave.http.HttpRequestParser;
 import brave.http.HttpTracingCustomizer;
-import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
-import com.google.auth.Credentials;
-import com.google.auth.RequestMetadataCallback;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.devtools.cloudtrace.v2.BatchWriteSpansRequest;
 import com.google.devtools.cloudtrace.v2.Span;
@@ -46,7 +42,6 @@ import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Test;
-import org.mockito.stubbing.Answer;
 import zipkin2.Call;
 import zipkin2.CheckResult;
 import zipkin2.codec.Encoding;
@@ -66,8 +61,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -84,7 +77,7 @@ import static org.mockito.Mockito.when;
  * @author Elena Felder
  * @author Vinesh Prasanna M
  */
-public class StackdriverTraceAutoConfigurationTests {
+class StackdriverTraceAutoConfigurationTests {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(
@@ -92,7 +85,7 @@ public class StackdriverTraceAutoConfigurationTests {
 					GcpContextAutoConfiguration.class,
 					BraveAutoConfiguration.class,
 					RefreshAutoConfiguration.class))
-			.withUserConfiguration(StackdriverTraceAutoConfigurationTests.MockConfiguration.class)
+			.withUserConfiguration(MockConfiguration.class)
 			.withPropertyValues("spring.cloud.gcp.project-id=proj",
 					"spring.sleuth.sampler.probability=1.0");
 
@@ -247,30 +240,6 @@ public class StackdriverTraceAutoConfigurationTests {
 					final ExecutorProvider executorProvider = context.getBean("traceExecutorProvider", ExecutorProvider.class);
 					assertThat(executorProvider.getExecutor()).isEqualTo(scheduledExecutorServiceMock);
 				});
-	}
-
-	/**
-	 * Spring config for tests.
-	 */
-	public static class MockConfiguration {
-
-		// We'll fake a successful call to GCP for the validation of our "credentials"
-		@Bean
-		public static CredentialsProvider googleCredentials() {
-			return () -> {
-				Credentials creds = mock(Credentials.class);
-				doAnswer((Answer<Void>)
-					invocationOnMock -> {
-						RequestMetadataCallback callback =
-								(RequestMetadataCallback) invocationOnMock.getArguments()[2];
-						callback.onSuccess(Collections.emptyMap());
-						return null;
-					})
-				.when(creds)
-				.getRequestMetadata(any(), any(), any());
-				return creds;
-			};
-		}
 	}
 
 	/**
