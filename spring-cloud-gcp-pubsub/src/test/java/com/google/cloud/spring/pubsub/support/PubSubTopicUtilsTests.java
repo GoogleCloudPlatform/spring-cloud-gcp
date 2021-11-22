@@ -18,7 +18,7 @@ package com.google.cloud.spring.pubsub.support;
 
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.TopicName;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,10 +28,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  *
  * @author Mike Eltsufin
  */
-public class PubSubTopicUtilsTests {
+class PubSubTopicUtilsTests {
 
 	@Test
-	public void testToProjectTopicName_canonical() {
+	void testToProjectTopicName_canonical() {
 		String project = "projectA";
 		String topic = "topicA";
 		String fqn = "projects/" + project + "/topics/" + topic;
@@ -44,21 +44,21 @@ public class PubSubTopicUtilsTests {
 	}
 
 	@Test
-	public void testToProjectTopicName_no_topic() {
+	void testToProjectTopicName_no_topic() {
 		assertThatThrownBy(() -> PubSubTopicUtils.toProjectTopicName(null, "topicA"))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("The topic can't be null.");
 	}
 
 	@Test
-	public void testToProjectTopicName_canonical_no_project() {
+	void testToProjectTopicName_canonical_no_project() {
 		assertThatThrownBy(() -> PubSubTopicUtils.toProjectTopicName("topicA", null))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("The project ID can't be null when using canonical topic name.");
 	}
 
 	@Test
-	public void testToProjectTopicName_fqn() {
+	void testToProjectTopicName_fqn() {
 		String project = "projectA";
 		String topic = "topicA";
 		String fqn = "projects/" + project + "/topics/" + topic;
@@ -71,7 +71,7 @@ public class PubSubTopicUtilsTests {
 	}
 
 	@Test
-	public void testToProjectTopicName_fqn_no_project() {
+	void testToProjectTopicName_fqn_no_project() {
 		String project = "projectA";
 		String topic = "topicA";
 		String fqn = "projects/" + project + "/topics/" + topic;
@@ -84,7 +84,7 @@ public class PubSubTopicUtilsTests {
 	}
 
 	@Test
-	public void testToTopicName_canonical() {
+	void testToTopicName_canonical() {
 		String project = "projectA";
 		String topic = "topicA";
 		String fqn = "projects/" + project + "/topics/" + topic;
@@ -97,21 +97,21 @@ public class PubSubTopicUtilsTests {
 	}
 
 	@Test
-	public void testToTopicName_no_topic() {
+	void testToTopicName_no_topic() {
 		assertThatThrownBy(() -> PubSubTopicUtils.toTopicName(null, "topicA"))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("The topic can't be null.");
 	}
 
 	@Test
-	public void testToTopicName_canonical_no_project() {
+	void testToTopicName_canonical_no_project() {
 		assertThatThrownBy(() -> PubSubTopicUtils.toTopicName("topicA", null))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("The project ID can't be null when using canonical topic name.");
 	}
 
 	@Test
-	public void testToTopicName_fqn() {
+	void testToTopicName_fqn() {
 		String project = "projectA";
 		String topic = "topicA";
 		String fqn = "projects/" + project + "/topics/" + topic;
@@ -124,7 +124,7 @@ public class PubSubTopicUtilsTests {
 	}
 
 	@Test
-	public void testToTopicName_fqn_no_project() {
+	void testToTopicName_fqn_no_project() {
 		String project = "projectA";
 		String topic = "topicA";
 		String fqn = "projects/" + project + "/topics/" + topic;

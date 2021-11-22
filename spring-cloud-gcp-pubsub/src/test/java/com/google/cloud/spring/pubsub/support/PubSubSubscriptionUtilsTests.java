@@ -17,7 +17,7 @@
 package com.google.cloud.spring.pubsub.support;
 
 import com.google.pubsub.v1.ProjectSubscriptionName;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -27,10 +27,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  *
  * @author Mike Eltsufin
  */
-public class PubSubSubscriptionUtilsTests {
+class PubSubSubscriptionUtilsTests {
 
 	@Test
-	public void testToProjectSubscriptionName_canonical() {
+	void testToProjectSubscriptionName_canonical() {
 		String project = "projectA";
 		String subscription = "subscriptionA";
 		String fqn = "projects/" + project + "/subscriptions/" + subscription;
@@ -44,21 +44,21 @@ public class PubSubSubscriptionUtilsTests {
 	}
 
 	@Test
-	public void testToProjectSubscriptionName_no_subscription() {
+	void testToProjectSubscriptionName_no_subscription() {
 		assertThatThrownBy(() -> PubSubSubscriptionUtils.toProjectSubscriptionName(null, "subscriptionA"))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("The subscription can't be null.");
 	}
 
 	@Test
-	public void testToProjectSubscriptionName_canonical_no_project() {
+	void testToProjectSubscriptionName_canonical_no_project() {
 		assertThatThrownBy(() -> PubSubSubscriptionUtils.toProjectSubscriptionName("subscriptionA", null))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("The project ID can't be null when using canonical subscription name.");
 	}
 
 	@Test
-	public void testToProjectSubscriptionName_fqn() {
+	void testToProjectSubscriptionName_fqn() {
 		String project = "projectA";
 		String subscription = "subscriptionA";
 		String fqn = "projects/" + project + "/subscriptions/" + subscription;
@@ -72,7 +72,7 @@ public class PubSubSubscriptionUtilsTests {
 	}
 
 	@Test
-	public void testToProjectSubscriptionName_fqn_no_project() {
+	void testToProjectSubscriptionName_fqn_no_project() {
 		String project = "projectA";
 		String subscription = "subscriptionA";
 		String fqn = "projects/" + project + "/subscriptions/" + subscription;

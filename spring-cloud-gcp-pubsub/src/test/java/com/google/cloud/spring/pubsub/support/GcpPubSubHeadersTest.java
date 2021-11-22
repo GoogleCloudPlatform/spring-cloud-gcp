@@ -18,7 +18,7 @@ package com.google.cloud.spring.pubsub.support;
 
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
@@ -26,23 +26,23 @@ import org.springframework.messaging.support.GenericMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class GcpPubSubHeadersTest {
+class GcpPubSubHeadersTest {
 
 	@Test
-	public void getOriginalMessage_emptyHeaders() {
+	void getOriginalMessage_emptyHeaders() {
 		Message<String> m = new GenericMessage<>("batman");
 		assertThat(GcpPubSubHeaders.getOriginalMessage(m)).isEmpty();
 	}
 
 	@Test
-	public void getOriginalMessage_wrongType() {
+	void getOriginalMessage_wrongType() {
 		Message<String> m = new GenericMessage<>("batman",
 				Collections.singletonMap(GcpPubSubHeaders.ORIGINAL_MESSAGE, 101));
 		assertThat(GcpPubSubHeaders.getOriginalMessage(m)).isEmpty();
 	}
 
 	@Test
-	public void getOriginalMessage() {
+	void getOriginalMessage() {
 		Message<String> m = new GenericMessage<>("batman",
 				Collections.singletonMap(GcpPubSubHeaders.ORIGINAL_MESSAGE,
 						mock(BasicAcknowledgeablePubsubMessage.class)));

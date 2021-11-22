@@ -18,8 +18,8 @@ package com.google.cloud.spring.pubsub.integration.inbound;
 
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.integration.acks.AcknowledgmentCallback;
 
@@ -35,31 +35,31 @@ import static org.mockito.Mockito.verify;
  *
  * @since 1.2
  */
-public class PubSubAcknowledgmentCallbackTests {
+ class PubSubAcknowledgmentCallbackTests {
 
 	private AcknowledgeablePubsubMessage mockMessage;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		this.mockMessage = mock(AcknowledgeablePubsubMessage.class);
 	}
 
 	@Test
-	public void constructor_nullMessageFailsAssert() {
+	void constructor_nullMessageFailsAssert() {
 		assertThatThrownBy(() -> new PubSubAcknowledgmentCallback(null, AckMode.MANUAL))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessage("message to be acknowledged cannot be null");
 	}
 
 	@Test
-	public void constructor_nullAckModeFailsAssert() {
+	void constructor_nullAckModeFailsAssert() {
 		assertThatThrownBy(() -> new PubSubAcknowledgmentCallback(this.mockMessage, null))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("ackMode cannot be null");
 	}
 
 	@Test
-	public void acknowledge_acksOnAccept() {
+	void acknowledge_acksOnAccept() {
 		PubSubAcknowledgmentCallback callback = new PubSubAcknowledgmentCallback(this.mockMessage, AckMode.AUTO);
 		callback.acknowledge(AcknowledgmentCallback.Status.ACCEPT);
 		verify(this.mockMessage).ack();
@@ -67,7 +67,7 @@ public class PubSubAcknowledgmentCallbackTests {
 	}
 
 	@Test
-	public void acknowledge_nacksOnReject() {
+	void acknowledge_nacksOnReject() {
 		PubSubAcknowledgmentCallback callback = new PubSubAcknowledgmentCallback(this.mockMessage, AckMode.AUTO);
 		callback.acknowledge(AcknowledgmentCallback.Status.REJECT);
 		verify(this.mockMessage).nack();
@@ -75,7 +75,7 @@ public class PubSubAcknowledgmentCallbackTests {
 	}
 
 	@Test
-	public void acknowledge_nacksOnRequeue() {
+	void acknowledge_nacksOnRequeue() {
 		PubSubAcknowledgmentCallback callback = new PubSubAcknowledgmentCallback(this.mockMessage, AckMode.AUTO);
 		callback.acknowledge(AcknowledgmentCallback.Status.REQUEUE);
 		verify(this.mockMessage).nack();
@@ -83,38 +83,38 @@ public class PubSubAcknowledgmentCallbackTests {
 	}
 
 	@Test
-	public void isAutoAckTrueForAutoMode() {
+	void isAutoAckTrueForAutoMode() {
 		PubSubAcknowledgmentCallback callback = new PubSubAcknowledgmentCallback(this.mockMessage, AckMode.AUTO);
 		assertThat(callback.isAutoAck()).isTrue();
 	}
 
 	@Test
-	public void isAutoAckTrueForAutoAckMode() {
+	void isAutoAckTrueForAutoAckMode() {
 		PubSubAcknowledgmentCallback callback = new PubSubAcknowledgmentCallback(this.mockMessage, AckMode.AUTO_ACK);
 		assertThat(callback.isAutoAck()).isTrue();
 	}
 
 	@Test
-	public void isAutoAckFalseFroManualMode() {
+	void isAutoAckFalseFroManualMode() {
 		PubSubAcknowledgmentCallback callback = new PubSubAcknowledgmentCallback(this.mockMessage, AckMode.MANUAL);
 		assertThat(callback.isAutoAck()).isFalse();
 	}
 
 	@Test
-	public void isAcknowledgedFalseForNewCallback() {
+	void isAcknowledgedFalseForNewCallback() {
 		PubSubAcknowledgmentCallback callback = new PubSubAcknowledgmentCallback(this.mockMessage, AckMode.MANUAL);
 		assertThat(callback.isAcknowledged()).isFalse();
 	}
 
 	@Test
-	public void isAcknowledgedTrueAfterAccept() {
+	void isAcknowledgedTrueAfterAccept() {
 		PubSubAcknowledgmentCallback callback = new PubSubAcknowledgmentCallback(this.mockMessage, AckMode.MANUAL);
 		callback.acknowledge(AcknowledgmentCallback.Status.ACCEPT);
 		assertThat(callback.isAcknowledged()).isTrue();
 	}
 
 	@Test
-	public void isAcknowledgedTrueAfterReject() {
+	void isAcknowledgedTrueAfterReject() {
 		PubSubAcknowledgmentCallback callback = new PubSubAcknowledgmentCallback(this.mockMessage, AckMode.MANUAL);
 		callback.acknowledge(AcknowledgmentCallback.Status.REJECT);
 		assertThat(callback.isAcknowledged()).isTrue();
