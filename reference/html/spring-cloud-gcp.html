@@ -1608,7 +1608,23 @@ Pub/Sub credentials</p></td>
 <div class="sect3">
 <h4 id="publishersubscriber-configuration"><a class="anchor" href="#publishersubscriber-configuration"></a><a class="link" href="#publishersubscriber-configuration">6.1.2. Publisher/Subscriber Configuration</a></h4>
 <div class="paragraph">
-<p>This section describes configuration options to customize the behavior of the application&#8217;s Pub/Sub publishers and subscribers.</p>
+<p>This section describes configuration options to customize the behavior of the application&#8217;s Pub/Sub publishers and subscribers.
+Subscriber settings can be either global or subscription-specific.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A custom configuration (injected through a setter in <code>DefaultSubscriberFactory</code> or a custom bean) will take precedence over auto-configuration.
+Hence, if one wishes to use per-subscription configuration for a Pub/Sub setting, there must not be a custom bean for that setting.
+When using auto-configuration, if both global and per-subscription configurations are provided, then the per-subscription configuration will be used.
+However, if a per-subscription configuration is not set then the global or default configuration will be used.
+</td>
+</tr>
+</table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1707,6 +1723,67 @@ This is useful in conjunction with enabling message ordering because sending mes
 </tr>
 </tbody>
 </table>
+<div class="sect4">
+<h5 id="subscription-specific-configurations"><a class="anchor" href="#subscription-specific-configurations"></a><a class="link" href="#subscription-specific-configurations">Subscription-specific Configurations</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].parallel-pull-count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of pull workers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].max-ack-extension-period</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum period a message ack deadline will be extended, in seconds.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].pull-endpoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The endpoint for synchronous pulling messages.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pubsub.googleapis.com:443</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].executor-threads</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of threads used by <code>Subscriber</code> instances created by <code>SubscriberFactory</code>. Note that configuring per-subscription <code>executor-threads</code> will result in the creation of thread pools for both global/default <strong>and</strong> per-subscription configurations.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].flow-control.max-outstanding-element-count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of outstanding elements to keep in memory before enforcing flow control.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unlimited</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].flow-control.max-outstanding-request-bytes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of outstanding bytes to keep in memory before enforcing flow control.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unlimited</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].flow-control.limit-exceeded-behavior</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The behavior when the specified limits are exceeded.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Block</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="grpc-connection-settings"><a class="anchor" href="#grpc-connection-settings"></a><a class="link" href="#grpc-connection-settings">6.1.3. GRPC Connection Settings</a></h4>
@@ -1810,6 +1887,92 @@ The timeout of the previous call is multiplied by the RpcTimeoutMultiplier to ca
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher].retry.max-rpc-timeout-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaxRpcTimeout puts a limit on the value of the RPC timeout, so that the RpcTimeoutMultiplier
+can&#8217;t increase the RPC timeout higher than this amount.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Subscription-specific Configuration</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retryableCodes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RPC status codes that should be retried when pulling messages.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNKNOWN,ABORTED,UNAVAILABLE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.total-timeout-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TotalTimeout has ultimate control over how long the logic should keep trying the remote call until it gives up completely. The higher the total timeout, the more retries can be attempted.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.initial-retry-delay-second</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">InitialRetryDelay controls the delay before the first retry.
+Subsequent retries will use this value adjusted according to the RetryDelayMultiplier.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.retry-delay-multiplier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RetryDelayMultiplier controls the change in retry delay.
+The retry delay of the previous call is multiplied by the RetryDelayMultiplier to calculate the retry delay for the next call.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.max-retry-delay-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaxRetryDelay puts a limit on the value of the retry delay, so that the RetryDelayMultiplier
+can&#8217;t increase the retry delay higher than this amount.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.max-attempts</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaxAttempts defines the maximum number of attempts to perform.
+If this value is greater than 0, and the number of attempts reaches this limit, the logic will give up retrying even if the total retry time is still lower than TotalTimeout.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.jittered</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Jitter determines if the delay time should be randomized.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.initial-rpc-timeout-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">InitialRpcTimeout controls the timeout for the initial RPC.
+Subsequent calls will use this value adjusted according to the RpcTimeoutMultiplier.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.rpc-timeout-multiplier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RpcTimeoutMultiplier controls the change in RPC timeout.
+The timeout of the previous call is multiplied by the RpcTimeoutMultiplier to calculate the timeout for the next call.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.max-rpc-timeout-seconds</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MaxRpcTimeout puts a limit on the value of the RPC timeout, so that the RpcTimeoutMultiplier
 can&#8217;t increase the RPC timeout higher than this amount.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
