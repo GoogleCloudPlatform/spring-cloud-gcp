@@ -18,18 +18,18 @@ package com.google.cloud.spring.kms;
 
 import com.google.cloud.kms.v1.CryptoKeyName;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class KmsPropertyUtilsTests {
+class KmsPropertyUtilsTests {
 
 	private static final GcpProjectIdProvider DEFAULT_PROJECT_ID_PROVIDER = () -> "defaultProject";
 
 
 	@Test
-	public void testInvalidKmsFormat_missingValues() {
+	void testInvalidKmsFormat_missingValues() {
 		String cryptoKeyNameStr = "some-key";
 
 		assertThatThrownBy(() ->
@@ -39,7 +39,7 @@ public class KmsPropertyUtilsTests {
 	}
 
 	@Test
-	public void testKmsFormat_globalDefault() {
+	void testKmsFormat_globalDefault() {
 		String cryptoKeyNameStr = "key-ring-id/key-id";
 
 		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKeyNameStr, DEFAULT_PROJECT_ID_PROVIDER);
@@ -51,7 +51,7 @@ public class KmsPropertyUtilsTests {
 	}
 
 	@Test
-	public void testKmsFormat_noProject() {
+	void testKmsFormat_noProject() {
 		String cryptoKeyNameStr = "europe-west2/key-ring-id/key-id";
 
 		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKeyNameStr, DEFAULT_PROJECT_ID_PROVIDER);
@@ -63,7 +63,7 @@ public class KmsPropertyUtilsTests {
 	}
 
 	@Test
-	public void testKmsFormat_lean() {
+	void testKmsFormat_lean() {
 		String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/key-id";
 
 		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKeyNameStr, DEFAULT_PROJECT_ID_PROVIDER);
@@ -75,7 +75,7 @@ public class KmsPropertyUtilsTests {
 	}
 
 	@Test
-	public void testKmsFormat_verbose() {
+	void testKmsFormat_verbose() {
 		String cryptoKeyNameStr = "projects/test-project/locations/europe-west2/keyRings/key-ring-id/cryptoKeys/key-id";
 
 		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKeyNameStr, DEFAULT_PROJECT_ID_PROVIDER);
