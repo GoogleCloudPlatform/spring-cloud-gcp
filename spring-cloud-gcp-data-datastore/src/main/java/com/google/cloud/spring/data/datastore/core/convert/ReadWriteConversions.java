@@ -36,7 +36,7 @@ public interface ReadWriteConversions {
 
 	/**
 	 * Converts a given object to an object of a target type.
-	 * @param val the value to convert
+	 * @param val the simple type or Iterable value to convert. Arrays are not supported.
 	 * @param targetCollectionType the type of the collection to be converted into.
 	 * {@code null} if the property is a singular object.
 	 * @param targetComponentType the type of the property to convert. For collection-like
@@ -50,7 +50,7 @@ public interface ReadWriteConversions {
 	/**
 	 * Converts a given object to an object of a target type that is possibly an embedded
 	 * entity.
-	 * @param val the value to convert.
+	 * @param val the simple type or Iterable value to convert. Arrays are not supported.
 	 * @param embeddedType contains the type of embedded entity conversion should produce.
 	 * @param targetTypeInformation type metadata information for the desired type.
 	 * @param <T> the type of the object that is produced by reading
