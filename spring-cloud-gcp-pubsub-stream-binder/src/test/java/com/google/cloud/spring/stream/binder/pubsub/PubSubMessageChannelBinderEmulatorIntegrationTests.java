@@ -45,9 +45,9 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests extends
 
 	private String hostPort;
 
-	// Constructor gets PubSubEmulator instance from ParameterResolver
-	public PubSubMessageChannelBinderEmulatorIntegrationTests(PubSubEmulator pubSubEmulator) {
-		this.hostPort = pubSubEmulator.getEmulatorHostPort();
+	// Constructor gets PubSubEmulator port number from ParameterResolver
+	public PubSubMessageChannelBinderEmulatorIntegrationTests(String pubSubEmulatorPort) {
+		this.hostPort = pubSubEmulatorPort;
 	}
 
 	@Override

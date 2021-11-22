@@ -102,19 +102,19 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, Para
 	}
 
 	/**
-	 * Set up ParameterResolver to support PubSubEmulator as parameter type.
+	 * Set up ParameterResolver to support String as parameter type.
 	 */
 	@Override
 	public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-		return parameterContext.getParameter().getType() == PubSubEmulator.class;
+		return parameterContext.getParameter().getType() == String.class;
 	}
 
 	/**
-	 * Set up ParameterResolver to return current instance of PubSubEmulator to test.
+	 * Set up ParameterResolver to return current emulatorHostPort to test.
 	 */
 	@Override
-	public PubSubEmulator resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-		return this;
+	public String resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+		return this.emulatorHostPort;
 	}
 
 	/**
