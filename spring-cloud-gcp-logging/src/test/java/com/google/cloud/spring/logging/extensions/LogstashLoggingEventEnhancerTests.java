@@ -23,8 +23,8 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.Payload;
 import net.logstash.logback.marker.Markers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,14 +33,14 @@ import static org.mockito.Mockito.when;
 /**
  * Tests for {@link LogstashLoggingEventEnhancer}.
  */
-public class LogstashLoggingEventEnhancerTests {
+class LogstashLoggingEventEnhancerTests {
 
 	private ILoggingEvent loggingEvent;
 
 	private LogstashLoggingEventEnhancer enhancer;
 
-	@Before
-	public void setup() {
+	@BeforeEach
+	void setup() {
 		enhancer = new LogstashLoggingEventEnhancer();
 
 		loggingEvent = Mockito.mock(ILoggingEvent.class);
@@ -53,7 +53,7 @@ public class LogstashLoggingEventEnhancerTests {
 	}
 
 	@Test
-	public void testEnhanceJson() {
+	void testEnhanceJson() {
 		Map<String, Object> jsonMap = new HashMap<>();
 		enhancer.enhanceJsonLogEntry(jsonMap, loggingEvent);
 		assertThat(jsonMap)
@@ -62,7 +62,7 @@ public class LogstashLoggingEventEnhancerTests {
 	}
 
 	@Test
-	public void testEnhanceLogEntry() {
+	void testEnhanceLogEntry() {
 		LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(Payload.StringPayload.of("hello world"));
 		enhancer.enhanceLogEntry(logEntryBuilder, loggingEvent);
 
