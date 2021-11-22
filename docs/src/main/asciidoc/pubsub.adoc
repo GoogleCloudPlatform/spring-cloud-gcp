@@ -56,6 +56,12 @@ Pub/Sub credentials | No | https://www.googleapis.com/auth/pubsub
 ==== Publisher/Subscriber Configuration
 
 This section describes configuration options to customize the behavior of the application's Pub/Sub publishers and subscribers.
+Subscriber settings can be either global or subscription-specific.
+
+NOTE: A custom configuration (injected through a setter in `DefaultSubscriberFactory` or a custom bean) will take precedence over auto-configuration.
+Hence, if one wishes to use per-subscription configuration for a Pub/Sub setting, there must not be a custom bean for that setting.
+When using auto-configuration, if both global and per-subscription configurations are provided, then the per-subscription configuration will be used.
+However, if a per-subscription configuration is not set then the global or default configuration will be used.
 
 |===
 | Name | Description | Required | Default value
@@ -84,6 +90,22 @@ Enables message ordering. | No | false
 The publisher endpoint.
 Example: `"us-east1-pubsub.googleapis.com:443"`.
 This is useful in conjunction with enabling message ordering because sending messages to the same region ensures they are received in order even when multiple publishers are used. | No | pubsub.googleapis.com:443
+|===
+
+===== Subscription-specific Configurations
+
+|===
+| Name | Description | Required | Default value
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].parallel-pull-count` | The number of pull workers. | No | 1
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].max-ack-extension-period` | The maximum period a message ack deadline will be extended, in seconds. | No | 0
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].pull-endpoint` | The endpoint for synchronous pulling messages. | No | pubsub.googleapis.com:443
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].executor-threads` | Number of threads used by `Subscriber` instances created by `SubscriberFactory`. Note that configuring per-subscription `executor-threads` will result in the creation of thread pools for both global/default **and** per-subscription configurations.  | No | 4
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].flow-control.max-outstanding-element-count`|
+Maximum number of outstanding elements to keep in memory before enforcing flow control. | No | unlimited
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].flow-control.max-outstanding-request-bytes`|
+Maximum number of outstanding bytes to keep in memory before enforcing flow control. | No | unlimited
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].flow-control.limit-exceeded-behavior`|
+The behavior when the specified limits are exceeded. | No | Block
 |===
 
 ==== GRPC Connection Settings
@@ -121,6 +143,36 @@ Subsequent calls will use this value adjusted according to the RpcTimeoutMultipl
 RpcTimeoutMultiplier controls the change in RPC timeout.
 The timeout of the previous call is multiplied by the RpcTimeoutMultiplier to calculate the timeout for the next call. | No | 1
 | `spring.cloud.gcp.pubsub.[subscriber,publisher].retry.max-rpc-timeout-seconds`|
+MaxRpcTimeout puts a limit on the value of the RPC timeout, so that the RpcTimeoutMultiplier
+can't increase the RPC timeout higher than this amount. | No | 0
+|===
+
+Subscription-specific Configuration
+|===
+| Name | Description | Required | Default value
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].retryableCodes` | RPC status codes that should be retried when pulling messages. | No | UNKNOWN,ABORTED,UNAVAILABLE
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.total-timeout-seconds`|
+TotalTimeout has ultimate control over how long the logic should keep trying the remote call until it gives up completely. The higher the total timeout, the more retries can be attempted. | No | 0
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.initial-retry-delay-second`|
+InitialRetryDelay controls the delay before the first retry.
+Subsequent retries will use this value adjusted according to the RetryDelayMultiplier. | No | 0
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.retry-delay-multiplier`|
+RetryDelayMultiplier controls the change in retry delay.
+The retry delay of the previous call is multiplied by the RetryDelayMultiplier to calculate the retry delay for the next call. | No | 1
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.max-retry-delay-seconds`|
+MaxRetryDelay puts a limit on the value of the retry delay, so that the RetryDelayMultiplier
+can't increase the retry delay higher than this amount. | No | 0
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.max-attempts`|
+MaxAttempts defines the maximum number of attempts to perform.
+If this value is greater than 0, and the number of attempts reaches this limit, the logic will give up retrying even if the total retry time is still lower than TotalTimeout. | No | 0
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.jittered`|Jitter determines if the delay time should be randomized. | No | true
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.initial-rpc-timeout-seconds`|
+InitialRpcTimeout controls the timeout for the initial RPC.
+Subsequent calls will use this value adjusted according to the RpcTimeoutMultiplier. | No |0
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.rpc-timeout-multiplier`|
+RpcTimeoutMultiplier controls the change in RPC timeout.
+The timeout of the previous call is multiplied by the RpcTimeoutMultiplier to calculate the timeout for the next call. | No | 1
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.max-rpc-timeout-seconds`|
 MaxRpcTimeout puts a limit on the value of the RPC timeout, so that the RpcTimeoutMultiplier
 can't increase the RPC timeout higher than this amount. | No | 0
 |===
