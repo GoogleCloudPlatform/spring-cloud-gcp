@@ -64,6 +64,8 @@ public class Singer {
 
 	private Set<Album> albums;
 
+	private byte[] message;
+
 	public Singer() {
 	}
 
@@ -130,6 +132,14 @@ public class Singer {
 		this.albums = albums;
 	}
 
+	public byte[] getMessage() {
+		return message;
+	}
+
+	public void setMessage(byte[] message) {
+		this.message = message;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -162,6 +172,7 @@ public class Singer {
 				+ ((this.personalInstruments == null) ? ""
 						: Strings.join(this.personalInstruments.stream()
 								.map(x -> x.getType()).collect(Collectors.toList()), ','))
+				+ ((this.message == null) ? "" : ", Message: " + new String(message))
 				+ '}';
 	}
 
