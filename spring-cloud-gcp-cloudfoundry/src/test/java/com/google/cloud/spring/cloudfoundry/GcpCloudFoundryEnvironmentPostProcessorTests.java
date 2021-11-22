@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import io.pivotal.cfenv.test.AbstractCfEnvTests;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
@@ -41,14 +41,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Chengyuan Zhao
  * @author Eddú Meléndez
  */
-public class GcpCloudFoundryEnvironmentPostProcessorTests extends AbstractCfEnvTests {
+class GcpCloudFoundryEnvironmentPostProcessorTests extends AbstractCfEnvTests {
 
 	private GcpCloudFoundryEnvironmentPostProcessor initializer = new GcpCloudFoundryEnvironmentPostProcessor();
 
 	private final ConfigurableApplicationContext context = new AnnotationConfigApplicationContext();
 
-	@Before
-	public void setup() {
+	@BeforeEach
+	void setup() {
 		TestPropertySourceUtils.addInlinedPropertiesToEnvironment(this.context,
 				"spring.cloud.gcp.sql.instance-connection-name=test-connection",
 				"spring.cloud.gcp.sql.database-name=test-dbname",
@@ -56,7 +56,7 @@ public class GcpCloudFoundryEnvironmentPostProcessorTests extends AbstractCfEnvT
 	}
 
 	@Test
-	public void testConfigurationProperties() throws IOException {
+	void testConfigurationProperties() throws IOException {
 		String vcapFileContents = new String(Files.readAllBytes(
 				new ClassPathResource("VCAP_SERVICES").getFile().toPath()));
 		mockVcapServices(vcapFileContents);
@@ -112,7 +112,7 @@ public class GcpCloudFoundryEnvironmentPostProcessorTests extends AbstractCfEnvT
 	}
 
 	@Test
-	public void test2Sqls() throws IOException {
+	void test2Sqls() throws IOException {
 		String vcapFileContents = new String(Files.readAllBytes(
 				new ClassPathResource("VCAP_SERVICES_2_SQL").getFile().toPath()));
 		mockVcapServices(vcapFileContents);
@@ -126,7 +126,7 @@ public class GcpCloudFoundryEnvironmentPostProcessorTests extends AbstractCfEnvT
 	}
 
 	@Test
-	public void testUserProvidedServices() throws IOException {
+	void testUserProvidedServices() throws IOException {
 		String vcapFileContents = new String(Files.readAllBytes(
 				new ClassPathResource("VCAP_SERVICES_USER_PROVIDED").getFile().toPath()));
 		mockVcapServices(vcapFileContents);
