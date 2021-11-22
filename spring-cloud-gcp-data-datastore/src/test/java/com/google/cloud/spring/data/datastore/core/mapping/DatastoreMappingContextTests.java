@@ -17,7 +17,7 @@
 package com.google.cloud.spring.data.datastore.core.mapping;
 
 import com.google.cloud.Timestamp;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.util.ClassTypeInformation;
@@ -34,9 +34,9 @@ import static org.mockito.Mockito.verifyZeroInteractions;
  *
  * @author Chengyuan Zhao
  */
-public class DatastoreMappingContextTests {
+class DatastoreMappingContextTests {
 	@Test
-	public void testApplicationContextPassing() {
+	void testApplicationContextPassing() {
 		DatastorePersistentEntityImpl mockEntity = mock(
 				DatastorePersistentEntityImpl.class);
 		DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
@@ -49,7 +49,7 @@ public class DatastoreMappingContextTests {
 	}
 
 	@Test
-	public void testApplicationContextIsNotSet() {
+	void testApplicationContextIsNotSet() {
 		DatastorePersistentEntityImpl mockEntity = mock(
 				DatastorePersistentEntityImpl.class);
 		DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
@@ -60,7 +60,7 @@ public class DatastoreMappingContextTests {
 	}
 
 	@Test
-	public void testGetInvalidEntity() {
+	void testGetInvalidEntity() {
 		DatastorePersistentEntityImpl mockEntity = mock(
 				DatastorePersistentEntityImpl.class);
 		DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
@@ -71,7 +71,7 @@ public class DatastoreMappingContextTests {
 	}
 
 	@Test
-	public void testTimestampNotAnEntity() {
+	void testTimestampNotAnEntity() {
 		// Datastore native types like Timestamp should be considered simple type and no an entity
 		DatastoreMappingContext context = new DatastoreMappingContext();
 		assertThatThrownBy(() -> context.getDatastorePersistentEntity(Timestamp.class))
