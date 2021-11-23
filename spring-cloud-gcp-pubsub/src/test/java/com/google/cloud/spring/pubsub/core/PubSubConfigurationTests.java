@@ -18,14 +18,14 @@ package com.google.cloud.spring.pubsub.core;
 
 import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.rpc.StatusCode.Code;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PubSubConfigurationTests {
+class PubSubConfigurationTests {
 
 	@Test
-	public void testDefaultHealthProperties() {
+	void testDefaultHealthProperties() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Health health = pubSubConfiguration.getHealth();
 
@@ -36,7 +36,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testDefaultSubscriberProperties() {
+	void testDefaultSubscriberProperties() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = pubSubConfiguration.getSubscriber();
 		PubSubConfiguration.FlowControl flowControl = subscriber.getFlowControl();
@@ -65,7 +65,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberProperties() {
+	void testSubscriberProperties() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = pubSubConfiguration.getSubscriber();
 
@@ -88,7 +88,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testHealthProperties() {
+	void testHealthProperties() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Health health = pubSubConfiguration.getHealth();
 
@@ -104,7 +104,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberFlowControlSettings() {
+	void testSubscriberFlowControlSettings() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = pubSubConfiguration.getSubscriber();
 		PubSubConfiguration.FlowControl flowControl = subscriber.getFlowControl();
@@ -120,7 +120,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputeFlowControlSettings_returnCustom() {
+	void testComputeFlowControlSettings_returnCustom() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
 		PubSubConfiguration.FlowControl selectiveFlowControl = subscriber.getFlowControl();
@@ -142,7 +142,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputeFlowControlSettings_returnGlobal() {
+	void testComputeFlowControlSettings_returnGlobal() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
 		PubSubConfiguration.FlowControl globalFlowControl = globalSubscriber.getFlowControl();
@@ -162,7 +162,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputeParallelPullCount_returnCustom() {
+	void testComputeParallelPullCount_returnCustom() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
 		subscriber.setParallelPullCount(2);
@@ -176,7 +176,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputeParallelPullCount_returnGlobal() {
+	void testComputeParallelPullCount_returnGlobal() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
 		globalSubscriber.setParallelPullCount(2);
@@ -189,7 +189,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputePullEndpoint_returnCustom() {
+	void testComputePullEndpoint_returnCustom() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
 		subscriber.setPullEndpoint("endpoint");
@@ -203,7 +203,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputePullEndpoint_returnGlobal() {
+	void testComputePullEndpoint_returnGlobal() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
 		globalSubscriber.setPullEndpoint("endpoint");
@@ -216,7 +216,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputeMaxAckExtensionPeriod_returnCustom() {
+	void testComputeMaxAckExtensionPeriod_returnCustom() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
 		subscriber.setMaxAckExtensionPeriod(1L);
@@ -230,7 +230,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputeMaxAckExtensionPeriod_returnGlobal() {
+	void testComputeMaxAckExtensionPeriod_returnGlobal() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
 		globalSubscriber.setMaxAckExtensionPeriod(2L);
@@ -243,7 +243,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputeMaxAckExtensionPeriod_returnDefault() {
+	void testComputeMaxAckExtensionPeriod_returnDefault() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 
 		Long result = pubSubConfiguration.computeMaxAckExtensionPeriod(
@@ -254,7 +254,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberRetrySettings() {
+	void testSubscriberRetrySettings() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = pubSubConfiguration.getSubscriber();
 		PubSubConfiguration.Retry retrySettings = subscriber.getRetry();
@@ -281,7 +281,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputeSubscriberRetrySettings_returnCustom() {
+	void testComputeSubscriberRetrySettings_returnCustom() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
 		PubSubConfiguration.Retry retry = subscriber.getRetry();
@@ -314,7 +314,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputeSubscriberRetrySettings_returnGlobal() {
+	void testComputeSubscriberRetrySettings_returnGlobal() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
 		PubSubConfiguration.Retry retry = globalSubscriber.getRetry();
@@ -344,7 +344,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputeRetryableCodes_returnsGlobal() {
+	void testComputeRetryableCodes_returnsGlobal() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
 
@@ -355,7 +355,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testComputeRetryableCodes_returnCustom() {
+	void testComputeRetryableCodes_returnCustom() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
 		subscriber.setRetryableCodes(new Code[] { Code.INTERNAL });
@@ -367,7 +367,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberMapProperties_defaultOrGlobal_addToMap() {
+	void testSubscriberMapProperties_defaultOrGlobal_addToMap() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 
 		assertThat(pubSubConfiguration.getSubscription()).isEmpty();
@@ -379,7 +379,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberMapProperties_subscriptionName_returnCustom() {
+	void testSubscriberMapProperties_subscriptionName_returnCustom() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
 		subscriber.setExecutorThreads(8);
@@ -395,7 +395,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberMapProperties_fullNamePresentInMap_returnCustom() {
+	void testSubscriberMapProperties_fullNamePresentInMap_returnCustom() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
 		subscriber.setExecutorThreads(8);
@@ -410,7 +410,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberMapProperties_fullNamePresentInMap_projectIdIgnored_returnCustom() {
+	void testSubscriberMapProperties_fullNamePresentInMap_projectIdIgnored_returnCustom() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
 		subscriber.setExecutorThreads(8);
@@ -427,7 +427,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testDefaultPublisherProperties() {
+	void testDefaultPublisherProperties() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Publisher publisher = pubSubConfiguration.getPublisher();
 		PubSubConfiguration.Batching batching = publisher.getBatching();
@@ -454,7 +454,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testPublisherProperties() {
+	void testPublisherProperties() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Publisher publisher = pubSubConfiguration.getPublisher();
 
@@ -468,7 +468,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testPublisherBatchingSettings() {
+	void testPublisherBatchingSettings() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Publisher publisher = pubSubConfiguration.getPublisher();
 		PubSubConfiguration.Batching batching = publisher.getBatching();
@@ -493,7 +493,7 @@ public class PubSubConfigurationTests {
 	}
 
 	@Test
-	public void testPublisherRetrySettings() {
+	void testPublisherRetrySettings() {
 		PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
 		PubSubConfiguration.Publisher publisher = pubSubConfiguration.getPublisher();
 		PubSubConfiguration.Retry retrySettings = publisher.getRetry();
