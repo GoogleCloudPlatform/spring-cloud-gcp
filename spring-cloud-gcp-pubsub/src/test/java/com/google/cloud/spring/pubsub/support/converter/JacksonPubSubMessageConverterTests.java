@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import com.google.pubsub.v1.PubsubMessage;
 import org.json.JSONException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,12 +37,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since  1.1
  */
 
-public class JacksonPubSubMessageConverterTests {
+class JacksonPubSubMessageConverterTests {
 
 	private JacksonPubSubMessageConverter converter = new JacksonPubSubMessageConverter(new ObjectMapper());
 
 	@Test
-	public void testString() throws JSONException {
+	void testString() throws JSONException {
 		String str = "test 123";
 
 		PubsubMessage pubsubMessage = this.converter.toPubSubMessage(str, null);
@@ -58,7 +58,7 @@ public class JacksonPubSubMessageConverterTests {
 	}
 
 	@Test
-	public void testPojo() throws JSONException {
+	void testPojo() throws JSONException {
 		Contact contact = new Contact("Thomas", "Edison", 8817);
 
 		PubsubMessage pubsubMessage = this.converter.toPubSubMessage(contact, null);
@@ -74,14 +74,14 @@ public class JacksonPubSubMessageConverterTests {
 	}
 
 	@Test
-	public void testToPubSubMessageWithNullPayload() throws JSONException {
+	void testToPubSubMessageWithNullPayload() throws JSONException {
 		PubsubMessage pubsubMessage = this.converter.toPubSubMessage(null, null);
 		assertThat(pubsubMessage).isNotNull();
 		assertThat(pubsubMessage.getAttributesCount()).isZero();
 	}
 
 	@Test
-	public void testToPubSubMessageWithOrderingKeyHeader() throws JSONException {
+	void testToPubSubMessageWithOrderingKeyHeader() throws JSONException {
 		PubsubMessage pubsubMessage = this.converter.toPubSubMessage(null,
 				Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1"));
 		assertThat(pubsubMessage).isNotNull();
@@ -90,7 +90,7 @@ public class JacksonPubSubMessageConverterTests {
 	}
 
 	@Test
-	public void testToPubSubMessageWitHeader() throws JSONException {
+	void testToPubSubMessageWitHeader() throws JSONException {
 		PubsubMessage pubsubMessage = this.converter.toPubSubMessage(null,
 				Collections.singletonMap("custom-header", "val1"));
 		assertThat(pubsubMessage).isNotNull();
