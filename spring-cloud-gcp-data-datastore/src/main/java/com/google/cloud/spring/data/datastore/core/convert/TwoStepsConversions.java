@@ -17,7 +17,7 @@
 package com.google.cloud.spring.data.datastore.core.convert;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -159,7 +159,7 @@ public class TwoStepsConversions implements ReadWriteConversions {
 			try {
 				List elements;
 				if (val.getClass().isArray()) {
-					elements = Collections.singletonList(val);
+					elements = Arrays.asList((Object[]) val);
 				}
 				else {
 					elements = StreamSupport

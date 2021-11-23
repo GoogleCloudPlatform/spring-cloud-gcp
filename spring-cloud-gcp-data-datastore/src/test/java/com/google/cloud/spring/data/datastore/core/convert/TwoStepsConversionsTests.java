@@ -103,4 +103,12 @@ class TwoStepsConversionsTests {
 		assertThat(result).isEqualTo("three");
 	}
 
+	@Test
+	void convertingArraysTranslatesToList() {
+		String[] arr = new String[] { "a", "b", "c"};
+
+		List<String> result = this.twoStepsConversions.convertOnRead(arr, List.class, String.class);
+		assertThat(result).containsExactly("a", "b", "c");
+	}
+
 }
