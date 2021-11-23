@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.config;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -34,14 +34,14 @@ import static org.mockito.Mockito.mock;
  * @author João André Martins
  * @author Chengyuan Zhao
  */
-public class GcpConfigBootstrapConfigurationTest {
+class GcpConfigBootstrapConfigurationTest {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(GcpConfigBootstrapConfiguration.class))
 			.withUserConfiguration(TestConfiguration.class);
 
 	@Test
-	public void testConfigurationValueDefaultsAreAsExpected() {
+	void testConfigurationValueDefaultsAreAsExpected() {
 		this.contextRunner.withPropertyValues("spring.cloud.gcp.config.enabled=true")
 				.run(context -> {
 					GcpConfigProperties config = context.getBean(GcpConfigProperties.class);
@@ -53,7 +53,7 @@ public class GcpConfigBootstrapConfigurationTest {
 	}
 
 	@Test
-	public void testConfigurationValuesAreCorrectlyLoaded() {
+	void testConfigurationValuesAreCorrectlyLoaded() {
 		this.contextRunner.withPropertyValues("spring.application.name=myapp",
 				"spring.profiles.active=prod",
 				"spring.cloud.gcp.config.timeoutMillis=120000",
@@ -70,7 +70,7 @@ public class GcpConfigBootstrapConfigurationTest {
 	}
 
 	@Test
-	public void testConfigurationDisabled() {
+	void testConfigurationDisabled() {
 		this.contextRunner.run(context ->
 				assertThatExceptionOfType(NoSuchBeanDefinitionException.class).isThrownBy(() ->
 						context.getBean(GcpConfigProperties.class)));

@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 
 import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.testing.LocalDatastoreHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -36,9 +36,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  *
  * @since 1.2
  */
-public class GcpDatastoreEmulatorAutoConfigurationTests {
+class GcpDatastoreEmulatorAutoConfigurationTests {
 	@Test
-	public void testDatastoreOptionsCorrectlySet() {
+	void testDatastoreOptionsCorrectlySet() {
 		new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(
 						GcpDatastoreEmulatorAutoConfiguration.class))
@@ -59,7 +59,7 @@ public class GcpDatastoreEmulatorAutoConfigurationTests {
 	}
 
 	@Test
-	public void testDisabledAutoEmulator() {
+	void testDisabledAutoEmulator() {
 		new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(
 						GcpDatastoreEmulatorAutoConfiguration.class))

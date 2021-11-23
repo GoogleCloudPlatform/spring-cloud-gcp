@@ -31,7 +31,7 @@ import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -59,7 +59,7 @@ import static org.mockito.Mockito.when;
  * @author Elena Felder
  * @author Patrik Hörlin
  */
-public class PubSubHealthIndicatorAutoConfigurationTests {
+class PubSubHealthIndicatorAutoConfigurationTests {
 
 	private static final Pattern UUID_PATTERN =
 			Pattern.compile("spring-cloud-gcp-healthcheck-[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}");
@@ -72,7 +72,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void healthIndicatorPresent_defaults() throws Exception {
+	void healthIndicatorPresent_defaults() throws Exception {
 		PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
 		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
 
@@ -95,7 +95,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void healthIndicatorPresent_customConfig() throws Exception {
+	void healthIndicatorPresent_customConfig() throws Exception {
 		PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
 		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
 
@@ -123,7 +123,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void compositeHealthIndicatorPresentMultiplePubSubTemplate() throws Exception {
+	void compositeHealthIndicatorPresentMultiplePubSubTemplate() throws Exception {
 		PubSubTemplate mockPubSubTemplate1 = mock(PubSubTemplate.class);
 		PubSubTemplate mockPubSubTemplate2 = mock(PubSubTemplate.class);
 		ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
@@ -154,7 +154,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void apiExceptionWhenValidating_userSubscriptionSpecified_healthAutoConfigurationFails() throws Exception {
+	void apiExceptionWhenValidating_userSubscriptionSpecified_healthAutoConfigurationFails() throws Exception {
 		PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
 		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration(properties);
 		properties.setSubscription("test");
@@ -173,7 +173,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void apiExceptionWhenValidating_userSubscriptionNotSpecified_healthAutoConfigurationSucceeds() throws Exception {
+	void apiExceptionWhenValidating_userSubscriptionNotSpecified_healthAutoConfigurationSucceeds() throws Exception {
 		PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
 		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration(properties);
 
@@ -190,7 +190,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void runtimeExceptionWhenValidating_healthAutoConfigurationFails() throws Exception {
+	void runtimeExceptionWhenValidating_healthAutoConfigurationFails() throws Exception {
 		PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
 		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration(properties);
 
@@ -207,7 +207,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void interruptedExceptionWhenValidating_healthAutoConfigurationFails() throws Exception {
+	void interruptedExceptionWhenValidating_healthAutoConfigurationFails() throws Exception {
 		PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
 		PubSubHealthIndicatorAutoConfiguration p = new PubSubHealthIndicatorAutoConfiguration(properties);
 
@@ -223,7 +223,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 	}
 
 	@Test
-	public void healthCheckConfigurationBacksOffWhenHealthIndicatorBeanPresent() {
+	void healthCheckConfigurationBacksOffWhenHealthIndicatorBeanPresent() {
 		PubSubHealthIndicator userHealthIndicator = mock(PubSubHealthIndicator.class);
 
 		this.baseContextRunner
@@ -239,7 +239,7 @@ public class PubSubHealthIndicatorAutoConfigurationTests {
 	}
 
 	@Test
-	public void healthIndicatorDisabledWhenPubSubTurnedOff() {
+	void healthIndicatorDisabledWhenPubSubTurnedOff() {
 		this.baseContextRunner
 				.withPropertyValues(
 						"management.health.pubsub.enabled=true",

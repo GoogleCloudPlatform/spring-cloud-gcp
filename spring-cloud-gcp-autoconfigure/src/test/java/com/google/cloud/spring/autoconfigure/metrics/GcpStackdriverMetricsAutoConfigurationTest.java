@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Eddú Meléndez
  */
-public class GcpStackdriverMetricsAutoConfigurationTest {
+class GcpStackdriverMetricsAutoConfigurationTest {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(GcpContextAutoConfiguration.class, GcpStackdriverMetricsAutoConfiguration.class,
@@ -45,7 +45,7 @@ public class GcpStackdriverMetricsAutoConfigurationTest {
 			.withUserConfiguration(Config.class);
 
 	@Test
-	public void testProjectIdIsSet() {
+	void testProjectIdIsSet() {
 		this.contextRunner
 				.withPropertyValues("spring.cloud.gcp.project-id=demo-project")
 				.run(context -> assertThat(context).hasSingleBean(StackdriverConfig.class)
@@ -53,7 +53,7 @@ public class GcpStackdriverMetricsAutoConfigurationTest {
 	}
 
 	@Test
-	public void testMetricsProjectIdIsSet() {
+	void testMetricsProjectIdIsSet() {
 		this.contextRunner
 				.withPropertyValues("spring.cloud.gcp.metrics.project-id=demo-project")
 				.run(context -> assertThat(context).hasSingleBean(StackdriverConfig.class)
