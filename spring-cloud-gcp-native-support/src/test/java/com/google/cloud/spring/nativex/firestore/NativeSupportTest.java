@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.ServiceLoader;
 
 import com.google.cloud.spring.data.firestore.Document;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.data.repository.Repository;
 import org.springframework.nativex.type.ComponentProcessor;
@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class NativeSupportTest {
+class NativeSupportTest {
 
 	private NativeContext nativeContext;
 	private TypeSystem typeSystem;
@@ -45,8 +45,8 @@ public class NativeSupportTest {
 	private final FirestoreRepositoryComponentProcessor repositoryComponentProcessor =
 			new FirestoreRepositoryComponentProcessor();
 
-	@Before
-	public void setup() {
+	@BeforeEach
+	void setup() {
 		nativeContext = mock(NativeContext.class);
 		typeSystem = new TypeSystem(
 				Arrays.asList(
@@ -57,20 +57,20 @@ public class NativeSupportTest {
 	}
 
 	@Test
-	public void shouldConfigureComponentProcessorJavaSpi() {
+	void shouldConfigureComponentProcessorJavaSpi() {
 		assertThat(ServiceLoader.load(ComponentProcessor.class))
 				.anyMatch(FirestoreDocumentComponentProcessor.class::isInstance)
 				.anyMatch(FirestoreRepositoryComponentProcessor.class::isInstance);
 	}
 
 	@Test
-	public void shouldConfigureNativeConfigurationJavaSpi() {
+	void shouldConfigureNativeConfigurationJavaSpi() {
 		assertThat(ServiceLoader.load(NativeConfiguration.class))
 				.anyMatch(FirestoreNativeConfig.class::isInstance);
 	}
 
 	@Test
-	public void shouldHandleComponentIndexedFirestoreDocuments() {
+	void shouldHandleComponentIndexedFirestoreDocuments() {
 		assertThat(
 				documentsComponentProcessor.handle(
 						nativeContext,
@@ -81,7 +81,7 @@ public class NativeSupportTest {
 	}
 
 	@Test
-	public void shouldHandleNoneIndexedFirestoreDocuments() {
+	void shouldHandleNoneIndexedFirestoreDocuments() {
 		assertThat(
 				documentsComponentProcessor.handle(
 						nativeContext,
@@ -92,7 +92,7 @@ public class NativeSupportTest {
 	}
 
 	@Test
-	public void shouldHandleFirestoreRepositories() {
+	void shouldHandleFirestoreRepositories() {
 		assertThat(
 				repositoryComponentProcessor.handle(
 						nativeContext,
