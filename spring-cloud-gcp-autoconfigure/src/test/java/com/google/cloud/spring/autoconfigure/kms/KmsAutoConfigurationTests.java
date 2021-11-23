@@ -20,7 +20,7 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
 import com.google.cloud.spring.kms.KmsTemplate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.mock;
  *
  * @author Emmanouil Gkatziouras
  */
-public class KmsAutoConfigurationTests {
+class KmsAutoConfigurationTests {
 
 	private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
 	private static final String LOCATION_NAME = "global";
@@ -53,7 +53,7 @@ public class KmsAutoConfigurationTests {
 			).web(WebApplicationType.NONE);
 
 	@Test
-	public void testKeyManagementClientCreated() {
+	void testKeyManagementClientCreated() {
 		try (ConfigurableApplicationContext c = applicationBuilder.run()) {
 			KeyManagementServiceClient client = c.getBean(KeyManagementServiceClient.class);
 			assertThat(client).isNotNull();
@@ -61,7 +61,7 @@ public class KmsAutoConfigurationTests {
 	}
 
 	@Test
-	public void testKmsTemplateCreated() {
+	void testKmsTemplateCreated() {
 		try (ConfigurableApplicationContext c = applicationBuilder.run()) {
 			KmsTemplate kmsTemplate = c.getBean(KmsTemplate.class);
 			assertThat(kmsTemplate).isNotNull();

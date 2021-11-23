@@ -23,7 +23,7 @@ import java.util.concurrent.TimeoutException;
 
 import com.google.api.core.ApiFuture;
 import com.google.pubsub.v1.PullResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class TracingApiFuturePullResponseTest {
+class TracingApiFuturePullResponseTest {
 
 	static final String TEST_SUBSCRIPTION = "testSubscription";
 
@@ -46,7 +46,7 @@ public class TracingApiFuturePullResponseTest {
 	TracingApiFuturePullResponse tracingApiFuturePullResponse = new TracingApiFuturePullResponse(mockDelegate, mockPubSubTracing, TEST_SUBSCRIPTION);
 
 	@Test
-	public void test_get() throws ExecutionException, InterruptedException {
+	void test_get() throws ExecutionException, InterruptedException {
 		when(mockDelegate.get()).thenReturn(mockPullResponse);
 		when(mockPubSubTracing.tracePullResponse(mockPullResponse, TEST_SUBSCRIPTION)).thenReturn(mockWrappedPullResponse);
 
@@ -56,7 +56,7 @@ public class TracingApiFuturePullResponseTest {
 	}
 
 	@Test
-	public void test_get_withTimeout() throws ExecutionException, InterruptedException, TimeoutException {
+	void test_get_withTimeout() throws ExecutionException, InterruptedException, TimeoutException {
 		when(mockDelegate.get(1L, TimeUnit.MINUTES)).thenReturn(mockPullResponse);
 		when(mockPubSubTracing.tracePullResponse(mockPullResponse, TEST_SUBSCRIPTION)).thenReturn(mockWrappedPullResponse);
 
@@ -66,7 +66,7 @@ public class TracingApiFuturePullResponseTest {
 	}
 
 	@Test
-	public void test_addListener() {
+	void test_addListener() {
 		Runnable mockRunnable = mock(Runnable.class);
 		Executor mockExecutor = mock(Executor.class);
 
@@ -75,19 +75,19 @@ public class TracingApiFuturePullResponseTest {
 	}
 
 	@Test
-	public void test_cancel() {
+	void test_cancel() {
 		tracingApiFuturePullResponse.cancel(true);
 		verify(mockDelegate, times(1)).cancel(true);
 	}
 
 	@Test
-	public void test_isCancelled() {
+	void test_isCancelled() {
 		tracingApiFuturePullResponse.isCancelled();
 		verify(mockDelegate, times(1)).isCancelled();
 	}
 
 	@Test
-	public void test_isDone() {
+	void test_isDone() {
 		tracingApiFuturePullResponse.isDone();
 		verify(mockDelegate, times(1)).isDone();
 	}

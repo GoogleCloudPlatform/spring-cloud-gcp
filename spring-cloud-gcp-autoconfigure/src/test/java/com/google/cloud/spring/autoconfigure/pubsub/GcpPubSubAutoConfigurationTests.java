@@ -30,7 +30,7 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.threeten.bp.Duration;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -47,10 +47,10 @@ import static org.mockito.Mockito.mock;
  * @author Elena Felder
  * @author Mike Eltsufin
  */
-public class GcpPubSubAutoConfigurationTests {
+class GcpPubSubAutoConfigurationTests {
 
 	@Test
-	public void keepAliveValue_default() {
+	void keepAliveValue_default() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withUserConfiguration(TestConfig.class);
@@ -71,7 +71,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void keepAliveValue_custom() {
+	void keepAliveValue_custom() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withUserConfiguration(TestConfig.class)
@@ -93,7 +93,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void maxInboundMessageSize_default() {
+	void maxInboundMessageSize_default() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withUserConfiguration(TestConfig.class);
@@ -113,7 +113,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void retryableCodes_default() {
+	void retryableCodes_default() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withUserConfiguration(TestConfig.class);
@@ -128,7 +128,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void retryableCodes_empty() {
+	void retryableCodes_empty() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withUserConfiguration(TestConfig.class)
@@ -149,7 +149,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void retryableCodes_INTERNAL() {
+	void retryableCodes_INTERNAL() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withUserConfiguration(TestConfig.class)
@@ -171,7 +171,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void retryableCodes_many() {
+	void retryableCodes_many() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withUserConfiguration(TestConfig.class)
@@ -195,7 +195,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void retryableCodes_selectiveConfigurationSet() {
+	void retryableCodes_selectiveConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withUserConfiguration(TestConfig.class)
@@ -213,7 +213,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void retryableCodes_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+	void retryableCodes_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withUserConfiguration(TestConfig.class)
@@ -232,7 +232,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void retryableCodes_globalAndDifferentSelectiveConfigurationSet_pickGlobal() {
+	void retryableCodes_globalAndDifferentSelectiveConfigurationSet_pickGlobal() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withUserConfiguration(TestConfig.class)
@@ -250,7 +250,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void customExecutorProviderUsedWhenProvided() {
+	void customExecutorProviderUsedWhenProvided() {
 		ExecutorProvider executorProvider = mock(ExecutorProvider.class);
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
@@ -267,7 +267,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void threadPoolScheduler_noConfigurationSet_globalCreated() {
+	void threadPoolScheduler_noConfigurationSet_globalCreated() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withUserConfiguration(TestConfig.class);
@@ -284,7 +284,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void subscriberThreadPoolTaskScheduler_globalConfigurationSet() {
+	void subscriberThreadPoolTaskScheduler_globalConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.executor-threads=7")
@@ -305,7 +305,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void subscriberExecutorProvider_globalConfigurationSet() {
+	void subscriberExecutorProvider_globalConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.executor-threads=7")
@@ -322,7 +322,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void threadPoolTaskScheduler_selectiveConfigurationSet() {
+	void threadPoolTaskScheduler_selectiveConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -349,7 +349,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void subscriberExecutorProvider_selectiveConfigurationSet() {
+	void subscriberExecutorProvider_selectiveConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues("spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=7")
@@ -369,7 +369,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void threadPoolScheduler_globalAndSelectiveConfigurationSet() {
+	void threadPoolScheduler_globalAndSelectiveConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -396,7 +396,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void threadPoolTaskScheduler_globalAndDifferentSelectiveConfigurationSet_onlyGlobalCreated() {
+	void threadPoolTaskScheduler_globalAndDifferentSelectiveConfigurationSet_onlyGlobalCreated() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -419,7 +419,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void subscriberExecutorProvider_globalAndDifferentSelectiveConfigurationSet_onlyGlobalCreated() {
+	void subscriberExecutorProvider_globalAndDifferentSelectiveConfigurationSet_onlyGlobalCreated() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -439,7 +439,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void subscriberExecutorProvider_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+	void subscriberExecutorProvider_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -462,7 +462,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void pullConfig_globalConfigurationSet() {
+	void pullConfig_globalConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues("spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=7",
@@ -488,7 +488,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void pullConfig_selectiveConfigurationSet() {
+	void pullConfig_selectiveConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -514,7 +514,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void pullConfig_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+	void pullConfig_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -555,7 +555,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void pullConfig_globalAndDifferentSelectiveConfigurationSet_pickGlobal() {
+	void pullConfig_globalAndDifferentSelectiveConfigurationSet_pickGlobal() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -584,7 +584,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void customRetrySettingsUsedWhenProvided() {
+	void customRetrySettingsUsedWhenProvided() {
 		RetrySettings retrySettings = mock(RetrySettings.class);
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
@@ -599,7 +599,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void retrySettings_globalConfigurationSet() {
+	void retrySettings_globalConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -648,7 +648,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void retrySettings_selectiveConfigurationSet() {
+	void retrySettings_selectiveConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -702,7 +702,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void retrySettings_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+	void retrySettings_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -799,7 +799,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void retrySettings_globalAndDifferentSelectiveConfigurationSet_pickGlobal() {
+	void retrySettings_globalAndDifferentSelectiveConfigurationSet_pickGlobal() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -851,7 +851,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void retrySettings_subsetOfProperties_pickGlobalWhenSelectiveNotSpecified() {
+	void retrySettings_subsetOfProperties_pickGlobalWhenSelectiveNotSpecified() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -905,7 +905,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void customFlowControlUsedWhenProvided() {
+	void customFlowControlUsedWhenProvided() {
 		FlowControlSettings flowControlSettings = mock(FlowControlSettings.class);
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
@@ -921,7 +921,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void flowControlSettings_globalConfigurationSet() {
+	void flowControlSettings_globalConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -952,7 +952,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void flowControlSettings_selectiveConfigurationSet() {
+	void flowControlSettings_selectiveConfigurationSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -991,7 +991,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void flowControlSettings_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+	void flowControlSettings_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -1053,7 +1053,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void flowControlSettings_globalAndDifferentSelectiveConfigurationSet_pickGlobal() {
+	void flowControlSettings_globalAndDifferentSelectiveConfigurationSet_pickGlobal() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -1093,7 +1093,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void flowControlSettings_subsetOfProperties_pickGlobalWhenSelectiveNotSpecified() {
+	void flowControlSettings_subsetOfProperties_pickGlobalWhenSelectiveNotSpecified() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withPropertyValues(
@@ -1133,7 +1133,7 @@ public class GcpPubSubAutoConfigurationTests {
 	}
 
 	@Test
-	public void createSubscriberStub_flowControlSettings_noPropertiesSet() {
+	void createSubscriberStub_flowControlSettings_noPropertiesSet() {
 		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 				.withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
 				.withUserConfiguration(TestConfig.class);

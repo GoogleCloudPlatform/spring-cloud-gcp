@@ -22,7 +22,7 @@ import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Bean;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class GcpBigQueryAutoConfigurationTests {
+class GcpBigQueryAutoConfigurationTests {
 
 	private static final GoogleCredentials MOCK_CREDENTIALS = mock(GoogleCredentials.class);
 
@@ -44,7 +44,7 @@ public class GcpBigQueryAutoConfigurationTests {
 			.withPropertyValues("spring.cloud.gcp.bigquery.datasetName=test-dataset");
 
 	@Test
-	public void testSettingBigQueryOptions() {
+	void testSettingBigQueryOptions() {
 		this.contextRunner.run(context -> {
 			BigQueryOptions bigQueryOptions = context.getBean(BigQuery.class).getOptions();
 			assertThat(bigQueryOptions.getProjectId()).isEqualTo("test-project");

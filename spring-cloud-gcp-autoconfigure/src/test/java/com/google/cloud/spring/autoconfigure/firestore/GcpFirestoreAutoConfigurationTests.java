@@ -23,7 +23,7 @@ import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.firestore.v1.FirestoreGrpc;
 import io.grpc.ManagedChannel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -43,7 +43,7 @@ import static org.mockito.Mockito.mock;
  * @author Dmitry Solomakha
  * @since 1.2
  */
-public class GcpFirestoreAutoConfigurationTests {
+class GcpFirestoreAutoConfigurationTests {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(GcpFirestoreAutoConfiguration.class,
@@ -53,7 +53,7 @@ public class GcpFirestoreAutoConfigurationTests {
 			.withPropertyValues("spring.cloud.gcp.firestore.project-id=test-project");
 
 	@Test
-	public void testDatastoreOptionsCorrectlySet() {
+	void testDatastoreOptionsCorrectlySet() {
 		this.contextRunner.run(context -> {
 			FirestoreOptions datastoreOptions = context.getBean(Firestore.class).getOptions();
 			assertThat(datastoreOptions.getProjectId()).isEqualTo("test-project");
@@ -61,12 +61,12 @@ public class GcpFirestoreAutoConfigurationTests {
 	}
 
 	@Test
-	public void testTestRepositoryCreated() {
+	void testTestRepositoryCreated() {
 		this.contextRunner.run(context -> assertThat(context.getBean(FirestoreTestRepository.class)).isNotNull());
 	}
 
 	@Test
-	public void testCorrectManagedChannel() {
+	void testCorrectManagedChannel() {
 		ManagedChannel wrongChannel = Mockito.mock(ManagedChannel.class);
 
 		this.contextRunner
@@ -79,7 +79,7 @@ public class GcpFirestoreAutoConfigurationTests {
 	}
 
 	@Test
-	public void testTransactionManagerExcludedWithoutAutoConfiguration() {
+	void testTransactionManagerExcludedWithoutAutoConfiguration() {
 		contextRunner
 				.withPropertyValues("spring.cloud.gcp.firestore.enabled=false")
 				.run(ctx -> {
