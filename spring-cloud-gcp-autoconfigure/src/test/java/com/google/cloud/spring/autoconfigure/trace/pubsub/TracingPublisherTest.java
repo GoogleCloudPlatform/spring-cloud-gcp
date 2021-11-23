@@ -20,7 +20,7 @@ import brave.handler.MutableSpan;
 import brave.propagation.CurrentTraceContext.Scope;
 import com.google.cloud.pubsub.v1.PublisherInterface;
 import com.google.pubsub.v1.PubsubMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import static brave.Span.Kind.PRODUCER;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class TracingPublisherTest extends PubSubTestBase {
+class TracingPublisherTest extends PubSubTestBase {
 
 	PublisherInterface mockPublisher = mock(PublisherInterface.class);
 
@@ -43,7 +43,7 @@ public class TracingPublisherTest extends PubSubTestBase {
 			ArgumentCaptor.forClass(PubsubMessage.class);
 
 	@Test
-	public void should_add_b3_headers_to_messages() {
+	void should_add_b3_headers_to_messages() {
 		tracingPublisher.publish(producerMessage.build());
 
 		when(mockPublisher.publish(any())).thenReturn(null);
@@ -54,7 +54,7 @@ public class TracingPublisherTest extends PubSubTestBase {
 	}
 
 	@Test
-	public void should_add_b3_headers_when_other_headers_exist() {
+	void should_add_b3_headers_when_other_headers_exist() {
 		PubsubMessage.Builder message = producerMessage.putAttributes("tx-id", "1");
 
 		tracingPublisher.publish(message.build());
@@ -69,7 +69,7 @@ public class TracingPublisherTest extends PubSubTestBase {
 	}
 
 	@Test
-	public void should_inject_child_context() {
+	void should_inject_child_context() {
 		try (Scope scope = currentTraceContext.newScope(parent)) {
 			tracingPublisher.publish(producerMessage.build());
 		}
@@ -84,7 +84,7 @@ public class TracingPublisherTest extends PubSubTestBase {
 	}
 
 	@Test
-	public void should_add_parent_trace_when_context_injected_on_headers() {
+	void should_add_parent_trace_when_context_injected_on_headers() {
 		PubsubMessage.Builder message = producerMessage.putAttributes("tx-id", "1");
 
 		pubSubTracing.producerInjector.inject(parent, new PubSubProducerRequest(message, "myTopic"));
@@ -101,14 +101,14 @@ public class TracingPublisherTest extends PubSubTestBase {
 	}
 
 	@Test
-	public void should_call_wrapped_producer() {
+	void should_call_wrapped_producer() {
 		PubsubMessage message = producerMessage.build();
 		tracingPublisher.publish(message);
 		verify(mockPublisher, times(1)).publish(any());
 	}
 
 	@Test
-	public void send_should_set_name() {
+	void send_should_set_name() {
 		tracingPublisher.publish(producerMessage.build());
 
 		MutableSpan producerSpan = spans.get(0);
@@ -117,7 +117,7 @@ public class TracingPublisherTest extends PubSubTestBase {
 	}
 
 	@Test
-	public void send_should_tag_topic() {
+	void send_should_tag_topic() {
 		tracingPublisher.publish(producerMessage.build());
 
 		MutableSpan producerSpan = spans.get(0);
@@ -127,7 +127,7 @@ public class TracingPublisherTest extends PubSubTestBase {
 	}
 
 	@Test
-	public void send_shouldnt_tag_null_topic() {
+	void send_shouldnt_tag_null_topic() {
 		TracingPublisher tracingPublisher =
 				pubSubTracing.publisher(mockPublisher, null);
 		tracingPublisher.publish(producerMessage.build());

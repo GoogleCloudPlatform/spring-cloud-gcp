@@ -21,7 +21,7 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.BeanFactory;
 
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public final class TracePubSubBeanPostProcessorTest {
+final class TracePubSubBeanPostProcessorTest {
 
 	BeanFactory mockBeanFactory = mock(BeanFactory.class);
 
@@ -40,7 +40,7 @@ public final class TracePubSubBeanPostProcessorTest {
 	TracePubSubBeanPostProcessor tracePubSubBeanPostProcessor = new TracePubSubBeanPostProcessor(mockBeanFactory);
 
 	@Test
-	public void test_postProcessBeforeInitialization_PublisherFactory() {
+	void test_postProcessBeforeInitialization_PublisherFactory() {
 		PublisherFactory mockPublisherFactory = mock(PublisherFactory.class);
 
 		Object result = tracePubSubBeanPostProcessor.postProcessBeforeInitialization(mockPublisherFactory, "publisherFactory");
@@ -50,7 +50,7 @@ public final class TracePubSubBeanPostProcessorTest {
 	}
 
 	@Test
-	public void test_postProcessBeforeInitialization_SubscriberFactory() {
+	void test_postProcessBeforeInitialization_SubscriberFactory() {
 		SubscriberFactory mockSubscriberFactory = mock(SubscriberFactory.class);
 
 		Object result = tracePubSubBeanPostProcessor.postProcessBeforeInitialization(mockSubscriberFactory, "subscriberFactory");
@@ -59,7 +59,7 @@ public final class TracePubSubBeanPostProcessorTest {
 	}
 
 	@Test
-	public void test_postProcessBeforeInitialization_Other() {
+	void test_postProcessBeforeInitialization_Other() {
 		PubSubTemplate mockOther = mock(PubSubTemplate.class);
 
 		Object result = tracePubSubBeanPostProcessor.postProcessBeforeInitialization(mockOther, "other");
@@ -68,7 +68,7 @@ public final class TracePubSubBeanPostProcessorTest {
 	}
 
 	@Test
-	public void test_pubsubTracingCaching() {
+	void test_pubsubTracingCaching() {
 		when(mockBeanFactory.getBean(PubSubTracing.class)).thenReturn(mockPubSubTracing);
 		tracePubSubBeanPostProcessor.pubSubTracing();
 		tracePubSubBeanPostProcessor.pubSubTracing();

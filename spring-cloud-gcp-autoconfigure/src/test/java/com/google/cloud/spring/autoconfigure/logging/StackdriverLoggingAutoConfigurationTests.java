@@ -21,7 +21,7 @@ import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
 import com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import zipkin2.reporter.Reporter;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -41,7 +41,7 @@ import static org.mockito.Mockito.mock;
  * @author João André Martins
  * @author Chengyuan Zhao
  */
-public class StackdriverLoggingAutoConfigurationTests {
+class StackdriverLoggingAutoConfigurationTests {
 
 	private WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
 			.withUserConfiguration(TestConfiguration.class)
@@ -51,13 +51,13 @@ public class StackdriverLoggingAutoConfigurationTests {
 							GcpContextAutoConfiguration.class));
 
 	@Test
-	public void testDisabledConfiguration() {
+	void testDisabledConfiguration() {
 		this.contextRunner.withPropertyValues("spring.cloud.gcp.logging.enabled=false")
 				.run(context -> assertThat(context.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class)).isEmpty());
 	}
 
 	@Test
-	public void testNonWebAppConfiguration() {
+	void testNonWebAppConfiguration() {
 		new ApplicationContextRunner().withConfiguration(
 				AutoConfigurations.of(
 						StackdriverLoggingAutoConfiguration.class,
@@ -67,7 +67,7 @@ public class StackdriverLoggingAutoConfigurationTests {
 	}
 
 	@Test
-	public void testNonServletConfiguration() {
+	void testNonServletConfiguration() {
 		new ReactiveWebApplicationContextRunner().withConfiguration(
 				AutoConfigurations.of(
 						StackdriverLoggingAutoConfiguration.class,
@@ -77,13 +77,13 @@ public class StackdriverLoggingAutoConfigurationTests {
 	}
 
 	@Test
-	public void testRegularConfiguration() {
+	void testRegularConfiguration() {
 		this.contextRunner.run(context -> assertThat(context.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class))
 				.hasSize(1));
 	}
 
 	@Test
-	public void testWithSleuth() {
+	void testWithSleuth() {
 		this.contextRunner
 				.withConfiguration(AutoConfigurations.of(StackdriverTraceAutoConfiguration.class,
 						BraveAutoConfiguration.class))

@@ -18,7 +18,6 @@ package com.google.cloud.spring.autoconfigure.trace;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +28,7 @@ import brave.TracingCustomizer;
 import brave.handler.SpanHandler;
 import brave.http.HttpRequestParser;
 import brave.http.HttpTracingCustomizer;
-import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
-import com.google.auth.Credentials;
-import com.google.auth.RequestMetadataCallback;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.devtools.cloudtrace.v2.BatchWriteSpansRequest;
 import com.google.devtools.cloudtrace.v2.Span;
@@ -45,8 +41,7 @@ import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.junit.Test;
-import org.mockito.stubbing.Answer;
+import org.junit.jupiter.api.Test;
 import zipkin2.Call;
 import zipkin2.CheckResult;
 import zipkin2.codec.Encoding;
@@ -66,8 +61,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -84,7 +77,7 @@ import static org.mockito.Mockito.when;
  * @author Elena Felder
  * @author Vinesh Prasanna M
  */
-public class StackdriverTraceAutoConfigurationTests {
+class StackdriverTraceAutoConfigurationTests {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(
@@ -92,12 +85,12 @@ public class StackdriverTraceAutoConfigurationTests {
 					GcpContextAutoConfiguration.class,
 					BraveAutoConfiguration.class,
 					RefreshAutoConfiguration.class))
-			.withUserConfiguration(StackdriverTraceAutoConfigurationTests.MockConfiguration.class)
+			.withUserConfiguration(MockConfiguration.class)
 			.withPropertyValues("spring.cloud.gcp.project-id=proj",
 					"spring.sleuth.sampler.probability=1.0");
 
 	@Test
-	public void test() {
+	void test() {
 		this.contextRunner
 				.withBean(
 						StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
@@ -112,7 +105,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	}
 
 	@Test
-	public void testDefaultConfig() {
+	void testDefaultConfig() {
 		this.contextRunner
 				.withBean(
 						StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
@@ -137,7 +130,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	}
 
 	@Test
-	public void testServerResponseTimeout() {
+	void testServerResponseTimeout() {
 		this.contextRunner
 				.withPropertyValues("spring.cloud.gcp.trace.server-response-timeout-ms=1000")
 				.withBean(
@@ -156,7 +149,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	}
 
 	@Test
-	public void supportsMultipleReporters() {
+	void supportsMultipleReporters() {
 		this.contextRunner
 				.withConfiguration(AutoConfigurations.of(
 						BraveAutoConfiguration.class,
@@ -201,7 +194,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	}
 
 	@Test
-	public void testAsyncReporterHealthCheck() {
+	void testAsyncReporterHealthCheck() {
 		Sender senderMock = mock(Sender.class);
 		when(senderMock.check()).thenReturn(CheckResult.OK);
 		when(senderMock.encoding()).thenReturn(SpanBytesEncoder.PROTO3.encoding());
@@ -219,7 +212,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	}
 
 	@Test
-	public void defaultSchedulerUsedWhenNoneProvided() {
+	void defaultSchedulerUsedWhenNoneProvided() {
 		this.contextRunner
 				.withBean(
 						StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
@@ -232,7 +225,7 @@ public class StackdriverTraceAutoConfigurationTests {
 	}
 
 	@Test
-	public void customSchedulerUsedWhenAvailable() {
+	void customSchedulerUsedWhenAvailable() {
 		ThreadPoolTaskScheduler threadPoolTaskSchedulerMock = mock(ThreadPoolTaskScheduler.class);
 		ScheduledExecutorService scheduledExecutorServiceMock = mock(ScheduledExecutorService.class);
 		when(threadPoolTaskSchedulerMock.getScheduledExecutor()).thenReturn(scheduledExecutorServiceMock);
@@ -247,30 +240,6 @@ public class StackdriverTraceAutoConfigurationTests {
 					final ExecutorProvider executorProvider = context.getBean("traceExecutorProvider", ExecutorProvider.class);
 					assertThat(executorProvider.getExecutor()).isEqualTo(scheduledExecutorServiceMock);
 				});
-	}
-
-	/**
-	 * Spring config for tests.
-	 */
-	public static class MockConfiguration {
-
-		// We'll fake a successful call to GCP for the validation of our "credentials"
-		@Bean
-		public static CredentialsProvider googleCredentials() {
-			return () -> {
-				Credentials creds = mock(Credentials.class);
-				doAnswer((Answer<Void>)
-					invocationOnMock -> {
-						RequestMetadataCallback callback =
-								(RequestMetadataCallback) invocationOnMock.getArguments()[2];
-						callback.onSuccess(Collections.emptyMap());
-						return null;
-					})
-				.when(creds)
-				.getRequestMetadata(any(), any(), any());
-				return creds;
-			};
-		}
 	}
 
 	/**

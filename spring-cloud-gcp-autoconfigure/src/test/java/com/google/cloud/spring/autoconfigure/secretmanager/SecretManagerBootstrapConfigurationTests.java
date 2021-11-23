@@ -23,7 +23,7 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.protobuf.ByteString;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.WebApplicationType;
@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
  * @author Mike Eltsufin
  * @author Daniel Zou
  */
-public class SecretManagerBootstrapConfigurationTests {
+class SecretManagerBootstrapConfigurationTests {
 
 	private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
 
@@ -57,7 +57,7 @@ public class SecretManagerBootstrapConfigurationTests {
 					.web(WebApplicationType.NONE);
 
 	@Test
-	public void testGetProperty() {
+	void testGetProperty() {
 		try (ConfigurableApplicationContext c = applicationBuilder.run()) {
 			String secret = c.getEnvironment().getProperty("sm://my-secret");
 			assertThat(secret).isEqualTo("hello");
@@ -65,7 +65,7 @@ public class SecretManagerBootstrapConfigurationTests {
 	}
 
 	@Test
-	public void testGetProperty_otherVersion() {
+	void testGetProperty_otherVersion() {
 		try (ConfigurableApplicationContext c = applicationBuilder.run()) {
 			String secret = c.getEnvironment().getProperty(
 					"sm://my-secret/1");
@@ -74,7 +74,7 @@ public class SecretManagerBootstrapConfigurationTests {
 	}
 
 	@Test
-	public void testGetProperty_otherProject() {
+	void testGetProperty_otherProject() {
 		try (ConfigurableApplicationContext c = applicationBuilder.run()) {
 			String secret = c.getEnvironment().getProperty(
 					"sm://projects/other-project/secrets/other-secret/versions/3");
@@ -83,7 +83,7 @@ public class SecretManagerBootstrapConfigurationTests {
 	}
 
 	@Test
-	public void testValueAnnotation() {
+	void testValueAnnotation() {
 		try (ConfigurableApplicationContext c = applicationBuilder.run()) {
 			String secret = c.getBean("secret", String.class);
 			assertThat(secret).isEqualTo("hello");
@@ -94,7 +94,7 @@ public class SecretManagerBootstrapConfigurationTests {
 	}
 
 	@Test
-	public void configurationDisabled() {
+	void configurationDisabled() {
 		SpringApplicationBuilder disabledConfigurationApp =
 				new SpringApplicationBuilder(
 						TestBootstrapConfiguration.class, GcpSecretManagerBootstrapConfiguration.class)

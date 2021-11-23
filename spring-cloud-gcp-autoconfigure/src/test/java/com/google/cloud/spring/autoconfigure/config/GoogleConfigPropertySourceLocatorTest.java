@@ -23,8 +23,8 @@ import java.util.Map;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
@@ -45,7 +45,7 @@ import static org.mockito.Mockito.when;
  * @author João André Martins
  * @author Chengyuan Zhao
  */
-public class GoogleConfigPropertySourceLocatorTest {
+class GoogleConfigPropertySourceLocatorTest {
 
 	private GcpConfigProperties gcpConfigProperties;
 
@@ -57,8 +57,8 @@ public class GoogleConfigPropertySourceLocatorTest {
 
 	private CredentialsProvider credentialsProvider;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		this.gcpConfigProperties = mock(GcpConfigProperties.class);
 		when(this.gcpConfigProperties.getName()).thenReturn("test");
 		when(this.gcpConfigProperties.isEnabled()).thenReturn(true);
@@ -75,7 +75,7 @@ public class GoogleConfigPropertySourceLocatorTest {
 	}
 
 	@Test
-	public void locateReturnsMapPropertySource() throws Exception {
+	void locateReturnsMapPropertySource() throws Exception {
 		GoogleConfigEnvironment googleConfigEnvironment = mock(GoogleConfigEnvironment.class);
 		when(googleConfigEnvironment.getConfig()).thenReturn(this.expectedProperties);
 		this.googleConfigPropertySourceLocator = spy(new GoogleConfigPropertySourceLocator(
@@ -89,7 +89,7 @@ public class GoogleConfigPropertySourceLocatorTest {
 	}
 
 	@Test
-	public void locateReturnsMapPropertySource_disabled() throws Exception {
+	void locateReturnsMapPropertySource_disabled() throws Exception {
 		when(this.gcpConfigProperties.isEnabled()).thenReturn(false);
 		GoogleConfigEnvironment googleConfigEnvironment = mock(GoogleConfigEnvironment.class);
 		when(googleConfigEnvironment.getConfig()).thenReturn(this.expectedProperties);
@@ -102,7 +102,7 @@ public class GoogleConfigPropertySourceLocatorTest {
 	}
 
 	@Test
-	public void disabledPropertySourceReturnsNull() throws Exception {
+	void disabledPropertySourceReturnsNull() throws Exception {
 		when(this.gcpConfigProperties.isEnabled()).thenReturn(false);
 		this.googleConfigPropertySourceLocator = spy(new GoogleConfigPropertySourceLocator(
 				this.projectIdProvider, this.credentialsProvider, this.gcpConfigProperties));
@@ -111,7 +111,7 @@ public class GoogleConfigPropertySourceLocatorTest {
 	}
 
 	@Test
-	public void disabledPropertySourceAvoidChecks() throws IOException {
+	void disabledPropertySourceAvoidChecks() throws IOException {
 		when(this.gcpConfigProperties.isEnabled()).thenReturn(false);
 		this.googleConfigPropertySourceLocator =
 				spy(new GoogleConfigPropertySourceLocator(null, null, this.gcpConfigProperties));
@@ -120,7 +120,7 @@ public class GoogleConfigPropertySourceLocatorTest {
 	}
 
 	@Test
-	public void testProjectIdInConfigProperties() throws IOException {
+	void testProjectIdInConfigProperties() throws IOException {
 		when(this.gcpConfigProperties.getProjectId()).thenReturn("pariah");
 		this.googleConfigPropertySourceLocator = new GoogleConfigPropertySourceLocator(
 				this.projectIdProvider, this.credentialsProvider, this.gcpConfigProperties
