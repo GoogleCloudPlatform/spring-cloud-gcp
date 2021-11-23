@@ -32,8 +32,8 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.CacheControl;
@@ -66,17 +66,17 @@ import static org.mockito.Mockito.when;
  * @author Vinicius Carvalho
  * @since 1.2.2
  */
-public class FirebaseJwtTokenDecoderTests {
+class FirebaseJwtTokenDecoderTests {
 
 	private static RSAKeyGeneratorUtils keyGeneratorUtils;
 
-	@BeforeClass
-	public static void setup() throws Exception {
+	@BeforeAll
+	static void setup() throws Exception {
 		keyGeneratorUtils = new RSAKeyGeneratorUtils();
 	}
 
 	@Test
-	public void unsignedTokenTests() {
+	void unsignedTokenTests() {
 		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
 				.subject("test-subject")
 				.expirationTime(Date.from(Instant.now().plusSeconds(60)))
@@ -91,7 +91,7 @@ public class FirebaseJwtTokenDecoderTests {
 	}
 
 	@Test
-	public void signedTokenTests() throws Exception {
+	void signedTokenTests() throws Exception {
 		String signedJWT = signedJwt();
 		OAuth2TokenValidator validator = mock(OAuth2TokenValidator.class);
 		when(validator.validate(any())).thenReturn(OAuth2TokenValidatorResult.success());
@@ -100,7 +100,7 @@ public class FirebaseJwtTokenDecoderTests {
 	}
 
 	@Test
-	public void refreshFlowTests()  throws Exception {
+	void refreshFlowTests()  throws Exception {
 		String signedJWT = signedJwt();
 		OAuth2TokenValidator validator = mock(OAuth2TokenValidator.class);
 		when(validator.validate(any())).thenReturn(OAuth2TokenValidatorResult.success());
@@ -115,7 +115,7 @@ public class FirebaseJwtTokenDecoderTests {
 	}
 
 	@Test
-	public void keyNotFoundTests() throws Exception {
+	void keyNotFoundTests() throws Exception {
 		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("two").build();
 		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
 				.subject("test-subject")
@@ -132,7 +132,7 @@ public class FirebaseJwtTokenDecoderTests {
 	}
 
 	@Test
-	public void connectionErrorTests() throws Exception {
+	void connectionErrorTests() throws Exception {
 		String signedJWT = signedJwt();
 		OAuth2TokenValidator validator = mock(OAuth2TokenValidator.class);
 		when(validator.validate(any())).thenReturn(OAuth2TokenValidatorResult.success());
@@ -148,7 +148,7 @@ public class FirebaseJwtTokenDecoderTests {
 	}
 
 	@Test
-	public void invalidResponses_nullBody() throws Exception {
+	void invalidResponses_nullBody() throws Exception {
 		String signedJWT = signedJwt();
 
 		Map<String, String> payload = null;
@@ -163,7 +163,7 @@ public class FirebaseJwtTokenDecoderTests {
 	}
 
 	@Test
-	public void invalidResponses_emptyBody() throws Exception {
+	void invalidResponses_emptyBody() throws Exception {
 		String signedJWT = signedJwt();
 
 		Map<String, String> payload = new HashMap<>();
@@ -178,7 +178,7 @@ public class FirebaseJwtTokenDecoderTests {
 	}
 
 	@Test
-	public void expiredTokenTests() throws Exception {
+	void expiredTokenTests() throws Exception {
 		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("one").build();
 		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
 				.subject("test-subject")
@@ -196,7 +196,7 @@ public class FirebaseJwtTokenDecoderTests {
 	}
 
 	@Test
-	public void invalidIssuerTests() throws Exception {
+	void invalidIssuerTests() throws Exception {
 		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("one").build();
 		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
 				.subject("test-subject")
@@ -219,7 +219,7 @@ public class FirebaseJwtTokenDecoderTests {
 	}
 
 	@Test
-	public void validTokenTests() throws Exception {
+	void validTokenTests() throws Exception {
 		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("one").build();
 		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
 				.subject("test-subject")
@@ -242,7 +242,7 @@ public class FirebaseJwtTokenDecoderTests {
 	}
 
 	@Test
-	public void invalidAudienceTests() throws Exception {
+	void invalidAudienceTests() throws Exception {
 		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("one").build();
 		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
 				.subject("test-subject")
@@ -266,7 +266,7 @@ public class FirebaseJwtTokenDecoderTests {
 	}
 
 	@Test
-	public void invalidIssuedAt() throws Exception {
+	void invalidIssuedAt() throws Exception {
 		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("one").build();
 		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
 				.subject("test-subject")
@@ -290,7 +290,7 @@ public class FirebaseJwtTokenDecoderTests {
 	}
 
 	@Test
-	public void invalidSubject() throws Exception {
+	void invalidSubject() throws Exception {
 		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("one").build();
 		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
 				.audience("123456")
