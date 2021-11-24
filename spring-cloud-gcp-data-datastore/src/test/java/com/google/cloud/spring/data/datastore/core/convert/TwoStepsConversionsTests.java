@@ -104,7 +104,7 @@ class TwoStepsConversionsTests {
 	}
 
 	@Test
-	public void convertingArrayNotSupported() {
+	void convertingArrayNotSupported() {
 		String[] arr = new String[] { "a", "b", "c"};
 
 		assertThatThrownBy(() -> {
