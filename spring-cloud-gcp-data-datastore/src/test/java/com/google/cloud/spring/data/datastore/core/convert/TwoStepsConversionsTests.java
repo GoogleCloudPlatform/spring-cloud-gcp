@@ -103,4 +103,13 @@ class TwoStepsConversionsTests {
 		assertThat(result).isEqualTo("three");
 	}
 
+	@Test
+	void convertingArrayNotSupported() {
+		String[] arr = new String[] { "a", "b", "c"};
+
+		assertThatThrownBy(() -> {
+					this.twoStepsConversions.<String>convertOnRead(arr, List.class, String.class);
+				}).isInstanceOf(IllegalArgumentException.class)
+				.hasMessageContaining("Value passed to convertOnRead expected to be Iterable");
+	}
 }
