@@ -18,7 +18,7 @@ package com.google.cloud.spring.core;
 
 import java.util.regex.Pattern;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Mike Eltsufin
  * @author Chengyuan Zhao
  */
-public class UserAgentHeaderProviderTests {
+class UserAgentHeaderProviderTests {
 
 	static final String USER_AGENT_HEADER_NAME = "user-agent";
 
@@ -37,7 +37,7 @@ public class UserAgentHeaderProviderTests {
 	 * This test is check if the generated user-agent header is in the right format.
 	 */
 	@Test
-	public void testGetHeaders() {
+	void testGetHeaders() {
 		UserAgentHeaderProvider subject = new UserAgentHeaderProvider(this.getClass());
 
 		String versionRegex = ".*"; // no version verification because we don't have JAR MANIFEST

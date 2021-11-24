@@ -20,7 +20,7 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreAutoConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.mock;
  *
  * @since 1.2
  */
-public class DatastoreHealthIndicatorAutoConfigurationTests {
+class DatastoreHealthIndicatorAutoConfigurationTests {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(GcpDatastoreAutoConfiguration.class,
@@ -52,7 +52,7 @@ public class DatastoreHealthIndicatorAutoConfigurationTests {
 					"management.health.datastore.enabled=true");
 
 	@Test
-	public void testDatastoreHealthIndicatorCreated() {
+	void testDatastoreHealthIndicatorCreated() {
 		this.contextRunner.run(context -> assertThat(context.getBean(DatastoreHealthIndicator.class)).isNotNull());
 	}
 

@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.zaxxer.hikari.HikariDataSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Øystein Urdahl Hardeng
  * @author Mike Eltsufin
  */
-public class CloudSqlEnvironmentPostProcessorTests {
+class CloudSqlEnvironmentPostProcessorTests {
 	private CloudSqlEnvironmentPostProcessor initializer = new CloudSqlEnvironmentPostProcessor();
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
@@ -55,7 +55,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 					DataSourceAutoConfiguration.class));
 
 	@Test
-	public void testCloudSqlDataSource() {
+	void testCloudSqlDataSource() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=tubular-bells:singapore:test-instance",
 				"spring.datasource.password=")
@@ -73,7 +73,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testCloudSqlSpringDataSourceUrlPropertyOverride() {
+	void testCloudSqlSpringDataSourceUrlPropertyOverride() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=tubular-bells:singapore:test-instance",
 				"spring.datasource.password=",
@@ -97,7 +97,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testCloudSqlDataSourceWithIgnoredProvidedUrl() {
+	void testCloudSqlDataSourceWithIgnoredProvidedUrl() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=tubular-bells:singapore:test-instance",
 				"spring.datasource.password=",
@@ -117,7 +117,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testCloudSqlAppEngineDataSourceDefaultUserNameMySqlTest() {
+	void testCloudSqlAppEngineDataSourceDefaultUserNameMySqlTest() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.project-id=im-not-used-for-anything",
 				"spring.cloud.gcp.sql.instance-connection-name=tubular-bells:australia:test-instance",
@@ -141,7 +141,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testUserAndPassword() {
+	void testUserAndPassword() {
 		this.contextRunner.withPropertyValues("spring.datasource.username=watchmaker",
 				"spring.datasource.password=pass",
 				"spring.cloud.gcp.sql.instance-connection-name=proj:reg:test-instance")
@@ -159,7 +159,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testUserSpecifiedDriverOverride() {
+	void testUserSpecifiedDriverOverride() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=proj:reg:test-instance",
 				"spring.datasource.driver-class-name=org.postgresql.Driver")
@@ -175,7 +175,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testDataSourceProperties() {
+	void testDataSourceProperties() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=proj:reg:test-instance",
 				"spring.datasource.hikari.connectionTestQuery=select 1",
@@ -194,7 +194,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testInstanceConnectionName() {
+	void testInstanceConnectionName() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=world:asia:japan")
 				.run(context -> {
@@ -207,7 +207,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testPostgres() {
+	void testPostgres() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=tubular-bells:singapore:test-instance")
 				.withClassLoader(
@@ -225,7 +225,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testNoJdbc() {
+	void testNoJdbc() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=tubular-bells:singapore:test-instance")
 				.withClassLoader(
@@ -238,7 +238,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testIpTypes() {
+	void testIpTypes() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=world:asia:japan",
 				"spring.cloud.gcp.sql.ip-types=PRIVATE")
@@ -251,7 +251,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testIamAuth() {
+	void testIamAuth() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=world:asia:japan",
 				"spring.cloud.gcp.sql.enableIamAuth=true")
@@ -264,7 +264,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testSecretManagerPlaceholdersNotResolved() {
+	void testSecretManagerPlaceholdersNotResolved() {
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.sql.instance-connection-name=world:asia:japan",
 				"spring.cloud.gcp.sql.database-name=${sm://my-db}")
@@ -279,7 +279,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testEnvPlaceholdersResolved() {
+	void testEnvPlaceholdersResolved() {
 		this.contextRunner.withPropertyValues(
 				"DB_NAME=mydb",
 				"spring.cloud.gcp.sql.instance-connection-name=world:asia:japan",
@@ -295,7 +295,7 @@ public class CloudSqlEnvironmentPostProcessorTests {
 	}
 
 	@Test
-	public void testSkipOnBootstrap() {
+	void testSkipOnBootstrap() {
 		new ApplicationContextRunner()
 				.withPropertyValues("spring.cloud.gcp.sql.databaseName=test-database")
 				.withInitializer(new ApplicationContextInitializer<ConfigurableApplicationContext>() {

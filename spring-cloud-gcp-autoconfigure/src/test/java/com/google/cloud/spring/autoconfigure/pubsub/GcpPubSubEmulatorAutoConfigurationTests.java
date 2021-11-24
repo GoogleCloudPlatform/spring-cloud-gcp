@@ -28,7 +28,7 @@ import com.google.cloud.pubsub.v1.TopicAdminSettings;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import org.assertj.core.data.Offset;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.threeten.bp.Duration;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -45,7 +45,7 @@ import static org.mockito.Mockito.mock;
  * @author João André Martins
  * @author Chengyuan Zhao
  */
-public class GcpPubSubEmulatorAutoConfigurationTests {
+class GcpPubSubEmulatorAutoConfigurationTests {
 
 	private static final Offset<Double> DELTA = Offset.offset(0.0001);
 
@@ -89,7 +89,7 @@ public class GcpPubSubEmulatorAutoConfigurationTests {
 			.withUserConfiguration(TestConfiguration.class);
 
 	@Test
-	public void testEmulatorConfig() {
+	void testEmulatorConfig() {
 		this.contextRunner.run(context -> {
 			CredentialsProvider defaultCredentialsProvider = context.getBean(CredentialsProvider.class);
 			assertThat(defaultCredentialsProvider).isNotInstanceOf(NoCredentialsProvider.class);
@@ -104,7 +104,7 @@ public class GcpPubSubEmulatorAutoConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberPullConfig() {
+	void testSubscriberPullConfig() {
 		this.contextRunner.run(context -> {
 			GcpPubSubProperties gcpPubSubProperties = context
 					.getBean(GcpPubSubProperties.class);
@@ -117,7 +117,7 @@ public class GcpPubSubEmulatorAutoConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberRetrySettings() {
+	void testSubscriberRetrySettings() {
 		this.contextRunner
 				.run(context -> {
 					GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
@@ -134,7 +134,7 @@ public class GcpPubSubEmulatorAutoConfigurationTests {
 	}
 
 	@Test
-	public void testPublisherRetrySettings() {
+	void testPublisherRetrySettings() {
 		this.contextRunner.run(context -> {
 			RetrySettings settings = context.getBean("publisherRetrySettings",
 					RetrySettings.class);
@@ -151,7 +151,7 @@ public class GcpPubSubEmulatorAutoConfigurationTests {
 	}
 
 	@Test
-	public void testSubscriberFlowControlSettings() {
+	void testSubscriberFlowControlSettings() {
 		this.contextRunner
 				.run(context -> {
 					GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
@@ -163,7 +163,7 @@ public class GcpPubSubEmulatorAutoConfigurationTests {
 	}
 
 	@Test
-	public void testPublisherBatchingSettings() {
+	void testPublisherBatchingSettings() {
 		this.contextRunner.run(context -> {
 			BatchingSettings settings = context.getBean("publisherBatchSettings",
 					BatchingSettings.class);

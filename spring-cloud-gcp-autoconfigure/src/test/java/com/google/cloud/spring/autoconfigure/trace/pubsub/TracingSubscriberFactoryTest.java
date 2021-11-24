@@ -21,7 +21,7 @@ import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.pubsub.v1.PullRequest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class TracingSubscriberFactoryTest {
+class TracingSubscriberFactoryTest {
 
 	static final String TEST_SUBSCRIPTION = "testSubscription";
 
@@ -42,7 +42,7 @@ public class TracingSubscriberFactoryTest {
 	TracingSubscriberFactory tracingSubscriberFactory = new TracingSubscriberFactory(mockPubSubTracing, mockDelegate);
 
 	@Test
-	public void test_getProjectId() {
+	void test_getProjectId() {
 		when(mockDelegate.getProjectId()).thenReturn("testProjectId");
 
 		assertThat(tracingSubscriberFactory.getProjectId()).isEqualTo("testProjectId");
@@ -50,7 +50,7 @@ public class TracingSubscriberFactoryTest {
 	}
 
 	@Test
-	public void test_createSubscriber() {
+	void test_createSubscriber() {
 		Subscriber mockSubscriber = mock(Subscriber.class);
 		MessageReceiver mockMessageReceiver = mock(MessageReceiver.class);
 		TracingMessageReceiver mockWrappedMessageReceiver = mock(TracingMessageReceiver.class);
@@ -63,7 +63,7 @@ public class TracingSubscriberFactoryTest {
 	}
 
 	@Test
-	public void test_createPullRequest() {
+	void test_createPullRequest() {
 		PullRequest mockPullRequest = mock(PullRequest.class);
 		when(mockDelegate.createPullRequest(TEST_SUBSCRIPTION, 10, true)).thenReturn(mockPullRequest);
 
@@ -72,7 +72,7 @@ public class TracingSubscriberFactoryTest {
 	}
 
 	@Test
-	public void test_createSubscriberStub() {
+	void test_createSubscriberStub() {
 		SubscriberStub mockSubscriberStub = mock(SubscriberStub.class);
 		TracingSubscriberStub mockTracingSubscriberStub = mock(TracingSubscriberStub.class);
 		when(mockDelegate.createSubscriberStub(any())).thenReturn(mockSubscriberStub);

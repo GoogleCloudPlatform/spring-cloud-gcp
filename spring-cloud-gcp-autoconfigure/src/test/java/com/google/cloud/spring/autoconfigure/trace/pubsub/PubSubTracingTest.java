@@ -19,13 +19,13 @@ package com.google.cloud.spring.autoconfigure.trace.pubsub;
 import brave.Span;
 import brave.propagation.B3SingleFormat;
 import brave.propagation.CurrentTraceContext.Scope;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PubSubTracingTest extends PubSubTestBase {
+class PubSubTracingTest extends PubSubTestBase {
 	@Test
-	public void nextSpan_prefers_b3_header() {
+	void nextSpan_prefers_b3_header() {
 		consumerMessage.putAttributes("b3", B3SingleFormat.writeB3SingleFormat(incoming));
 
 		Span child;
@@ -39,7 +39,7 @@ public class PubSubTracingTest extends PubSubTestBase {
 	}
 
 	@Test
-	public void nextSpan_uses_current_context() {
+	void nextSpan_uses_current_context() {
 		Span child;
 		try (Scope ws = tracing.currentTraceContext().newScope(parent)) {
 			child = pubSubTracing.nextSpan(consumerMessage);
@@ -51,12 +51,12 @@ public class PubSubTracingTest extends PubSubTestBase {
 	}
 
 	@Test
-	public void nextSpan_should_create_span_if_no_headers() {
+	void nextSpan_should_create_span_if_no_headers() {
 		assertThat(pubSubTracing.nextSpan(consumerMessage)).isNotNull();
 	}
 
 	@Test
-	public void nextSpan_should_create_span_with_baggage() {
+	void nextSpan_should_create_span_with_baggage() {
 		addB3MultiHeaders(parent, consumerMessage);
 		consumerMessage.putAttributes(BAGGAGE_FIELD_KEY, "user1");
 
@@ -65,7 +65,7 @@ public class PubSubTracingTest extends PubSubTestBase {
 	}
 
 	@Test
-	public void nextSpan_should_clear_propagation_headers() {
+	void nextSpan_should_clear_propagation_headers() {
 		addB3MultiHeaders(parent, consumerMessage);
 
 		pubSubTracing.nextSpan(consumerMessage);
@@ -73,7 +73,7 @@ public class PubSubTracingTest extends PubSubTestBase {
 	}
 
 	@Test
-	public void nextSpan_should_retain_baggage_headers() {
+	void nextSpan_should_retain_baggage_headers() {
 		consumerMessage.putAttributes(BAGGAGE_FIELD_KEY, "some-baggage");
 
 		pubSubTracing.nextSpan(consumerMessage);
@@ -81,7 +81,7 @@ public class PubSubTracingTest extends PubSubTestBase {
 	}
 
 	@Test
-	public void nextSpan_should_not_clear_other_headers() {
+	void nextSpan_should_not_clear_other_headers() {
 		consumerMessage.putAttributes("foo", "bar");
 
 		pubSubTracing.nextSpan(consumerMessage);

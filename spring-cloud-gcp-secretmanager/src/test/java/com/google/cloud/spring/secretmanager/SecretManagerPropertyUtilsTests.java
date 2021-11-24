@@ -18,17 +18,17 @@ package com.google.cloud.spring.secretmanager;
 
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class SecretManagerPropertyUtilsTests {
+class SecretManagerPropertyUtilsTests {
 
 	private static final GcpProjectIdProvider DEFAULT_PROJECT_ID_PROVIDER = () -> "defaultProject";
 
 	@Test
-	public void testNonSecret() {
+	void testNonSecret() {
 		String property = "spring.cloud.datasource";
 		SecretVersionName secretIdentifier =
 				SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER);
@@ -37,7 +37,7 @@ public class SecretManagerPropertyUtilsTests {
 	}
 
 	@Test
-	public void testInvalidSecretFormat_missingSecretId() {
+	void testInvalidSecretFormat_missingSecretId() {
 		String property = "sm://";
 
 		assertThatThrownBy(() ->
@@ -47,7 +47,7 @@ public class SecretManagerPropertyUtilsTests {
 	}
 
 	@Test
-	public void testShortProperty_secretId() {
+	void testShortProperty_secretId() {
 		String property = "sm://the-secret";
 		SecretVersionName secretIdentifier =
 				SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER);
@@ -58,7 +58,7 @@ public class SecretManagerPropertyUtilsTests {
 	}
 
 	@Test
-	public void testShortProperty_projectSecretId() {
+	void testShortProperty_projectSecretId() {
 		String property = "sm://the-secret/the-version";
 		SecretVersionName secretIdentifier =
 				SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER);
@@ -69,7 +69,7 @@ public class SecretManagerPropertyUtilsTests {
 	}
 
 	@Test
-	public void testShortProperty_projectSecretIdVersion() {
+	void testShortProperty_projectSecretIdVersion() {
 		String property = "sm://my-project/the-secret/2";
 		SecretVersionName secretIdentifier =
 				SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER);
@@ -80,7 +80,7 @@ public class SecretManagerPropertyUtilsTests {
 	}
 
 	@Test
-	public void testLongProperty_projectSecret() {
+	void testLongProperty_projectSecret() {
 		String property = "sm://projects/my-project/secrets/the-secret";
 		SecretVersionName secretIdentifier =
 				SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER);
@@ -91,7 +91,7 @@ public class SecretManagerPropertyUtilsTests {
 	}
 
 	@Test
-	public void testLongProperty_projectSecretVersion() {
+	void testLongProperty_projectSecretVersion() {
 		String property = "sm://projects/my-project/secrets/the-secret/versions/3";
 		SecretVersionName secretIdentifier =
 				SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER);
