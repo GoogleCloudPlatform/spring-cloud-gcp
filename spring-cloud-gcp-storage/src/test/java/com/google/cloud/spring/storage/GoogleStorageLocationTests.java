@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.storage;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -24,31 +24,31 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 /**
  * @author Daniel Zou
  */
-public class GoogleStorageLocationTests {
+class GoogleStorageLocationTests {
 
 	@Test
-	public void testBadInputsToConstructor() {
+	void testBadInputsToConstructor() {
 		assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new GoogleStorageLocation(null));
 		assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new GoogleStorageLocation(""));
 		assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new GoogleStorageLocation(" "));
 	}
 
 	@Test
-	public void testCorrectLocationForBucket() {
+	void testCorrectLocationForBucket() {
 		GoogleStorageLocation location = GoogleStorageLocation.forBucket("bucketName");
 		assertThat(location.uriString()).isEqualTo("gs://bucketName/");
 		assertThat(location.isBucket()).isTrue();
 	}
 
 	@Test
-	public void testCorrectLocationForFolder() {
+	void testCorrectLocationForFolder() {
 		GoogleStorageLocation location = GoogleStorageLocation.forFolder("bucketName", "folderName");
 		assertThat(location.uriString()).isEqualTo("gs://bucketName/folderName/");
 		assertThat(location.isFolder()).isTrue();
 	}
 
 	@Test
-	public void testCorrectLocationForFile() {
+	void testCorrectLocationForFile() {
 		GoogleStorageLocation location = GoogleStorageLocation.forFile("bucketName", "fileName");
 		assertThat(location.uriString()).isEqualTo("gs://bucketName/fileName");
 		assertThat(location.isFile()).isTrue();
