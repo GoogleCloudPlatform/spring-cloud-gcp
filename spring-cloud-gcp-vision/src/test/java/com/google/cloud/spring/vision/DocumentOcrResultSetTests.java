@@ -21,17 +21,17 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.cloud.storage.Blob;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-public class DocumentOcrResultSetTests {
+class DocumentOcrResultSetTests {
 
 	@Test
-	public void testValidateBlobNames() {
+	void testValidateBlobNames() {
 		Blob blob = Mockito.mock(Blob.class);
 		when(blob.getName()).thenReturn("output.json");
 
@@ -42,7 +42,7 @@ public class DocumentOcrResultSetTests {
 	}
 
 	@Test
-	public void testBlobRangeChecks() {
+	void testBlobRangeChecks() {
 		Blob blob1 = Mockito.mock(Blob.class);
 		when(blob1.getName()).thenReturn("blob-output-1-to-3.json");
 
