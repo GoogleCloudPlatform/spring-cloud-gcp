@@ -22,17 +22,17 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GoogleStorageResourceTest {
+class GoogleStorageResourceTest {
 
 	@Test
-	public void testConstructorValidation() {
+	void testConstructorValidation() {
 		assertThatExceptionOfType(IllegalArgumentException.class)
 				.isThrownBy(() -> new GoogleStorageResource(null, "gs://foo", false))
 				.withMessageContaining("Storage object can not be null");
@@ -50,7 +50,7 @@ public class GoogleStorageResourceTest {
 	}
 
 	@Test
-	public void getURL_Bucket() throws IOException {
+	void getURL_Bucket() throws IOException {
 		Storage mockStorage = mock(Storage.class);
 		Bucket mockBucket = mock(Bucket.class);
 
@@ -62,7 +62,7 @@ public class GoogleStorageResourceTest {
 	}
 
 	@Test
-	public void getURL_Object() throws IOException {
+	void getURL_Object() throws IOException {
 		Storage mockStorage = mock(Storage.class);
 		Blob mockBlob = mock(Blob.class);
 

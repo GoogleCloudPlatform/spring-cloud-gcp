@@ -23,16 +23,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.google.cloud.storage.BlobInfo;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GcsDiscardRecentModifiedFileListFilterTest {
+class GcsDiscardRecentModifiedFileListFilterTest {
 
 	@Test
-	public void testFileLessThanMinimumAgeIsFilteredOut() {
+	void testFileLessThanMinimumAgeIsFilteredOut() {
 		GcsDiscardRecentModifiedFileListFilter filter = new GcsDiscardRecentModifiedFileListFilter(Duration.ofSeconds(60));
 		AtomicBoolean callbackTriggered = new AtomicBoolean(false);
 		filter.addDiscardCallback(blobInfo -> callbackTriggered.set(true));
@@ -48,7 +48,7 @@ public class GcsDiscardRecentModifiedFileListFilterTest {
 	}
 
 	@Test
-	public void testFileOlderThanMinimumAgeIsReturned() {
+	void testFileOlderThanMinimumAgeIsReturned() {
 		GcsDiscardRecentModifiedFileListFilter filter = new GcsDiscardRecentModifiedFileListFilter(Duration.ofSeconds(60));
 		filter.addDiscardCallback(blobInfo -> Assert.fail("Not expected"));
 
