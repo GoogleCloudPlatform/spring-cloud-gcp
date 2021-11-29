@@ -18,7 +18,7 @@ package com.google.cloud.spring.vision;
 
 import com.google.cloud.storage.Blob;
 import com.google.protobuf.InvalidProtocolBufferException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,13 +26,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class OcrPageRangeTests {
+class OcrPageRangeTests {
 
 	private static final byte[] SINGLE_JSON_OUTPUT_PAGE = "{'responses':[{'fullTextAnnotation': {'text': 'hello_world'}}]}"
 			.getBytes();
 
 	@Test
-	public void testParseCorrectPageRange() {
+	void testParseCorrectPageRange() {
 		Blob blob = Mockito.mock(Blob.class);
 		when(blob.getName()).thenReturn("blob-output-8-to-12.json");
 		when(blob.getContent()).thenReturn(SINGLE_JSON_OUTPUT_PAGE);
@@ -43,7 +43,7 @@ public class OcrPageRangeTests {
 	}
 
 	@Test
-	public void testBlobCaching() throws InvalidProtocolBufferException {
+	void testBlobCaching() throws InvalidProtocolBufferException {
 		Blob blob = Mockito.mock(Blob.class);
 		when(blob.getName()).thenReturn("blob-output-1-to-1.json");
 		when(blob.getContent()).thenReturn(SINGLE_JSON_OUTPUT_PAGE);
