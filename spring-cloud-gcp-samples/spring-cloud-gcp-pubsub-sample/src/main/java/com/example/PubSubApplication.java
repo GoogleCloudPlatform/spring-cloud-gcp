@@ -27,8 +27,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PubSubApplication {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		SpringApplication.run(PubSubApplication.class, args);
+		System.in.read();
 	}
 
 }

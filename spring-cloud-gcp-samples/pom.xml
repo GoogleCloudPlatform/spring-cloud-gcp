@@ -210,6 +210,7 @@
 							<violationSeverity>warning</violationSeverity>
 							<!-- exclude generated Spring AOT classes -->
 							<excludes>org/springframework/**/*.*</excludes>
+							<skip>${checkstyle.skip}</skip>
 						</configuration>
 						<goals>
 							<goal>check</goal>

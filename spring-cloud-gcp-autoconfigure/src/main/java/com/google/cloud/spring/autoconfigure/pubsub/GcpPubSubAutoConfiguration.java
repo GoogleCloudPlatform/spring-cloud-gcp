@@ -487,6 +487,7 @@ public class GcpPubSubAutoConfiguration {
 	private ThreadPoolTaskScheduler createAndRegisterSchedulerBean(Integer executorThreads, String threadName,
 			String beanName,
 			GenericApplicationContext context) {
+		System.out.println("Creating scheduler " + beanName);
 		ThreadPoolTaskScheduler scheduler = createThreadPoolTaskScheduler(executorThreads, threadName);
 		context.registerBeanDefinition(beanName,
 				BeanDefinitionBuilder.genericBeanDefinition(ThreadPoolTaskScheduler.class, () -> scheduler)

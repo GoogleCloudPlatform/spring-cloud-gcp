@@ -489,9 +489,11 @@ public class PubSubSubscriberTemplate
 	}
 
 	private SubscriberStub getSubscriberStub(String subscription) {
+		System.out.println("*** Asked for a subscriber stub for " + subscription);
 		if (subscriptionNameToStubMap.containsKey(subscription)) {
 			return subscriptionNameToStubMap.get(subscription);
 		}
+		System.out.println("*** Did not find a subscriber stub for " + subscription + "! Creating new one!");
 		return subscriptionNameToStubMap.computeIfAbsent(subscription, this.subscriberFactory::createSubscriberStub);
 	}
 

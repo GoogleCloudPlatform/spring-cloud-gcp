@@ -25,9 +25,13 @@ import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
+import io.grpc.StatusRuntimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +54,10 @@ public class WebController {
 	private final PubSubAdmin pubSubAdmin;
 
 	private final ArrayList<Subscriber> allSubscribers;
+
+	@Autowired
+	private ConfigurableApplicationContext ctx;
+
 
 	public WebController(PubSubTemplate pubSubTemplate, PubSubAdmin pubSubAdmin) {
 		this.pubSubTemplate = pubSubTemplate;
@@ -158,6 +166,29 @@ public class WebController {
 
 		return buildStatusView("Subscription deleted successfully.");
 	}
+
+	@GetMapping("shutdown")
+	public String shutdownContext() {
+		System.out.println("My context: " + this.ctx);
+		this.ctx.close();
+		System.gc();
+		return "shutdown";
+	}
+
+	@GetMapping("poke200subscriptions")
+	public String poke200subscriptions() {
+		// well, 199 subscriptions because that's all that's set up in config
+		for (int i = 1; i < 200; i++) {
+			try {
+				this.pubSubTemplate.pull("customsubscription" + i, 3, true);
+			} catch (Exception e) {
+				System.out.println("Did not find subscription " + i);
+			}
+		}
+
+		return "poked";
+	}
+
 
 	private RedirectView buildStatusView(String statusMessage) {
 		RedirectView view = new RedirectView("/");

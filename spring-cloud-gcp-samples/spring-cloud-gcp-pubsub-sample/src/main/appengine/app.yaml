@@ -1,0 +1,7 @@
+runtime: java11
+instance_class: B4
+manual_scaling:
+  instances: 1
+
+env_variables:
+  JAVA_TOOL_OPTIONS: "-XX:MaxRAM=512m -XX:ActiveProcessorCount=2 -Xmx512m -agentpath:/opt/cprof/profiler_java_agent.so=-logtostderr,-cprof_enable_heap_sampling=true"
