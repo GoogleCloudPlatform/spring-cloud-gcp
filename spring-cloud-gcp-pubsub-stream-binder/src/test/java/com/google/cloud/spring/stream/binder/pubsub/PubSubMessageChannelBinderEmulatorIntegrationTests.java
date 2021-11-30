@@ -18,9 +18,10 @@ package com.google.cloud.spring.stream.binder.pubsub;
 
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.cloud.stream.binder.AbstractBinderTests;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
@@ -36,19 +37,21 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Elena Felder
  * @author Artem Bilan
  */
-public class PubSubMessageChannelBinderEmulatorIntegrationTests extends
+@ExtendWith(PubSubEmulator.class)
+class PubSubMessageChannelBinderEmulatorIntegrationTests extends
 		AbstractBinderTests<PubSubTestBinder, ExtendedConsumerProperties<PubSubConsumerProperties>,
 				ExtendedProducerProperties<PubSubProducerProperties>> {
 
-	/**
-	 * The emulator instance, shared across tests.
-	 */
-	@ClassRule
-	public static PubSubEmulator emulator = new PubSubEmulator();
+	private String hostPort;
+
+	// Constructor gets PubSubEmulator port number from ParameterResolver
+	PubSubMessageChannelBinderEmulatorIntegrationTests(String pubSubEmulatorPort) {
+		this.hostPort = pubSubEmulatorPort;
+	}
 
 	@Override
 	protected PubSubTestBinder getBinder() {
-		return new PubSubTestBinder(emulator.getEmulatorHostPort());
+		return new PubSubTestBinder(this.hostPort);
 	}
 
 	@Override
@@ -57,7 +60,8 @@ public class PubSubMessageChannelBinderEmulatorIntegrationTests extends
 	}
 
 	@Override
-	protected ExtendedProducerProperties<PubSubProducerProperties> createProducerProperties() {
+	protected ExtendedProducerProperties<PubSubProducerProperties> createProducerProperties(TestInfo testInfo) {
+		// TODO: signature change, need to validate test behavior.
 		return new ExtendedProducerProperties<>(new PubSubProducerProperties());
 	}
 
@@ -67,18 +71,19 @@ public class PubSubMessageChannelBinderEmulatorIntegrationTests extends
 	}
 
 	@Override
-	public void testClean() {
+	public void testClean(TestInfo testInfo) throws Exception {
+		// TODO: signature change, need to validate test behavior.
 		// Do nothing. Original test tests for Lifecycle logic that we don't need.
 
 		// Dummy assertion to appease SonarCloud.
-		assertThat(emulator.getEmulatorHostPort()).isNotNull();
+		assertThat(this.hostPort).isNotNull();
 	}
 
 	@Test
-	@Ignore("Looks like there is no Kryo support in SCSt")
-	public void testSendPojoReceivePojoKryoWithStreamListener() {
+	@Disabled("Looks like there is no Kryo support in SCSt")
+	void testSendPojoReceivePojoKryoWithStreamListener() {
 		// Dummy assertion to appease SonarCloud.
-		assertThat(emulator.getEmulatorHostPort()).isNotNull();
+		assertThat(this.hostPort).isNotNull();
 	}
 
 
