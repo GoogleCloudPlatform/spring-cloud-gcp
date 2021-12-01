@@ -336,7 +336,7 @@ public class SpannerCompositeKeyProperty implements SpannerPersistentProperty {
 
 	@Override
 	public Iterable<? extends TypeInformation<?>> getPersistentEntityTypeInformation() {
-		throw new UnsupportedOperationException();
+		return Collections.emptySet();
 	}
 
 	/**
