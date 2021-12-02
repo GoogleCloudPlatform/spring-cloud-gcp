@@ -212,7 +212,7 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		return pageable instanceof DatastorePageable ? ((DatastorePageable) pageable).getTotalCount() : countCall.getAsLong();
 	}
 
-	// TODO: Restore @Override when not supporting Spring Boot 2.4 anymore
+	@Override
 	public void deleteAllById(Iterable<? extends I> iterable) {
 		this.datastoreTemplate.deleteAllById(iterable, entityType);
 	}
