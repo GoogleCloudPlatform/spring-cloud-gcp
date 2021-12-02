@@ -61,7 +61,6 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests extends
 
 	@Override
 	protected ExtendedProducerProperties<PubSubProducerProperties> createProducerProperties(TestInfo testInfo) {
-		// TODO: signature change, need to validate test behavior.
 		return new ExtendedProducerProperties<>(new PubSubProducerProperties());
 	}
 
@@ -72,7 +71,6 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests extends
 
 	@Override
 	public void testClean(TestInfo testInfo) throws Exception {
-		// TODO: signature change, need to validate test behavior.
 		// Do nothing. Original test tests for Lifecycle logic that we don't need.
 
 		// Dummy assertion to appease SonarCloud.
