@@ -16,7 +16,6 @@ pushd $dir/../
 PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
 
 # Install docuploader package
-python3 -m pip install --upgrade six
 python3 -m pip install gcp-docuploader
 
 # Build the javadocs
