@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2021-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@
 
 package com.example;
 
+import io.r2dbc.spi.ConnectionFactory;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer;
+import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
 
-/**
- * Sample application for MySQL.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- */
 @SpringBootApplication
 public class SqlApplication {
 
@@ -32,5 +32,13 @@ public class SqlApplication {
 		SpringApplication.run(SqlApplication.class, args);
 	}
 
-
+	@Bean
+	ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
+		ConnectionFactoryInitializer initializer = new ConnectionFactoryInitializer();
+		initializer.setConnectionFactory(connectionFactory);
+		initializer.setDatabasePopulator(
+				new ResourceDatabasePopulator(new ClassPathResource("schema.sql"), new ClassPathResource("data.sql")));
+		initializer.setDatabaseCleaner(new ResourceDatabasePopulator(new ClassPathResource("cleanup.sql")));
+		return initializer;
+	}
 }
