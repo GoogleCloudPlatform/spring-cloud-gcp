@@ -21,9 +21,10 @@ import java.io.PrintStream;
 import java.util.UUID;
 
 import org.apache.commons.io.output.TeeOutputStream;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.util.LinkedMultiValueMap;
@@ -31,8 +32,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * These tests verifies that the pubsub-integration-sample works.
@@ -41,7 +40,8 @@ import static org.junit.Assume.assumeThat;
  *
  * @since 1.1
  */
-public class SampleAppIntegrationTest {
+@EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
+class SampleAppIntegrationTest {
 
 	private RestTemplate restTemplate = new RestTemplate();
 
@@ -49,26 +49,21 @@ public class SampleAppIntegrationTest {
 
 	private static ByteArrayOutputStream baos;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub-integration=true' "
-						+ "to enable them. ",
-				System.getProperty("it.pubsub-integration"), is("true"));
-
+	@BeforeAll
+	static void prepare() {
 		systemOut = System.out;
 		baos = new ByteArrayOutputStream();
 		TeeOutputStream out = new TeeOutputStream(systemOut, baos);
 		System.setOut(new PrintStream(out));
 	}
 
-	@AfterClass
-	public static void bringBack() {
+	@AfterAll
+	static void bringBack() {
 		System.setOut(systemOut);
 	}
 
 	@Test
-	public void testSample() throws Exception {
+	void testSample() throws Exception {
 
 		SpringApplicationBuilder sender = new SpringApplicationBuilder(SenderApplication.class)
 				.properties("server.port=8082");
