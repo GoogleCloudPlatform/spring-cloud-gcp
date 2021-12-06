@@ -18,7 +18,8 @@ package com.google.cloud.spring.autoconfigure.sql;
 
 import javax.sql.DataSource;
 
-import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.NoCredentialsProvider;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +32,8 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.PropertySource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
@@ -51,8 +54,8 @@ class CloudSqlEnvironmentPostProcessorTests {
 			.withPropertyValues("spring.cloud.gcp.sql.databaseName=test-database")
 			.withInitializer(configurableApplicationContext -> initializer.postProcessEnvironment(configurableApplicationContext.getEnvironment(), new SpringApplication()))
 			.withConfiguration(AutoConfigurations.of(
-					GcpContextAutoConfiguration.class,
-					DataSourceAutoConfiguration.class));
+					DataSourceAutoConfiguration.class))
+			.withUserConfiguration(Config.class);
 
 	@Test
 	void testCloudSqlDataSource() {
@@ -322,5 +325,15 @@ class CloudSqlEnvironmentPostProcessorTests {
 
 	private String getSpringDatasourceDriverClassName(ApplicationContext context) {
 		return context.getEnvironment().getProperty("spring.datasource.driver-class-name");
+	}
+
+
+	@Configuration
+	static class Config {
+
+		@Bean
+		public CredentialsProvider credentialsProvider() {
+			return NoCredentialsProvider.create();
+		}
 	}
 }
