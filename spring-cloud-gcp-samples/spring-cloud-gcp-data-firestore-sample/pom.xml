@@ -176,6 +176,9 @@
                   <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>${native.build.args}</BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
                 </env>
                 <pullPolicy>IF_NOT_PRESENT</pullPolicy>
+                <buildpacks>
+                    <buildpack>gcr.io/paketo-buildpacks/java-native-image:5.5.0</buildpack>
+                </buildpacks>
               </image>
             </configuration>
             <executions>
