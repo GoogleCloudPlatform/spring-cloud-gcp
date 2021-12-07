@@ -626,8 +626,7 @@ public class ConverterConfiguration {
 
 Note that `ConverterAwareMappingSpannerEntityProcessor` takes a list of Converters for write and read operations to support multiple user-defined types.
 The list cannot have duplicate Converters for a user-defined class.
-This means that, for a user-defined class `U`, the list for write Converters must have
-at most one `Converter<U, ...>` and the list for read Converters must have at most one `Converter<..., U>`.
+This means that, for a user-defined class `U`, the list for write Converters can have at most one `Converter<U, ...>` and the list for read Converters can have at most one `Converter<..., U>`.
 
 ==== Custom Converter for Struct Array Columns
 If a `Converter<Struct, A>` is provided, then properties of type `List<A>` can be used in your entity types.
