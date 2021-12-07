@@ -1079,6 +1079,11 @@ public class ConverterConfiguration {
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Note that <code>ConverterAwareMappingSpannerEntityProcessor</code> takes a list of Converters for write and read operations to support multiple user-defined types.
+When there are duplicate Converters for a user-defined class in the list, it chooses the first matching item in the lists.
+This means that, for a user-defined class <code>U</code>, write operations use the first <code>Converter&lt;U, &#8230;&#8203;&gt;</code> from the write Converters and read operations use the first <code>Converter&lt;&#8230;&#8203;, U&gt;</code> from the read Converters.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_custom_converter_for_struct_array_columns"><a class="link" href="#_custom_converter_for_struct_array_columns">Custom Converter for Struct Array Columns</a></h4>
