@@ -78,7 +78,7 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Adds SocketFactory and MySQL driver to classpath -->
+        <!-- JDBC: Adds SocketFactory and MySQL driver to classpath -->
         <dependency>
             <groupId>com.google.cloud.sql</groupId>
             <artifactId>mysql-socket-factory</artifactId>
@@ -99,22 +99,32 @@
             </exclusions>
         </dependency>
 
-        <!-- PostgreSQL -->
+        <!-- R2DBC: Adds SocketFactory and MySQL driver to classpath -->
+        <dependency>
+            <groupId>com.google.cloud.sql</groupId>
+            <artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
+        </dependency>
+
+        <!-- JDBC: PostgreSQL -->
         <dependency>
             <groupId>com.google.cloud.sql</groupId>
             <artifactId>postgres-socket-factory</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- R2DBC: PostgreSQL-->
+        <dependency>
+            <groupId>com.google.cloud.sql</groupId>
+            <artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
         </dependency>
 
         <!-- Storage -->
