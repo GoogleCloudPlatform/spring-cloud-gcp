@@ -27,6 +27,7 @@
 		<app-engine-maven-plugin.version>2.4.1</app-engine-maven-plugin.version>
 		<spring-native.version>0.10.4</spring-native.version>
 		<google-cloud-graalvm-support.version>0.7.0</google-cloud-graalvm-support.version>
+		<java-native-image.version>5.5.0</java-native-image.version>
 		<testcontainers.version>1.16.2</testcontainers.version>
 		<skip.surefire.tests>false</skip.surefire.tests>
 		<skip.failsafe.tests>false</skip.failsafe.tests>
