@@ -253,6 +253,7 @@
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
 
+			<!-- spring-cloud-gcp-starter-sql-r2dbc -->
 			<dependency>
 				<groupId>com.google.cloud.sql</groupId>
 				<artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
@@ -264,7 +265,6 @@
 				<artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
-
 
 			<!--Google Cloud Platform Libraries BOM -->
 			<dependency>

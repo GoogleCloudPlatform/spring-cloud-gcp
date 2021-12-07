@@ -32,7 +32,7 @@ import org.springframework.http.ResponseEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Simple integration test to verify the SQL sample application with Postgres.
+ * Simple integration test to verify the SQL sample application with MySQL.
  *
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { SqlApplication.class }, properties = {

@@ -71,7 +71,7 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- JDBC-->
+        <!-- Cloud SQL -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
@@ -84,6 +84,7 @@
             <artifactId>mysql-socket-factory</artifactId>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
