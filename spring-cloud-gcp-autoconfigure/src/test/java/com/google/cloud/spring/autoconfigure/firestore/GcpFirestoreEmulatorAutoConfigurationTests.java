@@ -20,13 +20,16 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.auth.Credentials;
+import com.google.cloud.NoCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Bean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -38,19 +41,25 @@ import static org.mockito.Mockito.mock;
  */
 class GcpFirestoreEmulatorAutoConfigurationTests {
 
+	GcpProjectIdProvider projectID = () -> "projectID";
+
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(
-					GcpContextAutoConfiguration.class,
 					GcpFirestoreEmulatorAutoConfiguration.class,
-					GcpFirestoreAutoConfiguration.class));
+					GcpFirestoreAutoConfiguration.class))
+			.withBean("projectId", GcpProjectIdProvider.class,() -> projectID);
 
 	@Test
 	void testEmulatorEnabledConfig() {
+
+		CredentialsProvider mockedCredentialsProvider = () -> mock(NoCredentials.class);
+
 		this.contextRunner.withPropertyValues(
 				"spring.cloud.gcp.firestore.projectId=test-project",
 				"spring.cloud.gcp.firestore.emulator.enabled=true",
 				"spring.cloud.gcp.firestore.host-port=localhost:8080"
-		).run(context -> {
+		).withBean("mockedCredentialsProvider", CredentialsProvider.class, () -> mockedCredentialsProvider)
+				.run(context -> {
 			CredentialsProvider defaultCredentialsProvider = context.getBean(CredentialsProvider.class);
 			assertThat(defaultCredentialsProvider).isNotInstanceOf(NoCredentialsProvider.class);
 
@@ -86,4 +95,19 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
 			assertThat(channelProvider.getEndpoint()).isEqualTo("firestore.googleapis.com:443");
 		});
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
