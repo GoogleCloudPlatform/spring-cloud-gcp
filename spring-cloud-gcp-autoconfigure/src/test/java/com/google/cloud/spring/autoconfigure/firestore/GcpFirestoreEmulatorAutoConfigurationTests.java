@@ -60,7 +60,7 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
 		).withBean("mockedCredentialsProvider", CredentialsProvider.class, () -> mockedCredentialsProvider)
 				.run(context -> {
 			CredentialsProvider defaultCredentialsProvider = context.getBean(CredentialsProvider.class);
-			assertThat(defaultCredentialsProvider).isNotInstanceOf(NoCredentialsProvider.class);
+			assertThat(defaultCredentialsProvider).isSameAs(mockedCredentialsProvider);
 
 			GcpFirestoreAutoConfiguration firestoreAutoConfiguration = context.getBean(GcpFirestoreAutoConfiguration.class);
 			assertThat(firestoreAutoConfiguration.getCredentialsProvider()).isInstanceOf(NoCredentialsProvider.class);
@@ -94,4 +94,19 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
 			assertThat(channelProvider.getEndpoint()).isEqualTo("firestore.googleapis.com:443");
 		});
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
