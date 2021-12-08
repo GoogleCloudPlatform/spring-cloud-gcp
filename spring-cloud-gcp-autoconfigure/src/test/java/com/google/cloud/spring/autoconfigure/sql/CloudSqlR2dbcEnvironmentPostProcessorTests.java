@@ -44,4 +44,12 @@ public class CloudSqlR2dbcEnvironmentPostProcessorTests {
 					assertThat(initializer.isR2dbc()).isFalse();
 				});
 	}
+
+	@Test
+	void testIsR2dbc_gcpSocketFactoriesIsPresent() {
+		this.contextRunner.run(
+				context -> {
+					assertThat(initializer.isR2dbc()).isFalse();
+				});
+	}
 }
