@@ -53,13 +53,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = BigQuerySampleApplication.class, properties = "spring.cloud.gcp.bigquery.datasetName=test_dataset")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = BigQuerySampleApplication.class, properties = "spring.cloud.gcp.bigquery.datasetName=sampledata")
 @EnabledIfSystemProperty(named = "it.bigquery", matches = "true")
 class BigQuerySampleApplicationIntegrationTests {
 
-	private static final String DATASET_NAME = "test_dataset";
+	private static final String DATASET_NAME = "sampledata";
 
-	private static final String TABLE_NAME = "bigquery_sample_test_table";
+	private static final String TABLE_NAME = "hello";
 
 	@Autowired
 	BigQuery bigQuery;
