@@ -30,7 +30,7 @@ import org.springframework.data.annotation.Id;
  * @author Chengyuan Zhao
  */
 @Entity(name = "test_entities_#{\"ci\"}")
-public class TestEntity {
+class TestEntity {
 
 	@Id
 	private Long id;
@@ -47,10 +47,10 @@ public class TestEntity {
 
 	EmbeddedEntity embeddedEntity;
 
-	public TestEntity() {
+	TestEntity() {
 	}
 
-	public TestEntity(Long id, String color, Long size, Shape shape, Blob blobField) {
+	TestEntity(Long id, String color, Long size, Shape shape, Blob blobField) {
 		this.id = id;
 		this.color = color;
 		this.size = size;
@@ -58,7 +58,7 @@ public class TestEntity {
 		this.blobField = blobField;
 	}
 
-	public TestEntity(Long id, String color, Long size, Shape shape, Blob blobField, EmbeddedEntity embeddedEntity) {
+	TestEntity(Long id, String color, Long size, Shape shape, Blob blobField, EmbeddedEntity embeddedEntity) {
 		this.id = id;
 		this.color = color;
 		this.size = size;
@@ -67,58 +67,58 @@ public class TestEntity {
 		this.embeddedEntity = embeddedEntity;
 	}
 
-	public TestEntity(Long id, String color, Long size, Timestamp datetime) {
+	TestEntity(Long id, String color, Long size, Timestamp datetime) {
 		this.id = id;
 		this.color = color;
 		this.size = size;
 		this.datetime = datetime;
 	}
 
-	public Shape getShape() {
+	Shape getShape() {
 		return this.shape;
 	}
 
-	public void setShape(Shape shape) {
+	void setShape(Shape shape) {
 		this.shape = shape;
 	}
 
-	public Long getId() {
+	Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id) {
+	void setId(Long id) {
 		this.id = id;
 	}
 
-	public Blob getBlobField() {
+	Blob getBlobField() {
 		return this.blobField;
 	}
 
-	public void setBlobField(Blob blobField) {
+	void setBlobField(Blob blobField) {
 		this.blobField = blobField;
 	}
 
-	public String getColor() {
+	String getColor() {
 		return this.color;
 	}
 
-	public void setColor(String color) {
+	void setColor(String color) {
 		this.color = color;
 	}
 
-	public Long getSize() {
+	Long getSize() {
 		return this.size;
 	}
 
-	public void setSize(Long size) {
+	void setSize(Long size) {
 		this.size = size;
 	}
 
-	public Timestamp getDatetime() {
+	Timestamp getDatetime() {
 		return datetime;
 	}
 
-	public void setDatetime(Timestamp datetime) {
+	void setDatetime(Timestamp datetime) {
 		this.datetime = datetime;
 	}
 
