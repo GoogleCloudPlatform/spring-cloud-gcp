@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.data.datastore.repository.query;
 
-import com.google.cloud.Timestamp;
-import com.google.cloud.datastore.Blob;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -30,6 +28,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import com.google.cloud.Timestamp;
+import com.google.cloud.datastore.Blob;
 import com.google.cloud.datastore.Cursor;
 import com.google.cloud.datastore.EntityQuery;
 import com.google.cloud.datastore.Key;
@@ -1002,10 +1002,10 @@ public class PartTreeDatastoreQueryTests {
 
 		EmbeddedEntity embeddedEntity;
 
-		public TestEntity() {
+		TestEntity() {
 		}
 
-		public TestEntity(Long id, String color, Long size, Shape shape, Blob blobField) {
+		TestEntity(Long id, String color, Long size, Shape shape, Blob blobField) {
 			this.id = id;
 			this.color = color;
 			this.size = size;
@@ -1013,7 +1013,7 @@ public class PartTreeDatastoreQueryTests {
 			this.blobField = blobField;
 		}
 
-		public TestEntity(Long id, String color, Long size, Shape shape, Blob blobField, EmbeddedEntity embeddedEntity) {
+		TestEntity(Long id, String color, Long size, Shape shape, Blob blobField, EmbeddedEntity embeddedEntity) {
 			this.id = id;
 			this.color = color;
 			this.size = size;
@@ -1022,7 +1022,7 @@ public class PartTreeDatastoreQueryTests {
 			this.embeddedEntity = embeddedEntity;
 		}
 
-		public TestEntity(Long id, String color, Long size, Timestamp datetime) {
+		TestEntity(Long id, String color, Long size, Timestamp datetime) {
 			this.id = id;
 			this.color = color;
 			this.size = size;
