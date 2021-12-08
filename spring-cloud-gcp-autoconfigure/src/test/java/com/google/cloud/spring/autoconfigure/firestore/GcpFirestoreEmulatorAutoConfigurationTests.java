@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.context.annotation.Bean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -40,13 +39,13 @@ import static org.mockito.Mockito.mock;
  */
 class GcpFirestoreEmulatorAutoConfigurationTests {
 
-	GcpProjectIdProvider projectID = () -> "projectID";
+	GcpProjectIdProvider projectId = () -> "projectId";
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(
 					GcpFirestoreEmulatorAutoConfiguration.class,
 					GcpFirestoreAutoConfiguration.class))
-			.withBean("projectId", GcpProjectIdProvider.class,() -> projectID);
+			.withBean("projectId", GcpProjectIdProvider.class, () -> projectId);
 
 	@Test
 	void testEmulatorEnabledConfig() {
