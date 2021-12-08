@@ -51,7 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Daniel Zou
  */
-
+//In order to enable the tests, please use '-Dit.bigquery=true' .
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = BigQuerySampleApplication.class, properties = "spring.cloud.gcp.bigquery.datasetName=test_dataset")
 @EnabledIfSystemProperty(named = "it.bigquery", matches = "true")
