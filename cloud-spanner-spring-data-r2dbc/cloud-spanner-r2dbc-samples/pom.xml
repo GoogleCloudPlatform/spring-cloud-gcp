@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.google.cloud</groupId>
     <artifactId>cloud-spanner-r2dbc-parent</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>cloud-spanner-r2dbc-samples</artifactId>
