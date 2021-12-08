@@ -24,19 +24,19 @@ import com.google.cloud.spring.data.datastore.core.mapping.Entity;
  * @author Dmitry Solomakha
  */
 @Entity
-public class EmbeddedEntity {
+class EmbeddedEntity {
 
 	private String stringField;
 
-	public EmbeddedEntity(String stringField) {
+	EmbeddedEntity(String stringField) {
 		this.stringField = stringField;
 	}
 
-	public String getStringField() {
+	String getStringField() {
 		return stringField;
 	}
 
-	public void setStringField(String stringField) {
+	void setStringField(String stringField) {
 		this.stringField = stringField;
 	}
 

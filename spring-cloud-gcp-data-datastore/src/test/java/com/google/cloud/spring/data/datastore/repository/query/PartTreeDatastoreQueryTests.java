@@ -45,8 +45,6 @@ import com.google.cloud.spring.data.datastore.core.convert.TwoStepsConversions;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import com.google.cloud.spring.data.datastore.core.mapping.Field;
-import com.google.cloud.spring.data.datastore.it.EmbeddedEntity;
-import com.google.cloud.spring.data.datastore.it.TestEntity;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -120,7 +118,7 @@ public class PartTreeDatastoreQueryTests {
 	@Before
 	public void initMocks() {
 		this.queryMethod = mock(DatastoreQueryMethod.class);
-		when(this.queryMethod.getReturnedObjectType()).thenReturn((Class) TestEntity.class);
+		when(this.queryMethod.getReturnedObjectType()).thenReturn((Class) Trade.class);
 		this.datastoreTemplate = mock(DatastoreTemplate.class);
 		this.datastoreMappingContext = new DatastoreMappingContext();
 		this.datastoreEntityConverter = mock(DatastoreEntityConverter.class);
@@ -189,7 +187,7 @@ public class PartTreeDatastoreQueryTests {
 		when(this.queryMethod.getCollectionReturnType()).thenReturn(List.class);
 
 		this.partTreeDatastoreQuery.execute(params);
-		verify(this.datastoreTemplate, times(1))
+		verify(this.datastoreTemplate)
 				.queryKeysOrEntities(any(), any());
 	}
 
@@ -237,7 +235,7 @@ public class PartTreeDatastoreQueryTests {
 		when(this.queryMethod.getCollectionReturnType()).thenReturn(List.class);
 
 		this.partTreeDatastoreQuery.execute(params);
-		verify(this.datastoreTemplate, times(1))
+		verify(this.datastoreTemplate)
 				.queryKeysOrEntities(any(), any());
 	}
 
@@ -974,5 +972,10 @@ public class PartTreeDatastoreQueryTests {
 		String getId();
 
 		String getSymbol();
+	}
+
+	@Entity
+	public class EmbeddedEntity {
+		private String stringField;
 	}
 }
