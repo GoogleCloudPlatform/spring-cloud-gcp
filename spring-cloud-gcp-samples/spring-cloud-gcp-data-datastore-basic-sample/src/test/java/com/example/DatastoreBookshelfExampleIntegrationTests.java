@@ -20,9 +20,9 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import org.awaitility.Awaitility;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,19 +38,20 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Tests for the Book Shelf sample app.
  *
  * @author Dmitry Solomakha
  */
+
+//Please use "-Dit.datastore=true" to enable the tests.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DatastoreBookshelfExample.class,
 		properties = { InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "="
 				+ false }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DatastoreBookshelfExampleIntegrationTests {
+@EnabledIfSystemProperty(named = "it.datastore", matches = "true")
+class DatastoreBookshelfExampleIntegrationTests {
 
 	@Autowired
 	private Shell shell;
@@ -64,21 +65,13 @@ public class DatastoreBookshelfExampleIntegrationTests {
 	@Autowired
 	private TestRestTemplate restTemplate;
 
-	@After
-	public void cleanUp() {
+	@AfterEach
+	void cleanUp() {
 		this.datastoreTemplate.deleteAll(Book.class);
 	}
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Datastore-sample integration tests are disabled. Please use '-Dit.datastore=true' "
-						+ "to enable them. ",
-				System.getProperty("it.datastore"), is("true"));
-	}
-
 	@Test
-	public void testSerializedPage() {
+	void testSerializedPage() {
 		Book book = new Book("Book1", "Author1", 2019);
 		book.id = 12345678L;
 		this.bookRepository.save(book);
@@ -90,7 +83,7 @@ public class DatastoreBookshelfExampleIntegrationTests {
 	}
 
 	@Test
-	public void testSaveBook() {
+	void testSaveBook() {
 		String book1 = (String) this.shell.evaluate(() -> "save-book book1 author1 1984");
 		String book2 = (String) this.shell.evaluate(() -> "save-book book2 author2 2000");
 
