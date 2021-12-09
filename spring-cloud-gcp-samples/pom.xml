@@ -25,7 +25,7 @@
 		<spring-cloud-build-tools.version>3.0.1</spring-cloud-build-tools.version>
 		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
 		<app-engine-maven-plugin.version>2.4.1</app-engine-maven-plugin.version>
-		<spring-native.version>0.10.4</spring-native.version>
+		<spring-native.version>0.11.0</spring-native.version>
 		<google-cloud-graalvm-support.version>0.7.0</google-cloud-graalvm-support.version>
 		<java-native-image.version>5.5.0</java-native-image.version>
 		<testcontainers.version>1.16.2</testcontainers.version>
