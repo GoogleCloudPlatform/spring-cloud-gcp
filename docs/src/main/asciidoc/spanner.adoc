@@ -317,8 +317,11 @@ CREATE TABLE items (
 ) PRIMARY KEY (grandParentId, parentId, id)
 ----
 
-Note that embedded properties' column names must all be unique.
+Note that the following restrictions apply when you use embedded objects:
 
+- embedded properties' column names must all be unique.
+- embedded properties must be mutable; otherwise you'll get an error, such as `SpannerDataException: Column not found: parent`.
+  Therefore, you cannot use Kotlin's data class, which is immutable, to hold an embedded property.
 
 ==== Relationships
 
