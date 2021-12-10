@@ -26,11 +26,11 @@ import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.TableResult;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,21 +41,21 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Tests the {@link BigQuerySampleApplication} POST endpoints.
  *
  * @author Daniel Zou
  */
-@RunWith(SpringRunner.class)
+//In order to enable the tests, please use '-Dit.bigquery=true' .
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = BigQuerySampleApplication.class, properties = "spring.cloud.gcp.bigquery.datasetName=test_dataset")
-public class BigQuerySampleApplicationIntegrationTests {
+@EnabledIfSystemProperty(named = "it.bigquery", matches = "true")
+class BigQuerySampleApplicationIntegrationTests {
 
 	private static final String DATASET_NAME = "test_dataset";
 
@@ -70,23 +70,15 @@ public class BigQuerySampleApplicationIntegrationTests {
 	@Value("classpath:test.csv")
 	Resource csvFile;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"BigQuery integration tests are disabled. "
-						+ "Please use '-Dit.bigquery=true' to enable them.",
-				System.getProperty("it.bigquery"), is("true"));
-	}
-
-	@Before
-	@After
-	public void cleanupTestEnvironment() {
+	@BeforeEach
+	@AfterEach
+	void cleanupTestEnvironment() {
 		// Clear the previous dataset before beginning the test.
 		this.bigQuery.delete(TableId.of(DATASET_NAME, TABLE_NAME));
 	}
 
 	@Test
-	public void testFileUpload() throws InterruptedException, IOException {
+	void testFileUpload() throws InterruptedException, IOException {
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		map.add("file", csvFile);
 		map.add("tableName", TABLE_NAME);
@@ -113,7 +105,7 @@ public class BigQuerySampleApplicationIntegrationTests {
 	}
 
 	@Test
-	public void testCsvDataUpload() throws InterruptedException {
+	void testCsvDataUpload() throws InterruptedException {
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		map.add("csvText", "name,age,location\nBob,24,Wyoming");
 		map.add("tableName", TABLE_NAME);

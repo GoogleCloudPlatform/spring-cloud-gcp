@@ -45,7 +45,7 @@ import org.springframework.lang.Nullable;
  * @author Dmitry Solomakha
  */
 @Nonnull
-public interface TestEntityRepository extends DatastoreRepository<TestEntity, Long> {
+interface TestEntityRepository extends DatastoreRepository<TestEntity, Long> {
 
 	@Query("select * from  test_entities_ci where size = @size ")
 	LinkedList<TestEntity> findEntitiesWithCustomQuery(@Param("size") long size);
