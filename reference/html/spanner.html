@@ -672,7 +672,18 @@ class B {
 </div>
 </div>
 <div class="paragraph">
-<p>Note that embedded properties' column names must all be unique.</p>
+<p>Note that the following restrictions apply when you use embedded objects:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Embedded properties' column names must all be unique.</p>
+</li>
+<li>
+<p>Embedded properties must not be passed through a constructor and the property must be mutable; otherwise you&#8217;ll get an error, such as <code>SpannerDataException: Column not found</code>.
+Be careful about this restriction when you use Kotlin&#8217;s data class to hold an embedded property.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
