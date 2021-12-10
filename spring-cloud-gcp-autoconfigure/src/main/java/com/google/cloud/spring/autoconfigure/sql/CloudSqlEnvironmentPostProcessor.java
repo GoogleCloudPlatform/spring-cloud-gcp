@@ -31,12 +31,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.context.properties.bind.PlaceholdersResolver;
-import org.springframework.boot.context.properties.bind.PropertySourcesPlaceholdersResolver;
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ClassUtils;
@@ -191,24 +188,6 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
 		}
 		catch (IOException ioe) {
 			LOGGER.info("Error reading Cloud SQL credentials file.", ioe);
-		}
-	}
-
-	private static class NonSecretsManagerPropertiesPlaceholdersResolver implements PlaceholdersResolver {
-		private PlaceholdersResolver resolver;
-
-		NonSecretsManagerPropertiesPlaceholdersResolver(Environment environment) {
-			this.resolver = new PropertySourcesPlaceholdersResolver(environment);
-		}
-
-		@Override
-		public Object resolvePlaceholders(Object value) {
-			if (value.toString().contains("sm://")) {
-				return value;
-			}
-			else {
-				return resolver.resolvePlaceholders(value);
-			}
 		}
 	}
 }
