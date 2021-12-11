@@ -39,12 +39,12 @@ public class WebController {
 	}
 
 	@GetMapping("/getTuples")
-	public List<String> getTuples() {
+	public Mono<List<String>> getTuples() {
 		return Mono.from(connectionFactory.create())
 				.flatMapMany(connection -> connection.createStatement("SELECT * FROM users").execute())
 				.flatMap(result -> result
 						.map((row, metadata) -> String.format("[%s, %s, %s]", row.get("EMAIL", String.class),
 								row.get("FIRST_NAME", String.class), row.get("LAST_NAME", String.class))))
-				.collectList().block();
+				.collectList();
 	}
 }

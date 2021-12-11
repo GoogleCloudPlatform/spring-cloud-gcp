@@ -9,9 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-cloud-gcp-starter-sql-r2dbc</artifactId>
-    <name>Spring Cloud GCP Starter - R2DBC</name>
-    <url>https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-r2dbc</url>
+    <artifactId>spring-cloud-gcp-starter-sql-postgres-r2dbc</artifactId>
+    <name>Spring Cloud GCP Starter - R2DBC PostgreSQL</name>
+    <url>https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-postgres-r2dbc</url>
 
     <dependencies>
         <dependency>
@@ -23,18 +23,7 @@
             <artifactId>spring-boot-starter-data-r2dbc</artifactId>
         </dependency>
 
-        <!-- Cloud SQl MYSQL R2DBC-->
-        <dependency>
-            <groupId>com.google.cloud.sql</groupId>
-            <artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dev.miku</groupId>
-            <artifactId>r2dbc-mysql</artifactId>
-            <version>0.8.2.RELEASE</version>
-        </dependency>
-
-        <!-- CLOUD SQL POSTGRES R2DBC-->
+        <!-- CLOUD SQL POSTGRES R2DBC Connection Factory and Driver-->
         <dependency>
             <groupId>com.google.cloud.sql</groupId>
             <artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
@@ -42,7 +31,7 @@
         <dependency>
             <groupId>io.r2dbc</groupId>
             <artifactId>r2dbc-postgresql</artifactId>
-            <version>0.8.5.RELEASE</version>
+            <version>0.8.10.RELEASE</version>
         </dependency>
 
     </dependencies>

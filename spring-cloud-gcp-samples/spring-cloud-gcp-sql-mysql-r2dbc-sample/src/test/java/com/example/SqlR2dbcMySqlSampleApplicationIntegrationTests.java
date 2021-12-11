@@ -36,10 +36,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { SqlApplication.class }, properties = {
-//		"spring.r2dbc.url=r2dbc:gcp:mysql://spring-cloud-gcp-ci:us-central1:testmysql/code_samples_r2dbc_db",
-		"spring.cloud.gcp.sql.databaseName=code_samples_r2dbc_db",
+		"spring.cloud.gcp.sql.databaseName=code_samples_test_r2dbc_db",
 		"spring.cloud.gcp.sql.instanceConnectionName=spring-cloud-gcp-ci:us-central1:testmysql",
-		//"spring.r2dbc.username=root",
 		"spring.r2dbc.password=test"
 })
 @EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")

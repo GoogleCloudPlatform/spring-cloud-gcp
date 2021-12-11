@@ -32,6 +32,10 @@ public class SqlApplication {
 		SpringApplication.run(SqlApplication.class, args);
 	}
 
+	/**
+	 * Populates Cloud SQL database table with data from data.sql and deletes the table after the application
+	 * finishes running.
+	 */
 	@Bean
 	ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
 		ConnectionFactoryInitializer initializer = new ConnectionFactoryInitializer();
