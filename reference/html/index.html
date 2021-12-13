@@ -184,8 +184,9 @@ window.onload = function() {
 <li><a href="#introduction">1. Introduction</a></li>
 <li><a href="#getting-started">2. Getting Started</a>
 <ul class="sectlevel2">
-<li><a href="#setting-up-dependencies">2.1. Setting up Dependencies</a></li>
-<li><a href="#learning-spring-cloud-gcp">2.2. Learning Spring Cloud GCP</a></li>
+<li><a href="#compatibility-with-spring-project-versions">2.1. Compatibility with Spring Project Versions</a></li>
+<li><a href="#setting-up-dependencies">2.2. Setting up Dependencies</a></li>
+<li><a href="#learning-spring-cloud-gcp">2.3. Learning Spring Cloud GCP</a></li>
 </ul>
 </li>
 <li><a href="#spring-cloud-gcp-core">3. Spring Cloud GCP Core</a>
@@ -446,7 +447,43 @@ window.onload = function() {
 <p>This section describes how to get up to speed with Spring Cloud GCP libraries.</p>
 </div>
 <div class="sect2">
-<h3 id="setting-up-dependencies"><a class="anchor" href="#setting-up-dependencies"></a><a class="link" href="#setting-up-dependencies">2.1. Setting up Dependencies</a></h3>
+<h3 id="compatibility-with-spring-project-versions"><a class="anchor" href="#compatibility-with-spring-project-versions"></a><a class="link" href="#compatibility-with-spring-project-versions">2.1. Compatibility with Spring Project Versions</a></h3>
+<div class="paragraph">
+<p>Spring Cloud GCP has dependency and transitive dependencies on Spring Projects. The table below outlines the versions of Spring Cloud, Spring Boot and Spring Framework versions that are compatible with certain Spring Cloud GCP version.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Spring Cloud GCP</th>
+<th class="tableblock halign-left valign-top">Spring Cloud</th>
+<th class="tableblock halign-left valign-top">Spring Boot</th>
+<th class="tableblock halign-left valign-top">Spring Framework</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes">2020.0.x</a> (3.0/Illford)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.4.x, 2.5.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5.3.x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0 (next expected release)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes">2021.0.x</a> (3.1/Jubilee)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.6.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5.3.x</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="setting-up-dependencies"><a class="anchor" href="#setting-up-dependencies"></a><a class="link" href="#setting-up-dependencies">2.2. Setting up Dependencies</a></h3>
 <div class="paragraph">
 <p>All Spring Cloud GCP artifacts are made available through Maven Central.
 The following resources are provided to help you setup the libraries for your project:</p>
@@ -465,7 +502,7 @@ The following resources are provided to help you setup the libraries for your pr
 <p>You may also consult our <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp">Github project</a> to examine the code or build directly from source.</p>
 </div>
 <div class="sect3">
-<h4 id="bill-of-materials"><a class="anchor" href="#bill-of-materials"></a><a class="link" href="#bill-of-materials">2.1.1. Bill of Materials</a></h4>
+<h4 id="bill-of-materials"><a class="anchor" href="#bill-of-materials"></a><a class="link" href="#bill-of-materials">2.2.1. Bill of Materials</a></h4>
 <div class="paragraph">
 <p>The Spring Cloud GCP Bill of Materials (BOM) contains the versions of all the dependencies it uses.</p>
 </div>
@@ -506,7 +543,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
 </div>
 </div>
 <div class="sect3">
-<h4 id="starter-dependencies"><a class="anchor" href="#starter-dependencies"></a><a class="link" href="#starter-dependencies">2.1.2. Starter Dependencies</a></h4>
+<h4 id="starter-dependencies"><a class="anchor" href="#starter-dependencies"></a><a class="link" href="#starter-dependencies">2.2.2. Starter Dependencies</a></h4>
 <div class="paragraph">
 <p>Spring Cloud GCP offers <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters">starter dependencies</a> through Maven to easily depend on different modules of the library.
 Each starter contains all the dependencies and transitive dependencies needed to begin using their corresponding Spring Cloud GCP module.</p>
@@ -596,7 +633,7 @@ You do <strong>not</strong> need to include the underlying <code>spring-cloud-gc
 </table>
 </div>
 <div class="sect3">
-<h4 id="spring-initializr"><a class="anchor" href="#spring-initializr"></a><a class="link" href="#spring-initializr">2.1.3. Spring Initializr</a></h4>
+<h4 id="spring-initializr"><a class="anchor" href="#spring-initializr"></a><a class="link" href="#spring-initializr">2.2.3. Spring Initializr</a></h4>
 <div class="paragraph">
 <p><a href="https://start.spring.io/">Spring Initializr</a> is a tool which generates the scaffolding code for a new Spring Boot project.
 It handles the work of generating the Maven or Gradle build file so you do not have to manually add the dependencies yourself.</p>
@@ -621,12 +658,12 @@ Most of the autoconfiguration code is only enabled if the required dependency is
 </div>
 </div>
 <div class="sect2">
-<h3 id="learning-spring-cloud-gcp"><a class="anchor" href="#learning-spring-cloud-gcp"></a><a class="link" href="#learning-spring-cloud-gcp">2.2. Learning Spring Cloud GCP</a></h3>
+<h3 id="learning-spring-cloud-gcp"><a class="anchor" href="#learning-spring-cloud-gcp"></a><a class="link" href="#learning-spring-cloud-gcp">2.3. Learning Spring Cloud GCP</a></h3>
 <div class="paragraph">
 <p>There are a variety of resources to help you learn how to use Spring Cloud GCP libraries.</p>
 </div>
 <div class="sect3">
-<h4 id="sample-applications"><a class="anchor" href="#sample-applications"></a><a class="link" href="#sample-applications">2.2.1. Sample Applications</a></h4>
+<h4 id="sample-applications"><a class="anchor" href="#sample-applications"></a><a class="link" href="#sample-applications">2.3.1. Sample Applications</a></h4>
 <div class="paragraph">
 <p>The easiest way to learn how to use Spring Cloud GCP is to consult the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples">sample applications on Github</a>.
 Spring Cloud GCP provides sample applications which demonstrate how to use every integration in the library.
@@ -689,7 +726,7 @@ If you are interested, you may consult guides for <a href="https://codelabs.deve
 </div>
 </div>
 <div class="sect3">
-<h4 id="codelabs"><a class="anchor" href="#codelabs"></a><a class="link" href="#codelabs">2.2.2. Codelabs</a></h4>
+<h4 id="codelabs"><a class="anchor" href="#codelabs"></a><a class="link" href="#codelabs">2.3.2. Codelabs</a></h4>
 <div class="paragraph">
 <p>For a more hands-on approach, there are several guides and codelabs to help you get up to speed.
 These guides provide step-by-step instructions for building an application using Spring Cloud GCP.</p>
