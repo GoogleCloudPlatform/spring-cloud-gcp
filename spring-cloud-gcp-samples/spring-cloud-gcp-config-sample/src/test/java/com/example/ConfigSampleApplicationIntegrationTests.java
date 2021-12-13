@@ -36,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Mike Eltsufin
  */
+//Please use "-Dit.config=true" to enable the tests.
 @ExtendWith(SpringExtension.class)
 @EnabledIfSystemProperty(named = "it.config", matches = "true")
 @SpringBootTest(
