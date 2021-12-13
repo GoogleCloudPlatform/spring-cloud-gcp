@@ -78,12 +78,8 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 		Assert.hasText(sqlProperties.getInstanceConnectionName(),
 				"An instance connection name must be provided in the format <PROJECT_ID>:<REGION>:<INSTANCE_ID>.");
 
-		String r2dbcUrl = String.format(databaseType.getUrlTemplate(),
+		return String.format(databaseType.getUrlTemplate(),
 				sqlProperties.getInstanceConnectionName(), sqlProperties.getDatabaseName());
-		if (sqlProperties.isEnableIamAuth()) {
-			r2dbcUrl += "?enableIamAuth=true&sslmode=disable";
-		}
-		return r2dbcUrl;
 	}
 
 	R2dbcDatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
