@@ -97,7 +97,7 @@ public class R2dbcCloudSqlEnvironmentPostProcessorTest {
 		this.contextRunner
 				.withPropertyValues("spring.cloud.gcp.sql.databaseName=my-database",
 						"spring.cloud.gcp.sql.instanceConnectionName=my-project:region:my-instance")
-				.withClassLoader(new FilteredClassLoader("com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql"))
+				.withClassLoader(new FilteredClassLoader("dev.miku.r2dbc.mysql"))
 				.run(
 						context -> {
 							assertThat(context.getEnvironment().getProperty("spring.r2dbc.url"))

@@ -32,6 +32,11 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
+/**
+ * Builds connection string for Cloud SQL through Spring R2DBC by requiring only a
+ * database and instance connection name.
+ *
+ */
 public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostProcessor {
 	private static final Log LOGGER = LogFactory.getLog(R2dbcCloudSqlEnvironmentPostProcessor.class);
 
@@ -44,7 +49,6 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 			Binder binder = new Binder(ConfigurationPropertySources.get(environment),
 					new NonSecretsManagerPropertiesPlaceholdersResolver(environment),
 					null, null, null);
-
 			String cloudSqlPropertiesPrefix = GcpCloudSqlProperties.class.getAnnotation(ConfigurationProperties.class)
 					.value();
 			GcpCloudSqlProperties sqlProperties = binder
@@ -58,6 +62,7 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 						+ r2dbcUrl);
 			}
 
+			// Add default username as fallback when not specified
 			Map<String, Object> fallbackMap = new HashMap<>();
 			fallbackMap.put("spring.r2dbc.username", databaseType.getDefaultUsername());
 			environment.getPropertySources().addLast(new MapPropertySource("CLOUD_SQL_R2DBC_USERNAME", fallbackMap));
@@ -84,10 +89,12 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 	R2dbcDatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
 		if (Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.sql.enabled", "true"))
 				&& isOnClasspath("com.google.cloud.sql.CredentialFactory")) {
-			if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql")) {
+			if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql") &&
+					isOnClasspath("dev.miku.r2dbc.mysql.MySqlConnectionFactoryProvider")) {
 				return R2dbcDatabaseType.MYSQL;
 			}
-			else if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres")) {
+			else if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres")
+					&& isOnClasspath("io.r2dbc.postgresql.PostgresqlConnectionFactoryProvider")) {
 				return R2dbcDatabaseType.POSTGRESQL;
 			}
 		}

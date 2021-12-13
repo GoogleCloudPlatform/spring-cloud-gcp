@@ -23,7 +23,7 @@
             <artifactId>spring-boot-starter-data-r2dbc</artifactId>
         </dependency>
 
-        <!-- Cloud SQl MYSQL R2DBC Connection Factory and Driver-->
+        <!-- Cloud SQL MySQL R2DBC Connection Factory and Driver-->
         <dependency>
             <groupId>com.google.cloud.sql</groupId>
             <artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
@@ -31,7 +31,6 @@
         <dependency>
             <groupId>dev.miku</groupId>
             <artifactId>r2dbc-mysql</artifactId>
-            <version>0.8.2.RELEASE</version>
         </dependency>
 
     </dependencies>

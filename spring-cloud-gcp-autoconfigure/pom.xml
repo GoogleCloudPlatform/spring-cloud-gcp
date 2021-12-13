@@ -123,11 +123,22 @@
             <artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>dev.miku</groupId>
+            <artifactId>r2dbc-mysql</artifactId>
+            <optional>true</optional>
+        </dependency>
+
 
         <!--R2DBC : PostgreSQL connector factory -->
         <dependency>
             <groupId>com.google.cloud.sql</groupId>
             <artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.r2dbc</groupId>
+            <artifactId>r2dbc-postgresql</artifactId>
             <optional>true</optional>
         </dependency>
 
