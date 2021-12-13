@@ -24,7 +24,10 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class R2dbcCloudSqlEnvironmentPostProcessorTest {
+/**
+ * Tests for {@link R2dbcCloudSqlEnvironmentPostProcessor}.
+ */
+class R2dbcCloudSqlEnvironmentPostProcessorTest {
 
 	private R2dbcCloudSqlEnvironmentPostProcessor initializer = new R2dbcCloudSqlEnvironmentPostProcessor();
 
