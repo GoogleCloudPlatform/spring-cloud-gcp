@@ -32,10 +32,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.awaitility.Awaitility;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -45,12 +46,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 
 /**
  * These tests verifies that the datastore-sample works. In order to run it, use the
@@ -61,11 +61,13 @@ import static org.assertj.core.api.Assumptions.assumeThat;
  * @author Chengyuan Zhao
  * @author Dmitry Solomakha
  */
-@RunWith(SpringRunner.class)
+//please use "-Dit.datastore=true" to enable the tests
+@EnabledIfSystemProperty(named = "it.datastore", matches = "true")
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest(classes = {
 		DatastoreRepositoryExample.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DatastoreSampleApplicationIntegrationTests {
+class DatastoreSampleApplicationIntegrationTests {
 
 	private static PrintStream systemOut;
 
@@ -85,33 +87,29 @@ public class DatastoreSampleApplicationIntegrationTests {
 	@Autowired
 	DatastoreTemplate datastoreTemplate;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(System.getProperty("it.datastore"))
-				.as("Datastore sample integration tests are disabled. "
-						+ "Please use '-Dit.datastore=true' to enable them.")
-				.isEqualTo("true");
+	@BeforeAll
+	static void checkToRun() {
 		systemOut = System.out;
 		baos = new ByteArrayOutputStream();
 		TeeOutputStream out = new TeeOutputStream(systemOut, baos);
 		System.setOut(new PrintStream(out));
 	}
 
-	@After
-	public void cleanUp() {
+	@AfterEach
+	void cleanUp() {
 		this.datastoreTemplate.deleteAll(Instrument.class);
 		this.datastoreTemplate.deleteAll(Band.class);
 		this.datastoreTemplate.deleteAll(Singer.class);
 	}
 
 	@Test
-	public void runTests() throws Exception {
+	void runTests() throws Exception {
 		basicTest();
 		testCompoundKeyRestResource();
 		testQueryReturnStream();
 	}
 
-	public void basicTest() throws Exception {
+	void basicTest() throws Exception {
 		Singer johnDoe = new Singer(null, "John", "Doe", null);
 		Singer janeDoe = new Singer(null, "Jane", "Doe", null);
 		Singer richardRoe = new Singer(null, "Richard", "Roe", null);
@@ -205,7 +203,7 @@ public class DatastoreSampleApplicationIntegrationTests {
 		assertThat(baos.toString()).contains("This concludes the sample.");
 	}
 
-	public void testCompoundKeyRestResource() throws IOException {
+	void testCompoundKeyRestResource() throws IOException {
 		String allInstrumentsResponse = sendRequest("/instruments", null, HttpMethod.GET);
 		Map<String, Object> parsedResponse = this.mapper.readValue(allInstrumentsResponse,
 				new TypeReference<HashMap<String, Object>>() {
@@ -243,7 +241,7 @@ public class DatastoreSampleApplicationIntegrationTests {
 				.collect(Collectors.toList());
 	}
 
-	public void testQueryReturnStream() {
+	void testQueryReturnStream() {
 		Stream<Singer> streamResult = singerRepository.findStreamOfSingersByLastName("Doe");
 		assertThat(streamResult).isInstanceOf(Stream.class);
 		streamResult.map(Singer::getLastName).forEach(x -> assertThat(x).isEqualTo("Doe"));
