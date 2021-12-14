@@ -27,11 +27,11 @@ import java.util.Set;
 
 import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,23 +45,21 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Tests for the Spanner repository example.
  *
  * @author Daniel Zou
  */
-
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 
-public class SpannerRepositoryIntegrationTests {
+class SpannerRepositoryIntegrationTests {
 	@LocalServerPort
 	private int port;
 
@@ -80,24 +78,16 @@ public class SpannerRepositoryIntegrationTests {
 	@Autowired
 	private SpannerRepositoryExample spannerRepositoryExample;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Spanner integration tests are disabled. "
-						+ "Please use '-Dit.spanner=true' to enable them. ",
-				System.getProperty("it.spanner"), is("true"));
-	}
-
-	@Before
-	@After
-	public void cleanupAndSetupTables() {
+	@BeforeEach
+	@AfterEach
+	void cleanupAndSetupTables() {
 		this.spannerRepositoryExample.createTablesIfNotExists();
 		this.tradeRepository.deleteAll();
 		this.traderRepository.deleteAll();
 	}
 
 	@Test
-	public void testRestEndpoint() {
+	void testRestEndpoint() {
 		this.spannerRepositoryExample.runExample();
 
 		TestRestTemplate testRestTemplate = new TestRestTemplate();
@@ -111,7 +101,7 @@ public class SpannerRepositoryIntegrationTests {
 	}
 
 	@Test
-	public void testRestEndpointPut() {
+	void testRestEndpointPut() {
 		this.spannerRepositoryExample.runExample();
 
 		TestRestTemplate testRestTemplate = new TestRestTemplate();
@@ -136,7 +126,7 @@ public class SpannerRepositoryIntegrationTests {
 	}
 
 	@Test
-	public void testLoadsCorrectData() {
+	void testLoadsCorrectData() {
 		assertThat(this.traderRepository.count()).isZero();
 		assertThat(this.tradeRepository.count()).isZero();
 
@@ -168,7 +158,7 @@ public class SpannerRepositoryIntegrationTests {
 	}
 
 	@Test
-	public void testJsonFieldReadWrite() {
+	void testJsonFieldReadWrite() {
 
 		Address workAddress = new Address(5L, "address line", true);
 		Trader trader = new Trader("demo_trader1", "John", "Doe", workAddress);
