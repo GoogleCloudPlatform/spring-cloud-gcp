@@ -20,28 +20,27 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.firestore", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = FirestoreSampleApplication.class)
 @TestPropertySource("classpath:application-test.properties")
-public class FirestoreSampleApplicationIntegrationTests {
+class FirestoreSampleApplicationIntegrationTests {
 	private static final User ALPHA_USER = new User("Alpha", 49, singletonList(new Pet("rat", "Snowflake")));
 	private static final List<PhoneNumber> ALPHA_PHONE_NUMBERS = Arrays.asList(
 			new PhoneNumber("555666777"),
@@ -61,21 +60,14 @@ public class FirestoreSampleApplicationIntegrationTests {
 
 	private TestUserClient testUserClient;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat("Firestore Spring Data tests are "
-						+ "disabled. Please use '-Dit.firestore=true' to enable them. ",
-				System.getProperty("it.firestore"), is("true"));
-	}
-
-	@Before
-	public void cleanupEnvironment() {
+	@BeforeEach
+	void cleanupEnvironment() {
 		testUserClient = new TestUserClient(restTemplate.getRestTemplate());
 		firestoreTemplate.deleteAll(User.class).block();
 	}
 
 	@Test
-	public void saveUserTest() {
+	void saveUserTest() {
 		testUserClient.removePhonesForUser("Alpha");
 		List<User> users = testUserClient.listUsers();
 		assertThat(users).isEmpty();
