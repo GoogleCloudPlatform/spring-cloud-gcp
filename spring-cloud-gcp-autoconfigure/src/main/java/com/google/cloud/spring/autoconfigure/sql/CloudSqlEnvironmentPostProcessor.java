@@ -89,7 +89,7 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
 			}
 			applyJdbcSettings(environment, sqlProperties, databaseType);
 		}
-		else if (r2dbcDatabaseType != null) {
+		else {
 			if (LOGGER.isInfoEnabled()) {
 				LOGGER.info("post-processing Cloud SQL properties for + " + r2dbcDatabaseType.name());
 			}
