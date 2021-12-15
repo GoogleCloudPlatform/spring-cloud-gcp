@@ -17,7 +17,7 @@
 package com.google.cloud.spring.autoconfigure.sql;
 
 /**
- * Enum class for JDBC workflow containing MySQL and Postgresql constants.
+ * Enum class containing MySQL and Postgresql constants.
  *
  * @author João André Martins
  * @author Chengyuan Zhao

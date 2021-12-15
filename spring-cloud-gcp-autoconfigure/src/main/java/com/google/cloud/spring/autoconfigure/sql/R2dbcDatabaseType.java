@@ -16,9 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.sql;
 
-/**
- * Enum class for R2DBC workflow containing MySQL and PostgreSQL constants.
- */
 public enum R2dbcDatabaseType {
 
 	/**
