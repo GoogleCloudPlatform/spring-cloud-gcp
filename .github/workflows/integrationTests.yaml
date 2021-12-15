@@ -25,6 +25,7 @@ jobs:
           - kms
           - logging
           - metrics
+          - multisample
           - native
           - kotlin
           - pubsub

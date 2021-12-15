@@ -34,8 +34,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
  */
 ////Please use "-Dit.spanner=true -Dit.datastore=true" to enable the tests
 @ExtendWith(SpringExtension.class)
-@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
-@EnabledIfSystemProperty(named = "it.datastore", matches = "true")
+@EnabledIfSystemProperty(named = "it.multisample", matches = "true")
 @TestPropertySource("classpath:application-test.properties")
 @EnableAutoConfiguration
 class MultipleDataModuleIntegrationTest {
