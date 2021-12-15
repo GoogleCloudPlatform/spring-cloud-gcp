@@ -23,9 +23,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
@@ -42,20 +39,15 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+		if (environment.getPropertySources().contains("bootstrap")) {
+			// Do not run in the bootstrap phase as the user configuration is not available yet
+			return;
+		}
 
-		R2dbcDatabaseType databaseType = getEnabledDatabaseType(environment);
+		DatabaseType databaseType = getEnabledDatabaseType(environment);
 		if (databaseType != null) {
-			// Bind properties without resolving Secret Manager placeholders
-			Binder binder = new Binder(ConfigurationPropertySources.get(environment),
-					new NonSecretsManagerPropertiesPlaceholdersResolver(environment),
-					null, null, null);
-			String cloudSqlPropertiesPrefix = GcpCloudSqlProperties.class.getAnnotation(ConfigurationProperties.class)
-					.value();
-			GcpCloudSqlProperties sqlProperties = binder
-					.bind(cloudSqlPropertiesPrefix, GcpCloudSqlProperties.class)
-					.orElse(new GcpCloudSqlProperties());
-
-			String r2dbcUrl = createUrl(databaseType, sqlProperties);
+			PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
+			String r2dbcUrl = createUrl(databaseType, propertiesRetriever.getCloudSqlProperties());
 			if (LOGGER.isInfoEnabled()) {
 				LOGGER.info("Default " + databaseType.name()
 						+ " R2dbcUrl provider. Connecting to "
@@ -73,25 +65,25 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 		}
 	}
 
-	String createUrl(R2dbcDatabaseType databaseType, GcpCloudSqlProperties sqlProperties) {
+	String createUrl(DatabaseType databaseType, GcpCloudSqlProperties sqlProperties) {
 		Assert.hasText(sqlProperties.getDatabaseName(), "A database name must be provided.");
 		Assert.hasText(sqlProperties.getInstanceConnectionName(),
 				"An instance connection name must be provided in the format <PROJECT_ID>:<REGION>:<INSTANCE_ID>.");
 
-		return String.format(databaseType.getUrlTemplate(),
+		return String.format(databaseType.getR2dbcUrlTemplate(),
 				sqlProperties.getInstanceConnectionName(), sqlProperties.getDatabaseName());
 	}
 
-	R2dbcDatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
+	DatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
 		if (Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.sql.enabled", "true"))
 				&& isOnClasspath("com.google.cloud.sql.CredentialFactory")) {
 			if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql") &&
 					isOnClasspath("dev.miku.r2dbc.mysql.MySqlConnectionFactoryProvider")) {
-				return R2dbcDatabaseType.MYSQL;
+				return DatabaseType.R2DBC_MYSQL;
 			}
 			else if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres")
 					&& isOnClasspath("io.r2dbc.postgresql.PostgresqlConnectionFactoryProvider")) {
-				return R2dbcDatabaseType.POSTGRESQL;
+				return DatabaseType.R2DBC_POSTGRESQL;
 			}
 		}
 		return null;

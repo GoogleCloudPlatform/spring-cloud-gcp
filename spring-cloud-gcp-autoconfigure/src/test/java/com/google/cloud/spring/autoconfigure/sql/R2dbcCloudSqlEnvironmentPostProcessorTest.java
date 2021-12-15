@@ -41,7 +41,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTest {
 		GcpCloudSqlProperties properties = new GcpCloudSqlProperties();
 		properties.setDatabaseName("my-database");
 		properties.setInstanceConnectionName("my-instance-connection-name");
-		String r2dbcUrl = initializer.createUrl(R2dbcDatabaseType.MYSQL, properties);
+		String r2dbcUrl = initializer.createUrl(DatabaseType.R2DBC_MYSQL, properties);
 		assertThat(r2dbcUrl).isEqualTo("r2dbc:gcp:mysql://my-instance-connection-name/my-database");
 	}
 
@@ -50,7 +50,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTest {
 		GcpCloudSqlProperties properties = new GcpCloudSqlProperties();
 		properties.setDatabaseName("my-database");
 		properties.setInstanceConnectionName("my-instance-connection-name");
-		String r2dbcUrl = initializer.createUrl(R2dbcDatabaseType.POSTGRESQL, properties);
+		String r2dbcUrl = initializer.createUrl(DatabaseType.R2DBC_POSTGRESQL, properties);
 		assertThat(r2dbcUrl).isEqualTo("r2dbc:gcp:postgres://my-instance-connection-name/my-database");
 	}
 

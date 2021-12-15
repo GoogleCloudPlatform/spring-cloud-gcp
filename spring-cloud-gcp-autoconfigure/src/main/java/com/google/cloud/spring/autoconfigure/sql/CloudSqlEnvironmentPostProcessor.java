@@ -29,9 +29,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
@@ -67,19 +64,8 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
 				LOGGER.info("post-processing Cloud SQL properties for + " + databaseType.name());
 			}
 
-			// Bind properties without resolving Secret Manager placeholders
-			Binder binder = new Binder(ConfigurationPropertySources.get(environment),
-					new NonSecretsManagerPropertiesPlaceholdersResolver(environment),
-					null, null, null);
-
-			String cloudSqlPropertiesPrefix = GcpCloudSqlProperties.class.getAnnotation(ConfigurationProperties.class).value();
-			GcpCloudSqlProperties sqlProperties = binder
-					.bind(cloudSqlPropertiesPrefix, GcpCloudSqlProperties.class)
-					.orElse(new GcpCloudSqlProperties());
-			GcpProperties gcpProperties = binder
-					.bind(cloudSqlPropertiesPrefix, GcpProperties.class)
-					.orElse(new GcpProperties());
-
+			PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
+			GcpCloudSqlProperties sqlProperties = propertiesRetriever.getCloudSqlProperties();
 			CloudSqlJdbcInfoProvider cloudSqlJdbcInfoProvider = new DefaultCloudSqlJdbcInfoProvider(sqlProperties, databaseType);
 			if (LOGGER.isInfoEnabled()) {
 				LOGGER.info("Default " + databaseType.name()
@@ -101,7 +87,7 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
 			environment.getPropertySources()
 					.addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
 
-			setCredentials(sqlProperties, gcpProperties);
+			setCredentials(sqlProperties, propertiesRetriever.getGcpProperties());
 
 			// support usage metrics
 			CoreSocketFactory.setApplicationName("spring-cloud-gcp-sql/"
