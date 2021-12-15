@@ -64,6 +64,7 @@
 		<skipTests>false</skipTests>
 		<spring-cloud-build.version>3.0.4</spring-cloud-build.version>
 		<spring-cloud-dependencies.version>2020.0.4</spring-cloud-dependencies.version>
+		<spring-boot-dependencies.version>2.5.7</spring-boot-dependencies.version>
 		<spring-javaformat-checkstyle.version>0.0.29</spring-javaformat-checkstyle.version>
 		<zipkin-gcp.version>1.0.2</zipkin-gcp.version>
 		<spring-native.version>0.10.5</spring-native.version>
@@ -80,9 +81,9 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-build-dependencies</artifactId>
-				<version>${spring-cloud-build.version}</version>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring-boot-dependencies.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -171,7 +172,6 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Needed to run JUnit4 tests while inheriting from spring-cloud-build parent pom -->
 		<dependency>
 			<groupId>org.junit.vintage</groupId>
 			<artifactId>junit-vintage-engine</artifactId>
