@@ -32,7 +32,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
  *
  * @author Chengyuan
  */
-////Please use "-Dit.spanner=true -Dit.datastore=true" to enable the tests
+////Please use "-Dit.multisample=true" to enable the tests
 @ExtendWith(SpringExtension.class)
 @EnabledIfSystemProperty(named = "it.multisample", matches = "true")
 @TestPropertySource("classpath:application-test.properties")
