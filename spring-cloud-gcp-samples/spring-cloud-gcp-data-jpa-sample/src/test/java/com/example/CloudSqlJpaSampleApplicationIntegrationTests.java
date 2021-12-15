@@ -16,20 +16,18 @@
 
 package com.example;
 
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.system.OutputCaptureRule;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * This test verifies that the jpa-sample works.
@@ -42,16 +40,12 @@ import static org.junit.Assume.assumeThat;
  * @author Dmitry Solomakha
  * @author Daniel Zou
  */
-@RunWith(SpringRunner.class)
+//Please use "-Dit.cloudsql=true" to enable the tests
+@EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
+@ExtendWith(SpringExtension.class)
+@ExtendWith(OutputCaptureExtension.class)
 @SpringBootTest(classes = {DemoApplication.class})
-public class CloudSqlJpaSampleApplicationIntegrationTests {
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"JPA-sample integration tests are disabled. Please use '-Dit.cloudsql=true' "
-						+ "to enable them. ",
-				System.getProperty("it.cloudsql"), is("true"));
-	}
+class CloudSqlJpaSampleApplicationIntegrationTests {
 
 	@Autowired
 	private CommandLineRunner commandLineRunner;
@@ -59,15 +53,13 @@ public class CloudSqlJpaSampleApplicationIntegrationTests {
 	/**
 	 * Used to check exception messages and types.
 	 */
-	@Rule
-	public OutputCaptureRule outputCapture = new OutputCaptureRule();
 
 	@Test
-	public void basicTest() throws Exception {
+	void basicTest(CapturedOutput capturedOutput) throws Exception {
 		// we need to run the command line runner again to capture output
 		this.commandLineRunner.run();
 
-		assertThat(this.outputCapture.toString()).contains("Number of houses is 4");
-		assertThat(this.outputCapture.toString()).contains("636 Avenue of the Americas, NYC");
+		assertThat(capturedOutput.toString()).contains("Number of houses is 4");
+		assertThat(capturedOutput.toString()).contains("636 Avenue of the Americas, NYC");
 	}
 }
