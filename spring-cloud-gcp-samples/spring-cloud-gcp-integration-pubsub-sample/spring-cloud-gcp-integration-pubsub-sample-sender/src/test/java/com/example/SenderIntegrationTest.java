@@ -22,21 +22,19 @@ import java.util.UUID;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Integration test for the sender sample app.
@@ -45,11 +43,11 @@ import static org.junit.Assume.assumeThat;
  *
  * @since 1.1
  */
-
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
-public class SenderIntegrationTest {
+class SenderIntegrationTest {
 
 	@Autowired
 	private TestRestTemplate restTemplate;
@@ -57,16 +55,8 @@ public class SenderIntegrationTest {
 	@Autowired
 	private PubSubTemplate pubSubTemplate;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub-integration=true' "
-						+ "to enable them. ",
-				System.getProperty("it.pubsub-integration"), is("true"));
-	}
-
 	@Test
-	public void testSample() throws Exception {
+	void testSample() throws Exception {
 		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		String message = "test message " + UUID.randomUUID();
 
