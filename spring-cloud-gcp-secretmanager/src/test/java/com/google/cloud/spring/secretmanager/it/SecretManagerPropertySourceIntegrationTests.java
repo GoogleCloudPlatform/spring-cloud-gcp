@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 public class SecretManagerPropertySourceIntegrationTests {
 
 	private ConfigurableApplicationContext context =
-			new SpringApplicationBuilder(TestConfiguration.class)
+			new SpringApplicationBuilder(SecretManagerTestConfiguration.class, TestConfiguration.class)
 					.web(WebApplicationType.NONE)
 					.properties("spring.cloud.bootstrap.enabled=true")
 					.run();
