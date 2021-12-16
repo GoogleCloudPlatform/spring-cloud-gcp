@@ -16,22 +16,19 @@
 
 package com.example;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
-import org.apache.commons.io.output.TeeOutputStream;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -47,31 +44,16 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
 @ExtendWith(SpringExtension.class)
+@ExtendWith(OutputCaptureExtension.class)
 @SpringBootTest
 @DirtiesContext
 class ReceiverIntegrationTest {
-	private static PrintStream systemOut;
-
-	private static ByteArrayOutputStream baos;
 
 	@Autowired
 	private PubSubTemplate pubSubTemplate;
 
-	@BeforeAll
-	static void prepare() {
-		systemOut = System.out;
-		baos = new ByteArrayOutputStream();
-		TeeOutputStream out = new TeeOutputStream(systemOut, baos);
-		System.setOut(new PrintStream(out));
-	}
-
-	@AfterAll
-	static void bringBack() {
-		System.setOut(systemOut);
-	}
-
 	@Test
-	void testSample() throws Exception {
+	void testSample(CapturedOutput capturedOutput) throws Exception {
 		String message = "test message " + UUID.randomUUID();
 		String expectedString = "Message arrived! Payload: " + message;
 
@@ -79,7 +61,7 @@ class ReceiverIntegrationTest {
 
 		Awaitility.await()
 				.atMost(60, TimeUnit.SECONDS)
-				.until(() -> baos.toString().contains(expectedString));
-		assertThat(baos.toString()).contains(expectedString);
+				.until(() -> capturedOutput.toString().contains(expectedString));
+		assertThat(capturedOutput.toString()).contains(expectedString);
 	}
 }
