@@ -20,42 +20,34 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.cloud.spring.autoconfigure.datastore.DatastoreNamespaceProvider;
 import org.awaitility.Awaitility;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Integration test for multiple-namespace support.
  *
  * @author Chengyuan Zhao
  */
-@RunWith(SpringRunner.class)
+//Please use "-Dit.datastore=true" to enable the tests
+@EnabledIfSystemProperty(named = "it.datastore", matches = "true")
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
 @EnableAutoConfiguration
-public class MultipleNamespaceDatastoreIntegrationTest {
+class MultipleNamespaceDatastoreIntegrationTest {
 
 	@Autowired
 	PersonRepository datastorePersonRepository;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat("Datastore integration tests are disabled. "
-				+ "Please use '-Dit.datastore=true' to enable them.",
-				System.getProperty("it.datastore"), is("true"));
-	}
-
 	@Test
-	public void testMultipleNamespaces() {
+	void testMultipleNamespaces() {
 
 		this.datastorePersonRepository.deleteAll();
 		Config.flipNamespace();
