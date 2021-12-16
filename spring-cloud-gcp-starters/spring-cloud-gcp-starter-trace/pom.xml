@@ -27,28 +27,6 @@
 			<artifactId>spring-cloud-sleuth-brave</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.zipkin.gcp</groupId>
-			<artifactId>zipkin-sender-stackdriver</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.protobuf</groupId>
-					<artifactId>protobuf-java</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.grpc</groupId>
-					<artifactId>grpc-protobuf</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.grpc</groupId>
-					<artifactId>grpc-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.zipkin.gcp</groupId>
-			<artifactId>brave-propagation-stackdriver</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-core-grpc</artifactId>
 		</dependency>

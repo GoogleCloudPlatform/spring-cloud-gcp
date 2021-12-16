@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<artifactId>spring-cloud-gcp</artifactId>
+		<groupId>com.google.cloud</groupId>
+		<version>2.0.7-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>spring-cloud-gcp-trace</artifactId>
+
+	<properties>
+		<!-- from armeria-grpc -->
+		<grpc.version>1.33.1</grpc.version>
+		<!-- from grpc-protobuf -->
+		<protobuf.version>3.12.0</protobuf.version>
+		<!-- only used for stackdriver protos, we could possibly obviate this if a problem -->
+		<grpc-google-cloud-trace.version>1.2.10</grpc-google-cloud-trace.version>
+		<brave.version>5.13.3</brave.version>
+		<zipkin.version></zipkin.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.zipkin.brave</groupId>
+			<artifactId>brave</artifactId>
+			<version>${brave.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.api.grpc</groupId>
+			<artifactId>grpc-google-cloud-trace-v2</artifactId>
+			<version>${grpc-google-cloud-trace.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-core</artifactId>
+			<version>${grpc.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-protobuf</artifactId>
+			<version>${grpc.version}</version>
+		</dependency>
+
+		<!-- Stackdriver Trace read operations are only available in its v1 API. Use it to validate data was written during integration tests. -->
+		<dependency>
+			<groupId>com.google.api.grpc</groupId>
+			<artifactId>grpc-google-cloud-trace-v1</artifactId>
+			<version>${grpc-google-cloud-trace.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-testing</artifactId>
+			<version>${grpc.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-auth</artifactId>
+			<version>${grpc.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-netty-shaded</artifactId>
+			<version>${grpc.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.auth</groupId>
+			<artifactId>google-auth-library-oauth2-http</artifactId>
+			<version>0.22.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+</project>

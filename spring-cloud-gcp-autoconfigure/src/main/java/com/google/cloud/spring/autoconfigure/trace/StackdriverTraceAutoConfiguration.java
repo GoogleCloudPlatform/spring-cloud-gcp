@@ -31,6 +31,7 @@ import com.google.cloud.spring.autoconfigure.trace.sleuth.StackdriverHttpRequest
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.trace.brave.sender.StackdriverSender;
 import io.grpc.CallOptions;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
