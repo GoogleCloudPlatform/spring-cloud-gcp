@@ -22,18 +22,16 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.output.TeeOutputStream;
 import org.awaitility.Awaitility;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Tests for the Firestore sample application.
@@ -42,37 +40,32 @@ import static org.junit.Assume.assumeThat;
  *
  * @since 1.2
  */
-
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.firestore", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext
-public class FirestoreSampleAppIntegrationTests {
+class FirestoreSampleAppIntegrationTests {
 	private static final int TIMEOUT = 10;
 	private static PrintStream systemOut;
 
 	private static ByteArrayOutputStream baos;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"Firestore-sample tests are disabled. Please use '-Dit.firestore=true' "
-						+ "to enable them. ",
-				System.getProperty("it.firestore"), is("true"));
-
+	@BeforeAll
+	static void prepare() {
 		systemOut = System.out;
 		baos = new ByteArrayOutputStream();
 		TeeOutputStream out = new TeeOutputStream(systemOut, baos);
 		System.setOut(new PrintStream(out));
 	}
 
-	@AfterClass
-	public static void bringBack() {
+	@AfterAll
+	static void bringBack() {
 		System.setOut(systemOut);
 	}
 
 	@Test
-	public void testSample() {
+	void testSample() {
 		String expectedString =
 				"read: {name=Ada, phones=[123, 456]}\n" +
 				"read: User{name='Joe', phones=[Phone{number=12345, type=CELL}, Phone{number=54321, type=WORK}]}";
