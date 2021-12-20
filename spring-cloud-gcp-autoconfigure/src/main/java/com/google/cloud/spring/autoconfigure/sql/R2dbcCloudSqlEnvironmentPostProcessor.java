@@ -70,13 +70,22 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 		Assert.hasText(sqlProperties.getInstanceConnectionName(),
 				"An instance connection name must be provided in the format <PROJECT_ID>:<REGION>:<INSTANCE_ID>.");
 
-		return String.format(databaseType.getR2dbcUrlTemplate(),
+		return String.format(databaseType.getUrlTemplate(),
 				sqlProperties.getInstanceConnectionName(), sqlProperties.getDatabaseName());
 	}
 
+	/**
+	 * Returns {@link DatabaseType} constant based on whether mySQL or postgreSQL driver and
+	 * connector dependencies are present on the classpath. Returns null if Cloud SQL is not
+	 * enabled in Spring Cloud GCP, CredentialFactory is not present or ConnectionFactory
+	 * (which is used to enable Spring R2DBC auto-configuration) is not present.
+	 * @param environment environment to post-process
+	 * @return database type
+	 */
 	DatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
 		if (Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.sql.enabled", "true"))
-				&& isOnClasspath("com.google.cloud.sql.CredentialFactory")) {
+				&& isOnClasspath("com.google.cloud.sql.CredentialFactory")
+				&& isOnClasspath("io.r2dbc.spi.ConnectionFactory")) {
 			if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql") &&
 					isOnClasspath("dev.miku.r2dbc.mysql.MySqlConnectionFactoryProvider")) {
 				return DatabaseType.R2DBC_MYSQL;
