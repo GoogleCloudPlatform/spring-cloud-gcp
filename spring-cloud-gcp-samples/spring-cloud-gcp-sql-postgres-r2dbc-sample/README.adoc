@@ -18,7 +18,7 @@ You will be asked to set a password for the user; remember this value.
 
 4. Open the link:src/main/resources/application.properties[application.properties] file and replace the following:
 - *[database-name]* with the name of the database you created in step 3.
-- *[instance-connection-name]* with the instance name of the Postgres instance you created in step 1.
+- *[instance-connection-name]* with the instance name (in the format [GCP_PROJECT_ID]:[REGION]:[INSTANCE_NAME]) of the Postgres instance you created in step 1.
 +
 If you would like to use a different user instead of the default (`postgres`), set the `spring.r2dbc.username` property appropriately.
 +

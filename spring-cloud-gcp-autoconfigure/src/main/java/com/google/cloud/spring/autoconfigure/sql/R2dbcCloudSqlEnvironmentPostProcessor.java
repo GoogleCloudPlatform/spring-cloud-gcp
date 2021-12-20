@@ -75,7 +75,7 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 	}
 
 	/**
-	 * Returns {@link DatabaseType} constant based on whether mySQL or postgreSQL driver and
+	 * Returns {@link DatabaseType} constant based on whether mySQL or postgreSQL R2DBC driver and
 	 * connector dependencies are present on the classpath. Returns null if Cloud SQL is not
 	 * enabled in Spring Cloud GCP, CredentialFactory is not present or ConnectionFactory
 	 * (which is used to enable Spring R2DBC auto-configuration) is not present.
