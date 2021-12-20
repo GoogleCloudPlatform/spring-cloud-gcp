@@ -120,4 +120,14 @@ class R2dbcCloudSqlEnvironmentPostProcessorTest {
 							assertThat(initializer.getEnabledDatabaseType(context.getEnvironment())).isNull();
 						});
 	}
+
+	@Test
+	void testGetEnabledDatatype_noConnectionFactoryPresent() {
+		this.contextRunner.withClassLoader(
+				new FilteredClassLoader("io.r2dbc.spi.ConnectionFactory"))
+				.run(
+						context -> {
+							assertThat(initializer.getEnabledDatabaseType(context.getEnvironment())).isNull();
+						});
+	}
 }
