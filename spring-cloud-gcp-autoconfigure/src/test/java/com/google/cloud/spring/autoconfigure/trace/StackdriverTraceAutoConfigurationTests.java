@@ -29,6 +29,7 @@ import brave.http.HttpRequestParser;
 import brave.http.HttpTracingCustomizer;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.trace.brave.sender.StackdriverSender;
 import com.google.devtools.cloudtrace.v2.BatchWriteSpansRequest;
 import com.google.devtools.cloudtrace.v2.Span;
 import com.google.devtools.cloudtrace.v2.TraceServiceGrpc;
@@ -62,7 +63,6 @@ import zipkin2.codec.SpanBytesEncoder;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Sender;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
-import zipkin2.reporter.stackdriver.StackdriverSender;
 
 /** Tests for auto-config. */
 class StackdriverTraceAutoConfigurationTests {

@@ -8,7 +8,6 @@ import brave.propagation.TraceContextOrSamplingFlags;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.cloud.spring.trace.brave.propagation.StackdriverTracePropagation;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

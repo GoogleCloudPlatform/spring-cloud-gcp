@@ -23,7 +23,6 @@ import brave.http.HttpRequestParser;
 import brave.http.HttpTracingCustomizer;
 import brave.propagation.B3Propagation;
 import brave.propagation.Propagation;
-import brave.propagation.stackdriver.StackdriverTracePropagation;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.FixedExecutorProvider;
@@ -31,6 +30,8 @@ import com.google.cloud.spring.autoconfigure.trace.sleuth.StackdriverHttpRequest
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.trace.brave.propagation.StackdriverTracePropagation;
+import com.google.cloud.spring.trace.brave.sender.StackdriverEncoder;
 import com.google.cloud.spring.trace.brave.sender.StackdriverSender;
 import io.grpc.CallOptions;
 import io.grpc.ManagedChannel;
@@ -235,10 +236,9 @@ public class StackdriverTraceAutoConfiguration {
       }
     }
 
-    final Builder builder =
-        StackdriverSender.newBuilder(channel)
-            .projectId(this.finalProjectIdProvider.getProjectId())
-            .callOptions(callOptions);
+		final StackdriverSender.Builder builder = StackdriverSender.newBuilder(channel)
+				.projectId(this.finalProjectIdProvider.getProjectId())
+				.callOptions(callOptions);
 
     if (traceProperties.getServerResponseTimeoutMs() != null) {
       builder.serverResponseTimeoutMs(traceProperties.getServerResponseTimeoutMs());
