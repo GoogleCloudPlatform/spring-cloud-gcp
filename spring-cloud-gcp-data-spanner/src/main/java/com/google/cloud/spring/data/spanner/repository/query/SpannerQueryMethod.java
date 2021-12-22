@@ -37,19 +37,19 @@ import org.springframework.util.StringUtils;
  */
 public class SpannerQueryMethod extends QueryMethod {
 
-	private final Method method;
+	private final Method queryMethod;
 
 	/**
 	 * Creates a new {@link QueryMethod} from the given parameters. Looks up the correct
 	 * query to use for following invocations of the method given.
 	 *
-	 * @param method must not be {@literal null}.
+	 * @param queryMethod must not be {@literal null}.
 	 * @param metadata must not be {@literal null}.
 	 * @param factory must not be {@literal null}.
 	 */
-	public SpannerQueryMethod(Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
-		super(method, metadata, factory);
-		this.method = method;
+	public SpannerQueryMethod(Method queryMethod, RepositoryMetadata metadata, ProjectionFactory factory) {
+		super(queryMethod, metadata, factory);
+		this.queryMethod = queryMethod;
 	}
 
 	/**
@@ -73,8 +73,8 @@ public class SpannerQueryMethod extends QueryMethod {
 	 * Get the method metadata.
 	 * @return the method metadata.
 	 */
-	public Method getMethod() {
-		return this.method;
+	Method getQueryMethod() {
+		return this.queryMethod;
 	}
 
 	/**
@@ -85,6 +85,6 @@ public class SpannerQueryMethod extends QueryMethod {
 	 */
 	@Nullable
 	Query getQueryAnnotation() {
-		return AnnotatedElementUtils.findMergedAnnotation(this.method, Query.class);
+		return AnnotatedElementUtils.findMergedAnnotation(this.queryMethod, Query.class);
 	}
 }
