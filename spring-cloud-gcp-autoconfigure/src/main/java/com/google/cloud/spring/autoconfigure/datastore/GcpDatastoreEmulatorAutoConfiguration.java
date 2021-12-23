@@ -20,10 +20,12 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import com.google.cloud.datastore.testing.LocalDatastoreHelper;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -42,6 +44,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty("spring.cloud.gcp.datastore.emulator.enabled")
+@ConditionalOnClass(DatastoreTemplate.class)
 @AutoConfigureBefore(GcpDatastoreAutoConfiguration.class)
 @EnableConfigurationProperties(GcpDatastoreProperties.class)
 @ConditionalOnMissingBean(LocalDatastoreHelper.class)

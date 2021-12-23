@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.nativex.firestore;
 
-import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreEmulatorAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.firestore.FirestoreRepositoriesAutoConfiguration;
 import com.google.cloud.spring.data.firestore.SimpleFirestoreReactiveRepository;
 import com.google.cloud.spring.data.firestore.repository.support.FirestoreRepositoryFactoryBean;
@@ -37,8 +36,8 @@ import org.springframework.nativex.type.NativeConfiguration;
 		trigger = FirestoreRepositoriesAutoConfiguration.class,
 		types = @TypeHint(types = {
 				FirestoreRepositoryFactoryBean.class,
-				SimpleFirestoreReactiveRepository.class,
-				GcpDatastoreEmulatorAutoConfiguration.class
+				SimpleFirestoreReactiveRepository.class//,
+				//GcpDatastoreEmulatorAutoConfiguration.class
 		}, typeNames = {
 				"com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext"
 		}, access = AccessBits.CLASS
