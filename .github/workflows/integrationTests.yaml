@@ -26,7 +26,6 @@ jobs:
           - logging
           - metrics
           - multisample
-          - native
           - kotlin
           - pubsub
           - pubsub-bus
@@ -50,7 +49,7 @@ jobs:
           java-version: 11
       - name: Setup GraalVM
         uses: DeLaGuardo/setup-graalvm@4.0
-        if: matrix.it == 'native'
+        if: matrix.it == 'native' # note that this is no longer in the matrix
         with:
           graalvm: '21.2.0'
           java: 'java11'
