@@ -31,14 +31,14 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class SpannerQueryMethodTests {
+class SpannerQueryMethodTests {
 
 
 	RepositoryMetadata mockMetadata;
 	ProjectionFactory mockProjectionFactory;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	void setUp() throws Exception {
 		this.mockMetadata = mock(RepositoryMetadata.class);
 		this.mockProjectionFactory = mock(ProjectionFactory.class);
 		when(mockMetadata.getReturnType(any())).thenReturn(
@@ -47,28 +47,28 @@ public class SpannerQueryMethodTests {
 	}
 
 	@Test
-	public void hasQueryAnnotationTrueIfNonEmptyQueryFound() throws NoSuchMethodException {
+	void hasQueryAnnotationTrueIfNonEmptyQueryFound() throws NoSuchMethodException {
 		SpannerQueryMethod queryMethod = new SpannerQueryMethod(
 				Example.class.getMethod("someAnnotatedMethod"), mockMetadata, mockProjectionFactory);
 		assertThat(queryMethod.hasAnnotatedQuery()).isTrue();
 	}
 
 	@Test
-	public void hasQueryAnnotationFalseIfNotAnnotated() throws NoSuchMethodException {
+	void hasQueryAnnotationFalseIfNotAnnotated() throws NoSuchMethodException {
 		SpannerQueryMethod queryMethod = new SpannerQueryMethod(
 				Example.class.getMethod("plainMethod"), mockMetadata, mockProjectionFactory);
 		assertThat(queryMethod.hasAnnotatedQuery()).isFalse();
 	}
 
 	@Test
-	public void getQueryMethodReturnsStoredConstructorArgument() throws NoSuchMethodException {
+	void getQueryMethodReturnsStoredConstructorArgument() throws NoSuchMethodException {
 		Method method = Example.class.getMethod("plainMethod");
 		SpannerQueryMethod queryMethod = new SpannerQueryMethod(method, mockMetadata, mockProjectionFactory);
 		assertThat(queryMethod.getQueryMethod()).isSameAs(method);
 	}
 
 	@Test
-	public void getQueryAnnotationsReturnsCorrectOne() throws NoSuchMethodException {
+	void getQueryAnnotationsReturnsCorrectOne() throws NoSuchMethodException {
 		SpannerQueryMethod queryMethod = new SpannerQueryMethod(
 				Example.class.getMethod("someAnnotatedMethod"), mockMetadata, mockProjectionFactory);
 		Query query = queryMethod.getQueryAnnotation();
