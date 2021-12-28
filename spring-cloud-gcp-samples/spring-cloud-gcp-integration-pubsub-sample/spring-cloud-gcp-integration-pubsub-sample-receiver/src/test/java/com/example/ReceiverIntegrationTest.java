@@ -16,27 +16,23 @@
 
 package com.example;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
-import org.apache.commons.io.output.TeeOutputStream;
 import org.awaitility.Awaitility;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Tests for the receiver application.
@@ -46,38 +42,18 @@ import static org.junit.Assume.assumeThat;
  *
  * @since 1.1
  */
-
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
+@ExtendWith(SpringExtension.class)
+@ExtendWith(OutputCaptureExtension.class)
 @SpringBootTest
 @DirtiesContext
-public class ReceiverIntegrationTest {
-	private static PrintStream systemOut;
-
-	private static ByteArrayOutputStream baos;
+class ReceiverIntegrationTest {
 
 	@Autowired
 	private PubSubTemplate pubSubTemplate;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub-integration=true' "
-						+ "to enable them. ",
-				System.getProperty("it.pubsub-integration"), is("true"));
-
-		systemOut = System.out;
-		baos = new ByteArrayOutputStream();
-		TeeOutputStream out = new TeeOutputStream(systemOut, baos);
-		System.setOut(new PrintStream(out));
-	}
-
-	@AfterClass
-	public static void bringBack() {
-		System.setOut(systemOut);
-	}
-
 	@Test
-	public void testSample() throws Exception {
+	void testSample(CapturedOutput capturedOutput) throws Exception {
 		String message = "test message " + UUID.randomUUID();
 		String expectedString = "Message arrived! Payload: " + message;
 
@@ -85,7 +61,7 @@ public class ReceiverIntegrationTest {
 
 		Awaitility.await()
 				.atMost(60, TimeUnit.SECONDS)
-				.until(() -> baos.toString().contains(expectedString));
-		assertThat(baos.toString()).contains(expectedString);
+				.until(() -> capturedOutput.toString().contains(expectedString));
+		assertThat(capturedOutput.toString()).contains(expectedString);
 	}
 }
