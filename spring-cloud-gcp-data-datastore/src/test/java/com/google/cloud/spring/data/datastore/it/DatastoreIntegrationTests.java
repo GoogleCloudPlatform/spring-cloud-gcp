@@ -78,6 +78,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.AopTestUtils;
@@ -1091,98 +1092,63 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 
 	@Test
 	public void testFindByExampleFluent() {
+		Example<TestEntity> exampleRedCircle = Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null));
+		Example<TestEntity> exampleRed = Example.of(new TestEntity(null, "red", null, null, null));
 		// regular find by example. no fluent query
 		Iterable<TestEntity> results = this.testEntityRepository
-				.findAll(Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null)));
+				.findAll(exampleRedCircle);
 		assertThat(results)
 				.containsExactlyInAnyOrder(this.testEntityA, this.testEntityC);
 
+
+		TestEntityProjection projectedResults = this.testEntityRepository.findBySize(1L);
+		System.out.println(projectedResults);
+
+		assertThat(projectedResults).isInstanceOf(TestEntityProjection.class);
+		assertThat(projectedResults).isNotInstanceOf(TestEntity.class);
 		// sort by and all.
 		assertThat((List<TestEntity>) this.testEntityRepository.findBy(
-				Example.of(new TestEntity(null, "red", null, null, null)),
+				exampleRed,
 				q -> q.sortBy(Sort.by("id")).all())).containsExactly(this.testEntityA, this.testEntityC, this.testEntityD);
 
 		// get count
 		assertThat((long) this.testEntityRepository.findBy(
-				Example.of(new TestEntity(null, "red", null, null, null)),
+				exampleRed,
 				q -> q.count())).isEqualTo(3);
 
 		// exists
 		assertThat((boolean) this.testEntityRepository.findBy(
-				Example.of(new TestEntity(null, "red", null, null, null)),
+				exampleRed,
 				q -> q.exists())).isTrue();
 
 		// find one
 		TestEntity red = this.testEntityRepository.findBy(
-				Example.of(new TestEntity(null, "red", null, null, null)),
+				exampleRed,
 				q -> q.firstValue());
 		System.out.println(red);
 		assertThat(red.getColor()).isEqualTo("red");
 
 		// one value
 		TestEntity red1 = this.testEntityRepository.findBy(
-				Example.of(new TestEntity(null, "red", null, null, null)),
+				exampleRed,
 				q -> q.oneValue());
 		assertThat(red1.getColor()).isEqualTo("red");
 		assertThat((Optional<TestEntity>) this.testEntityRepository.findBy(
 				Example.of(new TestEntity(null, "purple", null, null, null)),
-				q -> q.one())).isNotPresent();
+				FetchableFluentQuery::one)).isNotPresent();
 
+		// page
+		Pageable pageable = PageRequest.of(0, 2);
+		Page<TestEntity> pagedResults = this.testEntityRepository.findBy(exampleRed, q -> q.page(pageable));
 
-		// assertThat(this.testEntityRepository
-		// 		.findAll(Example.of(new TestEntity(2L, "blue", null, null, null))))
-		// 		.containsExactly(this.testEntityB);
-		//
-		// assertThat(this.testEntityRepository
-		// 		.findAll(Example.of(new TestEntity(2L, "red", null, null, null))))
-		// 		.isEmpty();
-		//
-		// Page<TestEntity> result1 = this.testEntityRepository
-		// 		.findAll(
-		// 				Example.of(new TestEntity(null, null, null, null, null)),
-		// 				PageRequest.of(0, 2, Sort.by("size")));
-		// assertThat(result1.getTotalElements()).isEqualTo(4);
-		// assertThat(result1.getNumber()).isZero();
-		// assertThat(result1.getNumberOfElements()).isEqualTo(2);
-		// assertThat(result1.getTotalPages()).isEqualTo(2);
-		// assertThat(result1.hasNext()).isTrue();
-		// assertThat(result1).containsExactly(this.testEntityA, this.testEntityC);
-		//
-		// Page<TestEntity> result2 = this.testEntityRepository
-		// 		.findAll(
-		// 				Example.of(new TestEntity(null, null, null, null, null)),
-		// 				result1.getPageable().next());
-		// assertThat(result2.getTotalElements()).isEqualTo(4);
-		// assertThat(result2.getNumber()).isEqualTo(1);
-		// assertThat(result2.getNumberOfElements()).isEqualTo(2);
-		// assertThat(result2.getTotalPages()).isEqualTo(2);
-		// assertThat(result2.hasNext()).isFalse();
-		// assertThat(result2).containsExactly(this.testEntityD, this.testEntityB);
-		//
-		// assertThat(this.testEntityRepository
-		// 		.findAll(
-		// 				Example.of(new TestEntity(null, null, null, null, null)),
-		// 				Sort.by(Sort.Direction.ASC, "id")))
-		// 		.containsExactly(this.testEntityA, this.testEntityB, this.testEntityC, this.testEntityD);
-		//
-		// assertThat(this.testEntityRepository
-		// 		.count(Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null),
-		// 				ExampleMatcher.matching().withIgnorePaths("size", "blobField"))))
-		// 		.isEqualTo(2);
-		//
-		// assertThat(this.testEntityRepository
-		// 		.exists(Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null),
-		// 				ExampleMatcher.matching().withIgnorePaths("size", "blobField"))))
-		// 		.isTrue();
-		//
-		// assertThat(this.testEntityRepository
-		// 		.exists(Example.of(new TestEntity(null, "red", null, null, null),
-		// 				ExampleMatcher.matching().withIgnorePaths("id").withIncludeNullValues())))
-		// 		.isFalse();
-		//
-		// assertThat(this.testEntityRepository
-		// 		.exists(Example.of(new TestEntity(null, "red", null, null, null))))
-		// 		.isTrue();
+		assertThat(pagedResults).containsExactly(this.testEntityA, this.testEntityC);
+
+		// List<TestEntityProjection> ppResults = this.testEntityRepository.findBy(
+		// 		Example.of(new TestEntity(null, "red", null, null, null)),
+		// 		q -> q.sortBy(Sort.by("id")).as(TestEntityProjection.class).all());
+
+		// System.out.println(ppResults);
+
 	}
 }
 

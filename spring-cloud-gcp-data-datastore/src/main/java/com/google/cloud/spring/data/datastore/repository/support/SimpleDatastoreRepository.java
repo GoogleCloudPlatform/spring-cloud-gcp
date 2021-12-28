@@ -274,12 +274,19 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 
 		@Override
 		public List<R> all() {
-			return (List) stream().collect(Collectors.toList());
+			return stream().collect(Collectors.toList());
 		}
 
+		/**
+		 * Get a page of matching elements for {@link Pageable}.
+		 *
+		 * @param pageable must not be {@code null}. The given {@link Pageable} will override any previously specified
+		 *          {@link Sort sort} if the {@link Sort} object is not {@link Sort#isUnsorted()}.
+		 * @return
+		 */
 		@Override
 		public Page<R> page(Pageable pageable) {
-			return null;
+			return (Page<R>) SimpleDatastoreRepository.this.findAll(example,pageable);
 		}
 
 		@Override
@@ -287,7 +294,7 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 			if (sort.isSorted()) {
 				return (Stream<R>) findAll(example, PageRequest.of(0, Integer.MAX_VALUE, sort)).stream();
 			}
-			return (Stream<R>) Streamable.of((Iterable<S>) findAll(example, PageRequest.of(0, Integer.MAX_VALUE))).stream();
+			return (Stream<R>) Streamable.of((Iterable<S>) SimpleDatastoreRepository.this.findAll(example, PageRequest.of(0, Integer.MAX_VALUE))).stream();
 		}
 
 		@Override
@@ -307,9 +314,13 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 
 		@Override
 		public FetchableFluentQuery as(Class resultType) {
-			return null;
+			// return new DatastoreFluentQueryByExample<>(example, sort, domainType, resultType);
+			throw new UnsupportedOperationException();
 		}
 
 
+// private <P> Function<Iterator<S>, P> getConversionFunction(Iterator<S> input, Class<P> targetType) {
+		// 	((DatastoreTemplate) SimpleDatastoreRepository.this.datastoreTemplate).convertEntitiesForRead(input, targetType);
+		// }
 	}
 }
