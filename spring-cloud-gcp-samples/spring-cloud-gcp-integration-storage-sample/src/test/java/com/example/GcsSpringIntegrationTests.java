@@ -32,21 +32,19 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import org.awaitility.Awaitility;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * This test uploads a file to Google Cloud Storage and verifies that it was received in
@@ -57,10 +55,11 @@ import static org.junit.Assume.assumeThat;
  *
  * @author Daniel Zou
  */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.storage", matches = "true")
+@ExtendWith(SpringExtension.class)
 @PropertySource("classpath:application.properties")
 @SpringBootTest(classes = { GcsSpringIntegrationApplication.class })
-public class GcsSpringIntegrationTests {
+class GcsSpringIntegrationTests {
 
 	private static final String TEST_FILE_NAME = "test_file";
 
@@ -76,27 +75,19 @@ public class GcsSpringIntegrationTests {
 	@Value("${gcs-local-directory}")
 	private String outputFolder;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Google Cloud Storage integration tests are disabled. "
-						+ "Please use '-Dit.storage=true' to enable them. ",
-				System.getProperty("it.storage"), is("true"));
-	}
-
-	@Before
-	public void setupTestEnvironment() {
+	@BeforeEach
+	void setupTestEnvironment() {
 		cleanupCloudStorage();
 	}
 
-	@After
-	public void teardownTestEnvironment() throws IOException {
+	@AfterEach
+	void teardownTestEnvironment() throws IOException {
 		cleanupCloudStorage();
 		cleanupLocalDirectory();
 	}
 
 	@Test
-	public void testFilePropagatedToLocalDirectory() {
+	void testFilePropagatedToLocalDirectory() {
 		BlobId blobId = BlobId.of(this.cloudInputBucket, TEST_FILE_NAME);
 		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
 		this.storage.create(blobInfo, "Hello World!".getBytes(StandardCharsets.UTF_8));
@@ -118,14 +109,14 @@ public class GcsSpringIntegrationTests {
 				});
 	}
 
-	private void cleanupCloudStorage() {
+	void cleanupCloudStorage() {
 		Page<Blob> blobs = this.storage.list(this.cloudInputBucket);
 		for (Blob blob : blobs.iterateAll()) {
 			blob.delete();
 		}
 	}
 
-	private void cleanupLocalDirectory() throws IOException {
+	void cleanupLocalDirectory() throws IOException {
 		Path localDirectory = Paths.get(this.outputFolder);
 		List<Path> files = Files.list(localDirectory).collect(Collectors.toList());
 		for (Path file : files) {
