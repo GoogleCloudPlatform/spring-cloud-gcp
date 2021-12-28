@@ -22,31 +22,29 @@ import java.util.stream.Collectors;
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Tests for the Spanner template usage.
  *
  * @author Daniel Zou
  */
-@RunWith(SpringRunner.class)
-
+@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest
-public class SpannerTemplateIntegrationTests {
+class SpannerTemplateIntegrationTests {
 	@Autowired
 	private SpannerOperations spannerOperations;
 
@@ -56,24 +54,16 @@ public class SpannerTemplateIntegrationTests {
 	@Autowired
 	private SpannerTemplateExample spannerTemplateExample;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Spanner integration tests are disabled. "
-						+ "Please use '-Dit.spanner=true' to enable them. ",
-				System.getProperty("it.spanner"), is("true"));
-	}
-
-	@Before
-	@After
-	public void cleanupSpannerTables() {
+	@BeforeEach
+	@AfterEach
+	void cleanupSpannerTables() {
 		this.spannerTemplateExample.createTablesIfNotExists();
 		this.spannerOperations.delete(Trader.class, KeySet.all());
 		this.spannerOperations.delete(Trade.class, KeySet.all());
 	}
 
 	@Test
-	public void testSpannerTemplateLoadsData() {
+	void testSpannerTemplateLoadsData() {
 		assertThat(this.spannerOperations.readAll(Trade.class)).isEmpty();
 
 		this.spannerTemplateExample.runExample();
