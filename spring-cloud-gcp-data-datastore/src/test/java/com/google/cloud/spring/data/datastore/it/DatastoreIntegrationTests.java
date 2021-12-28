@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -1090,21 +1091,44 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 
 	@Test
 	public void testFindByExampleFluent() {
+		// regular find by example. no fluent query
 		Iterable<TestEntity> results = this.testEntityRepository
 				.findAll(Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null)));
 		assertThat(results)
 				.containsExactlyInAnyOrder(this.testEntityA, this.testEntityC);
 
-		List<TestEntity> result = this.testEntityRepository.findBy(
+		// sort by and all.
+		assertThat((List<TestEntity>) this.testEntityRepository.findBy(
 				Example.of(new TestEntity(null, "red", null, null, null)),
-				q -> q.sortBy(Sort.by("id")).all());
-		System.out.println(result);
-		assertThat(result).containsExactly(this.testEntityA, this.testEntityC, this.testEntityD);
+				q -> q.sortBy(Sort.by("id")).all())).containsExactly(this.testEntityA, this.testEntityC, this.testEntityD);
 
-		long c = this.testEntityRepository.findBy(
+		// get count
+		assertThat((long) this.testEntityRepository.findBy(
 				Example.of(new TestEntity(null, "red", null, null, null)),
-				q -> q.count());
-		System.out.println(c);
+				q -> q.count())).isEqualTo(3);
+
+		// exists
+		assertThat((boolean) this.testEntityRepository.findBy(
+				Example.of(new TestEntity(null, "red", null, null, null)),
+				q -> q.exists())).isTrue();
+
+		// find one
+		TestEntity red = this.testEntityRepository.findBy(
+				Example.of(new TestEntity(null, "red", null, null, null)),
+				q -> q.firstValue());
+		System.out.println(red);
+		assertThat(red.getColor()).isEqualTo("red");
+
+		// one value
+		TestEntity red1 = this.testEntityRepository.findBy(
+				Example.of(new TestEntity(null, "red", null, null, null)),
+				q -> q.oneValue());
+		assertThat(red1.getColor()).isEqualTo("red");
+		assertThat((Optional<TestEntity>) this.testEntityRepository.findBy(
+				Example.of(new TestEntity(null, "purple", null, null, null)),
+				q -> q.one())).isNotPresent();
+
+
 		// assertThat(this.testEntityRepository
 		// 		.findAll(Example.of(new TestEntity(2L, "blue", null, null, null))))
 		// 		.containsExactly(this.testEntityB);

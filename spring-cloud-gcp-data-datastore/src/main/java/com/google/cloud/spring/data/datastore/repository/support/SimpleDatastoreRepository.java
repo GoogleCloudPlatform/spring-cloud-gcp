@@ -45,6 +45,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.data.util.Streamable;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
@@ -251,12 +252,15 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		}
 
 		@Override
+		public Optional<R> one() {
+			return (Optional<R>) SimpleDatastoreRepository.this.findOne(example);
+		}
+
+		@Nullable
+		@Override
 		public R oneValue() {
-			Optional<S> one = SimpleDatastoreRepository.this.findOne(example);
-			if (one.isPresent()) {
-				return (R) one;
-			}
-			return null;
+			Optional<R> one = one();
+			return one.orElse(null);
 		}
 
 		@Override
@@ -269,21 +273,21 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		}
 
 		@Override
-		public List all() {
+		public List<R> all() {
 			return (List) stream().collect(Collectors.toList());
 		}
 
 		@Override
-		public Page page(Pageable pageable) {
+		public Page<R> page(Pageable pageable) {
 			return null;
 		}
 
 		@Override
-		public Stream stream() {
+		public Stream<R> stream() {
 			if (sort.isSorted()) {
-				return findAll(example, PageRequest.of(0, Integer.MAX_VALUE, sort)).stream();
+				return (Stream<R>) findAll(example, PageRequest.of(0, Integer.MAX_VALUE, sort)).stream();
 			}
-			return Streamable.of((Iterable<S>) findAll(example, PageRequest.of(0, Integer.MAX_VALUE))).stream();
+			return (Stream<R>) Streamable.of((Iterable<S>) findAll(example, PageRequest.of(0, Integer.MAX_VALUE))).stream();
 		}
 
 		@Override
@@ -297,7 +301,7 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		}
 
 		@Override
-		public FetchableFluentQuery project(Collection properties) {
+		public FetchableFluentQuery<R> project(Collection properties) {
 			throw new UnsupportedOperationException();
 		}
 
