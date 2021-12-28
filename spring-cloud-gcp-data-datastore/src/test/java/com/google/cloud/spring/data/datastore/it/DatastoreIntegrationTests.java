@@ -1086,6 +1086,80 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 		List<TestEntity> results2 = this.testEntityRepository.findByDatetimeGreaterThan(endDate);
 		assertThat(results2).containsExactly(testEntity2);
 	}
+
+
+	@Test
+	public void testFindByExampleFluent() {
+		Iterable<TestEntity> results = this.testEntityRepository
+				.findAll(Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null)));
+		assertThat(results)
+				.containsExactlyInAnyOrder(this.testEntityA, this.testEntityC);
+
+		List<TestEntity> result = this.testEntityRepository.findBy(
+				Example.of(new TestEntity(null, "red", null, null, null)),
+				q -> q.sortBy(Sort.by("id")).all());
+		System.out.println(result);
+		assertThat(result).containsExactly(this.testEntityA, this.testEntityC, this.testEntityD);
+
+		long c = this.testEntityRepository.findBy(
+				Example.of(new TestEntity(null, "red", null, null, null)),
+				q -> q.count());
+		System.out.println(c);
+		// assertThat(this.testEntityRepository
+		// 		.findAll(Example.of(new TestEntity(2L, "blue", null, null, null))))
+		// 		.containsExactly(this.testEntityB);
+		//
+		// assertThat(this.testEntityRepository
+		// 		.findAll(Example.of(new TestEntity(2L, "red", null, null, null))))
+		// 		.isEmpty();
+		//
+		// Page<TestEntity> result1 = this.testEntityRepository
+		// 		.findAll(
+		// 				Example.of(new TestEntity(null, null, null, null, null)),
+		// 				PageRequest.of(0, 2, Sort.by("size")));
+		// assertThat(result1.getTotalElements()).isEqualTo(4);
+		// assertThat(result1.getNumber()).isZero();
+		// assertThat(result1.getNumberOfElements()).isEqualTo(2);
+		// assertThat(result1.getTotalPages()).isEqualTo(2);
+		// assertThat(result1.hasNext()).isTrue();
+		// assertThat(result1).containsExactly(this.testEntityA, this.testEntityC);
+		//
+		// Page<TestEntity> result2 = this.testEntityRepository
+		// 		.findAll(
+		// 				Example.of(new TestEntity(null, null, null, null, null)),
+		// 				result1.getPageable().next());
+		// assertThat(result2.getTotalElements()).isEqualTo(4);
+		// assertThat(result2.getNumber()).isEqualTo(1);
+		// assertThat(result2.getNumberOfElements()).isEqualTo(2);
+		// assertThat(result2.getTotalPages()).isEqualTo(2);
+		// assertThat(result2.hasNext()).isFalse();
+		// assertThat(result2).containsExactly(this.testEntityD, this.testEntityB);
+		//
+		// assertThat(this.testEntityRepository
+		// 		.findAll(
+		// 				Example.of(new TestEntity(null, null, null, null, null)),
+		// 				Sort.by(Sort.Direction.ASC, "id")))
+		// 		.containsExactly(this.testEntityA, this.testEntityB, this.testEntityC, this.testEntityD);
+		//
+		// assertThat(this.testEntityRepository
+		// 		.count(Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null),
+		// 				ExampleMatcher.matching().withIgnorePaths("size", "blobField"))))
+		// 		.isEqualTo(2);
+		//
+		// assertThat(this.testEntityRepository
+		// 		.exists(Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null),
+		// 				ExampleMatcher.matching().withIgnorePaths("size", "blobField"))))
+		// 		.isTrue();
+		//
+		// assertThat(this.testEntityRepository
+		// 		.exists(Example.of(new TestEntity(null, "red", null, null, null),
+		// 				ExampleMatcher.matching().withIgnorePaths("id").withIncludeNullValues())))
+		// 		.isFalse();
+		//
+		// assertThat(this.testEntityRepository
+		// 		.exists(Example.of(new TestEntity(null, "red", null, null, null))))
+		// 		.isTrue();
+	}
 }
 
 /**

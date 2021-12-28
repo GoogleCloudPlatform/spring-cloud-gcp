@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.LongSupplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import com.google.cloud.datastore.Cursor;
@@ -39,9 +40,11 @@ import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
+import org.springframework.data.util.Streamable;
 import org.springframework.util.Assert;
 
 /**
@@ -218,6 +221,91 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 
 	@Override
 	public <S extends T, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
-		throw new UnsupportedOperationException();
+		Assert.notNull(example, "Example must not be null!");
+		Assert.notNull(queryFunction, "Query function must not be null!");
+
+		return queryFunction.apply(new DatastoreFluentQueryByExample<>(example, example.getProbeType()));
+	}
+
+	class DatastoreFluentQueryByExample<S extends T, R> implements FluentQuery.FetchableFluentQuery<R> {
+		private final Example<S> example;
+		private final Sort sort;
+		private final Class<?> domainType;
+		private final Class<R> resultType;
+		DatastoreQueryOptions.Builder builder;
+
+		DatastoreFluentQueryByExample(Example<S> example, Class<R> resultType) {
+			this(example, Sort.unsorted(), resultType, resultType);
+		}
+
+		DatastoreFluentQueryByExample(Example<S> example, Sort sort, Class<?> domainType, Class<R> resultType) {
+			this.example = example;
+			this.sort = sort;
+			this.domainType = domainType;
+			this.resultType = resultType;
+		}
+
+		@Override
+		public FetchableFluentQuery sortBy(Sort sort) {
+			return new DatastoreFluentQueryByExample<>(example, sort, domainType, resultType);
+		}
+
+		@Override
+		public R oneValue() {
+			Optional<S> one = SimpleDatastoreRepository.this.findOne(example);
+			if (one.isPresent()) {
+				return (R) one;
+			}
+			return null;
+		}
+
+		@Override
+		public R firstValue() {
+			Iterable<S> iter = SimpleDatastoreRepository.this.findAll(example);
+			if (iter.iterator().hasNext()) {
+				return (R) iter.iterator().next();
+			}
+			return null;
+		}
+
+		@Override
+		public List all() {
+			return (List) stream().collect(Collectors.toList());
+		}
+
+		@Override
+		public Page page(Pageable pageable) {
+			return null;
+		}
+
+		@Override
+		public Stream stream() {
+			if (sort.isSorted()) {
+				return findAll(example, PageRequest.of(0, Integer.MAX_VALUE, sort)).stream();
+			}
+			return Streamable.of((Iterable<S>) findAll(example, PageRequest.of(0, Integer.MAX_VALUE))).stream();
+		}
+
+		@Override
+		public long count() {
+			return SimpleDatastoreRepository.this.count(example);
+		}
+
+		@Override
+		public boolean exists() {
+			return SimpleDatastoreRepository.this.exists(example);
+		}
+
+		@Override
+		public FetchableFluentQuery project(Collection properties) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public FetchableFluentQuery as(Class resultType) {
+			return null;
+		}
+
+
 	}
 }
