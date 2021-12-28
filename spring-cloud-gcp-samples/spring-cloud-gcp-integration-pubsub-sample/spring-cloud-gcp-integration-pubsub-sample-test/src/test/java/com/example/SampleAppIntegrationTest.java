@@ -16,17 +16,15 @@
 
 package com.example;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.UUID;
 
-import org.apache.commons.io.output.TeeOutputStream;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -41,29 +39,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 1.1
  */
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
+@ExtendWith(OutputCaptureExtension.class)
 class SampleAppIntegrationTest {
 
 	private RestTemplate restTemplate = new RestTemplate();
 
-	private static PrintStream systemOut;
-
-	private static ByteArrayOutputStream baos;
-
-	@BeforeAll
-	static void prepare() {
-		systemOut = System.out;
-		baos = new ByteArrayOutputStream();
-		TeeOutputStream out = new TeeOutputStream(systemOut, baos);
-		System.setOut(new PrintStream(out));
-	}
-
-	@AfterAll
-	static void bringBack() {
-		System.setOut(systemOut);
-	}
-
 	@Test
-	void testSample() throws Exception {
+	void testSample(CapturedOutput capturedOutput) throws Exception {
 
 		SpringApplicationBuilder sender = new SpringApplicationBuilder(SenderApplication.class)
 				.properties("server.port=8082");
@@ -82,7 +64,7 @@ class SampleAppIntegrationTest {
 
 		boolean messageReceived = false;
 		for (int i = 0; i < 100; i++) {
-			if (baos.toString().contains("Message arrived! Payload: " + message)) {
+			if (capturedOutput.toString().contains("Message arrived! Payload: " + message)) {
 				messageReceived = true;
 				break;
 			}
