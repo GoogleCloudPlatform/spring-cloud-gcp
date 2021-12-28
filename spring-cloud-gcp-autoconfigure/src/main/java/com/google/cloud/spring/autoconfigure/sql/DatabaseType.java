@@ -29,34 +29,28 @@ public enum DatabaseType {
 	 */
 	MYSQL("com.mysql.cj.jdbc.Driver", "jdbc:mysql://google/%s?"
 			+ "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
-			+ "&cloudSqlInstance=%s", "root"),
+			+ "&cloudSqlInstance=%s", "r2dbc:gcp:mysql://%s/%s", "root"),
 
 	/**
 	 * Postgresql constants.
 	 */
 	POSTGRESQL("org.postgresql.Driver", "jdbc:postgresql://google/%s?"
 			+ "socketFactory=com.google.cloud.sql.postgres.SocketFactory"
-			+ "&cloudSqlInstance=%s", "postgres"),
+			+ "&cloudSqlInstance=%s", "r2dbc:gcp:postgres://%s/%s", "postgres");
 
-	/**
-	 * R2DBC MySQL constants.
-	 */
-	R2DBC_MYSQL(null,  "r2dbc:gcp:mysql://%s/%s", "root"),
-
-	/**
-	 * R2DBC Postgresql constants.
-	 */
-	R2DBC_POSTGRESQL(null,  "r2dbc:gcp:postgres://%s/%s", "postgres");
 
 	private final String jdbcDriverName;
 
-	private final String urlTemplate;
+	private final String jdbcUrlTemplate;
+
+	private final String r2dbcUrlTemplate;
 
 	private final String defaultUsername;
 
-	DatabaseType(String jdbcDriverName, String urlTemplate, String defaultUsername) {
+	DatabaseType(String jdbcDriverName, String jdbcUrlTemplate, String r2dbcUrlTemplate, String defaultUsername) {
 		this.jdbcDriverName = jdbcDriverName;
-		this.urlTemplate = urlTemplate;
+		this.jdbcUrlTemplate = jdbcUrlTemplate;
+		this.r2dbcUrlTemplate = r2dbcUrlTemplate;
 		this.defaultUsername = defaultUsername;
 	}
 
@@ -64,16 +58,12 @@ public enum DatabaseType {
 		return this.jdbcDriverName;
 	}
 
-	public String getUrlTemplate() {
-		return this.urlTemplate;
+	public String getJdbcUrlTemplate() {
+		return this.jdbcUrlTemplate;
 	}
 
-	/**
-	 * @deprecated Use {@code getUrlTemplate()}.
-	 */
-	@Deprecated
-	public String getJdbcUrlTemplate() {
-		return this.urlTemplate;
+	public String getR2dbcUrlTemplate() {
+		return this.r2dbcUrlTemplate;
 	}
 
 	public String getDefaultUsername() {

@@ -16,9 +16,8 @@
 
 package com.example;
 
-import java.util.List;
-
 import io.r2dbc.spi.ConnectionFactory;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,12 +38,11 @@ public class WebController {
 	}
 
 	@GetMapping("/getTuples")
-	public Mono<List<String>> getTuples() {
+	public Flux<String> getTuples() {
 		return Mono.from(connectionFactory.create())
 				.flatMapMany(connection -> connection.createStatement("SELECT * FROM users").execute())
 				.flatMap(result -> result
 						.map((row, metadata) -> String.format("[%s, %s, %s]", row.get("EMAIL", String.class),
-								row.get("FIRST_NAME", String.class), row.get("LAST_NAME", String.class))))
-				.collectList();
+								row.get("FIRST_NAME", String.class), row.get("LAST_NAME", String.class))));
 	}
 }

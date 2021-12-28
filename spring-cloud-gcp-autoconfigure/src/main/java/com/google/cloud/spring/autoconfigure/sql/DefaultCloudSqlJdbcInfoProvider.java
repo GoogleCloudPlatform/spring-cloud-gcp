@@ -50,7 +50,7 @@ public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider
 
 	@Override
 	public String getJdbcUrl() {
-		String jdbcUrl = String.format(this.databaseType.getUrlTemplate(),
+		String jdbcUrl = String.format(this.databaseType.getJdbcUrlTemplate(),
 				this.properties.getDatabaseName(),
 				this.properties.getInstanceConnectionName());
 

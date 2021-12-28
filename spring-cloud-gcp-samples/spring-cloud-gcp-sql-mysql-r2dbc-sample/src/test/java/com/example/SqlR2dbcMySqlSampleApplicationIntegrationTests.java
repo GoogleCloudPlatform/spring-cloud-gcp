@@ -16,8 +16,6 @@
 
 package com.example;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
@@ -35,11 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Simple integration test to verify the SQL sample application with MySQL.
  *
  */
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { SqlApplication.class }, properties = {
-		"spring.cloud.gcp.sql.databaseName=code_samples_test_r2dbc_db",
-		"spring.cloud.gcp.sql.instanceConnectionName=spring-cloud-gcp-ci:us-central1:testmysql",
-		"spring.r2dbc.password=test"
-})
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { SqlApplication.class })
 @EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
 public class SqlR2dbcMySqlSampleApplicationIntegrationTests {
 
@@ -48,13 +42,11 @@ public class SqlR2dbcMySqlSampleApplicationIntegrationTests {
 
 	@Test
 	void testSqlRowsAccess() {
-		ResponseEntity<List<String>> result = this.testRestTemplate.exchange(
-				"/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {
+		ResponseEntity<String> result = this.testRestTemplate.exchange(
+				"/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<String>() {
 				});
 
-		assertThat(result.getBody()).containsExactlyInAnyOrder(
-				"[luisao@example.com, Anderson, Silva]",
-				"[jonas@example.com, Jonas, Goncalves]",
-				"[fejsa@example.com, Ljubomir, Fejsa]");
+		assertThat(result.getBody()).isEqualTo(
+				"[fejsa@example.com, Ljubomir, Fejsa][jonas@example.com, Jonas, Goncalves][luisao@example.com, Anderson, Silva]");
 	}
 }

@@ -16,8 +16,6 @@
 
 package com.example;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
@@ -48,13 +46,11 @@ public class SqlR2dbcPostgresSampleApplicationIntegrationTests {
 
 	@Test
 	void testSqlRowsAccess() {
-		ResponseEntity<List<String>> result = this.testRestTemplate.exchange(
-				"/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {
+		ResponseEntity<String> result = this.testRestTemplate.exchange(
+				"/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<String>() {
 				});
 
-		assertThat(result.getBody()).containsExactlyInAnyOrder(
-				"[luisao@example.com, Anderson, Silva]",
-				"[jonas@example.com, Jonas, Goncalves]",
-				"[fejsa@example.com, Ljubomir, Fejsa]");
+		assertThat(result.getBody()).isEqualTo(
+				"[luisao@example.com, Anderson, Silva][jonas@example.com, Jonas, Goncalves][fejsa@example.com, Ljubomir, Fejsa]");
 	}
 }

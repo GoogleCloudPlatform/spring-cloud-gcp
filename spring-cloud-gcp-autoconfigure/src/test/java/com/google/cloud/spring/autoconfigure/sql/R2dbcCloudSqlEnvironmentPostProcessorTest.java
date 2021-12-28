@@ -29,11 +29,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class R2dbcCloudSqlEnvironmentPostProcessorTest {
 
-	private R2dbcCloudSqlEnvironmentPostProcessor initializer = new R2dbcCloudSqlEnvironmentPostProcessor();
+	private R2dbcCloudSqlEnvironmentPostProcessor r2dbcPostProcessor = new R2dbcCloudSqlEnvironmentPostProcessor();
 
 	ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withInitializer(
-					configurableApplicationContext -> initializer.postProcessEnvironment(
+					configurableApplicationContext -> r2dbcPostProcessor.postProcessEnvironment(
 							configurableApplicationContext.getEnvironment(), new SpringApplication()));
 
 	@Test
@@ -41,7 +41,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTest {
 		GcpCloudSqlProperties properties = new GcpCloudSqlProperties();
 		properties.setDatabaseName("my-database");
 		properties.setInstanceConnectionName("my-instance-connection-name");
-		String r2dbcUrl = initializer.createUrl(DatabaseType.R2DBC_MYSQL, properties);
+		String r2dbcUrl = r2dbcPostProcessor.createUrl(DatabaseType.MYSQL, properties);
 		assertThat(r2dbcUrl).isEqualTo("r2dbc:gcp:mysql://my-instance-connection-name/my-database");
 	}
 
@@ -50,7 +50,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTest {
 		GcpCloudSqlProperties properties = new GcpCloudSqlProperties();
 		properties.setDatabaseName("my-database");
 		properties.setInstanceConnectionName("my-instance-connection-name");
-		String r2dbcUrl = initializer.createUrl(DatabaseType.R2DBC_POSTGRESQL, properties);
+		String r2dbcUrl = r2dbcPostProcessor.createUrl(DatabaseType.POSTGRESQL, properties);
 		assertThat(r2dbcUrl).isEqualTo("r2dbc:gcp:postgres://my-instance-connection-name/my-database");
 	}
 
@@ -117,7 +117,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTest {
 						"com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres"))
 				.run(
 						context -> {
-							assertThat(initializer.getEnabledDatabaseType(context.getEnvironment())).isNull();
+							assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment())).isNull();
 						});
 	}
 
@@ -127,7 +127,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTest {
 				new FilteredClassLoader("io.r2dbc.spi.ConnectionFactory"))
 				.run(
 						context -> {
-							assertThat(initializer.getEnabledDatabaseType(context.getEnvironment())).isNull();
+							assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment())).isNull();
 						});
 	}
 }

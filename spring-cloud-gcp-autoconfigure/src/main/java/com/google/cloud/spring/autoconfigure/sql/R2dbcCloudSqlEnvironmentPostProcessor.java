@@ -70,7 +70,7 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 		Assert.hasText(sqlProperties.getInstanceConnectionName(),
 				"An instance connection name must be provided in the format <PROJECT_ID>:<REGION>:<INSTANCE_ID>.");
 
-		return String.format(databaseType.getUrlTemplate(),
+		return String.format(databaseType.getR2dbcUrlTemplate(),
 				sqlProperties.getInstanceConnectionName(), sqlProperties.getDatabaseName());
 	}
 
@@ -88,11 +88,11 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 				&& isOnClasspath("io.r2dbc.spi.ConnectionFactory")) {
 			if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql") &&
 					isOnClasspath("dev.miku.r2dbc.mysql.MySqlConnectionFactoryProvider")) {
-				return DatabaseType.R2DBC_MYSQL;
+				return DatabaseType.MYSQL;
 			}
 			else if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres")
 					&& isOnClasspath("io.r2dbc.postgresql.PostgresqlConnectionFactoryProvider")) {
-				return DatabaseType.R2DBC_POSTGRESQL;
+				return DatabaseType.POSTGRESQL;
 			}
 		}
 		return null;
