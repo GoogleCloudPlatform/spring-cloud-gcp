@@ -29,17 +29,16 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.awaitility.Awaitility;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import org.springframework.web.client.RestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Integration test for the config client with local config server.
@@ -51,7 +50,9 @@ import static org.junit.Assume.assumeThat;
  *
  * @since 1.2
  */
-public class LocalSampleAppIntegrationTest {
+
+@EnabledIfSystemProperty(named = "it.pubsub-bus", matches = "true")
+class LocalSampleAppIntegrationTest {
 
 	private static final Log LOGGER = LogFactory.getLog("LocalSampleAppIntegrationTest");
 
@@ -73,17 +74,13 @@ public class LocalSampleAppIntegrationTest {
 
 	Process configClientProcess;
 
-	@BeforeClass
-	public static void prepare() throws Exception {
-		assumeThat(
-			"PUB/SUB integration tests are disabled. Use '-Dit.pubsub-bus=true' to enable.",
-			System.getProperty("it.pubsub-bus"), is("true"));
-
+	@BeforeAll
+	static void prepare() throws Exception {
 		Files.createDirectories(Paths.get(CONFIG_DIR));
 	}
 
 	@Test
-	public void testSample() throws Exception {
+	void testSample() throws Exception {
 
 		writeMessageToFile(INITIAL_MESSAGE);
 
@@ -107,8 +104,8 @@ public class LocalSampleAppIntegrationTest {
 		assertConfigClientValue(UPDATED_MESSAGE);
 	}
 
-	@AfterClass
-	public static void tearDown() throws Exception {
+	@AfterAll
+	static void tearDown() throws Exception {
 
 		Path configFile = Paths.get(CONFIG_FILE);
 		if (Files.exists(configFile)) {
@@ -122,8 +119,8 @@ public class LocalSampleAppIntegrationTest {
 
 	}
 
-	@After
-	public void closeResources() throws IOException {
+	@AfterEach
+	void closeResources() throws IOException {
 
 		if (this.configServerOutput != null) {
 			this.configServerOutput.close();
@@ -143,7 +140,7 @@ public class LocalSampleAppIntegrationTest {
 
 	}
 
-	private void startConfigServer() throws IOException {
+	void startConfigServer() throws IOException {
 		LOGGER.info("Starting config server...");
 		ProcessBuilder serverBuilder = new ProcessBuilder("../../../mvnw", "spring-boot:run",
 				"-f", "../spring-cloud-gcp-pubsub-bus-config-sample-server-local");
@@ -152,7 +149,7 @@ public class LocalSampleAppIntegrationTest {
 		LOGGER.info("Config server started.");
 	}
 
-	private void startConfigClient() throws IOException {
+	void startConfigClient() throws IOException {
 		LOGGER.info("Starting config client...");
 		ProcessBuilder serverBuilder = new ProcessBuilder("../../../mvnw", "spring-boot:run",
 				"-f", "../spring-cloud-gcp-pubsub-bus-config-sample-client");
@@ -161,7 +158,7 @@ public class LocalSampleAppIntegrationTest {
 		LOGGER.info("Config client started.");
 	}
 
-	private static void writeMessageToFile(String value) {
+	static void writeMessageToFile(String value) {
 		File properties = new File(CONFIG_FILE);
 
 		String message = "example.message = " + value;
@@ -174,19 +171,19 @@ public class LocalSampleAppIntegrationTest {
 		LOGGER.info("Wrote message " + message + " to file " + CONFIG_FILE);
 	}
 
-	private void assertConfigServerValue(String message) {
+	void assertConfigServerValue(String message) {
 		// Server is aware of value from filesystem.
 		String serverPropertiesJson = this.restTemplate.getForObject("http://localhost:8888/application/default", String.class);
 		assertThat(serverPropertiesJson).contains(message);
 	}
 
-	private void assertConfigClientValue(String message) {
+	void assertConfigClientValue(String message) {
 		// Refresh scoped variable updated and returned.
 		String value = this.restTemplate.getForObject("http://localhost:8080/message", String.class);
 		assertThat(value).isEqualTo(message);
 	}
 
-	private void waitForLogMessage(BufferedReader reader, Source source, String message) {
+	void waitForLogMessage(BufferedReader reader, Source source, String message) {
 		LOGGER.info("Waiting for message " + message);
 		Awaitility.await(message)
 			.atMost(60, TimeUnit.SECONDS)
