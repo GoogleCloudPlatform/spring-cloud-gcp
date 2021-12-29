@@ -213,7 +213,7 @@ class PubSubSampleApplicationIntegrationTests {
 				.collect(Collectors.toList());
 	}
 
-	void createTopic(String topicName) {
+	private void createTopic(String topicName) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/createTopic")
 				.queryParam("topicName", topicName)
 				.toUriString();
@@ -227,7 +227,7 @@ class PubSubSampleApplicationIntegrationTests {
 				});
 	}
 
-	void deleteTopic(String topicName) {
+	private void deleteTopic(String topicName) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/deleteTopic")
 				.queryParam("topic", topicName)
 				.toUriString();
@@ -241,7 +241,7 @@ class PubSubSampleApplicationIntegrationTests {
 				});
 	}
 
-	void createSubscription(String subscriptionName, String topicName) {
+	private void createSubscription(String subscriptionName, String topicName) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/createSubscription")
 				.queryParam("topicName", topicName)
 				.queryParam("subscriptionName", subscriptionName)
@@ -256,7 +256,7 @@ class PubSubSampleApplicationIntegrationTests {
 				});
 	}
 
-	void deleteSubscription(String subscriptionName) {
+	private void deleteSubscription(String subscriptionName) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/deleteSubscription")
 				.queryParam("subscription", subscriptionName)
 				.toUriString();
@@ -270,14 +270,14 @@ class PubSubSampleApplicationIntegrationTests {
 				});
 	}
 
-	void subscribe(String subscriptionName) {
+	private void subscribe(String subscriptionName) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/subscribe")
 				.queryParam("subscription", subscriptionName)
 				.toUriString();
 		this.testRestTemplate.getForEntity(url, null, String.class);
 	}
 
-	void postMessage(String message, String topicName) {
+	private void postMessage(String message, String topicName) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/postMessage")
 				.queryParam("message", message)
 				.queryParam("topicName", topicName)
@@ -286,7 +286,7 @@ class PubSubSampleApplicationIntegrationTests {
 		this.testRestTemplate.getForEntity(url, null, String.class);
 	}
 
-	void multiPull(String subscription1, String subscription2) {
+	private void multiPull(String subscription1, String subscription2) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/multipull")
 				.queryParam("subscription1", subscription1)
 				.queryParam("subscription2", subscription2)
@@ -308,7 +308,7 @@ class PubSubSampleApplicationIntegrationTests {
 				.collect(Collectors.toList());
 	}
 
-	static void deleteTopics(String... testTopics) {
+	private static void deleteTopics(String... testTopics) {
 		for (String topicName : testTopics) {
 			List<String> projectTopics = getTopicNamesFromProject();
 			String testTopicName = ProjectTopicName.format(projectName, topicName);
@@ -318,7 +318,7 @@ class PubSubSampleApplicationIntegrationTests {
 		}
 	}
 
-	static void deleteSubscriptions(String... testSubscriptions) {
+	private static void deleteSubscriptions(String... testSubscriptions) {
 		for (String testSubscription : testSubscriptions) {
 			String testSubscriptionName = ProjectSubscriptionName.format(
 					projectName, testSubscription);
