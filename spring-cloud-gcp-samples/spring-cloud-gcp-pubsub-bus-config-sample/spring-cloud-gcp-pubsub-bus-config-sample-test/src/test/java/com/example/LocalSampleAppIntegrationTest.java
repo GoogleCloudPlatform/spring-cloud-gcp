@@ -50,7 +50,6 @@ import static org.assertj.core.api.Assertions.fail;
  *
  * @since 1.2
  */
-
 @EnabledIfSystemProperty(named = "it.pubsub-bus", matches = "true")
 class LocalSampleAppIntegrationTest {
 
@@ -140,7 +139,7 @@ class LocalSampleAppIntegrationTest {
 
 	}
 
-	void startConfigServer() throws IOException {
+	private void startConfigServer() throws IOException {
 		LOGGER.info("Starting config server...");
 		ProcessBuilder serverBuilder = new ProcessBuilder("../../../mvnw", "spring-boot:run",
 				"-f", "../spring-cloud-gcp-pubsub-bus-config-sample-server-local");
@@ -149,7 +148,7 @@ class LocalSampleAppIntegrationTest {
 		LOGGER.info("Config server started.");
 	}
 
-	void startConfigClient() throws IOException {
+	private void startConfigClient() throws IOException {
 		LOGGER.info("Starting config client...");
 		ProcessBuilder serverBuilder = new ProcessBuilder("../../../mvnw", "spring-boot:run",
 				"-f", "../spring-cloud-gcp-pubsub-bus-config-sample-client");
@@ -158,7 +157,7 @@ class LocalSampleAppIntegrationTest {
 		LOGGER.info("Config client started.");
 	}
 
-	static void writeMessageToFile(String value) {
+	private static void writeMessageToFile(String value) {
 		File properties = new File(CONFIG_FILE);
 
 		String message = "example.message = " + value;
@@ -171,19 +170,19 @@ class LocalSampleAppIntegrationTest {
 		LOGGER.info("Wrote message " + message + " to file " + CONFIG_FILE);
 	}
 
-	void assertConfigServerValue(String message) {
+	private void assertConfigServerValue(String message) {
 		// Server is aware of value from filesystem.
 		String serverPropertiesJson = this.restTemplate.getForObject("http://localhost:8888/application/default", String.class);
 		assertThat(serverPropertiesJson).contains(message);
 	}
 
-	void assertConfigClientValue(String message) {
+	private void assertConfigClientValue(String message) {
 		// Refresh scoped variable updated and returned.
 		String value = this.restTemplate.getForObject("http://localhost:8080/message", String.class);
 		assertThat(value).isEqualTo(message);
 	}
 
-	void waitForLogMessage(BufferedReader reader, Source source, String message) {
+	private void waitForLogMessage(BufferedReader reader, Source source, String message) {
 		LOGGER.info("Waiting for message " + message);
 		Awaitility.await(message)
 			.atMost(60, TimeUnit.SECONDS)
