@@ -23,10 +23,10 @@ import java.util.concurrent.TimeUnit;
 import com.google.api.MetricDescriptor;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.actuate.metrics.AutoConfigureMetrics;
@@ -34,22 +34,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Tests for the metrics sample app.
  *
  * @author Eddú Meléndez
  */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.metrics", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = MetricsApplication.class)
 @AutoConfigureMetrics // needed to enable metrics export in Spring Boot tests
-public class MetricsSampleApplicationIntegrationTests {
+class MetricsSampleApplicationIntegrationTests {
 
 	@Autowired
 	private GcpProjectIdProvider projectIdProvider;
@@ -62,21 +61,13 @@ public class MetricsSampleApplicationIntegrationTests {
 
 	private MetricServiceClient metricClient;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Google Cloud Monitoring integration tests are disabled. "
-						+ "Please use '-Dit.metrics=true' to enable them. ",
-				System.getProperty("it.metrics"), is("true"));
-	}
-
-	@Before
-	public void setupLogging() throws IOException {
+	@BeforeEach
+	void setupLogging() throws IOException {
 		this.metricClient = MetricServiceClient.create();
 	}
 
 	@Test
-	public void testMetricRecordedInStackdriver() {
+	void testMetricRecordedInStackdriver() {
 		String projectId = this.projectIdProvider.getProjectId();
 
 		String id = "integration_test_" + UUID.randomUUID().toString().replace('-', '_');
