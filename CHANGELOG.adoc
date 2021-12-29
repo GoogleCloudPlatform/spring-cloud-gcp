@@ -5,7 +5,18 @@ https://spring.io/projects/spring-cloud-gcp[Spring Cloud GCP] is a set of integr
 This document provides a high-level overview of the changes introduced in Spring Cloud GCP by release.
 For a detailed view of what has changed, refer to the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main[commit history] on GitHub.
 
-== 2.0.7.BUILD-SNAPSHOT
+== 2.0.8.BUILD-SNAPSHOT
+
+== 2.0.7
+
+This is a maintenance release upgrading dependency versions.
+
+=== General
+
+* Switched to explicitly defining Spring Boot version as 2.5.x train (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/804[#804]).
+  * Upgraded Spring Boot dependencies to 2.5.8, which includes log4j-api upgrade to 2.17.0 (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/812[#812]).
+* Updated `gcp-libraries-bom.version` to 24.1.1 (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/816[#816]).
+* Updated `cloud-sql-socket-factory.version` to 1.4.1 (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/773[#773])
 
 
 == 2.0.6
