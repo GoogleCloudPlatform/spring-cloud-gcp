@@ -29,10 +29,10 @@ import com.google.cloud.logging.Logging;
 import com.google.cloud.logging.LoggingOptions;
 import com.google.cloud.logging.Payload.JsonPayload;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,21 +43,20 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Tests for the logging sample app.
  *
  * @author Daniel Zou
  */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.logging", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { Application.class })
-public class LoggingSampleApplicationIntegrationTests {
+class LoggingSampleApplicationIntegrationTests {
 
 	private static final String LOG_FILTER_FORMAT = "trace:%s AND logName=projects/%s/logs/spring.log AND timestamp>=\"%s\"";
 
@@ -72,21 +71,13 @@ public class LoggingSampleApplicationIntegrationTests {
 
 	private Logging logClient;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Spanner Google Cloud Logging integration tests are disabled. "
-						+ "Please use '-Dit.logging=true' to enable them. ",
-				System.getProperty("it.logging"), is("true"));
-	}
-
-	@Before
-	public void setupLogging() {
+	@BeforeEach
+	void setupLogging() {
 		this.logClient = LoggingOptions.getDefaultInstance().getService();
 	}
 
 	@Test
-	public void testLogRecordedInStackDriver() {
+	void testLogRecordedInStackDriver() {
 		DateTime startDateTime = new DateTime(System.currentTimeMillis());
 		String url = String.format("http://localhost:%s/log", this.port);
 		String traceHeader = "gcp-logging-test-" + Instant.now().toEpochMilli();
