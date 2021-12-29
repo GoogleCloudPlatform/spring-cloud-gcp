@@ -20,21 +20,18 @@ import java.io.UnsupportedEncodingException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Tests for the Reactive Pub/Sub sample application.
@@ -43,11 +40,13 @@ import static org.junit.Assume.assumeThat;
  *
  * @since 1.2
  */
-@RunWith(SpringRunner.class)
+
+@EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
 	webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 	classes = ReactiveReceiverApplication.class)
-public class ReactiveReceiverApplicationIntegrationTest {
+class ReactiveReceiverApplicationIntegrationTest {
 
 	@LocalServerPort
 	private int port;
@@ -58,14 +57,8 @@ public class ReactiveReceiverApplicationIntegrationTest {
 	@Autowired
 	private PubSubTemplate pubSubTemplate;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat("PUB/SUB-sample integration tests disabled. Use '-Dit.pubsub=true' to enable them.",
-				System.getProperty("it.pubsub"), is("true"));
-	}
-
 	@Test
-	public void testSample() throws UnsupportedEncodingException {
+	void testSample() throws UnsupportedEncodingException {
 		webTestClient.post()
 				.uri(uriBuilder -> uriBuilder
 						.path("/postMessage")
