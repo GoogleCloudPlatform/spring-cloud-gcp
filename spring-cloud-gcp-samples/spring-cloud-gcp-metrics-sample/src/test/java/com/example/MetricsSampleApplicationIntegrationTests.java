@@ -80,7 +80,7 @@ class MetricsSampleApplicationIntegrationTests {
 		String metricName = "projects/" + projectId + "/metricDescriptors/" + metricType;
 
 		await().atMost(4, TimeUnit.MINUTES)
-				.pollInterval(5, TimeUnit.SECONDS)
+				.pollInterval(1, TimeUnit.SECONDS)
 				.ignoreExceptionsMatching(e -> e.getMessage().contains("Could not find descriptor for metric"))
 				.untilAsserted(() -> {
 					MetricDescriptor metricDescriptor = this.metricClient.getMetricDescriptor(metricName);
