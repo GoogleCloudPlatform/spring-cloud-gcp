@@ -1094,18 +1094,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 	public void testFindByExampleFluent() {
 		Example<TestEntity> exampleRedCircle = Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null));
 		Example<TestEntity> exampleRed = Example.of(new TestEntity(null, "red", null, null, null));
-		// regular find by example. no fluent query
-		Iterable<TestEntity> results = this.testEntityRepository
-				.findAll(exampleRedCircle);
-		assertThat(results)
-				.containsExactlyInAnyOrder(this.testEntityA, this.testEntityC);
 
-
-		TestEntityProjection projectedResults = this.testEntityRepository.findBySize(1L);
-		System.out.println(projectedResults);
-
-		assertThat(projectedResults).isInstanceOf(TestEntityProjection.class);
-		assertThat(projectedResults).isNotInstanceOf(TestEntity.class);
 		// sort by and all.
 		assertThat((List<TestEntity>) this.testEntityRepository.findBy(
 				exampleRed,
@@ -1113,20 +1102,18 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 
 		// get count
 		assertThat((long) this.testEntityRepository.findBy(
-				exampleRed,
-				q -> q.count())).isEqualTo(3);
+				exampleRedCircle,
+				FetchableFluentQuery::count)).isEqualTo(2);
 
 		// exists
 		assertThat((boolean) this.testEntityRepository.findBy(
 				exampleRed,
-				q -> q.exists())).isTrue();
+				FetchableFluentQuery::exists)).isTrue();
 
 		// find one
-		TestEntity red = this.testEntityRepository.findBy(
+		assertThat((TestEntity) this.testEntityRepository.findBy(
 				exampleRed,
-				q -> q.firstValue());
-		System.out.println(red);
-		assertThat(red.getColor()).isEqualTo("red");
+				FetchableFluentQuery::firstValue)).isEqualTo(testEntityA);
 
 		// one value
 		TestEntity red1 = this.testEntityRepository.findBy(
@@ -1140,15 +1127,12 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 		// page
 		Pageable pageable = PageRequest.of(0, 2);
 		Page<TestEntity> pagedResults = this.testEntityRepository.findBy(exampleRed, q -> q.page(pageable));
-
 		assertThat(pagedResults).containsExactly(this.testEntityA, this.testEntityC);
 
-		// List<TestEntityProjection> ppResults = this.testEntityRepository.findBy(
-		// 		Example.of(new TestEntity(null, "red", null, null, null)),
-		// 		q -> q.sortBy(Sort.by("id")).as(TestEntityProjection.class).all());
-
-		// System.out.println(ppResults);
-
+		// sort by and one.
+		Optional<TestEntity> one = this.testEntityRepository.findBy(exampleRed,
+				q -> q.sortBy(Sort.by("id")).one());
+		assertThat(one).isPresent().get().isEqualTo(testEntityA);
 	}
 }
 
