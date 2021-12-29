@@ -17,6 +17,8 @@ Alternatively, https://console.cloud.google.com/iam-admin/serviceaccounts[create
 +
 Then, uncomment the `spring.cloud.gcp.datastore.credentials.location` property in the link:src/main/resources/application.properties[application.properties] file and fill its value with the path to your service account private key on your local file system, prepended with `file:`.
 
+. Create indexes from link:src/main/resources/index.yaml[index.yaml] by running `gcloud datastore indexes create 'index.yaml'` from link:src/main/resources[resources directory]. Indexes enable sort ordering.
+
 . Run `$ mvn clean install` from the root directory of the project.
 
 . Run the `DatastoreRepositoryExample` Spring Boot console app by running `$ mvn spring-boot:run` in the same directory
