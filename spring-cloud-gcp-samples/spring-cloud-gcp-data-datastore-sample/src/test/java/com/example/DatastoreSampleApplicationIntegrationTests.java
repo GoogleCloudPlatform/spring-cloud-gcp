@@ -188,8 +188,7 @@ class DatastoreSampleApplicationIntegrationTests {
 				"albums=[Album{albumName='a', date=2012-01-20}");
 
 		assertThat(baos.toString()).contains("Fluent Query by example\n" +
-				"Singer{singerId='singer2', firstName='Jane', lastName='Doe', " +
-				"albums=[Album{albumName='a', date=2012-01-20}");
+				"John");
 
 		assertThat(baos.toString()).contains("Using Pageable parameter\n" +
 				"Singer{singerId='singer1', firstName='John', lastName='Doe', " +

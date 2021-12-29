@@ -1,6 +1,0 @@
-indexes:
-
-- kind: singers
-  properties:
-  - name: last_name
-  - name: first_name

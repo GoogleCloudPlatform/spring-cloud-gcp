@@ -36,7 +36,6 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 
 /**
  * Sample app for Datastore repository.
@@ -114,9 +113,9 @@ public class DatastoreRepositoryExample {
 		System.out.println("Fluent Query by example");
 		Example<Singer> example = Example.of(new Singer(null, null, "Doe", null),
 				ExampleMatcher.matching().withIgnorePaths("singerId"));
-		List<Singer> singerSortedByFirstName = this.singerRepository.findBy(example,
-				x -> x.sortBy(Sort.by("firstName")).all());
-		singerSortedByFirstName.forEach(System.out::println);
+		String oneSingerName = this.singerRepository.findBy(example,
+				x -> x.oneValue().getFirstName());
+		System.out.println(oneSingerName);
 
 		//Pageable parameter
 		System.out.println("Using Pageable parameter");
