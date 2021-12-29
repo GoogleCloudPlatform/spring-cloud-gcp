@@ -238,8 +238,6 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 
 		private final Class<R> resultType;
 
-		DatastoreQueryOptions.Builder builder;
-
 		DatastoreFluentQueryByExample(Example<S> example, Class<R> resultType) {
 			this(example, Sort.unsorted(), resultType, resultType);
 		}
@@ -253,12 +251,12 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 
 		@Override
 		public FetchableFluentQuery sortBy(Sort sort) {
-			return new DatastoreFluentQueryByExample<>(example, sort, domainType, resultType);
+			return new DatastoreFluentQueryByExample<>(this.example, sort, this.domainType, this.resultType);
 		}
 
 		@Override
 		public Optional<R> one() {
-			return (Optional<R>) SimpleDatastoreRepository.this.findOne(example);
+			return (Optional<R>) SimpleDatastoreRepository.this.findOne(this.example);
 		}
 
 		@Nullable
@@ -270,7 +268,7 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 
 		@Override
 		public R firstValue() {
-			Iterable<S> iter = SimpleDatastoreRepository.this.findAll(example);
+			Iterable<S> iter = SimpleDatastoreRepository.this.findAll(this.example);
 			if (iter.iterator().hasNext()) {
 				return (R) iter.iterator().next();
 			}
@@ -292,27 +290,28 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		 */
 		@Override
 		public Page<R> page(Pageable pageable) {
-			return (Page<R>) SimpleDatastoreRepository.this.findAll(example, pageable);
+			return (Page<R>) SimpleDatastoreRepository.this.findAll(this.example, pageable);
 		}
 
 		@Override
 		public Stream<R> stream() {
 			if (sort.isSorted()) {
-				return (Stream<R>) findAll(example, PageRequest.of(0, Integer.MAX_VALUE, sort)).stream();
+				return (Stream<R>) findAll(this.example, PageRequest.of(0, Integer.MAX_VALUE, sort)).stream();
 			}
 			return (Stream<R>) Streamable.of(
-					(Iterable<S>) SimpleDatastoreRepository.this.findAll(example, PageRequest.of(0, Integer.MAX_VALUE)))
+					(Iterable<S>) SimpleDatastoreRepository.this.findAll(this.example,
+							PageRequest.of(0, Integer.MAX_VALUE)))
 					.stream();
 		}
 
 		@Override
 		public long count() {
-			return SimpleDatastoreRepository.this.count(example);
+			return SimpleDatastoreRepository.this.count(this.example);
 		}
 
 		@Override
 		public boolean exists() {
-			return SimpleDatastoreRepository.this.exists(example);
+			return SimpleDatastoreRepository.this.exists(this.example);
 		}
 
 		@Override
@@ -321,7 +320,7 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		}
 
 		@Override
-		public FetchableFluentQuery as(Class resultType) {
+		public <V> FetchableFluentQuery<V> as(Class<V> resultType) {
 			throw new UnsupportedOperationException();
 		}
 
