@@ -36,40 +36,37 @@ import com.google.pubsub.v1.PullResponse;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.Topic;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Tests for the Pub/Sub sample application.
  *
  * @author Daniel Zou
  */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
+@ExtendWith(SpringExtension.class)
+@ExtendWith(OutputCaptureExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { PubSubApplication.class })
-public class PubSubSampleApplicationIntegrationTests {
-
-	/** Output capture for validating that message was received. */
-	@Rule
-	public OutputCaptureRule output = new OutputCaptureRule();
+class PubSubSampleApplicationIntegrationTests {
 
 	private static final int PUBSUB_CLIENT_TIMEOUT_SECONDS = 60;
 
@@ -101,12 +98,8 @@ public class PubSubSampleApplicationIntegrationTests {
 
 	private String appUrl;
 
-	@BeforeClass
-	public static void prepare() throws IOException {
-		assumeThat(
-				"PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub=true' "
-						+ "to enable them. ",
-				System.getProperty("it.pubsub"), is("true"));
+	@BeforeAll
+	static void prepare() throws IOException {
 
 		projectName = ProjectName.of(ServiceOptions.getDefaultProjectId()).getProject();
 		topicAdminClient = TopicAdminClient.create();
@@ -133,8 +126,8 @@ public class PubSubSampleApplicationIntegrationTests {
 				10);
 	}
 
-	@AfterClass
-	public static void cleanupPubsubClients() {
+	@AfterAll
+	static void cleanupPubsubClients() {
 
 		if (subscriptionAdminClient != null) {
 			deleteSubscriptions(SAMPLE_TEST_SUBSCRIPTION1, SAMPLE_TEST_SUBSCRIPTION2,
@@ -150,13 +143,13 @@ public class PubSubSampleApplicationIntegrationTests {
 
 	}
 
-	@Before
-	public void initializeAppUrl() throws IOException {
+	@BeforeEach
+	void initializeAppUrl() throws IOException {
 		this.appUrl = "http://localhost:" + this.port;
 	}
 
 	@Test
-	public void testCreateAndDeleteTopicAndSubscriptions() {
+	void testCreateAndDeleteTopicAndSubscriptions() {
 		createTopic(SAMPLE_TEST_TOPIC_DELETE);
 		createSubscription(SAMPLE_TEST_SUBSCRIPTION_DELETE, SAMPLE_TEST_TOPIC_DELETE);
 
@@ -165,7 +158,7 @@ public class PubSubSampleApplicationIntegrationTests {
 	}
 
 	@Test
-	public void testReceiveMessageByPull() {
+	void testReceiveMessageByPull() {
 		postMessage("HelloWorld-Pull", SAMPLE_TEST_TOPIC);
 		await().atMost(PUBSUB_CLIENT_TIMEOUT_SECONDS, TimeUnit.SECONDS).untilAsserted(
 				() -> assertThat(getMessagesFromSubscription(SAMPLE_TEST_SUBSCRIPTION1))
@@ -173,17 +166,17 @@ public class PubSubSampleApplicationIntegrationTests {
 	}
 
 	@Test
-	public void testReceiveMessagesBySubscribe() {
+	void testReceiveMessagesBySubscribe(CapturedOutput capturedOutput) {
 		postMessage("HelloWorld-Subscribe", SAMPLE_TEST_TOPIC);
 
 		subscribe(SAMPLE_TEST_SUBSCRIPTION1);
 		await().atMost(PUBSUB_CLIENT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-				.until(() -> this.output.getOut().contains(
+				.until(() -> capturedOutput.getOut().contains(
 						"Message received from " + SAMPLE_TEST_SUBSCRIPTION1 + " subscription: HelloWorld-Pull"));
 	}
 
 	@Test
-	public void testMultiPull() {
+	void testMultiPull() {
 		postMessage("HelloWorld-MultiPull", SAMPLE_TEST_TOPIC2);
 		await().atMost(PUBSUB_CLIENT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
 				.untilAsserted(
@@ -220,7 +213,7 @@ public class PubSubSampleApplicationIntegrationTests {
 				.collect(Collectors.toList());
 	}
 
-	private void createTopic(String topicName) {
+	void createTopic(String topicName) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/createTopic")
 				.queryParam("topicName", topicName)
 				.toUriString();
@@ -234,7 +227,7 @@ public class PubSubSampleApplicationIntegrationTests {
 				});
 	}
 
-	private void deleteTopic(String topicName) {
+	void deleteTopic(String topicName) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/deleteTopic")
 				.queryParam("topic", topicName)
 				.toUriString();
@@ -248,7 +241,7 @@ public class PubSubSampleApplicationIntegrationTests {
 				});
 	}
 
-	private void createSubscription(String subscriptionName, String topicName) {
+	void createSubscription(String subscriptionName, String topicName) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/createSubscription")
 				.queryParam("topicName", topicName)
 				.queryParam("subscriptionName", subscriptionName)
@@ -263,7 +256,7 @@ public class PubSubSampleApplicationIntegrationTests {
 				});
 	}
 
-	private void deleteSubscription(String subscriptionName) {
+	void deleteSubscription(String subscriptionName) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/deleteSubscription")
 				.queryParam("subscription", subscriptionName)
 				.toUriString();
@@ -277,14 +270,14 @@ public class PubSubSampleApplicationIntegrationTests {
 				});
 	}
 
-	private void subscribe(String subscriptionName) {
+	void subscribe(String subscriptionName) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/subscribe")
 				.queryParam("subscription", subscriptionName)
 				.toUriString();
 		this.testRestTemplate.getForEntity(url, null, String.class);
 	}
 
-	private void postMessage(String message, String topicName) {
+	void postMessage(String message, String topicName) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/postMessage")
 				.queryParam("message", message)
 				.queryParam("topicName", topicName)
@@ -293,7 +286,7 @@ public class PubSubSampleApplicationIntegrationTests {
 		this.testRestTemplate.getForEntity(url, null, String.class);
 	}
 
-	private void multiPull(String subscription1, String subscription2) {
+	void multiPull(String subscription1, String subscription2) {
 		String url = UriComponentsBuilder.fromHttpUrl(this.appUrl + "/multipull")
 				.queryParam("subscription1", subscription1)
 				.queryParam("subscription2", subscription2)
@@ -315,7 +308,7 @@ public class PubSubSampleApplicationIntegrationTests {
 				.collect(Collectors.toList());
 	}
 
-	private static void deleteTopics(String... testTopics) {
+	static void deleteTopics(String... testTopics) {
 		for (String topicName : testTopics) {
 			List<String> projectTopics = getTopicNamesFromProject();
 			String testTopicName = ProjectTopicName.format(projectName, topicName);
@@ -325,7 +318,7 @@ public class PubSubSampleApplicationIntegrationTests {
 		}
 	}
 
-	private static void deleteSubscriptions(String... testSubscriptions) {
+	static void deleteSubscriptions(String... testSubscriptions) {
 		for (String testSubscription : testSubscriptions) {
 			String testSubscriptionName = ProjectSubscriptionName.format(
 					projectName, testSubscription);
@@ -335,5 +328,4 @@ public class PubSubSampleApplicationIntegrationTests {
 			}
 		}
 	}
-
 }
