@@ -280,13 +280,9 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 			return stream().collect(Collectors.toList());
 		}
 
-		/**
-		 * Get a page of matching elements for {@link Pageable}.
-		 *
-		 * @param pageable must not be {@code null}. The given {@link Pageable} will override any
-		 *     previously specified {@link Sort sort} if the {@link Sort} object is not
-		 *     {@link Sort#isUnsorted()}.
-		 * @return
+		/*
+		 * (non-Javadoc)
+		 * @see org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery#page(org.springframework.data.domain.Pageable)
 		 */
 		@Override
 		public Page<R> page(Pageable pageable) {
