@@ -104,18 +104,19 @@ public class DatastoreRepositoryExample {
 		Stream<Singer> streamResult = singerRepository.findStreamOfSingersByLastName("Doe");
 		streamResult.forEach(System.out::println);
 
-		//Query by example: find all singers with the last name "Doe"
-		Iterable<Singer> singers = this.singerRepository.findAll(
-				Example.of(new Singer(null, null, "Doe", null), ExampleMatcher.matching().withIgnorePaths("singerId")));
+		// Query by example: find all singers with the last name "Doe"
+		Example<Singer> example = Example.of(new Singer(null, null, "Doe", null),
+				ExampleMatcher.matching().withIgnorePaths("singerId"));
+		Iterable<Singer> singers = this.singerRepository.findAll(example);
 		System.out.println("Query by example");
 		singers.forEach(System.out::println);
 
+		// Fluent Query by example: find all singers with the last name "Doe" and return a list of
+		// singer names
 		System.out.println("Fluent Query by example");
-		Example<Singer> example = Example.of(new Singer(null, null, "Doe", null),
-				ExampleMatcher.matching().withIgnorePaths("singerId"));
-		String oneSingerName = this.singerRepository.findBy(example,
-				x -> x.oneValue().getFirstName());
-		System.out.println(oneSingerName);
+		List<String> singerNames = this.singerRepository.findBy(example,
+				q -> q.stream().map(Singer::FirstAndLastName).collect(Collectors.toList()));
+		singerNames.forEach(System.out::println);
 
 		//Pageable parameter
 		System.out.println("Using Pageable parameter");
