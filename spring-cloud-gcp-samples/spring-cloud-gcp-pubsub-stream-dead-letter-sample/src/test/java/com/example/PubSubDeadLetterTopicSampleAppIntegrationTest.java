@@ -20,6 +20,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,8 @@ import static org.awaitility.Awaitility.await;
  * @author Travis Tomsu
  * @since 2.0.2
  */
+//Please enable the tests using "-Dit.pubsub=true"
+@EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
 @ExtendWith(OutputCaptureExtension.class)
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
