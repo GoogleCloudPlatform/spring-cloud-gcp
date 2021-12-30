@@ -1095,44 +1095,52 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 		Example<TestEntity> exampleRedCircle = Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null));
 		Example<TestEntity> exampleRed = Example.of(new TestEntity(null, "red", null, null, null));
 
-		// sort by and all.
-		assertThat((List<TestEntity>) this.testEntityRepository.findBy(
+		List<TestEntity> entityRedAllSorted = this.testEntityRepository.findBy(
 				exampleRed,
-				q -> q.sortBy(Sort.by("id")).all())).containsExactly(this.testEntityA, this.testEntityC, this.testEntityD);
+				q -> q.sortBy(Sort.by("id")).all());
+		assertThat(entityRedAllSorted).containsExactly(this.testEntityA, this.testEntityC, this.testEntityD);
 
-		// get count
-		assertThat((long) this.testEntityRepository.findBy(
+		long countRedCircle = this.testEntityRepository.findBy(
 				exampleRedCircle,
-				FetchableFluentQuery::count)).isEqualTo(2);
+				FetchableFluentQuery::count);
+		assertThat(countRedCircle).isEqualTo(2);
 
-		// exists
-		assertThat((boolean) this.testEntityRepository.findBy(
+		boolean existsRed = this.testEntityRepository.findBy(
 				exampleRed,
-				FetchableFluentQuery::exists)).isTrue();
+				FetchableFluentQuery::exists);
+		assertThat(existsRed).isTrue();
 
-		// find one
-		assertThat((TestEntity) this.testEntityRepository.findBy(
+		TestEntity FirstValueRed = this.testEntityRepository.findBy(
 				exampleRed,
-				FetchableFluentQuery::firstValue)).isEqualTo(testEntityA);
+				FetchableFluentQuery::firstValue);
+		assertThat(FirstValueRed).isEqualTo(testEntityA);
 
-		// one value
-		TestEntity red1 = this.testEntityRepository.findBy(
+		TestEntity oneValueRed = this.testEntityRepository.findBy(
 				exampleRed,
 				q -> q.oneValue());
-		assertThat(red1.getColor()).isEqualTo("red");
-		assertThat((Optional<TestEntity>) this.testEntityRepository.findBy(
-				Example.of(new TestEntity(null, "purple", null, null, null)),
-				FetchableFluentQuery::one)).isNotPresent();
+		assertThat(oneValueRed.getColor()).isEqualTo("red");
 
-		// page
+		Optional<TestEntity> onePurple = this.testEntityRepository.findBy(
+				Example.of(new TestEntity(null, "purple", null, null, null)),
+				FetchableFluentQuery::one);
+		assertThat(onePurple).isNotPresent();
+
 		Pageable pageable = PageRequest.of(0, 2);
 		Page<TestEntity> pagedResults = this.testEntityRepository.findBy(exampleRed, q -> q.page(pageable));
 		assertThat(pagedResults).containsExactly(this.testEntityA, this.testEntityC);
 
-		// sort by and one.
-		Optional<TestEntity> one = this.testEntityRepository.findBy(exampleRed,
+		Optional<TestEntity> oneRed = this.testEntityRepository.findBy(exampleRed,
 				q -> q.sortBy(Sort.by("id")).one());
-		assertThat(one).isPresent().get().isEqualTo(testEntityA);
+		assertThat(oneRed).isPresent().get().isEqualTo(testEntityA);
+
+		long firstValueId = this.testEntityRepository.findBy(
+				exampleRed,
+				q -> q.firstValue().getId());
+		assertThat(firstValueId).isEqualTo(1L);
+
+		List<String> redIdList = this.testEntityRepository.findBy(exampleRed,
+				q -> q.sortBy(Sort.by("id")).stream().map(x -> x.getId().toString()).collect(Collectors.toList()));
+		assertThat(redIdList).containsExactly("1", "3", "4");
 	}
 }
 
