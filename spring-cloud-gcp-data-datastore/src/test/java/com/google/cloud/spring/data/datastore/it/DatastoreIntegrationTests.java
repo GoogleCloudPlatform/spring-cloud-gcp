@@ -1095,10 +1095,15 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 		Example<TestEntity> exampleRedCircle = Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null));
 		Example<TestEntity> exampleRed = Example.of(new TestEntity(null, "red", null, null, null));
 
-		List<TestEntity> entityRedAllSorted = this.testEntityRepository.findBy(
+		List<TestEntity> entityRedAll = this.testEntityRepository.findBy(
 				exampleRed,
-				q -> q.sortBy(Sort.by("id")).all());
-		assertThat(entityRedAllSorted).containsExactly(this.testEntityA, this.testEntityC, this.testEntityD);
+				q -> q.all());
+		assertThat(entityRedAll).containsExactlyInAnyOrder(this.testEntityA, this.testEntityC, this.testEntityD);
+
+		List<TestEntity> entityRedAllReverseSortedById = this.testEntityRepository.findBy(
+				exampleRed,
+				q -> q.sortBy(Sort.by("id").descending()).all());
+		assertThat(entityRedAllReverseSortedById).containsExactly(this.testEntityD, this.testEntityC, this.testEntityA);
 
 		long countRedCircle = this.testEntityRepository.findBy(
 				exampleRedCircle,
