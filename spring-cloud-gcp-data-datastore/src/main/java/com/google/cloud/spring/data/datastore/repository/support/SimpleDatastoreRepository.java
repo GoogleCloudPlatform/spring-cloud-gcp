@@ -45,6 +45,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.data.util.Streamable;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -164,6 +165,14 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
 	}
 
+	<S extends T> S findFirstSorted(Example<S> example, Sort sort) {
+		Iterable<S> entities = this.datastoreTemplate.queryByExample(example,
+				new DatastoreQueryOptions.Builder().setSort(sort).setLimit(1).build());
+		Iterator<S> iterator = entities.iterator();
+		return iterator.hasNext() ? iterator.next() : null;
+	}
+
+
 	@Override
 	public <S extends T> Iterable<S> findAll(Example<S> example) {
 		return this.datastoreTemplate.queryByExample(example, null);
@@ -249,11 +258,13 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 			this.resultType = resultType;
 		}
 
+		@NonNull
 		@Override
-		public FetchableFluentQuery sortBy(Sort sort) {
+		public FetchableFluentQuery<R> sortBy(@NonNull Sort sort) {
 			return new DatastoreFluentQueryByExample<>(this.example, sort, this.domainType, this.resultType);
 		}
 
+		@NonNull
 		@Override
 		public Optional<R> one() {
 			return (Optional<R>) SimpleDatastoreRepository.this.findOne(this.example);
@@ -268,13 +279,10 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 
 		@Override
 		public R firstValue() {
-			Iterable<S> iter = SimpleDatastoreRepository.this.findAll(this.example);
-			if (iter.iterator().hasNext()) {
-				return (R) iter.iterator().next();
-			}
-			return null;
+			return (R) SimpleDatastoreRepository.this.findFirstSorted(this.example, this.sort);
 		}
 
+		@NonNull
 		@Override
 		public List<R> all() {
 			return stream().collect(Collectors.toList());
@@ -284,11 +292,13 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		 * (non-Javadoc)
 		 * @see org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery#page(org.springframework.data.domain.Pageable)
 		 */
+		@NonNull
 		@Override
-		public Page<R> page(Pageable pageable) {
+		public Page<R> page(@NonNull Pageable pageable) {
 			return (Page<R>) SimpleDatastoreRepository.this.findAll(this.example, pageable);
 		}
 
+		@NonNull
 		@Override
 		public Stream<R> stream() {
 			if (sort.isSorted()) {
