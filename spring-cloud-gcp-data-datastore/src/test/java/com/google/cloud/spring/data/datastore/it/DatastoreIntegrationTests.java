@@ -1133,14 +1133,14 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 				q -> q.sortBy(Sort.by("id")).one());
 		assertThat(oneRed).isPresent().get().isEqualTo(testEntityA);
 
-		long firstValueId = this.testEntityRepository.findBy(
+		long firstValueReverseSortedById = this.testEntityRepository.findBy(
 				exampleRed,
-				q -> q.firstValue().getId());
-		assertThat(firstValueId).isEqualTo(1L);
+				q -> q.sortBy(Sort.by("id").descending()).firstValue().getId());
+		assertThat(firstValueReverseSortedById).isEqualTo(4L);
 
-		List<String> redIdList = this.testEntityRepository.findBy(exampleRed,
-				q -> q.sortBy(Sort.by("id")).stream().map(x -> x.getId().toString()).collect(Collectors.toList()));
-		assertThat(redIdList).containsExactly("1", "3", "4");
+		List<String> redIdListReverseSorted = this.testEntityRepository.findBy(exampleRed,
+				q -> q.sortBy(Sort.by("id").descending()).stream().map(x -> x.getId().toString()).collect(Collectors.toList()));
+		assertThat(redIdListReverseSorted).containsExactly("4", "3", "1");
 	}
 }
 

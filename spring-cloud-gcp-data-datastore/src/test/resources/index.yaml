@@ -4,3 +4,9 @@ indexes:
   properties:
   - name: size
   - name: color
+
+- kind: test_entities_ci
+  properties:
+  - name: color
+  - name: __key__
+    direction: desc
