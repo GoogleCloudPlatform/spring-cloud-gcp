@@ -40,7 +40,6 @@ import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
@@ -288,10 +287,6 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 			return stream().collect(Collectors.toList());
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery#page(org.springframework.data.domain.Pageable)
-		 */
 		@NonNull
 		@Override
 		public Page<R> page(@NonNull Pageable pageable) {
@@ -301,13 +296,7 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		@NonNull
 		@Override
 		public Stream<R> stream() {
-			if (sort.isSorted()) {
-				return (Stream<R>) findAll(this.example, PageRequest.of(0, Integer.MAX_VALUE, sort)).stream();
-			}
-			return (Stream<R>) Streamable.of(
-					(Iterable<S>) SimpleDatastoreRepository.this.findAll(this.example,
-							PageRequest.of(0, Integer.MAX_VALUE)))
-					.stream();
+			return (Stream<R>) Streamable.of(SimpleDatastoreRepository.this.findAll(this.example, this.sort)).stream();
 		}
 
 		@Override

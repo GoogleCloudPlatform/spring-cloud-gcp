@@ -368,9 +368,9 @@ public class SimpleDatastoreRepositoryTests {
 		doAnswer(invocationOnMock -> new DatastoreResultsIterable(entities, null))
 				.when(this.datastoreTemplate).queryByExample(same(example), any());
 		this.spyRepo.findBy(example, FetchableFluentQuery::all);
-		verify(this.spyRepo).findAll(same(example), eq(PageRequest.of(0, Integer.MAX_VALUE, Sort.unsorted())));
+		verify(this.spyRepo).findAll(same(example), eq(Sort.unsorted()));
 		this.spyRepo.findBy(example, query -> query.sortBy(sort).all());
-		verify(this.spyRepo).findAll(same(example), eq(PageRequest.of(0, Integer.MAX_VALUE, sort)));
+		verify(this.spyRepo).findAll(same(example), eq(sort));
 	}
 
 	@Test
