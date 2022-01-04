@@ -16,9 +16,15 @@
 
 package com.google.cloud.spring.logging;
 
+import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.auth.Credentials;
+import com.google.cloud.grpc.GrpcTransportOptions;
 import com.google.cloud.logging.LoggingOptions;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * A Google Cloud Java Logback {@link com.google.cloud.logging.logback.LoggingAppender}
@@ -29,6 +35,10 @@ import com.google.cloud.spring.core.UserAgentHeaderProvider;
  */
 public class LoggingAppender extends com.google.cloud.logging.logback.LoggingAppender {
 	private LoggingOptions loggingOptions;
+
+	private Integer maxThreads;
+
+	private ScheduledExecutorService executorService;
 
 	/**
 	 * Wraps {@link com.google.cloud.logging.logback.LoggingAppender#getLoggingOptions()} to
@@ -50,9 +60,75 @@ public class LoggingAppender extends com.google.cloud.logging.logback.LoggingApp
 			// set User-Agent
 			loggingOptionsBuilder.setHeaderProvider(new UserAgentHeaderProvider(this.getClass()));
 
+			if (this.getMaxThreads() != null) {
+				System.out.println("**** HELLOO, will create custom thread pool");
+
+				loggingOptionsBuilder.setTransportOptions(
+						LoggingOptions.getDefaultGrpcTransportOptions().toBuilder()
+								.setExecutorFactory(new FixedThreadExecutorFactory(this.maxThreads))
+								.build());
+
+			}
+
+			//loggingOptionsBuilder.setRetrySettings()
+/*			loggingOptionsBuilder.setTransportOptions(
+					GrpcTransportOptions.newBuilder()
+							.setExecutorFactory(FixedExecutorProvider.create())
+							.build());*/
+
 			this.loggingOptions = loggingOptionsBuilder.build();
 		}
 
 		return this.loggingOptions;
+	}
+
+	static class FixedThreadExecutorFactory implements GrpcTransportOptions.ExecutorFactory<ScheduledExecutorService> {
+		private int numThreads;
+		volatile int threadSuffix = 0;
+
+		FixedThreadExecutorFactory(int numThreads) {
+			this.numThreads = numThreads;
+		}
+
+		@Override
+		public ScheduledExecutorService get() {
+			ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+			scheduler.setPoolSize(this.numThreads);
+
+			System.out.println("***** creating thread pool  " + "gcp-logging-" + threadSuffix);
+			scheduler.setThreadNamePrefix("gcp-logging-" + threadSuffix);
+			threadSuffix++;
+
+			scheduler.setDaemon(true);
+			scheduler.initialize();
+			return scheduler.getScheduledExecutor();
+		}
+
+		@Override
+		public void release(ScheduledExecutorService scheduledExecutorService) {
+			System.out.println("***** shutting down thread pool " );
+			scheduledExecutorService.shutdown();
+		}
+	}
+
+	public Integer getMaxThreads() {
+		return maxThreads;
+	}
+
+	public void setMaxThreads(Integer maxThreads) {
+		//System.out.println("****** HELLO, setting max threads to " + maxThreads);
+
+		this.maxThreads = maxThreads;
+	}
+
+	@Override
+	public synchronized void stop() {
+		super.stop();
+
+		System.out.println("****** HELLO, cleaning up thread pool");
+		// clean up thread pool
+		if (this.executorService != null) {
+			this.executorService.shutdown();
+		}
 	}
 }

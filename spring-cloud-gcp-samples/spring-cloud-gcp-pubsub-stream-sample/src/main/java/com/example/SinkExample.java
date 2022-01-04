@@ -16,6 +16,7 @@
 
 package com.example;
 
+import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -49,9 +50,22 @@ public class SinkExample {
 	// Note that the error `inputChannel` is formatted as [Pub/Sub subscription name].errors
 	// or the equivalent of [Pub/Sub topic name].[group name].errors. If you change the topic name in
 	// `application.properties`, you will also have to change the `inputChannel` below.
-	@ServiceActivator(inputChannel = "my-topic.my-group.errors")
+
+/*	@ServiceActivator(inputChannel = "my-topic.my-group.errors")
 	public void error(Message<MessagingException> message) {
 		LOGGER.error("The message that was sent is now processed by the error handler.");
 		LOGGER.error("Failed message: " + message.getPayload().getFailedMessage());
+	}*/
+
+
+	@ServiceActivator(inputChannel = "errorChannel")
+	public void errorGlobal(Message<MessagingException> message) {
+		LOGGER.error("*** GLOBAL ERRROR The message that was sent is now processed by the error handler.");
+		LOGGER.error("*** GLOBAL ERROR Failed message: " + message.getPayload().getFailedMessage());
+		System.out.println("heders: " + message.getHeaders());
+		Message failedMessage = message.getPayload().getFailedMessage();
+		BasicAcknowledgeablePubsubMessage msg = (BasicAcknowledgeablePubsubMessage) failedMessage.getHeaders().get("gcp_pubsub_original_message");
+		msg.ack();
+		System.out.println("Acked message");
 	}
 }
