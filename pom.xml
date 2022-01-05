@@ -63,7 +63,7 @@
 		<skip.surefire.tests>${skipTests}</skip.surefire.tests>
 		<skipTests>false</skipTests>
 		<spring-cloud-build.version>3.0.4</spring-cloud-build.version>
-		<spring-cloud-dependencies.version>2020.0.4</spring-cloud-dependencies.version>
+		<spring-cloud-dependencies.version>2020.0.5</spring-cloud-dependencies.version>
 		<spring-boot-dependencies.version>2.5.8</spring-boot-dependencies.version>
 		<spring-javaformat-checkstyle.version>0.0.29</spring-javaformat-checkstyle.version>
 		<zipkin-gcp.version>1.0.3</zipkin-gcp.version>
