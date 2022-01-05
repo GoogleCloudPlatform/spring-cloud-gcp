@@ -435,4 +435,18 @@ public class SimpleDatastoreRepositoryTests {
 		verify(this.spyRepo).findAll(same(example), same(pageRequest));
 	}
 
+	@Test
+	public void findByExampleFluentQueryAsUnsupported() {
+		this.expectedEx.expect(UnsupportedOperationException.class);
+		Example<Object> example = Example.of(new Object());
+		this.simpleDatastoreRepository.findBy(example, q -> q.as(Object.class).all());
+	}
+
+	@Test
+	public void findByExampleFluentQueryProjectUnsupported() {
+		this.expectedEx.expect(UnsupportedOperationException.class);
+		Example<Object> example = Example.of(new Object());
+		this.simpleDatastoreRepository.findBy(example, q -> q.project("firstProperty").all());
+	}
+
 }
