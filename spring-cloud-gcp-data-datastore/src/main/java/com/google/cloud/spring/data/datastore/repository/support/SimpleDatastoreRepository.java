@@ -234,69 +234,63 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		Assert.notNull(example, "Example must not be null!");
 		Assert.notNull(queryFunction, "Query function must not be null!");
 
-		return queryFunction.apply(new DatastoreFluentQueryByExample<>(example, example.getProbeType()));
+		return queryFunction.apply(new DatastoreFluentQueryByExample<>(example));
 	}
 
-	class DatastoreFluentQueryByExample<S extends T, R> implements FluentQuery.FetchableFluentQuery<R> {
+	class DatastoreFluentQueryByExample<S extends T> implements FluentQuery.FetchableFluentQuery<S> {
 		private final Example<S> example;
 
 		private final Sort sort;
 
-		private final Class<?> domainType;
-
-		private final Class<R> resultType;
-
-		DatastoreFluentQueryByExample(Example<S> example, Class<R> resultType) {
-			this(example, Sort.unsorted(), resultType, resultType);
+		DatastoreFluentQueryByExample(Example<S> example) {
+			this(example, Sort.unsorted());
 		}
 
-		DatastoreFluentQueryByExample(Example<S> example, Sort sort, Class<?> domainType, Class<R> resultType) {
+		DatastoreFluentQueryByExample(Example<S> example, Sort sort) {
 			this.example = example;
 			this.sort = sort;
-			this.domainType = domainType;
-			this.resultType = resultType;
 		}
 
 		@NonNull
 		@Override
-		public FetchableFluentQuery<R> sortBy(@NonNull Sort sort) {
-			return new DatastoreFluentQueryByExample<>(this.example, sort, this.domainType, this.resultType);
+		public FetchableFluentQuery<S> sortBy(@NonNull Sort sort) {
+			return new DatastoreFluentQueryByExample<>(this.example, sort);
 		}
 
 		@NonNull
 		@Override
-		public Optional<R> one() {
-			return (Optional<R>) SimpleDatastoreRepository.this.findOne(this.example);
+		public Optional<S> one() {
+			return SimpleDatastoreRepository.this.findOne(this.example);
 		}
 
 		@Nullable
 		@Override
-		public R oneValue() {
-			Optional<R> one = one();
+		public S oneValue() {
+			Optional<S> one = one();
 			return one.orElse(null);
 		}
 
 		@Override
-		public R firstValue() {
-			return (R) SimpleDatastoreRepository.this.findFirstSorted(this.example, this.sort);
+		public S firstValue() {
+			return SimpleDatastoreRepository.this.findFirstSorted(this.example, this.sort);
 		}
 
 		@NonNull
 		@Override
-		public List<R> all() {
+		public List<S> all() {
 			return stream().collect(Collectors.toList());
 		}
 
 		@NonNull
 		@Override
-		public Page<R> page(@NonNull Pageable pageable) {
-			return (Page<R>) SimpleDatastoreRepository.this.findAll(this.example, pageable);
+		public Page<S> page(@NonNull Pageable pageable) {
+			return SimpleDatastoreRepository.this.findAll(this.example, pageable);
 		}
 
 		@NonNull
 		@Override
-		public Stream<R> stream() {
-			return (Stream<R>) Streamable.of(SimpleDatastoreRepository.this.findAll(this.example, this.sort)).stream();
+		public Stream<S> stream() {
+			return Streamable.of(SimpleDatastoreRepository.this.findAll(this.example, this.sort)).stream();
 		}
 
 		@Override
@@ -310,7 +304,7 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		}
 
 		@Override
-		public FetchableFluentQuery<R> project(Collection properties) {
+		public FetchableFluentQuery<S> project(Collection properties) {
 			throw new UnsupportedOperationException();
 		}
 
