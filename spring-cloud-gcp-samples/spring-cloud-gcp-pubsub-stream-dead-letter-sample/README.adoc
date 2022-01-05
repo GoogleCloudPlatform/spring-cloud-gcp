@@ -26,7 +26,7 @@ The topics will be created in your account if they do not already exist.
 
 5. Run `$ mvn clean install` from the root directory of the project.
 
-6. Run `$ mvn clean spring-boot:run` in the root of the code sample
+6. Run `$ mvn spring-boot:run` in the root of the code sample
 (spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-dead-letter-sample) to get the app running.
 
 7. Browse to `localhost:8080` or use the `Web Preview` button in Cloud Shell to preview the app on port 8080,
