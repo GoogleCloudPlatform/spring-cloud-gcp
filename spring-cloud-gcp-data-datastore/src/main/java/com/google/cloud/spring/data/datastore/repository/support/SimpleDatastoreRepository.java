@@ -36,6 +36,8 @@ import com.google.cloud.spring.data.datastore.core.DatastoreResultsCollection;
 import com.google.cloud.spring.data.datastore.core.DatastoreResultsIterable;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -60,6 +62,8 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 	private final DatastoreOperations datastoreTemplate;
 
 	private final Class<T> entityType;
+
+	private static final Log LOGGER = LogFactory.getLog(SimpleDatastoreRepository.class);
 
 	public SimpleDatastoreRepository(DatastoreOperations datastoreTemplate,
 			Class<T> entityType) {
@@ -272,6 +276,11 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 
 		@Override
 		public S firstValue() {
+			if (this.sort.isUnsorted()) {
+				LOGGER.warn(
+						"firstValue() used without sorting. "
+								+ "Use oneValue() instead if order does not matter.");
+			}
 			return SimpleDatastoreRepository.this.findFirstSorted(this.example, this.sort);
 		}
 
