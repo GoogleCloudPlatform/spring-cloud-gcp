@@ -42,7 +42,7 @@ import io.grpc.ManagedChannelBuilder;
 import org.springframework.cloud.stream.binder.AbstractTestBinder;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
-import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
@@ -55,7 +55,7 @@ public class PubSubTestBinder extends AbstractTestBinder<PubSubMessageChannelBin
 		ExtendedConsumerProperties<PubSubConsumerProperties>,
 		ExtendedProducerProperties<PubSubProducerProperties>> {
 
-	public PubSubTestBinder(String host) {
+	public PubSubTestBinder(String host, ApplicationContext applicationContext) {
 		GcpProjectIdProvider projectIdProvider = () -> "porto sentido";
 
 		// Transport channel provider so that test binder talks to emulator.
@@ -106,9 +106,7 @@ public class PubSubTestBinder extends AbstractTestBinder<PubSubMessageChannelBin
 		PubSubMessageChannelBinder binder =
 				new PubSubMessageChannelBinder(null, pubSubChannelProvisioner, pubSubTemplate,
 						new PubSubExtendedBindingProperties());
-		GenericApplicationContext context = new GenericApplicationContext();
-		context.refresh();
-		binder.setApplicationContext(context);
+		binder.setApplicationContext(applicationContext);
 		this.setBinder(binder);
 	}
 
