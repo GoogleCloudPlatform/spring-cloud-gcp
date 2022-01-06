@@ -24,8 +24,6 @@ import org.junit.jupiter.api.Test;
 import static com.google.cloud.spring.data.datastore.core.util.SliceUtil.sliceAndExecute;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- */
 class SliceUtilTest {
 	@Test
 	void sliceAndExecuteTest() {

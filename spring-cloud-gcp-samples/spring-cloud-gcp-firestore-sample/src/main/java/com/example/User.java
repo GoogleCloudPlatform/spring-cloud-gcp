@@ -18,8 +18,6 @@ package com.example;
 
 import java.util.List;
 
-/**
- */
 public class User {
 	private String name;
 	private List<Phone> phones;

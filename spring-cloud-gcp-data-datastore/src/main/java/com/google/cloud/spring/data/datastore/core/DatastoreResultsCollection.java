@@ -25,8 +25,6 @@ import java.util.stream.Stream;
 
 import com.google.cloud.datastore.Cursor;
 
-/**
- */
 public class DatastoreResultsCollection<T> implements Collection<T> {
 	private final Collection<T> collection;
 

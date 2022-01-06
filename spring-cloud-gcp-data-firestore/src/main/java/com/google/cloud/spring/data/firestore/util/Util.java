@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.data.firestore.util;
 
-/**
- */
 public final class Util {
 
 	private Util() {

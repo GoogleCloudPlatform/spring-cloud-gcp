@@ -51,8 +51,6 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-/**
- */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = FirestoreIntegrationTestsConfiguration.class)
 public class FirestoreIntegrationTests {
