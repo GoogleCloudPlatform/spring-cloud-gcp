@@ -22,7 +22,7 @@
 		<main.basedir>${basedir}/..</main.basedir>
 
 		<!-- Checkstyle version settings. Keep in sync with ../pom.xml -->
-		<spring-cloud-build-tools.version>3.0.1</spring-cloud-build-tools.version>
+		<spring-cloud-build-tools.version>3.1.0</spring-cloud-build-tools.version>
 		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
 		<app-engine-maven-plugin.version>2.4.1</app-engine-maven-plugin.version>
 		<spring-native.version>0.10.4</spring-native.version>
