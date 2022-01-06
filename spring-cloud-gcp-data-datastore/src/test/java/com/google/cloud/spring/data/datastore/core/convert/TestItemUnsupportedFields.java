@@ -23,8 +23,6 @@ import java.util.Objects;
 
 /**
  * A test item with fields that are of unsupported types.
- *
- * @author Dmitry Solomakha
  */
 class TestItemUnsupportedFields {
 	private String stringField;

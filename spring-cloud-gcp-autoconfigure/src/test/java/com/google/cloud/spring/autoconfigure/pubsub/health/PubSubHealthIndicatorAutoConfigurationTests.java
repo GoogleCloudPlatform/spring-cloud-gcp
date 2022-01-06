@@ -55,9 +55,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for Pub/Sub Health Indicator autoconfiguration.
- *
- * @author Elena Felder
- * @author Patrik Hörlin
  */
 class PubSubHealthIndicatorAutoConfigurationTests {
 

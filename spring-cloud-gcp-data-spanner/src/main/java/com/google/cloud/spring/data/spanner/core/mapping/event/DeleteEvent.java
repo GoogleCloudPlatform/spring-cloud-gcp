@@ -23,8 +23,6 @@ import com.google.cloud.spanner.Mutation;
 
 /**
  * An event signaling a Cloud Spanner delete operation.
- *
- * @author Chengyuan Zhao
  */
 public class DeleteEvent extends MutationEvent {
 

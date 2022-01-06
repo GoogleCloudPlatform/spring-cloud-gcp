@@ -19,7 +19,6 @@ package com.example;
 import java.util.List;
 
 /**
- * @author Dmitry Solomakha
  */
 public class User {
 	private String name;

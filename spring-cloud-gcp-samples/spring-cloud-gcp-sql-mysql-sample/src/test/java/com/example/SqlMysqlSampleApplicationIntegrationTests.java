@@ -42,8 +42,6 @@ import static org.junit.Assume.assumeThat;
  * properties set in resources/application.properties.
  *
  * Run with: mvn -Dit.cloudsql test
- *
- * @author Daniel Zou
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { SqlApplication.class })

@@ -24,8 +24,6 @@ import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
  *
  * @param <T> the type of the converted payload.
  *
- * @author Mike Eltsufin
- *
  * @since 1.1
  */
 public interface ConvertedAcknowledgeablePubsubMessage<T> extends AcknowledgeablePubsubMessage,

@@ -33,8 +33,6 @@ import org.springframework.data.convert.ThreeTenBackPortConverters;
 /**
  * Value object to capture custom conversion. {@link DatastoreCustomConversions}
  *
- * @author Dmitry Solomakha
- *
  * @since 1.1
  */
 public class DatastoreCustomConversions extends CustomConversions {

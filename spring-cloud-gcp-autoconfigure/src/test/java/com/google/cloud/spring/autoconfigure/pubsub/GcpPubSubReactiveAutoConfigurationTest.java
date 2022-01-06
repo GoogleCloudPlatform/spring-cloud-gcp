@@ -49,8 +49,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Elena Felder
- * @author Maurice Zeijen
  */
 @RunWith(MockitoJUnitRunner.class)
 public class GcpPubSubReactiveAutoConfigurationTest {

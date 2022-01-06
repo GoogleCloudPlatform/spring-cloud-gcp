@@ -48,8 +48,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests the {@link BigQuerySampleApplication} POST endpoints.
- *
- * @author Daniel Zou
  */
 //In order to enable the tests, please use '-Dit.bigquery=true' .
 @ExtendWith(SpringExtension.class)

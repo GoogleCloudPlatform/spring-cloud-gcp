@@ -24,9 +24,6 @@ import com.google.pubsub.v1.PubsubMessage;
 
 /**
  * Interface for converters that can convert POJOs to and from Pub/Sub messages.
- *
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
  */
 public interface PubSubMessageConverter {
 

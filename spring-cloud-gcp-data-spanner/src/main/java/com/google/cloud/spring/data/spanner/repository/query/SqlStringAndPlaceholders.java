@@ -25,8 +25,6 @@ import java.util.List;
  * the list of placeholders would look like this:
  * [tag0, tag1]
  *
- * @author Dmitry Solomakha
- *
  * @since 1.2.4
  */
 class SqlStringAndPlaceholders {

@@ -21,8 +21,6 @@ import org.springframework.data.mapping.PersistentProperty;
 /**
  * Persistent property for Google Cloud Datastore.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public interface DatastorePersistentProperty

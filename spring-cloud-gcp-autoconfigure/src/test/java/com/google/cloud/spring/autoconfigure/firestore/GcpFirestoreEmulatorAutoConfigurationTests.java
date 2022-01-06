@@ -34,8 +34,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for the Firestore emulator config.
- *
- * @author Gary Wong
  */
 class GcpFirestoreEmulatorAutoConfigurationTests {
 

@@ -21,8 +21,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * Properties for Spanner Health Indicator.
  *
- * @author ikeyat
- *
  * @since 2.0.6
  */
 @ConfigurationProperties("spring.cloud.gcp.spanner.health")

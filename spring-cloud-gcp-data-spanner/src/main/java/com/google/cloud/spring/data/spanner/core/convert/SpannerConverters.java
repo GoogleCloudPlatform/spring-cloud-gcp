@@ -39,9 +39,6 @@ import static com.google.cloud.spring.data.spanner.core.convert.CommitTimestamp.
 /**
  * Default commonly-used custom converters.
  *
- * @author Chengyuan Zhao
- * @author Balint Pato
- *
  * @since 1.1
  */
 public final class SpannerConverters {

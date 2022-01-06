@@ -28,9 +28,6 @@ import com.google.spanner.v1.TypeCode;
  * Annotation for a {@link SpannerPersistentProperty} that allows specifying the column name
  * instead of deriving it from the field's name.
  *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Documented

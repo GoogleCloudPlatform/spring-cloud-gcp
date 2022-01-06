@@ -30,8 +30,6 @@ import org.springframework.context.annotation.Import;
 /**
  * Automatically enables Firestore repositories support.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
 @Configuration(proxyBeanMethods = false)

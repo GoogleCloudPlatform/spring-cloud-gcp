@@ -46,8 +46,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for the Spanner mutation factory implementation.
- *
- * @author Chengyuan Zhao
  */
 public class SpannerMutationFactoryImplTests {
 

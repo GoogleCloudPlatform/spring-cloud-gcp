@@ -25,7 +25,6 @@ import reactor.core.publisher.Mono;
 /**
  * An interface of operations that can be done with Cloud Firestore.
  *
- * @author Dmitry Solomakha
  * @since 1.2
  */
 public interface FirestoreReactiveOperations {

@@ -43,9 +43,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration tests that use many features of the Spanner Template.
- *
- * @author Balint Pato
- * @author Chengyuan Zhao
  */
 @RunWith(SpringRunner.class)
 public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationTest {

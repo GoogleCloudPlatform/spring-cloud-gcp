@@ -40,9 +40,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Config for Storage auto config tests.
- *
- * @author Artem Bilan
- * @author Elena Felder
  */
 public class GcpStorageAutoConfigurationTests {
 

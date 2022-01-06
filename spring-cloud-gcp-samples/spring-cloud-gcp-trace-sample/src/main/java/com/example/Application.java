@@ -46,9 +46,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Sample spring boot application.
- *
- * @author Ray Tsang
- * @author Mike Eltsufin
  */
 @SpringBootApplication
 public class Application implements WebMvcConfigurer {

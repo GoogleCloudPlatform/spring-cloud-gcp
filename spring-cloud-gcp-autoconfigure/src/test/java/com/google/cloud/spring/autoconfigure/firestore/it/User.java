@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @author Dmitry Solomakha
  */
 public class User {
 	private String name;

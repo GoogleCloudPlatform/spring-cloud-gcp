@@ -29,8 +29,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for the logging-web-mvc configurer.
- *
- * @author Mike Eltsufin
  */
 @RunWith(MockitoJUnitRunner.class)
 public class LoggingWebMvcConfigurerTests {

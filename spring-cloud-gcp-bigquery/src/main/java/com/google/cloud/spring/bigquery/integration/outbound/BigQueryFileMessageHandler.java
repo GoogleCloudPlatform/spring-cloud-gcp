@@ -51,7 +51,6 @@ import org.springframework.util.concurrent.ListenableFuture;
  * A {@link org.springframework.messaging.MessageHandler} which handles sending and
  * loading files to a BigQuery table.
  *
- * @author Daniel Zou
  * @since 1.2
  */
 public class BigQueryFileMessageHandler extends AbstractReplyProducingMessageHandler {

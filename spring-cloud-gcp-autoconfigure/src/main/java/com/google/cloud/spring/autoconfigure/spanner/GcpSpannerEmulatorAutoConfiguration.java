@@ -36,8 +36,6 @@ import org.springframework.util.Assert;
 /**
  * Provides auto-configuration to use the Spanner emulator if enabled.
  *
- * @author Eddú Meléndez
- * @author Eddy Kioi
  * @since 1.2.3
  */
 @Configuration(proxyBeanMethods = false)

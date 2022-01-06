@@ -27,8 +27,6 @@ import org.springframework.data.domain.Sort;
 
 /**
  * A test custom repository.
- *
- * @author Chengyuan Zhao
  */
 //tag::repository[]
 public interface UserRepository extends FirestoreReactiveRepository<User> {

@@ -26,7 +26,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 /**
  * Settings for Stackdriver Metrics.
  *
- * @author Eddú Meléndez
  * @since 1.2.4
  */
 @ConfigurationProperties(prefix = "spring.cloud.gcp.metrics")

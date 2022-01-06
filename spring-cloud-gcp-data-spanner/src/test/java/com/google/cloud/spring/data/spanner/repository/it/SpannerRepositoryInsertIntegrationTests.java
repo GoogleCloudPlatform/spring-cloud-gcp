@@ -39,7 +39,6 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 
 /**
  * Integration tests for Spanner Repository.
- *
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { IntegrationTestConfiguration.class })

@@ -32,8 +32,6 @@ import org.springframework.data.repository.config.DefaultRepositoryBaseClass;
 /**
  * Annotation that enables Firestore's Query Method functionality.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Target(ElementType.TYPE)

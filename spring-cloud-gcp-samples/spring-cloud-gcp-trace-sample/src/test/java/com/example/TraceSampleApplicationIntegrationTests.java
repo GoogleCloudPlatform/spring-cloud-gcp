@@ -63,9 +63,6 @@ import static org.junit.Assume.assumeThat;
 
 /**
  * Verifies that the logged Traces on the sample application appear in StackDriver.
- *
- * @author Daniel Zou
- * @author Mike Eltsufin
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { Application.class })

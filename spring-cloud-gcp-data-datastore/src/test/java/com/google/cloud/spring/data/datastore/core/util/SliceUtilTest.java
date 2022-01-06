@@ -25,7 +25,6 @@ import static com.google.cloud.spring.data.datastore.core.util.SliceUtil.sliceAn
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Dmitry Solomakha
  */
 class SliceUtilTest {
 	@Test

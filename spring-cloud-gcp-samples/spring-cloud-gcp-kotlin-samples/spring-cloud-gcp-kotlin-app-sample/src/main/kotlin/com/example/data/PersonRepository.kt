@@ -19,7 +19,6 @@ package com.example.data
 import org.springframework.data.repository.CrudRepository
 
 /**
- * @author Daniel Zou
  *
  * @since 1.1
  */

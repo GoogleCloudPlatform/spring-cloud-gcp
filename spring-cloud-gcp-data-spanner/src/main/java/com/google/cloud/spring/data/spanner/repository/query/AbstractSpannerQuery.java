@@ -30,8 +30,6 @@ import org.springframework.data.repository.query.RepositoryQuery;
  *
  * @param <T> the return type of the Query Method
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 abstract class AbstractSpannerQuery<T> implements RepositoryQuery {

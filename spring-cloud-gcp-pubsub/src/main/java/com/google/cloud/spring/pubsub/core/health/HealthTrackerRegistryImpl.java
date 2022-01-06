@@ -33,7 +33,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 
 /**
- * @author Emmanouil Gkatziouras
  *
  * @since 2.0.6
  */

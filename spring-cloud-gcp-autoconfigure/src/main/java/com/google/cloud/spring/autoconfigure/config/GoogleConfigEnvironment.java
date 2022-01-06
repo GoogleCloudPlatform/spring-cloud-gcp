@@ -26,10 +26,6 @@ import java.util.Map;
 /**
  * Expected response format for Google Runtime Configurator API response.
  *
- * @author Jisha Abubaker
- * @author Chengyuan Zhao
- * @author Eddy Kioi
- *
  * @since 1.1
  */
 class GoogleConfigEnvironment {

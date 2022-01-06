@@ -61,9 +61,6 @@ import static org.springframework.data.repository.query.parser.Part.Type.NOT_IN;
 import static org.springframework.data.repository.query.parser.Part.Type.SIMPLE_PROPERTY;
 
 /**
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- * @author Daniel Zou
  *
  * @since 1.2
  */

@@ -29,7 +29,6 @@ import org.springframework.security.web.authentication.Http403ForbiddenEntryPoin
  * Because of {@code spring-cloud-gcp-starter-security-iap} dependency, the secure token will be retrieved from Google
  * Cloud IAP header {@code x-goog-iap-jwt-assertion}, and not from the standard OAuth Bearer header.
  *
- * @author Elena Felder
  * @since 1.1
  */
 @Configuration

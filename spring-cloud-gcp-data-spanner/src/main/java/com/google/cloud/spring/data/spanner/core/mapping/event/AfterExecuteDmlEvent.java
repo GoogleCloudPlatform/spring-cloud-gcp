@@ -23,8 +23,6 @@ import com.google.cloud.spanner.Statement;
 /**
  * This event is published immediately after a DML statement is executed. It contains the
  * DML statement as well as the number of rows affected.
- *
- * @author Chengyuan Zhao
  */
 public class AfterExecuteDmlEvent extends ExecuteDmlEvent {
 

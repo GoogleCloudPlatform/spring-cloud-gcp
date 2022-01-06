@@ -29,9 +29,6 @@ import brave.propagation.TraceContext;
  * An {@link HttpRequestParser} that fills information for Stackdriver Trace.
  *
  * <p>Based on {@code org.springframework.cloud.sleuth.instrument.web.SleuthHttpClientParser}.
- *
- * @author Ray Tsang
- * @author Travis Tomsu
  */
 public class StackdriverHttpRequestParser implements HttpRequestParser {
 

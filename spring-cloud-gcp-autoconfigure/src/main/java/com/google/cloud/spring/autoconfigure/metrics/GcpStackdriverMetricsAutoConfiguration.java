@@ -44,7 +44,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Provides auto-detection for `project-id` and `credentials`.
  *
- * @author Eddú Meléndez
  * @since 1.2.4
  */
 @Configuration(proxyBeanMethods = false)

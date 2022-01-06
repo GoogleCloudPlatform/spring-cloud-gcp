@@ -35,8 +35,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
  * Tests for the Spanner mapping context.
- *
- * @author Chengyuan Zhao
  */
 @RunWith(SpringRunner.class)
 public class SpannerMappingContextTests {

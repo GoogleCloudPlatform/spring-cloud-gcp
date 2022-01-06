@@ -36,8 +36,6 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
  *
  * 4. Long form - specify project ID, location ID, key ring ID, and key ID (full resource name)
  * projects/{project-id}/locations/{location-id}/keyRings/{key-ring-id}/cryptoKeys/{key-id}
- *
- * @author Emmanouil Gkatziouras
  */
 public interface KmsOperations {
 

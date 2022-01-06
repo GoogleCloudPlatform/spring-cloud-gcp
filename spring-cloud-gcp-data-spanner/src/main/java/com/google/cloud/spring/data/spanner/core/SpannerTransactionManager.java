@@ -51,10 +51,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 /**
  * Spanner transaction manager.
  *
- * @author Alexander Khimich
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
- *
  * @since 1.1
  */
 public class SpannerTransactionManager extends AbstractPlatformTransactionManager {

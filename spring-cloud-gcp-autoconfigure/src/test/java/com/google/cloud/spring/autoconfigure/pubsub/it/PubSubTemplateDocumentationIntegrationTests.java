@@ -60,8 +60,6 @@ import static org.awaitility.Awaitility.await;
 
 /**
  * Documentation tests for Pub/Sub.
- *
- * @author Dmitry Solomakha
  */
 public class PubSubTemplateDocumentationIntegrationTests {
 

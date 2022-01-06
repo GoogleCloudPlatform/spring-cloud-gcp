@@ -31,8 +31,6 @@ import org.springframework.context.annotation.Conditional;
  *
  * Supported environments are enumerated in {@link GcpEnvironment}.
  *
- * @author Elena Felder
- *
  * @since 1.1
  */
 @Target({ ElementType.TYPE, ElementType.METHOD })

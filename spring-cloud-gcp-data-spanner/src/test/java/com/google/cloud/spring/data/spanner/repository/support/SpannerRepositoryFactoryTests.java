@@ -42,9 +42,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for the Spanner repository factory.
- *
- * @author Chengyuan Zhao
- * @author Balint Pato
  */
 public class SpannerRepositoryFactoryTests {
 

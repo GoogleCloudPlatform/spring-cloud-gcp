@@ -31,8 +31,6 @@ import static org.junit.Assume.assumeThat;
 
 /**
  * Tests for Firestore Emulator autoconfiguration.
- *
- * @author Daniel Zou
  */
 public class GcpFirestoreEmulatorAutoConfigurationIntegrationTests {
 

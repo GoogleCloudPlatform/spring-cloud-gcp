@@ -24,8 +24,6 @@ import org.springframework.lang.Nullable;
  * The Spring Google Cloud Pub/Sub specific {@link PubSubException}.
  * Handles failures while publishing events to Pub/Sub.
  *
- * @author SateeshKumar Kota
- *
  * @since 1.2
  */
 public class PubSubDeliveryException extends PubSubException {

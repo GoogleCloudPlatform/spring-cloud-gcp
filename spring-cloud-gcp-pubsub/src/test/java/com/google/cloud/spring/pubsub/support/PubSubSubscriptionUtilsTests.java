@@ -24,8 +24,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests for {@link PubSubSubscriptionUtils}.
- *
- * @author Mike Eltsufin
  */
 class PubSubSubscriptionUtilsTests {
 

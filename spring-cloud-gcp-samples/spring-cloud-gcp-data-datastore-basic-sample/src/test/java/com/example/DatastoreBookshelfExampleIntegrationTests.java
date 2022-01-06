@@ -41,8 +41,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for the Book Shelf sample app.
- *
- * @author Dmitry Solomakha
  */
 //Please use "-Dit.datastore=true" to enable the tests.
 @ExtendWith(SpringExtension.class)

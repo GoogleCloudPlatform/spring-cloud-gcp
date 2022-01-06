@@ -39,8 +39,6 @@ import static org.junit.Assume.assumeThat;
 
 /**
  * Simple integration test to verify the SQL sample application with Postgres.
- *
- * @author Daniel Zou
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { SqlApplication.class }, properties = {

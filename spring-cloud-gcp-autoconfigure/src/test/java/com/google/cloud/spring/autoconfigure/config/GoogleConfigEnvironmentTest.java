@@ -26,9 +26,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for the environment config.
- *
- * @author Dmitry Solomakha
- * @author Eddy Kioi
  */
 class GoogleConfigEnvironmentTest {
 	@Test

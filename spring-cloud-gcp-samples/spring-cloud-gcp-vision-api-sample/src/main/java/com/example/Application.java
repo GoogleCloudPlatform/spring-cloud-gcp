@@ -21,8 +21,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Sample application.
- *
- * @author João André Martins
  */
 @SpringBootApplication
 public class Application {

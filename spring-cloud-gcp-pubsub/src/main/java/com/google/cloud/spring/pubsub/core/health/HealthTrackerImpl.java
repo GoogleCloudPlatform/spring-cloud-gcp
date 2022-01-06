@@ -31,7 +31,6 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 import static com.google.monitoring.v3.ListTimeSeriesRequest.TimeSeriesView.FULL;
 
 /**
- * @author Emmanouil Gkatziouras
  * @since 2.0.6
  */
 public class HealthTrackerImpl implements HealthTracker {

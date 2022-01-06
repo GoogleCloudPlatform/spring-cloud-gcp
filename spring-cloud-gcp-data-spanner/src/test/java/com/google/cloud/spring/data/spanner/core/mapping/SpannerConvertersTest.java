@@ -30,8 +30,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for common Spanner custom converters.
- *
- * @author Chengyuan Zhao
  */
 class SpannerConvertersTest {
 

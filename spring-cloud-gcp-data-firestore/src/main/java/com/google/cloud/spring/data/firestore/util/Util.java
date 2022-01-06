@@ -17,7 +17,6 @@
 package com.google.cloud.spring.data.firestore.util;
 
 /**
- * @author Dmitry Solomakha
  */
 public final class Util {
 

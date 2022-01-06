@@ -48,7 +48,6 @@ import org.springframework.util.Assert;
  * Implementation of {@link DatastoreRepository}.
  * @param <T> the type of the entities
  * @param <I> the id type of the entities
- * @author Chengyuan Zhao
  *
  * @since 1.1
  */

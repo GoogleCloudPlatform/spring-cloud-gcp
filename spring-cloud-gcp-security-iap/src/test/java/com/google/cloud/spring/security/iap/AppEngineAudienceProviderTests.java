@@ -31,8 +31,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for the AppEngine Audience Provider.
- *
- * @author Elena Felder
  */
 @RunWith(MockitoJUnitRunner.class)
 public class AppEngineAudienceProviderTests {

@@ -49,9 +49,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for Datastore auto-config.
- *
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
  */
 public class GcpDatastoreAutoConfigurationTests {
 

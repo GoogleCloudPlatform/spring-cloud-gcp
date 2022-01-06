@@ -31,9 +31,6 @@ import org.springframework.util.Assert;
 /**
  * Utility functions used in conversion operations.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public final class ConversionUtils {

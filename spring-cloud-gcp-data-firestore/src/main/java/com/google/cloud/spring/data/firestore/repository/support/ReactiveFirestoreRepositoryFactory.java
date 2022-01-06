@@ -35,8 +35,6 @@ import org.springframework.lang.Nullable;
 /**
  * A factory for reactive Firestore repositories.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
 public class ReactiveFirestoreRepositoryFactory extends ReactiveRepositoryFactorySupport {

@@ -31,8 +31,6 @@ import org.springframework.context.annotation.Import;
  * Enables autoconfiguration for
  * {@link com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreRepositories}.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Configuration(proxyBeanMethods = false)

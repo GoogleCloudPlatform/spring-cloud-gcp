@@ -37,9 +37,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for the simple message converter.
- *
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 public class SimplePubSubMessageConverterTests {
 

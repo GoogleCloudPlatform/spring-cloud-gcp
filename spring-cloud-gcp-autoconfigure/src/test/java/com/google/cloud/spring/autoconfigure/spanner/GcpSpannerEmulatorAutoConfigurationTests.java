@@ -30,7 +30,6 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Eddú Meléndez
  */
 public class GcpSpannerEmulatorAutoConfigurationTests {
 

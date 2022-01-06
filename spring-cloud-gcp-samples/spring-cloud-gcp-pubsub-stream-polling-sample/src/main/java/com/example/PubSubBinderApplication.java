@@ -23,8 +23,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * Sample application for a binder.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 @SpringBootApplication

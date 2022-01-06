@@ -30,9 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Sample REST Controller to demonstrate Spring Cloud Sleuth and Stackdriver Trace.
- *
- * @author Ray Tsang
- * @author Mike Eltsufin
  */
 @RestController
 public class ExampleController {

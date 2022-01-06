@@ -21,8 +21,6 @@ import com.google.cloud.datastore.Key;
 /**
  * Utility class containing methods for transforming and manipulating Datastore keys.
  *
- * @author Daniel Zou
- *
  * @since 1.2
  */
 public final class KeyUtil {

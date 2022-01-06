@@ -52,9 +52,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for the streaming message source.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration

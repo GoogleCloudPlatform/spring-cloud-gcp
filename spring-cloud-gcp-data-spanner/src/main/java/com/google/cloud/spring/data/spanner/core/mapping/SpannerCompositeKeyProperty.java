@@ -41,9 +41,6 @@ import org.springframework.util.Assert;
  * Represents an persistent property just to represent Cloud Spanner primary keys, and does not
  * correspond to actual properties of POJOs, as it might even be a composite, multi-column key.
  *
- * @author Chengyuan Zhao
- * @author Roman Solodovnichenko
- *
  * @since 1.1
  */
 public class SpannerCompositeKeyProperty implements SpannerPersistentProperty {

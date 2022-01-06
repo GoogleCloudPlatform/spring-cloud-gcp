@@ -31,8 +31,6 @@ import com.google.protobuf.util.JsonFormat;
 
 /**
  * Represents a range of pages of the OCR content of a document.
- *
- * @author Daniel Zou
  */
 final class OcrPageRange {
 

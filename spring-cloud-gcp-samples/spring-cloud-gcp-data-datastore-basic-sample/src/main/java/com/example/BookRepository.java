@@ -22,8 +22,6 @@ import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 
 /**
  * This interface contains custom-defined query methods of which implementations are generated for you.
- *
- * @author Dmitry Solomakha
  */
 public interface BookRepository extends DatastoreRepository<Book, Long> {
 

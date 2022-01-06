@@ -55,9 +55,6 @@ import static org.assertj.core.api.Assumptions.assumeThat;
  * the entity annotations as well dynamically to avoid collisions of multiple parallel
  * tests running against the same instance.
  * </p>
- *
- * @author Balint Pato
- * @author Chengyuan Zhao
  */
 @ContextConfiguration(classes = { IntegrationTestConfiguration.class })
 @TestExecutionListeners(listeners = SpannerTestExecutionListener.class,

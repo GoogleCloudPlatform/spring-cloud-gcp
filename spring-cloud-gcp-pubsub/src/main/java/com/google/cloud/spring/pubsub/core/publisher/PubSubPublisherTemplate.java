@@ -39,13 +39,6 @@ import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
  * Default implementation of {@link PubSubPublisherOperations}.
  * <p>The main Google Cloud Pub/Sub integration component for publishing to topics.
  *
- * @author Vinicius Carvalho
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Doug Hoard
- * @author SateeshKumar Kota
- *
  * @since 1.1
  */
 public class PubSubPublisherTemplate implements PubSubPublisherOperations {

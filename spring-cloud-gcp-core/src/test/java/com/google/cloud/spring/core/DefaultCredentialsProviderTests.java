@@ -26,10 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for the {@link DefaultCredentialsProvider}.
- *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 class DefaultCredentialsProviderTests {
 
