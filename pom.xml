@@ -5,7 +5,7 @@
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>2.0.8-SNAPSHOT</version>
+	<version>3.0.0-SNAPSHOT</version>
 
 	<name>Spring Cloud GCP</name>
 	<description>Spring Cloud GCP</description>
@@ -62,9 +62,9 @@
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
 		<skip.surefire.tests>${skipTests}</skip.surefire.tests>
 		<skipTests>false</skipTests>
-		<spring-cloud-build.version>3.0.4</spring-cloud-build.version>
-		<spring-cloud-dependencies.version>2020.0.5</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>2.5.8</spring-boot-dependencies.version>
+		<spring-cloud-build.version>3.1.0</spring-cloud-build.version>
+		<spring-cloud-dependencies.version>2021.0.0</spring-cloud-dependencies.version>
+		<spring-boot-dependencies.version>2.6.2</spring-boot-dependencies.version>
 		<spring-javaformat-checkstyle.version>0.0.29</spring-javaformat-checkstyle.version>
 		<zipkin-gcp.version>1.0.3</zipkin-gcp.version>
 		<spring-native.version>0.10.5</spring-native.version>
@@ -485,7 +485,7 @@
 							<artifactId>maven-surefire-plugin</artifactId>
 							<configuration>
 								<!-- illegal-access=permit is needed to make GCLIB proxying work, used in Datastore -->
-								<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+								<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED</argLine>
 								<skip>${skip.surefire.tests}</skip>
 								<excludes>
 									<exclude>${integration-test.pattern}</exclude>

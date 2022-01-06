@@ -74,9 +74,9 @@ This might take a while.
 
 . Confirm the reference documentation was published: https://googlecloudplatform.github.io/spring-cloud-gcp/$RELEASE_VERSION/reference/html/index.html. See section below for more information.
 
-. Increment the project base _patch_ version. For example, from `2.0.6-SNAPSHOT` to `2.0.7-SNAPSHOT`, do:
+. Increment the project base _patch_ version. For example, from `1.0.0-SNAPSHOT` to `1.1.0-SNAPSHOT`, do:
 ```
-$ ./mvnw versions:set -DprocessAllModules -DnewVersion=2.0.7-SNAPSHOT
+$ ./mvnw versions:set -DprocessAllModules -DnewVersion=1.1.0-SNAPSHOT
 ```
 
 == Uploading Javadocs
