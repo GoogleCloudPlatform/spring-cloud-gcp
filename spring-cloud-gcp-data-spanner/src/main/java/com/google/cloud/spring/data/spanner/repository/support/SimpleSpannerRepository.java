@@ -164,8 +164,7 @@ public class SimpleSpannerRepository<T, I> implements SpannerRepository<T, I> {
 				pageable, this.spannerTemplate.count(this.entityType));
 	}
 
-	// TODO: Restore @Override when not supporting Spring Boot 2.4 anymore
-	//@Override
+	@Override
 	public void deleteAllById(Iterable<? extends I> ids) {
 		KeySet.Builder builder = KeySet.newBuilder();
 		for (Object id : ids) {

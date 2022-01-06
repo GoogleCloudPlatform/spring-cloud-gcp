@@ -36,6 +36,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -357,4 +358,12 @@ public class SimpleDatastoreRepositoryTests {
 		this.simpleDatastoreRepository.deleteAllById(keys);
 		verify(this.datastoreTemplate).deleteAllById(keys, Object.class);
 	}
+
+	@Test
+	public void testUnsupportedFindBy() {
+		this.expectedEx.expect(UnsupportedOperationException.class);
+		Example<Object> example = Example.of(new Object());
+		this.simpleDatastoreRepository.findBy(example, FetchableFluentQuery::all);
+	}
+
 }

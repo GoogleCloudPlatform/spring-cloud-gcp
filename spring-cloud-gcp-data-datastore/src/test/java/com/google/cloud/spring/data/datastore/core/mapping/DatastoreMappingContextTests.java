@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
  * Tests for the `DatastoreMappingContext`.
@@ -56,7 +56,7 @@ class DatastoreMappingContextTests {
 
 		context.createPersistentEntity(ClassTypeInformation.from(Object.class));
 
-		verifyZeroInteractions(mockEntity);
+		verifyNoMoreInteractions(mockEntity);
 	}
 
 	@Test
