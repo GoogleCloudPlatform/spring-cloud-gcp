@@ -20,7 +20,8 @@ jobs:
       run: echo "::set-output name=date::$(date +'%Y-%m-%d' --utc)"
 
     - uses: actions/checkout@v2
-      - ref: '2.x'
+      with:
+        ref: '2.x'
 
     - uses: actions/setup-java@v1
       with:
@@ -97,7 +98,8 @@ jobs:
         run: echo "::set-output name=date::$(date +'%Y-%m-%d' --utc)"
 
       - uses: actions/checkout@v2
-        - ref: '2.x'
+        with:
+          ref: '2.x'
 
       - uses: actions/setup-java@v1
         with:
