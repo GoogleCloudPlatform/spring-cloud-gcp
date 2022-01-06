@@ -115,7 +115,7 @@ public class DatastoreRepositoryExample {
 		// singer names
 		System.out.println("Fluent Query by example");
 		List<String> singerNames = this.singerRepository.findBy(example,
-				q -> q.stream().map(Singer::FirstAndLastName).collect(Collectors.toList()));
+				q -> q.stream().map(Singer::firstAndLastName).collect(Collectors.toList()));
 		singerNames.forEach(System.out::println);
 
 		//Pageable parameter

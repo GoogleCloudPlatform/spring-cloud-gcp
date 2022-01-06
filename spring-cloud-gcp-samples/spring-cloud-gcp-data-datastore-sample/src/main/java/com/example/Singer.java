@@ -173,7 +173,7 @@ public class Singer {
 				+ '}';
 	}
 
-	public String FirstAndLastName() {
+	public String firstAndLastName() {
 		return "Singer{" + "singerId='" + this.singerId + '\'' + ", firstName='"
 				+ this.firstName + '\'' + ", lastName='" + this.lastName + '}';
 	}
