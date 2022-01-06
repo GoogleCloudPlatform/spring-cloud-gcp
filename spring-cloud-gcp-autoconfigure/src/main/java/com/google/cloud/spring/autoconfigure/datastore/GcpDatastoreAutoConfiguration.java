@@ -57,8 +57,6 @@ import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 /**
  * Provides Spring Data classes to use with Cloud Datastore.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Configuration(proxyBeanMethods = false)

@@ -46,8 +46,6 @@ import static org.springframework.util.ReflectionUtils.setField;
 
 /**
  * Integration tests for the {@link CommitTimestamp} feature.
- *
- * @author Roman Solodovnichenko
  */
 @RunWith(SpringRunner.class)
 public class CommitTimestampIntegrationTests extends AbstractSpannerIntegrationTest {

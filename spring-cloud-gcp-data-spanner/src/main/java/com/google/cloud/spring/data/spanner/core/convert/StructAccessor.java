@@ -38,9 +38,6 @@ import com.google.gson.Gson;
  * A convenience wrapper class around Struct to make reading columns easier without
  * knowing their type.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class StructAccessor {

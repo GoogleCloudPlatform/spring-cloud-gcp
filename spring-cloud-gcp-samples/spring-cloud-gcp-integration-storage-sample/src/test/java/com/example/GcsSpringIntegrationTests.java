@@ -52,8 +52,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * To run this test locally, first specify the buckets and local directory used by sample in
  * java/com/example/resources/application.properties. Then, run: mvn -Dit.storage=true test.
- *
- * @author Daniel Zou
  */
 @EnabledIfSystemProperty(named = "it.storage", matches = "true")
 @ExtendWith(SpringExtension.class)

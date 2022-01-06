@@ -26,8 +26,6 @@ import java.lang.annotation.Target;
  * Annotates properties that are embedded objects that can hold primary key components. If
  * the property holds primary key columns, then it should also be annotated with the
  * {@link PrimaryKey} annotation.
- *
- * @author Chengyuan Zhao
  */
 @Documented
 @Target(ElementType.FIELD)

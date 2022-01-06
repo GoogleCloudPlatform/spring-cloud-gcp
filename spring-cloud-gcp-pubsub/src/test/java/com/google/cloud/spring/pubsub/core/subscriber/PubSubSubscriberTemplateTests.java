@@ -72,11 +72,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link PubSubSubscriberTemplate}.
- *
- * @author Mike Eltsufin
- * @author Doug Hoard
- * @author Elena Felder
- * @author Maurice Zeijen
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PubSubSubscriberTemplateTests {

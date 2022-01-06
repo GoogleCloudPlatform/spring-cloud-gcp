@@ -43,9 +43,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for Pub/Sub autoconfiguration.
- *
- * @author Elena Felder
- * @author Mike Eltsufin
  */
 class GcpPubSubAutoConfigurationTests {
 

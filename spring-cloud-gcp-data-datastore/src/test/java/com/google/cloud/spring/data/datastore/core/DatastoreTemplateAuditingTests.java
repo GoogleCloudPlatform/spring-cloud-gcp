@@ -51,9 +51,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests the auditing features of the template.
- *
- * @author Chengyuan Zhao
- * @author Frank Pavageau
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration

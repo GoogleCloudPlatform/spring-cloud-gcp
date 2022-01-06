@@ -40,10 +40,6 @@ import org.springframework.util.StringUtils;
  * Represents an implementation for {@link SpannerPersistentProperty}, which is a property
  * of a {@link SpannerPersistentEntity} stored in a Cloud Spanner table.
  *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- * @author Roman Solodovnichenko
- *
  * @since 1.1
  */
 public class SpannerPersistentPropertyImpl

@@ -36,7 +36,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * Higher level tests invoking {@link TwoStepsConversions} as part of read/write
  * operations are in {@link TestDatastoreItemCollections}.
  *
- * @author Elena Felder
  * @since 1.1
  */
 class TwoStepsConversionsTests {

@@ -26,8 +26,6 @@ import java.lang.annotation.Target;
  * Annotation for a property that allows specifying the field name instead of deriving it
  * from the property's name.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Documented

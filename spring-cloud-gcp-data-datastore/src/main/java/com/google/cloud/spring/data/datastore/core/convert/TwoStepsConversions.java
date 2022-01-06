@@ -61,9 +61,6 @@ import static com.google.cloud.spring.data.datastore.core.util.ValueUtil.boxIfNe
  * second step converts simple types to Datastore-native types. The second step is skipped
  * if the first one produces a Datastore-native type.
  *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class TwoStepsConversions implements ReadWriteConversions {

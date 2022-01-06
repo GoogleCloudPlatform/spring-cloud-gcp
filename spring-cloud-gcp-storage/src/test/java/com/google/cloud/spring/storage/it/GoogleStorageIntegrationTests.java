@@ -52,8 +52,6 @@ import static org.junit.Assume.assumeThat;
 
 /**
  * Integration for Google Cloud Storage.
- *
- * @author Chengyuan Zhao
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {

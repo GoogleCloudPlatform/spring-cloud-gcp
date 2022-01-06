@@ -34,9 +34,6 @@ import org.springframework.util.Assert;
 /**
  * Determines the type of the user's custom-defined Query Methods and instantiates their implementations.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class SpannerQueryLookupStrategy implements QueryLookupStrategy {

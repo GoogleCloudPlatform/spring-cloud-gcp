@@ -23,8 +23,6 @@ import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 
 /**
  * Sample entity.
- *
- * @author Dmitry Solomakha
  */
 @Entity
 public class Album implements Comparable<Album> {

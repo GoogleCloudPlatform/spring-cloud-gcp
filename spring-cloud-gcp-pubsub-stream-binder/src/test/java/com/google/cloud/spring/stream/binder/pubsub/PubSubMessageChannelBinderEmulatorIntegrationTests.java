@@ -32,10 +32,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration tests that require the Pub/Sub emulator to be installed.
- *
- * @author João André Martins
- * @author Elena Felder
- * @author Artem Bilan
  */
 @ExtendWith(PubSubEmulator.class)
 class PubSubMessageChannelBinderEmulatorIntegrationTests extends

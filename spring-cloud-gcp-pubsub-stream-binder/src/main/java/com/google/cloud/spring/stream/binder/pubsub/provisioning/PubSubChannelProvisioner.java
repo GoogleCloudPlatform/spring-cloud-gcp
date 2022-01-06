@@ -42,9 +42,6 @@ import org.springframework.util.StringUtils;
 
 /**
  * Provisioning provider for Pub/Sub.
- *
- * @author João André Martins
- * @author Mike Eltsufin
  */
 public class PubSubChannelProvisioner
 		implements ProvisioningProvider<ExtendedConsumerProperties<PubSubConsumerProperties>,

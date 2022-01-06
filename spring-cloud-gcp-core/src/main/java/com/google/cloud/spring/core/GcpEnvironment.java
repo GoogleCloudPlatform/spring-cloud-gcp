@@ -19,8 +19,6 @@ package com.google.cloud.spring.core;
 /**
  * Enumeration of valid individual GCP environments.
  *
- * @author Elena Felder
- *
  * @since 1.1
  */
 public enum GcpEnvironment {

@@ -43,9 +43,6 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Custom {@link PropertySourceLocator} for Google Cloud Runtime Configurator API.
  *
- * @author Jisha Abubaker
- * @author Mike Eltsufin
- *
  * @since 1.1
  */
 public class GoogleConfigPropertySourceLocator implements PropertySourceLocator {

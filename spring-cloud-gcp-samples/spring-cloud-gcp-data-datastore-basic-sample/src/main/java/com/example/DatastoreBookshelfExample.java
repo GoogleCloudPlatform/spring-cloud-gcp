@@ -27,8 +27,6 @@ import org.springframework.shell.standard.ShellMethod;
 
 /**
  * This class contains the main method and performs common operations with books.
- *
- * @author Dmitry Solomakha
  */
 @ShellComponent
 @SpringBootApplication

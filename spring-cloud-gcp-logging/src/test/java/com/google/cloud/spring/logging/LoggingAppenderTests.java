@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests for {@link LoggingAppender}.
  *
- * @author Mike Eltsufin
  * @since 1.2
  */
 class LoggingAppenderTests {

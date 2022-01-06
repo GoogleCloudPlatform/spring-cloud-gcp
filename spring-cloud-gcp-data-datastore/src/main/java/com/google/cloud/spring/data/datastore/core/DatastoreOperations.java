@@ -34,9 +34,6 @@ import org.springframework.data.domain.Slice;
 /**
  * An interface of operations that can be done with Cloud Datastore.
  *
- * @author Chengyuan Zhao
- * @author Vinicius Carvalho
- *
  * @since 1.1
  */
 public interface DatastoreOperations {

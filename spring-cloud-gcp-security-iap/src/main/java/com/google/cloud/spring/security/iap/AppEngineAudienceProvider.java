@@ -27,8 +27,6 @@ import org.springframework.util.Assert;
  * {@link org.springframework.security.oauth2.jwt.Jwt} token validator for GCP App Engine (both Flexible and Standard)
  * audience strings.
  *
- * @author Elena Felder
- *
  * @since 1.1
  */
 public class AppEngineAudienceProvider implements AudienceProvider {

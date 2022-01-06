@@ -22,8 +22,6 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 
 /**
  * An embedded grouping of columns.
- *
- * @author Chengyuan Zhao
  */
 public class TradeDetail {
 

@@ -23,8 +23,6 @@ import com.google.cloud.spanner.Mutation;
 
 /**
  * An event that is published after a delete operation.
- *
- * @author Chengyuan Zhao
  */
 public class BeforeDeleteEvent extends DeleteEvent {
 

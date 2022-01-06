@@ -40,8 +40,6 @@ import static org.awaitility.Awaitility.await;
 
 /**
  * Tests the Pub/Sub Json payload app.
- *
- * @author Daniel Zou
  */
 //Please use "-Dit.pubsub-integration=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")

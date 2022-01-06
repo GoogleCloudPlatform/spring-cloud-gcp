@@ -47,8 +47,6 @@ import static org.junit.Assume.assumeThat;
  *
  * To run the test, set the gcs-resource-test-bucket property in application.properties to the name
  * of your bucket and run: mvn test -Dit.storage
- *
- * @author Daniel Zou
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { GcsApplication.class })

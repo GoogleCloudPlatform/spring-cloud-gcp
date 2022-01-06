@@ -26,8 +26,6 @@ import com.google.pubsub.v1.PubsubMessage;
 /**
  * A simple {@link PubSubMessageConverter} that directly maps payloads of type
  * {@code byte[]}, {@code ByteString}, {@code ByteBuffer}, and {@code String} to Pub/Sub messages.
- *
- * @author Mike Eltsufin
  */
 public class SimplePubSubMessageConverter implements PubSubMessageConverter {
 

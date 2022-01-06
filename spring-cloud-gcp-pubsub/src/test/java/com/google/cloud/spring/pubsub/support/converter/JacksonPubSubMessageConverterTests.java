@@ -30,10 +30,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests for the Jackson message converter.
  *
- * @author Dmitry Solomakha
- * @author Doug Hoard
- * @author Chengyuan Zhao
- *
  * @since  1.1
  */
 

@@ -31,10 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for the Pub/Sub message header.
- *
- * @author João André Martins
- * @author Eric Goetschalckx
- * @author Chengyuan Zhao
  */
 public class PubSubHeaderMapperTests {
 

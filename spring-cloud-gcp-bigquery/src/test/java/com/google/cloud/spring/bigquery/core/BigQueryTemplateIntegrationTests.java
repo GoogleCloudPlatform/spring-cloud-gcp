@@ -52,7 +52,6 @@ import static org.junit.Assume.assumeThat;
 /**
  * Integration tests for BigQuery.
  *
- * @author Daniel Zou
  * @since 1.2
  */
 @RunWith(SpringRunner.class)

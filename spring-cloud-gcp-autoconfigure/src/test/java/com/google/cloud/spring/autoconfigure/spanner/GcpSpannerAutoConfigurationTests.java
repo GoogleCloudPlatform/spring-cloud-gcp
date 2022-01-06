@@ -41,9 +41,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for Spanner auto-config.
- *
- * @author Chengyuan Zhao
- * @author João André Martins
  */
 public class GcpSpannerAutoConfigurationTests {
 

@@ -35,8 +35,6 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 
 /**
  * Sample application for Spring Data Firestore.
- *
- * @author Daniel Zou
  */
 @SpringBootApplication
 public class FirestoreSampleApplication {

@@ -24,8 +24,6 @@ import org.springframework.data.domain.Sort;
 
 /**
  * Encapsulates Cloud Datastore query options.
- *
- * @author Dmitry Solomakha
  */
 public final class DatastoreQueryOptions {
 

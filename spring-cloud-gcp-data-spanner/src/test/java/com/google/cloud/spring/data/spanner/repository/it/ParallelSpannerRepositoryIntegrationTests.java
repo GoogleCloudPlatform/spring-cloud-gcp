@@ -36,8 +36,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests multiple threads using a single repository instance.
- *
- * @author Chengyuan Zhao
  */
 @RunWith(SpringRunner.class)
 public class ParallelSpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {

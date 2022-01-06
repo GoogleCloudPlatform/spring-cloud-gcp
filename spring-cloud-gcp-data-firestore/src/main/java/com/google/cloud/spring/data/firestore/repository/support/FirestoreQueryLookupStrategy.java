@@ -32,8 +32,6 @@ import org.springframework.data.repository.query.RepositoryQuery;
  * The class that decides what type of Query Method to use. For Firestore it is always
  * just PartTree.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
 public class FirestoreQueryLookupStrategy implements QueryLookupStrategy {

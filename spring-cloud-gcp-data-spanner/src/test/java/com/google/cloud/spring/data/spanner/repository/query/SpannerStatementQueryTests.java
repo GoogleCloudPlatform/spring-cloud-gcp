@@ -57,9 +57,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests Spanner statement queries.
- *
- * @author Chengyuan Zhao
- * @author Balint Pato
  */
 public class SpannerStatementQueryTests {
 

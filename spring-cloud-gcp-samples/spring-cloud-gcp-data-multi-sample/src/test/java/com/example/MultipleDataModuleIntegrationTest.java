@@ -29,8 +29,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  * Tests that our Spring Data modules can be used with each other.
- *
- * @author Chengyuan
  */
 //Please use "-Dit.multisample=true" to enable the tests
 @ExtendWith(SpringExtension.class)

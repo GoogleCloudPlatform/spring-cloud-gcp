@@ -23,8 +23,6 @@ import org.springframework.data.repository.core.support.AbstractEntityInformatio
  *
  * @param <T> the domain type.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
 public class FirestorePersistentEntityInformation<T> extends AbstractEntityInformation<T, String> {

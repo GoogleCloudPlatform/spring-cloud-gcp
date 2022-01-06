@@ -40,7 +40,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 /**
  * Provides Spring Beans for using Cloud Vision API.
  *
- * @author Daniel Zou
  * @since 1.1
  */
 @Configuration(proxyBeanMethods = false)

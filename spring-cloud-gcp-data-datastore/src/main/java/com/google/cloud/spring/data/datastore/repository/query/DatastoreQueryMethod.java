@@ -30,8 +30,6 @@ import org.springframework.lang.Nullable;
 /**
  * A metadata class for Query Methods for Spring Data Cloud Datastore.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class DatastoreQueryMethod extends QueryMethod {

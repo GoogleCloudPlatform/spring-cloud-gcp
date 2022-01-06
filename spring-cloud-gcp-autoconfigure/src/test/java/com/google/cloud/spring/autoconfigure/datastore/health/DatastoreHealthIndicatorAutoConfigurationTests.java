@@ -33,11 +33,6 @@ import static org.mockito.Mockito.mock;
 /**
  * Tests for Datastore health check auto-config.
  *
- * @author Raghavan N S
- * @author Srinivasa Meenavalli
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
 class DatastoreHealthIndicatorAutoConfigurationTests {

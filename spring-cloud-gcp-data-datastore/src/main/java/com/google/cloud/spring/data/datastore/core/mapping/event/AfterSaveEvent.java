@@ -23,8 +23,6 @@ import com.google.cloud.datastore.Entity;
 
 /**
  * An event published immediately after a save operation to Cloud Datastore.
- *
- * @author Chengyuan Zhao
  */
 public class AfterSaveEvent extends SaveEvent {
 

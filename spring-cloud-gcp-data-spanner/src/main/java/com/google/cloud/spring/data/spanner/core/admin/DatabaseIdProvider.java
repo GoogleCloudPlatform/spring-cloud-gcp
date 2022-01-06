@@ -24,8 +24,6 @@ import com.google.cloud.spanner.DatabaseId;
  * A provider of {@code DatabaseId} that is used to determine the target Cloud Spanner
  * databases on which to act.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
 public interface DatabaseIdProvider extends Supplier<DatabaseId> {

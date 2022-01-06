@@ -55,8 +55,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for extended binding properties.
- *
- * @author Daniel Zou
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = {

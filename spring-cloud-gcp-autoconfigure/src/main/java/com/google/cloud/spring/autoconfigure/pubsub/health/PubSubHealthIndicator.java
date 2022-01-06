@@ -55,9 +55,6 @@ import org.springframework.util.concurrent.ListenableFuture;
  * set the {@code acknowledgeMessages} option to "true". However, take care not to configure
  * a subscription that has a business impact, or leave the custom subscription out completely.
  *
- * @author Vinicius Carvalho
- * @author Patrik Hörlin
- *
  * @since 1.2.2
  */
 public class PubSubHealthIndicator extends AbstractHealthIndicator {

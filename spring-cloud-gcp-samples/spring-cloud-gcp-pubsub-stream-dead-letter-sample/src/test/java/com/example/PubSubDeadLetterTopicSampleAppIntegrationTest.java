@@ -41,7 +41,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
 
 /**
- * @author Travis Tomsu
  * @since 2.0.2
  */
 @RunWith(SpringRunner.class)
