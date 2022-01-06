@@ -43,7 +43,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
- *
  * @since 2.0.6
  */
 @Configuration(proxyBeanMethods = false)

@@ -28,7 +28,6 @@ import com.google.firestore.v1.Document;
 import com.google.firestore.v1.Value;
 
 /**
- *
  * Uses Firestore client library to provide  object mapping functionality.
  *
  * @since 1.2.2

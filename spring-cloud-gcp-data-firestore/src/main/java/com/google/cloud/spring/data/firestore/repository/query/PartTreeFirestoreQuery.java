@@ -61,7 +61,6 @@ import static org.springframework.data.repository.query.parser.Part.Type.NOT_IN;
 import static org.springframework.data.repository.query.parser.Part.Type.SIMPLE_PROPERTY;
 
 /**
- *
  * @since 1.2
  */
 public class PartTreeFirestoreQuery implements RepositoryQuery {

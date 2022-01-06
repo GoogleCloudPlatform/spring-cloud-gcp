@@ -35,7 +35,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 /**
- *
  * @since 1.2
  */
 @SpringBootApplication
