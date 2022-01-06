@@ -1,14 +1,10 @@
-name: Unit Tests
+name: Scheduled Unit Tests for 2.x
 
 on:
-  push:
-    branches:
-      - main
-      - 2.x
-  pull_request:
+  # push to 2.x branch is handled by default unitTests.yaml
   workflow_dispatch:
   schedule:
-    - cron: '05 7 * * *' # 07:00 UTC every day
+    - cron: '05 5 * * *' # 05:00 UTC every day
 
 
 jobs:
@@ -24,6 +20,7 @@ jobs:
       run: echo "::set-output name=date::$(date +'%Y-%m-%d' --utc)"
 
     - uses: actions/checkout@v2
+      - ref: '2.x'
 
     - uses: actions/setup-java@v1
       with:
@@ -100,6 +97,7 @@ jobs:
         run: echo "::set-output name=date::$(date +'%Y-%m-%d' --utc)"
 
       - uses: actions/checkout@v2
+        - ref: '2.x'
 
       - uses: actions/setup-java@v1
         with:
