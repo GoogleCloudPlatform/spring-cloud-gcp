@@ -34,7 +34,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.rules.ExternalResource;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.ParameterResolver;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -51,7 +56,7 @@ import static org.junit.Assume.assumeTrue;
  *
  * @since 1.1
  */
-public class PubSubEmulator extends ExternalResource {
+public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, ParameterResolver {
 
 	private static final Path EMULATOR_CONFIG_DIR = Paths.get(System.getProperty("user.home")).resolve(
 			Paths.get(".config", "gcloud", "emulators", "pubsub"));
@@ -88,12 +93,28 @@ public class PubSubEmulator extends ExternalResource {
 	 * @throws InterruptedException if process is stopped while waiting to retry.
 	 */
 	@Override
-	protected void before() throws IOException, InterruptedException {
+	public void beforeAll(ExtensionContext extensionContext) throws IOException, InterruptedException {
 
 		assumeTrue("PubSubEmulator rule disabled. Please enable with -Dit.pubsub-emulator.", this.enableTests);
 
 		startEmulator();
 		determineHostPort();
+	}
+
+	/**
+	 * Set up ParameterResolver to support String as parameter type.
+	 */
+	@Override
+	public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+		return parameterContext.getParameter().getType() == String.class;
+	}
+
+	/**
+	 * Set up ParameterResolver to return current emulatorHostPort to test.
+	 */
+	@Override
+	public String resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+		return this.emulatorHostPort;
 	}
 
 	/**
@@ -105,7 +126,7 @@ public class PubSubEmulator extends ExternalResource {
 	 * Any failure is logged and ignored since it's not critical to the tests' operation.
 	 */
 	@Override
-	protected void after() {
+	public void afterAll(ExtensionContext extensionContext) throws Exception {
 		findAndDestroyEmulator();
 	}
 
@@ -234,7 +255,7 @@ public class PubSubEmulator extends ExternalResource {
 	private void updateConfig(WatchService watchService) throws InterruptedException {
 		int attempts = 10;
 		while (--attempts >= 0) {
-			WatchKey key = watchService.poll(100, TimeUnit.MILLISECONDS);
+			WatchKey key = watchService.poll(1000, TimeUnit.MILLISECONDS);
 
 			if (key != null) {
 				Optional<Path> configFilePath = key.pollEvents().stream()
@@ -263,4 +284,5 @@ public class PubSubEmulator extends ExternalResource {
 			LOGGER.warn("Failed to clean up PID " + pid);
 		}
 	}
+
 }

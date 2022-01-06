@@ -41,6 +41,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.util.Assert;
 
 /**
@@ -211,8 +212,13 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		return pageable instanceof DatastorePageable ? ((DatastorePageable) pageable).getTotalCount() : countCall.getAsLong();
 	}
 
-	// TODO: Restore @Override when not supporting Spring Boot 2.4 anymore
+	@Override
 	public void deleteAllById(Iterable<? extends I> iterable) {
 		this.datastoreTemplate.deleteAllById(iterable, entityType);
+	}
+
+	@Override
+	public <S extends T, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+		throw new UnsupportedOperationException();
 	}
 }

@@ -96,7 +96,7 @@ We offer `SNAPSHOT` versions of the project that always reflect the latest code 
 <repositories>
     <repository>
         <id>snapshots-repo</id>
-        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        <url>https://google.oss.sonatype.org/content/repositories/snapshots</url>
         <snapshots>
             <enabled>true</enabled>
         </snapshots>
