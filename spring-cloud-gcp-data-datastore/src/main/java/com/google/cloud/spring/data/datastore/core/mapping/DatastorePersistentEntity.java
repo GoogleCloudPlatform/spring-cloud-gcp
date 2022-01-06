@@ -27,8 +27,6 @@ import org.springframework.data.mapping.model.MutablePersistentEntity;
  *
  * @param <T> the type of the property described by this persistent property
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public interface DatastorePersistentEntity<T> extends

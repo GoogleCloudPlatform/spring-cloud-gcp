@@ -28,8 +28,6 @@ import org.springframework.scheduling.TaskScheduler;
 
 /**
  * Provides autoconfiguration for the BigQuery integration tests.
- *
- * @author Daniel Zou
  */
 @EnableIntegration
 @Configuration

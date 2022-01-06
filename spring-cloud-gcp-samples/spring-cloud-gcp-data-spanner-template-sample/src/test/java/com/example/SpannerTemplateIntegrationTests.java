@@ -37,8 +37,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for the Spanner template usage.
- *
- * @author Daniel Zou
  */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)

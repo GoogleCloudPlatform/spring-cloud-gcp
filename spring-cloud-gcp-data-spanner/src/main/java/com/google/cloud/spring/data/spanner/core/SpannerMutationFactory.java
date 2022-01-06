@@ -26,9 +26,6 @@ import com.google.cloud.spanner.Mutation;
 /**
  * Interface for a factory that creates Cloud Spanner mutation operation objects.
  *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public interface SpannerMutationFactory {

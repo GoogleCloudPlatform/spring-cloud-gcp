@@ -22,8 +22,6 @@ import org.springframework.data.annotation.Id;
 
 /**
  * This class represents a single book stored in Datastore.
- *
- * @author Dmitry Solomakha
  */
 @Entity(name = "books")
 public class Book {

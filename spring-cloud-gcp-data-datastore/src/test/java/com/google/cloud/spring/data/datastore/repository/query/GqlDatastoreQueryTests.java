@@ -71,8 +71,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for the GQL Query Method.
- *
- * @author Chengyuan Zhao
  */
 class GqlDatastoreQueryTests {
 

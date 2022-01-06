@@ -24,10 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A more complete integration test is available in {@code UserAgentHeaderProviderIntegrationTests}.
- *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 class UserAgentHeaderProviderTests {
 

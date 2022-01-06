@@ -30,8 +30,6 @@ import org.springframework.data.repository.query.parser.PartTree;
 /**
  * Implementation of a Spanner Query Method that handles all Part-tree / name-convention query methods.
  * @param <T> the return type of the Query Method
- * @author Balint Pato
- * @author Chengyuan Zhao
  *
  * @since 1.1
  */

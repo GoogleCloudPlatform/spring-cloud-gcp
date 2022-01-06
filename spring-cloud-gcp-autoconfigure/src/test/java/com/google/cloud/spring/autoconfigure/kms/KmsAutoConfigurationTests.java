@@ -33,8 +33,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Unit tests for {@link GcpKmsAutoConfiguration}.
- *
- * @author Emmanouil Gkatziouras
  */
 class KmsAutoConfigurationTests {
 

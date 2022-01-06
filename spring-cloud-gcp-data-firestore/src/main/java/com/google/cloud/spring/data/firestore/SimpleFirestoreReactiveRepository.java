@@ -21,8 +21,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * @author Dmitry Solomakha
- *
  * @since 1.2
  */
 public class SimpleFirestoreReactiveRepository<T> implements FirestoreReactiveRepository<T> {

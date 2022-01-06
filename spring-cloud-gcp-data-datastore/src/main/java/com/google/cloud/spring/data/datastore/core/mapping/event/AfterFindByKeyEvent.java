@@ -23,8 +23,6 @@ import com.google.cloud.datastore.Key;
 
 /**
  * An event published immediately after a read operation has finished.
- *
- * @author Chengyuan Zhao
  */
 public class AfterFindByKeyEvent extends ReadEvent {
 

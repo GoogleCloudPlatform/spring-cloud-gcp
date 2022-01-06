@@ -21,7 +21,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * Cloud IAP Authentication properties.
  *
- * @author Elena Felder
  * @since 1.1
  */
 @ConfigurationProperties("spring.cloud.gcp.security.iap")

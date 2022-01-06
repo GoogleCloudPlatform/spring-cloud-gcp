@@ -51,9 +51,6 @@ import static org.junit.Assume.assumeTrue;
  *
  * Tests can access the emulator's host/port combination by calling {@link #getEmulatorHostPort()} method.
  *
- * @author Elena Felder
- * @author Mike Eltsufin
- *
  * @since 1.1
  */
 public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, ParameterResolver {

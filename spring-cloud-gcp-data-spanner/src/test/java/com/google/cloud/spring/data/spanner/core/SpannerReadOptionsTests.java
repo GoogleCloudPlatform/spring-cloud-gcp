@@ -30,8 +30,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for the Spanner read options.
- *
- * @author Chengyuan Zhao
  */
 public class SpannerReadOptionsTests {
 

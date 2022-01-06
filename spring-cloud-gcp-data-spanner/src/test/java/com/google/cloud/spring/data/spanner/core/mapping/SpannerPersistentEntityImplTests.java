@@ -41,9 +41,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for the Spanner persistent entity.
- *
- * @author Chengyuan Zhao
- * @author Balint Pato
  */
 public class SpannerPersistentEntityImplTests {
 

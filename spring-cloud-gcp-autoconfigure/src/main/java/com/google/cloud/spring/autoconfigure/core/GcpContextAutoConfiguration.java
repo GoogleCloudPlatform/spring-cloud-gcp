@@ -37,13 +37,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Base starter for Google Cloud Projects. Provides defaults for {@link com.google.auth.oauth2.GoogleCredentials}.
  * Binds properties from {@link GcpProperties}.
- *
- * @author Vinicius Carvalho
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Elena Felder
- * @author Chengyuan Zhao
- * @author Serhat Soydan
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.gcp.core.enabled", havingValue = "true", matchIfMissing = true)

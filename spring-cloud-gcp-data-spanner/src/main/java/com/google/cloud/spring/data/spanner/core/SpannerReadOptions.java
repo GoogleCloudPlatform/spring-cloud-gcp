@@ -28,9 +28,6 @@ import org.springframework.util.Assert;
 /**
  * Encapsulates Cloud Spanner read options.
  *
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
- *
  * @since 1.1
  */
 public class SpannerReadOptions extends AbstractSpannerRequestOptions<ReadOption> {

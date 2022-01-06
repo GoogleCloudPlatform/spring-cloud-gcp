@@ -30,8 +30,6 @@ import static com.google.cloud.spring.data.firestore.FirestoreTemplate.NAME_FIEL
 /**
  * Persistent property metadata implementation for Firestore.
  *
- * @author Dmitry Solomakha
- *
  * @since 1.2
  */
 public class FirestorePersistentPropertyImpl

@@ -52,10 +52,6 @@ import static org.mockito.Mockito.mock;
 /**
  * Tests for Datastore Emulator integration with the datastore itself.
  *
- * @author Lucas Soares
- * @author Artem Bilan
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
 public class GcpDatastoreEmulatorIntegrationTests {

@@ -24,7 +24,6 @@ import org.springframework.data.auditing.AuditingHandler;
 /**
  * Auditing event listener that listens for {@code BeforeSaveEvent}.
  *
- * @author Chengyuan Zhao
  * @since 1.2
  */
 public class DatastoreAuditingEventListener implements ApplicationListener<BeforeSaveEvent> {

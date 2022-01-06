@@ -26,8 +26,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 /**
  * Properties for configuring Cloud Datastore.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @ConfigurationProperties("spring.cloud.gcp.datastore")

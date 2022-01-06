@@ -25,8 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link FirestorePersistentEntityImpl}.
- *
- * @author Daniel Zou
  */
 class FirestorePersistentEntityImplTests {
 

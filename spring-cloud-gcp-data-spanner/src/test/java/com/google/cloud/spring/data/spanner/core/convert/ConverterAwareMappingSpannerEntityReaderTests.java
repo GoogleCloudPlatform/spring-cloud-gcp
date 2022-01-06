@@ -51,9 +51,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for converting and reading Spanner entities and objects.
- *
- * @author Chengyuan Zhao
- * @author Balint Pato
  */
 public class ConverterAwareMappingSpannerEntityReaderTests {
 

@@ -79,8 +79,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests Spanner SQL Query Methods.
- *
- * @author Chengyuan Zhao
  */
 public class SqlSpannerQueryTests {
 

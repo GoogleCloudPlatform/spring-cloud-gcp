@@ -25,8 +25,6 @@ import java.lang.annotation.Target;
 /**
  * Annotation for subclasses in an inheritance hierarchy that matches a value in a
  * discrimination field in the parent class.
- *
- * @author Chengyuan Zhao
  */
 @Documented
 @Target(ElementType.TYPE)

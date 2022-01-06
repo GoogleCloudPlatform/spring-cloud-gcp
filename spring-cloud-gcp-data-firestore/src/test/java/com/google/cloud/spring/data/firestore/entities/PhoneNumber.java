@@ -23,8 +23,6 @@ import com.google.cloud.spring.data.firestore.Document;
 
 /**
  * Sample entity for integration tests.
- *
- * @author Dmitry Solomakha
  */
 
 @Document(collectionName = "phoneNumbers")

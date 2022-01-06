@@ -52,7 +52,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
- * @author Dmitry Solomakha
  * @since 1.2
  */
 public class FirestoreTemplateTests {

@@ -29,9 +29,6 @@ import org.springframework.data.convert.CustomConversions;
 /**
  * A custom converter used for reading from Spanner data types.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class SpannerReadConverter extends SpannerCustomConverter {

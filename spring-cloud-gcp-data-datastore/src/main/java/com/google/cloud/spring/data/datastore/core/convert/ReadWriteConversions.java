@@ -27,9 +27,6 @@ import org.springframework.data.util.TypeInformation;
 /**
  * An interface for type conversions on read and on write.
  *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public interface ReadWriteConversions {

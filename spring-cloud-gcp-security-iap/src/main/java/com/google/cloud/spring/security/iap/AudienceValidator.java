@@ -32,9 +32,6 @@ import org.springframework.util.StringUtils;
 /**
  * {@link Jwt} token validator for a custom audience claim.
  *
- * @author Elena Felder
- * @author Marcel Amado
- *
  * @since 1.1
  */
 public class AudienceValidator implements OAuth2TokenValidator<Jwt>, InitializingBean {

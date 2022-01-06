@@ -35,8 +35,6 @@ import static org.mockito.Mockito.when;
 /**
  * Spring context needed to exercise {@link AudienceValidator}'s {@code afterPropertiesSet()}.
  *
- * @author Elena Felder
- *
  * @since 1.1
  */
 public class AudienceValidatorTests {

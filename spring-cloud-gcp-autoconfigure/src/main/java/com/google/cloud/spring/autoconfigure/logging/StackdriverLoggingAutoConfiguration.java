@@ -38,9 +38,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
  * This class configures a Web MVC interceptor to capture trace IDs for log correlation.
  * This configuration is turned on only if Trace support is not used and Web MVC is used.
  * Otherwise, the MDC context will be used by the Logback appenders.
- *
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ HandlerInterceptor.class, LoggingAppender.class, TraceIdExtractor.class })

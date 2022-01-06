@@ -34,8 +34,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for the Datastore Persistent Entity.
- *
- * @author Chengyuan Zhao
  */
 public class DatastorePersistentEntityImplTests {
 

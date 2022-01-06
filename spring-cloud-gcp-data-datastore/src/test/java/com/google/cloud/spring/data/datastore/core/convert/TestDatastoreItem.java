@@ -26,9 +26,6 @@ import com.google.cloud.datastore.LatLng;
 
 /**
  * A test entity object that has fields of many different types to test features.
- *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
  */
 class TestDatastoreItem {
 	private Duration durationField;

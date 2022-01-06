@@ -32,9 +32,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
  *
  * <p>The {@link TraceIdLoggingEnhancer} can then be used in a logging appender to add the
  * trace ID metadata to log messages.
- *
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 public class TraceIdLoggingWebMvcInterceptor implements HandlerInterceptor {
 

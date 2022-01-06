@@ -76,10 +76,6 @@ import static org.springframework.data.repository.query.parser.Part.Type.SIMPLE_
  *
  * @param <T> the return type of this Query Method
  *
- * @author Chengyuan Zhao
- * @author Dmitry Solomakha
- * @author Vinicius Carvalho
- *
  * @since 1.1
  */
 public class PartTreeDatastoreQuery<T> extends AbstractDatastoreQuery<T> {

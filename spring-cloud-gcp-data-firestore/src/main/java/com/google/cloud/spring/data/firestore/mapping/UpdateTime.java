@@ -24,8 +24,6 @@ import java.lang.annotation.Target;
 /**
  * Marks a field to be used for update time.
  *
- * @author Dmitry Solomakha
- *
  * @since 2.0.0
  */
 @Retention(RetentionPolicy.RUNTIME)

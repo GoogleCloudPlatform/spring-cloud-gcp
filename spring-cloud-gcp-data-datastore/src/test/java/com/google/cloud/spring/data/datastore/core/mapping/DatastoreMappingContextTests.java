@@ -31,8 +31,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
  * Tests for the `DatastoreMappingContext`.
- *
- * @author Chengyuan Zhao
  */
 class DatastoreMappingContextTests {
 	@Test

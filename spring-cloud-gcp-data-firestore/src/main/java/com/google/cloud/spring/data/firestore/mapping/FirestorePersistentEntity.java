@@ -23,8 +23,6 @@ import org.springframework.data.mapping.model.MutablePersistentEntity;
  *
  * @param <T> the type of the property described by this persistent property
  *
- * @author Dmitry Solomakha
- *
  * @since 1.2
  */
 public interface FirestorePersistentEntity<T> extends

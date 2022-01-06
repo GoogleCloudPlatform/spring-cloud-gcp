@@ -35,10 +35,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Run with: mvn -Dit.cloudsql test
  *
  * The test will inherit the properties set in resources/application.properties.
- *
- * @author Mike Eltsufin
- * @author Dmitry Solomakha
- * @author Daniel Zou
  */
 //Please use "-Dit.cloudsql=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")

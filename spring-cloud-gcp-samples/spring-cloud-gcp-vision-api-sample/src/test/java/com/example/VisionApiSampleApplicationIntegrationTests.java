@@ -39,8 +39,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 /**
  * This test sends images to the GCP Vision API and verifies the returned image
  * annotations.
- *
- * @author Daniel Zou
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest

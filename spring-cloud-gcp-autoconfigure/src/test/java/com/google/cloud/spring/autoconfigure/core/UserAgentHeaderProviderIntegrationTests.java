@@ -27,10 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * This needs to be an integration test and in a different module because the JAR MANIFEST
  * has to be available for this.getClass().getPackage().getImplementationVersion() to work
  * properly.
- *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 public class UserAgentHeaderProviderIntegrationTests {
 

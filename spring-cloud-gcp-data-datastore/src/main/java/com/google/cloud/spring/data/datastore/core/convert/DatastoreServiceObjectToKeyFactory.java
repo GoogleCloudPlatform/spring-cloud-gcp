@@ -33,8 +33,6 @@ import org.springframework.util.Assert;
  * Implementation of {@link ObjectToKeyFactory} where the key factories are provided by
  * the Datastore Service.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class DatastoreServiceObjectToKeyFactory implements ObjectToKeyFactory {

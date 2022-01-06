@@ -23,8 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for DML before-execution event.
- *
- * @author Chengyuan Zhao
  */
 class BeforeExecuteDmlEventTest {
 

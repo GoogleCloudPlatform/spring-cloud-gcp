@@ -27,8 +27,6 @@ import org.springframework.data.annotation.Id;
 
 /**
  * An ancestor entity for integration tests.
- *
- * @author Dmitry Solomakha
  */
 public class AncestorEntity {
 	@Id

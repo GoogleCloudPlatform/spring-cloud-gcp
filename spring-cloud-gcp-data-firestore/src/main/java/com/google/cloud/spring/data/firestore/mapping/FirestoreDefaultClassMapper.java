@@ -28,11 +28,8 @@ import com.google.firestore.v1.Document;
 import com.google.firestore.v1.Value;
 
 /**
- *
  * Uses Firestore client library to provide  object mapping functionality.
  *
- * @author Dmitry Solomakha
- * @author Mike Eltsufin
  * @since 1.2.2
  */
 public final class FirestoreDefaultClassMapper implements FirestoreClassMapper {

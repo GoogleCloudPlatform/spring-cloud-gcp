@@ -33,7 +33,6 @@ import static org.mockito.Mockito.mock;
 
 
 /**
- * @author Vinicius Carvalho
  * @since 1.2.2
  */
 class FirebaseAuthenticationAutoConfigurationTests {

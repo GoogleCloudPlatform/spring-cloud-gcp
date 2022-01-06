@@ -20,8 +20,6 @@ import org.springframework.context.ApplicationEvent;
 
 /**
  * An event published when entities are read from Cloud Datastore.
- *
- * @author Chengyuan Zhao
  */
 public class ReadEvent extends ApplicationEvent {
 

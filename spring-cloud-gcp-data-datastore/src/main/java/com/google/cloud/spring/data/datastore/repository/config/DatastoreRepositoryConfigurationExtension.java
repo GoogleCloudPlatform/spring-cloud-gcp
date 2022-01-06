@@ -36,8 +36,6 @@ import org.springframework.data.repository.config.XmlRepositoryConfigurationSour
  * Holds configuration information for creating Datastore repositories and providing
  * Datastore templates.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class DatastoreRepositoryConfigurationExtension

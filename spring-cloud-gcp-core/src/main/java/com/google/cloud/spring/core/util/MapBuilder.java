@@ -31,8 +31,6 @@ import org.springframework.util.Assert;
  * @param <K> map key type
  * @param <V> map value type
  *
- * @author Elena Felder
- *
  * @since 1.1
  */
 public final class MapBuilder<K, V> {

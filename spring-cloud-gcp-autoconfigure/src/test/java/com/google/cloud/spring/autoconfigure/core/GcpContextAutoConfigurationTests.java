@@ -35,10 +35,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for the top-level context auto-configuration.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- * @author Serhat Soydan
  */
 class GcpContextAutoConfigurationTests {
 

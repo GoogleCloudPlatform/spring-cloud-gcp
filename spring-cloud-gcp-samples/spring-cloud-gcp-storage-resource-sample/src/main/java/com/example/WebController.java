@@ -32,9 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * A REST Controller that exposes read and write operations on a Google Cloud Storage file
  * accessed using the Spring Resource Abstraction.
- *
- * @author Mike Eltsufin
- * @author Daniel Zou
  */
 @RestController
 public class WebController {

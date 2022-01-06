@@ -27,8 +27,6 @@ import org.springframework.data.util.TypeInformation;
  * A mapping context for Firestore that provides ways to create persistent entities and
  * properties.
  *
- * @author Dmitry Solomakha
- *
  * @since 1.2
  */
 public class FirestoreMappingContext extends

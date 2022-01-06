@@ -25,8 +25,6 @@ import org.springframework.data.repository.query.Param;
 
 /**
  * Sample repository for testing.
- *
- * @author Chengyuan Zhao
  */
 public interface PersonRepository extends DatastoreRepository<Person, Long> {
 

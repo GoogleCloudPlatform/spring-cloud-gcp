@@ -87,9 +87,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for the Spanner Template.
- *
- * @author Chengyuan Zhao
- * @author Roman Solodovnichenko
  */
 public class SpannerTemplateTests {
 

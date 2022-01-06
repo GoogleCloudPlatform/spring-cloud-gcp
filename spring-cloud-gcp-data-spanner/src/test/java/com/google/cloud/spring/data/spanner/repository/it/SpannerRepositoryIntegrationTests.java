@@ -70,9 +70,6 @@ import static org.mockito.ArgumentMatchers.eq;
 
 /**
  * Integration tests for Spanner Repository that uses many features.
- *
- * @author Balint Pato
- * @author Chengyuan Zhao
  */
 @RunWith(SpringRunner.class)
 public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {

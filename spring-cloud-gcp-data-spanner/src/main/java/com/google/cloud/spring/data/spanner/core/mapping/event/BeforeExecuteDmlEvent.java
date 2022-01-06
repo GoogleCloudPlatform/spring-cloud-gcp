@@ -20,8 +20,6 @@ import com.google.cloud.spanner.Statement;
 
 /**
  * This event is published before a DML statement is executed.
- *
- * @author Chengyuan Zhao
  */
 public class BeforeExecuteDmlEvent extends ExecuteDmlEvent {
 	/**

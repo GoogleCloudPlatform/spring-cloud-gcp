@@ -26,11 +26,6 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 
 /**
  * Properties for Publisher or Subscriber specific configurations.
- *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Emmanouil Gkatziouras
  */
 public class PubSubConfiguration {
 

@@ -25,8 +25,6 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 /**
  * A registry for the {@link HealthTracker} health trackers created per {@link ProjectSubscriptionName}.
  *
- * @author Emmanouil Gkatziouras
- *
  * @since 2.0.6
  */
 public interface HealthTrackerRegistry {

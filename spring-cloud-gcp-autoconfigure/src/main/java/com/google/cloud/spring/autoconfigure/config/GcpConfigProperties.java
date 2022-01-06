@@ -29,10 +29,6 @@ import org.springframework.core.env.Environment;
 /**
  * Configuration for {@link GoogleConfigPropertySourceLocator}.
  *
- * @author Jisha Abubaker
- * @author João André Martins
- * @author Mike Eltsufin
- *
  * @since 1.1
  */
 @ConfigurationProperties("spring.cloud.gcp.config")
