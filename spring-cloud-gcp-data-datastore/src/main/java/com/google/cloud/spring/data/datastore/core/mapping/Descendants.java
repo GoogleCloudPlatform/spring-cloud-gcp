@@ -26,8 +26,6 @@ import java.lang.annotation.Target;
  * Annotation for Datastore property that indicates it holds child entities that are
  * linked to this entity by the Cloud Datastore Ancestor relationship.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Documented

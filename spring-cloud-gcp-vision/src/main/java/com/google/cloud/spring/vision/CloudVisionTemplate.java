@@ -40,8 +40,6 @@ import org.springframework.util.Assert;
  * Spring Template offering convenience methods for interacting with the Cloud Vision
  * APIs.
  *
- * @author Daniel Zou
- *
  * @since 1.1
  */
 public class CloudVisionTemplate {

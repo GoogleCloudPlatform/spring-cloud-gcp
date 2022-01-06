@@ -39,8 +39,6 @@ import org.springframework.lang.NonNull;
  * A mapping context for Datastore that provides ways to create persistent entities and
  * properties.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class DatastoreMappingContext extends

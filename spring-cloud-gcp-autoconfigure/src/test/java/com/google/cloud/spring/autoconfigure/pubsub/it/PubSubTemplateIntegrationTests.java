@@ -63,12 +63,6 @@ import static org.awaitility.Awaitility.await;
 
 /**
  * Integration tests for Pub/Sub template.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- * @author Dmitry Solomakha
- * @author Daniel Zou
- * @author Mike Eltsufin
  */
 public class PubSubTemplateIntegrationTests {
 

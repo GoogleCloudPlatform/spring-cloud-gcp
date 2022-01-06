@@ -25,8 +25,6 @@ import java.time.LocalDateTime;
  * The data will be serialized as JSON, so as long as the objects are compatible, they do not have
  * to be the same.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 public class UserMessage {

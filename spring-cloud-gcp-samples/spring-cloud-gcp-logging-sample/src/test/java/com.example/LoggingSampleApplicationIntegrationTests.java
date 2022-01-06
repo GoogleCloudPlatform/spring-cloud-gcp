@@ -50,8 +50,6 @@ import static org.awaitility.Awaitility.await;
 
 /**
  * Tests for the logging sample app.
- *
- * @author Daniel Zou
  */
 @EnabledIfSystemProperty(named = "it.logging", matches = "true")
 @ExtendWith(SpringExtension.class)

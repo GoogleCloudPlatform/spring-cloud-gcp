@@ -33,8 +33,6 @@ import org.springframework.util.Assert;
 /**
  * Query lookup strategy for Query Methods for Cloud Datastore.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class DatastoreQueryLookupStrategy implements QueryLookupStrategy {

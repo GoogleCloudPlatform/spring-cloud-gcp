@@ -33,8 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Tests for config sample.
- *
- * @author Mike Eltsufin
  */
 //Please use "-Dit.config=true" to enable the tests.
 @ExtendWith(SpringExtension.class)

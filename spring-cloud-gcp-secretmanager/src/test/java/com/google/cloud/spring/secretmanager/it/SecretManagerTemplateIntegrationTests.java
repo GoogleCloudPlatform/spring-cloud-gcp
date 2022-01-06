@@ -33,9 +33,6 @@ import static org.awaitility.Awaitility.await;
 
 /**
  * Integration tests for {@link SecretManagerTemplate}.
- *
- * @author Daniel Zou
- * @author Mike Eltsufin
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { SecretManagerTestConfiguration.class })

@@ -41,11 +41,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for Cloud SQL {@link CloudSqlEnvironmentPostProcessor}.
- *
- * @author João André Martins
- * @author Artem Bilan
- * @author Øystein Urdahl Hardeng
- * @author Mike Eltsufin
  */
 class CloudSqlEnvironmentPostProcessorTests {
 	private CloudSqlEnvironmentPostProcessor initializer = new CloudSqlEnvironmentPostProcessor();

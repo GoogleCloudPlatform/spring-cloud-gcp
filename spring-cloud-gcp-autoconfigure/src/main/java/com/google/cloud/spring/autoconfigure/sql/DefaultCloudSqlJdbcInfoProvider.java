@@ -23,10 +23,6 @@ import org.springframework.util.StringUtils;
  * Provides default JDBC driver class name and constructs the JDBC URL for Cloud SQL v2
  * when running on local laptop, or in a VM-based environment (e.g., Google Compute
  * Engine, Google Container Engine).
- *
- * @author Ray Tsang
- * @author João André Martins
- * @author Øystein Urdahl Hardeng
  */
 public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider {
 

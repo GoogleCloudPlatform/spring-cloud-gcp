@@ -25,10 +25,6 @@ import com.google.cloud.spanner.ResultSet;
  * Interface for processors that can populate fields from Spanner Structs and write them
  * to Spanner Mutations.
  *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- * @author Balint Pato
- *
  * @since 1.1
  */
 public interface SpannerEntityProcessor extends SpannerEntityReader, SpannerEntityWriter {

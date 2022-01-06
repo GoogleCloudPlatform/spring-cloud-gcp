@@ -71,10 +71,6 @@ import static org.mockito.Mockito.when;
 /**
  * Tests for channel binder.
  *
- * @author Mike Eltsufin
- * @author Elena Felder
- * @author Emmanouil Gkatziouras
- *
  * @since 1.1
  */
 @RunWith(MockitoJUnitRunner.class)

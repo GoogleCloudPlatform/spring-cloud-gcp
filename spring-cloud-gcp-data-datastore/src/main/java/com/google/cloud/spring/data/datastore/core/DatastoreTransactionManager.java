@@ -33,8 +33,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 /**
  * Cloud Datastore transaction manager.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class DatastoreTransactionManager extends AbstractPlatformTransactionManager {

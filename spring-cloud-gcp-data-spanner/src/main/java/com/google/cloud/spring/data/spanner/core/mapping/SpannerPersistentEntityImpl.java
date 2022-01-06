@@ -58,9 +58,6 @@ import org.springframework.util.StringUtils;
  * type.
  *
  * @param <T> the type of the persistent entity
- * @author Ray Tsang
- * @author Chengyuan Zhao
- * @author Roman Solodovnichenko
  *
  * @since 1.1
  */

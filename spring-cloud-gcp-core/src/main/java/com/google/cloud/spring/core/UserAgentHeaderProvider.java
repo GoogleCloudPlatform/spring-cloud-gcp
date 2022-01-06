@@ -24,10 +24,6 @@ import com.google.api.gax.rpc.HeaderProvider;
 /**
  * Provides the user-agent header to signal to the Google Cloud Client Libraries that requests originate from a Spring
  * Integration.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
  */
 public class UserAgentHeaderProvider implements HeaderProvider {
 

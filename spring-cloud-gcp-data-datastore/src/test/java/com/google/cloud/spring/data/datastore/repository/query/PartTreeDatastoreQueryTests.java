@@ -81,9 +81,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for Part-Tree Datastore Query Methods.
- *
- * @author Chengyuan Zhao
- * @author Dmitry Solomakha
  */
 public class PartTreeDatastoreQueryTests {
 

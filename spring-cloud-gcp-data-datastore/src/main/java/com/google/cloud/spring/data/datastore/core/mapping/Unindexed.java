@@ -25,8 +25,6 @@ import java.lang.annotation.Target;
 /**
  * Annotation for Datastore property that indicates it should be excluded from indexes.
  *
- * @author Dmytro Solomakha
- *
  * @since 1.1
  */
 @Documented

@@ -23,8 +23,6 @@ import com.google.cloud.spring.data.spanner.core.SpannerReadOptions;
 
 /**
  * This event read operation on Cloud Spanner.
- *
- * @author Chengyuan Zhao
  */
 public class AfterReadEvent extends LoadEvent {
 

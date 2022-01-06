@@ -30,8 +30,6 @@ import static org.mockito.Mockito.verify;
 /**
  * Tests for {@link PubSubAcknowledgmentCallback}.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 

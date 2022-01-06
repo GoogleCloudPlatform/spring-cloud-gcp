@@ -29,8 +29,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 /**
  * Represents the parsed OCR content for an document in the provided range of pages.
- *
- * @author Daniel Zou
  */
 public class DocumentOcrResultSet {
 

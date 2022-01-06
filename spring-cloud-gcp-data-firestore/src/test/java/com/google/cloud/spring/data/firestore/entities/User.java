@@ -27,9 +27,6 @@ import com.google.cloud.spring.data.firestore.mapping.UpdateTime;
 
 /**
  * Sample entity for integration tests.
- *
- * @author Daniel Zou
- * @author Dmitry Solomakha
  */
 //tag::class_definition[]
 //tag::embedded_class_collections[]

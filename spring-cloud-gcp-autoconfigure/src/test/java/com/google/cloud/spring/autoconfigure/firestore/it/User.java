@@ -19,9 +19,6 @@ package com.google.cloud.spring.autoconfigure.firestore.it;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * @author Dmitry Solomakha
- */
 public class User {
 	private String name;
 	private List<Phone> phones;

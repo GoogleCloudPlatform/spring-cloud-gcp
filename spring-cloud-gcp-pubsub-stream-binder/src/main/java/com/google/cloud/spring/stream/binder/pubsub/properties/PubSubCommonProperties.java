@@ -19,7 +19,6 @@ package com.google.cloud.spring.stream.binder.pubsub.properties;
 /**
  * Properties common to consumers and producers.
  *
- * @author Mike Eltsufin
  * @since 1.1
  */
 public class PubSubCommonProperties {

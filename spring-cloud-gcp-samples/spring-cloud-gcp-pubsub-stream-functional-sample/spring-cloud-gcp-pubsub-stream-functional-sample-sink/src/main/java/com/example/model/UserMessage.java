@@ -21,8 +21,6 @@ import java.time.LocalDateTime;
 /**
  * A user message for the sample app.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 public class UserMessage {

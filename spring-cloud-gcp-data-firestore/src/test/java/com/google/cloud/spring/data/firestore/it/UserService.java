@@ -25,9 +25,6 @@ import reactor.core.publisher.Mono;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * @author Dmitry Solomakha
- */
 
 //tag::user_service[]
 class UserService {

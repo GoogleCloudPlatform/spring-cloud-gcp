@@ -25,8 +25,6 @@ import org.springframework.data.annotation.Id;
 
 /**
  * Represents individual personal musical instruments a {@link Singer} can own.
- *
- * @author Chengyuan Zhao
  */
 @Entity
 public class Instrument {

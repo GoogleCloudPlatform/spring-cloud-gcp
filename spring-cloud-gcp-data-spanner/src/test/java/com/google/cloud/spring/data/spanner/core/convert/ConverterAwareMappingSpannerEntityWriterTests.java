@@ -67,9 +67,6 @@ import static org.springframework.util.ReflectionUtils.setField;
 
 /**
  * Tests for the conversion and mapping of entities for write.
- *
- * @author Chengyuan Zhao
- * @author Balint Pato
  */
 public class ConverterAwareMappingSpannerEntityWriterTests {
 

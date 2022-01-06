@@ -31,8 +31,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for the Spanner custom key property.
- *
- * @author Chengyuan Zhao
  */
 public class SpannerKeyPropertyTests {
 

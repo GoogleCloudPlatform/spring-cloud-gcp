@@ -29,8 +29,6 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * Verifies that GCP Storage may be disabled via the property:
  * "spring.cloud.gcp.storage.enabled=false".
- *
- * @author Daniel Zou
  */
 class GcpStorageDisableTests {
 	private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";

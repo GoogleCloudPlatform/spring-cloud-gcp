@@ -30,8 +30,6 @@ import org.springframework.util.Assert;
  * <p>{@link AcknowledgmentCallback#noAutoAck()} is not implemented; the correct way to
  * enable manual acking is through configuring {@link PubSubMessageSource}.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 public class PubSubAcknowledgmentCallback implements AcknowledgmentCallback {

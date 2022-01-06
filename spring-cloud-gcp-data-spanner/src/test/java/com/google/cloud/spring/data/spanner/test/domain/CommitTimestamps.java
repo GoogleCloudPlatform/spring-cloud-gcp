@@ -25,8 +25,6 @@ import com.google.cloud.spring.data.spanner.core.mapping.Table;
 
 /**
  * A test object for testing {@link CommitTimestamp} features.
- *
- * @author Roman Solodovnichenko
  */
 @Table(name = "#{'commit_timestamps_'.concat(tableNameSuffix)}")
 public class CommitTimestamps {

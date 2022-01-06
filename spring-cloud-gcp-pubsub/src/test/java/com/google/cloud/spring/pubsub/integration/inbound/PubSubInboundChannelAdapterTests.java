@@ -56,13 +56,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * {@link PubSubInboundChannelAdapter} unit tests.
- *
- * @author João André Martins
- * @author Doug Hoard
- * @author Mike Eltsufin
- * @author Taylor Burke
- * @author Chengyuan Zhao
- * @author Elena Felder
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PubSubInboundChannelAdapterTests {

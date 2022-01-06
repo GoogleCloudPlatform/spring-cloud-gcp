@@ -31,9 +31,6 @@ import com.google.cloud.spring.core.util.MapBuilder;
 /**
  * A utility class to map between common Java types and types to use with Spanner.
  *
- * @author Chengyuan Zhao
- * @author Balint Pato
- *
  * @since 1.1
  */
 public final class SpannerTypeMapper {

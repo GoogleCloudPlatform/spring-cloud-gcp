@@ -23,9 +23,6 @@ import org.springframework.util.CollectionUtils;
 /**
  * Utility class containing functions for working with types related to Cloud Datastore.
  *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public final class ValueUtil {

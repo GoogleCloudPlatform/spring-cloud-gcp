@@ -29,8 +29,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for GcsAcceptModifiedAfterFileListFilter.
- *
- * @author Hosain Al Ahmad
  */
 class GcsAcceptModifiedAfterFileListFilterTest {
 

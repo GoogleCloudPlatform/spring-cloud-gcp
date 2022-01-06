@@ -38,7 +38,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
 /**
- * @author Dmitry Solomakha
  * @since 1.2
  */
 public class FirestoreDocumentationIntegrationTests {

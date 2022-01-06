@@ -51,9 +51,6 @@ import static com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType.N
 /**
  * A class for object to entity and entity to object conversions.
  *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter {

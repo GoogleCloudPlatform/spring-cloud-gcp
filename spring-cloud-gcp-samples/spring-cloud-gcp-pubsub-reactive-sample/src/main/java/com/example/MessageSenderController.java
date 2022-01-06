@@ -27,8 +27,6 @@ import org.springframework.web.reactive.result.view.RedirectView;
 /**
  * A helper controller for sending Pub/Sub messages, which can then be received by {@link ReactiveController}.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 @Controller

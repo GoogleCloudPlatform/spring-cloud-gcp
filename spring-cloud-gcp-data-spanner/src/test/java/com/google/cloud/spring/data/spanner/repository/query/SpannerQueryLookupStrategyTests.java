@@ -56,9 +56,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests Spanner Query Method lookups.
- *
- * @author Chengyuan Zhao
- * @author Roman Solodovnichenko
  */
 class SpannerQueryLookupStrategyTests {
 

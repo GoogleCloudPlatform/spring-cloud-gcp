@@ -20,8 +20,6 @@ import com.google.cloud.spanner.ValueBinder;
 
 /**
  * An interface that allows multiple values to be bound for Cloud Spanner.
- *
- * @author Chengyuan Zhao
  */
 public interface MultipleValueBinder {
 

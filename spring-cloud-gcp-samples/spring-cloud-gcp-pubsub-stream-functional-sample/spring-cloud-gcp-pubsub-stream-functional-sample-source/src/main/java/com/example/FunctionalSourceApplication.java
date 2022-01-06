@@ -29,8 +29,6 @@ import org.springframework.context.annotation.Bean;
  * <p>This class bootstraps the Spring Boot application and creates the {@link Sinks.Many}
  * bean that is used for communication between {@link FrontendController} and {@link Source}.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 @SpringBootApplication

@@ -57,12 +57,6 @@ import org.springframework.util.StringUtils;
  * {@link org.springframework.data.repository.query.parser.PartTree} parsed method
  * definitions.
  *
- * @author Chengyuan Zhao
- * @author Balint Pato
- * @author Mike Eltsufin
- * @author Roman Solodovnichenko
- * @author Dmitry Solomakha
- *
  * @since 1.1
  */
 public final class SpannerStatementQueryExecutor {

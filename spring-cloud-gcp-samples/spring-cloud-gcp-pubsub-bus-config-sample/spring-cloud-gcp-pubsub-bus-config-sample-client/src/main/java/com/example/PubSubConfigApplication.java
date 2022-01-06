@@ -21,8 +21,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Sample application for config client.
- *
- * @author Elena Felder
  */
 @SpringBootApplication
 public class PubSubConfigApplication {

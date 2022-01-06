@@ -36,8 +36,6 @@ import org.springframework.context.annotation.Configuration;
  * started as a local datastore server using the
  * {@link com.google.cloud.datastore.testing.LocalDatastoreHelper}.
  *
- * @author Lucas Soares
- *
  * @since 1.2
  */
 @Configuration(proxyBeanMethods = false)

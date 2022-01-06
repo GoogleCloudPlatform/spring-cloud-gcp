@@ -35,9 +35,6 @@ import org.springframework.data.repository.config.XmlRepositoryConfigurationSour
 /**
  * A boilerplate class configuring the instantiation of Spanner repositories.
  *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class SpannerRepositoryConfigurationExtension

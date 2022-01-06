@@ -40,10 +40,6 @@ import com.google.spanner.v1.TypeCode;
 
 /**
  * A test domain object using many features.
- *
- * @author Ray Tsang
- * @author Balint Pato
- * @author Chengyuan Zhao
  */
 @Table(name = "#{'trades_'.concat(tableNameSuffix)}")
 public class Trade {

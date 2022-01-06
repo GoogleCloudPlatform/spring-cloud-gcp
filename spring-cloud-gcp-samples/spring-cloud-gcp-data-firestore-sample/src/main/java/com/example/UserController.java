@@ -35,8 +35,6 @@ import org.springframework.web.server.ServerWebExchange;
 
 /**
  * Example controller demonstrating usage of Spring Data Repositories for Firestore.
- *
- * @author Daniel Zou
  */
 @RestController
 @RequestMapping("/users")

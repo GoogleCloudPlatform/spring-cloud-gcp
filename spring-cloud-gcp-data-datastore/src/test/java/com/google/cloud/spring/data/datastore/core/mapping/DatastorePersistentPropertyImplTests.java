@@ -33,8 +33,6 @@ import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Tests for the Datastore persistent property.
- *
- * @author Chengyuan Zhao
  */
 public class DatastorePersistentPropertyImplTests {
 

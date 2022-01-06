@@ -36,8 +36,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 /**
  * Tests for the Reactive Pub/Sub sample application.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 

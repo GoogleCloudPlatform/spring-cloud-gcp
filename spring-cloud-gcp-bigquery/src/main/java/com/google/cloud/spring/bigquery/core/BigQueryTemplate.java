@@ -43,7 +43,6 @@ import org.springframework.util.concurrent.SettableListenableFuture;
 /**
  * Helper class which simplifies common operations done in BigQuery.
  *
- * @author Daniel Zou
  * @since 1.2
  */
 public class BigQueryTemplate implements BigQueryOperations {

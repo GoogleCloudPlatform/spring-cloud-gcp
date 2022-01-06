@@ -44,8 +44,6 @@ import org.springframework.util.Assert;
 
 /**
  * Firestore-specific implementation of {@link org.springframework.transaction.ReactiveTransactionManager}.
- *
- * @author Dmitry Solomakha
  */
 public class ReactiveFirestoreTransactionManager extends AbstractReactiveTransactionManager {
 

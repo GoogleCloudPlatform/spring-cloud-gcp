@@ -96,9 +96,6 @@ import org.springframework.util.TypeUtils;
 /**
  * An implementation of {@link DatastoreOperations}.
  *
- * @author Chengyuan Zhao
- * @author Vinicius Carvalho
- *
  * @since 1.1
  */
 public class DatastoreTemplate implements DatastoreOperations, ApplicationEventPublisherAware {

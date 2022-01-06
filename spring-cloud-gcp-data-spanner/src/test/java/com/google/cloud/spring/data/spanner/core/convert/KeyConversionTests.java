@@ -35,9 +35,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for converting Spanner keys.
- *
- * @author Balint Pato
- * @author Chengyuan Zhao
  */
 @RunWith(Parameterized.class)
 public class KeyConversionTests {

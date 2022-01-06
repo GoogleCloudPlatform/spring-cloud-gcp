@@ -30,8 +30,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests to check for new mapping methods that appear in the Spanner client lib.
- *
- * @author Chengyuan Zhao
  */
 class SpannerWriteMethodCoverageTests {
 

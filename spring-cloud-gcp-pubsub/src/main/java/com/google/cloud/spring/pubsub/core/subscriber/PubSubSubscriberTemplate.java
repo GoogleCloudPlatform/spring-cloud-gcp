@@ -72,14 +72,6 @@ import org.springframework.util.concurrent.SettableListenableFuture;
  * the responses of the asynchronous pull callback operations.
  * By default, this is executed on the same thread that executes the callback.
  *
- * @author Vinicius Carvalho
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Doug Hoard
- * @author Elena Felder
- * @author Maurice Zeijen
- *
  * @since 1.1
  */
 public class PubSubSubscriberTemplate

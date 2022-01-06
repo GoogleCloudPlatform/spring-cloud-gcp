@@ -46,8 +46,6 @@ import static org.mockito.Mockito.when;
 /**
  * Tests for {@link PubSubMessageSource}.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 @RunWith(MockitoJUnitRunner.class)

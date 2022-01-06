@@ -34,8 +34,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for auto-config.
- *
- * @author Eddú Meléndez
  */
 class GcpStackdriverMetricsAutoConfigurationTest {
 

@@ -25,8 +25,6 @@ import java.lang.annotation.Target;
 /**
  * Annotates properties that are collections of child entities.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Documented

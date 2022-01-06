@@ -46,8 +46,6 @@ import static org.mockito.Mockito.when;
 /**
  * Tests for Pub/Sub provisioner.
  *
- * @author Mike Eltsufin
- *
  * @since 1.1
  */
 @RunWith(MockitoJUnitRunner.class)

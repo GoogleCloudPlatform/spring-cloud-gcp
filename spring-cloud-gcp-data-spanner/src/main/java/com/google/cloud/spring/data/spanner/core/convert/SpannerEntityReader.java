@@ -25,8 +25,6 @@ import org.springframework.data.convert.EntityReader;
 /**
  * An entity reader that can read from Spanner `Struct` types.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
  * @since 1.1
  */
 interface SpannerEntityReader extends EntityReader<Object, Struct> {

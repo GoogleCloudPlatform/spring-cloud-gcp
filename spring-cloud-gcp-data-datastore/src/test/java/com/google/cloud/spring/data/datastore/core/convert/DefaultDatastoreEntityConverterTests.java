@@ -64,9 +64,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /**
  * Tests for the entity converter.
  *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 

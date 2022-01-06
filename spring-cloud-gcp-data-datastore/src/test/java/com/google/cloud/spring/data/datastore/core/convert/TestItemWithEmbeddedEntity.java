@@ -27,9 +27,6 @@ import com.google.cloud.spring.data.datastore.entities.CustomMap;
 
 /**
  * A test entity focused on holding embedded entities.
- *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
  */
 public class TestItemWithEmbeddedEntity {
 	private int intField;

@@ -40,8 +40,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * These tests verifies that the pubsub-polling-binder-sample works.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 //Please use "-Dit.pubsub=true" to enable the tests
