@@ -173,6 +173,11 @@ public class Singer {
 				+ '}';
 	}
 
+	public String firstAndLastName() {
+		return "Singer{" + "singerId='" + this.singerId + '\'' + ", firstName='"
+				+ this.firstName + '\'' + ", lastName='" + this.lastName + '}';
+	}
+
 	public LocalDateTime getLastModifiedTime() {
 		return this.lastModifiedTime;
 	}
