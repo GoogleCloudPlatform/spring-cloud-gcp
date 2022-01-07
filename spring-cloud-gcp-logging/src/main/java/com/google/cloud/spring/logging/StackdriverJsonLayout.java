@@ -58,9 +58,9 @@ public class StackdriverJsonLayout extends JsonLayout {
 
 	private String projectId;
 
-	private String traceIdMDCField;
+	private String traceIdMdcField;
 
-	private String spanIdMDCField;
+	private String spanIdMdcField;
 
 	private boolean includeTraceId;
 
@@ -76,12 +76,10 @@ public class StackdriverJsonLayout extends JsonLayout {
 
 	private final List<JsonLoggingEventEnhancer> loggingEventEnhancers = new ArrayList<>();
 
-	/**
-	 * creates a layout for a Logback appender compatible to the Stackdriver log format.
-	 */
+	/** creates a layout for a Logback appender compatible to the Stackdriver log format. */
 	public StackdriverJsonLayout() {
-		this.traceIdMDCField = StackdriverTraceConstants.MDC_FIELD_TRACE_ID;
-		this.spanIdMDCField = StackdriverTraceConstants.MDC_FIELD_SPAN_ID;
+		this.traceIdMdcField = StackdriverTraceConstants.MDC_FIELD_TRACE_ID;
+		this.spanIdMdcField = StackdriverTraceConstants.MDC_FIELD_SPAN_ID;
 		this.appendLineSeparator = true;
 		this.includeExceptionInMessage = true;
 		this.includeException = false;
@@ -109,38 +107,42 @@ public class StackdriverJsonLayout extends JsonLayout {
 
 	/**
 	 * Get the MDC filed name for trace id.
+	 *
 	 * @return the MDC field name for retrieving a trace id
 	 * @since 2.0.5
 	 */
-	public String getTraceIdMDCField() {
-		return traceIdMDCField;
+	public String getTraceIdMdcField() {
+		return traceIdMdcField;
 	}
 
 	/**
 	 * Set the MDC filed name for trace id.
-	 * @param traceIdMDCField the MDC field name for retrieving a trace id
+	 *
+	 * @param traceIdMdcField the MDC field name for retrieving a trace id
 	 * @since 2.0.5
 	 */
-	public void setTraceIdMDCField(String traceIdMDCField) {
-		this.traceIdMDCField = traceIdMDCField;
+	public void setTraceIdMdcField(String traceIdMdcField) {
+		this.traceIdMdcField = traceIdMdcField;
 	}
 
 	/**
 	 * Get the MDC field name for span id.
+	 *
 	 * @return the MDC field name for retrieving a span id
 	 * @since 2.0.5
 	 */
-	public String getSpanIdMDCField() {
-		return spanIdMDCField;
+	public String getSpanIdMdcField() {
+		return spanIdMdcField;
 	}
 
 	/**
 	 * Set the MDC field name for span id.
-	 * @param spanIdMDCField the MDC field name for retrieving a span id
+	 *
+	 * @param spanIdMdcField the MDC field name for retrieving a span id
 	 * @since 2.0.5
 	 */
-	public void setSpanIdMDCField(String spanIdMDCField) {
-		this.spanIdMDCField = spanIdMDCField;
+	public void setSpanIdMdcField(String spanIdMdcField) {
+		this.spanIdMdcField = spanIdMdcField;
 	}
 
 	/**
@@ -235,9 +237,9 @@ public class StackdriverJsonLayout extends JsonLayout {
 			this.projectId = projectIdProvider.getProjectId();
 		}
 
-		this.filteredMdcFields =
-				new HashSet<>(Arrays.asList(traceIdMDCField, spanIdMDCField,
-						StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT));
+		this.filteredMdcFields = new HashSet<>(
+				Arrays.asList(
+						traceIdMdcField, spanIdMdcField, StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT));
 	}
 
 	/**
@@ -274,11 +276,18 @@ public class StackdriverJsonLayout extends JsonLayout {
 			map.put(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, formatMessage(event));
 		}
 		add(JsonLayout.MESSAGE_ATTR_NAME, this.includeMessage, event.getMessage(), map);
-		add(JsonLayout.CONTEXT_ATTR_NAME, this.includeContextName, event.getLoggerContextVO().getName(), map);
+		add(
+				JsonLayout.CONTEXT_ATTR_NAME,
+				this.includeContextName,
+				event.getLoggerContextVO().getName(),
+				map);
 		addThrowableInfo(JsonLayout.EXCEPTION_ATTR_NAME, this.includeException, event, map);
 		addTraceId(event, map);
-		add(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, this.includeSpanId,
-				event.getMDCPropertyMap().get(spanIdMDCField), map);
+		add(
+				StackdriverTraceConstants.SPAN_ID_ATTRIBUTE,
+				this.includeSpanId,
+				event.getMDCPropertyMap().get(spanIdMdcField),
+				map);
 		if (this.serviceContext != null) {
 			map.put(StackdriverTraceConstants.SERVICE_CONTEXT_ATTRIBUTE, this.serviceContext);
 		}
@@ -297,7 +306,8 @@ public class StackdriverJsonLayout extends JsonLayout {
 	}
 
 	private String formatMessage(ILoggingEvent event) {
-		//the formatted message might be null, don't initialize StringBuilder with it, but append it afterwards
+		// the formatted message might be null, don't initialize StringBuilder with it, but append
+		// it afterwards
 		StringBuilder message = new StringBuilder();
 		message.append(event.getFormattedMessage());
 		if (!this.includeExceptionInMessage) {
@@ -317,7 +327,8 @@ public class StackdriverJsonLayout extends JsonLayout {
 
 	protected String formatTraceId(final String traceId) {
 		// Trace IDs are either 64-bit or 128-bit, which is 16-digit hex, or 32-digit hex.
-		// If traceId is 64-bit (16-digit hex), then we need to prepend 0's to make a 32-digit hex.
+		// If traceId is 64-bit (16-digit hex), then we need to prepend 0's to make a 32-digit
+		// hex.
 		if (traceId != null && traceId.length() == 16) {
 			return "0000000000000000" + traceId;
 		}
@@ -329,15 +340,14 @@ public class StackdriverJsonLayout extends JsonLayout {
 			return;
 		}
 
-		String traceId = event.getMDCPropertyMap().get(traceIdMDCField);
+		String traceId = event.getMDCPropertyMap().get(traceIdMdcField);
 		if (traceId == null) {
 			traceId = TraceIdLoggingEnhancer.getCurrentTraceId();
 		}
 		if (StringUtils.hasText(traceId)
 				&& StringUtils.hasText(this.projectId)
 				&& !this.projectId.endsWith("_IS_UNDEFINED")) {
-			traceId = StackdriverTraceConstants.composeFullTraceName(
-					this.projectId, formatTraceId(traceId));
+			traceId = StackdriverTraceConstants.composeFullTraceName(this.projectId, formatTraceId(traceId));
 		}
 
 		add(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE, this.includeTraceId, traceId, map);

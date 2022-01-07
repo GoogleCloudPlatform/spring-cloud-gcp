@@ -86,8 +86,7 @@ class StackdriverJsonLayoutLoggerTests {
 				.containsEntry(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test")
 				.containsEntry(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARNING")
 				.containsEntry(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutLoggerTests")
-				.containsEntry(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
-						"projects/test-project/traces/12345678901234561234567890123456")
+				.containsEntry(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE, "projects/test-project/traces/12345678901234561234567890123456")
 				.containsEntry(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, "span123")
 				.containsKey(StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE)
 				.containsKey(StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE)
@@ -108,10 +107,8 @@ class StackdriverJsonLayoutLoggerTests {
 				.isNotNull()
 				.containsEntry(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test")
 				.containsEntry(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARNING")
-				.containsEntry(StackdriverJsonLayout.LOGGER_ATTR_NAME,
-						"StackdriverJsonLayoutServiceCtxLoggerTests")
-				.containsEntry(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
-						"projects/test-project/traces/12345678901234561234567890123456")
+				.containsEntry(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutServiceCtxLoggerTests")
+				.containsEntry(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE, "projects/test-project/traces/12345678901234561234567890123456")
 				.containsEntry(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, "span123")
 				.containsEntry("foo", "bar")
 				.containsEntry("custom-key", "custom-value")
@@ -173,10 +170,8 @@ class StackdriverJsonLayoutLoggerTests {
 				.containsEntry("foo", "bar")
 				.containsEntry(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, "test")
 				.containsEntry(StackdriverTraceConstants.SEVERITY_ATTRIBUTE, "WARNING")
-				.containsEntry(StackdriverJsonLayout.LOGGER_ATTR_NAME,
-						"StackdriverJsonLayoutCustomMDCFieldTests")
-				.containsEntry(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE,
-						"projects/test-project/traces/12345678901234561234567890123456")
+				.containsEntry(StackdriverJsonLayout.LOGGER_ATTR_NAME, "StackdriverJsonLayoutCustomMDCFieldTests")
+				.containsEntry(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE, "projects/test-project/traces/12345678901234561234567890123456")
 				.containsEntry(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, "span123")
 				.containsKey(StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE)
 				.containsKey(StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE)
@@ -235,10 +230,11 @@ class StackdriverJsonLayoutLoggerTests {
 
 		List<String> jsonLogRecords = Arrays.asList(new String(logOutput.toByteArray()).split("\n"));
 
-		List<String> logSeverities = jsonLogRecords.stream()
-				.map(record -> GSON.fromJson(record, Map.class))
-				.map(data -> (String) data.get(StackdriverTraceConstants.SEVERITY_ATTRIBUTE))
-				.collect(Collectors.toList());
+		List<String> logSeverities =
+				jsonLogRecords.stream()
+						.map(record -> GSON.fromJson(record, Map.class))
+						.map(data -> (String) data.get(StackdriverTraceConstants.SEVERITY_ATTRIBUTE))
+						.collect(Collectors.toList());
 
 		assertThat(logSeverities)
 				.containsExactly("DEBUG", "DEBUG", "INFO", "WARNING", "ERROR", "ERROR");
@@ -252,7 +248,8 @@ class StackdriverJsonLayoutLoggerTests {
 				.filter(s -> s.getLevel() == Status.ERROR)
 				.map(s -> s.getThrowable().getCause())
 				.filter(t -> t instanceof IllegalArgumentException)
-				.findFirst()).isPresent();
+				.findFirst()
+		).isPresent();
 
 	}
 
