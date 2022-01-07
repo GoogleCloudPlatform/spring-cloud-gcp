@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.logging;
 
-import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
+import com.google.cloud.spring.logging.extractors.CloudTraceIdExtractor;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -35,8 +35,8 @@ class TraceIdLoggingWebMvcInterceptorTests {
 
 	private static final String TRACE_ID_HEADER = "X-CLOUD-TRACE-CONTEXT";
 
-	private TraceIdLoggingWebMvcInterceptor interceptor = new TraceIdLoggingWebMvcInterceptor(
-			new XCloudTraceIdExtractor());
+	private TraceIdLoggingWebMvcInterceptor interceptor =
+			new TraceIdLoggingWebMvcInterceptor(new CloudTraceIdExtractor());
 
 	@Test
 	void testPreHandle() throws Exception {
