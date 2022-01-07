@@ -1009,6 +1009,7 @@ It enables dynamic query generation based on a user-provided object. See https:/
 . Currently, only equality queries are supported (no ignore-case matching, regexp matching, etc.).
 . Per-field matchers are not supported.
 . Embedded entities matching is not supported.
+. Projection is not supported.
 
 For example, if you want to find all users with the last name "Smith", you would use the following code:
 [source, java]
@@ -1022,7 +1023,14 @@ userRepository.findAll(
 userRepository.findAll(
     Example.of(new User(null, null, "Smith"), ExampleMatcher.matching().withIncludeNullValues())
 ----
+You can also extend query specification initially defined by an example in FluentQuery's chaining style:
+----
+userRepository.findBy(
+    Example.of(new User(null, null, "Smith")), q -> q.sortBy(Sort.by("firstName")).firstValue());
 
+userRepository.findBy(
+    Example.of(new User(null, null, "Smith")), FetchableFluentQuery::stream);
+----
 ==== Custom GQL query methods
 
 Custom GQL queries can be mapped to repository methods in one of two ways:
