@@ -28,6 +28,9 @@ public abstract class GcpPubSubHeaders {
 
   private static final String PREFIX = "gcp_pubsub_";
 
+  /** The client header text. */
+  public static final String CLIENT = "googclient_*";
+
   /** The topic header text. */
   public static final String TOPIC = PREFIX + "topic";
 
@@ -42,7 +45,7 @@ public abstract class GcpPubSubHeaders {
    * Message}.
    *
    * @param message The Spring Message that was converted by a {@link
-   *     com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter}.
+   * com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter}.
    * @return An Optional possibly containing a BasicAcknowledgeablePubsubMessage for acking and
    *     nacking.
    */
