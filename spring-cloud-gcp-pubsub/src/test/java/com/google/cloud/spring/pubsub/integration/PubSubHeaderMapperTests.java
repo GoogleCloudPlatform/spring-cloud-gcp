@@ -41,6 +41,24 @@ public class PubSubHeaderMapperTests {
 	public ExpectedException expectedException = ExpectedException.none();
 
 	@Test
+	public void testFilterGoogleClientHeaders() {
+		PubSubHeaderMapper mapper = new PubSubHeaderMapper();
+		Map<String, Object> originalHeaders = new HashMap<>();
+		originalHeaders.put("my header", "pantagruel's nativity");
+		MessageHeaders internalHeaders = new MessageHeaders(originalHeaders);
+
+		originalHeaders.put("googclient_deliveryattempt", "header attached when DLQ is enabled");
+		originalHeaders.put("googclient_anyHeader", "any other possible headers");
+
+		Map<String, String> filteredHeaders = new HashMap<>();
+		mapper.fromHeaders(internalHeaders, filteredHeaders);
+		assertThat(filteredHeaders)
+				.hasSize(1)
+				.containsEntry("my header", "pantagruel's nativity");
+	}
+
+
+	@Test
 	public void testFilterHeaders() {
 		PubSubHeaderMapper mapper = new PubSubHeaderMapper();
 		Map<String, Object> originalHeaders = new HashMap<>();
