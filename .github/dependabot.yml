@@ -5,3 +5,17 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  labels:
+  - "dependencies"
+
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  target-branch: "2.x"
+  ignore:
+  - dependency-name: "*"
+    update-types: [ "version-update:semver-major" ]
+  labels:
+  - "2.x dependencies"
+  open-pull-requests-limit: 10
