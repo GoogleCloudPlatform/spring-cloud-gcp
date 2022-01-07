@@ -234,6 +234,8 @@ public class PubSubReactiveFactoryTests {
 						return AsyncResult.forExecutionException(new DeadlineExceededException("this is a noop", null, GrpcStatusCode.of(Status.Code.DEADLINE_EXCEEDED), true));
 					case "throw":
 						return AsyncResult.forExecutionException(new RuntimeException("expected exception during pull of messages"));
+					default:
+						// continue processing
 				}
 
 				AcknowledgeablePubsubMessage msg = mock(AcknowledgeablePubsubMessage.class);

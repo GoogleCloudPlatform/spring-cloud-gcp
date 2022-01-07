@@ -55,12 +55,19 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 
 	private HealthTrackerRegistry healthTrackerRegistry;
 
-	public PubSubInboundChannelAdapter(PubSubSubscriberOperations pubSubSubscriberOperations, String subscriptionName) {
-		Assert.notNull(pubSubSubscriberOperations, "Pub/Sub subscriber template can't be null.");
-		Assert.notNull(subscriptionName, "Pub/Sub subscription name can't be null.");
-		this.pubSubSubscriberOperations = pubSubSubscriberOperations;
-		this.subscriptionName = subscriptionName;
-	}
+  /**
+   * Instantiates a streaming Pub/Sub subscirtion adapter.
+   *
+   * @param pubSubSubscriberOperations {@link PubSubSubscriberOperations} to use
+   * @param subscriptionName short or fully qualified subscription name
+   */
+  public PubSubInboundChannelAdapter(
+      PubSubSubscriberOperations pubSubSubscriberOperations, String subscriptionName) {
+    Assert.notNull(pubSubSubscriberOperations, "Pub/Sub subscriber template can't be null.");
+    Assert.notNull(subscriptionName, "Pub/Sub subscription name can't be null.");
+    this.pubSubSubscriberOperations = pubSubSubscriberOperations;
+    this.subscriptionName = subscriptionName;
+  }
 
 	public AckMode getAckMode() {
 		return this.ackMode;

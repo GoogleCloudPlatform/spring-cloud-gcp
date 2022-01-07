@@ -49,10 +49,10 @@ class GoogleStorageResourceTest {
 		assertThat(new GoogleStorageResource(mockStorage, "gs://foo/bar", true)).isNotNull();
 	}
 
-	@Test
-	void getURL_Bucket() throws IOException {
-		Storage mockStorage = mock(Storage.class);
-		Bucket mockBucket = mock(Bucket.class);
+  @Test
+  void getUrlBucket() throws IOException {
+    Storage mockStorage = mock(Storage.class);
+    Bucket mockBucket = mock(Bucket.class);
 
 		when(mockStorage.get("my-bucket")).thenReturn(mockBucket);
 		when(mockBucket.getSelfLink()).thenReturn("https://www.googleapis.com/storage/v1/b/my-bucket");
@@ -61,10 +61,10 @@ class GoogleStorageResourceTest {
 		assertThat(gsr.getURL()).isNotNull();
 	}
 
-	@Test
-	void getURL_Object() throws IOException {
-		Storage mockStorage = mock(Storage.class);
-		Blob mockBlob = mock(Blob.class);
+  @Test
+  void getUrlObject() throws IOException {
+    Storage mockStorage = mock(Storage.class);
+    Blob mockBlob = mock(Blob.class);
 
 		when(mockStorage.get(BlobId.of("my-bucket", "my-object"))).thenReturn(mockBlob);
 		when(mockBlob.getSelfLink()).thenReturn("https://www.googleapis.com/storage/v1/b/my-bucket/o/my-object");

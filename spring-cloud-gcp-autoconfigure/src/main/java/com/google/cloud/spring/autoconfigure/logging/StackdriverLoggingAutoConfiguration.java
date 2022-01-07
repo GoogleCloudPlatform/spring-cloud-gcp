@@ -21,8 +21,7 @@ import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfigura
 import com.google.cloud.spring.logging.LoggingWebMvcConfigurer;
 import com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor;
 import com.google.cloud.spring.logging.extractors.TraceIdExtractor;
-import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
-
+import com.google.cloud.spring.logging.extractors.CloudTraceIdExtractor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -55,10 +54,9 @@ public class StackdriverLoggingAutoConfiguration {
 		return new TraceIdLoggingWebMvcInterceptor(extractor);
 	}
 
-	@Bean
-	@ConditionalOnMissingBean
-	public TraceIdExtractor traceIdExtractor() {
-		return new XCloudTraceIdExtractor();
-	}
-
+  @Bean
+  @ConditionalOnMissingBean
+  public TraceIdExtractor traceIdExtractor() {
+    return new CloudTraceIdExtractor();
+  }
 }

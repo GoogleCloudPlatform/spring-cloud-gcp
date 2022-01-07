@@ -68,12 +68,18 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 
 	private HeaderMapper<Map<String, String>> headerMapper = new PubSubHeaderMapper();
 
-	public PubSubMessageHandler(PubSubPublisherOperations pubSubPublisherOperations, String topic) {
-		Assert.notNull(pubSubPublisherOperations, "Pub/Sub publisher template can't be null.");
-		Assert.hasText(topic, "Pub/Sub topic can't be null or empty.");
-		this.pubSubPublisherOperations = pubSubPublisherOperations;
-		this.topicExpression = new LiteralExpression(topic);
-	}
+  /**
+   * Instantiates an outbound adapter for publishing messages to a topic.
+   *
+   * @param pubSubPublisherOperations {@link PubSubPublisherOperations} to use
+   * @param topic short or fully qualified destination topic name
+   */
+  public PubSubMessageHandler(PubSubPublisherOperations pubSubPublisherOperations, String topic) {
+    Assert.notNull(pubSubPublisherOperations, "Pub/Sub publisher template can't be null.");
+    Assert.hasText(topic, "Pub/Sub topic can't be null or empty.");
+    this.pubSubPublisherOperations = pubSubPublisherOperations;
+    this.topicExpression = new LiteralExpression(topic);
+  }
 
 	public boolean isSync() {
 		return this.sync;
@@ -218,21 +224,25 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 		}
 	}
 
-	/**
-	 * Returns Pub/Sub destination topic in following order of precedence:
-	 * <ul>
-	 * <li>Message header {@code GcpPubSubHeaders.TOPIC}
-	 * <li>Handler-global topic name or evaluated expression.
-	 * </ul>
-	 * @param message message to extract headers from
-	 * @return Pub/Sub topic destination for given message
-	 */
-	private String calculateTopic(Message<?> message) {
-		if (message.getHeaders().containsKey(GcpPubSubHeaders.TOPIC)) {
-			return message.getHeaders().get(GcpPubSubHeaders.TOPIC, String.class);
-		}
-		return this.topicExpression.getValue(this.evaluationContext, message, String.class);
-	}
+  /**
+   * Returns Pub/Sub destination topic.
+   *
+   * <p>Order of precedence is:
+   *
+   * <ul>
+   *   <li>Message header {@code GcpPubSubHeaders.TOPIC}
+   *   <li>Handler-global topic name or evaluated expression.
+   * </ul>
+   *
+   * @param message message to extract headers from
+   * @return Pub/Sub topic destination for given message
+   */
+  private String calculateTopic(Message<?> message) {
+    if (message.getHeaders().containsKey(GcpPubSubHeaders.TOPIC)) {
+      return message.getHeaders().get(GcpPubSubHeaders.TOPIC, String.class);
+    }
+    return this.topicExpression.getValue(this.evaluationContext, message, String.class);
+  }
 
 	private void blockOnPublishFuture(ListenableFuture<String> pubsubFuture, Message<?> message, Long timeout) {
 		try {

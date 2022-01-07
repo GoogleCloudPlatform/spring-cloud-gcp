@@ -107,14 +107,15 @@ public class GoogleStorageResource implements WritableResource {
 		return this.autoCreateFiles;
 	}
 
-	/**
-	 * @throws StorageException if an issue occurs getting the Bucket or Blob.
-	 * @return Returns true if the bucket or object exists.
-	 */
-	@Override
-	public boolean exists() {
-		return isBucket() ? getBucket() != null : getBlob() != null;
-	}
+  /**
+   * @return Returns true if the bucket or object exists.
+   *
+   * @throws StorageException if an issue occurs getting the Bucket or Blob.
+   */
+  @Override
+  public boolean exists() {
+    return isBucket() ? getBucket() != null : getBlob() != null;
+  }
 
 	@Override
 	public boolean isReadable() {
@@ -328,26 +329,26 @@ public class GoogleStorageResource implements WritableResource {
 
 	}
 
-	/**
-	 * @return the blob name of the Google Storage Resource; null if the resource is a bucket
-	 */
-	public String getBlobName() {
-		return this.location.getBlobName();
-	}
+  /**
+   * @return the blob name of the Google Storage Resource; null if the resource is a bucket
+   */
+  public String getBlobName() {
+    return this.location.getBlobName();
+  }
 
-	/**
-	 * @return true if the resource is a bucket; false otherwise
-	 */
-	public boolean isBucket() {
-		return this.location.isBucket();
-	}
+  /**
+   * @return true if the resource is a bucket; false otherwise
+   */
+  public boolean isBucket() {
+    return this.location.isBucket();
+  }
 
-	/**
-	 * @return the bucket name of the Google Storage Resource
-	 */
-	public String getBucketName() {
-		return this.location.getBucketName();
-	}
+  /**
+   * @return the bucket name of the Google Storage Resource
+   */
+  public String getBucketName() {
+    return this.location.getBucketName();
+  }
 
 	/**
 	 * @return the {@link GoogleStorageLocation} describing the location of the resource in GCS

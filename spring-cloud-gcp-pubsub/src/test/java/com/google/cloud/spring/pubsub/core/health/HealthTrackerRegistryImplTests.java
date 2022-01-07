@@ -42,6 +42,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * Tests for HealthTrackerRegistryImpl.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class HealthTrackerRegistryImplTests {
 

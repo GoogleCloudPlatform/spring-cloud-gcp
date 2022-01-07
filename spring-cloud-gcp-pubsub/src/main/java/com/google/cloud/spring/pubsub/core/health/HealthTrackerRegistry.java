@@ -79,10 +79,10 @@ public interface HealthTrackerRegistry {
 	 */
 	void addListener(Subscriber subscriber);
 
-	/**
-	 * Retrieve all the health trackers registered.
-	 * @return
-	 */
-	Collection<HealthTracker> healthTrackers();
-
+  /**
+   * Retrieve all the health trackers registered.
+   *
+   * @return all known health trackers
+   */
+  Collection<HealthTracker> healthTrackers();
 }

@@ -45,7 +45,7 @@ import org.springframework.util.Assert;
 public class PubSubAdmin implements AutoCloseable {
 
 	protected static final int MIN_ACK_DEADLINE_SECONDS = 10;
-
+	
 	protected static final int MAX_ACK_DEADLINE_SECONDS = 600;
 
 	private static final String NO_TOPIC_SPECIFIED = "No topic name was specified.";
@@ -93,12 +93,20 @@ public class PubSubAdmin implements AutoCloseable {
 		}
 	}
 
-	public PubSubAdmin(GcpProjectIdProvider projectIdProvider, TopicAdminClient topicAdminClient,
-			SubscriptionAdminClient subscriptionAdminClient) {
-		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
-		Assert.notNull(topicAdminClient, "The topic administration client can't be null");
-		Assert.notNull(subscriptionAdminClient,
-				"The subscription administration client can't be null");
+  /**
+   * Instantiates PubSubAdmin with provided topic/subscription client.
+   *
+   * @param projectIdProvider the project id provider to use
+   * @param topicAdminClient the {@link TopicAdminClient} to use
+   * @param subscriptionAdminClient the {@link SubscriptionAdminClient} to use
+   */
+  public PubSubAdmin(
+      GcpProjectIdProvider projectIdProvider,
+      TopicAdminClient topicAdminClient,
+      SubscriptionAdminClient subscriptionAdminClient) {
+    Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
+    Assert.notNull(topicAdminClient, "The topic administration client can't be null");
+    Assert.notNull(subscriptionAdminClient, "The subscription administration client can't be null");
 
 		this.projectId = projectIdProvider.getProjectId();
 		Assert.hasText(this.projectId, "The project ID can't be null or empty.");

@@ -152,17 +152,17 @@ class StackdriverJsonLayoutLoggerTests {
 				.startsWith("null" + System.lineSeparator() + "java.lang.NullPointerException: null");
 	}
 
-	@Test
-	void testCustomMDCFieldForTraceIdAndSpanId() {
-		Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutCustomMDCFieldTests");
+  @Test
+  void testCustomMdcFieldForTraceIdAndSpanId() {
 
-		mdc.remove(StackdriverTraceConstants.MDC_FIELD_TRACE_ID);
-		mdc.remove(StackdriverTraceConstants.MDC_FIELD_SPAN_ID);
-		mdc.put("trace_id", "12345678901234561234567890123456");
-		mdc.put("span_id", "span123");
+    mdc.remove(StackdriverTraceConstants.MDC_FIELD_TRACE_ID);
+    mdc.remove(StackdriverTraceConstants.MDC_FIELD_SPAN_ID);
+    mdc.put("trace_id", "12345678901234561234567890123456");
+    mdc.put("span_id", "span123");
 
-		logger.warn("test");
-		Map<String, String> data = getLogMetadata();
+    Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutCustomMDCFieldTests");
+    logger.warn("test");
+    Map<String, String> data = getLogMetadata();
 
 		assertThat(data)
 				.isNotNull()

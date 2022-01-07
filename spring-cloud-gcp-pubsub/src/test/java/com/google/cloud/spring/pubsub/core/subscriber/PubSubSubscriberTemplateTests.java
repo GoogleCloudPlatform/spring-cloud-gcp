@@ -575,7 +575,7 @@ public class PubSubSubscriberTemplateTests {
 		}
 
 		@Override
-		public void onSuccess(Void aVoid) {
+		public void onSuccess(Void unusedVoid) {
 
 		}
 

@@ -10,4 +10,11 @@
     <suppress checks="IllegalImport" files=".*KmsTemplate.java"/>
     <suppress checks="IllegalImport" files=".*SpannerRepositoryIntegrationTests.java"/>
     <suppress checks="IllegalImport" files=".*PubSubPublisherTemplate.java"/>
+
+    <!-- Temporary suppressions for migrating from Spring style -->
+    <suppress checks="MissingJavadocMethod" files=".*"/>
+    <suppress checks="SummaryJavadoc" files=".*"/>
+    <suppress checks="OverloadMethodsDeclarationOrder" files=".*"/>
+    <suppress checks="VariableDeclarationUsageDistance" files=".*"/>
+
 </suppressions>

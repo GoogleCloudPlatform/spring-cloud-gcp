@@ -38,14 +38,18 @@ public class TraceIdLoggingEnhancer implements LoggingEnhancer, LoggingEventEnha
 
 	private boolean runningOnAppEngine = System.getenv("GAE_INSTANCE") != null;
 
-	public static void setCurrentTraceId(String id) {
-		if (id == null) {
-			threadLocalTraceId.remove();
-		}
-		else {
-			threadLocalTraceId.set(id);
-		}
-	}
+  /**
+   * Sets or removes the current trace ID.
+   *
+   * @param id current ID or null to unset
+   */
+  public static void setCurrentTraceId(String id) {
+    if (id == null) {
+      threadLocalTraceId.remove();
+    } else {
+      threadLocalTraceId.set(id);
+    }
+  }
 
 	/**
 	 * Get the current trace id.

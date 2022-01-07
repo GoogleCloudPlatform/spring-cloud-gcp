@@ -55,9 +55,8 @@ class TraceIdLoggingEnhancerTests {
 		assertThat(logEntry.getSpanId()).isNull();
 	}
 
-	@Test
-	void testLoggingEventMDC() {
-		LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
+  @Test
+  void testLoggingEventMdc() {
 
 		ILoggingEvent mockLoggingEvent = mock(ILoggingEvent.class);
 		Map<String, String> map = new HashMap<>();
@@ -68,7 +67,8 @@ class TraceIdLoggingEnhancerTests {
 		MDC.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid-mdc");
 		MDC.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "sid-mdc");
 
-		enhancer.enhanceLogEntry(logEntryBuilder, mockLoggingEvent);
+    LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
+    enhancer.enhanceLogEntry(logEntryBuilder, mockLoggingEvent);
 
 		LogEntry logEntry = logEntryBuilder.build();
 
@@ -76,9 +76,9 @@ class TraceIdLoggingEnhancerTests {
 		assertThat(logEntry.getSpanId()).isEqualTo("sid123");
 	}
 
-	@Test
-	void testThreadLocalMDC() {
-		LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
+  @Test
+  void testThreadLocalMdc() {
+    LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
 
 		MDC.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid123");
 		MDC.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "sid123");

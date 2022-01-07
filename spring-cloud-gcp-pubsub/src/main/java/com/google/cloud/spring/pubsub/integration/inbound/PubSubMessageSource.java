@@ -56,13 +56,19 @@ public class PubSubMessageSource extends AbstractFetchLimitingMessageSource<Obje
 
 	private final ArrayDeque<ConvertedAcknowledgeablePubsubMessage<?>> cachedMessages = new ArrayDeque<>();
 
-	public PubSubMessageSource(PubSubSubscriberOperations pubSubSubscriberOperations,
-			String subscriptionName) {
-		Assert.notNull(pubSubSubscriberOperations, "Pub/Sub subscriber template can't be null.");
-		Assert.notNull(subscriptionName, "Pub/Sub subscription name can't be null.");
-		this.pubSubSubscriberOperations = pubSubSubscriberOperations;
-		this.subscriptionName = subscriptionName;
-	}
+  /**
+   * Instantiates a Pub/Sub inbound message adapter to poll a given subscription for messages.
+   *
+   * @param pubSubSubscriberOperations {@link PubSubSubscriberOperations} to use
+   * @param subscriptionName short or fully qualified subscription name
+   */
+  public PubSubMessageSource(
+      PubSubSubscriberOperations pubSubSubscriberOperations, String subscriptionName) {
+    Assert.notNull(pubSubSubscriberOperations, "Pub/Sub subscriber template can't be null.");
+    Assert.notNull(subscriptionName, "Pub/Sub subscription name can't be null.");
+    this.pubSubSubscriberOperations = pubSubSubscriberOperations;
+    this.subscriptionName = subscriptionName;
+  }
 
 	public void setAckMode(AckMode ackMode) {
 		Assert.notNull(ackMode, "The acknowledgement mode can't be null.");

@@ -37,13 +37,20 @@ public final class MapBuilder<K, V> {
 
 	private final Map<K, V> map = new HashMap<>();
 
-	public MapBuilder<K, V> put(K key, V value) {
-		Assert.notNull(key, "Map key cannot be null.");
-		Assert.notNull(value, "Map value cannot be null.");
-		Assert.isNull(this.map.get(key), "Duplicate keys not allowed.");
-		this.map.put(key, value);
-		return this;
-	}
+  /**
+   * Adds a unique non-null key/value pair.
+   *
+   * @param key non-null key
+   * @param value non-null value
+   * @return itself for chaining
+   */
+  public MapBuilder<K, V> put(K key, V value) {
+    Assert.notNull(key, "Map key cannot be null.");
+    Assert.notNull(value, "Map value cannot be null.");
+    Assert.isNull(this.map.get(key), "Duplicate keys not allowed.");
+    this.map.put(key, value);
+    return this;
+  }
 
 	public Map<K, V> build() {
 		return Collections.unmodifiableMap(this.map);

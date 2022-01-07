@@ -118,12 +118,12 @@ public class PubSubMessageSourceTests {
 				.pullAndConvert("sub1", 3, true, String.class);
 	}
 
-	@Test
-	@SuppressWarnings("unchecked")
-	public void doReceive_pullsOneAtATimeWhenMaxFetchSizeZeroe() {
-		PubSubMessageSource pubSubMessageSource = new PubSubMessageSource(
-				this.mockPubSubSubscriberOperations, "sub1");
-		pubSubMessageSource.setPayloadType(String.class);
+  @Test
+  @SuppressWarnings("unchecked")
+  public void doReceive_pullsOneAtAtimeWhenMaxFetchSizeZero() {
+    PubSubMessageSource pubSubMessageSource =
+        new PubSubMessageSource(this.mockPubSubSubscriberOperations, "sub1");
+    pubSubMessageSource.setPayloadType(String.class);
 
 		MessageBuilder<String> message = (MessageBuilder<String>) pubSubMessageSource.doReceive(0);
 
@@ -134,12 +134,13 @@ public class PubSubMessageSourceTests {
 				.pullAndConvert("sub1", 1, true, String.class);
 	}
 
-	@Test
-	@SuppressWarnings("unchecked")
-	public void doReceive_pullsOneAtATimeWhenMaxFetchSizeNegative() {
-		PubSubMessageSource pubSubMessageSource = new PubSubMessageSource(
-				this.mockPubSubSubscriberOperations, "sub1");
-		pubSubMessageSource.setPayloadType(String.class);
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void doReceive_pullsOneAtAtimeWhenMaxFetchSizeNegative() {
+    PubSubMessageSource pubSubMessageSource =
+        new PubSubMessageSource(this.mockPubSubSubscriberOperations, "sub1");
+    pubSubMessageSource.setPayloadType(String.class);
 
 		MessageBuilder<String> message = (MessageBuilder<String>) pubSubMessageSource.doReceive(-1);
 
