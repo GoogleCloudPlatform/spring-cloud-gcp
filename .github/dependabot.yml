@@ -14,8 +14,21 @@ updates:
     interval: daily
   target-branch: "2.x"
   ignore:
-    - dependency-name: "*"
-      update-types: [ "version-update:semver-major" ]
+  # Ignore Spring dependencies based on Spring Boot 2.6 and later
+  - dependency-name: "org.springframework.boot:spring-boot*"
+    versions: ["[2.6.0,)"]
+  - dependency-name: "org.springframework.cloud:spring-cloud-build*"
+    versions: ["[3.0.0,)"]
+  - dependency-name: "org.springframework.cloud:spring-cloud-dependencies"
+    versions: ["[2021.0.0,)"]
+  - dependency-name: "org.springframework.cloud:spring-cloud-dependencies-parent"
+    versions: ["[3.0.0,)"]
+  - dependency-name: "org.springframework.cloud:spring-cloud-config-dependencies"
+    versions: ["[3.0.0,)"]
+  - dependency-name: "org.springframework.experimental:*"
+    versions: ["[0.11.0,)"]
+  - dependency-name: "*"
+    update-types: [ "version-update:semver-major" ]
   labels:
-    - "2.x dependencies"
+  - "2.x dependencies"
   open-pull-requests-limit: 10
