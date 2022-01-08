@@ -25,7 +25,14 @@ updates:
     versions: ["[3.0.0,)"]
   - dependency-name: "org.springframework.cloud:spring-cloud-config-dependencies"
     versions: ["[3.0.0,)"]
-  - dependency-name: "org.springframework.experimental:*"
+    # Spring Native dependencies
+  - dependency-name: "org.springframework.experimental:spring-native-configuration"
+    versions: ["[0.11.0,)"]
+  - dependency-name: "org.springframework.experimental:spring-aot"
+    versions: ["[0.11.0,)"]
+  - dependency-name: "org.springframework.experimental:spring-native"
+    versions: ["[0.11.0,)"]
+  - dependency-name: "org.springframework.experimental:spring-aot-maven-plugin"
     versions: ["[0.11.0,)"]
   - dependency-name: "*"
     update-types: [ "version-update:semver-major" ]
