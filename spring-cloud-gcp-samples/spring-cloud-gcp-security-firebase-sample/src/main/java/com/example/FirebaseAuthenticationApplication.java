@@ -20,15 +20,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-/**
- * @since 1.2.2
- */
+/** @since 1.2.2 */
 @SpringBootApplication
 @EnableConfigurationProperties(FirebaseConfig.class)
 public class FirebaseAuthenticationApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(FirebaseAuthenticationApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(FirebaseAuthenticationApplication.class, args);
+  }
 }

@@ -16,21 +16,19 @@
 
 package com.google.cloud.spring.security.iap;
 
-import java.util.Arrays;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
-
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.jwt.Jwt;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 /**
  * Spring context needed to exercise {@link AudienceValidator}'s {@code afterPropertiesSet()}.
@@ -39,53 +37,51 @@ import static org.mockito.Mockito.when;
  */
 public class AudienceValidatorTests {
 
-	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(TestConfiguration.class));
+  private ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(AutoConfigurations.of(TestConfiguration.class));
 
-	/**
-	 * used to test for exception messages and types.
-	 */
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
+  /** used to test for exception messages and types. */
+  @Rule public ExpectedException thrown = ExpectedException.none();
 
-	@Test
-	public void testNullAudienceDisallowedInConstructor() {
-		this.thrown.expect(IllegalArgumentException.class);
-		this.thrown.expectMessage("Audience Provider cannot be null");
+  @Test
+  public void testNullAudienceDisallowedInConstructor() {
+    this.thrown.expect(IllegalArgumentException.class);
+    this.thrown.expectMessage("Audience Provider cannot be null");
 
-		new AudienceValidator(null);
-	}
+    new AudienceValidator(null);
+  }
 
-	@Test
-	public void testCorrectAudienceMatches() {
-		Jwt mockJwt = Mockito.mock(Jwt.class);
-		when(mockJwt.getAudience()).thenReturn(Arrays.asList("cats"));
+  @Test
+  public void testCorrectAudienceMatches() {
+    Jwt mockJwt = Mockito.mock(Jwt.class);
+    when(mockJwt.getAudience()).thenReturn(Arrays.asList("cats"));
 
-		this.contextRunner.run(context -> {
-			AudienceValidator validator = context.getBean(AudienceValidator.class);
-			assertThat(validator.validate(mockJwt).hasErrors()).isFalse();
-		});
-	}
+    this.contextRunner.run(
+        context -> {
+          AudienceValidator validator = context.getBean(AudienceValidator.class);
+          assertThat(validator.validate(mockJwt).hasErrors()).isFalse();
+        });
+  }
 
-	@Test
-	public void testWrongAudienceDoesNotMatch() {
-		Jwt mockJwt = Mockito.mock(Jwt.class);
-		when(mockJwt.getAudience()).thenReturn(Arrays.asList("dogs"));
+  @Test
+  public void testWrongAudienceDoesNotMatch() {
+    Jwt mockJwt = Mockito.mock(Jwt.class);
+    when(mockJwt.getAudience()).thenReturn(Arrays.asList("dogs"));
 
-		this.contextRunner.run(context -> {
-			AudienceValidator validator = context.getBean(AudienceValidator.class);
-			assertThat(validator.validate(mockJwt).hasErrors()).isTrue();
-		});
-	}
+    this.contextRunner.run(
+        context -> {
+          AudienceValidator validator = context.getBean(AudienceValidator.class);
+          assertThat(validator.validate(mockJwt).hasErrors()).isTrue();
+        });
+  }
 
-	/**
-	 * Configuration for the tests.
-	 */
-	@Configuration
-	static class TestConfiguration {
-		@Bean
-		AudienceValidator audienceValidator() {
-			return new AudienceValidator(() -> "cats");
-		}
-	}
+  /** Configuration for the tests. */
+  @Configuration
+  static class TestConfiguration {
+    @Bean
+    AudienceValidator audienceValidator() {
+      return new AudienceValidator(() -> "cats");
+    }
+  }
 }

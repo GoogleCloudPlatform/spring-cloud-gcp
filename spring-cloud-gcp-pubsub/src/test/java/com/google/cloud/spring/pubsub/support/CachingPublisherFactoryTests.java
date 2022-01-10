@@ -16,46 +16,41 @@
 
 package com.google.cloud.spring.pubsub.support;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.cloud.pubsub.v1.Publisher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-/**
- * Tests for the {@link CachingPublisherFactory}.
- */
+/** Tests for the {@link CachingPublisherFactory}. */
 @RunWith(MockitoJUnitRunner.class)
 public class CachingPublisherFactoryTests {
 
-	@Mock
-	private PublisherFactory delegate;
+  @Mock private PublisherFactory delegate;
 
-	@Mock
-	private Publisher publisher1;
+  @Mock private Publisher publisher1;
 
-	@Mock
-	private Publisher publisher2;
+  @Mock private Publisher publisher2;
 
-	@Test
-	public void testGetPublisherCaching() {
-		CachingPublisherFactory cachingPublisherFactory = new CachingPublisherFactory(delegate);
+  @Test
+  public void testGetPublisherCaching() {
+    CachingPublisherFactory cachingPublisherFactory = new CachingPublisherFactory(delegate);
 
-		when(delegate.createPublisher("topic1")).thenReturn(publisher1);
-		when(delegate.createPublisher("topic2")).thenReturn(publisher2);
+    when(delegate.createPublisher("topic1")).thenReturn(publisher1);
+    when(delegate.createPublisher("topic2")).thenReturn(publisher2);
 
-		assertThat(cachingPublisherFactory.createPublisher("topic1")).isEqualTo(publisher1);
-		assertThat(cachingPublisherFactory.createPublisher("topic1")).isEqualTo(publisher1);
+    assertThat(cachingPublisherFactory.createPublisher("topic1")).isEqualTo(publisher1);
+    assertThat(cachingPublisherFactory.createPublisher("topic1")).isEqualTo(publisher1);
 
-		assertThat(cachingPublisherFactory.createPublisher("topic2")).isEqualTo(publisher2);
-		assertThat(cachingPublisherFactory.createPublisher("topic2")).isEqualTo(publisher2);
+    assertThat(cachingPublisherFactory.createPublisher("topic2")).isEqualTo(publisher2);
+    assertThat(cachingPublisherFactory.createPublisher("topic2")).isEqualTo(publisher2);
 
-		verify(delegate, times(1)).createPublisher("topic1");
-		verify(delegate, times(1)).createPublisher("topic2");
-	}
+    verify(delegate, times(1)).createPublisher("topic1");
+    verify(delegate, times(1)).createPublisher("topic2");
+  }
 }

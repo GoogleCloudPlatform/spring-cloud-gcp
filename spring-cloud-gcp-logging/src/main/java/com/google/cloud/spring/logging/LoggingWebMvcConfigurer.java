@@ -23,13 +23,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * MVC Adapter that adds the {@link TraceIdLoggingWebMvcInterceptor}.
- */
+/** MVC Adapter that adds the {@link TraceIdLoggingWebMvcInterceptor}. */
 @Configuration(proxyBeanMethods = false)
 public class LoggingWebMvcConfigurer implements WebMvcConfigurer {
 
-	private final TraceIdLoggingWebMvcInterceptor interceptor;
+  private final TraceIdLoggingWebMvcInterceptor interceptor;
 
   /**
    * Constructor that accepts an {@link TraceIdLoggingWebMvcInterceptor}. If the given interceptor
@@ -49,8 +47,8 @@ public class LoggingWebMvcConfigurer implements WebMvcConfigurer {
     }
   }
 
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(this.interceptor);
-	}
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(this.interceptor);
+  }
 }

@@ -16,39 +16,36 @@
 
 package com.google.cloud.spring.data.datastore.entities;
 
-import java.util.Objects;
-
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-
+import java.util.Objects;
 import org.springframework.data.annotation.Id;
 
 @Entity
 public class ServiceConfiguration {
-	@Id
-	private String serviceName;
+  @Id private String serviceName;
 
-	private CustomMap customMap;
+  private CustomMap customMap;
 
-	public ServiceConfiguration(String serviceName, CustomMap customMap) {
-		this.serviceName = serviceName;
-		this.customMap = customMap;
-	}
+  public ServiceConfiguration(String serviceName, CustomMap customMap) {
+    this.serviceName = serviceName;
+    this.customMap = customMap;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		ServiceConfiguration that = (ServiceConfiguration) o;
-		return Objects.equals(serviceName, that.serviceName) &&
-				Objects.equals(customMap, that.customMap);
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ServiceConfiguration that = (ServiceConfiguration) o;
+    return Objects.equals(serviceName, that.serviceName)
+        && Objects.equals(customMap, that.customMap);
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(serviceName, customMap);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(serviceName, customMap);
+  }
 }

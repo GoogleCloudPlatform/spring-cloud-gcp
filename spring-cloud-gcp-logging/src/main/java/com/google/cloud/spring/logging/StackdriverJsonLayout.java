@@ -16,16 +16,6 @@
 
 package com.google.cloud.spring.logging;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
@@ -36,45 +26,53 @@ import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.gson.Gson;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import org.springframework.util.StringUtils;
 
 /**
- * This class provides a JSON layout for a Logback appender compatible to the Stackdriver
- * log format.
+ * This class provides a JSON layout for a Logback appender compatible to the Stackdriver log
+ * format.
  *
- * Reference: https://cloud.google.com/logging/docs/agent/configuration#process-payload
+ * <p>Reference: https://cloud.google.com/logging/docs/agent/configuration#process-payload
  */
 public class StackdriverJsonLayout extends JsonLayout {
 
-	private static final Map<Level, String> logbackToSeverityMap =
-			new MapBuilder<Level, String>()
-					.put(Level.TRACE, Severity.DEBUG.name())
-					.put(Level.DEBUG, Severity.DEBUG.name())
-					.put(Level.INFO, Severity.INFO.name())
-					.put(Level.WARN, Severity.WARNING.name())
-					.put(Level.ERROR, Severity.ERROR.name())
-					.build();
+  private static final Map<Level, String> logbackToSeverityMap =
+      new MapBuilder<Level, String>()
+          .put(Level.TRACE, Severity.DEBUG.name())
+          .put(Level.DEBUG, Severity.DEBUG.name())
+          .put(Level.INFO, Severity.INFO.name())
+          .put(Level.WARN, Severity.WARNING.name())
+          .put(Level.ERROR, Severity.ERROR.name())
+          .build();
 
-	private String projectId;
+  private String projectId;
 
   private String traceIdMdcField;
 
   private String spanIdMdcField;
 
-	private boolean includeTraceId;
+  private boolean includeTraceId;
 
-	private boolean includeSpanId;
+  private boolean includeSpanId;
 
-	private boolean includeExceptionInMessage;
+  private boolean includeExceptionInMessage;
 
-	private StackdriverErrorReportingServiceContext serviceContext;
+  private StackdriverErrorReportingServiceContext serviceContext;
 
-	private Map<String, Object> customJson;
+  private Map<String, Object> customJson;
 
-	private Set<String> filteredMdcFields;
+  private Set<String> filteredMdcFields;
 
-	private final List<JsonLoggingEventEnhancer> loggingEventEnhancers = new ArrayList<>();
+  private final List<JsonLoggingEventEnhancer> loggingEventEnhancers = new ArrayList<>();
 
   /** creates a layout for a Logback appender compatible to the Stackdriver log format. */
   public StackdriverJsonLayout() {
@@ -89,21 +87,23 @@ public class StackdriverJsonLayout extends JsonLayout {
     setJsonFormatter(formatter::toJson);
   }
 
-	/**
-	 * Get the project id.
-	 * @return the Google Cloud project id relevant for logging the traceId
-	 */
-	public String getProjectId() {
-		return this.projectId;
-	}
+  /**
+   * Get the project id.
+   *
+   * @return the Google Cloud project id relevant for logging the traceId
+   */
+  public String getProjectId() {
+    return this.projectId;
+  }
 
-	/**
-	 * set the project id.
-	 * @param projectId the Google Cloud project id relevant for logging the traceId
-	 */
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+  /**
+   * set the project id.
+   *
+   * @param projectId the Google Cloud project id relevant for logging the traceId
+   */
+  public void setProjectId(String projectId) {
+    this.projectId = projectId;
+  }
 
   /**
    * Get the MDC filed name for trace id.
@@ -145,97 +145,105 @@ public class StackdriverJsonLayout extends JsonLayout {
     this.spanIdMdcField = spanIdMdcField;
   }
 
-	/**
-	 * check if the trace id is included.
-	 * @return true if the traceId should be included into the JSON
-	 */
-	public boolean isIncludeTraceId() {
-		return this.includeTraceId;
-	}
+  /**
+   * check if the trace id is included.
+   *
+   * @return true if the traceId should be included into the JSON
+   */
+  public boolean isIncludeTraceId() {
+    return this.includeTraceId;
+  }
 
-	/**
-	 * set whether the trace id is included.
-	 * @param includeTraceId true if the traceId should be included into the JSON
-	 */
-	public void setIncludeTraceId(boolean includeTraceId) {
-		this.includeTraceId = includeTraceId;
-	}
+  /**
+   * set whether the trace id is included.
+   *
+   * @param includeTraceId true if the traceId should be included into the JSON
+   */
+  public void setIncludeTraceId(boolean includeTraceId) {
+    this.includeTraceId = includeTraceId;
+  }
 
-	/**
-	 * check if the span id is included.
-	 * @return true if the spanId should be included into the JSON
-	 */
-	public boolean isIncludeSpanId() {
-		return this.includeSpanId;
-	}
+  /**
+   * check if the span id is included.
+   *
+   * @return true if the spanId should be included into the JSON
+   */
+  public boolean isIncludeSpanId() {
+    return this.includeSpanId;
+  }
 
-	/**
-	 * set whether the span id is included.
-	 * @param includeSpanId true if the spanId should be included into the JSON
-	 */
-	public void setIncludeSpanId(boolean includeSpanId) {
-		this.includeSpanId = includeSpanId;
-	}
+  /**
+   * set whether the span id is included.
+   *
+   * @param includeSpanId true if the spanId should be included into the JSON
+   */
+  public void setIncludeSpanId(boolean includeSpanId) {
+    this.includeSpanId = includeSpanId;
+  }
 
-	/**
-	 * check if there is an included exception in the message.
-	 * @return true if the exception should be added to the message
-	 */
-	public boolean isIncludeExceptionInMessage() {
-		return this.includeExceptionInMessage;
-	}
+  /**
+   * check if there is an included exception in the message.
+   *
+   * @return true if the exception should be added to the message
+   */
+  public boolean isIncludeExceptionInMessage() {
+    return this.includeExceptionInMessage;
+  }
 
-	/**
-	 * set whether the exception is included in the message.
-	 * @param includeExceptionInMessage true if the exception should be added to the message
-	 */
-	public void setIncludeExceptionInMessage(boolean includeExceptionInMessage) {
-		this.includeExceptionInMessage = includeExceptionInMessage;
-	}
+  /**
+   * set whether the exception is included in the message.
+   *
+   * @param includeExceptionInMessage true if the exception should be added to the message
+   */
+  public void setIncludeExceptionInMessage(boolean includeExceptionInMessage) {
+    this.includeExceptionInMessage = includeExceptionInMessage;
+  }
 
-	/**
-	 * set the service context for stackdriver.
-	 * @param serviceContext the service context
-	 * @since 1.2
-	 */
-	public void setServiceContext(StackdriverErrorReportingServiceContext serviceContext) {
-		this.serviceContext = serviceContext;
-	}
+  /**
+   * set the service context for stackdriver.
+   *
+   * @param serviceContext the service context
+   * @since 1.2
+   */
+  public void setServiceContext(StackdriverErrorReportingServiceContext serviceContext) {
+    this.serviceContext = serviceContext;
+  }
 
-	/**
-	 * set custom json data to include in log output.
-	 * @param json json string
-	 * @since 1.2
-	 */
-	public void setCustomJson(String json) {
-		Gson gson = new Gson();
-		this.customJson = gson.fromJson(json, Map.class);
-	}
+  /**
+   * set custom json data to include in log output.
+   *
+   * @param json json string
+   * @since 1.2
+   */
+  public void setCustomJson(String json) {
+    Gson gson = new Gson();
+    this.customJson = gson.fromJson(json, Map.class);
+  }
 
-	/**
-	 * Add additional logging enhancers that implement {@link JsonLoggingEventEnhancer}.
-	 * @param enhancerClassName class name of the layout enhancer
-	 */
-	public void addLoggingEventEnhancer(String enhancerClassName) {
-		try {
-			Class<JsonLoggingEventEnhancer> clz =
-					(Class<JsonLoggingEventEnhancer>) Loader.loadClass(enhancerClassName.trim());
-			loggingEventEnhancers.add(clz.getDeclaredConstructor().newInstance());
-		}
-		catch (Exception ex) {
-			throw new IllegalArgumentException("Cannot create object of class " + enhancerClassName, ex);
-		}
-	}
+  /**
+   * Add additional logging enhancers that implement {@link JsonLoggingEventEnhancer}.
+   *
+   * @param enhancerClassName class name of the layout enhancer
+   */
+  public void addLoggingEventEnhancer(String enhancerClassName) {
+    try {
+      Class<JsonLoggingEventEnhancer> clz =
+          (Class<JsonLoggingEventEnhancer>) Loader.loadClass(enhancerClassName.trim());
+      loggingEventEnhancers.add(clz.getDeclaredConstructor().newInstance());
+    } catch (Exception ex) {
+      throw new IllegalArgumentException("Cannot create object of class " + enhancerClassName, ex);
+    }
+  }
 
-	@Override
-	public void start() {
-		super.start();
+  @Override
+  public void start() {
+    super.start();
 
-		// If no Project ID set, then attempt to resolve it with the default project ID provider
-		if (!StringUtils.hasText(this.projectId) || this.projectId.endsWith("_IS_UNDEFINED")) {
-			GcpProjectIdProvider projectIdProvider = new DefaultGcpProjectIdProvider();
-			this.projectId = projectIdProvider.getProjectId();
-		}
+    // If no Project ID set, then attempt to resolve it with the default project ID provider
+    if (!StringUtils.hasText(this.projectId) || this.projectId.endsWith("_IS_UNDEFINED")) {
+      GcpProjectIdProvider projectIdProvider = new DefaultGcpProjectIdProvider();
+      this.projectId = projectIdProvider.getProjectId();
+    }
 
     this.filteredMdcFields =
         new HashSet<>(
@@ -243,35 +251,39 @@ public class StackdriverJsonLayout extends JsonLayout {
                 traceIdMdcField, spanIdMdcField, StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT));
   }
 
-	/**
-	 * Convert a logging event into a Map.
-	 * @param event the logging event
-	 * @return the map which should get rendered as JSON
-	 */
-	@Override
-	protected Map<String, Object> toJsonMap(ILoggingEvent event) {
+  /**
+   * Convert a logging event into a Map.
+   *
+   * @param event the logging event
+   * @return the map which should get rendered as JSON
+   */
+  @Override
+  protected Map<String, Object> toJsonMap(ILoggingEvent event) {
 
-		Map<String, Object> map = new LinkedHashMap<>();
+    Map<String, Object> map = new LinkedHashMap<>();
 
-		if (this.includeMDC) {
-			Map<String, String> shallowCopy = new HashMap<>(event.getMDCPropertyMap());
-			shallowCopy.keySet().removeAll(filteredMdcFields);
-			map.putAll(shallowCopy);
-		}
-		if (this.includeTimestamp) {
-			map.put(StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE,
-					TimeUnit.MILLISECONDS.toSeconds(event.getTimeStamp()));
-			map.put(StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE,
-					TimeUnit.MILLISECONDS.toNanos(event.getTimeStamp() % 1_000));
-		}
+    if (this.includeMDC) {
+      Map<String, String> shallowCopy = new HashMap<>(event.getMDCPropertyMap());
+      shallowCopy.keySet().removeAll(filteredMdcFields);
+      map.putAll(shallowCopy);
+    }
+    if (this.includeTimestamp) {
+      map.put(
+          StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE,
+          TimeUnit.MILLISECONDS.toSeconds(event.getTimeStamp()));
+      map.put(
+          StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE,
+          TimeUnit.MILLISECONDS.toNanos(event.getTimeStamp() % 1_000));
+    }
 
-		add(StackdriverTraceConstants.SEVERITY_ATTRIBUTE,
-				this.includeLevel,
-				logbackToSeverityMap.getOrDefault(event.getLevel(), Severity.DEFAULT.name()),
-				map);
+    add(
+        StackdriverTraceConstants.SEVERITY_ATTRIBUTE,
+        this.includeLevel,
+        logbackToSeverityMap.getOrDefault(event.getLevel(), Severity.DEFAULT.name()),
+        map);
 
-		add(JsonLayout.THREAD_ATTR_NAME, this.includeThreadName, event.getThreadName(), map);
-		add(JsonLayout.LOGGER_ATTR_NAME, this.includeLoggerName, event.getLoggerName(), map);
+    add(JsonLayout.THREAD_ATTR_NAME, this.includeThreadName, event.getThreadName(), map);
+    add(JsonLayout.LOGGER_ATTR_NAME, this.includeLoggerName, event.getLoggerName(), map);
 
     if (this.includeFormattedMessage) {
       map.put(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME, formatMessage(event));
@@ -299,45 +311,46 @@ public class StackdriverJsonLayout extends JsonLayout {
     }
     addCustomDataToJsonMap(map, event);
 
-		for (JsonLoggingEventEnhancer enhancer : loggingEventEnhancers) {
-			enhancer.enhanceJsonLogEntry(map, event);
-		}
+    for (JsonLoggingEventEnhancer enhancer : loggingEventEnhancers) {
+      enhancer.enhanceJsonLogEntry(map, event);
+    }
 
-		return map;
-	}
+    return map;
+  }
 
-	private String formatMessage(ILoggingEvent event) {
-		//the formatted message might be null, don't initialize StringBuilder with it, but append it afterwards
-		StringBuilder message = new StringBuilder();
-		message.append(event.getFormattedMessage());
-		if (!this.includeExceptionInMessage) {
-			return message.toString();
-		}
-		IThrowableProxy throwableProxy = event.getThrowableProxy();
-		if (throwableProxy != null) {
-			message.append(formatThrowable(event));
-		}
-		return message.toString();
-	}
+  private String formatMessage(ILoggingEvent event) {
+    // the formatted message might be null, don't initialize StringBuilder with it, but append it
+    // afterwards
+    StringBuilder message = new StringBuilder();
+    message.append(event.getFormattedMessage());
+    if (!this.includeExceptionInMessage) {
+      return message.toString();
+    }
+    IThrowableProxy throwableProxy = event.getThrowableProxy();
+    if (throwableProxy != null) {
+      message.append(formatThrowable(event));
+    }
+    return message.toString();
+  }
 
-	private String formatThrowable(ILoggingEvent event) {
-		String stackTrace = getThrowableProxyConverter().convert(event);
-		return StringUtils.hasText(stackTrace) ? "\n" + stackTrace : "";
-	}
+  private String formatThrowable(ILoggingEvent event) {
+    String stackTrace = getThrowableProxyConverter().convert(event);
+    return StringUtils.hasText(stackTrace) ? "\n" + stackTrace : "";
+  }
 
-	protected String formatTraceId(final String traceId) {
-		// Trace IDs are either 64-bit or 128-bit, which is 16-digit hex, or 32-digit hex.
-		// If traceId is 64-bit (16-digit hex), then we need to prepend 0's to make a 32-digit hex.
-		if (traceId != null && traceId.length() == 16) {
-			return "0000000000000000" + traceId;
-		}
-		return traceId;
-	}
+  protected String formatTraceId(final String traceId) {
+    // Trace IDs are either 64-bit or 128-bit, which is 16-digit hex, or 32-digit hex.
+    // If traceId is 64-bit (16-digit hex), then we need to prepend 0's to make a 32-digit hex.
+    if (traceId != null && traceId.length() == 16) {
+      return "0000000000000000" + traceId;
+    }
+    return traceId;
+  }
 
-	private void addTraceId(ILoggingEvent event, Map<String, Object> map) {
-		if (!this.includeTraceId) {
-			return;
-		}
+  private void addTraceId(ILoggingEvent event, Map<String, Object> map) {
+    if (!this.includeTraceId) {
+      return;
+    }
 
     String traceId = event.getMDCPropertyMap().get(traceIdMdcField);
     if (traceId == null) {
@@ -350,6 +363,6 @@ public class StackdriverJsonLayout extends JsonLayout {
           StackdriverTraceConstants.composeFullTraceName(this.projectId, formatTraceId(traceId));
     }
 
-		add(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE, this.includeTraceId, traceId, map);
-	}
+    add(StackdriverTraceConstants.TRACE_ID_ATTRIBUTE, this.includeTraceId, traceId, map);
+  }
 }

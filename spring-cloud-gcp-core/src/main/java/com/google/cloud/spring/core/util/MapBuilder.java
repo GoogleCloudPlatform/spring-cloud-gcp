@@ -19,23 +19,22 @@ package com.google.cloud.spring.core.util;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.util.Assert;
 
 /**
  * Utility for building an immutable, type-safe {@link Map}.
- * <p>Underlying implementation uses a {@link HashMap}, but disallows {@code null} keys,
- * {@code null} values, and duplicate keys. This is consistent with Java 9 {@code Map.of()}
- * static factory method, which will eventually replace the uses of this utility.
+ *
+ * <p>Underlying implementation uses a {@link HashMap}, but disallows {@code null} keys, {@code
+ * null} values, and duplicate keys. This is consistent with Java 9 {@code Map.of()} static factory
+ * method, which will eventually replace the uses of this utility.
  *
  * @param <K> map key type
  * @param <V> map value type
- *
  * @since 1.1
  */
 public final class MapBuilder<K, V> {
 
-	private final Map<K, V> map = new HashMap<>();
+  private final Map<K, V> map = new HashMap<>();
 
   /**
    * Adds a unique non-null key/value pair.
@@ -52,12 +51,11 @@ public final class MapBuilder<K, V> {
     return this;
   }
 
-	public Map<K, V> build() {
-		return Collections.unmodifiableMap(this.map);
-	}
+  public Map<K, V> build() {
+    return Collections.unmodifiableMap(this.map);
+  }
 
-	public Map<K, V> buildModifiable() {
-		return this.map;
-	}
-
+  public Map<K, V> buildModifiable() {
+    return this.map;
+  }
 }

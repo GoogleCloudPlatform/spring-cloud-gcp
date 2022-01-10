@@ -18,7 +18,6 @@ package com.google.cloud.spring.pubsub.support;
 
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
-
 import org.springframework.util.concurrent.ListenableFuture;
 
 /**
@@ -28,28 +27,31 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 public interface BasicAcknowledgeablePubsubMessage {
 
-	/**
-	 * Accessor for the project subscription name of the Pub/Sub message.
-	 * @return the project subscription name
-	 */
-	ProjectSubscriptionName getProjectSubscriptionName();
+  /**
+   * Accessor for the project subscription name of the Pub/Sub message.
+   *
+   * @return the project subscription name
+   */
+  ProjectSubscriptionName getProjectSubscriptionName();
 
-	/**
-	 * Accessor for the wrapped {@link PubsubMessage}.
-	 * @return the wrapped Pub/Sub message
-	 */
-	PubsubMessage getPubsubMessage();
+  /**
+   * Accessor for the wrapped {@link PubsubMessage}.
+   *
+   * @return the wrapped Pub/Sub message
+   */
+  PubsubMessage getPubsubMessage();
 
-	/**
-	 * Acknowledge (ack) the message asynchronously.
-	 * @return {@code ListenableFuture<Void>}}
-	 */
-	ListenableFuture<Void> ack();
+  /**
+   * Acknowledge (ack) the message asynchronously.
+   *
+   * @return {@code ListenableFuture<Void>}}
+   */
+  ListenableFuture<Void> ack();
 
-	/**
-	 * Negatatively achnowledge (nack) the message asynchronously.
-	 * @return {@code ListenableFuture<Void>}}
-	 */
-	ListenableFuture<Void> nack();
-
+  /**
+   * Negatatively achnowledge (nack) the message asynchronously.
+   *
+   * @return {@code ListenableFuture<Void>}}
+   */
+  ListenableFuture<Void> nack();
 }

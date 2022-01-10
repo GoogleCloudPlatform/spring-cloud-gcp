@@ -16,21 +16,23 @@
 
 package com.example;
 
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeUnit;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assume.assumeThat;
 
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,63 +40,64 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
-
 /**
  * This verifies the sample application for using GCP Storage with Spring Resource abstractions.
  *
- * To run the test, set the gcs-resource-test-bucket property in application.properties to the name
- * of your bucket and run: mvn test -Dit.storage
+ * <p>To run the test, set the gcs-resource-test-bucket property in application.properties to the
+ * name of your bucket and run: mvn test -Dit.storage
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { GcsApplication.class })
+@SpringBootTest(
+    webEnvironment = WebEnvironment.RANDOM_PORT,
+    classes = {GcsApplication.class})
 public class GcsSampleApplicationIntegrationTests {
 
-	@Autowired
-	private Storage storage;
+  @Autowired private Storage storage;
 
-	@Autowired
-	private TestRestTemplate testRestTemplate;
+  @Autowired private TestRestTemplate testRestTemplate;
 
-	@Value("${gcs-resource-test-bucket}")
-	private String bucketName;
+  @Value("${gcs-resource-test-bucket}")
+  private String bucketName;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Google Cloud Storage Resource integration tests are disabled. "
-						+ "Please use '-Dit.storage=true' to enable them. ",
-				System.getProperty("it.storage"), is("true"));
-	}
+  @BeforeClass
+  public static void checkToRun() {
+    assumeThat(
+        "Google Cloud Storage Resource integration tests are disabled. "
+            + "Please use '-Dit.storage=true' to enable them. ",
+        System.getProperty("it.storage"),
+        is("true"));
+  }
 
-	@Before
-	@After
-	public void cleanupCloudStorage() {
-		Page<Blob> blobs = this.storage.list(this.bucketName);
-		for (Blob blob : blobs.iterateAll()) {
-			blob.delete();
-		}
-	}
+  @Before
+  @After
+  public void cleanupCloudStorage() {
+    Page<Blob> blobs = this.storage.list(this.bucketName);
+    for (Blob blob : blobs.iterateAll()) {
+      blob.delete();
+    }
+  }
 
-	@Test
-	public void testGcsResourceIsLoaded() {
-		BlobId blobId = BlobId.of(this.bucketName, "my-file.txt");
-		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
-		this.storage.create(blobInfo, "Good Morning!".getBytes(StandardCharsets.UTF_8));
+  @Test
+  public void testGcsResourceIsLoaded() {
+    BlobId blobId = BlobId.of(this.bucketName, "my-file.txt");
+    BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
+    this.storage.create(blobInfo, "Good Morning!".getBytes(StandardCharsets.UTF_8));
 
-		Awaitility.await().atMost(15, TimeUnit.SECONDS)
-				.untilAsserted(() -> {
-					String result = this.testRestTemplate.getForObject("/", String.class);
-					assertThat(result).isEqualTo("Good Morning!\n");
-				});
+    Awaitility.await()
+        .atMost(15, TimeUnit.SECONDS)
+        .untilAsserted(
+            () -> {
+              String result = this.testRestTemplate.getForObject("/", String.class);
+              assertThat(result).isEqualTo("Good Morning!\n");
+            });
 
-		this.testRestTemplate.postForObject("/", "Good Night!", String.class);
-		Awaitility.await().atMost(15, TimeUnit.SECONDS)
-				.untilAsserted(() -> {
-					String result = this.testRestTemplate.getForObject("/", String.class);
-					assertThat(result).isEqualTo("Good Night!\n");
-				});
-	}
+    this.testRestTemplate.postForObject("/", "Good Night!", String.class);
+    Awaitility.await()
+        .atMost(15, TimeUnit.SECONDS)
+        .untilAsserted(
+            () -> {
+              String result = this.testRestTemplate.getForObject("/", String.class);
+              assertThat(result).isEqualTo("Good Night!\n");
+            });
+  }
 }
