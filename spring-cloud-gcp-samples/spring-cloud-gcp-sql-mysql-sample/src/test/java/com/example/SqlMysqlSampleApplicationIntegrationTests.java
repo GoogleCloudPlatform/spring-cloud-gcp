@@ -18,10 +18,10 @@ package com.example;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,11 +31,9 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Simple integration test to verify the SQL sample application. This test will use the
@@ -43,9 +41,10 @@ import static org.junit.Assume.assumeThat;
  *
  * Run with: mvn -Dit.cloudsql test
  */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { SqlApplication.class })
-public class SqlMysqlSampleApplicationIntegrationTests {
+class SqlMysqlSampleApplicationIntegrationTests {
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
@@ -53,21 +52,13 @@ public class SqlMysqlSampleApplicationIntegrationTests {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"SQL sample integration tests are disabled. Please use '-Dit.cloudsql=true' "
-						+ "to enable them. ",
-				System.getProperty("it.cloudsql"), is("true"));
-	}
-
-	@After
-	public void clearTable() {
+	@AfterEach
+	void clearTable() {
 		this.jdbcTemplate.execute("DROP TABLE IF EXISTS users");
 	}
 
 	@Test
-	public void testSqlRowsAccess() {
+	void testSqlRowsAccess() {
 		ResponseEntity<List<String>> result = this.testRestTemplate.exchange(
 				"/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {
 				});
