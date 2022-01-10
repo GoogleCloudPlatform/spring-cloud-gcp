@@ -16,70 +16,46 @@
 
 package com.example;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.output.TeeOutputStream;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * These tests verifies that the pubsub-binder-sample works.
  *
  * @since 1.1
  */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
+@ExtendWith(SpringExtension.class)
+@ExtendWith(OutputCaptureExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
 		"spring.cloud.stream.bindings.input.destination=my-topic",
 		"spring.cloud.stream.bindings.output.destination=my-topic",
 		"spring.cloud.stream.bindings.input.group=my-group"})
 @DirtiesContext
-public class PubSubBinderSampleAppIntegrationTest {
+class PubSubBinderSampleAppIntegrationTest {
 
 	@Autowired
 	private TestRestTemplate restTemplate;
 
-	private static PrintStream systemOut;
-
-	private static ByteArrayOutputStream baos;
-
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub=true' "
-						+ "to enable them. ",
-				System.getProperty("it.pubsub"), is("true"));
-
-		systemOut = System.out;
-		baos = new ByteArrayOutputStream();
-		TeeOutputStream out = new TeeOutputStream(systemOut, baos);
-		System.setOut(new PrintStream(out));
-	}
-
-	@AfterClass
-	public static void bringBack() {
-		System.setOut(systemOut);
-	}
-
 	@Test
-	public void testSample_successfulMessage() throws Exception {
+	void testSample_successfulMessage(CapturedOutput capturedOutput) throws Exception {
 		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		String message = "test message " + UUID.randomUUID();
 
@@ -91,12 +67,12 @@ public class PubSubBinderSampleAppIntegrationTest {
 
 		await()
 				.atMost(20, TimeUnit.SECONDS)
-				.untilAsserted(() -> assertThat(baos.toString())
+				.untilAsserted(() -> assertThat(capturedOutput.toString())
 						.contains("New message received from testUserName: " + message + " at "));
 	}
 
 	@Test
-	public void testSample_error() throws Exception {
+	void testSample_error(CapturedOutput capturedOutput) throws Exception {
 		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		String message = "test message " + UUID.randomUUID();
 
@@ -108,7 +84,7 @@ public class PubSubBinderSampleAppIntegrationTest {
 
 		await()
 				.atMost(20, TimeUnit.SECONDS)
-				.untilAsserted(() -> assertThat(baos.toString())
+				.untilAsserted(() -> assertThat(capturedOutput.toString())
 						.contains("The message that was sent is now processed by the error handler."));
 	}
 }
