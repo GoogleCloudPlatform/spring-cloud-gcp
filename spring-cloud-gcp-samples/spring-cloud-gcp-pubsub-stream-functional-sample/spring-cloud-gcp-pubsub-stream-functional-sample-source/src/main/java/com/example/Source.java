@@ -35,8 +35,6 @@ import org.springframework.context.annotation.Configuration;
  * The {@link Sinks.Many} is used only as a local communication mechanism between the
  * {@link FrontendController} and this Spring Cloud Stream source.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 @Configuration

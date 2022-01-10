@@ -33,9 +33,6 @@ import org.springframework.data.annotation.Reference;
 
 /**
  * Sample entity.
- *
- * @author Chengyuan Zhao
- * @author Dmitry Solomakha
  */
 @Entity(name = "singers")
 public class Singer {
@@ -174,6 +171,11 @@ public class Singer {
 								.map(x -> x.getType()).collect(Collectors.toList()), ','))
 				+ ((this.message == null) ? "" : ", Message: " + new String(message))
 				+ '}';
+	}
+
+	public String firstAndLastName() {
+		return "Singer{" + "singerId='" + this.singerId + '\'' + ", firstName='"
+				+ this.firstName + '\'' + ", lastName='" + this.lastName + '}';
 	}
 
 	public LocalDateTime getLastModifiedTime() {

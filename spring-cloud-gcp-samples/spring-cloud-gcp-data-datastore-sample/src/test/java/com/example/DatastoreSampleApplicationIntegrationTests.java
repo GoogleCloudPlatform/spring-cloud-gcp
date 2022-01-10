@@ -57,9 +57,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * -Dit.datastore=true -Dspring.cloud.gcp.sql.database-name=[...]
  * -Dspring.cloud.gcp.datastore.namespace=[...]
- *
- * @author Chengyuan Zhao
- * @author Dmitry Solomakha
  */
 //please use "-Dit.datastore=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
@@ -189,6 +186,10 @@ class DatastoreSampleApplicationIntegrationTests {
 				"albums=[], firstBand=null, bands=, personalInstruments=}\n" +
 				"Singer{singerId='singer2', firstName='Jane', lastName='Doe', " +
 				"albums=[Album{albumName='a', date=2012-01-20}");
+
+		assertThat(baos.toString()).contains("Fluent Query by example\n" +
+				"Singer{singerId='singer1', firstName='John', lastName='Doe}\n" +
+				"Singer{singerId='singer2', firstName='Jane', lastName='Doe}");
 
 		assertThat(baos.toString()).contains("Using Pageable parameter\n" +
 				"Singer{singerId='singer1', firstName='John', lastName='Doe', " +

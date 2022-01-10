@@ -31,8 +31,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for {@link TraceIdLoggingEnhancer}.
- *
- * @author Mike Eltsufin
  */
 class TraceIdLoggingEnhancerTests {
 

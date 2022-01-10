@@ -20,8 +20,6 @@ import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 
 /**
  * A repository for testing instantiation.
- *
- * @author Chengyuan Zhao
  */
 public interface TestRepository extends DatastoreRepository {
 }

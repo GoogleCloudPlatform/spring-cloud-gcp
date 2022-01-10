@@ -36,8 +36,6 @@ import static org.mockito.Mockito.when;
 /**
  * Tests for {@link SpannerHealthIndicator}.
  *
- * @author ikeyat
- *
  * @since 2.0.6
  */
 @RunWith(MockitoJUnitRunner.class)

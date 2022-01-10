@@ -57,9 +57,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests Spanner statement queries.
- *
- * @author Chengyuan Zhao
- * @author Balint Pato
  */
 public class SpannerStatementQueryTests {
 
@@ -84,7 +81,7 @@ public class SpannerStatementQueryTests {
 		this.queryMethod = mock(SpannerQueryMethod.class);
 		// this is a dummy object. it is not mockable otherwise.
 		Method method = Object.class.getMethod("toString");
-		when(this.queryMethod.getMethod()).thenReturn(method);
+		when(this.queryMethod.getQueryMethod()).thenReturn(method);
 		this.spannerTemplate = mock(SpannerTemplate.class);
 		SpannerEntityProcessor spannerEntityProcessor = mock(SpannerEntityProcessor.class);
 		when(this.spannerTemplate.getSpannerEntityProcessor()).thenReturn(spannerEntityProcessor);
@@ -160,7 +157,7 @@ public class SpannerStatementQueryTests {
 		Method method = QueryHolder.class.getMethod("repositoryMethod1", Object.class, Object.class, Object.class,
 				Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
 				Object.class, Object.class, List.class, BigDecimal.class);
-		when(this.queryMethod.getMethod()).thenReturn(method);
+		when(this.queryMethod.getQueryMethod()).thenReturn(method);
 		doReturn(new DefaultParameters(method)).when(this.queryMethod).getParameters();
 
 		this.partTreeSpannerQuery.execute(params);

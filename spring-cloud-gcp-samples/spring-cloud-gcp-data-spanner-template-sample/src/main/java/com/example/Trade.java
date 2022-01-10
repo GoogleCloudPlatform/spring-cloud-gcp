@@ -24,10 +24,6 @@ import com.google.cloud.spring.data.spanner.core.mapping.Table;
 
 /**
  * A sample entity.
- *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
  */
 @Table(name = "trades_template")
 

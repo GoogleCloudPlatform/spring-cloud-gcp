@@ -35,9 +35,6 @@ import org.springframework.data.mapping.model.PersistentEntityParameterValueProv
 /**
  * A reading converter for Spanner that uses custom converters.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 class ConverterAwareMappingSpannerEntityReader implements SpannerEntityReader {

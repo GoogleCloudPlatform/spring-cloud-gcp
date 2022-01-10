@@ -21,12 +21,13 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.awaitility.Awaitility;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -35,30 +36,17 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Integration test for the Pub/Sub functional stream binder sample app.
- *
- * @author Elena Felder
  */
-public class PubSubStreamBinderSampleAppIntegrationTest {
-
-	/** Captures output to check that Sink application processed the message. */
-	@Rule
-	public OutputCaptureRule output = new OutputCaptureRule();
-
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub=true' "
-						+ "to enable them. ",
-				System.getProperty("it.pubsub"), is("true"));
-	}
+//Please use "-Dit.pubsub=true" to enable the tests
+@EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
+@ExtendWith(OutputCaptureExtension.class)
+class PubSubStreamBinderSampleAppIntegrationTest {
 
 	@Test
-	public void testSample() throws Exception {
+	void testSample(CapturedOutput capturedOutput) throws Exception {
 
 		// Run Source app
 		SpringApplicationBuilder sourceBuilder = new SpringApplicationBuilder(FunctionalSourceApplication.class)
@@ -84,7 +72,7 @@ public class PubSubStreamBinderSampleAppIntegrationTest {
 		assertThat(redirect).hasToString("http://localhost:8080/index.html");
 
 		Awaitility.await().atMost(10, TimeUnit.SECONDS)
-				.until(() -> this.output.getOut()
+				.until(() -> capturedOutput.getOut()
 						.contains("New message received from integration-test-user: " + message));
 
 	}

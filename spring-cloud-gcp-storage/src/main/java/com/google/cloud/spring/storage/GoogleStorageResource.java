@@ -43,13 +43,6 @@ import org.springframework.util.Assert;
 /**
  * Implements {@link WritableResource} for reading and writing objects in Google Cloud
  * Storage (GCS). An instance of this class represents a handle to a bucket or a blob.
- *
- * @author Vinicius Carvalho
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author João André Martins
- * @author Daniel Zou
- * @author Elena Felder
  */
 public class GoogleStorageResource implements WritableResource {
 

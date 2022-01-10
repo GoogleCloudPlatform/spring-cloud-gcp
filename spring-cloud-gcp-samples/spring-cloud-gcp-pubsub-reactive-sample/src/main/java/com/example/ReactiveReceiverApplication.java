@@ -32,8 +32,6 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 /**
  * Spring Boot Application demonstrating reactive subscription to PubSub.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 @SpringBootApplication

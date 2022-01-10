@@ -24,9 +24,6 @@ import org.springframework.integration.file.filters.AbstractRegexPatternFileList
 
 /**
  * A pattern file lister for Google Cloud Storage.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 public class GcsRegexPatternFileListFilter extends AbstractRegexPatternFileListFilter<BlobInfo> {
 

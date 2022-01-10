@@ -51,9 +51,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for inbound file synchronizer.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration

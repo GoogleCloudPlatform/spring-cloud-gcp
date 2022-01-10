@@ -30,8 +30,6 @@ import org.springframework.data.repository.query.parser.PartTree;
 /**
  * Implementation of a Spanner Query Method that handles all Part-tree / name-convention query methods.
  * @param <T> the return type of the Query Method
- * @author Balint Pato
- * @author Chengyuan Zhao
  *
  * @since 1.1
  */
@@ -60,7 +58,7 @@ public class PartTreeSpannerQuery<T> extends AbstractSpannerQuery<T> {
 		if (isCountOrExistsQuery()) {
 			return SpannerStatementQueryExecutor.executeQuery(
 					struct -> isCountQuery() ? struct.getLong(0) : struct.getBoolean(0),
-					this.entityType, this.tree, paramAccessor, getQueryMethod().getMethod().getParameters(),
+					this.entityType, this.tree, paramAccessor, getQueryMethod().getQueryMethod().getParameters(),
 					this.spannerTemplate,
 					this.spannerMappingContext);
 		}
@@ -69,7 +67,7 @@ public class PartTreeSpannerQuery<T> extends AbstractSpannerQuery<T> {
 					.performReadWriteTransaction(getDeleteFunction(parameters));
 		}
 		return SpannerStatementQueryExecutor.executeQuery(this.entityType, this.tree,
-				paramAccessor, getQueryMethod().getMethod().getParameters(), this.spannerTemplate,
+				paramAccessor, getQueryMethod().getQueryMethod().getParameters(), this.spannerTemplate,
 				this.spannerMappingContext);
 	}
 
@@ -78,7 +76,7 @@ public class PartTreeSpannerQuery<T> extends AbstractSpannerQuery<T> {
 			ParameterAccessor paramAccessor = new ParametersParameterAccessor(getQueryMethod().getParameters(),
 					parameters);
 			List<T> entitiesToDelete = SpannerStatementQueryExecutor
-					.executeQuery(this.entityType, this.tree, paramAccessor, getQueryMethod().getMethod().getParameters(),
+					.executeQuery(this.entityType, this.tree, paramAccessor, getQueryMethod().getQueryMethod().getParameters(),
 							transactionTemplate, this.spannerMappingContext);
 			transactionTemplate.deleteAll(entitiesToDelete);
 

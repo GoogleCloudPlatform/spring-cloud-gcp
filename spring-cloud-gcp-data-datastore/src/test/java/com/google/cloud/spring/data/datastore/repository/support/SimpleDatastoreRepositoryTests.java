@@ -36,6 +36,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,15 +45,13 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
  * Tests for the default Datastore Repository implementation.
- *
- * @author Chengyuan Zhao
- * @author Artem Bilan
  */
 public class SimpleDatastoreRepositoryTests {
 	/**
@@ -65,6 +64,9 @@ public class SimpleDatastoreRepositoryTests {
 
 	private final SimpleDatastoreRepository<Object, String> simpleDatastoreRepository = new SimpleDatastoreRepository<>(
 			this.datastoreTemplate, Object.class);
+
+	private final SimpleDatastoreRepository<Object, Object> spyRepo = spy(new SimpleDatastoreRepository<>(
+			this.datastoreTemplate, Object.class));
 
 	@Test
 	public void saveTest() {
@@ -357,4 +359,94 @@ public class SimpleDatastoreRepositoryTests {
 		this.simpleDatastoreRepository.deleteAllById(keys);
 		verify(this.datastoreTemplate).deleteAllById(keys, Object.class);
 	}
+
+	@Test
+	public void findByExampleFluentQueryAll() {
+		Example<Object> example = Example.of(new Object());
+		Sort sort = Sort.by("id");
+		Iterable entities = Arrays.asList();
+		doAnswer(invocationOnMock -> new DatastoreResultsIterable(entities, null))
+				.when(this.datastoreTemplate).queryByExample(same(example), any());
+		this.spyRepo.findBy(example, FetchableFluentQuery::all);
+		verify(this.spyRepo).findAll(same(example), eq(Sort.unsorted()));
+		this.spyRepo.findBy(example, query -> query.sortBy(sort).all());
+		verify(this.spyRepo).findAll(same(example), eq(sort));
+	}
+
+	@Test
+	public void findByExampleFluentQueryOneValue() {
+		Example<Object> example = Example.of(new Object());
+		Iterable entities = Arrays.asList();
+		doAnswer(invocationOnMock -> new DatastoreResultsIterable(entities, null))
+				.when(this.datastoreTemplate).queryByExample(same(example), any());
+		this.spyRepo.findBy(example, FetchableFluentQuery::oneValue);
+		verify(this.spyRepo).findOne(same(example));
+	}
+
+	@Test
+	public void findByExampleFluentQuerySortAndFirstValue() {
+		Example<Object> example = Example.of(new Object());
+		Sort sort = Sort.by("id");
+		Iterable entities = Arrays.asList(1);
+		doAnswer(invocationOnMock -> new DatastoreResultsIterable(entities, null))
+				.when(this.datastoreTemplate).queryByExample(same(example), any());
+		this.spyRepo.findBy(example, q -> q.sortBy(sort).firstValue());
+		verify(this.spyRepo).findFirstSorted(same(example), same(sort));
+		verify(this.datastoreTemplate).queryByExample(same(example),
+				eq(new DatastoreQueryOptions.Builder().setSort(sort).setLimit(1).build()));
+	}
+
+	@Test
+	public void findByExampleFluentQueryExists() {
+		Example<Object> example = Example.of(new Object());
+		doAnswer(invocationOnMock -> Arrays.asList())
+				.when(this.datastoreTemplate).keyQueryByExample(same(example),
+						eq(new DatastoreQueryOptions.Builder().setLimit(1).build()));
+
+		this.spyRepo.findBy(example, FetchableFluentQuery::exists);
+		verify(this.spyRepo).exists(same(example));
+	}
+
+	@Test
+	public void findByExampleFluentQueryCount() {
+		Example<Object> example = Example.of(new Object());
+		doAnswer(invocationOnMock -> Arrays.asList(1, 2, 3))
+				.when(this.datastoreTemplate).keyQueryByExample(same(example), isNull());
+
+		this.spyRepo.findBy(example, FetchableFluentQuery::count);
+		verify(this.spyRepo).count(same(example));
+	}
+
+	@Test
+	public void findByExampleFluentQueryPage() {
+		Example<Object> example = Example.of(new Object());
+		Sort sort = Sort.by("id");
+
+		doAnswer(invocationOnMock -> new DatastoreResultsIterable(Arrays.asList(1, 2), null))
+				.when(this.datastoreTemplate).queryByExample(same(example),
+						eq(new DatastoreQueryOptions.Builder().setLimit(2).setOffset(2).setSort(sort)
+								.build()));
+
+		doAnswer(invocationOnMock -> new DatastoreResultsIterable(Arrays.asList(1, 2, 3, 4, 5), null))
+				.when(this.datastoreTemplate).keyQueryByExample(same(example), isNull());
+
+		PageRequest pageRequest = PageRequest.of(1, 2, sort);
+		this.spyRepo.findBy(example, q -> q.page(pageRequest));
+		verify(this.spyRepo).findAll(same(example), same(pageRequest));
+	}
+
+	@Test
+	public void findByExampleFluentQueryAsUnsupported() {
+		this.expectedEx.expect(UnsupportedOperationException.class);
+		Example<Object> example = Example.of(new Object());
+		this.simpleDatastoreRepository.findBy(example, q -> q.as(Object.class).all());
+	}
+
+	@Test
+	public void findByExampleFluentQueryProjectUnsupported() {
+		this.expectedEx.expect(UnsupportedOperationException.class);
+		Example<Object> example = Example.of(new Object());
+		this.simpleDatastoreRepository.findBy(example, q -> q.project("firstProperty").all());
+	}
+
 }

@@ -20,9 +20,6 @@ import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 
 /**
  * A sample repository.
- *
- * @author Ray Tsang
- * @author Chengyuan Zhao
  */
 public interface TraderRepository extends SpannerRepository<Trader, String> {
 

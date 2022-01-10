@@ -37,7 +37,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 /**
- * @author Travis Tomsu
  * @since 2.0.2
  */
 //Please enable the tests using "-Dit.pubsub=true"

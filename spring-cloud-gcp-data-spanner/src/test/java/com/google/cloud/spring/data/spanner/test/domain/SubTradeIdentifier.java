@@ -26,8 +26,6 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
  * An object that holds the components that identify a {@link SubTrade}. This is
  * intentionally not used in {@link SubTrade} but is used in {@link SubTradeComponent} to
  * test that nested embedded key properties are resolved properly.
- *
- * @author Chengyuan Zhao
  */
 public class SubTradeIdentifier {
 

@@ -20,8 +20,6 @@ import java.time.LocalDateTime;
 
 /**
  * A user message for the sample app.
- *
- * @author Travis Tomsu
  */
 public class UserMessage {
 

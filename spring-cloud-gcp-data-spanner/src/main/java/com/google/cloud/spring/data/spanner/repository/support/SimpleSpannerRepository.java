@@ -37,7 +37,6 @@ import org.springframework.util.Assert;
  *
  * @param <T> the entity type of the repository
  * @param <I> the id type of the entity
- * @author Chengyuan Zhao
  *
  * @since 1.1
  */
@@ -164,8 +163,7 @@ public class SimpleSpannerRepository<T, I> implements SpannerRepository<T, I> {
 				pageable, this.spannerTemplate.count(this.entityType));
 	}
 
-	// TODO: Restore @Override when not supporting Spring Boot 2.4 anymore
-	//@Override
+	@Override
 	public void deleteAllById(Iterable<? extends I> ids) {
 		KeySet.Builder builder = KeySet.newBuilder();
 		for (Object id : ids) {

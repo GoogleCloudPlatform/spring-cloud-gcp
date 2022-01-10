@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.LongSupplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import com.google.cloud.datastore.Cursor;
@@ -35,19 +36,24 @@ import com.google.cloud.spring.data.datastore.core.DatastoreResultsCollection;
 import com.google.cloud.spring.data.datastore.core.DatastoreResultsIterable;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
+import org.springframework.data.util.Streamable;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
  * Implementation of {@link DatastoreRepository}.
  * @param <T> the type of the entities
  * @param <I> the id type of the entities
- * @author Chengyuan Zhao
  *
  * @since 1.1
  */
@@ -56,6 +62,8 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 	private final DatastoreOperations datastoreTemplate;
 
 	private final Class<T> entityType;
+
+	private static final Log LOGGER = LogFactory.getLog(SimpleDatastoreRepository.class);
 
 	public SimpleDatastoreRepository(DatastoreOperations datastoreTemplate,
 			Class<T> entityType) {
@@ -160,6 +168,14 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
 	}
 
+	<S extends T> S findFirstSorted(Example<S> example, Sort sort) {
+		Iterable<S> entities = this.datastoreTemplate.queryByExample(example,
+				new DatastoreQueryOptions.Builder().setSort(sort).setLimit(1).build());
+		Iterator<S> iterator = entities.iterator();
+		return iterator.hasNext() ? iterator.next() : null;
+	}
+
+
 	@Override
 	public <S extends T> Iterable<S> findAll(Example<S> example) {
 		return this.datastoreTemplate.queryByExample(example, null);
@@ -211,8 +227,100 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
 		return pageable instanceof DatastorePageable ? ((DatastorePageable) pageable).getTotalCount() : countCall.getAsLong();
 	}
 
-	// TODO: Restore @Override when not supporting Spring Boot 2.4 anymore
+	@Override
 	public void deleteAllById(Iterable<? extends I> iterable) {
 		this.datastoreTemplate.deleteAllById(iterable, entityType);
+	}
+
+	@Override
+	public <S extends T, R> R findBy(Example<S> example,
+			Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+		Assert.notNull(example, "Example must not be null!");
+		Assert.notNull(queryFunction, "Query function must not be null!");
+
+		return queryFunction.apply(new DatastoreFluentQueryByExample<>(example));
+	}
+
+	class DatastoreFluentQueryByExample<S extends T> implements FluentQuery.FetchableFluentQuery<S> {
+		private final Example<S> example;
+
+		private final Sort sort;
+
+		DatastoreFluentQueryByExample(Example<S> example) {
+			this(example, Sort.unsorted());
+		}
+
+		DatastoreFluentQueryByExample(Example<S> example, Sort sort) {
+			this.example = example;
+			this.sort = sort;
+		}
+
+		@NonNull
+		@Override
+		public FetchableFluentQuery<S> sortBy(@NonNull Sort sort) {
+			return new DatastoreFluentQueryByExample<>(this.example, sort);
+		}
+
+		@NonNull
+		@Override
+		public Optional<S> one() {
+			return SimpleDatastoreRepository.this.findOne(this.example);
+		}
+
+		@Nullable
+		@Override
+		public S oneValue() {
+			Optional<S> one = one();
+			return one.orElse(null);
+		}
+
+		@Override
+		public S firstValue() {
+			if (this.sort.isUnsorted()) {
+				LOGGER.warn(
+						"firstValue() used without sorting. "
+								+ "Use oneValue() instead if order does not matter.");
+			}
+			return SimpleDatastoreRepository.this.findFirstSorted(this.example, this.sort);
+		}
+
+		@NonNull
+		@Override
+		public List<S> all() {
+			return stream().collect(Collectors.toList());
+		}
+
+		@NonNull
+		@Override
+		public Page<S> page(@NonNull Pageable pageable) {
+			return SimpleDatastoreRepository.this.findAll(this.example, pageable);
+		}
+
+		@NonNull
+		@Override
+		public Stream<S> stream() {
+			return Streamable.of(SimpleDatastoreRepository.this.findAll(this.example, this.sort)).stream();
+		}
+
+		@Override
+		public long count() {
+			return SimpleDatastoreRepository.this.count(this.example);
+		}
+
+		@Override
+		public boolean exists() {
+			return SimpleDatastoreRepository.this.exists(this.example);
+		}
+
+		@Override
+		public FetchableFluentQuery<S> project(Collection properties) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public <V> FetchableFluentQuery<V> as(Class<V> resultType) {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 }

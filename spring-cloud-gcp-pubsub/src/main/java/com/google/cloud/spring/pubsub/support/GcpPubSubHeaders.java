@@ -22,10 +22,6 @@ import org.springframework.messaging.Message;
 
 /**
  * Google Cloud Platform internal headers for Spring Messaging messages.
- *
- * @author João André Martins
- * @author Elena Felder
- * @author Chengyuan Zhao
  */
 public abstract class GcpPubSubHeaders {
 
@@ -33,6 +29,11 @@ public abstract class GcpPubSubHeaders {
 	}
 
 	private static final String PREFIX = "gcp_pubsub_";
+
+	/**
+	 * The client header text.
+	 */
+	public static final String CLIENT = "googclient_*";
 
 	/**
 	 * The topic header text.

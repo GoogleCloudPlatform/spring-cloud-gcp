@@ -51,10 +51,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for the Pub/Sub message handler.
- *
- * @author João André Martins
- * @author Eric Goetschalckx
- * @author Chengyuan Zhao
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PubSubMessageHandlerTests {

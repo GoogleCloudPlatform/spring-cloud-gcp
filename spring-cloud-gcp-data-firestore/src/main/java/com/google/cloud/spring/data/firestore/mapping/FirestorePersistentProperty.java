@@ -21,8 +21,6 @@ import org.springframework.data.mapping.PersistentProperty;
 /**
  * Persistent property for Google Cloud Firestore.
  *
- * @author Dmitry Solomakha
- *
  * @since 1.2
  */
 public interface FirestorePersistentProperty

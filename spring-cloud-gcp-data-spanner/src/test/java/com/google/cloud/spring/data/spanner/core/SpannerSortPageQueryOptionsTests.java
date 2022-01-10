@@ -30,8 +30,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for the Spanner sort and page query options.
- *
- * @author Chengyuan Zhao
  */
 public class SpannerSortPageQueryOptionsTests {
 

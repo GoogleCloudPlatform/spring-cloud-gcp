@@ -49,10 +49,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for the Spanner transaction manager.
- *
- * @author Alexander Khimich
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
  */
 public class SpannerTransactionManagerTests {
 

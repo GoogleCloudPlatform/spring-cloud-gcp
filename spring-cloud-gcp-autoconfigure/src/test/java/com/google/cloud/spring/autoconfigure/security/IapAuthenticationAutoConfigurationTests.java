@@ -60,10 +60,6 @@ import static org.mockito.Mockito.when;
 /**
  * Tests for IAP auth config.
  *
- * @author Elena Felder
- * @author Marcel Amado
- * @author Eddú Meléndez
- *
  * @since 1.1
  */
 @RunWith(MockitoJUnitRunner.class)

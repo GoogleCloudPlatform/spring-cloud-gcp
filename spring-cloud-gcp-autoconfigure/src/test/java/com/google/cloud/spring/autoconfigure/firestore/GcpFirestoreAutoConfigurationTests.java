@@ -40,7 +40,6 @@ import static org.mockito.Mockito.mock;
 /**
  * Tests for Firestore auto-config.
  *
- * @author Dmitry Solomakha
  * @since 1.2
  */
 class GcpFirestoreAutoConfigurationTests {

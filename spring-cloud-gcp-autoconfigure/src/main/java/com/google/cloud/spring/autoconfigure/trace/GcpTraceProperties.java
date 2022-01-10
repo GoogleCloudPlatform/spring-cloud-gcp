@@ -25,11 +25,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * Stackdriver Trace Properties.
- *
- * @author Ray Tsang
- * @author Mike Eltsufin
- * @author João André Martins
- * @author Tim Ysewyn
  */
 @ConfigurationProperties("spring.cloud.gcp.trace")
 public class GcpTraceProperties implements CredentialsSupplier {

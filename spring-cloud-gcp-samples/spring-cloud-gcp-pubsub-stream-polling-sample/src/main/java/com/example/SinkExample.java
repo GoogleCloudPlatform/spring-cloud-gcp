@@ -32,8 +32,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 /**
  * Example of a sink for the sample app.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 @EnableBinding(PollableSink.class)

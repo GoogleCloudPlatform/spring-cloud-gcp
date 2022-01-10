@@ -62,8 +62,6 @@ import org.springframework.util.StringUtils;
  * A Query Method for Spanner using SQL strings.
  *
  * @param <T> the return type of the Query Method
- * @author Balint Pato
- * @author Chengyuan Zhao
  *
  * @since 1.1
  */
@@ -262,7 +260,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
 
 	private Statement buildStatementFromQueryAndTags(QueryTagValue queryTagValue) {
 		Map<String, java.lang.reflect.Parameter> paramMetadataMap = new HashMap<>();
-		for (java.lang.reflect.Parameter param : getQueryMethod().getMethod().getParameters()) {
+		for (java.lang.reflect.Parameter param : getQueryMethod().getQueryMethod().getParameters()) {
 			Param annotation = param.getAnnotation(Param.class);
 			paramMetadataMap.put(annotation == null ? param.getName() : annotation.value(), param);
 		}

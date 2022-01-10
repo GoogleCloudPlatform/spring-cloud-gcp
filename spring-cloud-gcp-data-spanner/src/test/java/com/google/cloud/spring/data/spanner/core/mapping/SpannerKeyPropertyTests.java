@@ -31,8 +31,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Tests for the Spanner custom key property.
- *
- * @author Chengyuan Zhao
  */
 public class SpannerKeyPropertyTests {
 
@@ -108,6 +106,11 @@ public class SpannerKeyPropertyTests {
 	public void getPersistentEntityTypeTest() {
 		assertThat(
 				this.spannerKeyProperty.getPersistentEntityTypes().iterator().hasNext()).isFalse();
+	}
+
+	@Test
+	public void getPersistentEntityTypeInformationTest() {
+		assertThat(this.spannerKeyProperty.getPersistentEntityTypeInformation().iterator().hasNext()).isFalse();
 	}
 
 	@Test
@@ -220,5 +223,10 @@ public class SpannerKeyPropertyTests {
 	@Test
 	public void usePropertyAccessTest() {
 		assertThat(this.spannerKeyProperty.usePropertyAccess()).isFalse();
+	}
+
+	@Test
+	public void getAssociationTargetTypeInformationTest() {
+		assertThat(this.spannerKeyProperty.getAssociationTargetTypeInformation()).isNull();
 	}
 }

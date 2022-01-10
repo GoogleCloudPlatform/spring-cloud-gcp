@@ -36,8 +36,6 @@ import org.springframework.messaging.handler.annotation.Header;
 /**
  * Spring Boot Application demonstrating receiving PubSub messages via synchronous pull.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 @SpringBootApplication

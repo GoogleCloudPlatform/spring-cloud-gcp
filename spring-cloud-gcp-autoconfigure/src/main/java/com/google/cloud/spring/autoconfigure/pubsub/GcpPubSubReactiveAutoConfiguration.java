@@ -35,9 +35,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Reactive Pub/Sub support autoconfiguration.
  *
- * @author Elena Felder
- * @author Maurice Zeijen
- *
  * @since 1.2
  */
 @Configuration(proxyBeanMethods = false)

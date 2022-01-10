@@ -36,8 +36,6 @@ import org.springframework.data.repository.core.RepositoryMetadata;
 /**
  * Configures the use of Firestore repositories.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
 public class FirestoreRepositoryConfigurationExtension extends RepositoryConfigurationExtensionSupport {

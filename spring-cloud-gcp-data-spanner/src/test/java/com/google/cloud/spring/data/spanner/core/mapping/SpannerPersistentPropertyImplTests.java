@@ -35,8 +35,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for the Spanner persistent property.
- *
- * @author Chengyuan Zhao
  */
 @RunWith(SpringRunner.class)
 public class SpannerPersistentPropertyImplTests {

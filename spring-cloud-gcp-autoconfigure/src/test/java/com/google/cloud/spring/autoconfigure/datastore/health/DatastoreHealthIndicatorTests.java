@@ -32,8 +32,6 @@ import static org.mockito.Mockito.when;
 /**
  * Tests for {@link DatastoreHealthIndicator}.
  *
- * @author Mike Eltsufin
- *
  * @since 1.2
  */
 @RunWith(MockitoJUnitRunner.class)

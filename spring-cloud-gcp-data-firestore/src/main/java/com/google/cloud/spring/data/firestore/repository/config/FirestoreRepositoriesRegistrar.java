@@ -24,8 +24,6 @@ import org.springframework.data.repository.config.RepositoryConfigurationExtensi
 /**
  * Registers the class of the Firestore repositories enabling annotation.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
 public class FirestoreRepositoriesRegistrar extends RepositoryBeanDefinitionRegistrarSupport {

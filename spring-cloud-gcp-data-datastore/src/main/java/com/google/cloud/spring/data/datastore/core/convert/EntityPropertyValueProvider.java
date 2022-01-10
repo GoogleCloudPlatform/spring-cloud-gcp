@@ -28,9 +28,6 @@ import org.springframework.data.util.TypeInformation;
 /**
  * A {@link PropertyValueProvider} for Datastore entities.
  *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class EntityPropertyValueProvider implements PropertyValueProvider<DatastorePersistentProperty> {

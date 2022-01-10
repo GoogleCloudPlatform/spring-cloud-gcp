@@ -57,8 +57,6 @@ import static org.mockito.Mockito.when;
 /**
  * This class tests that {@link DatastoreTemplate} is using the transction-specific
  * read-write when inside transactions.
- *
- * @author Chengyuan Zhao
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration

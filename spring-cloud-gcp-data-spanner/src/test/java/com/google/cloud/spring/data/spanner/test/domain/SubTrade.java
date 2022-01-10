@@ -28,9 +28,6 @@ import com.google.cloud.spring.data.spanner.core.mapping.Where;
 
 /**
  * An interleaved child of {@link Trade}.
- *
- * @author Chengyuan Zhao
- * @author Roman Solodovnichenko
  */
 @Table(name = "#{'sub_trades_'.concat(tableNameSuffix)}")
 @Where("disabled = false")

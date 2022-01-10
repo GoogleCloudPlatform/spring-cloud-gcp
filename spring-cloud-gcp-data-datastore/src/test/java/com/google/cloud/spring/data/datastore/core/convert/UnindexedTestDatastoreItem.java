@@ -24,9 +24,6 @@ import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
 
 /**
  * A test entity with an unindexed property and unindexed list property.
- *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
  */
 @Entity
 public class UnindexedTestDatastoreItem {

@@ -29,8 +29,6 @@ import com.google.spanner.v1.TypeCode;
 
 /**
  * A sample entity.
- *
- * @author Mike Eltsufin
  */
 @Table(name = "traders_repository")
 public class Trader {

@@ -30,7 +30,6 @@ import static org.awaitility.Awaitility.await;
 
 /**
  * A transactional service used for integration tests.
- * @author Chengyuan Zhao
  */
 public class TransactionalTemplateService {
 

@@ -20,9 +20,6 @@ import org.springframework.util.Assert;
 
 /**
  * Constants for Stackdriver Trace.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 public interface StackdriverTraceConstants {
 

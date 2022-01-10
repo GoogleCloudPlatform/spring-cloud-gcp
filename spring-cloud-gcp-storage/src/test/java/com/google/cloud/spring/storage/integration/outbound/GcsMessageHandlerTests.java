@@ -55,9 +55,6 @@ import static org.mockito.Mockito.verify;
 
 /**
  * Tests for the message handler.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration

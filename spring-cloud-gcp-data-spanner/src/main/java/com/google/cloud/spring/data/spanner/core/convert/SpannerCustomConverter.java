@@ -28,9 +28,6 @@ import org.springframework.util.Assert;
 /**
  * A custom type converter.
  *
- * @author Chengyuan Zhao
- * @author Balint Pato
- *
  * @since 1.1
  */
 public abstract class SpannerCustomConverter {

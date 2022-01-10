@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -77,6 +78,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.AopTestUtils;
@@ -94,9 +96,6 @@ import static org.mockito.Mockito.verify;
 
 /**
  * Integration tests for Datastore that use many features.
- *
- * @author Chengyuan Zhao
- * @author Dmitry Solomakha
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { DatastoreIntegrationTestConfiguration.class })
@@ -1089,12 +1088,69 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 		List<TestEntity> results2 = this.testEntityRepository.findByDatetimeGreaterThan(endDate);
 		assertThat(results2).containsExactly(testEntity2);
 	}
+
+
+	@Test
+	public void testFindByExampleFluent() {
+		Example<TestEntity> exampleRedCircle = Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null));
+		Example<TestEntity> exampleRed = Example.of(new TestEntity(null, "red", null, null, null));
+
+		List<TestEntity> entityRedAll = this.testEntityRepository.findBy(
+				exampleRed,
+				q -> q.all());
+		assertThat(entityRedAll).containsExactlyInAnyOrder(this.testEntityA, this.testEntityC, this.testEntityD);
+
+		List<TestEntity> entityRedAllReverseSortedById = this.testEntityRepository.findBy(
+				exampleRed,
+				q -> q.sortBy(Sort.by("id").descending()).all());
+		assertThat(entityRedAllReverseSortedById).containsExactly(this.testEntityD, this.testEntityC, this.testEntityA);
+
+		long countRedCircle = this.testEntityRepository.findBy(
+				exampleRedCircle,
+				FetchableFluentQuery::count);
+		assertThat(countRedCircle).isEqualTo(2);
+
+		boolean existsRed = this.testEntityRepository.findBy(
+				exampleRed,
+				FetchableFluentQuery::exists);
+		assertThat(existsRed).isTrue();
+
+		TestEntity FirstValueRed = this.testEntityRepository.findBy(
+				exampleRed,
+				FetchableFluentQuery::firstValue);
+		assertThat(FirstValueRed).isEqualTo(testEntityA);
+
+		TestEntity oneValueRed = this.testEntityRepository.findBy(
+				exampleRed,
+				q -> q.oneValue());
+		assertThat(oneValueRed.getColor()).isEqualTo("red");
+
+		Optional<TestEntity> onePurple = this.testEntityRepository.findBy(
+				Example.of(new TestEntity(null, "purple", null, null, null)),
+				FetchableFluentQuery::one);
+		assertThat(onePurple).isNotPresent();
+
+		Pageable pageable = PageRequest.of(0, 2);
+		Page<TestEntity> pagedResults = this.testEntityRepository.findBy(exampleRed, q -> q.page(pageable));
+		assertThat(pagedResults).containsExactly(this.testEntityA, this.testEntityC);
+
+		Optional<TestEntity> oneRed = this.testEntityRepository.findBy(exampleRed,
+				q -> q.sortBy(Sort.by("id")).one());
+		assertThat(oneRed).isPresent().get().isEqualTo(testEntityA);
+
+		long firstValueReverseSortedById = this.testEntityRepository.findBy(
+				exampleRed,
+				q -> q.sortBy(Sort.by("id").descending()).firstValue().getId());
+		assertThat(firstValueReverseSortedById).isEqualTo(4L);
+
+		List<String> redIdListReverseSorted = this.testEntityRepository.findBy(exampleRed,
+				q -> q.sortBy(Sort.by("id").descending()).stream().map(x -> x.getId().toString()).collect(Collectors.toList()));
+		assertThat(redIdListReverseSorted).containsExactly("4", "3", "1");
+	}
 }
 
 /**
  * Test class.
- *
- * @author Dmitry Solomakha
  */
 @Entity
 class ParentEntity {
@@ -1119,8 +1175,6 @@ class ParentEntity {
 
 /**
  * Test class.
- *
- * @author Dmitry Solomakha
  */
 @Entity
 class SubEntity {

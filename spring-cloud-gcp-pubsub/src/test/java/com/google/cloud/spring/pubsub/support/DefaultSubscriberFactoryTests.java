@@ -59,9 +59,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for the subscriber factory.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultSubscriberFactoryTests {

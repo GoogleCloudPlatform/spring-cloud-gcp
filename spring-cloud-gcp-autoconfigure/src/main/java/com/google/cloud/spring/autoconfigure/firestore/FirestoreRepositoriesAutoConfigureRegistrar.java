@@ -27,8 +27,6 @@ import org.springframework.data.repository.config.RepositoryConfigurationExtensi
 /**
  * Support configuration class for Firestore repositories.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
 public class FirestoreRepositoriesAutoConfigureRegistrar

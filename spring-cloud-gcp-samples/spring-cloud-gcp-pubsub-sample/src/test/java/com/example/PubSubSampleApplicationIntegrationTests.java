@@ -59,8 +59,6 @@ import static org.awaitility.Awaitility.await;
 
 /**
  * Tests for the Pub/Sub sample application.
- *
- * @author Daniel Zou
  */
 @EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
 @ExtendWith(SpringExtension.class)

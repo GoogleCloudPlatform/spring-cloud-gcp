@@ -21,8 +21,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * @author Dmitry Solomakha
- *
  * @since 1.2
  */
 public class SimpleFirestoreReactiveRepository<T> implements FirestoreReactiveRepository<T> {
@@ -121,8 +119,7 @@ public class SimpleFirestoreReactiveRepository<T> implements FirestoreReactiveRe
 		return this.firestoreTemplate.deleteAll(this.type);
 	}
 
-	// TODO: Restore @Override when not supporting Spring Boot 2.4 anymore
-	// @Override
+	@Override
 	public Mono<Void> deleteAllById(Iterable<? extends String> ids) {
 		return this.firestoreTemplate.deleteById(Flux.fromIterable(ids), this.type);
 	}

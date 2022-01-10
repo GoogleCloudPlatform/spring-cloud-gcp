@@ -30,7 +30,6 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
  * Factory bean for creating factories that create Datastore repositories.
  * @param <S> the type of the entities
  * @param <I> the id type of the entities
- * @author Chengyuan Zhao
  *
  * @since 1.1
  */

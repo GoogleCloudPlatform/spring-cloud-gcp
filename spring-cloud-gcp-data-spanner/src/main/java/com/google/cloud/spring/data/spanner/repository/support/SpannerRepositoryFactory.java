@@ -48,9 +48,6 @@ import org.springframework.util.Assert;
 /**
  * A factory for instantiating Spanner repositories.
  *
- * @author Chengyuan Zhao
- * @author Ray Tsang
- *
  * @since 1.1
  */
 public class SpannerRepositoryFactory extends RepositoryFactorySupport

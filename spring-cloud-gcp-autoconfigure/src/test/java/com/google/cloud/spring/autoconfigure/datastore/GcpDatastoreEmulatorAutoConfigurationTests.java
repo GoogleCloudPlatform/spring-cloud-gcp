@@ -32,8 +32,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 /**
  * Tests for Datastore Emulator auto-config.
  *
- * @author Lucas Soares
- *
  * @since 1.2
  */
 class GcpDatastoreEmulatorAutoConfigurationTests {

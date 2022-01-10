@@ -32,8 +32,6 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 
 /**
  * Integration tests for {@link KmsTemplate}.
- *
- * @author Emmanouil Gkatziouras
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { KmsTestConfiguration.class })

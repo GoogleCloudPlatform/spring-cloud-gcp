@@ -25,7 +25,6 @@ import org.springframework.data.repository.query.QueryMethod;
 /**
  * A Metadata class for Spring Data Reactive Firestore {@link QueryMethod}.
  *
- * @author Daniel Zou
  * @since 1.2
  */
 public class FirestoreQueryMethod extends QueryMethod {

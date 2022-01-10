@@ -36,8 +36,6 @@ import org.springframework.messaging.handler.annotation.Header;
 
 /**
  * Configuration for receiving and processing messages from a Pub/Sub topic.
- *
- * @author Daniel Zou
  */
 @Configuration
 public class ReceiverConfiguration {

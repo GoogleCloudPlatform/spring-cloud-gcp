@@ -27,8 +27,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for GcsPersistentAcceptOnceFileListFilter.
- *
- * @author Lukas Gemela
  */
 class GcsPersistentAcceptOnceFileListFilterTest {
 
