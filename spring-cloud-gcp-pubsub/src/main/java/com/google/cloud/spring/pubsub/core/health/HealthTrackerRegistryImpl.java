@@ -30,7 +30,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 
-/** @since 2.0.6 */
+/**
+ * A registry for the {@link HealthTracker} health trackers created per {@link
+ * ProjectSubscriptionName}.
+ *
+ * @since 2.0.6
+ */
 public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
 
   private static final Log LOGGER = LogFactory.getLog(HealthTrackerRegistryImpl.class);

@@ -41,13 +41,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @Repository
-interface SubclassesReferencesEntityARepository extends DatastoreRepository<EntityA, Key> {}
+interface SubclassesReferencesEntityArepository extends DatastoreRepository<EntityA, Key> {}
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
 public class SubclassesReferencesIntegrationTests extends AbstractDatastoreIntegrationTests {
 
-  @Autowired SubclassesReferencesEntityARepository entityARepository;
+  @Autowired
+  SubclassesReferencesEntityArepository entityArepository;
 
   @Autowired private DatastoreTemplate datastoreTemplate;
 
@@ -68,11 +69,11 @@ public class SubclassesReferencesIntegrationTests extends AbstractDatastoreInteg
   }
 
   @Test
-  public void testEntityCContainsReferenceToEntityB() {
-    EntityB entityB_1 = new EntityB();
-    EntityC entityC_1 = new EntityC(entityB_1);
-    entityARepository.saveAll(Arrays.asList(entityB_1, entityC_1));
-    EntityC fetchedC = (EntityC) entityARepository.findById(entityC_1.getId()).get();
+  public void testEntityCcontainsReferenceToEntityB() {
+    EntityB entityB1 = new EntityB();
+    EntityC entityC1 = new EntityC(entityB1);
+    entityArepository.saveAll(Arrays.asList(entityB1, entityC1));
+    EntityC fetchedC = (EntityC) entityArepository.findById(entityC1.getId()).get();
     assertThat(fetchedC.getEntityB()).isNotNull();
   }
 }

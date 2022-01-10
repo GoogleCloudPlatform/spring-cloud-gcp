@@ -203,7 +203,7 @@
 						</goals>
 						<configuration>
 							<configLocation>google_checks.xml</configLocation>
-							<suppressionsLocation>src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+							<suppressionsLocation>../src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
 							<failOnViolation>true</failOnViolation>
 							<violationSeverity>warning</violationSeverity>

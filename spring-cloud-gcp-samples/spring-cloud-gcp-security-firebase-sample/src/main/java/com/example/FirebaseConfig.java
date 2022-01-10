@@ -18,7 +18,9 @@ package com.example;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/** @since 1.2.2 */
+/**
+ * @since 1.2.2
+ */
 @ConfigurationProperties("firebase.config")
 public class FirebaseConfig {
 

@@ -43,13 +43,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @Repository
-interface SubclassesDescendantsEntityARepository extends DatastoreRepository<EntityA, Key> {}
+interface SubclassesDescendantsEntityArepository extends DatastoreRepository<EntityA, Key> {}
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
 public class SubclassesDescendantsIntegrationTests extends AbstractDatastoreIntegrationTests {
 
-  @Autowired SubclassesDescendantsEntityARepository entityARepository;
+  @Autowired
+  SubclassesDescendantsEntityArepository entityArepository;
 
   @Autowired private DatastoreTemplate datastoreTemplate;
 
@@ -70,14 +71,14 @@ public class SubclassesDescendantsIntegrationTests extends AbstractDatastoreInte
   }
 
   @Test
-  public void testEntityCContainsReferenceToEntityB() {
-    EntityB entityB_1 = new EntityB();
-    EntityC entityC_1 = new EntityC();
-    entityB_1.addEntityC(entityC_1);
-    entityARepository.saveAll(Arrays.asList(entityB_1, entityC_1));
-    EntityB fetchedB = (EntityB) entityARepository.findById(entityB_1.getId()).get();
-    List<EntityC> entitiesCOfB = fetchedB.getEntitiesC();
-    assertThat(entitiesCOfB).hasSize(1);
+  public void testEntityCcontainsReferenceToEntityB() {
+    EntityB entityB1 = new EntityB();
+    EntityC entityC1 = new EntityC();
+    entityB1.addEntityC(entityC1);
+    entityArepository.saveAll(Arrays.asList(entityB1, entityC1));
+    EntityB fetchedB = (EntityB) entityArepository.findById(entityB1.getId()).get();
+    List<EntityC> entitiesCofB = fetchedB.getEntitiesC();
+    assertThat(entitiesCofB).hasSize(1);
   }
 }
 
@@ -96,8 +97,8 @@ abstract class EntityA {
 class EntityB extends EntityA {
   @Descendants private List<EntityC> entitiesC = new ArrayList<>();
 
-  public void addEntityC(EntityC entityCDescendants) {
-    this.entitiesC.add(entityCDescendants);
+  public void addEntityC(EntityC entityCdescendants) {
+    this.entitiesC.add(entityCdescendants);
   }
 
   public List<EntityC> getEntitiesC() {

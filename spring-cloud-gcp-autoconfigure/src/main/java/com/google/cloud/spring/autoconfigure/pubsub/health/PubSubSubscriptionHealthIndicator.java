@@ -21,7 +21,9 @@ import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health.Builder;
 
-/** @since 2.0.6 */
+/**
+ * @since 2.0.6
+ */
 public class PubSubSubscriptionHealthIndicator extends AbstractHealthIndicator {
 
   private final HealthTrackerRegistry healthTrackerRegistry;

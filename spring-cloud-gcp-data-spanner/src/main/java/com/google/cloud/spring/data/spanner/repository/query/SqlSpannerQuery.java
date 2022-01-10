@@ -153,7 +153,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
     return result;
   }
 
-  private void resolveSpELTags(QueryTagValue queryTagValue) {
+  private void resolveSpelTags(QueryTagValue queryTagValue) {
     Expression[] expressions = detectExpressions(queryTagValue.sql);
     StringBuilder sb = new StringBuilder();
     Map<Object, String> valueToTag = new HashMap<>();
@@ -202,7 +202,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
             params,
             resolveEntityClassNames(this.sql, this.spannerMappingContext));
 
-    resolveSpELTags(queryTagValue);
+    resolveSpelTags(queryTagValue);
 
     return this.isDml
         ? Collections.singletonList(
