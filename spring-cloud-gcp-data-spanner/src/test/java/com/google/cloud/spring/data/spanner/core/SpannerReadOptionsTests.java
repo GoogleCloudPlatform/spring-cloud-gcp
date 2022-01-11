@@ -16,55 +16,47 @@
 
 package com.google.cloud.spring.data.spanner.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+import com.google.cloud.spanner.Options.ReadOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
-
-import com.google.cloud.spanner.Options.ReadOption;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
-/**
- * Tests for the Spanner read options.
- */
+/** Tests for the Spanner read options. */
 public class SpannerReadOptionsTests {
 
-	/**
-	 * checks the exception for messages and types.
-	 */
-	@Rule
-	public ExpectedException expectedEx = ExpectedException.none();
+  /** checks the exception for messages and types. */
+  @Rule public ExpectedException expectedEx = ExpectedException.none();
 
-	@Test
-	public void addNullReadOptionTest() {
+  @Test
+  public void addNullReadOptionTest() {
 
-		this.expectedEx.expect(IllegalArgumentException.class);
-		this.expectedEx.expectMessage("Valid read option is required!");
+    this.expectedEx.expect(IllegalArgumentException.class);
+    this.expectedEx.expectMessage("Valid read option is required!");
 
-		new SpannerReadOptions().addReadOption(null);
-	}
+    new SpannerReadOptions().addReadOption(null);
+  }
 
-	@Test
-	public void addReadOptionTest() {
-		SpannerReadOptions spannerReadOptions = new SpannerReadOptions();
-		ReadOption r1 = mock(ReadOption.class);
-		ReadOption r2 = mock(ReadOption.class);
-		spannerReadOptions.addReadOption(r1).addReadOption(r2);
-		assertThat(Arrays.asList(spannerReadOptions.getOptions()))
-				.containsExactlyInAnyOrder(r1, r2);
-	}
+  @Test
+  public void addReadOptionTest() {
+    SpannerReadOptions spannerReadOptions = new SpannerReadOptions();
+    ReadOption r1 = mock(ReadOption.class);
+    ReadOption r2 = mock(ReadOption.class);
+    spannerReadOptions.addReadOption(r1).addReadOption(r2);
+    assertThat(Arrays.asList(spannerReadOptions.getOptions())).containsExactlyInAnyOrder(r1, r2);
+  }
 
-	@Test
-	public void includePropertiesTest() {
-		SpannerReadOptions spannerReadOptions = new SpannerReadOptions();
-		Set<String> includeProperties = Collections.emptySet();
-		assertThat(spannerReadOptions.getIncludeProperties()).isNull();
-		spannerReadOptions.setIncludeProperties(includeProperties);
-		assertThat(spannerReadOptions.getIncludeProperties()).isNotNull();
-	}
-
+  @Test
+  public void includePropertiesTest() {
+    SpannerReadOptions spannerReadOptions = new SpannerReadOptions();
+    Set<String> includeProperties = Collections.emptySet();
+    assertThat(spannerReadOptions.getIncludeProperties()).isNull();
+    spannerReadOptions.setIncludeProperties(includeProperties);
+    assertThat(spannerReadOptions.getIncludeProperties()).isNotNull();
+  }
 }

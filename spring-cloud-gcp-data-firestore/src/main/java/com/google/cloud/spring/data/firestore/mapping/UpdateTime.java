@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * @since 2.0.0
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.FIELD })
+@Target({ElementType.METHOD, ElementType.FIELD})
 public @interface UpdateTime {
-	boolean version() default false;
+  boolean version() default false;
 }
