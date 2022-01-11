@@ -19,7 +19,6 @@ package com.google.cloud.spring.autoconfigure.trace.pubsub;
 import brave.Tracing;
 import brave.messaging.MessagingTracing;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -36,20 +35,19 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnMessagingEnabled
 @ConditionalOnBean(Tracing.class)
 @ConditionalOnProperty(value = "spring.cloud.gcp.trace.pubsub.enabled", matchIfMissing = false)
-@ConditionalOnClass({ PublisherFactory.class, MessagingTracing.class })
-@AutoConfigureAfter({ BraveAutoConfiguration.class, BraveMessagingAutoConfiguration.class })
+@ConditionalOnClass({PublisherFactory.class, MessagingTracing.class})
+@AutoConfigureAfter({BraveAutoConfiguration.class, BraveMessagingAutoConfiguration.class})
 class TracePubSubAutoConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean
-	static TracePubSubBeanPostProcessor tracePubSubBeanPostProcessor(BeanFactory beanFactory) {
-		return new TracePubSubBeanPostProcessor(beanFactory);
-	}
+  @Bean
+  @ConditionalOnMissingBean
+  static TracePubSubBeanPostProcessor tracePubSubBeanPostProcessor(BeanFactory beanFactory) {
+    return new TracePubSubBeanPostProcessor(beanFactory);
+  }
 
-	@Bean
-	@ConditionalOnMissingBean
-	PubSubTracing pubSubTracing(MessagingTracing messagingTracing) {
-		return PubSubTracing.newBuilder(messagingTracing).build();
-	}
-
+  @Bean
+  @ConditionalOnMissingBean
+  PubSubTracing pubSubTracing(MessagingTracing messagingTracing) {
+    return PubSubTracing.newBuilder(messagingTracing).build();
+  }
 }

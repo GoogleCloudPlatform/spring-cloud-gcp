@@ -16,69 +16,67 @@
 
 package com.google.cloud.spring.stream.binder.pubsub;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.cloud.stream.binder.AbstractBinderTests;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.Spy;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-/**
- * Integration tests that require the Pub/Sub emulator to be installed.
- */
+/** Integration tests that require the Pub/Sub emulator to be installed. */
 @ExtendWith(PubSubEmulator.class)
-class PubSubMessageChannelBinderEmulatorIntegrationTests extends
-		AbstractBinderTests<PubSubTestBinder, ExtendedConsumerProperties<PubSubConsumerProperties>,
-				ExtendedProducerProperties<PubSubProducerProperties>> {
+class PubSubMessageChannelBinderEmulatorIntegrationTests
+    extends AbstractBinderTests<
+        PubSubTestBinder,
+        ExtendedConsumerProperties<PubSubConsumerProperties>,
+        ExtendedProducerProperties<PubSubProducerProperties>> {
 
-	private String hostPort;
+  private String hostPort;
 
-	// Constructor gets PubSubEmulator port number from ParameterResolver
-	PubSubMessageChannelBinderEmulatorIntegrationTests(String pubSubEmulatorPort) {
-		this.hostPort = pubSubEmulatorPort;
-	}
+  // Constructor gets PubSubEmulator port number from ParameterResolver
+  PubSubMessageChannelBinderEmulatorIntegrationTests(String pubSubEmulatorPort) {
+    this.hostPort = pubSubEmulatorPort;
+  }
 
-	@Override
-	protected PubSubTestBinder getBinder() {
-		return new PubSubTestBinder(this.hostPort, this.applicationContext);
-	}
+  @Override
+  protected PubSubTestBinder getBinder() {
+    return new PubSubTestBinder(this.hostPort, this.applicationContext);
+  }
 
-	@Override
-	protected ExtendedConsumerProperties<PubSubConsumerProperties> createConsumerProperties() {
-		return new ExtendedConsumerProperties<>(new PubSubConsumerProperties());
-	}
+  @Override
+  protected ExtendedConsumerProperties<PubSubConsumerProperties> createConsumerProperties() {
+    return new ExtendedConsumerProperties<>(new PubSubConsumerProperties());
+  }
 
-	@Override
-	protected ExtendedProducerProperties<PubSubProducerProperties> createProducerProperties(TestInfo testInfo) {
-		return new ExtendedProducerProperties<>(new PubSubProducerProperties());
-	}
+  @Override
+  protected ExtendedProducerProperties<PubSubProducerProperties> createProducerProperties(
+      TestInfo testInfo) {
+    return new ExtendedProducerProperties<>(new PubSubProducerProperties());
+  }
 
-	@Override
-	public Spy spyOn(String name) {
-		return null;
-	}
+  @Override
+  public Spy spyOn(String name) {
+    return null;
+  }
 
-	@Override
-	public void testClean(TestInfo testInfo) throws Exception {
-		// Do nothing. Original test tests for Lifecycle logic that we don't need.
+  @Override
+  public void testClean(TestInfo testInfo) throws Exception {
+    // Do nothing. Original test tests for Lifecycle logic that we don't need.
 
-		// Dummy assertion to appease SonarCloud.
-		assertThat(this.hostPort).isNotNull();
-	}
+    // Dummy assertion to appease SonarCloud.
+    assertThat(this.hostPort).isNotNull();
+  }
 
-	@Test
-	@Disabled("Looks like there is no Kryo support in SCSt")
-	void testSendPojoReceivePojoKryoWithStreamListener() {
-		// Dummy assertion to appease SonarCloud.
-		assertThat(this.hostPort).isNotNull();
-	}
-
-
+  @Test
+  @Disabled("Looks like there is no Kryo support in SCSt")
+  void testSendPojoReceivePojoKryoWithStreamListener() {
+    // Dummy assertion to appease SonarCloud.
+    assertThat(this.hostPort).isNotNull();
+  }
 }

@@ -16,11 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.config;
 
-import java.io.IOException;
-
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
-
+import java.io.IOException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -37,12 +35,13 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(GcpConfigProperties.class)
 public class GcpConfigBootstrapConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean
-	public GoogleConfigPropertySourceLocator googleConfigPropertySourceLocator(
-			GcpConfigProperties configProperties) throws IOException {
-		return new GoogleConfigPropertySourceLocator(new DefaultGcpProjectIdProvider(),
-				new DefaultCredentialsProvider(configProperties), configProperties);
-	}
+  @Bean
+  @ConditionalOnMissingBean
+  public GoogleConfigPropertySourceLocator googleConfigPropertySourceLocator(
+      GcpConfigProperties configProperties) throws IOException {
+    return new GoogleConfigPropertySourceLocator(
+        new DefaultGcpProjectIdProvider(),
+        new DefaultCredentialsProvider(configProperties),
+        configProperties);
+  }
 }
-

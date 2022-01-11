@@ -18,34 +18,29 @@ package com.google.cloud.spring.autoconfigure.pubsub.health;
 
 import com.google.cloud.spring.pubsub.core.health.HealthTracker;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
-
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health.Builder;
 
-/**
- * @since 2.0.6
- */
+/** @since 2.0.6 */
 public class PubSubSubscriptionHealthIndicator extends AbstractHealthIndicator {
 
-	private final HealthTrackerRegistry healthTrackerRegistry;
+  private final HealthTrackerRegistry healthTrackerRegistry;
 
-	public PubSubSubscriptionHealthIndicator(
-		HealthTrackerRegistry healthTrackerRegistry) {
-		this.healthTrackerRegistry = healthTrackerRegistry;
-	}
+  public PubSubSubscriptionHealthIndicator(HealthTrackerRegistry healthTrackerRegistry) {
+    this.healthTrackerRegistry = healthTrackerRegistry;
+  }
 
-	@Override
-	protected void doHealthCheck(Builder builder) throws Exception {
-		builder.up();
+  @Override
+  protected void doHealthCheck(Builder builder) throws Exception {
+    builder.up();
 
-		for (HealthTracker healthTracker : healthTrackerRegistry.healthTrackers()) {
-			long messagesOverThreshold = healthTracker.messagesOverThreshold();
+    for (HealthTracker healthTracker : healthTrackerRegistry.healthTrackers()) {
+      long messagesOverThreshold = healthTracker.messagesOverThreshold();
 
-			if (messagesOverThreshold > 0) {
-				builder.down();
-				builder.withDetail(healthTracker.subscription().toString(), messagesOverThreshold);
-			}
-		}
-	}
-
+      if (messagesOverThreshold > 0) {
+        builder.down();
+        builder.withDetail(healthTracker.subscription().toString(), messagesOverThreshold);
+      }
+    }
+  }
 }

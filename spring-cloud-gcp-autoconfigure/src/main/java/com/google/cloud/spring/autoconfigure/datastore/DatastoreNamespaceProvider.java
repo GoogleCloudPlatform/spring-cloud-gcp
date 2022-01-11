@@ -23,5 +23,4 @@ import java.util.function.Supplier;
  *
  * @since 1.2
  */
-public interface DatastoreNamespaceProvider extends Supplier<String> {
-}
+public interface DatastoreNamespaceProvider extends Supplier<String> {}
