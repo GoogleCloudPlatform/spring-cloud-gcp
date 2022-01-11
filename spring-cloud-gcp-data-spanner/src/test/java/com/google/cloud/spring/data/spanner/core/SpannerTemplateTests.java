@@ -257,7 +257,7 @@ public class SpannerTemplateTests {
 
     Key key = Key.of("key");
     KeySet keySet = KeySet.singleKey(key);
-    assertThat(this.spannerTemplate.existsById(TestEntityEmbeddedPK.class, key)).isFalse();
+    assertThat(this.spannerTemplate.existsById(TestEntityEmbeddedPrimaryKey.class, key)).isFalse();
 
     verify(this.databaseClient, times(1)).singleUse();
     verify(this.readContext, times(1))
@@ -936,11 +936,12 @@ public class SpannerTemplateTests {
   }
 
   @Table(name = "test_table_embedded_pk")
-  private static class TestEntityEmbeddedPK {
-    @Embedded @PrimaryKey EmbeddedPK key;
+  private static class TestEntityEmbeddedPrimaryKey {
+    @Embedded @PrimaryKey
+    EmbeddedPrimaryKey key;
   }
 
-  private static class EmbeddedPK {
+  private static class EmbeddedPrimaryKey {
     @PrimaryKey(keyOrder = 1)
     String stringId;
 

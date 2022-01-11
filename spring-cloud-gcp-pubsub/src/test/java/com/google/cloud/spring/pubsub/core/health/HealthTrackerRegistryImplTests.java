@@ -40,6 +40,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+/** Tests for HealthTrackerRegistryImpl. */
 @RunWith(MockitoJUnitRunner.class)
 public class HealthTrackerRegistryImplTests {
 

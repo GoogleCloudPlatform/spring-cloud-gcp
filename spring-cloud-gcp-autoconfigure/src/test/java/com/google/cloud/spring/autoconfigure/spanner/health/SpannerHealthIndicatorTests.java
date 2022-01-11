@@ -44,7 +44,7 @@ public class SpannerHealthIndicatorTests {
 
   @Mock private ResultSet resultSet;
 
-  private final String QUERY = "SELECT 2";
+  private static final String QUERY = "SELECT 2";
 
   @Test
   public void testdoHealthCheckUp() throws Exception {

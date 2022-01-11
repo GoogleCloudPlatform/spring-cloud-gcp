@@ -89,15 +89,15 @@ public class Trade {
     this.executionTimes = executionTimes;
   }
 
-  public static Trade aTrade() {
-    return aTrade(null, 0);
+  public static Trade makeTrade() {
+    return makeTrade(null, 0);
   }
 
-  public static Trade aTrade(String customTraderId, int subTrades) {
-    return aTrade(customTraderId, subTrades, 0);
+  public static Trade makeTrade(String customTraderId, int subTrades) {
+    return makeTrade(customTraderId, subTrades, 0);
   }
 
-  public static Trade aTrade(String customTraderId, int subTrades, int tradeTime) {
+  public static Trade makeTrade(String customTraderId, int subTrades, int tradeTime) {
     Trade t = new Trade("ABCD", new ArrayList<>());
     String tradeId = UUID.randomUUID().toString();
     String traderId = customTraderId == null ? UUID.randomUUID().toString() : customTraderId;

@@ -34,8 +34,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-/** @since 2.0.2 */
-// Please enable the tests using "-Dit.pubsub=true"
+/**
+ * @since 2.0.2
+ */
+//Please enable the tests using "-Dit.pubsub=true"
 @EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
 @ExtendWith(OutputCaptureExtension.class)
 @ExtendWith(SpringExtension.class)
@@ -43,7 +45,8 @@ import org.springframework.util.MultiValueMap;
 @DirtiesContext
 class PubSubDeadLetterTopicSampleAppIntegrationTest {
 
-  @Autowired private TestRestTemplate restTemplate;
+  @Autowired
+  private TestRestTemplate restTemplate;
 
   @Test
   void testSample_deadLetterHandling(CapturedOutput capturedOutput) {
@@ -55,15 +58,12 @@ class PubSubDeadLetterTopicSampleAppIntegrationTest {
 
     this.restTemplate.postForObject("/newMessage", map, String.class);
 
-    await()
-        .atMost(60, TimeUnit.SECONDS)
+    await().atMost(60, TimeUnit.SECONDS)
         .pollDelay(3, TimeUnit.SECONDS)
-        .untilAsserted(
-            () ->
-                assertThat(capturedOutput.toString())
-                    .contains("Nacking message (attempt 1)")
-                    .contains("Nacking message (attempt 6)")
-                    .contains("Received message on dead letter topic")
-                    .contains(message));
+        .untilAsserted(() -> assertThat(capturedOutput.toString())
+            .contains("Nacking message (attempt 1)")
+            .contains("Nacking message (attempt 6)")
+            .contains("Received message on dead letter topic")
+            .contains(message));
   }
 }

@@ -237,10 +237,9 @@ public class TwoStepsConversions implements ReadWriteConversions {
       Object secondStepVal =
           this.internalConversionService.convert(val, typeTargets.getFirstStepTarget());
       result = this.conversionService.convert(secondStepVal, targetType);
-    }
-    // if the value can be directly converted
-    else if (DatastoreNativeTypes.isNativeType(sourceType)
+    } else if (DatastoreNativeTypes.isNativeType(sourceType)
         && this.conversionService.canConvert(sourceType, targetType)) {
+      // the value can be directly converted
       result = this.conversionService.convert(val, targetType);
     } else if (DatastoreNativeTypes.isNativeType(sourceType)
         && this.internalConversionService.canConvert(sourceType, targetType)) {
@@ -308,8 +307,8 @@ public class TwoStepsConversions implements ReadWriteConversions {
       builder = FullEntity.newBuilder();
     } else {
       /* The following does 3 sequential null checks. We only want an ID value if the object isn't null,
-      	has an ID property, and the ID property isn't null.
-      * */
+        has an ID property, and the ID property isn't null.
+       */
       Optional idProp =
           Optional.ofNullable(val)
               .map(v -> this.datastoreMappingContext.getPersistentEntity(v.getClass()))

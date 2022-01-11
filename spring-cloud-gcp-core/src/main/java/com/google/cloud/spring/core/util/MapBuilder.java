@@ -36,6 +36,13 @@ public final class MapBuilder<K, V> {
 
   private final Map<K, V> map = new HashMap<>();
 
+  /**
+   * Adds a unique non-null key/value pair.
+   *
+   * @param key non-null key
+   * @param value non-null value
+   * @return itself for chaining
+   */
   public MapBuilder<K, V> put(K key, V value) {
     Assert.notNull(key, "Map key cannot be null.");
     Assert.notNull(value, "Map value cannot be null.");

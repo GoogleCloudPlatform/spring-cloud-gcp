@@ -77,12 +77,11 @@ public class SpannerQueryLookupStrategy implements QueryLookupStrategy {
       NamedQueries namedQueries) {
     SpannerQueryMethod queryMethod = createQueryMethod(method, metadata, factory);
     Class<?> entityType = getEntityType(queryMethod);
-    boolean isDml =
-        queryMethod.getQueryAnnotation() != null && queryMethod.getQueryAnnotation().dmlStatement();
+    Query queryAnnotation = queryMethod.getQueryAnnotation();
+    boolean isDml = queryAnnotation != null && queryAnnotation.dmlStatement();
 
-    if (queryMethod.hasAnnotatedQuery()) {
-      Query query = queryMethod.getQueryAnnotation();
-      return createSqlSpannerQuery(entityType, queryMethod, query.value(), isDml);
+    if (queryAnnotation != null && queryMethod.hasAnnotatedQuery()) {
+      return createSqlSpannerQuery(entityType, queryMethod, queryAnnotation.value(), isDml);
     } else if (namedQueries.hasQuery(queryMethod.getNamedQueryName())) {
       String sql = namedQueries.getQuery(queryMethod.getNamedQueryName());
       return createSqlSpannerQuery(entityType, queryMethod, sql, isDml);

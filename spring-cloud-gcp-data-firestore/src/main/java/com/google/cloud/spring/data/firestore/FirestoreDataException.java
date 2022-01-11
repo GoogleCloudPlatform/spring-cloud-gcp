@@ -18,7 +18,9 @@ package com.google.cloud.spring.data.firestore;
 
 import org.springframework.dao.DataAccessException;
 
-/** @since 1.2 */
+/**
+ * @since 1.2
+ */
 public class FirestoreDataException extends DataAccessException {
 
   public FirestoreDataException(String msg) {

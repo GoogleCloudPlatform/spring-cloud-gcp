@@ -83,7 +83,7 @@ public class SpannerTemplateAuditingTests {
   /** Spring config for the tests. */
   @Configuration
   @EnableSpannerAuditing
-  static class config {
+  static class Config {
 
     @Bean
     public SpannerMappingContext spannerMappingContext() {

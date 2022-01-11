@@ -21,6 +21,7 @@ import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import org.springframework.context.annotation.ConditionContext;
@@ -50,7 +51,8 @@ public class OnGcpEnvironmentCondition extends SpringBootCondition {
 
     Assert.notNull(context, "Application context cannot be null.");
     Assert.notNull(metadata, "AnnotationTypeMetadata cannot be null.");
-    Assert.notNull(context.getBeanFactory(), "Bean factory cannot be null.");
+    ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
+    Assert.notNull(beanFactory, "Bean factory cannot be null.");
 
     Map<String, Object> attributes =
         metadata.getAnnotationAttributes(ConditionalOnGcpEnvironment.class.getName());
@@ -60,8 +62,7 @@ public class OnGcpEnvironmentCondition extends SpringBootCondition {
     Assert.notNull(
         targetEnvironments, "Value attribute of ConditionalOnGcpEnvironment cannot be null.");
 
-    GcpEnvironmentProvider environmentProvider =
-        context.getBeanFactory().getBean(GcpEnvironmentProvider.class);
+    GcpEnvironmentProvider environmentProvider = beanFactory.getBean(GcpEnvironmentProvider.class);
     Assert.notNull(environmentProvider, "GcpEnvironmentProvider not found in context.");
     GcpEnvironment currentEnvironment = environmentProvider.getCurrentEnvironment();
 

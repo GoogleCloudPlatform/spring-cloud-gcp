@@ -53,27 +53,27 @@ public class SpannerHealthIndicatorAutoConfigurationTests {
 
   @Test
   public void testSpannerHealthIndicatorCreated() {
-    final String DEFAULT_QUERY = "SELECT 1";
+    final String defaultQuery = "SELECT 1";
     this.contextRunner.run(
         context -> {
           SpannerHealthIndicator indicator = context.getBean(SpannerHealthIndicator.class);
           assertThat(indicator).isNotNull();
           assertThat(indicator)
-              .hasFieldOrPropertyWithValue("validationStatement", Statement.of(DEFAULT_QUERY));
+              .hasFieldOrPropertyWithValue("validationStatement", Statement.of(defaultQuery));
         });
   }
 
   @Test
   public void testSpannerHealthIndicatorCreatedWithQuery() {
-    final String CUSTOM_QUERY = "SELECT 2";
+    final String customQuery = "SELECT 2";
     this.contextRunner
-        .withPropertyValues("spring.cloud.gcp.spanner.health.query=" + CUSTOM_QUERY)
+        .withPropertyValues("spring.cloud.gcp.spanner.health.query=" + customQuery)
         .run(
             context -> {
               SpannerHealthIndicator indicator = context.getBean(SpannerHealthIndicator.class);
               assertThat(indicator).isNotNull();
               assertThat(indicator)
-                  .hasFieldOrPropertyWithValue("validationStatement", Statement.of(CUSTOM_QUERY));
+                  .hasFieldOrPropertyWithValue("validationStatement", Statement.of(customQuery));
             });
   }
 

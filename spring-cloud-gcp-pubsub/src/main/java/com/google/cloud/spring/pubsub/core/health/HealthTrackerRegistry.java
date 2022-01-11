@@ -93,7 +93,7 @@ public interface HealthTrackerRegistry {
   /**
    * Retrieve all the health trackers registered.
    *
-   * @return
+   * @return all known health trackers
    */
   Collection<HealthTracker> healthTrackers();
 }
