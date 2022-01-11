@@ -16,10 +16,8 @@
 
 package com.google.cloud.spring.data.datastore.it;
 
-/**
- * A projection interface for the integration tests.
- */
+/** A projection interface for the integration tests. */
 public interface TestEntityProjection {
 
-	String getColor();
+  String getColor();
 }

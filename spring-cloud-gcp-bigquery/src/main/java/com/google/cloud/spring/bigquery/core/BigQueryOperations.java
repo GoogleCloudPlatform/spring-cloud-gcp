@@ -16,12 +16,10 @@
 
 package com.google.cloud.spring.bigquery.core;
 
-import java.io.InputStream;
-
 import com.google.cloud.bigquery.FormatOptions;
 import com.google.cloud.bigquery.Job;
 import com.google.cloud.bigquery.Schema;
-
+import java.io.InputStream;
 import org.springframework.util.concurrent.ListenableFuture;
 
 /**
@@ -31,47 +29,42 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 public interface BigQueryOperations {
 
-	/**
-	 * Writes data to a specified BigQuery table.
-	 *
-	 * @param tableName name of the table to write to
-	 * @param inputStream input stream of the table data to write
-	 * @param dataFormatOptions the format of the data to write
-	 * @return {@link ListenableFuture} containing the BigQuery Job indicating completion of
-	 * operation
-	 *
-	 * @throws BigQueryException if errors occur when loading data to the BigQuery table
-	 */
-	ListenableFuture<Job> writeDataToTable(
-			String tableName, InputStream inputStream, FormatOptions dataFormatOptions);
+  /**
+   * Writes data to a specified BigQuery table.
+   *
+   * @param tableName name of the table to write to
+   * @param inputStream input stream of the table data to write
+   * @param dataFormatOptions the format of the data to write
+   * @return {@link ListenableFuture} containing the BigQuery Job indicating completion of operation
+   * @throws BigQueryException if errors occur when loading data to the BigQuery table
+   */
+  ListenableFuture<Job> writeDataToTable(
+      String tableName, InputStream inputStream, FormatOptions dataFormatOptions);
 
-	/**
-	 * Writes data to a specified BigQuery table with a manually-specified table Schema.
-	 *
-	 * <p>Example:
-	 *
-	 * <pre>{@code
-	 *
-	 * Schema schema = Schema.of(
-	 *    Field.of("CountyId", StandardSQLTypeName.INT64),
-	 *    Field.of("State", StandardSQLTypeName.STRING),
-	 *    Field.of("County", StandardSQLTypeName.STRING)
-	 * );
-	 *
-	 * ListenableFuture<Job> bigQueryJobFuture =
-	 *     bigQueryTemplate.writeDataToTable(
-	 * 	       TABLE_NAME, dataFile.getInputStream(), FormatOptions.csv(), schema);
-	 * }</pre>
-	 *
-	 * @param tableName name of the table to write to
-	 * @param inputStream input stream of the table data to write
-	 * @param dataFormatOptions the format of the data to write
-	 * @param schema the schema of the table being loaded
-	 * @return {@link ListenableFuture} containing the BigQuery Job indicating completion of
-	 * operation
-	 *
-	 * @throws BigQueryException if errors occur when loading data to the BigQuery table
-	 */
-	ListenableFuture<Job> writeDataToTable(
-			String tableName, InputStream inputStream, FormatOptions dataFormatOptions, Schema schema);
+  /**
+   * Writes data to a specified BigQuery table with a manually-specified table Schema.
+   *
+   * <p>Example:
+   *
+   * <pre>{@code
+   * Schema schema = Schema.of(
+   *    Field.of("CountyId", StandardSQLTypeName.INT64),
+   *    Field.of("State", StandardSQLTypeName.STRING),
+   *    Field.of("County", StandardSQLTypeName.STRING)
+   * );
+   *
+   * ListenableFuture<Job> bigQueryJobFuture =
+   *     bigQueryTemplate.writeDataToTable(
+   * 	       TABLE_NAME, dataFile.getInputStream(), FormatOptions.csv(), schema);
+   * }</pre>
+   *
+   * @param tableName name of the table to write to
+   * @param inputStream input stream of the table data to write
+   * @param dataFormatOptions the format of the data to write
+   * @param schema the schema of the table being loaded
+   * @return {@link ListenableFuture} containing the BigQuery Job indicating completion of operation
+   * @throws BigQueryException if errors occur when loading data to the BigQuery table
+   */
+  ListenableFuture<Job> writeDataToTable(
+      String tableName, InputStream inputStream, FormatOptions dataFormatOptions, Schema schema);
 }

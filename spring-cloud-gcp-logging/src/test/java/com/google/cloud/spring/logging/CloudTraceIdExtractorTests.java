@@ -16,53 +16,49 @@
 
 package com.google.cloud.spring.logging;
 
-import com.google.cloud.spring.logging.extractors.CloudTraceIdExtractor;
-import org.junit.jupiter.api.Test;
-
-import org.springframework.mock.web.MockHttpServletRequest;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Tests for the x-cloud trace ID extractor.
- */
+import com.google.cloud.spring.logging.extractors.CloudTraceIdExtractor;
+import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+
+/** Tests for the x-cloud trace ID extractor. */
 class CloudTraceIdExtractorTests {
 
-	private static final String TEST_TRACE_ID = "105445aa7843bc8bf206b120001000";
+  private static final String TEST_TRACE_ID = "105445aa7843bc8bf206b120001000";
 
-	private static final String TEST_TRACE_ID_WITH_SPAN = "105445aa7843bc8bf206b120001000/0;o=1";
+  private static final String TEST_TRACE_ID_WITH_SPAN = "105445aa7843bc8bf206b120001000/0;o=1";
 
-	private static final String TRACE_ID_HEADER = "X-CLOUD-TRACE-CONTEXT";
+  private static final String TRACE_ID_HEADER = "X-CLOUD-TRACE-CONTEXT";
 
-	private CloudTraceIdExtractor extractor = new CloudTraceIdExtractor();
+  private CloudTraceIdExtractor extractor = new CloudTraceIdExtractor();
 
-	@Test
-	void testExtractTraceIdFromRequest_valid() {
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader(TRACE_ID_HEADER, TEST_TRACE_ID_WITH_SPAN);
+  @Test
+  void testExtractTraceIdFromRequest_valid() {
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.addHeader(TRACE_ID_HEADER, TEST_TRACE_ID_WITH_SPAN);
 
-		String traceId = this.extractor.extractTraceIdFromRequest(request);
+    String traceId = this.extractor.extractTraceIdFromRequest(request);
 
-		assertThat(traceId).isEqualTo(TEST_TRACE_ID);
-	}
+    assertThat(traceId).isEqualTo(TEST_TRACE_ID);
+  }
 
-	@Test
-	void testExtractTraceIdFromRequest_missing() {
-		MockHttpServletRequest request = new MockHttpServletRequest();
+  @Test
+  void testExtractTraceIdFromRequest_missing() {
+    MockHttpServletRequest request = new MockHttpServletRequest();
 
-		String traceId = this.extractor.extractTraceIdFromRequest(request);
+    String traceId = this.extractor.extractTraceIdFromRequest(request);
 
-		assertThat(traceId).isNull();
-	}
+    assertThat(traceId).isNull();
+  }
 
-	@Test
-	void testExtractTraceIdFromRequest_missingSpan() {
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader(TRACE_ID_HEADER, TEST_TRACE_ID);
+  @Test
+  void testExtractTraceIdFromRequest_missingSpan() {
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.addHeader(TRACE_ID_HEADER, TEST_TRACE_ID);
 
-		String traceId = this.extractor.extractTraceIdFromRequest(request);
+    String traceId = this.extractor.extractTraceIdFromRequest(request);
 
-		assertThat(traceId).isEqualTo(TEST_TRACE_ID);
-	}
-
+    assertThat(traceId).isEqualTo(TEST_TRACE_ID);
+  }
 }

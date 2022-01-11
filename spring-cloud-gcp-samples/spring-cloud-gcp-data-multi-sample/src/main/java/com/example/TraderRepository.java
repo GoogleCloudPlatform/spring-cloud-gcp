@@ -18,9 +18,5 @@ package com.example;
 
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 
-/**
- * A sample repository.
- */
-public interface TraderRepository extends SpannerRepository<Trader, String> {
-
-}
+/** A sample repository. */
+public interface TraderRepository extends SpannerRepository<Trader, String> {}

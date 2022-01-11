@@ -16,13 +16,14 @@
 
 package com.example;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.CapturedOutput;
@@ -33,13 +34,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
-
-/**
- * @since 2.0.2
- */
-//Please enable the tests using "-Dit.pubsub=true"
+/** @since 2.0.2 */
+// Please enable the tests using "-Dit.pubsub=true"
 @EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
 @ExtendWith(OutputCaptureExtension.class)
 @ExtendWith(SpringExtension.class)
@@ -47,25 +43,27 @@ import static org.awaitility.Awaitility.await;
 @DirtiesContext
 class PubSubDeadLetterTopicSampleAppIntegrationTest {
 
-	@Autowired
-	private TestRestTemplate restTemplate;
+  @Autowired private TestRestTemplate restTemplate;
 
-	@Test
-	void testSample_deadLetterHandling(CapturedOutput capturedOutput) {
-		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		String message = "test message " + UUID.randomUUID();
+  @Test
+  void testSample_deadLetterHandling(CapturedOutput capturedOutput) {
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    String message = "test message " + UUID.randomUUID();
 
-		map.add("messageBody", message);
-		map.add("username", "testUserName");
+    map.add("messageBody", message);
+    map.add("username", "testUserName");
 
-		this.restTemplate.postForObject("/newMessage", map, String.class);
+    this.restTemplate.postForObject("/newMessage", map, String.class);
 
-		await().atMost(60, TimeUnit.SECONDS)
-				.pollDelay(3, TimeUnit.SECONDS)
-				.untilAsserted(() -> assertThat(capturedOutput.toString())
-						.contains("Nacking message (attempt 1)")
-						.contains("Nacking message (attempt 6)")
-						.contains("Received message on dead letter topic")
-						.contains(message));
-	}
+    await()
+        .atMost(60, TimeUnit.SECONDS)
+        .pollDelay(3, TimeUnit.SECONDS)
+        .untilAsserted(
+            () ->
+                assertThat(capturedOutput.toString())
+                    .contains("Nacking message (attempt 1)")
+                    .contains("Nacking message (attempt 6)")
+                    .contains("Received message on dead letter topic")
+                    .contains(message));
+  }
 }
