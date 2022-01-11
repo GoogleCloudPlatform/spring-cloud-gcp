@@ -66,7 +66,7 @@
 		<spring-cloud-dependencies.version>2021.0.0</spring-cloud-dependencies.version>
 		<spring-boot-dependencies.version>2.6.2</spring-boot-dependencies.version>
 		<spring-javaformat-checkstyle.version>0.0.29</spring-javaformat-checkstyle.version>
-		<zipkin-gcp.version>1.0.3</zipkin-gcp.version>
+		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<spring-native.version>0.10.5</spring-native.version>
 	</properties>
 
