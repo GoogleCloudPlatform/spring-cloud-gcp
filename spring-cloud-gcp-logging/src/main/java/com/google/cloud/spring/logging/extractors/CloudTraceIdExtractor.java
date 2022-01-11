@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Extracts trace IDs from HTTP requests using the x-cloud-trace-context header.
  */
-public class XCloudTraceIdExtractor implements TraceIdExtractor {
+public class CloudTraceIdExtractor implements TraceIdExtractor {
 
 	/**
 	 * The name of the header that contains the trace id.

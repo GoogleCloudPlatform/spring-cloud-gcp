@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.logging;
 
-import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
+import com.google.cloud.spring.logging.extractors.CloudTraceIdExtractor;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -26,8 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests for the x-cloud trace ID extractor.
  */
-
-class XCloudTraceIdExtractorTests {
+class CloudTraceIdExtractorTests {
 
 	private static final String TEST_TRACE_ID = "105445aa7843bc8bf206b120001000";
 
@@ -35,7 +34,7 @@ class XCloudTraceIdExtractorTests {
 
 	private static final String TRACE_ID_HEADER = "X-CLOUD-TRACE-CONTEXT";
 
-	private XCloudTraceIdExtractor extractor = new XCloudTraceIdExtractor();
+	private CloudTraceIdExtractor extractor = new CloudTraceIdExtractor();
 
 	@Test
 	void testExtractTraceIdFromRequest_valid() {

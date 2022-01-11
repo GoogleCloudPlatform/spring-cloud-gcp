@@ -58,9 +58,9 @@ public class StackdriverJsonLayout extends JsonLayout {
 
 	private String projectId;
 
-	private String traceIdMDCField;
+	private String traceIdMdcField;
 
-	private String spanIdMDCField;
+	private String spanIdMdcField;
 
 	private boolean includeTraceId;
 
@@ -80,8 +80,8 @@ public class StackdriverJsonLayout extends JsonLayout {
 	 * creates a layout for a Logback appender compatible to the Stackdriver log format.
 	 */
 	public StackdriverJsonLayout() {
-		this.traceIdMDCField = StackdriverTraceConstants.MDC_FIELD_TRACE_ID;
-		this.spanIdMDCField = StackdriverTraceConstants.MDC_FIELD_SPAN_ID;
+		this.traceIdMdcField = StackdriverTraceConstants.MDC_FIELD_TRACE_ID;
+		this.spanIdMdcField = StackdriverTraceConstants.MDC_FIELD_SPAN_ID;
 		this.appendLineSeparator = true;
 		this.includeExceptionInMessage = true;
 		this.includeException = false;
@@ -112,17 +112,17 @@ public class StackdriverJsonLayout extends JsonLayout {
 	 * @return the MDC field name for retrieving a trace id
 	 * @since 2.0.5
 	 */
-	public String getTraceIdMDCField() {
-		return traceIdMDCField;
+	public String getTraceIdMdcField() {
+		return traceIdMdcField;
 	}
 
 	/**
 	 * Set the MDC filed name for trace id.
-	 * @param traceIdMDCField the MDC field name for retrieving a trace id
+	 * @param traceIdMdcField the MDC field name for retrieving a trace id
 	 * @since 2.0.5
 	 */
-	public void setTraceIdMDCField(String traceIdMDCField) {
-		this.traceIdMDCField = traceIdMDCField;
+	public void setTraceIdMdcField(String traceIdMdcField) {
+		this.traceIdMdcField = traceIdMdcField;
 	}
 
 	/**
@@ -130,17 +130,17 @@ public class StackdriverJsonLayout extends JsonLayout {
 	 * @return the MDC field name for retrieving a span id
 	 * @since 2.0.5
 	 */
-	public String getSpanIdMDCField() {
-		return spanIdMDCField;
+	public String getSpanIdMdcField() {
+		return spanIdMdcField;
 	}
 
 	/**
 	 * Set the MDC field name for span id.
-	 * @param spanIdMDCField the MDC field name for retrieving a span id
+	 * @param spanIdMdcField the MDC field name for retrieving a span id
 	 * @since 2.0.5
 	 */
-	public void setSpanIdMDCField(String spanIdMDCField) {
-		this.spanIdMDCField = spanIdMDCField;
+	public void setSpanIdMdcField(String spanIdMdcField) {
+		this.spanIdMdcField = spanIdMdcField;
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class StackdriverJsonLayout extends JsonLayout {
 		}
 
 		this.filteredMdcFields =
-				new HashSet<>(Arrays.asList(traceIdMDCField, spanIdMDCField,
+				new HashSet<>(Arrays.asList(traceIdMdcField, spanIdMdcField,
 						StackdriverTraceConstants.MDC_FIELD_SPAN_EXPORT));
 	}
 
@@ -278,7 +278,7 @@ public class StackdriverJsonLayout extends JsonLayout {
 		addThrowableInfo(JsonLayout.EXCEPTION_ATTR_NAME, this.includeException, event, map);
 		addTraceId(event, map);
 		add(StackdriverTraceConstants.SPAN_ID_ATTRIBUTE, this.includeSpanId,
-				event.getMDCPropertyMap().get(spanIdMDCField), map);
+				event.getMDCPropertyMap().get(spanIdMdcField), map);
 		if (this.serviceContext != null) {
 			map.put(StackdriverTraceConstants.SERVICE_CONTEXT_ATTRIBUTE, this.serviceContext);
 		}
@@ -329,7 +329,7 @@ public class StackdriverJsonLayout extends JsonLayout {
 			return;
 		}
 
-		String traceId = event.getMDCPropertyMap().get(traceIdMDCField);
+		String traceId = event.getMDCPropertyMap().get(traceIdMdcField);
 		if (traceId == null) {
 			traceId = TraceIdLoggingEnhancer.getCurrentTraceId();
 		}
