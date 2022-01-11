@@ -16,18 +16,19 @@
 
 package com.example;
 
-import java.io.IOException;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 import com.google.api.MetricDescriptor;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import java.io.IOException;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.actuate.metrics.AutoConfigureMetrics;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,55 +37,52 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
-
-/**
- * Tests for the metrics sample app.
- */
+/** Tests for the metrics sample app. */
 @EnabledIfSystemProperty(named = "it.metrics", matches = "true")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = MetricsApplication.class)
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = MetricsApplication.class)
 @AutoConfigureMetrics // needed to enable metrics export in Spring Boot tests
 class MetricsSampleApplicationIntegrationTests {
 
-	@Autowired
-	private GcpProjectIdProvider projectIdProvider;
+  @Autowired private GcpProjectIdProvider projectIdProvider;
 
-	@Autowired
-	private TestRestTemplate testRestTemplate;
+  @Autowired private TestRestTemplate testRestTemplate;
 
-	@LocalServerPort
-	private int port;
+  @LocalServerPort private int port;
 
-	private MetricServiceClient metricClient;
+  private MetricServiceClient metricClient;
 
-	@BeforeEach
-	void setupLogging() throws IOException {
-		this.metricClient = MetricServiceClient.create();
-	}
+  @BeforeEach
+  void setupLogging() throws IOException {
+    this.metricClient = MetricServiceClient.create();
+  }
 
-	@Test
-	void testMetricRecordedInStackdriver() {
-		String projectId = this.projectIdProvider.getProjectId();
+  @Test
+  void testMetricRecordedInStackdriver() {
+    String projectId = this.projectIdProvider.getProjectId();
 
-		String id = "integration_test_" + UUID.randomUUID().toString().replace('-', '_');
-		String url = String.format("http://localhost:%s/%s", this.port, id);
+    String id = "integration_test_" + UUID.randomUUID().toString().replace('-', '_');
+    String url = String.format("http://localhost:%s/%s", this.port, id);
 
-		ResponseEntity<String> responseEntity = this.testRestTemplate.getForEntity(url, String.class, String.class);
-		assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
+    ResponseEntity<String> responseEntity =
+        this.testRestTemplate.getForEntity(url, String.class, String.class);
+    assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
 
-		String metricType = "custom.googleapis.com/" + id;
-		String metricName = "projects/" + projectId + "/metricDescriptors/" + metricType;
+    String metricType = "custom.googleapis.com/" + id;
+    String metricName = "projects/" + projectId + "/metricDescriptors/" + metricType;
 
-		await().atMost(4, TimeUnit.MINUTES)
-				.pollInterval(5, TimeUnit.SECONDS)
-				.ignoreExceptionsMatching(e -> e.getMessage().contains("Could not find descriptor for metric"))
-				.untilAsserted(() -> {
-					MetricDescriptor metricDescriptor = this.metricClient.getMetricDescriptor(metricName);
-					assertThat(metricDescriptor.getName()).isEqualTo(metricName);
-					assertThat(metricDescriptor.getType()).isEqualTo(metricType);
-				});
-	}
-
+    await()
+        .atMost(4, TimeUnit.MINUTES)
+        .pollInterval(5, TimeUnit.SECONDS)
+        .ignoreExceptionsMatching(
+            e -> e.getMessage().contains("Could not find descriptor for metric"))
+        .untilAsserted(
+            () -> {
+              MetricDescriptor metricDescriptor = this.metricClient.getMetricDescriptor(metricName);
+              assertThat(metricDescriptor.getName()).isEqualTo(metricName);
+              assertThat(metricDescriptor.getType()).isEqualTo(metricType);
+            });
+  }
 }

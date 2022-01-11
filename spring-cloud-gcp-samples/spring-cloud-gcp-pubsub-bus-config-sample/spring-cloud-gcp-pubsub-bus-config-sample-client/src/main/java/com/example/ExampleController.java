@@ -21,19 +21,16 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * @since 1.2
- */
+/** @since 1.2 */
 @RefreshScope
 @RestController
 public class ExampleController {
 
-	@Value("${example.message:none}")
-	private String message;
+  @Value("${example.message:none}")
+  private String message;
 
-	@GetMapping("/message")
-	public String getMessage() {
-		return this.message;
-	}
-
+  @GetMapping("/message")
+  public String getMessage() {
+    return this.message;
+  }
 }

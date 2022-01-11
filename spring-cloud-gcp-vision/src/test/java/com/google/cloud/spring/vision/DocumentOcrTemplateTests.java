@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.vision;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.google.cloud.spring.storage.GoogleStorageLocation;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
@@ -23,42 +25,35 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(SpringRunner.class)
 public class DocumentOcrTemplateTests {
 
-	private Storage storage;
+  private Storage storage;
 
-	private ImageAnnotatorClient imageAnnotatorClient;
+  private ImageAnnotatorClient imageAnnotatorClient;
 
-	private DocumentOcrTemplate documentOcrTemplate;
+  private DocumentOcrTemplate documentOcrTemplate;
 
-	@Before
-	public void setupDocumentTemplateMocks() {
-		this.storage = Mockito.mock(Storage.class);
-		this.imageAnnotatorClient = Mockito.mock(ImageAnnotatorClient.class);
-		this.documentOcrTemplate = new DocumentOcrTemplate(
-				imageAnnotatorClient,
-				storage,
-				Runnable::run,
-				10);
-	}
+  @Before
+  public void setupDocumentTemplateMocks() {
+    this.storage = Mockito.mock(Storage.class);
+    this.imageAnnotatorClient = Mockito.mock(ImageAnnotatorClient.class);
+    this.documentOcrTemplate =
+        new DocumentOcrTemplate(imageAnnotatorClient, storage, Runnable::run, 10);
+  }
 
-	@Test
-	public void testValidateGcsFileInputs() {
-		GoogleStorageLocation folder = GoogleStorageLocation.forFolder(
-				"bucket", "path/to/folder/");
+  @Test
+  public void testValidateGcsFileInputs() {
+    GoogleStorageLocation folder = GoogleStorageLocation.forFolder("bucket", "path/to/folder/");
 
-		assertThatThrownBy(() -> this.documentOcrTemplate.runOcrForDocument(folder, folder))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessageContaining("Provided document location is not a valid file location");
+    assertThatThrownBy(() -> this.documentOcrTemplate.runOcrForDocument(folder, folder))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Provided document location is not a valid file location");
 
-		assertThatThrownBy(() -> this.documentOcrTemplate.readOcrOutputFile(folder))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessageContaining("Provided jsonOutputFile location is not a valid file location");
-	}
+    assertThatThrownBy(() -> this.documentOcrTemplate.readOcrOutputFile(folder))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Provided jsonOutputFile location is not a valid file location");
+  }
 }

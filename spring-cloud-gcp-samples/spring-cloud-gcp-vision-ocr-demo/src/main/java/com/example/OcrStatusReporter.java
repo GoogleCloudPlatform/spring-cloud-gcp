@@ -16,54 +16,50 @@
 
 package com.example;
 
+import com.google.cloud.spring.vision.DocumentOcrResultSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
-import com.google.cloud.spring.vision.DocumentOcrResultSet;
-
 import org.springframework.util.concurrent.ListenableFuture;
 
 public class OcrStatusReporter {
 
-	private final Map<String, OcrOperationStatus> pendingOcrOperations;
+  private final Map<String, OcrOperationStatus> pendingOcrOperations;
 
-	public OcrStatusReporter() {
-		this.pendingOcrOperations = new HashMap<>();
-	}
+  public OcrStatusReporter() {
+    this.pendingOcrOperations = new HashMap<>();
+  }
 
-	public void registerFuture(
-			String documentPath, ListenableFuture<DocumentOcrResultSet> resultFuture) {
+  public void registerFuture(
+      String documentPath, ListenableFuture<DocumentOcrResultSet> resultFuture) {
 
-		pendingOcrOperations.put(
-				documentPath, new OcrOperationStatus(documentPath, resultFuture));
-	}
+    pendingOcrOperations.put(documentPath, new OcrOperationStatus(documentPath, resultFuture));
+  }
 
-	public Map<String, OcrOperationStatus> getDocumentOcrStatuses() {
-		return pendingOcrOperations;
-	}
+  public Map<String, OcrOperationStatus> getDocumentOcrStatuses() {
+    return pendingOcrOperations;
+  }
 
-	public static final class OcrOperationStatus {
-		final String gcsLocation;
-		final ListenableFuture<DocumentOcrResultSet> ocrResultFuture;
+  public static final class OcrOperationStatus {
+    final String gcsLocation;
+    final ListenableFuture<DocumentOcrResultSet> ocrResultFuture;
 
-		public OcrOperationStatus(
-				String gcsLocation,
-				ListenableFuture<DocumentOcrResultSet> ocrResultFuture) {
-			this.gcsLocation = gcsLocation;
-			this.ocrResultFuture = ocrResultFuture;
-		}
+    public OcrOperationStatus(
+        String gcsLocation, ListenableFuture<DocumentOcrResultSet> ocrResultFuture) {
+      this.gcsLocation = gcsLocation;
+      this.ocrResultFuture = ocrResultFuture;
+    }
 
-		public String getGcsLocation() {
-			return gcsLocation;
-		}
+    public String getGcsLocation() {
+      return gcsLocation;
+    }
 
-		public boolean isDone() {
-			return ocrResultFuture.isDone();
-		}
+    public boolean isDone() {
+      return ocrResultFuture.isDone();
+    }
 
-		public DocumentOcrResultSet getResultSet() throws ExecutionException, InterruptedException {
-			return ocrResultFuture.get();
-		}
-	}
+    public DocumentOcrResultSet getResultSet() throws ExecutionException, InterruptedException {
+      return ocrResultFuture.get();
+    }
+  }
 }

@@ -16,32 +16,29 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
+import brave.propagation.Propagation;
+import com.google.pubsub.v1.PubsubMessage;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import brave.propagation.Propagation;
-import com.google.pubsub.v1.PubsubMessage;
-
 public class PubSubProducerRequestSetterTest extends PropagationSetterTest<PubSubProducerRequest> {
-	PubSubProducerRequest request = new PubSubProducerRequest(
-			PubsubMessage.newBuilder(), "myTopic"
-	);
+  PubSubProducerRequest request = new PubSubProducerRequest(PubsubMessage.newBuilder(), "myTopic");
 
-	@Override
-	protected PubSubProducerRequest request() {
-		return request;
-	}
+  @Override
+  protected PubSubProducerRequest request() {
+    return request;
+  }
 
-	@Override
-	protected Propagation.Setter<PubSubProducerRequest, String> setter() {
-		return PubSubProducerRequest.SETTER;
-	}
+  @Override
+  protected Propagation.Setter<PubSubProducerRequest, String> setter() {
+    return PubSubProducerRequest.SETTER;
+  }
 
-	@Override
-	protected Iterable<String> read(PubSubProducerRequest request, String key) {
-		return StreamSupport.stream(request.delegate.getAttributesMap().entrySet().spliterator(), false)
-				.filter(entry -> entry.getKey().equals(key))
-				.map(entry -> entry.getValue())
-				.collect(Collectors.toList());
-	}
+  @Override
+  protected Iterable<String> read(PubSubProducerRequest request, String key) {
+    return StreamSupport.stream(request.delegate.getAttributesMap().entrySet().spliterator(), false)
+        .filter(entry -> entry.getKey().equals(key))
+        .map(entry -> entry.getValue())
+        .collect(Collectors.toList());
+  }
 }

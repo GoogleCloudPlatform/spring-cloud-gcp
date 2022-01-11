@@ -16,47 +16,49 @@
 
 package com.google.cloud.spring.storage.integration.filters;
 
-import java.time.Duration;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.google.cloud.storage.BlobInfo;
-import org.junit.Assert;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.cloud.storage.BlobInfo;
+import java.time.Duration;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+
 class GcsDiscardRecentModifiedFileListFilterTest {
 
-	@Test
-	void testFileLessThanMinimumAgeIsFilteredOut() {
-		GcsDiscardRecentModifiedFileListFilter filter = new GcsDiscardRecentModifiedFileListFilter(Duration.ofSeconds(60));
-		AtomicBoolean callbackTriggered = new AtomicBoolean(false);
-		filter.addDiscardCallback(blobInfo -> callbackTriggered.set(true));
+  @Test
+  void testFileLessThanMinimumAgeIsFilteredOut() {
+    GcsDiscardRecentModifiedFileListFilter filter =
+        new GcsDiscardRecentModifiedFileListFilter(Duration.ofSeconds(60));
+    AtomicBoolean callbackTriggered = new AtomicBoolean(false);
+    filter.addDiscardCallback(blobInfo -> callbackTriggered.set(true));
 
-		BlobInfo blobInfo = mock(BlobInfo.class);
-		when(blobInfo.getUpdateTime())
-				.thenReturn(ZonedDateTime.now(ZoneId.systemDefault()).toInstant().toEpochMilli());
+    BlobInfo blobInfo = mock(BlobInfo.class);
+    when(blobInfo.getUpdateTime())
+        .thenReturn(ZonedDateTime.now(ZoneId.systemDefault()).toInstant().toEpochMilli());
 
-		assertThat(filter.filterFiles(new BlobInfo[] { blobInfo })).isEmpty();
-		assertThat(filter.accept(blobInfo)).isFalse();
-		assertThat(callbackTriggered).isTrue();
-		assertThat(filter.supportsSingleFileFiltering()).isTrue();
-	}
+    assertThat(filter.filterFiles(new BlobInfo[] {blobInfo})).isEmpty();
+    assertThat(filter.accept(blobInfo)).isFalse();
+    assertThat(callbackTriggered).isTrue();
+    assertThat(filter.supportsSingleFileFiltering()).isTrue();
+  }
 
-	@Test
-	void testFileOlderThanMinimumAgeIsReturned() {
-		GcsDiscardRecentModifiedFileListFilter filter = new GcsDiscardRecentModifiedFileListFilter(Duration.ofSeconds(60));
-		filter.addDiscardCallback(blobInfo -> Assert.fail("Not expected"));
+  @Test
+  void testFileOlderThanMinimumAgeIsReturned() {
+    GcsDiscardRecentModifiedFileListFilter filter =
+        new GcsDiscardRecentModifiedFileListFilter(Duration.ofSeconds(60));
+    filter.addDiscardCallback(blobInfo -> Assert.fail("Not expected"));
 
-		BlobInfo blobInfo = mock(BlobInfo.class);
-		when(blobInfo.getUpdateTime())
-				.thenReturn(ZonedDateTime.now(ZoneId.systemDefault()).minusMinutes(3).toInstant().toEpochMilli());
+    BlobInfo blobInfo = mock(BlobInfo.class);
+    when(blobInfo.getUpdateTime())
+        .thenReturn(
+            ZonedDateTime.now(ZoneId.systemDefault()).minusMinutes(3).toInstant().toEpochMilli());
 
-		assertThat(filter.filterFiles(new BlobInfo[] { blobInfo })).hasSize(1);
-		assertThat(filter.accept(blobInfo)).isTrue();
-	}
+    assertThat(filter.filterFiles(new BlobInfo[] {blobInfo})).hasSize(1);
+    assertThat(filter.accept(blobInfo)).isTrue();
+  }
 }

@@ -19,14 +19,11 @@ package com.example;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Sample application for config client.
- */
+/** Sample application for config client. */
 @SpringBootApplication
 public class PubSubConfigApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PubSubConfigApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(PubSubConfigApplication.class, args);
+  }
 }

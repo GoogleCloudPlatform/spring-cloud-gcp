@@ -22,7 +22,6 @@ import com.google.cloud.spring.logging.LoggingWebMvcConfigurer;
 import com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor;
 import com.google.cloud.spring.logging.extractors.CloudTraceIdExtractor;
 import com.google.cloud.spring.logging.extractors.TraceIdExtractor;
-
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -35,12 +34,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
- * This class configures a Web MVC interceptor to capture trace IDs for log correlation.
- * This configuration is turned on only if Trace support is not used and Web MVC is used.
- * Otherwise, the MDC context will be used by the Logback appenders.
+ * This class configures a Web MVC interceptor to capture trace IDs for log correlation. This
+ * configuration is turned on only if Trace support is not used and Web MVC is used. Otherwise, the
+ * MDC context will be used by the Logback appenders.
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass({ HandlerInterceptor.class, LoggingAppender.class, TraceIdExtractor.class })
+@ConditionalOnClass({HandlerInterceptor.class, LoggingAppender.class, TraceIdExtractor.class})
 @ConditionalOnMissingBean(name = "stackdriverTracingCustomizer")
 @AutoConfigureAfter(StackdriverTraceAutoConfiguration.class)
 @ConditionalOnWebApplication(type = Type.SERVLET)
@@ -48,17 +47,15 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Import(LoggingWebMvcConfigurer.class)
 public class StackdriverLoggingAutoConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean
-	public TraceIdLoggingWebMvcInterceptor loggingWebMvcInterceptor(
-			TraceIdExtractor extractor) {
-		return new TraceIdLoggingWebMvcInterceptor(extractor);
-	}
+  @Bean
+  @ConditionalOnMissingBean
+  public TraceIdLoggingWebMvcInterceptor loggingWebMvcInterceptor(TraceIdExtractor extractor) {
+    return new TraceIdLoggingWebMvcInterceptor(extractor);
+  }
 
-	@Bean
-	@ConditionalOnMissingBean
-	public TraceIdExtractor traceIdExtractor() {
-		return new CloudTraceIdExtractor();
-	}
-
+  @Bean
+  @ConditionalOnMissingBean
+  public TraceIdExtractor traceIdExtractor() {
+    return new CloudTraceIdExtractor();
+  }
 }

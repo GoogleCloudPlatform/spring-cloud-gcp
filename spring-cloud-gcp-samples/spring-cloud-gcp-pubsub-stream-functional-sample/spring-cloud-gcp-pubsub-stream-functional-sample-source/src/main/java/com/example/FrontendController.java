@@ -17,13 +17,12 @@
 package com.example;
 
 import com.example.model.UserMessage;
-import reactor.core.publisher.Sinks;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
+import reactor.core.publisher.Sinks;
 
 /**
  * Controller for the user message form submission.
@@ -35,16 +34,14 @@ import org.springframework.web.servlet.view.RedirectView;
 @RestController
 public class FrontendController {
 
-	@Autowired
-	private Sinks.Many<UserMessage> postOffice;
+  @Autowired private Sinks.Many<UserMessage> postOffice;
 
-	@PostMapping("/postMessage")
-	public RedirectView sendMessage(
-			@RequestParam("messageBody") String messageBody,
-			@RequestParam("username") String username) {
-		UserMessage userMessage = new UserMessage(messageBody, username);
-		postOffice.tryEmitNext(userMessage);
+  @PostMapping("/postMessage")
+  public RedirectView sendMessage(
+      @RequestParam("messageBody") String messageBody, @RequestParam("username") String username) {
+    UserMessage userMessage = new UserMessage(messageBody, username);
+    postOffice.tryEmitNext(userMessage);
 
-		return new RedirectView("index.html");
-	}
+    return new RedirectView("index.html");
+  }
 }

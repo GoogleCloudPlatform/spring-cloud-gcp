@@ -23,6 +23,5 @@ package com.google.cloud.spring.security.iap;
  */
 public interface AudienceProvider {
 
-	String getAudience();
-
+  String getAudience();
 }
