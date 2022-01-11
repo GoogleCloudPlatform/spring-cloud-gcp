@@ -20,8 +20,8 @@ import com.google.cloud.logging.logback.LoggingAppender;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
 import com.google.cloud.spring.logging.LoggingWebMvcConfigurer;
 import com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor;
+import com.google.cloud.spring.logging.extractors.CloudTraceIdExtractor;
 import com.google.cloud.spring.logging.extractors.TraceIdExtractor;
-import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -58,7 +58,7 @@ public class StackdriverLoggingAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public TraceIdExtractor traceIdExtractor() {
-		return new XCloudTraceIdExtractor();
+		return new CloudTraceIdExtractor();
 	}
 
 }
