@@ -35,10 +35,9 @@ public class LoggingWebMvcConfigurer implements WebMvcConfigurer {
 	/**
 	 * Constructor that accepts an {@link TraceIdLoggingWebMvcInterceptor}. If the given
 	 * interceptor is null, then a default {@link CloudTraceIdExtractor} is used.
-	 *
 	 * @param interceptor the interceptor to use with this configurer. If not provided a
-	 *     {@link TraceIdLoggingWebMvcInterceptor} is used with the trace ID extractor
-	 *     described above.
+	 * {@link TraceIdLoggingWebMvcInterceptor} is used with the trace ID extractor
+	 * described above.
 	 * @param projectIdProvider the project ID provider to use
 	 */
 	public LoggingWebMvcConfigurer(
@@ -48,7 +47,9 @@ public class LoggingWebMvcConfigurer implements WebMvcConfigurer {
 			this.interceptor = interceptor;
 		}
 		else {
-			this.interceptor = new TraceIdLoggingWebMvcInterceptor(new CloudTraceIdExtractor());
+			this.interceptor = new TraceIdLoggingWebMvcInterceptor(
+					new CloudTraceIdExtractor()
+			);
 		}
 	}
 

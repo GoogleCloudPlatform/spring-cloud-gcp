@@ -35,12 +35,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
- * This class configures a Web MVC interceptor to capture trace IDs for log correlation. This
- * configuration is turned on only if Trace support is not used and Web MVC is used. Otherwise, the
- * MDC context will be used by the Logback appenders.
+ * This class configures a Web MVC interceptor to capture trace IDs for log correlation.
+ * This configuration is turned on only if Trace support is not used and Web MVC is used.
+ * Otherwise, the MDC context will be used by the Logback appenders.
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass({HandlerInterceptor.class, LoggingAppender.class, TraceIdExtractor.class})
+@ConditionalOnClass({ HandlerInterceptor.class, LoggingAppender.class, TraceIdExtractor.class })
 @ConditionalOnMissingBean(name = "stackdriverTracingCustomizer")
 @AutoConfigureAfter(StackdriverTraceAutoConfiguration.class)
 @ConditionalOnWebApplication(type = Type.SERVLET)
