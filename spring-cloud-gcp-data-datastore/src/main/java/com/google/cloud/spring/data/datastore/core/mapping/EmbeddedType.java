@@ -46,7 +46,7 @@ public enum EmbeddedType {
    * @param typeInformation the given type metadata to check for embedded type.
    * @return the embedded type.
    */
-  public static EmbeddedType of(TypeInformation typeInformation) {
+  public static EmbeddedType of(TypeInformation<?> typeInformation) {
     EmbeddedType embeddedType;
     if (typeInformation.isMap()) {
       embeddedType = EmbeddedType.EMBEDDED_MAP;
@@ -59,12 +59,12 @@ public enum EmbeddedType {
     return embeddedType;
   }
 
-  private static boolean isEntity(TypeInformation componentType) {
+  private static boolean isEntity(TypeInformation<?> componentType) {
     if (componentType == null) {
       return false;
     }
 
-    Class type = componentType.getType();
+    Class<?> type = componentType.getType();
     return type.isAnnotationPresent(Entity.class);
   }
 }
