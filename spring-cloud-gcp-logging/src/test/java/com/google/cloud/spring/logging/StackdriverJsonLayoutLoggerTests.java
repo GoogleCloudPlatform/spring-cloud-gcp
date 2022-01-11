@@ -153,7 +153,8 @@ class StackdriverJsonLayoutLoggerTests {
 	}
 
 	@Test
-	void testCustomMDCFieldForTraceIdAndSpanId() {
+	void testCustomMdcFieldForTraceIdAndSpanId() {
+
 		Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutCustomMDCFieldTests");
 
 		mdc.remove(StackdriverTraceConstants.MDC_FIELD_TRACE_ID);

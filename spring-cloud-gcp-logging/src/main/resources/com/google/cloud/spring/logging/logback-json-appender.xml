@@ -10,8 +10,8 @@ Stackdriver json-log format provided for import.
             <layout class="com.google.cloud.spring.logging.StackdriverJsonLayout">
                 <projectId>${projectId}</projectId>
 
-                <!--<traceIdMDCField>traceId</traceIdMDCField>-->
-                <!--<spanIdMDCField>spanId</spanIdMDCField>-->
+                <!--<traceIdMdcField>traceId</traceIdMdcField>-->
+                <!--<spanIdMdcField>spanId</spanIdMdcField>-->
                 <!--<includeTraceId>true</includeTraceId>-->
                 <!--<includeSpanId>true</includeSpanId>-->
                 <!--<includeLevel>true</includeLevel>-->
