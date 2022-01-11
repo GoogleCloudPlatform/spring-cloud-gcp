@@ -33,6 +33,9 @@
 		<!-- App engine plugin version, used to deploy sample apps -->
 		<app-engine-maven-plugin.version>2.4.1</app-engine-maven-plugin.version>
 
+		<!-- Deploy plugin is skipped for all samples but exists -->
+		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
 		<integration-test.tags.include/>
 		<integration-test.tags.exclude/>
@@ -159,6 +162,11 @@
 						<groups>${integration-test.tags.include}</groups>
 						<excludedGroups>${integration-test.tags.exclude}</excludedGroups>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>${maven-deploy-plugin.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
