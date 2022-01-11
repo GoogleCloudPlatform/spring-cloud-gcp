@@ -75,6 +75,7 @@ import static org.awaitility.Awaitility.await;
 /**
  * Verifies that the logged Traces on the sample application appear in StackDriver.
  */
+//Please use "-Dit.trace=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.trace", matches = "true")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { Application.class })
