@@ -38,7 +38,7 @@ If you are already using a Zipkin server capturing trace information from multip
 === Tracing
 
 Spring Cloud Sleuth uses the https://github.com/openzipkin/brave[Brave tracer] to generate traces.
-This integration enables Brave to use the https://github.com/openzipkin/zipkin-gcp/tree/main/propagation-stackdriver[`StackdriverTracePropagation`] propagation.
+This integration autoconfigures use of `StackdriverTracePropagation`.
 
 A propagation is responsible for extracting trace context from an entity (e.g., an HTTP servlet request) and injecting trace context into an entity.
 A canonical example of the propagation usage is a web server that receives an HTTP request, which triggers other HTTP requests from the server before returning an HTTP response to the original caller.
@@ -61,7 +61,7 @@ If a `x-cloud-trace-context` key isn't found, `StackdriverTracePropagation` fall
 
 === Spring Boot Starter for Cloud Trace
 
-Spring Boot Starter for Cloud Trace uses Spring Cloud Sleuth and auto-configures a https://github.com/openzipkin/zipkin-gcp/blob/main/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java[StackdriverSender] that sends the Sleuth’s trace information to Cloud Trace.
+Spring Boot Starter for Cloud Trace uses Spring Cloud Sleuth and auto-configures a `StackdriverSender` that sends the Sleuth’s trace information to Cloud Trace.
 
 All configurations are optional:
 
