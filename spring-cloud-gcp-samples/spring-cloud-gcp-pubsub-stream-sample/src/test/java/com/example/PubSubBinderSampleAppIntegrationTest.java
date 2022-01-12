@@ -16,13 +16,14 @@
 
 package com.example;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.CapturedOutput;
@@ -33,9 +34,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
-
 /**
  * These tests verifies that the pubsub-binder-sample works.
  *
@@ -44,47 +42,53 @@ import static org.awaitility.Awaitility.await;
 @EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ExtendWith(OutputCaptureExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
-		"spring.cloud.stream.bindings.input.destination=my-topic",
-		"spring.cloud.stream.bindings.output.destination=my-topic",
-		"spring.cloud.stream.bindings.input.group=my-group"})
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = {
+      "spring.cloud.stream.bindings.input.destination=my-topic",
+      "spring.cloud.stream.bindings.output.destination=my-topic",
+      "spring.cloud.stream.bindings.input.group=my-group"
+    })
 @DirtiesContext
 class PubSubBinderSampleAppIntegrationTest {
 
-	@Autowired
-	private TestRestTemplate restTemplate;
+  @Autowired private TestRestTemplate restTemplate;
 
-	@Test
-	void testSample_successfulMessage(CapturedOutput capturedOutput) throws Exception {
-		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		String message = "test message " + UUID.randomUUID();
+  @Test
+  void testSample_successfulMessage(CapturedOutput capturedOutput) throws Exception {
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    String message = "test message " + UUID.randomUUID();
 
-		map.add("messageBody", message);
-		map.add("username", "testUserName");
-		map.add("throwError", false);
+    map.add("messageBody", message);
+    map.add("username", "testUserName");
+    map.add("throwError", false);
 
-		this.restTemplate.postForObject("/newMessage", map, String.class);
+    this.restTemplate.postForObject("/newMessage", map, String.class);
 
-		await()
-				.atMost(20, TimeUnit.SECONDS)
-				.untilAsserted(() -> assertThat(capturedOutput.toString())
-						.contains("New message received from testUserName: " + message + " at "));
-	}
+    await()
+        .atMost(20, TimeUnit.SECONDS)
+        .untilAsserted(
+            () ->
+                assertThat(capturedOutput.toString())
+                    .contains("New message received from testUserName: " + message + " at "));
+  }
 
-	@Test
-	void testSample_error(CapturedOutput capturedOutput) throws Exception {
-		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		String message = "test message " + UUID.randomUUID();
+  @Test
+  void testSample_error(CapturedOutput capturedOutput) throws Exception {
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    String message = "test message " + UUID.randomUUID();
 
-		map.add("messageBody", message);
-		map.add("username", "testUserName");
-		map.add("throwError", true);
+    map.add("messageBody", message);
+    map.add("username", "testUserName");
+    map.add("throwError", true);
 
-		this.restTemplate.postForObject("/newMessage", map, String.class);
+    this.restTemplate.postForObject("/newMessage", map, String.class);
 
-		await()
-				.atMost(20, TimeUnit.SECONDS)
-				.untilAsserted(() -> assertThat(capturedOutput.toString())
-						.contains("The message that was sent is now processed by the error handler."));
-	}
+    await()
+        .atMost(20, TimeUnit.SECONDS)
+        .untilAsserted(
+            () ->
+                assertThat(capturedOutput.toString())
+                    .contains("The message that was sent is now processed by the error handler."));
+  }
 }
