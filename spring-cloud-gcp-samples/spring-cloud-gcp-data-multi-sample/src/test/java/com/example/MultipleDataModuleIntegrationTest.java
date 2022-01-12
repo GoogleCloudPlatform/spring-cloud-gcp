@@ -16,48 +16,43 @@
 
 package com.example;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
-/**
- * Tests that our Spring Data modules can be used with each other.
- */
-//Please use "-Dit.multisample=true" to enable the tests
+/** Tests that our Spring Data modules can be used with each other. */
+// Please use "-Dit.multisample=true" to enable the tests
 @ExtendWith(SpringExtension.class)
 @EnabledIfSystemProperty(named = "it.multisample", matches = "true")
 @TestPropertySource("classpath:application-test.properties")
 @EnableAutoConfiguration
 class MultipleDataModuleIntegrationTest {
 
-	// The Spanner Repo
-	@Autowired
-	TraderRepository traderRepository;
+  // The Spanner Repo
+  @Autowired TraderRepository traderRepository;
 
-	// The Datastore Repo
-	@Autowired
-	PersonRepository datastorePersonRepository;
+  // The Datastore Repo
+  @Autowired PersonRepository datastorePersonRepository;
 
-	@Test
-	void testMultipleModulesTogether() {
+  @Test
+  void testMultipleModulesTogether() {
 
-		this.traderRepository.deleteAll();
-		this.datastorePersonRepository.deleteAll();
+    this.traderRepository.deleteAll();
+    this.datastorePersonRepository.deleteAll();
 
-		assertThat(this.traderRepository.count()).isZero();
-		assertThat(this.datastorePersonRepository.count()).isZero();
+    assertThat(this.traderRepository.count()).isZero();
+    assertThat(this.datastorePersonRepository.count()).isZero();
 
-		this.traderRepository.save(new Trader("id1", "trader", "one"));
-		this.datastorePersonRepository.save(new Person(1L, "person1"));
+    this.traderRepository.save(new Trader("id1", "trader", "one"));
+    this.datastorePersonRepository.save(new Person(1L, "person1"));
 
-		assertThat(this.traderRepository.count()).isEqualTo(1L);
-		assertThat(this.datastorePersonRepository.count()).isEqualTo(1L);
-	}
+    assertThat(this.traderRepository.count()).isEqualTo(1L);
+    assertThat(this.datastorePersonRepository.count()).isEqualTo(1L);
+  }
 }

@@ -25,22 +25,20 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import org.awaitility.Awaitility;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * This verifies the sample application for using GCP Storage with Spring Resource abstractions.
@@ -48,9 +46,10 @@ import static org.junit.Assume.assumeThat;
  * To run the test, set the gcs-resource-test-bucket property in application.properties to the name
  * of your bucket and run: mvn test -Dit.storage
  */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.storage", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { GcsApplication.class })
-public class GcsSampleApplicationIntegrationTests {
+class GcsSampleApplicationIntegrationTests {
 
 	@Autowired
 	private Storage storage;
@@ -61,17 +60,9 @@ public class GcsSampleApplicationIntegrationTests {
 	@Value("${gcs-resource-test-bucket}")
 	private String bucketName;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Google Cloud Storage Resource integration tests are disabled. "
-						+ "Please use '-Dit.storage=true' to enable them. ",
-				System.getProperty("it.storage"), is("true"));
-	}
-
-	@Before
-	@After
-	public void cleanupCloudStorage() {
+	@BeforeEach
+	@AfterEach
+	void cleanupCloudStorage() {
 		Page<Blob> blobs = this.storage.list(this.bucketName);
 		for (Blob blob : blobs.iterateAll()) {
 			blob.delete();
@@ -79,7 +70,7 @@ public class GcsSampleApplicationIntegrationTests {
 	}
 
 	@Test
-	public void testGcsResourceIsLoaded() {
+	void testGcsResourceIsLoaded() {
 		BlobId blobId = BlobId.of(this.bucketName, "my-file.txt");
 		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
 		this.storage.create(blobInfo, "Good Morning!".getBytes(StandardCharsets.UTF_8));

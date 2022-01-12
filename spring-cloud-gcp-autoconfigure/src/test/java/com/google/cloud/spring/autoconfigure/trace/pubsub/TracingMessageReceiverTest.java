@@ -16,6 +16,12 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.spring.core.util.MapBuilder;
@@ -23,27 +29,30 @@ import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.refEq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 class TracingMessageReceiverTest extends PubSubTestBase {
 
-	MessageReceiver mockMesageReceiver = mock(MessageReceiver.class);
+  MessageReceiver mockMesageReceiver = mock(MessageReceiver.class);
 
-	TracingMessageReceiver tracingMessageReceiver = new TracingMessageReceiver(mockMesageReceiver, pubSubTracing, "testSubscription");
+  TracingMessageReceiver tracingMessageReceiver =
+      new TracingMessageReceiver(mockMesageReceiver, pubSubTracing, "testSubscription");
 
-	@Test
-	void testReceiverMessage() {
-		PubsubMessage.Builder pubSubMessageBuilder = PubsubMessage.newBuilder()
-				.putAllAttributes(new MapBuilder<String, String>().put("b3", "80f198ee56343ba864fe8b2a57d3eff7-e457b5a2e4d86bd1-1-05e3ac9a4f6e3b90").build())
-				.setData(ByteString.copyFrom("test".getBytes()));
-		AckReplyConsumer mockAckReplyConsumer = mock(AckReplyConsumer.class);
+  @Test
+  void testReceiverMessage() {
+    PubsubMessage.Builder pubSubMessageBuilder =
+        PubsubMessage.newBuilder()
+            .putAllAttributes(
+                new MapBuilder<String, String>()
+                    .put(
+                        "b3",
+                        "80f198ee56343ba864fe8b2a57d3eff7-e457b5a2e4d86bd1-1-05e3ac9a4f6e3b90")
+                    .build())
+            .setData(ByteString.copyFrom("test".getBytes()));
+    AckReplyConsumer mockAckReplyConsumer = mock(AckReplyConsumer.class);
 
-		tracingMessageReceiver.receiveMessage(pubSubMessageBuilder.build(), mockAckReplyConsumer);
-		// we expect tracing header to be stripped
-		verify(mockMesageReceiver, times(1)).receiveMessage(eq(pubSubMessageBuilder.clearAttributes().build()), refEq(mockAckReplyConsumer));
-	}
+    tracingMessageReceiver.receiveMessage(pubSubMessageBuilder.build(), mockAckReplyConsumer);
+    // we expect tracing header to be stripped
+    verify(mockMesageReceiver, times(1))
+        .receiveMessage(
+            eq(pubSubMessageBuilder.clearAttributes().build()), refEq(mockAckReplyConsumer));
+  }
 }

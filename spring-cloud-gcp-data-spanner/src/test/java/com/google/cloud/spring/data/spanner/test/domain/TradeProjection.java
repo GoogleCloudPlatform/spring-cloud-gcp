@@ -18,13 +18,11 @@ package com.google.cloud.spring.data.spanner.test.domain;
 
 import org.springframework.beans.factory.annotation.Value;
 
-/**
- * A projection interface used for integration tests.
- */
+/** A projection interface used for integration tests. */
 public interface TradeProjection {
 
-	String getAction();
+  String getAction();
 
-	@Value("#{target.symbol + ' ' + target.action}")
-	String getSymbolAndAction();
+  @Value("#{target.symbol + ' ' + target.action}")
+  String getSymbolAndAction();
 }

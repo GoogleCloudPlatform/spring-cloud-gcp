@@ -25,12 +25,11 @@ import org.springframework.dao.DataAccessException;
  */
 public class SpannerDataException extends DataAccessException {
 
-	public SpannerDataException(String message) {
-		super(message);
-	}
+  public SpannerDataException(String message) {
+    super(message);
+  }
 
-	public SpannerDataException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
+  public SpannerDataException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

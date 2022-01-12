@@ -16,41 +16,37 @@
 
 package com.google.cloud.spring.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-/**
- * Tests for the {@link DefaultCredentialsProvider}.
- */
+/** Tests for the {@link DefaultCredentialsProvider}. */
 class DefaultCredentialsProviderTests {
 
-	@Test
-	void testResolveScopesDefaultScopes() {
-		List<String> scopes = DefaultCredentialsProvider.resolveScopes(null);
-		assertThat(scopes.size()).isGreaterThan(1);
-		assertThat(scopes).contains(GcpScope.PUBSUB.getUrl());
-	}
+  @Test
+  void testResolveScopesDefaultScopes() {
+    List<String> scopes = DefaultCredentialsProvider.resolveScopes(null);
+    assertThat(scopes.size()).isGreaterThan(1);
+    assertThat(scopes).contains(GcpScope.PUBSUB.getUrl());
+  }
 
-	@Test
-	void testResolveScopesOverrideScopes() {
-		List<String> scopes = DefaultCredentialsProvider.resolveScopes(Collections.singletonList("myscope"));
-		assertThat(scopes)
-				.hasSize(1)
-				.contains("myscope");
-	}
+  @Test
+  void testResolveScopesOverrideScopes() {
+    List<String> scopes =
+        DefaultCredentialsProvider.resolveScopes(Collections.singletonList("myscope"));
+    assertThat(scopes).hasSize(1).contains("myscope");
+  }
 
-	@Test
-	void testResolveScopesStarterScopesPlaceholder() {
-		List<String> scopes = DefaultCredentialsProvider.resolveScopes(Arrays.asList("DEFAULT_SCOPES", "myscope"));
-		assertThat(scopes)
-				.hasSize(GcpScope.values().length + 1)
-				.contains(GcpScope.PUBSUB.getUrl())
-				.contains("myscope");
-	}
-
+  @Test
+  void testResolveScopesStarterScopesPlaceholder() {
+    List<String> scopes =
+        DefaultCredentialsProvider.resolveScopes(Arrays.asList("DEFAULT_SCOPES", "myscope"));
+    assertThat(scopes)
+        .hasSize(GcpScope.values().length + 1)
+        .contains(GcpScope.PUBSUB.getUrl())
+        .contains("myscope");
+  }
 }

@@ -17,11 +17,10 @@
 package com.google.cloud.spring.nativex.firestore;
 
 import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
-import reactor.core.publisher.Flux;
-
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 
 @Repository
 public interface TestDocumentRepository extends FirestoreReactiveRepository<TestDocument> {
-	Flux<TestDocument> findAllByName(String name);
+  Flux<TestDocument> findAllByName(String name);
 }

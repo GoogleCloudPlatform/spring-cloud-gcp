@@ -26,7 +26,6 @@ import org.springframework.cloud.stream.binder.PollableMessageSource;
  */
 public interface PollableSink {
 
-	@Input("input")
-	PollableMessageSource input();
-
+  @Input("input")
+  PollableMessageSource input();
 }

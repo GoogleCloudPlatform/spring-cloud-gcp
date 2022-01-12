@@ -20,6 +20,10 @@ import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import com.google.cloud.spring.data.spanner.repository.query.Query;
 
 public interface SingerRepository extends SpannerRepository<Singer, String> {
-	@Query(dmlStatement = true, value = "INSERT INTO singers_list (singerId, firstName, lastName) VALUES (@singerId, @firstName, @lastName)")
-	void insert(Integer singerId, String firstName, String lastName);
+  @Query(
+      dmlStatement = true,
+      value =
+          "INSERT INTO singers_list (singerId, firstName, lastName) VALUES (@singerId, @firstName,"
+              + " @lastName)")
+  void insert(Integer singerId, String firstName, String lastName);
 }
