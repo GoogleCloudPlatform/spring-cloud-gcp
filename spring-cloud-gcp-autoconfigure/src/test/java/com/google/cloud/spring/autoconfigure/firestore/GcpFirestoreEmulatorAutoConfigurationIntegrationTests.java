@@ -16,79 +16,82 @@
 
 package com.google.cloud.spring.autoconfigure.firestore;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assume.assumeThat;
+
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
-
-/**
- * Tests for Firestore Emulator autoconfiguration.
- */
+/** Tests for Firestore Emulator autoconfiguration. */
 public class GcpFirestoreEmulatorAutoConfigurationIntegrationTests {
 
-	ApplicationContextRunner contextRunner =
-			new ApplicationContextRunner()
-					.withConfiguration(AutoConfigurations.of(
-							GcpFirestoreEmulatorAutoConfiguration.class,
-							GcpContextAutoConfiguration.class,
-							GcpFirestoreAutoConfiguration.class,
-							FirestoreTransactionManagerAutoConfiguration.class));
+  ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(
+              AutoConfigurations.of(
+                  GcpFirestoreEmulatorAutoConfiguration.class,
+                  GcpContextAutoConfiguration.class,
+                  GcpFirestoreAutoConfiguration.class,
+                  FirestoreTransactionManagerAutoConfiguration.class));
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat("Firestore emulator integration tests are disabled. "
-						+ "Please use '-Dit.firestore=true' to enable them. ",
-				System.getProperty("it.firestore"), is("true"));
-	}
+  @BeforeClass
+  public static void checkToRun() {
+    assumeThat(
+        "Firestore emulator integration tests are disabled. "
+            + "Please use '-Dit.firestore=true' to enable them. ",
+        System.getProperty("it.firestore"),
+        is("true"));
+  }
 
-	@Test
-	public void testAutoConfigurationEnabled() {
-		contextRunner
-				.withPropertyValues(
-						"spring.cloud.gcp.firestore.project-id=",
-						"spring.cloud.gcp.firestore.emulator.enabled=true",
-						"spring.cloud.gcp.firestore.host-port=localhost:9000")
-				.run(context -> {
-					FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
-					String endpoint =
-							((InstantiatingGrpcChannelProvider)
-									firestoreOptions.getTransportChannelProvider()).getEndpoint();
-					assertThat(endpoint).isEqualTo("localhost:9000");
+  @Test
+  public void testAutoConfigurationEnabled() {
+    contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.firestore.project-id=",
+            "spring.cloud.gcp.firestore.emulator.enabled=true",
+            "spring.cloud.gcp.firestore.host-port=localhost:9000")
+        .run(
+            context -> {
+              FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
+              String endpoint =
+                  ((InstantiatingGrpcChannelProvider)
+                          firestoreOptions.getTransportChannelProvider())
+                      .getEndpoint();
+              assertThat(endpoint).isEqualTo("localhost:9000");
 
-					assertThat(firestoreOptions.getProjectId()).isEqualTo("unused");
-				});
-	}
+              assertThat(firestoreOptions.getProjectId()).isEqualTo("unused");
+            });
+  }
 
-	@Test
-	public void testAutoConfigurationDisabled() {
-		contextRunner
-				.run(context -> {
-					FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
-					String endpoint =
-							((InstantiatingGrpcChannelProvider)
-									firestoreOptions.getTransportChannelProvider()).getEndpoint();
-					assertThat(endpoint).isEqualTo("firestore.googleapis.com:443");
-				});
-	}
+  @Test
+  public void testAutoConfigurationDisabled() {
+    contextRunner.run(
+        context -> {
+          FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
+          String endpoint =
+              ((InstantiatingGrpcChannelProvider) firestoreOptions.getTransportChannelProvider())
+                  .getEndpoint();
+          assertThat(endpoint).isEqualTo("firestore.googleapis.com:443");
+        });
+  }
 
-	@Test
-	public void testThatIfProjectIdIsGivenItWillBeUsed() {
-		contextRunner
-				.withPropertyValues(
-						"spring.cloud.gcp.firestore.project-id=demo",
-						"spring.cloud.gcp.firestore.emulator.enabled=true",
-						"spring.cloud.gcp.firestore.host-port=localhost:9000")
-				.run(context -> {
-					FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
-					assertThat(firestoreOptions.getProjectId()).isEqualTo("demo");
-				});
-	}
+  @Test
+  public void testThatIfProjectIdIsGivenItWillBeUsed() {
+    contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.firestore.project-id=demo",
+            "spring.cloud.gcp.firestore.emulator.enabled=true",
+            "spring.cloud.gcp.firestore.host-port=localhost:9000")
+        .run(
+            context -> {
+              FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
+              assertThat(firestoreOptions.getProjectId()).isEqualTo("demo");
+            });
+  }
 }

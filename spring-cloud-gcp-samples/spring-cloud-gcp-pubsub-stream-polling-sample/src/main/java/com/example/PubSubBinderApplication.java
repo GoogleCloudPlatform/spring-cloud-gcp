@@ -29,7 +29,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class PubSubBinderApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PubSubBinderApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(PubSubBinderApplication.class, args);
+  }
 }

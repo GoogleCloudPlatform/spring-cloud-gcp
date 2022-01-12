@@ -25,12 +25,11 @@ import org.springframework.dao.DataAccessException;
  */
 public class DatastoreDataException extends DataAccessException {
 
-	public DatastoreDataException(String message) {
-		super(message);
-	}
+  public DatastoreDataException(String message) {
+    super(message);
+  }
 
-	public DatastoreDataException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
+  public DatastoreDataException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

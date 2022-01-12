@@ -29,19 +29,21 @@ import org.springframework.security.web.authentication.Http403ForbiddenEntryPoin
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-				.authorizeRequests()
-				.antMatchers("/").permitAll()
-				.antMatchers("/css/**").permitAll()
-				.antMatchers("/templates/**").permitAll()
-				.antMatchers("/answer").authenticated()
-				.and()
-				.oauth2ResourceServer()
-				.jwt()
-				.and()
-				.authenticationEntryPoint(new Http403ForbiddenEntryPoint());
-
-	}
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.authorizeRequests()
+        .antMatchers("/")
+        .permitAll()
+        .antMatchers("/css/**")
+        .permitAll()
+        .antMatchers("/templates/**")
+        .permitAll()
+        .antMatchers("/answer")
+        .authenticated()
+        .and()
+        .oauth2ResourceServer()
+        .jwt()
+        .and()
+        .authenticationEntryPoint(new Http403ForbiddenEntryPoint());
+  }
 }

@@ -16,39 +16,36 @@
 
 package com.google.cloud.spring.autoconfigure.trace;
 
-import java.util.Collections;
-
-import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.Credentials;
-import com.google.auth.RequestMetadataCallback;
-import org.mockito.stubbing.Answer;
-
-import org.springframework.context.annotation.Bean;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
-/**
- * Spring config for tests.
- */
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.auth.Credentials;
+import com.google.auth.RequestMetadataCallback;
+import java.util.Collections;
+import org.mockito.stubbing.Answer;
+import org.springframework.context.annotation.Bean;
+
+/** Spring config for tests. */
 public class MockConfiguration {
 
-	// We'll fake a successful call to GCP for the validation of our "credentials"
-	@Bean
-	private static CredentialsProvider googleCredentials() {
-		return () -> {
-			Credentials creds = mock(Credentials.class);
-			doAnswer((Answer<Void>)
-					invocationOnMock -> {
-						RequestMetadataCallback callback =
-								(RequestMetadataCallback) invocationOnMock.getArguments()[2];
-						callback.onSuccess(Collections.emptyMap());
-						return null;
-					})
-					.when(creds)
-					.getRequestMetadata(any(), any(), any());
-			return creds;
-		};
-	}
+  // We'll fake a successful call to GCP for the validation of our "credentials"
+  @Bean
+  private static CredentialsProvider googleCredentials() {
+    return () -> {
+      Credentials creds = mock(Credentials.class);
+      doAnswer(
+              (Answer<Void>)
+                  invocationOnMock -> {
+                    RequestMetadataCallback callback =
+                        (RequestMetadataCallback) invocationOnMock.getArguments()[2];
+                    callback.onSuccess(Collections.emptyMap());
+                    return null;
+                  })
+          .when(creds)
+          .getRequestMetadata(any(), any(), any());
+      return creds;
+    };
+  }
 }

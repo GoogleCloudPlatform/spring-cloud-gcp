@@ -32,10 +32,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Entity {
 
-	/**
-	 * The Kind name of the Entity in Datastore, which can differ from the name of the
-	 * class which it annotates.
-	 * @return The Kind name of the Entity
-	 */
-	String name() default "";
+  /**
+   * The Kind name of the Entity in Datastore, which can differ from the name of the class which it
+   * annotates.
+   *
+   * @return The Kind name of the Entity
+   */
+  String name() default "";
 }
