@@ -263,12 +263,12 @@ public class PubSubMessageChannelBinderTests {
             });
   }
 
-  public interface PMS {
+  public interface PollableSource {
     @Input
     PollableMessageSource source();
   }
 
-  @EnableBinding({Processor.class, PMS.class})
+  @EnableBinding({Processor.class, PollableSource.class})
   @EnableAutoConfiguration
   public static class PubSubBinderTestConfig {
 

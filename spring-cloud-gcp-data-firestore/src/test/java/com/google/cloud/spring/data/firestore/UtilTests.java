@@ -21,7 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.cloud.spring.data.firestore.util.Util;
 import org.junit.jupiter.api.Test;
 
-/** @since 1.2 */
+/**
+ * @since 1.2
+ */
 class UtilTests {
 
   @Test

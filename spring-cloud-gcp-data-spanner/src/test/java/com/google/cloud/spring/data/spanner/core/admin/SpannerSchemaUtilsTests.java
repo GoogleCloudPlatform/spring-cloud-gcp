@@ -169,7 +169,7 @@ class SpannerSchemaUtilsTests {
       String name,
       Type.Code code,
       OptionalLong length,
-      String expectedDDL) {
+      String expectedDdl) {
     SpannerPersistentProperty spannerPersistentProperty = mock(SpannerPersistentProperty.class);
 
     // @formatter:off
@@ -184,7 +184,7 @@ class SpannerSchemaUtilsTests {
     assertThat(
             this.spannerSchemaUtils.getColumnDdlString(
                 spannerPersistentProperty, this.spannerEntityProcessor))
-        .isEqualTo(expectedDDL);
+        .isEqualTo(expectedDdl);
   }
 
   @Test

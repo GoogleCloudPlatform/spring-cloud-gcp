@@ -41,7 +41,9 @@ import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
-/** @since 1.2.2 */
+/**
+ * @since 1.2.2
+ */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(FirebaseTokenValidator.class)
 @ConditionalOnProperty(value = "spring.cloud.gcp.security.firebase.enabled", matchIfMissing = true)

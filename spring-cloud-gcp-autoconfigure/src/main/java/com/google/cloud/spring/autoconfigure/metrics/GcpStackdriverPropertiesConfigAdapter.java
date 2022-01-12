@@ -20,7 +20,9 @@ import com.google.api.gax.core.CredentialsProvider;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.stackdriver.StackdriverProperties;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.stackdriver.StackdriverPropertiesConfigAdapter;
 
-/** @since 1.2.4 */
+/**
+ * @since 1.2.4
+ */
 public class GcpStackdriverPropertiesConfigAdapter extends StackdriverPropertiesConfigAdapter {
 
   private String projectId;
