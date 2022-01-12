@@ -23,37 +23,39 @@ import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.pubsub.v1.PullRequest;
 
 final class TracingSubscriberFactory implements SubscriberFactory {
-	private final PubSubTracing pubSubTracing;
+  private final PubSubTracing pubSubTracing;
 
-	private final SubscriberFactory delegate;
+  private final SubscriberFactory delegate;
 
-	TracingSubscriberFactory(PubSubTracing pubSubTracing, SubscriberFactory delegate) {
-		this.pubSubTracing = pubSubTracing;
-		this.delegate = delegate;
-	}
+  TracingSubscriberFactory(PubSubTracing pubSubTracing, SubscriberFactory delegate) {
+    this.pubSubTracing = pubSubTracing;
+    this.delegate = delegate;
+  }
 
-	@Override
-	public String getProjectId() {
-		return delegate.getProjectId();
-	}
+  @Override
+  public String getProjectId() {
+    return delegate.getProjectId();
+  }
 
-	@Override
-	public Subscriber createSubscriber(String subscriptionName, MessageReceiver receiver) {
-		return delegate.createSubscriber(subscriptionName, pubSubTracing.messageReceiver(receiver, subscriptionName));
-	}
+  @Override
+  public Subscriber createSubscriber(String subscriptionName, MessageReceiver receiver) {
+    return delegate.createSubscriber(
+        subscriptionName, pubSubTracing.messageReceiver(receiver, subscriptionName));
+  }
 
-	@Override
-	public PullRequest createPullRequest(String subscriptionName, Integer maxMessages, Boolean returnImmediately) {
-		return delegate.createPullRequest(subscriptionName, maxMessages, returnImmediately);
-	}
+  @Override
+  public PullRequest createPullRequest(
+      String subscriptionName, Integer maxMessages, Boolean returnImmediately) {
+    return delegate.createPullRequest(subscriptionName, maxMessages, returnImmediately);
+  }
 
-	@Override
-	public SubscriberStub createSubscriberStub() {
-		return pubSubTracing.subscriberStub(delegate.createSubscriberStub());
-	}
+  @Override
+  public SubscriberStub createSubscriberStub() {
+    return pubSubTracing.subscriberStub(delegate.createSubscriberStub());
+  }
 
-	@Override
-	public SubscriberStub createSubscriberStub(String subscriptionName) {
-		return pubSubTracing.subscriberStub(delegate.createSubscriberStub(subscriptionName));
-	}
+  @Override
+  public SubscriberStub createSubscriberStub(String subscriptionName) {
+    return pubSubTracing.subscriberStub(delegate.createSubscriberStub(subscriptionName));
+  }
 }

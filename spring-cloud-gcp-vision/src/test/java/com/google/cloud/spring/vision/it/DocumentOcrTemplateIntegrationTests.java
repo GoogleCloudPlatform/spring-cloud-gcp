@@ -16,99 +16,98 @@
 
 package com.google.cloud.spring.vision.it;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import com.google.cloud.spring.storage.GoogleStorageLocation;
 import com.google.cloud.spring.vision.DocumentOcrResultSet;
 import com.google.cloud.spring.vision.DocumentOcrTemplate;
 import com.google.cloud.vision.v1.TextAnnotation;
 import com.google.protobuf.InvalidProtocolBufferException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.concurrent.ListenableFuture;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
-
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { VisionTestConfiguration.class })
+@ContextConfiguration(classes = {VisionTestConfiguration.class})
 public class DocumentOcrTemplateIntegrationTests {
 
-	@Autowired
-	private DocumentOcrTemplate documentOcrTemplate;
+  @Autowired private DocumentOcrTemplate documentOcrTemplate;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(System.getProperty("it.vision"))
-				.as("Vision Sample integration tests are disabled. "
-						+ "Please use '-Dit.vision=true' to enable them.")
-				.isEqualTo("true");
-	}
+  @BeforeClass
+  public static void prepare() {
+    assumeThat(System.getProperty("it.vision"))
+        .as(
+            "Vision Sample integration tests are disabled. "
+                + "Please use '-Dit.vision=true' to enable them.")
+        .isEqualTo("true");
+  }
 
-	@Test
-	public void testDocumentOcrTemplate()
-			throws ExecutionException, InterruptedException, InvalidProtocolBufferException, TimeoutException {
+  @Test
+  public void testDocumentOcrTemplate()
+      throws ExecutionException, InterruptedException, InvalidProtocolBufferException,
+          TimeoutException {
 
-		GoogleStorageLocation document = GoogleStorageLocation.forFile(
-				"vision-integration-test-bucket", "test.pdf");
-		GoogleStorageLocation outputLocationPrefix = GoogleStorageLocation.forFile(
-				"vision-integration-test-bucket", "it_output/test-");
+    GoogleStorageLocation document =
+        GoogleStorageLocation.forFile("vision-integration-test-bucket", "test.pdf");
+    GoogleStorageLocation outputLocationPrefix =
+        GoogleStorageLocation.forFile("vision-integration-test-bucket", "it_output/test-");
 
-		ListenableFuture<DocumentOcrResultSet> result = this.documentOcrTemplate.runOcrForDocument(
-				document,
-				outputLocationPrefix);
+    ListenableFuture<DocumentOcrResultSet> result =
+        this.documentOcrTemplate.runOcrForDocument(document, outputLocationPrefix);
 
-		DocumentOcrResultSet ocrPages = result.get(5, TimeUnit.MINUTES);
+    DocumentOcrResultSet ocrPages = result.get(5, TimeUnit.MINUTES);
 
-		String page1Text = ocrPages.getPage(1).getText();
-		assertThat(page1Text).contains("Hello World. Is mayonnaise an instrument?");
+    String page1Text = ocrPages.getPage(1).getText();
+    assertThat(page1Text).contains("Hello World. Is mayonnaise an instrument?");
 
-		String page2Text = ocrPages.getPage(2).getText();
-		assertThat(page2Text).contains("Page 2 stuff");
+    String page2Text = ocrPages.getPage(2).getText();
+    assertThat(page2Text).contains("Page 2 stuff");
 
-		ArrayList<String> pageContent = new ArrayList<>();
+    ArrayList<String> pageContent = new ArrayList<>();
 
-		Iterator<TextAnnotation> pageIterator = ocrPages.getAllPages();
-		while (pageIterator.hasNext()) {
-			pageContent.add(pageIterator.next().getText());
-		}
+    Iterator<TextAnnotation> pageIterator = ocrPages.getAllPages();
+    while (pageIterator.hasNext()) {
+      pageContent.add(pageIterator.next().getText());
+    }
 
-		assertThat(pageContent).containsExactly(
-				"Hello World. Is mayonnaise an instrument?\n",
-				"Page 2 stuff\n",
-				"Page 3 stuff\n",
-				"Page 4 stuff\n");
-	}
+    assertThat(pageContent)
+        .containsExactly(
+            "Hello World. Is mayonnaise an instrument?\n",
+            "Page 2 stuff\n",
+            "Page 3 stuff\n",
+            "Page 4 stuff\n");
+  }
 
-	@Test
-	public void testParseOcrResultSet() throws InvalidProtocolBufferException {
-		GoogleStorageLocation ocrOutputPrefix = GoogleStorageLocation.forFolder(
-				"vision-integration-test-bucket", "json_output_set/");
+  @Test
+  public void testParseOcrResultSet() throws InvalidProtocolBufferException {
+    GoogleStorageLocation ocrOutputPrefix =
+        GoogleStorageLocation.forFolder("vision-integration-test-bucket", "json_output_set/");
 
-		DocumentOcrResultSet result = this.documentOcrTemplate.readOcrOutputFileSet(ocrOutputPrefix);
+    DocumentOcrResultSet result = this.documentOcrTemplate.readOcrOutputFileSet(ocrOutputPrefix);
 
-		String text = result.getPage(2).getText();
-		assertThat(text).contains("Hello World. Is mayonnaise an instrument?");
-	}
+    String text = result.getPage(2).getText();
+    assertThat(text).contains("Hello World. Is mayonnaise an instrument?");
+  }
 
-	@Test
-	public void testParseOcrFile() throws InvalidProtocolBufferException {
-		GoogleStorageLocation ocrOutputFile = GoogleStorageLocation.forFile(
-				"vision-integration-test-bucket",
-				"json_output_set/test_output-2-to-2.json");
+  @Test
+  public void testParseOcrFile() throws InvalidProtocolBufferException {
+    GoogleStorageLocation ocrOutputFile =
+        GoogleStorageLocation.forFile(
+            "vision-integration-test-bucket", "json_output_set/test_output-2-to-2.json");
 
-		DocumentOcrResultSet pages = this.documentOcrTemplate.readOcrOutputFile(ocrOutputFile);
+    DocumentOcrResultSet pages = this.documentOcrTemplate.readOcrOutputFile(ocrOutputFile);
 
-		String text = pages.getPage(2).getText();
-		assertThat(text).contains("Hello World. Is mayonnaise an instrument?");
-	}
+    String text = pages.getPage(2).getText();
+    assertThat(text).contains("Hello World. Is mayonnaise an instrument?");
+  }
 }

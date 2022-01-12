@@ -16,17 +16,15 @@
 
 package com.google.cloud.spring.stream.binder.pubsub.properties;
 
-/**
- * Producer properties for Pub/Sub.
- */
+/** Producer properties for Pub/Sub. */
 public class PubSubProducerProperties extends PubSubCommonProperties {
-	private boolean sync = false;
+  private boolean sync = false;
 
-	public boolean isSync() {
-		return sync;
-	}
+  public boolean isSync() {
+    return sync;
+  }
 
-	public void setSync(boolean sync) {
-		this.sync = sync;
-	}
+  public void setSync(boolean sync) {
+    this.sync = sync;
+  }
 }

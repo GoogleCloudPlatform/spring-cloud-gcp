@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.pubsub.support;
 
-import java.io.IOException;
-
 import com.google.api.gax.batching.BatchingSettings;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
@@ -27,164 +25,173 @@ import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubException;
-
+import java.io.IOException;
 import org.springframework.util.Assert;
 
 /**
  * The default {@link PublisherFactory} implementation.
  *
- * <p>Creates {@link Publisher}s for topics.
- * Use {@link CachingPublisherFactory} to cache them.
+ * <p>Creates {@link Publisher}s for topics. Use {@link CachingPublisherFactory} to cache them.
  */
 public class DefaultPublisherFactory implements PublisherFactory {
 
-	private final String projectId;
+  private final String projectId;
 
-	private ExecutorProvider executorProvider;
+  private ExecutorProvider executorProvider;
 
-	private TransportChannelProvider channelProvider;
+  private TransportChannelProvider channelProvider;
 
-	private CredentialsProvider credentialsProvider;
+  private CredentialsProvider credentialsProvider;
 
-	private HeaderProvider headerProvider;
+  private HeaderProvider headerProvider;
 
-	private RetrySettings retrySettings;
+  private RetrySettings retrySettings;
 
-	private BatchingSettings batchingSettings;
+  private BatchingSettings batchingSettings;
 
-	private Boolean enableMessageOrdering;
+  private Boolean enableMessageOrdering;
 
-	private String endpoint;
+  private String endpoint;
 
-	/**
-	 * Create {@link DefaultPublisherFactory} instance based on the provided {@link GcpProjectIdProvider}.
-	 * <p>The {@link GcpProjectIdProvider} must not be null, neither provide an empty {@code projectId}.
-	 * @param projectIdProvider provides the default GCP project ID for selecting the topic
-	 */
-	public DefaultPublisherFactory(GcpProjectIdProvider projectIdProvider) {
-		Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
+  /**
+   * Create {@link DefaultPublisherFactory} instance based on the provided {@link
+   * GcpProjectIdProvider}.
+   *
+   * <p>The {@link GcpProjectIdProvider} must not be null, neither provide an empty {@code
+   * projectId}.
+   *
+   * @param projectIdProvider provides the default GCP project ID for selecting the topic
+   */
+  public DefaultPublisherFactory(GcpProjectIdProvider projectIdProvider) {
+    Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
 
-		this.projectId = projectIdProvider.getProjectId();
-		Assert.hasText(this.projectId, "The project ID can't be null or empty.");
-	}
+    this.projectId = projectIdProvider.getProjectId();
+    Assert.hasText(this.projectId, "The project ID can't be null or empty.");
+  }
 
-	/**
-	 * Set the provider for the executor that will be used by the publisher. Useful to specify the number of threads to
-	 * be used by each executor.
-	 * @param executorProvider the executor provider to set
-	 */
-	public void setExecutorProvider(ExecutorProvider executorProvider) {
-		this.executorProvider = executorProvider;
-	}
+  /**
+   * Set the provider for the executor that will be used by the publisher. Useful to specify the
+   * number of threads to be used by each executor.
+   *
+   * @param executorProvider the executor provider to set
+   */
+  public void setExecutorProvider(ExecutorProvider executorProvider) {
+    this.executorProvider = executorProvider;
+  }
 
-	/**
-	 * Set the provider for the channel to be used by the publisher. Useful to specify HTTP headers for the REST API
-	 * calls.
-	 * @param channelProvider the channel provider to set
-	 */
-	public void setChannelProvider(TransportChannelProvider channelProvider) {
-		this.channelProvider = channelProvider;
-	}
+  /**
+   * Set the provider for the channel to be used by the publisher. Useful to specify HTTP headers
+   * for the REST API calls.
+   *
+   * @param channelProvider the channel provider to set
+   */
+  public void setChannelProvider(TransportChannelProvider channelProvider) {
+    this.channelProvider = channelProvider;
+  }
 
-	/**
-	 * Set the provider for the GCP credentials to be used by the publisher on every API calls it makes.
-	 * @param credentialsProvider the credentials provider to set
-	 */
-	public void setCredentialsProvider(CredentialsProvider credentialsProvider) {
-		this.credentialsProvider = credentialsProvider;
-	}
+  /**
+   * Set the provider for the GCP credentials to be used by the publisher on every API calls it
+   * makes.
+   *
+   * @param credentialsProvider the credentials provider to set
+   */
+  public void setCredentialsProvider(CredentialsProvider credentialsProvider) {
+    this.credentialsProvider = credentialsProvider;
+  }
 
-	/**
-	 * Set the provider for the HTTP headers to be used in the Pub/Sub REST API requests.
-	 * @param headerProvider the header provider to set
-	 */
-	public void setHeaderProvider(HeaderProvider headerProvider) {
-		this.headerProvider = headerProvider;
-	}
+  /**
+   * Set the provider for the HTTP headers to be used in the Pub/Sub REST API requests.
+   *
+   * @param headerProvider the header provider to set
+   */
+  public void setHeaderProvider(HeaderProvider headerProvider) {
+    this.headerProvider = headerProvider;
+  }
 
-	/**
-	 * Set the API call retry configuration.
-	 * @param retrySettings the retry settings to set
-	 */
-	public void setRetrySettings(RetrySettings retrySettings) {
-		this.retrySettings = retrySettings;
-	}
+  /**
+   * Set the API call retry configuration.
+   *
+   * @param retrySettings the retry settings to set
+   */
+  public void setRetrySettings(RetrySettings retrySettings) {
+    this.retrySettings = retrySettings;
+  }
 
-	/**
-	 * Set the API call batching configuration.
-	 * @param batchingSettings the batching settings to set
-	 */
-	public void setBatchingSettings(BatchingSettings batchingSettings) {
-		this.batchingSettings = batchingSettings;
-	}
+  /**
+   * Set the API call batching configuration.
+   *
+   * @param batchingSettings the batching settings to set
+   */
+  public void setBatchingSettings(BatchingSettings batchingSettings) {
+    this.batchingSettings = batchingSettings;
+  }
 
-	/**
-	 * Set whether message ordering should be enabled on the publisher.
-	 * @param enableMessageOrdering whether to enable message ordering
-	 */
-	public void setEnableMessageOrdering(Boolean enableMessageOrdering) {
-		this.enableMessageOrdering = enableMessageOrdering;
-	}
+  /**
+   * Set whether message ordering should be enabled on the publisher.
+   *
+   * @param enableMessageOrdering whether to enable message ordering
+   */
+  public void setEnableMessageOrdering(Boolean enableMessageOrdering) {
+    this.enableMessageOrdering = enableMessageOrdering;
+  }
 
-	/**
-	 * Set the publisher endpoint. Example: "us-east1-pubsub.googleapis.com:443".
-	 * This is useful in conjunction with enabling message ordering because
-	 * sending messages to the same region ensures they are received in order
-	 * even when multiple publishers are used.
-	 * @param endpoint publisher endpoint
-	 */
-	public void setEndpoint(String endpoint) {
-		this.endpoint = endpoint;
-	}
+  /**
+   * Set the publisher endpoint. Example: "us-east1-pubsub.googleapis.com:443". This is useful in
+   * conjunction with enabling message ordering because sending messages to the same region ensures
+   * they are received in order even when multiple publishers are used.
+   *
+   * @param endpoint publisher endpoint
+   */
+  public void setEndpoint(String endpoint) {
+    this.endpoint = endpoint;
+  }
 
-	@Override
-	public Publisher createPublisher(String topic) {
-		try {
-			Publisher.Builder publisherBuilder =
-					Publisher.newBuilder(PubSubTopicUtils.toTopicName(topic, this.projectId));
+  @Override
+  public Publisher createPublisher(String topic) {
+    try {
+      Publisher.Builder publisherBuilder =
+          Publisher.newBuilder(PubSubTopicUtils.toTopicName(topic, this.projectId));
 
-			applyPublisherSettings(publisherBuilder);
+      applyPublisherSettings(publisherBuilder);
 
-			return publisherBuilder.build();
-		}
-		catch (IOException ioe) {
-			throw new PubSubException("An error creating the Google Cloud Pub/Sub publisher " +
-					"occurred.", ioe);
-		}
-	}
+      return publisherBuilder.build();
+    } catch (IOException ioe) {
+      throw new PubSubException(
+          "An error creating the Google Cloud Pub/Sub publisher " + "occurred.", ioe);
+    }
+  }
 
-	void applyPublisherSettings(Publisher.Builder publisherBuilder) {
-		if (this.executorProvider != null) {
-			publisherBuilder.setExecutorProvider(this.executorProvider);
-		}
+  void applyPublisherSettings(Publisher.Builder publisherBuilder) {
+    if (this.executorProvider != null) {
+      publisherBuilder.setExecutorProvider(this.executorProvider);
+    }
 
-		if (this.channelProvider != null) {
-			publisherBuilder.setChannelProvider(this.channelProvider);
-		}
+    if (this.channelProvider != null) {
+      publisherBuilder.setChannelProvider(this.channelProvider);
+    }
 
-		if (this.credentialsProvider != null) {
-			publisherBuilder.setCredentialsProvider(this.credentialsProvider);
-		}
+    if (this.credentialsProvider != null) {
+      publisherBuilder.setCredentialsProvider(this.credentialsProvider);
+    }
 
-		if (this.headerProvider != null) {
-			publisherBuilder.setHeaderProvider(this.headerProvider);
-		}
+    if (this.headerProvider != null) {
+      publisherBuilder.setHeaderProvider(this.headerProvider);
+    }
 
-		if (this.retrySettings != null) {
-			publisherBuilder.setRetrySettings(this.retrySettings);
-		}
+    if (this.retrySettings != null) {
+      publisherBuilder.setRetrySettings(this.retrySettings);
+    }
 
-		if (this.batchingSettings != null) {
-			publisherBuilder.setBatchingSettings(this.batchingSettings);
-		}
+    if (this.batchingSettings != null) {
+      publisherBuilder.setBatchingSettings(this.batchingSettings);
+    }
 
-		if (this.enableMessageOrdering != null) {
-			publisherBuilder.setEnableMessageOrdering(this.enableMessageOrdering);
-		}
+    if (this.enableMessageOrdering != null) {
+      publisherBuilder.setEnableMessageOrdering(this.enableMessageOrdering);
+    }
 
-		if (this.endpoint != null) {
-			publisherBuilder.setEndpoint(this.endpoint);
-		}
-	}
-
+    if (this.endpoint != null) {
+      publisherBuilder.setEndpoint(this.endpoint);
+    }
+  }
 }
