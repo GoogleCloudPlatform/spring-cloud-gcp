@@ -46,31 +46,40 @@ public final class StackdriverSender extends Sender {
     long serverResponseTimeoutMs = DEFAULT_SERVER_TIMEOUT_MS;
 
     Builder(Channel channel) {
-      if (channel == null) throw new NullPointerException("channel == null");
+      if (channel == null) {
+        throw new NullPointerException("channel == null");
+      }
       this.channel = channel;
     }
 
     public Builder projectId(String projectId) {
-      if (projectId == null) throw new NullPointerException("projectId == null");
+      if (projectId == null) {
+        throw new NullPointerException("projectId == null");
+      }
       this.projectId = projectId;
       return this;
     }
 
     public Builder callOptions(CallOptions callOptions) {
-      if (callOptions == null) throw new NullPointerException("callOptions == null");
+      if (callOptions == null) {
+        throw new NullPointerException("callOptions == null");
+      }
       this.callOptions = callOptions;
       return this;
     }
 
     public Builder serverResponseTimeoutMs(long serverResponseTimeoutMs) {
-      if (serverResponseTimeoutMs <= 0)
+      if (serverResponseTimeoutMs <= 0) {
         throw new IllegalArgumentException("Server response timeout must be greater than 0");
+      }
       this.serverResponseTimeoutMs = serverResponseTimeoutMs;
       return this;
     }
 
     public StackdriverSender build() {
-      if (projectId == null) throw new NullPointerException("projectId == null");
+      if (projectId == null) {
+        throw new NullPointerException("projectId == null");
+      }
       return new StackdriverSender(this);
     }
   }
@@ -128,8 +137,12 @@ public final class StackdriverSender extends Sender {
   @Override
   public int messageSizeInBytes(List<byte[]> traceIdPrefixedSpans) {
     int length = traceIdPrefixedSpans.size();
-    if (length == 0) return 0;
-    if (length == 1) return messageSizeInBytes(traceIdPrefixedSpans.get(0).length);
+    if (length == 0) {
+      return 0;
+    }
+    if (length == 1) {
+      return messageSizeInBytes(traceIdPrefixedSpans.get(0).length);
+    }
 
     int size = projectNameFieldSize;
     for (int i = 0; i < length; i++) {
@@ -149,9 +162,13 @@ public final class StackdriverSender extends Sender {
 
   @Override
   public Call<Void> sendSpans(List<byte[]> traceIdPrefixedSpans) {
-    if (closeCalled) throw new IllegalStateException("closed");
+    if (closeCalled) {
+      throw new IllegalStateException("closed");
+    }
     int length = traceIdPrefixedSpans.size();
-    if (length == 0) return Call.create(null);
+    if (length == 0) {
+      return Call.create(null);
+    }
 
     BatchWriteSpansRequest.Builder request =
         BatchWriteSpansRequest.newBuilder().setNameBytes(projectName);
@@ -195,8 +212,12 @@ public final class StackdriverSender extends Sender {
 
   @Override
   public void close() {
-    if (!shutdownChannelOnClose) return;
-    if (closeCalled) return;
+    if (!shutdownChannelOnClose) {
+      return;
+    }
+    if (closeCalled) {
+      return;
+    }
     closeCalled = true;
     ((ManagedChannel) channel).shutdownNow();
   }
@@ -204,7 +225,8 @@ public final class StackdriverSender extends Sender {
   static Span parseTraceIdPrefixedSpan(
       byte[] traceIdPrefixedSpan, int spanNameSize, ByteString traceIdPrefix) {
     // start parsing after the trace ID
-    int off = 32, len = traceIdPrefixedSpan.length - off;
+    int off = 32;
+    int len = traceIdPrefixedSpan.length - off;
     Span.Builder span = Span.newBuilder();
     try {
       span.mergeFrom(traceIdPrefixedSpan, off, len);

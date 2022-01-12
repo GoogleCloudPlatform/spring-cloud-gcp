@@ -22,9 +22,13 @@ public class StackdriverTracePropagation implements Propagation<String> {
   /** 128 trace ID lower-hex encoded into 32 characters (required) */
   public static final String TRACE_ID_NAME = "x-cloud-trace-context";
 
-  /** @param primary typically constructed by {@link B3Propagation#newFactoryBuilder()} */
+  /**
+   * @param primary typically constructed by {@link B3Propagation#newFactoryBuilder()}
+   */
   public static Propagation.Factory newFactory(Propagation.Factory primary) {
-    if (primary == null) throw new NullPointerException("primary == null");
+    if (primary == null) {
+      throw new NullPointerException("primary == null");
+    }
     return new Factory(primary);
   }
 
@@ -83,7 +87,9 @@ public class StackdriverTracePropagation implements Propagation<String> {
 
   @Override
   public <R> Extractor<R> extractor(Getter<R, String> getter) {
-    if (getter == null) throw new NullPointerException("getter == null");
-    return new XCloudTraceContextExtractor<>(primary, getter);
+    if (getter == null) {
+      throw new NullPointerException("getter == null");
+    }
+    return new CloudTraceContextExtractor<>(primary, getter);
   }
 }

@@ -11,14 +11,14 @@ import brave.propagation.TraceIdContext;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-final class XCloudTraceContextExtractor<R> implements Extractor<R> {
+final class CloudTraceContextExtractor<R> implements Extractor<R> {
 
-  static final Logger LOG = Logger.getLogger(XCloudTraceContextExtractor.class.getName());
+  static final Logger LOG = Logger.getLogger(CloudTraceContextExtractor.class.getName());
 
   final Extractor<R> primary;
   final Getter<R, String> getter;
 
-  XCloudTraceContextExtractor(Propagation<String> primary, Getter<R, String> getter) {
+  CloudTraceContextExtractor(Propagation<String> primary, Getter<R, String> getter) {
     this.primary = primary.extractor(getter);
     this.getter = getter;
   }
@@ -30,16 +30,20 @@ final class XCloudTraceContextExtractor<R> implements Extractor<R> {
    */
   @Override
   public TraceContextOrSamplingFlags extract(R request) {
-    if (request == null) throw new NullPointerException("request == null");
+    if (request == null) {
+      throw new NullPointerException("request == null");
+    }
     TraceContextOrSamplingFlags context = primary.extract(request);
-    if (context != TraceContextOrSamplingFlags.EMPTY) return context;
+    if (context != TraceContextOrSamplingFlags.EMPTY) {
+      return context;
+    }
 
     TraceContextOrSamplingFlags result = TraceContextOrSamplingFlags.EMPTY;
 
-    String xCloudTraceContext = getter.get(request, StackdriverTracePropagation.TRACE_ID_NAME);
+    String cloudTraceContext = getter.get(request, StackdriverTracePropagation.TRACE_ID_NAME);
 
-    if (xCloudTraceContext != null) {
-      String[] tokens = xCloudTraceContext.split("/");
+    if (cloudTraceContext != null) {
+      String[] tokens = cloudTraceContext.split("/");
 
       long[] traceId = convertHexTraceIdToLong(tokens[0]);
 
@@ -89,7 +93,9 @@ final class XCloudTraceContextExtractor<R> implements Extractor<R> {
     long[] result = new long[2];
     int length = hexTraceId.length();
 
-    if (length != 32) return null;
+    if (length != 32) {
+      return null;
+    }
 
     // left-most characters, if any, are the high bits
     int traceIdIndex = Math.max(0, length - 16);
@@ -115,17 +121,25 @@ final class XCloudTraceContextExtractor<R> implements Extractor<R> {
 
   /** Strictly parses unsigned numbers without a java 8 dependency. */
   static long parseUnsignedLong(String input) throws NumberFormatException {
-    if (input == null) throw new NumberFormatException("input == null");
+    if (input == null) {
+      throw new NumberFormatException("input == null");
+    }
     int len = input.length();
-    if (len == 0) throw new NumberFormatException("empty input");
-    if (len > 20) throw new NumberFormatException("too long for uint64: " + input);
+    if (len == 0) {
+      throw new NumberFormatException("empty input");
+    }
+    if (len > 20) {
+      throw new NumberFormatException("too long for uint64: " + input);
+    }
 
     // Bear in mind the following:
     // * maximum int64  is  9223372036854775807. Note it is 19 characters
     // * maximum uint64 is 18446744073709551615. Note it is 20 characters
 
     // It is safe to use defaults to parse <= 18 characters.
-    if (len <= 18) return Long.parseLong(input);
+    if (len <= 18) {
+      return Long.parseLong(input);
+    }
 
     // we now know it is 19 or 20 characters: safely parse the left 18 characters
     long left = Long.parseLong(input.substring(0, 18));
@@ -171,7 +185,9 @@ final class XCloudTraceContextExtractor<R> implements Extractor<R> {
   }
 
   private static int digitAt(String input, int position) {
-    if (input.length() <= position) throw new NumberFormatException("position out of bounds");
+    if (input.length() <= position) {
+      throw new NumberFormatException("position out of bounds");
+    }
 
     switch (input.charAt(position)) {
       case '0':

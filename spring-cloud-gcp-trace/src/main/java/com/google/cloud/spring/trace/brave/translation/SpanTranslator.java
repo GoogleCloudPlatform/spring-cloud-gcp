@@ -78,7 +78,9 @@ public final class SpanTranslator {
   public static com.google.devtools.cloudtrace.v2.Span.Builder translate(
       com.google.devtools.cloudtrace.v2.Span.Builder spanBuilder, Span zipkinSpan) {
     boolean logTranslation = LOG.isLoggable(FINE);
-    if (logTranslation) LOG.log(FINE, ">> translating zipkin span: {0}", zipkinSpan);
+    if (logTranslation) {
+      LOG.log(FINE, ">> translating zipkin span: {0}", zipkinSpan);
+    }
 
     spanBuilder.setSpanId(zipkinSpan.id());
     if (zipkinSpan.parentId() != null) {
@@ -116,7 +118,9 @@ public final class SpanTranslator {
       spanBuilder.setTimeEvents(events);
     }
 
-    if (logTranslation) LOG.log(FINE, "<< translated to stackdriver span: {0}", spanBuilder);
+    if (logTranslation) {
+      LOG.log(FINE, "<< translated to stackdriver span: {0}", spanBuilder);
+    }
     return spanBuilder;
   }
 

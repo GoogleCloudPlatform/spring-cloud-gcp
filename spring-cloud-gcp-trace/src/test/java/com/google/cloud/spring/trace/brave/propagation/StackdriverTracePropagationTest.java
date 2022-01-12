@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.cloud.spring.trace.brave.propagation;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,7 +39,7 @@ public class StackdriverTracePropagationTest {
   TraceContext.Extractor<Map<String, String>> extractor = propagation.extractor(Map::get);
 
   @Test
-  public void b3TakesPrecedenceOverXCloud() {
+  public void b3TakesPrecedenceOverCloudHeader() {
 
     Map<String, String> headers = new HashMap<>();
     headers.put(StackdriverTracePropagation.TRACE_ID_NAME, XCLOUD_VALUE);
@@ -35,7 +51,7 @@ public class StackdriverTracePropagationTest {
   }
 
   @Test
-  public void xCloudReturnedWhenB3Missing() {
+  public void cloudReturnedWhenB3Missing() {
     Map<String, String> headers = new HashMap<>();
     headers.put(StackdriverTracePropagation.TRACE_ID_NAME, XCLOUD_VALUE);
 
@@ -45,7 +61,7 @@ public class StackdriverTracePropagationTest {
   }
 
   @Test
-  public void b3ReturnedWhenXCloudMissing() {
+  public void b3ReturnedWhenCloudHeaderMissing() {
     Map<String, String> headers = new HashMap<>();
     headers.put(B3_HEADER, B3_VALUE);
 

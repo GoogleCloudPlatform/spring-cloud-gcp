@@ -19,8 +19,9 @@ final class AwaitableUnaryClientCallListener<V> extends ClientCall.Listener<V> {
   long serverTimeoutMs; // how long to wait for server response in milliseconds
 
   AwaitableUnaryClientCallListener(long serverTimeoutMs) {
-    if (serverTimeoutMs <= 0)
+    if (serverTimeoutMs <= 0) {
       throw new IllegalArgumentException("Server response timeout must be greater than 0");
+    }
     this.serverTimeoutMs = serverTimeoutMs;
   }
 
@@ -42,13 +43,21 @@ final class AwaitableUnaryClientCallListener<V> extends ClientCall.Listener<V> {
           }
           Object result;
           synchronized (this) {
-            if (!resultSet) continue;
+            if (!resultSet) {
+              continue;
+            }
             result = this.result;
           }
           if (result instanceof Throwable) {
-            if (result instanceof Error) throw (Error) result;
-            if (result instanceof IOException) throw (IOException) result;
-            if (result instanceof RuntimeException) throw (RuntimeException) result;
+            if (result instanceof Error) {
+              throw (Error) result;
+            }
+            if (result instanceof IOException) {
+              throw (IOException) result;
+            }
+            if (result instanceof RuntimeException) {
+              throw (RuntimeException) result;
+            }
             // Don't set interrupted status when the callback received InterruptedException
             throw new RuntimeException((Throwable) result);
           }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.cloud.spring.trace.brave.sender;
 
 import java.util.Calendar;
@@ -12,7 +28,7 @@ public class TestConstants {
       Endpoint.newBuilder().serviceName("frontend").ip("127.0.0.1").build();
   public static final Endpoint BACKEND =
       Endpoint.newBuilder().serviceName("backend").ip("192.168.99.101").port(9000).build();
-  public static final long TODAY = midnightUTC(System.currentTimeMillis());
+  public static final long TODAY = midnightUtc(System.currentTimeMillis());
 
   public static final Span CLIENT_SPAN =
       Span.newBuilder()
@@ -30,7 +46,7 @@ public class TestConstants {
           .putTag("clnt/finagle.version", "6.45.0")
           .build();
 
-  public static long midnightUTC(long epochMillis) {
+  public static long midnightUtc(long epochMillis) {
     Calendar day = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     day.setTimeInMillis(epochMillis);
     day.set(Calendar.MILLISECOND, 0);
