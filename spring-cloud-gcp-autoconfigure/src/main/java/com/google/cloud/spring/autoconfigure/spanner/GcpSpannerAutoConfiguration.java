@@ -40,6 +40,7 @@ import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -234,6 +235,12 @@ public class GcpSpannerAutoConfiguration {
     @ConditionalOnMissingBean
     public SpannerEntityProcessor spannerConverter(SpannerMappingContext mappingContext) {
       return new ConverterAwareMappingSpannerEntityProcessor(mappingContext);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public Gson gson() {
+      return new Gson();
     }
 
     @Bean

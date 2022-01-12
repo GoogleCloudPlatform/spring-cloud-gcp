@@ -22,6 +22,7 @@ import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
 import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityWriter;
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -97,10 +98,12 @@ public class SpannerPersistentEntityImpl<T>
    * @param information type information about the underlying entity type.
    */
   public SpannerPersistentEntityImpl(TypeInformation<T> information) {
-    this(
-        information,
-        new SpannerMappingContext(),
-        new ConverterAwareMappingSpannerEntityProcessor(new SpannerMappingContext()));
+    this(information, null);
+  }
+
+  public SpannerPersistentEntityImpl(TypeInformation<T> information, Gson gson) {
+    this(information, new SpannerMappingContext(),
+        new ConverterAwareMappingSpannerEntityProcessor(new SpannerMappingContext(), gson));
   }
 
   /**

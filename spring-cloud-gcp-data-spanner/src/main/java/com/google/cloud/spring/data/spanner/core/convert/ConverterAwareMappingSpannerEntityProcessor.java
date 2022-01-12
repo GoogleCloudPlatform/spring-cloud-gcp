@@ -21,6 +21,7 @@ import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,21 +48,26 @@ public class ConverterAwareMappingSpannerEntityProcessor implements SpannerEntit
   private final SpannerWriteConverter writeConverter;
 
   public ConverterAwareMappingSpannerEntityProcessor(SpannerMappingContext spannerMappingContext) {
-    this(spannerMappingContext, null, null);
+    this(spannerMappingContext, null, null, null);
   }
 
-  public ConverterAwareMappingSpannerEntityProcessor(
-      SpannerMappingContext spannerMappingContext,
-      Collection<Converter> writeConverters,
-      Collection<Converter> readConverters) {
-    Assert.notNull(spannerMappingContext, "A valid mapping context for Spanner is required.");
+  public ConverterAwareMappingSpannerEntityProcessor(SpannerMappingContext spannerMappingContext,
+      Gson gson) {
+    this(spannerMappingContext, null, null, gson);
+  }
 
+  public ConverterAwareMappingSpannerEntityProcessor(SpannerMappingContext spannerMappingContext,
+      Collection<Converter> writeConverters, Collection<Converter> readConverters, Gson gson) {
+    Assert.notNull(spannerMappingContext,
+        "A valid mapping context for Spanner is required.");
+    // Assert.notNull(gson,
+    // "A valid Gson object is required.");
     this.readConverter = new SpannerReadConverter(readConverters);
-    this.entityReader =
-        new ConverterAwareMappingSpannerEntityReader(spannerMappingContext, this.readConverter);
+    this.entityReader = new ConverterAwareMappingSpannerEntityReader(spannerMappingContext,
+        this.readConverter);
     this.writeConverter = new SpannerWriteConverter(writeConverters);
-    this.entityWriter =
-        new ConverterAwareMappingSpannerEntityWriter(spannerMappingContext, this.writeConverter);
+    this.entityWriter = new ConverterAwareMappingSpannerEntityWriter(spannerMappingContext,
+        this.writeConverter, gson);
   }
 
   @Override

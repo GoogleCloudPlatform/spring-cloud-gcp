@@ -16,7 +16,9 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping;
 
+import com.google.gson.Gson;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.mapping.context.AbstractMappingContext;
@@ -25,6 +27,7 @@ import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 import org.springframework.data.util.TypeInformation;
+import org.springframework.stereotype.Component;
 
 /**
  * A mapping context for Cloud Spanner that provides ways to create persistent entities and
@@ -32,6 +35,7 @@ import org.springframework.data.util.TypeInformation;
  *
  * @since 1.1
  */
+@Component
 public class SpannerMappingContext
     extends AbstractMappingContext<SpannerPersistentEntity<?>, SpannerPersistentProperty>
     implements ApplicationContextAware {
@@ -42,6 +46,13 @@ public class SpannerMappingContext
   private FieldNamingStrategy fieldNamingStrategy = DEFAULT_NAMING_STRATEGY;
 
   private ApplicationContext applicationContext;
+
+  private Gson gson;
+
+  @Autowired
+  public void setGson(Gson gson) {
+    this.gson = gson;
+  }
 
   /**
    * Set the field naming strategy used when creating persistent properties.
@@ -75,7 +86,7 @@ public class SpannerMappingContext
 
   protected <T> SpannerPersistentEntityImpl<T> constructPersistentEntity(
       TypeInformation<T> typeInformation) {
-    return new SpannerPersistentEntityImpl<>(typeInformation);
+    return new SpannerPersistentEntityImpl<>(typeInformation, this.gson);
   }
 
   @Override
