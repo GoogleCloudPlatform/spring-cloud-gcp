@@ -48,8 +48,8 @@
 		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
 			<layout class="com.google.cloud.spring.logging.StackdriverJsonLayout">
 				<projectId>${projectId}</projectId>
-				<traceIdMDCField>trace_id</traceIdMDCField>
-				<spanIdMDCField>span_id</spanIdMDCField>
+				<traceIdMdcField>trace_id</traceIdMdcField>
+				<spanIdMdcField>span_id</spanIdMdcField>
 			</layout>
 		</encoder>
 	</appender>

@@ -35,17 +35,15 @@
 	</distributionManagement>
 
 	<properties>
-		<app-engine-maven-plugin.version>2.4.1</app-engine-maven-plugin.version>
-		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.10.0</errorprone.version>
-		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
+
+		<!-- Dependency versions -->
+		<spring-cloud-dependencies.version>2021.0.0</spring-cloud-dependencies.version>
+		<spring-boot-dependencies.version>2.6.2</spring-boot-dependencies.version>
+		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.0</java-cfenv.version>
-		<javadoc.failOnError>false</javadoc.failOnError>
-		<javadoc.failOnWarnings>false</javadoc.failOnWarnings>
-		<maven-checkstyle-plugin.failOnViolation>true</maven-checkstyle-plugin.failOnViolation>
-		<maven-checkstyle-plugin.failsOnError>true</maven-checkstyle-plugin.failsOnError>
-		<maven-checkstyle-plugin.skip>false</maven-checkstyle-plugin.skip>
-		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
+		<spring-native.version>0.10.5</spring-native.version>
+
+		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 		<maven-failsafe-plugin.version>2.22.1</maven-failsafe-plugin.version>
@@ -58,16 +56,24 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<nexus-staging-plugin.version>1.6.8</nexus-staging-plugin.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
+		<checkstyle-rules.version>9.2.1</checkstyle-rules.version>
+		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
+		<errorprone.version>2.10.0</errorprone.version>
+
+
+		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
 		<skip.surefire.tests>${skipTests}</skip.surefire.tests>
 		<skipTests>false</skipTests>
-		<spring-cloud-build.version>3.1.0</spring-cloud-build.version>
-		<spring-cloud-dependencies.version>2021.0.0</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>2.6.2</spring-boot-dependencies.version>
-		<spring-javaformat-checkstyle.version>0.0.29</spring-javaformat-checkstyle.version>
-		<zipkin-gcp.version>1.0.3</zipkin-gcp.version>
-		<spring-native.version>0.10.5</spring-native.version>
+		<checkstyle.skip>false</checkstyle.skip>
+		<javadoc.failOnError>false</javadoc.failOnError>
+		<javadoc.failOnWarnings>false</javadoc.failOnWarnings>
+
+		<!-- Other defaults -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
+
 	</properties>
 
 	<dependencyManagement>
@@ -235,43 +241,11 @@
 					<version>${maven-checkstyle-plugin.version}</version>
 					<dependencies>
 						<dependency>
-							<groupId>io.spring.javaformat</groupId>
-							<artifactId>spring-javaformat-checkstyle</artifactId>
-							<version>${spring-javaformat-checkstyle.version}</version>
-						</dependency>
-						<dependency>
-							<groupId>org.springframework.cloud</groupId>
-							<artifactId>spring-cloud-build-tools</artifactId>
-							<version>${spring-cloud-build.version}</version>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>${checkstyle-rules.version}</version>
 						</dependency>
 					</dependencies>
-					<executions>
-						<execution>
-							<id>checkstyle-validation</id>
-							<phase>validate</phase>
-							<inherited>true</inherited>
-							<configuration>
-								<skip>${maven-checkstyle-plugin.skip}</skip>
-								<configLocation>checkstyle.xml</configLocation>
-								<headerLocation>checkstyle-header.txt</headerLocation>
-								<propertyExpansion>
-									checkstyle.build.directory=${project.build.directory}
-									checkstyle.suppressions.file=https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/spring-cloud-build-tools/src/checkstyle/checkstyle-suppressions.xml
-									checkstyle.additional.suppressions.file=${maven.multiModuleProjectDirectory}/src/checkstyle/checkstyle-suppressions.xml
-								</propertyExpansion>
-								<consoleOutput>true</consoleOutput>
-								<includeTestSourceDirectory>true</includeTestSourceDirectory>
-								<failsOnError>${maven-checkstyle-plugin.failsOnError}
-								</failsOnError>
-								<failOnViolation>
-									${maven-checkstyle-plugin.failOnViolation}
-								</failOnViolation>
-							</configuration>
-							<goals>
-								<goal>check</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -281,17 +255,15 @@
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>checkstyle-validation</id>
+						<id>validate-google-style</id>
 						<phase>validate</phase>
 						<goals>
 							<goal>check</goal>
 						</goals>
 						<configuration>
-							<!-- Checkstyle rules inherited from spring-cloud-build -->
+							<configLocation>google_checks.xml</configLocation>
 							<suppressionsLocation>src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
-							<consoleOutput>true</consoleOutput>
-							<failsOnError>true</failsOnError>
 							<failOnViolation>true</failOnViolation>
 							<violationSeverity>warning</violationSeverity>
 						</configuration>
@@ -308,11 +280,6 @@
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.google.cloud.tools</groupId>
-				<artifactId>appengine-maven-plugin</artifactId>
-				<version>${app-engine-maven-plugin.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

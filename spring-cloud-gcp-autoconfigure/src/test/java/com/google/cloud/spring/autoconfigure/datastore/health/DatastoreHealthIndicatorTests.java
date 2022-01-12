@@ -16,18 +16,17 @@
 
 package com.google.cloud.spring.autoconfigure.datastore.health;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import com.google.cloud.datastore.Datastore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 /**
  * Tests for {@link DatastoreHealthIndicator}.
@@ -37,48 +36,51 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DatastoreHealthIndicatorTests {
 
-	@Mock
-	private Datastore datastore;
+  @Mock private Datastore datastore;
 
-	@Test
-	public void testdoHealthCheckUp() throws Exception {
-		DatastoreHealthIndicator datastoreHealthIndicator = new DatastoreHealthIndicator(() -> datastore);
+  @Test
+  public void testdoHealthCheckUp() throws Exception {
+    DatastoreHealthIndicator datastoreHealthIndicator =
+        new DatastoreHealthIndicator(() -> datastore);
 
-		when(datastore.run(any())).thenReturn(null);
+    when(datastore.run(any())).thenReturn(null);
 
-		Health.Builder builder = new Health.Builder();
+    Health.Builder builder = new Health.Builder();
 
-		datastoreHealthIndicator.doHealthCheck(builder);
+    datastoreHealthIndicator.doHealthCheck(builder);
 
-		assertThat(builder.build().getStatus()).isSameAs(Status.UP);
-	}
+    assertThat(builder.build().getStatus()).isSameAs(Status.UP);
+  }
 
-	@Test(expected = Exception.class)
-	public void testdoHealthCheckDown() throws Exception {
-		DatastoreHealthIndicator datastoreHealthIndicator = new DatastoreHealthIndicator(() -> datastore);
+  @Test(expected = Exception.class)
+  public void testdoHealthCheckDown() throws Exception {
+    DatastoreHealthIndicator datastoreHealthIndicator =
+        new DatastoreHealthIndicator(() -> datastore);
 
-		when(datastore.run(any())).thenThrow(new RuntimeException("Cloud Datastore is down!!!"));
+    when(datastore.run(any())).thenThrow(new RuntimeException("Cloud Datastore is down!!!"));
 
-		Health.Builder builder = new Health.Builder();
+    Health.Builder builder = new Health.Builder();
 
-		datastoreHealthIndicator.doHealthCheck(builder);
-	}
+    datastoreHealthIndicator.doHealthCheck(builder);
+  }
 
-	@Test
-	public void testHealthy()  {
-		DatastoreHealthIndicator datastoreHealthIndicator = new DatastoreHealthIndicator(() -> datastore);
+  @Test
+  public void testHealthy() {
+    DatastoreHealthIndicator datastoreHealthIndicator =
+        new DatastoreHealthIndicator(() -> datastore);
 
-		when(datastore.run(any())).thenReturn(null);
+    when(datastore.run(any())).thenReturn(null);
 
-		assertThat(datastoreHealthIndicator.health().getStatus()).isSameAs(Status.UP);
-	}
+    assertThat(datastoreHealthIndicator.health().getStatus()).isSameAs(Status.UP);
+  }
 
-	@Test
-	public void testUnhealthy() {
-		DatastoreHealthIndicator datastoreHealthIndicator = new DatastoreHealthIndicator(() -> datastore);
+  @Test
+  public void testUnhealthy() {
+    DatastoreHealthIndicator datastoreHealthIndicator =
+        new DatastoreHealthIndicator(() -> datastore);
 
-		when(datastore.run(any())).thenThrow(new RuntimeException("Cloud Datastore is down!!!"));
+    when(datastore.run(any())).thenThrow(new RuntimeException("Cloud Datastore is down!!!"));
 
-		assertThat(datastoreHealthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
-	}
+    assertThat(datastoreHealthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
+  }
 }

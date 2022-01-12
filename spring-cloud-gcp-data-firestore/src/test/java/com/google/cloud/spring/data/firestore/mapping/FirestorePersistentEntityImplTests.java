@@ -16,37 +16,32 @@
 
 package com.google.cloud.spring.data.firestore.mapping;
 
-import com.google.cloud.spring.data.firestore.Document;
-import org.junit.jupiter.api.Test;
-
-import org.springframework.data.util.ClassTypeInformation;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Tests for {@link FirestorePersistentEntityImpl}.
- */
+import com.google.cloud.spring.data.firestore.Document;
+import org.junit.jupiter.api.Test;
+import org.springframework.data.util.ClassTypeInformation;
+
+/** Tests for {@link FirestorePersistentEntityImpl}. */
 class FirestorePersistentEntityImplTests {
 
-	@Test
-	void testSetCollectionName() {
-		FirestorePersistentEntity<Student> firestorePersistentEntity = new FirestorePersistentEntityImpl<>(
-				ClassTypeInformation.from(Student.class));
-		assertThat(firestorePersistentEntity.collectionName()).isEqualTo("student");
-	}
+  @Test
+  void testSetCollectionName() {
+    FirestorePersistentEntity<Student> firestorePersistentEntity =
+        new FirestorePersistentEntityImpl<>(ClassTypeInformation.from(Student.class));
+    assertThat(firestorePersistentEntity.collectionName()).isEqualTo("student");
+  }
 
-	@Test
-	void testInferCollectionName() {
-		FirestorePersistentEntity<Employee> firestorePersistentEntity = new FirestorePersistentEntityImpl<>(
-				ClassTypeInformation.from(Employee.class));
-		assertThat(firestorePersistentEntity.collectionName()).isEqualTo("employee_table");
-	}
+  @Test
+  void testInferCollectionName() {
+    FirestorePersistentEntity<Employee> firestorePersistentEntity =
+        new FirestorePersistentEntityImpl<>(ClassTypeInformation.from(Employee.class));
+    assertThat(firestorePersistentEntity.collectionName()).isEqualTo("employee_table");
+  }
 
-	@Document
-	private static class Student {
-	}
+  @Document
+  private static class Student {}
 
-	@Document(collectionName = "employee_table")
-	private static class Employee {
-	}
+  @Document(collectionName = "employee_table")
+  private static class Employee {}
 }

@@ -25,8 +25,8 @@ import com.google.cloud.MetadataConfig;
  */
 public class DefaultGcpMetadataProvider implements MetadataProvider {
 
-	@Override
-	public String getAttribute(String attributeName) {
-		return MetadataConfig.getAttribute(attributeName);
-	}
+  @Override
+  public String getAttribute(String attributeName) {
+    return MetadataConfig.getAttribute(attributeName);
+  }
 }

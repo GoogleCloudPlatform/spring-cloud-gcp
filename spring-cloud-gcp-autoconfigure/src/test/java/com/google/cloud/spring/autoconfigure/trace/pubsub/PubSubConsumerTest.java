@@ -16,24 +16,24 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.pubsub.v1.PubsubMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 class PubSubConsumerTest {
-	PubsubMessage.Builder message = PubsubMessage.newBuilder();
+  PubsubMessage.Builder message = PubsubMessage.newBuilder();
 
-	PubSubConsumerRequest request = new PubSubConsumerRequest(message, "mySubscription");
+  PubSubConsumerRequest request = new PubSubConsumerRequest(message, "mySubscription");
 
-	@Test
-	void operation() {
-		assertThat(request.operation()).isEqualTo("receive");
-	}
+  @Test
+  void operation() {
+    assertThat(request.operation()).isEqualTo("receive");
+  }
 
-	@Test
-	void subscription() {
-		assertThat(request.channelKind()).isEqualTo("subscription");
-		assertThat(request.channelName()).isEqualTo("mySubscription");
-	}
+  @Test
+  void subscription() {
+    assertThat(request.channelKind()).isEqualTo("subscription");
+    assertThat(request.channelName()).isEqualTo("mySubscription");
+  }
 }
