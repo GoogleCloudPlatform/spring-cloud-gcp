@@ -66,7 +66,7 @@
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
 		<skip.surefire.tests>${skipTests}</skip.surefire.tests>
 		<skipTests>false</skipTests>
-<<<<<<< HEAD
+
 		<checkstyle.skip>false</checkstyle.skip>
 		<javadoc.failOnError>false</javadoc.failOnError>
 		<javadoc.failOnWarnings>false</javadoc.failOnWarnings>
@@ -75,13 +75,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
 
-=======
-		<spring-cloud-build.version>3.0.4</spring-cloud-build.version>
-		<spring-cloud-dependencies.version>2020.0.4</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>2.5.7</spring-boot-dependencies.version>
-		<spring-javaformat-checkstyle.version>0.0.29</spring-javaformat-checkstyle.version>
-		<spring-native.version>0.10.5</spring-native.version>
->>>>>>> 2e2615b98 (initial copy from zipkin-gcp; forgot some tests)
 	</properties>
 
 	<dependencyManagement>

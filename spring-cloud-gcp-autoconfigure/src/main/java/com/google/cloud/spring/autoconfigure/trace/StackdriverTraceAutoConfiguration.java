@@ -61,9 +61,6 @@ import zipkin2.reporter.Reporter;
 import zipkin2.reporter.ReporterMetrics;
 import zipkin2.reporter.Sender;
 import zipkin2.reporter.brave.ZipkinSpanHandler;
-import zipkin2.reporter.stackdriver.StackdriverEncoder;
-import zipkin2.reporter.stackdriver.StackdriverSender;
-import zipkin2.reporter.stackdriver.StackdriverSender.Builder;
 
 /** Config for Stackdriver Trace. */
 @Configuration(proxyBeanMethods = false)
