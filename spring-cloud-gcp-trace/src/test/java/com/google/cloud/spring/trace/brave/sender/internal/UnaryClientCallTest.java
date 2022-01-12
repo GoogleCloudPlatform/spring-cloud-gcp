@@ -47,8 +47,14 @@ public class UnaryClientCallTest {
   static class BatchWriteSpansCall extends UnaryClientCall<BatchWriteSpansRequest, Empty> {
     final Channel channel;
 
-    BatchWriteSpansCall(Channel channel, BatchWriteSpansRequest request, long serverResponseTimeout) {
-      super(channel, TraceServiceGrpc.getBatchWriteSpansMethod(), DEFAULT, request, serverResponseTimeout);
+    BatchWriteSpansCall(
+        Channel channel, BatchWriteSpansRequest request, long serverResponseTimeout) {
+      super(
+          channel,
+          TraceServiceGrpc.getBatchWriteSpansMethod(),
+          DEFAULT,
+          request,
+          serverResponseTimeout);
       this.channel = channel;
     }
 
@@ -63,16 +69,20 @@ public class UnaryClientCallTest {
   @Before
   public void setUp() {
     server.getServiceRegistry().addService(traceService);
-    call = new BatchWriteSpansCall(server.getChannel(), BatchWriteSpansRequest.newBuilder().build(), DEFAULT_SERVER_TIMEOUT_MS);
+    call =
+        new BatchWriteSpansCall(
+            server.getChannel(),
+            BatchWriteSpansRequest.newBuilder().build(),
+            DEFAULT_SERVER_TIMEOUT_MS);
   }
 
   @Test
   public void execute_success() throws Throwable {
     onClientCall(
-            observer -> {
-              observer.onNext(Empty.getDefaultInstance());
-              observer.onCompleted();
-            });
+        observer -> {
+          observer.onNext(Empty.getDefaultInstance());
+          observer.onCompleted();
+        });
 
     call.execute();
 
@@ -82,10 +92,10 @@ public class UnaryClientCallTest {
   @Test
   public void enqueue_success() throws Throwable {
     onClientCall(
-            observer -> {
-              observer.onNext(Empty.getDefaultInstance());
-              observer.onCompleted();
-            });
+        observer -> {
+          observer.onNext(Empty.getDefaultInstance());
+          observer.onCompleted();
+        });
 
     awaitCallbackResult();
 
@@ -94,7 +104,7 @@ public class UnaryClientCallTest {
 
   void verifyPatchRequestSent() {
     ArgumentCaptor<BatchWriteSpansRequest> requestCaptor =
-            ArgumentCaptor.forClass(BatchWriteSpansRequest.class);
+        ArgumentCaptor.forClass(BatchWriteSpansRequest.class);
 
     verify(traceService).batchWriteSpans(requestCaptor.capture(), any());
 
@@ -119,14 +129,18 @@ public class UnaryClientCallTest {
   @Test(expected = IllegalStateException.class)
   public void execute_timeout() throws Throwable {
     long overriddenTimeout = 50;
-    call = new BatchWriteSpansCall(server.getChannel(), BatchWriteSpansRequest.newBuilder().build(), overriddenTimeout);
+    call =
+        new BatchWriteSpansCall(
+            server.getChannel(), BatchWriteSpansRequest.newBuilder().build(), overriddenTimeout);
     onClientCall(
-            observer ->
-                    Executors.newSingleThreadExecutor().submit(() ->
-                    {
+        observer ->
+            Executors.newSingleThreadExecutor()
+                .submit(
+                    () -> {
                       try {
                         Thread.sleep(overriddenTimeout + 10);
-                      } catch (InterruptedException e) {}
+                      } catch (InterruptedException e) {
+                      }
                       observer.onCompleted();
                     }));
 
@@ -139,18 +153,18 @@ public class UnaryClientCallTest {
     AtomicReference<Throwable> ref = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
     call.enqueue(
-            new Callback<Empty>() {
-              @Override
-              public void onSuccess(Empty empty) {
-                latch.countDown();
-              }
+        new Callback<Empty>() {
+          @Override
+          public void onSuccess(Empty empty) {
+            latch.countDown();
+          }
 
-              @Override
-              public void onError(Throwable throwable) {
-                ref.set(throwable);
-                latch.countDown();
-              }
-            });
+          @Override
+          public void onError(Throwable throwable) {
+            ref.set(throwable);
+            latch.countDown();
+          }
+        });
     latch.await(10, TimeUnit.MILLISECONDS);
     if (ref.get() != null) throw ref.get();
   }
@@ -158,13 +172,13 @@ public class UnaryClientCallTest {
   void onClientCall(Consumer<StreamObserver<Empty>> onClientCall) {
     doAnswer(
             (Answer<Void>)
-                    invocationOnMock -> {
-                      StreamObserver<Empty> observer =
-                              ((StreamObserver) invocationOnMock.getArguments()[1]);
-                      onClientCall.accept(observer);
-                      return null;
-                    })
-            .when(traceService)
-            .batchWriteSpans(any(BatchWriteSpansRequest.class), any(StreamObserver.class));
+                invocationOnMock -> {
+                  StreamObserver<Empty> observer =
+                      ((StreamObserver) invocationOnMock.getArguments()[1]);
+                  onClientCall.accept(observer);
+                  return null;
+                })
+        .when(traceService)
+        .batchWriteSpans(any(BatchWriteSpansRequest.class), any(StreamObserver.class));
   }
 }

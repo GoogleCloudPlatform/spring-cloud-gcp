@@ -31,10 +31,8 @@ import io.grpc.StatusRuntimeException;
 import io.grpc.auth.MoreCallCredentials;
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Random;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,19 +54,24 @@ public class ITStackdriverSender {
   @BeforeEach
   public void setUp() throws IOException {
     // Application Default credential is configured using the GOOGLE_APPLICATION_CREDENTIALS env var
-    // See: https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application
+    // See:
+    // https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application
 
     String credentialsPath = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
     assumeThat(credentialsPath).isNotBlank();
     assumeThat(new File(credentialsPath)).exists();
     assumeThatCode(GoogleCredentials::getApplicationDefault).doesNotThrowAnyException();
 
-    credentials = GoogleCredentials.getApplicationDefault()
-            .createScoped(Collections.singletonList("https://www.googleapis.com/auth/trace.append"));
+    credentials =
+        GoogleCredentials.getApplicationDefault()
+            .createScoped(
+                Collections.singletonList("https://www.googleapis.com/auth/trace.append"));
 
     // Setup the sender to authenticate the Google Stackdriver service
-    sender = StackdriverSender.newBuilder()
-            .callOptions(CallOptions.DEFAULT.withCallCredentials(MoreCallCredentials.from(credentials)))
+    sender =
+        StackdriverSender.newBuilder()
+            .callOptions(
+                CallOptions.DEFAULT.withCallCredentials(MoreCallCredentials.from(credentials)))
             .build();
 
     reporter =
@@ -76,16 +79,18 @@ public class ITStackdriverSender {
             .messageTimeout(0, TimeUnit.MILLISECONDS) // don't spawn a thread
             .build(StackdriverEncoder.V2);
 
-    traceServiceGrpcV1 = TraceServiceGrpc.newBlockingStub(sender.channel)
-            .withCallCredentials(MoreCallCredentials.from(credentials.createScoped("https://www.googleapis.com/auth/cloud-platform")));
+    traceServiceGrpcV1 =
+        TraceServiceGrpc.newBlockingStub(sender.channel)
+            .withCallCredentials(
+                MoreCallCredentials.from(
+                    credentials.createScoped("https://www.googleapis.com/auth/cloud-platform")));
 
-    senderNoPermission = StackdriverSender.newBuilder()
-            .build();
+    senderNoPermission = StackdriverSender.newBuilder().build();
 
     reporterNoPermission =
-            AsyncReporter.builder(senderNoPermission)
-                    .messageTimeout(0, TimeUnit.MILLISECONDS)
-                    .build(StackdriverEncoder.V2);
+        AsyncReporter.builder(senderNoPermission)
+            .messageTimeout(0, TimeUnit.MILLISECONDS)
+            .build(StackdriverEncoder.V2);
   }
 
   @AfterEach
@@ -106,7 +111,8 @@ public class ITStackdriverSender {
   @Test
   public void sendSpans() {
     Random random = new Random();
-    Span span = Span.newBuilder()
+    Span span =
+        Span.newBuilder()
             .traceId(random.nextLong(), random.nextLong())
             .parentId("1")
             .id("2")
@@ -124,17 +130,21 @@ public class ITStackdriverSender {
     reporter.report(span);
     reporter.flush();
 
-    Trace trace = await()
+    Trace trace =
+        await()
             .atLeast(1, TimeUnit.SECONDS)
             .atMost(10, TimeUnit.SECONDS)
             .pollInterval(1, TimeUnit.SECONDS)
-            .ignoreExceptionsMatching(e ->
-                    e instanceof StatusRuntimeException &&
-                            ((StatusRuntimeException) e).getStatus().getCode() == Status.Code.NOT_FOUND
-            )
-            .until(() -> traceServiceGrpcV1.getTrace(GetTraceRequest.newBuilder()
-                    .setTraceId(span.traceId())
-                    .build()), t -> t.getSpansCount() == 1);
+            .ignoreExceptionsMatching(
+                e ->
+                    e instanceof StatusRuntimeException
+                        && ((StatusRuntimeException) e).getStatus().getCode()
+                            == Status.Code.NOT_FOUND)
+            .until(
+                () ->
+                    traceServiceGrpcV1.getTrace(
+                        GetTraceRequest.newBuilder().setTraceId(span.traceId()).build()),
+                t -> t.getSpansCount() == 1);
 
     assertThat(trace.getSpans(0).getSpanId()).isEqualTo(2);
     assertThat(trace.getSpans(0).getParentSpanId()).isEqualTo(1);
@@ -143,7 +153,8 @@ public class ITStackdriverSender {
   @Test
   public void sendSpanEmptyName() {
     Random random = new Random();
-    Span span = Span.newBuilder()
+    Span span =
+        Span.newBuilder()
             .traceId(random.nextLong(), random.nextLong())
             .parentId("1")
             .id("2")
@@ -160,17 +171,21 @@ public class ITStackdriverSender {
     reporter.report(span);
     reporter.flush();
 
-    Trace trace = await()
+    Trace trace =
+        await()
             .atLeast(1, TimeUnit.SECONDS)
             .atMost(10, TimeUnit.SECONDS)
             .pollInterval(1, TimeUnit.SECONDS)
-            .ignoreExceptionsMatching(e ->
-                    e instanceof StatusRuntimeException &&
-                            ((StatusRuntimeException) e).getStatus().getCode() == Status.Code.NOT_FOUND
-            )
-            .until(() -> traceServiceGrpcV1.getTrace(GetTraceRequest.newBuilder()
-                    .setTraceId(span.traceId())
-                    .build()), t -> t.getSpansCount() == 1);
+            .ignoreExceptionsMatching(
+                e ->
+                    e instanceof StatusRuntimeException
+                        && ((StatusRuntimeException) e).getStatus().getCode()
+                            == Status.Code.NOT_FOUND)
+            .until(
+                () ->
+                    traceServiceGrpcV1.getTrace(
+                        GetTraceRequest.newBuilder().setTraceId(span.traceId()).build()),
+                t -> t.getSpansCount() == 1);
 
     // In Stackdriver Trace v2 API, Zipkin Span "name" is sent as Stackdriver Span "displayName"
     // However, in Stackdriver Trace v1 API, to read this back, it's Stackdriver TraceSpan's "name"
@@ -184,8 +199,9 @@ public class ITStackdriverSender {
     CheckResult result = reporterNoPermission.check();
     assertThat(result.ok()).isFalse();
     assertThat(result.error()).isNotNull();
-    assertThat(result.error()).isInstanceOfSatisfying(StatusRuntimeException.class,
+    assertThat(result.error())
+        .isInstanceOfSatisfying(
+            StatusRuntimeException.class,
             sre -> assertThat(sre.getStatus().getCode()).isEqualTo(Status.Code.PERMISSION_DENIED));
   }
-
 }

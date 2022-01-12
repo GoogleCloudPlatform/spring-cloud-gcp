@@ -26,20 +26,21 @@ import zipkin2.Span.Kind;
 public class StackdriverEncoderTest {
 
   StackdriverEncoder encoder = StackdriverEncoder.V2;
-  Span zipkinSpan =  Span.newBuilder()
-      .traceId("7180c278b62e8f6a216a2aea45d08fc9")
-      .parentId("1")
-      .id("2")
-      .name("get")
-      .kind(Kind.CLIENT)
-      .localEndpoint(FRONTEND)
-      .remoteEndpoint(BACKEND)
-      .timestamp((TODAY + 50L) * 1000L)
-      .duration(200 * 1000L)
-      .addAnnotation((TODAY + 100) * 1000L, "foo")
-      .putTag("http.path", "/api")
-      .putTag("clnt/finagle.version", "6.45.0")
-      .build();
+  Span zipkinSpan =
+      Span.newBuilder()
+          .traceId("7180c278b62e8f6a216a2aea45d08fc9")
+          .parentId("1")
+          .id("2")
+          .name("get")
+          .kind(Kind.CLIENT)
+          .localEndpoint(FRONTEND)
+          .remoteEndpoint(BACKEND)
+          .timestamp((TODAY + 50L) * 1000L)
+          .duration(200 * 1000L)
+          .addAnnotation((TODAY + 100) * 1000L, "foo")
+          .putTag("http.path", "/api")
+          .putTag("clnt/finagle.version", "6.45.0")
+          .build();
 
   @Test
   public void sizeInBytes() {
@@ -73,12 +74,14 @@ public class StackdriverEncoderTest {
 
     assertThat(new String(traceId)).isEqualTo(expectedTraceId);
 
-    com.google.devtools.cloudtrace.v2.Span
-        deserialized = com.google.devtools.cloudtrace.v2.Span.parser()
-        .parseFrom(serialized, 32, serialized.length - 32);
+    com.google.devtools.cloudtrace.v2.Span deserialized =
+        com.google.devtools.cloudtrace.v2.Span.parser()
+            .parseFrom(serialized, 32, serialized.length - 32);
 
     assertThat(deserialized)
-        .isEqualTo(SpanTranslator.translate(
-            com.google.devtools.cloudtrace.v2.Span.newBuilder(), zipkinSpan).build());
+        .isEqualTo(
+            SpanTranslator.translate(
+                    com.google.devtools.cloudtrace.v2.Span.newBuilder(), zipkinSpan)
+                .build());
   }
 }

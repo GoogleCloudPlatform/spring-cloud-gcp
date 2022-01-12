@@ -19,66 +19,71 @@ import java.util.List;
  * <p>Uses {@link B3Propagation} injection, to inject the tracing context using B3 headers.
  */
 public class StackdriverTracePropagation implements Propagation<String> {
-	/** 128 trace ID lower-hex encoded into 32 characters (required) */
-	public static final String TRACE_ID_NAME = "x-cloud-trace-context";
+  /** 128 trace ID lower-hex encoded into 32 characters (required) */
+  public static final String TRACE_ID_NAME = "x-cloud-trace-context";
 
-	/**
-	 * @param primary typically constructed by {@link B3Propagation#newFactoryBuilder()}
-	 */
-	public static Propagation.Factory newFactory(Propagation.Factory primary) {
-		if (primary == null) throw new NullPointerException("primary == null");
-		return new Factory(primary);
-	}
+  /** @param primary typically constructed by {@link B3Propagation#newFactoryBuilder()} */
+  public static Propagation.Factory newFactory(Propagation.Factory primary) {
+    if (primary == null) throw new NullPointerException("primary == null");
+    return new Factory(primary);
+  }
 
-	static final class Factory extends Propagation.Factory {
-		final Propagation.Factory primary;
+  static final class Factory extends Propagation.Factory {
+    final Propagation.Factory primary;
 
-		Factory(Propagation.Factory primary) {
-			this.primary = primary;
-		}
+    Factory(Propagation.Factory primary) {
+      this.primary = primary;
+    }
 
-		@Override public Propagation<String> get() {
-			return new StackdriverTracePropagation(primary.get());
-		}
+    @Override
+    public Propagation<String> get() {
+      return new StackdriverTracePropagation(primary.get());
+    }
 
-		@Deprecated public <K> Propagation<K> create(KeyFactory<K> keyFactory) {
-			return StringPropagationAdapter.create(get(), keyFactory);
-		}
+    @Deprecated
+    public <K> Propagation<K> create(KeyFactory<K> keyFactory) {
+      return StringPropagationAdapter.create(get(), keyFactory);
+    }
 
-		@Override public boolean supportsJoin() {
-			return false;
-		}
+    @Override
+    public boolean supportsJoin() {
+      return false;
+    }
 
-		@Override public boolean requires128BitTraceId() {
-			return true;
-		}
+    @Override
+    public boolean requires128BitTraceId() {
+      return true;
+    }
 
-		@Override public TraceContext decorate(TraceContext context) {
-			return primary.decorate(context);
-		}
-	}
+    @Override
+    public TraceContext decorate(TraceContext context) {
+      return primary.decorate(context);
+    }
+  }
 
-	final Propagation<String> primary;
-	final List<String> keyNames;
+  final Propagation<String> primary;
+  final List<String> keyNames;
 
-	StackdriverTracePropagation(Propagation<String> primary) {
-		this.primary = primary;
-		ArrayList<String> keyNames = new ArrayList<>(primary.keys());
-		keyNames.add(TRACE_ID_NAME);
-		this.keyNames = Collections.unmodifiableList(keyNames);
-	}
+  StackdriverTracePropagation(Propagation<String> primary) {
+    this.primary = primary;
+    ArrayList<String> keyNames = new ArrayList<>(primary.keys());
+    keyNames.add(TRACE_ID_NAME);
+    this.keyNames = Collections.unmodifiableList(keyNames);
+  }
 
-	@Override public List<String> keys() {
-		return keyNames;
-	}
+  @Override
+  public List<String> keys() {
+    return keyNames;
+  }
 
-	@Override public <R> Injector<R> injector(Setter<R, String> setter) {
-		return primary.injector(setter);
-	}
+  @Override
+  public <R> Injector<R> injector(Setter<R, String> setter) {
+    return primary.injector(setter);
+  }
 
-	@Override public <R> Extractor<R> extractor(Getter<R, String> getter) {
-		if (getter == null) throw new NullPointerException("getter == null");
-		return new XCloudTraceContextExtractor<>(primary, getter);
-	}
+  @Override
+  public <R> Extractor<R> extractor(Getter<R, String> getter) {
+    if (getter == null) throw new NullPointerException("getter == null");
+    return new XCloudTraceContextExtractor<>(primary, getter);
+  }
 }
-

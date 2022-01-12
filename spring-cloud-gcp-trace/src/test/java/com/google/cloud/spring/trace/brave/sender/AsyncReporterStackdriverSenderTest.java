@@ -81,8 +81,8 @@ public class AsyncReporterStackdriverSenderTest {
     BatchWriteSpansRequest request = requestCaptor.getValue();
     assertThat(request.getName()).isEqualTo("projects/" + projectId);
 
-    assertThat(request.getSpansList()).containsExactlyElementsOf(
-        SpanTranslator.translate(projectId, asList(CLIENT_SPAN)));
+    assertThat(request.getSpansList())
+        .containsExactlyElementsOf(SpanTranslator.translate(projectId, asList(CLIENT_SPAN)));
   }
 
   void onClientCall(Consumer<StreamObserver<Empty>> onClientCall) {

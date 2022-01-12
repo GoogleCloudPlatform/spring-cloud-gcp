@@ -131,9 +131,10 @@ public class StackdriverSenderTest {
 
   @Test
   public void verifyCheckReturnsFailureWhenServiceFailsWithKnownGrpcFailure() {
-    onClientCall(observer -> {
-      observer.onError(new StatusRuntimeException(Status.RESOURCE_EXHAUSTED));
-    });
+    onClientCall(
+        observer -> {
+          observer.onError(new StatusRuntimeException(Status.RESOURCE_EXHAUSTED));
+        });
     CheckResult result = sender.check();
     assertThat(result.ok()).isFalse();
     assertThat(result.error())
@@ -143,30 +144,31 @@ public class StackdriverSenderTest {
 
   @Test
   public void verifyCheckReturnsFailureWhenServiceFailsForUnknownReason() {
-    onClientCall(observer -> {
-      observer.onError(new RuntimeException("oh no"));
-    });
+    onClientCall(
+        observer -> {
+          observer.onError(new RuntimeException("oh no"));
+        });
     CheckResult result = sender.check();
     assertThat(result.ok()).isFalse();
-    assertThat(result.error())
-        .isInstanceOf(RuntimeException.class)
-        .hasMessageContaining("UNKNOWN");
+    assertThat(result.error()).isInstanceOf(RuntimeException.class).hasMessageContaining("UNKNOWN");
   }
 
   @Test
   public void verifyCheckReturnsOkWhenExpectedValidationFailure() {
-    onClientCall(observer -> {
-      observer.onError(new StatusRuntimeException(Status.INVALID_ARGUMENT));
-    });
+    onClientCall(
+        observer -> {
+          observer.onError(new StatusRuntimeException(Status.INVALID_ARGUMENT));
+        });
     assertThat(sender.check()).isSameAs(CheckResult.OK);
   }
 
   @Test
   public void verifyCheckReturnsOkWhenServiceSucceeds() {
-    onClientCall(observer -> {
-      observer.onNext(Empty.getDefaultInstance());
-      observer.onCompleted();
-    });
+    onClientCall(
+        observer -> {
+          observer.onNext(Empty.getDefaultInstance());
+          observer.onCompleted();
+        });
     assertThat(sender.check()).isSameAs(CheckResult.OK);
   }
 
