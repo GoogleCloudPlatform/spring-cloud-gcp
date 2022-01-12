@@ -46,24 +46,25 @@ public enum EmbeddedType {
    * @param typeInformation the given type metadata to check for embedded type.
    * @return the embedded type.
    */
-  public static EmbeddedType of(TypeInformation typeInformation) {
+  public static EmbeddedType of(TypeInformation<?> typeInformation) {
     EmbeddedType embeddedType;
     if (typeInformation.isMap()) {
       embeddedType = EmbeddedType.EMBEDDED_MAP;
-    } else if ((typeInformation.isCollectionLike()
-            && typeInformation
-                .getComponentType()
-                .getType()
-                .isAnnotationPresent(
-                    com.google.cloud.spring.data.datastore.core.mapping.Entity.class))
-        || typeInformation
-            .getType()
-            .isAnnotationPresent(
-                com.google.cloud.spring.data.datastore.core.mapping.Entity.class)) {
+    } else if ((typeInformation.isCollectionLike() && isEntity(typeInformation.getComponentType()))
+        || isEntity(typeInformation)) {
       embeddedType = EmbeddedType.EMBEDDED_ENTITY;
     } else {
       embeddedType = EmbeddedType.NOT_EMBEDDED;
     }
     return embeddedType;
+  }
+
+  private static boolean isEntity(TypeInformation<?> componentType) {
+    if (componentType == null) {
+      return false;
+    }
+
+    Class<?> type = componentType.getType();
+    return type.isAnnotationPresent(Entity.class);
   }
 }

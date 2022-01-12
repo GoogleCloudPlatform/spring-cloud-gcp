@@ -35,7 +35,9 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-/** @since 1.2 */
+/**
+ * @since 1.2
+ */
 public class FirestoreDocumentationIntegrationTests {
   private final ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()

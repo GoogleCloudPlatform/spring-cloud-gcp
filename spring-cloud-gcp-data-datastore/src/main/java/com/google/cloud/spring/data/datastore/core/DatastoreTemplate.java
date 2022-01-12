@@ -493,8 +493,8 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
   }
 
   @Override
-  public Key createKey(Class aClass, Object id) {
-    return this.objectToKeyFactory.getKeyFromId(id, getPersistentEntity(aClass).kindName());
+  public Key createKey(Class clazz, Object id) {
+    return this.objectToKeyFactory.getKeyFromId(id, getPersistentEntity(clazz).kindName());
   }
 
   private static StructuredQuery.OrderBy createOrderBy(
@@ -603,7 +603,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
         : PathElement.of(key.getKind(), key.getId());
   }
 
-  private void validateKey(Object entity, PathElement ancestorPE) {
+  private void validateKey(Object entity, PathElement ancestorPathElement) {
     DatastorePersistentEntity datastorePersistentEntity = getPersistentEntity(entity.getClass());
     DatastorePersistentProperty idProp = datastorePersistentEntity.getIdPropertyOrFail();
 
@@ -612,7 +612,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
     }
 
     Key key = getKey(entity, false);
-    if (key == null || key.getAncestors().stream().anyMatch(pe -> pe.equals(ancestorPE))) {
+    if (key == null || key.getAncestors().stream().anyMatch(pe -> pe.equals(ancestorPathElement))) {
       return;
     }
     throw new DatastoreDataException("Descendant object has a key without current ancestor");

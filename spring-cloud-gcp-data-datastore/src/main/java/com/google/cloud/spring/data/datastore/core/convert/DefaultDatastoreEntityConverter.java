@@ -143,15 +143,15 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
 
   @Override
   @SuppressWarnings("unchecked")
-  public <R> R read(Class<R> aClass, BaseEntity entity) {
+  public <R> R read(Class<R> clazz, BaseEntity entity) {
     if (entity == null) {
       return null;
     }
     DatastorePersistentEntity<R> ostensiblePersistentEntity =
-        (DatastorePersistentEntity<R>) this.mappingContext.getPersistentEntity(aClass);
+        (DatastorePersistentEntity<R>) this.mappingContext.getPersistentEntity(clazz);
 
     if (ostensiblePersistentEntity == null) {
-      throw new DatastoreDataException("Unable to convert Datastore Entity to " + aClass);
+      throw new DatastoreDataException("Unable to convert Datastore Entity to " + clazz);
     }
 
     EntityPropertyValueProvider propertyValueProvider =

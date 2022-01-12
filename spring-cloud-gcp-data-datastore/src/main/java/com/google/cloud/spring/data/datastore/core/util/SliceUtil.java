@@ -19,7 +19,9 @@ package com.google.cloud.spring.data.datastore.core.util;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-/** @since 1.2 */
+/**
+ *  @since 1.2
+ */
 public final class SliceUtil {
 
   private SliceUtil() {}

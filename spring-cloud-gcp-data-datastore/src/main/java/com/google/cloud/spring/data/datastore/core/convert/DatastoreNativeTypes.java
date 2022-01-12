@@ -128,11 +128,11 @@ public abstract class DatastoreNativeTypes {
   /**
    * Checks if a given type is a native type for Cloud Datastore.
    *
-   * @param aClass the class type to check
+   * @param clazz the class type to check
    * @return `true` if the type is a native type, which includes `null`. `false` otherwise.
    */
-  public static boolean isNativeType(Class aClass) {
-    return aClass == null || DATASTORE_NATIVE_TYPES.contains(aClass);
+  public static boolean isNativeType(Class clazz) {
+    return clazz == null || DATASTORE_NATIVE_TYPES.contains(clazz);
   }
 
   /**
