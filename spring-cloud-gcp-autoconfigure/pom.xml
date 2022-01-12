@@ -162,11 +162,13 @@
             <artifactId>spring-cloud-sleuth-autoconfigure</artifactId>
             <optional>true</optional>
         </dependency>
-		<dependency>
-			<groupId>com.google.cloud</groupId>
-			<artifactId>spring-cloud-gcp-trace</artifactId>
-			<optional>true</optional>
-		</dependency>
+
+        <dependency>
+          <groupId>com.google.cloud</groupId>
+          <artifactId>spring-cloud-gcp-trace</artifactId>
+          <optional>true</optional>
+        </dependency>
+
         <dependency>
             <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-reporter-brave</artifactId>
