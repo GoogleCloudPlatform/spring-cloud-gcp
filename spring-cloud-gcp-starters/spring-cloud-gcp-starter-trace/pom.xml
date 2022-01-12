@@ -28,6 +28,10 @@
 		</dependency>
 		<dependency>
 			<groupId>com.google.cloud</groupId>
+			<artifactId>spring-cloud-gcp-trace</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-core-grpc</artifactId>
 		</dependency>
 		<dependency>

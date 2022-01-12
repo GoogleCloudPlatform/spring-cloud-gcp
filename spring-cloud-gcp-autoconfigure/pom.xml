@@ -158,15 +158,15 @@
 
         <!-- Trace -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-sleuth-autoconfigure</artifactId>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>spring-cloud-gcp-trace</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-          <groupId>com.google.cloud</groupId>
-          <artifactId>spring-cloud-gcp-trace</artifactId>
-          <optional>true</optional>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-sleuth-autoconfigure</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
