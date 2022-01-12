@@ -24,8 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-/** @author Dmitry Solomakha */
-
 // tag::user_service[]
 class UserService {
   @Autowired private UserRepository userRepository;

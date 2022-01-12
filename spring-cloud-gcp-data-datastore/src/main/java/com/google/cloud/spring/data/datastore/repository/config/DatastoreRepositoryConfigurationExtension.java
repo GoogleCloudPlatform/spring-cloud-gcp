@@ -34,7 +34,6 @@ import org.w3c.dom.Element;
  * Holds configuration information for creating Datastore repositories and providing Datastore
  * templates.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class DatastoreRepositoryConfigurationExtension

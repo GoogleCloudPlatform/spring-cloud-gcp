@@ -24,8 +24,6 @@ import java.util.Objects;
  * A class containing the key components needed to identify a {@link Trade}. This is intentionally
  * not used in {@link Trade} but is used by its children to test that embedded objects containing
  * keys are resolved properly.
- *
- * @author Chengyuan Zhao
  */
 public class TradeIdentifier {
 

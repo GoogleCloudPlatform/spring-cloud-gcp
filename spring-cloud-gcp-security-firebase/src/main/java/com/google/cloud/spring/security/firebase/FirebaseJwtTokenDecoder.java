@@ -55,7 +55,6 @@ import org.springframework.web.client.RestOperations;
  * claim header {@link FirebaseTokenValidator} - Validates all other headers according to definition
  * at https://firebase.google.com/docs/auth/admin/verify-id-tokens
  *
- * @author Vinicius Carvalho
  * @since 1.2.2
  */
 public class FirebaseJwtTokenDecoder implements JwtDecoder {

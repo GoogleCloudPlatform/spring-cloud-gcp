@@ -38,8 +38,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
  * Bootstrap Autoconfiguration for GCP Secret Manager which enables loading secrets as properties
  * into the application {@link org.springframework.core.env.Environment}.
  *
- * @author Daniel Zou
- * @author Eddú Meléndez
  * @since 1.2.2
  */
 @Configuration(proxyBeanMethods = false)

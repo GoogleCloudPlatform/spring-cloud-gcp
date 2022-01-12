@@ -73,8 +73,6 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenResolv
  * {@link WebSecurityConfigurerAdapter} is found, Spring Boot's default {@code
  * OAuth2ResourceServerWebSecurityConfiguration} will add this customization.
  *
- * @author Elena Felder
- * @author Eddú Meléndez
  * @since 1.1
  */
 @Configuration(proxyBeanMethods = false)

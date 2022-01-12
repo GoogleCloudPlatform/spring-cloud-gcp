@@ -55,9 +55,6 @@ import reactor.util.context.Context;
 /**
  * An implementation of {@link FirestoreReactiveOperations}.
  *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
  * @since 1.2
  */
 public class FirestoreTemplate implements FirestoreReactiveOperations {
@@ -389,12 +386,12 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
             });
   }
 
-  private Mono<Document> getDocument(String id, Class aClass, DocumentMask documentMask) {
+  private Mono<Document> getDocument(String id, Class clazz, DocumentMask documentMask) {
     return Mono.subscriberContext()
         .flatMap(
             ctx -> {
               FirestorePersistentEntity<?> persistentEntity =
-                  this.mappingContext.getPersistentEntity(aClass);
+                  this.mappingContext.getPersistentEntity(clazz);
               GetDocumentRequest.Builder builder =
                   GetDocumentRequest.newBuilder().setName(buildResourceName(persistentEntity, id));
 

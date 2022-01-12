@@ -31,7 +31,6 @@ import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 /**
  * A key converter that parses Key JSON from REST requests.
  *
- * @author Chengyuan Zhao
  * @since 1.2
  */
 public class DatastoreKeyIdConverter implements BackendIdConverter {
@@ -48,7 +47,7 @@ public class DatastoreKeyIdConverter implements BackendIdConverter {
   }
 
   @Override
-  public Serializable fromRequestId(String s, Class<?> aClass) {
+  public Serializable fromRequestId(String s, Class<?> clazz) {
     try {
       return Key.fromUrlSafe(URLDecoder.decode(s, Charset.defaultCharset().name()));
     } catch (UnsupportedEncodingException e) {
@@ -57,7 +56,7 @@ public class DatastoreKeyIdConverter implements BackendIdConverter {
   }
 
   @Override
-  public String toRequestId(Serializable serializable, Class<?> aClass) {
+  public String toRequestId(Serializable serializable, Class<?> clazz) {
     return ((Key) serializable).toUrlSafe();
   }
 

@@ -28,10 +28,6 @@ import org.springframework.util.Assert;
  * A simple implementation of a {@link HealthIndicator} returning status information for Google
  * Cloud Datastore.
  *
- * @author Raghavan N S
- * @author Srinivasa Meenavalli
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  * @since 1.2
  */
 @Component

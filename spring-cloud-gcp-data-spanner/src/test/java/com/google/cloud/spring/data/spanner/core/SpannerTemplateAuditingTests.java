@@ -47,8 +47,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Tests the auditing features of the template.
- *
- * @author Chengyuan Zhao
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration
@@ -87,7 +85,7 @@ public class SpannerTemplateAuditingTests {
   /** Spring config for the tests. */
   @Configuration
   @EnableSpannerAuditing
-  static class config {
+  static class Config {
 
     @Bean
     public SpannerMappingContext spannerMappingContext() {

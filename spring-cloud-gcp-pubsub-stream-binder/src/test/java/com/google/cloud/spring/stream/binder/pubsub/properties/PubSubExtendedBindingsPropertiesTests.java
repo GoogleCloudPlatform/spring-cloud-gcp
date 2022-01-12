@@ -54,8 +54,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Tests for extended binding properties.
- *
- * @author Daniel Zou
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(

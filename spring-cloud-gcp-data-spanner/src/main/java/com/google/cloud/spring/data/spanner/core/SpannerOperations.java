@@ -28,8 +28,6 @@ import java.util.function.Function;
 /**
  * Defines operations available to use with Spanner.
  *
- * @author Ray Tsang
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public interface SpannerOperations {

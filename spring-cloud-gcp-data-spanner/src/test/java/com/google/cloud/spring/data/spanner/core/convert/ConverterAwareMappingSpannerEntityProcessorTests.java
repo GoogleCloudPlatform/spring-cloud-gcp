@@ -47,9 +47,6 @@ import org.springframework.lang.NonNull;
 
 /**
  * Tests for Spanner mapping and converting.
- *
- * @author Chengyuan Zhao
- * @author Balint Pato
  */
 class ConverterAwareMappingSpannerEntityProcessorTests {
 
@@ -75,7 +72,7 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
 
   private SpannerEntityProcessor spannerEntityProcessor;
 
-  private final Converter<LocalDateTime, Timestamp> LOCAL_DATE_TIME_WRITE_CONVERTER =
+  private static final Converter<LocalDateTime, Timestamp> LOCAL_DATE_TIME_WRITE_CONVERTER =
       new Converter<LocalDateTime, Timestamp>() {
 
         @Override
@@ -84,7 +81,7 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
         }
       };
 
-  private final Converter<Timestamp, LocalDateTime> LOCAL_DATE_TIME_READ_CONVERTER =
+  private static final Converter<Timestamp, LocalDateTime> LOCAL_DATE_TIME_READ_CONVERTER =
       new Converter<Timestamp, LocalDateTime>() {
 
         @Override

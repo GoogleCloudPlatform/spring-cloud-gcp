@@ -27,8 +27,6 @@ import org.springframework.data.domain.Pageable;
 /**
  * Annotation used in user-defined repositories to provide SQL for custom Query Methods.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
  * @since 1.1
  */
 @Retention(RetentionPolicy.RUNTIME)

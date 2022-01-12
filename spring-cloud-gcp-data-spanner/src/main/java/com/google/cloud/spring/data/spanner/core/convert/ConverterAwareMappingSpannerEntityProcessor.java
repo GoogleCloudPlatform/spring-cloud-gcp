@@ -34,8 +34,6 @@ import org.springframework.util.Assert;
  * The primary class for writing entity objects to Spanner and creating entity objects from rows
  * stored in Spanner.
  *
- * @author Chengyuan Zhao
- * @author Balint Pato
  * @since 1.1
  */
 public class ConverterAwareMappingSpannerEntityProcessor implements SpannerEntityProcessor {

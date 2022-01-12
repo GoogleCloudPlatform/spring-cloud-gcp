@@ -36,10 +36,6 @@ import org.springframework.messaging.handler.annotation.Header;
 /**
  * Spring Boot Application demonstrating receiving PubSub messages via streaming pull.
  *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
  * @since 1.1
  */
 @SpringBootApplication

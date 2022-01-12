@@ -23,10 +23,6 @@ import java.util.List;
 
 /**
  * A sample entity.
- *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
  */
 @Table(name = "trades_template")
 public class Trade {

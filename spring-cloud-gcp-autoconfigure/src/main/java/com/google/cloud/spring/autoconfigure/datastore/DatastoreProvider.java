@@ -22,7 +22,6 @@ import java.util.function.Supplier;
 /**
  * This interface is the return type for the bean that provides Cloud Datastore clients.
  *
- * @author Chengyuan Zhao
  * @since 1.2
  */
 public interface DatastoreProvider extends Supplier<Datastore> {}

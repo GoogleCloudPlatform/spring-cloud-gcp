@@ -47,7 +47,6 @@ import org.springframework.core.io.Resource;
 /**
  * Unit tests for the {@link CloudVisionTemplate}.
  *
- * @author Daniel Zou
  * @since 1.1
  */
 public class CloudVisionTemplateTests {
@@ -156,7 +155,7 @@ public class CloudVisionTemplateTests {
   }
 
   @Test
-  public void testIOError() {
+  public void testResourceReadingError() {
     this.expectedException.expect(CloudVisionException.class);
     this.expectedException.expectMessage("Failed to read image bytes from provided resource.");
 

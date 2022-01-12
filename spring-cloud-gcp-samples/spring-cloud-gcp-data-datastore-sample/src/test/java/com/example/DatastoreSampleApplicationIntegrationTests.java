@@ -55,9 +55,6 @@ import org.springframework.util.MultiValueMap;
  *
  * <p>-Dit.datastore=true -Dspring.cloud.gcp.sql.database-name=[...]
  * -Dspring.cloud.gcp.datastore.namespace=[...]
- *
- * @author Chengyuan Zhao
- * @author Dmitry Solomakha
  */
 // please use "-Dit.datastore=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")

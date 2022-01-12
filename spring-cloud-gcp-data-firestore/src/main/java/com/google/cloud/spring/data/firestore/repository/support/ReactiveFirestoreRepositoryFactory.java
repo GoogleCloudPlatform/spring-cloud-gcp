@@ -33,7 +33,6 @@ import org.springframework.lang.Nullable;
 /**
  * A factory for reactive Firestore repositories.
  *
- * @author Chengyuan Zhao
  * @since 1.2
  */
 public class ReactiveFirestoreRepositoryFactory extends ReactiveRepositoryFactorySupport {
@@ -55,11 +54,11 @@ public class ReactiveFirestoreRepositoryFactory extends ReactiveRepositoryFactor
   }
 
   @Override
-  public <T, I> EntityInformation<T, I> getEntityInformation(Class<T> aClass) {
+  public <T, I> EntityInformation<T, I> getEntityInformation(Class<T> clazz) {
     return (EntityInformation<T, I>)
         new FirestorePersistentEntityInformation<>(
             (FirestorePersistentEntity<T>)
-                this.firestoreMappingContext.getPersistentEntity(aClass));
+                this.firestoreMappingContext.getPersistentEntity(clazz));
   }
 
   @Override

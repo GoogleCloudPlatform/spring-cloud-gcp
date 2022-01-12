@@ -44,8 +44,6 @@ import reactor.core.publisher.Mono;
 /**
  * Firestore-specific implementation of {@link
  * org.springframework.transaction.ReactiveTransactionManager}.
- *
- * @author Dmitry Solomakha
  */
 public class ReactiveFirestoreTransactionManager extends AbstractReactiveTransactionManager {
 

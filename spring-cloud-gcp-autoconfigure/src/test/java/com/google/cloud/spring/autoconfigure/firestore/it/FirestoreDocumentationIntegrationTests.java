@@ -36,7 +36,6 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 /**
- * @author Dmitry Solomakha
  * @since 1.2
  */
 public class FirestoreDocumentationIntegrationTests {

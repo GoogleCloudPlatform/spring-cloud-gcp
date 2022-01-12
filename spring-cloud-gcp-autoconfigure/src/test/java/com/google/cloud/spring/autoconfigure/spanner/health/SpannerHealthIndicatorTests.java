@@ -35,7 +35,6 @@ import org.springframework.boot.actuate.health.Status;
 /**
  * Tests for {@link SpannerHealthIndicator}.
  *
- * @author ikeyat
  * @since 2.0.6
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -45,7 +44,7 @@ public class SpannerHealthIndicatorTests {
 
   @Mock private ResultSet resultSet;
 
-  private final String QUERY = "SELECT 2";
+  private static final String QUERY = "SELECT 2";
 
   @Test
   public void testdoHealthCheckUp() throws Exception {

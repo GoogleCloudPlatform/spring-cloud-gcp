@@ -30,8 +30,6 @@ import org.slf4j.MDC;
 
 /**
  * Tests for {@link TraceIdLoggingEnhancer}.
- *
- * @author Mike Eltsufin
  */
 class TraceIdLoggingEnhancerTests {
 
@@ -57,8 +55,7 @@ class TraceIdLoggingEnhancerTests {
   }
 
   @Test
-  void testLoggingEventMDC() {
-    LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
+  void testLoggingEventMdc() {
 
     ILoggingEvent mockLoggingEvent = mock(ILoggingEvent.class);
     Map<String, String> map = new HashMap<>();
@@ -69,6 +66,7 @@ class TraceIdLoggingEnhancerTests {
     MDC.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid-mdc");
     MDC.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "sid-mdc");
 
+    LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
     enhancer.enhanceLogEntry(logEntryBuilder, mockLoggingEvent);
 
     LogEntry logEntry = logEntryBuilder.build();
@@ -78,7 +76,7 @@ class TraceIdLoggingEnhancerTests {
   }
 
   @Test
-  void testThreadLocalMDC() {
+  void testThreadLocalMdc() {
     LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
 
     MDC.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid123");

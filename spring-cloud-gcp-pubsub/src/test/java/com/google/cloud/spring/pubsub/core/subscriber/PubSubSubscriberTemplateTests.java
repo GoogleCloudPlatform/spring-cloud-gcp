@@ -70,11 +70,6 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 /**
  * Unit tests for {@link PubSubSubscriberTemplate}.
- *
- * @author Mike Eltsufin
- * @author Doug Hoard
- * @author Elena Felder
- * @author Maurice Zeijen
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PubSubSubscriberTemplateTests {
@@ -600,7 +595,7 @@ public class PubSubSubscriberTemplateTests {
     }
 
     @Override
-    public void onSuccess(Void aVoid) {}
+    public void onSuccess(Void unusedVoid) {}
 
     public Throwable getThrowable() {
       return this.throwable;

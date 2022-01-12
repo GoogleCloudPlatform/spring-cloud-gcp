@@ -41,18 +41,16 @@ import org.bouncycastle.util.io.pem.PemWriter;
 /**
  * Test utility class to generate a pair of Public/Private keys. Used for testing JWT signing.
  *
- * @author Vinicius Carvalho
- * @author Elena Felder
  * @since 1.2.2
  */
-public class RSAKeyGeneratorUtils {
+public class RsaKeyGeneratorUtils {
 
   private static final String LINE_SEPARATOR = System.getProperty("line.separator");
   private PrivateKey privateKey;
   private PublicKey publicKey;
   private X509Certificate certificate;
 
-  public RSAKeyGeneratorUtils() throws Exception {
+  public RsaKeyGeneratorUtils() throws Exception {
     KeyStore keyStore = KeyStore.getInstance("JKS");
     keyStore.load(null, null);
     KeyPairGenerator kpGenerator = KeyPairGenerator.getInstance("RSA");

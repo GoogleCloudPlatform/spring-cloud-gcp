@@ -30,12 +30,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 /**
  * An abstraction for Google Cloud Pub/Sub subscription / pulling operations.
  *
- * @author Vinicius Carvalho
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Doug Hoard
- * @author Maurice Zeijen
  * @since 1.1
  */
 public interface PubSubSubscriberOperations {

@@ -28,8 +28,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for GcsAcceptModifiedAfterFileListFilter.
- *
- * @author Hosain Al Ahmad
  */
 class GcsAcceptModifiedAfterFileListFilterTest {
 

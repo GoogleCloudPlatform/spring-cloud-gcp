@@ -45,8 +45,6 @@ import org.springframework.test.context.junit4.SpringRunner;
  *
  * <p>To run the test, set the gcs-resource-test-bucket property in application.properties to the
  * name of your bucket and run: mvn test -Dit.storage
- *
- * @author Daniel Zou
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(

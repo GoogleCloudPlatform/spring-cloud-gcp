@@ -33,7 +33,6 @@ import reactor.core.publisher.Flux;
 /**
  * Auto-configuration for {@link ReactiveFirestoreTransactionManager}.
  *
- * @author Biju Kunjummen
  * @since 2.0.5
  */
 @Configuration(proxyBeanMethods = false)

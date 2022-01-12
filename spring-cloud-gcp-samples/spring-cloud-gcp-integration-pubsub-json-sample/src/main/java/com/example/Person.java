@@ -23,8 +23,6 @@ import java.util.Objects;
 /**
  * This is a sample POJO which is serialized/deserialized as a JSON payload and sent through Cloud
  * Pub/Sub.
- *
- * @author Daniel Zou
  */
 public class Person {
 

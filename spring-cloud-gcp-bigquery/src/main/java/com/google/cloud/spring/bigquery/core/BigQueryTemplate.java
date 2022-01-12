@@ -41,7 +41,6 @@ import org.springframework.util.concurrent.SettableListenableFuture;
 /**
  * Helper class which simplifies common operations done in BigQuery.
  *
- * @author Daniel Zou
  * @since 1.2
  */
 public class BigQueryTemplate implements BigQueryOperations {
@@ -159,7 +158,9 @@ public class BigQueryTemplate implements BigQueryOperations {
     return createJobFuture(writer.getJob());
   }
 
-  /** @return the name of the BigQuery dataset that the template is operating in. */
+  /**
+   * @return the name of the BigQuery dataset that the template is operating in.
+   */
   public String getDatasetName() {
     return this.datasetName;
   }

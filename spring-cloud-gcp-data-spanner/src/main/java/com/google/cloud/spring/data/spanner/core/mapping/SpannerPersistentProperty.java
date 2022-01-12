@@ -25,9 +25,6 @@ import org.springframework.data.mapping.PersistentProperty;
  * Interface for a {@link PersistentProperty} of a {@link SpannerPersistentEntity} to be stored in a
  * Google Cloud Spanner table.
  *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- * @author Roman Solodovnichenko
  * @since 1.1
  */
 public interface SpannerPersistentProperty extends PersistentProperty<SpannerPersistentProperty> {

@@ -23,7 +23,6 @@ import java.util.List;
  * WHERE ( action=@tag0 AND ticker=@tag1 ) the list of placeholders would look like this: [tag0,
  * tag1]
  *
- * @author Dmitry Solomakha
  * @since 1.2.4
  */
 class SqlStringAndPlaceholders {

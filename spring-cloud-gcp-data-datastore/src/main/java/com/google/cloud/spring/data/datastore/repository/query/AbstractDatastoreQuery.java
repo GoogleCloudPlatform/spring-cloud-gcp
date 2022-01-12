@@ -28,7 +28,6 @@ import org.springframework.data.repository.query.RepositoryQuery;
  * Abstract class for implementing Cloud Datastore query methods.
  *
  * @param <T> the domain type of the repository class containing this query method.
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public abstract class AbstractDatastoreQuery<T> implements RepositoryQuery {

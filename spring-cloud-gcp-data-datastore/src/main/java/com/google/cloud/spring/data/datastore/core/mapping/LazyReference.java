@@ -27,7 +27,6 @@ import org.springframework.data.annotation.Reference;
  * Annotation for a class that indicates that a property is a collection of lazy loaded Datastore
  * entities.
  *
- * @author Dmitry Solomakha
  * @since 1.2.2
  */
 @Documented

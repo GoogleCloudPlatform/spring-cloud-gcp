@@ -70,10 +70,6 @@ import org.springframework.util.Assert;
 /**
  * An implementation of {@link SpannerOperations}.
  *
- * @author Chengyuan Zhao
- * @author Ray Tsang
- * @author Mike Eltsufin
- * @author Roman Solodovnichenko
  * @since 1.1
  */
 public class SpannerTemplate implements SpannerOperations, ApplicationEventPublisherAware {

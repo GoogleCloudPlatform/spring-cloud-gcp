@@ -45,7 +45,6 @@ import org.springframework.util.Assert;
 /**
  * Repository factory for Datastore.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class DatastoreRepositoryFactory extends RepositoryFactorySupport

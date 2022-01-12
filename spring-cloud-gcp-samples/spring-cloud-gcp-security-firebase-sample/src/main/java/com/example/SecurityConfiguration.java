@@ -23,7 +23,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 
 /**
- * @author Vinicius Carvalho
  * @since 1.2.2
  */
 @Configuration

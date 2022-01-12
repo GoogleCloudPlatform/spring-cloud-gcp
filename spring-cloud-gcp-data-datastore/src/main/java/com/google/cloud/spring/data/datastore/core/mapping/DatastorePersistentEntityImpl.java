@@ -37,13 +37,13 @@ import org.springframework.expression.common.LiteralExpression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
  * Metadata class for entities stored in Datastore.
  *
  * @param <T> the type of the persistent entity
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class DatastorePersistentEntityImpl<T>
@@ -77,20 +77,26 @@ public class DatastorePersistentEntityImpl<T>
       TypeInformation<T> information, DatastoreMappingContext datastoreMappingContext) {
     super(information);
 
-    Class<?> rawType = information.getType();
-
     this.datastoreMappingContext = datastoreMappingContext;
     this.context = new StandardEvaluationContext();
     this.kind = findAnnotation(Entity.class);
     this.discriminatorField = findAnnotation(DiscriminatorField.class);
     this.discriminatorValue = findAnnotation(DiscriminatorValue.class);
-    this.classBasedKindName =
-        this.hasTableName() ? this.kind.name() : StringUtils.uncapitalize(rawType.getSimpleName());
+    this.classBasedKindName = findKindName(information.getType());
     this.kindNameExpression = detectExpression();
   }
 
   protected boolean hasTableName() {
     return this.kind != null && StringUtils.hasText(this.kind.name());
+  }
+
+  private String findKindName(Class<?> rawType) {
+    if (this.hasTableName()) {
+      // hasTableName() pre-checks kind; the below assert will never trigger.
+      Assert.notNull(this.kind, "Kind unknown; check your @Entity declaration.");
+      return this.kind.name();
+    }
+    return StringUtils.uncapitalize(rawType.getSimpleName());
   }
 
   @Nullable

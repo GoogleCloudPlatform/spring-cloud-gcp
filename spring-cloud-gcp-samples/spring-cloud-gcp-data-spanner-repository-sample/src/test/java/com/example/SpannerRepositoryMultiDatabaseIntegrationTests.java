@@ -38,8 +38,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Tests for the Spanner repository example using multiple databases.
- *
- * @author Chengyuan Zhao
  */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)

@@ -23,7 +23,6 @@ import org.springframework.util.Assert;
 /**
  * Represents a Google Cloud Storage location provided by the user.
  *
- * @author Daniel Zou
  * @since 1.2
  */
 public class GoogleStorageLocation {

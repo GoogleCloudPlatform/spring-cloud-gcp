@@ -35,7 +35,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 /**
  * Tests for the receiver application.
  *
- * @author Dmitry Solomakha
  * @since 1.2
  */
 // Please use "-Dit.pubsub-integration=true" to enable the tests

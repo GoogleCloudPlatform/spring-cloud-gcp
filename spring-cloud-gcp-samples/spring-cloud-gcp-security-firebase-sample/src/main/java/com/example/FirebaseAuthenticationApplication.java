@@ -21,7 +21,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 /**
- * @author Vinicius Carvalho
  * @since 1.2.2
  */
 @SpringBootApplication

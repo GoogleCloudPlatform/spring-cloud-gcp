@@ -42,7 +42,6 @@ import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * @author Vinicius Carvalho
  * @since 1.2.2
  */
 @Configuration(proxyBeanMethods = false)

@@ -30,8 +30,6 @@ import java.util.Map;
 /**
  * A utility class to map between common Java types and types to use with Spanner.
  *
- * @author Chengyuan Zhao
- * @author Balint Pato
  * @since 1.1
  */
 public final class SpannerTypeMapper {

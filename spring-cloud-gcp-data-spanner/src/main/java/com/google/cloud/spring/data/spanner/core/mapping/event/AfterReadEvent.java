@@ -22,8 +22,6 @@ import java.util.Objects;
 
 /**
  * This event read operation on Cloud Spanner.
- *
- * @author Chengyuan Zhao
  */
 public class AfterReadEvent extends LoadEvent {
 

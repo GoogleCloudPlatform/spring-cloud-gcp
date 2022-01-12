@@ -23,9 +23,6 @@ import java.util.Map;
 
 /**
  * A test entity with an unindexed property and unindexed list property.
- *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
  */
 @Entity
 public class UnindexedTestDatastoreItem {

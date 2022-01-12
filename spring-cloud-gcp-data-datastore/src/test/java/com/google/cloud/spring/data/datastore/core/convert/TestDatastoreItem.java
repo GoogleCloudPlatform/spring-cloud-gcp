@@ -24,9 +24,6 @@ import java.time.Duration;
 
 /**
  * A test entity object that has fields of many different types to test features.
- *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
  */
 class TestDatastoreItem {
   private Duration durationField;

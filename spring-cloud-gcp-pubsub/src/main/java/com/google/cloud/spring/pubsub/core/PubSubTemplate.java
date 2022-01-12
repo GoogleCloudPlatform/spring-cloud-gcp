@@ -39,13 +39,6 @@ import org.springframework.util.concurrent.ListenableFuture;
  *
  * <p>The main Google Cloud Pub/Sub integration component for publishing to topics and consuming
  * messages from subscriptions asynchronously or by pulling.
- *
- * @author Vinicius Carvalho
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Doug Hoard
- * @author Maurice Zeijen
  */
 public class PubSubTemplate implements PubSubOperations {
 

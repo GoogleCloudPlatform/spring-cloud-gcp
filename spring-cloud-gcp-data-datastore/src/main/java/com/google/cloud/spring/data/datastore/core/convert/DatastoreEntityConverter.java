@@ -26,7 +26,6 @@ import org.springframework.data.util.TypeInformation;
 /**
  * An interface for converting objects to Datastore Entities and vice versa.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public interface DatastoreEntityConverter

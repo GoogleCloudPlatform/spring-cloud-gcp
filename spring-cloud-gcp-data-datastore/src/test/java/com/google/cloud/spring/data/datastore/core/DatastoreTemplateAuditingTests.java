@@ -49,9 +49,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Tests the auditing features of the template.
- *
- * @author Chengyuan Zhao
- * @author Frank Pavageau
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration
@@ -105,7 +102,7 @@ public class DatastoreTemplateAuditingTests {
   /** Spring config for the tests. */
   @Configuration
   @EnableDatastoreAuditing
-  static class config {
+  static class Config {
 
     @Bean
     public DatastoreMappingContext datastoreMappingContext() {

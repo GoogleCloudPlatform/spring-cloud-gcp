@@ -34,8 +34,6 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Autoconfiguration for GCP KMS which enables data encryption and decryption.
- *
- * @author Emmanouil Gkatziouras
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(GcpKmsProperties.class)

@@ -25,7 +25,6 @@ import java.lang.annotation.Target;
 /**
  * Annotation for a class that indicates it is an entity stored in a Datastore Entity.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 @Documented

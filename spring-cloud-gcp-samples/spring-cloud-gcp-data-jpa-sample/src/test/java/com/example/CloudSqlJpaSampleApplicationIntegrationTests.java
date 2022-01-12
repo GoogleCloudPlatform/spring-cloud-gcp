@@ -34,10 +34,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  * <p>Run with: mvn -Dit.cloudsql test
  *
  * <p>The test will inherit the properties set in resources/application.properties.
- *
- * @author Mike Eltsufin
- * @author Dmitry Solomakha
- * @author Daniel Zou
  */
 // Please use "-Dit.cloudsql=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")

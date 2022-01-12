@@ -22,7 +22,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Spring Boot application launcher.
  *
- * @author Elena Felder
  * @since 1.2
  */
 @SpringBootApplication

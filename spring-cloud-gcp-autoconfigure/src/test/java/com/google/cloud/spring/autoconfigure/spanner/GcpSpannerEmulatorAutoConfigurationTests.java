@@ -28,7 +28,6 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.threeten.bp.Duration;
 
-/** @author Eddú Meléndez */
 public class GcpSpannerEmulatorAutoConfigurationTests {
 
   private ApplicationContextRunner contextRunner =

@@ -41,13 +41,6 @@ import org.springframework.util.Assert;
 /**
  * Implements {@link WritableResource} for reading and writing objects in Google Cloud Storage
  * (GCS). An instance of this class represents a handle to a bucket or a blob.
- *
- * @author Vinicius Carvalho
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author João André Martins
- * @author Daniel Zou
- * @author Elena Felder
  */
 public class GoogleStorageResource implements WritableResource {
 
@@ -109,8 +102,8 @@ public class GoogleStorageResource implements WritableResource {
   }
 
   /**
-   * @throws StorageException if an issue occurs getting the Bucket or Blob.
    * @return Returns true if the bucket or object exists.
+   * @throws StorageException if an issue occurs getting the Bucket or Blob.
    */
   @Override
   public boolean exists() {
@@ -333,17 +326,23 @@ public class GoogleStorageResource implements WritableResource {
     return Channels.newOutputStream(this.storage.writer(BlobInfo.newBuilder(getBlobId()).build()));
   }
 
-  /** @return the blob name of the Google Storage Resource; null if the resource is a bucket */
+  /**
+   * @return the blob name of the Google Storage Resource; null if the resource is a bucket
+   */
   public String getBlobName() {
     return this.location.getBlobName();
   }
 
-  /** @return true if the resource is a bucket; false otherwise */
+  /**
+   * @return true if the resource is a bucket; false otherwise
+   */
   public boolean isBucket() {
     return this.location.isBucket();
   }
 
-  /** @return the bucket name of the Google Storage Resource */
+  /**
+   * @return the bucket name of the Google Storage Resource
+   */
   public String getBucketName() {
     return this.location.getBucketName();
   }

@@ -32,7 +32,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 /**
  * Spring Boot Application demonstrating reactive subscription to PubSub.
  *
- * @author Elena Felder
  * @since 1.2
  */
 @SpringBootApplication

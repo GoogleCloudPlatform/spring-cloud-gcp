@@ -26,9 +26,6 @@ import java.util.Objects;
 
 /**
  * Sample entity for integration tests.
- *
- * @author Daniel Zou
- * @author Dmitry Solomakha
  */
 // tag::class_definition[]
 // tag::embedded_class_collections[]
@@ -129,6 +126,7 @@ public class User {
     this.homeAddress = homeAddress;
   }
   // end::embedded_class_collections[]
+
   @Override
   public String toString() {
     return "User{"
@@ -171,13 +169,13 @@ public class User {
   }
 
   // tag::embedded_class_collections[]
-
   public static class Address {
     String streetAddress;
     String country;
 
     public Address() {}
     // end::embedded_class_collections[]
+
     public Address(String streetAddress, String country) {
       this.streetAddress = streetAddress;
       this.country = country;

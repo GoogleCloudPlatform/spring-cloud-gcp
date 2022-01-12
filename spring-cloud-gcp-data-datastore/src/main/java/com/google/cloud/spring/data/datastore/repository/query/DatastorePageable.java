@@ -25,9 +25,6 @@ import org.springframework.data.domain.Pageable;
  *
  * <p>The static methods can take either paged or unpaged {@link Pageable}, while instance methods
  * only deal with a paged self object.
- *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
  */
 public class DatastorePageable extends PageRequest {
   private final String urlSafeCursor;

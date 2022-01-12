@@ -24,7 +24,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-/** @author Dmitry Solomakha */
 public class DatastoreResultsCollection<T> implements Collection<T> {
   private final Collection<T> collection;
 

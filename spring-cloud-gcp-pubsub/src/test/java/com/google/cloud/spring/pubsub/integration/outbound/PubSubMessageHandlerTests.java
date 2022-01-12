@@ -49,10 +49,6 @@ import org.springframework.util.concurrent.SettableListenableFuture;
 
 /**
  * Tests for the Pub/Sub message handler.
- *
- * @author João André Martins
- * @author Eric Goetschalckx
- * @author Chengyuan Zhao
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PubSubMessageHandlerTests {
@@ -247,7 +243,7 @@ public class PubSubMessageHandlerTests {
     when(this.pubSubTemplate.publish(eq("testTopic"), eq("testPayload"), anyMap()))
         .thenReturn(future);
 
-    Message<String> aMessage =
+    Message<String> testMessage =
         new GenericMessage<String>("testPayload", Collections.singletonMap("message_id", "123"));
 
     AtomicReference<String> messageIdRef = new AtomicReference<>();
@@ -259,7 +255,7 @@ public class PubSubMessageHandlerTests {
           ackIdRef.set(ackId);
         });
 
-    this.adapter.handleMessage(aMessage);
+    this.adapter.handleMessage(testMessage);
     Awaitility.await().atMost(Duration.ofSeconds(1)).untilAtomic(messageIdRef, notNullValue());
 
     assertThat(messageIdRef).hasValue("123");
@@ -274,7 +270,7 @@ public class PubSubMessageHandlerTests {
     when(this.pubSubTemplate.publish(eq("testTopic"), eq("testPayload"), anyMap()))
         .thenReturn(future);
 
-    Message<String> aMessage =
+    Message<String> testMessage =
         new GenericMessage("testPayload", Collections.singletonMap("message_id", "123"));
 
     AtomicReference<Throwable> failureCauseRef = new AtomicReference<>();
@@ -286,7 +282,7 @@ public class PubSubMessageHandlerTests {
           messageIdRef.set(message.getHeaders().get("message_id", String.class));
         });
 
-    this.adapter.handleMessage(aMessage);
+    this.adapter.handleMessage(testMessage);
     Awaitility.await().atMost(Duration.ofSeconds(1)).untilAtomic(messageIdRef, notNullValue());
 
     assertThat(messageIdRef).hasValue("123");

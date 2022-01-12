@@ -40,14 +40,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-/**
- * Tests the Stackdriver Json Layout Logger.
- *
- * @author Andreas Berger
- * @author Mike Eltsufin
- * @author Stefan Dieringer
- * @author Kazuki Shimizu
- */
+/** Tests the Stackdriver Json Layout Logger. */
 class StackdriverJsonLayoutLoggerTests {
 
   private static final Gson GSON = new Gson();
@@ -161,14 +154,14 @@ class StackdriverJsonLayoutLoggerTests {
   }
 
   @Test
-  void testCustomMDCFieldForTraceIdAndSpanId() {
-    Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutCustomMDCFieldTests");
+  void testCustomMdcFieldForTraceIdAndSpanId() {
 
     mdc.remove(StackdriverTraceConstants.MDC_FIELD_TRACE_ID);
     mdc.remove(StackdriverTraceConstants.MDC_FIELD_SPAN_ID);
     mdc.put("trace_id", "12345678901234561234567890123456");
     mdc.put("span_id", "span123");
 
+    Logger logger = LoggerFactory.getLogger("StackdriverJsonLayoutCustomMDCFieldTests");
     logger.warn("test");
     Map<String, String> data = getLogMetadata();
 

@@ -30,7 +30,6 @@ import org.springframework.data.repository.config.DefaultRepositoryBaseClass;
 /**
  * Annotation that enables the instantiation of Datastore repositories.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 @Target(ElementType.TYPE)

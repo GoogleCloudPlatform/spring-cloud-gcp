@@ -47,8 +47,6 @@ import org.springframework.util.Assert;
  * The primary class for adding values from entity objects to {@link WriteBuilder} for the purpose
  * of creating mutations for Spanner.
  *
- * @author Chengyuan Zhao
- * @author Balint Pato
  * @since 1.1
  */
 public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWriter {
@@ -380,16 +378,16 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
    *
    * <pre>
    * {
-   * 	&#64;code
+   *   &#64;code
    *
-   * 	long singerId = my_singer_id;
-   * 	Mutation.WriteBuilder writeBuilder = Mutation.newInsertBuilder("Singer")
-   * 			.set("SingerId")
-   * 			.to(singerId)
-   * 			.set("FirstName")
-   * 			.to("Billy")
-   * 			.set("LastName")
-   * 			.to("Joel");
+   *   long singerId = my_singer_id;
+   *   Mutation.WriteBuilder writeBuilder = Mutation.newInsertBuilder("Singer")
+   *       .set("SingerId")
+   *       .to(singerId)
+   *       .set("FirstName")
+   *       .to("Billy")
+   *       .set("LastName")
+   *       .to("Joel");
    * }
    * </pre>
    *
@@ -432,14 +430,12 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
                 valueBinder,
                 Timestamp.class,
                 this.writeConverter);
-      }
-      // annotated json column, bind directly
-      else if (property.getAnnotatedColumnItemType() == Type.Code.JSON) {
+      } else if (property.getAnnotatedColumnItemType() == Type.Code.JSON) {
+        // annotated json column, bind directly
         valueBinder.to(covertJsonToValue(propertyValue));
         valueSet = true;
-      }
-      // use the user's annotated column type if possible
-      else if (property.getAnnotatedColumnItemType() != null) {
+      } else if (property.getAnnotatedColumnItemType() != null) {
+        // use the user's annotated column type if possible
         valueSet =
             attemptSetSingleItemValue(
                 propertyValue,

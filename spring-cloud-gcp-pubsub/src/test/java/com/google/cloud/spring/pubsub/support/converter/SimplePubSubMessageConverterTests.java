@@ -35,9 +35,6 @@ import org.springframework.core.convert.converter.Converter;
 
 /**
  * Tests for the simple message converter.
- *
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 public class SimplePubSubMessageConverterTests {
 

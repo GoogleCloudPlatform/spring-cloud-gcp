@@ -23,7 +23,6 @@ import org.springframework.util.Assert;
 /**
  * Various utility methods for dealing with Pub/Sub subscriptions.
  *
- * @author Mike Eltsufin
  * @since 1.2
  */
 public final class PubSubSubscriptionUtils {

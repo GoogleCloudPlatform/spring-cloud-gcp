@@ -33,7 +33,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 /**
- * @author Dmitry Solomakha
  * @since 1.2
  */
 @SpringBootApplication

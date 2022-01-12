@@ -68,9 +68,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Integration tests for Spanner Repository that uses many features.
- *
- * @author Balint Pato
- * @author Chengyuan Zhao
  */
 @RunWith(SpringRunner.class)
 public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {
@@ -95,7 +92,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 
   @Test
   public void queryOptionalSingleValueTest() {
-    Trade trade = Trade.aTrade(null, 0);
+    Trade trade = Trade.makeTrade(null, 0);
     this.spannerOperations.insert(trade);
 
     Optional<String> nonEmpty = tradeRepository.fetchSymbolById(trade.getId());
@@ -108,7 +105,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   @Test
   public void queryMethodsTest_simple() {
     final int subTrades = 42;
-    Trade trade = Trade.aTrade(null, subTrades);
+    Trade trade = Trade.makeTrade(null, subTrades);
     this.spannerOperations.insert(trade);
 
     Optional<Trade> fetchedTrade = tradeRepository.fetchById(trade.getId());
@@ -434,7 +431,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
     assertThat(this.subTradeComponentRepository.count()).isEqualTo(3);
 
     Iterable<SubTradeComponent> subTradeComponents = this.subTradeComponentRepository.findAll();
-    Timestamp expectedTS = subTradeComponents.iterator().next().getCommitTimestamp();
+    Timestamp expectedTimestamp = subTradeComponents.iterator().next().getCommitTimestamp();
 
     assertThat(subTradeComponents)
         .hasSize(3)
@@ -442,7 +439,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
         .allSatisfy(
             ts ->
                 assertThat(ts)
-                    .isEqualTo(expectedTS)
+                    .isEqualTo(expectedTimestamp)
                     .isGreaterThan(Timestamp.ofTimeMicroseconds(22)));
 
     this.subTradeRepository.deleteById(this.spannerSchemaUtils.getKey(subTrade1));
@@ -470,7 +467,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   public void queryMethodsTest_EagerFetch() {
     Mockito.clearInvocations(spannerTemplate);
 
-    final Trade aTrade = Trade.aTrade("trader1", 0, 0);
+    final Trade aTrade = Trade.makeTrade("trader1", 0, 0);
     aTrade.setAction("BUY");
     aTrade.setSymbol("ABCD");
     this.tradeRepository.save(aTrade);
@@ -521,7 +518,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 
   @Test
   public void existsTest() {
-    Trade trade = Trade.aTrade();
+    Trade trade = Trade.makeTrade();
     this.tradeRepository.save(trade);
     SpannerPersistentEntity<?> persistentEntity =
         this.spannerMappingContext.getPersistentEntity(Trade.class);
@@ -542,12 +539,12 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 
   @Test
   public void testWithJsonField() {
-    Trade trade1 = Trade.aTrade();
+    Trade trade1 = Trade.makeTrade();
     trade1.setOptionalDetails(new Details("abc", "def"));
     trade1.setBackupDetails(new Details("backup context", "backup context continued"));
-    Trade trade2 = Trade.aTrade();
+    Trade trade2 = Trade.makeTrade();
     trade2.setOptionalDetails(new Details("some context", null));
-    Trade trade3 = Trade.aTrade();
+    Trade trade3 = Trade.makeTrade();
     this.tradeRepository.save(trade1);
     this.tradeRepository.save(trade2);
     this.tradeRepository.save(trade3);
@@ -590,7 +587,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   private Trade insertTrade(String traderId, String action, int tradeTime) {
-    Trade t = Trade.aTrade(traderId, 0, tradeTime);
+    Trade t = Trade.makeTrade(traderId, 0, tradeTime);
     t.setAction(action);
     t.setSymbol("ABCD");
     this.spannerOperations.insert(t);
@@ -604,7 +601,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 
     @Transactional
     public void testTransactionalAnnotation(int numSubTrades) {
-      Trade trade = Trade.aTrade(null, numSubTrades);
+      Trade trade = Trade.makeTrade(null, numSubTrades);
       this.tradeRepository.save(trade);
       // because the insert happens within the same transaction, this count is still
       // 1
@@ -613,7 +610,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 
     @Transactional
     public void testTransactionRolledBack() {
-      Trade trade = Trade.aTrade();
+      Trade trade = Trade.makeTrade();
       this.tradeRepository.save(trade);
       throw new RuntimeException("Intentional error to rollback save.");
     }

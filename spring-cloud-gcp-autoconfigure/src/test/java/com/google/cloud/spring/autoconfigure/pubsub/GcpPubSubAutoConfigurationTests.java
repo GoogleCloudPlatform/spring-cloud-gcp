@@ -42,9 +42,6 @@ import org.threeten.bp.Duration;
 
 /**
  * Tests for Pub/Sub autoconfiguration.
- *
- * @author Elena Felder
- * @author Mike Eltsufin
  */
 class GcpPubSubAutoConfigurationTests {
 
@@ -163,7 +160,7 @@ class GcpPubSubAutoConfigurationTests {
   }
 
   @Test
-  void retryableCodes_INTERNAL() {
+  void retryableCodes_Internal() {
     ApplicationContextRunner contextRunner =
         new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))

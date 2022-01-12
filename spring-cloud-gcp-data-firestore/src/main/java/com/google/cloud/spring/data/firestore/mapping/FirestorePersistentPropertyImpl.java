@@ -29,7 +29,6 @@ import org.springframework.data.mapping.model.SimpleTypeHolder;
 /**
  * Persistent property metadata implementation for Firestore.
  *
- * @author Dmitry Solomakha
  * @since 1.2
  */
 public class FirestorePersistentPropertyImpl

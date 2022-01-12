@@ -31,8 +31,6 @@ import reactor.core.publisher.Sinks;
 
 /**
  * An example source for the sample app.
- *
- * @author Travis Tomsu
  */
 @RestController
 public class SourceExample {

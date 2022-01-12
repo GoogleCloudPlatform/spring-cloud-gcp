@@ -26,7 +26,6 @@ import org.springframework.stereotype.Indexed;
 /**
  * Annotation for a class that represents a Firestore Document.
  *
- * @author Dmitry Solomakha
  * @since 1.2
  */
 @Documented

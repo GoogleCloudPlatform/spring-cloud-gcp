@@ -43,9 +43,6 @@ import org.springframework.util.StringUtils;
 /**
  * A {@link CredentialsProvider} implementation that wraps credentials based on user-provided
  * properties and defaults.
- *
- * @author João André Martins
- * @author Mike Eltsufin
  */
 public class DefaultCredentialsProvider implements CredentialsProvider {
 

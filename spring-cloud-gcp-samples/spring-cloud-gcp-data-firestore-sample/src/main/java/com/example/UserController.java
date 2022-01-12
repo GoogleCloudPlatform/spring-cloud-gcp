@@ -33,8 +33,6 @@ import reactor.core.publisher.Mono;
 
 /**
  * Example controller demonstrating usage of Spring Data Repositories for Firestore.
- *
- * @author Daniel Zou
  */
 @RestController
 @RequestMapping("/users")
@@ -68,7 +66,7 @@ public class UserController {
   private Mono<String> removeUserByName(@RequestParam String name) {
     return this.userRepository
         .delete(new User(name, 0, null))
-        .map(aVoid -> name + "was successfully removed");
+        .map(unusedVoid -> name + "was successfully removed");
   }
 
   @GetMapping("/removePhonesForUser")

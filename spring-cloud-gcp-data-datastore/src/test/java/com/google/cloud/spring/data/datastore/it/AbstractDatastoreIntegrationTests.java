@@ -22,8 +22,6 @@ import org.awaitility.Awaitility;
 
 /**
  * Abstract base class for integration tests.
- *
- * @author Chengyuan Zhao
  */
 public abstract class AbstractDatastoreIntegrationTests {
 

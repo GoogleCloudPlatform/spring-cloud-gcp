@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
  *   <li>{@code /headers} - Unsecured page that can be used for troubleshooting.
  * </ul>
  *
- * @author Elena Felder
  * @since 1.1
  */
 @RestController

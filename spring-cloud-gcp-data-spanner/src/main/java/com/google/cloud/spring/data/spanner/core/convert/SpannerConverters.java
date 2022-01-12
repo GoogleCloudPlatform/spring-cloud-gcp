@@ -37,8 +37,6 @@ import org.springframework.util.Assert;
 /**
  * Default commonly-used custom converters.
  *
- * @author Chengyuan Zhao
- * @author Balint Pato
  * @since 1.1
  */
 public final class SpannerConverters {

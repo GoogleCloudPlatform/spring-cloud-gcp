@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Test;
 
-/** @author Daniel Zou */
 class GoogleStorageLocationTests {
 
   @Test

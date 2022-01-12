@@ -60,8 +60,6 @@ import org.springframework.util.StringUtils;
  * A Query Method for Spanner using SQL strings.
  *
  * @param <T> the return type of the Query Method
- * @author Balint Pato
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
@@ -155,7 +153,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
     return result;
   }
 
-  private void resolveSpELTags(QueryTagValue queryTagValue) {
+  private void resolveSpelTags(QueryTagValue queryTagValue) {
     Expression[] expressions = detectExpressions(queryTagValue.sql);
     StringBuilder sb = new StringBuilder();
     Map<Object, String> valueToTag = new HashMap<>();
@@ -204,7 +202,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
             params,
             resolveEntityClassNames(this.sql, this.spannerMappingContext));
 
-    resolveSpELTags(queryTagValue);
+    resolveSpelTags(queryTagValue);
 
     return this.isDml
         ? Collections.singletonList(

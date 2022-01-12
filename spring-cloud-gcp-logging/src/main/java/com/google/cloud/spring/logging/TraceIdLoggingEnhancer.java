@@ -27,10 +27,6 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 /**
  * Adds the trace ID and span ID to the logging entry, in its correct format to be displayed in the
  * Logs viewer.
- *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 public class TraceIdLoggingEnhancer implements LoggingEnhancer, LoggingEventEnhancer {
 
@@ -42,6 +38,11 @@ public class TraceIdLoggingEnhancer implements LoggingEnhancer, LoggingEventEnha
 
   private boolean runningOnAppEngine = System.getenv("GAE_INSTANCE") != null;
 
+  /**
+   * Sets or removes the current trace ID.
+   *
+   * @param id current ID or null to unset
+   */
   public static void setCurrentTraceId(String id) {
     if (id == null) {
       threadLocalTraceId.remove();

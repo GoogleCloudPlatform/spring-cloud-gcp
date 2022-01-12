@@ -35,8 +35,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 /**
  * Tests for the receiver application.
  *
- * @author Dmitry Solomakha
- * @author Elena Felder
  * @since 1.1
  */
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")

@@ -28,7 +28,6 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
  * @param <S> the entity type of the repository
  * @param <I> the id type of the entity
  * @param <T> the repository type
- * @author Chengyuan Zhao
  * @since 1.2
  */
 public class FirestoreRepositoryFactoryBean<T extends Repository<S, I>, S, I>

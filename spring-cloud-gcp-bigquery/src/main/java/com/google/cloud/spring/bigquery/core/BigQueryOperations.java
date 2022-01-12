@@ -25,7 +25,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 /**
  * Defines operations for use with BigQuery.
  *
- * @author Daniel Zou
  * @since 1.2
  */
 public interface BigQueryOperations {
@@ -56,7 +55,7 @@ public interface BigQueryOperations {
    *
    * ListenableFuture<Job> bigQueryJobFuture =
    *     bigQueryTemplate.writeDataToTable(
-   * 	       TABLE_NAME, dataFile.getInputStream(), FormatOptions.csv(), schema);
+   *          TABLE_NAME, dataFile.getInputStream(), FormatOptions.csv(), schema);
    * }</pre>
    *
    * @param tableName name of the table to write to

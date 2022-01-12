@@ -24,8 +24,6 @@ import org.springframework.core.env.EnumerablePropertySource;
  * A property source for Secret Manager which accesses the Secret Manager APIs when {@link
  * #getProperty} is called.
  *
- * @author Daniel Zou
- * @author Eddú Meléndez
  * @since 1.2.2
  */
 public class SecretManagerPropertySource extends EnumerablePropertySource<SecretManagerTemplate> {

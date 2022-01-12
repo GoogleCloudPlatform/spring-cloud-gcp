@@ -29,7 +29,6 @@ import java.lang.annotation.Target;
  * interleaved list as well. It overwrites the class-level `@Where` annotation when used on an
  * interleaved list property of the same type.
  *
- * @author Roman Solodovnichenko
  * @since 1.2.2
  */
 @Target({TYPE, FIELD})

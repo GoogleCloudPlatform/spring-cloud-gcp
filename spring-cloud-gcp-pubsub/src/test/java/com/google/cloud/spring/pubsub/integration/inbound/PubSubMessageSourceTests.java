@@ -44,7 +44,6 @@ import org.springframework.messaging.MessageHandlingException;
 /**
  * Tests for {@link PubSubMessageSource}.
  *
- * @author Elena Felder
  * @since 1.2
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -116,7 +115,7 @@ public class PubSubMessageSourceTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void doReceive_pullsOneAtATimeWhenMaxFetchSizeZeroe() {
+  public void doReceive_pullsOneAtAtimeWhenMaxFetchSizeZero() {
     PubSubMessageSource pubSubMessageSource =
         new PubSubMessageSource(this.mockPubSubSubscriberOperations, "sub1");
     pubSubMessageSource.setPayloadType(String.class);
@@ -132,7 +131,7 @@ public class PubSubMessageSourceTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void doReceive_pullsOneAtATimeWhenMaxFetchSizeNegative() {
+  public void doReceive_pullsOneAtAtimeWhenMaxFetchSizeNegative() {
     PubSubMessageSource pubSubMessageSource =
         new PubSubMessageSource(this.mockPubSubSubscriberOperations, "sub1");
     pubSubMessageSource.setPayloadType(String.class);

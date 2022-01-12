@@ -21,8 +21,6 @@ import org.springframework.context.ApplicationEvent;
 
 /**
  * An event holding a DML statement.
- *
- * @author Chengyuan Zhao
  */
 public class ExecuteDmlEvent extends ApplicationEvent {
 

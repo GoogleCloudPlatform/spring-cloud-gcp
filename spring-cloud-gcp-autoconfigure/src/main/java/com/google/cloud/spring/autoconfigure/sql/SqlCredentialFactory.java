@@ -34,9 +34,6 @@ import org.apache.commons.logging.LogFactory;
  *
  * <p>Since the sockets factory creates an instance of this class by reflection and without any
  * arguments, the credential location must be in a place that this class knows without any context.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 public class SqlCredentialFactory implements CredentialFactory {
 

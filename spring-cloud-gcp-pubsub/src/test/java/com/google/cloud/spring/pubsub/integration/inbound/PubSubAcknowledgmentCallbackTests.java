@@ -30,7 +30,6 @@ import org.springframework.integration.acks.AcknowledgmentCallback;
 /**
  * Tests for {@link PubSubAcknowledgmentCallback}.
  *
- * @author Elena Felder
  * @since 1.2
  */
 class PubSubAcknowledgmentCallbackTests {

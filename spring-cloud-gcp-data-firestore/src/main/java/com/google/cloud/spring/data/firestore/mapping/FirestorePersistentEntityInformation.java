@@ -22,7 +22,6 @@ import org.springframework.data.repository.core.support.AbstractEntityInformatio
  * A metadata holder for Firestore persistent entities.
  *
  * @param <T> the domain type.
- * @author Chengyuan Zhao
  * @since 1.2
  */
 public class FirestorePersistentEntityInformation<T> extends AbstractEntityInformation<T, String> {

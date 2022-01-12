@@ -31,10 +31,6 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * Example repository usage.
- *
- * @author Chengyuan Zhao
- * @author Balint Pato
- * @author Mike Eltsufin
  */
 @SpringBootApplication
 public class SpannerRepositoryExample {

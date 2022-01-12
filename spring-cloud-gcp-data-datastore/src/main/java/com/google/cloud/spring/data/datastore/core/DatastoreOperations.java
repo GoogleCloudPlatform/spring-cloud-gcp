@@ -32,8 +32,6 @@ import org.springframework.data.domain.Slice;
 /**
  * An interface of operations that can be done with Cloud Datastore.
  *
- * @author Chengyuan Zhao
- * @author Vinicius Carvalho
  * @since 1.1
  */
 public interface DatastoreOperations {
@@ -251,12 +249,12 @@ public interface DatastoreOperations {
   /**
    * Create a {@link com.google.cloud.datastore.Key} from entity class and id value.
    *
-   * @param aClass the Cloud Datastore entity class
+   * @param clazz the Cloud Datastore entity class
    * @param id object to be used as id; if it is a Long, the value is used, otherwise it is
    *     converted to String
    * @return created key
    */
-  Key createKey(Class aClass, Object id);
+  Key createKey(Class clazz, Object id);
 
   /**
    * Create a {@link com.google.cloud.datastore.Key} from id property of an entity object.

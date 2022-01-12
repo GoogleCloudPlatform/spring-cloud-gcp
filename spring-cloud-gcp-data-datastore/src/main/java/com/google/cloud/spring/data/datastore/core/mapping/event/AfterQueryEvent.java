@@ -21,8 +21,6 @@ import java.util.Objects;
 
 /**
  * An event published immediately after a read-by-query request.
- *
- * @author Chengyuan Zhao
  */
 public class AfterQueryEvent extends ReadEvent {
 

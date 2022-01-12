@@ -43,10 +43,6 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
  *
  * <p>It delegates Google Cloud Pub/Sub interaction to {@link
  * com.google.cloud.spring.pubsub.core.PubSubTemplate}.
- *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Artem Bilan
  */
 public class PubSubMessageHandler extends AbstractMessageHandler {
 
@@ -70,6 +66,12 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 
   private HeaderMapper<Map<String, String>> headerMapper = new PubSubHeaderMapper();
 
+  /**
+   * Instantiates an outbound adapter for publishing messages to a topic.
+   *
+   * @param pubSubPublisherOperations {@link PubSubPublisherOperations} to use
+   * @param topic short or fully qualified destination topic name
+   */
   public PubSubMessageHandler(PubSubPublisherOperations pubSubPublisherOperations, String topic) {
     Assert.notNull(pubSubPublisherOperations, "Pub/Sub publisher template can't be null.");
     Assert.hasText(topic, "Pub/Sub topic can't be null or empty.");
@@ -234,7 +236,9 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
   }
 
   /**
-   * Returns Pub/Sub destination topic in following order of precedence:
+   * Returns Pub/Sub destination topic.
+   *
+   * <p>Order of precedence is:
    *
    * <ul>
    *   <li>Message header {@code GcpPubSubHeaders.TOPIC}
