@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.secretmanager.it;
 
-import java.io.IOException;
-
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
@@ -30,7 +28,7 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerPropertySourceLocator;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import com.google.protobuf.ByteString;
-
+import java.io.IOException;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,63 +38,68 @@ import org.springframework.core.env.ConfigurableEnvironment;
 @Configuration
 public class SecretManagerTestConfiguration {
 
-	private final GcpProjectIdProvider projectIdProvider;
+  private final GcpProjectIdProvider projectIdProvider;
 
-	private final CredentialsProvider credentialsProvider;
+  private final CredentialsProvider credentialsProvider;
 
-	public SecretManagerTestConfiguration(
-			ConfigurableEnvironment configurableEnvironment) throws IOException {
+  public SecretManagerTestConfiguration(ConfigurableEnvironment configurableEnvironment)
+      throws IOException {
 
-		this.projectIdProvider = new DefaultGcpProjectIdProvider();
-		this.credentialsProvider = new DefaultCredentialsProvider(Credentials::new);
+    this.projectIdProvider = new DefaultGcpProjectIdProvider();
+    this.credentialsProvider = new DefaultCredentialsProvider(Credentials::new);
 
-		// Registers {@link ByteString} type converters to convert to String and byte[].
-		configurableEnvironment.getConversionService().addConverter(
-				new Converter<ByteString, String>() {
-					@Override
-					public String convert(ByteString source) {
-						return source.toStringUtf8();
-					}
-				});
+    // Registers {@link ByteString} type converters to convert to String and byte[].
+    configurableEnvironment
+        .getConversionService()
+        .addConverter(
+            new Converter<ByteString, String>() {
+              @Override
+              public String convert(ByteString source) {
+                return source.toStringUtf8();
+              }
+            });
 
-		configurableEnvironment.getConversionService().addConverter(
-				new Converter<ByteString, byte[]>() {
-					@Override
-					public byte[] convert(ByteString source) {
-						return source.toByteArray();
-					}
-				});
-	}
+    configurableEnvironment
+        .getConversionService()
+        .addConverter(
+            new Converter<ByteString, byte[]>() {
+              @Override
+              public byte[] convert(ByteString source) {
+                return source.toByteArray();
+              }
+            });
+  }
 
-	@Bean
-	public GcpProjectIdProvider gcpProjectIdProvider() {
-		return this.projectIdProvider;
-	}
+  @Bean
+  public GcpProjectIdProvider gcpProjectIdProvider() {
+    return this.projectIdProvider;
+  }
 
-	@Bean
-	public static GcpEnvironmentProvider gcpEnvironmentProvider() {
-		return new DefaultGcpEnvironmentProvider();
-	}
+  @Bean
+  public static GcpEnvironmentProvider gcpEnvironmentProvider() {
+    return new DefaultGcpEnvironmentProvider();
+  }
 
-	@Bean
-	public SecretManagerServiceClient secretManagerClient() throws IOException {
-		SecretManagerServiceSettings settings = SecretManagerServiceSettings.newBuilder()
-				.setCredentialsProvider(this.credentialsProvider)
-				.build();
+  @Bean
+  public SecretManagerServiceClient secretManagerClient() throws IOException {
+    SecretManagerServiceSettings settings =
+        SecretManagerServiceSettings.newBuilder()
+            .setCredentialsProvider(this.credentialsProvider)
+            .build();
 
-		return SecretManagerServiceClient.create(settings);
-	}
+    return SecretManagerServiceClient.create(settings);
+  }
 
-	@Bean
-	public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
-		return new SecretManagerTemplate(client, this.projectIdProvider);
-	}
+  @Bean
+  public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
+    return new SecretManagerTemplate(client, this.projectIdProvider);
+  }
 
-	@Bean
-	public PropertySourceLocator secretManagerPropertySourceLocator(
-			SecretManagerTemplate secretManagerTemplate) {
-		SecretManagerPropertySourceLocator propertySourceLocator =
-				new SecretManagerPropertySourceLocator(secretManagerTemplate, this.projectIdProvider);
-		return propertySourceLocator;
-	}
+  @Bean
+  public PropertySourceLocator secretManagerPropertySourceLocator(
+      SecretManagerTemplate secretManagerTemplate) {
+    SecretManagerPropertySourceLocator propertySourceLocator =
+        new SecretManagerPropertySourceLocator(secretManagerTemplate, this.projectIdProvider);
+    return propertySourceLocator;
+  }
 }

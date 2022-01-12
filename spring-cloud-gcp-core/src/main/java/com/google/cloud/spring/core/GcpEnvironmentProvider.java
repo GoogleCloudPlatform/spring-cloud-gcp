@@ -23,6 +23,5 @@ package com.google.cloud.spring.core;
  */
 public interface GcpEnvironmentProvider {
 
-	GcpEnvironment getCurrentEnvironment();
-
+  GcpEnvironment getCurrentEnvironment();
 }

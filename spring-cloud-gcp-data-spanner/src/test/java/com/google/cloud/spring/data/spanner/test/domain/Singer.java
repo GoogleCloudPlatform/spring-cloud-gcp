@@ -16,42 +16,40 @@
 
 package com.google.cloud.spring.data.spanner.test.domain;
 
-import java.util.Objects;
-
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import java.util.Objects;
 
 @Table(name = "singers_list")
 public class Singer {
-	@PrimaryKey
-	Integer singerId;
+  @PrimaryKey Integer singerId;
 
-	String firstName;
+  String firstName;
 
-	String lastName;
+  String lastName;
 
-	public Singer(Integer singerId, String firstName, String lastName) {
-		this.singerId = singerId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
+  public Singer(Integer singerId, String firstName, String lastName) {
+    this.singerId = singerId;
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		Singer singer = (Singer) o;
-		return Objects.equals(singerId, singer.singerId) &&
-						Objects.equals(firstName, singer.firstName) &&
-						Objects.equals(lastName, singer.lastName);
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Singer singer = (Singer) o;
+    return Objects.equals(singerId, singer.singerId)
+        && Objects.equals(firstName, singer.firstName)
+        && Objects.equals(lastName, singer.lastName);
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(singerId, firstName, lastName);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(singerId, firstName, lastName);
+  }
 }

@@ -23,6 +23,5 @@ package com.google.cloud.spring.core;
  */
 public interface MetadataProvider {
 
-	String getAttribute(String attributeName);
-
+  String getAttribute(String attributeName);
 }
