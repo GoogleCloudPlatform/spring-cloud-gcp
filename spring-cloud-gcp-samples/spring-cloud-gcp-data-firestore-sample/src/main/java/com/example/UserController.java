@@ -66,7 +66,7 @@ public class UserController {
   private Mono<String> removeUserByName(@RequestParam String name) {
     return this.userRepository
         .delete(new User(name, 0, null))
-        .map(aVoid -> name + "was successfully removed");
+        .map(unusedVoid -> name + "was successfully removed");
   }
 
   @GetMapping("/removePhonesForUser")

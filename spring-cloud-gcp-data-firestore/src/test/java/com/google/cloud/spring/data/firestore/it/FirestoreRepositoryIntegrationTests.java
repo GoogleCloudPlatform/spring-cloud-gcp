@@ -417,13 +417,13 @@ public class FirestoreRepositoryIntegrationTests {
     User bob = new User("Bob", 60);
     this.userRepository.save(alice).then(this.userRepository.save(bob)).block();
 
-    Mono<User> aUser = this.userRepository.findByAge(29).next();
+    Mono<User> testUser = this.userRepository.findByAge(29).next();
 
     Flux<String> stringFlux =
         userRepository
             .findAll()
             .flatMap(
-                user -> aUser.flatMap(user1 -> Mono.just(user.getName() + " " + user1.getName())));
+                user -> testUser.flatMap(user1 -> Mono.just(user.getName() + " " + user1.getName())));
     List<String> list = stringFlux.collectList().block();
     assertThat(list).contains("Alice Alice", "Bob Alice");
   }

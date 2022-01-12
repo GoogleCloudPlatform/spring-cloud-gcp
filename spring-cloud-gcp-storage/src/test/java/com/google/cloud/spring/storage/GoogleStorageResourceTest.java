@@ -49,7 +49,7 @@ class GoogleStorageResourceTest {
   }
 
   @Test
-  void getURL_Bucket() throws IOException {
+  void getUrlBucket() throws IOException {
     Storage mockStorage = mock(Storage.class);
     Bucket mockBucket = mock(Bucket.class);
 
@@ -61,7 +61,7 @@ class GoogleStorageResourceTest {
   }
 
   @Test
-  void getURL_Object() throws IOException {
+  void getUrlObject() throws IOException {
     Storage mockStorage = mock(Storage.class);
     Blob mockBlob = mock(Blob.class);
 

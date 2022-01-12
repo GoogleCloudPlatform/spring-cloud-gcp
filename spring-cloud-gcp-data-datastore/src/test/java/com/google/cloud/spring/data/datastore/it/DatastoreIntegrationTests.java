@@ -62,6 +62,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -90,9 +91,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.transaction.TransactionSystemException;
 
-/**
- * Integration tests for Datastore that use many features.
- */
+/** Integration tests for Datastore that use many features. */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
 public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
@@ -598,6 +597,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
     try {
       this.transactionalTemplateService.testSaveInTransactionFailed(this.allTestEntities);
     } catch (Exception ignored) {
+      // do nothing
     }
 
     // we wait a period long enough that the previously attempted failed save would
@@ -1141,9 +1141,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 }
 
-/**
- * Test class.
- */
+/** Test class. */
 @Entity
 class ParentEntity {
   @Id Long id;
@@ -1162,9 +1160,7 @@ class ParentEntity {
   }
 }
 
-/**
- * Test class.
- */
+/** Test class. */
 @Entity
 class SubEntity {
   @Id Key key;

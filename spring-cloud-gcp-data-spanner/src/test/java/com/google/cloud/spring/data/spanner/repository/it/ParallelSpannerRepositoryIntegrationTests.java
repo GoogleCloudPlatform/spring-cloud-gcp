@@ -55,7 +55,7 @@ public class ParallelSpannerRepositoryIntegrationTests extends AbstractSpannerIn
         repo -> {
           executeInParallel(
               unused -> {
-                repo.save(Trade.aTrade());
+                repo.save(Trade.makeTrade());
 
                 // all of the threads are using the same transaction at the same time, so they all
                 // still

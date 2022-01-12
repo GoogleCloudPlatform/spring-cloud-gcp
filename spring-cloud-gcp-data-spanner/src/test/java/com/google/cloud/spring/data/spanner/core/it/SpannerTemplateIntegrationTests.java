@@ -72,7 +72,7 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
 
     assertThat(this.spannerOperations.count(Trade.class)).isZero();
 
-    Trade trade = Trade.aTrade(null, 1);
+    Trade trade = Trade.makeTrade(null, 1);
     this.spannerOperations.insert(trade);
     assertThat(this.spannerOperations.count(Trade.class)).isEqualTo(1L);
 
@@ -89,7 +89,7 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
 
     assertThat(trades).containsExactly(trade);
 
-    Trade trade2 = Trade.aTrade(null, 1);
+    Trade trade2 = Trade.makeTrade(null, 1);
     this.spannerOperations.insert(trade2);
 
     trades =
@@ -112,9 +112,9 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
     this.spannerOperations.delete(Trade.class, KeySet.all());
     assertThat(this.spannerOperations.count(Trade.class)).isZero();
 
-    Trade trade1 = Trade.aTrade();
+    Trade trade1 = Trade.makeTrade();
     trade1.setOptionalDetails(new Details("abc", "def"));
-    Trade trade2 = Trade.aTrade();
+    Trade trade2 = Trade.makeTrade();
     trade2.setOptionalDetails(new Details("some context", null));
 
     this.spannerOperations.insert(trade1);
@@ -138,7 +138,7 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
 
   @Test
   public void readWriteTransactionTest() {
-    Trade trade = Trade.aTrade();
+    Trade trade = Trade.makeTrade();
     this.spannerOperations.performReadWriteTransaction(
         transactionOperations -> {
           long beforeCount = transactionOperations.count(Trade.class);
@@ -160,7 +160,7 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
     this.expectedEx.expect(SpannerDataException.class);
     this.expectedEx.expectMessage("A read-only transaction template cannot perform mutations.");
 
-    Trade trade = Trade.aTrade();
+    Trade trade = Trade.makeTrade();
     this.spannerOperations.performReadOnlyTransaction(
         transactionOperations -> {
           // cannot do mutate in a read-only transaction
@@ -178,7 +178,7 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
     @Transactional
     public void testTransactionalAnnotation() {
       long beforeCount = this.spannerTemplate.count(Trade.class);
-      Trade trade = Trade.aTrade();
+      Trade trade = Trade.makeTrade();
       this.spannerTemplate.insert(trade);
 
       // because the insert happens within the same transaction, this count is unchanged.

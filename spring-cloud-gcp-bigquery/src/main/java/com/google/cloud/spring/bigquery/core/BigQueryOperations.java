@@ -55,7 +55,7 @@ public interface BigQueryOperations {
    *
    * ListenableFuture<Job> bigQueryJobFuture =
    *     bigQueryTemplate.writeDataToTable(
-   * 	       TABLE_NAME, dataFile.getInputStream(), FormatOptions.csv(), schema);
+   *          TABLE_NAME, dataFile.getInputStream(), FormatOptions.csv(), schema);
    * }</pre>
    *
    * @param tableName name of the table to write to

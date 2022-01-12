@@ -102,7 +102,7 @@ public class DatastoreTemplateAuditingTests {
   /** Spring config for the tests. */
   @Configuration
   @EnableDatastoreAuditing
-  static class config {
+  static class Config {
 
     @Bean
     public DatastoreMappingContext datastoreMappingContext() {

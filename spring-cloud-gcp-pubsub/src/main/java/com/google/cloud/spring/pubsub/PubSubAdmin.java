@@ -90,6 +90,13 @@ public class PubSubAdmin implements AutoCloseable {
     }
   }
 
+  /**
+   * Instantiates PubSubAdmin with provided topic/subscription client.
+   *
+   * @param projectIdProvider the project id provider to use
+   * @param topicAdminClient the {@link TopicAdminClient} to use
+   * @param subscriptionAdminClient the {@link SubscriptionAdminClient} to use
+   */
   public PubSubAdmin(
       GcpProjectIdProvider projectIdProvider,
       TopicAdminClient topicAdminClient,
