@@ -226,7 +226,7 @@ public class SqlSpannerQueryTests {
               Map<String, Value> paramMap = statement.getParameters();
 
               assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
-              assertThat(paramMap.get("trader_id").getString()).isEqualTo(params[1]);
+              assertThat(paramMap.get("traderId").getString()).isEqualTo(params[1]);
               assertThat(paramMap.get("ignoredPageable")).isNull();
 
               return null;
@@ -289,7 +289,7 @@ public class SqlSpannerQueryTests {
               Map<String, Value> paramMap = statement.getParameters();
 
               assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
-              assertThat(paramMap.get("trader_id").getString()).isEqualTo(params[1]);
+              assertThat(paramMap.get("traderId").getString()).isEqualTo(params[1]);
               assertThat(paramMap.get("ignoredSort")).isNull();
 
               return null;
@@ -353,7 +353,7 @@ public class SqlSpannerQueryTests {
               Map<String, Value> paramMap = statement.getParameters();
 
               assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
-              assertThat(paramMap.get("trader_id").getString()).isEqualTo(params[1]);
+              assertThat(paramMap.get("traderId").getString()).isEqualTo(params[1]);
               assertThat(paramMap.get("ignoredSort")).isNull();
               assertThat(paramMap.get("pageable")).isNull();
 
@@ -581,7 +581,7 @@ public class SqlSpannerQueryTests {
               Map<String, Value> paramMap = statement.getParameters();
 
               assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
-              assertThat(paramMap.get("trader_id").getString()).isEqualTo(params[1]);
+              assertThat(paramMap.get("traderId").getString()).isEqualTo(params[1]);
               return resultSet;
             })
         .when(this.spannerTemplate)
@@ -769,15 +769,15 @@ public class SqlSpannerQueryTests {
       return 0;
     }
 
-    public long dummyMethod3(String id, String trader_id) {
+    public long dummyMethod3(String id, String traderId) {
       return 0;
     }
 
-    public List<Child> dummyMethod4(String id, String trader_id, Pageable param3) {
+    public List<Child> dummyMethod4(String id, String traderId, Pageable param3) {
       return null;
     }
 
-    public List<Child> dummyMethod5(String id, String trader_id, Sort param3) {
+    public List<Child> dummyMethod5(String id, String traderId, Sort param3) {
       return null;
     }
 
@@ -795,7 +795,7 @@ public class SqlSpannerQueryTests {
 
     public void noParamMethod() {}
 
-    public List<Child> sortAndPageable(String id, String trader_id, Sort sort, Pageable pageable) {
+    public List<Child> sortAndPageable(String id, String traderId, Sort sort, Pageable pageable) {
       return null;
     }
   }

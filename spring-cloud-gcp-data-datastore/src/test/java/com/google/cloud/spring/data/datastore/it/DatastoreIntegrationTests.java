@@ -598,6 +598,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
     try {
       this.transactionalTemplateService.testSaveInTransactionFailed(this.allTestEntities);
     } catch (Exception ignored) {
+      // do nothing
     }
 
     // we wait a period long enough that the previously attempted failed save would
@@ -1163,9 +1164,9 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
     boolean existsRed = this.testEntityRepository.findBy(exampleRed, FetchableFluentQuery::exists);
     assertThat(existsRed).isTrue();
 
-    TestEntity FirstValueRed =
+    TestEntity firstValueRed =
         this.testEntityRepository.findBy(exampleRed, FetchableFluentQuery::firstValue);
-    assertThat(FirstValueRed).isEqualTo(testEntityA);
+    assertThat(firstValueRed).isEqualTo(testEntityA);
 
     TestEntity oneValueRed = this.testEntityRepository.findBy(exampleRed, q -> q.oneValue());
     assertThat(oneValueRed.getColor()).isEqualTo("red");

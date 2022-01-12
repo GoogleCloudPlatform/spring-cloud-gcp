@@ -164,7 +164,7 @@ public class FirestoreSampleApplicationNativeIntegrationTests {
       waitingFor(Wait.forHttp("/"));
       withLogConsumer(
           outputFrame ->
-              System.out.println("MYAPP-DOCKER-OUTPUT	" + outputFrame.getUtf8String().trim()));
+              System.out.println("MYAPP-DOCKER-OUTPUT  " + outputFrame.getUtf8String().trim()));
     }
 
     public String getBaseUrl() {

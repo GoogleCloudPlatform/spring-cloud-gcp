@@ -20,7 +20,9 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-/** @since 1.2 */
+/**
+ * @since 1.2
+ */
 public class SimpleFirestoreReactiveRepository<T> implements FirestoreReactiveRepository<T> {
 
   private FirestoreTemplate firestoreTemplate;

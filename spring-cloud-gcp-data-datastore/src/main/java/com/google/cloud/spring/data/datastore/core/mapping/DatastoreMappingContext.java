@@ -91,12 +91,12 @@ public class DatastoreMappingContext
    * Get the set of other classes that share the same underlying Datastore Kind and that are
    * subclasses of the given class.
    *
-   * @param aClass the class to look up.
+   * @param clazz the class to look up.
    * @return a {@code Set} of other classes that share the same Kind that are subclasses. Will be
    *     {@code null} if this class is not discriminated from a set of other classes.
    */
-  public static Set<Class> getDiscriminationFamily(Class aClass) {
-    return discriminationFamilies.get(aClass);
+  public static Set<Class> getDiscriminationFamily(Class clazz) {
+    return discriminationFamilies.get(clazz);
   }
 
   protected <T> DatastorePersistentEntityImpl<T> constructPersistentEntity(
@@ -125,9 +125,9 @@ public class DatastoreMappingContext
    * A non-null version of the {@link MappingContext#getPersistentEntity(Class)}.
    *
    * @param entityClass the entity type.
+   * @return the {@link DatastorePersistentEntity} for the provided type.
    * @throws DatastoreDataException if unable to retrieve a DatastorePersistentEntity for the
    *     provided type.
-   * @return the {@link DatastorePersistentEntity} for the provided type.
    */
   @NonNull
   public DatastorePersistentEntity<?> getDatastorePersistentEntity(Class<?> entityClass) {

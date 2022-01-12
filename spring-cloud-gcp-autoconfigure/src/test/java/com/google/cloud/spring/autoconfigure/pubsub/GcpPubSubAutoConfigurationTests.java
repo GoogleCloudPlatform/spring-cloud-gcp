@@ -158,7 +158,7 @@ class GcpPubSubAutoConfigurationTests {
   }
 
   @Test
-  void retryableCodes_INTERNAL() {
+  void retryableCodes_Internal() {
     ApplicationContextRunner contextRunner =
         new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))

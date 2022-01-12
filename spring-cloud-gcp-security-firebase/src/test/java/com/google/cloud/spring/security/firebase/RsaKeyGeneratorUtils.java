@@ -43,14 +43,14 @@ import org.bouncycastle.util.io.pem.PemWriter;
  *
  * @since 1.2.2
  */
-public class RSAKeyGeneratorUtils {
+public class RsaKeyGeneratorUtils {
 
   private static final String LINE_SEPARATOR = System.getProperty("line.separator");
   private PrivateKey privateKey;
   private PublicKey publicKey;
   private X509Certificate certificate;
 
-  public RSAKeyGeneratorUtils() throws Exception {
+  public RsaKeyGeneratorUtils() throws Exception {
     KeyStore keyStore = KeyStore.getInstance("JKS");
     keyStore.load(null, null);
     KeyPairGenerator kpGenerator = KeyPairGenerator.getInstance("RSA");
