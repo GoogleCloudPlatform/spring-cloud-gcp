@@ -62,7 +62,9 @@ import zipkin2.reporter.ReporterMetrics;
 import zipkin2.reporter.Sender;
 import zipkin2.reporter.brave.ZipkinSpanHandler;
 
-/** Config for Stackdriver Trace. */
+/**
+ * Config for Stackdriver Trace.
+ */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({GcpTraceProperties.class})
 @ConditionalOnProperty(
@@ -81,7 +83,8 @@ public class StackdriverTraceAutoConfiguration {
   public static final String REPORTER_BEAN_NAME = "stackdriverReporter";
 
   /**
-   * Stackdriver sender bean name. Name of the bean matters for supporting multiple tracing systems.
+   * Stackdriver sender bean name. Name of the bean matters for supporting multiple tracing
+   * systems.
    */
   public static final String SENDER_BEAN_NAME = "stackdriverSender";
 
@@ -233,9 +236,9 @@ public class StackdriverTraceAutoConfiguration {
       }
     }
 
-		final StackdriverSender.Builder builder = StackdriverSender.newBuilder(channel)
-				.projectId(this.finalProjectIdProvider.getProjectId())
-				.callOptions(callOptions);
+    final StackdriverSender.Builder builder = StackdriverSender.newBuilder(channel)
+        .projectId(this.finalProjectIdProvider.getProjectId())
+        .callOptions(callOptions);
 
     if (traceProperties.getServerResponseTimeoutMs() != null) {
       builder.serverResponseTimeoutMs(traceProperties.getServerResponseTimeoutMs());
@@ -259,7 +262,9 @@ public class StackdriverTraceAutoConfiguration {
     }
   }
 
-  /** Configuration for Sleuth. */
+  /**
+   * Configuration for Sleuth.
+   */
   @Configuration(proxyBeanMethods = false)
   @ConditionalOnProperty(
       name = "spring.sleuth.http.enabled",
@@ -267,6 +272,7 @@ public class StackdriverTraceAutoConfiguration {
       matchIfMissing = true)
   @AutoConfigureBefore(BraveHttpConfiguration.class)
   public static class StackdriverTraceHttpAutoconfiguration {
+
     @Bean
     @ConditionalOnProperty(
         name = "spring.sleuth.http.legacy.enabled",
