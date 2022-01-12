@@ -16,10 +16,6 @@
 
 package com.example;
 
-import java.io.IOException;
-import java.nio.channels.Channels;
-import java.util.concurrent.ExecutionException;
-
 import com.google.api.client.util.ByteStreams;
 import com.google.cloud.WriteChannel;
 import com.google.cloud.spring.storage.GoogleStorageLocation;
@@ -31,7 +27,9 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.BucketGetOption;
 import com.google.cloud.vision.v1.TextAnnotation;
 import com.google.protobuf.InvalidProtocolBufferException;
-
+import java.io.IOException;
+import java.nio.channels.Channels;
+import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -47,114 +45,113 @@ import org.springframework.web.servlet.ModelAndView;
 @RestController
 public class WebController {
 
-	private String ocrBucket;
+  private String ocrBucket;
 
-	@Autowired
-	private Storage storage;
+  @Autowired private Storage storage;
 
-	@Autowired
-	private ResourceLoader resourceLoader;
+  @Autowired private ResourceLoader resourceLoader;
 
-	@Autowired
-	private DocumentOcrTemplate documentOcrTemplate;
+  @Autowired private DocumentOcrTemplate documentOcrTemplate;
 
-	private final OcrStatusReporter ocrStatusReporter;
+  private final OcrStatusReporter ocrStatusReporter;
 
-	public WebController() {
-		this.ocrStatusReporter = new OcrStatusReporter();
-	}
+  public WebController() {
+    this.ocrStatusReporter = new OcrStatusReporter();
+  }
 
-	@GetMapping("/")
-	public ModelAndView renderIndex(ModelMap map) {
-		map.put("ocrBucket", ocrBucket);
-		return new ModelAndView("index", map);
-	}
+  @GetMapping("/")
+  public ModelAndView renderIndex(ModelMap map) {
+    map.put("ocrBucket", ocrBucket);
+    return new ModelAndView("index", map);
+  }
 
-	@GetMapping("/status")
-	public ModelAndView renderStatusPage(ModelMap map) {
-		map.put("ocrStatuses", ocrStatusReporter.getDocumentOcrStatuses().values());
-		return new ModelAndView("status", map);
-	}
+  @GetMapping("/status")
+  public ModelAndView renderStatusPage(ModelMap map) {
+    map.put("ocrStatuses", ocrStatusReporter.getDocumentOcrStatuses().values());
+    return new ModelAndView("status", map);
+  }
 
-	@GetMapping("/viewDocument")
-	public ModelAndView renderViewDocumentPage(
-			@RequestParam("gcsDocumentUrl") String gcsDocumentUrl,
-			@RequestParam("pageNumber") int pageNumber,
-			ModelMap map)
-			throws ExecutionException, InterruptedException, InvalidProtocolBufferException {
+  @GetMapping("/viewDocument")
+  public ModelAndView renderViewDocumentPage(
+      @RequestParam("gcsDocumentUrl") String gcsDocumentUrl,
+      @RequestParam("pageNumber") int pageNumber,
+      ModelMap map)
+      throws ExecutionException, InterruptedException, InvalidProtocolBufferException {
 
-		TextAnnotation textAnnotation =
-				ocrStatusReporter.getDocumentOcrStatuses()
-						.get(gcsDocumentUrl)
-						.getResultSet()
-						.getPage(pageNumber);
+    TextAnnotation textAnnotation =
+        ocrStatusReporter
+            .getDocumentOcrStatuses()
+            .get(gcsDocumentUrl)
+            .getResultSet()
+            .getPage(pageNumber);
 
-		String[] firstWordsTokens = textAnnotation.getText().split(" ", 50);
+    String[] firstWordsTokens = textAnnotation.getText().split(" ", 50);
 
-		map.put("pageNumber", pageNumber);
-		map.put("gcsDocumentUrl", gcsDocumentUrl);
-		map.put("text", String.join(" ", firstWordsTokens));
+    map.put("pageNumber", pageNumber);
+    map.put("gcsDocumentUrl", gcsDocumentUrl);
+    map.put("text", String.join(" ", firstWordsTokens));
 
-		return new ModelAndView("viewDocument", map);
-	}
+    return new ModelAndView("viewDocument", map);
+  }
 
-	@PostMapping("/submitDocument")
-	public ModelAndView submitDocument(@RequestParam("documentUrl") String documentUrl) throws IOException {
+  @PostMapping("/submitDocument")
+  public ModelAndView submitDocument(@RequestParam("documentUrl") String documentUrl)
+      throws IOException {
 
-		// Uploads the document to the GCS bucket
-		Resource documentResource = resourceLoader.getResource(documentUrl);
-		BlobId outputBlobId = BlobId.of(ocrBucket, documentResource.getFilename());
-		BlobInfo blobInfo =
-				BlobInfo.newBuilder(outputBlobId)
-						.setContentType(getFileType(documentResource))
-						.build();
+    // Uploads the document to the GCS bucket
+    Resource documentResource = resourceLoader.getResource(documentUrl);
+    BlobId outputBlobId = BlobId.of(ocrBucket, documentResource.getFilename());
+    BlobInfo blobInfo =
+        BlobInfo.newBuilder(outputBlobId).setContentType(getFileType(documentResource)).build();
 
-		try (WriteChannel writer = storage.writer(blobInfo)) {
-			ByteStreams.copy(documentResource.getInputStream(), Channels.newOutputStream(writer));
-		}
+    try (WriteChannel writer = storage.writer(blobInfo)) {
+      ByteStreams.copy(documentResource.getInputStream(), Channels.newOutputStream(writer));
+    }
 
-		// Run OCR on the document
-		GoogleStorageLocation documentLocation =
-				GoogleStorageLocation.forFile(outputBlobId.getBucket(), outputBlobId.getName());
+    // Run OCR on the document
+    GoogleStorageLocation documentLocation =
+        GoogleStorageLocation.forFile(outputBlobId.getBucket(), outputBlobId.getName());
 
-		GoogleStorageLocation outputLocation = GoogleStorageLocation.forFolder(
-				outputBlobId.getBucket(), "ocr_results/" + documentLocation.getBlobName());
+    GoogleStorageLocation outputLocation =
+        GoogleStorageLocation.forFolder(
+            outputBlobId.getBucket(), "ocr_results/" + documentLocation.getBlobName());
 
-		ListenableFuture<DocumentOcrResultSet> result =
-				documentOcrTemplate.runOcrForDocument(documentLocation, outputLocation);
+    ListenableFuture<DocumentOcrResultSet> result =
+        documentOcrTemplate.runOcrForDocument(documentLocation, outputLocation);
 
-		ocrStatusReporter.registerFuture(documentLocation.uriString(), result);
+    ocrStatusReporter.registerFuture(documentLocation.uriString(), result);
 
-		return new ModelAndView("submit_done");
-	}
+    return new ModelAndView("submit_done");
+  }
 
-	@Value("${application.ocr-bucket}")
-	public void setOcrBucket(String ocrBucket) {
-		try {
-			this.storage.get(ocrBucket, BucketGetOption.fields());
-		}
-		catch (Exception e) {
-			throw new IllegalArgumentException(
-					"The bucket " + ocrBucket + " does not exist. "
-							+ "Please specify a valid Google Storage bucket name "
-							+ "in the resources/application.properties file. "
-							+ "You can create a new bucket at: https://console.cloud.google.com/storage");
-		}
+  @Value("${application.ocr-bucket}")
+  public void setOcrBucket(String ocrBucket) {
+    try {
+      this.storage.get(ocrBucket, BucketGetOption.fields());
+    } catch (Exception e) {
+      throw new IllegalArgumentException(
+          "The bucket "
+              + ocrBucket
+              + " does not exist. "
+              + "Please specify a valid Google Storage bucket name "
+              + "in the resources/application.properties file. "
+              + "You can create a new bucket at: https://console.cloud.google.com/storage");
+    }
 
-		this.ocrBucket = ocrBucket;
-	}
+    this.ocrBucket = ocrBucket;
+  }
 
-	private static String getFileType(Resource documentResource) {
-		int extensionIdx = documentResource.getFilename().lastIndexOf(".");
-		String fileType = documentResource.getFilename().substring(extensionIdx);
+  private static String getFileType(Resource documentResource) {
+    int extensionIdx = documentResource.getFilename().lastIndexOf(".");
+    String fileType = documentResource.getFilename().substring(extensionIdx);
 
-		switch (fileType) {
-			case ".tif":
-				return "image/tiff";
-			case ".pdf":
-				return "application/pdf";
-			default:
-				throw new IllegalArgumentException("Does not support processing file type: " + fileType);
-		}
-	}
+    switch (fileType) {
+      case ".tif":
+        return "image/tiff";
+      case ".pdf":
+        return "application/pdf";
+      default:
+        throw new IllegalArgumentException("Does not support processing file type: " + fileType);
+    }
+  }
 }

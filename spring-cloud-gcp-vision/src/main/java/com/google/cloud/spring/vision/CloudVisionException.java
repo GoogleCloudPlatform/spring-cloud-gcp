@@ -25,13 +25,13 @@ import org.springframework.core.NestedRuntimeException;
  */
 public final class CloudVisionException extends NestedRuntimeException {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	CloudVisionException(String message, Exception errorCause) {
-		super(message, errorCause);
-	}
+  CloudVisionException(String message, Exception errorCause) {
+    super(message, errorCause);
+  }
 
-	CloudVisionException(String message) {
-		super(message);
-	}
+  CloudVisionException(String message) {
+    super(message);
+  }
 }

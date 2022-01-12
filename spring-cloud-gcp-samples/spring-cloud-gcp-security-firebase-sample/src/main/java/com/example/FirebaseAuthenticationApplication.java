@@ -27,8 +27,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties(FirebaseConfig.class)
 public class FirebaseAuthenticationApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(FirebaseAuthenticationApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(FirebaseAuthenticationApplication.class, args);
+  }
 }

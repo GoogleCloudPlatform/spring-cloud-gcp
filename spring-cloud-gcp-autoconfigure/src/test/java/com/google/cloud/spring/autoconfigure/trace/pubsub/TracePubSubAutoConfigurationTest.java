@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import brave.handler.SpanHandler;
 import brave.http.HttpRequestParser;
 import brave.http.HttpTracingCustomizer;
@@ -24,65 +26,64 @@ import com.google.cloud.spring.autoconfigure.trace.MockConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
 import io.grpc.ManagedChannel;
 import org.junit.jupiter.api.Test;
-import zipkin2.reporter.Sender;
-
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
 import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
 import org.springframework.cloud.sleuth.autoconfig.brave.instrument.messaging.BraveMessagingAutoConfiguration;
+import zipkin2.reporter.Sender;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-/**
- * Tests for Trace Pub/Sub auto-config.
- */
+/** Tests for Trace Pub/Sub auto-config. */
 class TracePubSubAutoConfigurationTest {
 
-	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(
-					TracePubSubAutoConfiguration.class,
-					StackdriverTraceAutoConfiguration.class,
-					GcpContextAutoConfiguration.class,
-					BraveAutoConfiguration.class,
-					BraveMessagingAutoConfiguration.class,
-					RefreshAutoConfiguration.class))
-			.withUserConfiguration(MockConfiguration.class)
-			.withBean(
-					StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
-					SpanHandler.class,
-					() -> SpanHandler.NOOP)
-			.withPropertyValues("spring.cloud.gcp.project-id=proj",
-					"spring.sleuth.sampler.probability=1.0");
+  private ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(
+              AutoConfigurations.of(
+                  TracePubSubAutoConfiguration.class,
+                  StackdriverTraceAutoConfiguration.class,
+                  GcpContextAutoConfiguration.class,
+                  BraveAutoConfiguration.class,
+                  BraveMessagingAutoConfiguration.class,
+                  RefreshAutoConfiguration.class))
+          .withUserConfiguration(MockConfiguration.class)
+          .withBean(
+              StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
+              SpanHandler.class,
+              () -> SpanHandler.NOOP)
+          .withPropertyValues(
+              "spring.cloud.gcp.project-id=proj", "spring.sleuth.sampler.probability=1.0");
 
-	@Test
-	void test() {
-		this.contextRunner
-				.run(context -> {
-					assertThat(context.getBean(HttpRequestParser.class)).isNotNull();
-					assertThat(context.getBean(HttpTracingCustomizer.class)).isNotNull();
-					assertThat(context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class)).isNotNull();
-					assertThat(context.getBean(ManagedChannel.class)).isNotNull();
-				});
-	}
+  @Test
+  void test() {
+    this.contextRunner.run(
+        context -> {
+          assertThat(context.getBean(HttpRequestParser.class)).isNotNull();
+          assertThat(context.getBean(HttpTracingCustomizer.class)).isNotNull();
+          assertThat(
+                  context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class))
+              .isNotNull();
+          assertThat(context.getBean(ManagedChannel.class)).isNotNull();
+        });
+  }
 
+  @Test
+  void testPubSubTracingDisabledByDefault() {
+    this.contextRunner.run(
+        context -> {
+          assertThat(context.getBeansOfType(TracePubSubBeanPostProcessor.class)).isEmpty();
+          assertThat(context.getBeansOfType(PubSubTracing.class)).isEmpty();
+        });
+  }
 
-	@Test
-	void testPubSubTracingDisabledByDefault() {
-		this.contextRunner.run(context -> {
-			assertThat(context.getBeansOfType(TracePubSubBeanPostProcessor.class)).isEmpty();
-			assertThat(context.getBeansOfType(PubSubTracing.class)).isEmpty();
-		});
-	}
-
-	@Test
-	void testPubSubTracingEnabled() {
-		this.contextRunner
-				.withPropertyValues("spring.cloud.gcp.trace.pubsub.enabled=true")
-				.run(context -> {
-					assertThat(context.getBean(TracePubSubBeanPostProcessor.class)).isNotNull();
-					assertThat(context.getBean(PubSubTracing.class)).isNotNull();
-				});
-	}
-
+  @Test
+  void testPubSubTracingEnabled() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.trace.pubsub.enabled=true")
+        .run(
+            context -> {
+              assertThat(context.getBean(TracePubSubBeanPostProcessor.class)).isNotNull();
+              assertThat(context.getBean(PubSubTracing.class)).isNotNull();
+            });
+  }
 }

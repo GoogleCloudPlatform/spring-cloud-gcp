@@ -1,4 +1,2 @@
-/**
- * Configuration of stream binder for Pub/Sub in Spring.
- */
+/** Configuration of stream binder for Pub/Sub in Spring. */
 package com.google.cloud.spring.stream.binder.pubsub.config;

@@ -16,62 +16,60 @@
 
 package com.google.cloud.spring.data.datastore.it;
 
-import java.util.function.IntConsumer;
-import java.util.stream.IntStream;
-
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
 
-/**
- * Tests performing many operations at the same time using single instances of the
- * repository.
- */
+import java.util.function.IntConsumer;
+import java.util.stream.IntStream;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+/** Tests performing many operations at the same time using single instances of the repository. */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { DatastoreIntegrationTestConfiguration.class })
+@ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
 public class ParallelDatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
-	private static final int PARALLEL_OPERATIONS = 10;
+  private static final int PARALLEL_OPERATIONS = 10;
 
-	@Autowired
-	TestEntityRepository testEntityRepository;
+  @Autowired TestEntityRepository testEntityRepository;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Datastore integration tests are disabled. Please use '-Dit.datastore=true' "
-						+ "to enable them. ",
-				System.getProperty("it.datastore"), is("true"));
-	}
+  @BeforeClass
+  public static void checkToRun() {
+    assumeThat(
+        "Datastore integration tests are disabled. Please use '-Dit.datastore=true' "
+            + "to enable them. ",
+        System.getProperty("it.datastore"),
+        is("true"));
+  }
 
-	@After
-	public void deleteAll() {
-		this.testEntityRepository.deleteAll();
-	}
+  @After
+  public void deleteAll() {
+    this.testEntityRepository.deleteAll();
+  }
 
-	@Test
-	public void testParallelOperations() {
-		performOperation(x -> this.testEntityRepository.save(new TestEntity((long) x, "color", (long) x, null, null)));
+  @Test
+  public void testParallelOperations() {
+    performOperation(
+        x ->
+            this.testEntityRepository.save(
+                new TestEntity((long) x, "color", (long) x, null, null)));
 
-		waitUntilTrue(() -> this.testEntityRepository.count() == PARALLEL_OPERATIONS - 1);
+    waitUntilTrue(() -> this.testEntityRepository.count() == PARALLEL_OPERATIONS - 1);
 
-		performOperation(x -> assertThat(this.testEntityRepository.getSizes(x)).hasSize(x));
+    performOperation(x -> assertThat(this.testEntityRepository.getSizes(x)).hasSize(x));
 
-		performOperation(x -> this.testEntityRepository.deleteBySize(x));
+    performOperation(x -> this.testEntityRepository.deleteBySize(x));
 
-		waitUntilTrue(() -> this.testEntityRepository.count() == 0);
-	}
+    waitUntilTrue(() -> this.testEntityRepository.count() == 0);
+  }
 
-	private void performOperation(IntConsumer function) {
-		IntStream.range(1, PARALLEL_OPERATIONS).parallel().forEach(function);
-	}
+  private void performOperation(IntConsumer function) {
+    IntStream.range(1, PARALLEL_OPERATIONS).parallel().forEach(function);
+  }
 }

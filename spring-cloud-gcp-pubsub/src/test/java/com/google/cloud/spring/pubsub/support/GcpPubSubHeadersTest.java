@@ -16,39 +16,40 @@
 
 package com.google.cloud.spring.pubsub.support;
 
-import java.util.Collections;
-
-import org.junit.jupiter.api.Test;
-
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.GenericMessage;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import java.util.Collections;
+import org.junit.jupiter.api.Test;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.GenericMessage;
+
 class GcpPubSubHeadersTest {
 
-	@Test
-	void getOriginalMessage_emptyHeaders() {
-		Message<String> m = new GenericMessage<>("batman");
-		assertThat(GcpPubSubHeaders.getOriginalMessage(m)).isEmpty();
-	}
+  @Test
+  void getOriginalMessage_emptyHeaders() {
+    Message<String> m = new GenericMessage<>("batman");
+    assertThat(GcpPubSubHeaders.getOriginalMessage(m)).isEmpty();
+  }
 
-	@Test
-	void getOriginalMessage_wrongType() {
-		Message<String> m = new GenericMessage<>("batman",
-				Collections.singletonMap(GcpPubSubHeaders.ORIGINAL_MESSAGE, 101));
-		assertThat(GcpPubSubHeaders.getOriginalMessage(m)).isEmpty();
-	}
+  @Test
+  void getOriginalMessage_wrongType() {
+    Message<String> m =
+        new GenericMessage<>(
+            "batman", Collections.singletonMap(GcpPubSubHeaders.ORIGINAL_MESSAGE, 101));
+    assertThat(GcpPubSubHeaders.getOriginalMessage(m)).isEmpty();
+  }
 
-	@Test
-	void getOriginalMessage() {
-		Message<String> m = new GenericMessage<>("batman",
-				Collections.singletonMap(GcpPubSubHeaders.ORIGINAL_MESSAGE,
-						mock(BasicAcknowledgeablePubsubMessage.class)));
-		assertThat(GcpPubSubHeaders.getOriginalMessage(m))
-				.isNotEmpty()
-				.get()
-				.isInstanceOf(BasicAcknowledgeablePubsubMessage.class);
-	}
+  @Test
+  void getOriginalMessage() {
+    Message<String> m =
+        new GenericMessage<>(
+            "batman",
+            Collections.singletonMap(
+                GcpPubSubHeaders.ORIGINAL_MESSAGE, mock(BasicAcknowledgeablePubsubMessage.class)));
+    assertThat(GcpPubSubHeaders.getOriginalMessage(m))
+        .isNotEmpty()
+        .get()
+        .isInstanceOf(BasicAcknowledgeablePubsubMessage.class);
+  }
 }

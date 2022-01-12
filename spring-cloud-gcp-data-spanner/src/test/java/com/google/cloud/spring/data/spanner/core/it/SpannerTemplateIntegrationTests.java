@@ -16,9 +16,7 @@
 
 package com.google.cloud.spring.data.spanner.core.it;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
@@ -29,162 +27,165 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.test.AbstractSpannerIntegrationTest;
 import com.google.cloud.spring.data.spanner.test.domain.Details;
 import com.google.cloud.spring.data.spanner.test.domain.Trade;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-/**
- * Integration tests that use many features of the Spanner Template.
- */
+/** Integration tests that use many features of the Spanner Template. */
 @RunWith(SpringRunner.class)
 public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationTest {
 
-	/**
-	 * used for checking exception messages and types.
-	 */
-	@Rule
-	public ExpectedException expectedEx = ExpectedException.none();
+  /** used for checking exception messages and types. */
+  @Rule public ExpectedException expectedEx = ExpectedException.none();
 
-	@Autowired
-	TemplateTransactionalService transactionalService;
+  @Autowired TemplateTransactionalService transactionalService;
 
-	@Test
-	public void testReadOnlyOperation() {
-		// Integration tests are configured with 10 sessions max. This will hang and fail if there
-		// is a leak.
-		for (int i = 0; i < 20; i++) {
-			Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> {
-				this.transactionalService.testReadOnlyOperation();
-				return true;
-			});
-		}
-	}
+  @Test
+  public void testReadOnlyOperation() {
+    // Integration tests are configured with 10 sessions max. This will hang and fail if there
+    // is a leak.
+    for (int i = 0; i < 20; i++) {
+      Awaitility.await()
+          .atMost(10, TimeUnit.SECONDS)
+          .until(
+              () -> {
+                this.transactionalService.testReadOnlyOperation();
+                return true;
+              });
+    }
+  }
 
-	@Test
-	public void insertAndDeleteSequence() {
+  @Test
+  public void insertAndDeleteSequence() {
 
-		this.spannerOperations.delete(Trade.class, KeySet.all());
+    this.spannerOperations.delete(Trade.class, KeySet.all());
 
-		assertThat(this.spannerOperations.count(Trade.class)).isZero();
+    assertThat(this.spannerOperations.count(Trade.class)).isZero();
 
-		Trade trade = Trade.aTrade(null, 1);
-		this.spannerOperations.insert(trade);
-		assertThat(this.spannerOperations.count(Trade.class)).isEqualTo(1L);
+    Trade trade = Trade.makeTrade(null, 1);
+    this.spannerOperations.insert(trade);
+    assertThat(this.spannerOperations.count(Trade.class)).isEqualTo(1L);
 
-		List<Trade> trades = this.spannerOperations.queryAll(Trade.class, new SpannerPageableQueryOptions());
+    List<Trade> trades =
+        this.spannerOperations.queryAll(Trade.class, new SpannerPageableQueryOptions());
 
-		assertThat(trades).containsExactly(trade);
+    assertThat(trades).containsExactly(trade);
 
-		Trade retrievedTrade = this.spannerOperations.read(Trade.class,
-				Key.of(trade.getId(), trade.getTraderId()));
-		assertThat(retrievedTrade).isEqualTo(trade);
+    Trade retrievedTrade =
+        this.spannerOperations.read(Trade.class, Key.of(trade.getId(), trade.getTraderId()));
+    assertThat(retrievedTrade).isEqualTo(trade);
 
-		trades = this.spannerOperations.readAll(Trade.class);
+    trades = this.spannerOperations.readAll(Trade.class);
 
-		assertThat(trades).containsExactly(trade);
+    assertThat(trades).containsExactly(trade);
 
-		Trade trade2 = Trade.aTrade(null, 1);
-		this.spannerOperations.insert(trade2);
+    Trade trade2 = Trade.makeTrade(null, 1);
+    this.spannerOperations.insert(trade2);
 
-		trades = this.spannerOperations.read(Trade.class, KeySet.newBuilder().addKey(Key.of(trade.getId(), trade.getTraderId()))
-				.addKey(Key.of(trade2.getId(), trade2.getTraderId())).build());
+    trades =
+        this.spannerOperations.read(
+            Trade.class,
+            KeySet.newBuilder()
+                .addKey(Key.of(trade.getId(), trade.getTraderId()))
+                .addKey(Key.of(trade2.getId(), trade2.getTraderId()))
+                .build());
 
-		assertThat(trades).containsExactlyInAnyOrder(trade, trade2);
+    assertThat(trades).containsExactlyInAnyOrder(trade, trade2);
 
-		this.spannerOperations.deleteAll(Arrays.asList(trade, trade2));
-		assertThat(this.spannerOperations.count(Trade.class)).isZero();
-	}
+    this.spannerOperations.deleteAll(Arrays.asList(trade, trade2));
+    assertThat(this.spannerOperations.count(Trade.class)).isZero();
+  }
 
-	@Test
-	public void insertAndDeleteWithJsonField() {
+  @Test
+  public void insertAndDeleteWithJsonField() {
 
-		this.spannerOperations.delete(Trade.class, KeySet.all());
-		assertThat(this.spannerOperations.count(Trade.class)).isZero();
+    this.spannerOperations.delete(Trade.class, KeySet.all());
+    assertThat(this.spannerOperations.count(Trade.class)).isZero();
 
-		Trade trade1 = Trade.aTrade();
-		trade1.setOptionalDetails(new Details("abc", "def"));
-		Trade trade2 = Trade.aTrade();
-		trade2.setOptionalDetails(new Details("some context", null));
+    Trade trade1 = Trade.makeTrade();
+    trade1.setOptionalDetails(new Details("abc", "def"));
+    Trade trade2 = Trade.makeTrade();
+    trade2.setOptionalDetails(new Details("some context", null));
 
-		this.spannerOperations.insert(trade1);
-		this.spannerOperations.insert(trade2);
-		assertThat(this.spannerOperations.count(Trade.class)).isEqualTo(2L);
+    this.spannerOperations.insert(trade1);
+    this.spannerOperations.insert(trade2);
+    assertThat(this.spannerOperations.count(Trade.class)).isEqualTo(2L);
 
-		List<Trade> trades = this.spannerOperations.queryAll(Trade.class, new SpannerPageableQueryOptions());
+    List<Trade> trades =
+        this.spannerOperations.queryAll(Trade.class, new SpannerPageableQueryOptions());
 
-		assertThat(trades).containsExactlyInAnyOrder(trade1, trade2);
+    assertThat(trades).containsExactlyInAnyOrder(trade1, trade2);
 
-		Trade retrievedTrade = this.spannerOperations.read(Trade.class,
-				Key.of(trade1.getId(), trade1.getTraderId()));
-		assertThat(retrievedTrade).isEqualTo(trade1);
-		assertThat(retrievedTrade.getOptionalDetails()).isInstanceOf(Details.class);
-		assertThat(retrievedTrade.getOptionalDetails()).isEqualTo(new Details("abc", "def"));
+    Trade retrievedTrade =
+        this.spannerOperations.read(Trade.class, Key.of(trade1.getId(), trade1.getTraderId()));
+    assertThat(retrievedTrade).isEqualTo(trade1);
+    assertThat(retrievedTrade.getOptionalDetails()).isInstanceOf(Details.class);
+    assertThat(retrievedTrade.getOptionalDetails()).isEqualTo(new Details("abc", "def"));
 
-		this.spannerOperations.deleteAll(Arrays.asList(trade1, trade2));
-		assertThat(this.spannerOperations.count(Trade.class)).isZero();
-	}
+    this.spannerOperations.deleteAll(Arrays.asList(trade1, trade2));
+    assertThat(this.spannerOperations.count(Trade.class)).isZero();
+  }
 
-	@Test
-	public void readWriteTransactionTest() {
-		Trade trade = Trade.aTrade();
-		this.spannerOperations.performReadWriteTransaction(transactionOperations -> {
+  @Test
+  public void readWriteTransactionTest() {
+    Trade trade = Trade.makeTrade();
+    this.spannerOperations.performReadWriteTransaction(
+        transactionOperations -> {
+          long beforeCount = transactionOperations.count(Trade.class);
+          transactionOperations.insert(trade);
 
-			long beforeCount = transactionOperations.count(Trade.class);
-			transactionOperations.insert(trade);
+          // because the insert happens within the same transaction, this count is unchanged.
+          assertThat(transactionOperations.count(Trade.class)).isEqualTo(beforeCount);
+          return null;
+        });
 
-			// because the insert happens within the same transaction, this count is unchanged.
-			assertThat(transactionOperations.count(Trade.class)).isEqualTo(beforeCount);
-			return null;
-		});
+    assertThat(this.spannerOperations.count(Trade.class)).isEqualTo(1L);
+    this.transactionalService.testTransactionalAnnotation();
+    assertThat(this.spannerOperations.count(Trade.class)).isEqualTo(2L);
+  }
 
-		assertThat(this.spannerOperations.count(Trade.class)).isEqualTo(1L);
-		this.transactionalService.testTransactionalAnnotation();
-		assertThat(this.spannerOperations.count(Trade.class)).isEqualTo(2L);
-	}
+  @Test
+  public void readOnlyTransactionTest() {
 
-	@Test
-	public void readOnlyTransactionTest() {
+    this.expectedEx.expect(SpannerDataException.class);
+    this.expectedEx.expectMessage("A read-only transaction template cannot perform mutations.");
 
-		this.expectedEx.expect(SpannerDataException.class);
-		this.expectedEx.expectMessage("A read-only transaction template cannot perform mutations.");
+    Trade trade = Trade.makeTrade();
+    this.spannerOperations.performReadOnlyTransaction(
+        transactionOperations -> {
+          // cannot do mutate in a read-only transaction
+          transactionOperations.insert(trade);
+          return null;
+        },
+        new SpannerReadOptions());
+  }
 
-		Trade trade = Trade.aTrade();
-		this.spannerOperations.performReadOnlyTransaction(transactionOperations -> {
-			// cannot do mutate in a read-only transaction
-			transactionOperations.insert(trade);
-			return null;
-		}, new SpannerReadOptions());
-	}
+  /** a transactional service for testing annotated transaction methods. */
+  public static class TemplateTransactionalService {
 
-	/**
-	 * a transactional service for testing annotated transaction methods.
-	 */
-	public static class TemplateTransactionalService {
+    @Autowired SpannerTemplate spannerTemplate;
 
-		@Autowired
-		SpannerTemplate spannerTemplate;
+    @Transactional
+    public void testTransactionalAnnotation() {
+      long beforeCount = this.spannerTemplate.count(Trade.class);
+      Trade trade = Trade.makeTrade();
+      this.spannerTemplate.insert(trade);
 
-		@Transactional
-		public void testTransactionalAnnotation() {
-			long beforeCount = this.spannerTemplate.count(Trade.class);
-			Trade trade = Trade.aTrade();
-			this.spannerTemplate.insert(trade);
+      // because the insert happens within the same transaction, this count is unchanged.
+      assertThat(this.spannerTemplate.count(Trade.class)).isEqualTo(beforeCount);
+    }
 
-			// because the insert happens within the same transaction, this count is unchanged.
-			assertThat(this.spannerTemplate.count(Trade.class)).isEqualTo(beforeCount);
-		}
-
-		@Transactional(readOnly = true)
-		public void testReadOnlyOperation() {
-			this.spannerTemplate.count(Trade.class);
-		}
-	}
+    @Transactional(readOnly = true)
+    public void testReadOnlyOperation() {
+      this.spannerTemplate.count(Trade.class);
+    }
+  }
 }

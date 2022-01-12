@@ -28,12 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ExampleController {
 
-	@Value("${example.message:none}")
-	private String message;
+  @Value("${example.message:none}")
+  private String message;
 
-	@GetMapping("/message")
-	public String getMessage() {
-		return this.message;
-	}
-
+  @GetMapping("/message")
+  public String getMessage() {
+    return this.message;
+  }
 }

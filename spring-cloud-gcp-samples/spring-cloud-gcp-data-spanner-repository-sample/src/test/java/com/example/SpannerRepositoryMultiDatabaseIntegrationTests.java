@@ -16,6 +16,8 @@
 
 package com.example;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.data.spanner.core.admin.DatabaseIdProvider;
@@ -26,7 +28,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -35,84 +36,75 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-/**
- * Tests for the Spanner repository example using multiple databases.
- */
+/** Tests for the Spanner repository example using multiple databases. */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
 @EnableAutoConfiguration
 class SpannerRepositoryMultiDatabaseIntegrationTests {
-	@Autowired
-	private TraderRepository traderRepository;
+  @Autowired private TraderRepository traderRepository;
 
-	@Autowired
-	private SpannerSchemaUtils spannerSchemaUtils;
+  @Autowired private SpannerSchemaUtils spannerSchemaUtils;
 
-	@Autowired
-	private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
+  @Autowired private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
 
-	@BeforeEach
-	@AfterEach
-	void setUp() {
-		createTable();
-		Config.flipDatabase();
-		createTable();
-		this.traderRepository.deleteAll();
-	}
+  @BeforeEach
+  @AfterEach
+  void setUp() {
+    createTable();
+    Config.flipDatabase();
+    createTable();
+    this.traderRepository.deleteAll();
+  }
 
-	private void createTable() {
-		if (!this.spannerDatabaseAdminTemplate.tableExists("traders_repository")) {
-			this.spannerDatabaseAdminTemplate.executeDdlStrings(
-					this.spannerSchemaUtils.getCreateTableDdlStringsForInterleavedHierarchy(Trader.class),
-					true);
-		}
-	}
+  private void createTable() {
+    if (!this.spannerDatabaseAdminTemplate.tableExists("traders_repository")) {
+      this.spannerDatabaseAdminTemplate.executeDdlStrings(
+          this.spannerSchemaUtils.getCreateTableDdlStringsForInterleavedHierarchy(Trader.class),
+          true);
+    }
+  }
 
-	@Test
-	void testLoadsCorrectData() {
-		assertThat(this.traderRepository.count()).isZero();
-		Config.flipDatabase();
-		assertThat(this.traderRepository.count()).isZero();
+  @Test
+  void testLoadsCorrectData() {
+    assertThat(this.traderRepository.count()).isZero();
+    Config.flipDatabase();
+    assertThat(this.traderRepository.count()).isZero();
 
-		this.traderRepository.save(new Trader("1", "a", "al"));
-		Config.flipDatabase();
-		this.traderRepository.save(new Trader("2", "a", "al"));
-		Config.flipDatabase();
-		this.traderRepository.save(new Trader("3", "a", "al"));
+    this.traderRepository.save(new Trader("1", "a", "al"));
+    Config.flipDatabase();
+    this.traderRepository.save(new Trader("2", "a", "al"));
+    Config.flipDatabase();
+    this.traderRepository.save(new Trader("3", "a", "al"));
 
-		assertThat(this.traderRepository.count()).isEqualTo(2);
-		Config.flipDatabase();
-		assertThat(this.traderRepository.count()).isEqualTo(1);
-	}
+    assertThat(this.traderRepository.count()).isEqualTo(2);
+    Config.flipDatabase();
+    assertThat(this.traderRepository.count()).isEqualTo(1);
+  }
 
-	/**
-	 * Configuring custom multiple database connections.
-	 *
-	 * @author Chengyuan Zhao
-	 */
-	@Configuration
-	static class Config {
+  /**
+   * Configuring custom multiple database connections.
+   *
+   * @author Chengyuan Zhao
+   */
+  @Configuration
+  static class Config {
 
-		static boolean databaseFlipper;
+    static boolean databaseFlipper;
 
-		@Value("${spring.cloud.gcp.spanner.instance-id}")
-		String instanceId;
+    @Value("${spring.cloud.gcp.spanner.instance-id}")
+    String instanceId;
 
-		/**
-		 * Flips the database connection that all repositories and templates use.
-		 */
-		static void flipDatabase() {
-			databaseFlipper = !databaseFlipper;
-		}
+    /** Flips the database connection that all repositories and templates use. */
+    static void flipDatabase() {
+      databaseFlipper = !databaseFlipper;
+    }
 
-		@Bean
-		public DatabaseIdProvider databaseIdProvider(SpannerOptions spannerOptions) {
-			return () -> DatabaseId.of(spannerOptions.getProjectId(), this.instanceId,
-					databaseFlipper ? "db1" : "db2");
-		}
-	}
-
+    @Bean
+    public DatabaseIdProvider databaseIdProvider(SpannerOptions spannerOptions) {
+      return () ->
+          DatabaseId.of(
+              spannerOptions.getProjectId(), this.instanceId, databaseFlipper ? "db1" : "db2");
+    }
+  }
 }

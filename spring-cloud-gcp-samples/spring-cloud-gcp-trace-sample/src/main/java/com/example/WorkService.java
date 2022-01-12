@@ -20,7 +20,6 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.integration.support.MessageBuilder;
@@ -30,45 +29,39 @@ import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * The busy-work service for the sample application.
- */
+/** The busy-work service for the sample application. */
 @Service
 public class WorkService {
-	private static final Log LOGGER = LogFactory.getLog(WorkService.class);
+  private static final Log LOGGER = LogFactory.getLog(WorkService.class);
 
-	private final RestTemplate restTemplate;
+  private final RestTemplate restTemplate;
 
-	@Autowired
-	private PubSubTemplate pubSubTemplate;
+  @Autowired private PubSubTemplate pubSubTemplate;
 
-	@Autowired
-	private MessageChannel pubsubOutputChannel;
+  @Autowired private MessageChannel pubsubOutputChannel;
 
-	public WorkService(RestTemplate restTemplate) {
-		this.restTemplate = restTemplate;
-	}
+  public WorkService(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
+  }
 
-	@NewSpan
-	public void visitMeetEndpoint(String meetUrl) {
-		LOGGER.info("starting busy work");
-		for (int i = 0; i < 3; i++) {
-			this.restTemplate.getForObject(meetUrl, String.class);
-		}
-		LOGGER.info("finished busy work");
-	}
+  @NewSpan
+  public void visitMeetEndpoint(String meetUrl) {
+    LOGGER.info("starting busy work");
+    for (int i = 0; i < 3; i++) {
+      this.restTemplate.getForObject(meetUrl, String.class);
+    }
+    LOGGER.info("finished busy work");
+  }
 
-	@NewSpan
-	public void sendMessageSpringIntegration(String text) throws MessagingException {
-		final Message<?> message = MessageBuilder
-				.withPayload(text)
-				.setHeader(GcpPubSubHeaders.TOPIC, "traceTopic").build();
-		pubsubOutputChannel.send(message);
-	}
+  @NewSpan
+  public void sendMessageSpringIntegration(String text) throws MessagingException {
+    final Message<?> message =
+        MessageBuilder.withPayload(text).setHeader(GcpPubSubHeaders.TOPIC, "traceTopic").build();
+    pubsubOutputChannel.send(message);
+  }
 
-	@NewSpan
-	public void sendMessagePubSubTemplate(String text) throws MessagingException {
-		pubSubTemplate.publish("traceTopic", text);
-	}
-
+  @NewSpan
+  public void sendMessagePubSubTemplate(String text) throws MessagingException {
+    pubSubTemplate.publish("traceTopic", text);
+  }
 }

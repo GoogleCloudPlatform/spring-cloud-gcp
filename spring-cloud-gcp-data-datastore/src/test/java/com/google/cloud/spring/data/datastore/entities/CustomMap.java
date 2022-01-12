@@ -18,6 +18,4 @@ package com.google.cloud.spring.data.datastore.entities;
 
 import java.util.HashMap;
 
-public class CustomMap extends HashMap<String, Object> {
-
-}
+public class CustomMap extends HashMap<String, Object> {}
