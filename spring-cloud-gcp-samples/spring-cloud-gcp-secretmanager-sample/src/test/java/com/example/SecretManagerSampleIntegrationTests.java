@@ -17,29 +17,28 @@
 package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assume.assumeThat;
 
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 /** Application secret named "application-secret" must exist and have a value of "Hello world.". */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.secretmanager", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = SecretManagerApplication.class)
-public class SecretManagerSampleIntegrationTests {
+class SecretManagerSampleIntegrationTests {
 
   private static final String SECRET_TO_DELETE = "secret-manager-sample-delete-secret";
 
@@ -47,24 +46,15 @@ public class SecretManagerSampleIntegrationTests {
 
   @Autowired private TestRestTemplate testRestTemplate;
 
-  @BeforeClass
-  public static void prepare() {
-    assumeThat(
-        "Secret Manager integration tests are disabled. "
-            + "Please use '-Dit.secretmanager=true' to enable them.",
-        System.getProperty("it.secretmanager"),
-        is("true"));
-  }
-
   @Test
-  public void testApplicationStartup() {
+  void testApplicationStartup() {
     ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
     assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
     assertThat(response.getBody()).contains("<b>application-secret:</b> <i>Hello world.</i>");
   }
 
   @Test
-  public void testCreateReadSecret() {
+  void testCreateReadSecret() {
     MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
     params.add("secretId", "secret-manager-sample-secret");
     params.add("projectId", "");
@@ -83,7 +73,7 @@ public class SecretManagerSampleIntegrationTests {
   }
 
   @Test
-  public void testDeleteSecret() {
+  void testDeleteSecret() {
     secretManagerTemplate.createSecret(SECRET_TO_DELETE, "test");
 
     MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
