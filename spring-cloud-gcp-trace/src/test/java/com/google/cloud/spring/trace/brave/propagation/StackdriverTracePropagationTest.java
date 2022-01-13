@@ -16,17 +16,26 @@
 
 package com.google.cloud.spring.trace.brave.propagation;
 
+import static com.google.cloud.spring.trace.brave.propagation.StackdriverTracePropagation.TRACE_ID_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import brave.propagation.B3Propagation;
 import brave.propagation.Propagation;
+import brave.propagation.Propagation.Getter;
 import brave.propagation.TraceContext;
+import brave.propagation.TraceContext.Extractor;
+import brave.propagation.TraceContext.Injector;
 import brave.propagation.TraceContextOrSamplingFlags;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class StackdriverTracePropagationTest {
+class StackdriverTracePropagationTest {
   static final String XCLOUD_TRACE_ID = "c108dc108dc108dc108dc108dc108d00";
   static final String XCLOUD_VALUE = XCLOUD_TRACE_ID + "/1234";
 
@@ -39,10 +48,10 @@ public class StackdriverTracePropagationTest {
   TraceContext.Extractor<Map<String, String>> extractor = propagation.extractor(Map::get);
 
   @Test
-  public void b3TakesPrecedenceOverCloudHeader() {
+  void b3TakesPrecedenceOverCloudHeader() {
 
     Map<String, String> headers = new HashMap<>();
-    headers.put(StackdriverTracePropagation.TRACE_ID_NAME, XCLOUD_VALUE);
+    headers.put(TRACE_ID_NAME, XCLOUD_VALUE);
     headers.put(B3_HEADER, B3_VALUE);
 
     TraceContextOrSamplingFlags ctx = extractor.extract(headers);
@@ -51,9 +60,9 @@ public class StackdriverTracePropagationTest {
   }
 
   @Test
-  public void cloudReturnedWhenB3Missing() {
+  void cloudReturnedWhenB3Missing() {
     Map<String, String> headers = new HashMap<>();
-    headers.put(StackdriverTracePropagation.TRACE_ID_NAME, XCLOUD_VALUE);
+    headers.put(TRACE_ID_NAME, XCLOUD_VALUE);
 
     TraceContextOrSamplingFlags ctx = extractor.extract(headers);
 
@@ -61,7 +70,7 @@ public class StackdriverTracePropagationTest {
   }
 
   @Test
-  public void b3ReturnedWhenCloudHeaderMissing() {
+  void b3ReturnedWhenCloudHeaderMissing() {
     Map<String, String> headers = new HashMap<>();
     headers.put(B3_HEADER, B3_VALUE);
 
@@ -71,9 +80,67 @@ public class StackdriverTracePropagationTest {
   }
 
   @Test
-  public void emptyContextReturnedWhenNoHeadersPresent() {
+  void emptyContextReturnedWhenNoHeadersPresent() {
     TraceContextOrSamplingFlags ctx = extractor.extract(new HashMap<>());
 
     assertThat(ctx).isSameAs(TraceContextOrSamplingFlags.EMPTY);
   }
+
+  @Test
+  void newFactoryFailsWhenWrappedFactoryNull() {
+    assertThatThrownBy(() ->  StackdriverTracePropagation.newFactory(null))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessage("primary == null");
+  }
+
+  @Test
+  void joinNotSupported() {
+    Propagation.Factory factory = StackdriverTracePropagation.newFactory(B3Propagation.FACTORY);
+    assertThat(factory.supportsJoin()).isFalse();
+  }
+
+  @Test
+  void requres128BitTraceId() {
+    Propagation.Factory factory = StackdriverTracePropagation.newFactory(B3Propagation.FACTORY);
+    assertThat(factory.requires128BitTraceId()).isTrue();
+  }
+
+  @Test
+  void stackdriverPropagationAddsCloudTraceIdToWrappedKeys() {
+    Propagation<String> mockPropagation = mock(Propagation.class);
+    when(mockPropagation.keys()).thenReturn(Arrays.asList("key1"));
+
+    Propagation<String> cloudPropagation = new StackdriverTracePropagation(mockPropagation);
+    assertThat(cloudPropagation.keys()).containsExactly("key1", TRACE_ID_NAME);
+  }
+
+  @Test
+  void injectorDelegatesToWrappedPropagation() {
+    Propagation<String> mockPropagation = mock(Propagation.class);
+    Injector<Object> mockInjector = mock(Injector.class);
+    when(mockPropagation.injector(any())).thenReturn(mockInjector);
+
+    Propagation<String> cloudPropagation = new StackdriverTracePropagation(mockPropagation);
+    assertThat(cloudPropagation.injector((request, key, value) -> {}))
+        .isSameAs(mockInjector);
+  }
+
+  @Test
+  void extractorRequiresGetter() {
+    assertThatThrownBy(() -> propagation.extractor(null))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessage("getter == null");
+  }
+
+  @Test
+  void propagationExtractorReturnsCloudTraceContextExtractor() {
+    Propagation<String> mockPropagation = mock(Propagation.class);
+    Propagation<String> cloudPropagation = new StackdriverTracePropagation(mockPropagation);
+    Getter<String, String> getter = (request, key) -> "unused";
+
+    Extractor extractor = cloudPropagation.extractor(getter);
+    assertThat(extractor).isInstanceOf(CloudTraceContextExtractor.class);
+  }
+
+
 }

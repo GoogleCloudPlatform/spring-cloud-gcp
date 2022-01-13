@@ -17,8 +17,10 @@
 package com.google.cloud.spring.trace.brave.sender;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -27,6 +29,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.devtools.cloudtrace.v2.BatchWriteSpansRequest;
 import com.google.devtools.cloudtrace.v2.TraceServiceGrpc;
 import com.google.protobuf.Empty;
+import io.grpc.CallOptions;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -173,6 +176,52 @@ public class StackdriverSenderTest {
           observer.onCompleted();
         });
     assertThat(sender.check()).isSameAs(CheckResult.OK);
+  }
+
+  @Test
+  public void builderFailsOnNullChannel() {
+    assertThatThrownBy(() -> StackdriverSender.newBuilder(null))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessage("channel == null");
+  }
+
+  @Test
+  public void builderFailsOnNullProjectId() {
+    StackdriverSender.Builder builder = StackdriverSender.newBuilder(server.getChannel());
+    assertThatThrownBy(() -> builder.projectId(null))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessage("projectId == null");
+  }
+
+  @Test
+  public void builderFailsOnNullCallOptions() {
+    StackdriverSender.Builder builder = StackdriverSender.newBuilder(server.getChannel());
+    assertThatThrownBy(() -> builder.callOptions(null))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessage("callOptions == null");
+  }
+
+  @Test
+  public void builderSetsCallOptions() {
+    StackdriverSender.Builder builder = StackdriverSender.newBuilder(server.getChannel());
+    CallOptions callOptions = CallOptions.DEFAULT.withMaxOutboundMessageSize(42);
+    builder.callOptions(callOptions);
+    assertThat(builder.callOptions).isSameAs(callOptions);
+  }
+
+  @Test
+  public void serverResponseTimeoutFailsIfNonPositive() {
+    StackdriverSender.Builder builder = StackdriverSender.newBuilder(server.getChannel());
+    assertThatThrownBy(() -> builder.serverResponseTimeoutMs(0))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Server response timeout must be greater than 0");
+  }
+
+  @Test
+  public void builderSetsResponseTimeout() {
+    StackdriverSender.Builder builder = StackdriverSender.newBuilder(server.getChannel());
+    builder.serverResponseTimeoutMs(17);
+    assertThat(builder.serverResponseTimeoutMs).isEqualTo(17);
   }
 
   void onClientCall(Consumer<StreamObserver<Empty>> onClientCall) {
