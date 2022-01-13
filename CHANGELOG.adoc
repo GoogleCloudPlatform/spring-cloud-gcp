@@ -5,7 +5,37 @@ https://spring.io/projects/spring-cloud-gcp[Spring Cloud GCP] is a set of integr
 This document provides a high-level overview of the changes introduced in Spring Cloud GCP by release.
 For a detailed view of what has changed, refer to the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main[commit history] on GitHub.
 
+== 3.1.0.BUILD-SNAPSHOT
+
 == 2.0.8.BUILD-SNAPSHOT
+
+== 3.0.0
+
+*This release introduces Spring Boot 2.6 and Spring Cloud 2021.0 Compatibility.*
+
+### General
+
+* Updated `gcp-libraries-bom.version` to 24.2.0 (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/861[#861]).
+
+### Datastore
+* `SimpleDatastoreRepository` now supports `findBy()` with fluent query semantics (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/836[#836])
+
+### Logging
+
+* Renamed methods (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/865[#865])  ⚠️ **breaking change**
+  - Renamed `XCloudTraceIdExtractor` to `CloudTraceIdExtractor`
+  - Renamed methods in `StackdriverJsonLayout`. Make sure to update Logback XML configuration with custom layout and rename `traceIdMDCField` and `spanIdMDCField` to `traceIdMdcField` and `spanIdMdcField` respectively.
+    - getTraceIdMDCField() -> getTraceIdMdcField()
+    - setTraceIdMDCField() -> setTraceIdMdcField()
+    - getSpanIdMDCField() -> getSpanIdMdcField()
+    - setSpanIdMDCField() -> setSpanIdMdcField(). 
+  
+### Pub/Sub
+* Spring Integration and Spring Cloud Stream outgoing adapters will now exclude headers with `googclient_` prefix from being propagated to Cloud Pub/Sub (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/845[#845]).
+
+### Spanner
+* Reduced visibility and renamed `SpannerQueryMethod.getMethod()` (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull815[/#815]) ⚠️ **breaking change**
+
 
 == 2.0.7
 
