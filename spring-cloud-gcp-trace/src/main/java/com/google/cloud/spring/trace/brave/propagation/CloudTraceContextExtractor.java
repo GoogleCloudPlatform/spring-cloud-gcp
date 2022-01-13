@@ -105,7 +105,7 @@ final class CloudTraceContextExtractor<R> implements Extractor<R> {
     return result;
   }
 
-  private static long[] convertHexTraceIdToLong(String hexTraceId) {
+  static long[] convertHexTraceIdToLong(String hexTraceId) {
     long[] result = new long[2];
     int length = hexTraceId.length();
 

@@ -17,10 +17,12 @@
 package com.google.cloud.spring.trace.brave.propagation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 import brave.propagation.B3Propagation;
 import brave.propagation.TraceContextOrSamplingFlags;
+import java.util.Arrays;
 import org.junit.Test;
 
 public class CloudTraceContextExtractorTest {
@@ -50,6 +52,18 @@ public class CloudTraceContextExtractorTest {
     assertThat(context.traceIdContext().traceId()).isEqualTo(-7348336952112078057L);
     assertThat(context.traceIdContext().traceIdHigh()).isEqualTo(-8081649345970823455L);
     assertThat(context.traceIdContext().sampled()).isTrue();
+  }
+
+  @Test
+  public void extractFailsOnNullRequest() {
+    String cloudTraceContext = "8fd836bcfe241ee19a057679a77ba317/0;o=1";
+    CloudTraceContextExtractor extractor =
+        new CloudTraceContextExtractor<>(
+            B3Propagation.FACTORY.get(), (request, key) -> cloudTraceContext);
+
+    assertThatThrownBy(() -> extractor.extract(null))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessage("request == null");
   }
 
   @Test
@@ -140,4 +154,23 @@ public class CloudTraceContextExtractorTest {
       // ignore exception
     }
   }
+
+  @Test
+  public void traceIdReturnsNullIfLengthIncorrect() {
+    long[] longParts = CloudTraceContextExtractor.convertHexTraceIdToLong("ABCDEF");
+    assertThat(longParts).isNull();
+  }
+
+  @Test
+  public void traceIdReturnsNullOnInvalidInputInFirstHalf() {
+    long[] longParts = CloudTraceContextExtractor.convertHexTraceIdToLong("aaXaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    assertThat(longParts).isNull();
+  }
+
+  @Test
+  public void traceIdReturnsNullOnInvalidInputInSecondHalf() {
+    long[] longParts = CloudTraceContextExtractor.convertHexTraceIdToLong("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaXaa");
+    assertThat(longParts).isNull();
+  }
+
 }
