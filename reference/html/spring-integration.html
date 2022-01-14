@@ -530,15 +530,14 @@ The old <code>setPublishCallback()</code> method that only gave access to messag
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">adapter.setPublishCallback(new ListenableFutureCallback&lt;String&gt;() {
-	@Override
-	public void onFailure(Throwable ex) {
-	}
+<pre class="highlight"><code class="language-java" data-lang="java">adapter.setPublishCallback(
+    new ListenableFutureCallback&lt;String&gt;() {
+      @Override
+      public void onFailure(Throwable ex) {}
 
-	@Override
-	public void onSuccess(String result) {
-	}
-});</code></pre>
+      @Override
+      public void onSuccess(String result) {}
+    });</code></pre>
 </div>
 </div>
 <div class="paragraph">

@@ -870,7 +870,8 @@ Additionally, if you are using multiple publishers, you will want to set the <co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, String&gt; headers = Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1");
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, String&gt; headers =
+    Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1");
 pubSubTemplate.publish(topicName, "message1", headers).get();
 pubSubTemplate.publish(topicName, "message2", headers).get();</code></pre>
 </div>
@@ -892,11 +893,17 @@ The subscription name could either be a canonical subscription name within the c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Subscriber subscriber = pubSubTemplate.subscribe(subscriptionName, message -&gt; {
-	logger.info("Message received from " + subscriptionName + " subscription: "
-			+ message.getPubsubMessage().getData().toStringUtf8());
-	message.ack();
-});</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">Subscriber subscriber =
+    pubSubTemplate.subscribe(
+        subscriptionName,
+        message -&gt; {
+          logger.info(
+              "Message received from "
+                  + subscriptionName
+                  + " subscription: "
+                  + message.getPubsubMessage().getData().toStringUtf8());
+          message.ack();
+        });</code></pre>
 </div>
 </div>
 </div>
@@ -954,13 +961,15 @@ This is different from subscribing to a subscription, in the sense that subscrib
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">int maxMessages = 10;
 boolean returnImmediately = false;
-List&lt;AcknowledgeablePubsubMessage&gt; messages = pubSubTemplate.pull(subscriptionName, maxMessages,
-		returnImmediately);
+List&lt;AcknowledgeablePubsubMessage&gt; messages =
+    pubSubTemplate.pull(subscriptionName, maxMessages, returnImmediately);
 
-//acknowledge the messages
+// acknowledge the messages
 pubSubTemplate.ack(messages);
 
-messages.forEach(message -&gt; logger.info(message.getPubsubMessage().getData().toStringUtf8()));</code></pre>
+messages.forEach(
+    message -&gt;
+        logger.info(message.getPubsubMessage().getData().toStringUtf8()));</code></pre>
 </div>
 </div>
 </div>
@@ -1084,7 +1093,7 @@ See <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics">here</a> f
 // on the ObjectMapper provided by Spring Boot starters.
 @Bean
 public PubSubMessageConverter pubSubMessageConverter() {
-	return new JacksonPubSubMessageConverter(new ObjectMapper());
+  return new JacksonPubSubMessageConverter(new ObjectMapper());
 }</code></pre>
 </div>
 </div>
@@ -1108,25 +1117,25 @@ Other implementations of the <code>PubSubMessageConverter</code> can also be con
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">static class TestUser {
 
-	String username;
+  String username;
 
-	String password;
+  String password;
 
-	public String getUsername() {
-		return this.username;
-	}
+  public String getUsername() {
+    return this.username;
+  }
 
-	void setUsername(String username) {
-		this.username = username;
-	}
+  void setUsername(String username) {
+    this.username = username;
+  }
 
-	public String getPassword() {
-		return this.password;
-	}
+  public String getPassword() {
+    return this.password;
+  }
 
-	void setPassword(String password) {
-		this.password = password;
-	}
+  void setPassword(String password) {
+    this.password = password;
+  }
 }</code></pre>
 </div>
 </div>
@@ -1148,12 +1157,13 @@ pubSubTemplate.publish(topicName, user);</code></pre>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">int maxMessages = 1;
 boolean returnImmediately = false;
-List&lt;ConvertedAcknowledgeablePubsubMessage&lt;TestUser&gt;&gt; messages = pubSubTemplate.pullAndConvert(
-		subscriptionName, maxMessages, returnImmediately, TestUser.class);
+List&lt;ConvertedAcknowledgeablePubsubMessage&lt;TestUser&gt;&gt; messages =
+    pubSubTemplate.pullAndConvert(
+        subscriptionName, maxMessages, returnImmediately, TestUser.class);
 
 ConvertedAcknowledgeablePubsubMessage&lt;TestUser&gt; message = messages.get(0);
 
-//acknowledge the message
+// acknowledge the message
 message.ack();
 
 TestUser receivedTestUser = message.getPayload();</code></pre>
@@ -1288,11 +1298,8 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; topics = pubSubAdmin
-		.listTopics()
-		.stream()
-		.map(Topic::getName)
-		.collect(Collectors.toList());</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; topics =
+    pubSubAdmin.listTopics().stream().map(Topic::getName).collect(Collectors.toList());</code></pre>
 </div>
 </div>
 </div>
@@ -1364,11 +1371,10 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; subscriptions = pubSubAdmin
-		.listSubscriptions()
-		.stream()
-		.map(Subscription::getName)
-		.collect(Collectors.toList());</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; subscriptions =
+    pubSubAdmin.listSubscriptions().stream()
+        .map(Subscription::getName)
+        .collect(Collectors.toList());</code></pre>
 </div>
 </div>
 </div>

@@ -391,7 +391,7 @@ window.onload = function() {
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>3.0.0-SNAPSHOT</strong></p>
+<p><strong>3.1.0-SNAPSHOT</strong></p>
 </div>
 </div>
 </div>
@@ -517,7 +517,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
        &lt;dependency&gt;
            &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
            &lt;artifactId&gt;spring-cloud-gcp-dependencies&lt;/artifactId&gt;
-           &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+           &lt;version&gt;3.1.0-SNAPSHOT&lt;/version&gt;
            &lt;type&gt;pom&lt;/type&gt;
            &lt;scope&gt;import&lt;/scope&gt;
        &lt;/dependency&gt;
@@ -531,7 +531,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:3.0.0-SNAPSHOT")
+    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:3.1.0-SNAPSHOT")
 }</code></pre>
 </div>
 </div>
@@ -2232,7 +2232,8 @@ Additionally, if you are using multiple publishers, you will want to set the <co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, String&gt; headers = Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1");
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, String&gt; headers =
+    Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1");
 pubSubTemplate.publish(topicName, "message1", headers).get();
 pubSubTemplate.publish(topicName, "message2", headers).get();</code></pre>
 </div>
@@ -2254,11 +2255,17 @@ The subscription name could either be a canonical subscription name within the c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Subscriber subscriber = pubSubTemplate.subscribe(subscriptionName, message -&gt; {
-    logger.info("Message received from " + subscriptionName + " subscription: "
-            + message.getPubsubMessage().getData().toStringUtf8());
-    message.ack();
-});</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">Subscriber subscriber =
+    pubSubTemplate.subscribe(
+        subscriptionName,
+        message -&gt; {
+          logger.info(
+              "Message received from "
+                  + subscriptionName
+                  + " subscription: "
+                  + message.getPubsubMessage().getData().toStringUtf8());
+          message.ack();
+        });</code></pre>
 </div>
 </div>
 </div>
@@ -2316,13 +2323,15 @@ This is different from subscribing to a subscription, in the sense that subscrib
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">int maxMessages = 10;
 boolean returnImmediately = false;
-List&lt;AcknowledgeablePubsubMessage&gt; messages = pubSubTemplate.pull(subscriptionName, maxMessages,
-        returnImmediately);
+List&lt;AcknowledgeablePubsubMessage&gt; messages =
+    pubSubTemplate.pull(subscriptionName, maxMessages, returnImmediately);
 
-//acknowledge the messages
+// acknowledge the messages
 pubSubTemplate.ack(messages);
 
-messages.forEach(message -&gt; logger.info(message.getPubsubMessage().getData().toStringUtf8()));</code></pre>
+messages.forEach(
+    message -&gt;
+        logger.info(message.getPubsubMessage().getData().toStringUtf8()));</code></pre>
 </div>
 </div>
 </div>
@@ -2446,7 +2455,7 @@ See <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics">here</a> f
 // on the ObjectMapper provided by Spring Boot starters.
 @Bean
 public PubSubMessageConverter pubSubMessageConverter() {
-    return new JacksonPubSubMessageConverter(new ObjectMapper());
+  return new JacksonPubSubMessageConverter(new ObjectMapper());
 }</code></pre>
 </div>
 </div>
@@ -2470,25 +2479,25 @@ Other implementations of the <code>PubSubMessageConverter</code> can also be con
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">static class TestUser {
 
-    String username;
+  String username;
 
-    String password;
+  String password;
 
-    public String getUsername() {
-        return this.username;
-    }
+  public String getUsername() {
+    return this.username;
+  }
 
-    void setUsername(String username) {
-        this.username = username;
-    }
+  void setUsername(String username) {
+    this.username = username;
+  }
 
-    public String getPassword() {
-        return this.password;
-    }
+  public String getPassword() {
+    return this.password;
+  }
 
-    void setPassword(String password) {
-        this.password = password;
-    }
+  void setPassword(String password) {
+    this.password = password;
+  }
 }</code></pre>
 </div>
 </div>
@@ -2510,12 +2519,13 @@ pubSubTemplate.publish(topicName, user);</code></pre>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">int maxMessages = 1;
 boolean returnImmediately = false;
-List&lt;ConvertedAcknowledgeablePubsubMessage&lt;TestUser&gt;&gt; messages = pubSubTemplate.pullAndConvert(
+List&lt;ConvertedAcknowledgeablePubsubMessage&lt;TestUser&gt;&gt; messages =
+    pubSubTemplate.pullAndConvert(
         subscriptionName, maxMessages, returnImmediately, TestUser.class);
 
 ConvertedAcknowledgeablePubsubMessage&lt;TestUser&gt; message = messages.get(0);
 
-//acknowledge the message
+// acknowledge the message
 message.ack();
 
 TestUser receivedTestUser = message.getPayload();</code></pre>
@@ -2650,11 +2660,8 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; topics = pubSubAdmin
-        .listTopics()
-        .stream()
-        .map(Topic::getName)
-        .collect(Collectors.toList());</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; topics =
+    pubSubAdmin.listTopics().stream().map(Topic::getName).collect(Collectors.toList());</code></pre>
 </div>
 </div>
 </div>
@@ -2726,9 +2733,8 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; subscriptions = pubSubAdmin
-        .listSubscriptions()
-        .stream()
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; subscriptions =
+    pubSubAdmin.listSubscriptions().stream()
         .map(Subscription::getName)
         .collect(Collectors.toList());</code></pre>
 </div>
@@ -3099,15 +3105,14 @@ The old <code>setPublishCallback()</code> method that only gave access to messag
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">adapter.setPublishCallback(new ListenableFutureCallback&lt;String&gt;() {
-    @Override
-    public void onFailure(Throwable ex) {
-    }
+<pre class="highlight"><code class="language-java" data-lang="java">adapter.setPublishCallback(
+    new ListenableFutureCallback&lt;String&gt;() {
+      @Override
+      public void onFailure(Throwable ex) {}
 
-    @Override
-    public void onSuccess(String result) {
-    }
-});</code></pre>
+      @Override
+      public void onSuccess(String result) {}
+    });</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8882,35 +8887,31 @@ import com.google.cloud.spring.data.firestore.Document;
 
 @Document(collectionName = "usersCollection")
 public class User {
-    /**
-     * Used to test @PropertyName annotation on a field.
-     */
-    @PropertyName("drink")
-    public String favoriteDrink;
+  /** Used to test @PropertyName annotation on a field. */
+  @PropertyName("drink")
+  public String favoriteDrink;
 
-    @DocumentId
-    private String name;
+  @DocumentId private String name;
 
-    private Integer age;
+  private Integer age;
 
-    public User() {
-    }
+  public User() {}
 
-    public String getName() {
-        return this.name;
-    }
+  public String getName() {
+    return this.name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public Integer getAge() {
-        return this.age;
-    }
+  public Integer getAge() {
+    return this.age;
+  }
 
-    public void setAge(Integer age) {
-        this.age = age;
-    }
+  public void setAge(Integer age) {
+    this.age = age;
+  }
 }</code></pre>
 </div>
 </div>
@@ -8960,64 +8961,59 @@ They are stored as embedded documents (or arrays, correspondingly) in the Cloud 
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Document(collectionName = "usersCollection")
 public class User {
-    /**
-     * Used to test @PropertyName annotation on a field.
-     */
-    @PropertyName("drink")
-    public String favoriteDrink;
+  /** Used to test @PropertyName annotation on a field. */
+  @PropertyName("drink")
+  public String favoriteDrink;
 
-    @DocumentId
-    private String name;
+  @DocumentId private String name;
 
-    private Integer age;
+  private Integer age;
 
-    private List&lt;String&gt; pets;
+  private List&lt;String&gt; pets;
 
-    private List&lt;Address&gt; addresses;
+  private List&lt;Address&gt; addresses;
 
-    private Address homeAddress;
+  private Address homeAddress;
 
-    public List&lt;String&gt; getPets() {
-        return this.pets;
-    }
+  public List&lt;String&gt; getPets() {
+    return this.pets;
+  }
 
-    public void setPets(List&lt;String&gt; pets) {
-        this.pets = pets;
-    }
+  public void setPets(List&lt;String&gt; pets) {
+    this.pets = pets;
+  }
 
-    public List&lt;Address&gt; getAddresses() {
-        return this.addresses;
-    }
+  public List&lt;Address&gt; getAddresses() {
+    return this.addresses;
+  }
 
-    public void setAddresses(List&lt;Address&gt; addresses) {
-        this.addresses = addresses;
-    }
+  public void setAddresses(List&lt;Address&gt; addresses) {
+    this.addresses = addresses;
+  }
 
-    public Timestamp getUpdateTime() {
-        return updateTime;
-    }
+  public Timestamp getUpdateTime() {
+    return updateTime;
+  }
 
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
+  public void setUpdateTime(Timestamp updateTime) {
+    this.updateTime = updateTime;
+  }
 
-    @PropertyName("address")
-    public Address getHomeAddress() {
-        return this.homeAddress;
-    }
+  @PropertyName("address")
+  public Address getHomeAddress() {
+    return this.homeAddress;
+  }
 
-    @PropertyName("address")
-    public void setHomeAddress(Address homeAddress) {
-        this.homeAddress = homeAddress;
-    }
+  @PropertyName("address")
+  public void setHomeAddress(Address homeAddress) {
+    this.homeAddress = homeAddress;
+  }
+  public static class Address {
+    String streetAddress;
+    String country;
 
-    public static class Address {
-        String streetAddress;
-        String country;
-
-        public Address() {
-        }
-    }
+    public Address() {}
+  }
 }</code></pre>
 </div>
 </div>
@@ -9034,45 +9030,45 @@ public class User {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public interface UserRepository extends FirestoreReactiveRepository&lt;User&gt; {
-    Flux&lt;User&gt; findBy(Pageable pageable);
+  Flux&lt;User&gt; findBy(Pageable pageable);
 
-    Flux&lt;User&gt; findByAge(Integer age);
+  Flux&lt;User&gt; findByAge(Integer age);
 
-    Flux&lt;User&gt; findByAge(Integer age, Sort sort);
+  Flux&lt;User&gt; findByAge(Integer age, Sort sort);
 
-    Flux&lt;User&gt; findByAgeOrderByNameDesc(Integer age);
+  Flux&lt;User&gt; findByAgeOrderByNameDesc(Integer age);
 
-    Flux&lt;User&gt; findAllByOrderByAge();
+  Flux&lt;User&gt; findAllByOrderByAge();
 
-    Flux&lt;User&gt; findByAgeNot(Integer age);
+  Flux&lt;User&gt; findByAgeNot(Integer age);
 
-    Flux&lt;User&gt; findByNameAndAge(String name, Integer age);
+  Flux&lt;User&gt; findByNameAndAge(String name, Integer age);
 
-    Flux&lt;User&gt; findByHomeAddressCountry(String country);
+  Flux&lt;User&gt; findByHomeAddressCountry(String country);
 
-    Flux&lt;User&gt; findByFavoriteDrink(String drink);
+  Flux&lt;User&gt; findByFavoriteDrink(String drink);
 
-    Flux&lt;User&gt; findByAgeGreaterThanAndAgeLessThan(Integer age1, Integer age2);
+  Flux&lt;User&gt; findByAgeGreaterThanAndAgeLessThan(Integer age1, Integer age2);
 
-    Flux&lt;User&gt; findByAgeGreaterThan(Integer age);
+  Flux&lt;User&gt; findByAgeGreaterThan(Integer age);
 
-    Flux&lt;User&gt; findByAgeGreaterThan(Integer age, Sort sort);
+  Flux&lt;User&gt; findByAgeGreaterThan(Integer age, Sort sort);
 
-    Flux&lt;User&gt; findByAgeGreaterThan(Integer age, Pageable pageable);
+  Flux&lt;User&gt; findByAgeGreaterThan(Integer age, Pageable pageable);
 
-    Flux&lt;User&gt; findByAgeIn(List&lt;Integer&gt; ages);
+  Flux&lt;User&gt; findByAgeIn(List&lt;Integer&gt; ages);
 
-    Flux&lt;User&gt; findByAgeNotIn(List&lt;Integer&gt; ages);
+  Flux&lt;User&gt; findByAgeNotIn(List&lt;Integer&gt; ages);
 
-    Flux&lt;User&gt; findByAgeAndPetsContains(Integer age, List&lt;String&gt; pets);
+  Flux&lt;User&gt; findByAgeAndPetsContains(Integer age, List&lt;String&gt; pets);
 
-    Flux&lt;User&gt; findByNameAndPetsContains(String name, List&lt;String&gt; pets);
+  Flux&lt;User&gt; findByNameAndPetsContains(String name, List&lt;String&gt; pets);
 
-    Flux&lt;User&gt; findByPetsContains(List&lt;String&gt; pets);
+  Flux&lt;User&gt; findByPetsContains(List&lt;String&gt; pets);
 
-    Flux&lt;User&gt; findByPetsContainsAndAgeIn(String pets, List&lt;Integer&gt; ages);
+  Flux&lt;User&gt; findByPetsContainsAndAgeIn(String pets, List&lt;Integer&gt; ages);
 
-    Mono&lt;Long&gt; countByAgeIsGreaterThan(Integer age);
+  Mono&lt;Long&gt; countByAgeIsGreaterThan(Integer age);
 }</code></pre>
 </div>
 </div>
@@ -9098,32 +9094,37 @@ You can refer to nested fields using <a href="https://docs.spring.io/spring-data
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
 
-    @Autowired
-    UserRepository userRepository;
+  @Autowired UserRepository userRepository;
 
-    public void writeReadDeleteTest() {
-        List&lt;User.Address&gt; addresses = Arrays.asList(new User.Address("123 Alice st", "US"),
-                new User.Address("1 Alice ave", "US"));
-        User.Address homeAddress = new User.Address("10 Alice blvd", "UK");
-        User alice = new User("Alice", 29, null, addresses, homeAddress);
-        User bob = new User("Bob", 60);
+  public void writeReadDeleteTest() {
+    List&lt;User.Address&gt; addresses =
+        Arrays.asList(
+            new User.Address("123 Alice st", "US"), new User.Address("1 Alice ave", "US"));
+    User.Address homeAddress = new User.Address("10 Alice blvd", "UK");
+    User alice = new User("Alice", 29, null, addresses, homeAddress);
+    User bob = new User("Bob", 60);
 
-        this.userRepository.save(alice).block();
-        this.userRepository.save(bob).block();
+    this.userRepository.save(alice).block();
+    this.userRepository.save(bob).block();
 
-        assertThat(this.userRepository.count().block()).isEqualTo(2);
-        assertThat(this.userRepository.findAll().map(User::getName).collectList().block())
-                .containsExactlyInAnyOrder("Alice", "Bob");
+    assertThat(this.userRepository.count().block()).isEqualTo(2);
+    assertThat(this.userRepository.findAll().map(User::getName).collectList().block())
+        .containsExactlyInAnyOrder("Alice", "Bob");
 
-        User aliceLoaded = this.userRepository.findById("Alice").block();
-        assertThat(aliceLoaded.getAddresses()).isEqualTo(addresses);
-        assertThat(aliceLoaded.getHomeAddress()).isEqualTo(homeAddress);
+    User aliceLoaded = this.userRepository.findById("Alice").block();
+    assertThat(aliceLoaded.getAddresses()).isEqualTo(addresses);
+    assertThat(aliceLoaded.getHomeAddress()).isEqualTo(homeAddress);
 
-        // cast to SimpleFirestoreReactiveRepository for method be reachable with Spring Boot 2.4
-        SimpleFirestoreReactiveRepository repository = AopTestUtils.getTargetObject(this.userRepository);
-        StepVerifier.create(repository.deleteAllById(Arrays.asList("Alice", "Bob")).then(this.userRepository.count()))
-                .expectNext(0L).verifyComplete();
-    }
+    // cast to SimpleFirestoreReactiveRepository for method be reachable with Spring Boot 2.4
+    SimpleFirestoreReactiveRepository repository =
+        AopTestUtils.getTargetObject(this.userRepository);
+    StepVerifier.create(
+            repository
+                .deleteAllById(Arrays.asList("Alice", "Bob"))
+                .then(this.userRepository.count()))
+        .expectNext(0L)
+        .verifyComplete();
+  }
 }</code></pre>
 </div>
 </div>
@@ -9196,29 +9197,43 @@ public class FirestoreTemplateExample {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
-    public void partTreeRepositoryMethodTest() {
-        User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
-        u1.favoriteDrink = "tea";
-        User u2 = new User("Squall", 17, Arrays.asList("cat", "dog"), null, new Address("2 Second st., London", "UK"));
-        u2.favoriteDrink = "wine";
-        Flux&lt;User&gt; users = Flux.fromArray(new User[] {u1, u2});
+  public void partTreeRepositoryMethodTest() {
+    User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
+    u1.favoriteDrink = "tea";
+    User u2 =
+        new User(
+            "Squall",
+            17,
+            Arrays.asList("cat", "dog"),
+            null,
+            new Address("2 Second st., London", "UK"));
+    u2.favoriteDrink = "wine";
+    Flux&lt;User&gt; users = Flux.fromArray(new User[] {u1, u2});
 
-        this.userRepository.saveAll(users).blockLast();
+    this.userRepository.saveAll(users).blockLast();
 
-        assertThat(this.userRepository.count().block()).isEqualTo(2);
-        assertThat(this.userRepository.findBy(PageRequest.of(0, 10)).collectList().block()).containsExactly(u1, u2);
-        assertThat(this.userRepository.findByAge(22).collectList().block()).containsExactly(u1);
-        assertThat(this.userRepository.findByAgeNot(22).collectList().block()).containsExactly(u2);
-        assertThat(this.userRepository.findByHomeAddressCountry("USA").collectList().block()).containsExactly(u1);
-        assertThat(this.userRepository.findByFavoriteDrink("wine").collectList().block()).containsExactly(u2);
-        assertThat(this.userRepository.findByAgeGreaterThanAndAgeLessThan(20, 30).collectList().block())
-                .containsExactly(u1);
-        assertThat(this.userRepository.findByAgeGreaterThan(10).collectList().block()).containsExactlyInAnyOrder(u1,
-                u2);
-        assertThat(this.userRepository.findByNameAndAge("Cloud", 22).collectList().block())
-                .containsExactly(u1);
-        assertThat(this.userRepository.findByNameAndPetsContains("Squall", Collections.singletonList("cat")).collectList().block()).containsExactly(u2);
-    }
+    assertThat(this.userRepository.count().block()).isEqualTo(2);
+    assertThat(this.userRepository.findBy(PageRequest.of(0, 10)).collectList().block())
+        .containsExactly(u1, u2);
+    assertThat(this.userRepository.findByAge(22).collectList().block()).containsExactly(u1);
+    assertThat(this.userRepository.findByAgeNot(22).collectList().block()).containsExactly(u2);
+    assertThat(this.userRepository.findByHomeAddressCountry("USA").collectList().block())
+        .containsExactly(u1);
+    assertThat(this.userRepository.findByFavoriteDrink("wine").collectList().block())
+        .containsExactly(u2);
+    assertThat(this.userRepository.findByAgeGreaterThanAndAgeLessThan(20, 30).collectList().block())
+        .containsExactly(u1);
+    assertThat(this.userRepository.findByAgeGreaterThan(10).collectList().block())
+        .containsExactlyInAnyOrder(u1, u2);
+    assertThat(this.userRepository.findByNameAndAge("Cloud", 22).collectList().block())
+        .containsExactly(u1);
+    assertThat(
+            this.userRepository
+                .findByNameAndPetsContains("Squall", Collections.singletonList("cat"))
+                .collectList()
+                .block())
+        .containsExactly(u2);
+  }
 }</code></pre>
 </div>
 </div>
@@ -9287,8 +9302,7 @@ In order to use it, you would need to autowire <code>ReactiveFirestoreTransactio
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
-    @Autowired
-    ReactiveFirestoreTransactionManager txManager;
+  @Autowired ReactiveFirestoreTransactionManager txManager;
 }</code></pre>
 </div>
 </div>
@@ -9300,7 +9314,8 @@ Note that you can switch between read-only and read-write transactions using <co
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
 transactionDefinition.setReadOnly(false);
-TransactionalOperator operator = TransactionalOperator.create(this.txManager, transactionDefinition);</code></pre>
+TransactionalOperator operator =
+    TransactionalOperator.create(this.txManager, transactionDefinition);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9311,20 +9326,25 @@ TransactionalOperator operator = TransactionalOperator.create(this.txManager, tr
 <pre class="highlight"><code class="language-java" data-lang="java">User alice = new User("Alice", 29);
 User bob = new User("Bob", 60);
 
-this.userRepository.save(alice)
-        .then(this.userRepository.save(bob))
-        .as(operator::transactional)
-        .block();
+this.userRepository
+    .save(alice)
+    .then(this.userRepository.save(bob))
+    .as(operator::transactional)
+    .block();
 
-this.userRepository.findAll()
-        .flatMap(a -&gt; {
-            a.setAge(a.getAge() - 1);
-            return this.userRepository.save(a);
+this.userRepository
+    .findAll()
+    .flatMap(
+        a -&gt; {
+          a.setAge(a.getAge() - 1);
+          return this.userRepository.save(a);
         })
-        .as(operator::transactional).collectList().block();
+    .as(operator::transactional)
+    .collectList()
+    .block();
 
 assertThat(this.userRepository.findAll().map(User::getAge).collectList().block())
-        .containsExactlyInAnyOrder(28, 59);</code></pre>
+    .containsExactlyInAnyOrder(28, 59);</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9368,18 +9388,19 @@ If a method annotated with <code>@Transactional</code> calls another method also
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">class UserService {
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-    @Transactional
-    public Mono&lt;Void&gt; updateUsers() {
-        return this.userRepository.findAll()
-                .flatMap(a -&gt; {
-                    a.setAge(a.getAge() - 1);
-                    return this.userRepository.save(a);
-                })
-                .then();
-    }
+  @Transactional
+  public Mono&lt;Void&gt; updateUsers() {
+    return this.userRepository
+        .findAll()
+        .flatMap(
+            a -&gt; {
+              a.setAge(a.getAge() - 1);
+              return this.userRepository.save(a);
+            })
+        .then();
+  }
 }</code></pre>
 </div>
 </div>
@@ -9394,7 +9415,7 @@ If a method annotated with <code>@Transactional</code> calls another method also
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public UserService userService() {
-    return new UserService();
+  return new UserService();
 }</code></pre>
 </div>
 </div>
@@ -9404,8 +9425,7 @@ public UserService userService() {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
-    @Autowired
-    UserService userService;
+  @Autowired UserService userService;
 }</code></pre>
 </div>
 </div>
@@ -9453,11 +9473,13 @@ FirestoreReactiveOperations firestoreTemplate;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">FirestoreReactiveOperations bobTemplate = this.firestoreTemplate.withParent(new User("Bob", 60));
+<pre class="highlight"><code class="language-java" data-lang="java">FirestoreReactiveOperations bobTemplate =
+    this.firestoreTemplate.withParent(new User("Bob", 60));
 
 PhoneNumber phoneNumber = new PhoneNumber("111-222-333");
 bobTemplate.save(phoneNumber).block();
-assertThat(bobTemplate.findAll(PhoneNumber.class).collectList().block()).containsExactly(phoneNumber);
+assertThat(bobTemplate.findAll(PhoneNumber.class).collectList().block())
+    .containsExactly(phoneNumber);
 bobTemplate.deleteAll(PhoneNumber.class).block();
 assertThat(bobTemplate.findAll(PhoneNumber.class).collectList().block()).isEmpty();</code></pre>
 </div>
@@ -9538,29 +9560,28 @@ It uses this field&#8217;s value as a document version and checks that the versi
 <pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 Firestore firestore;
 
-   void writeDocumentFromObject() throws ExecutionException, InterruptedException {
-       // Add document data with id "joe" using a custom User class
-       User data = new User("Joe",
-               Arrays.asList(
-                       new Phone(12345, PhoneType.CELL),
-                       new Phone(54321, PhoneType.WORK)));
+ void writeDocumentFromObject() throws ExecutionException, InterruptedException {
+   // Add document data with id "joe" using a custom User class
+   User data =
+       new User(
+           "Joe",
+           Arrays.asList(new Phone(12345, PhoneType.CELL), new Phone(54321, PhoneType.WORK)));
 
-       // .get() blocks on response
-       WriteResult writeResult = this.firestore.document("users/joe").set(data).get();
+   // .get() blocks on response
+   WriteResult writeResult = this.firestore.document("users/joe").set(data).get();
 
-       LOGGER.info("Update time: " + writeResult.getUpdateTime());
-   }
+   LOGGER.info("Update time: " + writeResult.getUpdateTime());
+ }
 
-   User readDocumentToObject() throws ExecutionException, InterruptedException {
-       ApiFuture&lt;DocumentSnapshot&gt; documentFuture =
-               this.firestore.document("users/joe").get();
+ User readDocumentToObject() throws ExecutionException, InterruptedException {
+   ApiFuture&lt;DocumentSnapshot&gt; documentFuture = this.firestore.document("users/joe").get();
 
-       User user = documentFuture.get().toObject(User.class);
+   User user = documentFuture.get().toObject(User.class);
 
-       LOGGER.info("read: " + user);
+   LOGGER.info("read: " + user);
 
-       return user;
-   }</code></pre>
+   return user;
+ }</code></pre>
 </div>
 </div>
 </div>
@@ -10772,7 +10793,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-config&lt;/artifactId&gt;
-    &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;3.1.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -10784,7 +10805,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 <pre class="highlight"><code>dependencies {
     compile group: 'org.springframework.cloud',
     name: 'spring-cloud-gcp-starter-config',
-    version: '3.0.0-SNAPSHOT'
+    version: '3.1.0-SNAPSHOT'
 }</code></pre>
 </div>
 </div>
@@ -11234,7 +11255,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
     &lt;dependency&gt;
       &lt;groupId&gt;com.google.cloud&lt;/groupId&gt; <i class="conum" data-value="2"></i><b>(2)</b>
       &lt;artifactId&gt;spring-cloud-gcp-dependencies&lt;/artifactId&gt;
-      &lt;version&gt;2.0.7&lt;/version&gt;
+      &lt;version&gt;3.0.0&lt;/version&gt;
       &lt;type&gt;pom&lt;/type&gt;
       &lt;scope&gt;import&lt;/scope&gt;
     &lt;/dependency&gt;
