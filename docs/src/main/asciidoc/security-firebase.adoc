@@ -1,0 +1,6 @@
+[#security-firebase]
+== Firebase Authentication
+
+https://firebase.google.com/products/auth[Firebase Authentication] provides an end-to-end identity solution, supporting email and password accounts, phone auth, and Google, Twitter, Facebook, and GitHub login.
+
+link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-security-firebase[Spring Cloud GCP Firebase Authentication Starter] to extract user identity from a signed https://firebase.google.com/[Firebase] JWT token.
