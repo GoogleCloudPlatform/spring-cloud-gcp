@@ -17,28 +17,27 @@
 package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import com.google.cloud.vision.v1.EntityAnnotation;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.ModelAndView;
 
 /** This test sends images to the GCP Vision API and verifies the returned image annotations. */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.vision", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class VisionApiSampleApplicationIntegrationTests {
+class VisionApiSampleApplicationIntegrationTests {
 
   private static final String LABEL_IMAGE_URL =
       "/extractLabels?imageUrl=classpath:static/boston-terrier.jpg";
@@ -48,17 +47,8 @@ public class VisionApiSampleApplicationIntegrationTests {
 
   @Autowired private MockMvc mockMvc;
 
-  @BeforeClass
-  public static void prepare() {
-    assumeThat(
-        "Vision Sample integration tests are disabled. Please use '-Dit.vision=true' "
-            + "to enable them.",
-        System.getProperty("it.vision"),
-        is("true"));
-  }
-
   @Test
-  public void testExtractTextFromImage() throws Exception {
+  void testExtractTextFromImage() throws Exception {
     this.mockMvc
         .perform(get(TEXT_IMAGE_URL))
         .andDo(
@@ -70,7 +60,7 @@ public class VisionApiSampleApplicationIntegrationTests {
   }
 
   @Test
-  public void testClassifyImageLabels() throws Exception {
+  void testClassifyImageLabels() throws Exception {
     this.mockMvc
         .perform(get(LABEL_IMAGE_URL))
         .andDo(
