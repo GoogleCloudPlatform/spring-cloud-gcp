@@ -33,6 +33,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.ModelAndView;
 
 /** This test sends images to the GCP Vision API and verifies the returned image annotations. */
+//Please use "-Dit.vision=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.vision", matches = "true")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
