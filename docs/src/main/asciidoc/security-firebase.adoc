@@ -3,4 +3,25 @@
 
 https://firebase.google.com/products/auth[Firebase Authentication] provides an end-to-end identity solution, supporting email and password accounts, phone auth, and Google, Twitter, Facebook, and GitHub login.
 
+xxxxzxx
 link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-security-firebase[Spring Cloud GCP Firebase Authentication Starter] to extract user identity from a signed https://firebase.google.com/[Firebase] JWT token.
+xxxxxxx
+
+Starter Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>spring-cloud-gcp-starter-security-firebase</artifactId>
+</dependency>
+----
+
+Starter Gradle coordinates:
+
+[source]
+----
+dependencies {
+    implementation("com.google.cloud:spring-cloud-gcp-starter-security-firebase")
+}
+----
