@@ -17,38 +17,29 @@
 package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringRunner.class)
+//Please use "-Dit.vision=true" to enable the tests
+@EnabledIfSystemProperty(named = "it.vision", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = Application.class,
     properties = "application.ocr-bucket=vision-integration-test-bucket")
-public class VisionOcrSampleIntegrationTest {
+class VisionOcrSampleIntegrationTest {
 
   @Autowired private TestRestTemplate testRestTemplate;
 
-  @BeforeClass
-  public static void prepare() {
-    assumeThat(
-        "Vision Sample integration tests are disabled. Please use '-Dit.vision=true' "
-            + "to enable them.",
-        System.getProperty("it.vision"),
-        is("true"));
-  }
-
   @Test
-  public void testApplicationStartup() {
+  void testApplicationStartup() {
     ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
     assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
 
