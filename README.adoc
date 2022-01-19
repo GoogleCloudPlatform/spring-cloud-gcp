@@ -12,9 +12,8 @@ You can check our project website https://spring.io/projects/spring-cloud-gcp[he
 For a deep dive into the project, refer to the Spring Cloud GCP Reference documentation below or the https://googleapis.dev/java/spring-cloud-gcp/latest/index.html[latest Javadocs].
 
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/index.html[Spring Cloud GCP Latest]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.0.0/reference/html/index.html[Spring Cloud GCP 3.0.0]
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/2.0.7/reference/html/index.html[Spring Cloud GCP 2.0.7]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/1.2.x/reference/html/index.html[Spring Cloud GCP 1.2.x]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/1.1.x/single/spring-cloud-gcp.html[Spring Cloud GCP 1.1.x]
 
 If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[Spring Cloud GCP sample applications] or the https://codelabs.developers.google.com/spring[Spring on GCP codelabs].
 
@@ -55,8 +54,8 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 |===
 | Spring Cloud GCP | Spring Cloud | Spring Boot | Spring Framework
 
-|2.x |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes[2020.0.x] (3.0/Illford) |2.4.x, 2.5.x|5.3.x
-|3.0 (next expected release) | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes[2021.0.x] (3.1/Jubilee) |2.6.x | 5.3.x
+|2.0.x |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes[2020.0.x] (3.0/Illford) |2.4.x, 2.5.x|5.3.x
+|3.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes[2021.0.x] (3.1/Jubilee) |2.6.x | 5.3.x
 |===
 
 == Spring Initializr
@@ -79,7 +78,7 @@ This will allow you to not specify versions for any of the Maven dependencies an
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-dependencies</artifactId>
-            <version>2.0.7</version>
+            <version>3.0.0</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -103,8 +102,6 @@ We offer `SNAPSHOT` versions of the project that always reflect the latest code 
     </repository>
 </repositories>
 ----
-
-For example, the version `2.0.8-SNAPSHOT` is available from this repository.
 
 == Spring Boot Starters
 
