@@ -62,14 +62,12 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Verifies that the logged Traces on the sample application appear in StackDriver. */
 // Please use "-Dit.trace=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.trace", matches = "true")
 @ExtendWith(SpringExtension.class)
-@TestPropertySource(properties = { "sampleTopic=traceTopic", "login.pwd=k12" })
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {Application.class})
@@ -83,11 +81,11 @@ class TraceSampleApplicationIntegrationTests {
 
   @Autowired private  CredentialsProvider credentialsProvider;
 
+  private String url;
+
   private static String SAMPLE_TOPIC = "traceTopic";
 
   private static String SAMPLE_SUBSCRIPTION = "traceSubscription";
-
-  private String url;
 
   private TestRestTemplate testRestTemplate;
 
@@ -95,22 +93,15 @@ class TraceSampleApplicationIntegrationTests {
 
   private TraceServiceBlockingStub traceServiceStub;
 
-  static final String projectName =
-      ProjectName.of(ServiceOptions.getDefaultProjectId()).getProject();
-
-  private static TopicAdminClient topicAdminClient;
-
-  private  static SubscriptionAdminClient subscriptionAdminClient;
-
   private static PubSubAdmin pubSubAdmin;
 
   @BeforeAll
   static void setup() throws IOException {
 
-    projectIdProvider = () -> projectName;
+    projectIdProvider = () -> ProjectName.of(ServiceOptions.getDefaultProjectId()).getProject();
 
-    topicAdminClient = TopicAdminClient.create();
-    subscriptionAdminClient = SubscriptionAdminClient.create();
+    TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create();
 
     pubSubAdmin = new PubSubAdmin(projectIdProvider, topicAdminClient, subscriptionAdminClient);
 
