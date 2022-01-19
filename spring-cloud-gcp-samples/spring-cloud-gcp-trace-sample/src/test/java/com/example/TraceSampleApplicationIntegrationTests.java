@@ -29,19 +29,13 @@ import com.google.cloud.logging.Payload.JsonPayload;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.devtools.cloudtrace.v1.GetTraceRequest;
 import com.google.devtools.cloudtrace.v1.Trace;
 import com.google.devtools.cloudtrace.v1.TraceServiceGrpc;
 import com.google.devtools.cloudtrace.v1.TraceServiceGrpc.TraceServiceBlockingStub;
 import com.google.devtools.cloudtrace.v1.TraceSpan;
 import com.google.pubsub.v1.ProjectName;
-import com.google.pubsub.v1.ProjectSubscriptionName;
-import com.google.pubsub.v1.ProjectTopicName;
-import com.google.pubsub.v1.PushConfig;
-import com.google.pubsub.v1.Subscription;
-import com.google.pubsub.v1.SubscriptionName;
-import com.google.pubsub.v1.Topic;
-import com.google.pubsub.v1.TopicName;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
@@ -68,12 +62,14 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Verifies that the logged Traces on the sample application appear in StackDriver. */
 // Please use "-Dit.trace=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.trace", matches = "true")
 @ExtendWith(SpringExtension.class)
+@TestPropertySource(properties = { "sampleTopic=traceTopic", "login.pwd=k12" })
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {Application.class})
@@ -83,9 +79,13 @@ class TraceSampleApplicationIntegrationTests {
 
   @LocalServerPort private int port;
 
-  @Autowired private GcpProjectIdProvider projectIdProvider;
+  private static GcpProjectIdProvider projectIdProvider;
 
-  @Autowired private CredentialsProvider credentialsProvider;
+  @Autowired private  CredentialsProvider credentialsProvider;
+
+  private static String SAMPLE_TOPIC = "traceTopic";
+
+  private static String SAMPLE_SUBSCRIPTION = "traceSubscription";
 
   private String url;
 
@@ -95,49 +95,42 @@ class TraceSampleApplicationIntegrationTests {
 
   private TraceServiceBlockingStub traceServiceStub;
 
-  private static final String SAMPLE_TOPIC = "traceTopic";
-
-  private static final String SAMPLE_SUBSCRIPTION = "traceSubscription";
-
   static final String projectName =
       ProjectName.of(ServiceOptions.getDefaultProjectId()).getProject();
 
   private static TopicAdminClient topicAdminClient;
 
-  private static SubscriptionAdminClient subscriptionAdminClient;
+  private  static SubscriptionAdminClient subscriptionAdminClient;
+
+  private static PubSubAdmin pubSubAdmin;
 
   @BeforeAll
   static void setup() throws IOException {
 
+    projectIdProvider = () -> projectName;
+
     topicAdminClient = TopicAdminClient.create();
     subscriptionAdminClient = SubscriptionAdminClient.create();
 
-    TopicName topic = TopicName.ofProjectTopicName(projectName, SAMPLE_TOPIC);
-    Topic response = topicAdminClient.createTopic(topic);
-    SubscriptionName subName = SubscriptionName.of(projectName, SAMPLE_SUBSCRIPTION);
-    PushConfig pushConfig = PushConfig.newBuilder().build();
-    int ackDeadlineSeconds = 599;
-    Subscription subResponse =
-        subscriptionAdminClient.createSubscription(subName, topic, pushConfig, ackDeadlineSeconds);
+    pubSubAdmin = new PubSubAdmin(projectIdProvider, topicAdminClient, subscriptionAdminClient);
+
+    pubSubAdmin.createTopic(SAMPLE_TOPIC);
+    pubSubAdmin.createSubscription(SAMPLE_SUBSCRIPTION, SAMPLE_TOPIC);
+
   }
 
   @AfterAll
-  static void cleanupPubsubClients() {
-
-    if (subscriptionAdminClient != null) {
-      deleteSubscriptions(SAMPLE_SUBSCRIPTION);
-
-      subscriptionAdminClient.close();
-    }
-
-    if (topicAdminClient != null) {
-      deleteTopics(SAMPLE_TOPIC);
-      topicAdminClient.close();
+  static void cleanUp() {
+    if (pubSubAdmin != null) {
+      pubSubAdmin.deleteSubscription(SAMPLE_SUBSCRIPTION);
+      pubSubAdmin.deleteTopic(SAMPLE_TOPIC);
+      pubSubAdmin.close();
     }
   }
 
   @BeforeEach
   void setupTraceClient() throws IOException {
+
     this.url = String.format("http://localhost:%d/", this.port);
 
     // Create a new RestTemplate here because the auto-wired instance has built-in instrumentation
@@ -283,17 +276,5 @@ class TraceSampleApplicationIntegrationTests {
                   .contains("Message arrived! Payload: All work is done via SI.");
               log.debug("Found 'SI' line");
             });
-  }
-
-  private static void deleteSubscriptions(String testSubscription) {
-
-    String testSubscriptionName = ProjectSubscriptionName.format(projectName, testSubscription);
-    subscriptionAdminClient.deleteSubscription(testSubscriptionName);
-  }
-
-  private static void deleteTopics(String testTopic) {
-
-    String testTopicName = ProjectTopicName.format(projectName, testTopic);
-    topicAdminClient.deleteTopic(testTopicName);
   }
 }
