@@ -62,6 +62,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Verifies that the logged Traces on the sample application appear in StackDriver. */
@@ -73,6 +75,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
     classes = {Application.class})
 class TraceSampleApplicationIntegrationTests {
 
+  @DynamicPropertySource
+  static void registerProperties(DynamicPropertyRegistry registry) {
+    registry.add("sampleTopic", () -> SAMPLE_TOPIC);
+    registry.add("sampleSubscription", () -> SAMPLE_SUBSCRIPTION);
+  }
+
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   @LocalServerPort private int port;
@@ -83,9 +91,9 @@ class TraceSampleApplicationIntegrationTests {
 
   private String url;
 
-  private static String SAMPLE_TOPIC = "traceTopic";
+  private static String SAMPLE_TOPIC = "traceTopic-" + UUID.randomUUID();
 
-  private static String SAMPLE_SUBSCRIPTION = "traceSubscription";
+  private static String SAMPLE_SUBSCRIPTION = "traceSubscription-" + UUID.randomUUID();
 
   private TestRestTemplate testRestTemplate;
 
