@@ -27,7 +27,22 @@ image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.goo
 2. Have the https://cloud.google.com/sdk/[Google Cloud SDK] installed, initialized and logged in with https://developers.google.com/identity/protocols/application-default-credentials[application default credentials] (you can run the sample locally without logging in, but you'll need the credentials to deploy).
 3. Run `$ mvn clean install` from the root directory of the project.
 
+
+== Deploying the Sample to AppEngine Standard
+
+The following Maven target will deploy this application to the root of your AppEngine Standard instance:
+----
+$ mvn clean package appengine:deploy -Dapp.deploy.projectId=$PROJECT_ID -Dapp.deploy.version=$VERSION
+----
+After deployed, follow steps link:https://cloud.google.com/iap/docs/app-engine-quickstart#enabling_iap[here] to enable IAP for this AppEngine application. You will also need to link:https://cloud.google.com/iap/docs/managing-access/#add_access[add "IAP-Secured Web App User" role] for user to gain access.
+
 == Running the Sample Locally
+
+In the link:src/main/resources/applications.properties[application.properties] file, you need to specify the value of `spring.cloud.gcp.security.iap.audience` to:
+
+- A dummy value to just test run locally
+- Or, the deployed AppEngine application's audience string to test with JWK token grabbed from deployed application. link:https://cloud.google.com/iap/docs/signed-headers-howto#verifying_the_jwt_payload[This guide] gives direction on how to find your audience string.
+
 Run with Maven from the root of this code sample (spring-cloud-gcp-samples/spring-cloud-gcp-security-iap-sample):
 
 ----
@@ -55,11 +70,4 @@ Please take care with your token if you do this.
 $ curl -H "x-goog-iap-jwt-assertion: [JWK TOKEN]" localhost:8080/topsecret
 ----
 
-
-== Deploying the Sample to AppEngine Standard
-
-The following Maven target will deploy this application to the root of your AppEngine Standard instance:
-----
-$ mvn clean package appengine:deploy -Dapp.deploy.projectId=$PROJECT_ID -Dapp.deploy.version=$VERSION
-----
 
