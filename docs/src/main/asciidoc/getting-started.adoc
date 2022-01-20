@@ -121,6 +121,10 @@ A summary of these artifacts are provided below.
 | Provides a security layer over applications deployed to Google Cloud
 | <<security-iap.adoc#cloud-iap, com.google.cloud:spring-cloud-gcp-starter-security-iap>>
 
+| Security - Firebase
+| Provides a security layer over applications deployed to Firebase
+| <<security-firebase.adoc#security-firebase, com.google.cloud:spring-cloud-gcp-starter-security-firebase>>
+
 |===
 
 ==== Spring Initializr
