@@ -1,11 +1,23 @@
+:spring-security-ref: https://docs.spring.io/spring-security/reference/
+
 [#security-firebase]
 == Firebase Authentication
 
-https://firebase.google.com/products/auth[Firebase Authentication] provides an end-to-end identity solution, supporting email and password accounts, phone auth, and Google, Twitter, Facebook, and GitHub login.
+https://firebase.google.com/products/auth[Firebase Authentication] provides a security layer over applications deployed to Firebase.
 
-xxxxzxx
-link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-security-firebase[Spring Cloud GCP Firebase Authentication Starter] to extract user identity from a signed https://firebase.google.com/[Firebase] JWT token.
-xxxxxxx
+The Security Firebase starter uses {spring-security-ref}servlet/oauth2/resource-server/index.html[Spring Security OAuth 2.0 Resource Server] functionality to decode and validate signed https://firebase.google.com/[Firebase] JWT token from HTTP header.
+//TODO: verify token name in header.
+The Firebase JWT tokens are validated with rules presented link:https://firebase.google.com/docs/auth/admin/verify-id-tokens[here].
+
+The following claims are validated automatically:
+
+* Issued-at time : Must be in the past
+* Audience : Must be the firebase project id
+* Authentication time : Must be in the past
+* Subject : Must not be empty
+
+NOTE: If you create a custom {spring-security-javadoc}config/annotation/web/configuration/WebSecurityConfigurerAdapter.html[`WebSecurityConfigurerAdapter`], enable extracting user identity by adding `.oauth2ResourceServer().jwt()` configuration to the {spring-security-javadoc}config/annotation/web/builders/HttpSecurity.html[`HttpSecurity`] object.
+If no custom {spring-security-javadoc}config/annotation/web/configuration/WebSecurityConfigurerAdapter.html[`WebSecurityConfigurerAdapter`] is present, nothing needs to be done because Spring Boot will add this customization by default.
 
 Starter Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
 
@@ -25,3 +37,21 @@ dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-security-firebase")
 }
 ----
+
+=== Configuration
+The following properties are available.
+
+|====================================================
+|Name |Description |Required |Default
+
+|`spring.cloud.gcp.security.firebase.project-id`
+|Overrides the GCP project ID specified in the Core module.
+|false
+|
+
+|`spring.cloud.gcp.security.firebase.public-keys-endpoint`
+|Link to Google's public endpoint containing Firebase public keys.
+|true
+|https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com
+
+|====================================================
