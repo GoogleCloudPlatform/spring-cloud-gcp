@@ -180,6 +180,9 @@ https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-g
 
 | Cloud Security - IAP
 | https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-security-iap-sample[spring-cloud-gcp-security-iap-sample]
+
+| Cloud Security - Firebase
+| https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-security-firebase-sample[spring-cloud-gcp-security-firebase-sample]
 |===
 
 Each sample application demonstrates how to use Spring Cloud GCP libraries in context and how to setup the dependencies for the project.
