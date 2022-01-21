@@ -16,10 +16,27 @@
 
 package com.google.cloud.spring.pubsub.support;
 
-import com.google.cloud.pubsub.v1.PublisherInterface;
+import com.google.cloud.pubsub.v1.Publisher;
+import java.util.function.Consumer;
 
 /** The publisher factory interface that can create publishers. */
 public interface PublisherFactory {
 
-  PublisherInterface createPublisher(String topic);
+  /**
+   * Creates a {@link Publisher} for a given topic.
+   *
+   * @param topic destination topic
+   * @return fully configured publisher
+   */
+  Publisher createPublisher(String topic);
+
+  /**
+   * Creates a {@link Publisher} for a given topic.
+   *
+   * @param topic destination topic
+   * @param publisherCustomizer a {@link Consumer} accepting a `{@link Publisher.Builder} and
+   *     applying any necessary customizations.
+   * @return fully configured publisher
+   */
+  Publisher createPublisher(String topic, Consumer<Publisher.Builder> publisherCustomizer);
 }

@@ -16,8 +16,15 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
-import com.google.cloud.pubsub.v1.PublisherInterface;
+import static brave.Span.Kind.PRODUCER;
+
+import brave.Span;
+import brave.propagation.TraceContext;
+import brave.propagation.TraceContextOrSamplingFlags;
+import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
+import com.google.pubsub.v1.PubsubMessage;
+import java.util.function.Consumer;
 
 final class TracingPublisherFactory implements PublisherFactory {
   private final PubSubTracing pubSubTracing;
@@ -30,7 +37,66 @@ final class TracingPublisherFactory implements PublisherFactory {
   }
 
   @Override
-  public PublisherInterface createPublisher(String topic) {
-    return pubSubTracing.publisher(publisherFactory.createPublisher(topic), topic);
+  public Publisher createPublisher(String topic) {
+    Consumer<Publisher.Builder> customizer =
+        builder -> builder.setTransform(msg -> instrumentMessage(msg, topic));
+    return publisherFactory.createPublisher(topic, customizer);
+  }
+
+  @Override
+  public Publisher createPublisher(String topic, Consumer<Publisher.Builder> publisherCustomizer) {
+    Consumer<Publisher.Builder> customizer = builder -> {
+      // Apply the provided customizer first.
+      publisherCustomizer.accept(builder);
+      // Trace instrumentation is mandatory, overriding any transform set in customizer.
+      builder.setTransform(msg -> instrumentMessage(msg, topic));
+    };
+    return publisherFactory.createPublisher(topic, customizer);
+  }
+
+  /**
+   * Adds tracing headers to an outgoing Pub/Sub message.
+   * Uses the current application trace context; falls back to original message header context
+   * if not available.
+   *
+   * @param originalMessage message to instrument
+   * @param topic destination topic, used as channel name and {@link PubSubTags#PUBSUB_TOPIC_TAG}.
+   */
+  PubsubMessage instrumentMessage(PubsubMessage originalMessage, String topic) {
+    PubsubMessage.Builder messageBuilder = PubsubMessage.newBuilder(originalMessage);
+    PubSubProducerRequest request = new PubSubProducerRequest(messageBuilder, topic);
+
+    TraceContext maybeParent = pubSubTracing.tracing.currentTraceContext().get();
+
+    Span span;
+    if (maybeParent == null) {
+      TraceContextOrSamplingFlags extracted =
+          pubSubTracing.extractAndClearTraceIdHeaders(
+              pubSubTracing.producerExtractor, request, messageBuilder);
+      span = pubSubTracing.nextMessagingSpan(pubSubTracing.producerSampler, request, extracted);
+    } else { // If we have a span in scope assume headers were cleared before
+      span = pubSubTracing.tracer.newChild(maybeParent);
+    }
+
+    if (!span.isNoop()) {
+      span.kind(PRODUCER).name("publish");
+      if (topic != null) {
+        span.tag(PubSubTags.PUBSUB_TOPIC_TAG, topic);
+      }
+      if (pubSubTracing.remoteServiceName != null) {
+        span.remoteServiceName(pubSubTracing.remoteServiceName);
+      }
+      // incur timestamp overhead only once
+      long timestamp = pubSubTracing.tracing.clock(span.context()).currentTimeMicroseconds();
+      // the span is just an instant, since we don't yet track how long it takes to publish and
+      // carry that forward
+      // TODO: register a listener on the publish future
+      span.start(timestamp).finish(timestamp);
+    }
+
+    // inject span context into the messageBuilder
+    pubSubTracing.producerInjector.inject(span.context(), request);
+
+    return messageBuilder.build();
   }
 }

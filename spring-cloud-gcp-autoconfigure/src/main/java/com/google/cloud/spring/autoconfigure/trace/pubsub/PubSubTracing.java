@@ -29,6 +29,7 @@ import brave.propagation.TraceContext.Injector;
 import brave.propagation.TraceContextOrSamplingFlags;
 import brave.sampler.SamplerFunction;
 import com.google.cloud.pubsub.v1.MessageReceiver;
+import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.pubsub.v1.PublisherInterface;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
 import com.google.pubsub.v1.PubsubMessage;
@@ -114,11 +115,6 @@ final class PubSubTracing {
 
   public static Builder newBuilder(MessagingTracing messagingTracing) {
     return new Builder(messagingTracing);
-  }
-
-  /** Creates an instrumented {@linkplain PublisherInterface}. */
-  public TracingPublisher publisher(PublisherInterface publisher, String topic) {
-    return new TracingPublisher(publisher, this, topic);
   }
 
   /** Creates an instrumented {@linkplain SubscriberStub} for use in message pulling scenario. */

@@ -26,6 +26,7 @@ import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubException;
 import java.io.IOException;
+import java.util.function.Consumer;
 import org.springframework.util.Assert;
 
 /**
@@ -146,13 +147,49 @@ public class DefaultPublisherFactory implements PublisherFactory {
     this.endpoint = endpoint;
   }
 
+  /**
+   * Creates a {@link Publisher} for a given topic.
+   *
+   * <p></p>Configuration precedence:
+   * <ol>
+   *   <li>{@code spring.cloud.gcp.pubsub.publisher} configuration options
+   *   <li>client library defaults
+   *</ol>
+   *
+   * @param topic destination topic
+   * @return fully configured publisher
+   */
   @Override
   public Publisher createPublisher(String topic) {
+    return createPublisher(topic, null);
+  }
+
+  /**
+   * Creates a {@link Publisher} for a given topic.
+   *
+   * <p></p>Configuration precedence:
+   * <ol>
+   *   <li>modifications applied by the passed-in customizer
+   *   <li>{@code spring.cloud.gcp.pubsub.publisher} configuration options
+   *   <li>client library defaults
+   *</ol>
+   *
+   * @param topic destination topic
+   * @param publisherCustomizer a {@link Consumer} accepting a `{@link Publisher.Builder} and
+   *     applying any necessary customizations.
+   * @return fully configured publisher
+   */
+  @Override
+  public Publisher createPublisher(String topic, Consumer<Publisher.Builder> publisherCustomizer) {
     try {
       Publisher.Builder publisherBuilder =
           Publisher.newBuilder(PubSubTopicUtils.toTopicName(topic, this.projectId));
 
       applyPublisherSettings(publisherBuilder);
+
+      if (publisherCustomizer != null) {
+        publisherCustomizer.accept(publisherBuilder);
+      }
 
       return publisherBuilder.build();
     } catch (IOException ioe) {
