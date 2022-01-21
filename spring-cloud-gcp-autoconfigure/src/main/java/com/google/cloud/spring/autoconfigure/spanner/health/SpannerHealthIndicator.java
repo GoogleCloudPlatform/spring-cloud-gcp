@@ -55,7 +55,6 @@ public class SpannerHealthIndicator extends AbstractHealthIndicator {
     ResultSet resultSet = spannerTemplate.executeQuery(validationStatement, null);
     // Touch the record
     resultSet.next();
-    resultSet.close();
     builder.up();
   }
 }
