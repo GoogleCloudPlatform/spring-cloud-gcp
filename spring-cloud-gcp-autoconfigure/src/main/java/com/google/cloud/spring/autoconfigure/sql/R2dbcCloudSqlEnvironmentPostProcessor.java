@@ -89,7 +89,7 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
    * @return database type
    */
   DatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
-    if (Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.sql.enabled", "true"))
+    if (isR2dbcEnabled(environment)
         && isOnClasspath("com.google.cloud.sql.CredentialFactory")
         && isOnClasspath("io.r2dbc.spi.ConnectionFactory")) {
       if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql")
@@ -105,5 +105,11 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 
   private boolean isOnClasspath(String className) {
     return ClassUtils.isPresent(className, null);
+  }
+
+  private boolean isR2dbcEnabled(ConfigurableEnvironment environment) {
+    return Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.sql.enabled", "true"))
+        && Boolean.parseBoolean(
+            environment.getProperty("spring.cloud.gcp.sql.r2dbc.enabled", "true"));
   }
 }
