@@ -17,15 +17,8 @@
 package com.google.cloud.spring.autoconfigure.spanner;
 
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
-
 import org.springframework.stereotype.Repository;
 
-/**
- * A repository for testing instantiation.
- *
- * @author Chengyuan Zhao
- */
+/** A repository for testing instantiation. */
 @Repository
-public interface TestRepository extends SpannerRepository {
-
-}
+public interface TestRepository extends SpannerRepository {}

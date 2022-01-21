@@ -20,91 +20,86 @@ import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpScope;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * Properties for configuring Cloud Datastore.
  *
- * @author Dmitry Solomakha
- * @author Biju Kunjummen
  * @since 1.2
  */
 @ConfigurationProperties("spring.cloud.gcp.firestore")
 public class GcpFirestoreProperties implements CredentialsSupplier {
-	private static final String ROOT_PATH_FORMAT = "projects/%s/databases/(default)/documents";
+  private static final String ROOT_PATH_FORMAT = "projects/%s/databases/(default)/documents";
 
-	/**
-	 * Overrides the GCP OAuth2 credentials specified in the Core module.
-	 * Uses same URL as Datastore
-	 */
-	@NestedConfigurationProperty
-	private final Credentials credentials = new Credentials(GcpScope.DATASTORE.getUrl());
+  /**
+   * Overrides the GCP OAuth2 credentials specified in the Core module. Uses same URL as Datastore
+   */
+  @NestedConfigurationProperty
+  private final Credentials credentials = new Credentials(GcpScope.DATASTORE.getUrl());
 
-	private String projectId;
+  private String projectId;
 
-	/**
-	 * The host and port of the Firestore emulator service; can be overridden to specify an emulator.
-	 */
-	private String hostPort = "firestore.googleapis.com:443";
+  /**
+   * The host and port of the Firestore emulator service; can be overridden to specify an emulator.
+   */
+  private String hostPort = "firestore.googleapis.com:443";
 
-	@NestedConfigurationProperty
-	private FirestoreEmulatorProperties emulator = new FirestoreEmulatorProperties();
+  @NestedConfigurationProperty
+  private FirestoreEmulatorProperties emulator = new FirestoreEmulatorProperties();
 
-	@Override
-	public Credentials getCredentials() {
-		return this.credentials;
-	}
+  @Override
+  public Credentials getCredentials() {
+    return this.credentials;
+  }
 
-	public String getProjectId() {
-		return this.projectId;
-	}
+  public String getProjectId() {
+    return this.projectId;
+  }
 
-	public String getResolvedProjectId(GcpProjectIdProvider projectIdProvider) {
-		return (getProjectId() != null)
-				? getProjectId()
-				: projectIdProvider.getProjectId();
-	}
+  public String getResolvedProjectId(GcpProjectIdProvider projectIdProvider) {
+    return (getProjectId() != null) ? getProjectId() : projectIdProvider.getProjectId();
+  }
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+  public void setProjectId(String projectId) {
+    this.projectId = projectId;
+  }
 
-	public String getHostPort() {
-		return hostPort;
-	}
+  public String getHostPort() {
+    return hostPort;
+  }
 
-	public void setHostPort(String hostPort) {
-		this.hostPort = hostPort;
-	}
+  public void setHostPort(String hostPort) {
+    this.hostPort = hostPort;
+  }
 
-	public FirestoreEmulatorProperties getEmulator() {
-		return emulator;
-	}
+  public FirestoreEmulatorProperties getEmulator() {
+    return emulator;
+  }
 
-	public void setEmulator(FirestoreEmulatorProperties emulator) {
-		this.emulator = emulator;
-	}
+  public void setEmulator(FirestoreEmulatorProperties emulator) {
+    this.emulator = emulator;
+  }
 
-	public String getFirestoreRootPath(GcpProjectIdProvider projectIdProvider) {
-		return String.format(ROOT_PATH_FORMAT, this.getResolvedProjectId(projectIdProvider));
-	}
+  public String getFirestoreRootPath(GcpProjectIdProvider projectIdProvider) {
+    return String.format(ROOT_PATH_FORMAT, this.getResolvedProjectId(projectIdProvider));
+  }
 
-	public static class FirestoreEmulatorProperties {
+  public static class FirestoreEmulatorProperties {
 
-		/**
-		 * Enables autoconfiguration to use the Firestore emulator.
-		 * If this is set to true, then you should set the spring.cloud.gcp.firestore.host-port to the host:port of your locally running emulator instance
-		 */
-		private boolean enabled = false;
+    /**
+     * Enables autoconfiguration to use the Firestore emulator. If this is set to true, then you
+     * should set the spring.cloud.gcp.firestore.host-port to the host:port of your locally running
+     * emulator instance
+     */
+    private boolean enabled = false;
 
-		public boolean isEnabled() {
-			return enabled;
-		}
+    public boolean isEnabled() {
+      return enabled;
+    }
 
-		public void setEnabled(boolean enabled) {
-			this.enabled = enabled;
-		}
-	}
+    public void setEnabled(boolean enabled) {
+      this.enabled = enabled;
+    }
+  }
 }

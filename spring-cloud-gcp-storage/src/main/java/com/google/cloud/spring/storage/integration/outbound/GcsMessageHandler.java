@@ -17,34 +17,29 @@
 package com.google.cloud.spring.storage.integration.outbound;
 
 import com.google.cloud.storage.BlobInfo;
-
 import org.springframework.integration.file.remote.RemoteFileTemplate;
 import org.springframework.integration.file.remote.handler.FileTransferringMessageHandler;
 import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.file.support.FileExistsMode;
 
-/**
- * A file message handler for Google Cloud Storage.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- */
+/** A file message handler for Google Cloud Storage. */
 public class GcsMessageHandler extends FileTransferringMessageHandler<BlobInfo> {
 
-	public GcsMessageHandler(SessionFactory<BlobInfo> sessionFactory) {
-		super(sessionFactory);
-	}
+  public GcsMessageHandler(SessionFactory<BlobInfo> sessionFactory) {
+    super(sessionFactory);
+  }
 
-	public GcsMessageHandler(RemoteFileTemplate<BlobInfo> remoteFileTemplate) {
-		super(remoteFileTemplate);
-	}
+  public GcsMessageHandler(RemoteFileTemplate<BlobInfo> remoteFileTemplate) {
+    super(remoteFileTemplate);
+  }
 
-	public GcsMessageHandler(RemoteFileTemplate<BlobInfo> remoteFileTemplate, FileExistsMode mode) {
-		super(remoteFileTemplate, mode);
-	}
+  public GcsMessageHandler(RemoteFileTemplate<BlobInfo> remoteFileTemplate, FileExistsMode mode) {
+    super(remoteFileTemplate, mode);
+  }
 
-	@Override
-	public void setRemoteFileSeparator(String remoteFileSeparator) {
-		throw new UnsupportedOperationException("Google Cloud Storage doesn't support separators other than '/'.");
-	}
+  @Override
+  public void setRemoteFileSeparator(String remoteFileSeparator) {
+    throw new UnsupportedOperationException(
+        "Google Cloud Storage doesn't support separators other than '/'.");
+  }
 }

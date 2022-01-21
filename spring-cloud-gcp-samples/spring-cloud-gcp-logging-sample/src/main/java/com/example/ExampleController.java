@@ -18,25 +18,20 @@ package com.example;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Sample REST Controller to demonstrate Stackdriver Logging.
- *
- * @author Chengyuan Zhao
- */
+/** Sample REST Controller to demonstrate Stackdriver Logging. */
 @RestController
 public class ExampleController {
-	private static final Log LOGGER = LogFactory.getLog(ExampleController.class);
+  private static final Log LOGGER = LogFactory.getLog(ExampleController.class);
 
-	@GetMapping("/log")
-	public String log() {
-		String message = "This line was written to the log.";
-		String secondMessage = "This line was also written to the log with the same Trace ID.";
-		LOGGER.info(message);
-		LOGGER.info(secondMessage);
-		return message;
-	}
+  @GetMapping("/log")
+  public String log() {
+    String message = "This line was written to the log.";
+    String secondMessage = "This line was also written to the log with the same Trace ID.";
+    LOGGER.info(message);
+    LOGGER.info(secondMessage);
+    return message;
+  }
 }

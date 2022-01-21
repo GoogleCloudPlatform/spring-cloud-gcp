@@ -16,13 +16,15 @@
 
 package com.example;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assume.assumeThat;
 
+import java.util.List;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -33,50 +35,46 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
-
 /**
- * Simple integration test to verify the SQL sample application. This test will use the
- * properties set in resources/application.properties.
+ * Simple integration test to verify the SQL sample application. This test will use the properties
+ * set in resources/application.properties.
  *
- * Run with: mvn -Dit.cloudsql test
- *
- * @author Daniel Zou
+ * <p>Run with: mvn -Dit.cloudsql test
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { SqlApplication.class })
+@SpringBootTest(
+    webEnvironment = WebEnvironment.RANDOM_PORT,
+    classes = {SqlApplication.class})
 public class SqlMysqlSampleApplicationIntegrationTests {
 
-	@Autowired
-	private TestRestTemplate testRestTemplate;
+  @Autowired private TestRestTemplate testRestTemplate;
 
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
+  @Autowired private JdbcTemplate jdbcTemplate;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"SQL sample integration tests are disabled. Please use '-Dit.cloudsql=true' "
-						+ "to enable them. ",
-				System.getProperty("it.cloudsql"), is("true"));
-	}
+  @BeforeClass
+  public static void checkToRun() {
+    assumeThat(
+        "SQL sample integration tests are disabled. Please use '-Dit.cloudsql=true' "
+            + "to enable them. ",
+        System.getProperty("it.cloudsql"),
+        is("true"));
+  }
 
-	@After
-	public void clearTable() {
-		this.jdbcTemplate.execute("DROP TABLE IF EXISTS users");
-	}
+  @After
+  public void clearTable() {
+    this.jdbcTemplate.execute("DROP TABLE IF EXISTS users");
+  }
 
-	@Test
-	public void testSqlRowsAccess() {
-		ResponseEntity<List<String>> result = this.testRestTemplate.exchange(
-				"/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {
-				});
+  @Test
+  public void testSqlRowsAccess() {
+    ResponseEntity<List<String>> result =
+        this.testRestTemplate.exchange(
+            "/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
 
-		assertThat(result.getBody()).containsExactlyInAnyOrder(
-				"[luisao@example.com, Anderson, Silva]",
-				"[jonas@example.com, Jonas, Goncalves]",
-				"[fejsa@example.com, Ljubomir, Fejsa]");
-	}
+    assertThat(result.getBody())
+        .containsExactlyInAnyOrder(
+            "[luisao@example.com, Anderson, Silva]",
+            "[jonas@example.com, Jonas, Goncalves]",
+            "[fejsa@example.com, Ljubomir, Fejsa]");
+  }
 }

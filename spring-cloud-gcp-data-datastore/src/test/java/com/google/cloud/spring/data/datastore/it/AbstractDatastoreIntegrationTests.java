@@ -18,23 +18,18 @@ package com.google.cloud.spring.data.datastore.it;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-
 import org.awaitility.Awaitility;
 
-/**
- * Abstract base class for integration tests.
- *
- * @author Chengyuan Zhao
- */
+/** Abstract base class for integration tests. */
 public abstract class AbstractDatastoreIntegrationTests {
 
-	// queries are eventually consistent, so we may need to retry a few times.
-	private static final int QUERY_WAIT_INTERVAL_SECONDS = 20;
+  // queries are eventually consistent, so we may need to retry a few times.
+  private static final int QUERY_WAIT_INTERVAL_SECONDS = 20;
 
-	protected long waitUntilTrue(Supplier<Boolean> condition) {
-		long startTime = System.currentTimeMillis();
-		Awaitility.await().atMost(QUERY_WAIT_INTERVAL_SECONDS, TimeUnit.SECONDS).until(condition::get);
+  protected long waitUntilTrue(Supplier<Boolean> condition) {
+    long startTime = System.currentTimeMillis();
+    Awaitility.await().atMost(QUERY_WAIT_INTERVAL_SECONDS, TimeUnit.SECONDS).until(condition::get);
 
-		return System.currentTimeMillis() - startTime;
-	}
+    return System.currentTimeMillis() - startTime;
+  }
 }

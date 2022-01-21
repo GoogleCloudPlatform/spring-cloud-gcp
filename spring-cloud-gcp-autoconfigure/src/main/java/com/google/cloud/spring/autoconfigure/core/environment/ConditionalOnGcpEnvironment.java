@@ -16,34 +16,32 @@
 
 package com.google.cloud.spring.autoconfigure.core.environment;
 
+import com.google.cloud.spring.core.GcpEnvironment;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import com.google.cloud.spring.core.GcpEnvironment;
-
 import org.springframework.context.annotation.Conditional;
 
 /**
- * {@link Conditional} that matches based on GCP environment in which the application currently runs.
+ * {@link Conditional} that matches based on GCP environment in which the application currently
+ * runs.
  *
- * Supported environments are enumerated in {@link GcpEnvironment}.
- *
- * @author Elena Felder
+ * <p>Supported environments are enumerated in {@link GcpEnvironment}.
  *
  * @since 1.1
  */
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Conditional(OnGcpEnvironmentCondition.class)
 public @interface ConditionalOnGcpEnvironment {
 
-	/**
-	 * Configures which environment to match.
-	 * @return an array of GCP Environments.
-	 */
-	GcpEnvironment[] value();
+  /**
+   * Configures which environment to match.
+   *
+   * @return an array of GCP Environments.
+   */
+  GcpEnvironment[] value();
 }

@@ -19,15 +19,11 @@ package com.example;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Sample application demonstrating loading data into BigQuery using Spring Integration.
- *
- * @author Daniel Zou
- */
+/** Sample application demonstrating loading data into BigQuery using Spring Integration. */
 @SpringBootApplication
 public class BigQuerySampleApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BigQuerySampleApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(BigQuerySampleApplication.class, args);
+  }
 }

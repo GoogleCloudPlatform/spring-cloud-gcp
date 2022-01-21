@@ -17,77 +17,75 @@
 package com.google.cloud.spring.data.datastore.repository.query;
 
 import com.google.cloud.datastore.Cursor;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 /**
  * A pageable implementation for Cloud Datastore that uses the cursor for efficient reads.
  *
- * The static methods can take either paged or unpaged {@link Pageable}, while instance methods only deal with a paged
- * self object.
- *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
+ * <p>The static methods can take either paged or unpaged {@link Pageable}, while instance methods
+ * only deal with a paged self object.
  */
 public class DatastorePageable extends PageRequest {
-	private final String urlSafeCursor;
+  private final String urlSafeCursor;
 
-	private final Long totalCount;
+  private final Long totalCount;
 
-	private DatastorePageable(Pageable pageable, String urlSafeCursor, Long totalCount) {
-		super(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
-		this.urlSafeCursor = urlSafeCursor;
-		this.totalCount = totalCount;
-	}
+  private DatastorePageable(Pageable pageable, String urlSafeCursor, Long totalCount) {
+    super(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
+    this.urlSafeCursor = urlSafeCursor;
+    this.totalCount = totalCount;
+  }
 
-	DatastorePageable(Pageable pageable, Cursor cursor, Long totalCount) {
-		this(pageable, cursor.toUrlSafe(), totalCount);
-	}
+  DatastorePageable(Pageable pageable, Cursor cursor, Long totalCount) {
+    this(pageable, cursor.toUrlSafe(), totalCount);
+  }
 
-	/**
-	 * Creates a {@link DatastorePageable} wrapper for a paged request, but passes unpaged requests back unchanged.
-	 *
-	 * @param pageable The source {@link Pageable} that can be paged or unpaged
-	 * @param cursor Current cursor; null if not applicable
-	 * @param totalCount Total result count
-	 * @return an instance of {@link DatastorePageable} or the original unpaged {@link Pageable}.
-	 */
-	public static Pageable from(Pageable pageable, Cursor cursor, Long totalCount) {
-		return from(pageable, cursor == null ? null : cursor.toUrlSafe(), totalCount);
-	}
+  /**
+   * Creates a {@link DatastorePageable} wrapper for a paged request, but passes unpaged requests
+   * back unchanged.
+   *
+   * @param pageable The source {@link Pageable} that can be paged or unpaged
+   * @param cursor Current cursor; null if not applicable
+   * @param totalCount Total result count
+   * @return an instance of {@link DatastorePageable} or the original unpaged {@link Pageable}.
+   */
+  public static Pageable from(Pageable pageable, Cursor cursor, Long totalCount) {
+    return from(pageable, cursor == null ? null : cursor.toUrlSafe(), totalCount);
+  }
 
-	/**
-	 * Creates a {@link DatastorePageable} wrapper for a paged request, but passes unpaged requests back unchanged.
-	 *
-	 * @param pageable The source {@link Pageable} that can be paged or unpaged
-	 * @param urlSafeCursor Current cursor as ; null if not applicable
-	 * @param totalCount Current cursor; null if not applicable
-	 * @return an instance of {@link DatastorePageable} or the original unpaged {@link Pageable}.
-	 */
-	public static Pageable from(Pageable pageable, String urlSafeCursor, Long totalCount) {
-		if (pageable.isUnpaged()) {
-			return pageable;
-		}
-		return new DatastorePageable(pageable, urlSafeCursor, totalCount);
-	}
+  /**
+   * Creates a {@link DatastorePageable} wrapper for a paged request, but passes unpaged requests
+   * back unchanged.
+   *
+   * @param pageable The source {@link Pageable} that can be paged or unpaged
+   * @param urlSafeCursor Current cursor as ; null if not applicable
+   * @param totalCount Current cursor; null if not applicable
+   * @return an instance of {@link DatastorePageable} or the original unpaged {@link Pageable}.
+   */
+  public static Pageable from(Pageable pageable, String urlSafeCursor, Long totalCount) {
+    if (pageable.isUnpaged()) {
+      return pageable;
+    }
+    return new DatastorePageable(pageable, urlSafeCursor, totalCount);
+  }
 
-	public String getUrlSafeCursor() {
-		return this.urlSafeCursor;
-	}
+  public String getUrlSafeCursor() {
+    return this.urlSafeCursor;
+  }
 
-	@Override
-	public PageRequest next() {
-		Pageable nextPage = PageRequest.of(getPageNumber() + 1, getPageSize(), getSort());
-		// Cast is safe because from() either returns the original PageRequest or a DatastorePageable.
-		return (PageRequest) from(nextPage, this.urlSafeCursor, this.totalCount);
-	}
+  @Override
+  public PageRequest next() {
+    Pageable nextPage = PageRequest.of(getPageNumber() + 1, getPageSize(), getSort());
+    // Cast is safe because from() either returns the original PageRequest or a DatastorePageable.
+    return (PageRequest) from(nextPage, this.urlSafeCursor, this.totalCount);
+  }
 
-	public Cursor toCursor() {
-		return this.urlSafeCursor == null ? null : Cursor.fromUrlSafe(this.urlSafeCursor);
-	}
+  public Cursor toCursor() {
+    return this.urlSafeCursor == null ? null : Cursor.fromUrlSafe(this.urlSafeCursor);
+  }
 
-	public Long getTotalCount() {
-		return this.totalCount;
-	}
+  public Long getTotalCount() {
+    return this.totalCount;
+  }
 }

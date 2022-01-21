@@ -19,7 +19,6 @@ package com.google.cloud.spring.data.firestore.mapping;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spring.data.firestore.Document;
 import com.google.cloud.spring.data.firestore.FirestoreDataException;
-
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.mapping.model.BasicPersistentEntity;
 import org.springframework.data.util.TypeInformation;
@@ -27,70 +26,68 @@ import org.springframework.util.StringUtils;
 
 /**
  * Metadata class for entities stored in Datastore.
- * @param <T> the type of the persistent entity
  *
- * @author Dmitry Solomakha
+ * @param <T> the type of the persistent entity
  * @since 1.2
  */
 public class FirestorePersistentEntityImpl<T>
-		extends BasicPersistentEntity<T, FirestorePersistentProperty>
-		implements FirestorePersistentEntity<T> {
+    extends BasicPersistentEntity<T, FirestorePersistentProperty>
+    implements FirestorePersistentEntity<T> {
 
-	private final String collectionName;
+  private final String collectionName;
 
-	private FirestorePersistentProperty updateTimeProperty;
+  private FirestorePersistentProperty updateTimeProperty;
 
-	public FirestorePersistentEntityImpl(TypeInformation<T> information) {
-		super(information);
-		this.collectionName = getEntityCollectionName(information);
-	}
+  public FirestorePersistentEntityImpl(TypeInformation<T> information) {
+    super(information);
+    this.collectionName = getEntityCollectionName(information);
+  }
 
-	@Override
-	public String collectionName() {
-		return this.collectionName;
-	}
+  @Override
+  public String collectionName() {
+    return this.collectionName;
+  }
 
-	@Override
-	public FirestorePersistentProperty getIdPropertyOrFail() {
-		FirestorePersistentProperty idProperty = getIdProperty();
-		if (idProperty == null) {
-			throw new FirestoreDataException(
-					"An ID property was required but does not exist for the type: "
-							+ getType());
-		}
-		if (idProperty.getType() != String.class) {
-			throw new FirestoreDataException(
-							"An ID property is expected to be of String type; was " + idProperty.getType());
-		}
-		return idProperty;
-	}
+  @Override
+  public FirestorePersistentProperty getIdPropertyOrFail() {
+    FirestorePersistentProperty idProperty = getIdProperty();
+    if (idProperty == null) {
+      throw new FirestoreDataException(
+          "An ID property was required but does not exist for the type: " + getType());
+    }
+    if (idProperty.getType() != String.class) {
+      throw new FirestoreDataException(
+          "An ID property is expected to be of String type; was " + idProperty.getType());
+    }
+    return idProperty;
+  }
 
-	@Override
-	public FirestorePersistentProperty getUpdateTimeProperty() {
-		return updateTimeProperty;
-	}
+  @Override
+  public FirestorePersistentProperty getUpdateTimeProperty() {
+    return updateTimeProperty;
+  }
 
-	private static <T> String getEntityCollectionName(TypeInformation<T> typeInformation) {
-		Document document = AnnotationUtils.findAnnotation(typeInformation.getType(), Document.class);
-		String collectionName = (String) AnnotationUtils.getValue(document, "collectionName");
+  private static <T> String getEntityCollectionName(TypeInformation<T> typeInformation) {
+    Document document = AnnotationUtils.findAnnotation(typeInformation.getType(), Document.class);
+    String collectionName = (String) AnnotationUtils.getValue(document, "collectionName");
 
-		if (!StringUtils.hasText(collectionName)) {
-			// Infer the collection name as the uncapitalized document name.
-			return StringUtils.uncapitalize(typeInformation.getType().getSimpleName());
-		}
-		else {
-			return collectionName;
-		}
-	}
+    if (!StringUtils.hasText(collectionName)) {
+      // Infer the collection name as the uncapitalized document name.
+      return StringUtils.uncapitalize(typeInformation.getType().getSimpleName());
+    } else {
+      return collectionName;
+    }
+  }
 
-	@Override
-	public void addPersistentProperty(FirestorePersistentProperty property) {
-		super.addPersistentProperty(property);
-		if (property.findAnnotation(UpdateTime.class) != null) {
-			if (property.getActualType() != Timestamp.class) {
-				throw new FirestoreDataException("@UpdateTime annotated field should be of com.google.cloud.Timestamp type");
-			}
-			updateTimeProperty = property;
-		}
-	}
+  @Override
+  public void addPersistentProperty(FirestorePersistentProperty property) {
+    super.addPersistentProperty(property);
+    if (property.findAnnotation(UpdateTime.class) != null) {
+      if (property.getActualType() != Timestamp.class) {
+        throw new FirestoreDataException(
+            "@UpdateTime annotated field should be of com.google.cloud.Timestamp type");
+      }
+      updateTimeProperty = property;
+    }
+  }
 }

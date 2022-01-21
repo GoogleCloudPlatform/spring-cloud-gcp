@@ -16,74 +16,66 @@
 
 package com.example;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import com.google.cloud.vision.v1.EntityAnnotation;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import java.util.List;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.ModelAndView;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
-/**
- * This test sends images to the GCP Vision API and verifies the returned image
- * annotations.
- *
- * @author Daniel Zou
- */
-@RunWith(SpringRunner.class)
+/** This test sends images to the GCP Vision API and verifies the returned image annotations. */
+//Please use "-Dit.vision=true" to enable the tests
+@EnabledIfSystemProperty(named = "it.vision", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class VisionApiSampleApplicationIntegrationTests {
+class VisionApiSampleApplicationIntegrationTests {
 
-	private static final String LABEL_IMAGE_URL = "/extractLabels?imageUrl=classpath:static/boston-terrier.jpg";
+  private static final String LABEL_IMAGE_URL =
+      "/extractLabels?imageUrl=classpath:static/boston-terrier.jpg";
 
-	private static final String TEXT_IMAGE_URL = "/extractText?imageUrl=classpath:static/stop-sign.jpg";
+  private static final String TEXT_IMAGE_URL =
+      "/extractText?imageUrl=classpath:static/stop-sign.jpg";
 
-	@Autowired
-	private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"Vision Sample integration tests are disabled. Please use '-Dit.vision=true' "
-						+ "to enable them.",
-				System.getProperty("it.vision"), is("true"));
-	}
+  @Test
+  void testExtractTextFromImage() throws Exception {
+    this.mockMvc
+        .perform(get(TEXT_IMAGE_URL))
+        .andDo(
+            response -> {
+              ModelAndView result = response.getModelAndView();
+              String textFromImage = ((String) result.getModelMap().get("text")).trim();
+              assertThat(textFromImage).isEqualTo("STOP");
+            });
+  }
 
-	@Test
-	public void testExtractTextFromImage() throws Exception {
-		this.mockMvc.perform(get(TEXT_IMAGE_URL))
-				.andDo(response -> {
-					ModelAndView result = response.getModelAndView();
-					String textFromImage = ((String) result.getModelMap().get("text")).trim();
-					assertThat(textFromImage).isEqualTo("STOP");
-				});
-	}
+  @Test
+  void testClassifyImageLabels() throws Exception {
+    this.mockMvc
+        .perform(get(LABEL_IMAGE_URL))
+        .andDo(
+            response -> {
+              ModelAndView result = response.getModelAndView();
+              List<EntityAnnotation> annotations =
+                  (List<EntityAnnotation>) result.getModelMap().get("annotations");
 
-	@Test
-	public void testClassifyImageLabels() throws Exception {
-		this.mockMvc.perform(get(LABEL_IMAGE_URL))
-				.andDo(response -> {
-					ModelAndView result = response.getModelAndView();
-					List<EntityAnnotation> annotations = (List<EntityAnnotation>) result.getModelMap().get("annotations");
+              List<String> annotationNames =
+                  annotations.stream()
+                      .map(annotation -> annotation.getDescription().toLowerCase().trim())
+                      .collect(Collectors.toList());
 
-					List<String> annotationNames = annotations.stream()
-							.map(annotation -> annotation.getDescription().toLowerCase().trim())
-							.collect(Collectors.toList());
-
-					assertThat(annotationNames).contains("dog");
-				});
-	}
+              assertThat(annotationNames).contains("dog");
+            });
+  }
 }

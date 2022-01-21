@@ -19,7 +19,6 @@ package com.google.cloud.spring.autoconfigure.spanner;
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import com.google.cloud.spring.data.spanner.repository.config.SpannerRepositoryConfigurationExtension;
 import com.google.cloud.spring.data.spanner.repository.support.SpannerRepositoryFactoryBean;
-
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -28,17 +27,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
- * Enables autoconfiguration for
- * {@link com.google.cloud.spring.data.spanner.repository.config.EnableSpannerRepositories}.
- *
- * @author João André Martins
+ * Enables autoconfiguration for {@link
+ * com.google.cloud.spring.data.spanner.repository.config.EnableSpannerRepositories}.
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(SpannerRepository.class)
-@ConditionalOnMissingBean({ SpannerRepositoryFactoryBean.class,
-		SpannerRepositoryConfigurationExtension.class })
+@ConditionalOnMissingBean({
+  SpannerRepositoryFactoryBean.class,
+  SpannerRepositoryConfigurationExtension.class
+})
 @ConditionalOnProperty(value = "spring.cloud.gcp.spanner.enabled", matchIfMissing = true)
 @Import({SpannerRepositoriesAutoConfigureRegistrar.class})
 @AutoConfigureBefore(GcpSpannerAutoConfiguration.class)
-public class SpannerRepositoriesAutoConfiguration {
-}
+public class SpannerRepositoriesAutoConfiguration {}

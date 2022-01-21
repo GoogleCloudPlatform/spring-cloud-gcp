@@ -16,16 +16,14 @@
 
 package com.google.cloud.spring.autoconfigure.datastore;
 
+import com.google.cloud.datastore.Key;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.Optional;
-
-import com.google.cloud.datastore.Key;
-import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
-import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
-
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
@@ -33,46 +31,43 @@ import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 /**
  * A key converter that parses Key JSON from REST requests.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
 public class DatastoreKeyIdConverter implements BackendIdConverter {
 
-	private final DatastoreMappingContext datastoreMappingContext;
+  private final DatastoreMappingContext datastoreMappingContext;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param datastoreMappingContext the mapping context.
-	 */
-	public DatastoreKeyIdConverter(DatastoreMappingContext datastoreMappingContext) {
-		this.datastoreMappingContext = datastoreMappingContext;
-	}
+  /**
+   * Constructor.
+   *
+   * @param datastoreMappingContext the mapping context.
+   */
+  public DatastoreKeyIdConverter(DatastoreMappingContext datastoreMappingContext) {
+    this.datastoreMappingContext = datastoreMappingContext;
+  }
 
-	@Override
-	public Serializable fromRequestId(String s, Class<?> aClass) {
-		try {
-			return Key.fromUrlSafe(URLDecoder.decode(s, Charset.defaultCharset().name()));
-		}
-		catch (UnsupportedEncodingException e) {
-			throw new DatastoreDataException("Could not decode URL key param: " + s);
-		}
-	}
+  @Override
+  public Serializable fromRequestId(String s, Class<?> clazz) {
+    try {
+      return Key.fromUrlSafe(URLDecoder.decode(s, Charset.defaultCharset().name()));
+    } catch (UnsupportedEncodingException e) {
+      throw new DatastoreDataException("Could not decode URL key param: " + s);
+    }
+  }
 
-	@Override
-	public String toRequestId(Serializable serializable, Class<?> aClass) {
-		return ((Key) serializable).toUrlSafe();
-	}
+  @Override
+  public String toRequestId(Serializable serializable, Class<?> clazz) {
+    return ((Key) serializable).toUrlSafe();
+  }
 
-	@Override
-	public boolean supports(Class<?> entityType) {
-		// This ID converter only covers the Datastore key type. Returning false here causes the
-		// default converter from Spring Data to be used.
-		return Optional.ofNullable(this.datastoreMappingContext.getPersistentEntity(entityType))
-				.map(PersistentEntity::getIdProperty)
-				.map(PersistentProperty::getType)
-				.map(clz -> clz.equals(Key.class))
-				.orElse(false);
-	}
+  @Override
+  public boolean supports(Class<?> entityType) {
+    // This ID converter only covers the Datastore key type. Returning false here causes the
+    // default converter from Spring Data to be used.
+    return Optional.ofNullable(this.datastoreMappingContext.getPersistentEntity(entityType))
+        .map(PersistentEntity::getIdProperty)
+        .map(PersistentProperty::getType)
+        .map(clz -> clz.equals(Key.class))
+        .orElse(false);
+  }
 }

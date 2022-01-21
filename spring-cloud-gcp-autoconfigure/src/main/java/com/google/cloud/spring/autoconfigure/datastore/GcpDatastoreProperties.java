@@ -19,69 +19,61 @@ package com.google.cloud.spring.autoconfigure.datastore;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import com.google.cloud.spring.core.GcpScope;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * Properties for configuring Cloud Datastore.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @ConfigurationProperties("spring.cloud.gcp.datastore")
 public class GcpDatastoreProperties implements CredentialsSupplier {
 
-	/** Overrides the GCP OAuth2 credentials specified in the Core module. */
-	@NestedConfigurationProperty
-	private final Credentials credentials = new Credentials(GcpScope.DATASTORE.getUrl());
+  /** Overrides the GCP OAuth2 credentials specified in the Core module. */
+  @NestedConfigurationProperty
+  private final Credentials credentials = new Credentials(GcpScope.DATASTORE.getUrl());
 
-	/**
-	 * Properties to auto configure a local Datastore Emulator.
-	 */
-	@NestedConfigurationProperty
-	private final EmulatorSettings emulator = new EmulatorSettings();
+  /** Properties to auto configure a local Datastore Emulator. */
+  @NestedConfigurationProperty private final EmulatorSettings emulator = new EmulatorSettings();
 
-	/**
-	 * The host and port of a Datastore emulator as the following example: localhost:8081.
-	 */
-	private String host;
+  /** The host and port of a Datastore emulator as the following example: localhost:8081. */
+  private String host;
 
-	private String projectId;
+  private String projectId;
 
-	private String namespace;
+  private String namespace;
 
-	@Override
-	public Credentials getCredentials() {
-		return this.credentials;
-	}
+  @Override
+  public Credentials getCredentials() {
+    return this.credentials;
+  }
 
-	public EmulatorSettings getEmulator() {
-		return this.emulator;
-	}
+  public EmulatorSettings getEmulator() {
+    return this.emulator;
+  }
 
-	public String getProjectId() {
-		return this.projectId;
-	}
+  public String getProjectId() {
+    return this.projectId;
+  }
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+  public void setProjectId(String projectId) {
+    this.projectId = projectId;
+  }
 
-	public String getNamespace() {
-		return this.namespace;
-	}
+  public String getNamespace() {
+    return this.namespace;
+  }
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
+  public void setNamespace(String namespace) {
+    this.namespace = namespace;
+  }
 
-	public String getHost() {
-		return this.host;
-	}
+  public String getHost() {
+    return this.host;
+  }
 
-	public void setHost(String host) {
-		this.host = host;
-	}
+  public void setHost(String host) {
+    this.host = host;
+  }
 }

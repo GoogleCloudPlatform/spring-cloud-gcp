@@ -16,40 +16,34 @@
 
 package com.google.cloud.spring.autoconfigure.spanner;
 
-import java.lang.annotation.Annotation;
-
 import com.google.cloud.spring.data.spanner.repository.config.EnableSpannerRepositories;
 import com.google.cloud.spring.data.spanner.repository.config.SpannerRepositoryConfigurationExtension;
-
+import java.lang.annotation.Annotation;
 import org.springframework.boot.autoconfigure.data.AbstractRepositoryConfigurationSourceSupport;
 import org.springframework.data.repository.config.RepositoryConfigurationExtension;
 
 /**
- * {@link org.springframework.context.annotation.ImportBeanDefinitionRegistrar}
- * used to auto-configure Spring Data JPA Repositories.
- *
- * @author João André Martins
+ * {@link org.springframework.context.annotation.ImportBeanDefinitionRegistrar} used to
+ * auto-configure Spring Data JPA Repositories.
  */
 public class SpannerRepositoriesAutoConfigureRegistrar
-		extends AbstractRepositoryConfigurationSourceSupport {
+    extends AbstractRepositoryConfigurationSourceSupport {
 
-	@Override
-	protected Class<? extends Annotation> getAnnotation() {
-		return EnableSpannerRepositories.class;
-	}
+  @Override
+  protected Class<? extends Annotation> getAnnotation() {
+    return EnableSpannerRepositories.class;
+  }
 
-	@Override
-	protected Class<?> getConfiguration() {
-		return EnableSpannerRepositoriesConfiguration.class;
-	}
+  @Override
+  protected Class<?> getConfiguration() {
+    return EnableSpannerRepositoriesConfiguration.class;
+  }
 
-	@Override
-	protected RepositoryConfigurationExtension getRepositoryConfigurationExtension() {
-		return new SpannerRepositoryConfigurationExtension();
-	}
+  @Override
+  protected RepositoryConfigurationExtension getRepositoryConfigurationExtension() {
+    return new SpannerRepositoryConfigurationExtension();
+  }
 
-	@EnableSpannerRepositories
-	private static class EnableSpannerRepositoriesConfiguration {
-
-	}
+  @EnableSpannerRepositories
+  private static class EnableSpannerRepositoriesConfiguration {}
 }

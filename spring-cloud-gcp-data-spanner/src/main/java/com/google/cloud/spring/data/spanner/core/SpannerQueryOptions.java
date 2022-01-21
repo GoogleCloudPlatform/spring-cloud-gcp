@@ -16,60 +16,55 @@
 
 package com.google.cloud.spring.data.spanner.core;
 
-import java.util.Set;
-
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Options.QueryOption;
 import com.google.cloud.spanner.TimestampBound;
-
+import java.util.Set;
 import org.springframework.util.Assert;
 
 /**
- * Encapsulates Cloud Spanner query options. These are options that are independent of the
- * SQL being run.
- *
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
+ * Encapsulates Cloud Spanner query options. These are options that are independent of the SQL being
+ * run.
  *
  * @since 1.1
  */
 public class SpannerQueryOptions extends AbstractSpannerRequestOptions<QueryOption> {
 
-	/**
-	 * Constructor to create an instance. Use the extension-style add/set functions to add
-	 * options and settings.
-	 */
-	public SpannerQueryOptions() {
-		this.requestOptionType = QueryOption.class;
-	}
+  /**
+   * Constructor to create an instance. Use the extension-style add/set functions to add options and
+   * settings.
+   */
+  public SpannerQueryOptions() {
+    this.requestOptionType = QueryOption.class;
+  }
 
-	public SpannerQueryOptions addQueryOption(QueryOption queryOption) {
-		Assert.notNull(queryOption, "Valid query option is required!");
-		this.requestOptions.add(queryOption);
-		return this;
-	}
+  public SpannerQueryOptions addQueryOption(QueryOption queryOption) {
+    Assert.notNull(queryOption, "Valid query option is required!");
+    this.requestOptions.add(queryOption);
+    return this;
+  }
 
-	@Override
-	public SpannerQueryOptions setIncludeProperties(Set<String> includeProperties) {
-		super.setIncludeProperties(includeProperties);
-		return this;
-	}
+  @Override
+  public SpannerQueryOptions setIncludeProperties(Set<String> includeProperties) {
+    super.setIncludeProperties(includeProperties);
+    return this;
+  }
 
-	@Override
-	public SpannerQueryOptions setTimestampBound(TimestampBound timestampBound) {
-		super.setTimestampBound(timestampBound);
-		return this;
-	}
+  @Override
+  public SpannerQueryOptions setTimestampBound(TimestampBound timestampBound) {
+    super.setTimestampBound(timestampBound);
+    return this;
+  }
 
-	@Override
-	public SpannerQueryOptions setTimestamp(Timestamp timestamp) {
-		super.setTimestamp(timestamp);
-		return this;
-	}
+  @Override
+  public SpannerQueryOptions setTimestamp(Timestamp timestamp) {
+    super.setTimestamp(timestamp);
+    return this;
+  }
 
-	@Override
-	public SpannerQueryOptions setAllowPartialRead(boolean allowPartialRead) {
-		super.setAllowPartialRead(allowPartialRead);
-		return this;
-	}
+  @Override
+  public SpannerQueryOptions setAllowPartialRead(boolean allowPartialRead) {
+    super.setAllowPartialRead(allowPartialRead);
+    return this;
+  }
 }

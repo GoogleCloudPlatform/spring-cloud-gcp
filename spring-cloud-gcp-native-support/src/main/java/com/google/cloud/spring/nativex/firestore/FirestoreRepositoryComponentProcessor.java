@@ -18,17 +18,16 @@ package com.google.cloud.spring.nativex.firestore;
 
 import java.util.Collections;
 import java.util.Set;
-
 import org.springframework.data.SpringDataComponentProcessor;
 
 /**
- * Extend {@link SpringDataComponentProcessor} to add required native support for Firestore Repositories.
+ * Extend {@link SpringDataComponentProcessor} to add required native support for Firestore
+ * Repositories.
  */
 public class FirestoreRepositoryComponentProcessor extends SpringDataComponentProcessor {
-	@Override
-	protected Set<String> storeSpecificRepositoryDeclarationNames() {
-		return Collections.singleton(
-				"com.google.cloud.spring.data.firestore.FirestoreReactiveRepository"
-		);
-	}
+  @Override
+  protected Set<String> storeSpecificRepositoryDeclarationNames() {
+    return Collections.singleton(
+        "com.google.cloud.spring.data.firestore.FirestoreReactiveRepository");
+  }
 }

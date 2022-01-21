@@ -18,21 +18,17 @@ package com.google.cloud.spring.stream.binder.pubsub.provisioning;
 
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 
-/**
- * Consumer destination for Pub/Sub.
- *
- * @author João André Martins
- */
+/** Consumer destination for Pub/Sub. */
 public class PubSubConsumerDestination implements ConsumerDestination {
 
-	private String name;
+  private String name;
 
-	public PubSubConsumerDestination(String name) {
-		this.name = name;
-	}
+  public PubSubConsumerDestination(String name) {
+    this.name = name;
+  }
 
-	@Override
-	public String getName() {
-		return this.name;
-	}
+  @Override
+  public String getName() {
+    return this.name;
+  }
 }

@@ -19,53 +19,54 @@ package com.google.cloud.spring.data.firestore.it;
 import com.google.cloud.spring.data.firestore.FirestoreDataException;
 import com.google.cloud.spring.data.firestore.entities.User;
 import com.google.cloud.spring.data.firestore.entities.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-/**
- * @author Dmitry Solomakha
- */
-
-//tag::user_service[]
+// tag::user_service[]
 class UserService {
-	@Autowired
-	private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-	//end::user_service[]
-	@Transactional
-	public Mono<Void> updateUsersTransactionPropagation() {
-		return findAll()
-				.flatMap(a -> {
-					a.setAge(a.getAge() - 1);
-					return this.userRepository.save(a);
-				})
-				.then();
-	}
+  // end::user_service[]
+  @Transactional
+  public Mono<Void> updateUsersTransactionPropagation() {
+    return findAll()
+        .flatMap(
+            a -> {
+              a.setAge(a.getAge() - 1);
+              return this.userRepository.save(a);
+            })
+        .then();
+  }
 
-	@Transactional
-	private Flux<User> findAll() {
-		return this.userRepository.findAll();
-	}
+  @Transactional
+  private Flux<User> findAll() {
+    return this.userRepository.findAll();
+  }
 
-	@Transactional
-	public Mono<Void> deleteUsers() {
-		return this.userRepository.saveAll(Mono.defer(() -> {
-			throw new FirestoreDataException("BOOM!");
-		})).then(this.userRepository.deleteAll());
-	}
+  @Transactional
+  public Mono<Void> deleteUsers() {
+    return this.userRepository
+        .saveAll(
+            Mono.defer(
+                () -> {
+                  throw new FirestoreDataException("BOOM!");
+                }))
+        .then(this.userRepository.deleteAll());
+  }
 
-	// tag::user_service[]
-	@Transactional
-	public Mono<Void> updateUsers() {
-		return this.userRepository.findAll()
-				.flatMap(a -> {
-					a.setAge(a.getAge() - 1);
-					return this.userRepository.save(a);
-				})
-				.then();
-	}
+  // tag::user_service[]
+  @Transactional
+  public Mono<Void> updateUsers() {
+    return this.userRepository
+        .findAll()
+        .flatMap(
+            a -> {
+              a.setAge(a.getAge() - 1);
+              return this.userRepository.save(a);
+            })
+        .then();
+  }
 }
-//end::user_service[]
+// end::user_service[]

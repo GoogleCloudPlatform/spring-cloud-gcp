@@ -16,57 +16,54 @@
 
 package com.google.cloud.spring.data.firestore.mapping;
 
+import static com.google.cloud.spring.data.firestore.FirestoreTemplate.NAME_FIELD;
+
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.PropertyName;
-
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.model.AnnotationBasedPersistentProperty;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 
-import static com.google.cloud.spring.data.firestore.FirestoreTemplate.NAME_FIELD;
-
 /**
  * Persistent property metadata implementation for Firestore.
- *
- * @author Dmitry Solomakha
  *
  * @since 1.2
  */
 public class FirestorePersistentPropertyImpl
-		extends AnnotationBasedPersistentProperty<FirestorePersistentProperty>
-		implements FirestorePersistentProperty {
+    extends AnnotationBasedPersistentProperty<FirestorePersistentProperty>
+    implements FirestorePersistentProperty {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param property the property to store
-	 * @param owner the entity to which this property belongs
-	 * @param simpleTypeHolder the type holder
-	 */
-	FirestorePersistentPropertyImpl(Property property,
-			PersistentEntity<?, FirestorePersistentProperty> owner,
-			SimpleTypeHolder simpleTypeHolder) {
-		super(property, owner, simpleTypeHolder);
-	}
+  /**
+   * Constructor.
+   *
+   * @param property the property to store
+   * @param owner the entity to which this property belongs
+   * @param simpleTypeHolder the type holder
+   */
+  FirestorePersistentPropertyImpl(
+      Property property,
+      PersistentEntity<?, FirestorePersistentProperty> owner,
+      SimpleTypeHolder simpleTypeHolder) {
+    super(property, owner, simpleTypeHolder);
+  }
 
+  @Override
+  protected Association<FirestorePersistentProperty> createAssociation() {
+    return new Association<>(this, null);
+  }
 
-	@Override
-	protected Association<FirestorePersistentProperty> createAssociation() {
-		return new Association<>(this, null);
-	}
+  @Override
+  public boolean isIdProperty() {
+    return findAnnotation(DocumentId.class) != null;
+  }
 
-	@Override
-	public boolean isIdProperty() {
-		return findAnnotation(DocumentId.class) != null;
-	}
-
-	public String getFieldName() {
-		if (isIdProperty()) {
-			return NAME_FIELD;
-		}
-		PropertyName annotation = findAnnotation(PropertyName.class);
-		return annotation != null ? annotation.value() : super.getName();
-	}
+  public String getFieldName() {
+    if (isIdProperty()) {
+      return NAME_FIELD;
+    }
+    PropertyName annotation = findAnnotation(PropertyName.class);
+    return annotation != null ? annotation.value() : super.getName();
+  }
 }

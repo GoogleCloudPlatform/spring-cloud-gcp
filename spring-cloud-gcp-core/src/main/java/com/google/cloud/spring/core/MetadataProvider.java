@@ -19,12 +19,9 @@ package com.google.cloud.spring.core;
 /**
  * Interface for retrieving properties from Metadata Server.
  *
- * @author Elena Felder
- *
  * @since 1.1
  */
 public interface MetadataProvider {
 
-	String getAttribute(String attributeName);
-
+  String getAttribute(String attributeName);
 }

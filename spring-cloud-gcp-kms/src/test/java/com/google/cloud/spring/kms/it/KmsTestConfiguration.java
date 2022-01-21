@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.kms.it;
 
-import java.io.IOException;
-
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
 import com.google.cloud.kms.v1.KeyManagementServiceSettings;
@@ -26,44 +24,39 @@ import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.kms.KmsTemplate;
-
+import java.io.IOException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Configuration for Integration tests.
- *
- * @author Emmanouil Gkatziouras
- */
+/** Configuration for Integration tests. */
 @Configuration
 public class KmsTestConfiguration {
 
-	private final GcpProjectIdProvider projectIdProvider;
-	private final CredentialsProvider credentialsProvider;
+  private final GcpProjectIdProvider projectIdProvider;
+  private final CredentialsProvider credentialsProvider;
 
-	public KmsTestConfiguration() throws IOException {
-		this.projectIdProvider = new DefaultGcpProjectIdProvider();
-		this.credentialsProvider = new DefaultCredentialsProvider(Credentials::new);
-	}
+  public KmsTestConfiguration() throws IOException {
+    this.projectIdProvider = new DefaultGcpProjectIdProvider();
+    this.credentialsProvider = new DefaultCredentialsProvider(Credentials::new);
+  }
 
-	@Bean
-	public GcpProjectIdProvider gcpProjectIdProvider() {
-		return this.projectIdProvider;
-	}
+  @Bean
+  public GcpProjectIdProvider gcpProjectIdProvider() {
+    return this.projectIdProvider;
+  }
 
-	@Bean
-	public KeyManagementServiceClient keyManagementServiceClient() throws IOException {
-		KeyManagementServiceSettings settings = KeyManagementServiceSettings.newBuilder()
-				.setCredentialsProvider(this.credentialsProvider)
-				.build();
+  @Bean
+  public KeyManagementServiceClient keyManagementServiceClient() throws IOException {
+    KeyManagementServiceSettings settings =
+        KeyManagementServiceSettings.newBuilder()
+            .setCredentialsProvider(this.credentialsProvider)
+            .build();
 
-		return KeyManagementServiceClient.create(settings);
-	}
+    return KeyManagementServiceClient.create(settings);
+  }
 
-	@Bean
-	public KmsTemplate kmsTemplate(KeyManagementServiceClient client) {
-		return new KmsTemplate(client, this.projectIdProvider);
-	}
-
-
+  @Bean
+  public KmsTemplate kmsTemplate(KeyManagementServiceClient client) {
+    return new KmsTemplate(client, this.projectIdProvider);
+  }
 }

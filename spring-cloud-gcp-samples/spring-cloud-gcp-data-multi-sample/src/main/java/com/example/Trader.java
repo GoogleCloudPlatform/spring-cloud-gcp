@@ -20,62 +20,63 @@ import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 
-/**
- * A sample entity.
- *
- * @author Mike Eltsufin
- */
+/** A sample entity. */
 @Table(name = "traders")
 public class Trader {
-	@PrimaryKey
-	@Column(name = "trader_id")
-	private String traderId;
+  @PrimaryKey
+  @Column(name = "trader_id")
+  private String traderId;
 
-	@Column(name = "first_name")
-	private String firstName;
+  @Column(name = "first_name")
+  private String firstName;
 
-	@Column(name = "last_name")
-	private String lastName;
+  @Column(name = "last_name")
+  private String lastName;
 
-	public Trader() {
-	}
+  public Trader() {}
 
-	public Trader(String id, String firstName, String lastName) {
-		this.traderId = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
+  public Trader(String id, String firstName, String lastName) {
+    this.traderId = id;
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
 
-	public String getTraderId() {
-		return this.traderId;
-	}
+  public String getTraderId() {
+    return this.traderId;
+  }
 
-	public void setTraderId(String traderId) {
-		this.traderId = traderId;
-	}
+  public void setTraderId(String traderId) {
+    this.traderId = traderId;
+  }
 
-	public String getFirstName() {
-		return this.firstName;
-	}
+  public String getFirstName() {
+    return this.firstName;
+  }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-	public String getLastName() {
-		return this.lastName;
-	}
+  public String getLastName() {
+    return this.lastName;
+  }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-	@Override
-	public String toString() {
-		return "Trader{" +
-				"traderId='" + this.traderId + '\'' +
-				", firstName='" + this.firstName + '\'' +
-				", lastName='" + this.lastName + '\'' +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "Trader{"
+        + "traderId='"
+        + this.traderId
+        + '\''
+        + ", firstName='"
+        + this.firstName
+        + '\''
+        + ", lastName='"
+        + this.lastName
+        + '\''
+        + '}';
+  }
 }

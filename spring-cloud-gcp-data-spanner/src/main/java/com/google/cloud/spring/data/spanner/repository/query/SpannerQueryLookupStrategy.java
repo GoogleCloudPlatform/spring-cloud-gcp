@@ -16,11 +16,9 @@
 
 package com.google.cloud.spring.data.spanner.repository.query;
 
-import java.lang.reflect.Method;
-
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
-
+import java.lang.reflect.Method;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryMetadata;
@@ -32,77 +30,82 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.Assert;
 
 /**
- * Determines the type of the user's custom-defined Query Methods and instantiates their implementations.
- *
- * @author Balint Pato
- * @author Chengyuan Zhao
+ * Determines the type of the user's custom-defined Query Methods and instantiates their
+ * implementations.
  *
  * @since 1.1
  */
 public class SpannerQueryLookupStrategy implements QueryLookupStrategy {
 
-	private final SpannerTemplate spannerTemplate;
+  private final SpannerTemplate spannerTemplate;
 
-	private final SpannerMappingContext spannerMappingContext;
+  private final SpannerMappingContext spannerMappingContext;
 
-	private QueryMethodEvaluationContextProvider evaluationContextProvider;
+  private QueryMethodEvaluationContextProvider evaluationContextProvider;
 
-	private SpelExpressionParser expressionParser;
+  private SpelExpressionParser expressionParser;
 
-	public SpannerQueryLookupStrategy(SpannerMappingContext spannerMappingContext,
-			SpannerTemplate spannerTemplate,
-			QueryMethodEvaluationContextProvider evaluationContextProvider,
-			SpelExpressionParser expressionParser) {
-		Assert.notNull(spannerMappingContext,
-				"A valid SpannerMappingContext is required.");
-		Assert.notNull(spannerTemplate, "A valid SpannerTemplate is required.");
-		Assert.notNull(evaluationContextProvider,
-				"A valid EvaluationContextProvider is required.");
-		Assert.notNull(expressionParser, "A valid SpelExpressionParser is required.");
-		this.spannerMappingContext = spannerMappingContext;
-		this.evaluationContextProvider = evaluationContextProvider;
-		this.spannerTemplate = spannerTemplate;
-		this.expressionParser = expressionParser;
-	}
+  public SpannerQueryLookupStrategy(
+      SpannerMappingContext spannerMappingContext,
+      SpannerTemplate spannerTemplate,
+      QueryMethodEvaluationContextProvider evaluationContextProvider,
+      SpelExpressionParser expressionParser) {
+    Assert.notNull(spannerMappingContext, "A valid SpannerMappingContext is required.");
+    Assert.notNull(spannerTemplate, "A valid SpannerTemplate is required.");
+    Assert.notNull(evaluationContextProvider, "A valid EvaluationContextProvider is required.");
+    Assert.notNull(expressionParser, "A valid SpelExpressionParser is required.");
+    this.spannerMappingContext = spannerMappingContext;
+    this.evaluationContextProvider = evaluationContextProvider;
+    this.spannerTemplate = spannerTemplate;
+    this.expressionParser = expressionParser;
+  }
 
-	Class<?> getEntityType(QueryMethod queryMethod) {
-		return queryMethod.getResultProcessor().getReturnedType().getDomainType();
-	}
+  Class<?> getEntityType(QueryMethod queryMethod) {
+    return queryMethod.getResultProcessor().getReturnedType().getDomainType();
+  }
 
-	SpannerQueryMethod createQueryMethod(Method method,
-			RepositoryMetadata metadata, ProjectionFactory factory) {
-		return new SpannerQueryMethod(method, metadata, factory);
-	}
+  SpannerQueryMethod createQueryMethod(
+      Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
+    return new SpannerQueryMethod(method, metadata, factory);
+  }
 
-	@Override
-	public RepositoryQuery resolveQuery(Method method, RepositoryMetadata metadata,
-			ProjectionFactory factory, NamedQueries namedQueries) {
-		SpannerQueryMethod queryMethod = createQueryMethod(method, metadata, factory);
-		Class<?> entityType = getEntityType(queryMethod);
-		boolean isDml = queryMethod.getQueryAnnotation() != null && queryMethod.getQueryAnnotation().dmlStatement();
+  @Override
+  public RepositoryQuery resolveQuery(
+      Method method,
+      RepositoryMetadata metadata,
+      ProjectionFactory factory,
+      NamedQueries namedQueries) {
+    SpannerQueryMethod queryMethod = createQueryMethod(method, metadata, factory);
+    Class<?> entityType = getEntityType(queryMethod);
+    Query queryAnnotation = queryMethod.getQueryAnnotation();
+    boolean isDml = queryAnnotation != null && queryAnnotation.dmlStatement();
 
-		if (queryMethod.hasAnnotatedQuery()) {
-			Query query = queryMethod.getQueryAnnotation();
-			return createSqlSpannerQuery(entityType, queryMethod, query.value(), isDml);
-		}
-		else if (namedQueries.hasQuery(queryMethod.getNamedQueryName())) {
-			String sql = namedQueries.getQuery(queryMethod.getNamedQueryName());
-			return createSqlSpannerQuery(entityType, queryMethod, sql, isDml);
-		}
+    if (queryAnnotation != null && queryMethod.hasAnnotatedQuery()) {
+      return createSqlSpannerQuery(entityType, queryMethod, queryAnnotation.value(), isDml);
+    } else if (namedQueries.hasQuery(queryMethod.getNamedQueryName())) {
+      String sql = namedQueries.getQuery(queryMethod.getNamedQueryName());
+      return createSqlSpannerQuery(entityType, queryMethod, sql, isDml);
+    }
 
-		return createPartTreeSpannerQuery(entityType, queryMethod);
-	}
+    return createPartTreeSpannerQuery(entityType, queryMethod);
+  }
 
-	<T> SqlSpannerQuery<T> createSqlSpannerQuery(Class<T> entityType,
-			SpannerQueryMethod queryMethod, String sql, boolean isDml) {
-		return new SqlSpannerQuery<>(entityType, queryMethod, this.spannerTemplate, sql,
-				this.evaluationContextProvider, this.expressionParser,
-				this.spannerMappingContext, isDml);
-	}
+  <T> SqlSpannerQuery<T> createSqlSpannerQuery(
+      Class<T> entityType, SpannerQueryMethod queryMethod, String sql, boolean isDml) {
+    return new SqlSpannerQuery<>(
+        entityType,
+        queryMethod,
+        this.spannerTemplate,
+        sql,
+        this.evaluationContextProvider,
+        this.expressionParser,
+        this.spannerMappingContext,
+        isDml);
+  }
 
-	<T> PartTreeSpannerQuery<T> createPartTreeSpannerQuery(Class<T> entityType,
-			SpannerQueryMethod queryMethod) {
-		return new PartTreeSpannerQuery<>(entityType, queryMethod, this.spannerTemplate,
-				this.spannerMappingContext);
-	}
+  <T> PartTreeSpannerQuery<T> createPartTreeSpannerQuery(
+      Class<T> entityType, SpannerQueryMethod queryMethod) {
+    return new PartTreeSpannerQuery<>(
+        entityType, queryMethod, this.spannerTemplate, this.spannerMappingContext);
+  }
 }

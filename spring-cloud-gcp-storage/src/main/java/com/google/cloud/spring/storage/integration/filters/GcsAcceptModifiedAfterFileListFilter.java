@@ -16,80 +16,73 @@
 
 package com.google.cloud.spring.storage.integration.filters;
 
+import com.google.cloud.storage.BlobInfo;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-
 import javax.annotation.Nullable;
-
-import com.google.cloud.storage.BlobInfo;
-
 import org.springframework.integration.file.filters.DiscardAwareFileListFilter;
 
 /**
- * The {@link GcsAcceptModifiedAfterFileListFilter} is a filter which accepts all files
- * that were modified after a specified point in time.
+ * The {@link GcsAcceptModifiedAfterFileListFilter} is a filter which accepts all files that were
+ * modified after a specified point in time.
  *
  * <p>More specifically, it accepts (includes) all files whose {@link BlobInfo#getUpdateTime()} is
  * after (greater than or equal to) the {@link #acceptAfterCutoffTimestamp}.
  *
- * <p>{@link #acceptAfterCutoffTimestamp} defaults to Instant.now() (UTC) in millis,
- * but an alternative {@link Instant} can be provided via the constructor.
+ * <p>{@link #acceptAfterCutoffTimestamp} defaults to Instant.now() (UTC) in millis, but an
+ * alternative {@link Instant} can be provided via the constructor.
  *
  * <p>When {@link #discardCallback} is provided, it is called for all the rejected files.
- *
- * @author Hosain Al Ahmad
  */
 public class GcsAcceptModifiedAfterFileListFilter implements DiscardAwareFileListFilter<BlobInfo> {
 
-	private final long acceptAfterCutoffTimestamp;
+  private final long acceptAfterCutoffTimestamp;
 
-	@Nullable
-	private Consumer<BlobInfo> discardCallback;
+  @Nullable private Consumer<BlobInfo> discardCallback;
 
-	public GcsAcceptModifiedAfterFileListFilter() {
-		acceptAfterCutoffTimestamp = Instant.now(Clock.systemUTC()).toEpochMilli();
-	}
+  public GcsAcceptModifiedAfterFileListFilter() {
+    acceptAfterCutoffTimestamp = Instant.now(Clock.systemUTC()).toEpochMilli();
+  }
 
-	public GcsAcceptModifiedAfterFileListFilter(Instant instant) {
-		acceptAfterCutoffTimestamp = instant.toEpochMilli();
-	}
+  public GcsAcceptModifiedAfterFileListFilter(Instant instant) {
+    acceptAfterCutoffTimestamp = instant.toEpochMilli();
+  }
 
-	@Override
-	public void addDiscardCallback(@Nullable Consumer<BlobInfo> discardCallback) {
-		this.discardCallback = discardCallback;
-	}
+  @Override
+  public void addDiscardCallback(@Nullable Consumer<BlobInfo> discardCallback) {
+    this.discardCallback = discardCallback;
+  }
 
-	@Override
-	public List<BlobInfo> filterFiles(BlobInfo[] blobInfos) {
-		List<BlobInfo> list = new ArrayList<>();
-		for (BlobInfo file : blobInfos) {
-			if (accept(file)) {
-				list.add(file);
-			}
-		}
-		return list;
-	}
+  @Override
+  public List<BlobInfo> filterFiles(BlobInfo[] blobInfos) {
+    List<BlobInfo> list = new ArrayList<>();
+    for (BlobInfo file : blobInfos) {
+      if (accept(file)) {
+        list.add(file);
+      }
+    }
+    return list;
+  }
 
-	@Override
-	public boolean accept(BlobInfo file) {
-		if (fileUpdateTimeOnOrAfterPointInTime(file)) {
-			return true;
-		}
-		else if (this.discardCallback != null) {
-			this.discardCallback.accept(file);
-		}
-		return false;
-	}
+  @Override
+  public boolean accept(BlobInfo file) {
+    if (fileUpdateTimeOnOrAfterPointInTime(file)) {
+      return true;
+    } else if (this.discardCallback != null) {
+      this.discardCallback.accept(file);
+    }
+    return false;
+  }
 
-	private boolean fileUpdateTimeOnOrAfterPointInTime(BlobInfo file) {
-		return file.getUpdateTime() >= acceptAfterCutoffTimestamp;
-	}
+  private boolean fileUpdateTimeOnOrAfterPointInTime(BlobInfo file) {
+    return file.getUpdateTime() >= acceptAfterCutoffTimestamp;
+  }
 
-	@Override
-	public boolean supportsSingleFileFiltering() {
-		return true;
-	}
+  @Override
+  public boolean supportsSingleFileFiltering() {
+    return true;
+  }
 }

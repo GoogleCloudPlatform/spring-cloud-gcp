@@ -18,14 +18,8 @@ package com.example;
 
 import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
-
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-/**
- * Repository REST resource for testing keys with ancestors.
- *
- * @author Chengyuan Zhao
- */
+/** Repository REST resource for testing keys with ancestors. */
 @RepositoryRestResource(collectionResourceRel = "instruments", path = "instruments")
-public interface InstrumentRepositoryRestResource extends DatastoreRepository<Instrument, Key> {
-}
+public interface InstrumentRepositoryRestResource extends DatastoreRepository<Instrument, Key> {}

@@ -16,11 +16,9 @@
 
 package com.google.cloud.spring.data.datastore.repository.query;
 
-import java.lang.reflect.Method;
-
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
-
+import java.lang.reflect.Method;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryMetadata;
@@ -33,65 +31,70 @@ import org.springframework.util.Assert;
 /**
  * Query lookup strategy for Query Methods for Cloud Datastore.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class DatastoreQueryLookupStrategy implements QueryLookupStrategy {
 
-	private final DatastoreOperations datastoreOperations;
+  private final DatastoreOperations datastoreOperations;
 
-	private final DatastoreMappingContext datastoreMappingContext;
+  private final DatastoreMappingContext datastoreMappingContext;
 
-	private QueryMethodEvaluationContextProvider evaluationContextProvider;
+  private QueryMethodEvaluationContextProvider evaluationContextProvider;
 
-	public DatastoreQueryLookupStrategy(DatastoreMappingContext datastoreMappingContext,
-			DatastoreOperations datastoreOperations,
-			QueryMethodEvaluationContextProvider evaluationContextProvider) {
-		Assert.notNull(datastoreMappingContext,
-				"A non-null DatastoreMappingContext is required.");
-		Assert.notNull(datastoreOperations,
-				"A non-null DatastoreOperations is required.");
-		Assert.notNull(evaluationContextProvider,
-				"A non-null EvaluationContextProvider is required.");
-		this.datastoreMappingContext = datastoreMappingContext;
-		this.evaluationContextProvider = evaluationContextProvider;
-		this.datastoreOperations = datastoreOperations;
-	}
+  public DatastoreQueryLookupStrategy(
+      DatastoreMappingContext datastoreMappingContext,
+      DatastoreOperations datastoreOperations,
+      QueryMethodEvaluationContextProvider evaluationContextProvider) {
+    Assert.notNull(datastoreMappingContext, "A non-null DatastoreMappingContext is required.");
+    Assert.notNull(datastoreOperations, "A non-null DatastoreOperations is required.");
+    Assert.notNull(evaluationContextProvider, "A non-null EvaluationContextProvider is required.");
+    this.datastoreMappingContext = datastoreMappingContext;
+    this.evaluationContextProvider = evaluationContextProvider;
+    this.datastoreOperations = datastoreOperations;
+  }
 
-	@Override
-	public RepositoryQuery resolveQuery(Method method, RepositoryMetadata metadata,
-			ProjectionFactory projectionFactory, NamedQueries namedQueries) {
-		DatastoreQueryMethod queryMethod = createQueryMethod(method, metadata, projectionFactory);
-		Class<?> entityType = getEntityType(queryMethod);
+  @Override
+  public RepositoryQuery resolveQuery(
+      Method method,
+      RepositoryMetadata metadata,
+      ProjectionFactory projectionFactory,
+      NamedQueries namedQueries) {
+    DatastoreQueryMethod queryMethod = createQueryMethod(method, metadata, projectionFactory);
+    Class<?> entityType = getEntityType(queryMethod);
 
-		if (queryMethod.hasAnnotatedQuery()) {
-			String sql = queryMethod.getQueryAnnotation().value();
-			return createGqlDatastoreQuery(entityType, queryMethod, sql);
-		}
-		else if (namedQueries.hasQuery(queryMethod.getNamedQueryName())) {
-			String sql = namedQueries.getQuery(queryMethod.getNamedQueryName());
-			return createGqlDatastoreQuery(entityType, queryMethod, sql);
-		}
+    if (queryMethod.hasAnnotatedQuery()) {
+      String sql = queryMethod.getQueryAnnotation().value();
+      return createGqlDatastoreQuery(entityType, queryMethod, sql);
+    } else if (namedQueries.hasQuery(queryMethod.getNamedQueryName())) {
+      String sql = namedQueries.getQuery(queryMethod.getNamedQueryName());
+      return createGqlDatastoreQuery(entityType, queryMethod, sql);
+    }
 
-		return new PartTreeDatastoreQuery<>(queryMethod, this.datastoreOperations,
-				this.datastoreMappingContext, entityType, projectionFactory);
-	}
+    return new PartTreeDatastoreQuery<>(
+        queryMethod,
+        this.datastoreOperations,
+        this.datastoreMappingContext,
+        entityType,
+        projectionFactory);
+  }
 
-	<T> GqlDatastoreQuery<T> createGqlDatastoreQuery(Class<T> entityType,
-			DatastoreQueryMethod queryMethod, String gql) {
-		return new GqlDatastoreQuery<>(entityType, queryMethod, this.datastoreOperations,
-				gql, this.evaluationContextProvider,
-				this.datastoreMappingContext);
-	}
+  <T> GqlDatastoreQuery<T> createGqlDatastoreQuery(
+      Class<T> entityType, DatastoreQueryMethod queryMethod, String gql) {
+    return new GqlDatastoreQuery<>(
+        entityType,
+        queryMethod,
+        this.datastoreOperations,
+        gql,
+        this.evaluationContextProvider,
+        this.datastoreMappingContext);
+  }
 
-	Class<?> getEntityType(QueryMethod queryMethod) {
-		return queryMethod.getResultProcessor().getReturnedType().getDomainType();
-	}
+  Class<?> getEntityType(QueryMethod queryMethod) {
+    return queryMethod.getResultProcessor().getReturnedType().getDomainType();
+  }
 
-	DatastoreQueryMethod createQueryMethod(Method method, RepositoryMetadata metadata,
-			ProjectionFactory factory) {
-		return new DatastoreQueryMethod(method, metadata, factory);
-	}
-
+  DatastoreQueryMethod createQueryMethod(
+      Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
+    return new DatastoreQueryMethod(method, metadata, factory);
+  }
 }

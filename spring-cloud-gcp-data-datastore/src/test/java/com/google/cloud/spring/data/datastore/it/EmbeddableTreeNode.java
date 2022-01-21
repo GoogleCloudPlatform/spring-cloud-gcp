@@ -16,58 +16,54 @@
 
 package com.google.cloud.spring.data.datastore.it;
 
-import java.util.Objects;
-
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-
+import java.util.Objects;
 import org.springframework.data.annotation.Id;
 
-/**
- * A test class that uses embedded relationships to represent a tree.
- *
- * @author Dmitry Solomakha
- */
+/** A test class that uses embedded relationships to represent a tree. */
 @Entity
 public class EmbeddableTreeNode {
-	@Id
-	long value;
+  @Id long value;
 
-	EmbeddableTreeNode left;
+  EmbeddableTreeNode left;
 
-	EmbeddableTreeNode right;
+  EmbeddableTreeNode right;
 
-	public EmbeddableTreeNode(long value, EmbeddableTreeNode left, EmbeddableTreeNode right) {
-		this.value = value;
-		this.left = left;
-		this.right = right;
-	}
+  public EmbeddableTreeNode(long value, EmbeddableTreeNode left, EmbeddableTreeNode right) {
+    this.value = value;
+    this.left = left;
+    this.right = right;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		EmbeddableTreeNode treeNode = (EmbeddableTreeNode) o;
-		return this.value == treeNode.value &&
-				Objects.equals(this.left, treeNode.left) &&
-				Objects.equals(this.right, treeNode.right);
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    EmbeddableTreeNode treeNode = (EmbeddableTreeNode) o;
+    return this.value == treeNode.value
+        && Objects.equals(this.left, treeNode.left)
+        && Objects.equals(this.right, treeNode.right);
+  }
 
-	@Override
-	public int hashCode() {
+  @Override
+  public int hashCode() {
 
-		return Objects.hash(this.value, this.left, this.right);
-	}
+    return Objects.hash(this.value, this.left, this.right);
+  }
 
-	@Override
-	public String toString() {
-		return "EmbeddableTreeNode{" +
-				"value=" + this.value +
-				", left=" + this.left +
-				", right=" + this.right +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "EmbeddableTreeNode{"
+        + "value="
+        + this.value
+        + ", left="
+        + this.left
+        + ", right="
+        + this.right
+        + '}';
+  }
 }

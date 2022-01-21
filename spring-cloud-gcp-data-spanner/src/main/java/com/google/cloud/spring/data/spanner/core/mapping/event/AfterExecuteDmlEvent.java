@@ -16,52 +16,52 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping.event;
 
+import com.google.cloud.spanner.Statement;
 import java.util.Objects;
 
-import com.google.cloud.spanner.Statement;
-
 /**
- * This event is published immediately after a DML statement is executed. It contains the
- * DML statement as well as the number of rows affected.
- *
- * @author Chengyuan Zhao
+ * This event is published immediately after a DML statement is executed. It contains the DML
+ * statement as well as the number of rows affected.
  */
 public class AfterExecuteDmlEvent extends ExecuteDmlEvent {
 
-	private final long numberOfRowsAffected;
+  private final long numberOfRowsAffected;
 
-	/**
-	 * Constructor.
-	 * @param statement the DML statement that was executed.
-	 * @param numberOfRowsAffected the number of rows affected.
-	 */
-	public AfterExecuteDmlEvent(Statement statement, long numberOfRowsAffected) {
-		super(statement);
-		this.numberOfRowsAffected = numberOfRowsAffected;
-	}
+  /**
+   * Constructor.
+   *
+   * @param statement the DML statement that was executed.
+   * @param numberOfRowsAffected the number of rows affected.
+   */
+  public AfterExecuteDmlEvent(Statement statement, long numberOfRowsAffected) {
+    super(statement);
+    this.numberOfRowsAffected = numberOfRowsAffected;
+  }
 
-	/**
-	 * Get the number of rows affected by the DML.
-	 * @return the number of rows affected.
-	 */
-	public long getNumberOfRowsAffected() {
-		return this.numberOfRowsAffected;
-	}
+  /**
+   * Get the number of rows affected by the DML.
+   *
+   * @return the number of rows affected.
+   */
+  public long getNumberOfRowsAffected() {
+    return this.numberOfRowsAffected;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		AfterExecuteDmlEvent that = (AfterExecuteDmlEvent) o;
-		return getStatement().equals(that.getStatement()) && getNumberOfRowsAffected() == that.getNumberOfRowsAffected();
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    AfterExecuteDmlEvent that = (AfterExecuteDmlEvent) o;
+    return getStatement().equals(that.getStatement())
+        && getNumberOfRowsAffected() == that.getNumberOfRowsAffected();
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getStatement().hashCode(), getNumberOfRowsAffected());
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(getStatement().hashCode(), getNumberOfRowsAffected());
+  }
 }

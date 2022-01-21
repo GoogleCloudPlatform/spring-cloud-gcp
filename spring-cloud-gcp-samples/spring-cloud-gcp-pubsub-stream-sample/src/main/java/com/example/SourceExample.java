@@ -17,7 +17,6 @@
 package com.example;
 
 import java.time.LocalDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.messaging.Source;
@@ -26,25 +25,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * An example source for the sample app.
- *
- * @author João André Martins
- */
+/** An example source for the sample app. */
 @EnableBinding(Source.class)
 @RestController
 public class SourceExample {
 
-	@Autowired
-	private Source source;
+  @Autowired private Source source;
 
-	@PostMapping("/newMessage")
-	public UserMessage sendMessage(
-			@RequestParam("messageBody") String messageBody,
-			@RequestParam("username") String username,
-			@RequestParam("throwError") boolean shouldThrowError) {
-		UserMessage userMessage = new UserMessage(messageBody, username, LocalDateTime.now(), shouldThrowError);
-		this.source.output().send(new GenericMessage<>(userMessage));
-		return userMessage;
-	}
+  @PostMapping("/newMessage")
+  public UserMessage sendMessage(
+      @RequestParam("messageBody") String messageBody,
+      @RequestParam("username") String username,
+      @RequestParam("throwError") boolean shouldThrowError) {
+    UserMessage userMessage =
+        new UserMessage(messageBody, username, LocalDateTime.now(), shouldThrowError);
+    this.source.output().send(new GenericMessage<>(userMessage));
+    return userMessage;
+  }
 }

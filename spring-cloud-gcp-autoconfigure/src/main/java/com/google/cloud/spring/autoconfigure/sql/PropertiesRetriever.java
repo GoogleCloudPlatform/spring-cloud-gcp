@@ -31,45 +31,48 @@ import org.springframework.core.env.Environment;
  */
 class PropertiesRetriever {
 
-	private Binder binder;
+  private Binder binder;
 
-	PropertiesRetriever(Environment environment) {
-		// Bind properties without resolving Secret Manager placeholders
-		this.binder = new Binder(ConfigurationPropertySources.get(environment),
-				new NonSecretsManagerPropertiesPlaceholdersResolver(environment),
-				null, null, null);
-	}
+  PropertiesRetriever(Environment environment) {
+    // Bind properties without resolving Secret Manager placeholders
+    this.binder =
+        new Binder(
+            ConfigurationPropertySources.get(environment),
+            new NonSecretsManagerPropertiesPlaceholdersResolver(environment),
+            null,
+            null,
+            null);
+  }
 
-	GcpCloudSqlProperties getCloudSqlProperties() {
-		String cloudSqlPropertiesPrefix = GcpCloudSqlProperties.class.getAnnotation(ConfigurationProperties.class)
-				.value();
-		return this.binder
-				.bind(cloudSqlPropertiesPrefix, GcpCloudSqlProperties.class)
-				.orElse(new GcpCloudSqlProperties());
-	}
+  GcpCloudSqlProperties getCloudSqlProperties() {
+    String cloudSqlPropertiesPrefix =
+        GcpCloudSqlProperties.class.getAnnotation(ConfigurationProperties.class).value();
+    return this.binder
+        .bind(cloudSqlPropertiesPrefix, GcpCloudSqlProperties.class)
+        .orElse(new GcpCloudSqlProperties());
+  }
 
-	GcpProperties getGcpProperties() {
-		String gcpPropertiesPrefix = GcpProperties.class.getAnnotation(ConfigurationProperties.class).value();
-		return this.binder
-				.bind(gcpPropertiesPrefix, GcpProperties.class)
-				.orElse(new GcpProperties());
-	}
+  GcpProperties getGcpProperties() {
+    String gcpPropertiesPrefix =
+        GcpProperties.class.getAnnotation(ConfigurationProperties.class).value();
+    return this.binder.bind(gcpPropertiesPrefix, GcpProperties.class).orElse(new GcpProperties());
+  }
 
-	private static class NonSecretsManagerPropertiesPlaceholdersResolver implements PlaceholdersResolver {
-		private PlaceholdersResolver resolver;
+  private static class NonSecretsManagerPropertiesPlaceholdersResolver
+      implements PlaceholdersResolver {
+    private PlaceholdersResolver resolver;
 
-		NonSecretsManagerPropertiesPlaceholdersResolver(Environment environment) {
-			this.resolver = new PropertySourcesPlaceholdersResolver(environment);
-		}
+    NonSecretsManagerPropertiesPlaceholdersResolver(Environment environment) {
+      this.resolver = new PropertySourcesPlaceholdersResolver(environment);
+    }
 
-		@Override
-		public Object resolvePlaceholders(Object value) {
-			if (value.toString().contains("sm://")) {
-				return value;
-			}
-			else {
-				return resolver.resolvePlaceholders(value);
-			}
-		}
-	}
+    @Override
+    public Object resolvePlaceholders(Object value) {
+      if (value.toString().contains("sm://")) {
+        return value;
+      } else {
+        return resolver.resolvePlaceholders(value);
+      }
+    }
+  }
 }

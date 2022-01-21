@@ -132,8 +132,8 @@ a| This is used to generate fully qualified Cloud Trace ID format: `projects/[PR
 This format is required to correlate trace between Cloud Trace and Cloud Logging.
 
 If `projectId` is not set and cannot be determined, then it'll log `traceId` without the fully qualified format.
-| `traceIdMDCField` | `traceId` | The MDC field name for retrieving a trace id
-| `spanIdMDCField` | `spanId` | the MDC field name for retrieving a span id
+| `traceIdMdcField` | `traceId` | The MDC field name for retrieving a trace id
+| `spanIdMdcField` | `spanId` | the MDC field name for retrieving a span id
 | `includeTraceId` | `true` | Should the trace id be included
 | `includeSpanId` | `true` | Should the span id be included
 | `includeLevel` | `true` | Should the severity be included
@@ -170,8 +170,8 @@ This is an example of such an Logback configuration:
       <layout class="com.google.cloud.spring.logging.StackdriverJsonLayout">
         <projectId>${projectId}</projectId>
 
-        <!--<traceIdMDCField>traceId</traceIdMDCField>-->
-        <!--<spanIdMDCField>spanId</spanIdMDCField>-->
+        <!--<traceIdMdcField>traceId</traceIdMdcField>-->
+        <!--<spanIdMdcField>spanId</spanIdMdcField>-->
         <!--<includeTraceId>true</includeTraceId>-->
         <!--<includeSpanId>true</includeSpanId>-->
         <!--<includeLevel>true</includeLevel>-->

@@ -16,23 +16,21 @@
 
 package com.google.cloud.spring.data.firestore;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.cloud.spring.data.firestore.util.Util;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
- * @author Dmitry Solomakha
  * @since 1.2
  */
 class UtilTests {
 
-	@Test
-	void extractDatabasePathTest() {
-		String actualDbPath = "projects/MY_PROJECT/databases/MY_DB_ID";
-		String extractedDbPath = Util.extractDatabasePath(actualDbPath + "/abc/def");
+  @Test
+  void extractDatabasePathTest() {
+    String actualDbPath = "projects/MY_PROJECT/databases/MY_DB_ID";
+    String extractedDbPath = Util.extractDatabasePath(actualDbPath + "/abc/def");
 
-		assertThat(extractedDbPath).isEqualTo(actualDbPath);
-	}
+    assertThat(extractedDbPath).isEqualTo(actualDbPath);
+  }
 }
-

@@ -21,79 +21,76 @@ import java.nio.file.Path;
 /**
  * Properties for configuring Cloud Datastore Emulator.
  *
- * See https://cloud.google.com/sdk/gcloud/reference/beta/emulators/datastore/start for the correspondent properties
- *
- * @author Lucas Soares
+ * <p>See https://cloud.google.com/sdk/gcloud/reference/beta/emulators/datastore/start for the
+ * correspondent properties
  *
  * @since 1.2
  */
 public class EmulatorSettings {
-	/**
-	 * If enabled the Datastore client will connect to an local datastore emulator.
-	 */
-	private boolean enabled;
+  /** If enabled the Datastore client will connect to an local datastore emulator. */
+  private boolean enabled;
 
-	/**
-	 * Is the datastore emulator port.
-	 * Correspondent CLI property: --host-port=localhost:{@link EmulatorSettings #port} Default: {@code 8081}
-	 */
-	private int port = 8081;
+  /**
+   * Is the datastore emulator port. Correspondent CLI property: --host-port=localhost:{@link
+   * EmulatorSettings #port} Default: {@code 8081}
+   */
+  private int port = 8081;
 
-	/**
-	 * Consistency to use creating the Datastore server instance.
-	 * Correspondent CLI property: --consistency Default: {@code 0.9}
-	 */
-	private double consistency = 0.9D;
+  /**
+   * Consistency to use creating the Datastore server instance. Correspondent CLI property:
+   * --consistency Default: {@code 0.9}
+   */
+  private double consistency = 0.9D;
 
-	/**
-	 * Configures whether or not the emulator should persist any data to disk for the emulator session.
-	 * Correspondent CLI property: --store-on-disk. Default: {@code true}
-	 */
-	private boolean storeOnDisk = true;
+  /**
+   * Configures whether or not the emulator should persist any data to disk for the emulator
+   * session. Correspondent CLI property: --store-on-disk. Default: {@code true}
+   */
+  private boolean storeOnDisk = true;
 
-	/**
-	 * The directory to be used to store/retrieve data/config for an emulator run.
-	 * Correspondent CLI property: --data-dir. The default value ${USER_CONFIG_DIR}/emulators/datastore is used on null
-	 */
-	private Path dataDir;
+  /**
+   * The directory to be used to store/retrieve data/config for an emulator run. Correspondent CLI
+   * property: --data-dir. The default value ${USER_CONFIG_DIR}/emulators/datastore is used on null
+   */
+  private Path dataDir;
 
-	public Path getDataDir() {
-		return dataDir;
-	}
+  public Path getDataDir() {
+    return dataDir;
+  }
 
-	public void setDataDir(Path dataDir) {
-		this.dataDir = dataDir;
-	}
+  public void setDataDir(Path dataDir) {
+    this.dataDir = dataDir;
+  }
 
-	public boolean isStoreOnDisk() {
-		return storeOnDisk;
-	}
+  public boolean isStoreOnDisk() {
+    return storeOnDisk;
+  }
 
-	public void setStoreOnDisk(boolean storeOnDisk) {
-		this.storeOnDisk = storeOnDisk;
-	}
+  public void setStoreOnDisk(boolean storeOnDisk) {
+    this.storeOnDisk = storeOnDisk;
+  }
 
-	public boolean isEnabled() {
-		return enabled;
-	}
+  public boolean isEnabled() {
+    return enabled;
+  }
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
 
-	public int getPort() {
-		return port;
-	}
+  public int getPort() {
+    return port;
+  }
 
-	public void setPort(int port) {
-		this.port = port;
-	}
+  public void setPort(int port) {
+    this.port = port;
+  }
 
-	public double getConsistency() {
-		return consistency;
-	}
+  public double getConsistency() {
+    return consistency;
+  }
 
-	public void setConsistency(double consistency) {
-		this.consistency = consistency;
-	}
+  public void setConsistency(double consistency) {
+    this.consistency = consistency;
+  }
 }

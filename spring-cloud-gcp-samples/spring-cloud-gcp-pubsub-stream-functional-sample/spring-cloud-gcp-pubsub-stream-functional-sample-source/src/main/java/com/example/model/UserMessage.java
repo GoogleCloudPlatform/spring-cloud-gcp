@@ -21,38 +21,34 @@ import java.time.LocalDateTime;
 /**
  * A user message for the sample app.
  *
- * The Source version of {@link UserMessage} object is immutable.
- * The data will be serialized as JSON, so as long as the objects are compatible, they do not have
- * to be the same.
- *
- * @author Elena Felder
+ * <p>The Source version of {@link UserMessage} object is immutable. The data will be serialized as
+ * JSON, so as long as the objects are compatible, they do not have to be the same.
  *
  * @since 1.2
  */
 public class UserMessage {
 
-	private String body;
+  private String body;
 
-	private String username;
+  private String username;
 
-	private LocalDateTime createdAt;
+  private LocalDateTime createdAt;
 
-	public UserMessage(String body, String username) {
-		this.body = body;
-		this.username = username;
-		this.createdAt = LocalDateTime.now();
-	}
+  public UserMessage(String body, String username) {
+    this.body = body;
+    this.username = username;
+    this.createdAt = LocalDateTime.now();
+  }
 
-	public String getBody() {
-		return this.body;
-	}
+  public String getBody() {
+    return this.body;
+  }
 
-	public String getUsername() {
-		return this.username;
-	}
+  public String getUsername() {
+    return this.username;
+  }
 
-	public LocalDateTime getCreatedAt() {
-		return this.createdAt;
-	}
-
+  public LocalDateTime getCreatedAt() {
+    return this.createdAt;
+  }
 }

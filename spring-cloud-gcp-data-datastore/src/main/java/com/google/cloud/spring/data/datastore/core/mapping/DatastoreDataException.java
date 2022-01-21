@@ -21,18 +21,15 @@ import org.springframework.dao.DataAccessException;
 /**
  * Exceptions that are created by Spring Data Cloud Datastore.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class DatastoreDataException extends DataAccessException {
 
-	public DatastoreDataException(String message) {
-		super(message);
-	}
+  public DatastoreDataException(String message) {
+    super(message);
+  }
 
-	public DatastoreDataException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
+  public DatastoreDataException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

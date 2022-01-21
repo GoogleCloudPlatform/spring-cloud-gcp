@@ -16,114 +16,105 @@
 
 package com.google.cloud.spring.data.datastore.core.convert;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * A test item with fields that are of unsupported types.
- *
- * @author Dmitry Solomakha
- */
+/** A test item with fields that are of unsupported types. */
 class TestItemUnsupportedFields {
-	private String stringField;
+  private String stringField;
 
-	private NewType unsupportedField;
+  private NewType unsupportedField;
 
-	public String getStringField() {
-		return this.stringField;
-	}
+  public String getStringField() {
+    return this.stringField;
+  }
 
-	public void setStringField(String stringField) {
-		this.stringField = stringField;
-	}
+  public void setStringField(String stringField) {
+    this.stringField = stringField;
+  }
 
-	public NewType getUnsupportedField() {
-		return this.unsupportedField;
-	}
+  public NewType getUnsupportedField() {
+    return this.unsupportedField;
+  }
 
-	public void setUnsupportedField(NewType unsupportedField) {
-		this.unsupportedField = unsupportedField;
-	}
+  public void setUnsupportedField(NewType unsupportedField) {
+    this.unsupportedField = unsupportedField;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		TestItemUnsupportedFields that = (TestItemUnsupportedFields) o;
-		return Objects.equals(getStringField(), that.getStringField()) &&
-				Objects.equals(getUnsupportedField(), that.getUnsupportedField());
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TestItemUnsupportedFields that = (TestItemUnsupportedFields) o;
+    return Objects.equals(getStringField(), that.getStringField())
+        && Objects.equals(getUnsupportedField(), that.getUnsupportedField());
+  }
 
-	@Override
-	public int hashCode() {
+  @Override
+  public int hashCode() {
 
-		return Objects.hash(getStringField(), getUnsupportedField());
-	}
+    return Objects.hash(getStringField(), getUnsupportedField());
+  }
 
-	/**
-	 * A test new type.
-	 */
-	static class NewType {
-		boolean val;
+  /** A test new type. */
+  static class NewType {
+    boolean val;
 
-		NewType(boolean val) {
-			this.val = val;
-		}
+    NewType(boolean val) {
+      this.val = val;
+    }
 
-		public boolean isVal() {
-			return this.val;
-		}
+    public boolean isVal() {
+      return this.val;
+    }
 
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			}
-			if (o == null || getClass() != o.getClass()) {
-				return false;
-			}
-			NewType that = (NewType) o;
-			return isVal() == that.isVal();
-		}
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+      NewType that = (NewType) o;
+      return isVal() == that.isVal();
+    }
 
-		@Override
-		public int hashCode() {
+    @Override
+    public int hashCode() {
 
-			return Objects.hash(isVal());
-		}
-	}
+      return Objects.hash(isVal());
+    }
+  }
 
-	/**
-	 * A test type of collection of unsupported types.
-	 */
-	static class CollectionOfUnsupportedTypes {
-		List<NewType> unsupportedElts = new ArrayList<>();
+  /** A test type of collection of unsupported types. */
+  static class CollectionOfUnsupportedTypes {
+    List<NewType> unsupportedElts = new ArrayList<>();
 
-		public List<NewType> getUnsupportedElts() {
-			return this.unsupportedElts;
-		}
+    public List<NewType> getUnsupportedElts() {
+      return this.unsupportedElts;
+    }
 
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			}
-			if (o == null || getClass() != o.getClass()) {
-				return false;
-			}
-			CollectionOfUnsupportedTypes that = (CollectionOfUnsupportedTypes) o;
-			return Objects.equals(getUnsupportedElts(), that.getUnsupportedElts());
-		}
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+      CollectionOfUnsupportedTypes that = (CollectionOfUnsupportedTypes) o;
+      return Objects.equals(getUnsupportedElts(), that.getUnsupportedElts());
+    }
 
-		@Override
-		public int hashCode() {
-			return Objects.hash(getUnsupportedElts());
-		}
-	}
+    @Override
+    public int hashCode() {
+      return Objects.hash(getUnsupportedElts());
+    }
+  }
 }

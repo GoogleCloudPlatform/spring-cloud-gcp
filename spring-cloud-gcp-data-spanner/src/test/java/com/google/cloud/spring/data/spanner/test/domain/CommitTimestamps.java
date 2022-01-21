@@ -16,49 +16,30 @@
 
 package com.google.cloud.spring.data.spanner.test.domain;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-
 import com.google.cloud.spring.data.spanner.core.convert.CommitTimestamp;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import java.time.Instant;
+import java.time.LocalDateTime;
 
-/**
- * A test object for testing {@link CommitTimestamp} features.
- *
- * @author Roman Solodovnichenko
- */
+/** A test object for testing {@link CommitTimestamp} features. */
 @Table(name = "#{'commit_timestamps_'.concat(tableNameSuffix)}")
 public class CommitTimestamps {
-	/**
-	 * A primary key.
-	 */
-	@PrimaryKey
-	public String id;
+  /** A primary key. */
+  @PrimaryKey public String id;
 
-	/**
-	 * A cloud Timestamp field.
-	 */
-	public com.google.cloud.Timestamp cloudTimestamp;
+  /** A cloud Timestamp field. */
+  public com.google.cloud.Timestamp cloudTimestamp;
 
-	/**
-	 * An sql Timestamp field.
-	 */
-	public java.sql.Timestamp sqlTimestamp;
+  /** An sql Timestamp field. */
+  public java.sql.Timestamp sqlTimestamp;
 
-	/**
-	 * A LocalDateTime field.
-	 */
-	public LocalDateTime localDateTime;
+  /** A LocalDateTime field. */
+  public LocalDateTime localDateTime;
 
-	/**
-	 * An Instant field.
-	 */
-	public Instant instant;
+  /** An Instant field. */
+  public Instant instant;
 
-	/**
-	 * A java Date field.
-	 */
-	public java.util.Date utilDate;
-
+  /** A java Date field. */
+  public java.util.Date utilDate;
 }

@@ -20,15 +20,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * An example Spring Boot application that reads and writes files stored in Google Cloud
- * Storage (GCS) using the Spring Resource abstraction and the gs: protocol prefix.
- *
- * @author Mike Eltsufin
+ * An example Spring Boot application that reads and writes files stored in Google Cloud Storage
+ * (GCS) using the Spring Resource abstraction and the gs: protocol prefix.
  */
 @SpringBootApplication
 public class GcsApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GcsApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(GcsApplication.class, args);
+  }
 }

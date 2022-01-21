@@ -16,34 +16,30 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping.event;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.cloud.spanner.Statement;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-/**
- * Tests for DML before-execution event.
- *
- * @author Chengyuan Zhao
- */
+/** Tests for DML before-execution event. */
 class BeforeExecuteDmlEventTest {
 
-	@Test
-	void equalsHashcodeTest() {
-		BeforeExecuteDmlEvent beforeExecuteDmlEvent = new BeforeExecuteDmlEvent(Statement.of("a"));
-		BeforeExecuteDmlEvent beforeExecuteDmlEvent1 = new BeforeExecuteDmlEvent(Statement.of("a"));
+  @Test
+  void equalsHashcodeTest() {
+    BeforeExecuteDmlEvent beforeExecuteDmlEvent = new BeforeExecuteDmlEvent(Statement.of("a"));
+    BeforeExecuteDmlEvent beforeExecuteDmlEvent1 = new BeforeExecuteDmlEvent(Statement.of("a"));
 
-		BeforeExecuteDmlEvent beforeExecuteDmlEvent2 = new BeforeExecuteDmlEvent(Statement.of("b"));
+    BeforeExecuteDmlEvent beforeExecuteDmlEvent2 = new BeforeExecuteDmlEvent(Statement.of("b"));
 
-		assertThat(beforeExecuteDmlEvent)
-				.isNotNull()
-				.isEqualTo(beforeExecuteDmlEvent)
-				.isEqualTo(beforeExecuteDmlEvent1)
-				.isNotEqualTo(new Object())
-				.hasSameHashCodeAs(beforeExecuteDmlEvent)
-				.hasSameHashCodeAs(beforeExecuteDmlEvent1);
+    assertThat(beforeExecuteDmlEvent)
+        .isNotNull()
+        .isEqualTo(beforeExecuteDmlEvent)
+        .isEqualTo(beforeExecuteDmlEvent1)
+        .isNotEqualTo(new Object())
+        .hasSameHashCodeAs(beforeExecuteDmlEvent)
+        .hasSameHashCodeAs(beforeExecuteDmlEvent1);
 
-		assertThat(beforeExecuteDmlEvent2).isNotEqualTo(beforeExecuteDmlEvent);
-		assertThat(beforeExecuteDmlEvent2.hashCode()).isNotEqualTo(beforeExecuteDmlEvent.hashCode());
-	}
+    assertThat(beforeExecuteDmlEvent2).isNotEqualTo(beforeExecuteDmlEvent);
+    assertThat(beforeExecuteDmlEvent2.hashCode()).isNotEqualTo(beforeExecuteDmlEvent.hashCode());
+  }
 }

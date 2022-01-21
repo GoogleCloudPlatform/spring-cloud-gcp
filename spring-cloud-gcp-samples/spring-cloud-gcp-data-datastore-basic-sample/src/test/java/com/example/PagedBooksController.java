@@ -22,20 +22,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * A REST controller that tests serializing of paged responses.
- *
- * @author Chengyuan Zhao
- */
+/** A REST controller that tests serializing of paged responses. */
 @RestController
 public class PagedBooksController {
 
-	@Autowired
-	private PagedBookRepository pagedBookRepository;
+  @Autowired private PagedBookRepository pagedBookRepository;
 
-	@GetMapping("/allbooksserialized")
-	public Page<Book> findAllUsers() {
-		return this.pagedBookRepository.getAllBooksByPage(PageRequest.of(0, 1));
-	}
-
+  @GetMapping("/allbooksserialized")
+  public Page<Book> findAllUsers() {
+    return this.pagedBookRepository.getAllBooksByPage(PageRequest.of(0, 1));
+  }
 }

@@ -19,15 +19,13 @@ package com.google.cloud.spring.pubsub.support.converter;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 
 /**
- * A {@link BasicAcknowledgeablePubsubMessage} that also contains the payload of the
- * Pub/Sub message converted to the desired type {@code T}.
+ * A {@link BasicAcknowledgeablePubsubMessage} that also contains the payload of the Pub/Sub message
+ * converted to the desired type {@code T}.
  *
  * @param <T> the type of the converted payload.
- *
- * @author Mike Eltsufin
- *
  * @since 1.1
  */
-public interface ConvertedBasicAcknowledgeablePubsubMessage<T> extends BasicAcknowledgeablePubsubMessage {
-	T getPayload();
+public interface ConvertedBasicAcknowledgeablePubsubMessage<T>
+    extends BasicAcknowledgeablePubsubMessage {
+  T getPayload();
 }

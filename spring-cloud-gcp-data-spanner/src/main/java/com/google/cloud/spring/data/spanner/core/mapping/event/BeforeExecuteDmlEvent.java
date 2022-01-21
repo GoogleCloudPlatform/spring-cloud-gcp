@@ -18,18 +18,14 @@ package com.google.cloud.spring.data.spanner.core.mapping.event;
 
 import com.google.cloud.spanner.Statement;
 
-/**
- * This event is published before a DML statement is executed.
- *
- * @author Chengyuan Zhao
- */
+/** This event is published before a DML statement is executed. */
 public class BeforeExecuteDmlEvent extends ExecuteDmlEvent {
-	/**
-	 * Constructor.
-	 *
-	 * @param statement the DML statement which is never {@code null}
-	 */
-	public BeforeExecuteDmlEvent(Statement statement) {
-		super(statement);
-	}
+  /**
+   * Constructor.
+   *
+   * @param statement the DML statement which is never {@code null}
+   */
+  public BeforeExecuteDmlEvent(Statement statement) {
+    super(statement);
+  }
 }

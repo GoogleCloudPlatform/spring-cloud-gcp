@@ -19,31 +19,27 @@ package com.google.cloud.spring.data.spanner.repository.query;
 import java.util.List;
 
 /**
- * Holds SQL query string and a list of placeholders.
- * For sql string like this
- * SELECT * FROM trades WHERE ( action=@tag0 AND ticker=@tag1 )
- * the list of placeholders would look like this:
- * [tag0, tag1]
- *
- * @author Dmitry Solomakha
+ * Holds SQL query string and a list of placeholders. For sql string like this SELECT * FROM trades
+ * WHERE ( action=@tag0 AND ticker=@tag1 ) the list of placeholders would look like this: [tag0,
+ * tag1]
  *
  * @since 1.2.4
  */
 class SqlStringAndPlaceholders {
-	private String sql;
+  private String sql;
 
-	private List<String> placeholders;
+  private List<String> placeholders;
 
-	SqlStringAndPlaceholders(String finalSql, List<String> placeholders) {
-		this.sql = finalSql;
-		this.placeholders = placeholders;
-	}
+  SqlStringAndPlaceholders(String finalSql, List<String> placeholders) {
+    this.sql = finalSql;
+    this.placeholders = placeholders;
+  }
 
-	String getSql() {
-		return sql;
-	}
+  String getSql() {
+    return sql;
+  }
 
-	List<String> getPlaceholders() {
-		return placeholders;
-	}
+  List<String> getPlaceholders() {
+    return placeholders;
+  }
 }

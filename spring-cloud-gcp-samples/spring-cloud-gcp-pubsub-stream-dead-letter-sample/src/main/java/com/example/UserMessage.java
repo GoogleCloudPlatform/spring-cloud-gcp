@@ -18,34 +18,30 @@ package com.example;
 
 import java.time.LocalDateTime;
 
-/**
- * A user message for the sample app.
- *
- * @author Travis Tomsu
- */
+/** A user message for the sample app. */
 public class UserMessage {
 
-	private final String body;
+  private final String body;
 
-	private final String username;
+  private final String username;
 
-	private final LocalDateTime createdAt;
+  private final LocalDateTime createdAt;
 
-	public UserMessage(String body, String username, LocalDateTime createdAt) {
-		this.body = body;
-		this.username = username;
-		this.createdAt = createdAt;
-	}
+  public UserMessage(String body, String username, LocalDateTime createdAt) {
+    this.body = body;
+    this.username = username;
+    this.createdAt = createdAt;
+  }
 
-	public String getBody() {
-		return body;
-	}
+  public String getBody() {
+    return body;
+  }
 
-	public String getUsername() {
-		return username;
-	}
+  public String getUsername() {
+    return username;
+  }
 
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
 }

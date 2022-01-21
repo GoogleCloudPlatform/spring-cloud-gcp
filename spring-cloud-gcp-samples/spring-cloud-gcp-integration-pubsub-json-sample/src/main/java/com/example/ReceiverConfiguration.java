@@ -16,16 +16,14 @@
 
 package com.example;
 
-import java.util.ArrayList;
-
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
+import java.util.ArrayList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,47 +32,44 @@ import org.springframework.integration.channel.DirectChannel;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.handler.annotation.Header;
 
-/**
- * Configuration for receiving and processing messages from a Pub/Sub topic.
- *
- * @author Daniel Zou
- */
+/** Configuration for receiving and processing messages from a Pub/Sub topic. */
 @Configuration
 public class ReceiverConfiguration {
 
-	private static final Log LOGGER = LogFactory.getLog(ReceiverConfiguration.class);
+  private static final Log LOGGER = LogFactory.getLog(ReceiverConfiguration.class);
 
-	private static final String SUBSCRIPTION_NAME = "json-payload-sample-subscription";
+  private static final String SUBSCRIPTION_NAME = "json-payload-sample-subscription";
 
-	private final ArrayList<Person> processedPersonsList = new ArrayList<>();
+  private final ArrayList<Person> processedPersonsList = new ArrayList<>();
 
-	@Bean
-	public DirectChannel pubSubInputChannel() {
-		return new DirectChannel();
-	}
+  @Bean
+  public DirectChannel pubSubInputChannel() {
+    return new DirectChannel();
+  }
 
-	@Bean
-	public PubSubInboundChannelAdapter messageChannelAdapter(
-			@Qualifier("pubSubInputChannel") MessageChannel inputChannel,
-			PubSubTemplate pubSubTemplate) {
-		PubSubInboundChannelAdapter adapter = new PubSubInboundChannelAdapter(pubSubTemplate, SUBSCRIPTION_NAME);
-		adapter.setOutputChannel(inputChannel);
-		adapter.setAckMode(AckMode.MANUAL);
-		adapter.setPayloadType(Person.class);
-		return adapter;
-	}
+  @Bean
+  public PubSubInboundChannelAdapter messageChannelAdapter(
+      @Qualifier("pubSubInputChannel") MessageChannel inputChannel, PubSubTemplate pubSubTemplate) {
+    PubSubInboundChannelAdapter adapter =
+        new PubSubInboundChannelAdapter(pubSubTemplate, SUBSCRIPTION_NAME);
+    adapter.setOutputChannel(inputChannel);
+    adapter.setAckMode(AckMode.MANUAL);
+    adapter.setPayloadType(Person.class);
+    return adapter;
+  }
 
-	@ServiceActivator(inputChannel = "pubSubInputChannel")
-	public void messageReceiver(Person payload,
-			@Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
-		LOGGER.info("Message arrived! Payload: " + payload);
-		this.processedPersonsList.add(payload);
-		message.ack();
-	}
+  @ServiceActivator(inputChannel = "pubSubInputChannel")
+  public void messageReceiver(
+      Person payload,
+      @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
+    LOGGER.info("Message arrived! Payload: " + payload);
+    this.processedPersonsList.add(payload);
+    message.ack();
+  }
 
-	@Bean
-	@Qualifier("ProcessedPersonsList")
-	public ArrayList<Person> processedPersonsList() {
-		return this.processedPersonsList;
-	}
+  @Bean
+  @Qualifier("ProcessedPersonsList")
+  public ArrayList<Person> processedPersonsList() {
+    return this.processedPersonsList;
+  }
 }

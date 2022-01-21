@@ -18,48 +18,44 @@ package com.google.cloud.spring.data.datastore.core.mapping.event;
 
 import java.util.List;
 import java.util.Objects;
-
 import org.springframework.context.ApplicationEvent;
 
-/**
- * An event published when entities are saved to Cloud Datastore.
- *
- * @author Chengyuan Zhao
- */
+/** An event published when entities are saved to Cloud Datastore. */
 public class SaveEvent extends ApplicationEvent {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param entities The original Java entities being saved. Each entity may result in
-	 *     multiple Datastore entities being saved due to relationships.
-	 */
-	public SaveEvent(List entities) {
-		super(entities);
-	}
+  /**
+   * Constructor.
+   *
+   * @param entities The original Java entities being saved. Each entity may result in multiple
+   *     Datastore entities being saved due to relationships.
+   */
+  public SaveEvent(List entities) {
+    super(entities);
+  }
 
-	/**
-	 * Get the original Java objects that were saved.
-	 * @return The original Java objects that were saved to Cloud Datastore.
-	 */
-	public List getTargetEntities() {
-		return (List) getSource();
-	}
+  /**
+   * Get the original Java objects that were saved.
+   *
+   * @return The original Java objects that were saved to Cloud Datastore.
+   */
+  public List getTargetEntities() {
+    return (List) getSource();
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		SaveEvent that = (SaveEvent) o;
-		return Objects.equals(getTargetEntities(), that.getTargetEntities());
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    SaveEvent that = (SaveEvent) o;
+    return Objects.equals(getTargetEntities(), that.getTargetEntities());
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getTargetEntities());
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(getTargetEntities());
+  }
 }

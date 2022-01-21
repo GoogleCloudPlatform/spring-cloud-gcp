@@ -30,8 +30,6 @@ import com.google.firestore.v1.RollbackRequest;
 import com.google.firestore.v1.TransactionOptions;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
-import reactor.core.publisher.Mono;
-
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;
@@ -41,169 +39,195 @@ import org.springframework.transaction.reactive.GenericReactiveTransaction;
 import org.springframework.transaction.reactive.TransactionSynchronizationManager;
 import org.springframework.transaction.support.SmartTransactionObject;
 import org.springframework.util.Assert;
+import reactor.core.publisher.Mono;
 
 /**
- * Firestore-specific implementation of {@link org.springframework.transaction.ReactiveTransactionManager}.
- *
- * @author Dmitry Solomakha
+ * Firestore-specific implementation of {@link
+ * org.springframework.transaction.ReactiveTransactionManager}.
  */
 public class ReactiveFirestoreTransactionManager extends AbstractReactiveTransactionManager {
 
-	private final FirestoreGrpc.FirestoreStub firestore;
+  private final FirestoreGrpc.FirestoreStub firestore;
 
-	private final String databasePath;
+  private final String databasePath;
 
-	private FirestoreClassMapper classMapper;
+  private FirestoreClassMapper classMapper;
 
-	/**
-	 * Constructor for ReactiveFirestoreTransactionManager.
-	 * @param firestore Firestore gRPC stub
-	 * @param parent the parent resource. For example:
-	 *     projects/{project_id}/databases/{database_id}/documents or
-	 * @param classMapper Firestore class mapper
-	 */
-	public ReactiveFirestoreTransactionManager(FirestoreStub firestore, String parent, FirestoreClassMapper classMapper) {
-		this.firestore = firestore;
-		this.databasePath = Util.extractDatabasePath(parent);
-		this.classMapper = classMapper;
-	}
+  /**
+   * Constructor for ReactiveFirestoreTransactionManager.
+   *
+   * @param firestore Firestore gRPC stub
+   * @param parent the parent resource. For example:
+   *     projects/{project_id}/databases/{database_id}/documents or
+   * @param classMapper Firestore class mapper
+   */
+  public ReactiveFirestoreTransactionManager(
+      FirestoreStub firestore, String parent, FirestoreClassMapper classMapper) {
+    this.firestore = firestore;
+    this.databasePath = Util.extractDatabasePath(parent);
+    this.classMapper = classMapper;
+  }
 
-	@Override
-	protected Object doGetTransaction(TransactionSynchronizationManager synchronizationManager)
-			throws TransactionException {
-		ReactiveFirestoreResourceHolder resourceHolder = (ReactiveFirestoreResourceHolder) synchronizationManager
-				.getResource(this.firestore);
-		return new ReactiveFirestoreTransactionObject(resourceHolder);
-	}
+  @Override
+  protected Object doGetTransaction(TransactionSynchronizationManager synchronizationManager)
+      throws TransactionException {
+    ReactiveFirestoreResourceHolder resourceHolder =
+        (ReactiveFirestoreResourceHolder) synchronizationManager.getResource(this.firestore);
+    return new ReactiveFirestoreTransactionObject(resourceHolder);
+  }
 
-	@Override
-	protected Mono<Void> doBegin(TransactionSynchronizationManager synchronizationManager, Object transactionObject,
-			TransactionDefinition transactionDefinition) throws TransactionException {
-		return Mono.defer(() -> {
-			Mono<ReactiveFirestoreResourceHolder> holder = startTransaction(transactionDefinition);
+  @Override
+  protected Mono<Void> doBegin(
+      TransactionSynchronizationManager synchronizationManager,
+      Object transactionObject,
+      TransactionDefinition transactionDefinition)
+      throws TransactionException {
+    return Mono.defer(
+        () -> {
+          Mono<ReactiveFirestoreResourceHolder> holder = startTransaction(transactionDefinition);
 
-			return holder.doOnNext(extractFirestoreTransaction(transactionObject)::setResourceHolder)
-					.onErrorMap(
-							ex -> new TransactionSystemException("Could not start Firestore transaction", ex))
-					.doOnSuccess(resourceHolder -> synchronizationManager.bindResource(this.firestore, resourceHolder))
-					.then();
-		});
-	}
+          return holder
+              .doOnNext(extractFirestoreTransaction(transactionObject)::setResourceHolder)
+              .onErrorMap(
+                  ex -> new TransactionSystemException("Could not start Firestore transaction", ex))
+              .doOnSuccess(
+                  resourceHolder ->
+                      synchronizationManager.bindResource(this.firestore, resourceHolder))
+              .then();
+        });
+  }
 
-	@Override
-	protected Mono<Void> doCommit(TransactionSynchronizationManager transactionSynchronizationManager,
-			GenericReactiveTransaction genericReactiveTransaction) throws TransactionException {
-		return Mono.defer(() -> {
-			ReactiveFirestoreResourceHolder resourceHolder = extractFirestoreTransaction(genericReactiveTransaction)
-					.getResourceHolder();
+  @Override
+  protected Mono<Void> doCommit(
+      TransactionSynchronizationManager transactionSynchronizationManager,
+      GenericReactiveTransaction genericReactiveTransaction)
+      throws TransactionException {
+    return Mono.defer(
+        () -> {
+          ReactiveFirestoreResourceHolder resourceHolder =
+              extractFirestoreTransaction(genericReactiveTransaction).getResourceHolder();
 
-			CommitRequest.Builder builder = CommitRequest.newBuilder()
-					.setDatabase(this.databasePath)
-					.setTransaction(resourceHolder.getTransactionId());
+          CommitRequest.Builder builder =
+              CommitRequest.newBuilder()
+                  .setDatabase(this.databasePath)
+                  .setTransaction(resourceHolder.getTransactionId());
 
-			resourceHolder.getWrites().forEach(builder::addWrites);
+          resourceHolder.getWrites().forEach(builder::addWrites);
 
-			return ObservableReactiveUtil
-					.<CommitResponse>unaryCall(obs -> this.firestore.commit(builder.build(), obs))
-					.flatMap(response -> {
-								for (Object entity : resourceHolder.getEntities()) {
-									this.classMapper.setUpdateTime(entity, Timestamp.fromProto(response.getCommitTime()));
-								}
-								return Mono.empty();
-							}
-					);
-		});
-	}
+          return ObservableReactiveUtil.<CommitResponse>unaryCall(
+                  obs -> this.firestore.commit(builder.build(), obs))
+              .flatMap(
+                  response -> {
+                    for (Object entity : resourceHolder.getEntities()) {
+                      this.classMapper.setUpdateTime(
+                          entity, Timestamp.fromProto(response.getCommitTime()));
+                    }
+                    return Mono.empty();
+                  });
+        });
+  }
 
+  @Override
+  protected Mono<Void> doRollback(
+      TransactionSynchronizationManager transactionSynchronizationManager,
+      GenericReactiveTransaction genericReactiveTransaction)
+      throws TransactionException {
 
-	@Override
-	protected Mono<Void> doRollback(TransactionSynchronizationManager transactionSynchronizationManager,
-			GenericReactiveTransaction genericReactiveTransaction) throws TransactionException {
+    return ObservableReactiveUtil.<Empty>unaryCall(
+            obs ->
+                this.firestore.rollback(
+                    RollbackRequest.newBuilder()
+                        .setTransaction(
+                            extractFirestoreTransaction(genericReactiveTransaction)
+                                .getTransactionId())
+                        .setDatabase(this.databasePath)
+                        .build(),
+                    obs))
+        .then();
+  }
 
-		return ObservableReactiveUtil
-				.<Empty>unaryCall(
-						obs -> this.firestore.rollback(RollbackRequest.newBuilder()
-								.setTransaction(
-										extractFirestoreTransaction(genericReactiveTransaction).getTransactionId())
-								.setDatabase(this.databasePath)
-								.build(), obs))
-				.then();
-	}
+  private static ReactiveFirestoreTransactionObject extractFirestoreTransaction(
+      Object transaction) {
 
-	private static ReactiveFirestoreTransactionObject extractFirestoreTransaction(Object transaction) {
+    Assert.isInstanceOf(
+        ReactiveFirestoreTransactionObject.class,
+        transaction,
+        () ->
+            String.format(
+                "Expected to find a %s but it turned out to be %s.",
+                ReactiveFirestoreTransactionObject.class, transaction.getClass()));
 
-		Assert.isInstanceOf(ReactiveFirestoreTransactionObject.class, transaction,
-				() -> String.format("Expected to find a %s but it turned out to be %s.",
-						ReactiveFirestoreTransactionObject.class,
-						transaction.getClass()));
+    return (ReactiveFirestoreTransactionObject) transaction;
+  }
 
-		return (ReactiveFirestoreTransactionObject) transaction;
-	}
+  private static ReactiveFirestoreTransactionObject extractFirestoreTransaction(
+      GenericReactiveTransaction transaction) {
 
-	private static ReactiveFirestoreTransactionObject extractFirestoreTransaction(
-			GenericReactiveTransaction transaction) {
+    Assert.isInstanceOf(
+        ReactiveFirestoreTransactionObject.class,
+        transaction.getTransaction(),
+        () ->
+            String.format(
+                "Expected to find a %s but it turned out to be %s.",
+                ReactiveFirestoreTransactionObject.class, transaction.getTransaction().getClass()));
 
-		Assert.isInstanceOf(ReactiveFirestoreTransactionObject.class, transaction.getTransaction(),
-				() -> String.format("Expected to find a %s but it turned out to be %s.",
-						ReactiveFirestoreTransactionObject.class,
-						transaction.getTransaction().getClass()));
+    return (ReactiveFirestoreTransactionObject) transaction.getTransaction();
+  }
 
-		return (ReactiveFirestoreTransactionObject) transaction.getTransaction();
-	}
+  private Mono<ReactiveFirestoreResourceHolder> startTransaction(TransactionDefinition definition) {
+    TransactionOptions.Builder txOptions =
+        definition.isReadOnly()
+            ? TransactionOptions.newBuilder()
+                .setReadOnly(TransactionOptions.ReadOnly.newBuilder().build())
+            : TransactionOptions.newBuilder()
+                .setReadWrite(TransactionOptions.ReadWrite.newBuilder().build());
 
-	private Mono<ReactiveFirestoreResourceHolder> startTransaction(TransactionDefinition definition) {
-		TransactionOptions.Builder txOptions = definition.isReadOnly()
-				? TransactionOptions.newBuilder().setReadOnly(TransactionOptions.ReadOnly.newBuilder().build())
-				: TransactionOptions.newBuilder().setReadWrite(TransactionOptions.ReadWrite.newBuilder().build());
+    BeginTransactionRequest beginTransactionRequest =
+        BeginTransactionRequest.newBuilder()
+            .setOptions(txOptions)
+            .setDatabase(this.databasePath)
+            .build();
+    return ObservableReactiveUtil.<BeginTransactionResponse>unaryCall(
+            obs -> this.firestore.beginTransaction(beginTransactionRequest, obs))
+        .map(
+            beginTransactionResponse ->
+                new ReactiveFirestoreResourceHolder(beginTransactionResponse.getTransaction()));
+  }
 
-		BeginTransactionRequest beginTransactionRequest = BeginTransactionRequest.newBuilder()
-				.setOptions(txOptions)
-				.setDatabase(this.databasePath)
-				.build();
-		return ObservableReactiveUtil
-				.<BeginTransactionResponse>unaryCall(
-						obs -> this.firestore.beginTransaction(beginTransactionRequest, obs))
-				.map(beginTransactionResponse -> new ReactiveFirestoreResourceHolder(
-						beginTransactionResponse.getTransaction()));
-	}
+  /**
+   * Firestore specific transaction object, representing a {@link ReactiveFirestoreResourceHolder}.
+   * Used as transaction object by {@link ReactiveFirestoreTransactionManager}.
+   */
+  private class ReactiveFirestoreTransactionObject implements SmartTransactionObject {
+    private @Nullable ReactiveFirestoreResourceHolder resourceHolder;
 
-	/**
-	 * Firestore specific transaction object, representing a
-	 * {@link ReactiveFirestoreResourceHolder}. Used as transaction object by
-	 * {@link ReactiveFirestoreTransactionManager}.
-	 */
-	private class ReactiveFirestoreTransactionObject implements SmartTransactionObject {
-		private @Nullable ReactiveFirestoreResourceHolder resourceHolder;
+    ReactiveFirestoreTransactionObject(@Nullable ReactiveFirestoreResourceHolder resourceHolder) {
+      this.resourceHolder = resourceHolder;
+    }
 
-		ReactiveFirestoreTransactionObject(@Nullable ReactiveFirestoreResourceHolder resourceHolder) {
-			this.resourceHolder = resourceHolder;
-		}
+    @Nullable
+    public ByteString getTransactionId() {
+      return this.resourceHolder != null ? this.resourceHolder.getTransactionId() : null;
+    }
 
-		@Nullable
-		public ByteString getTransactionId() {
-			return this.resourceHolder != null ? this.resourceHolder.getTransactionId() : null;
-		}
+    @Nullable
+    public ReactiveFirestoreResourceHolder getResourceHolder() {
+      return this.resourceHolder;
+    }
 
-		@Nullable
-		public ReactiveFirestoreResourceHolder getResourceHolder() {
-			return this.resourceHolder;
-		}
+    public void setResourceHolder(@Nullable ReactiveFirestoreResourceHolder resourceHolder) {
+      this.resourceHolder = resourceHolder;
+    }
 
-		public void setResourceHolder(@Nullable ReactiveFirestoreResourceHolder resourceHolder) {
-			this.resourceHolder = resourceHolder;
-		}
+    @Override
+    public boolean isRollbackOnly() {
+      return false;
+    }
 
-		@Override
-		public boolean isRollbackOnly() {
-			return false;
-		}
-
-		/**
-		 * Does nothing - not supported in Firestore.
-		 */
-		@Override
-		public void flush() {
-			// Not supported in Firestore.
-		}
-	}
+    /** Does nothing - not supported in Firestore. */
+    @Override
+    public void flush() {
+      // Not supported in Firestore.
+    }
+  }
 }

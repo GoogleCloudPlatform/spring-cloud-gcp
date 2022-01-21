@@ -18,22 +18,13 @@ package com.google.cloud.spring.pubsub.core.test.allowed;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-/**
- * An allowed payload type for testing Pub/Sub JSON safety.
- *
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
- */
+/** An allowed payload type for testing Pub/Sub JSON safety. */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public class AllowedPayload {
 
-	/**
-	 * A test property.
-	 */
-	public String name;
+  /** A test property. */
+  public String name;
 
-	/**
-	 * A test property.
-	 */
-	public int value;
+  /** A test property. */
+  public int value;
 }

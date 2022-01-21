@@ -17,27 +17,23 @@
 package com.google.cloud.spring.data.datastore.repository.config;
 
 import java.lang.annotation.Annotation;
-
 import org.springframework.data.repository.config.RepositoryBeanDefinitionRegistrarSupport;
 import org.springframework.data.repository.config.RepositoryConfigurationExtension;
 
 /**
  * Registers annotation that enables the use of Datastore repositories.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
-public class DatastoreRepositoriesRegistrar
-		extends RepositoryBeanDefinitionRegistrarSupport {
+public class DatastoreRepositoriesRegistrar extends RepositoryBeanDefinitionRegistrarSupport {
 
-	@Override
-	protected Class<? extends Annotation> getAnnotation() {
-		return EnableDatastoreRepositories.class;
-	}
+  @Override
+  protected Class<? extends Annotation> getAnnotation() {
+    return EnableDatastoreRepositories.class;
+  }
 
-	@Override
-	protected RepositoryConfigurationExtension getExtension() {
-		return new DatastoreRepositoryConfigurationExtension();
-	}
+  @Override
+  protected RepositoryConfigurationExtension getExtension() {
+    return new DatastoreRepositoryConfigurationExtension();
+  }
 }

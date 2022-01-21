@@ -16,81 +16,78 @@
 
 package com.google.cloud.spring.data.datastore.it;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-/**
- * A transactional service used for integration tests.
- * @author Chengyuan Zhao
- */
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+/** A transactional service used for integration tests. */
 public class TransactionalTemplateService {
 
-	@Autowired
-	private DatastoreTemplate datastoreTemplate;
+  @Autowired private DatastoreTemplate datastoreTemplate;
 
-	@Transactional
-	public void testSaveAndStateConstantInTransaction(List<TestEntity> testEntities,
-			long waitMillisecondsForConfirmation) {
+  @Transactional
+  public void testSaveAndStateConstantInTransaction(
+      List<TestEntity> testEntities, long waitMillisecondsForConfirmation) {
 
-		for (TestEntity testEntity : testEntities) {
-			assertThat(this.datastoreTemplate.findById(testEntity.getId(), TestEntity.class)).isNull();
-		}
+    for (TestEntity testEntity : testEntities) {
+      assertThat(this.datastoreTemplate.findById(testEntity.getId(), TestEntity.class)).isNull();
+    }
 
-		this.datastoreTemplate.saveAll(testEntities);
+    this.datastoreTemplate.saveAll(testEntities);
 
-		// Because these saved entities should NOT appear when we subsequently check, we
-		// must wait a period of time that would see a non-transactional save go through.
-		await().pollDelay(waitMillisecondsForConfirmation, TimeUnit.MILLISECONDS)
-				.atMost(Duration.ofMinutes(1))
-				.untilAsserted(() -> {
-					// Datastore transactions always see the state at the start of the transaction. Even
-					// after waiting these entities should not be found.
-					for (TestEntity testEntity : testEntities) {
-						assertThat(this.datastoreTemplate.findById(testEntity.getId(), TestEntity.class)).isNull();
-					}
-				});
-	}
+    // Because these saved entities should NOT appear when we subsequently check, we
+    // must wait a period of time that would see a non-transactional save go through.
+    await()
+        .pollDelay(waitMillisecondsForConfirmation, TimeUnit.MILLISECONDS)
+        .atMost(Duration.ofMinutes(1))
+        .untilAsserted(
+            () -> {
+              // Datastore transactions always see the state at the start of the transaction. Even
+              // after waiting these entities should not be found.
+              for (TestEntity testEntity : testEntities) {
+                assertThat(this.datastoreTemplate.findById(testEntity.getId(), TestEntity.class))
+                    .isNull();
+              }
+            });
+  }
 
-	@Transactional
-	public void testSaveInTransactionFailed(List<TestEntity> testEntities) {
-		this.datastoreTemplate.saveAll(testEntities);
-		throw new RuntimeException("Intentional failure to cause rollback.");
-	}
+  @Transactional
+  public void testSaveInTransactionFailed(List<TestEntity> testEntities) {
+    this.datastoreTemplate.saveAll(testEntities);
+    throw new RuntimeException("Intentional failure to cause rollback.");
+  }
 
-	@Transactional(readOnly = true)
-	public void writingInReadOnly() {
-		this.datastoreTemplate.save(new TestEntity(1L, "red", 1L, TestEntity.Shape.CIRCLE, null));
-	}
+  @Transactional(readOnly = true)
+  public void writingInReadOnly() {
+    this.datastoreTemplate.save(new TestEntity(1L, "red", 1L, TestEntity.Shape.CIRCLE, null));
+  }
 
-	@Transactional(readOnly = true)
-	public void deleteInReadOnly() {
-		this.datastoreTemplate.delete(new TestEntity(1L, "red", 1L, TestEntity.Shape.CIRCLE, null));
-	}
+  @Transactional(readOnly = true)
+  public void deleteInReadOnly() {
+    this.datastoreTemplate.delete(new TestEntity(1L, "red", 1L, TestEntity.Shape.CIRCLE, null));
+  }
 
-	@Transactional(readOnly = true)
-	public TestEntity findByIdInReadOnly(long id) {
-		return this.datastoreTemplate.findById(id, TestEntity.class);
-	}
+  @Transactional(readOnly = true)
+  public TestEntity findByIdInReadOnly(long id) {
+    return this.datastoreTemplate.findById(id, TestEntity.class);
+  }
 
-	@Transactional
-	public ReferenceEntry findByIdLazy(long id) {
-		return this.datastoreTemplate.findById(id, ReferenceEntry.class);
-	}
+  @Transactional
+  public ReferenceEntry findByIdLazy(long id) {
+    return this.datastoreTemplate.findById(id, ReferenceEntry.class);
+  }
 
-	@Transactional
-	@SuppressWarnings("ReturnValueIgnored")
-	public ReferenceEntry findByIdLazyAndLoad(long id) {
-		ReferenceEntry entry = this.datastoreTemplate.findById(id, ReferenceEntry.class);
-		entry.children.size();
-		return entry;
-	}
+  @Transactional
+  @SuppressWarnings("ReturnValueIgnored")
+  public ReferenceEntry findByIdLazyAndLoad(long id) {
+    ReferenceEntry entry = this.datastoreTemplate.findById(id, ReferenceEntry.class);
+    entry.children.size();
+    return entry;
+  }
 }

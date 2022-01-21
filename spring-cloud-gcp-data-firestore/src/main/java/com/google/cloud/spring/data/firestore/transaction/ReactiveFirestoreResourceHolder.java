@@ -16,39 +16,36 @@
 
 package com.google.cloud.spring.data.firestore.transaction;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.firestore.v1.Write;
 import com.google.protobuf.ByteString;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.transaction.support.ResourceHolderSupport;
 
 /**
- *  Firestore specific resource holder, {@link ReactiveFirestoreTransactionManager} binds instances of this class to the subscriber context.
- *
- * @author Dmitry Solomakha
+ * Firestore specific resource holder, {@link ReactiveFirestoreTransactionManager} binds instances
+ * of this class to the subscriber context.
  */
 public class ReactiveFirestoreResourceHolder extends ResourceHolderSupport {
-	private com.google.protobuf.ByteString transactionId;
+  private com.google.protobuf.ByteString transactionId;
 
-	private List<Write> writes = new ArrayList<>();
+  private List<Write> writes = new ArrayList<>();
 
-	private List<Object> entities = new ArrayList<>();
+  private List<Object> entities = new ArrayList<>();
 
-	public ReactiveFirestoreResourceHolder(ByteString transactionId) {
-		this.transactionId = transactionId;
-	}
+  public ReactiveFirestoreResourceHolder(ByteString transactionId) {
+    this.transactionId = transactionId;
+  }
 
-	public ByteString getTransactionId() {
-		return this.transactionId;
-	}
+  public ByteString getTransactionId() {
+    return this.transactionId;
+  }
 
-	public List<Write> getWrites() {
-		return this.writes;
-	}
+  public List<Write> getWrites() {
+    return this.writes;
+  }
 
-	public List<Object> getEntities() {
-		return entities;
-	}
+  public List<Object> getEntities() {
+    return entities;
+  }
 }

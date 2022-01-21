@@ -16,16 +16,12 @@
 
 package com.google.cloud.spring.autoconfigure.datastore;
 
-import java.util.function.Supplier;
-
 import com.google.cloud.datastore.Datastore;
+import java.util.function.Supplier;
 
 /**
  * This interface is the return type for the bean that provides Cloud Datastore clients.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
-public interface DatastoreProvider extends Supplier<Datastore> {
-}
+public interface DatastoreProvider extends Supplier<Datastore> {}

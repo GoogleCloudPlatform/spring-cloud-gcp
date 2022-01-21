@@ -16,10 +16,8 @@
 
 package com.google.cloud.spring.data.spanner.repository;
 
-import java.util.function.Function;
-
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
-
+import java.util.function.Function;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
@@ -27,36 +25,35 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  *
  * @param <T> the entity type of the repository
  * @param <I> the id type of the entity
- *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public interface SpannerRepository<T, I> extends PagingAndSortingRepository<T, I> {
 
-	/**
-	 * Gets a {@link SpannerOperations}, which allows more-direct access to Google Cloud Spanner
-	 * functions.
-	 * @return the operations object providing Cloud Spanner functions.
-	 */
-	SpannerOperations getSpannerTemplate();
+  /**
+   * Gets a {@link SpannerOperations}, which allows more-direct access to Google Cloud Spanner
+   * functions.
+   *
+   * @return the operations object providing Cloud Spanner functions.
+   */
+  SpannerOperations getSpannerTemplate();
 
-	/**
-	 * Performs multiple read and write operations in a single transaction.
-	 * @param operations the function representing the operations to perform using a
-	 * SpannerRepository based on a single transaction.
-	 * @param <A> the final return type of the operations.
-	 * @return the final result of the transaction.
-	 */
-	<A> A performReadWriteTransaction(Function<SpannerRepository<T, I>, A> operations);
+  /**
+   * Performs multiple read and write operations in a single transaction.
+   *
+   * @param operations the function representing the operations to perform using a SpannerRepository
+   *     based on a single transaction.
+   * @param <A> the final return type of the operations.
+   * @return the final result of the transaction.
+   */
+  <A> A performReadWriteTransaction(Function<SpannerRepository<T, I>, A> operations);
 
-	/**
-	 * Performs multiple read-only operations in a single transaction.
-	 * @param operations the function representing the operations to perform using a
-	 * SpannerRepository based on a single transaction.
-	 * @param <A> the final return type of the operations.
-	 * @return the final result of the transaction.
-	 */
-	<A> A performReadOnlyTransaction(Function<SpannerRepository<T, I>, A> operations);
+  /**
+   * Performs multiple read-only operations in a single transaction.
+   *
+   * @param operations the function representing the operations to perform using a SpannerRepository
+   *     based on a single transaction.
+   * @param <A> the final return type of the operations.
+   * @return the final result of the transaction.
+   */
+  <A> A performReadOnlyTransaction(Function<SpannerRepository<T, I>, A> operations);
 }

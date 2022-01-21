@@ -17,42 +17,37 @@
 package com.example;
 
 import java.util.stream.Stream;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-/**
- * Sample application.
- *
- * @author Joao Andre Martins
- */
+/** Sample application. */
 @SpringBootApplication
 public class DemoApplication {
 
-	private static final Log LOGGER = LogFactory.getLog(DemoApplication.class);
+  private static final Log LOGGER = LogFactory.getLog(DemoApplication.class);
 
-	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(DemoApplication.class, args);
+  }
 
-	@Bean
-	public CommandLineRunner houses(HouseRepository houseRepository) {
-		return args -> {
-			houseRepository.deleteAll();
+  @Bean
+  public CommandLineRunner houses(HouseRepository houseRepository) {
+    return args -> {
+      houseRepository.deleteAll();
 
-			Stream.of(new House("111 8th Av., NYC"),
-					new House("636 Avenue of the Americas, NYC"),
-					new House("White House"),
-					new House("Pentagon"))
-					.forEach(houseRepository::save);
+      Stream.of(
+              new House("111 8th Av., NYC"),
+              new House("636 Avenue of the Americas, NYC"),
+              new House("White House"),
+              new House("Pentagon"))
+          .forEach(houseRepository::save);
 
-			LOGGER.info("Number of houses is " + houseRepository.count());
-			houseRepository.findAll().forEach(house -> LOGGER.info(house.getAddress()));
-		};
-	}
+      LOGGER.info("Number of houses is " + houseRepository.count());
+      houseRepository.findAll().forEach(house -> LOGGER.info(house.getAddress()));
+    };
+  }
 }

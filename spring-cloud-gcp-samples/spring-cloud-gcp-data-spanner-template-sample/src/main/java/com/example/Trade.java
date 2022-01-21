@@ -16,122 +16,128 @@
 
 package com.example;
 
-import java.util.List;
-
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import java.util.List;
 
-/**
- * A sample entity.
- *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
- */
+/** A sample entity. */
 @Table(name = "trades_template")
-
 public class Trade {
 
-	@PrimaryKey(keyOrder = 2)
-	@Column(name = "trade_id")
-	private String tradeId;
+  @PrimaryKey(keyOrder = 2)
+  @Column(name = "trade_id")
+  private String tradeId;
 
-	@PrimaryKey(keyOrder = 1)
-	@Column(name = "trader_id")
-	private String traderId;
+  @PrimaryKey(keyOrder = 1)
+  @Column(name = "trader_id")
+  private String traderId;
 
-	private String action;
+  private String action;
 
-	private Double price;
+  private Double price;
 
-	private Double shares;
+  private Double shares;
 
-	private String symbol;
+  private String symbol;
 
-	private List<Double> curve;
+  private List<Double> curve;
 
-	public Trade() {
-	}
+  public Trade() {}
 
-	public Trade(String tradeId, String action, Double price, Double shares,
-			String symbol, String traderId,
-			List<Double> curve) {
-		this.tradeId = tradeId;
-		this.action = action;
-		this.price = price;
-		this.shares = shares;
-		this.symbol = symbol;
-		this.traderId = traderId;
-		this.curve = curve;
-	}
+  public Trade(
+      String tradeId,
+      String action,
+      Double price,
+      Double shares,
+      String symbol,
+      String traderId,
+      List<Double> curve) {
+    this.tradeId = tradeId;
+    this.action = action;
+    this.price = price;
+    this.shares = shares;
+    this.symbol = symbol;
+    this.traderId = traderId;
+    this.curve = curve;
+  }
 
-	public String getTradeId() {
-		return this.tradeId;
-	}
+  public String getTradeId() {
+    return this.tradeId;
+  }
 
-	public void setTradeId(String tradeId) {
-		this.tradeId = tradeId;
-	}
+  public void setTradeId(String tradeId) {
+    this.tradeId = tradeId;
+  }
 
-	public String getTraderId() {
-		return this.traderId;
-	}
+  public String getTraderId() {
+    return this.traderId;
+  }
 
-	public void setTraderId(String traderId) {
-		this.traderId = traderId;
-	}
+  public void setTraderId(String traderId) {
+    this.traderId = traderId;
+  }
 
-	public String getAction() {
-		return this.action;
-	}
+  public String getAction() {
+    return this.action;
+  }
 
-	public void setAction(String action) {
-		this.action = action;
-	}
+  public void setAction(String action) {
+    this.action = action;
+  }
 
-	public Double getPrice() {
-		return this.price;
-	}
+  public Double getPrice() {
+    return this.price;
+  }
 
-	public void setPrice(Double price) {
-		this.price = price;
-	}
+  public void setPrice(Double price) {
+    this.price = price;
+  }
 
-	public Double getShares() {
-		return this.shares;
-	}
+  public Double getShares() {
+    return this.shares;
+  }
 
-	public void setShares(Double shares) {
-		this.shares = shares;
-	}
+  public void setShares(Double shares) {
+    this.shares = shares;
+  }
 
-	public String getSymbol() {
-		return this.symbol;
-	}
+  public String getSymbol() {
+    return this.symbol;
+  }
 
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
-	}
+  public void setSymbol(String symbol) {
+    this.symbol = symbol;
+  }
 
-	public List<Double> getCurve() {
-		return this.curve;
-	}
+  public List<Double> getCurve() {
+    return this.curve;
+  }
 
-	public void setCurve(List<Double> curve) {
-		this.curve = curve;
-	}
+  public void setCurve(List<Double> curve) {
+    this.curve = curve;
+  }
 
-	@Override
-	public String toString() {
-		return "Trade{" +
-				"tradeId=" + this.tradeId +
-				", traderId='" + this.traderId + '\'' +
-				", action='" + this.action + '\'' +
-				", price=" + this.price +
-				", shares=" + this.shares +
-				", symbol='" + this.symbol + '\'' +
-				", curve=" + this.curve +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "Trade{"
+        + "tradeId="
+        + this.tradeId
+        + ", traderId='"
+        + this.traderId
+        + '\''
+        + ", action='"
+        + this.action
+        + '\''
+        + ", price="
+        + this.price
+        + ", shares="
+        + this.shares
+        + ", symbol='"
+        + this.symbol
+        + '\''
+        + ", curve="
+        + this.curve
+        + '}';
+  }
 }

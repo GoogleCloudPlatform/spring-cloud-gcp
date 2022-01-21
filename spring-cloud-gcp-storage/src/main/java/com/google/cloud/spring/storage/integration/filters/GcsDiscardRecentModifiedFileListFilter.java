@@ -16,76 +16,71 @@
 
 package com.google.cloud.spring.storage.integration.filters;
 
+import com.google.cloud.storage.BlobInfo;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-
-import com.google.cloud.storage.BlobInfo;
-
 import org.springframework.integration.file.filters.DiscardAwareFileListFilter;
 import org.springframework.lang.Nullable;
 
 /**
- * The {@link GcsDiscardRecentModifiedFileListFilter} is a filter which excludes all files
- * that were updated less than some specified amount of time ago.
+ * The {@link GcsDiscardRecentModifiedFileListFilter} is a filter which excludes all files that were
+ * updated less than some specified amount of time ago.
  *
- * <p>More specifically, it excludes all files whose {@link BlobInfo#getUpdateTime()} is
- * within {@link #age} of the current time.
+ * <p>More specifically, it excludes all files whose {@link BlobInfo#getUpdateTime()} is within
+ * {@link #age} of the current time.
  *
  * <p>When {@link #discardCallback} is provided, it called for all the rejected files.
- *
- * @author Hosain Al Ahmad
  */
-public class GcsDiscardRecentModifiedFileListFilter implements DiscardAwareFileListFilter<BlobInfo> {
+public class GcsDiscardRecentModifiedFileListFilter
+    implements DiscardAwareFileListFilter<BlobInfo> {
 
-	private final Duration age;
+  private final Duration age;
 
-	@Nullable
-	private Consumer<BlobInfo> discardCallback;
+  @Nullable private Consumer<BlobInfo> discardCallback;
 
-	/**
-	 * Construct a {@link GcsDiscardRecentModifiedFileListFilter} instance with provided {@link #age}.
-	 *
-	 * @param age {@link Duration} describing the age of files to filter.
-	 */
-	public GcsDiscardRecentModifiedFileListFilter(Duration age) {
-		this.age = age;
-	}
+  /**
+   * Construct a {@link GcsDiscardRecentModifiedFileListFilter} instance with provided {@link #age}.
+   *
+   * @param age {@link Duration} describing the age of files to filter.
+   */
+  public GcsDiscardRecentModifiedFileListFilter(Duration age) {
+    this.age = age;
+  }
 
-	@Override
-	public void addDiscardCallback(@Nullable Consumer<BlobInfo> discardCallbackToSet) {
-		this.discardCallback = discardCallbackToSet;
-	}
+  @Override
+  public void addDiscardCallback(@Nullable Consumer<BlobInfo> discardCallbackToSet) {
+    this.discardCallback = discardCallbackToSet;
+  }
 
-	@Override
-	public List<BlobInfo> filterFiles(BlobInfo[] files) {
-		List<BlobInfo> list = new ArrayList<>();
-		for (BlobInfo file : files) {
-			if (accept(file)) {
-				list.add(file);
-			}
-		}
-		return list;
-	}
+  @Override
+  public List<BlobInfo> filterFiles(BlobInfo[] files) {
+    List<BlobInfo> list = new ArrayList<>();
+    for (BlobInfo file : files) {
+      if (accept(file)) {
+        list.add(file);
+      }
+    }
+    return list;
+  }
 
-	@Override
-	public boolean accept(BlobInfo file) {
-		if (fileIsAged(file)) {
-			return true;
-		}
-		else if (this.discardCallback != null) {
-			this.discardCallback.accept(file);
-		}
-		return false;
-	}
+  @Override
+  public boolean accept(BlobInfo file) {
+    if (fileIsAged(file)) {
+      return true;
+    } else if (this.discardCallback != null) {
+      this.discardCallback.accept(file);
+    }
+    return false;
+  }
 
-	private boolean fileIsAged(BlobInfo file) {
-		return file.getUpdateTime() + this.age.toMillis() <= System.currentTimeMillis();
-	}
+  private boolean fileIsAged(BlobInfo file) {
+    return file.getUpdateTime() + this.age.toMillis() <= System.currentTimeMillis();
+  }
 
-	@Override
-	public boolean supportsSingleFileFiltering() {
-		return true;
-	}
+  @Override
+  public boolean supportsSingleFileFiltering() {
+    return true;
+  }
 }

@@ -19,7 +19,6 @@ package com.google.cloud.spring.autoconfigure.datastore;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.config.DatastoreRepositoryConfigurationExtension;
 import com.google.cloud.spring.data.datastore.repository.support.DatastoreRepositoryFactoryBean;
-
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -28,19 +27,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
- * Enables autoconfiguration for
- * {@link com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreRepositories}.
- *
- * @author Chengyuan Zhao
+ * Enables autoconfiguration for {@link
+ * com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreRepositories}.
  *
  * @since 1.1
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(DatastoreRepository.class)
-@ConditionalOnMissingBean({ DatastoreRepositoryFactoryBean.class,
-		DatastoreRepositoryConfigurationExtension.class })
+@ConditionalOnMissingBean({
+  DatastoreRepositoryFactoryBean.class,
+  DatastoreRepositoryConfigurationExtension.class
+})
 @ConditionalOnProperty(value = "spring.cloud.gcp.datastore.enabled", matchIfMissing = true)
-@Import({ DatastoreRepositoriesAutoConfigureRegistrar.class })
+@Import({DatastoreRepositoriesAutoConfigureRegistrar.class})
 @AutoConfigureBefore(GcpDatastoreAutoConfiguration.class)
-public class DatastoreRepositoriesAutoConfiguration {
-}
+public class DatastoreRepositoriesAutoConfiguration {}

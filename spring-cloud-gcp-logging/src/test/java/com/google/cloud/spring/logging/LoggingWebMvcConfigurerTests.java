@@ -16,47 +16,37 @@
 
 package com.google.cloud.spring.logging;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-/**
- * Tests for the logging-web-mvc configurer.
- *
- * @author Mike Eltsufin
- */
+/** Tests for the logging-web-mvc configurer. */
 @RunWith(MockitoJUnitRunner.class)
 public class LoggingWebMvcConfigurerTests {
 
-	@Mock
-	private TraceIdLoggingWebMvcInterceptor interceptor;
+  @Mock private TraceIdLoggingWebMvcInterceptor interceptor;
 
-	@Test
-	public void testAddInterceptors() {
-		LoggingWebMvcConfigurer adapter =
-				new LoggingWebMvcConfigurer(this.interceptor, () -> "remission");
-		TestInterceptorRegistry registry = new TestInterceptorRegistry();
+  @Test
+  public void testAddInterceptors() {
+    LoggingWebMvcConfigurer adapter =
+        new LoggingWebMvcConfigurer(this.interceptor, () -> "remission");
+    TestInterceptorRegistry registry = new TestInterceptorRegistry();
 
-		adapter.addInterceptors(registry);
+    adapter.addInterceptors(registry);
 
-		assertThat(registry.doGetInterceptors()).hasSize(1);
-		assertThat(registry.doGetInterceptors().get(0)).isEqualTo(this.interceptor);
-	}
+    assertThat(registry.doGetInterceptors()).hasSize(1);
+    assertThat(registry.doGetInterceptors().get(0)).isEqualTo(this.interceptor);
+  }
 
-	/**
-	 * Test interceptor registry that makes interceptors list accessible.
-	 */
-	private static class TestInterceptorRegistry extends InterceptorRegistry {
-		public List<Object> doGetInterceptors() {
-			return super.getInterceptors();
-		}
-	}
-
+  /** Test interceptor registry that makes interceptors list accessible. */
+  private static class TestInterceptorRegistry extends InterceptorRegistry {
+    public List<Object> doGetInterceptors() {
+      return super.getInterceptors();
+    }
+  }
 }

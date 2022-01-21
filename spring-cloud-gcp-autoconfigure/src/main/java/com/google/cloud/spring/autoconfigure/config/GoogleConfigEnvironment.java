@@ -26,98 +26,90 @@ import java.util.Map;
 /**
  * Expected response format for Google Runtime Configurator API response.
  *
- * @author Jisha Abubaker
- * @author Chengyuan Zhao
- * @author Eddy Kioi
- *
  * @since 1.1
  */
 class GoogleConfigEnvironment {
 
-	private List<Variable> variables;
+  private List<Variable> variables;
 
-	GoogleConfigEnvironment() {
-	}
+  GoogleConfigEnvironment() {}
 
-	List<Variable> getVariables() {
-		if (variables == null) {
-			return Collections.emptyList();
-		}
-		return this.variables;
-	}
+  List<Variable> getVariables() {
+    if (variables == null) {
+      return Collections.emptyList();
+    }
+    return this.variables;
+  }
 
-	void setVariables(List<Variable> variables) {
-		this.variables = variables;
-	}
+  void setVariables(List<Variable> variables) {
+    this.variables = variables;
+  }
 
-	Map<String, Object> getConfig() {
-		Map<String, Object> config = new HashMap<>();
-		for (Variable variable : getVariables()) {
-			Object value = (variable.getText() != null) ? variable.getText() : variable.getValue();
-			config.put(variable.getName(), value);
-		}
-		return config;
-	}
+  Map<String, Object> getConfig() {
+    Map<String, Object> config = new HashMap<>();
+    for (Variable variable : getVariables()) {
+      Object value = (variable.getText() != null) ? variable.getText() : variable.getValue();
+      config.put(variable.getName(), value);
+    }
+    return config;
+  }
 
-	/**
-	 * A data object for a configuration.
-	 */
-	static class Variable {
+  /** A data object for a configuration. */
+  static class Variable {
 
-		private String name;
+    private String name;
 
-		private String text;
+    private String text;
 
-		private String value;
+    private String value;
 
-		private String updateTime;
+    private String updateTime;
 
-		Variable() {
-		}
+    Variable() {}
 
-		String getName() {
-			return this.name;
-		}
+    String getName() {
+      return this.name;
+    }
 
-		public void setName(String name) {
-			if (name != null) {
-				// use short variable name instead of {project/config/variable} path
-				String[] variableNameSplit = name.split("/");
-				if (variableNameSplit.length > 0) {
-					this.name = variableNameSplit[variableNameSplit.length - 1];
-				}
-			}
-		}
+    public void setName(String name) {
+      if (name != null) {
+        // use short variable name instead of {project/config/variable} path
+        String[] variableNameSplit = name.split("/");
+        if (variableNameSplit.length > 0) {
+          this.name = variableNameSplit[variableNameSplit.length - 1];
+        }
+      }
+    }
 
-		String getText() {
-			return this.text;
-		}
+    String getText() {
+      return this.text;
+    }
 
-		void setText(String text) {
-			this.text = text;
-		}
+    void setText(String text) {
+      this.text = text;
+    }
 
-		String getValue() {
-			return this.value;
-		}
+    String getValue() {
+      return this.value;
+    }
 
-		void setValue(String value) {
-			if (value != null) {
-				this.value = decode(value);
-			}
-		}
+    void setValue(String value) {
+      if (value != null) {
+        this.value = decode(value);
+      }
+    }
 
-		String getUpdateTime() {
-			return this.updateTime;
-		}
+    String getUpdateTime() {
+      return this.updateTime;
+    }
 
-		void setUpdateTime(String updateTime) {
-			this.updateTime = updateTime;
-		}
+    void setUpdateTime(String updateTime) {
+      this.updateTime = updateTime;
+    }
 
-		private String decode(String value) {
-			byte[] decodedValue = Base64.getDecoder().decode(value);
-			return new String(decodedValue, StandardCharsets.UTF_8);
-		}
-	}
+    private String decode(String value) {
+      byte[] decodedValue = Base64.getDecoder().decode(value);
+      return new String(decodedValue, StandardCharsets.UTF_8);
+    }
+  }
 }

@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.storage;
 
-import java.io.IOException;
-
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.spring.autoconfigure.core.GcpProperties;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
@@ -27,7 +25,7 @@ import com.google.cloud.spring.storage.GoogleStorageProtocolResolver;
 import com.google.cloud.spring.storage.GoogleStorageProtocolResolverSettings;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-
+import java.io.IOException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -37,52 +35,48 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
- * An auto-configuration for Google {@link GoogleStorageProtocolResolverSettings} bean
- * definition. Also it {@link Import} a {@link GoogleStorageProtocolResolver} to register
- * it with the {@code DefaultResourceLoader}.
- *
- * @author Vinicius Carvalho
- * @author Artem Bilan
- * @author Mike Eltsufin
- * @author Daniel Zou
+ * An auto-configuration for Google {@link GoogleStorageProtocolResolverSettings} bean definition.
+ * Also it {@link Import} a {@link GoogleStorageProtocolResolver} to register it with the {@code
+ * DefaultResourceLoader}.
  *
  * @see GoogleStorageProtocolResolver
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass({ GoogleStorageProtocolResolverSettings.class, Storage.class })
+@ConditionalOnClass({GoogleStorageProtocolResolverSettings.class, Storage.class})
 @ConditionalOnProperty(value = "spring.cloud.gcp.storage.enabled", matchIfMissing = true)
 @EnableConfigurationProperties({GcpProperties.class, GcpStorageProperties.class})
 @Import(GoogleStorageProtocolResolver.class)
-public class GcpStorageAutoConfiguration { //NOSONAR squid:S1610 must be a class for Spring
+public class GcpStorageAutoConfiguration { // NOSONAR squid:S1610 must be a class for Spring
 
-	private final GcpProjectIdProvider gcpProjectIdProvider;
+  private final GcpProjectIdProvider gcpProjectIdProvider;
 
-	private final CredentialsProvider credentialsProvider;
+  private final CredentialsProvider credentialsProvider;
 
-	public GcpStorageAutoConfiguration(
-			GcpProjectIdProvider coreProjectIdProvider,
-			CredentialsProvider credentialsProvider,
-			GcpStorageProperties gcpStorageProperties) throws IOException {
+  public GcpStorageAutoConfiguration(
+      GcpProjectIdProvider coreProjectIdProvider,
+      CredentialsProvider credentialsProvider,
+      GcpStorageProperties gcpStorageProperties)
+      throws IOException {
 
-		this.gcpProjectIdProvider =
-				gcpStorageProperties.getProjectId() != null
-						? gcpStorageProperties::getProjectId
-						: coreProjectIdProvider;
+    this.gcpProjectIdProvider =
+        gcpStorageProperties.getProjectId() != null
+            ? gcpStorageProperties::getProjectId
+            : coreProjectIdProvider;
 
-		this.credentialsProvider =
-				gcpStorageProperties.getCredentials().hasKey()
-						? new DefaultCredentialsProvider(gcpStorageProperties)
-						: credentialsProvider;
-	}
+    this.credentialsProvider =
+        gcpStorageProperties.getCredentials().hasKey()
+            ? new DefaultCredentialsProvider(gcpStorageProperties)
+            : credentialsProvider;
+  }
 
-	@Bean
-	@ConditionalOnMissingBean
-	public Storage storage() throws IOException {
-		return StorageOptions.newBuilder()
-				.setHeaderProvider(
-						new UserAgentHeaderProvider(GcpStorageAutoConfiguration.class))
-				.setProjectId(this.gcpProjectIdProvider.getProjectId())
-				.setCredentials(this.credentialsProvider.getCredentials())
-				.build().getService();
-	}
+  @Bean
+  @ConditionalOnMissingBean
+  public Storage storage() throws IOException {
+    return StorageOptions.newBuilder()
+        .setHeaderProvider(new UserAgentHeaderProvider(GcpStorageAutoConfiguration.class))
+        .setProjectId(this.gcpProjectIdProvider.getProjectId())
+        .setCredentials(this.credentialsProvider.getCredentials())
+        .build()
+        .getService();
+  }
 }

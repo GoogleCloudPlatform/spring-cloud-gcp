@@ -16,111 +16,117 @@
 
 package com.google.cloud.spring.data.spanner.repository.query;
 
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
-import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
-
 import org.springframework.data.repository.query.RepositoryQuery;
 
 /**
  * Base abstract class for Spanner Query Methods.
  *
  * @param <T> the return type of the Query Method
- *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 abstract class AbstractSpannerQuery<T> implements RepositoryQuery {
 
-	protected final SpannerQueryMethod queryMethod;
+  protected final SpannerQueryMethod queryMethod;
 
-	protected final SpannerTemplate spannerTemplate;
+  protected final SpannerTemplate spannerTemplate;
 
-	protected final SpannerMappingContext spannerMappingContext;
+  protected final SpannerMappingContext spannerMappingContext;
 
-	protected final Class<T> entityType;
+  protected final Class<T> entityType;
 
-	/**
-	 * Constructor.
-	 * @param type the underlying entity type
-	 * @param queryMethod the underlying query method to support.
-	 * @param spannerTemplate used for executing queries.
-	 * @param spannerMappingContext used for getting metadata about entities.
-	 */
-	AbstractSpannerQuery(Class<T> type, SpannerQueryMethod queryMethod,
-			SpannerTemplate spannerTemplate,
-			SpannerMappingContext spannerMappingContext) {
-		this.queryMethod = queryMethod;
-		this.entityType = type;
-		this.spannerTemplate = spannerTemplate;
-		this.spannerMappingContext = spannerMappingContext;
-	}
+  /**
+   * Constructor.
+   *
+   * @param type the underlying entity type
+   * @param queryMethod the underlying query method to support.
+   * @param spannerTemplate used for executing queries.
+   * @param spannerMappingContext used for getting metadata about entities.
+   */
+  AbstractSpannerQuery(
+      Class<T> type,
+      SpannerQueryMethod queryMethod,
+      SpannerTemplate spannerTemplate,
+      SpannerMappingContext spannerMappingContext) {
+    this.queryMethod = queryMethod;
+    this.entityType = type;
+    this.spannerTemplate = spannerTemplate;
+    this.spannerMappingContext = spannerMappingContext;
+  }
 
-	@Override
-	public Object execute(Object[] parameters) {
-		List results = executeRawResult(parameters);
-		Class<?> simpleConvertedType = getReturnedSimpleConvertableItemType();
-		if (simpleConvertedType != null) {
-			return convertToSimpleReturnType(results, simpleConvertedType);
-		}
-		if (this.queryMethod.isCollectionQuery()) {
-			return applyProjection(results);
-		}
-		return (results == null || results.isEmpty()) ? null
-				: this.queryMethod.getResultProcessor().processResult(results.get(0));
-	}
+  @Override
+  public Object execute(Object[] parameters) {
+    List results = executeRawResult(parameters);
+    Class<?> simpleConvertedType = getReturnedSimpleConvertableItemType();
+    if (simpleConvertedType != null) {
+      return convertToSimpleReturnType(results, simpleConvertedType);
+    }
+    if (this.queryMethod.isCollectionQuery()) {
+      return applyProjection(results);
+    }
+    return (results == null || results.isEmpty())
+        ? null
+        : this.queryMethod.getResultProcessor().processResult(results.get(0));
+  }
 
-	Object convertToSimpleReturnType(List<?> results, Class<?> simpleConvertedType) {
-		return this.queryMethod.isCollectionQuery()
-				? results.stream()
-						.map(x -> this.spannerTemplate.getSpannerEntityProcessor()
-								.getReadConverter().convert(x, simpleConvertedType))
-						.collect(Collectors.toList())
-				: this.spannerTemplate.getSpannerEntityProcessor().getReadConverter()
-						.convert(getFirstElementOrNull(results), simpleConvertedType);
-	}
+  Object convertToSimpleReturnType(List<?> results, Class<?> simpleConvertedType) {
+    return this.queryMethod.isCollectionQuery()
+        ? results.stream()
+            .map(
+                x ->
+                    this.spannerTemplate
+                        .getSpannerEntityProcessor()
+                        .getReadConverter()
+                        .convert(x, simpleConvertedType))
+            .collect(Collectors.toList())
+        : this.spannerTemplate
+            .getSpannerEntityProcessor()
+            .getReadConverter()
+            .convert(getFirstElementOrNull(results), simpleConvertedType);
+  }
 
-	private Object getFirstElementOrNull(List<?> results) {
-		return !results.isEmpty() ? results.get(0) : null;
-	}
+  private Object getFirstElementOrNull(List<?> results) {
+    return !results.isEmpty() ? results.get(0) : null;
+  }
 
-	Class<?> getReturnedType() {
-		return this.queryMethod.isCollectionQuery()
-				? this.queryMethod.getResultProcessor().getReturnedType().getReturnedType()
-				: this.queryMethod.getReturnedObjectType();
-	}
+  Class<?> getReturnedType() {
+    return this.queryMethod.isCollectionQuery()
+        ? this.queryMethod.getResultProcessor().getReturnedType().getReturnedType()
+        : this.queryMethod.getReturnedObjectType();
+  }
 
-	Class<?> getReturnedSimpleConvertableItemType() {
-		Class<?> itemType = getReturnedType();
+  Class<?> getReturnedSimpleConvertableItemType() {
+    Class<?> itemType = getReturnedType();
 
-		// If the user has configured converters that can handle the item type, then it is
-		// assumed
-		// to not be an entity type.
-		return (itemType == void.class) ? null
-				: this.spannerTemplate.getSpannerEntityProcessor()
-				.getCorrespondingSpannerJavaType(itemType, false);
-	}
+    // If the user has configured converters that can handle the item type, then it is
+    // assumed
+    // to not be an entity type.
+    return (itemType == void.class)
+        ? null
+        : this.spannerTemplate
+            .getSpannerEntityProcessor()
+            .getCorrespondingSpannerJavaType(itemType, false);
+  }
 
-	Object processRawObjectForProjection(Object object) {
-		return this.queryMethod.getResultProcessor().processResult(object);
-	}
+  Object processRawObjectForProjection(Object object) {
+    return this.queryMethod.getResultProcessor().processResult(object);
+  }
 
-	@Override
-	public SpannerQueryMethod getQueryMethod() {
-		return this.queryMethod;
-	}
+  @Override
+  public SpannerQueryMethod getQueryMethod() {
+    return this.queryMethod;
+  }
 
-	private List applyProjection(List<T> rawResult) {
-		if (rawResult == null) {
-			return Collections.emptyList();
-		}
-		return rawResult.stream().map(this::processRawObjectForProjection)
-				.collect(Collectors.toList());
-	}
+  private List applyProjection(List<T> rawResult) {
+    if (rawResult == null) {
+      return Collections.emptyList();
+    }
+    return rawResult.stream().map(this::processRawObjectForProjection).collect(Collectors.toList());
+  }
 
-	protected abstract List executeRawResult(Object[] parameters);
+  protected abstract List executeRawResult(Object[] parameters);
 }
