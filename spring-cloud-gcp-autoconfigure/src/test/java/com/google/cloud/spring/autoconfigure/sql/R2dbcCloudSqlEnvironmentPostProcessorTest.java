@@ -143,8 +143,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTest {
   @Test
   void testGetEnabledDatatype_r2dbcDisabled() {
     this.contextRunner
-        .withPropertyValues("spring.cloud.gcp.sql.r2dbc.enabled=true")
-        .withClassLoader(new FilteredClassLoader("io.r2dbc.spi.ConnectionFactory"))
+        .withPropertyValues("spring.cloud.gcp.sql.r2dbc.enabled=false")
         .run(
             context -> {
               assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment()))
