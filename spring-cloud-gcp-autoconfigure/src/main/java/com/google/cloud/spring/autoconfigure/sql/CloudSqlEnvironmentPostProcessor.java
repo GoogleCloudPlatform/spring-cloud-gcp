@@ -16,18 +16,16 @@
 
 package com.google.cloud.spring.autoconfigure.sql;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.cloud.spring.autoconfigure.core.GcpProperties;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.sql.CredentialFactory;
 import com.google.cloud.sql.core.CoreSocketFactory;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;

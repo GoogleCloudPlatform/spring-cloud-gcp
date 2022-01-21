@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.sql;
 
 import com.google.cloud.spring.autoconfigure.core.GcpProperties;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.bind.PlaceholdersResolver;

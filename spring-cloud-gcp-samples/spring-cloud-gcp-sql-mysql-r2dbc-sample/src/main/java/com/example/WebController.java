@@ -17,32 +17,36 @@
 package com.example;
 
 import io.r2dbc.spi.ConnectionFactory;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 /**
- * Web app controller class for sample application. Contains a function that runs a query
- * and displays the results.
- *
+ * Web app controller class for sample application. Contains a function that runs a query and
+ * displays the results.
  */
 @RestController
 public class WebController {
 
-	private final ConnectionFactory connectionFactory;
+  private final ConnectionFactory connectionFactory;
 
-	public WebController(ConnectionFactory connectionFactory) {
-		this.connectionFactory = connectionFactory;
-	}
+  public WebController(ConnectionFactory connectionFactory) {
+    this.connectionFactory = connectionFactory;
+  }
 
-	@GetMapping("/getTuples")
-	public Flux<String> getTuples() {
-		return Mono.from(connectionFactory.create())
-				.flatMapMany(connection -> connection.createStatement("SELECT * FROM users").execute())
-				.flatMap(result -> result
-						.map((row, metadata) -> String.format("[%s, %s, %s]", row.get("EMAIL", String.class),
-								row.get("FIRST_NAME", String.class), row.get("LAST_NAME", String.class))));
-	}
+  @GetMapping("/getTuples")
+  public Flux<String> getTuples() {
+    return Mono.from(connectionFactory.create())
+        .flatMapMany(connection -> connection.createStatement("SELECT * FROM users").execute())
+        .flatMap(
+            result ->
+                result.map(
+                    (row, metadata) ->
+                        String.format(
+                            "[%s, %s, %s]",
+                            row.get("EMAIL", String.class),
+                            row.get("FIRST_NAME", String.class),
+                            row.get("LAST_NAME", String.class))));
+  }
 }

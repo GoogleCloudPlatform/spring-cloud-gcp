@@ -17,7 +17,6 @@
 package com.example;
 
 import io.r2dbc.spi.ConnectionFactory;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -28,21 +27,23 @@ import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
 @SpringBootApplication
 public class SqlApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SqlApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(SqlApplication.class, args);
+  }
 
-	/**
-	 * Populates Cloud SQL database table with data from data.sql and deletes the table after the application
-	 * finishes running.
-	 */
-	@Bean
-	ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
-		ConnectionFactoryInitializer initializer = new ConnectionFactoryInitializer();
-		initializer.setConnectionFactory(connectionFactory);
-		initializer.setDatabasePopulator(
-				new ResourceDatabasePopulator(new ClassPathResource("schema.sql"), new ClassPathResource("data.sql")));
-		initializer.setDatabaseCleaner(new ResourceDatabasePopulator(new ClassPathResource("cleanup.sql")));
-		return initializer;
-	}
+  /**
+   * Populates Cloud SQL database table with data from data.sql and deletes the table after the
+   * application finishes running.
+   */
+  @Bean
+  ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
+    ConnectionFactoryInitializer initializer = new ConnectionFactoryInitializer();
+    initializer.setConnectionFactory(connectionFactory);
+    initializer.setDatabasePopulator(
+        new ResourceDatabasePopulator(
+            new ClassPathResource("schema.sql"), new ClassPathResource("data.sql")));
+    initializer.setDatabaseCleaner(
+        new ResourceDatabasePopulator(new ClassPathResource("cleanup.sql")));
+    return initializer;
+  }
 }

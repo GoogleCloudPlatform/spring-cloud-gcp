@@ -16,9 +16,10 @@
 
 package com.example;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -27,26 +28,24 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-/**
- * Simple integration test to verify the SQL sample application with MySQL.
- *
- */
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { SqlApplication.class })
+/** Simple integration test to verify the SQL sample application with MySQL. */
+@SpringBootTest(
+    webEnvironment = WebEnvironment.RANDOM_PORT,
+    classes = {SqlApplication.class})
 @EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
 public class SqlR2dbcMySqlSampleApplicationIntegrationTests {
 
-	@Autowired
-	private TestRestTemplate testRestTemplate;
+  @Autowired private TestRestTemplate testRestTemplate;
 
-	@Test
-	void testSqlRowsAccess() {
-		ResponseEntity<String> result = this.testRestTemplate.exchange(
-				"/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<String>() {
-				});
+  @Test
+  void testSqlRowsAccess() {
+    ResponseEntity<String> result =
+        this.testRestTemplate.exchange(
+            "/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<String>() {});
 
-		assertThat(result.getBody()).isEqualTo(
-				"[fejsa@example.com, Ljubomir, Fejsa][jonas@example.com, Jonas, Goncalves][luisao@example.com, Anderson, Silva]");
-	}
+    assertThat(result.getBody())
+        .isEqualTo(
+            "[fejsa@example.com, Ljubomir, Fejsa][jonas@example.com, Jonas,"
+                + " Goncalves][luisao@example.com, Anderson, Silva]");
+  }
 }
