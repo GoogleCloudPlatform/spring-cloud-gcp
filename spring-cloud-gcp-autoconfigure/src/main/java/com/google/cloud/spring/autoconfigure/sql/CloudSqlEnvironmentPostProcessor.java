@@ -36,8 +36,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.ClassUtils;
 
 /**
- * Provides Google Cloud SQL instance connectivity through Spring JDBC by providing only a
- * database and instance connection name.
+ * Provides Google Cloud SQL instance connectivity through Spring JDBC by providing only a database
+ * and instance connection name.
  *
  * @author João André Martins
  * @author Artem Bilan
@@ -46,134 +46,136 @@ import org.springframework.util.ClassUtils;
  * @author Eddú Meléndez
  */
 public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcessor {
-	private static final Log LOGGER =
-			LogFactory.getLog(CloudSqlEnvironmentPostProcessor.class);
+  private static final Log LOGGER = LogFactory.getLog(CloudSqlEnvironmentPostProcessor.class);
 
-	@Override
-	public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+  @Override
+  public void postProcessEnvironment(
+      ConfigurableEnvironment environment, SpringApplication application) {
 
-		if (environment.getPropertySources().contains("bootstrap")) {
-			// Do not run in the bootstrap phase as the user configuration is not available yet
-			return;
-		}
+    if (environment.getPropertySources().contains("bootstrap")) {
+      // Do not run in the bootstrap phase as the user configuration is not available yet
+      return;
+    }
 
-		DatabaseType databaseType = getEnabledDatabaseType(environment);
+    DatabaseType databaseType = getEnabledDatabaseType(environment);
 
-		if (databaseType != null) {
-			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info("post-processing Cloud SQL properties for + " + databaseType.name());
-			}
+    if (databaseType != null) {
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info("post-processing Cloud SQL properties for + " + databaseType.name());
+      }
 
-			PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
-			GcpCloudSqlProperties sqlProperties = propertiesRetriever.getCloudSqlProperties();
-			CloudSqlJdbcInfoProvider cloudSqlJdbcInfoProvider = new DefaultCloudSqlJdbcInfoProvider(sqlProperties, databaseType);
-			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info("Default " + databaseType.name()
-						+ " JdbcUrl provider. Connecting to "
-						+ cloudSqlJdbcInfoProvider.getJdbcUrl() + " with driver "
-						+ cloudSqlJdbcInfoProvider.getJdbcDriverClass());
-			}
+      PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
+      GcpCloudSqlProperties sqlProperties = propertiesRetriever.getCloudSqlProperties();
+      CloudSqlJdbcInfoProvider cloudSqlJdbcInfoProvider =
+          new DefaultCloudSqlJdbcInfoProvider(sqlProperties, databaseType);
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info(
+            "Default "
+                + databaseType.name()
+                + " JdbcUrl provider. Connecting to "
+                + cloudSqlJdbcInfoProvider.getJdbcUrl()
+                + " with driver "
+                + cloudSqlJdbcInfoProvider.getJdbcDriverClass());
+      }
 
-			// configure default JDBC driver and username as fallback values when not specified
-			Map<String, Object> fallbackMap = new HashMap<>();
-			fallbackMap.put("spring.datasource.username", databaseType.getDefaultUsername());
-			fallbackMap.put("spring.datasource.driver-class-name", cloudSqlJdbcInfoProvider.getJdbcDriverClass());
-			environment.getPropertySources()
-					.addLast(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_FALLBACK", fallbackMap));
+      // configure default JDBC driver and username as fallback values when not specified
+      Map<String, Object> fallbackMap = new HashMap<>();
+      fallbackMap.put("spring.datasource.username", databaseType.getDefaultUsername());
+      fallbackMap.put(
+          "spring.datasource.driver-class-name", cloudSqlJdbcInfoProvider.getJdbcDriverClass());
+      environment
+          .getPropertySources()
+          .addLast(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_FALLBACK", fallbackMap));
 
-			// always set the spring.datasource.url property in the environment
-			Map<String, Object> primaryMap = new HashMap<>();
-			primaryMap.put("spring.datasource.url", cloudSqlJdbcInfoProvider.getJdbcUrl());
-			environment.getPropertySources()
-					.addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
+      // always set the spring.datasource.url property in the environment
+      Map<String, Object> primaryMap = new HashMap<>();
+      primaryMap.put("spring.datasource.url", cloudSqlJdbcInfoProvider.getJdbcUrl());
+      environment
+          .getPropertySources()
+          .addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
 
-			setCredentials(sqlProperties, propertiesRetriever.getGcpProperties());
+      setCredentials(sqlProperties, propertiesRetriever.getGcpProperties());
 
-			// support usage metrics
-			CoreSocketFactory.setApplicationName("spring-cloud-gcp-sql/"
-					+ this.getClass().getPackage().getImplementationVersion());
-		}
-	}
+      // support usage metrics
+      CoreSocketFactory.setApplicationName(
+          "spring-cloud-gcp-sql/" + this.getClass().getPackage().getImplementationVersion());
+    }
+  }
 
-	private DatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
-		if (Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.sql.enabled", "true"))
-				&& isOnClasspath("javax.sql.DataSource")
-				&& isOnClasspath("org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType")
-				&& isOnClasspath("com.google.cloud.sql.CredentialFactory")) {
-			if (isOnClasspath("com.google.cloud.sql.mysql.SocketFactory")
-					&& isOnClasspath("com.mysql.cj.jdbc.Driver")) {
-				return DatabaseType.MYSQL;
-			}
-			else if (isOnClasspath("com.google.cloud.sql.postgres.SocketFactory")
-					&& isOnClasspath("org.postgresql.Driver")) {
-				return DatabaseType.POSTGRESQL;
-			}
-		}
-		return null;
-	}
+  private DatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
+    if (Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.sql.enabled", "true"))
+        && isOnClasspath("javax.sql.DataSource")
+        && isOnClasspath("org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType")
+        && isOnClasspath("com.google.cloud.sql.CredentialFactory")) {
+      if (isOnClasspath("com.google.cloud.sql.mysql.SocketFactory")
+          && isOnClasspath("com.mysql.cj.jdbc.Driver")) {
+        return DatabaseType.MYSQL;
+      } else if (isOnClasspath("com.google.cloud.sql.postgres.SocketFactory")
+          && isOnClasspath("org.postgresql.Driver")) {
+        return DatabaseType.POSTGRESQL;
+      }
+    }
+    return null;
+  }
 
-	private boolean isOnClasspath(String className) {
-		return ClassUtils.isPresent(className, null);
-	}
+  private boolean isOnClasspath(String className) {
+    return ClassUtils.isPresent(className, null);
+  }
 
-	/**
-	 * Set credentials to be used by the Google Cloud SQL socket factory.
-	 *
-	 * <p>The only way to pass a {@link CredentialFactory} to the socket factory is by passing a
-	 * class name through a system property. The socket factory creates an instance of
-	 * {@link CredentialFactory} using reflection without any arguments. Because of that, the
-	 * credential location needs to be stored somewhere where the class can read it without
-	 * any context. It could be possible to pass in a Spring context to
-	 * {@link SqlCredentialFactory}, but this is a tricky solution that needs some thinking
-	 * about.
-	 *
-	 * <p>If user didn't specify credentials, the socket factory already does the right thing by
-	 * using the application default credentials by default. So we don't need to do anything.
-	 */
-	private void setCredentials(GcpCloudSqlProperties sqlProperties, GcpProperties gcpProperties) {
-		Credentials credentials = null;
+  /**
+   * Set credentials to be used by the Google Cloud SQL socket factory.
+   *
+   * <p>The only way to pass a {@link CredentialFactory} to the socket factory is by passing a class
+   * name through a system property. The socket factory creates an instance of {@link
+   * CredentialFactory} using reflection without any arguments. Because of that, the credential
+   * location needs to be stored somewhere where the class can read it without any context. It could
+   * be possible to pass in a Spring context to {@link SqlCredentialFactory}, but this is a tricky
+   * solution that needs some thinking about.
+   *
+   * <p>If user didn't specify credentials, the socket factory already does the right thing by using
+   * the application default credentials by default. So we don't need to do anything.
+   */
+  private void setCredentials(GcpCloudSqlProperties sqlProperties, GcpProperties gcpProperties) {
+    Credentials credentials = null;
 
-		// First tries the SQL configuration credential.
-		if (sqlProperties.getCredentials().hasKey()) {
-			credentials = sqlProperties.getCredentials();
-		}
-		// Then, the global credential.
-		else {
-			credentials = gcpProperties.getCredentials();
-		}
+    // First tries the SQL configuration credential.
+    if (sqlProperties.getCredentials().hasKey()) {
+      credentials = sqlProperties.getCredentials();
+    }
+    // Then, the global credential.
+    else {
+      credentials = gcpProperties.getCredentials();
+    }
 
-		if (credentials.getEncodedKey() != null) {
-			setCredentialsEncodedKeyProperty(credentials.getEncodedKey());
-		}
-		else if (credentials.getLocation() != null) {
-			setCredentialsFileProperty(credentials.getLocation());
-		}
-		// Else do nothing, let sockets factory use application default credentials.
-	}
+    if (credentials.getEncodedKey() != null) {
+      setCredentialsEncodedKeyProperty(credentials.getEncodedKey());
+    } else if (credentials.getLocation() != null) {
+      setCredentialsFileProperty(credentials.getLocation());
+    }
+    // Else do nothing, let sockets factory use application default credentials.
+  }
 
-	private void setCredentialsEncodedKeyProperty(String encodedKey) {
-		System.setProperty(SqlCredentialFactory.CREDENTIAL_ENCODED_KEY_PROPERTY_NAME,
-				encodedKey);
+  private void setCredentialsEncodedKeyProperty(String encodedKey) {
+    System.setProperty(SqlCredentialFactory.CREDENTIAL_ENCODED_KEY_PROPERTY_NAME, encodedKey);
 
-		System.setProperty(CredentialFactory.CREDENTIAL_FACTORY_PROPERTY,
-				SqlCredentialFactory.class.getName());
-	}
+    System.setProperty(
+        CredentialFactory.CREDENTIAL_FACTORY_PROPERTY, SqlCredentialFactory.class.getName());
+  }
 
+  private void setCredentialsFileProperty(Resource credentialsLocation) {
+    try {
+      // A resource might not be in the filesystem, but the Cloud SQL credential must.
+      File credentialsLocationFile = credentialsLocation.getFile();
 
-	private void setCredentialsFileProperty(Resource credentialsLocation) {
-		try {
-			// A resource might not be in the filesystem, but the Cloud SQL credential must.
-			File credentialsLocationFile = credentialsLocation.getFile();
+      System.setProperty(
+          SqlCredentialFactory.CREDENTIAL_LOCATION_PROPERTY_NAME,
+          credentialsLocationFile.getAbsolutePath());
 
-			System.setProperty(SqlCredentialFactory.CREDENTIAL_LOCATION_PROPERTY_NAME,
-					credentialsLocationFile.getAbsolutePath());
-
-			// If there are specified credentials, tell sockets factory to use them.
-			System.setProperty(CredentialFactory.CREDENTIAL_FACTORY_PROPERTY,
-					SqlCredentialFactory.class.getName());
-		}
-		catch (IOException ioe) {
-			LOGGER.info("Error reading Cloud SQL credentials file.", ioe);
-		}
-	}
+      // If there are specified credentials, tell sockets factory to use them.
+      System.setProperty(
+          CredentialFactory.CREDENTIAL_FACTORY_PROPERTY, SqlCredentialFactory.class.getName());
+    } catch (IOException ioe) {
+      LOGGER.info("Error reading Cloud SQL credentials file.", ioe);
+    }
+  }
 }
