@@ -45,7 +45,8 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
     DatabaseType databaseType = getEnabledDatabaseType(environment);
     if (databaseType != null) {
       PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
-      String r2dbcUrl = createUrl(databaseType, propertiesRetriever.getCloudSqlProperties());
+      GcpCloudSqlProperties sqlProperties = propertiesRetriever.getCloudSqlProperties();
+      String r2dbcUrl = createUrl(databaseType, sqlProperties);
       if (LOGGER.isInfoEnabled()) {
         LOGGER.info(
             "Default " + databaseType.name() + " R2dbcUrl provider. Connecting to " + r2dbcUrl);
@@ -63,6 +64,9 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
       environment
           .getPropertySources()
           .addFirst(new MapPropertySource("CLOUD_SQL_R2DBC_URL", primaryMap));
+
+      CredentialsPropertiesSetter.setCredentials(sqlProperties,
+          propertiesRetriever.getGcpProperties(), LOGGER);
     }
   }
 

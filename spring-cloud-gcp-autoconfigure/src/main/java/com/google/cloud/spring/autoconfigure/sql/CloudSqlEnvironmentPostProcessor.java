@@ -16,12 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.sql;
 
-import com.google.cloud.spring.autoconfigure.core.GcpProperties;
-import com.google.cloud.spring.core.Credentials;
-import com.google.cloud.sql.CredentialFactory;
 import com.google.cloud.sql.core.CoreSocketFactory;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.logging.Log;
@@ -85,7 +80,7 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
           .getPropertySources()
           .addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
 
-			CredentialsPropertiesSetter.setCredentials(environment, LOGGER);
+      CredentialsPropertiesSetter.setCredentials(sqlProperties, propertiesRetriever.getGcpProperties(), LOGGER);
 
       // support usage metrics
       CoreSocketFactory.setApplicationName(

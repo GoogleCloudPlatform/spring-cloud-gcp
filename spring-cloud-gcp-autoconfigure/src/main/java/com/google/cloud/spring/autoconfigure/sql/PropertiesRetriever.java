@@ -57,6 +57,8 @@ class PropertiesRetriever {
     return this.binder.bind(gcpPropertiesPrefix, GcpProperties.class).orElse(new GcpProperties());
   }
 
+
+
   private static class NonSecretsManagerPropertiesPlaceholdersResolver
       implements PlaceholdersResolver {
     private PlaceholdersResolver resolver;
