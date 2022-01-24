@@ -19,5 +19,5 @@ package com.google.cloud.spring.pubsub.core.publisher;
 import com.google.cloud.pubsub.v1.Publisher;
 
 public interface PublisherCustomizer {
-  public void apply(Publisher.Builder builder, String topic);
+  public void apply(Publisher.Builder publisherBuilder, String topic);
 }
