@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.pubsub;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import com.google.api.gax.batching.BatchingSettings;
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.core.CredentialsProvider;
@@ -28,10 +29,14 @@ import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.auth.Credentials;
+import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
+import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
+import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
+import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -42,6 +47,10 @@ import org.threeten.bp.Duration;
 
 /** Tests for Pub/Sub autoconfiguration. */
 class GcpPubSubAutoConfigurationTests {
+
+  ApplicationContextRunner baseContextRunner = new ApplicationContextRunner()
+          .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+          .withUserConfiguration(TestConfig.class);
 
   @Test
   void keepAliveValue_default() {
@@ -1282,6 +1291,26 @@ class GcpPubSubAutoConfigurationTests {
               subscriberFactory.createSubscriber("subscription-name", (message, consumer) -> {});
           assertThat(subscriber.getFlowControlSettings())
               .isEqualTo(Subscriber.Builder.getDefaultFlowControlSettings());
+        });
+  }
+
+  @Test
+  void createPublisherWithCustomizer() {
+    BatchingSettings testBatchingSettings = BatchingSettings.newBuilder()
+        .setDelayThreshold(Duration.ofSeconds(11))
+        .build();
+    PublisherCustomizer customizer = (builder, topic) -> {
+      builder.setEndpoint("unused:443");
+      builder.setBatchingSettings(testBatchingSettings);
+    };
+
+    baseContextRunner
+        .withBean(PublisherCustomizer.class, () -> customizer)
+        .run(ctx -> {
+          PublisherFactory factory =
+              ctx.getBean("defaultPublisherFactory", PublisherFactory.class);
+          Publisher testPublisher = factory.createPublisher("unused");
+          assertThat(testPublisher.getBatchingSettings()).isSameAs(testBatchingSettings);
         });
   }
 
