@@ -43,6 +43,7 @@ import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
+import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
@@ -347,7 +348,8 @@ public class GcpPubSubAutoConfiguration {
       @Qualifier("publisherBatchSettings") ObjectProvider<BatchingSettings> batchingSettings,
       @Qualifier("publisherRetrySettings") ObjectProvider<RetrySettings> retrySettings,
       @Qualifier("publisherTransportChannelProvider")
-          TransportChannelProvider publisherTransportChannelProvider) {
+          TransportChannelProvider publisherTransportChannelProvider,
+      Optional<PublisherCustomizer> customizer) {
     DefaultPublisherFactory factory = new DefaultPublisherFactory(this.finalProjectIdProvider);
     factory.setExecutorProvider(executorProvider);
     factory.setCredentialsProvider(this.finalCredentialsProvider);
@@ -357,6 +359,7 @@ public class GcpPubSubAutoConfiguration {
     batchingSettings.ifAvailable(factory::setBatchingSettings);
     factory.setEnableMessageOrdering(gcpPubSubProperties.getPublisher().getEnableMessageOrdering());
     factory.setEndpoint(gcpPubSubProperties.getPublisher().getEndpoint());
+    customizer.ifPresent(factory::setCustomizer);
     return new CachingPublisherFactory(factory);
   }
 

@@ -1,11 +1,11 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2022-2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,37 +21,14 @@ import static brave.Span.Kind.PRODUCER;
 import brave.Span;
 import brave.propagation.TraceContext;
 import brave.propagation.TraceContextOrSamplingFlags;
-import com.google.cloud.pubsub.v1.Publisher;
-import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import com.google.pubsub.v1.PubsubMessage;
-import java.util.function.Consumer;
 
-final class TracingPublisherFactory implements PublisherFactory {
+class TraceHelper {
+
   private final PubSubTracing pubSubTracing;
 
-  private final PublisherFactory publisherFactory;
-
-  TracingPublisherFactory(PubSubTracing pubSubTracing, PublisherFactory publisherFactory) {
+  TraceHelper(PubSubTracing pubSubTracing) {
     this.pubSubTracing = pubSubTracing;
-    this.publisherFactory = publisherFactory;
-  }
-
-  @Override
-  public Publisher createPublisher(String topic) {
-    Consumer<Publisher.Builder> customizer =
-        builder -> builder.setTransform(msg -> instrumentMessage(msg, topic));
-    return publisherFactory.createPublisher(topic, customizer);
-  }
-
-  @Override
-  public Publisher createPublisher(String topic, Consumer<Publisher.Builder> publisherCustomizer) {
-    Consumer<Publisher.Builder> customizer = builder -> {
-      // Apply the provided customizer first.
-      publisherCustomizer.accept(builder);
-      // Trace instrumentation is mandatory, overriding any transform set in customizer.
-      builder.setTransform(msg -> instrumentMessage(msg, topic));
-    };
-    return publisherFactory.createPublisher(topic, customizer);
   }
 
   /**
@@ -99,4 +76,5 @@ final class TracingPublisherFactory implements PublisherFactory {
 
     return messageBuilder.build();
   }
+
 }

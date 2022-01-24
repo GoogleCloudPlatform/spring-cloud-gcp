@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class TracingPublisherFactoryTest extends PubSubTestBase {
-
+ /*
   PublisherFactory mockDelegateFactory;
 
   @BeforeEach
@@ -123,7 +123,7 @@ public class TracingPublisherFactoryTest extends PubSubTestBase {
    * Returns the message transformer {@code ApiFunction} that would be applied to every published
    * message.
    * Along the way validates that the transformer got created/propagated.
-   */
+
   private ApiFunction<PubsubMessage, PubsubMessage> getMessageTransformer(String topic) {
     TracingPublisherFactory tracingFactory = new TracingPublisherFactory(pubSubTracing, mockDelegateFactory);
     Publisher publisher = tracingFactory.createPublisher(topic);
@@ -149,4 +149,6 @@ public class TracingPublisherFactoryTest extends PubSubTestBase {
     assertThat(transform).isNotNull();
     return transform;
   }
+
+  */
 }

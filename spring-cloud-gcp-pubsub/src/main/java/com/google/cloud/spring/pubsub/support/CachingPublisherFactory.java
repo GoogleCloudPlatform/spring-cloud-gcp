@@ -47,12 +47,6 @@ public class CachingPublisherFactory implements PublisherFactory {
     return this.publishers.computeIfAbsent(topic, delegate::createPublisher);
   }
 
-  @Override
-  public Publisher createPublisher(String topic, Consumer<Publisher.Builder> publisherCustomizer) {
-    return this.publishers.computeIfAbsent(
-        topic, t -> delegate.createPublisher(topic, publisherCustomizer));
-  }
-
   /**
    * Returns the delegate.
    *
