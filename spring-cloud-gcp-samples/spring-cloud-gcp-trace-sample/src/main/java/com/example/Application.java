@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +38,7 @@ import org.springframework.integration.channel.DirectChannel;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -44,8 +46,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /** Sample spring boot application. */
 @SpringBootApplication
+@Component
 public class Application implements WebMvcConfigurer {
   private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+
+  @Value("${sampleSubscription}")
+  private String sampleSubscription;
+
+  @Value("${sampleTopic}")
+  private String sampleTopic;
 
   @Autowired PubSubTemplate pubSubTemplate;
 
@@ -85,7 +94,7 @@ public class Application implements WebMvcConfigurer {
   @Bean
   @ServiceActivator(inputChannel = "pubsubOutputChannel")
   public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
-    return new PubSubMessageHandler(pubsubTemplate, "traceTopic");
+    return new PubSubMessageHandler(pubsubTemplate, sampleTopic);
   }
 
   // MESSAGE RECEIVING
@@ -99,7 +108,7 @@ public class Application implements WebMvcConfigurer {
   public PubSubInboundChannelAdapter messageChannelAdapter(
       @Qualifier("pubsubInputChannel") MessageChannel inputChannel, PubSubTemplate pubSubTemplate) {
     PubSubInboundChannelAdapter adapter =
-        new PubSubInboundChannelAdapter(pubSubTemplate, "traceSubscription");
+        new PubSubInboundChannelAdapter(pubSubTemplate, sampleSubscription);
     adapter.setOutputChannel(inputChannel);
     adapter.setAckMode(AckMode.AUTO_ACK);
     adapter.setPayloadType(String.class);

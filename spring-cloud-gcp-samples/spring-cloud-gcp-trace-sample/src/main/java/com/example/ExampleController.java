@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 /** Sample REST Controller to demonstrate Spring Cloud Sleuth and Stackdriver Trace. */
 @RestController
 public class ExampleController {
+
+  @Value("${sampleSubscription}")
+  private String sampleSubscription;
+
   private static final Log LOGGER = LogFactory.getLog(ExampleController.class);
 
   private final WorkService workService;
@@ -62,7 +67,7 @@ public class ExampleController {
   public String pull() throws InterruptedException {
     String result = "nothing";
 
-    PubsubMessage message = pubSubTemplate.pullNext("traceSubscription");
+    PubsubMessage message = pubSubTemplate.pullNext(sampleSubscription);
     if (message != null) {
       result = message.toString();
     }
