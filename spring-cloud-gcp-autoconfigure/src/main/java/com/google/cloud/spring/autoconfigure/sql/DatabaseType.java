@@ -24,6 +24,7 @@ public enum DatabaseType {
       "jdbc:mysql://google/%s?"
           + "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
           + "&cloudSqlInstance=%s",
+      "r2dbc:gcp:mysql://%s/%s",
       "root"),
 
   /** Postgresql constants. */
@@ -32,17 +33,25 @@ public enum DatabaseType {
       "jdbc:postgresql://google/%s?"
           + "socketFactory=com.google.cloud.sql.postgres.SocketFactory"
           + "&cloudSqlInstance=%s",
+      "r2dbc:gcp:postgres://%s/%s",
       "postgres");
 
   private final String jdbcDriverName;
 
   private final String jdbcUrlTemplate;
 
+  private final String r2dbcUrlTemplate;
+
   private final String defaultUsername;
 
-  DatabaseType(String jdbcDriverName, String jdbcUrlTemplate, String defaultUsername) {
+  DatabaseType(
+      String jdbcDriverName,
+      String jdbcUrlTemplate,
+      String r2dbcUrlTemplate,
+      String defaultUsername) {
     this.jdbcDriverName = jdbcDriverName;
     this.jdbcUrlTemplate = jdbcUrlTemplate;
+    this.r2dbcUrlTemplate = r2dbcUrlTemplate;
     this.defaultUsername = defaultUsername;
   }
 
@@ -52,6 +61,10 @@ public enum DatabaseType {
 
   public String getJdbcUrlTemplate() {
     return this.jdbcUrlTemplate;
+  }
+
+  public String getR2dbcUrlTemplate() {
+    return this.r2dbcUrlTemplate;
   }
 
   public String getDefaultUsername() {

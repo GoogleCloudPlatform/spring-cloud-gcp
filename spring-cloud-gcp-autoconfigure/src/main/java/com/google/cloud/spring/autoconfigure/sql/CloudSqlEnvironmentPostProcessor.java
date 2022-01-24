@@ -27,14 +27,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.context.properties.bind.PlaceholdersResolver;
-import org.springframework.boot.context.properties.bind.PropertySourcesPlaceholdersResolver;
-import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ClassUtils;
@@ -62,24 +56,8 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
         LOGGER.info("post-processing Cloud SQL properties for + " + databaseType.name());
       }
 
-      // Bind properties without resolving Secret Manager placeholders
-      Binder binder =
-          new Binder(
-              ConfigurationPropertySources.get(environment),
-              new NonSecretsManagerPropertiesPlaceholdersResolver(environment),
-              null,
-              null,
-              null);
-
-      String cloudSqlPropertiesPrefix =
-          GcpCloudSqlProperties.class.getAnnotation(ConfigurationProperties.class).value();
-      GcpCloudSqlProperties sqlProperties =
-          binder
-              .bind(cloudSqlPropertiesPrefix, GcpCloudSqlProperties.class)
-              .orElse(new GcpCloudSqlProperties());
-      GcpProperties gcpProperties =
-          binder.bind(cloudSqlPropertiesPrefix, GcpProperties.class).orElse(new GcpProperties());
-
+      PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
+      GcpCloudSqlProperties sqlProperties = propertiesRetriever.getCloudSqlProperties();
       CloudSqlJdbcInfoProvider cloudSqlJdbcInfoProvider =
           new DefaultCloudSqlJdbcInfoProvider(sqlProperties, databaseType);
       if (LOGGER.isInfoEnabled()) {
@@ -108,7 +86,7 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
           .getPropertySources()
           .addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
 
-      setCredentials(sqlProperties, gcpProperties);
+      setCredentials(sqlProperties, propertiesRetriever.getGcpProperties());
 
       // support usage metrics
       CoreSocketFactory.setApplicationName(
@@ -189,24 +167,6 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
           CredentialFactory.CREDENTIAL_FACTORY_PROPERTY, SqlCredentialFactory.class.getName());
     } catch (IOException ioe) {
       LOGGER.info("Error reading Cloud SQL credentials file.", ioe);
-    }
-  }
-
-  private static class NonSecretsManagerPropertiesPlaceholdersResolver
-      implements PlaceholdersResolver {
-    private PlaceholdersResolver resolver;
-
-    NonSecretsManagerPropertiesPlaceholdersResolver(Environment environment) {
-      this.resolver = new PropertySourcesPlaceholdersResolver(environment);
-    }
-
-    @Override
-    public Object resolvePlaceholders(Object value) {
-      if (value.toString().contains("sm://")) {
-        return value;
-      } else {
-        return resolver.resolvePlaceholders(value);
-      }
     }
   }
 }
