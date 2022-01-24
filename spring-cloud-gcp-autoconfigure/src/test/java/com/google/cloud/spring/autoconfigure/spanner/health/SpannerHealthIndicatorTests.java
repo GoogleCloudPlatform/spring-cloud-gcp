@@ -39,7 +39,7 @@ import org.springframework.boot.actuate.health.Status;
  * @since 2.0.6
  */
 @ExtendWith(MockitoExtension.class)
-public class SpannerHealthIndicatorTests {
+class SpannerHealthIndicatorTests {
 
   @Mock private SpannerTemplate spannerTemplate;
 
@@ -48,7 +48,7 @@ public class SpannerHealthIndicatorTests {
   private static final String QUERY = "SELECT 2";
 
   @Test
-  public void testdoHealthCheckUp() throws Exception {
+  void testdoHealthCheckUp() throws Exception {
     SpannerHealthIndicator spannerHealthIndicator =
         new SpannerHealthIndicator(spannerTemplate, QUERY);
 
@@ -67,7 +67,7 @@ public class SpannerHealthIndicatorTests {
   }
 
   @Test
-  public void testdoHealthCheckDownSpannerTemplate() throws Exception {
+  void testdoHealthCheckDownSpannerTemplate() throws Exception {
     SpannerHealthIndicator spannerHealthIndicator =
         new SpannerHealthIndicator(spannerTemplate, QUERY);
 
@@ -82,7 +82,7 @@ public class SpannerHealthIndicatorTests {
   }
 
   @Test
-  public void testdoHealthCheckDownResultSet() throws Exception {
+  void testdoHealthCheckDownResultSet() throws Exception {
     SpannerHealthIndicator spannerHealthIndicator =
         new SpannerHealthIndicator(spannerTemplate, QUERY);
 
@@ -97,7 +97,7 @@ public class SpannerHealthIndicatorTests {
   }
 
   @Test
-  public void testHealthy() {
+  void testHealthy() {
     SpannerHealthIndicator spannerHealthIndicator =
         new SpannerHealthIndicator(spannerTemplate, QUERY);
 
@@ -110,7 +110,7 @@ public class SpannerHealthIndicatorTests {
   }
 
   @Test
-  public void testUnhealthySpannerTemplate() {
+  void testUnhealthySpannerTemplate() {
     SpannerHealthIndicator spannerHealthIndicator =
         new SpannerHealthIndicator(spannerTemplate, QUERY);
 
@@ -124,7 +124,7 @@ public class SpannerHealthIndicatorTests {
   }
 
   @Test
-  public void testUnhealthyResultSet() {
+  void testUnhealthyResultSet() {
     SpannerHealthIndicator spannerHealthIndicator =
         new SpannerHealthIndicator(spannerTemplate, QUERY);
 
