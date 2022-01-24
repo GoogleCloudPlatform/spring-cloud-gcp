@@ -16,68 +16,65 @@
 
 package com.google.cloud.spring.data.datastore.it;
 
+import com.google.cloud.spring.data.datastore.core.mapping.LazyReference;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-
-import com.google.cloud.spring.data.datastore.core.mapping.LazyReference;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 
-/**
- * A test class that holds references as relationships.
- *
- * @author Dmitry Solomakha
- */
+/** A test class that holds references as relationships. */
 public class ReferenceEntry {
-	@Id
-	Long id;
+  @Id Long id;
 
-	String name;
+  String name;
 
-	@Reference
-	ReferenceEntry sibling;
+  @Reference ReferenceEntry sibling;
 
-	@LazyReference
-	List<ReferenceEntry> children;
+  @LazyReference List<ReferenceEntry> children;
 
-	ReferenceEntry(String name, ReferenceEntry sibling, List<ReferenceEntry> children) {
-		this.name = name;
-		this.sibling = sibling;
-		this.children = children;
-	}
+  ReferenceEntry(String name, ReferenceEntry sibling, List<ReferenceEntry> children) {
+    this.name = name;
+    this.sibling = sibling;
+    this.children = children;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		ReferenceEntry that = (ReferenceEntry) o;
-		return Objects.equals(this.id, that.id) &&
-				Objects.equals(this.name, that.name) &&
-				Objects.equals(this.sibling, that.sibling) &&
-				new HashSet<>((this.children != null) ? this.children : Collections.emptyList())
-						.equals(new HashSet<>((that.children != null) ? that.children : Collections.emptyList()));
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ReferenceEntry that = (ReferenceEntry) o;
+    return Objects.equals(this.id, that.id)
+        && Objects.equals(this.name, that.name)
+        && Objects.equals(this.sibling, that.sibling)
+        && new HashSet<>((this.children != null) ? this.children : Collections.emptyList())
+            .equals(
+                new HashSet<>((that.children != null) ? that.children : Collections.emptyList()));
+  }
 
-	@Override
-	public int hashCode() {
+  @Override
+  public int hashCode() {
 
-		return Objects.hash(this.id, this.name, this.sibling, this.children);
-	}
+    return Objects.hash(this.id, this.name, this.sibling, this.children);
+  }
 
-	@Override
-	public String toString() {
-		return "ReferenceEntry{" +
-				"id=" + this.id +
-				", name='" + this.name + '\'' +
-				", sibling=" + this.sibling +
-				", childeren=" + this.children +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "ReferenceEntry{"
+        + "id="
+        + this.id
+        + ", name='"
+        + this.name
+        + '\''
+        + ", sibling="
+        + this.sibling
+        + ", childeren="
+        + this.children
+        + '}';
+  }
 }

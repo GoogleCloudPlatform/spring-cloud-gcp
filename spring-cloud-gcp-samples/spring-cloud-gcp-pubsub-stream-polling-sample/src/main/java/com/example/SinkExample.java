@@ -20,7 +20,6 @@ import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.binder.PollableMessageSource;
@@ -32,36 +31,39 @@ import org.springframework.scheduling.annotation.Scheduled;
 /**
  * Example of a sink for the sample app.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 @EnableBinding(PollableSink.class)
 public class SinkExample {
 
-	private static final Log LOGGER = LogFactory.getLog(SinkExample.class);
+  private static final Log LOGGER = LogFactory.getLog(SinkExample.class);
 
-	@Autowired
-	PollableMessageSource destIn;
+  @Autowired PollableMessageSource destIn;
 
-	PolledMessageHandler messageHandler = new PolledMessageHandler();
+  PolledMessageHandler messageHandler = new PolledMessageHandler();
 
-	@Scheduled(fixedRate = 1000)
-	public void poller() {
+  @Scheduled(fixedRate = 1000)
+  public void poller() {
 
-		destIn.poll(this.messageHandler, ParameterizedTypeReference.forType(UserMessage.class));
-	}
+    destIn.poll(this.messageHandler, ParameterizedTypeReference.forType(UserMessage.class));
+  }
 
-	static class PolledMessageHandler implements MessageHandler {
-		@Override
-		public void handleMessage(Message<?> message) {
-			AcknowledgeablePubsubMessage ackableMessage = (AcknowledgeablePubsubMessage) message.getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE);
-			ackableMessage.ack();
+  static class PolledMessageHandler implements MessageHandler {
+    @Override
+    public void handleMessage(Message<?> message) {
+      AcknowledgeablePubsubMessage ackableMessage =
+          (AcknowledgeablePubsubMessage)
+              message.getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE);
+      ackableMessage.ack();
 
-			UserMessage userMessage = (UserMessage) message.getPayload();
-			LOGGER.info("New message received from " + userMessage.getUsername() + " via polling: " + userMessage.getBody() +
-					" at " + userMessage.getCreatedAt());
-		}
-	}
-
+      UserMessage userMessage = (UserMessage) message.getPayload();
+      LOGGER.info(
+          "New message received from "
+              + userMessage.getUsername()
+              + " via polling: "
+              + userMessage.getBody()
+              + " at "
+              + userMessage.getCreatedAt());
+    }
+  }
 }

@@ -19,33 +19,28 @@ package com.example;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
-/**
- * Sample Configuration class with property values loaded using the Runtime Configurator API.
- *
- * @author Jisha Abubaker
- * @author Stephane Nicoll
- */
+/** Sample Configuration class with property values loaded using the Runtime Configurator API. */
 @RefreshScope
 @ConfigurationProperties("myapp")
 public class MyAppProperties {
 
-	private int queueSize;
+  private int queueSize;
 
-	private boolean isFeatureXEnabled;
+  private boolean isFeatureXEnabled;
 
-	public int getQueueSize() {
-		return this.queueSize;
-	}
+  public int getQueueSize() {
+    return this.queueSize;
+  }
 
-	public void setQueueSize(int size) {
-		this.queueSize = size;
-	}
+  public void setQueueSize(int size) {
+    this.queueSize = size;
+  }
 
-	public boolean isFeatureXEnabled() {
-		return this.isFeatureXEnabled;
-	}
+  public boolean isFeatureXEnabled() {
+    return this.isFeatureXEnabled;
+  }
 
-	public void setFeatureXEnabled(boolean featureXEnabled) {
-		this.isFeatureXEnabled = featureXEnabled;
-	}
+  public void setFeatureXEnabled(boolean featureXEnabled) {
+    this.isFeatureXEnabled = featureXEnabled;
+  }
 }

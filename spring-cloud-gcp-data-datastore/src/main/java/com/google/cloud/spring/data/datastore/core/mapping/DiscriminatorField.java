@@ -23,20 +23,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for entities that are root superclasses of inheritance hierarchies of
- * subclass entities.
- *
- * @author Chengyuan Zhao
+ * Annotation for entities that are root superclasses of inheritance hierarchies of subclass
+ * entities.
  */
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DiscriminatorField {
 
-	/**
-	 * The name of the field that holds the value that distinguishes which subclass an entity
-	 * maps to.
-	 * @return the name of the column.
-	 */
-	String field();
+  /**
+   * The name of the field that holds the value that distinguishes which subclass an entity maps to.
+   *
+   * @return the name of the column.
+   */
+  String field();
 }

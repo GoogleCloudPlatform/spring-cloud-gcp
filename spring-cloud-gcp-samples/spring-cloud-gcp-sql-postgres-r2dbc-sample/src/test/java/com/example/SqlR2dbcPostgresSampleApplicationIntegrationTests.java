@@ -16,11 +16,10 @@
 
 package com.example;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -29,32 +28,29 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-/**
- * Simple integration test to verify the SQL sample application with Postgres.
- *
- */
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { SqlApplication.class }, properties = {
-		"spring.r2dbc.url=r2dbc:gcp:postgres://spring-cloud-gcp-ci:us-central1:testpostgres/code_samples_test_r2dbc_db",
-		"spring.r2dbc.username=postgres",
-		"spring.r2dbc.password=test"
-})
+/** Simple integration test to verify the SQL sample application with Postgres. */
+@SpringBootTest(
+    webEnvironment = WebEnvironment.RANDOM_PORT,
+    classes = {SqlApplication.class},
+    properties = {
+      "spring.cloud.gcp.sql.databaseName=code_samples_test_r2dbc_db",
+      "spring.cloud.gcp.sql.instanceConnectionName=spring-cloud-gcp-ci:us-central1:testpostgres",
+      "spring.r2dbc.password=test"
+    })
 @EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
 public class SqlR2dbcPostgresSampleApplicationIntegrationTests {
 
-	@Autowired
-	private TestRestTemplate testRestTemplate;
+  @Autowired private TestRestTemplate testRestTemplate;
 
-	@Test
-	void testSqlRowsAccess() {
-		ResponseEntity<List<String>> result = this.testRestTemplate.exchange(
-				"/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {
-				});
+  @Test
+  void testSqlRowsAccess() {
+    ResponseEntity<String> result =
+        this.testRestTemplate.exchange(
+            "/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<String>() {});
 
-		assertThat(result.getBody()).containsExactlyInAnyOrder(
-				"[luisao@example.com, Anderson, Silva]",
-				"[jonas@example.com, Jonas, Goncalves]",
-				"[fejsa@example.com, Ljubomir, Fejsa]");
-	}
+    assertThat(result.getBody())
+        .isEqualTo(
+            "[luisao@example.com, Anderson, Silva][jonas@example.com, Jonas,"
+                + " Goncalves][fejsa@example.com, Ljubomir, Fejsa]");
+  }
 }

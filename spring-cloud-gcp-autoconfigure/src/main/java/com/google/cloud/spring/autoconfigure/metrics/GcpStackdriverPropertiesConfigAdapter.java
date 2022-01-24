@@ -17,38 +17,36 @@
 package com.google.cloud.spring.autoconfigure.metrics;
 
 import com.google.api.gax.core.CredentialsProvider;
-
 import org.springframework.boot.actuate.autoconfigure.metrics.export.stackdriver.StackdriverProperties;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.stackdriver.StackdriverPropertiesConfigAdapter;
 
 /**
- * @author Eddú Meléndez
  * @since 1.2.4
  */
 public class GcpStackdriverPropertiesConfigAdapter extends StackdriverPropertiesConfigAdapter {
 
-	private String projectId;
+  private String projectId;
 
-	private CredentialsProvider credentialsProvider;
+  private CredentialsProvider credentialsProvider;
 
-	public GcpStackdriverPropertiesConfigAdapter(StackdriverProperties properties) {
-		super(properties);
-	}
+  public GcpStackdriverPropertiesConfigAdapter(StackdriverProperties properties) {
+    super(properties);
+  }
 
-	public GcpStackdriverPropertiesConfigAdapter(StackdriverProperties properties, String projectId,
-			CredentialsProvider credentialsProvider) {
-		this(properties);
-		this.projectId = projectId;
-		this.credentialsProvider = credentialsProvider;
-	}
+  public GcpStackdriverPropertiesConfigAdapter(
+      StackdriverProperties properties, String projectId, CredentialsProvider credentialsProvider) {
+    this(properties);
+    this.projectId = projectId;
+    this.credentialsProvider = credentialsProvider;
+  }
 
-	@Override
-	public String projectId() {
-		return this.projectId;
-	}
+  @Override
+  public String projectId() {
+    return this.projectId;
+  }
 
-	@Override
-	public CredentialsProvider credentials() {
-		return this.credentialsProvider;
-	}
+  @Override
+  public CredentialsProvider credentials() {
+    return this.credentialsProvider;
+  }
 }

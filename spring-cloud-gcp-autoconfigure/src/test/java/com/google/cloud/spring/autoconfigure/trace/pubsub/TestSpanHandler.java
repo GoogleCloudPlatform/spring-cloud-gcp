@@ -16,43 +16,42 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
+import brave.handler.MutableSpan;
+import brave.handler.SpanHandler;
+import brave.propagation.TraceContext;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import brave.handler.MutableSpan;
-import brave.handler.SpanHandler;
-import brave.propagation.TraceContext;
-
 // copy of what's in brave-tests
 public final class TestSpanHandler extends SpanHandler implements Iterable<MutableSpan> {
-	final List<MutableSpan> spans = new ArrayList<>();
+  final List<MutableSpan> spans = new ArrayList<>();
 
-	public MutableSpan get(int i) {
-		return spans.get(i);
-	}
+  public MutableSpan get(int i) {
+    return spans.get(i);
+  }
 
-	public List<MutableSpan> spans() {
-		return spans;
-	}
+  public List<MutableSpan> spans() {
+    return spans;
+  }
 
-	@Override
-	public boolean end(TraceContext context, MutableSpan span, Cause cause) {
-		spans.add(span);
-		return true;
-	}
+  @Override
+  public boolean end(TraceContext context, MutableSpan span, Cause cause) {
+    spans.add(span);
+    return true;
+  }
 
-	@Override
-	public Iterator<MutableSpan> iterator() {
-		return spans.iterator();
-	}
+  @Override
+  public Iterator<MutableSpan> iterator() {
+    return spans.iterator();
+  }
 
-	public void clear() {
-		spans.clear();
-	}
+  public void clear() {
+    spans.clear();
+  }
 
-	@Override
-	public String toString() {
-		return "TestSpanHandler{" + spans + "}";
-	}
+  @Override
+  public String toString() {
+    return "TestSpanHandler{" + spans + "}";
+  }
 }

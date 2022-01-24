@@ -16,7 +16,14 @@
 
 package com.google.cloud.spring.pubsub.integration.inbound;
 
-import java.util.function.Consumer;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
@@ -24,6 +31,7 @@ import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
 import com.google.pubsub.v1.PubsubMessage;
+import java.util.function.Consumer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -32,7 +40,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
 import org.springframework.boot.test.system.OutputCaptureRule;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.integration.handler.ServiceActivatingHandler;
@@ -45,233 +52,220 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.GenericMessage;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-/**
- * {@link PubSubInboundChannelAdapter} unit tests.
- *
- * @author João André Martins
- * @author Doug Hoard
- * @author Mike Eltsufin
- * @author Taylor Burke
- * @author Chengyuan Zhao
- * @author Elena Felder
- */
+/** {@link PubSubInboundChannelAdapter} unit tests. */
 @RunWith(MockitoJUnitRunner.class)
 public class PubSubInboundChannelAdapterTests {
 
-	private TestUtils.TestApplicationContext context = TestUtils.createTestApplicationContext();
+  private TestUtils.TestApplicationContext context = TestUtils.createTestApplicationContext();
 
-	PubSubInboundChannelAdapter adapter;
+  PubSubInboundChannelAdapter adapter;
 
-	static final String EXCEPTION_MESSAGE = "Simulated downstream message processing failure";
+  static final String EXCEPTION_MESSAGE = "Simulated downstream message processing failure";
 
-	/** Output capture for validating warning messages. */
-	@Rule
-	public OutputCaptureRule output = new OutputCaptureRule();
+  /** Output capture for validating warning messages. */
+  @Rule public OutputCaptureRule output = new OutputCaptureRule();
 
-	@Mock
-	PubSubSubscriberOperations mockPubSubSubscriberOperations;
+  @Mock PubSubSubscriberOperations mockPubSubSubscriberOperations;
 
-	@Mock
-	MessageChannel mockMessageChannel;
+  @Mock MessageChannel mockMessageChannel;
 
-	@Mock
-	ConvertedBasicAcknowledgeablePubsubMessage mockAcknowledgeableMessage;
+  @Mock ConvertedBasicAcknowledgeablePubsubMessage mockAcknowledgeableMessage;
 
-	@Before
-	@SuppressWarnings("unchecked")
-	public void setUp() {
+  @Before
+  @SuppressWarnings("unchecked")
+  public void setUp() {
 
-		this.adapter = new PubSubInboundChannelAdapter(
-				this.mockPubSubSubscriberOperations, "testSubscription");
-		this.adapter.setOutputChannel(this.mockMessageChannel);
-		this.adapter.setBeanFactory(this.context);
+    this.adapter =
+        new PubSubInboundChannelAdapter(this.mockPubSubSubscriberOperations, "testSubscription");
+    this.adapter.setOutputChannel(this.mockMessageChannel);
+    this.adapter.setBeanFactory(this.context);
 
-		when(this.mockMessageChannel.send(any())).thenReturn(true);
+    when(this.mockMessageChannel.send(any())).thenReturn(true);
 
-		when(mockAcknowledgeableMessage.getPubsubMessage()).thenReturn(PubsubMessage.newBuilder().build());
-		when(mockAcknowledgeableMessage.getPayload()).thenReturn("Test message payload.");
+    when(mockAcknowledgeableMessage.getPubsubMessage())
+        .thenReturn(PubsubMessage.newBuilder().build());
+    when(mockAcknowledgeableMessage.getPayload()).thenReturn("Test message payload.");
 
-		when(this.mockPubSubSubscriberOperations.subscribeAndConvert(
-				anyString(), any(Consumer.class), any(Class.class))).then(invocationOnMock -> {
-					Consumer<ConvertedBasicAcknowledgeablePubsubMessage> messageConsumer =
-							invocationOnMock.getArgument(1);
-					messageConsumer.accept(mockAcknowledgeableMessage);
-				return null;
-		});
-	}
+    when(this.mockPubSubSubscriberOperations.subscribeAndConvert(
+            anyString(), any(Consumer.class), any(Class.class)))
+        .then(
+            invocationOnMock -> {
+              Consumer<ConvertedBasicAcknowledgeablePubsubMessage> messageConsumer =
+                  invocationOnMock.getArgument(1);
+              messageConsumer.accept(mockAcknowledgeableMessage);
+              return null;
+            });
+  }
 
-	@After
-	public void tearDown() {
-		this.context.close();
-	}
+  @After
+  public void tearDown() {
+    this.context.close();
+  }
 
-	@Test
-	public void testNonNullAckMode() {
+  @Test
+  public void testNonNullAckMode() {
 
-		assertThatThrownBy(() -> {
-			this.adapter.setAckMode(null);
-		}).isInstanceOf(IllegalArgumentException.class)
-				.hasMessage("The acknowledgement mode can't be null.");
-	}
+    assertThatThrownBy(
+            () -> {
+              this.adapter.setAckMode(null);
+            })
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("The acknowledgement mode can't be null.");
+  }
 
-	@Test
-	public void testAckModeAuto_nacksWhenDownstreamProcessingFails()  {
+  @Test
+  public void testAckModeAuto_nacksWhenDownstreamProcessingFails() {
 
-		when(this.mockMessageChannel.send(any())).thenThrow(new RuntimeException(EXCEPTION_MESSAGE));
+    when(this.mockMessageChannel.send(any())).thenThrow(new RuntimeException(EXCEPTION_MESSAGE));
 
-		this.adapter.setAckMode(AckMode.AUTO);
-		this.adapter.setOutputChannel(this.mockMessageChannel);
+    this.adapter.setAckMode(AckMode.AUTO);
+    this.adapter.setOutputChannel(this.mockMessageChannel);
 
-		this.adapter.start();
+    this.adapter.start();
 
-		verify(mockAcknowledgeableMessage).nack();
+    verify(mockAcknowledgeableMessage).nack();
 
-		assertThat(output.getOut()).contains("failed; message nacked automatically");
-		assertThat(output.getOut()).contains(EXCEPTION_MESSAGE);
-	}
+    assertThat(output.getOut()).contains("failed; message nacked automatically");
+    assertThat(output.getOut()).contains(EXCEPTION_MESSAGE);
+  }
 
-	@Test
-	public void testAckModeAuto_nacksWhenDownstreamProcessingFailsWhenContextShutdown()  {
+  @Test
+  public void testAckModeAuto_nacksWhenDownstreamProcessingFailsWhenContextShutdown() {
 
-		this.adapter.setAckMode(AckMode.AUTO);
-		this.adapter.setOutputChannel(this.mockMessageChannel);
+    this.adapter.setAckMode(AckMode.AUTO);
+    this.adapter.setOutputChannel(this.mockMessageChannel);
 
-		PublishSubscribeChannel errorChannel = new PublishSubscribeChannel(true);
-		// Simulating what FinalRethrowingErrorMessageHandler would do.
-		MessageHandler errorHandler = message -> {
-			throw new RuntimeException("error channel fails, too");
-		};
-		errorChannel.subscribe(errorHandler);
-		ServiceActivatingHandler handler = new ServiceActivatingHandler(msg -> {
-					throw new RuntimeException("error handling failed");
-		});
-		handler.setBeanFactory(this.context);
-		handler.afterPropertiesSet();
-		this.adapter.setErrorChannel(errorChannel);
+    PublishSubscribeChannel errorChannel = new PublishSubscribeChannel(true);
+    // Simulating what FinalRethrowingErrorMessageHandler would do.
+    MessageHandler errorHandler =
+        message -> {
+          throw new RuntimeException("error channel fails, too");
+        };
+    errorChannel.subscribe(errorHandler);
+    ServiceActivatingHandler handler =
+        new ServiceActivatingHandler(
+            msg -> {
+              throw new RuntimeException("error handling failed");
+            });
+    handler.setBeanFactory(this.context);
+    handler.afterPropertiesSet();
+    this.adapter.setErrorChannel(errorChannel);
 
-		when(this.mockMessageChannel.send(any())).then(input -> {
-			errorChannel.unsubscribe(errorHandler);
-			this.adapter.stop();
-			throw new RuntimeException(EXCEPTION_MESSAGE);
-		});
+    when(this.mockMessageChannel.send(any()))
+        .then(
+            input -> {
+              errorChannel.unsubscribe(errorHandler);
+              this.adapter.stop();
+              throw new RuntimeException(EXCEPTION_MESSAGE);
+            });
 
-		this.adapter.start();
+    this.adapter.start();
 
-		verify(mockAcknowledgeableMessage).nack();
-		verify(mockAcknowledgeableMessage, times(0)).ack();
+    verify(mockAcknowledgeableMessage).nack();
+    verify(mockAcknowledgeableMessage, times(0)).ack();
 
-		assertThat(output.getOut()).contains("failed; message nacked automatically");
-		// original message handling exception
-		assertThat(output.getOut()).contains(EXCEPTION_MESSAGE);
-	}
+    assertThat(output.getOut()).contains("failed; message nacked automatically");
+    // original message handling exception
+    assertThat(output.getOut()).contains(EXCEPTION_MESSAGE);
+  }
 
-	@Test
-	public void testAckModeAutoAck_neitherAcksNorNacksWhenMessageProcessingFails() {
+  @Test
+  public void testAckModeAutoAck_neitherAcksNorNacksWhenMessageProcessingFails() {
 
-		when(this.mockMessageChannel.send(any())).thenThrow(new RuntimeException(EXCEPTION_MESSAGE));
+    when(this.mockMessageChannel.send(any())).thenThrow(new RuntimeException(EXCEPTION_MESSAGE));
 
-		this.adapter.setAckMode(AckMode.AUTO_ACK);
+    this.adapter.setAckMode(AckMode.AUTO_ACK);
 
-		this.adapter.start();
+    this.adapter.start();
 
-		// When exception thrown, verify that neither ack() nor nack() is called.
-		verify(mockAcknowledgeableMessage, times(0)).ack();
-		verify(mockAcknowledgeableMessage, times(0)).nack();
+    // When exception thrown, verify that neither ack() nor nack() is called.
+    verify(mockAcknowledgeableMessage, times(0)).ack();
+    verify(mockAcknowledgeableMessage, times(0)).nack();
 
-		assertThat(output.getOut()).contains("failed; message neither acked nor nacked");
-		assertThat(output.getOut()).contains(EXCEPTION_MESSAGE);
-	}
+    assertThat(output.getOut()).contains("failed; message neither acked nor nacked");
+    assertThat(output.getOut()).contains(EXCEPTION_MESSAGE);
+  }
 
-	@Test
-	public void testSetHealthRegistry_Success() {
-		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
-		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
-		adapter.doStart();
-		verify(healthTrackerRegistry).registerTracker("testSubscription");
-	}
+  @Test
+  public void testSetHealthRegistry_Success() {
+    HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
+    adapter.setHealthTrackerRegistry(healthTrackerRegistry);
+    adapter.doStart();
+    verify(healthTrackerRegistry).registerTracker("testSubscription");
+  }
 
-	@Test
-	public void testMessageProcessed_successWhenRegistrySet() {
-		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
-		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
-		adapter.doStart();
+  @Test
+  public void testMessageProcessed_successWhenRegistrySet() {
+    HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
+    adapter.setHealthTrackerRegistry(healthTrackerRegistry);
+    adapter.doStart();
 
-		verify(healthTrackerRegistry, times(1)).registerTracker(any(String.class));
+    verify(healthTrackerRegistry, times(1)).registerTracker(any(String.class));
 
-		this.mockMessageChannel.send(new GenericMessage<>("test-message"));
+    this.mockMessageChannel.send(new GenericMessage<>("test-message"));
 
-		verify(healthTrackerRegistry, times(1)).processedMessage(any());
-	}
+    verify(healthTrackerRegistry, times(1)).processedMessage(any());
+  }
 
-	@Test
-	public void testAddingSubscription_successWhenSubscriberAdded() {
-		HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
-		adapter.setHealthTrackerRegistry(healthTrackerRegistry);
-		adapter.doStart();
+  @Test
+  public void testAddingSubscription_successWhenSubscriberAdded() {
+    HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
+    adapter.setHealthTrackerRegistry(healthTrackerRegistry);
+    adapter.doStart();
 
-		verify(healthTrackerRegistry, times(1)).addListener(any());
-	}
+    verify(healthTrackerRegistry, times(1)).addListener(any());
+  }
 
-	@Test
-	@SuppressWarnings("unchecked")
-	public void customMessageBuilderFactoryUsedWhenAvailable() {
+  @Test
+  @SuppressWarnings("unchecked")
+  public void customMessageBuilderFactoryUsedWhenAvailable() {
 
-		MutableMessageBuilderFactory factory = mock(MutableMessageBuilderFactory.class);
-		when(factory.withPayload(any())).thenReturn(MutableMessageBuilder.withPayload("custom payload"));
+    MutableMessageBuilderFactory factory = mock(MutableMessageBuilderFactory.class);
+    when(factory.withPayload(any()))
+        .thenReturn(MutableMessageBuilder.withPayload("custom payload"));
 
-		this.adapter.setMessageBuilderFactory(factory);
+    this.adapter.setMessageBuilderFactory(factory);
 
-		this.adapter.start();
+    this.adapter.start();
 
-		verify(factory, times(1)).withPayload(any());
-		ArgumentCaptor<Message<String>> argument = ArgumentCaptor.forClass(Message.class);
-		verify(this.mockMessageChannel).send(argument.capture());
-		assertThat(argument.getValue().getPayload()).isEqualTo("custom payload");
-	}
+    verify(factory, times(1)).withPayload(any());
+    ArgumentCaptor<Message<String>> argument = ArgumentCaptor.forClass(Message.class);
+    verify(this.mockMessageChannel).send(argument.capture());
+    assertThat(argument.getValue().getPayload()).isEqualTo("custom payload");
+  }
 
-	@Test
-	public void consumeMessageAttachesOriginalMessageHeaderInManualMode() {
-		this.adapter.setAckMode(AckMode.MANUAL);
-		this.adapter.start();
+  @Test
+  public void consumeMessageAttachesOriginalMessageHeaderInManualMode() {
+    this.adapter.setAckMode(AckMode.MANUAL);
+    this.adapter.start();
 
-		verifyOriginalMessage();
-	}
+    verifyOriginalMessage();
+  }
 
-	@Test
-	public void consumeMessageAttachesOriginalMessageHeaderInAutoMode() {
-		this.adapter.setAckMode(AckMode.AUTO);
-		this.adapter.start();
+  @Test
+  public void consumeMessageAttachesOriginalMessageHeaderInAutoMode() {
+    this.adapter.setAckMode(AckMode.AUTO);
+    this.adapter.start();
 
-		verifyOriginalMessage();
-	}
+    verifyOriginalMessage();
+  }
 
-	@Test
-	public void consumeMessageAttachesOriginalMessageHeaderInAutoAckMode() {
-		this.adapter.setAckMode(AckMode.AUTO_ACK);
-		this.adapter.start();
+  @Test
+  public void consumeMessageAttachesOriginalMessageHeaderInAutoAckMode() {
+    this.adapter.setAckMode(AckMode.AUTO_ACK);
+    this.adapter.start();
 
-		verifyOriginalMessage();
-	}
+    verifyOriginalMessage();
+  }
 
-	@SuppressWarnings("unchecked")
-	private void verifyOriginalMessage() {
-		ArgumentCaptor<Message<?>> argument = ArgumentCaptor.forClass(Message.class);
-		verify(this.mockMessageChannel).send(argument.capture());
-		MessageHeaders headers = argument.getValue().getHeaders();
-		assertThat(headers).containsKey(GcpPubSubHeaders.ORIGINAL_MESSAGE);
-		assertThat(headers.get(GcpPubSubHeaders.ORIGINAL_MESSAGE)).isNotNull();
-		assertThat(headers.get(GcpPubSubHeaders.ORIGINAL_MESSAGE)).isEqualTo(mockAcknowledgeableMessage);
-	}
-
-
-
+  @SuppressWarnings("unchecked")
+  private void verifyOriginalMessage() {
+    ArgumentCaptor<Message<?>> argument = ArgumentCaptor.forClass(Message.class);
+    verify(this.mockMessageChannel).send(argument.capture());
+    MessageHeaders headers = argument.getValue().getHeaders();
+    assertThat(headers).containsKey(GcpPubSubHeaders.ORIGINAL_MESSAGE);
+    assertThat(headers.get(GcpPubSubHeaders.ORIGINAL_MESSAGE)).isNotNull();
+    assertThat(headers.get(GcpPubSubHeaders.ORIGINAL_MESSAGE))
+        .isEqualTo(mockAcknowledgeableMessage);
+  }
 }

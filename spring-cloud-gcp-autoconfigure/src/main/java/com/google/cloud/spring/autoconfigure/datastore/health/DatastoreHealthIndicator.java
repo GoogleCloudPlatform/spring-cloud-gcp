@@ -18,7 +18,6 @@ package com.google.cloud.spring.autoconfigure.datastore.health;
 
 import com.google.cloud.datastore.Query;
 import com.google.cloud.spring.autoconfigure.datastore.DatastoreProvider;
-
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
@@ -26,35 +25,30 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 /**
- * A simple implementation of a {@link HealthIndicator} returning status information for
- * Google Cloud Datastore.
- *
- * @author Raghavan N S
- * @author Srinivasa Meenavalli
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
+ * A simple implementation of a {@link HealthIndicator} returning status information for Google
+ * Cloud Datastore.
  *
  * @since 1.2
  */
 @Component
 public class DatastoreHealthIndicator extends AbstractHealthIndicator {
 
-	private final DatastoreProvider datastore;
+  private final DatastoreProvider datastore;
 
-	/**
-	 * DatastoreHealthIndicator constructor.
-	 *
-	 * @param datastore Datastore supplier
-	 */
-	public DatastoreHealthIndicator(final DatastoreProvider datastore) {
-		super("Datastore health check failed");
-		Assert.notNull(datastore, "Datastore supplier must not be null");
-		this.datastore = datastore;
-	}
+  /**
+   * DatastoreHealthIndicator constructor.
+   *
+   * @param datastore Datastore supplier
+   */
+  public DatastoreHealthIndicator(final DatastoreProvider datastore) {
+    super("Datastore health check failed");
+    Assert.notNull(datastore, "Datastore supplier must not be null");
+    this.datastore = datastore;
+  }
 
-	@Override
-	protected void doHealthCheck(Health.Builder builder) {
-		datastore.get().run(Query.newKeyQueryBuilder().setKind("__Stat_Total__").build());
-		builder.up();
-	}
+  @Override
+  protected void doHealthCheck(Health.Builder builder) {
+    datastore.get().run(Query.newKeyQueryBuilder().setKind("__Stat_Total__").build());
+    builder.up();
+  }
 }

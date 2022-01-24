@@ -16,110 +16,101 @@
 
 package com.google.cloud.spring.autoconfigure.sql;
 
+import com.google.cloud.spring.autoconfigure.core.GcpProperties;
+import com.google.cloud.spring.core.Credentials;
+import com.google.cloud.sql.CredentialFactory;
+import com.google.cloud.sql.core.CoreSocketFactory;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.cloud.sql.core.CoreSocketFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.util.ClassUtils;
 
 /**
- * Provides Google Cloud SQL instance connectivity through Spring JDBC by providing only a
- * database and instance connection name.
- *
- * @author João André Martins
- * @author Artem Bilan
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Eddú Meléndez
+ * Provides Google Cloud SQL instance connectivity through Spring JDBC by providing only a database
+ * and instance connection name.
  */
 public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcessor {
-	private static final Log LOGGER =
-			LogFactory.getLog(CloudSqlEnvironmentPostProcessor.class);
+  private static final Log LOGGER = LogFactory.getLog(CloudSqlEnvironmentPostProcessor.class);
 
-	@Override
-	public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+  @Override
+  public void postProcessEnvironment(
+      ConfigurableEnvironment environment, SpringApplication application) {
 
-		if (environment.getPropertySources().contains("bootstrap")) {
-			// Do not run in the bootstrap phase as the user configuration is not available yet
-			return;
-		}
+    if (environment.getPropertySources().contains("bootstrap")) {
+      // Do not run in the bootstrap phase as the user configuration is not available yet
+      return;
+    }
 
-		DatabaseType databaseType = getEnabledDatabaseType(environment);
+    DatabaseType databaseType = getEnabledDatabaseType(environment);
 
-		if (databaseType != null) {
-			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info("post-processing Cloud SQL properties for + " + databaseType.name());
-			}
+    if (databaseType != null) {
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info("post-processing Cloud SQL properties for + " + databaseType.name());
+      }
 
-			// Bind properties without resolving Secret Manager placeholders
-			Binder binder = new Binder(ConfigurationPropertySources.get(environment),
-					new NonSecretsManagerPropertiesPlaceholdersResolver(environment),
-					null, null, null);
+      PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
+      GcpCloudSqlProperties sqlProperties = propertiesRetriever.getCloudSqlProperties();
+      CloudSqlJdbcInfoProvider cloudSqlJdbcInfoProvider =
+          new DefaultCloudSqlJdbcInfoProvider(sqlProperties, databaseType);
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info(
+            "Default "
+                + databaseType.name()
+                + " JdbcUrl provider. Connecting to "
+                + cloudSqlJdbcInfoProvider.getJdbcUrl()
+                + " with driver "
+                + cloudSqlJdbcInfoProvider.getJdbcDriverClass());
+      }
 
-			String cloudSqlPropertiesPrefix = GcpCloudSqlProperties.class.getAnnotation(ConfigurationProperties.class)
-					.value();
-			GcpCloudSqlProperties sqlProperties = binder
-					.bind(cloudSqlPropertiesPrefix, GcpCloudSqlProperties.class)
-					.orElse(new GcpCloudSqlProperties());
+      // configure default JDBC driver and username as fallback values when not specified
+      Map<String, Object> fallbackMap = new HashMap<>();
+      fallbackMap.put("spring.datasource.username", databaseType.getDefaultUsername());
+      fallbackMap.put(
+          "spring.datasource.driver-class-name", cloudSqlJdbcInfoProvider.getJdbcDriverClass());
+      environment
+          .getPropertySources()
+          .addLast(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_FALLBACK", fallbackMap));
 
-			CloudSqlJdbcInfoProvider cloudSqlJdbcInfoProvider = new DefaultCloudSqlJdbcInfoProvider(sqlProperties, databaseType);
-			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info("Default " + databaseType.name()
-						+ " JdbcUrl provider. Connecting to "
-						+ cloudSqlJdbcInfoProvider.getJdbcUrl() + " with driver "
-						+ cloudSqlJdbcInfoProvider.getJdbcDriverClass());
-			}
-
-			// configure default JDBC driver and username as fallback values when not specified
-			Map<String, Object> fallbackMap = new HashMap<>();
-			fallbackMap.put("spring.datasource.username", databaseType.getDefaultUsername());
-			fallbackMap.put("spring.datasource.driver-class-name", cloudSqlJdbcInfoProvider.getJdbcDriverClass());
-			environment.getPropertySources()
-					.addLast(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_FALLBACK", fallbackMap));
-
-			// always set the spring.datasource.url property in the environment
-			Map<String, Object> primaryMap = new HashMap<>();
-			primaryMap.put("spring.datasource.url", cloudSqlJdbcInfoProvider.getJdbcUrl());
-			environment.getPropertySources()
-					.addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
+      // always set the spring.datasource.url property in the environment
+      Map<String, Object> primaryMap = new HashMap<>();
+      primaryMap.put("spring.datasource.url", cloudSqlJdbcInfoProvider.getJdbcUrl());
+      environment
+          .getPropertySources()
+          .addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
 
 			CredentialsPropertiesSetter.setCredentials(environment, LOGGER);
 
-			// support usage metrics
-			CoreSocketFactory.setApplicationName("spring-cloud-gcp-sql/"
-					+ this.getClass().getPackage().getImplementationVersion());
-		}
-	}
+      // support usage metrics
+      CoreSocketFactory.setApplicationName(
+          "spring-cloud-gcp-sql/" + this.getClass().getPackage().getImplementationVersion());
+    }
+  }
 
-	private DatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
-		if (Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.sql.enabled", "true"))
-				&& isOnClasspath("javax.sql.DataSource")
-				&& isOnClasspath("org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType")
-				&& isOnClasspath("com.google.cloud.sql.CredentialFactory")) {
-			if (isOnClasspath("com.google.cloud.sql.mysql.SocketFactory")
-					&& isOnClasspath("com.mysql.cj.jdbc.Driver")) {
-				return DatabaseType.MYSQL;
-			}
-			else if (isOnClasspath("com.google.cloud.sql.postgres.SocketFactory")
-					&& isOnClasspath("org.postgresql.Driver")) {
-				return DatabaseType.POSTGRESQL;
-			}
-		}
-		return null;
-	}
+  private DatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
+    if (Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.sql.enabled", "true"))
+        && isOnClasspath("javax.sql.DataSource")
+        && isOnClasspath("org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType")
+        && isOnClasspath("com.google.cloud.sql.CredentialFactory")) {
+      if (isOnClasspath("com.google.cloud.sql.mysql.SocketFactory")
+          && isOnClasspath("com.mysql.cj.jdbc.Driver")) {
+        return DatabaseType.MYSQL;
+      } else if (isOnClasspath("com.google.cloud.sql.postgres.SocketFactory")
+          && isOnClasspath("org.postgresql.Driver")) {
+        return DatabaseType.POSTGRESQL;
+      }
+    }
+    return null;
+  }
 
-	private boolean isOnClasspath(String className) {
-		return ClassUtils.isPresent(className, null);
-	}
+  private boolean isOnClasspath(String className) {
+    return ClassUtils.isPresent(className, null);
+  }
 
 }

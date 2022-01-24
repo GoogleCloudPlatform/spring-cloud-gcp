@@ -18,26 +18,22 @@ package com.google.cloud.spring.stream.binder.pubsub.provisioning;
 
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 
-/**
- * A producer destination for Pub/Sub.
- *
- * @author João André Martins
- */
+/** A producer destination for Pub/Sub. */
 public class PubSubProducerDestination implements ProducerDestination {
 
-	private String name;
+  private String name;
 
-	public PubSubProducerDestination(String name) {
-		this.name = name;
-	}
+  public PubSubProducerDestination(String name) {
+    this.name = name;
+  }
 
-	@Override
-	public String getName() {
-		return this.name;
-	}
+  @Override
+  public String getName() {
+    return this.name;
+  }
 
-	@Override
-	public String getNameForPartition(int partition) {
-		return this.name + "-" + partition;
-	}
+  @Override
+  public String getNameForPartition(int partition) {
+    return this.name + "-" + partition;
+  }
 }

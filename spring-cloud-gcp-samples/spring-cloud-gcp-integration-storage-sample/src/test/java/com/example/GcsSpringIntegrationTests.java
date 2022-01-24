@@ -16,6 +16,13 @@
 
 package com.example;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.google.api.gax.paging.Page;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -25,112 +32,95 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import com.google.api.gax.paging.Page;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
 import org.awaitility.Awaitility;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
- * This test uploads a file to Google Cloud Storage and verifies that it was received in
- * the local directory specified in application-test.properties.
+ * This test uploads a file to Google Cloud Storage and verifies that it was received in the local
+ * directory specified in application-test.properties.
  *
- * To run this test locally, first specify the buckets and local directory used by sample in
+ * <p>To run this test locally, first specify the buckets and local directory used by sample in
  * java/com/example/resources/application.properties. Then, run: mvn -Dit.storage=true test.
- *
- * @author Daniel Zou
  */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.storage", matches = "true")
+@ExtendWith(SpringExtension.class)
 @PropertySource("classpath:application.properties")
-@SpringBootTest(classes = { GcsSpringIntegrationApplication.class })
-public class GcsSpringIntegrationTests {
+@SpringBootTest(classes = {GcsSpringIntegrationApplication.class})
+class GcsSpringIntegrationTests {
 
-	private static final String TEST_FILE_NAME = "test_file";
+  private static final String TEST_FILE_NAME = "test_file";
 
-	@Autowired
-	private Storage storage;
+  @Autowired private Storage storage;
 
-	@Value("${gcs-read-bucket}")
-	private String cloudInputBucket;
+  @Value("${gcs-read-bucket}")
+  private String cloudInputBucket;
 
-	@Value("${gcs-write-bucket}")
-	private String cloudOutputBucket;
+  @Value("${gcs-write-bucket}")
+  private String cloudOutputBucket;
 
-	@Value("${gcs-local-directory}")
-	private String outputFolder;
+  @Value("${gcs-local-directory}")
+  private String outputFolder;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Google Cloud Storage integration tests are disabled. "
-						+ "Please use '-Dit.storage=true' to enable them. ",
-				System.getProperty("it.storage"), is("true"));
-	}
+  @BeforeEach
+  void setupTestEnvironment() {
+    cleanupCloudStorage();
+  }
 
-	@Before
-	public void setupTestEnvironment() {
-		cleanupCloudStorage();
-	}
+  @AfterEach
+  void teardownTestEnvironment() throws IOException {
+    cleanupCloudStorage();
+    cleanupLocalDirectory();
+  }
 
-	@After
-	public void teardownTestEnvironment() throws IOException {
-		cleanupCloudStorage();
-		cleanupLocalDirectory();
-	}
+  @Test
+  void testFilePropagatedToLocalDirectory() {
+    BlobId blobId = BlobId.of(this.cloudInputBucket, TEST_FILE_NAME);
+    BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
+    this.storage.create(blobInfo, "Hello World!".getBytes(StandardCharsets.UTF_8));
 
-	@Test
-	public void testFilePropagatedToLocalDirectory() {
-		BlobId blobId = BlobId.of(this.cloudInputBucket, TEST_FILE_NAME);
-		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
-		this.storage.create(blobInfo, "Hello World!".getBytes(StandardCharsets.UTF_8));
+    Awaitility.await()
+        .atMost(15, TimeUnit.SECONDS)
+        .untilAsserted(
+            () -> {
+              Path outputFile = Paths.get(this.outputFolder + "/" + TEST_FILE_NAME);
+              assertThat(Files.exists(outputFile)).isTrue();
+              assertThat(Files.isRegularFile(outputFile)).isTrue();
 
-		Awaitility.await().atMost(15, TimeUnit.SECONDS)
-				.untilAsserted(() -> {
-					Path outputFile = Paths.get(this.outputFolder + "/" + TEST_FILE_NAME);
-					assertThat(Files.exists(outputFile)).isTrue();
-					assertThat(Files.isRegularFile(outputFile)).isTrue();
+              String firstLine = Files.lines(outputFile).findFirst().get();
+              assertThat(firstLine).isEqualTo("Hello World!");
 
-					String firstLine = Files.lines(outputFile).findFirst().get();
-					assertThat(firstLine).isEqualTo("Hello World!");
+              List<String> blobNamesInOutputBucket = new ArrayList<>();
+              this.storage
+                  .list(this.cloudOutputBucket)
+                  .iterateAll()
+                  .forEach(b -> blobNamesInOutputBucket.add(b.getName()));
 
-					List<String> blobNamesInOutputBucket = new ArrayList<>();
-					this.storage.list(this.cloudOutputBucket).iterateAll()
-							.forEach(b -> blobNamesInOutputBucket.add(b.getName()));
+              assertThat(blobNamesInOutputBucket).contains(TEST_FILE_NAME);
+            });
+  }
 
-					assertThat(blobNamesInOutputBucket).contains(TEST_FILE_NAME);
-				});
-	}
+  void cleanupCloudStorage() {
+    Page<Blob> blobs = this.storage.list(this.cloudInputBucket);
+    for (Blob blob : blobs.iterateAll()) {
+      blob.delete();
+    }
+  }
 
-	private void cleanupCloudStorage() {
-		Page<Blob> blobs = this.storage.list(this.cloudInputBucket);
-		for (Blob blob : blobs.iterateAll()) {
-			blob.delete();
-		}
-	}
-
-	private void cleanupLocalDirectory() throws IOException {
-		Path localDirectory = Paths.get(this.outputFolder);
-		List<Path> files = Files.list(localDirectory).collect(Collectors.toList());
-		for (Path file : files) {
-			Files.delete(file);
-		}
-		Files.deleteIfExists(Paths.get(this.outputFolder));
-	}
+  void cleanupLocalDirectory() throws IOException {
+    Path localDirectory = Paths.get(this.outputFolder);
+    List<Path> files = Files.list(localDirectory).collect(Collectors.toList());
+    for (Path file : files) {
+      Files.delete(file);
+    }
+    Files.deleteIfExists(Paths.get(this.outputFolder));
+  }
 }

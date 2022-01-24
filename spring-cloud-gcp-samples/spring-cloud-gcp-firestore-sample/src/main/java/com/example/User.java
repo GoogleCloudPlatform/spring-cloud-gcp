@@ -18,78 +18,73 @@ package com.example;
 
 import java.util.List;
 
-/**
- * @author Dmitry Solomakha
- */
 public class User {
-	private String name;
-	private List<Phone> phones;
+  private String name;
+  private List<Phone> phones;
 
-	public User() {
-	}
+  public User() {}
 
-	User(String name, List<Phone> phones) {
-		this.name = name;
-		this.phones = phones;
-	}
+  User(String name, List<Phone> phones) {
+    this.name = name;
+    this.phones = phones;
+  }
 
-	public String getName() {
-		return this.name;
-	}
+  public String getName() {
+    return this.name;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public List<Phone> getPhones() {
-		return this.phones;
-	}
+  public List<Phone> getPhones() {
+    return this.phones;
+  }
 
-	public void setPhones(List<Phone> phones) {
-		this.phones = phones;
-	}
+  public void setPhones(List<Phone> phones) {
+    this.phones = phones;
+  }
 
-	@Override
-	public String toString() {
-		return "User{" + "name='" + this.name + '\'' + ", phones=" + this.phones + '}';
-	}
+  @Override
+  public String toString() {
+    return "User{" + "name='" + this.name + '\'' + ", phones=" + this.phones + '}';
+  }
 }
 
 class Phone {
-	private int number;
-	private PhoneType type;
+  private int number;
+  private PhoneType type;
 
-	Phone() {
-	}
+  Phone() {}
 
-	Phone(int number, PhoneType type) {
-		this.number = number;
-		this.type = type;
-	}
+  Phone(int number, PhoneType type) {
+    this.number = number;
+    this.type = type;
+  }
 
-	public int getNumber() {
-		return this.number;
-	}
+  public int getNumber() {
+    return this.number;
+  }
 
-	public void setNumber(int number) {
-		this.number = number;
-	}
+  public void setNumber(int number) {
+    this.number = number;
+  }
 
-	public PhoneType getType() {
-		return this.type;
-	}
+  public PhoneType getType() {
+    return this.type;
+  }
 
-	public void setType(PhoneType type) {
-		this.type = type;
-	}
+  public void setType(PhoneType type) {
+    this.type = type;
+  }
 
-	@Override
-	public String toString() {
-		return "Phone{" + "number=" + this.number + ", type=" + this.type + '}';
-	}
+  @Override
+  public String toString() {
+    return "Phone{" + "number=" + this.number + ", type=" + this.type + '}';
+  }
 }
 
 enum PhoneType {
-	WORK, CELL;
+  WORK,
+  CELL;
 }
-

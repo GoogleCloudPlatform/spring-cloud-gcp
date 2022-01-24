@@ -20,41 +20,34 @@ import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.JobInfo.WriteDisposition;
 import com.google.cloud.spring.bigquery.integration.outbound.BigQueryFileMessageHandler;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.scheduling.TaskScheduler;
 
-/**
- * Provides autoconfiguration for the BigQuery integration tests.
- *
- * @author Daniel Zou
- */
+/** Provides autoconfiguration for the BigQuery integration tests. */
 @EnableIntegration
 @Configuration
 public class BigQueryTestConfiguration {
 
-	/**
-	 * The BigQuery Dataset name used for the integration tests.
-	 */
-	public static final String DATASET_NAME = "test_dataset";
+  /** The BigQuery Dataset name used for the integration tests. */
+  public static final String DATASET_NAME = "test_dataset";
 
-	@Bean
-	public BigQuery bigQuery() {
-		return BigQueryOptions.getDefaultInstance().getService();
-	}
+  @Bean
+  public BigQuery bigQuery() {
+    return BigQueryOptions.getDefaultInstance().getService();
+  }
 
-	@Bean
-	public BigQueryTemplate bigQueryTemplate(BigQuery bigQuery, TaskScheduler taskScheduler) {
-		BigQueryTemplate bigQueryTemplate = new BigQueryTemplate(bigQuery, DATASET_NAME, taskScheduler);
-		bigQueryTemplate.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE);
-		return bigQueryTemplate;
-	}
+  @Bean
+  public BigQueryTemplate bigQueryTemplate(BigQuery bigQuery, TaskScheduler taskScheduler) {
+    BigQueryTemplate bigQueryTemplate = new BigQueryTemplate(bigQuery, DATASET_NAME, taskScheduler);
+    bigQueryTemplate.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE);
+    return bigQueryTemplate;
+  }
 
-	@Bean
-	public BigQueryFileMessageHandler messageHandler(BigQueryTemplate bigQueryTemplate) {
-		BigQueryFileMessageHandler messageHandler = new BigQueryFileMessageHandler(bigQueryTemplate);
-		return messageHandler;
-	}
+  @Bean
+  public BigQueryFileMessageHandler messageHandler(BigQueryTemplate bigQueryTemplate) {
+    BigQueryFileMessageHandler messageHandler = new BigQueryFileMessageHandler(bigQueryTemplate);
+    return messageHandler;
+  }
 }

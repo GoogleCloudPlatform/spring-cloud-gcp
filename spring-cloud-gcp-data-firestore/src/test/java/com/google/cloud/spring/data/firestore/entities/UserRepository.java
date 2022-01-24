@@ -16,60 +16,54 @@
 
 package com.google.cloud.spring.data.firestore.entities;
 
-import java.util.List;
-
 import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
+import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-
-/**
- * A test custom repository.
- *
- * @author Chengyuan Zhao
- */
-//tag::repository[]
+/** A test custom repository. */
+// tag::repository[]
 public interface UserRepository extends FirestoreReactiveRepository<User> {
-	Flux<User> findBy(Pageable pageable);
+  Flux<User> findBy(Pageable pageable);
 
-	Flux<User> findByAge(Integer age);
+  Flux<User> findByAge(Integer age);
 
-	Flux<User> findByAge(Integer age, Sort sort);
+  Flux<User> findByAge(Integer age, Sort sort);
 
-	Flux<User> findByAgeOrderByNameDesc(Integer age);
+  Flux<User> findByAgeOrderByNameDesc(Integer age);
 
-	Flux<User> findAllByOrderByAge();
+  Flux<User> findAllByOrderByAge();
 
-	Flux<User> findByAgeNot(Integer age);
+  Flux<User> findByAgeNot(Integer age);
 
-	Flux<User> findByNameAndAge(String name, Integer age);
+  Flux<User> findByNameAndAge(String name, Integer age);
 
-	Flux<User> findByHomeAddressCountry(String country);
+  Flux<User> findByHomeAddressCountry(String country);
 
-	Flux<User> findByFavoriteDrink(String drink);
+  Flux<User> findByFavoriteDrink(String drink);
 
-	Flux<User> findByAgeGreaterThanAndAgeLessThan(Integer age1, Integer age2);
+  Flux<User> findByAgeGreaterThanAndAgeLessThan(Integer age1, Integer age2);
 
-	Flux<User> findByAgeGreaterThan(Integer age);
+  Flux<User> findByAgeGreaterThan(Integer age);
 
-	Flux<User> findByAgeGreaterThan(Integer age, Sort sort);
+  Flux<User> findByAgeGreaterThan(Integer age, Sort sort);
 
-	Flux<User> findByAgeGreaterThan(Integer age, Pageable pageable);
+  Flux<User> findByAgeGreaterThan(Integer age, Pageable pageable);
 
-	Flux<User> findByAgeIn(List<Integer> ages);
+  Flux<User> findByAgeIn(List<Integer> ages);
 
-	Flux<User> findByAgeNotIn(List<Integer> ages);
+  Flux<User> findByAgeNotIn(List<Integer> ages);
 
-	Flux<User> findByAgeAndPetsContains(Integer age, List<String> pets);
+  Flux<User> findByAgeAndPetsContains(Integer age, List<String> pets);
 
-	Flux<User> findByNameAndPetsContains(String name, List<String> pets);
+  Flux<User> findByNameAndPetsContains(String name, List<String> pets);
 
-	Flux<User> findByPetsContains(List<String> pets);
+  Flux<User> findByPetsContains(List<String> pets);
 
-	Flux<User> findByPetsContainsAndAgeIn(String pets, List<Integer> ages);
+  Flux<User> findByPetsContainsAndAgeIn(String pets, List<Integer> ages);
 
-	Mono<Long> countByAgeIsGreaterThan(Integer age);
+  Mono<Long> countByAgeIsGreaterThan(Integer age);
 }
-//end::repository[]
+// end::repository[]

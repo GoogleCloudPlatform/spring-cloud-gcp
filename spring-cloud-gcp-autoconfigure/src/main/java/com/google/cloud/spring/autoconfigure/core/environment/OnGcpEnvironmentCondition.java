@@ -16,13 +16,12 @@
 
 package com.google.cloud.spring.autoconfigure.core.environment;
 
+import com.google.cloud.spring.core.GcpEnvironment;
+import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import com.google.cloud.spring.core.GcpEnvironment;
-import com.google.cloud.spring.core.GcpEnvironmentProvider;
-
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import org.springframework.context.annotation.ConditionContext;
@@ -30,46 +29,52 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.util.Assert;
 
 /**
- * {@link org.springframework.context.annotation.Condition} that determines which GCP environment the application is
- * running on.
- *
- * @author Elena Felder
+ * {@link org.springframework.context.annotation.Condition} that determines which GCP environment
+ * the application is running on.
  *
  * @since 1.1
  */
 public class OnGcpEnvironmentCondition extends SpringBootCondition {
 
-	/**
-	 * Determines whether the current runtime environment matches the one passed through the annotation.
-	 * @param context the spring context at the point in time the condition is being evaluated
-	 * @param metadata annotation metadata containing all acceptable GCP environments
-	 * @throws org.springframework.beans.factory.NoSuchBeanDefinitionException if no GcpEnvironmentProvider is found in
-	 * spring context
-	 */
-	@Override
-	public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
+  /**
+   * Determines whether the current runtime environment matches the one passed through the
+   * annotation.
+   *
+   * @param context the spring context at the point in time the condition is being evaluated
+   * @param metadata annotation metadata containing all acceptable GCP environments
+   * @throws org.springframework.beans.factory.NoSuchBeanDefinitionException if no
+   *     GcpEnvironmentProvider is found in spring context
+   */
+  @Override
+  public ConditionOutcome getMatchOutcome(
+      ConditionContext context, AnnotatedTypeMetadata metadata) {
 
-		Assert.notNull(context, "Application context cannot be null.");
-		Assert.notNull(metadata, "AnnotationTypeMetadata cannot be null.");
-		Assert.notNull(context.getBeanFactory(), "Bean factory cannot be null.");
+    Assert.notNull(context, "Application context cannot be null.");
+    Assert.notNull(metadata, "AnnotationTypeMetadata cannot be null.");
+    ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
+    Assert.notNull(beanFactory, "Bean factory cannot be null.");
 
-		Map<String, Object> attributes = metadata.getAnnotationAttributes(ConditionalOnGcpEnvironment.class.getName());
-		Assert.notNull(attributes, "@ConditionalOnGcpEnvironment annotation not declared on type.");
+    Map<String, Object> attributes =
+        metadata.getAnnotationAttributes(ConditionalOnGcpEnvironment.class.getName());
+    Assert.notNull(attributes, "@ConditionalOnGcpEnvironment annotation not declared on type.");
 
-		GcpEnvironment[] targetEnvironments = (GcpEnvironment[]) attributes.get("value");
-		Assert.notNull(targetEnvironments, "Value attribute of ConditionalOnGcpEnvironment cannot be null.");
+    GcpEnvironment[] targetEnvironments = (GcpEnvironment[]) attributes.get("value");
+    Assert.notNull(
+        targetEnvironments, "Value attribute of ConditionalOnGcpEnvironment cannot be null.");
 
-		GcpEnvironmentProvider environmentProvider = context.getBeanFactory().getBean(GcpEnvironmentProvider.class);
-		Assert.notNull(environmentProvider, "GcpEnvironmentProvider not found in context.");
-		GcpEnvironment currentEnvironment = environmentProvider.getCurrentEnvironment();
+    GcpEnvironmentProvider environmentProvider = beanFactory.getBean(GcpEnvironmentProvider.class);
+    Assert.notNull(environmentProvider, "GcpEnvironmentProvider not found in context.");
+    GcpEnvironment currentEnvironment = environmentProvider.getCurrentEnvironment();
 
-		if (Arrays.stream(targetEnvironments).noneMatch(env -> env == currentEnvironment)) {
-			return new ConditionOutcome(false, "Application is not running on any of "
-					+ Arrays.stream(targetEnvironments)
-					.map(GcpEnvironment::toString)
-					.collect(Collectors.joining(", ")));
-		}
+    if (Arrays.stream(targetEnvironments).noneMatch(env -> env == currentEnvironment)) {
+      return new ConditionOutcome(
+          false,
+          "Application is not running on any of "
+              + Arrays.stream(targetEnvironments)
+                  .map(GcpEnvironment::toString)
+                  .collect(Collectors.joining(", ")));
+    }
 
-		return new ConditionOutcome(true, "Application is running on " + currentEnvironment);
-	}
+    return new ConditionOutcome(true, "Application is running on " + currentEnvironment);
+  }
 }

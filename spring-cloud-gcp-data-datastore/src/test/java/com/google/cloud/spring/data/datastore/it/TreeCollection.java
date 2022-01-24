@@ -18,40 +18,34 @@ package com.google.cloud.spring.data.datastore.it;
 
 import java.util.List;
 import java.util.Objects;
-
 import org.springframework.data.annotation.Id;
 
-/**
- * A test entity that uses lists of embedded relationships to build a tree.
- *
- * @author Dmitry Solomakha
- */
+/** A test entity that uses lists of embedded relationships to build a tree. */
 public class TreeCollection {
-	@Id
-	private long id;
+  @Id private long id;
 
-	private List<EmbeddableTreeNode> treeNodes;
+  private List<EmbeddableTreeNode> treeNodes;
 
-	public TreeCollection(long id, List<EmbeddableTreeNode> treeNodes) {
-		this.id = id;
-		this.treeNodes = treeNodes;
-	}
+  public TreeCollection(long id, List<EmbeddableTreeNode> treeNodes) {
+    this.id = id;
+    this.treeNodes = treeNodes;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		TreeCollection that = (TreeCollection) o;
-		return Objects.equals(this.treeNodes, that.treeNodes);
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TreeCollection that = (TreeCollection) o;
+    return Objects.equals(this.treeNodes, that.treeNodes);
+  }
 
-	@Override
-	public int hashCode() {
+  @Override
+  public int hashCode() {
 
-		return Objects.hash(this.treeNodes);
-	}
+    return Objects.hash(this.treeNodes);
+  }
 }

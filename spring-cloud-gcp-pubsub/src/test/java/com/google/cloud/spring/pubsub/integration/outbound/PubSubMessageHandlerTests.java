@@ -16,30 +16,6 @@
 
 package com.google.cloud.spring.pubsub.integration.outbound;
 
-import java.time.Duration;
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicReference;
-
-import com.google.cloud.spring.core.util.MapBuilder;
-import com.google.cloud.spring.pubsub.core.PubSubOperations;
-import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
-import org.awaitility.Awaitility;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import org.springframework.expression.Expression;
-import org.springframework.expression.common.LiteralExpression;
-import org.springframework.integration.expression.ValueExpression;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.GenericMessage;
-import org.springframework.util.concurrent.ListenableFutureCallback;
-import org.springframework.util.concurrent.SettableListenableFuture;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -49,253 +25,266 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Tests for the Pub/Sub message handler.
- *
- * @author João André Martins
- * @author Eric Goetschalckx
- * @author Chengyuan Zhao
- */
+import com.google.cloud.spring.core.util.MapBuilder;
+import com.google.cloud.spring.pubsub.core.PubSubOperations;
+import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
+import java.time.Duration;
+import java.util.Collections;
+import java.util.concurrent.atomic.AtomicReference;
+import org.awaitility.Awaitility;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.expression.Expression;
+import org.springframework.expression.common.LiteralExpression;
+import org.springframework.integration.expression.ValueExpression;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.GenericMessage;
+import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.util.concurrent.SettableListenableFuture;
+
+/** Tests for the Pub/Sub message handler. */
 @RunWith(MockitoJUnitRunner.class)
 public class PubSubMessageHandlerTests {
 
-	@Mock
-	private PubSubOperations pubSubTemplate;
+  @Mock private PubSubOperations pubSubTemplate;
 
-	private PubSubMessageHandler adapter;
+  private PubSubMessageHandler adapter;
 
-	private Message<?> message;
+  private Message<?> message;
 
-	/**
-	 * used to check exception messages and types.
-	 */
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+  /** used to check exception messages and types. */
+  @Rule public ExpectedException expectedException = ExpectedException.none();
 
-	@Before
-	public void setUp() {
-		this.message = new GenericMessage<byte[]>("testPayload".getBytes(),
-				new MapBuilder<String, Object>()
-						.put("key1", "value1")
-						.put("key2", "value2")
-						.build());
-		SettableListenableFuture<String> future = new SettableListenableFuture<>();
-		future.set("benfica");
-		when(this.pubSubTemplate.publish(eq("testTopic"),
-				eq("testPayload".getBytes()), anyMap()))
-				.thenReturn(future);
-		this.adapter = new PubSubMessageHandler(this.pubSubTemplate, "testTopic");
+  @Before
+  public void setUp() {
+    this.message =
+        new GenericMessage<byte[]>(
+            "testPayload".getBytes(),
+            new MapBuilder<String, Object>().put("key1", "value1").put("key2", "value2").build());
+    SettableListenableFuture<String> future = new SettableListenableFuture<>();
+    future.set("benfica");
+    when(this.pubSubTemplate.publish(eq("testTopic"), eq("testPayload".getBytes()), anyMap()))
+        .thenReturn(future);
+    this.adapter = new PubSubMessageHandler(this.pubSubTemplate, "testTopic");
+  }
 
-	}
+  @Test
+  public void testPublish() {
+    this.adapter.handleMessage(this.message);
+    verify(this.pubSubTemplate).publish(eq("testTopic"), eq("testPayload".getBytes()), anyMap());
+  }
 
-	@Test
-	public void testPublish() {
-		this.adapter.handleMessage(this.message);
-		verify(this.pubSubTemplate)
-				.publish(eq("testTopic"), eq("testPayload".getBytes()), anyMap());
-	}
+  @Test
+  public void testPublishDynamicTopic() {
+    Message<?> dynamicMessage =
+        new GenericMessage<byte[]>(
+            "testPayload".getBytes(),
+            new MapBuilder<String, Object>()
+                .put("key1", "value1")
+                .put("key2", "value2")
+                .put(GcpPubSubHeaders.TOPIC, "dynamicTopic")
+                .build());
+    this.adapter.handleMessage(dynamicMessage);
+    verify(this.pubSubTemplate).publish(eq("dynamicTopic"), eq("testPayload".getBytes()), anyMap());
+  }
 
-	@Test
-	public void testPublishDynamicTopic() {
-		Message<?> dynamicMessage = new GenericMessage<byte[]>("testPayload".getBytes(),
-				new MapBuilder<String, Object>()
-						.put("key1", "value1")
-						.put("key2", "value2")
-						.put(GcpPubSubHeaders.TOPIC, "dynamicTopic")
-						.build());
-		this.adapter.handleMessage(dynamicMessage);
-		verify(this.pubSubTemplate)
-			.publish(eq("dynamicTopic"), eq("testPayload".getBytes()), anyMap());
-	}
+  @Test
+  public void testSendToExpressionTopic() {
+    this.adapter.setTopicExpressionString("headers['sendToTopic']");
+    this.adapter.onInit();
+    Message<?> expressionMessage =
+        new GenericMessage<byte[]>(
+            "testPayload".getBytes(),
+            new MapBuilder<String, Object>()
+                .put("key1", "value1")
+                .put("key2", "value2")
+                .put("sendToTopic", "expressionTopic")
+                .build());
+    this.adapter.handleMessage(expressionMessage);
+    verify(this.pubSubTemplate)
+        .publish(eq("expressionTopic"), eq("testPayload".getBytes()), anyMap());
+  }
 
-	@Test
-	public void testSendToExpressionTopic() {
-		this.adapter.setTopicExpressionString("headers['sendToTopic']");
-		this.adapter.onInit();
-		Message<?> expressionMessage = new GenericMessage<byte[]>("testPayload".getBytes(),
-				new MapBuilder<String, Object>()
-						.put("key1", "value1")
-						.put("key2", "value2")
-						.put("sendToTopic", "expressionTopic")
-						.build());
-		this.adapter.handleMessage(expressionMessage);
-		verify(this.pubSubTemplate)
-				.publish(eq("expressionTopic"), eq("testPayload".getBytes()), anyMap());
-	}
+  @Test
+  public void testPublishSync() {
+    this.adapter.setSync(true);
+    Expression timeout = spy(this.adapter.getPublishTimeoutExpression());
+    this.adapter.setPublishTimeoutExpression(timeout);
 
-	@Test
-	public void testPublishSync() {
-		this.adapter.setSync(true);
-		Expression timeout = spy(this.adapter.getPublishTimeoutExpression());
-		this.adapter.setPublishTimeoutExpression(timeout);
+    this.adapter.handleMessage(this.message);
+    verify(timeout).getValue(isNull(), eq(this.message), eq(Long.class));
+  }
 
-		this.adapter.handleMessage(this.message);
-		verify(timeout).getValue(isNull(), eq(this.message), eq(Long.class));
-	}
+  @Test
+  public void testPublishCallback() {
+    ListenableFutureCallback<String> callbackSpy =
+        spy(
+            new ListenableFutureCallback<String>() {
+              @Override
+              public void onFailure(Throwable ex) {}
 
-	@Test
-	public void testPublishCallback() {
-		ListenableFutureCallback<String> callbackSpy = spy(new ListenableFutureCallback<String>() {
-			@Override
-			public void onFailure(Throwable ex) {
+              @Override
+              public void onSuccess(String result) {}
+            });
 
-			}
+    this.adapter.setPublishCallback(callbackSpy);
 
-			@Override
-			public void onSuccess(String result) {
+    this.adapter.handleMessage(this.message);
 
-			}
-		});
+    assertThat(this.adapter.getPublishCallback()).isSameAs(callbackSpy);
 
-		this.adapter.setPublishCallback(callbackSpy);
+    verify(callbackSpy).onSuccess("benfica");
+  }
 
-		this.adapter.handleMessage(this.message);
+  @Test
+  public void testSetPublishTimeoutExpressionStringWithNull() {
+    this.expectedException.expect(IllegalArgumentException.class);
+    this.expectedException.expectMessage("Publish timeout expression can't be null.");
 
-		assertThat(this.adapter.getPublishCallback()).isSameAs(callbackSpy);
+    this.adapter.setPublishTimeoutExpressionString(null);
+  }
 
-		verify(callbackSpy).onSuccess("benfica");
-	}
+  @Test
+  public void testPublishTimeoutExpressionString() {
+    String expressionString = "15";
 
-	@Test
-	public void testSetPublishTimeoutExpressionStringWithNull() {
-		this.expectedException.expect(IllegalArgumentException.class);
-		this.expectedException.expectMessage("Publish timeout expression can't be null.");
+    this.adapter.setPublishTimeoutExpressionString(expressionString);
 
-		this.adapter.setPublishTimeoutExpressionString(null);
-	}
+    Expression exp = this.adapter.getPublishTimeoutExpression();
 
-	@Test
-	public void testPublishTimeoutExpressionString() {
-		String expressionString = "15";
+    assertThat(exp.getValue()).isEqualTo(Integer.parseInt(expressionString));
+  }
 
-		this.adapter.setPublishTimeoutExpressionString(expressionString);
+  @Test
+  public void testPublishTimeout() {
+    long timeout = 15;
 
-		Expression exp = this.adapter.getPublishTimeoutExpression();
+    this.adapter.setPublishTimeout(timeout);
 
-		assertThat(exp.getValue()).isEqualTo(Integer.parseInt(expressionString));
-	}
+    Expression exp = this.adapter.getPublishTimeoutExpression();
 
-	@Test
-	public void testPublishTimeout() {
-		long timeout = 15;
+    assertThat(exp.getValue()).isEqualTo(timeout);
+  }
 
-		this.adapter.setPublishTimeout(timeout);
+  @Test
+  public void testIsSync() {
+    this.adapter.setSync(true);
 
-		Expression exp = this.adapter.getPublishTimeoutExpression();
+    assertThat(this.adapter.isSync()).isTrue();
 
-		assertThat(exp.getValue()).isEqualTo(timeout);
-	}
+    this.adapter.setSync(false);
 
-	@Test
-	public void testIsSync() {
-		this.adapter.setSync(true);
+    assertThat(this.adapter.isSync()).isFalse();
+  }
 
-		assertThat(this.adapter.isSync()).isTrue();
+  @Test
+  public void testTopicWithNull() {
+    this.expectedException.expect(IllegalArgumentException.class);
+    this.expectedException.expectMessage("The topic can't be null or empty");
 
-		this.adapter.setSync(false);
+    this.adapter.setTopic(null);
+  }
 
-		assertThat(this.adapter.isSync()).isFalse();
-	}
+  @Test
+  public void testTopic() {
+    String topic = "pubsub";
+    this.adapter.setTopic(topic);
 
-	@Test
-	public void testTopicWithNull() {
-		this.expectedException.expect(IllegalArgumentException.class);
-		this.expectedException.expectMessage("The topic can't be null or empty");
+    Expression exp = this.adapter.getTopicExpression();
 
-		this.adapter.setTopic(null);
-	}
+    assertThat(exp.getClass()).isEqualTo(LiteralExpression.class);
+    assertThat(exp.getValue()).isEqualTo(topic);
+  }
 
-	@Test
-	public void testTopic() {
-		String topic = "pubsub";
-		this.adapter.setTopic(topic);
+  @Test
+  public void testTopicExpression() {
+    Expression expected = new ValueExpression<>("topic");
 
-		Expression exp = this.adapter.getTopicExpression();
+    this.adapter.setTopicExpression(expected);
 
-		assertThat(exp.getClass()).isEqualTo(LiteralExpression.class);
-		assertThat(exp.getValue()).isEqualTo(topic);
-	}
+    assertThat(this.adapter.getTopicExpression()).isEqualTo(expected);
+  }
 
-	@Test
-	public void testTopicExpression() {
-		Expression expected = new ValueExpression<>("topic");
+  @Test
+  public void testSetHeaderMapperWithNull() {
+    this.expectedException.expect(IllegalArgumentException.class);
+    this.expectedException.expectMessage("The header mapper can't be null.");
 
-		this.adapter.setTopicExpression(expected);
+    this.adapter.setHeaderMapper(null);
+  }
 
-		assertThat(this.adapter.getTopicExpression()).isEqualTo(expected);
-	}
+  @Test
+  public void testPublishWithOrderingKey() {
+    this.message =
+        new GenericMessage<byte[]>(
+            "testPayload".getBytes(),
+            new MapBuilder<String, Object>().put(GcpPubSubHeaders.ORDERING_KEY, "key1").build());
 
-	@Test
-	public void testSetHeaderMapperWithNull() {
-		this.expectedException.expect(IllegalArgumentException.class);
-		this.expectedException.expectMessage("The header mapper can't be null.");
+    this.adapter.handleMessage(this.message);
+    verify(this.pubSubTemplate)
+        .publish(
+            "testTopic",
+            "testPayload".getBytes(),
+            Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1"));
+  }
 
-		this.adapter.setHeaderMapper(null);
-	}
+  @Test
+  public void publishWithSuccessCallback() throws Exception {
 
-	@Test
-	public void testPublishWithOrderingKey() {
-		this.message = new GenericMessage<byte[]>("testPayload".getBytes(),
-				new MapBuilder<String, Object>()
-						.put(GcpPubSubHeaders.ORDERING_KEY, "key1")
-						.build());
+    SettableListenableFuture<String> future = new SettableListenableFuture<>();
+    future.set("published12345");
+    when(this.pubSubTemplate.publish(eq("testTopic"), eq("testPayload"), anyMap()))
+        .thenReturn(future);
 
-		this.adapter.handleMessage(this.message);
-		verify(this.pubSubTemplate)
-				.publish("testTopic", "testPayload".getBytes(),
-						Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1"));
-	}
+    Message<String> testMessage =
+        new GenericMessage<String>("testPayload", Collections.singletonMap("message_id", "123"));
 
-	@Test
-	public void publishWithSuccessCallback() throws Exception {
+    AtomicReference<String> messageIdRef = new AtomicReference<>();
+    AtomicReference<String> ackIdRef = new AtomicReference<>();
 
-		SettableListenableFuture<String> future = new SettableListenableFuture<>();
-		future.set("published12345");
-		when(this.pubSubTemplate.publish(eq("testTopic"), eq("testPayload"), anyMap())).thenReturn(future);
+    this.adapter.setSuccessCallback(
+        (ackId, message) -> {
+          messageIdRef.set(message.getHeaders().get("message_id", String.class));
+          ackIdRef.set(ackId);
+        });
 
-		Message<String> aMessage = new GenericMessage<String>("testPayload", Collections.singletonMap("message_id", "123"));
+    this.adapter.handleMessage(testMessage);
+    Awaitility.await().atMost(Duration.ofSeconds(1)).untilAtomic(messageIdRef, notNullValue());
 
-		AtomicReference<String> messageIdRef = new AtomicReference<>();
-		AtomicReference<String> ackIdRef = new AtomicReference<>();
+    assertThat(messageIdRef).hasValue("123");
+    assertThat(ackIdRef).hasValue("published12345");
+  }
 
-		this.adapter.setSuccessCallback((ackId, message) -> {
-			messageIdRef.set(message.getHeaders().get("message_id", String.class));
-			ackIdRef.set(ackId);
-		});
+  @Test
+  public void publishWithFailureCallback() throws Exception {
 
-		this.adapter.handleMessage(aMessage);
-		Awaitility.await().atMost(Duration.ofSeconds(1))
-				.untilAtomic(messageIdRef, notNullValue());
+    SettableListenableFuture<String> future = new SettableListenableFuture<>();
+    future.setException(new RuntimeException("boom!"));
+    when(this.pubSubTemplate.publish(eq("testTopic"), eq("testPayload"), anyMap()))
+        .thenReturn(future);
 
-		assertThat(messageIdRef).hasValue("123");
-		assertThat(ackIdRef).hasValue("published12345");
-	}
+    Message<String> testMessage =
+        new GenericMessage("testPayload", Collections.singletonMap("message_id", "123"));
 
-	@Test
-	public void publishWithFailureCallback() throws Exception {
+    AtomicReference<Throwable> failureCauseRef = new AtomicReference<>();
+    AtomicReference<String> messageIdRef = new AtomicReference<>();
 
-		SettableListenableFuture<String> future = new SettableListenableFuture<>();
-		future.setException(new RuntimeException("boom!"));
-		when(this.pubSubTemplate.publish(eq("testTopic"), eq("testPayload"), anyMap())).thenReturn(future);
+    this.adapter.setFailureCallback(
+        (exception, message) -> {
+          failureCauseRef.set(exception);
+          messageIdRef.set(message.getHeaders().get("message_id", String.class));
+        });
 
-		Message<String> aMessage = new GenericMessage("testPayload", Collections.singletonMap("message_id", "123"));
+    this.adapter.handleMessage(testMessage);
+    Awaitility.await().atMost(Duration.ofSeconds(1)).untilAtomic(messageIdRef, notNullValue());
 
-		AtomicReference<Throwable> failureCauseRef = new AtomicReference<>();
-		AtomicReference<String> messageIdRef = new AtomicReference<>();
-
-		this.adapter.setFailureCallback((exception, message) -> {
-			failureCauseRef.set(exception);
-			messageIdRef.set(message.getHeaders().get("message_id", String.class));
-		});
-
-		this.adapter.handleMessage(aMessage);
-		Awaitility.await().atMost(Duration.ofSeconds(1))
-				.untilAtomic(messageIdRef, notNullValue());
-
-		assertThat(messageIdRef).hasValue("123");
-		Throwable cause = failureCauseRef.get();
-		assertThat(cause).isInstanceOf(RuntimeException.class).hasMessage("boom!");
-
-	}
-
+    assertThat(messageIdRef).hasValue("123");
+    Throwable cause = failureCauseRef.get();
+    assertThat(cause).isInstanceOf(RuntimeException.class).hasMessage("boom!");
+  }
 }

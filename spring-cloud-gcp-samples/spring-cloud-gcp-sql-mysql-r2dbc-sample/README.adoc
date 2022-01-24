@@ -1,12 +1,12 @@
-= Spring Cloud GCP MySQL Sample
+= Spring Cloud GCP MySQL R2DBC Sample
 
-This code sample demonstrates how to connect to a MySQL Google Cloud SQL instance using the link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-r2dbc[Spring Cloud GCP R2DBC Starter].
+This code sample demonstrates how to connect to a MySQL Google Cloud SQL instance using the link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-mysql-r2dbc[Spring Cloud GCP MySQL R2DBC Starter].
 
 You will create an instance, a database within the instance, populate the database and then query it.
 
 == Setup
 
-image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-sample/README.adoc]
+image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-r2dbc-sample/README.adoc]
 
 1. Follow https://cloud.google.com/sql/docs/mysql/quickstart[these instructions] to set up a Google Cloud Project with billing enabled.
 
@@ -17,12 +17,11 @@ If you decided to set a root password for your instance footnoteref:[note,Google
 
 4. Open the link:src/main/resources/application.properties[application.properties] file and replace the following:
 - *[database-name]* with the name of the database you created in step 3.
-- *[instance-connection-name]* with the instance name of the MySQL instance you created in step 1.
-- *[username]* with the username for the instance you created in step 1. This should be in the "Users" section of your instance in the console.
+- *[instance-connection-name]* with the instance name (in the format [GCP_PROJECT_ID]:[REGION]:[INSTANCE_NAME]) of the MySQL instance you created in step 1.
++
+If you would like to use a different user instead of the default (`root`), set the `spring.r2dbc.username` property appropriately.
 +
 If you set a root password, add the `spring.r2dbc.password` property with the root password as the value.
-Note that the password can also be set in the connection url.
-The template is as follows: `r2dbc:gcp:mysql://{username}:{password}@{instance-connection-name}/{database-name}`.
 
 5. https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login[If you are authenticated in the Cloud SDK], your credentials will be automatically found by the Spring Boot Starter for Google Cloud SQL.
 

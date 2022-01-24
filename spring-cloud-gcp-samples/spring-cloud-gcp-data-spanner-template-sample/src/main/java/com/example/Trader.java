@@ -16,121 +16,127 @@
 
 package com.example;
 
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Objects;
-
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Objects;
 
-/**
- * A sample entity.
- *
- * @author Mike Eltsufin
- */
+/** A sample entity. */
 @Table(name = "traders_template")
 public class Trader {
-	@PrimaryKey
-	@Column(name = "trader_id")
-	private String traderId;
+  @PrimaryKey
+  @Column(name = "trader_id")
+  private String traderId;
 
-	@Column(name = "first_name")
-	private String firstName;
+  @Column(name = "first_name")
+  private String firstName;
 
-	@Column(name = "last_name")
-	private String lastName;
+  @Column(name = "last_name")
+  private String lastName;
 
-	@Column(name = "CREATED_ON")
+  @Column(name = "CREATED_ON")
+  private java.sql.Timestamp createdOn;
 
-	private java.sql.Timestamp createdOn;
+  @Column(name = "MODIFIED_ON")
+  private List<java.sql.Timestamp> modifiedOn;
 
-	@Column(name = "MODIFIED_ON")
+  @Interleaved(lazy = true)
+  private List<Trade> trades;
 
-	private List<java.sql.Timestamp> modifiedOn;
+  public Trader() {}
 
-	@Interleaved(lazy = true)
-	private List<Trade> trades;
+  public Trader(String traderId, String firstName, String lastName) {
+    this.traderId = traderId;
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
 
-	public Trader() {
-	}
+  public Trader(
+      String traderId,
+      String firstName,
+      String lastName,
+      Timestamp createdOn,
+      List<Timestamp> modifiedOn) {
+    this.traderId = traderId;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.createdOn = createdOn;
+    this.modifiedOn = modifiedOn;
+  }
 
-	public Trader(String traderId, String firstName, String lastName) {
-		this.traderId = traderId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
+  public String getTraderId() {
+    return this.traderId;
+  }
 
-	public Trader(String traderId, String firstName, String lastName, Timestamp createdOn, List<Timestamp> modifiedOn) {
-		this.traderId = traderId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.createdOn = createdOn;
-		this.modifiedOn = modifiedOn;
-	}
+  public void setTraderId(String traderId) {
+    this.traderId = traderId;
+  }
 
-	public String getTraderId() {
-		return this.traderId;
-	}
+  public String getFirstName() {
+    return this.firstName;
+  }
 
-	public void setTraderId(String traderId) {
-		this.traderId = traderId;
-	}
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-	public String getFirstName() {
-		return this.firstName;
-	}
+  public String getLastName() {
+    return this.lastName;
+  }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-	public String getLastName() {
-		return this.lastName;
-	}
+  public List<Trade> getTrades() {
+    return trades;
+  }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+  public void setTrades(List<Trade> trades) {
+    this.trades = trades;
+  }
 
-	public List<Trade> getTrades() {
-		return trades;
-	}
+  @Override
+  public String toString() {
+    return "Trader{"
+        + "traderId='"
+        + this.traderId
+        + '\''
+        + ", firstName='"
+        + this.firstName
+        + '\''
+        + ", lastName='"
+        + this.lastName
+        + '\''
+        + ", createdOn="
+        + this.createdOn
+        + ", modifiedOn="
+        + this.modifiedOn
+        + '}';
+  }
 
-	public void setTrades(List<Trade> trades) {
-		this.trades = trades;
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Trader trader = (Trader) o;
+    return Objects.equals(getTraderId(), trader.getTraderId())
+        && Objects.equals(getFirstName(), trader.getFirstName())
+        && Objects.equals(getLastName(), trader.getLastName())
+        && Objects.equals(this.createdOn, trader.createdOn)
+        && Objects.equals(this.modifiedOn, trader.modifiedOn);
+  }
 
-	@Override
-	public String toString() {
-		return "Trader{" +
-				"traderId='" + this.traderId + '\'' +
-				", firstName='" + this.firstName + '\'' +
-				", lastName='" + this.lastName + '\'' +
-				", createdOn=" + this.createdOn +
-				", modifiedOn=" + this.modifiedOn +
-				'}';
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		Trader trader = (Trader) o;
-		return Objects.equals(getTraderId(), trader.getTraderId()) &&
-				Objects.equals(getFirstName(), trader.getFirstName()) &&
-				Objects.equals(getLastName(), trader.getLastName()) &&
-				Objects.equals(this.createdOn, trader.createdOn) &&
-				Objects.equals(this.modifiedOn, trader.modifiedOn);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(getTraderId(), getFirstName(), getLastName(), this.createdOn, this.modifiedOn);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        getTraderId(), getFirstName(), getLastName(), this.createdOn, this.modifiedOn);
+  }
 }

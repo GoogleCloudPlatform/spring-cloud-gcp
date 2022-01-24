@@ -16,9 +16,6 @@
 
 package com.example;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import brave.SpanCustomizer;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.AckMode;
@@ -26,11 +23,13 @@ import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAd
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -39,85 +38,87 @@ import org.springframework.integration.channel.DirectChannel;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * Sample spring boot application.
- *
- * @author Ray Tsang
- * @author Mike Eltsufin
- */
+/** Sample spring boot application. */
 @SpringBootApplication
+@Component
 public class Application implements WebMvcConfigurer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-	@Autowired
-	PubSubTemplate pubSubTemplate;
+  @Value("${sampleSubscription}")
+  private String sampleSubscription;
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+  @Value("${sampleTopic}")
+  private String sampleTopic;
 
-	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
+  @Autowired PubSubTemplate pubSubTemplate;
 
-	@Autowired
-	private SpanCustomizer spanCustomizer;
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
 
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new HandlerInterceptor() {
-			@Override
-			public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-					throws Exception {
-				spanCustomizer.tag("session-id", request.getSession().getId());
-				spanCustomizer.tag("environment", "QA");
+  @Bean
+  public RestTemplate restTemplate() {
+    return new RestTemplate();
+  }
 
-				return true;
-			}
-		});
-	}
+  @Autowired private SpanCustomizer spanCustomizer;
 
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(
+        new HandlerInterceptor() {
+          @Override
+          public boolean preHandle(
+              HttpServletRequest request, HttpServletResponse response, Object handler)
+              throws Exception {
+            spanCustomizer.tag("session-id", request.getSession().getId());
+            spanCustomizer.tag("environment", "QA");
 
-	// MESSAGE SENDING
-	@Bean
-	public DirectChannel pubsubOutputChannel() {
-		return new DirectChannel();
-	}
+            return true;
+          }
+        });
+  }
 
-	@Bean
-	@ServiceActivator(inputChannel = "pubsubOutputChannel")
-	public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
-		return new PubSubMessageHandler(pubsubTemplate, "traceTopic");
-	}
+  // MESSAGE SENDING
+  @Bean
+  public DirectChannel pubsubOutputChannel() {
+    return new DirectChannel();
+  }
 
-	// MESSAGE RECEIVING
+  @Bean
+  @ServiceActivator(inputChannel = "pubsubOutputChannel")
+  public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
+    return new PubSubMessageHandler(pubsubTemplate, sampleTopic);
+  }
 
-	@Bean
-	public MessageChannel pubsubInputChannel() {
-		return new DirectChannel();
-	}
+  // MESSAGE RECEIVING
 
-	@Bean
-	public PubSubInboundChannelAdapter messageChannelAdapter(
-			@Qualifier("pubsubInputChannel") MessageChannel inputChannel,
-			PubSubTemplate pubSubTemplate) {
-		PubSubInboundChannelAdapter adapter =
-				new PubSubInboundChannelAdapter(pubSubTemplate, "traceSubscription");
-		adapter.setOutputChannel(inputChannel);
-		adapter.setAckMode(AckMode.AUTO_ACK);
-		adapter.setPayloadType(String.class);
-		return adapter;
-	}
+  @Bean
+  public MessageChannel pubsubInputChannel() {
+    return new DirectChannel();
+  }
 
-	@ServiceActivator(inputChannel = "pubsubInputChannel")
-	public void messageReceiver(String payload,
-			@Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
-		LOGGER.info("Message arrived! Payload: " + payload);
-	}
+  @Bean
+  public PubSubInboundChannelAdapter messageChannelAdapter(
+      @Qualifier("pubsubInputChannel") MessageChannel inputChannel, PubSubTemplate pubSubTemplate) {
+    PubSubInboundChannelAdapter adapter =
+        new PubSubInboundChannelAdapter(pubSubTemplate, sampleSubscription);
+    adapter.setOutputChannel(inputChannel);
+    adapter.setAckMode(AckMode.AUTO_ACK);
+    adapter.setPayloadType(String.class);
+    return adapter;
+  }
+
+  @ServiceActivator(inputChannel = "pubsubInputChannel")
+  public void messageReceiver(
+      String payload,
+      @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
+    LOGGER.info("Message arrived! Payload: " + payload);
+  }
 }

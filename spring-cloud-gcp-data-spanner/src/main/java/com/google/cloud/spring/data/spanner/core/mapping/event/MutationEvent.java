@@ -16,64 +16,61 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping.event;
 
+import com.google.cloud.spanner.Mutation;
 import java.util.List;
 import java.util.Objects;
-
-import com.google.cloud.spanner.Mutation;
-
 import org.springframework.context.ApplicationEvent;
 
-/**
- * An event holding mutations that are submitted to Cloud Spanner.
- *
- * @author Chengyuan Zhao
- */
+/** An event holding mutations that are submitted to Cloud Spanner. */
 public class MutationEvent extends ApplicationEvent {
 
-	private final Iterable targetEntities;
+  private final Iterable targetEntities;
 
-	/**
-	 * Constructor.
-	 * @param source the mutations for the event initially occurred. (never {@code null})
-	 * @param targetEntities the target entities that need to be mutated. This may be
-	 *     {@code null} depending on the type of delete request.
-	 */
-	public MutationEvent(List<Mutation> source, Iterable targetEntities) {
-		super(source);
-		this.targetEntities = targetEntities;
-	}
+  /**
+   * Constructor.
+   *
+   * @param source the mutations for the event initially occurred. (never {@code null})
+   * @param targetEntities the target entities that need to be mutated. This may be {@code null}
+   *     depending on the type of delete request.
+   */
+  public MutationEvent(List<Mutation> source, Iterable targetEntities) {
+    super(source);
+    this.targetEntities = targetEntities;
+  }
 
-	/**
-	 * Get the mutations underlying this event.
-	 * @return the list of mutations.
-	 */
-	public List<Mutation> getMutations() {
-		return (List<Mutation>) getSource();
-	}
+  /**
+   * Get the mutations underlying this event.
+   *
+   * @return the list of mutations.
+   */
+  public List<Mutation> getMutations() {
+    return (List<Mutation>) getSource();
+  }
 
-	/**
-	 * Get the list of entities that needed to be deleted.
-	 * @return This may be {@code null} depending on the type of delete request.
-	 */
-	public Iterable getTargetEntities() {
-		return this.targetEntities;
-	}
+  /**
+   * Get the list of entities that needed to be deleted.
+   *
+   * @return This may be {@code null} depending on the type of delete request.
+   */
+  public Iterable getTargetEntities() {
+    return this.targetEntities;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		MutationEvent that = (MutationEvent) o;
-		return getMutations().equals(that.getMutations())
-				&& Objects.equals(getTargetEntities(), that.getTargetEntities());
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    MutationEvent that = (MutationEvent) o;
+    return getMutations().equals(that.getMutations())
+        && Objects.equals(getTargetEntities(), that.getTargetEntities());
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getMutations().hashCode(), getTargetEntities());
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(getMutations().hashCode(), getTargetEntities());
+  }
 }

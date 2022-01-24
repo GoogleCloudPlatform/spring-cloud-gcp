@@ -16,45 +16,45 @@
 
 package com.google.cloud.spring.vision;
 
-import com.google.cloud.storage.Blob;
-import com.google.protobuf.InvalidProtocolBufferException;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.cloud.storage.Blob;
+import com.google.protobuf.InvalidProtocolBufferException;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 class OcrPageRangeTests {
 
-	private static final byte[] SINGLE_JSON_OUTPUT_PAGE = "{'responses':[{'fullTextAnnotation': {'text': 'hello_world'}}]}"
-			.getBytes();
+  private static final byte[] SINGLE_JSON_OUTPUT_PAGE =
+      "{'responses':[{'fullTextAnnotation': {'text': 'hello_world'}}]}".getBytes();
 
-	@Test
-	void testParseCorrectPageRange() {
-		Blob blob = Mockito.mock(Blob.class);
-		when(blob.getName()).thenReturn("blob-output-8-to-12.json");
-		when(blob.getContent()).thenReturn(SINGLE_JSON_OUTPUT_PAGE);
+  @Test
+  void testParseCorrectPageRange() {
+    Blob blob = Mockito.mock(Blob.class);
+    when(blob.getName()).thenReturn("blob-output-8-to-12.json");
+    when(blob.getContent()).thenReturn(SINGLE_JSON_OUTPUT_PAGE);
 
-		OcrPageRange ocrPageRange = new OcrPageRange(blob);
-		assertThat(ocrPageRange.getStartPage()).isEqualTo(8);
-		assertThat(ocrPageRange.getEndPage()).isEqualTo(12);
-	}
+    OcrPageRange ocrPageRange = new OcrPageRange(blob);
+    assertThat(ocrPageRange.getStartPage()).isEqualTo(8);
+    assertThat(ocrPageRange.getEndPage()).isEqualTo(12);
+  }
 
-	@Test
-	void testBlobCaching() throws InvalidProtocolBufferException {
-		Blob blob = Mockito.mock(Blob.class);
-		when(blob.getName()).thenReturn("blob-output-1-to-1.json");
-		when(blob.getContent()).thenReturn(SINGLE_JSON_OUTPUT_PAGE);
+  @Test
+  void testBlobCaching() throws InvalidProtocolBufferException {
+    Blob blob = Mockito.mock(Blob.class);
+    when(blob.getName()).thenReturn("blob-output-1-to-1.json");
+    when(blob.getContent()).thenReturn(SINGLE_JSON_OUTPUT_PAGE);
 
-		OcrPageRange ocrPageRange = new OcrPageRange(blob);
+    OcrPageRange ocrPageRange = new OcrPageRange(blob);
 
-		assertThat(ocrPageRange.getPage(1).getText()).isEqualTo("hello_world");
-		assertThat(ocrPageRange.getPage(1).getText()).isEqualTo("hello_world");
-		assertThat(ocrPageRange.getPages()).hasSize(1);
+    assertThat(ocrPageRange.getPage(1).getText()).isEqualTo("hello_world");
+    assertThat(ocrPageRange.getPage(1).getText()).isEqualTo("hello_world");
+    assertThat(ocrPageRange.getPages()).hasSize(1);
 
-		/* Retrieved content of blob 3 times, but getContent() only called once due to caching. */
-		verify(blob, times(1)).getContent();
-	}
+    /* Retrieved content of blob 3 times, but getContent() only called once due to caching. */
+    verify(blob, times(1)).getContent();
+  }
 }

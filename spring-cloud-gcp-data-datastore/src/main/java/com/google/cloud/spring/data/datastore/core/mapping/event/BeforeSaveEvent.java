@@ -18,18 +18,14 @@ package com.google.cloud.spring.data.datastore.core.mapping.event;
 
 import java.util.List;
 
-/**
- * An event published immediately before a save event to Cloud Datastore.
- *
- * @author Chengyuan Zhao
- */
+/** An event published immediately before a save event to Cloud Datastore. */
 public class BeforeSaveEvent extends SaveEvent {
-	/**
-	 * Constructor.
-	 *
-	 * @param javaEntities The original Java entities being saved. Each entity may result in
-	 */
-	public BeforeSaveEvent(List javaEntities) {
-		super(javaEntities);
-	}
+  /**
+   * Constructor.
+   *
+   * @param javaEntities The original Java entities being saved. Each entity may result in
+   */
+  public BeforeSaveEvent(List javaEntities) {
+    super(javaEntities);
+  }
 }

@@ -22,45 +22,38 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-/**
- * An example demonstrating the use of both Spring Data Cloud Spanner and Datastore.
- *
- * @author Chengyuan Zhao
- */
+/** An example demonstrating the use of both Spring Data Cloud Spanner and Datastore. */
 @SpringBootApplication
 public class MultipleDataModuleExample {
 
-	// A Spring Data Datastore repository
-	@Autowired
-	PersonRepository personRepository;
+  // A Spring Data Datastore repository
+  @Autowired PersonRepository personRepository;
 
-	// A Spring Data Cloud Spanner repository
-	@Autowired
-	TraderRepository traderRepository;
+  // A Spring Data Cloud Spanner repository
+  @Autowired TraderRepository traderRepository;
 
-	public static void main(String[] args) {
-		SpringApplication.run(MultipleDataModuleExample.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(MultipleDataModuleExample.class, args);
+  }
 
-	@Bean
-	ApplicationRunner applicationRunner() {
-		return args -> {
+  @Bean
+  ApplicationRunner applicationRunner() {
+    return args -> {
+      System.out.println("Deleting all entities.");
 
-			System.out.println("Deleting all entities.");
+      this.personRepository.deleteAll();
+      this.traderRepository.deleteAll();
 
-			this.personRepository.deleteAll();
-			this.traderRepository.deleteAll();
+      System.out.println("The number of Person entities is now: " + this.personRepository.count());
+      System.out.println("The number of Trader entities is now: " + this.traderRepository.count());
 
-			System.out.println("The number of Person entities is now: " + this.personRepository.count());
-			System.out.println("The number of Trader entities is now: " + this.traderRepository.count());
+      System.out.println("Saving one entity with each repository.");
 
-			System.out.println("Saving one entity with each repository.");
+      this.traderRepository.save(new Trader("id1", "trader", "one"));
+      this.personRepository.save(new Person(1L, "person1"));
 
-			this.traderRepository.save(new Trader("id1", "trader", "one"));
-			this.personRepository.save(new Person(1L, "person1"));
-
-			System.out.println("The number of Person entities is now: " + this.personRepository.count());
-			System.out.println("The number of Trader entities is now: " + this.traderRepository.count());
-		};
-	}
+      System.out.println("The number of Person entities is now: " + this.personRepository.count());
+      System.out.println("The number of Trader entities is now: " + this.traderRepository.count());
+    };
+  }
 }

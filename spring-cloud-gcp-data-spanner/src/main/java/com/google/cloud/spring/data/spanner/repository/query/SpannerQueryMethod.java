@@ -18,7 +18,6 @@ package com.google.cloud.spring.data.spanner.repository.query;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
-
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.projection.ProjectionFactory;
@@ -30,61 +29,60 @@ import org.springframework.util.StringUtils;
 /**
  * A Query Method for Spanner.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class SpannerQueryMethod extends QueryMethod {
 
-	private final Method method;
+  private final Method queryMethod;
 
-	/**
-	 * Creates a new {@link QueryMethod} from the given parameters. Looks up the correct
-	 * query to use for following invocations of the method given.
-	 *
-	 * @param method must not be {@literal null}.
-	 * @param metadata must not be {@literal null}.
-	 * @param factory must not be {@literal null}.
-	 */
-	public SpannerQueryMethod(Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
-		super(method, metadata, factory);
-		this.method = method;
-	}
+  /**
+   * Creates a new {@link QueryMethod} from the given parameters. Looks up the correct query to use
+   * for following invocations of the method given.
+   *
+   * @param queryMethod must not be {@literal null}.
+   * @param metadata must not be {@literal null}.
+   * @param factory must not be {@literal null}.
+   */
+  public SpannerQueryMethod(
+      Method queryMethod, RepositoryMetadata metadata, ProjectionFactory factory) {
+    super(queryMethod, metadata, factory);
+    this.queryMethod = queryMethod;
+  }
 
-	/**
-	 * Returns whether the method has an annotated query.
-	 *
-	 * @return true this query method has annotation that holds the query string.
-	 */
-	public boolean hasAnnotatedQuery() {
-		return findAnnotatedQuery().isPresent();
-	}
+  /**
+   * Returns whether the method has an annotated query.
+   *
+   * @return true this query method has annotation that holds the query string.
+   */
+  public boolean hasAnnotatedQuery() {
+    return findAnnotatedQuery().isPresent();
+  }
 
-	private Optional<String> findAnnotatedQuery() {
+  private Optional<String> findAnnotatedQuery() {
 
-		return Optional.ofNullable(getQueryAnnotation())
-				.map(AnnotationUtils::getValue)
-				.map(String.class::cast)
-				.filter(StringUtils::hasText);
-	}
+    return Optional.ofNullable(getQueryAnnotation())
+        .map(AnnotationUtils::getValue)
+        .map(String.class::cast)
+        .filter(StringUtils::hasText);
+  }
 
-	/**
-	 * Get the method metadata.
-	 * @return the method metadata.
-	 */
-	public Method getMethod() {
-		return this.method;
-	}
+  /**
+   * Get the method metadata.
+   *
+   * @return the method metadata.
+   */
+  Method getQueryMethod() {
+    return this.queryMethod;
+  }
 
-	/**
-	 * Returns the {@link Query} annotation that is applied to the method or {@code null}
-	 * if none available.
-	 *
-	 * @return the query annotation that is applied.
-	 */
-	@Nullable
-	Query getQueryAnnotation() {
-		return AnnotatedElementUtils.findMergedAnnotation(this.method, Query.class);
-	}
+  /**
+   * Returns the {@link Query} annotation that is applied to the method or {@code null} if none
+   * available.
+   *
+   * @return the query annotation that is applied.
+   */
+  @Nullable
+  Query getQueryAnnotation() {
+    return AnnotatedElementUtils.findMergedAnnotation(this.queryMethod, Query.class);
+  }
 }

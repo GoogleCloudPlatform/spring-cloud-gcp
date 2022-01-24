@@ -16,15 +16,12 @@
 
 package com.google.cloud.spring.data.firestore.repository.config;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Collections;
-
 import com.google.cloud.spring.data.firestore.Document;
 import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
 import com.google.cloud.spring.data.firestore.repository.support.FirestoreRepositoryFactoryBean;
-import org.w3c.dom.Element;
-
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Collections;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.data.config.ParsingUtils;
@@ -32,59 +29,57 @@ import org.springframework.data.repository.config.AnnotationRepositoryConfigurat
 import org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport;
 import org.springframework.data.repository.config.XmlRepositoryConfigurationSource;
 import org.springframework.data.repository.core.RepositoryMetadata;
+import org.w3c.dom.Element;
 
 /**
  * Configures the use of Firestore repositories.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
-public class FirestoreRepositoryConfigurationExtension extends RepositoryConfigurationExtensionSupport {
-	@Override
-	protected String getModulePrefix() {
-		return "firestore-reactive";
-	}
+public class FirestoreRepositoryConfigurationExtension
+    extends RepositoryConfigurationExtensionSupport {
+  @Override
+  protected String getModulePrefix() {
+    return "firestore-reactive";
+  }
 
-	@Override
-	public String getRepositoryFactoryBeanClassName() {
-		return FirestoreRepositoryFactoryBean.class.getName();
-	}
+  @Override
+  public String getRepositoryFactoryBeanClassName() {
+    return FirestoreRepositoryFactoryBean.class.getName();
+  }
 
-	@Override
-	public void postProcess(BeanDefinitionBuilder builder,
-			AnnotationRepositoryConfigurationSource config) {
-		AnnotationAttributes attributes = config.getAttributes();
+  @Override
+  public void postProcess(
+      BeanDefinitionBuilder builder, AnnotationRepositoryConfigurationSource config) {
+    AnnotationAttributes attributes = config.getAttributes();
 
-		builder.addPropertyReference("firestoreTemplate",
-				attributes.getString("firestoreTemplateRef"));
-		builder.addPropertyReference("firestoreMappingContext",
-				attributes.getString("firestoreMappingContextRef"));
-	}
+    builder.addPropertyReference("firestoreTemplate", attributes.getString("firestoreTemplateRef"));
+    builder.addPropertyReference(
+        "firestoreMappingContext", attributes.getString("firestoreMappingContextRef"));
+  }
 
-	@Override
-	protected Collection<Class<? extends Annotation>> getIdentifyingAnnotations() {
-		return Collections.singleton(Document.class);
-	}
+  @Override
+  protected Collection<Class<? extends Annotation>> getIdentifyingAnnotations() {
+    return Collections.singleton(Document.class);
+  }
 
-	@Override
-	protected Collection<Class<?>> getIdentifyingTypes() {
-		return Collections.singleton(FirestoreReactiveRepository.class);
-	}
+  @Override
+  protected Collection<Class<?>> getIdentifyingTypes() {
+    return Collections.singleton(FirestoreReactiveRepository.class);
+  }
 
-	@Override
-	public void postProcess(BeanDefinitionBuilder builder,
-			XmlRepositoryConfigurationSource config) {
-		Element element = config.getElement();
+  @Override
+  public void postProcess(BeanDefinitionBuilder builder, XmlRepositoryConfigurationSource config) {
+    Element element = config.getElement();
 
-		ParsingUtils.setPropertyReference(builder, element, "firestore-template-ref",
-				"firestoreTemplate");
-		ParsingUtils.setPropertyReference(builder, element, "firestore-mapping-context-ref",
-				"firestoreMappingContext");
-	}
+    ParsingUtils.setPropertyReference(
+        builder, element, "firestore-template-ref", "firestoreTemplate");
+    ParsingUtils.setPropertyReference(
+        builder, element, "firestore-mapping-context-ref", "firestoreMappingContext");
+  }
 
-	@Override
-	protected boolean useRepositoryConfiguration(RepositoryMetadata repositoryMetadata) {
-		return repositoryMetadata.isReactiveRepository();
-	}
+  @Override
+  protected boolean useRepositoryConfiguration(RepositoryMetadata repositoryMetadata) {
+    return repositoryMetadata.isReactiveRepository();
+  }
 }

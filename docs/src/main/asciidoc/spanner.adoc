@@ -317,8 +317,11 @@ CREATE TABLE items (
 ) PRIMARY KEY (grandParentId, parentId, id)
 ----
 
-Note that embedded properties' column names must all be unique.
+Note that the following restrictions apply when you use embedded objects:
 
+- Embedded properties' column names must all be unique.
+- Embedded properties must not be passed through a constructor and the property must be mutable; otherwise you'll get an error, such as `SpannerDataException: Column not found`.
+  Be careful about this restriction when you use Kotlin's data class to hold an embedded property.
 
 ==== Relationships
 
@@ -623,6 +626,10 @@ public class ConverterConfiguration {
 	}
 }
 ----
+
+Note that `ConverterAwareMappingSpannerEntityProcessor` takes a list of Converters for write and read operations to support multiple user-defined types.
+When there are duplicate Converters for a user-defined class in the list, it chooses the first matching item in the lists.
+This means that, for a user-defined class `U`, write operations use the first `Converter<U, ...>` from the write Converters and read operations use the first `Converter<..., U>` from the read Converters.
 
 ==== Custom Converter for Struct Array Columns
 If a `Converter<Struct, A>` is provided, then properties of type `List<A>` can be used in your entity types.

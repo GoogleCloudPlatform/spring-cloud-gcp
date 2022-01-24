@@ -16,49 +16,58 @@
 
 package com.google.cloud.spring.autoconfigure.sql;
 
-/**
- * Enum class containing MySQL and Postgresql constants.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
- */
+/** Enum class containing MySQL and Postgresql constants. */
 public enum DatabaseType {
-	/**
-	 * MySQL constants.
-	 */
-	MYSQL("com.mysql.cj.jdbc.Driver", "jdbc:mysql://google/%s?"
-			+ "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
-			+ "&cloudSqlInstance=%s", "root"),
+  /** MySQL constants. */
+  MYSQL(
+      "com.mysql.cj.jdbc.Driver",
+      "jdbc:mysql://google/%s?"
+          + "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
+          + "&cloudSqlInstance=%s",
+      "r2dbc:gcp:mysql://%s/%s",
+      "root"),
 
-	/**
-	 * Postgresql constants.
-	 */
-	POSTGRESQL("org.postgresql.Driver", "jdbc:postgresql://google/%s?"
-			+ "socketFactory=com.google.cloud.sql.postgres.SocketFactory"
-			+ "&cloudSqlInstance=%s", "postgres");
+  /** Postgresql constants. */
+  POSTGRESQL(
+      "org.postgresql.Driver",
+      "jdbc:postgresql://google/%s?"
+          + "socketFactory=com.google.cloud.sql.postgres.SocketFactory"
+          + "&cloudSqlInstance=%s",
+      "r2dbc:gcp:postgres://%s/%s",
+      "postgres");
 
-	private final String jdbcDriverName;
+  private final String jdbcDriverName;
 
-	private final String jdbcUrlTemplate;
+  private final String jdbcUrlTemplate;
 
-	private final String defaultUsername;
+  private final String r2dbcUrlTemplate;
 
-	DatabaseType(String jdbcDriverName, String jdbcUrlTemplate, String defaultUsername) {
-		this.jdbcDriverName = jdbcDriverName;
-		this.jdbcUrlTemplate = jdbcUrlTemplate;
-		this.defaultUsername = defaultUsername;
-	}
+  private final String defaultUsername;
 
-	public String getJdbcDriverName() {
-		return this.jdbcDriverName;
-	}
+  DatabaseType(
+      String jdbcDriverName,
+      String jdbcUrlTemplate,
+      String r2dbcUrlTemplate,
+      String defaultUsername) {
+    this.jdbcDriverName = jdbcDriverName;
+    this.jdbcUrlTemplate = jdbcUrlTemplate;
+    this.r2dbcUrlTemplate = r2dbcUrlTemplate;
+    this.defaultUsername = defaultUsername;
+  }
 
-	public String getJdbcUrlTemplate() {
-		return this.jdbcUrlTemplate;
-	}
+  public String getJdbcDriverName() {
+    return this.jdbcDriverName;
+  }
 
-	public String getDefaultUsername() {
-		return defaultUsername;
-	}
+  public String getJdbcUrlTemplate() {
+    return this.jdbcUrlTemplate;
+  }
+
+  public String getR2dbcUrlTemplate() {
+    return this.r2dbcUrlTemplate;
+  }
+
+  public String getDefaultUsername() {
+    return defaultUsername;
+  }
 }

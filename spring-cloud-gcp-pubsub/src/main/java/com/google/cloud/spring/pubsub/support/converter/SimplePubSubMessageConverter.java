@@ -16,79 +16,69 @@
 
 package com.google.cloud.spring.pubsub.support.converter;
 
+import com.google.protobuf.ByteString;
+import com.google.pubsub.v1.PubsubMessage;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-import com.google.protobuf.ByteString;
-import com.google.pubsub.v1.PubsubMessage;
-
 /**
- * A simple {@link PubSubMessageConverter} that directly maps payloads of type
- * {@code byte[]}, {@code ByteString}, {@code ByteBuffer}, and {@code String} to Pub/Sub messages.
- *
- * @author Mike Eltsufin
+ * A simple {@link PubSubMessageConverter} that directly maps payloads of type {@code byte[]},
+ * {@code ByteString}, {@code ByteBuffer}, and {@code String} to Pub/Sub messages.
  */
 public class SimplePubSubMessageConverter implements PubSubMessageConverter {
 
-	private final Charset charset;
+  private final Charset charset;
 
-	public SimplePubSubMessageConverter() {
-		this(Charset.defaultCharset());
-	}
+  public SimplePubSubMessageConverter() {
+    this(Charset.defaultCharset());
+  }
 
-	public SimplePubSubMessageConverter(Charset charset) {
-		this.charset = charset;
-	}
+  public SimplePubSubMessageConverter(Charset charset) {
+    this.charset = charset;
+  }
 
-	@Override
-	public PubsubMessage toPubSubMessage(Object payload, Map<String, String> headers) {
+  @Override
+  public PubsubMessage toPubSubMessage(Object payload, Map<String, String> headers) {
 
-		ByteString convertedPayload;
+    ByteString convertedPayload;
 
-		if (payload instanceof ByteString) {
-			convertedPayload = (ByteString) payload;
-		}
-		else if (payload instanceof String) {
-			convertedPayload = ByteString.copyFrom(((String) payload).getBytes(this.charset));
-		}
-		else if (payload instanceof ByteBuffer) {
-			convertedPayload = ByteString.copyFrom((ByteBuffer) payload);
-		}
-		else if (payload instanceof byte[]) {
-			convertedPayload = ByteString.copyFrom((byte[]) payload);
-		}
-		else {
-			throw new PubSubMessageConversionException("Unable to convert payload of type " +
-					payload.getClass().getName() + " to byte[] for sending to Pub/Sub.");
-		}
+    if (payload instanceof ByteString) {
+      convertedPayload = (ByteString) payload;
+    } else if (payload instanceof String) {
+      convertedPayload = ByteString.copyFrom(((String) payload).getBytes(this.charset));
+    } else if (payload instanceof ByteBuffer) {
+      convertedPayload = ByteString.copyFrom((ByteBuffer) payload);
+    } else if (payload instanceof byte[]) {
+      convertedPayload = ByteString.copyFrom((byte[]) payload);
+    } else {
+      throw new PubSubMessageConversionException(
+          "Unable to convert payload of type "
+              + payload.getClass().getName()
+              + " to byte[] for sending to Pub/Sub.");
+    }
 
-		return byteStringToPubSubMessage(convertedPayload, headers);
+    return byteStringToPubSubMessage(convertedPayload, headers);
+  }
 
-	}
+  @Override
+  public <T> T fromPubSubMessage(PubsubMessage message, Class<T> payloadType) {
+    T result;
+    byte[] payload = message.getData().toByteArray();
 
-	@Override
-	public <T> T fromPubSubMessage(PubsubMessage message, Class<T> payloadType) {
-		T result;
-		byte[] payload = message.getData().toByteArray();
+    if (payloadType == ByteString.class) {
+      result = (T) message.getData();
+    } else if (payloadType == String.class) {
+      result = (T) new String(payload, this.charset);
+    } else if (payloadType == ByteBuffer.class) {
+      result = (T) ByteBuffer.wrap(payload);
+    } else if (payloadType == byte[].class) {
+      result = (T) payload;
+    } else {
+      throw new PubSubMessageConversionException(
+          "Unable to convert Pub/Sub message to payload of type " + payloadType.getName() + ".");
+    }
 
-		if (payloadType == ByteString.class) {
-			result = (T) message.getData();
-		}
-		else if (payloadType == String.class) {
-			result = (T) new String(payload, this.charset);
-		}
-		else if (payloadType == ByteBuffer.class) {
-			result = (T) ByteBuffer.wrap(payload);
-		}
-		else if (payloadType == byte[].class) {
-			result = (T) payload;
-		}
-		else {
-			throw new PubSubMessageConversionException("Unable to convert Pub/Sub message to payload of type " +
-					payloadType.getName() + ".");
-		}
-
-		return result;
-	}
+    return result;
+  }
 }

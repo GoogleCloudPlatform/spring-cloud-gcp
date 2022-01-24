@@ -21,19 +21,17 @@ import org.springframework.core.NestedRuntimeException;
 /**
  * Describes error conditions that can occur when interfacing with Cloud Vision APIs.
  *
- * @author Daniel Zou
- *
  * @since 1.1
  */
 public final class CloudVisionException extends NestedRuntimeException {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	CloudVisionException(String message, Exception errorCause) {
-		super(message, errorCause);
-	}
+  CloudVisionException(String message, Exception errorCause) {
+    super(message, errorCause);
+  }
 
-	CloudVisionException(String message) {
-		super(message);
-	}
+  CloudVisionException(String message) {
+    super(message);
+  }
 }

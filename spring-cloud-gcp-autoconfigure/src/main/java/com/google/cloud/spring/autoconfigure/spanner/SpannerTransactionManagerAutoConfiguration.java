@@ -16,11 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.spanner;
 
-import java.util.function.Supplier;
-
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spring.data.spanner.core.SpannerTransactionManager;
-
+import java.util.function.Supplier;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -35,8 +33,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 /**
  * Auto-configuration for {@link SpannerTransactionManager}.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Configuration(proxyBeanMethods = false)
@@ -45,32 +41,30 @@ import org.springframework.transaction.PlatformTransactionManager;
 @AutoConfigureBefore(TransactionAutoConfiguration.class)
 public class SpannerTransactionManagerAutoConfiguration {
 
-	/**
-	 * Config settings.
-	 */
-	@Configuration(proxyBeanMethods = false)
-	static class DatabaseClientTransactionManagerConfiguration {
+  /** Config settings. */
+  @Configuration(proxyBeanMethods = false)
+  static class DatabaseClientTransactionManagerConfiguration {
 
-		private final Supplier<DatabaseClient> databaseClientProvider;
+    private final Supplier<DatabaseClient> databaseClientProvider;
 
-		private final TransactionManagerCustomizers transactionManagerCustomizers;
+    private final TransactionManagerCustomizers transactionManagerCustomizers;
 
-		DatabaseClientTransactionManagerConfiguration(Supplier<DatabaseClient> databaseClientProvider,
-				ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
-			this.databaseClientProvider = databaseClientProvider;
-			this.transactionManagerCustomizers = transactionManagerCustomizers
-					.getIfAvailable();
-		}
+    DatabaseClientTransactionManagerConfiguration(
+        Supplier<DatabaseClient> databaseClientProvider,
+        ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
+      this.databaseClientProvider = databaseClientProvider;
+      this.transactionManagerCustomizers = transactionManagerCustomizers.getIfAvailable();
+    }
 
-		@Bean
-		@ConditionalOnMissingBean(PlatformTransactionManager.class)
-		public SpannerTransactionManager spannerTransactionManager() {
-			SpannerTransactionManager transactionManager = new SpannerTransactionManager(
-					this.databaseClientProvider);
-			if (this.transactionManagerCustomizers != null) {
-				this.transactionManagerCustomizers.customize(transactionManager);
-			}
-			return transactionManager;
-		}
-	}
+    @Bean
+    @ConditionalOnMissingBean(PlatformTransactionManager.class)
+    public SpannerTransactionManager spannerTransactionManager() {
+      SpannerTransactionManager transactionManager =
+          new SpannerTransactionManager(this.databaseClientProvider);
+      if (this.transactionManagerCustomizers != null) {
+        this.transactionManagerCustomizers.customize(transactionManager);
+      }
+      return transactionManager;
+    }
+  }
 }

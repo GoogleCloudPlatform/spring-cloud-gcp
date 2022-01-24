@@ -16,42 +16,39 @@
 
 package com.google.cloud.spring.data.spanner.test.domain;
 
-import java.util.Objects;
-
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import java.util.Objects;
 
 /**
- * A class containing the key components needed to identify a {@link Trade}. This is
- * intentionally not used in {@link Trade} but is used by its children to test that
- * embedded objects containing keys are resolved properly.
- *
- * @author Chengyuan Zhao
+ * A class containing the key components needed to identify a {@link Trade}. This is intentionally
+ * not used in {@link Trade} but is used by its children to test that embedded objects containing
+ * keys are resolved properly.
  */
 public class TradeIdentifier {
 
-	@Column(name = "id")
-	@PrimaryKey
-	String identifier;
+  @Column(name = "id")
+  @PrimaryKey
+  String identifier;
 
-	@PrimaryKey(keyOrder = 2)
-	String trader_id;
+  @PrimaryKey(keyOrder = 2)
+  String trader_id;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		TradeIdentifier that = (TradeIdentifier) o;
-		return Objects.equals(this.identifier, that.identifier) &&
-				Objects.equals(this.trader_id, that.trader_id);
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TradeIdentifier that = (TradeIdentifier) o;
+    return Objects.equals(this.identifier, that.identifier)
+        && Objects.equals(this.trader_id, that.trader_id);
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.identifier, this.trader_id);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.identifier, this.trader_id);
+  }
 }

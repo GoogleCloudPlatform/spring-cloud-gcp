@@ -20,7 +20,6 @@ import com.google.cloud.datastore.BaseEntity;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
 import com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType;
-
 import org.springframework.core.convert.ConversionException;
 import org.springframework.data.mapping.model.PropertyValueProvider;
 import org.springframework.data.util.TypeInformation;
@@ -28,51 +27,48 @@ import org.springframework.data.util.TypeInformation;
 /**
  * A {@link PropertyValueProvider} for Datastore entities.
  *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
-public class EntityPropertyValueProvider implements PropertyValueProvider<DatastorePersistentProperty> {
-	private final BaseEntity entity;
+public class EntityPropertyValueProvider
+    implements PropertyValueProvider<DatastorePersistentProperty> {
+  private final BaseEntity entity;
 
-	private final ReadWriteConversions conversion;
+  private final ReadWriteConversions conversion;
 
+  public EntityPropertyValueProvider(BaseEntity entity, ReadWriteConversions readWriteConversions) {
+    if (entity == null) {
+      throw new DatastoreDataException("A non-null entity is required");
+    }
+    this.entity = entity;
+    this.conversion = readWriteConversions;
+  }
 
-	public EntityPropertyValueProvider(BaseEntity entity, ReadWriteConversions readWriteConversions) {
-		if (entity == null) {
-			throw new DatastoreDataException("A non-null entity is required");
-		}
-		this.entity = entity;
-		this.conversion = readWriteConversions;
-	}
+  @Override
+  public <T> T getPropertyValue(DatastorePersistentProperty persistentProperty) {
+    if (persistentProperty.isIdProperty()) {
+      return this.conversion.convertOnRead(
+          this.entity.getKey(), EmbeddedType.NOT_EMBEDDED, persistentProperty.getTypeInformation());
+    } else if (!persistentProperty.isColumnBacked()) {
+      return null;
+    }
+    return getPropertyValue(
+        persistentProperty.getFieldName(),
+        persistentProperty.getEmbeddedType(),
+        persistentProperty.getTypeInformation());
+  }
 
-	@Override
-	public <T> T getPropertyValue(DatastorePersistentProperty persistentProperty) {
-		if (persistentProperty.isIdProperty()) {
-			return this.conversion.convertOnRead(this.entity.getKey(), EmbeddedType.NOT_EMBEDDED,
-					persistentProperty.getTypeInformation());
-		}
-		else if (!persistentProperty.isColumnBacked()) {
-			return null;
-		}
-		return getPropertyValue(persistentProperty.getFieldName(),
-				persistentProperty.getEmbeddedType(),
-				persistentProperty.getTypeInformation());
-	}
+  @SuppressWarnings("unchecked")
+  public <T> T getPropertyValue(
+      String fieldName, EmbeddedType embeddedType, TypeInformation targetTypeInformation) {
+    if (!this.entity.contains(fieldName)) {
+      return null;
+    }
 
-	@SuppressWarnings("unchecked")
-	public <T> T getPropertyValue(String fieldName, EmbeddedType embeddedType, TypeInformation targetTypeInformation) {
-		if (!this.entity.contains(fieldName)) {
-			return null;
-		}
-
-		try {
-			return this.conversion.convertOnRead(this.entity.getValue(fieldName).get(),
-					embeddedType, targetTypeInformation);
-		}
-		catch (ConversionException | DatastoreDataException ex) {
-			throw new DatastoreDataException("Unable to read property " + fieldName, ex);
-		}
-	}
+    try {
+      return this.conversion.convertOnRead(
+          this.entity.getValue(fieldName).get(), embeddedType, targetTypeInformation);
+    } catch (ConversionException | DatastoreDataException ex) {
+      throw new DatastoreDataException("Unable to read property " + fieldName, ex);
+    }
+  }
 }

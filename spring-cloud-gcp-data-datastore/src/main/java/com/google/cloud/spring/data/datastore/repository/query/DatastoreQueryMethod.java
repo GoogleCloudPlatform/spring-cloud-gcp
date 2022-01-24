@@ -20,7 +20,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
-
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.RepositoryMetadata;
@@ -30,91 +29,88 @@ import org.springframework.lang.Nullable;
 /**
  * A metadata class for Query Methods for Spring Data Cloud Datastore.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class DatastoreQueryMethod extends QueryMethod {
 
-	private final Method method;
+  private final Method method;
 
-	private Boolean isNullable = null;
+  private Boolean isNullable = null;
 
-	/**
-	 * Creates a new {@link QueryMethod} from the given parameters. Looks up the correct
-	 * query to use for following invocations of the method given.
-	 *
-	 * @param method must not be {@literal null}.
-	 * @param metadata must not be {@literal null}.
-	 * @param factory must not be {@literal null}.
-	 */
-	DatastoreQueryMethod(Method method, RepositoryMetadata metadata,
-			ProjectionFactory factory) {
-		super(method, metadata, factory);
-		this.method = method;
-	}
+  /**
+   * Creates a new {@link QueryMethod} from the given parameters. Looks up the correct query to use
+   * for following invocations of the method given.
+   *
+   * @param method must not be {@literal null}.
+   * @param metadata must not be {@literal null}.
+   * @param factory must not be {@literal null}.
+   */
+  DatastoreQueryMethod(Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
+    super(method, metadata, factory);
+    this.method = method;
+  }
 
-	/**
-	 * Returns whether the method has an annotated query.
-	 *
-	 * @return true if this query method has annotation that holds the query string.
-	 */
-	boolean hasAnnotatedQuery() {
-		return getQueryAnnotation() != null;
-	}
+  /**
+   * Returns whether the method has an annotated query.
+   *
+   * @return true if this query method has annotation that holds the query string.
+   */
+  boolean hasAnnotatedQuery() {
+    return getQueryAnnotation() != null;
+  }
 
-	/**
-	 * Get the type of the collection of the returned object.
-	 * @return the collection type of returned object if it is collection-like.
-	 * {@code null} otherwise
-	 */
-	Class getCollectionReturnType() {
-		return isCollectionQuery() ? this.method.getReturnType() : null;
-	}
+  /**
+   * Get the type of the collection of the returned object.
+   *
+   * @return the collection type of returned object if it is collection-like. {@code null} otherwise
+   */
+  Class getCollectionReturnType() {
+    return isCollectionQuery() ? this.method.getReturnType() : null;
+  }
 
-	/**
-	 * Return whether this method is an exists query.
-	 *
-	 * @return true if this query method is an exists query, and false otherwise.
-	 */
-	boolean isExistsQuery() {
-		Query annotation = getQueryAnnotation();
-		return annotation != null && annotation.exists();
-	}
+  /**
+   * Return whether this method is an exists query.
+   *
+   * @return true if this query method is an exists query, and false otherwise.
+   */
+  boolean isExistsQuery() {
+    Query annotation = getQueryAnnotation();
+    return annotation != null && annotation.exists();
+  }
 
-	/**
-	 * Return whether this method is a count query.
-	 *
-	 * @return true if this query method is a count query, and false otherwise.
-	 */
-	boolean isCountQuery() {
-		Query annotation = getQueryAnnotation();
-		return annotation != null && annotation.count();
-	}
+  /**
+   * Return whether this method is a count query.
+   *
+   * @return true if this query method is a count query, and false otherwise.
+   */
+  boolean isCountQuery() {
+    Query annotation = getQueryAnnotation();
+    return annotation != null && annotation.count();
+  }
 
-	/**
-	 * Returns the {@link Query} annotation that is applied to the method or {@code null}
-	 * if none available.
-	 *
-	 * @return the query annotation that is applied.
-	 */
-	@Nullable
-	Query getQueryAnnotation() {
-		return AnnotatedElementUtils.findMergedAnnotation(this.method, Query.class);
-	}
+  /**
+   * Returns the {@link Query} annotation that is applied to the method or {@code null} if none
+   * available.
+   *
+   * @return the query annotation that is applied.
+   */
+  @Nullable
+  Query getQueryAnnotation() {
+    return AnnotatedElementUtils.findMergedAnnotation(this.method, Query.class);
+  }
 
+  boolean isNullable() {
+    if (this.isNullable == null) {
+      Optional<Annotation> nullable =
+          Arrays.stream(this.method.getAnnotations())
+              .filter(annotation -> annotation instanceof Nullable)
+              .findFirst();
+      this.isNullable = nullable.isPresent();
+    }
+    return this.isNullable;
+  }
 
-	boolean isNullable() {
-		if (this.isNullable == null) {
-			Optional<Annotation> nullable = Arrays.stream(this.method.getAnnotations())
-					.filter(annotation -> annotation instanceof Nullable)
-					.findFirst();
-			this.isNullable = nullable.isPresent();
-		}
-		return this.isNullable;
-	}
-
-	boolean isOptionalReturnType() {
-		return this.method.getReturnType().isAssignableFrom(Optional.class);
-	}
+  boolean isOptionalReturnType() {
+    return this.method.getReturnType().isAssignableFrom(Optional.class);
+  }
 }

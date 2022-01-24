@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.data.datastore.it;
 
-import java.io.IOException;
-
 import com.google.auth.Credentials;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
@@ -32,79 +30,77 @@ import com.google.cloud.spring.data.datastore.core.convert.DefaultDatastoreEntit
 import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreRepositories;
-
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-/**
- * Config class for the integration tests.
- *
- * @author Chengyuan Zhao
- */
+/** Config class for the integration tests. */
 @Configuration
 @PropertySource("application-test.properties")
 @EnableDatastoreRepositories
 @EnableTransactionManagement
 public class DatastoreIntegrationTestConfiguration {
 
-	private final String projectId = new DefaultGcpProjectIdProvider().getProjectId();
+  private final String projectId = new DefaultGcpProjectIdProvider().getProjectId();
 
-	private final Credentials credentials = new DefaultCredentialsProvider(
-			com.google.cloud.spring.core.Credentials::new).getCredentials();
+  private final Credentials credentials =
+      new DefaultCredentialsProvider(com.google.cloud.spring.core.Credentials::new)
+          .getCredentials();
 
-	@Value("${test.integration.datastore.namespacePrefix}")
-	private String namespacePrefix;
+  @Value("${test.integration.datastore.namespacePrefix}")
+  private String namespacePrefix;
 
-	public DatastoreIntegrationTestConfiguration() throws IOException {
-	}
+  public DatastoreIntegrationTestConfiguration() throws IOException {}
 
-	@Bean
-	public TransactionalTemplateService transactionalTemplateService() {
-		return new TransactionalTemplateService();
-	}
+  @Bean
+  public TransactionalTemplateService transactionalTemplateService() {
+    return new TransactionalTemplateService();
+  }
 
-	@Bean
-	DatastoreTransactionManager datastoreTransactionManager(Datastore datastore) {
-		return new DatastoreTransactionManager(() -> datastore);
-	}
+  @Bean
+  DatastoreTransactionManager datastoreTransactionManager(Datastore datastore) {
+    return new DatastoreTransactionManager(() -> datastore);
+  }
 
-	@Bean
-	public Datastore datastore() {
-		DatastoreOptions.Builder builder = DatastoreOptions.newBuilder()
-				.setProjectId(this.projectId)
-				.setHeaderProvider(new UserAgentHeaderProvider(this.getClass()))
-				.setCredentials(this.credentials);
-		if (this.namespacePrefix != null) {
-			builder.setNamespace(this.namespacePrefix + System.currentTimeMillis());
-		}
-		return builder.build().getService();
-	}
+  @Bean
+  public Datastore datastore() {
+    DatastoreOptions.Builder builder =
+        DatastoreOptions.newBuilder()
+            .setProjectId(this.projectId)
+            .setHeaderProvider(new UserAgentHeaderProvider(this.getClass()))
+            .setCredentials(this.credentials);
+    if (this.namespacePrefix != null) {
+      builder.setNamespace(this.namespacePrefix + System.currentTimeMillis());
+    }
+    return builder.build().getService();
+  }
 
-	@Bean
-	public DatastoreMappingContext datastoreMappingContext() {
-		return new DatastoreMappingContext();
-	}
+  @Bean
+  public DatastoreMappingContext datastoreMappingContext() {
+    return new DatastoreMappingContext();
+  }
 
-	@Bean
-	public DatastoreEntityConverter datastoreEntityConverter(
-			DatastoreMappingContext datastoreMappingContext, ObjectToKeyFactory objectToKeyFactory) {
-		return new DefaultDatastoreEntityConverter(datastoreMappingContext, objectToKeyFactory);
-	}
+  @Bean
+  public DatastoreEntityConverter datastoreEntityConverter(
+      DatastoreMappingContext datastoreMappingContext, ObjectToKeyFactory objectToKeyFactory) {
+    return new DefaultDatastoreEntityConverter(datastoreMappingContext, objectToKeyFactory);
+  }
 
-	@Bean
-	public ObjectToKeyFactory objectToKeyFactory(Datastore datastore) {
-		return new DatastoreServiceObjectToKeyFactory(() -> datastore);
-	}
+  @Bean
+  public ObjectToKeyFactory objectToKeyFactory(Datastore datastore) {
+    return new DatastoreServiceObjectToKeyFactory(() -> datastore);
+  }
 
-	@Bean
-	public DatastoreTemplate datastoreTemplate(Datastore datastore,
-			DatastoreMappingContext datastoreMappingContext,
-			DatastoreEntityConverter datastoreEntityConverter,
-			ObjectToKeyFactory objectToKeyFactory) {
-		return new DatastoreTemplate(() -> datastore, datastoreEntityConverter,
-				datastoreMappingContext, objectToKeyFactory);
-	}
+  @Bean
+  public DatastoreTemplate datastoreTemplate(
+      Datastore datastore,
+      DatastoreMappingContext datastoreMappingContext,
+      DatastoreEntityConverter datastoreEntityConverter,
+      ObjectToKeyFactory objectToKeyFactory) {
+    return new DatastoreTemplate(
+        () -> datastore, datastoreEntityConverter, datastoreMappingContext, objectToKeyFactory);
+  }
 }

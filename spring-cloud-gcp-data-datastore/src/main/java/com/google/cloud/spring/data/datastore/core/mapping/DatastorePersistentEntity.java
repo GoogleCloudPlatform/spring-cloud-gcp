@@ -17,7 +17,6 @@
 package com.google.cloud.spring.data.datastore.core.mapping;
 
 import java.util.List;
-
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.data.mapping.model.MutablePersistentEntity;
@@ -26,65 +25,63 @@ import org.springframework.data.mapping.model.MutablePersistentEntity;
  * Persistent entity for Google Cloud Datastore.
  *
  * @param <T> the type of the property described by this persistent property
- *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
-public interface DatastorePersistentEntity<T> extends
-		MutablePersistentEntity<T, DatastorePersistentProperty>, ApplicationContextAware {
+public interface DatastorePersistentEntity<T>
+    extends MutablePersistentEntity<T, DatastorePersistentProperty>, ApplicationContextAware {
 
-	/**
-	 * Gets the name of the Datastore Kind.
-	 * @return the name of the Datastore Kind that stores these entities.
-	 */
-	String kindName();
+  /**
+   * Gets the name of the Datastore Kind.
+   *
+   * @return the name of the Datastore Kind that stores these entities.
+   */
+  String kindName();
 
-	/**
-	 * Gets the ID property, and will throw {@link DatastoreDataException} if the entity
-	 * does not have an ID property.
-	 * @return the ID property.
-	 */
-	DatastorePersistentProperty getIdPropertyOrFail();
+  /**
+   * Gets the ID property, and will throw {@link DatastoreDataException} if the entity does not have
+   * an ID property.
+   *
+   * @return the ID property.
+   */
+  DatastorePersistentProperty getIdPropertyOrFail();
 
-	/**
-	 * Get the name of the field for subtype discrimination if there is one.
-	 * @return the name of the discrimination field. {@code null} if this persistent entity
-	 * doesn't have one.
-	 */
-	String getDiscriminationFieldName();
+  /**
+   * Get the name of the field for subtype discrimination if there is one.
+   *
+   * @return the name of the discrimination field. {@code null} if this persistent entity doesn't
+   *     have one.
+   */
+  String getDiscriminationFieldName();
 
-	/**
-	 * Get the discrimination value corresponding to this persistent entity type.
-	 * @return the value or {@code null} if there is no value for this type.
-	 */
-	String getDiscriminatorValue();
+  /**
+   * Get the discrimination value corresponding to this persistent entity type.
+   *
+   * @return the value or {@code null} if there is no value for this type.
+   */
+  String getDiscriminatorValue();
 
-	/**
-	 * Get the discrimination values corresponding to this persistent entity ad its supertypes.
-	 * @return the list of values where the first item is this entity's discrimination value
-	 */
-	List<String> getCompatibleDiscriminationValues();
+  /**
+   * Get the discrimination values corresponding to this persistent entity ad its supertypes.
+   *
+   * @return the list of values where the first item is this entity's discrimination value
+   */
+  List<String> getCompatibleDiscriminationValues();
 
-	/**
-	 * Applies the given {@link PropertyHandler} to all
-	 * {@link DatastorePersistentProperty} contained in this
-	 * {@link DatastorePersistentEntity} that are stored as columns in the table for this
-	 * entity. This means properties backed by descendants or references to entities of
-	 * other Kinds are not provided to the {@code handler}.
-	 *
-	 * @param handler must not be {@literal null}.
-	 */
-	void doWithColumnBackedProperties(
-			PropertyHandler<DatastorePersistentProperty> handler);
+  /**
+   * Applies the given {@link PropertyHandler} to all {@link DatastorePersistentProperty} contained
+   * in this {@link DatastorePersistentEntity} that are stored as columns in the table for this
+   * entity. This means properties backed by descendants or references to entities of other Kinds
+   * are not provided to the {@code handler}.
+   *
+   * @param handler must not be {@literal null}.
+   */
+  void doWithColumnBackedProperties(PropertyHandler<DatastorePersistentProperty> handler);
 
-	/**
-	 * Applies the given {@link PropertyHandler} to all
-	 * {@link DatastorePersistentProperty} contained in this
-	 * {@link DatastorePersistentEntity} that are properties backed by descendants.
-	 *
-	 * @param handler must not be {@literal null}.
-	 */
-	void doWithDescendantProperties(
-			PropertyHandler<DatastorePersistentProperty> handler);
+  /**
+   * Applies the given {@link PropertyHandler} to all {@link DatastorePersistentProperty} contained
+   * in this {@link DatastorePersistentEntity} that are properties backed by descendants.
+   *
+   * @param handler must not be {@literal null}.
+   */
+  void doWithDescendantProperties(PropertyHandler<DatastorePersistentProperty> handler);
 }

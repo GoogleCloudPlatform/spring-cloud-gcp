@@ -16,54 +16,50 @@
 
 package com.google.cloud.spring.logging;
 
-
+import com.google.cloud.spring.logging.extractors.TraceIdExtractor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.cloud.spring.logging.extractors.TraceIdExtractor;
-
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
- * {@link org.springframework.web.servlet.HandlerInterceptor} that extracts the request
- * trace ID from the "x-cloud-trace-context" HTTP header and stores it in a thread-local
- * using {@link TraceIdLoggingEnhancer#setCurrentTraceId}.
+ * {@link org.springframework.web.servlet.HandlerInterceptor} that extracts the request trace ID
+ * from the "x-cloud-trace-context" HTTP header and stores it in a thread-local using {@link
+ * TraceIdLoggingEnhancer#setCurrentTraceId}.
  *
- * <p>The {@link TraceIdLoggingEnhancer} can then be used in a logging appender to add the
- * trace ID metadata to log messages.
- *
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
+ * <p>The {@link TraceIdLoggingEnhancer} can then be used in a logging appender to add the trace ID
+ * metadata to log messages.
  */
 public class TraceIdLoggingWebMvcInterceptor implements HandlerInterceptor {
 
-	private final TraceIdExtractor traceIdExtractor;
+  private final TraceIdExtractor traceIdExtractor;
 
-	public TraceIdLoggingWebMvcInterceptor(TraceIdExtractor extractor) {
-		Assert.notNull(extractor, "A valid trace id extractor is required.");
-		this.traceIdExtractor = extractor;
-	}
+  public TraceIdLoggingWebMvcInterceptor(TraceIdExtractor extractor) {
+    Assert.notNull(extractor, "A valid trace id extractor is required.");
+    this.traceIdExtractor = extractor;
+  }
 
-	public TraceIdExtractor getTraceIdExtractor() {
-		return this.traceIdExtractor;
-	}
+  public TraceIdExtractor getTraceIdExtractor() {
+    return this.traceIdExtractor;
+  }
 
-	@Override
-	public boolean preHandle(HttpServletRequest req,
-			HttpServletResponse resp, Object handler) {
-		String traceId = this.traceIdExtractor.extractTraceIdFromRequest(req);
-		if (traceId != null) {
-			TraceIdLoggingEnhancer.setCurrentTraceId(traceId);
-		}
-		return true;
-	}
+  @Override
+  public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handler) {
+    String traceId = this.traceIdExtractor.extractTraceIdFromRequest(req);
+    if (traceId != null) {
+      TraceIdLoggingEnhancer.setCurrentTraceId(traceId);
+    }
+    return true;
+  }
 
-	@Override
-	public void afterCompletion(HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse, Object handler, Exception e) {
-		// Note: the thread-local is currently not fully cleared, but just set to null
-		// See: https://github.com/GoogleCloudPlatform/google-cloud-java/issues/2746
-		TraceIdLoggingEnhancer.setCurrentTraceId(null);
-	}
+  @Override
+  public void afterCompletion(
+      HttpServletRequest httpServletRequest,
+      HttpServletResponse httpServletResponse,
+      Object handler,
+      Exception e) {
+    // Note: the thread-local is currently not fully cleared, but just set to null
+    // See: https://github.com/GoogleCloudPlatform/google-cloud-java/issues/2746
+    TraceIdLoggingEnhancer.setCurrentTraceId(null);
+  }
 }

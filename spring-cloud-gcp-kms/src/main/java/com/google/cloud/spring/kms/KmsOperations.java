@@ -21,71 +21,64 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 /**
  * Describes supported operations that one can perform on the KMS API.
  *
- * <p>For the methods you need specify the secret from GCP KMS by resource string.
- * The following secret resource syntax is supported:
+ * <p>For the methods you need specify the secret from GCP KMS by resource string. The following
+ * secret resource syntax is supported:
  *
- * 1. Shortest form - specify the key by key ring ID, and key ID.
- * Project is derived through {@link GcpProjectIdProvider}. The location is assumed to be `global`.
- * {key-ring-id}/{key-id}
+ * <p>1. Shortest form - specify the key by key ring ID, and key ID. Project is derived through
+ * {@link GcpProjectIdProvider}. The location is assumed to be `global`. {key-ring-id}/{key-id}
  *
- * 2. Short form - specify location ID, key ring ID, and key ID. Project is derived through {@link GcpProjectIdProvider}.
- * {location-id}/{key-ring-id}/{key-id}
+ * <p>2. Short form - specify location ID, key ring ID, and key ID. Project is derived through
+ * {@link GcpProjectIdProvider}. {location-id}/{key-ring-id}/{key-id}
  *
- * 3. Full form - specify project ID, location ID, key ring ID, and key ID
+ * <p>3. Full form - specify project ID, location ID, key ring ID, and key ID
  * {project-id}/{location-id}/{key-ring-id}/{key-id}
  *
- * 4. Long form - specify project ID, location ID, key ring ID, and key ID (full resource name)
+ * <p>4. Long form - specify project ID, location ID, key ring ID, and key ID (full resource name)
  * projects/{project-id}/locations/{location-id}/keyRings/{key-ring-id}/cryptoKeys/{key-id}
- *
- * @author Emmanouil Gkatziouras
  */
 public interface KmsOperations {
 
-	/**
-	 * Encrypt the {@code text} using the specified KMS resource string {@code cryptoKey}.
-	 *
-	 * <p>
-	 * An encryption request will be issued using GCP KMS.
-	 *
-	 * @param cryptoKey The KMS resource string
-	 * @param text UTF-8 encoded text to encrypt
-	 * @return The encrypted bytes
-	 */
-	byte[] encryptText(String cryptoKey, String text);
+  /**
+   * Encrypt the {@code text} using the specified KMS resource string {@code cryptoKey}.
+   *
+   * <p>An encryption request will be issued using GCP KMS.
+   *
+   * @param cryptoKey The KMS resource string
+   * @param text UTF-8 encoded text to encrypt
+   * @return The encrypted bytes
+   */
+  byte[] encryptText(String cryptoKey, String text);
 
-	/**
-	 * Encrypt the {@code bytes} using the specified KMS resource string {@code cryptoKey}.
-	 *
-	 * <p>
-	 * An encryption request will be issued using GCP KMS.
-	 *
-	 * @param cryptoKey The KMS resource string
-	 * @param bytes The bytes to encrypt
-	 * @return The encrypted bytes
-	 */
-	byte[] encryptBytes(String cryptoKey, byte[] bytes);
+  /**
+   * Encrypt the {@code bytes} using the specified KMS resource string {@code cryptoKey}.
+   *
+   * <p>An encryption request will be issued using GCP KMS.
+   *
+   * @param cryptoKey The KMS resource string
+   * @param bytes The bytes to encrypt
+   * @return The encrypted bytes
+   */
+  byte[] encryptBytes(String cryptoKey, byte[] bytes);
 
-	/**
-	 * Decrypt the text using the specified KMS resource string {@code cryptoKey}
-	 *
-	 * <p>
-	 * A decryption request will be issued using GCP KMS.
-	 *
-	 * @param cryptoKey The KMS resource string
-	 * @param cipherText The encrypted bytes
-	 * @return The decrypted bytes
-	 */
-	byte[] decryptBytes(String cryptoKey, byte[] cipherText);
+  /**
+   * Decrypt the text using the specified KMS resource string {@code cryptoKey}
+   *
+   * <p>A decryption request will be issued using GCP KMS.
+   *
+   * @param cryptoKey The KMS resource string
+   * @param cipherText The encrypted bytes
+   * @return The decrypted bytes
+   */
+  byte[] decryptBytes(String cryptoKey, byte[] cipherText);
 
-	/**
-	 * Decrypt the text using the specified KMS resource string {@code cryptoKey}
-	 *
-	 * <p>
-	 * A decryption request will be issued using GCP KMS.
-	 *
-	 * @param cryptoKey The KMS resource string
-	 * @param cipherText The encrypted bytes
-	 * @return The decrypted bytes UTF-8 encoded
-	 */
-	String decryptText(String cryptoKey, byte[] cipherText);
+  /**
+   * Decrypt the text using the specified KMS resource string {@code cryptoKey}
+   *
+   * <p>A decryption request will be issued using GCP KMS.
+   *
+   * @param cryptoKey The KMS resource string
+   * @param cipherText The encrypted bytes
+   * @return The decrypted bytes UTF-8 encoded
+   */
+  String decryptText(String cryptoKey, byte[] cipherText);
 }

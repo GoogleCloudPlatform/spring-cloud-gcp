@@ -21,13 +21,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import org.springframework.data.annotation.Reference;
 
 /**
- * Annotation for a class that indicates that a property is a collection of lazy loaded Datastore entities.
- *
- * @author Dmitry Solomakha
+ * Annotation for a class that indicates that a property is a collection of lazy loaded Datastore
+ * entities.
  *
  * @since 1.2.2
  */
@@ -35,5 +33,4 @@ import org.springframework.data.annotation.Reference;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Reference
-public @interface LazyReference {
-}
+public @interface LazyReference {}

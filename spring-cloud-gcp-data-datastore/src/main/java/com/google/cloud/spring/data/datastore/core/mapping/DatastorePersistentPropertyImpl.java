@@ -17,7 +17,6 @@
 package com.google.cloud.spring.data.datastore.core.mapping;
 
 import java.util.stream.Collectors;
-
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.model.AnnotationBasedPersistentProperty;
@@ -32,117 +31,114 @@ import org.springframework.util.StringUtils;
 /**
  * Persistent property metadata implementation for Datastore.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class DatastorePersistentPropertyImpl
-		extends AnnotationBasedPersistentProperty<DatastorePersistentProperty>
-		implements DatastorePersistentProperty {
+    extends AnnotationBasedPersistentProperty<DatastorePersistentProperty>
+    implements DatastorePersistentProperty {
 
-	private static final String KEY_FIELD_NAME = "__key__";
+  private static final String KEY_FIELD_NAME = "__key__";
 
-	private final FieldNamingStrategy fieldNamingStrategy;
+  private final FieldNamingStrategy fieldNamingStrategy;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param property the property to store
-	 * @param owner the entity to which this property belongs
-	 * @param simpleTypeHolder the type holder
-	 * @param fieldNamingStrategy the naming strategy used to get the column name of this
-	 * property
-	 */
-	DatastorePersistentPropertyImpl(Property property,
-			PersistentEntity<?, DatastorePersistentProperty> owner,
-			SimpleTypeHolder simpleTypeHolder, FieldNamingStrategy fieldNamingStrategy) {
-		super(property, owner, simpleTypeHolder);
-		this.fieldNamingStrategy = (fieldNamingStrategy != null)
-				? fieldNamingStrategy
-				: PropertyNameFieldNamingStrategy.INSTANCE;
-		verify();
-	}
+  /**
+   * Constructor.
+   *
+   * @param property the property to store
+   * @param owner the entity to which this property belongs
+   * @param simpleTypeHolder the type holder
+   * @param fieldNamingStrategy the naming strategy used to get the column name of this property
+   */
+  DatastorePersistentPropertyImpl(
+      Property property,
+      PersistentEntity<?, DatastorePersistentProperty> owner,
+      SimpleTypeHolder simpleTypeHolder,
+      FieldNamingStrategy fieldNamingStrategy) {
+    super(property, owner, simpleTypeHolder);
+    this.fieldNamingStrategy =
+        (fieldNamingStrategy != null)
+            ? fieldNamingStrategy
+            : PropertyNameFieldNamingStrategy.INSTANCE;
+    verify();
+  }
 
-	private void verify() {
-		if (hasFieldAnnotation()
-				&& (isDescendants() || isAssociation())) {
-			throw new DatastoreDataException(
-					"Property cannot be annotated as @Field if it is annotated @Descendants or @Reference: "
-							+ getFieldName());
-		}
-		if (isDescendants() && isAssociation()) {
-			throw new DatastoreDataException(
-					"Property cannot be annotated both @Descendants and @Reference: "
-							+ getFieldName());
-		}
-		if (isDescendants() && !isCollectionLike()) {
-			throw new DatastoreDataException(
-					"Only collection-like properties can contain the "
-							+ "descendant entity objects can be annotated @Descendants.");
-		}
-	}
+  private void verify() {
+    if (hasFieldAnnotation() && (isDescendants() || isAssociation())) {
+      throw new DatastoreDataException(
+          "Property cannot be annotated as @Field if it is annotated @Descendants or @Reference: "
+              + getFieldName());
+    }
+    if (isDescendants() && isAssociation()) {
+      throw new DatastoreDataException(
+          "Property cannot be annotated both @Descendants and @Reference: " + getFieldName());
+    }
+    if (isDescendants() && !isCollectionLike()) {
+      throw new DatastoreDataException(
+          "Only collection-like properties can contain the "
+              + "descendant entity objects can be annotated @Descendants.");
+    }
+  }
 
-	@Override
-	public String getFieldName() {
-		if (isIdProperty()) {
-			return KEY_FIELD_NAME;
-		}
-		if (StringUtils.hasText(getAnnotatedFieldName())) {
-			return getAnnotatedFieldName();
-		}
-		return this.fieldNamingStrategy.getFieldName(this);
-	}
+  @Override
+  public String getFieldName() {
+    if (isIdProperty()) {
+      return KEY_FIELD_NAME;
+    }
+    if (StringUtils.hasText(getAnnotatedFieldName())) {
+      return getAnnotatedFieldName();
+    }
+    return this.fieldNamingStrategy.getFieldName(this);
+  }
 
-	private boolean hasFieldAnnotation() {
-		return findAnnotation(Field.class) != null;
-	}
+  private boolean hasFieldAnnotation() {
+    return findAnnotation(Field.class) != null;
+  }
 
-	@Override
-	public boolean isDescendants() {
-		return findAnnotation(Descendants.class) != null;
-	}
+  @Override
+  public boolean isDescendants() {
+    return findAnnotation(Descendants.class) != null;
+  }
 
-	@Override
-	public boolean isUnindexed() {
-		return findAnnotation(Unindexed.class) != null;
-	}
+  @Override
+  public boolean isUnindexed() {
+    return findAnnotation(Unindexed.class) != null;
+  }
 
-	@Override
-	public boolean isColumnBacked() {
-		return !isDescendants() && !isAssociation();
-	}
+  @Override
+  public boolean isColumnBacked() {
+    return !isDescendants() && !isAssociation();
+  }
 
-	@Override
-	public EmbeddedType getEmbeddedType() {
-		return EmbeddedType.of(getTypeInformation());
-	}
+  @Override
+  public EmbeddedType getEmbeddedType() {
+    return EmbeddedType.of(getTypeInformation());
+  }
 
-	@Override
-	protected Association<DatastorePersistentProperty> createAssociation() {
-		return new Association<>(this, null);
-	}
+  @Override
+  protected Association<DatastorePersistentProperty> createAssociation() {
+    return new Association<>(this, null);
+  }
 
-	private String getAnnotatedFieldName() {
+  private String getAnnotatedFieldName() {
 
-		Field annotation = findAnnotation(Field.class);
+    Field annotation = findAnnotation(Field.class);
 
-		if (annotation != null && StringUtils.hasText(annotation.name())) {
-			return annotation.name();
-		}
+    if (annotation != null && StringUtils.hasText(annotation.name())) {
+      return annotation.name();
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	@Override
-	public Iterable<? extends TypeInformation<?>> getPersistentEntityTypes() {
-		return StreamUtils
-				.createStreamFromIterator(super.getPersistentEntityTypes().iterator())
-				.filter(typeInfo -> typeInfo.getType().isAnnotationPresent(Entity.class))
-				.collect(Collectors.toList());
-	}
+  @Override
+  public Iterable<? extends TypeInformation<?>> getPersistentEntityTypes() {
+    return StreamUtils.createStreamFromIterator(super.getPersistentEntityTypes().iterator())
+        .filter(typeInfo -> typeInfo.getType().isAnnotationPresent(Entity.class))
+        .collect(Collectors.toList());
+  }
 
-	@Override
-	public boolean isLazyLoaded() {
-		return findAnnotation(LazyReference.class) != null;
-	}
+  @Override
+  public boolean isLazyLoaded() {
+    return findAnnotation(LazyReference.class) != null;
+  }
 }

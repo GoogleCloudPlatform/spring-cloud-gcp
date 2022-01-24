@@ -16,26 +16,21 @@
 
 package com.google.cloud.spring.data.spanner.core.convert;
 
-import java.util.Set;
-
 import com.google.cloud.spanner.Struct;
-
+import java.util.Set;
 import org.springframework.data.convert.EntityReader;
 
 /**
  * An entity reader that can read from Spanner `Struct` types.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
  * @since 1.1
  */
 interface SpannerEntityReader extends EntityReader<Object, Struct> {
 
-	<R> R read(Class<R> type, Struct source, Set<String> includeColumns,
-			boolean allowMissingColumns);
+  <R> R read(Class<R> type, Struct source, Set<String> includeColumns, boolean allowMissingColumns);
 
-	@Override
-	default <R> R read(Class<R> type, Struct source) {
-		return read(type, source, null, false);
-	}
+  @Override
+  default <R> R read(Class<R> type, Struct source) {
+    return read(type, source, null, false);
+  }
 }

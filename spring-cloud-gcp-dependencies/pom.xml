@@ -11,7 +11,7 @@
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-dependencies</artifactId>
-	<version>2.0.7-SNAPSHOT</version>
+	<version>3.1.0-SNAPSHOT</version>
 
 	<name>Spring Cloud GCP Dependencies</name>
 	<description>Spring Cloud GCP Dependencies</description>
@@ -29,8 +29,8 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>24.0.0</gcp-libraries-bom.version>
-		<cloud-sql-socket-factory.version>1.4.0</cloud-sql-socket-factory.version>
+		<gcp-libraries-bom.version>24.2.0</gcp-libraries-bom.version>
+		<cloud-sql-socket-factory.version>1.4.2</cloud-sql-socket-factory.version>
 		<guava.version>31.0.1-jre</guava.version>
 	</properties>
 
@@ -185,7 +185,12 @@
 			</dependency>
 			<dependency>
 				<groupId>com.google.cloud</groupId>
-				<artifactId>spring-cloud-gcp-starter-sql-r2dbc</artifactId>
+				<artifactId>spring-cloud-gcp-starter-sql-mysql-r2dbc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>spring-cloud-gcp-starter-sql-postgres-r2dbc</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -253,13 +258,14 @@
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
 
-			<!-- spring-cloud-gcp-starter-sql-r2dbc -->
+			<!-- spring-cloud-gcp-starter-sql-mysql-r2dbc -->
 			<dependency>
 				<groupId>com.google.cloud.sql</groupId>
 				<artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
 
+			<!-- spring-cloud-gcp-starter-sql-postgres-r2dbc -->
 			<dependency>
 				<groupId>com.google.cloud.sql</groupId>
 				<artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>

@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.data.firestore.mapping;
 
-
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.mapping.context.AbstractMappingContext;
 import org.springframework.data.mapping.model.Property;
@@ -24,25 +23,23 @@ import org.springframework.data.mapping.model.SimpleTypeHolder;
 import org.springframework.data.util.TypeInformation;
 
 /**
- * A mapping context for Firestore that provides ways to create persistent entities and
- * properties.
- *
- * @author Dmitry Solomakha
+ * A mapping context for Firestore that provides ways to create persistent entities and properties.
  *
  * @since 1.2
  */
-public class FirestoreMappingContext extends
-		AbstractMappingContext<FirestorePersistentEntity<?>, FirestorePersistentProperty>
-		implements ApplicationContextAware {
+public class FirestoreMappingContext
+    extends AbstractMappingContext<FirestorePersistentEntity<?>, FirestorePersistentProperty>
+    implements ApplicationContextAware {
 
-	@Override
-	protected <T> FirestorePersistentEntity<?> createPersistentEntity(TypeInformation<T> typeInformation) {
-		return new FirestorePersistentEntityImpl<>(typeInformation);
-	}
+  @Override
+  protected <T> FirestorePersistentEntity<?> createPersistentEntity(
+      TypeInformation<T> typeInformation) {
+    return new FirestorePersistentEntityImpl<>(typeInformation);
+  }
 
-	@Override
-	protected FirestorePersistentProperty createPersistentProperty(Property property,
-			FirestorePersistentEntity<?> owner, SimpleTypeHolder simpleTypeHolder) {
-		return new FirestorePersistentPropertyImpl(property, owner, simpleTypeHolder);
-	}
+  @Override
+  protected FirestorePersistentProperty createPersistentProperty(
+      Property property, FirestorePersistentEntity<?> owner, SimpleTypeHolder simpleTypeHolder) {
+    return new FirestorePersistentPropertyImpl(property, owner, simpleTypeHolder);
+  }
 }

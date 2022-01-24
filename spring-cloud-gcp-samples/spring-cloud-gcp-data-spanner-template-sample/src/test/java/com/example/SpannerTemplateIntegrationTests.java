@@ -16,76 +16,56 @@
 
 package com.example;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
-
-/**
- * Tests for the Spanner template usage.
- *
- * @author Daniel Zou
- */
-@RunWith(SpringRunner.class)
-
+/** Tests for the Spanner template usage. */
+@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest
-public class SpannerTemplateIntegrationTests {
-	@Autowired
-	private SpannerOperations spannerOperations;
+class SpannerTemplateIntegrationTests {
+  @Autowired private SpannerOperations spannerOperations;
 
-	@Autowired
-	private SpannerSchemaUtils spannerSchemaUtils;
+  @Autowired private SpannerSchemaUtils spannerSchemaUtils;
 
-	@Autowired
-	private SpannerTemplateExample spannerTemplateExample;
+  @Autowired private SpannerTemplateExample spannerTemplateExample;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Spanner integration tests are disabled. "
-						+ "Please use '-Dit.spanner=true' to enable them. ",
-				System.getProperty("it.spanner"), is("true"));
-	}
+  @BeforeEach
+  @AfterEach
+  void cleanupSpannerTables() {
+    this.spannerTemplateExample.createTablesIfNotExists();
+    this.spannerOperations.delete(Trader.class, KeySet.all());
+    this.spannerOperations.delete(Trade.class, KeySet.all());
+  }
 
-	@Before
-	@After
-	public void cleanupSpannerTables() {
-		this.spannerTemplateExample.createTablesIfNotExists();
-		this.spannerOperations.delete(Trader.class, KeySet.all());
-		this.spannerOperations.delete(Trade.class, KeySet.all());
-	}
+  @Test
+  void testSpannerTemplateLoadsData() {
+    assertThat(this.spannerOperations.readAll(Trade.class)).isEmpty();
 
-	@Test
-	public void testSpannerTemplateLoadsData() {
-		assertThat(this.spannerOperations.readAll(Trade.class)).isEmpty();
+    this.spannerTemplateExample.runExample();
 
-		this.spannerTemplateExample.runExample();
+    Set<String> tradeSpannerKeys =
+        this.spannerOperations.readAll(Trade.class).stream()
+            .map(t -> this.spannerSchemaUtils.getKey(t).toString())
+            .collect(Collectors.toSet());
 
-		Set<String> tradeSpannerKeys = this.spannerOperations.readAll(Trade.class)
-				.stream()
-				.map(t -> this.spannerSchemaUtils.getKey(t).toString())
-				.collect(Collectors.toSet());
-
-		assertThat(tradeSpannerKeys).containsExactlyInAnyOrder(
-				"[template_trader1,1]",
-				"[template_trader1,2]",
-				"[template_trader2,1]");
-	}
+    assertThat(tradeSpannerKeys)
+        .containsExactlyInAnyOrder(
+            "[template_trader1,1]", "[template_trader1,2]", "[template_trader2,1]");
+  }
 }

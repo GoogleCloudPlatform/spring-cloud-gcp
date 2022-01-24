@@ -16,20 +16,16 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping;
 
+import com.google.spanner.v1.TypeCode;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.google.spanner.v1.TypeCode;
-
 /**
- * Annotation for a {@link SpannerPersistentProperty} that allows specifying the column name
- * instead of deriving it from the field's name.
- *
- * @author Ray Tsang
- * @author Chengyuan Zhao
+ * Annotation for a {@link SpannerPersistentProperty} that allows specifying the column name instead
+ * of deriving it from the field's name.
  *
  * @since 1.1
  */
@@ -38,45 +34,48 @@ import com.google.spanner.v1.TypeCode;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Column {
 
-	/**
-	 * The custom name of the column in the Spanner table, which can differ from the name of the
-	 * field which it annotates.
-	 * @return the name of the column in the Spanner table
-	 */
-	String name() default "";
+  /**
+   * The custom name of the column in the Spanner table, which can differ from the name of the field
+   * which it annotates.
+   *
+   * @return the name of the column in the Spanner table
+   */
+  String name() default "";
 
-	/**
-	 * The maximum length of the column in Cloud Spanner terms. For example, for STRING
-	 * columns this refers to the number of characters. For BYTES columns this refers to
-	 * the number of bytes. This setting is only used when generating schema from an
-	 * entity class. A setting of less than 0 indicates an unlimited maximum length.
-	 *
-	 * @return the maximum length for the column
-	 */
-	long spannerTypeMaxLength() default -1;
+  /**
+   * The maximum length of the column in Cloud Spanner terms. For example, for STRING columns this
+   * refers to the number of characters. For BYTES columns this refers to the number of bytes. This
+   * setting is only used when generating schema from an entity class. A setting of less than 0
+   * indicates an unlimited maximum length.
+   *
+   * @return the maximum length for the column
+   */
+  long spannerTypeMaxLength() default -1;
 
-	/**
-	 * If the column's schema should be NOT NULL when generating a schema based on an
-	 * entity class.
-	 * @return {@code false} if the column should be NOT NULL in generated DDL.
-	 * {@code true} otherwise.
-	 */
-	boolean nullable() default true;
+  /**
+   * If the column's schema should be NOT NULL when generating a schema based on an entity class.
+   *
+   * @return {@code false} if the column should be NOT NULL in generated DDL. {@code true}
+   *     otherwise.
+   */
+  boolean nullable() default true;
 
-	/**
-	 * Optionally directly specify the column type in Cloud Spanner. For ARRAY columns
-	 * this refers to type of the item the array holds. If this is not specified then it
-	 * is inferred from the Java property type.
-	 * @return The user-specified column item type.
-	 */
-	TypeCode spannerType() default TypeCode.TYPE_CODE_UNSPECIFIED;
+  /**
+   * Optionally directly specify the column type in Cloud Spanner. For ARRAY columns this refers to
+   * type of the item the array holds. If this is not specified then it is inferred from the Java
+   * property type.
+   *
+   * @return The user-specified column item type.
+   */
+  TypeCode spannerType() default TypeCode.TYPE_CODE_UNSPECIFIED;
 
-	/**
-	 * This setting takes effect when the entity in which it appears is used to generate
-	 * schema DDL. If {@code true}, then the column corresponding to the annotated property
-	 * will be auto-populated with the latest Cloud Spanner TrueTime commit timestamp of the
-	 * row. {@code false} for all other usage and columns.
-	 * @return {@code true} for auto-populating commit timestamp. {@code false} otherwise.
-	 */
-	boolean spannerCommitTimestamp() default false;
+  /**
+   * This setting takes effect when the entity in which it appears is used to generate schema DDL.
+   * If {@code true}, then the column corresponding to the annotated property will be auto-populated
+   * with the latest Cloud Spanner TrueTime commit timestamp of the row. {@code false} for all other
+   * usage and columns.
+   *
+   * @return {@code true} for auto-populating commit timestamp. {@code false} otherwise.
+   */
+  boolean spannerCommitTimestamp() default false;
 }

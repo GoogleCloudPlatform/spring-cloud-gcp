@@ -16,37 +16,34 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping.event;
 
+import com.google.cloud.spanner.Mutation;
 import java.util.List;
 import java.util.Set;
 
-import com.google.cloud.spanner.Mutation;
-
-/**
- * An event that signals a save operation to Cloud Spanner.
- *
- * @author Chengyuan Zhao
- */
+/** An event that signals a save operation to Cloud Spanner. */
 public class SaveEvent extends MutationEvent {
 
-	private final Set<String> includeProperties;
+  private final Set<String> includeProperties;
 
-	/**
-	 * Constructor.
-	 * @param source the mutations for the event initially occurred. (never {@code null})
-	 * @param targetEntities the target entities that need to be mutated. This may be
-	 *     {@code null} depending on the original request.
-	 * @param includeProperties the set of properties to include in the save operation.
-	 */
-	public SaveEvent(List<Mutation> source, Iterable targetEntities, Set<String> includeProperties) {
-		super(source, targetEntities);
-		this.includeProperties = includeProperties;
-	}
+  /**
+   * Constructor.
+   *
+   * @param source the mutations for the event initially occurred. (never {@code null})
+   * @param targetEntities the target entities that need to be mutated. This may be {@code null}
+   *     depending on the original request.
+   * @param includeProperties the set of properties to include in the save operation.
+   */
+  public SaveEvent(List<Mutation> source, Iterable targetEntities, Set<String> includeProperties) {
+    super(source, targetEntities);
+    this.includeProperties = includeProperties;
+  }
 
-	/**
-	 * Get the optional set of properties to include in this save operation.
-	 * @return the set of properties.
-	 */
-	public Set<String> getIncludeProperties() {
-		return includeProperties;
-	}
+  /**
+   * Get the optional set of properties to include in this save operation.
+   *
+   * @return the set of properties.
+   */
+  public Set<String> getIncludeProperties() {
+    return includeProperties;
+  }
 }

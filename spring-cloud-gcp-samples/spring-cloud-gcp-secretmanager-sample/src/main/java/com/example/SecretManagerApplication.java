@@ -21,7 +21,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class SecretManagerApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(SecretManagerApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(SecretManagerApplication.class, args);
+  }
 }

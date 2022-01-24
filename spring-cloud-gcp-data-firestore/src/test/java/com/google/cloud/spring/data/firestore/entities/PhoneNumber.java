@@ -16,48 +16,40 @@
 
 package com.google.cloud.spring.data.firestore.entities;
 
-import java.util.Objects;
-
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.spring.data.firestore.Document;
+import java.util.Objects;
 
-/**
- * Sample entity for integration tests.
- *
- * @author Dmitry Solomakha
- */
-
+/** Sample entity for integration tests. */
 @Document(collectionName = "phoneNumbers")
 public class PhoneNumber {
 
-	@DocumentId
-	private String phoneNumber;
+  @DocumentId private String phoneNumber;
 
-	public PhoneNumber() {
-	}
+  public PhoneNumber() {}
 
-	public PhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
+  public PhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+  }
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		PhoneNumber that = (PhoneNumber) o;
-		return Objects.equals(phoneNumber, that.phoneNumber);
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    PhoneNumber that = (PhoneNumber) o;
+    return Objects.equals(phoneNumber, that.phoneNumber);
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(phoneNumber);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(phoneNumber);
+  }
 }

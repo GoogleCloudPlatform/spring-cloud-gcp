@@ -16,14 +16,12 @@
 
 package com.google.cloud.spring.data.spanner.repository.support;
 
-import java.util.Optional;
-
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntityInformation;
 import com.google.cloud.spring.data.spanner.repository.query.SpannerQueryLookupStrategy;
-
+import java.util.Optional;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -48,108 +46,106 @@ import org.springframework.util.Assert;
 /**
  * A factory for instantiating Spanner repositories.
  *
- * @author Chengyuan Zhao
- * @author Ray Tsang
- *
  * @since 1.1
  */
 public class SpannerRepositoryFactory extends RepositoryFactorySupport
-		implements ApplicationContextAware {
+    implements ApplicationContextAware {
 
-	private static final SpelExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
+  private static final SpelExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
 
-	private final SpannerMappingContext spannerMappingContext;
+  private final SpannerMappingContext spannerMappingContext;
 
-	private final SpannerTemplate spannerTemplate;
+  private final SpannerTemplate spannerTemplate;
 
-	private ApplicationContext applicationContext;
+  private ApplicationContext applicationContext;
 
-	/**
-	 * Constructor.
-	 * @param spannerMappingContext the mapping context used to get mapping metadata for
-	 * entity types.
-	 * @param spannerTemplate the Cloud Spanner operations object used by Cloud Spanner repositories.
-	 */
-	SpannerRepositoryFactory(SpannerMappingContext spannerMappingContext,
-			SpannerTemplate spannerTemplate) {
-		Assert.notNull(spannerMappingContext,
-				"A valid SpannerMappingContext is required.");
-		Assert.notNull(spannerTemplate, "A valid SpannerTemplate object is required.");
-		this.spannerMappingContext = spannerMappingContext;
-		this.spannerTemplate = spannerTemplate;
-	}
+  /**
+   * Constructor.
+   *
+   * @param spannerMappingContext the mapping context used to get mapping metadata for entity types.
+   * @param spannerTemplate the Cloud Spanner operations object used by Cloud Spanner repositories.
+   */
+  SpannerRepositoryFactory(
+      SpannerMappingContext spannerMappingContext, SpannerTemplate spannerTemplate) {
+    Assert.notNull(spannerMappingContext, "A valid SpannerMappingContext is required.");
+    Assert.notNull(spannerTemplate, "A valid SpannerTemplate object is required.");
+    this.spannerMappingContext = spannerMappingContext;
+    this.spannerTemplate = spannerTemplate;
+  }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T, I> EntityInformation<T, I> getEntityInformation(Class<T> domainClass) {
-		SpannerPersistentEntity<T> entity = (SpannerPersistentEntity<T>) this.spannerMappingContext
-				.getPersistentEntity(domainClass);
+  @Override
+  @SuppressWarnings("unchecked")
+  public <T, I> EntityInformation<T, I> getEntityInformation(Class<T> domainClass) {
+    SpannerPersistentEntity<T> entity =
+        (SpannerPersistentEntity<T>) this.spannerMappingContext.getPersistentEntity(domainClass);
 
-		if (entity == null) {
-			throw new MappingException(String.format(
-					"Could not lookup mapping metadata for domain class %s!",
-					domainClass.getName()));
-		}
+    if (entity == null) {
+      throw new MappingException(
+          String.format(
+              "Could not lookup mapping metadata for domain class %s!", domainClass.getName()));
+    }
 
-		return (EntityInformation<T, I>) new SpannerPersistentEntityInformation<>(
-				entity);
-	}
+    return (EntityInformation<T, I>) new SpannerPersistentEntityInformation<>(entity);
+  }
 
-	@Override
-	protected Object getTargetRepository(RepositoryInformation metadata) {
-		return getTargetRepositoryViaReflection(metadata, this.spannerTemplate,
-				metadata.getDomainType());
-	}
+  @Override
+  protected Object getTargetRepository(RepositoryInformation metadata) {
+    return getTargetRepositoryViaReflection(
+        metadata, this.spannerTemplate, metadata.getDomainType());
+  }
 
-	@Override
-	protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
-		return SimpleSpannerRepository.class;
-	}
+  @Override
+  protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
+    return SimpleSpannerRepository.class;
+  }
 
-	@Override
-	protected Optional<QueryLookupStrategy> getQueryLookupStrategy(@Nullable Key key,
-			QueryMethodEvaluationContextProvider evaluationContextProvider) {
+  @Override
+  protected Optional<QueryLookupStrategy> getQueryLookupStrategy(
+      @Nullable Key key, QueryMethodEvaluationContextProvider evaluationContextProvider) {
 
-		return Optional.of(new SpannerQueryLookupStrategy(this.spannerMappingContext,
-				this.spannerTemplate,
-				delegateContextProvider(evaluationContextProvider), EXPRESSION_PARSER));
-	}
+    return Optional.of(
+        new SpannerQueryLookupStrategy(
+            this.spannerMappingContext,
+            this.spannerTemplate,
+            delegateContextProvider(evaluationContextProvider),
+            EXPRESSION_PARSER));
+  }
 
-	private QueryMethodEvaluationContextProvider delegateContextProvider(
-			QueryMethodEvaluationContextProvider evaluationContextProvider) {
-		return new QueryMethodEvaluationContextProvider() {
-			@Override
-			public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
-					T parameters, Object[] parameterValues) {
-				StandardEvaluationContext evaluationContext = (StandardEvaluationContext) evaluationContextProvider
-						.getEvaluationContext(parameters, parameterValues);
-				evaluationContext
-						.setRootObject(SpannerRepositoryFactory.this.applicationContext);
-				evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
-				evaluationContext.setBeanResolver(new BeanFactoryResolver(
-						SpannerRepositoryFactory.this.applicationContext));
-				return evaluationContext;
-			}
+  private QueryMethodEvaluationContextProvider delegateContextProvider(
+      QueryMethodEvaluationContextProvider evaluationContextProvider) {
+    return new QueryMethodEvaluationContextProvider() {
+      @Override
+      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
+          T parameters, Object[] parameterValues) {
+        StandardEvaluationContext evaluationContext =
+            (StandardEvaluationContext)
+                evaluationContextProvider.getEvaluationContext(parameters, parameterValues);
+        evaluationContext.setRootObject(SpannerRepositoryFactory.this.applicationContext);
+        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
+        evaluationContext.setBeanResolver(
+            new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
+        return evaluationContext;
+      }
 
-			@Override
-			public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
-					T parameters, Object[] parameterValues, ExpressionDependencies expressionDependencies) {
-				StandardEvaluationContext evaluationContext =
-						(StandardEvaluationContext) evaluationContextProvider.getEvaluationContext(
-								parameters, parameterValues, expressionDependencies);
+      @Override
+      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
+          T parameters, Object[] parameterValues, ExpressionDependencies expressionDependencies) {
+        StandardEvaluationContext evaluationContext =
+            (StandardEvaluationContext)
+                evaluationContextProvider.getEvaluationContext(
+                    parameters, parameterValues, expressionDependencies);
 
-				evaluationContext.setRootObject(SpannerRepositoryFactory.this.applicationContext);
-				evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
-				evaluationContext.setBeanResolver(
-						new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
-				return evaluationContext;
-			}
-		};
-	}
+        evaluationContext.setRootObject(SpannerRepositoryFactory.this.applicationContext);
+        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
+        evaluationContext.setBeanResolver(
+            new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
+        return evaluationContext;
+      }
+    };
+  }
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		this.applicationContext = applicationContext;
-	}
+  @Override
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
+  }
 }

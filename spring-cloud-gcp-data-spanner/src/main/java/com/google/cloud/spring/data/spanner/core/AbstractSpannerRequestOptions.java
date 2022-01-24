@@ -16,77 +16,72 @@
 
 package com.google.cloud.spring.data.spanner.core;
 
+import com.google.cloud.Timestamp;
+import com.google.cloud.spanner.TimestampBound;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.google.cloud.Timestamp;
-import com.google.cloud.spanner.TimestampBound;
-
-/**
- * Abstract class of common Read and Query request settings.
- *
- * @author Chengyuan Zhao
- */
+/** Abstract class of common Read and Query request settings. */
 public class AbstractSpannerRequestOptions<A> implements Serializable {
 
-	protected transient List<A> requestOptions = new ArrayList<>();
+  protected transient List<A> requestOptions = new ArrayList<>();
 
-	protected Class<A> requestOptionType;
+  protected Class<A> requestOptionType;
 
-	private TimestampBound timestampBound;
+  private TimestampBound timestampBound;
 
-	private Set<String> includeProperties;
+  private Set<String> includeProperties;
 
-	private boolean allowPartialRead;
+  private boolean allowPartialRead;
 
-	public Set<String> getIncludeProperties() {
-		return this.includeProperties;
-	}
+  public Set<String> getIncludeProperties() {
+    return this.includeProperties;
+  }
 
-	public AbstractSpannerRequestOptions setIncludeProperties(Set<String> includeProperties) {
-		this.includeProperties = includeProperties;
-		return this;
-	}
+  public AbstractSpannerRequestOptions setIncludeProperties(Set<String> includeProperties) {
+    this.includeProperties = includeProperties;
+    return this;
+  }
 
-	public TimestampBound getTimestampBound() {
-		return this.timestampBound;
-	}
+  public TimestampBound getTimestampBound() {
+    return this.timestampBound;
+  }
 
-	/**
-	 * Set if this query should be executed with bounded staleness.
-	 * @param timestampBound the timestamp bound. Can be exact or bounded staleness.
-	 * @return this options object.
-	 */
-	public AbstractSpannerRequestOptions setTimestampBound(TimestampBound timestampBound) {
-		this.timestampBound = timestampBound;
-		return this;
-	}
+  /**
+   * Set if this query should be executed with bounded staleness.
+   *
+   * @param timestampBound the timestamp bound. Can be exact or bounded staleness.
+   * @return this options object.
+   */
+  public AbstractSpannerRequestOptions setTimestampBound(TimestampBound timestampBound) {
+    this.timestampBound = timestampBound;
+    return this;
+  }
 
-	public Timestamp getTimestamp() {
-		return this.timestampBound.getMode() == TimestampBound.Mode.READ_TIMESTAMP
-				? this.timestampBound.getReadTimestamp()
-				: this.timestampBound.getMinReadTimestamp();
-	}
+  public Timestamp getTimestamp() {
+    return this.timestampBound.getMode() == TimestampBound.Mode.READ_TIMESTAMP
+        ? this.timestampBound.getReadTimestamp()
+        : this.timestampBound.getMinReadTimestamp();
+  }
 
-	public AbstractSpannerRequestOptions setTimestamp(Timestamp timestamp) {
-		this.timestampBound = TimestampBound.ofReadTimestamp(timestamp);
-		return this;
-	}
+  public AbstractSpannerRequestOptions setTimestamp(Timestamp timestamp) {
+    this.timestampBound = TimestampBound.ofReadTimestamp(timestamp);
+    return this;
+  }
 
-	public A[] getOptions() {
-		return this.requestOptions.toArray((A[]) Array.newInstance(this.requestOptionType, 0));
-	}
+  public A[] getOptions() {
+    return this.requestOptions.toArray((A[]) Array.newInstance(this.requestOptionType, 0));
+  }
 
-	public boolean isAllowPartialRead() {
-		return this.allowPartialRead;
-	}
+  public boolean isAllowPartialRead() {
+    return this.allowPartialRead;
+  }
 
-	public AbstractSpannerRequestOptions setAllowPartialRead(boolean allowPartialRead) {
-		this.allowPartialRead = allowPartialRead;
-		return this;
-	}
-
+  public AbstractSpannerRequestOptions setAllowPartialRead(boolean allowPartialRead) {
+    this.allowPartialRead = allowPartialRead;
+    return this;
+  }
 }

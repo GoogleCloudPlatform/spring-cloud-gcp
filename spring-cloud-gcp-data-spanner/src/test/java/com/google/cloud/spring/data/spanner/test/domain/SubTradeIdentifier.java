@@ -16,44 +16,39 @@
 
 package com.google.cloud.spring.data.spanner.test.domain;
 
-import java.util.Objects;
-
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.Embedded;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import java.util.Objects;
 
 /**
- * An object that holds the components that identify a {@link SubTrade}. This is
- * intentionally not used in {@link SubTrade} but is used in {@link SubTradeComponent} to
- * test that nested embedded key properties are resolved properly.
- *
- * @author Chengyuan Zhao
+ * An object that holds the components that identify a {@link SubTrade}. This is intentionally not
+ * used in {@link SubTrade} but is used in {@link SubTradeComponent} to test that nested embedded
+ * key properties are resolved properly.
  */
 public class SubTradeIdentifier {
 
-	@PrimaryKey
-	@Embedded
-	TradeIdentifier tradeIdentifier;
+  @PrimaryKey @Embedded TradeIdentifier tradeIdentifier;
 
-	@PrimaryKey(keyOrder = 2)
-	@Column(name = "subTradeId")
-	String sub_trade_id;
+  @PrimaryKey(keyOrder = 2)
+  @Column(name = "subTradeId")
+  String sub_trade_id;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		SubTradeIdentifier that = (SubTradeIdentifier) o;
-		return Objects.equals(this.tradeIdentifier, that.tradeIdentifier) &&
-				Objects.equals(this.sub_trade_id, that.sub_trade_id);
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    SubTradeIdentifier that = (SubTradeIdentifier) o;
+    return Objects.equals(this.tradeIdentifier, that.tradeIdentifier)
+        && Objects.equals(this.sub_trade_id, that.sub_trade_id);
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.tradeIdentifier, this.sub_trade_id);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.tradeIdentifier, this.sub_trade_id);
+  }
 }

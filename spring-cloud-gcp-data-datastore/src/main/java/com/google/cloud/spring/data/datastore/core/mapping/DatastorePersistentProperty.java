@@ -21,49 +21,52 @@ import org.springframework.data.mapping.PersistentProperty;
 /**
  * Persistent property for Google Cloud Datastore.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public interface DatastorePersistentProperty
-		extends PersistentProperty<DatastorePersistentProperty> {
+    extends PersistentProperty<DatastorePersistentProperty> {
 
-	/**
-	 * Get the name of the field to store this property in Datastore.
-	 * @return the string name of the field.
-	 */
-	String getFieldName();
+  /**
+   * Get the name of the field to store this property in Datastore.
+   *
+   * @return the string name of the field.
+   */
+  String getFieldName();
 
-	/**
-	 * Whether the property contains entities that are related to this entity via the
-	 * Cloud Datastore Ancestor relationship and have this entity as their ancestor.
-	 * @return {@code true} if the property contains child entities. {@code false}
-	 * otherwise.
-	 */
-	boolean isDescendants();
+  /**
+   * Whether the property contains entities that are related to this entity via the Cloud Datastore
+   * Ancestor relationship and have this entity as their ancestor.
+   *
+   * @return {@code true} if the property contains child entities. {@code false} otherwise.
+   */
+  boolean isDescendants();
 
-	/**
-	 * True if the property should be excluded from indexes.
-	 * @return true if the property should be indexed
-	 */
-	boolean isUnindexed();
+  /**
+   * True if the property should be excluded from indexes.
+   *
+   * @return true if the property should be indexed
+   */
+  boolean isUnindexed();
 
-	/**
-	 * Get the {@link EmbeddedType} of the property indicating what what type of embedding
-	 * pathway will be used to store the property.
-	 * @return the embedded type.
-	 */
-	EmbeddedType getEmbeddedType();
+  /**
+   * Get the {@link EmbeddedType} of the property indicating what what type of embedding pathway
+   * will be used to store the property.
+   *
+   * @return the embedded type.
+   */
+  EmbeddedType getEmbeddedType();
 
-	/**
-	 * True if the property is stored within Datastore entity.
-	 * @return true if the property is stored within Datastore entity
-	 */
-	boolean isColumnBacked();
+  /**
+   * True if the property is stored within Datastore entity.
+   *
+   * @return true if the property is stored within Datastore entity
+   */
+  boolean isColumnBacked();
 
-	/**
-	 * Return whether this property is a lazily-fetched one.
-	 * @return {@code true} if the property is lazily-fetched. {@code false} otherwise.
-	 */
-	boolean isLazyLoaded();
+  /**
+   * Return whether this property is a lazily-fetched one.
+   *
+   * @return {@code true} if the property is lazily-fetched. {@code false} otherwise.
+   */
+  boolean isLazyLoaded();
 }

@@ -17,15 +17,8 @@
 package com.google.cloud.spring.autoconfigure.firestore;
 
 import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
-
 import org.springframework.stereotype.Repository;
 
-/**
- * A repository for testing instantiation.
- *
- * @author Chengyuan Zhao
- */
+/** A repository for testing instantiation. */
 @Repository
-public interface FirestoreTestRepository extends FirestoreReactiveRepository {
-
-}
+public interface FirestoreTestRepository extends FirestoreReactiveRepository {}

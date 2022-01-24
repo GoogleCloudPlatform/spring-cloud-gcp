@@ -21,74 +21,63 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * Cloud IAP Authentication properties.
  *
- * @author Elena Felder
  * @since 1.1
  */
 @ConfigurationProperties("spring.cloud.gcp.security.iap")
 public class IapAuthenticationProperties {
 
-	/**
-	 * Link to JWK public key registry.
-	 */
-	private String registry = "https://www.gstatic.com/iap/verify/public_key-jwk";
+  /** Link to JWK public key registry. */
+  private String registry = "https://www.gstatic.com/iap/verify/public_key-jwk";
 
-	/**
-	 * Encryption algorithm used to sign the JWK token.
-	 */
-	private String algorithm = "ES256";
+  /** Encryption algorithm used to sign the JWK token. */
+  private String algorithm = "ES256";
 
-	/**
-	 * Header from which to extract the JWK key.
-	 */
-	private String header = "x-goog-iap-jwt-assertion";
+  /** Header from which to extract the JWK key. */
+  private String header = "x-goog-iap-jwt-assertion";
 
-	/**
-	 * JWK issuer to verify.
-	 */
-	private String issuer = "https://cloud.google.com/iap";
+  /** JWK issuer to verify. */
+  private String issuer = "https://cloud.google.com/iap";
 
-	/**
-	 * Non-dynamic audience string to validate.
-	 */
-	private String audience;
+  /** Non-dynamic audience string to validate. */
+  private String audience;
 
-	public String getRegistry() {
-		return this.registry;
-	}
+  public String getRegistry() {
+    return this.registry;
+  }
 
-	public void setRegistry(String registry) {
-		this.registry = registry;
-	}
+  public void setRegistry(String registry) {
+    this.registry = registry;
+  }
 
-	public String getAlgorithm() {
-		return this.algorithm;
-	}
+  public String getAlgorithm() {
+    return this.algorithm;
+  }
 
-	public void setAlgorithm(String algorithm) {
-		this.algorithm = algorithm;
-	}
+  public void setAlgorithm(String algorithm) {
+    this.algorithm = algorithm;
+  }
 
-	public String getHeader() {
-		return this.header;
-	}
+  public String getHeader() {
+    return this.header;
+  }
 
-	public void setHeader(String header) {
-		this.header = header;
-	}
+  public void setHeader(String header) {
+    this.header = header;
+  }
 
-	public String getIssuer() {
-		return this.issuer;
-	}
+  public String getIssuer() {
+    return this.issuer;
+  }
 
-	public void setIssuer(String issuer) {
-		this.issuer = issuer;
-	}
+  public void setIssuer(String issuer) {
+    this.issuer = issuer;
+  }
 
-	public String getAudience() {
-		return this.audience;
-	}
+  public String getAudience() {
+    return this.audience;
+  }
 
-	public void setAudience(String audience) {
-		this.audience = audience;
-	}
+  public void setAudience(String audience) {
+    this.audience = audience;
+  }
 }

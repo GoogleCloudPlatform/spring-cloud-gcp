@@ -19,15 +19,11 @@ package com.example;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Sample application for a binder.
- *
- * @author João André Martins
- */
+/** Sample application for a binder. */
 @SpringBootApplication
 public class PubSubBinderApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PubSubBinderApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(PubSubBinderApplication.class, args);
+  }
 }

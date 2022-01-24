@@ -19,12 +19,9 @@ package com.google.cloud.spring.security.iap;
 /**
  * Interface to allow customized audience strings.
  *
- * @author Elena Felder
- *
  * @since 1.1
  */
 public interface AudienceProvider {
 
-	String getAudience();
-
+  String getAudience();
 }

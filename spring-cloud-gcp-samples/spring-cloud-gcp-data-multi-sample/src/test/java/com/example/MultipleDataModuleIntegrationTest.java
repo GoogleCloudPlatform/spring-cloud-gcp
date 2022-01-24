@@ -16,60 +16,43 @@
 
 package com.example;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
-
-/**
- * Tests that our Spring Data modules can be used with each other.
- *
- * @author Chengyuan
- */
-@RunWith(SpringRunner.class)
+/** Tests that our Spring Data modules can be used with each other. */
+// Please use "-Dit.multisample=true" to enable the tests
+@ExtendWith(SpringExtension.class)
+@EnabledIfSystemProperty(named = "it.multisample", matches = "true")
 @TestPropertySource("classpath:application-test.properties")
 @EnableAutoConfiguration
-public class MultipleDataModuleIntegrationTest {
+class MultipleDataModuleIntegrationTest {
 
-	// The Spanner Repo
-	@Autowired
-	TraderRepository traderRepository;
+  // The Spanner Repo
+  @Autowired TraderRepository traderRepository;
 
-	// The Datastore Repo
-	@Autowired
-	PersonRepository datastorePersonRepository;
+  // The Datastore Repo
+  @Autowired PersonRepository datastorePersonRepository;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat("Spanner integration tests are disabled. "
-						+ "Please use '-Dit.spanner=true' to enable them. ",
-				System.getProperty("it.spanner"), is("true"));
-		assumeThat("Datastore integration tests are disabled. "
-				+ "Please use '-Dit.datastore=true' to enable them.",
-				System.getProperty("it.datastore"), is("true"));
-	}
+  @Test
+  void testMultipleModulesTogether() {
 
-	@Test
-	public void testMultipleModulesTogether() {
+    this.traderRepository.deleteAll();
+    this.datastorePersonRepository.deleteAll();
 
-		this.traderRepository.deleteAll();
-		this.datastorePersonRepository.deleteAll();
+    assertThat(this.traderRepository.count()).isZero();
+    assertThat(this.datastorePersonRepository.count()).isZero();
 
-		assertThat(this.traderRepository.count()).isZero();
-		assertThat(this.datastorePersonRepository.count()).isZero();
+    this.traderRepository.save(new Trader("id1", "trader", "one"));
+    this.datastorePersonRepository.save(new Person(1L, "person1"));
 
-		this.traderRepository.save(new Trader("id1", "trader", "one"));
-		this.datastorePersonRepository.save(new Person(1L, "person1"));
-
-		assertThat(this.traderRepository.count()).isEqualTo(1L);
-		assertThat(this.datastorePersonRepository.count()).isEqualTo(1L);
-	}
+    assertThat(this.traderRepository.count()).isEqualTo(1L);
+    assertThat(this.datastorePersonRepository.count()).isEqualTo(1L);
+  }
 }

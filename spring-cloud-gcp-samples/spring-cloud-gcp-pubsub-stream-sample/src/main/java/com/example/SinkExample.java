@@ -18,7 +18,6 @@ package com.example;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
@@ -26,32 +25,33 @@ import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
 
-/**
- * Example of a sink for the sample app.
- *
- * @author João André Martins
- */
+/** Example of a sink for the sample app. */
 @EnableBinding(Sink.class)
 public class SinkExample {
 
-	private static final Log LOGGER = LogFactory.getLog(SinkExample.class);
+  private static final Log LOGGER = LogFactory.getLog(SinkExample.class);
 
-	@StreamListener(Sink.INPUT)
-	public void handleMessage(UserMessage userMessage) {
-		if (userMessage.isThrowError()) {
-			throw new RuntimeException("An error was triggered in the message handler!");
-		}
+  @StreamListener(Sink.INPUT)
+  public void handleMessage(UserMessage userMessage) {
+    if (userMessage.isThrowError()) {
+      throw new RuntimeException("An error was triggered in the message handler!");
+    }
 
-		LOGGER.info("New message received from " + userMessage.getUsername() + ": " + userMessage.getBody() +
-				" at " + userMessage.getCreatedAt());
-	}
+    LOGGER.info(
+        "New message received from "
+            + userMessage.getUsername()
+            + ": "
+            + userMessage.getBody()
+            + " at "
+            + userMessage.getCreatedAt());
+  }
 
-	// Note that the error `inputChannel` is formatted as [Pub/Sub subscription name].errors
-	// or the equivalent of [Pub/Sub topic name].[group name].errors. If you change the topic name in
-	// `application.properties`, you will also have to change the `inputChannel` below.
-	@ServiceActivator(inputChannel = "my-topic.my-group.errors")
-	public void error(Message<MessagingException> message) {
-		LOGGER.error("The message that was sent is now processed by the error handler.");
-		LOGGER.error("Failed message: " + message.getPayload().getFailedMessage());
-	}
+  // Note that the error `inputChannel` is formatted as [Pub/Sub subscription name].errors
+  // or the equivalent of [Pub/Sub topic name].[group name].errors. If you change the topic name in
+  // `application.properties`, you will also have to change the `inputChannel` below.
+  @ServiceActivator(inputChannel = "my-topic.my-group.errors")
+  public void error(Message<MessagingException> message) {
+    LOGGER.error("The message that was sent is now processed by the error handler.");
+    LOGGER.error("Failed message: " + message.getPayload().getFailedMessage());
+  }
 }

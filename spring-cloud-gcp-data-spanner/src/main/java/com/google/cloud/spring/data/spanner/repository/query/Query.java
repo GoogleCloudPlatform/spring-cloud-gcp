@@ -21,41 +21,36 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import org.springframework.data.annotation.QueryAnnotation;
 import org.springframework.data.domain.Pageable;
 
 /**
  * Annotation used in user-defined repositories to provide SQL for custom Query Methods.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
+@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Documented
 @QueryAnnotation
 public @interface Query {
-	/**
-	 * Takes a Cloud Spanner SQL string to define the actual query to be executed. This one will
-	 * take precedence over the method name then.
-	 *
-	 * <p>Please note that sorting options should be passed by a {@link Pageable} parameter
-	 * instead of the query. Otherwise the sorting could be broken
-	 * by logic that fetches eager-interleaved fields.
-	 * </p>
-	 *
-	 * @return the SQL Cloud Spanner query string.
-	 */
-	String value() default "";
+  /**
+   * Takes a Cloud Spanner SQL string to define the actual query to be executed. This one will take
+   * precedence over the method name then.
+   *
+   * <p>Please note that sorting options should be passed by a {@link Pageable} parameter instead of
+   * the query. Otherwise the sorting could be broken by logic that fetches eager-interleaved
+   * fields.
+   *
+   * @return the SQL Cloud Spanner query string.
+   */
+  String value() default "";
 
-	/**
-	 * Indicates if the annotated Query Method is a DML statement or an SQL statement.
-	 * @return {@code false} if the query method is a read-only SQL query. {@code true} if the
-	 * query method is executed as a DML query.
-	 */
-	boolean dmlStatement() default false;
-
+  /**
+   * Indicates if the annotated Query Method is a DML statement or an SQL statement.
+   *
+   * @return {@code false} if the query method is a read-only SQL query. {@code true} if the query
+   *     method is executed as a DML query.
+   */
+  boolean dmlStatement() default false;
 }

@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.data.spanner.core.convert;
 
+import com.google.cloud.ByteArray;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -23,84 +24,80 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-
-import com.google.cloud.ByteArray;
-
 import org.springframework.util.Assert;
 
 /**
  * Utility functions used in conversion operations.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public final class ConversionUtils {
 
-	private ConversionUtils() {
-	}
+  private ConversionUtils() {}
 
-	static Class boxIfNeeded(Class propertyType) {
-		if (propertyType == null) {
-			return null;
-		}
-		return propertyType.isPrimitive()
-				? Array.get(Array.newInstance(propertyType, 1), 0).getClass()
-				: propertyType;
-	}
+  static Class boxIfNeeded(Class propertyType) {
+    if (propertyType == null) {
+      return null;
+    }
+    return propertyType.isPrimitive()
+        ? Array.get(Array.newInstance(propertyType, 1), 0).getClass()
+        : propertyType;
+  }
 
-	public static boolean isIterableNonByteArrayType(Class propType) {
-		return Iterable.class.isAssignableFrom(propType) && !ByteArray.class.isAssignableFrom(propType);
-	}
+  public static boolean isIterableNonByteArrayType(Class propType) {
+    return Iterable.class.isAssignableFrom(propType) && !ByteArray.class.isAssignableFrom(propType);
+  }
 
-	static <T> Iterable<T> convertIterable(
-			Iterable<Object> source, Class<T> targetType, SpannerCustomConverter converter) {
-		List<T> result = new ArrayList<>();
-		source.forEach(item -> result.add(converter.convert(item, targetType)));
-		return result;
-	}
+  static <T> Iterable<T> convertIterable(
+      Iterable<Object> source, Class<T> targetType, SpannerCustomConverter converter) {
+    List<T> result = new ArrayList<>();
+    source.forEach(item -> result.add(converter.convert(item, targetType)));
+    return result;
+  }
 
-	@SuppressWarnings("unchecked")
-	public static <T> T wrapSimpleLazyProxy(Supplier<T> supplierFunc, Class<T> type) {
-		return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[] { type },
-				new SimpleLazyDynamicInvocationHandler<>(supplierFunc));
-	}
+  @SuppressWarnings("unchecked")
+  public static <T> T wrapSimpleLazyProxy(Supplier<T> supplierFunc, Class<T> type) {
+    return (T)
+        Proxy.newProxyInstance(
+            type.getClassLoader(),
+            new Class[] {type},
+            new SimpleLazyDynamicInvocationHandler<>(supplierFunc));
+  }
 
-	public static boolean ignoreForWriteLazyProxy(Object object) {
-		if (Proxy.isProxyClass(object.getClass())
-				&& (Proxy.getInvocationHandler(object) instanceof SimpleLazyDynamicInvocationHandler)) {
-			SimpleLazyDynamicInvocationHandler<?> handler = (SimpleLazyDynamicInvocationHandler<?>) Proxy
-					.getInvocationHandler(object);
-			return !handler.isEvaluated();
-		}
-		return false;
-	}
+  public static boolean ignoreForWriteLazyProxy(Object object) {
+    if (Proxy.isProxyClass(object.getClass())
+        && (Proxy.getInvocationHandler(object) instanceof SimpleLazyDynamicInvocationHandler)) {
+      SimpleLazyDynamicInvocationHandler<?> handler =
+          (SimpleLazyDynamicInvocationHandler<?>) Proxy.getInvocationHandler(object);
+      return !handler.isEvaluated();
+    }
+    return false;
+  }
 
-	private static final class SimpleLazyDynamicInvocationHandler<T> implements InvocationHandler {
+  private static final class SimpleLazyDynamicInvocationHandler<T> implements InvocationHandler {
 
-		private final Supplier<T> supplierFunc;
+    private final Supplier<T> supplierFunc;
 
-		private boolean isEvaluated = false;
+    private boolean isEvaluated = false;
 
-		private T value;
+    private T value;
 
-		private SimpleLazyDynamicInvocationHandler(Supplier<T> supplierFunc) {
-			Assert.notNull(supplierFunc, "A non-null supplier function is required for a lazy proxy.");
-			this.supplierFunc = supplierFunc;
-		}
+    private SimpleLazyDynamicInvocationHandler(Supplier<T> supplierFunc) {
+      Assert.notNull(supplierFunc, "A non-null supplier function is required for a lazy proxy.");
+      this.supplierFunc = supplierFunc;
+    }
 
-		private boolean isEvaluated() {
-			return this.isEvaluated;
-		}
+    private boolean isEvaluated() {
+      return this.isEvaluated;
+    }
 
-		@Override
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			if (!this.isEvaluated) {
-				this.value = this.supplierFunc.get();
-				this.isEvaluated = true;
-			}
-			return method.invoke(this.value, args);
-		}
-	}
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+      if (!this.isEvaluated) {
+        this.value = this.supplierFunc.get();
+        this.isEvaluated = true;
+      }
+      return method.invoke(this.value, args);
+    }
+  }
 }

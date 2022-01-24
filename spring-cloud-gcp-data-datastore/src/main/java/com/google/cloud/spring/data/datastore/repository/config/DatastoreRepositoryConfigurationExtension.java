@@ -16,73 +16,66 @@
 
 package com.google.cloud.spring.data.datastore.repository.config;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Collections;
-
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.support.DatastoreRepositoryFactoryBean;
-import org.w3c.dom.Element;
-
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Collections;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.data.config.ParsingUtils;
 import org.springframework.data.repository.config.AnnotationRepositoryConfigurationSource;
 import org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport;
 import org.springframework.data.repository.config.XmlRepositoryConfigurationSource;
+import org.w3c.dom.Element;
 
 /**
- * Holds configuration information for creating Datastore repositories and providing
- * Datastore templates.
- *
- * @author Chengyuan Zhao
+ * Holds configuration information for creating Datastore repositories and providing Datastore
+ * templates.
  *
  * @since 1.1
  */
 public class DatastoreRepositoryConfigurationExtension
-		extends RepositoryConfigurationExtensionSupport {
+    extends RepositoryConfigurationExtensionSupport {
 
-	@Override
-	protected String getModulePrefix() {
-		return "datastore";
-	}
+  @Override
+  protected String getModulePrefix() {
+    return "datastore";
+  }
 
-	@Override
-	public String getRepositoryFactoryBeanClassName() {
-		return DatastoreRepositoryFactoryBean.class.getName();
-	}
+  @Override
+  public String getRepositoryFactoryBeanClassName() {
+    return DatastoreRepositoryFactoryBean.class.getName();
+  }
 
-	@Override
-	public void postProcess(BeanDefinitionBuilder builder,
-			AnnotationRepositoryConfigurationSource config) {
-		AnnotationAttributes attributes = config.getAttributes();
+  @Override
+  public void postProcess(
+      BeanDefinitionBuilder builder, AnnotationRepositoryConfigurationSource config) {
+    AnnotationAttributes attributes = config.getAttributes();
 
-		builder.addPropertyReference("datastoreTemplate",
-				attributes.getString("datastoreTemplateRef"));
-		builder.addPropertyReference("datastoreMappingContext",
-				attributes.getString("datastoreMappingContextRef"));
+    builder.addPropertyReference("datastoreTemplate", attributes.getString("datastoreTemplateRef"));
+    builder.addPropertyReference(
+        "datastoreMappingContext", attributes.getString("datastoreMappingContextRef"));
+  }
 
-	}
+  @Override
+  protected Collection<Class<? extends Annotation>> getIdentifyingAnnotations() {
+    return Collections.singleton(Entity.class);
+  }
 
-	@Override
-	protected Collection<Class<? extends Annotation>> getIdentifyingAnnotations() {
-		return Collections.singleton(Entity.class);
-	}
+  @Override
+  protected Collection<Class<?>> getIdentifyingTypes() {
+    return Collections.singleton(DatastoreRepository.class);
+  }
 
-	@Override
-	protected Collection<Class<?>> getIdentifyingTypes() {
-		return Collections.singleton(DatastoreRepository.class);
-	}
+  @Override
+  public void postProcess(BeanDefinitionBuilder builder, XmlRepositoryConfigurationSource config) {
+    Element element = config.getElement();
 
-	@Override
-	public void postProcess(BeanDefinitionBuilder builder,
-			XmlRepositoryConfigurationSource config) {
-		Element element = config.getElement();
-
-		ParsingUtils.setPropertyReference(builder, element, "datastore-template-ref",
-				"datastoreTemplate");
-		ParsingUtils.setPropertyReference(builder, element,
-				"datastore-mapping-context-ref", "datastoreMappingContext");
-	}
+    ParsingUtils.setPropertyReference(
+        builder, element, "datastore-template-ref", "datastoreTemplate");
+    ParsingUtils.setPropertyReference(
+        builder, element, "datastore-mapping-context-ref", "datastoreMappingContext");
+  }
 }

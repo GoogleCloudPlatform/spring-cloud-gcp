@@ -16,77 +16,66 @@
 
 package com.example;
 
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import com.google.cloud.spring.pubsub.core.PubSubTemplate;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import reactor.test.StepVerifier;
-
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
+import reactor.test.StepVerifier;
 
 /**
  * Tests for the Reactive Pub/Sub sample application.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
-	webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-	classes = ReactiveReceiverApplication.class)
-public class ReactiveReceiverApplicationIntegrationTest {
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = ReactiveReceiverApplication.class)
+class ReactiveReceiverApplicationIntegrationTest {
 
-	@LocalServerPort
-	private int port;
+  @LocalServerPort private int port;
 
-	@Autowired
-	private WebTestClient webTestClient;
+  @Autowired private WebTestClient webTestClient;
 
-	@Autowired
-	private PubSubTemplate pubSubTemplate;
+  @Autowired private PubSubTemplate pubSubTemplate;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat("PUB/SUB-sample integration tests disabled. Use '-Dit.pubsub=true' to enable them.",
-				System.getProperty("it.pubsub"), is("true"));
-	}
+  @Test
+  void testSample() throws UnsupportedEncodingException {
+    webTestClient
+        .post()
+        .uri(
+            uriBuilder ->
+                uriBuilder
+                    .path("/postMessage")
+                    .queryParam("message", "reactive test msg")
+                    .queryParam("count", (ReactiveController.MAX_RESPONSE_ITEMS) + "")
+                    .build())
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+        .exchange();
 
-	@Test
-	public void testSample() throws UnsupportedEncodingException {
-		webTestClient.post()
-				.uri(uriBuilder -> uriBuilder
-						.path("/postMessage")
-						.queryParam("message", "reactive test msg")
-						.queryParam("count", (ReactiveController.MAX_RESPONSE_ITEMS) + "")
-						.build())
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.exchange();
+    FluxExchangeResult<String> result =
+        webTestClient
+            .get()
+            .uri("/getMessages")
+            .accept(MediaType.TEXT_EVENT_STREAM)
+            .exchange()
+            .returnResult(String.class);
 
-		FluxExchangeResult<String> result = webTestClient.get()
-			.uri("/getMessages")
-			.accept(MediaType.TEXT_EVENT_STREAM)
-			.exchange()
-			.returnResult(String.class);
-
-		AtomicInteger i = new AtomicInteger(0);
-		StepVerifier.create(result.getResponseBody())
-				.expectNextCount(ReactiveController.MAX_RESPONSE_ITEMS)
-				.thenConsumeWhile(s -> s.startsWith("reactive test msg " + i.getAndIncrement()))
-			.thenCancel()
-			.verify();
-	}
-
+    AtomicInteger i = new AtomicInteger(0);
+    StepVerifier.create(result.getResponseBody())
+        .expectNextCount(ReactiveController.MAX_RESPONSE_ITEMS)
+        .thenConsumeWhile(s -> s.startsWith("reactive test msg " + i.getAndIncrement()))
+        .thenCancel()
+        .verify();
+  }
 }

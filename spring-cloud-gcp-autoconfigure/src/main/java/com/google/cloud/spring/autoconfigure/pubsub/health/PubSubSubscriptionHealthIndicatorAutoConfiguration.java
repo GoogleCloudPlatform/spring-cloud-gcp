@@ -16,9 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
-
-import java.io.IOException;
-
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
@@ -28,7 +25,7 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistryImpl;
-
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.autoconfigure.health.CompositeHealthContributorConfiguration;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
@@ -43,70 +40,74 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
- * @author Emmanouil Gkatziouras
- *
  * @since 2.0.6
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({HealthIndicator.class, MetricServiceClient.class})
 @ConditionalOnEnabledHealthIndicator("pubsub-subscriber")
-@ConditionalOnProperty({"spring.cloud.gcp.pubsub.health.lagThreshold", "spring.cloud.gcp.pubsub.health.backlogThreshold"})
+@ConditionalOnProperty({
+  "spring.cloud.gcp.pubsub.health.lagThreshold",
+  "spring.cloud.gcp.pubsub.health.backlogThreshold"
+})
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)
 @EnableConfigurationProperties(GcpPubSubProperties.class)
-public class PubSubSubscriptionHealthIndicatorAutoConfiguration  extends
-	CompositeHealthContributorConfiguration<PubSubHealthIndicator, PubSubTemplate> {
+public class PubSubSubscriptionHealthIndicatorAutoConfiguration
+    extends CompositeHealthContributorConfiguration<PubSubHealthIndicator, PubSubTemplate> {
 
-	private final GcpPubSubProperties gcpPubSubProperties;
+  private final GcpPubSubProperties gcpPubSubProperties;
 
-	private final String projectId;
+  private final String projectId;
 
-	public PubSubSubscriptionHealthIndicatorAutoConfiguration(
-		GcpPubSubProperties gcpPubSubProperties,
-		GcpProjectIdProvider projectIdProvider) {
-		this.projectId = (gcpPubSubProperties.getProjectId() != null)
-				? gcpPubSubProperties.getProjectId()
-				: projectIdProvider.getProjectId();
-		this.gcpPubSubProperties = gcpPubSubProperties;
-	}
+  public PubSubSubscriptionHealthIndicatorAutoConfiguration(
+      GcpPubSubProperties gcpPubSubProperties, GcpProjectIdProvider projectIdProvider) {
+    this.projectId =
+        (gcpPubSubProperties.getProjectId() != null)
+            ? gcpPubSubProperties.getProjectId()
+            : projectIdProvider.getProjectId();
+    this.gcpPubSubProperties = gcpPubSubProperties;
+  }
 
-	@Bean
-	@ConditionalOnMissingBean
-	public MetricServiceClient metricServiceClient() throws IOException {
-		return MetricServiceClient.create();
-	}
+  @Bean
+  @ConditionalOnMissingBean
+  public MetricServiceClient metricServiceClient() throws IOException {
+    return MetricServiceClient.create();
+  }
 
-	@Bean
-	@ConditionalOnMissingBean(name = "pubSubHealthThreadPool")
-	public ThreadPoolTaskScheduler pubSubHealthThreadPool() {
-		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.setPoolSize(gcpPubSubProperties.getHealth().getExecutorThreads());
-		scheduler.setThreadNamePrefix("gcp-pubsub-health");
-		scheduler.setDaemon(true);
-		return scheduler;
-	}
+  @Bean
+  @ConditionalOnMissingBean(name = "pubSubHealthThreadPool")
+  public ThreadPoolTaskScheduler pubSubHealthThreadPool() {
+    ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+    scheduler.setPoolSize(gcpPubSubProperties.getHealth().getExecutorThreads());
+    scheduler.setThreadNamePrefix("gcp-pubsub-health");
+    scheduler.setDaemon(true);
+    return scheduler;
+  }
 
-	@Bean
-	@ConditionalOnMissingBean(name = "healthCheckExecutorProvider")
-	public ExecutorProvider healthCheckExecutorProvider(
-			@Qualifier("pubSubHealthThreadPool") ThreadPoolTaskScheduler scheduler) {
-		return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
-	}
+  @Bean
+  @ConditionalOnMissingBean(name = "healthCheckExecutorProvider")
+  public ExecutorProvider healthCheckExecutorProvider(
+      @Qualifier("pubSubHealthThreadPool") ThreadPoolTaskScheduler scheduler) {
+    return FixedExecutorProvider.create(scheduler.getScheduledExecutor());
+  }
 
-	@Bean
-	@ConditionalOnMissingBean(name = "healthTrackerRegistry")
-	public HealthTrackerRegistry healthTrackerRegistry(
-		MetricServiceClient metricServiceClient,
-		@Qualifier("healthCheckExecutorProvider") ExecutorProvider executorProvider) {
-		return new HealthTrackerRegistryImpl(projectId, metricServiceClient,
-			gcpPubSubProperties.getHealth().getLagThreshold(),
-			gcpPubSubProperties.getHealth().getBacklogThreshold(),
-			gcpPubSubProperties.getHealth().getLookUpInterval(), executorProvider);
-	}
+  @Bean
+  @ConditionalOnMissingBean(name = "healthTrackerRegistry")
+  public HealthTrackerRegistry healthTrackerRegistry(
+      MetricServiceClient metricServiceClient,
+      @Qualifier("healthCheckExecutorProvider") ExecutorProvider executorProvider) {
+    return new HealthTrackerRegistryImpl(
+        projectId,
+        metricServiceClient,
+        gcpPubSubProperties.getHealth().getLagThreshold(),
+        gcpPubSubProperties.getHealth().getBacklogThreshold(),
+        gcpPubSubProperties.getHealth().getLookUpInterval(),
+        executorProvider);
+  }
 
-	@Bean
-	@ConditionalOnMissingBean(name = "pubSubSubscriptionHealthIndicator")
-	public PubSubSubscriptionHealthIndicator pubSubSubscriptionHealthIndicator(HealthTrackerRegistry healthTrackerRegistry) {
-		return new PubSubSubscriptionHealthIndicator(healthTrackerRegistry);
-	}
-
+  @Bean
+  @ConditionalOnMissingBean(name = "pubSubSubscriptionHealthIndicator")
+  public PubSubSubscriptionHealthIndicator pubSubSubscriptionHealthIndicator(
+      HealthTrackerRegistry healthTrackerRegistry) {
+    return new PubSubSubscriptionHealthIndicator(healthTrackerRegistry);
+  }
 }

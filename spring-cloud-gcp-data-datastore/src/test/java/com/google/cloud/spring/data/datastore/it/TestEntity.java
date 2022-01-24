@@ -16,150 +16,155 @@
 
 package com.google.cloud.spring.data.datastore.it;
 
-import java.util.Objects;
-
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Blob;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-
+import java.util.Objects;
 import org.springframework.data.annotation.Id;
 
-/**
- * A test entity for Datastore integration tests.
- *
- * @author Chengyuan Zhao
- */
+/** A test entity for Datastore integration tests. */
 @Entity(name = "test_entities_#{\"ci\"}")
-public class TestEntity {
+class TestEntity {
 
-	@Id
-	private Long id;
+  @Id private Long id;
 
-	private String color;
+  private String color;
 
-	private Long size;
+  private Long size;
 
-	private Shape shape;
+  private Shape shape;
 
-	private Blob blobField;
+  private Blob blobField;
 
-	private Timestamp datetime;
+  private Timestamp datetime;
 
-	EmbeddedEntity embeddedEntity;
+  EmbeddedEntity embeddedEntity;
 
-	public TestEntity() {
-	}
+  TestEntity() {}
 
-	public TestEntity(Long id, String color, Long size, Shape shape, Blob blobField) {
-		this.id = id;
-		this.color = color;
-		this.size = size;
-		this.shape = shape;
-		this.blobField = blobField;
-	}
+  TestEntity(Long id, String color, Long size, Shape shape, Blob blobField) {
+    this.id = id;
+    this.color = color;
+    this.size = size;
+    this.shape = shape;
+    this.blobField = blobField;
+  }
 
-	public TestEntity(Long id, String color, Long size, Shape shape, Blob blobField, EmbeddedEntity embeddedEntity) {
-		this.id = id;
-		this.color = color;
-		this.size = size;
-		this.shape = shape;
-		this.blobField = blobField;
-		this.embeddedEntity = embeddedEntity;
-	}
+  TestEntity(
+      Long id,
+      String color,
+      Long size,
+      Shape shape,
+      Blob blobField,
+      EmbeddedEntity embeddedEntity) {
+    this.id = id;
+    this.color = color;
+    this.size = size;
+    this.shape = shape;
+    this.blobField = blobField;
+    this.embeddedEntity = embeddedEntity;
+  }
 
-	public TestEntity(Long id, String color, Long size, Timestamp datetime) {
-		this.id = id;
-		this.color = color;
-		this.size = size;
-		this.datetime = datetime;
-	}
+  TestEntity(Long id, String color, Long size, Timestamp datetime) {
+    this.id = id;
+    this.color = color;
+    this.size = size;
+    this.datetime = datetime;
+  }
 
-	public Shape getShape() {
-		return this.shape;
-	}
+  Shape getShape() {
+    return this.shape;
+  }
 
-	public void setShape(Shape shape) {
-		this.shape = shape;
-	}
+  void setShape(Shape shape) {
+    this.shape = shape;
+  }
 
-	public Long getId() {
-		return this.id;
-	}
+  Long getId() {
+    return this.id;
+  }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+  void setId(Long id) {
+    this.id = id;
+  }
 
-	public Blob getBlobField() {
-		return this.blobField;
-	}
+  Blob getBlobField() {
+    return this.blobField;
+  }
 
-	public void setBlobField(Blob blobField) {
-		this.blobField = blobField;
-	}
+  void setBlobField(Blob blobField) {
+    this.blobField = blobField;
+  }
 
-	public String getColor() {
-		return this.color;
-	}
+  String getColor() {
+    return this.color;
+  }
 
-	public void setColor(String color) {
-		this.color = color;
-	}
+  void setColor(String color) {
+    this.color = color;
+  }
 
-	public Long getSize() {
-		return this.size;
-	}
+  Long getSize() {
+    return this.size;
+  }
 
-	public void setSize(Long size) {
-		this.size = size;
-	}
+  void setSize(Long size) {
+    this.size = size;
+  }
 
-	public Timestamp getDatetime() {
-		return datetime;
-	}
+  Timestamp getDatetime() {
+    return datetime;
+  }
 
-	public void setDatetime(Timestamp datetime) {
-		this.datetime = datetime;
-	}
+  void setDatetime(Timestamp datetime) {
+    this.datetime = datetime;
+  }
 
-	/**
-	 * An enum that tests conversion and storage.
-	 */
-	enum Shape {
-		CIRCLE, SQUARE;
-	}
+  /** An enum that tests conversion and storage. */
+  enum Shape {
+    CIRCLE,
+    SQUARE;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		TestEntity that = (TestEntity) o;
-		return Objects.equals(getId(), that.getId()) &&
-				Objects.equals(getColor(), that.getColor()) &&
-				Objects.equals(getSize(), that.getSize()) &&
-				getShape() == that.getShape() &&
-				Objects.equals(getBlobField(), that.getBlobField());
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TestEntity that = (TestEntity) o;
+    return Objects.equals(getId(), that.getId())
+        && Objects.equals(getColor(), that.getColor())
+        && Objects.equals(getSize(), that.getSize())
+        && getShape() == that.getShape()
+        && Objects.equals(getBlobField(), that.getBlobField());
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getId(), getColor(), getSize(), getShape(), getBlobField());
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getColor(), getSize(), getShape(), getBlobField());
+  }
 
-	@Override
-	public String toString() {
-		return "TestEntity{" +
-				"id=" + id +
-				", color='" + color + '\'' +
-				", size=" + size +
-				", shape=" + shape +
-				", blobField=" + blobField +
-				", embeddedEntity=" + embeddedEntity +
-				", datetime=" + datetime +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "TestEntity{"
+        + "id="
+        + id
+        + ", color='"
+        + color
+        + '\''
+        + ", size="
+        + size
+        + ", shape="
+        + shape
+        + ", blobField="
+        + blobField
+        + ", embeddedEntity="
+        + embeddedEntity
+        + ", datetime="
+        + datetime
+        + '}';
+  }
 }

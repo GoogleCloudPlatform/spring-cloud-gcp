@@ -16,93 +16,102 @@
 
 package com.google.cloud.spring.data.spanner.repository.query;
 
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-
-import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
-import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
-
 import org.springframework.data.repository.query.ParameterAccessor;
 import org.springframework.data.repository.query.ParametersParameterAccessor;
 import org.springframework.data.repository.query.parser.PartTree;
 
 /**
- * Implementation of a Spanner Query Method that handles all Part-tree / name-convention query methods.
- * @param <T> the return type of the Query Method
- * @author Balint Pato
- * @author Chengyuan Zhao
+ * Implementation of a Spanner Query Method that handles all Part-tree / name-convention query
+ * methods.
  *
+ * @param <T> the return type of the Query Method
  * @since 1.1
  */
 public class PartTreeSpannerQuery<T> extends AbstractSpannerQuery<T> {
 
-	private final PartTree tree;
+  private final PartTree tree;
 
-	/**
-	 * Constructor.
-	 * @param type the underlying entity type
-	 * @param queryMethod the underlying query method to support.
-	 * @param spannerTemplate used for executing queries.
-	 * @param spannerMappingContext used for getting metadata about entities.
-	 */
-	public PartTreeSpannerQuery(Class<T> type, SpannerQueryMethod queryMethod,
-			SpannerTemplate spannerTemplate,
-			SpannerMappingContext spannerMappingContext) {
-		super(type, queryMethod, spannerTemplate, spannerMappingContext);
-		this.tree = new PartTree(queryMethod.getName(), type);
-	}
+  /**
+   * Constructor.
+   *
+   * @param type the underlying entity type
+   * @param queryMethod the underlying query method to support.
+   * @param spannerTemplate used for executing queries.
+   * @param spannerMappingContext used for getting metadata about entities.
+   */
+  public PartTreeSpannerQuery(
+      Class<T> type,
+      SpannerQueryMethod queryMethod,
+      SpannerTemplate spannerTemplate,
+      SpannerMappingContext spannerMappingContext) {
+    super(type, queryMethod, spannerTemplate, spannerMappingContext);
+    this.tree = new PartTree(queryMethod.getName(), type);
+  }
 
-	@Override
-	protected List executeRawResult(Object[] parameters) {
-		ParameterAccessor paramAccessor = new ParametersParameterAccessor(getQueryMethod().getParameters(),
-				parameters);
-		if (isCountOrExistsQuery()) {
-			return SpannerStatementQueryExecutor.executeQuery(
-					struct -> isCountQuery() ? struct.getLong(0) : struct.getBoolean(0),
-					this.entityType, this.tree, paramAccessor, getQueryMethod().getMethod().getParameters(),
-					this.spannerTemplate,
-					this.spannerMappingContext);
-		}
-		if (this.tree.isDelete()) {
-			return this.spannerTemplate
-					.performReadWriteTransaction(getDeleteFunction(parameters));
-		}
-		return SpannerStatementQueryExecutor.executeQuery(this.entityType, this.tree,
-				paramAccessor, getQueryMethod().getMethod().getParameters(), this.spannerTemplate,
-				this.spannerMappingContext);
-	}
+  @Override
+  protected List executeRawResult(Object[] parameters) {
+    ParameterAccessor paramAccessor =
+        new ParametersParameterAccessor(getQueryMethod().getParameters(), parameters);
+    if (isCountOrExistsQuery()) {
+      return SpannerStatementQueryExecutor.executeQuery(
+          struct -> isCountQuery() ? struct.getLong(0) : struct.getBoolean(0),
+          this.entityType,
+          this.tree,
+          paramAccessor,
+          getQueryMethod().getQueryMethod().getParameters(),
+          this.spannerTemplate,
+          this.spannerMappingContext);
+    }
+    if (this.tree.isDelete()) {
+      return this.spannerTemplate.performReadWriteTransaction(getDeleteFunction(parameters));
+    }
+    return SpannerStatementQueryExecutor.executeQuery(
+        this.entityType,
+        this.tree,
+        paramAccessor,
+        getQueryMethod().getQueryMethod().getParameters(),
+        this.spannerTemplate,
+        this.spannerMappingContext);
+  }
 
-	private Function<SpannerTemplate, List> getDeleteFunction(Object[] parameters) {
-		return transactionTemplate -> {
-			ParameterAccessor paramAccessor = new ParametersParameterAccessor(getQueryMethod().getParameters(),
-					parameters);
-			List<T> entitiesToDelete = SpannerStatementQueryExecutor
-					.executeQuery(this.entityType, this.tree, paramAccessor, getQueryMethod().getMethod().getParameters(),
-							transactionTemplate, this.spannerMappingContext);
-			transactionTemplate.deleteAll(entitiesToDelete);
+  private Function<SpannerTemplate, List> getDeleteFunction(Object[] parameters) {
+    return transactionTemplate -> {
+      ParameterAccessor paramAccessor =
+          new ParametersParameterAccessor(getQueryMethod().getParameters(), parameters);
+      List<T> entitiesToDelete =
+          SpannerStatementQueryExecutor.executeQuery(
+              this.entityType,
+              this.tree,
+              paramAccessor,
+              getQueryMethod().getQueryMethod().getParameters(),
+              transactionTemplate,
+              this.spannerMappingContext);
+      transactionTemplate.deleteAll(entitiesToDelete);
 
-			List result = null;
-			if (this.queryMethod.isCollectionQuery()) {
-				result = entitiesToDelete;
-			}
-			else if (this.queryMethod.getReturnedObjectType() != void.class) {
-				result = Collections.singletonList(entitiesToDelete.size());
-			}
-			return result;
-		};
-	}
+      List result = null;
+      if (this.queryMethod.isCollectionQuery()) {
+        result = entitiesToDelete;
+      } else if (this.queryMethod.getReturnedObjectType() != void.class) {
+        result = Collections.singletonList(entitiesToDelete.size());
+      }
+      return result;
+    };
+  }
 
-	private boolean isCountOrExistsQuery() {
-		return isCountQuery() || isExistsQuery();
-	}
+  private boolean isCountOrExistsQuery() {
+    return isCountQuery() || isExistsQuery();
+  }
 
-	private boolean isCountQuery() {
-		return this.tree.isCountProjection();
-	}
+  private boolean isCountQuery() {
+    return this.tree.isCountProjection();
+  }
 
-	private boolean isExistsQuery() {
-		return this.tree.isExistsProjection();
-	}
-
+  private boolean isExistsQuery() {
+    return this.tree.isExistsProjection();
+  }
 }

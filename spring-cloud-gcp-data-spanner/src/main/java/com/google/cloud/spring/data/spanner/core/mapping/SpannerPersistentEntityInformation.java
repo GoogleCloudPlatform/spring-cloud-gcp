@@ -17,41 +17,39 @@
 package com.google.cloud.spring.data.spanner.core.mapping;
 
 import com.google.cloud.spanner.Key;
-
 import org.springframework.data.repository.core.support.AbstractEntityInformation;
 
 /**
  * Holds a Spanner persistent entity and its key type.
  *
  * @param <T> the type of the underlying entity
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
-public class SpannerPersistentEntityInformation<T>
-		extends AbstractEntityInformation<T, Key> {
+public class SpannerPersistentEntityInformation<T> extends AbstractEntityInformation<T, Key> {
 
-	private final SpannerPersistentEntity<T> persistentEntity;
+  private final SpannerPersistentEntity<T> persistentEntity;
 
-	/**
-	 * Creates a new {@link SpannerPersistentEntityInformation} for the given
-	 * {@link SpannerPersistentEntity}.
-	 *
-	 * @param entity must not be {@literal null}.
-	 */
-	public SpannerPersistentEntityInformation(SpannerPersistentEntity<T> entity) {
-		super(entity.getType());
-		this.persistentEntity = entity;
-	}
+  /**
+   * Creates a new {@link SpannerPersistentEntityInformation} for the given {@link
+   * SpannerPersistentEntity}.
+   *
+   * @param entity must not be {@literal null}.
+   */
+  public SpannerPersistentEntityInformation(SpannerPersistentEntity<T> entity) {
+    super(entity.getType());
+    this.persistentEntity = entity;
+  }
 
-	@Override
-	public Key getId(T entity) {
-		return (Key) this.persistentEntity.getPropertyAccessor(entity)
-				.getProperty(this.persistentEntity.getIdProperty());
-	}
+  @Override
+  public Key getId(T entity) {
+    return (Key)
+        this.persistentEntity
+            .getPropertyAccessor(entity)
+            .getProperty(this.persistentEntity.getIdProperty());
+  }
 
-	@Override
-	public Class<Key> getIdType() {
-		return Key.class;
-	}
+  @Override
+  public Class<Key> getIdType() {
+    return Key.class;
+  }
 }

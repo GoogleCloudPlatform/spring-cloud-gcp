@@ -18,27 +18,25 @@ package com.google.cloud.spring.data.datastore.core.mapping.event;
 
 import org.springframework.context.ApplicationEvent;
 
-/**
- * An event published when entities are read from Cloud Datastore.
- *
- * @author Chengyuan Zhao
- */
+/** An event published when entities are read from Cloud Datastore. */
 public class ReadEvent extends ApplicationEvent {
 
-	/**
-	 * Constructor.
-	 * @param results A list of results from the read operation where each item was mapped
-	 *     from a Cloud Datastore entity.
-	 */
-	public ReadEvent(Iterable results) {
-		super(results);
-	}
+  /**
+   * Constructor.
+   *
+   * @param results A list of results from the read operation where each item was mapped from a
+   *     Cloud Datastore entity.
+   */
+  public ReadEvent(Iterable results) {
+    super(results);
+  }
 
-	/**
-	 * Get the list of results from the read operation.
-	 * @return the list of results from the read operation.
-	 */
-	public Iterable getResults() {
-		return (Iterable) getSource();
-	}
+  /**
+   * Get the list of results from the read operation.
+   *
+   * @return the list of results from the read operation.
+   */
+  public Iterable getResults() {
+    return (Iterable) getSource();
+  }
 }

@@ -19,40 +19,34 @@ package com.google.cloud.spring.autoconfigure.metrics;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import com.google.cloud.spring.core.GcpScope;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * Settings for Stackdriver Metrics.
  *
- * @author Eddú Meléndez
  * @since 1.2.4
  */
 @ConfigurationProperties(prefix = "spring.cloud.gcp.metrics")
 public class GcpMetricsProperties implements CredentialsSupplier {
 
-	/**
-	 * Overrides the GCP project ID specified in the Core module.
-	 */
-	private String projectId;
+  /** Overrides the GCP project ID specified in the Core module. */
+  private String projectId;
 
-	/**
-	 * Overrides the GCP OAuth2 credentials specified in the Core module.
-	 */
-	@NestedConfigurationProperty
-	private final Credentials credentials = new Credentials(GcpScope.CLOUD_MONITORING_WRITE.getUrl());
+  /** Overrides the GCP OAuth2 credentials specified in the Core module. */
+  @NestedConfigurationProperty
+  private final Credentials credentials = new Credentials(GcpScope.CLOUD_MONITORING_WRITE.getUrl());
 
-	public String getProjectId() {
-		return this.projectId;
-	}
+  public String getProjectId() {
+    return this.projectId;
+  }
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+  public void setProjectId(String projectId) {
+    this.projectId = projectId;
+  }
 
-	@Override
-	public Credentials getCredentials() {
-		return this.credentials;
-	}
+  @Override
+  public Credentials getCredentials() {
+    return this.credentials;
+  }
 }

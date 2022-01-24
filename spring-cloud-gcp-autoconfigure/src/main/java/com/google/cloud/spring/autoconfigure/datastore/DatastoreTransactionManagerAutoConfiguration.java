@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.datastore;
 
 import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager;
-
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -32,8 +31,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 /**
  * Auto-configuration for {@link DatastoreTransactionManager}.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Configuration(proxyBeanMethods = false)
@@ -42,32 +39,30 @@ import org.springframework.transaction.PlatformTransactionManager;
 @AutoConfigureBefore(TransactionAutoConfiguration.class)
 public class DatastoreTransactionManagerAutoConfiguration {
 
-	/**
-	 * Configuration class.
-	 */
-	@Configuration(proxyBeanMethods = false)
-	static class DatastoreTransactionManagerConfiguration {
+  /** Configuration class. */
+  @Configuration(proxyBeanMethods = false)
+  static class DatastoreTransactionManagerConfiguration {
 
-		private final DatastoreProvider datastore;
+    private final DatastoreProvider datastore;
 
-		private final TransactionManagerCustomizers transactionManagerCustomizers;
+    private final TransactionManagerCustomizers transactionManagerCustomizers;
 
-		DatastoreTransactionManagerConfiguration(DatastoreProvider datastore,
-				ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
-			this.datastore = datastore;
-			this.transactionManagerCustomizers = transactionManagerCustomizers
-					.getIfAvailable();
-		}
+    DatastoreTransactionManagerConfiguration(
+        DatastoreProvider datastore,
+        ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
+      this.datastore = datastore;
+      this.transactionManagerCustomizers = transactionManagerCustomizers.getIfAvailable();
+    }
 
-		@Bean
-		@ConditionalOnMissingBean(PlatformTransactionManager.class)
-		public DatastoreTransactionManager datastoreTransactionManager() {
-			DatastoreTransactionManager transactionManager = new DatastoreTransactionManager(
-					this.datastore);
-			if (this.transactionManagerCustomizers != null) {
-				this.transactionManagerCustomizers.customize(transactionManager);
-			}
-			return transactionManager;
-		}
-	}
+    @Bean
+    @ConditionalOnMissingBean(PlatformTransactionManager.class)
+    public DatastoreTransactionManager datastoreTransactionManager() {
+      DatastoreTransactionManager transactionManager =
+          new DatastoreTransactionManager(this.datastore);
+      if (this.transactionManagerCustomizers != null) {
+        this.transactionManagerCustomizers.customize(transactionManager);
+      }
+      return transactionManager;
+    }
+  }
 }

@@ -16,35 +16,31 @@
 
 package com.google.cloud.spring.data.spanner.test.domain;
 
-/**
- * A small object containing just a stock symbol and action.
- *
- * @author Chengyuan Zhao
- */
+/** A small object containing just a stock symbol and action. */
 public class SymbolAction {
 
-	private String symbol;
+  private String symbol;
 
-	private String action;
+  private String action;
 
-	public SymbolAction(String symbol, String action) {
-		this.symbol = symbol;
-		this.action = action;
-	}
+  public SymbolAction(String symbol, String action) {
+    this.symbol = symbol;
+    this.action = action;
+  }
 
-	public String getSymbol() {
-		return this.symbol;
-	}
+  public String getSymbol() {
+    return this.symbol;
+  }
 
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
-	}
+  public void setSymbol(String symbol) {
+    this.symbol = symbol;
+  }
 
-	public String getAction() {
-		return this.action;
-	}
+  public String getAction() {
+    return this.action;
+  }
 
-	public void setAction(String action) {
-		this.action = action;
-	}
+  public void setAction(String action) {
+    this.action = action;
+  }
 }
