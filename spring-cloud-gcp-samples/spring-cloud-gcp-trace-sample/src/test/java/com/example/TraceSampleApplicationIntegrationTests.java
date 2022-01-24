@@ -18,21 +18,24 @@ package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 import com.google.api.client.util.DateTime;
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.cloud.ServiceOptions;
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.Logging;
 import com.google.cloud.logging.LoggingOptions;
 import com.google.cloud.logging.Payload.JsonPayload;
+import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
+import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.devtools.cloudtrace.v1.GetTraceRequest;
 import com.google.devtools.cloudtrace.v1.Trace;
 import com.google.devtools.cloudtrace.v1.TraceServiceGrpc;
 import com.google.devtools.cloudtrace.v1.TraceServiceGrpc.TraceServiceBlockingStub;
 import com.google.devtools.cloudtrace.v1.TraceSpan;
+import com.google.pubsub.v1.ProjectName;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
@@ -43,10 +46,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,24 +62,38 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Verifies that the logged Traces on the sample application appear in StackDriver. */
-@RunWith(SpringRunner.class)
+// Please use "-Dit.trace=true" to enable the tests
+@EnabledIfSystemProperty(named = "it.trace", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {Application.class})
-public class TraceSampleApplicationIntegrationTests {
+class TraceSampleApplicationIntegrationTests {
+
+  @DynamicPropertySource
+  static void registerProperties(DynamicPropertyRegistry registry) {
+    registry.add("sampleTopic", () -> SAMPLE_TOPIC);
+    registry.add("sampleSubscription", () -> SAMPLE_SUBSCRIPTION);
+  }
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   @LocalServerPort private int port;
 
-  @Autowired private GcpProjectIdProvider projectIdProvider;
+  private static GcpProjectIdProvider projectIdProvider;
 
-  @Autowired private CredentialsProvider credentialsProvider;
+  @Autowired private  CredentialsProvider credentialsProvider;
 
   private String url;
+
+  private static String SAMPLE_TOPIC = "traceTopic-" + UUID.randomUUID();
+
+  private static String SAMPLE_SUBSCRIPTION = "traceSubscription-" + UUID.randomUUID();
 
   private TestRestTemplate testRestTemplate;
 
@@ -82,17 +101,35 @@ public class TraceSampleApplicationIntegrationTests {
 
   private TraceServiceBlockingStub traceServiceStub;
 
-  @BeforeClass
-  public static void checkToRun() {
-    assumeThat(
-        "Google Cloud Trace integration tests are disabled. "
-            + "Please use '-Dit.trace=true' to enable them. ",
-        System.getProperty("it.trace"),
-        is("true"));
+  private static PubSubAdmin pubSubAdmin;
+
+  @BeforeAll
+  static void setup() throws IOException {
+
+    projectIdProvider = () -> ProjectName.of(ServiceOptions.getDefaultProjectId()).getProject();
+
+    TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create();
+
+    pubSubAdmin = new PubSubAdmin(projectIdProvider, topicAdminClient, subscriptionAdminClient);
+
+    pubSubAdmin.createTopic(SAMPLE_TOPIC);
+    pubSubAdmin.createSubscription(SAMPLE_SUBSCRIPTION, SAMPLE_TOPIC);
+
   }
 
-  @Before
-  public void setupTraceClient() throws IOException {
+  @AfterAll
+  static void cleanUp() {
+    if (pubSubAdmin != null) {
+      pubSubAdmin.deleteSubscription(SAMPLE_SUBSCRIPTION);
+      pubSubAdmin.deleteTopic(SAMPLE_TOPIC);
+      pubSubAdmin.close();
+    }
+  }
+
+  @BeforeEach
+  void setupTraceClient() throws IOException {
+
     this.url = String.format("http://localhost:%d/", this.port);
 
     // Create a new RestTemplate here because the auto-wired instance has built-in instrumentation
@@ -116,7 +153,7 @@ public class TraceSampleApplicationIntegrationTests {
   }
 
   @Test
-  public void testTracesAreLoggedCorrectly() {
+  void testTracesAreLoggedCorrectly() {
     DateTime startDateTime = new DateTime(System.currentTimeMillis() - 60000); // Time is hard.
 
     HttpHeaders headers = new HttpHeaders();
