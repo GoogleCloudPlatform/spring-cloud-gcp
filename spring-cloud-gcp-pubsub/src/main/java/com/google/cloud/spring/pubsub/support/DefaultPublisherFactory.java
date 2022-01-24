@@ -27,7 +27,6 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
 import java.io.IOException;
-import java.util.function.Consumer;
 import org.springframework.util.Assert;
 
 /**

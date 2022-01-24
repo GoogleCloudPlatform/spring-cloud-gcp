@@ -17,9 +17,7 @@
 package com.google.cloud.spring.pubsub.support;
 
 import com.google.cloud.pubsub.v1.Publisher;
-import com.google.cloud.pubsub.v1.PublisherInterface;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
 /**
  * The caching implementation of the {@link PublisherFactory}.

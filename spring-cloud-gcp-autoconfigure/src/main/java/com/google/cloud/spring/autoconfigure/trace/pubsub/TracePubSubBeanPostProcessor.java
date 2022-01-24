@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
-import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
-import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
