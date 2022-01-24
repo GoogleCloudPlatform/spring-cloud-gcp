@@ -1,0 +1,56 @@
+/*
+ * Copyright 2021-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.example;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+
+/** Simple integration test to verify the SQL sample application with Postgres. */
+@SpringBootTest(
+    webEnvironment = WebEnvironment.RANDOM_PORT,
+    classes = {SqlApplication.class},
+    properties = {
+      "spring.cloud.gcp.sql.databaseName=code_samples_test_r2dbc_db",
+      "spring.cloud.gcp.sql.instanceConnectionName=spring-cloud-gcp-ci:us-central1:testpostgres",
+      "spring.r2dbc.password=test"
+    })
+@EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
+public class SqlR2dbcPostgresSampleApplicationIntegrationTests {
+
+  @Autowired private TestRestTemplate testRestTemplate;
+
+  @Test
+  void testSqlRowsAccess() {
+    ResponseEntity<String> result =
+        this.testRestTemplate.exchange(
+            "/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<String>() {});
+
+    assertThat(result.getBody())
+        .isEqualTo(
+            "[luisao@example.com, Anderson, Silva][jonas@example.com, Jonas,"
+                + " Goncalves][fejsa@example.com, Ljubomir, Fejsa]");
+  }
+}

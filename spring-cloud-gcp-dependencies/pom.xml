@@ -185,6 +185,16 @@
 			</dependency>
 			<dependency>
 				<groupId>com.google.cloud</groupId>
+				<artifactId>spring-cloud-gcp-starter-sql-mysql-r2dbc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>spring-cloud-gcp-starter-sql-postgres-r2dbc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-starter-trace</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -245,6 +255,20 @@
 			<dependency>
 				<groupId>com.google.cloud.sql</groupId>
 				<artifactId>postgres-socket-factory</artifactId>
+				<version>${cloud-sql-socket-factory.version}</version>
+			</dependency>
+
+			<!-- spring-cloud-gcp-starter-sql-mysql-r2dbc -->
+			<dependency>
+				<groupId>com.google.cloud.sql</groupId>
+				<artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
+				<version>${cloud-sql-socket-factory.version}</version>
+			</dependency>
+
+			<!-- spring-cloud-gcp-starter-sql-postgres-r2dbc -->
+			<dependency>
+				<groupId>com.google.cloud.sql</groupId>
+				<artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
 
