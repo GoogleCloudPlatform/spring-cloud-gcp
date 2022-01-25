@@ -31,7 +31,7 @@ jobs:
       id: mvn-cache
       with:
         path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-unified-${{ steps.date.outputs.date }}
+        key: ${{ runner.os }}-maven-unified-2.x-${{ steps.date.outputs.date }}
 
     - name: Maven go offline
       id: mvn-offline
