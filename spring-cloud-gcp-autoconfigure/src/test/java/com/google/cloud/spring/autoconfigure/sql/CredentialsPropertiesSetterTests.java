@@ -29,7 +29,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 /**
  * Tests for {@link CredentialsPropertiesSetter}.
  */
-public class CredentialsPropertiesSetterTests {
+class CredentialsPropertiesSetterTests {
 
   @Mock
   Log mockLogger;

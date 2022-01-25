@@ -29,7 +29,7 @@ import org.springframework.core.io.Resource;
  */
 final class CredentialsPropertiesSetter {
 
-  CredentialsPropertiesSetter(PropertiesRetriever propertiesRetriever) {
+  CredentialsPropertiesSetter() {
   }
 
   /**
