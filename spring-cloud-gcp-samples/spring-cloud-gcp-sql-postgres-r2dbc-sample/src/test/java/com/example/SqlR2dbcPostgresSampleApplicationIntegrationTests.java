@@ -28,25 +28,29 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
-/** Simple integration test to verify the SQL sample application with Postgres. */
+/**
+ * Simple integration test to verify the SQL sample application with Postgres.
+ */
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {SqlApplication.class},
     properties = {
-      "spring.cloud.gcp.sql.databaseName=code_samples_test_r2dbc_db",
-      "spring.cloud.gcp.sql.instanceConnectionName=spring-cloud-gcp-ci:us-central1:testpostgres",
-      "spring.r2dbc.password=test"
+        "spring.cloud.gcp.sql.databaseName=code_samples_test_r2dbc_db",
+        "spring.cloud.gcp.sql.instanceConnectionName=spring-cloud-gcp-ci:us-central1:testpostgres",
+        "spring.r2dbc.password=test"
     })
 @EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
 public class SqlR2dbcPostgresSampleApplicationIntegrationTests {
 
-  @Autowired private TestRestTemplate testRestTemplate;
+  @Autowired
+  private TestRestTemplate testRestTemplate;
 
   @Test
   void testSqlRowsAccess() {
     ResponseEntity<String> result =
         this.testRestTemplate.exchange(
-            "/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<String>() {});
+            "/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<String>() {
+            });
 
     assertThat(result.getBody())
         .isEqualTo(
