@@ -362,6 +362,20 @@ class CloudSqlEnvironmentPostProcessorTests {
             });
   }
 
+  @Test
+  void testSkipIfJdbcPropertyIsDisabled() {
+    new ApplicationContextRunner()
+        .withPropertyValues("spring.cloud.gcp.sql.jdbc.enabled=false")
+        .withInitializer(
+            configurableApplicationContext ->
+                initializer.postProcessEnvironment(
+                    configurableApplicationContext.getEnvironment(), new SpringApplication()))
+        .run(
+            context -> {
+              assertThat(getSpringDatasourceUrl(context)).isNull();
+            });
+  }
+
   private String getSpringDatasourceUrl(ApplicationContext context) {
     return context.getEnvironment().getProperty("spring.datasource.url");
   }
