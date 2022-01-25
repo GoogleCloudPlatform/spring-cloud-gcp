@@ -95,7 +95,7 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
   }
 
   private DatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
-    if (Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.sql.enabled", "true"))
+    if (isJdbcEnabled(environment)
         && isOnClasspath("javax.sql.DataSource")
         && isOnClasspath("org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType")
         && isOnClasspath("com.google.cloud.sql.CredentialFactory")) {
@@ -108,6 +108,12 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
       }
     }
     return null;
+  }
+
+  private boolean isJdbcEnabled(ConfigurableEnvironment environment) {
+    return Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.sql.enabled", "true"))
+        && Boolean.parseBoolean(
+        environment.getProperty("spring.cloud.gcp.sql.jdbc.enabled", "true"));
   }
 
   private boolean isOnClasspath(String className) {

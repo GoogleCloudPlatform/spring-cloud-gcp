@@ -62,6 +62,7 @@ There is also some configuration specific to Google Cloud SQL:
 |===
 | Property name | Description | Required | Default value
 | `spring.cloud.gcp.sql.enabled` | Enables or disables Cloud SQL auto configuration | No | `true`
+| `spring.cloud.gcp.sql.jdbc.enabled` | Enables or disables JDBC Cloud SQL auto-configuration | No | `true`
 | `spring.cloud.gcp.sql.database-name` | Name of the database to connect to. | Yes |
 | `spring.cloud.gcp.sql.instance-connection-name` | A string containing a Google Cloud SQL instance's project ID, region and name, each separated by a colon. | Yes |
 For example, `my-project-id:my-region:my-instance-name`.
@@ -78,7 +79,7 @@ Used to authenticate and authorize new connections to a Google Cloud SQL instanc
 | `spring.datasource.driver-class-name` | JDBC driver to use. | No | MySQL: `com.mysql.cj.jdbc.Driver`; PostgreSQL: `org.postgresql.Driver`
 |===
 
-NOTE: If you provide your own `spring.datasource.url`, it will be ignored, unless you disable Cloud SQL auto configuration with `spring.cloud.gcp.sql.enabled=false`.
+NOTE: If you provide your own `spring.datasource.url`, it will be ignored, unless you disable Cloud SQL auto configuration with `spring.cloud.gcp.sql.enabled=false` or `spring.cloud.gcp.sql.jdbc.enabled=false`.
 
 ==== `DataSource` creation flow
 
