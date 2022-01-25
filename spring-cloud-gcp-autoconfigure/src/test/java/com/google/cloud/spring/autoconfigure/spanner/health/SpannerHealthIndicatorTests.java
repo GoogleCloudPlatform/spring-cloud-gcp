@@ -79,6 +79,8 @@ class SpannerHealthIndicatorTests {
     assertThatThrownBy(() -> spannerHealthIndicator.doHealthCheck(builder))
         .isInstanceOf(RuntimeException.class)
         .hasMessage("Cloud Spanner is down!!!");
+
+    verify(resultSet, never()).close();
   }
 
   @Test
@@ -94,6 +96,7 @@ class SpannerHealthIndicatorTests {
     assertThatThrownBy(() -> spannerHealthIndicator.doHealthCheck(builder))
         .isInstanceOf(RuntimeException.class)
         .hasMessage("Cloud Spanner is down!!!");
+    verify(resultSet).close();
   }
 
   @Test
@@ -107,6 +110,7 @@ class SpannerHealthIndicatorTests {
     assertThat(spannerHealthIndicator.health().getStatus()).isSameAs(Status.UP);
     verify(spannerTemplate).executeQuery(Statement.of(QUERY), null);
     verify(resultSet).next();
+    verify(resultSet).close();
   }
 
   @Test
@@ -134,5 +138,6 @@ class SpannerHealthIndicatorTests {
     assertThat(spannerHealthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
     verify(spannerTemplate).executeQuery(Statement.of(QUERY), null);
     verify(resultSet).next();
+    verify(resultSet).close();
   }
 }

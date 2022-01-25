@@ -52,10 +52,10 @@ public class SpannerHealthIndicator extends AbstractHealthIndicator {
 
   @Override
   protected void doHealthCheck(Builder builder) throws Exception {
-    ResultSet resultSet = spannerTemplate.executeQuery(validationStatement, null);
-    // Touch the record
-    resultSet.next();
-    resultSet.close();
+    try (ResultSet resultSet = spannerTemplate.executeQuery(validationStatement, null)) {
+      // Touch the record
+      resultSet.next();
+    }
 
     builder.up();
   }
