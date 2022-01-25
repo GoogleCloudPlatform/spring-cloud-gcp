@@ -275,6 +275,12 @@ There is also some configuration specific to Google Cloud SQL:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.jdbc.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables JDBC Cloud SQL auto-configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.database-name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the database to connect to.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
@@ -339,7 +345,7 @@ Used to authenticate and authorize new connections to a Google Cloud SQL instanc
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you provide your own <code>spring.datasource.url</code>, it will be ignored, unless you disable Cloud SQL auto configuration with <code>spring.cloud.gcp.sql.enabled=false</code>.
+If you provide your own <code>spring.datasource.url</code>, it will be ignored, unless you disable Cloud SQL auto configuration with <code>spring.cloud.gcp.sql.enabled=false</code> or <code>spring.cloud.gcp.sql.jdbc.enabled=false</code>.
 </td>
 </tr>
 </table>
