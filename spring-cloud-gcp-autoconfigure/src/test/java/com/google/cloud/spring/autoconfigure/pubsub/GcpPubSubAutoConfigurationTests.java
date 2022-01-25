@@ -1300,7 +1300,6 @@ class GcpPubSubAutoConfigurationTests {
         .setDelayThreshold(Duration.ofSeconds(11))
         .build();
     PublisherCustomizer customizer = (builder, topic) -> {
-      builder.setEndpoint("unused:443");
       builder.setBatchingSettings(testBatchingSettings);
     };
 
