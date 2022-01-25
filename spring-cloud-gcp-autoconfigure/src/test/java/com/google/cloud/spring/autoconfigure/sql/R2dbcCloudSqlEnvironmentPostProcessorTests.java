@@ -24,7 +24,7 @@ import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 /** Tests for {@link R2dbcCloudSqlEnvironmentPostProcessor}. */
-class R2dbcCloudSqlEnvironmentPostProcessorTest {
+class R2dbcCloudSqlEnvironmentPostProcessorTests {
 
   private R2dbcCloudSqlEnvironmentPostProcessor r2dbcPostProcessor =
       new R2dbcCloudSqlEnvironmentPostProcessor();

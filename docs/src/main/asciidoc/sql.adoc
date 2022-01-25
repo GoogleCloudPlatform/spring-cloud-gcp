@@ -66,7 +66,7 @@ There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Co
 | `spring.datasource.driver-class-name` | JDBC driver to use. | No | MySQL: `com.mysql.cj.jdbc.Driver`; PostgreSQL: `org.postgresql.Driver`
 |===
 
-NOTE: If you provide your own `spring.datasource.url`, it will be ignored, unless you disable Cloud SQL auto configuration with `spring.cloud.gcp.sql.enabled=false`.
+NOTE: If you provide your own `spring.datasource.url`, it will be ignored, unless you disable Cloud SQL auto configuration with `spring.cloud.gcp.sql.enabled=false` or `spring.cloud.gcp.sql.jdbc.enabled=false`.
 
 ==== `DataSource` creation flow
 
