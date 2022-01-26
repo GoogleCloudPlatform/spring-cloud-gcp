@@ -13,7 +13,7 @@ The Firebase JWT tokens are validated with rules presented link:https://firebase
 
 * Expiration time: Must be in the future
 * Issued-at time : Must be in the past
-* Audience : Must be the firebase project id v
+* Audience : Must be the firebase project id
 * Issuer: Must be "https://securetoken.google.com/`<projectId>` "
 * Authentication time : Must be in the past
 * Subject : Must not be empty
