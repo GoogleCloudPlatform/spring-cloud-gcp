@@ -16,11 +16,9 @@
 
 package com.google.cloud.spring.storage.integration.inbound;
 
+import com.google.cloud.storage.BlobInfo;
 import java.io.File;
 import java.util.Comparator;
-
-import com.google.cloud.storage.BlobInfo;
-
 import org.springframework.integration.file.remote.synchronizer.AbstractInboundFileSynchronizingMessageSource;
 
 /**
@@ -29,19 +27,20 @@ import org.springframework.integration.file.remote.synchronizer.AbstractInboundF
  * @author João André Martins
  * @author Chengyuan Zhao
  */
-public class GcsInboundFileSynchronizingMessageSource extends AbstractInboundFileSynchronizingMessageSource<BlobInfo> {
+public class GcsInboundFileSynchronizingMessageSource
+    extends AbstractInboundFileSynchronizingMessageSource<BlobInfo> {
 
-	public GcsInboundFileSynchronizingMessageSource(GcsInboundFileSynchronizer synchronizer) {
-		super(synchronizer);
-	}
+  public GcsInboundFileSynchronizingMessageSource(GcsInboundFileSynchronizer synchronizer) {
+    super(synchronizer);
+  }
 
-	public GcsInboundFileSynchronizingMessageSource(GcsInboundFileSynchronizer synchronizer,
-			Comparator<File> comparator) {
-		super(synchronizer, comparator);
-	}
+  public GcsInboundFileSynchronizingMessageSource(
+      GcsInboundFileSynchronizer synchronizer, Comparator<File> comparator) {
+    super(synchronizer, comparator);
+  }
 
-	@Override
-	public String getComponentType() {
-		return "gcp:gcs-inbound-channel-adapter";
-	}
+  @Override
+  public String getComponentType() {
+    return "gcp:gcs-inbound-channel-adapter";
+  }
 }

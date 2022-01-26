@@ -19,7 +19,6 @@ package com.example;
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField;
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-
 import org.springframework.data.annotation.Id;
 
 /**
@@ -32,23 +31,22 @@ import org.springframework.data.annotation.Id;
 @DiscriminatorValue("generic_band")
 public class Band {
 
-	@Id
-	protected String name;
+  @Id protected String name;
 
-	public Band(String name) {
-		this.name = name;
-	}
+  public Band(String name) {
+    this.name = name;
+  }
 
-	public String getName() {
-		return this.name;
-	}
+  public String getName() {
+    return this.name;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	@Override
-	public String toString() {
-		return this.name;
-	}
+  @Override
+  public String toString() {
+    return this.name;
+  }
 }

@@ -18,7 +18,6 @@ package com.google.cloud.spring.logging;
 
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.logging.extractors.XCloudTraceIdExtractor;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -33,30 +32,28 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration(proxyBeanMethods = false)
 public class LoggingWebMvcConfigurer implements WebMvcConfigurer {
 
-	private final TraceIdLoggingWebMvcInterceptor interceptor;
+  private final TraceIdLoggingWebMvcInterceptor interceptor;
 
-	/**
-	 * Constructor that accepts an {@link TraceIdLoggingWebMvcInterceptor}. If the given
-	 * interceptor is null, then a default {@link XCloudTraceIdExtractor} is used.
-	 * @param interceptor the interceptor to use with this configurer. If not provided a
-	 * {@link TraceIdLoggingWebMvcInterceptor} is used with the trace ID extractor
-	 * described above.
-	 * @param projectIdProvider the project ID provider to use
-	 */
-	public LoggingWebMvcConfigurer(
-			@Autowired(required = false) TraceIdLoggingWebMvcInterceptor interceptor,
-			GcpProjectIdProvider projectIdProvider) {
-		if (interceptor != null) {
-			this.interceptor = interceptor;
-		}
-		else {
-			this.interceptor = new TraceIdLoggingWebMvcInterceptor(
-					new XCloudTraceIdExtractor());
-		}
-	}
+  /**
+   * Constructor that accepts an {@link TraceIdLoggingWebMvcInterceptor}. If the given interceptor
+   * is null, then a default {@link XCloudTraceIdExtractor} is used.
+   *
+   * @param interceptor the interceptor to use with this configurer. If not provided a {@link
+   *     TraceIdLoggingWebMvcInterceptor} is used with the trace ID extractor described above.
+   * @param projectIdProvider the project ID provider to use
+   */
+  public LoggingWebMvcConfigurer(
+      @Autowired(required = false) TraceIdLoggingWebMvcInterceptor interceptor,
+      GcpProjectIdProvider projectIdProvider) {
+    if (interceptor != null) {
+      this.interceptor = interceptor;
+    } else {
+      this.interceptor = new TraceIdLoggingWebMvcInterceptor(new XCloudTraceIdExtractor());
+    }
+  }
 
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(this.interceptor);
-	}
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(this.interceptor);
+  }
 }

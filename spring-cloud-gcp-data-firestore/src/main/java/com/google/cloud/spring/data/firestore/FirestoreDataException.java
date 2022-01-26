@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-
 package com.google.cloud.spring.data.firestore;
-
 
 import org.springframework.dao.DataAccessException;
 
@@ -26,11 +24,11 @@ import org.springframework.dao.DataAccessException;
  */
 public class FirestoreDataException extends DataAccessException {
 
-	public FirestoreDataException(String msg) {
-		super(msg);
-	}
+  public FirestoreDataException(String msg) {
+    super(msg);
+  }
 
-	public FirestoreDataException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+  public FirestoreDataException(String msg, Throwable cause) {
+    super(msg, cause);
+  }
 }

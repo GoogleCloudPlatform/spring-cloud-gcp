@@ -17,7 +17,6 @@
 package com.google.cloud.spring.data.firestore.repository.query;
 
 import java.lang.reflect.Method;
-
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.query.QueryMethod;
@@ -30,19 +29,19 @@ import org.springframework.data.repository.query.QueryMethod;
  */
 public class FirestoreQueryMethod extends QueryMethod {
 
-	public FirestoreQueryMethod(Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
-		super(method, metadata, factory);
-	}
+  public FirestoreQueryMethod(
+      Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
+    super(method, metadata, factory);
+  }
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>
-	 * For Spring Data Firestore, all Firestore query methods are Reactive and considered to
-	 * be "streaming".
-	 */
-	@Override
-	public boolean isStreamQuery() {
-		return true;
-	}
+  /**
+   * {@inheritDoc}
+   *
+   * <p>For Spring Data Firestore, all Firestore query methods are Reactive and considered to be
+   * "streaming".
+   */
+  @Override
+  public boolean isStreamQuery() {
+    return true;
+  }
 }

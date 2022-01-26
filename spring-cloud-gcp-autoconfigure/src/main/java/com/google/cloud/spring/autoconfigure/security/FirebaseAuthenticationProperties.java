@@ -27,29 +27,26 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("spring.cloud.gcp.security.firebase")
 public class FirebaseAuthenticationProperties {
 
-	/**
-	 * Link to Google's public endpoint containing Firebase public keys.
-	 */
-	private String publicKeysEndpoint = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com";
+  /** Link to Google's public endpoint containing Firebase public keys. */
+  private String publicKeysEndpoint =
+      "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com";
 
-	/**
-	 * Overrides the GCP project ID specified in the Core module.
-	 */
-	private String projectId;
+  /** Overrides the GCP project ID specified in the Core module. */
+  private String projectId;
 
-	public String getPublicKeysEndpoint() {
-		return publicKeysEndpoint;
-	}
+  public String getPublicKeysEndpoint() {
+    return publicKeysEndpoint;
+  }
 
-	public void setPublicKeysEndpoint(String publicKeysEndpoint) {
-		this.publicKeysEndpoint = publicKeysEndpoint;
-	}
+  public void setPublicKeysEndpoint(String publicKeysEndpoint) {
+    this.publicKeysEndpoint = publicKeysEndpoint;
+  }
 
-	public String getProjectId() {
-		return projectId;
-	}
+  public String getProjectId() {
+    return projectId;
+  }
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+  public void setProjectId(String projectId) {
+    this.projectId = projectId;
+  }
 }

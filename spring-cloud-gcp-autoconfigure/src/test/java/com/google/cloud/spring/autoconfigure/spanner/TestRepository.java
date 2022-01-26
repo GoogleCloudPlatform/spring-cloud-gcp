@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.spanner;
 
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
-
 import org.springframework.stereotype.Repository;
 
 /**
@@ -26,6 +25,4 @@ import org.springframework.stereotype.Repository;
  * @author Chengyuan Zhao
  */
 @Repository
-public interface TestRepository extends SpannerRepository {
-
-}
+public interface TestRepository extends SpannerRepository {}

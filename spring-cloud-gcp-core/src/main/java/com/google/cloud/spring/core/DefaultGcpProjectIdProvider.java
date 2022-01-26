@@ -25,14 +25,14 @@ import com.google.cloud.ServiceOptions;
  */
 public class DefaultGcpProjectIdProvider implements GcpProjectIdProvider {
 
-	/**
-	 * {@link ServiceOptions#getDefaultProjectId()} checks for the project ID in the
-	 * {@code GOOGLE_CLOUD_PROJECT} environment variable and the Metadata Server, among others.
-	 *
-	 * @return the project ID in the context
-	 */
-	@Override
-	public String getProjectId() {
-		return ServiceOptions.getDefaultProjectId();
-	}
+  /**
+   * {@link ServiceOptions#getDefaultProjectId()} checks for the project ID in the {@code
+   * GOOGLE_CLOUD_PROJECT} environment variable and the Metadata Server, among others.
+   *
+   * @return the project ID in the context
+   */
+  @Override
+  public String getProjectId() {
+    return ServiceOptions.getDefaultProjectId();
+  }
 }

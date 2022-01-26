@@ -16,17 +16,20 @@
 
 package com.example;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assume.assumeThat;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.output.TeeOutputStream;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -34,11 +37,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * @author Travis Tomsu
@@ -49,45 +47,50 @@ import static org.junit.Assume.assumeThat;
 @DirtiesContext
 public class PubSubDeadLetterTopicSampleAppIntegrationTest {
 
-	@Autowired
-	private TestRestTemplate restTemplate;
+  @Autowired private TestRestTemplate restTemplate;
 
-	private static PrintStream systemOut;
+  private static PrintStream systemOut;
 
-	private static ByteArrayOutputStream baos;
+  private static ByteArrayOutputStream baos;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat("PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub=true' to enable them.",
-				System.getProperty("it.pubsub"), is("true"));
+  @BeforeClass
+  public static void prepare() {
+    assumeThat(
+        "PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub=true' to enable"
+            + " them.",
+        System.getProperty("it.pubsub"),
+        is("true"));
 
-		systemOut = System.out;
-		baos = new ByteArrayOutputStream();
-		TeeOutputStream out = new TeeOutputStream(systemOut, baos);
-		System.setOut(new PrintStream(out));
-	}
+    systemOut = System.out;
+    baos = new ByteArrayOutputStream();
+    TeeOutputStream out = new TeeOutputStream(systemOut, baos);
+    System.setOut(new PrintStream(out));
+  }
 
-	@AfterClass
-	public static void bringBack() {
-		System.setOut(systemOut);
-	}
+  @AfterClass
+  public static void bringBack() {
+    System.setOut(systemOut);
+  }
 
-	@Test
-	public void testSample_deadLetterHandling() {
-		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		String message = "test message " + UUID.randomUUID();
+  @Test
+  public void testSample_deadLetterHandling() {
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    String message = "test message " + UUID.randomUUID();
 
-		map.add("messageBody", message);
-		map.add("username", "testUserName");
+    map.add("messageBody", message);
+    map.add("username", "testUserName");
 
-		this.restTemplate.postForObject("/newMessage", map, String.class);
+    this.restTemplate.postForObject("/newMessage", map, String.class);
 
-		await().atMost(60, TimeUnit.SECONDS)
-				.pollDelay(3, TimeUnit.SECONDS)
-				.untilAsserted(() -> assertThat(baos.toString())
-						.contains("Nacking message (attempt 1)")
-						.contains("Nacking message (attempt 6)")
-						.contains("Received message on dead letter topic")
-						.contains(message));
-	}
+    await()
+        .atMost(60, TimeUnit.SECONDS)
+        .pollDelay(3, TimeUnit.SECONDS)
+        .untilAsserted(
+            () ->
+                assertThat(baos.toString())
+                    .contains("Nacking message (attempt 1)")
+                    .contains("Nacking message (attempt 6)")
+                    .contains("Received message on dead letter topic")
+                    .contains(message));
+  }
 }

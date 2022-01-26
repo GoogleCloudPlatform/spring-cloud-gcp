@@ -16,15 +16,15 @@
 
 package com.example;
 
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.CapturedOutput;
@@ -32,16 +32,13 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * Tests for the receiver application.
  *
  * @author Dmitry Solomakha
- *
  * @since 1.2
  */
-//Please use "-Dit.pubsub-integration=true" to enable the tests
+// Please use "-Dit.pubsub-integration=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ExtendWith(OutputCaptureExtension.class)
@@ -49,19 +46,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext
 class PollingReceiverIntegrationTest {
 
-	@Autowired
-	private PubSubTemplate pubSubTemplate;
+  @Autowired private PubSubTemplate pubSubTemplate;
 
-	@Test
-	void testSample(CapturedOutput capturedOutput) throws Exception {
-		String message = "test message " + UUID.randomUUID();
-		String expectedString = "Message arrived by Synchronous Pull! Payload: " + message;
+  @Test
+  void testSample(CapturedOutput capturedOutput) throws Exception {
+    String message = "test message " + UUID.randomUUID();
+    String expectedString = "Message arrived by Synchronous Pull! Payload: " + message;
 
-		this.pubSubTemplate.publish("exampleTopic", message);
+    this.pubSubTemplate.publish("exampleTopic", message);
 
-		Awaitility.await()
-				.atMost(60, TimeUnit.SECONDS)
-				.until(() -> capturedOutput.toString().contains(expectedString));
-		assertThat(capturedOutput.toString()).contains(expectedString);
-	}
+    Awaitility.await()
+        .atMost(60, TimeUnit.SECONDS)
+        .until(() -> capturedOutput.toString().contains(expectedString));
+    assertThat(capturedOutput.toString()).contains(expectedString);
+  }
 }

@@ -16,6 +16,12 @@
 
 package com.google.cloud.spring.autoconfigure.spanner.health;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
@@ -23,105 +29,103 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Tests for {@link SpannerHealthIndicator}.
  *
  * @author ikeyat
- *
  * @since 2.0.6
  */
 @RunWith(MockitoJUnitRunner.class)
 public class SpannerHealthIndicatorTests {
 
-	@Mock
-	private SpannerTemplate spannerTemplate;
+  @Mock private SpannerTemplate spannerTemplate;
 
-	@Mock
-	private ResultSet resultSet;
+  @Mock private ResultSet resultSet;
 
-	private final String QUERY = "SELECT 2";
+  private final String QUERY = "SELECT 2";
 
-	@Test
-	public void testdoHealthCheckUp() throws Exception {
-		SpannerHealthIndicator spannerHealthIndicator = new SpannerHealthIndicator(spannerTemplate, QUERY);
+  @Test
+  public void testdoHealthCheckUp() throws Exception {
+    SpannerHealthIndicator spannerHealthIndicator =
+        new SpannerHealthIndicator(spannerTemplate, QUERY);
 
-		when(spannerTemplate.executeQuery(any(), any())).thenReturn(resultSet);
-		when(resultSet.next()).thenReturn(true);
+    when(spannerTemplate.executeQuery(any(), any())).thenReturn(resultSet);
+    when(resultSet.next()).thenReturn(true);
 
-		Health.Builder builder = new Health.Builder();
+    Health.Builder builder = new Health.Builder();
 
-		spannerHealthIndicator.doHealthCheck(builder);
+    spannerHealthIndicator.doHealthCheck(builder);
 
-		assertThat(builder.build().getStatus()).isSameAs(Status.UP);
-		verify(spannerTemplate).executeQuery(Statement.of(QUERY), null);
-		verify(resultSet).next();
-	}
+    assertThat(builder.build().getStatus()).isSameAs(Status.UP);
+    verify(spannerTemplate).executeQuery(Statement.of(QUERY), null);
+    verify(resultSet).next();
+  }
 
-	@Test(expected = Exception.class)
-	public void testdoHealthCheckDownSpannerTemplate() throws Exception {
-		SpannerHealthIndicator spannerHealthIndicator = new SpannerHealthIndicator(spannerTemplate, QUERY);
+  @Test(expected = Exception.class)
+  public void testdoHealthCheckDownSpannerTemplate() throws Exception {
+    SpannerHealthIndicator spannerHealthIndicator =
+        new SpannerHealthIndicator(spannerTemplate, QUERY);
 
-		when(spannerTemplate.executeQuery(any(), any())).thenThrow(new RuntimeException("Cloud Spanner is down!!!"));
+    when(spannerTemplate.executeQuery(any(), any()))
+        .thenThrow(new RuntimeException("Cloud Spanner is down!!!"));
 
-		Health.Builder builder = new Health.Builder();
+    Health.Builder builder = new Health.Builder();
 
-		spannerHealthIndicator.doHealthCheck(builder);
-	}
+    spannerHealthIndicator.doHealthCheck(builder);
+  }
 
-	@Test(expected = Exception.class)
-	public void testdoHealthCheckDownResultSet() throws Exception {
-		SpannerHealthIndicator spannerHealthIndicator = new SpannerHealthIndicator(spannerTemplate, QUERY);
+  @Test(expected = Exception.class)
+  public void testdoHealthCheckDownResultSet() throws Exception {
+    SpannerHealthIndicator spannerHealthIndicator =
+        new SpannerHealthIndicator(spannerTemplate, QUERY);
 
-		when(spannerTemplate.executeQuery(any(), any())).thenReturn(resultSet);
-		when(resultSet.next()).thenThrow(new RuntimeException("Cloud Spanner is down!!!"));
+    when(spannerTemplate.executeQuery(any(), any())).thenReturn(resultSet);
+    when(resultSet.next()).thenThrow(new RuntimeException("Cloud Spanner is down!!!"));
 
-		Health.Builder builder = new Health.Builder();
+    Health.Builder builder = new Health.Builder();
 
-		spannerHealthIndicator.doHealthCheck(builder);
-	}
+    spannerHealthIndicator.doHealthCheck(builder);
+  }
 
-	@Test
-	public void testHealthy() {
-		SpannerHealthIndicator spannerHealthIndicator = new SpannerHealthIndicator(spannerTemplate, QUERY);
+  @Test
+  public void testHealthy() {
+    SpannerHealthIndicator spannerHealthIndicator =
+        new SpannerHealthIndicator(spannerTemplate, QUERY);
 
-		when(spannerTemplate.executeQuery(any(), any())).thenReturn(resultSet);
-		when(resultSet.next()).thenReturn(true);
+    when(spannerTemplate.executeQuery(any(), any())).thenReturn(resultSet);
+    when(resultSet.next()).thenReturn(true);
 
-		assertThat(spannerHealthIndicator.health().getStatus()).isSameAs(Status.UP);
-		verify(spannerTemplate).executeQuery(Statement.of(QUERY), null);
-		verify(resultSet).next();
-	}
+    assertThat(spannerHealthIndicator.health().getStatus()).isSameAs(Status.UP);
+    verify(spannerTemplate).executeQuery(Statement.of(QUERY), null);
+    verify(resultSet).next();
+  }
 
-	@Test
-	public void testUnhealthySpannerTemplate() {
-		SpannerHealthIndicator spannerHealthIndicator = new SpannerHealthIndicator(spannerTemplate, QUERY);
+  @Test
+  public void testUnhealthySpannerTemplate() {
+    SpannerHealthIndicator spannerHealthIndicator =
+        new SpannerHealthIndicator(spannerTemplate, QUERY);
 
-		when(spannerTemplate.executeQuery(any(), any())).thenThrow(new RuntimeException("Cloud Spanner is down!!!"));
+    when(spannerTemplate.executeQuery(any(), any()))
+        .thenThrow(new RuntimeException("Cloud Spanner is down!!!"));
 
-		assertThat(spannerHealthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
-		verify(spannerTemplate).executeQuery(Statement.of(QUERY), null);
-		verify(resultSet, never()).next();
-	}
+    assertThat(spannerHealthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
+    verify(spannerTemplate).executeQuery(Statement.of(QUERY), null);
+    verify(resultSet, never()).next();
+  }
 
-	@Test
-	public void testUnhealthyResultSet() {
-		SpannerHealthIndicator spannerHealthIndicator = new SpannerHealthIndicator(spannerTemplate, QUERY);
+  @Test
+  public void testUnhealthyResultSet() {
+    SpannerHealthIndicator spannerHealthIndicator =
+        new SpannerHealthIndicator(spannerTemplate, QUERY);
 
-		when(spannerTemplate.executeQuery(any(), any())).thenReturn(resultSet);
-		when(resultSet.next()).thenThrow(new RuntimeException("Cloud Spanner is down!!!"));
+    when(spannerTemplate.executeQuery(any(), any())).thenReturn(resultSet);
+    when(resultSet.next()).thenThrow(new RuntimeException("Cloud Spanner is down!!!"));
 
-		assertThat(spannerHealthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
-		verify(spannerTemplate).executeQuery(Statement.of(QUERY), null);
-		verify(resultSet).next();
-	}
+    assertThat(spannerHealthIndicator.health().getStatus()).isEqualTo(Status.DOWN);
+    verify(spannerTemplate).executeQuery(Statement.of(QUERY), null);
+    verify(resultSet).next();
+  }
 }

@@ -23,8 +23,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for subclasses in an inheritance hierarchy that matches a value in a
- * discrimination field in the parent class.
+ * Annotation for subclasses in an inheritance hierarchy that matches a value in a discrimination
+ * field in the parent class.
  *
  * @author Chengyuan Zhao
  */
@@ -33,10 +33,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DiscriminatorValue {
 
-	/**
-	 * The value that corresponds to entities of the annotated subclass stored in the
-	 * Datastore Kind belonging to the parent class.
-	 * @return the value that corresponds to the annotated subclass.
-	 */
-	String value();
+  /**
+   * The value that corresponds to entities of the annotated subclass stored in the Datastore Kind
+   * belonging to the parent class.
+   *
+   * @return the value that corresponds to the annotated subclass.
+   */
+  String value();
 }

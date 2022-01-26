@@ -25,10 +25,11 @@ import com.google.cloud.spanner.ValueBinder;
  */
 public interface MultipleValueBinder {
 
-	/**
-	 * Returns a {@link ValueBinder} for a given field name to bind.
-	 * @param fieldName the name of the field to bind.
-	 * @return a value-binder object that then accepts the value to bind.
-	 */
-	ValueBinder set(String fieldName);
+  /**
+   * Returns a {@link ValueBinder} for a given field name to bind.
+   *
+   * @param fieldName the name of the field to bind.
+   * @return a value-binder object that then accepts the value to bind.
+   */
+  ValueBinder set(String fieldName);
 }

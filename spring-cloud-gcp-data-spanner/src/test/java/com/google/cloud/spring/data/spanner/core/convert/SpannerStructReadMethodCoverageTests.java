@@ -16,6 +16,9 @@
 
 package com.google.cloud.spring.data.spanner.core.convert;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.google.cloud.spanner.Struct;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -23,11 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.google.cloud.spanner.Struct;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests to check for new mapping methods that appear in the Spanner client lib.
@@ -36,31 +35,32 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class SpannerStructReadMethodCoverageTests {
 
-	private static final Set<String> DISREGARDED_METHOD_NAMES = Collections.unmodifiableSet(new HashSet<String>(
-			Arrays.asList("getColumnIndex", "getStructList", "getColumnType", "getValue")
-	));
+  private static final Set<String> DISREGARDED_METHOD_NAMES =
+      Collections.unmodifiableSet(
+          new HashSet<String>(
+              Arrays.asList("getColumnIndex", "getStructList", "getColumnType", "getValue")));
 
-	// Checks that the converter is aware of all Spanner struct getter types
-	@Test
-	void allKnownMappingTypesTest() throws NoSuchFieldException {
-		for (Method method : Struct.class.getMethods()) {
-			String methodName = method.getName();
-			// ignoring private methods, ones not named like a getter. Getters must also
-			// only take the column index or name
-			if (!Modifier.isPublic(method.getModifiers()) || !methodName.startsWith("get")
-					|| method.getParameterCount() != 1
-					|| DISREGARDED_METHOD_NAMES.contains(methodName)) {
-				continue;
-			}
-			Class returnType = ConversionUtils.boxIfNeeded(method.getReturnType());
-			if (ConversionUtils.isIterableNonByteArrayType(returnType)) {
-				Class innerReturnType = (Class) ((ParameterizedType) method
-						.getGenericReturnType()).getActualTypeArguments()[0];
-				assertThat(StructAccessor.readIterableMapping).containsKey(innerReturnType);
-			}
-			else {
-				assertThat(StructAccessor.singleItemReadMethodMapping).containsKey(returnType);
-			}
-		}
-	}
+  // Checks that the converter is aware of all Spanner struct getter types
+  @Test
+  void allKnownMappingTypesTest() throws NoSuchFieldException {
+    for (Method method : Struct.class.getMethods()) {
+      String methodName = method.getName();
+      // ignoring private methods, ones not named like a getter. Getters must also
+      // only take the column index or name
+      if (!Modifier.isPublic(method.getModifiers())
+          || !methodName.startsWith("get")
+          || method.getParameterCount() != 1
+          || DISREGARDED_METHOD_NAMES.contains(methodName)) {
+        continue;
+      }
+      Class returnType = ConversionUtils.boxIfNeeded(method.getReturnType());
+      if (ConversionUtils.isIterableNonByteArrayType(returnType)) {
+        Class innerReturnType =
+            (Class) ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
+        assertThat(StructAccessor.readIterableMapping).containsKey(innerReturnType);
+      } else {
+        assertThat(StructAccessor.singleItemReadMethodMapping).containsKey(returnType);
+      }
+    }
+  }
 }

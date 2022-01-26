@@ -28,24 +28,21 @@ import javax.persistence.Id;
 @Entity
 public class House {
 
-	@Id
-	@GeneratedValue
-	private long id;
+  @Id @GeneratedValue private long id;
 
-	private String address;
+  private String address;
 
-	public House() {
-	}
+  public House() {}
 
-	public House(String address) {
-		this.address = address;
-	}
+  public House(String address) {
+    this.address = address;
+  }
 
-	public String getAddress() {
-		return this.address;
-	}
+  public String getAddress() {
+    return this.address;
+  }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+  public void setAddress(String address) {
+    this.address = address;
+  }
 }

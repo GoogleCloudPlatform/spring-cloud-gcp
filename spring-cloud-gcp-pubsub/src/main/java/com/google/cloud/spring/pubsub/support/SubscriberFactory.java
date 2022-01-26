@@ -34,50 +34,54 @@ import com.google.pubsub.v1.PullRequest;
  */
 public interface SubscriberFactory {
 
-	/**
-	 * Method to get the project id.
-	 * @return the project id
-	 * @since 1.1
-	 */
-	String getProjectId();
+  /**
+   * Method to get the project id.
+   *
+   * @return the project id
+   * @since 1.1
+   */
+  String getProjectId();
 
-	/**
-	 * Create a {@link Subscriber} for the specified subscription name and wired it up to
-	 * asynchronously deliver messages to the provided {@link MessageReceiver}.
-	 * @param subscriptionName the name of the subscription
-	 * @param receiver the callback for receiving messages asynchronously
-	 * @return the {@link Subscriber} that was created to bind the receiver to the subscription
-	 */
-	Subscriber createSubscriber(String subscriptionName, MessageReceiver receiver);
+  /**
+   * Create a {@link Subscriber} for the specified subscription name and wired it up to
+   * asynchronously deliver messages to the provided {@link MessageReceiver}.
+   *
+   * @param subscriptionName the name of the subscription
+   * @param receiver the callback for receiving messages asynchronously
+   * @return the {@link Subscriber} that was created to bind the receiver to the subscription
+   */
+  Subscriber createSubscriber(String subscriptionName, MessageReceiver receiver);
 
-	/**
-	 * Create a {@link PullRequest} for synchronously pulling a number of messages from
-	 * a Google Cloud Pub/Sub subscription.
-	 * @param subscriptionName the name of the subscription
-	 * @param maxMessages the maximum number of pulled messages; must be greater than zero.
-	 * If null is passed in, then up to Integer.MAX_VALUE messages will be requested.
-	 * @param returnImmediately causes the pull request to return immediately even
-	 * if subscription doesn't contain enough messages to satisfy {@code maxMessages}.
-	 * Setting this parameter to {@code true} is not recommended as it may result in long delays in message delivery.
-	 * @return the pull request that can be executed using a {@link SubscriberStub}
-	 */
-	PullRequest createPullRequest(String subscriptionName, Integer maxMessages,
-			Boolean returnImmediately);
+  /**
+   * Create a {@link PullRequest} for synchronously pulling a number of messages from a Google Cloud
+   * Pub/Sub subscription.
+   *
+   * @param subscriptionName the name of the subscription
+   * @param maxMessages the maximum number of pulled messages; must be greater than zero. If null is
+   *     passed in, then up to Integer.MAX_VALUE messages will be requested.
+   * @param returnImmediately causes the pull request to return immediately even if subscription
+   *     doesn't contain enough messages to satisfy {@code maxMessages}. Setting this parameter to
+   *     {@code true} is not recommended as it may result in long delays in message delivery.
+   * @return the pull request that can be executed using a {@link SubscriberStub}
+   */
+  PullRequest createPullRequest(
+      String subscriptionName, Integer maxMessages, Boolean returnImmediately);
 
-	/**
-	 * Create a {@link SubscriberStub} that is needed to execute {@link PullRequest}s. This
-	 * method will only set global settings.
-	 * @return the {@link SubscriberStub} used for executing {@link PullRequest}s.
-	 * @deprecated Use the new {@code createSubscriberStub(subscriptionName)} instead.
-	 */
-	@Deprecated
-	SubscriberStub createSubscriberStub();
+  /**
+   * Create a {@link SubscriberStub} that is needed to execute {@link PullRequest}s. This method
+   * will only set global settings.
+   *
+   * @return the {@link SubscriberStub} used for executing {@link PullRequest}s.
+   * @deprecated Use the new {@code createSubscriberStub(subscriptionName)} instead.
+   */
+  @Deprecated
+  SubscriberStub createSubscriberStub();
 
-	/**
-	 * Create a {@link SubscriberStub} that is needed to execute {@link PullRequest}s.
-	 * @param subscriptionName the subscription name
-	 * @return the {@link SubscriberStub} used for executing {@link PullRequest}s
-	 */
-	SubscriberStub createSubscriberStub(String subscriptionName);
-
+  /**
+   * Create a {@link SubscriberStub} that is needed to execute {@link PullRequest}s.
+   *
+   * @param subscriptionName the subscription name
+   * @return the {@link SubscriberStub} used for executing {@link PullRequest}s
+   */
+  SubscriberStub createSubscriberStub(String subscriptionName);
 }

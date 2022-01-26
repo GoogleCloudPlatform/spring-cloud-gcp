@@ -16,7 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub;
 
-import java.util.Arrays;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
@@ -25,16 +27,13 @@ import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.spring.pubsub.reactive.PubSubReactiveFactory;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
+import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
-import reactor.test.StepVerifier;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -43,10 +42,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncResult;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
+import reactor.test.StepVerifier;
 
 /**
  * @author Elena Felder
@@ -55,121 +53,123 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class GcpPubSubReactiveAutoConfigurationTest {
 
-	@Mock
-	PubSubSubscriberTemplate mockSubscriberTemplate;
+  @Mock PubSubSubscriberTemplate mockSubscriberTemplate;
 
-	@Mock
-	AcknowledgeablePubsubMessage mockMessage;
+  @Mock AcknowledgeablePubsubMessage mockMessage;
 
-	@Before
-	public void setUpMocks() {
-		this.mockSubscriberTemplate = Mockito.mock(PubSubSubscriberTemplate.class);
-		this.mockMessage = Mockito.mock(AcknowledgeablePubsubMessage.class);
+  @Before
+  public void setUpMocks() {
+    this.mockSubscriberTemplate = Mockito.mock(PubSubSubscriberTemplate.class);
+    this.mockMessage = Mockito.mock(AcknowledgeablePubsubMessage.class);
+  }
 
-	}
+  @Test
+  public void reactiveFactoryAutoconfiguredByDefault() {
 
-	@Test
-	public void reactiveFactoryAutoconfiguredByDefault() {
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner().withConfiguration(AutoConfigurations.of(TestConfig.class));
+    contextRunner.run(
+        ctx -> {
+          assertThat(ctx.containsBean("pubSubReactiveFactory")).isTrue();
+        });
+  }
 
-		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-				.withConfiguration(
-						AutoConfigurations.of(TestConfig.class));
-		contextRunner.run(ctx -> {
-			assertThat(ctx.containsBean("pubSubReactiveFactory")).isTrue();
-		});
-	}
+  @Test
+  public void reactiveConfigDisabledWhenPubSubDisabled() {
 
-	@Test
-	public void reactiveConfigDisabledWhenPubSubDisabled() {
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(TestConfig.class))
+            .withPropertyValues("spring.cloud.gcp.pubsub.enabled=false");
 
-		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-				.withConfiguration(
-						AutoConfigurations.of(TestConfig.class))
-				.withPropertyValues("spring.cloud.gcp.pubsub.enabled=false");
+    contextRunner.run(
+        ctx -> {
+          assertThat(ctx.containsBean("pubSubReactiveFactory")).isFalse();
+        });
+  }
 
-		contextRunner.run(ctx -> {
-			assertThat(ctx.containsBean("pubSubReactiveFactory")).isFalse();
-		});
-	}
+  @Test
+  public void reactiveConfigDisabledWhenReactivePubSubDisabled() {
 
-	@Test
-	public void reactiveConfigDisabledWhenReactivePubSubDisabled() {
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(TestConfig.class))
+            .withPropertyValues("spring.cloud.gcp.pubsub.reactive.enabled=false");
 
-		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-				.withConfiguration(
-						AutoConfigurations.of(TestConfig.class))
-				.withPropertyValues("spring.cloud.gcp.pubsub.reactive.enabled=false");
+    contextRunner.run(
+        ctx -> {
+          assertThat(ctx.containsBean("pubSubReactiveFactory")).isFalse();
+        });
+  }
 
-		contextRunner.run(ctx -> {
-			assertThat(ctx.containsBean("pubSubReactiveFactory")).isFalse();
-		});
-	}
+  @Test
+  public void defaultSchedulerUsedWhenNoneProvided() {
+    setUpThreadPrefixVerification("parallel");
 
-	@Test
-	public void defaultSchedulerUsedWhenNoneProvided() {
-		setUpThreadPrefixVerification("parallel");
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withBean(PubSubSubscriberOperations.class, () -> mockSubscriberTemplate)
+            .withConfiguration(AutoConfigurations.of(GcpPubSubReactiveAutoConfiguration.class));
 
-		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-				.withBean(PubSubSubscriberOperations.class, () -> mockSubscriberTemplate)
-				.withConfiguration(AutoConfigurations.of(GcpPubSubReactiveAutoConfiguration.class));
+    contextRunner.run(this::pollAndVerify);
+  }
 
-		contextRunner.run(this::pollAndVerify);
-	}
+  @Test
+  public void customSchedulerUsedWhenAvailable() {
 
-	@Test
-	public void customSchedulerUsedWhenAvailable() {
+    setUpThreadPrefixVerification("myCustomScheduler");
 
-		setUpThreadPrefixVerification("myCustomScheduler");
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withBean(PubSubSubscriberOperations.class, () -> mockSubscriberTemplate)
+            .withConfiguration(AutoConfigurations.of(GcpPubSubReactiveAutoConfiguration.class))
+            .withUserConfiguration(TestConfigWithOverriddenScheduler.class);
 
-		ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-				.withBean(PubSubSubscriberOperations.class, () -> mockSubscriberTemplate)
-				.withConfiguration(AutoConfigurations.of(GcpPubSubReactiveAutoConfiguration.class))
-				.withUserConfiguration(TestConfigWithOverriddenScheduler.class);
+    contextRunner.run(this::pollAndVerify);
+  }
 
-		contextRunner.run(this::pollAndVerify);
-	}
+  private void setUpThreadPrefixVerification(String threadPrefix) {
+    when(mockSubscriberTemplate.pullAsync("testSubscription", Integer.MAX_VALUE, true))
+        .then(
+            arg -> {
+              assertThat(Thread.currentThread().getName()).startsWith(threadPrefix);
 
-	private void setUpThreadPrefixVerification(String threadPrefix) {
-		when(mockSubscriberTemplate.pullAsync("testSubscription", Integer.MAX_VALUE, true))
-				.then(arg -> {
-					assertThat(Thread.currentThread().getName()).startsWith(threadPrefix);
+              return AsyncResult.forValue(Arrays.asList(mockMessage, mockMessage, mockMessage));
+            });
+  }
 
-					return AsyncResult.forValue(Arrays.asList(mockMessage, mockMessage, mockMessage));
-				});
-	}
+  private void pollAndVerify(ApplicationContext ctx) {
+    PubSubReactiveFactory reactiveFactory = ctx.getBean(PubSubReactiveFactory.class);
 
-	private void pollAndVerify(ApplicationContext ctx) {
-		PubSubReactiveFactory reactiveFactory = ctx.getBean(PubSubReactiveFactory.class);
+    StepVerifier.create(reactiveFactory.poll("testSubscription", 2))
+        .expectNext(mockMessage, mockMessage, mockMessage)
+        .thenCancel()
+        .verify();
+  }
 
-		StepVerifier.create(
-				reactiveFactory.poll("testSubscription", 2))
-				.expectNext(mockMessage, mockMessage, mockMessage)
-				.thenCancel()
-				.verify();
-	}
+  @Configuration
+  static class TestConfigWithOverriddenScheduler {
+    @Bean
+    @Qualifier("pubSubReactiveScheduler")
+    public Scheduler customScheduler() {
+      return Schedulers.newSingle("myCustomScheduler");
+    }
+  }
 
+  @Configuration
+  @ImportAutoConfiguration({
+    GcpPubSubReactiveAutoConfiguration.class,
+    GcpPubSubAutoConfiguration.class
+  })
+  static class TestConfig {
+    @Bean
+    public GcpProjectIdProvider projectIdProvider() {
+      return () -> "fake project";
+    }
 
-	@Configuration
-	static class TestConfigWithOverriddenScheduler {
-		@Bean
-		@Qualifier("pubSubReactiveScheduler")
-		public Scheduler customScheduler() {
-			return Schedulers.newSingle("myCustomScheduler");
-		}
-	}
-
-	@Configuration
-	@ImportAutoConfiguration({GcpPubSubReactiveAutoConfiguration.class, GcpPubSubAutoConfiguration.class})
-	static class TestConfig {
-		@Bean
-		public GcpProjectIdProvider projectIdProvider() {
-			return () -> "fake project";
-		}
-
-		@Bean
-		public CredentialsProvider googleCredentials() {
-			return () -> mock(Credentials.class);
-		}
-	}
-
+    @Bean
+    public CredentialsProvider googleCredentials() {
+      return () -> mock(Credentials.class);
+    }
+  }
 }

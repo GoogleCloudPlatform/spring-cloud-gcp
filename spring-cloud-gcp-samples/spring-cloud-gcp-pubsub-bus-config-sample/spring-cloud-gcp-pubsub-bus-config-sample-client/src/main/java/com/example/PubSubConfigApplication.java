@@ -27,8 +27,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PubSubConfigApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PubSubConfigApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(PubSubConfigApplication.class, args);
+  }
 }

@@ -23,6 +23,4 @@ import org.springframework.data.repository.CrudRepository;
  *
  * @author Joao Andre Martins
  */
-public interface HouseRepository extends CrudRepository<House, Long> {
-
-}
+public interface HouseRepository extends CrudRepository<House, Long> {}

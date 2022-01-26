@@ -29,8 +29,7 @@ import org.springframework.cloud.config.server.EnableConfigServer;
 @EnableConfigServer
 public class PubSubConfigGitHubServerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PubSubConfigGitHubServerApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(PubSubConfigGitHubServerApplication.class, args);
+  }
 }

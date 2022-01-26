@@ -16,14 +16,12 @@
 
 package com.google.cloud.spring.autoconfigure.trace.sleuth;
 
-import java.net.URI;
-
 import brave.SpanCustomizer;
 import brave.http.HttpRequest;
 import brave.http.HttpRequestParser;
 import brave.http.HttpTags;
 import brave.propagation.TraceContext;
-
+import java.net.URI;
 
 /**
  * An {@link HttpRequestParser} that fills information for Stackdriver Trace.
@@ -35,16 +33,16 @@ import brave.propagation.TraceContext;
  */
 public class StackdriverHttpRequestParser implements HttpRequestParser {
 
-	@Override
-	public void parse(HttpRequest request, TraceContext context, SpanCustomizer customizer) {
-		HttpRequestParser.DEFAULT.parse(request, context, customizer);
-		HttpTags.URL.tag(request, context, customizer);
-		HttpTags.ROUTE.tag(request, context, customizer);
+  @Override
+  public void parse(HttpRequest request, TraceContext context, SpanCustomizer customizer) {
+    HttpRequestParser.DEFAULT.parse(request, context, customizer);
+    HttpTags.URL.tag(request, context, customizer);
+    HttpTags.ROUTE.tag(request, context, customizer);
 
-		String url = request.url();
-		URI uri = URI.create(url);
-		if (uri.getHost() != null) {
-			customizer.tag("http.host", uri.getHost());
-		}
-	}
+    String url = request.url();
+    URI uri = URI.create(url);
+    if (uri.getHost() != null) {
+      customizer.tag("http.host", uri.getHost());
+    }
+  }
 }

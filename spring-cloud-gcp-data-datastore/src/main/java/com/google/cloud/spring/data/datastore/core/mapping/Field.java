@@ -23,11 +23,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for a property that allows specifying the field name instead of deriving it
- * from the property's name.
+ * Annotation for a property that allows specifying the field name instead of deriving it from the
+ * property's name.
  *
  * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Documented
@@ -35,10 +34,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Field {
 
-	/**
-	 * The custom name of the field in the Datastore Entity, which can differ from the name
-	 * of the property it annotates.
-	 * @return the name of the field in the Datastore Entity.
-	 */
-	String name();
+  /**
+   * The custom name of the field in the Datastore Entity, which can differ from the name of the
+   * property it annotates.
+   *
+   * @return the name of the field in the Datastore Entity.
+   */
+  String name();
 }

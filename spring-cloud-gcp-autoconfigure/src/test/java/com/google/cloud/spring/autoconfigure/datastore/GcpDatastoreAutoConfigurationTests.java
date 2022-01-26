@@ -16,7 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.datastore;
 
-import java.util.function.Supplier;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
@@ -29,10 +31,10 @@ import com.google.cloud.spring.autoconfigure.datastore.health.DatastoreHealthInd
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
 import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager;
+import java.util.function.Supplier;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -43,10 +45,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ResolvableType;
 import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-
 /**
  * Tests for Datastore auto-config.
  *
@@ -55,179 +53,192 @@ import static org.mockito.Mockito.mock;
  */
 public class GcpDatastoreAutoConfigurationTests {
 
-	/** Mock datastore for use in configuration. */
-	public static Datastore MOCK_CLIENT = mock(Datastore.class);
+  /** Mock datastore for use in configuration. */
+  public static Datastore MOCK_CLIENT = mock(Datastore.class);
 
-	/**
-	 * used to check exception messages and types.
-	 */
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+  /** used to check exception messages and types. */
+  @Rule public ExpectedException expectedException = ExpectedException.none();
 
-	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(GcpDatastoreAutoConfiguration.class,
-					GcpContextAutoConfiguration.class,
-					DatastoreTransactionManagerAutoConfiguration.class,
-					DatastoreRepositoriesAutoConfiguration.class,
-					DatastoreHealthIndicatorAutoConfiguration.class))
-			.withUserConfiguration(TestConfiguration.class)
-			.withPropertyValues("spring.cloud.gcp.datastore.project-id=test-project",
-					"spring.cloud.gcp.datastore.namespace=testNamespace",
-					"spring.cloud.gcp.datastore.host=localhost:8081",
-					"management.health.datastore.enabled=false");
+  private ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(
+              AutoConfigurations.of(
+                  GcpDatastoreAutoConfiguration.class,
+                  GcpContextAutoConfiguration.class,
+                  DatastoreTransactionManagerAutoConfiguration.class,
+                  DatastoreRepositoriesAutoConfiguration.class,
+                  DatastoreHealthIndicatorAutoConfiguration.class))
+          .withUserConfiguration(TestConfiguration.class)
+          .withPropertyValues(
+              "spring.cloud.gcp.datastore.project-id=test-project",
+              "spring.cloud.gcp.datastore.namespace=testNamespace",
+              "spring.cloud.gcp.datastore.host=localhost:8081",
+              "management.health.datastore.enabled=false");
 
-	@Test
-	public void testUserDatastoreBean() {
-		ApplicationContextRunner runner = new ApplicationContextRunner()
-				.withConfiguration(AutoConfigurations.of(GcpDatastoreAutoConfiguration.class))
-				.withUserConfiguration(TestConfigurationWithDatastoreBean.class)
-				.withPropertyValues("spring.cloud.gcp.datastore.project-id=test-project",
-						"spring.cloud.gcp.datastore.namespace=testNamespace",
-						"spring.cloud.gcp.datastore.host=localhost:8081",
-						"management.health.datastore.enabled=false");
+  @Test
+  public void testUserDatastoreBean() {
+    ApplicationContextRunner runner =
+        new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(GcpDatastoreAutoConfiguration.class))
+            .withUserConfiguration(TestConfigurationWithDatastoreBean.class)
+            .withPropertyValues(
+                "spring.cloud.gcp.datastore.project-id=test-project",
+                "spring.cloud.gcp.datastore.namespace=testNamespace",
+                "spring.cloud.gcp.datastore.host=localhost:8081",
+                "management.health.datastore.enabled=false");
 
-		runner.run(context -> {
-			assertThat(getDatastoreBean(context))
-					.isSameAs(MOCK_CLIENT);
-		});
-	}
+    runner.run(
+        context -> {
+          assertThat(getDatastoreBean(context)).isSameAs(MOCK_CLIENT);
+        });
+  }
 
-	@Test
-	public void testUserDatastoreBeanNamespace() {
-		ApplicationContextRunner runner = new ApplicationContextRunner()
-				.withConfiguration(AutoConfigurations.of(GcpDatastoreAutoConfiguration.class,
-						GcpContextAutoConfiguration.class))
-				.withUserConfiguration(TestConfigurationWithDatastoreBeanNamespaceProvider.class)
-				.withPropertyValues("spring.cloud.gcp.datastore.project-id=test-project",
-						"spring.cloud.gcp.datastore.namespace=testNamespace",
-						"spring.cloud.gcp.datastore.host=localhost:8081",
-						"management.health.datastore.enabled=false");
+  @Test
+  public void testUserDatastoreBeanNamespace() {
+    ApplicationContextRunner runner =
+        new ApplicationContextRunner()
+            .withConfiguration(
+                AutoConfigurations.of(
+                    GcpDatastoreAutoConfiguration.class, GcpContextAutoConfiguration.class))
+            .withUserConfiguration(TestConfigurationWithDatastoreBeanNamespaceProvider.class)
+            .withPropertyValues(
+                "spring.cloud.gcp.datastore.project-id=test-project",
+                "spring.cloud.gcp.datastore.namespace=testNamespace",
+                "spring.cloud.gcp.datastore.host=localhost:8081",
+                "management.health.datastore.enabled=false");
 
-		this.expectedException.expectMessage("failed to start");
-		runner.run(context -> getDatastoreBean(context));
-	}
+    this.expectedException.expectMessage("failed to start");
+    runner.run(context -> getDatastoreBean(context));
+  }
 
-	@Test
-	public void testDatastoreSimpleClient() {
-		this.contextRunner.run(context -> assertThat(context.getBean(Datastore.class)).isNotNull());
-	}
+  @Test
+  public void testDatastoreSimpleClient() {
+    this.contextRunner.run(context -> assertThat(context.getBean(Datastore.class)).isNotNull());
+  }
 
-	@Test
-	public void testDatastoreOptionsCorrectlySet() {
-		this.contextRunner.run(context -> {
-			DatastoreOptions datastoreOptions = getDatastoreBean(context).getOptions();
-			assertThat(datastoreOptions.getProjectId()).isEqualTo("test-project");
-			assertThat(datastoreOptions.getNamespace()).isEqualTo("testNamespace");
-			assertThat(datastoreOptions.getHost()).isEqualTo("localhost:8081");
-		});
-	}
+  @Test
+  public void testDatastoreOptionsCorrectlySet() {
+    this.contextRunner.run(
+        context -> {
+          DatastoreOptions datastoreOptions = getDatastoreBean(context).getOptions();
+          assertThat(datastoreOptions.getProjectId()).isEqualTo("test-project");
+          assertThat(datastoreOptions.getNamespace()).isEqualTo("testNamespace");
+          assertThat(datastoreOptions.getHost()).isEqualTo("localhost:8081");
+        });
+  }
 
-	@Test
-	public void testDatastoreEmulatorCredentialsConfig() {
-		this.contextRunner.run(context -> {
-			CredentialsProvider defaultCredentialsProvider = context.getBean(CredentialsProvider.class);
-			assertThat(defaultCredentialsProvider).isNotInstanceOf(NoCredentialsProvider.class);
+  @Test
+  public void testDatastoreEmulatorCredentialsConfig() {
+    this.contextRunner.run(
+        context -> {
+          CredentialsProvider defaultCredentialsProvider =
+              context.getBean(CredentialsProvider.class);
+          assertThat(defaultCredentialsProvider).isNotInstanceOf(NoCredentialsProvider.class);
 
-			DatastoreOptions datastoreOptions = getDatastoreBean(context).getOptions();
-			assertThat(datastoreOptions.getCredentials()).isInstanceOf(NoCredentials.class);
-		});
-	}
+          DatastoreOptions datastoreOptions = getDatastoreBean(context).getOptions();
+          assertThat(datastoreOptions.getCredentials()).isInstanceOf(NoCredentials.class);
+        });
+  }
 
-	@Test
-	public void testDatastoreOperationsCreated() {
-		this.contextRunner.run(context -> assertThat(context.getBean(DatastoreOperations.class)).isNotNull());
-	}
+  @Test
+  public void testDatastoreOperationsCreated() {
+    this.contextRunner.run(
+        context -> assertThat(context.getBean(DatastoreOperations.class)).isNotNull());
+  }
 
-	@Test
-	public void testTestRepositoryCreated() {
-		this.contextRunner.run(context -> assertThat(context.getBean(TestRepository.class)).isNotNull());
-	}
+  @Test
+  public void testTestRepositoryCreated() {
+    this.contextRunner.run(
+        context -> assertThat(context.getBean(TestRepository.class)).isNotNull());
+  }
 
-	@Test
-	public void testIdConverterCreated() {
-		this.contextRunner.run(context -> {
-			BackendIdConverter idConverter = context.getBean(BackendIdConverter.class);
-			assertThat(idConverter).isNotNull();
-			assertThat(idConverter).isInstanceOf(DatastoreKeyIdConverter.class);
-		});
-	}
+  @Test
+  public void testIdConverterCreated() {
+    this.contextRunner.run(
+        context -> {
+          BackendIdConverter idConverter = context.getBean(BackendIdConverter.class);
+          assertThat(idConverter).isNotNull();
+          assertThat(idConverter).isInstanceOf(DatastoreKeyIdConverter.class);
+        });
+  }
 
-	@Test
-	public void datastoreTransactionManagerCreated() {
-		this.contextRunner.run(context -> {
-			DatastoreTransactionManager transactionManager = context
-					.getBean(DatastoreTransactionManager.class);
-			assertThat(transactionManager).isNotNull();
-			assertThat(transactionManager)
-					.isInstanceOf(DatastoreTransactionManager.class);
-		});
-	}
+  @Test
+  public void datastoreTransactionManagerCreated() {
+    this.contextRunner.run(
+        context -> {
+          DatastoreTransactionManager transactionManager =
+              context.getBean(DatastoreTransactionManager.class);
+          assertThat(transactionManager).isNotNull();
+          assertThat(transactionManager).isInstanceOf(DatastoreTransactionManager.class);
+        });
+  }
 
-	@Test
-	public void testDatastoreHealthIndicatorNotCreated() {
-		this.contextRunner.run(context -> assertThatExceptionOfType(NoSuchBeanDefinitionException.class)
-				.isThrownBy(() -> context.getBean(DatastoreHealthIndicator.class)));
-	}
+  @Test
+  public void testDatastoreHealthIndicatorNotCreated() {
+    this.contextRunner.run(
+        context ->
+            assertThatExceptionOfType(NoSuchBeanDefinitionException.class)
+                .isThrownBy(() -> context.getBean(DatastoreHealthIndicator.class)));
+  }
 
-	private Datastore getDatastoreBean(ApplicationContext context) {
-		return (Datastore) ((Supplier) context.getBean(
-				context.getBeanNamesForType(ResolvableType.forClassWithGenerics(Supplier.class, Datastore.class))[0]))
-						.get();
-	}
+  private Datastore getDatastoreBean(ApplicationContext context) {
+    return (Datastore)
+        ((Supplier)
+                context.getBean(
+                    context
+                        .getBeanNamesForType(
+                            ResolvableType.forClassWithGenerics(Supplier.class, Datastore.class))[
+                        0]))
+            .get();
+  }
 
-	/**
-	 * Spring Boot config for tests.
-	 */
-	@AutoConfigurationPackage
-	static class TestConfiguration {
+  /** Spring Boot config for tests. */
+  @AutoConfigurationPackage
+  static class TestConfiguration {
 
-		@Bean
-		public CredentialsProvider credentialsProvider() {
-			return () -> NoCredentials.getInstance();
-		}
-	}
+    @Bean
+    public CredentialsProvider credentialsProvider() {
+      return () -> NoCredentials.getInstance();
+    }
+  }
 
-	/**
-	 * Spring Boot config for tests with custom Datastore Bean.
-	 */
-	@Configuration
-	static class TestConfigurationWithDatastoreBean {
+  /** Spring Boot config for tests with custom Datastore Bean. */
+  @Configuration
+  static class TestConfigurationWithDatastoreBean {
 
-		@Bean
-		public CredentialsProvider credentialsProvider() {
-			return () -> NoCredentials.getInstance();
-		}
+    @Bean
+    public CredentialsProvider credentialsProvider() {
+      return () -> NoCredentials.getInstance();
+    }
 
-		@Bean
-		public GcpProjectIdProvider gcpProjectIdProvider() {
-			return () -> "project123";
-		}
+    @Bean
+    public GcpProjectIdProvider gcpProjectIdProvider() {
+      return () -> "project123";
+    }
 
-		@Bean
-		public Datastore datastore() {
-			return MOCK_CLIENT;
-		}
-	}
+    @Bean
+    public Datastore datastore() {
+      return MOCK_CLIENT;
+    }
+  }
 
-	/**
-	 * Spring Boot config for tests with custom Datastore Bean.
-	 */
-	@Configuration
-	static class TestConfigurationWithDatastoreBeanNamespaceProvider {
+  /** Spring Boot config for tests with custom Datastore Bean. */
+  @Configuration
+  static class TestConfigurationWithDatastoreBeanNamespaceProvider {
 
-		@Bean
-		public CredentialsProvider credentialsProvider() {
-			return () -> NoCredentials.getInstance();
-		}
+    @Bean
+    public CredentialsProvider credentialsProvider() {
+      return () -> NoCredentials.getInstance();
+    }
 
-		@Bean
-		public Datastore datastore() {
-			return MOCK_CLIENT;
-		}
+    @Bean
+    public Datastore datastore() {
+      return MOCK_CLIENT;
+    }
 
-		@Bean
-		public DatastoreNamespaceProvider datastoreNamespaceProvider() {
-			return () -> "blah";
-		}
-	}
+    @Bean
+    public DatastoreNamespaceProvider datastoreNamespaceProvider() {
+      return () -> "blah";
+    }
+  }
 }

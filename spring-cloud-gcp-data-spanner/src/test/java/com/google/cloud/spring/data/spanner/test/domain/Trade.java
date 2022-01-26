@@ -16,6 +16,13 @@
 
 package com.google.cloud.spring.data.spanner.test.domain;
 
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.Embedded;
+import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.cloud.spring.data.spanner.core.mapping.Where;
+import com.google.spanner.v1.TypeCode;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -30,14 +37,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.google.cloud.spring.data.spanner.core.mapping.Column;
-import com.google.cloud.spring.data.spanner.core.mapping.Embedded;
-import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
-import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
-import com.google.cloud.spring.data.spanner.core.mapping.Table;
-import com.google.cloud.spring.data.spanner.core.mapping.Where;
-import com.google.spanner.v1.TypeCode;
-
 /**
  * A test domain object using many features.
  *
@@ -48,260 +47,284 @@ import com.google.spanner.v1.TypeCode;
 @Table(name = "#{'trades_'.concat(tableNameSuffix)}")
 public class Trade {
 
-	@Column(nullable = false)
-	private int age;
+  @Column(nullable = false)
+  private int age;
 
-	private Instant tradeTime;
+  private Instant tradeTime;
 
-	private Date tradeDate;
+  private Date tradeDate;
 
-	private LocalDate tradeLocalDate;
+  private LocalDate tradeLocalDate;
 
-	private LocalDateTime tradeLocalDateTime;
+  private LocalDateTime tradeLocalDateTime;
 
-	private String action;
+  private String action;
 
-	private String symbol;
+  private String symbol;
 
-	@Embedded
-	@PrimaryKey
-	private TradeDetail tradeDetail;
+  @Embedded @PrimaryKey private TradeDetail tradeDetail;
 
-	@PrimaryKey(keyOrder = 2)
-	@Column(name = "trader_id")
-	private String traderId;
+  @PrimaryKey(keyOrder = 2)
+  @Column(name = "trader_id")
+  private String traderId;
 
-	private List<Instant> executionTimes;
+  private List<Instant> executionTimes;
 
-	@Interleaved
-	@Where("disabled = false")
-	private List<SubTrade> subTrades = Collections.emptyList();
+  @Interleaved
+  @Where("disabled = false")
+  private List<SubTrade> subTrades = Collections.emptyList();
 
-	private BigDecimal bigDecimalField;
+  private BigDecimal bigDecimalField;
 
-	private List<BigDecimal> bigDecimals;
+  private List<BigDecimal> bigDecimals;
 
-	@Column(spannerType = TypeCode.JSON)
-	private Details optionalDetails;
+  @Column(spannerType = TypeCode.JSON)
+  private Details optionalDetails;
 
-	@Column(spannerType = TypeCode.JSON)
-	private Details backupDetails;
+  @Column(spannerType = TypeCode.JSON)
+  private Details backupDetails;
 
-	/**
-	 * Partial constructor. Intentionally tests a field that is left null sometimes.
-	 * @param symbol the symbol.
-	 * @param executionTimes the list of execution times.
-	 */
-	public Trade(String symbol, List<Instant> executionTimes) {
-		this.symbol = symbol;
-		this.executionTimes = executionTimes;
-	}
+  /**
+   * Partial constructor. Intentionally tests a field that is left null sometimes.
+   *
+   * @param symbol the symbol.
+   * @param executionTimes the list of execution times.
+   */
+  public Trade(String symbol, List<Instant> executionTimes) {
+    this.symbol = symbol;
+    this.executionTimes = executionTimes;
+  }
 
-	public static Trade aTrade() {
-		return aTrade(null, 0);
-	}
+  public static Trade aTrade() {
+    return aTrade(null, 0);
+  }
 
-	public static Trade aTrade(String customTraderId, int subTrades) {
-		return aTrade(customTraderId, subTrades, 0);
-	}
+  public static Trade aTrade(String customTraderId, int subTrades) {
+    return aTrade(customTraderId, subTrades, 0);
+  }
 
-	public static Trade aTrade(String customTraderId, int subTrades, int tradeTime) {
-		Trade t = new Trade("ABCD", new ArrayList<>());
-		String tradeId = UUID.randomUUID().toString();
-		String traderId = customTraderId == null ? UUID.randomUUID().toString() : customTraderId;
+  public static Trade aTrade(String customTraderId, int subTrades, int tradeTime) {
+    Trade t = new Trade("ABCD", new ArrayList<>());
+    String tradeId = UUID.randomUUID().toString();
+    String traderId = customTraderId == null ? UUID.randomUUID().toString() : customTraderId;
 
-		t.tradeDetail = new TradeDetail();
+    t.tradeDetail = new TradeDetail();
 
-		t.tradeDetail.id = tradeId;
-		t.age = 8;
-		t.action = "BUY";
-		t.traderId = traderId;
-		t.tradeTime = Instant.ofEpochSecond(333 + tradeTime);
-		t.tradeDate = Date.from(t.tradeTime);
-		t.tradeLocalDate = LocalDate.of(2015, 1, 1);
-		t.tradeLocalDateTime = LocalDateTime.of(2015, 1, 1, 2, 3, 4, 5);
-		if (subTrades > 0) {
-			t.setSubTrades(
-					IntStream.range(0, subTrades)
-							.mapToObj(i -> new SubTrade(t.getTradeDetail().getId(), t.getTraderId(), "subTrade" + i))
-							.collect(Collectors.toList()));
-		}
-		t.tradeDetail.price = 100.0;
-		t.tradeDetail.shares = 12345.6;
-		for (int i = 1; i <= 5; i++) {
-			t.executionTimes.add(Instant.ofEpochSecond(i));
-		}
-		t.bigDecimalField = new BigDecimal("1111.999");
-		t.bigDecimals = Arrays.asList(new BigDecimal("9999"), new BigDecimal("-0.00099"));
-		return t;
-	}
+    t.tradeDetail.id = tradeId;
+    t.age = 8;
+    t.action = "BUY";
+    t.traderId = traderId;
+    t.tradeTime = Instant.ofEpochSecond(333 + tradeTime);
+    t.tradeDate = Date.from(t.tradeTime);
+    t.tradeLocalDate = LocalDate.of(2015, 1, 1);
+    t.tradeLocalDateTime = LocalDateTime.of(2015, 1, 1, 2, 3, 4, 5);
+    if (subTrades > 0) {
+      t.setSubTrades(
+          IntStream.range(0, subTrades)
+              .mapToObj(
+                  i -> new SubTrade(t.getTradeDetail().getId(), t.getTraderId(), "subTrade" + i))
+              .collect(Collectors.toList()));
+    }
+    t.tradeDetail.price = 100.0;
+    t.tradeDetail.shares = 12345.6;
+    for (int i = 1; i <= 5; i++) {
+      t.executionTimes.add(Instant.ofEpochSecond(i));
+    }
+    t.bigDecimalField = new BigDecimal("1111.999");
+    t.bigDecimals = Arrays.asList(new BigDecimal("9999"), new BigDecimal("-0.00099"));
+    return t;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		Trade trade = (Trade) o;
-		return getAge() == trade.getAge() &&
-				Objects.equals(getTradeTime(), trade.getTradeTime()) &&
-				Objects.equals(getTradeDate(), trade.getTradeDate()) &&
-				Objects.equals(this.tradeLocalDate, trade.tradeLocalDate) &&
-				Objects.equals(this.tradeLocalDateTime, trade.tradeLocalDateTime) &&
-				Objects.equals(getAction(), trade.getAction()) &&
-				Objects.equals(getSymbol(), trade.getSymbol()) &&
-				Objects.equals(getTradeDetail(), trade.getTradeDetail()) &&
-				Objects.equals(getTraderId(), trade.getTraderId()) &&
-				Objects.equals(getExecutionTimes(), trade.getExecutionTimes()) &&
-				Objects.equals(getSubTrades(), trade.getSubTrades());
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Trade trade = (Trade) o;
+    return getAge() == trade.getAge()
+        && Objects.equals(getTradeTime(), trade.getTradeTime())
+        && Objects.equals(getTradeDate(), trade.getTradeDate())
+        && Objects.equals(this.tradeLocalDate, trade.tradeLocalDate)
+        && Objects.equals(this.tradeLocalDateTime, trade.tradeLocalDateTime)
+        && Objects.equals(getAction(), trade.getAction())
+        && Objects.equals(getSymbol(), trade.getSymbol())
+        && Objects.equals(getTradeDetail(), trade.getTradeDetail())
+        && Objects.equals(getTraderId(), trade.getTraderId())
+        && Objects.equals(getExecutionTimes(), trade.getExecutionTimes())
+        && Objects.equals(getSubTrades(), trade.getSubTrades());
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getAge(), getTradeTime(), getTradeDate(), this.tradeLocalDate, this.tradeLocalDateTime,
-				getAction(), getSymbol(), getTradeDetail(), getTraderId(), getExecutionTimes(), getSubTrades());
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        getAge(),
+        getTradeTime(),
+        getTradeDate(),
+        this.tradeLocalDate,
+        this.tradeLocalDateTime,
+        getAction(),
+        getSymbol(),
+        getTradeDetail(),
+        getTraderId(),
+        getExecutionTimes(),
+        getSubTrades());
+  }
 
-	public String getId() {
-		return this.tradeDetail.id;
-	}
+  public String getId() {
+    return this.tradeDetail.id;
+  }
 
-	public void setId(String id) {
-		this.tradeDetail.id = id;
-	}
+  public void setId(String id) {
+    this.tradeDetail.id = id;
+  }
 
-	public int getAge() {
-		return this.age;
-	}
+  public int getAge() {
+    return this.age;
+  }
 
-	public void setAge(int age) {
-		this.age = age;
-	}
+  public void setAge(int age) {
+    this.age = age;
+  }
 
-	public String getAction() {
-		return this.action;
-	}
+  public String getAction() {
+    return this.action;
+  }
 
-	public void setAction(String action) {
-		this.action = action;
-	}
+  public void setAction(String action) {
+    this.action = action;
+  }
 
-	public Instant getTradeTime() {
-		return this.tradeTime;
-	}
+  public Instant getTradeTime() {
+    return this.tradeTime;
+  }
 
-	public void setTradeTime(Instant tradeTime) {
-		this.tradeTime = tradeTime;
-	}
+  public void setTradeTime(Instant tradeTime) {
+    this.tradeTime = tradeTime;
+  }
 
-	public Double getPrice() {
-		return this.tradeDetail.price;
-	}
+  public Double getPrice() {
+    return this.tradeDetail.price;
+  }
 
-	public void setPrice(Double price) {
-		this.tradeDetail.price = price;
-	}
+  public void setPrice(Double price) {
+    this.tradeDetail.price = price;
+  }
 
-	public Double getShares() {
-		return this.tradeDetail.shares;
-	}
+  public Double getShares() {
+    return this.tradeDetail.shares;
+  }
 
-	public void setShares(Double shares) {
-		this.tradeDetail.shares = shares;
-	}
+  public void setShares(Double shares) {
+    this.tradeDetail.shares = shares;
+  }
 
-	public String getSymbol() {
-		return this.symbol;
-	}
+  public String getSymbol() {
+    return this.symbol;
+  }
 
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
-	}
+  public void setSymbol(String symbol) {
+    this.symbol = symbol;
+  }
 
-	public String getTraderId() {
-		return this.traderId;
-	}
+  public String getTraderId() {
+    return this.traderId;
+  }
 
-	public void setTraderId(String traderId) {
-		this.traderId = traderId;
-	}
+  public void setTraderId(String traderId) {
+    this.traderId = traderId;
+  }
 
-	public List<SubTrade> getSubTrades() {
-		return this.subTrades;
-	}
+  public List<SubTrade> getSubTrades() {
+    return this.subTrades;
+  }
 
-	public void setSubTrades(List<SubTrade> subTrades) {
-		this.subTrades = subTrades;
-	}
+  public void setSubTrades(List<SubTrade> subTrades) {
+    this.subTrades = subTrades;
+  }
 
-	public TradeDetail getTradeDetail() {
-		return this.tradeDetail;
-	}
+  public TradeDetail getTradeDetail() {
+    return this.tradeDetail;
+  }
 
-	public void setTradeDetail(TradeDetail tradeDetail) {
-		this.tradeDetail = tradeDetail;
-	}
+  public void setTradeDetail(TradeDetail tradeDetail) {
+    this.tradeDetail = tradeDetail;
+  }
 
-	@Override
-	public String toString() {
-		return "Trade{" +
-				"age=" + this.age +
-				", tradeTime=" + this.tradeTime +
-				", tradeDate=" + this.tradeDate +
-				", tradeLocalDate=" + this.tradeLocalDate +
-				", tradeLocalDateTime=" + this.tradeLocalDateTime +
-				", action='" + this.action + '\'' +
-				", symbol='" + this.symbol + '\'' +
-				", tradeDetail=" + this.tradeDetail +
-				", traderId='" + this.traderId + '\'' +
-				", executionTimes=" + this.executionTimes +
-				", subTrades=" + this.subTrades +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "Trade{"
+        + "age="
+        + this.age
+        + ", tradeTime="
+        + this.tradeTime
+        + ", tradeDate="
+        + this.tradeDate
+        + ", tradeLocalDate="
+        + this.tradeLocalDate
+        + ", tradeLocalDateTime="
+        + this.tradeLocalDateTime
+        + ", action='"
+        + this.action
+        + '\''
+        + ", symbol='"
+        + this.symbol
+        + '\''
+        + ", tradeDetail="
+        + this.tradeDetail
+        + ", traderId='"
+        + this.traderId
+        + '\''
+        + ", executionTimes="
+        + this.executionTimes
+        + ", subTrades="
+        + this.subTrades
+        + '}';
+  }
 
-	public Date getTradeDate() {
-		return this.tradeDate;
-	}
+  public Date getTradeDate() {
+    return this.tradeDate;
+  }
 
-	public void setTradeDate(Date tradeDate) {
-		this.tradeDate = tradeDate;
-	}
+  public void setTradeDate(Date tradeDate) {
+    this.tradeDate = tradeDate;
+  }
 
-	public List<Instant> getExecutionTimes() {
-		return this.executionTimes;
-	}
+  public List<Instant> getExecutionTimes() {
+    return this.executionTimes;
+  }
 
-	public void setExecutionTimes(List<Instant> executionTimes) {
-		this.executionTimes = executionTimes;
-	}
+  public void setExecutionTimes(List<Instant> executionTimes) {
+    this.executionTimes = executionTimes;
+  }
 
-	public BigDecimal getBigDecimalField() {
-		return bigDecimalField;
-	}
+  public BigDecimal getBigDecimalField() {
+    return bigDecimalField;
+  }
 
-	public void setBigDecimalField(BigDecimal bigDecimalField) {
-		this.bigDecimalField = bigDecimalField;
-	}
+  public void setBigDecimalField(BigDecimal bigDecimalField) {
+    this.bigDecimalField = bigDecimalField;
+  }
 
-	public List<BigDecimal> getBigDecimals() {
-		return bigDecimals;
-	}
+  public List<BigDecimal> getBigDecimals() {
+    return bigDecimals;
+  }
 
-	public void setBigDecimals(List<BigDecimal> bigDecimals) {
-		this.bigDecimals = bigDecimals;
-	}
+  public void setBigDecimals(List<BigDecimal> bigDecimals) {
+    this.bigDecimals = bigDecimals;
+  }
 
-	public Details getOptionalDetails() {
-		return optionalDetails;
-	}
+  public Details getOptionalDetails() {
+    return optionalDetails;
+  }
 
-	public void setOptionalDetails(Details optionalDetails) {
-		this.optionalDetails = optionalDetails;
-	}
+  public void setOptionalDetails(Details optionalDetails) {
+    this.optionalDetails = optionalDetails;
+  }
 
-	public void setBackupDetails(Details backupDetails) {
-		this.backupDetails = backupDetails;
-	}
+  public void setBackupDetails(Details backupDetails) {
+    this.backupDetails = backupDetails;
+  }
 }

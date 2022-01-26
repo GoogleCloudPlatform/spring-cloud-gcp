@@ -17,7 +17,6 @@
 package com.google.cloud.spring.storage.integration.filters;
 
 import com.google.cloud.storage.BlobInfo;
-
 import org.springframework.integration.file.filters.AbstractSimplePatternFileListFilter;
 
 /**
@@ -28,17 +27,17 @@ import org.springframework.integration.file.filters.AbstractSimplePatternFileLis
  */
 public class GcsSimplePatternFileListFilter extends AbstractSimplePatternFileListFilter<BlobInfo> {
 
-	public GcsSimplePatternFileListFilter(String path) {
-		super(path);
-	}
+  public GcsSimplePatternFileListFilter(String path) {
+    super(path);
+  }
 
-	@Override
-	protected String getFilename(BlobInfo blobInfo) {
-		return (blobInfo != null) ? blobInfo.getName() : null;
-	}
+  @Override
+  protected String getFilename(BlobInfo blobInfo) {
+    return (blobInfo != null) ? blobInfo.getName() : null;
+  }
 
-	@Override
-	protected boolean isDirectory(BlobInfo blobInfo) {
-		return blobInfo.isDirectory();
-	}
+  @Override
+  protected boolean isDirectory(BlobInfo blobInfo) {
+    return blobInfo.isDirectory();
+  }
 }

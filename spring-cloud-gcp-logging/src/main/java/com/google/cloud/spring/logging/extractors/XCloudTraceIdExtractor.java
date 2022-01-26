@@ -25,21 +25,19 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class XCloudTraceIdExtractor implements TraceIdExtractor {
 
-	/**
-	 * The name of the header that contains the trace id.
-	 */
-	public static final String X_CLOUD_TRACE_HEADER = "x-cloud-trace-context";
+  /** The name of the header that contains the trace id. */
+  public static final String X_CLOUD_TRACE_HEADER = "x-cloud-trace-context";
 
-	@Override
-	public String extractTraceIdFromRequest(HttpServletRequest req) {
-		String traceId = req.getHeader(X_CLOUD_TRACE_HEADER);
+  @Override
+  public String extractTraceIdFromRequest(HttpServletRequest req) {
+    String traceId = req.getHeader(X_CLOUD_TRACE_HEADER);
 
-		if (traceId != null) {
-			int slash = traceId.indexOf('/');
-			if (slash >= 0) {
-				traceId = traceId.substring(0, slash);
-			}
-		}
-		return traceId;
-	}
+    if (traceId != null) {
+      int slash = traceId.indexOf('/');
+      if (slash >= 0) {
+        traceId = traceId.substring(0, slash);
+      }
+    }
+    return traceId;
+  }
 }

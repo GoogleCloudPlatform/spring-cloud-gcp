@@ -23,16 +23,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for Datastore property that indicates it holds child entities that are
- * linked to this entity by the Cloud Datastore Ancestor relationship.
+ * Annotation for Datastore property that indicates it holds child entities that are linked to this
+ * entity by the Cloud Datastore Ancestor relationship.
  *
  * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Descendants {
-
-}
+public @interface Descendants {}

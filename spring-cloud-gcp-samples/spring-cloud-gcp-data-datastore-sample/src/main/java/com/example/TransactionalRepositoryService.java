@@ -18,7 +18,6 @@ package com.example;
 
 import java.util.List;
 import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,22 +28,21 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class TransactionalRepositoryService {
 
-	@Autowired
-	private SingerRepository singerRepository;
+  @Autowired private SingerRepository singerRepository;
 
-	@Transactional
-	public void createAndSaveSingerRelationshipsInTransaction(Singer singer,
-			Band firstBand, List<Band> bands, Set<Instrument> instruments) {
+  @Transactional
+  public void createAndSaveSingerRelationshipsInTransaction(
+      Singer singer, Band firstBand, List<Band> bands, Set<Instrument> instruments) {
 
-		singer.setFirstBand(firstBand);
-		singer.setBands(bands);
-		singer.setPersonalInstruments(instruments);
+    singer.setFirstBand(firstBand);
+    singer.setBands(bands);
+    singer.setPersonalInstruments(instruments);
 
-		this.singerRepository.save(singer);
+    this.singerRepository.save(singer);
 
-		System.out.println(
-				"Relationship links were saved between a singer, bands, and instruments"
-						+ " in a single transaction: " + singer);
-	}
-
+    System.out.println(
+        "Relationship links were saved between a singer, bands, and instruments"
+            + " in a single transaction: "
+            + singer);
+  }
 }

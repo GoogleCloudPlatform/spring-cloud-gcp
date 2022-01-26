@@ -18,7 +18,6 @@ package com.example;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,10 +31,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/answer")
 public class SampleController {
-	@GetMapping(produces = "application/json")
-	public ResponseEntity<Map<String, String>> hello() {
-		Map<String, String> response = new HashMap<>();
-		response.put("answer", "42");
-		return new ResponseEntity(response, HttpStatus.OK);
-	}
+  @GetMapping(produces = "application/json")
+  public ResponseEntity<Map<String, String>> hello() {
+    Map<String, String> response = new HashMap<>();
+    response.put("answer", "42");
+    return new ResponseEntity(response, HttpStatus.OK);
+  }
 }

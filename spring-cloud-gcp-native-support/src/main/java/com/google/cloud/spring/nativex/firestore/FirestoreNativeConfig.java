@@ -20,7 +20,6 @@ import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreEmulatorAutoC
 import com.google.cloud.spring.autoconfigure.firestore.FirestoreRepositoriesAutoConfiguration;
 import com.google.cloud.spring.data.firestore.SimpleFirestoreReactiveRepository;
 import com.google.cloud.spring.data.firestore.repository.support.FirestoreRepositoryFactoryBean;
-
 import org.springframework.nativex.hint.AccessBits;
 import org.springframework.nativex.hint.JdkProxyHint;
 import org.springframework.nativex.hint.NativeHint;
@@ -28,29 +27,33 @@ import org.springframework.nativex.hint.TypeHint;
 import org.springframework.nativex.type.NativeConfiguration;
 
 /**
- * Native hints for {@link FirestoreRepositoriesAutoConfiguration}. Inspired by
- * <code>org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesHints</code>
+ * Native hints for {@link FirestoreRepositoriesAutoConfiguration}. Inspired by <code>
+ * org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesHints</code>
  *
- * @see <a href="https://github.com/spring-projects-experimental/spring-native/blob/e659ad5488418b77492a04e028142daf02f7f3ef/spring-native-configuration/src/main/java/org/springframework/boot/autoconfigure/data/jpa/JpaRepositoriesHints.java">JpaRepositoriesHints</a>
+ * @see <a
+ *     href="https://github.com/spring-projects-experimental/spring-native/blob/e659ad5488418b77492a04e028142daf02f7f3ef/spring-native-configuration/src/main/java/org/springframework/boot/autoconfigure/data/jpa/JpaRepositoriesHints.java">JpaRepositoriesHints</a>
  */
 @NativeHint(
-		trigger = FirestoreRepositoriesAutoConfiguration.class,
-		types = @TypeHint(types = {
-				FirestoreRepositoryFactoryBean.class,
-				SimpleFirestoreReactiveRepository.class,
-				GcpDatastoreEmulatorAutoConfiguration.class
-		}, typeNames = {
-				"com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext"
-		}, access = AccessBits.CLASS
-				| AccessBits.DECLARED_METHODS
-				| AccessBits.DECLARED_CONSTRUCTORS
-				| AccessBits.RESOURCE),
-		jdkProxies = @JdkProxyHint(typeNames = {
-				"com.google.cloud.spring.data.firestore.FirestoreReactiveRepository",
-				"org.springframework.aop.SpringProxy",
-				"org.springframework.aop.framework.Advised",
-				"org.springframework.core.DecoratingProxy"
-		})
-)
-public class FirestoreNativeConfig implements NativeConfiguration {
-}
+    trigger = FirestoreRepositoriesAutoConfiguration.class,
+    types =
+        @TypeHint(
+            types = {
+              FirestoreRepositoryFactoryBean.class,
+              SimpleFirestoreReactiveRepository.class,
+              GcpDatastoreEmulatorAutoConfiguration.class
+            },
+            typeNames = {"com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext"},
+            access =
+                AccessBits.CLASS
+                    | AccessBits.DECLARED_METHODS
+                    | AccessBits.DECLARED_CONSTRUCTORS
+                    | AccessBits.RESOURCE),
+    jdkProxies =
+        @JdkProxyHint(
+            typeNames = {
+              "com.google.cloud.spring.data.firestore.FirestoreReactiveRepository",
+              "org.springframework.aop.SpringProxy",
+              "org.springframework.aop.framework.Advised",
+              "org.springframework.core.DecoratingProxy"
+            }))
+public class FirestoreNativeConfig implements NativeConfiguration {}

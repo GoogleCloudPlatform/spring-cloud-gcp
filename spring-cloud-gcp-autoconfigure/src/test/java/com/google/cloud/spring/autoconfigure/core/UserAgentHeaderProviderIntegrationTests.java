@@ -16,17 +16,15 @@
 
 package com.google.cloud.spring.autoconfigure.core;
 
-import java.util.regex.Pattern;
-
-import com.google.cloud.spring.core.UserAgentHeaderProvider;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import java.util.regex.Pattern;
+import org.junit.Test;
+
 /**
- * This needs to be an integration test and in a different module because the JAR MANIFEST
- * has to be available for this.getClass().getPackage().getImplementationVersion() to work
- * properly.
+ * This needs to be an integration test and in a different module because the JAR MANIFEST has to be
+ * available for this.getClass().getPackage().getImplementationVersion() to work properly.
  *
  * @author João André Martins
  * @author Mike Eltsufin
@@ -34,20 +32,19 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class UserAgentHeaderProviderIntegrationTests {
 
-	static final String USER_AGENT_HEADER_NAME = "user-agent";
+  static final String USER_AGENT_HEADER_NAME = "user-agent";
 
-	/**
-	 * This test is check if the generated user-agent header is in the right format.
-	 */
-	@Test
-	public void testGetHeaders() {
-		UserAgentHeaderProvider subject = new UserAgentHeaderProvider(this.getClass());
+  /** This test is check if the generated user-agent header is in the right format. */
+  @Test
+  public void testGetHeaders() {
+    UserAgentHeaderProvider subject = new UserAgentHeaderProvider(this.getClass());
 
-		String versionRegex = "\\d+\\.\\d+\\.\\d+(\\-RC\\d+)?(\\-SNAPSHOT)?";
-		assertThat(subject.getHeaders()).containsKey(USER_AGENT_HEADER_NAME);
-		assertThat(subject.getHeaders()).containsEntry(USER_AGENT_HEADER_NAME, subject.getUserAgent());
-		assertThat(subject.getHeaders().get(USER_AGENT_HEADER_NAME)).matches(
-				Pattern.compile("Spring/" + versionRegex + " spring-cloud-gcp-core/" + versionRegex));
-		assertThat(subject.getHeaders()).hasSize(1);
-	}
+    String versionRegex = "\\d+\\.\\d+\\.\\d+(\\-RC\\d+)?(\\-SNAPSHOT)?";
+    assertThat(subject.getHeaders()).containsKey(USER_AGENT_HEADER_NAME);
+    assertThat(subject.getHeaders()).containsEntry(USER_AGENT_HEADER_NAME, subject.getUserAgent());
+    assertThat(subject.getHeaders().get(USER_AGENT_HEADER_NAME))
+        .matches(
+            Pattern.compile("Spring/" + versionRegex + " spring-cloud-gcp-core/" + versionRegex));
+    assertThat(subject.getHeaders()).hasSize(1);
+  }
 }

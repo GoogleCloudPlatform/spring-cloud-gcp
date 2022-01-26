@@ -29,8 +29,7 @@ import org.springframework.cloud.config.server.EnableConfigServer;
 @EnableConfigServer
 public class PubSubConfigServerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PubSubConfigServerApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(PubSubConfigServerApplication.class, args);
+  }
 }

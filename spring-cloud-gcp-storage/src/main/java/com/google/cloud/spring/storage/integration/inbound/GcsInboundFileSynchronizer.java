@@ -20,7 +20,6 @@ import com.google.cloud.spring.storage.integration.GcsSessionFactory;
 import com.google.cloud.spring.storage.integration.filters.GcsPersistentAcceptOnceFileListFilter;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
-
 import org.springframework.integration.file.remote.synchronizer.AbstractInboundFileSynchronizer;
 import org.springframework.integration.metadata.SimpleMetadataStore;
 
@@ -33,28 +32,29 @@ import org.springframework.integration.metadata.SimpleMetadataStore;
  */
 public class GcsInboundFileSynchronizer extends AbstractInboundFileSynchronizer<BlobInfo> {
 
-	public GcsInboundFileSynchronizer(Storage gcs) {
-		super(new GcsSessionFactory(gcs));
-		doSetFilter(new GcsPersistentAcceptOnceFileListFilter(new SimpleMetadataStore(), "gcsMessageSource"));
-	}
+  public GcsInboundFileSynchronizer(Storage gcs) {
+    super(new GcsSessionFactory(gcs));
+    doSetFilter(
+        new GcsPersistentAcceptOnceFileListFilter(new SimpleMetadataStore(), "gcsMessageSource"));
+  }
 
-	@Override
-	protected boolean isFile(BlobInfo file) {
-		return true;
-	}
+  @Override
+  protected boolean isFile(BlobInfo file) {
+    return true;
+  }
 
-	@Override
-	protected String getFilename(BlobInfo file) {
-		return file.getName();
-	}
+  @Override
+  protected String getFilename(BlobInfo file) {
+    return file.getName();
+  }
 
-	@Override
-	protected long getModified(BlobInfo file) {
-		return file.getUpdateTime();
-	}
+  @Override
+  protected long getModified(BlobInfo file) {
+    return file.getUpdateTime();
+  }
 
-	@Override
-	protected String protocol() {
-		return "gs";
-	}
+  @Override
+  protected String protocol() {
+    return "gs";
+  }
 }

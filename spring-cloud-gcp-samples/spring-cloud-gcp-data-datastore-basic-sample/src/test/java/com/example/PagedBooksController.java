@@ -30,12 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PagedBooksController {
 
-	@Autowired
-	private PagedBookRepository pagedBookRepository;
+  @Autowired private PagedBookRepository pagedBookRepository;
 
-	@GetMapping("/allbooksserialized")
-	public Page<Book> findAllUsers() {
-		return this.pagedBookRepository.getAllBooksByPage(PageRequest.of(0, 1));
-	}
-
+  @GetMapping("/allbooksserialized")
+  public Page<Book> findAllUsers() {
+    return this.pagedBookRepository.getAllBooksByPage(PageRequest.of(0, 1));
+  }
 }

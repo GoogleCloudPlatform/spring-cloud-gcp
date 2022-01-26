@@ -23,5 +23,4 @@ import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
  *
  * @author Chengyuan Zhao
  */
-public interface TestRepository extends DatastoreRepository {
-}
+public interface TestRepository extends DatastoreRepository {}

@@ -16,17 +16,16 @@
 
 package com.google.cloud.spring.data.spanner.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+import com.google.cloud.spanner.Options.QueryOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
-
-import com.google.cloud.spanner.Options.QueryOption;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 /**
  * Tests for the Spanner sort and page query options.
@@ -35,37 +34,33 @@ import static org.mockito.Mockito.mock;
  */
 public class SpannerSortPageQueryOptionsTests {
 
-	/**
-	 * checks the exception for messages and types.
-	 */
-	@Rule
-	public ExpectedException expectedEx = ExpectedException.none();
+  /** checks the exception for messages and types. */
+  @Rule public ExpectedException expectedEx = ExpectedException.none();
 
-	@Test
-	public void addNullQueryOptionTest() {
+  @Test
+  public void addNullQueryOptionTest() {
 
-		this.expectedEx.expect(IllegalArgumentException.class);
-		this.expectedEx.expectMessage("Valid query option is required!");
+    this.expectedEx.expect(IllegalArgumentException.class);
+    this.expectedEx.expectMessage("Valid query option is required!");
 
-		new SpannerQueryOptions().addQueryOption(null);
-	}
+    new SpannerQueryOptions().addQueryOption(null);
+  }
 
-	@Test
-	public void includePropertiesTest() {
-		SpannerPageableQueryOptions spannerQueryOptions = new SpannerPageableQueryOptions();
-		Set<String> includeProperties = Collections.emptySet();
-		assertThat(spannerQueryOptions.getIncludeProperties()).isNull();
-		spannerQueryOptions.setIncludeProperties(includeProperties);
-		assertThat(spannerQueryOptions.getIncludeProperties()).isNotNull();
-	}
+  @Test
+  public void includePropertiesTest() {
+    SpannerPageableQueryOptions spannerQueryOptions = new SpannerPageableQueryOptions();
+    Set<String> includeProperties = Collections.emptySet();
+    assertThat(spannerQueryOptions.getIncludeProperties()).isNull();
+    spannerQueryOptions.setIncludeProperties(includeProperties);
+    assertThat(spannerQueryOptions.getIncludeProperties()).isNotNull();
+  }
 
-	@Test
-	public void addQueryOptionTest() {
-		SpannerPageableQueryOptions spannerQueryOptions = new SpannerPageableQueryOptions();
-		QueryOption r1 = mock(QueryOption.class);
-		QueryOption r2 = mock(QueryOption.class);
-		spannerQueryOptions.addQueryOption(r1).addQueryOption(r2);
-		assertThat(Arrays.asList(spannerQueryOptions.getOptions()))
-				.containsExactlyInAnyOrder(r1, r2);
-	}
+  @Test
+  public void addQueryOptionTest() {
+    SpannerPageableQueryOptions spannerQueryOptions = new SpannerPageableQueryOptions();
+    QueryOption r1 = mock(QueryOption.class);
+    QueryOption r2 = mock(QueryOption.class);
+    spannerQueryOptions.addQueryOption(r1).addQueryOption(r2);
+    assertThat(Arrays.asList(spannerQueryOptions.getOptions())).containsExactlyInAnyOrder(r1, r2);
+  }
 }

@@ -24,13 +24,13 @@ package com.google.cloud.spring.stream.binder.pubsub.properties;
  */
 public class PubSubCommonProperties {
 
-	private boolean autoCreateResources = true;
+  private boolean autoCreateResources = true;
 
-	public boolean isAutoCreateResources() {
-		return this.autoCreateResources;
-	}
+  public boolean isAutoCreateResources() {
+    return this.autoCreateResources;
+  }
 
-	public void setAutoCreateResources(boolean autoCreateResources) {
-		this.autoCreateResources = autoCreateResources;
-	}
+  public void setAutoCreateResources(boolean autoCreateResources) {
+    this.autoCreateResources = autoCreateResources;
+  }
 }

@@ -25,8 +25,8 @@ import org.springframework.beans.factory.annotation.Value;
  */
 public interface TradeProjection {
 
-	String getAction();
+  String getAction();
 
-	@Value("#{target.symbol + ' ' + target.action}")
-	String getSymbolAndAction();
+  @Value("#{target.symbol + ' ' + target.action}")
+  String getSymbolAndAction();
 }

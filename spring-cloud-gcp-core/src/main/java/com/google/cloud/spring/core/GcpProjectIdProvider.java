@@ -24,5 +24,5 @@ package com.google.cloud.spring.core;
 @FunctionalInterface
 public interface GcpProjectIdProvider {
 
-	String getProjectId();
+  String getProjectId();
 }

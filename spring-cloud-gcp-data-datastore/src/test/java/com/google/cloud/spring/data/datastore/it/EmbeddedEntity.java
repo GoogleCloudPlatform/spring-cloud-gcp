@@ -26,24 +26,22 @@ import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 @Entity
 class EmbeddedEntity {
 
-	private String stringField;
+  private String stringField;
 
-	EmbeddedEntity(String stringField) {
-		this.stringField = stringField;
-	}
+  EmbeddedEntity(String stringField) {
+    this.stringField = stringField;
+  }
 
-	String getStringField() {
-		return stringField;
-	}
+  String getStringField() {
+    return stringField;
+  }
 
-	void setStringField(String stringField) {
-		this.stringField = stringField;
-	}
+  void setStringField(String stringField) {
+    this.stringField = stringField;
+  }
 
-	@Override
-	public String toString() {
-		return "EmbeddedEntity{" +
-				"stringField='" + stringField + '\'' +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "EmbeddedEntity{" + "stringField='" + stringField + '\'' + '}';
+  }
 }

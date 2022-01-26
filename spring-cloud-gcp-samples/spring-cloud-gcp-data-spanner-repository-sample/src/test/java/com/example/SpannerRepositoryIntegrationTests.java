@@ -16,6 +16,10 @@
 
 package com.example;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import java.sql.Timestamp;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -24,15 +28,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
-import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -47,8 +47,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * Tests for the Spanner repository example.
  *
@@ -58,114 +56,123 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-
 class SpannerRepositoryIntegrationTests {
-	@LocalServerPort
-	private int port;
+  @LocalServerPort private int port;
 
-	@Autowired
-	private TraderRepository traderRepository;
+  @Autowired private TraderRepository traderRepository;
 
-	@Autowired
-	private TradeRepository tradeRepository;
+  @Autowired private TradeRepository tradeRepository;
 
-	@Autowired
-	private SpannerSchemaUtils spannerSchemaUtils;
+  @Autowired private SpannerSchemaUtils spannerSchemaUtils;
 
-	@Autowired
-	private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
+  @Autowired private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
 
-	@Autowired
-	private SpannerRepositoryExample spannerRepositoryExample;
+  @Autowired private SpannerRepositoryExample spannerRepositoryExample;
 
-	@BeforeEach
-	@AfterEach
-	void cleanupAndSetupTables() {
-		this.spannerRepositoryExample.createTablesIfNotExists();
-		this.tradeRepository.deleteAll();
-		this.traderRepository.deleteAll();
-	}
+  @BeforeEach
+  @AfterEach
+  void cleanupAndSetupTables() {
+    this.spannerRepositoryExample.createTablesIfNotExists();
+    this.tradeRepository.deleteAll();
+    this.traderRepository.deleteAll();
+  }
 
-	@Test
-	void testRestEndpoint() {
-		this.spannerRepositoryExample.runExample();
+  @Test
+  void testRestEndpoint() {
+    this.spannerRepositoryExample.runExample();
 
-		TestRestTemplate testRestTemplate = new TestRestTemplate();
-		ResponseEntity<PagedModel<Trade>> tradesResponse = testRestTemplate.exchange(
-				String.format("http://localhost:%s/trades/", this.port),
-				HttpMethod.GET,
-				null,
-				new ParameterizedTypeReference<PagedModel<Trade>>() {
-				});
-		assertThat(tradesResponse.getBody().getMetadata().getTotalElements()).isEqualTo(8);
-	}
+    TestRestTemplate testRestTemplate = new TestRestTemplate();
+    ResponseEntity<PagedModel<Trade>> tradesResponse =
+        testRestTemplate.exchange(
+            String.format("http://localhost:%s/trades/", this.port),
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<PagedModel<Trade>>() {});
+    assertThat(tradesResponse.getBody().getMetadata().getTotalElements()).isEqualTo(8);
+  }
 
-	@Test
-	void testRestEndpointPut() {
-		this.spannerRepositoryExample.runExample();
+  @Test
+  void testRestEndpointPut() {
+    this.spannerRepositoryExample.runExample();
 
-		TestRestTemplate testRestTemplate = new TestRestTemplate();
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+    TestRestTemplate testRestTemplate = new TestRestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
 
-		ResponseEntity<Trader> tradesResponse = testRestTemplate.exchange(
-				String.format("http://localhost:%s/traders/t123", this.port),
-				HttpMethod.PUT,
-				new HttpEntity<>("{\"firstName\": \"John\", \"lastName\": \"Smith\", \"createdOn\": " +
-						"\"2000-Jan-02 03:04:05 UTC\", \"modifiedOn\": [\"2000-Jan-02 03:04:05 UTC\"]}", headers),
-				new ParameterizedTypeReference<Trader>() {
-				});
+    ResponseEntity<Trader> tradesResponse =
+        testRestTemplate.exchange(
+            String.format("http://localhost:%s/traders/t123", this.port),
+            HttpMethod.PUT,
+            new HttpEntity<>(
+                "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"createdOn\": \"2000-Jan-02"
+                    + " 03:04:05 UTC\", \"modifiedOn\": [\"2000-Jan-02 03:04:05 UTC\"]}",
+                headers),
+            new ParameterizedTypeReference<Trader>() {});
 
-		ZonedDateTime expectedUtcDate = ZonedDateTime.of(2000, 1, 2, 3, 4, 5, 0, ZoneOffset.UTC);
-		Timestamp expectedTimestamp = new Timestamp(expectedUtcDate.toEpochSecond() * 1000L);
-		Trader expected = new Trader("t123", "John", "Smith", expectedTimestamp,
-				Collections.singletonList(expectedTimestamp));
-		assertThat(tradesResponse.getBody()).isEqualTo(expected);
-		assertThat(this.traderRepository.findAllById(Collections.singleton("t123")).iterator().next())
-				.isEqualTo(expected);
-	}
+    ZonedDateTime expectedUtcDate = ZonedDateTime.of(2000, 1, 2, 3, 4, 5, 0, ZoneOffset.UTC);
+    Timestamp expectedTimestamp = new Timestamp(expectedUtcDate.toEpochSecond() * 1000L);
+    Trader expected =
+        new Trader(
+            "t123",
+            "John",
+            "Smith",
+            expectedTimestamp,
+            Collections.singletonList(expectedTimestamp));
+    assertThat(tradesResponse.getBody()).isEqualTo(expected);
+    assertThat(this.traderRepository.findAllById(Collections.singleton("t123")).iterator().next())
+        .isEqualTo(expected);
+  }
 
-	@Test
-	void testLoadsCorrectData() {
-		assertThat(this.traderRepository.count()).isZero();
-		assertThat(this.tradeRepository.count()).isZero();
+  @Test
+  void testLoadsCorrectData() {
+    assertThat(this.traderRepository.count()).isZero();
+    assertThat(this.tradeRepository.count()).isZero();
 
-		this.spannerRepositoryExample.runExample();
-		List<String> traderIds = new ArrayList<>();
-		this.traderRepository.findAll().forEach(t -> traderIds.add(t.getTraderId()));
-		assertThat(traderIds).containsExactlyInAnyOrder("demo_trader1", "demo_trader2", "demo_trader3",
-				"demo_trader_json1", "demo_trader_json2", "demo_trader_json3");
+    this.spannerRepositoryExample.runExample();
+    List<String> traderIds = new ArrayList<>();
+    this.traderRepository.findAll().forEach(t -> traderIds.add(t.getTraderId()));
+    assertThat(traderIds)
+        .containsExactlyInAnyOrder(
+            "demo_trader1",
+            "demo_trader2",
+            "demo_trader3",
+            "demo_trader_json1",
+            "demo_trader_json2",
+            "demo_trader_json3");
 
-		assertThat(this.tradeRepository.findAll()).hasSize(8);
+    assertThat(this.tradeRepository.findAll()).hasSize(8);
 
-		Set<String> tradeSpannerKeys = new HashSet<>();
-		this.tradeRepository.findAll().forEach(t -> tradeSpannerKeys.add(this.spannerSchemaUtils.getKey(t).toString()));
+    Set<String> tradeSpannerKeys = new HashSet<>();
+    this.tradeRepository
+        .findAll()
+        .forEach(t -> tradeSpannerKeys.add(this.spannerSchemaUtils.getKey(t).toString()));
 
-		assertThat(tradeSpannerKeys).containsExactlyInAnyOrder(
-				"[demo_trader1,1]",
-				"[demo_trader1,2]",
-				"[demo_trader1,3]",
-				"[demo_trader2,1]",
-				"[demo_trader2,2]",
-				"[demo_trader2,3]",
-				"[demo_trader3,1]",
-				"[demo_trader3,2]");
+    assertThat(tradeSpannerKeys)
+        .containsExactlyInAnyOrder(
+            "[demo_trader1,1]",
+            "[demo_trader1,2]",
+            "[demo_trader1,3]",
+            "[demo_trader2,1]",
+            "[demo_trader2,2]",
+            "[demo_trader2,3]",
+            "[demo_trader3,1]",
+            "[demo_trader3,2]");
 
-		List<String> buyTradeIds = this.tradeRepository.getTradeIds("BUY");
-		assertThat(buyTradeIds).hasSize(5);
+    List<String> buyTradeIds = this.tradeRepository.getTradeIds("BUY");
+    assertThat(buyTradeIds).hasSize(5);
 
-		assertThat(this.traderRepository.findById("demo_trader1").get().getTrades()).hasSize(3);
-	}
+    assertThat(this.traderRepository.findById("demo_trader1").get().getTrades()).hasSize(3);
+  }
 
-	@Test
-	void testJsonFieldReadWrite() {
+  @Test
+  void testJsonFieldReadWrite() {
 
-		Address workAddress = new Address(5L, "address line", true);
-		Trader trader = new Trader("demo_trader1", "John", "Doe", workAddress);
-		this.traderRepository.save(trader);
+    Address workAddress = new Address(5L, "address line", true);
+    Trader trader = new Trader("demo_trader1", "John", "Doe", workAddress);
+    this.traderRepository.save(trader);
 
-		Trader traderFound = this.traderRepository.findById("demo_trader1").get();
-		assertThat(traderFound.getTraderId()).isEqualTo(trader.getTraderId());
-		assertThat(traderFound.getWorkAddress()).isEqualTo(workAddress);
-	}
+    Trader traderFound = this.traderRepository.findById("demo_trader1").get();
+    assertThat(traderFound.getTraderId()).isEqualTo(trader.getTraderId());
+    assertThat(traderFound.getWorkAddress()).isEqualTo(workAddress);
+  }
 }

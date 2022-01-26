@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.google.cloud.spring.data.firestore;
 
 import java.lang.annotation.Documented;
@@ -22,14 +21,12 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import org.springframework.stereotype.Indexed;
 
 /**
  * Annotation for a class that represents a Firestore Document.
  *
  * @author Dmitry Solomakha
- *
  * @since 1.2
  */
 @Documented
@@ -38,10 +35,11 @@ import org.springframework.stereotype.Indexed;
 @Indexed
 public @interface Document {
 
-	/**
-	 * The collection name of the Document in Firestore, which can differ from the name of the
-	 * class which it annotates.
-	 * @return The Collection name of the Document
-	 */
-	String collectionName() default "";
+  /**
+   * The collection name of the Document in Firestore, which can differ from the name of the class
+   * which it annotates.
+   *
+   * @return The Collection name of the Document
+   */
+  String collectionName() default "";
 }
