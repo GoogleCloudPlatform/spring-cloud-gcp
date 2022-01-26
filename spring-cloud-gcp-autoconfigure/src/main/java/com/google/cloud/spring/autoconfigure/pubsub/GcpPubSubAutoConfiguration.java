@@ -54,11 +54,14 @@ import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -349,7 +352,7 @@ public class GcpPubSubAutoConfiguration {
       @Qualifier("publisherRetrySettings") ObjectProvider<RetrySettings> retrySettings,
       @Qualifier("publisherTransportChannelProvider")
           TransportChannelProvider publisherTransportChannelProvider,
-      Optional<PublisherCustomizer> customizer) {
+      ObjectProvider<PublisherCustomizer> customizersProvider) {
     DefaultPublisherFactory factory = new DefaultPublisherFactory(this.finalProjectIdProvider);
     factory.setExecutorProvider(executorProvider);
     factory.setCredentialsProvider(this.finalCredentialsProvider);
@@ -359,7 +362,12 @@ public class GcpPubSubAutoConfiguration {
     batchingSettings.ifAvailable(factory::setBatchingSettings);
     factory.setEnableMessageOrdering(gcpPubSubProperties.getPublisher().getEnableMessageOrdering());
     factory.setEndpoint(gcpPubSubProperties.getPublisher().getEndpoint());
-    customizer.ifPresent(factory::setCustomizer);
+
+    List<PublisherCustomizer> customizers = customizersProvider.orderedStream()
+        .collect(Collectors.toList());
+    Collections.reverse(customizers); // highest priority customizer needs to be last
+    factory.setCustomizers(customizers);
+
     return new CachingPublisherFactory(factory);
   }
 

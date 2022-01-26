@@ -16,7 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
+import static com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration.REPORTER_BEAN_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import brave.handler.SpanHandler;
 import brave.http.HttpRequestParser;
@@ -24,13 +26,16 @@ import brave.http.HttpTracingCustomizer;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.MockConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
+import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
 import io.grpc.ManagedChannel;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
 import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
 import org.springframework.cloud.sleuth.autoconfig.brave.instrument.messaging.BraveMessagingAutoConfiguration;
+import zipkin2.reporter.Reporter;
 import zipkin2.reporter.Sender;
 
 /** Tests for Trace Pub/Sub auto-config. */
@@ -51,6 +56,8 @@ class TracePubSubAutoConfigurationTest {
               StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
               SpanHandler.class,
               () -> SpanHandler.NOOP)
+          // Prevent healthcheck from triggering a real call to Trace.
+          .withBean(REPORTER_BEAN_NAME, Reporter.class, () -> mock(Reporter.class))
           .withPropertyValues(
               "spring.cloud.gcp.project-id=proj", "spring.sleuth.sampler.probability=1.0");
 
@@ -85,5 +92,22 @@ class TracePubSubAutoConfigurationTest {
               assertThat(context.getBean(TracePubSubBeanPostProcessor.class)).isNotNull();
               assertThat(context.getBean(PubSubTracing.class)).isNotNull();
             });
+  }
+
+  @Test
+  void tracePubSubCustomizerAppliedLast() {
+    PublisherCustomizer noopCustomizer = (pb, t) -> {};
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.trace.pubsub.enabled=true")
+        .withBean(PublisherCustomizer.class, () -> noopCustomizer)
+        .run(context -> {
+          ObjectProvider<PublisherCustomizer> customizers =
+              context.getBeanProvider(PublisherCustomizer.class);
+          assertThat(customizers.orderedStream())
+              .hasSize(2)
+              // Object provider lists highest priority first, so default priority `noopCustomizer`
+              // will be second
+              .element(1).isSameAs(noopCustomizer);
+        });
   }
 }

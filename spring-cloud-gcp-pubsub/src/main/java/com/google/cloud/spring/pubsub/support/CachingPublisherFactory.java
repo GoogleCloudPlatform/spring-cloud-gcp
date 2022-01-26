@@ -48,7 +48,7 @@ public class CachingPublisherFactory implements PublisherFactory {
   /**
    * Returns the delegate.
    *
-   * @return the delgate.
+   * @return the delegate.
    */
   public PublisherFactory getDelegate() {
     return delegate;

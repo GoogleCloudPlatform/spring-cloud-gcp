@@ -34,6 +34,8 @@ import org.springframework.cloud.sleuth.autoconfig.brave.instrument.messaging.Br
 import org.springframework.cloud.sleuth.brave.instrument.messaging.ConditionalOnMessagingEnabled;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnMessagingEnabled
@@ -57,8 +59,8 @@ class TracePubSubAutoConfiguration {
   }
 
   @Bean
-  @ConditionalOnMissingBean
-  PublisherCustomizer publisherCustomizer(PubSubTracing pubSubTracing) {
+  @Order(Ordered.HIGHEST_PRECEDENCE)
+  PublisherCustomizer tracePublisherCustomizer(PubSubTracing pubSubTracing) {
     TraceHelper helper = new TraceHelper(pubSubTracing);
 
     return (Publisher.Builder publisherBuilder, String topic) -> {

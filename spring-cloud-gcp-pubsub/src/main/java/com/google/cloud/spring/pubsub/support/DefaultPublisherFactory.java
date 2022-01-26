@@ -27,6 +27,8 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.util.Assert;
 
 /**
@@ -54,7 +56,7 @@ public class DefaultPublisherFactory implements PublisherFactory {
 
   private String endpoint;
 
-  private PublisherCustomizer customizer;
+  private List<PublisherCustomizer> customizers;
 
   /**
    * Create {@link DefaultPublisherFactory} instance based on the provided {@link
@@ -150,11 +152,12 @@ public class DefaultPublisherFactory implements PublisherFactory {
   }
 
   /**
-   * Set the customizer that accepts a {@link Publisher.Builder} and
-   *     applies any necessary customizations before a {@link Publisher} is built.
+   * Accepts a list of {@link Publisher.Builder} customizers.
+   * The customizers are applied in the order provided, so the later customizers can override
+   * any settings provided by the earlier.
    */
-  public void setCustomizer(PublisherCustomizer customizer) {
-    this.customizer = customizer;
+  public void setCustomizers(List<PublisherCustomizer> customizers) {
+    this.customizers = Collections.unmodifiableList(customizers);
   }
 
   /**
@@ -177,10 +180,7 @@ public class DefaultPublisherFactory implements PublisherFactory {
           Publisher.newBuilder(PubSubTopicUtils.toTopicName(topic, this.projectId));
 
       applyPublisherSettings(publisherBuilder);
-
-      if (this.customizer != null) {
-        this.customizer.apply(publisherBuilder, topic);
-      }
+      applyCustomizers(publisherBuilder, topic);
 
       return publisherBuilder.build();
     } catch (IOException ioe) {
@@ -220,6 +220,16 @@ public class DefaultPublisherFactory implements PublisherFactory {
 
     if (this.endpoint != null) {
       publisherBuilder.setEndpoint(this.endpoint);
+    }
+  }
+
+  void applyCustomizers(Publisher.Builder publisherBuilder, String topic) {
+    if (this.customizers == null) {
+      return;
+    }
+
+    for (PublisherCustomizer customizer : this.customizers) {
+      customizer.apply(publisherBuilder, topic);
     }
   }
 }

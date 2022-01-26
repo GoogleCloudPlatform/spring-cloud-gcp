@@ -34,14 +34,19 @@ import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
+import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
+import java.util.List;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.threeten.bp.Duration;
 
@@ -51,6 +56,10 @@ class GcpPubSubAutoConfigurationTests {
   ApplicationContextRunner baseContextRunner = new ApplicationContextRunner()
           .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
           .withUserConfiguration(TestConfig.class);
+
+  static final BatchingSettings TEST_BATCHING_SETTINGS = BatchingSettings.newBuilder()
+      .setDelayThreshold(Duration.ofSeconds(11))
+      .build();
 
   @Test
   void keepAliveValue_default() {
@@ -1296,21 +1305,62 @@ class GcpPubSubAutoConfigurationTests {
 
   @Test
   void createPublisherWithCustomizer() {
-    BatchingSettings testBatchingSettings = BatchingSettings.newBuilder()
-        .setDelayThreshold(Duration.ofSeconds(11))
-        .build();
-    PublisherCustomizer customizer = (builder, topic) -> {
-      builder.setBatchingSettings(testBatchingSettings);
-    };
 
     baseContextRunner
-        .withBean(PublisherCustomizer.class, () -> customizer)
+        .withUserConfiguration(CustomizerConfig.class)
         .run(ctx -> {
           PublisherFactory factory =
               ctx.getBean("defaultPublisherFactory", PublisherFactory.class);
+
+          DefaultPublisherFactory defaultFactory =
+              (DefaultPublisherFactory) ((CachingPublisherFactory) factory).getDelegate();
+          List<PublisherCustomizer> customizers =
+              (List<PublisherCustomizer>) FieldUtils.readField(defaultFactory, "customizers", true);
+          assertThat(customizers)
+              .hasSize(3);
+          assertThat(customizers.get(0)).isInstanceOf(NoopCustomizer.class);
+          assertThat(customizers.get(1)).isInstanceOf(NoopCustomizer.class);
+          // DefaultPublisherFactory applies highest priority last
+          assertThat(customizers.get(2)).isInstanceOf(BatchingSettingsCustomizer.class);
+
           Publisher testPublisher = factory.createPublisher("unused");
-          assertThat(testPublisher.getBatchingSettings()).isSameAs(testBatchingSettings);
+          assertThat(testPublisher.getBatchingSettings()).isSameAs(TEST_BATCHING_SETTINGS);
         });
+  }
+
+  @Configuration
+  static class CustomizerConfig {
+    @Bean
+    NoopCustomizer noop1() {
+      return new NoopCustomizer();
+    }
+
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    @Bean
+    BatchingSettingsCustomizer batchingSettingsCustomizer() {
+      return new BatchingSettingsCustomizer();
+    }
+
+    @Bean
+    NoopCustomizer noop2() {
+      return new NoopCustomizer();
+    }
+
+  }
+
+  static class NoopCustomizer implements PublisherCustomizer {
+
+    @Override
+    public void apply(Publisher.Builder publisherBuilder, String topic) {
+      // do nothing
+    }
+  }
+
+  static class BatchingSettingsCustomizer implements PublisherCustomizer {
+    @Override
+    public void apply(Publisher.Builder publisherBuilder, String topic) {
+      publisherBuilder.setBatchingSettings(TEST_BATCHING_SETTINGS);
+    }
   }
 
   static class TestConfig {
