@@ -23,8 +23,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
-import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
-import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.BeanFactory;
@@ -37,19 +35,6 @@ final class TracePubSubBeanPostProcessorTest {
 
   TracePubSubBeanPostProcessor tracePubSubBeanPostProcessor =
       new TracePubSubBeanPostProcessor(mockBeanFactory);
-
-  @Test
-  void test_postProcessBeforeInitialization_PublisherFactory() {
-    PublisherFactory mockPublisherFactory = mock(PublisherFactory.class);
-
-    Object result =
-        tracePubSubBeanPostProcessor.postProcessBeforeInitialization(
-            mockPublisherFactory, "publisherFactory");
-
-    assertThat(result).isInstanceOf(CachingPublisherFactory.class);
-    assertThat(((CachingPublisherFactory) result).getDelegate())
-        .isInstanceOf(TracingPublisherFactory.class);
-  }
 
   @Test
   void test_postProcessBeforeInitialization_SubscriberFactory() {

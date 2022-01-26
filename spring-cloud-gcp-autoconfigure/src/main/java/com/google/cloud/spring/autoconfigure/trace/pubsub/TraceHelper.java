@@ -1,11 +1,11 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2022-2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,40 +21,30 @@ import static brave.Span.Kind.PRODUCER;
 import brave.Span;
 import brave.propagation.TraceContext;
 import brave.propagation.TraceContextOrSamplingFlags;
-import com.google.api.core.ApiFuture;
-import com.google.cloud.pubsub.v1.PublisherInterface;
 import com.google.pubsub.v1.PubsubMessage;
 
-final class TracingPublisher implements PublisherInterface {
-  private final PublisherInterface delegate;
+class TraceHelper {
 
   private final PubSubTracing pubSubTracing;
 
-  private final String topic;
-
-  TracingPublisher(PublisherInterface delegate, PubSubTracing pubSubTracing, String topic) {
-    this.delegate = delegate;
+  TraceHelper(PubSubTracing pubSubTracing) {
     this.pubSubTracing = pubSubTracing;
-    this.topic = topic;
   }
 
-  @Override
-  public ApiFuture<String> publish(PubsubMessage message) {
-    PubsubMessage.Builder builder = message.toBuilder();
-    postProcessMessageForPublishing(builder);
-    PubsubMessage tracedMessage = builder.build();
-    return delegate.publish(tracedMessage);
-  }
-
-  private void postProcessMessageForPublishing(PubsubMessage.Builder messageBuilder) {
+  /**
+   * Adds tracing headers to an outgoing Pub/Sub message.
+   * Uses the current application trace context; falls back to original message header context
+   * if not available.
+   *
+   * @param originalMessage message to instrument
+   * @param topic destination topic, used as channel name and {@link PubSubTags#PUBSUB_TOPIC_TAG}.
+   */
+  PubsubMessage instrumentMessage(PubsubMessage originalMessage, String topic) {
+    PubsubMessage.Builder messageBuilder = PubsubMessage.newBuilder(originalMessage);
     PubSubProducerRequest request = new PubSubProducerRequest(messageBuilder, topic);
 
     TraceContext maybeParent = pubSubTracing.tracing.currentTraceContext().get();
-    // Unlike message consumers, we try current span before trying extraction. This is the proper
-    // order because the span in scope should take precedence over a potentially stale header entry.
-    //
-    // NOTE: Brave instrumentation used properly does not result in stale header entries, as we
-    // always clear message headers after reading.
+
     Span span;
     if (maybeParent == null) {
       TraceContextOrSamplingFlags extracted =
@@ -83,5 +73,8 @@ final class TracingPublisher implements PublisherInterface {
 
     // inject span context into the messageBuilder
     pubSubTracing.producerInjector.inject(span.context(), request);
+
+    return messageBuilder.build();
   }
+
 }
