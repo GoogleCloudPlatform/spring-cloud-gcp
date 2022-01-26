@@ -20,26 +20,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
 import com.google.pubsub.v1.ProjectTopicName;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for the publisher factory. */
-@ExtendWith(MockitoExtension.class)
 public class DefaultPublisherFactoryTests {
 
-  @Mock private CredentialsProvider credentialsProvider;
+  DefaultPublisherFactory factory;
+
+  @BeforeEach
+  public void setUp() {
+    factory = new DefaultPublisherFactory(() -> "projectId");
+    factory.setCredentialsProvider(NoCredentialsProvider.create());
+  }
 
   @Test
   void testGetPublisher() {
-    DefaultPublisherFactory factory = new DefaultPublisherFactory(() -> "projectId");
-    factory.setCredentialsProvider(this.credentialsProvider);
+
     Publisher publisher = factory.createPublisher("testTopic");
 
     assertThat(((ProjectTopicName) publisher.getTopicName()).getTopic()).isEqualTo("testTopic");
@@ -75,7 +81,6 @@ public class DefaultPublisherFactoryTests {
       assertThat(counter.getAndIncrement()).isEqualTo(3);
     };
 
-    DefaultPublisherFactory factory = new DefaultPublisherFactory(() -> "projectId");
     factory.setCustomizers(Arrays.asList(c1, c2, c3));
     factory.createPublisher("testtopic");
 
@@ -85,7 +90,6 @@ public class DefaultPublisherFactoryTests {
   @Test
   void createPublisherWithoutCustomizersWorksFine() throws Exception {
 
-    DefaultPublisherFactory factory = new DefaultPublisherFactory(() -> "projectId");
     Publisher publisher = factory.createPublisher("testtopic");
 
     Publisher defaultPublisher = Publisher.newBuilder("testtopic").build();
