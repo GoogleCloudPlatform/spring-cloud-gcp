@@ -25,10 +25,10 @@ import brave.propagation.CurrentTraceContext.Scope;
 import com.google.pubsub.v1.PubsubMessage;
 import org.junit.jupiter.api.Test;
 
-public class TraceHelperTests extends PubSubTestBase {
+class TraceHelperTests extends PubSubTestBase {
 
   @Test
-  public void should_add_b3_headers_to_messages() {
+  void should_add_b3_headers_to_messages() {
     TraceHelper traceHelper = new TraceHelper(pubSubTracing);
 
     PubsubMessage instrumentedMessage =

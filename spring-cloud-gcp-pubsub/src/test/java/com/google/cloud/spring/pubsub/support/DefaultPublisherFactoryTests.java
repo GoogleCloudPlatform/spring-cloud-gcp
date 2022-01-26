@@ -17,28 +17,27 @@
 package com.google.cloud.spring.pubsub.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.pubsub.v1.Publisher;
+import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
 import com.google.pubsub.v1.ProjectTopicName;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for the publisher factory. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DefaultPublisherFactoryTests {
-
-  /** used to test exception messages and types. */
-  @Rule public ExpectedException expectedException = ExpectedException.none();
 
   @Mock private CredentialsProvider credentialsProvider;
 
   @Test
-  public void testGetPublisher() {
+  void testGetPublisher() {
     DefaultPublisherFactory factory = new DefaultPublisherFactory(() -> "projectId");
     factory.setCredentialsProvider(this.credentialsProvider);
     Publisher publisher = factory.createPublisher("testTopic");
@@ -48,16 +47,56 @@ public class DefaultPublisherFactoryTests {
   }
 
   @Test
-  public void testNewDefaultPublisherFactory_nullProjectIdProvider() {
-    this.expectedException.expect(IllegalArgumentException.class);
-    this.expectedException.expectMessage("The project ID provider can't be null.");
-    new DefaultPublisherFactory(null);
+  void testNewDefaultPublisherFactory_nullProjectIdProvider() {
+    assertThatThrownBy(() -> new DefaultPublisherFactory(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("The project ID provider can't be null.");
   }
 
   @Test
-  public void testNewDefaultPublisherFactory_nullProjectId() {
-    this.expectedException.expect(IllegalArgumentException.class);
-    this.expectedException.expectMessage("The project ID can't be null or empty.");
-    new DefaultPublisherFactory(() -> null);
+  void testNewDefaultPublisherFactory_nullProjectId() {
+
+    assertThatThrownBy(() -> new DefaultPublisherFactory(() -> null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("The project ID can't be null or empty.");
+  }
+
+  @Test
+  void creatPublisherUsesCustomizersInOrder() {
+    final AtomicInteger counter = new AtomicInteger(1);
+
+    PublisherCustomizer c1 = (pb, t) -> {
+      assertThat(counter.getAndIncrement()).isEqualTo(1);
+    };
+    PublisherCustomizer c2 = (pb, t) -> {
+      assertThat(counter.getAndIncrement()).isEqualTo(2);
+    };
+    PublisherCustomizer c3 = (pb, t) -> {
+      assertThat(counter.getAndIncrement()).isEqualTo(3);
+    };
+
+    DefaultPublisherFactory factory = new DefaultPublisherFactory(() -> "projectId");
+    factory.setCustomizers(Arrays.asList(c1, c2, c3));
+    factory.createPublisher("testtopic");
+
+    assertThat(counter).hasValue(4);
+  }
+
+  @Test
+  void createPublisherWithoutCustomizersWorksFine() throws Exception {
+
+    DefaultPublisherFactory factory = new DefaultPublisherFactory(() -> "projectId");
+    Publisher publisher = factory.createPublisher("testtopic");
+
+    Publisher defaultPublisher = Publisher.newBuilder("testtopic").build();
+    assertThat(publisher.getBatchingSettings()).isSameAs(defaultPublisher.getBatchingSettings());
+  }
+
+  @Test
+  void createPublisherWithExplicitNullCustomizersFails() {
+    DefaultPublisherFactory factory = new DefaultPublisherFactory(() -> "projectId");
+    assertThatThrownBy(() -> factory.setCustomizers(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Non-null customizers expected");
   }
 }

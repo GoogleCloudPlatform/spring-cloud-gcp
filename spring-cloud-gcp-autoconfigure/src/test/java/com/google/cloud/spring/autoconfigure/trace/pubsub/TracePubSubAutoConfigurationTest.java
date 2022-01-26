@@ -18,16 +18,23 @@ package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import static com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration.REPORTER_BEAN_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import brave.handler.SpanHandler;
 import brave.http.HttpRequestParser;
 import brave.http.HttpTracingCustomizer;
+import com.google.api.core.ApiFunction;
+import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.MockConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
 import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
 import io.grpc.ManagedChannel;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -101,13 +108,20 @@ class TracePubSubAutoConfigurationTest {
         .withPropertyValues("spring.cloud.gcp.trace.pubsub.enabled=true")
         .withBean(PublisherCustomizer.class, () -> noopCustomizer)
         .run(context -> {
-          ObjectProvider<PublisherCustomizer> customizers =
+          ObjectProvider<PublisherCustomizer> customizersProvider =
               context.getBeanProvider(PublisherCustomizer.class);
-          assertThat(customizers.orderedStream())
-              .hasSize(2)
-              // Object provider lists highest priority first, so default priority `noopCustomizer`
-              // will be second
-              .element(1).isSameAs(noopCustomizer);
+          List<PublisherCustomizer> customizers =
+              customizersProvider.orderedStream().collect(Collectors.toList());
+          assertThat(customizers).hasSize(2);
+
+          // Object provider lists highest priority first, so default priority `noopCustomizer`
+          // will be second
+          assertThat(customizers.get(1)).isSameAs(noopCustomizer);
+
+          PublisherCustomizer traceCustomizer = customizers.get(0);
+          Publisher.Builder spyBuilder = spy(Publisher.newBuilder("test"));
+          traceCustomizer.apply(spyBuilder, "test");
+          verify(spyBuilder).setTransform(any(ApiFunction.class));
         });
   }
 }

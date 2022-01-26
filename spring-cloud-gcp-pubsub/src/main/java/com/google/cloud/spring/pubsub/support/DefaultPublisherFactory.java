@@ -157,6 +157,7 @@ public class DefaultPublisherFactory implements PublisherFactory {
    * any settings provided by the earlier.
    */
   public void setCustomizers(List<PublisherCustomizer> customizers) {
+    Assert.notNull(customizers, "Non-null customizers expected");
     this.customizers = Collections.unmodifiableList(customizers);
   }
 
