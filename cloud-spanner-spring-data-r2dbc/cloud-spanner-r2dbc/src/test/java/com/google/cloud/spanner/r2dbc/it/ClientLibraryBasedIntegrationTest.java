@@ -31,7 +31,6 @@ import com.google.cloud.spanner.r2dbc.api.SpannerConnection;
 import com.google.cloud.spanner.r2dbc.v2.JsonWrapper;
 import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryConnectionFactory;
 import io.r2dbc.spi.Closeable;
-import io.r2dbc.spi.ColumnMetadata;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
@@ -42,8 +41,6 @@ import io.r2dbc.spi.Statement;
 import io.r2dbc.spi.ValidationDepth;
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
@@ -147,12 +144,8 @@ class ClientLibraryBasedIntegrationTest {
 
     StepVerifier.create(
         Mono.from(conn.createStatement("SELECT AUTHOR, PRICE FROM BOOKS LIMIT 1").execute())
-            .flatMapMany(rs -> rs.map((row, rmeta) -> {
-              List<ColumnMetadata> list = new ArrayList<>();
-              rmeta.getColumnMetadatas().forEach(list::add);
-              return list;
-            })))
-        .assertNext(metadataList -> {
+            .flatMapMany(rs -> rs.map((row, rmeta) -> rmeta.getColumnMetadatas()))
+        ).assertNext(metadataList -> {
           assertEquals(2, metadataList.size());
           assertEquals("AUTHOR", metadataList.get(0).getName());
           assertEquals("PRICE", metadataList.get(1).getName());

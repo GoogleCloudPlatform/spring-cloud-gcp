@@ -63,4 +63,10 @@ class SpannerClientLibraryColumnMetadata implements ColumnMetadata {
   public int hashCode() {
     return Objects.hash(this.structField);
   }
+
+  @Override
+  public io.r2dbc.spi.Type getType() {
+    throw new UnsupportedOperationException();
+  }
+
 }

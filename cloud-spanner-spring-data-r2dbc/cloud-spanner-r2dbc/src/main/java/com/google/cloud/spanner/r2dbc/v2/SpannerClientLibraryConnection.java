@@ -25,7 +25,9 @@ import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionMetadata;
 import io.r2dbc.spi.IsolationLevel;
 import io.r2dbc.spi.Statement;
+import io.r2dbc.spi.TransactionDefinition;
 import io.r2dbc.spi.ValidationDepth;
+import java.time.Duration;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
@@ -45,6 +47,21 @@ class SpannerClientLibraryConnection implements Connection, SpannerConnection {
   @Override
   public Publisher<Void> beginTransaction() {
     return this.clientLibraryAdapter.beginTransaction();
+  }
+
+  @Override
+  public Publisher<Void> beginTransaction(TransactionDefinition definition) {
+    return Mono.error(new UnsupportedOperationException());
+  }
+
+  @Override
+  public Publisher<Void> setLockWaitTimeout(Duration timeout) {
+    return Mono.error(new UnsupportedOperationException());
+  }
+
+  @Override
+  public Publisher<Void> setStatementTimeout(Duration timeout) {
+    return Mono.error(new UnsupportedOperationException());
   }
 
   @Override

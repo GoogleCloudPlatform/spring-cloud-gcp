@@ -17,6 +17,7 @@
 package com.google.cloud.spanner.r2dbc.v2;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import com.google.cloud.spanner.Type;
@@ -25,6 +26,7 @@ import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -64,5 +66,13 @@ class SpannerClientLibraryColumnMetadataTest {
 
     assertThat(meta.getNativeTypeMetadata()).isEqualTo(spannerType);
     assertThat(meta.getJavaType()).isEqualTo(javaType);
+  }
+
+  @Test
+  void getTypeNotSupported() {
+    StructField field = StructField.of("col1", Type.string());
+    SpannerClientLibraryColumnMetadata metadata = new SpannerClientLibraryColumnMetadata(field);
+    assertThatThrownBy(() -> metadata.getType())
+        .isInstanceOf(UnsupportedOperationException.class);
   }
 }

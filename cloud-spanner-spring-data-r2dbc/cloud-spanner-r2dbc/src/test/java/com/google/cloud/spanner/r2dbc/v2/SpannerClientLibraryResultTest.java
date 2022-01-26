@@ -16,6 +16,7 @@
 
 package com.google.cloud.spanner.r2dbc.v2;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.when;
 import io.r2dbc.spi.RowMetadata;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 class SpannerClientLibraryResultTest {
@@ -65,6 +67,19 @@ class SpannerClientLibraryResultTest {
     verify(mockRow2, times(0)).generateMetadata();
   }
 
+  @Test
+  void filterNotSupported() {
+    SpannerClientLibraryResult result = new SpannerClientLibraryResult(Flux.empty(), 0);
+    assertThatThrownBy(() -> result.filter(null))
+        .isInstanceOf(UnsupportedOperationException.class);
+  }
 
+  @Test
+  void flatMapWithSegmentNotSupported() {
+    SpannerClientLibraryResult result = new SpannerClientLibraryResult(Flux.empty(), 0);
+    StepVerifier.create(
+        result.flatMap(segment -> Mono.empty())
+    ).verifyError(UnsupportedOperationException.class);
+  }
 
 }

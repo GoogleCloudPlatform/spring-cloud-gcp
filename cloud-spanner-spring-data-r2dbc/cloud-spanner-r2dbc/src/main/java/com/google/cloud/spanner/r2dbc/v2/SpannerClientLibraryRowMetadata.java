@@ -77,7 +77,7 @@ class SpannerClientLibraryRowMetadata implements RowMetadata {
   }
 
   @Override
-  public Iterable<? extends ColumnMetadata> getColumnMetadatas() {
+  public List<? extends ColumnMetadata> getColumnMetadatas() {
     return this.columnMetadatas;
   }
 

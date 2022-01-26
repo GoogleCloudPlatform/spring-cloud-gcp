@@ -103,7 +103,7 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
   @Override
   public boolean supports(ConnectionFactoryOptions connectionFactoryOptions) {
     Assert.requireNonNull(connectionFactoryOptions, "connectionFactoryOptions must not be null");
-    String driver = connectionFactoryOptions.getValue(DRIVER);
+    String driver = (String) connectionFactoryOptions.getValue(DRIVER);
 
     return DRIVER_NAME.equals(driver) || SHORT_DRIVER_NAME.equals(driver);
   }
@@ -122,16 +122,16 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
     // Directly passed URL is supported for backwards compatibility. R2DBC SPI does not provide
     // the original URL when creating connection through ConnectionFactories.get(String).
     if (options.hasOption(URL)) {
-      config.setUrl(options.getValue(URL));
+      config.setUrl((String) options.getValue(URL));
     } else if (options.hasOption(DATABASE)
-        && FQDN_PATTERN_PARSE.matcher(options.getValue(DATABASE)).matches()) {
+        && FQDN_PATTERN_PARSE.matcher((String) options.getValue(DATABASE)).matches()) {
       // URL-based connection configuration
-      config.setFullyQualifiedDatabaseName(options.getValue(DATABASE));
+      config.setFullyQualifiedDatabaseName((String) options.getValue(DATABASE));
     } else {
       // Programmatic connection configuration.
-      config.setProjectId(options.getRequiredValue(PROJECT))
-          .setInstanceName(options.getRequiredValue(INSTANCE))
-          .setDatabaseName(options.getRequiredValue(DATABASE));
+      config.setProjectId((String) options.getRequiredValue(PROJECT))
+          .setInstanceName((String) options.getRequiredValue(INSTANCE))
+          .setDatabaseName((String) options.getRequiredValue(DATABASE));
     }
 
     config.setCredentials(extractCredentials(options));
@@ -142,7 +142,7 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
     }
 
     if (options.hasOption(OPTIMIZER_VERSION)) {
-      config.setOptimizerVersion(options.getValue(OPTIMIZER_VERSION));
+      config.setOptimizerVersion((String) options.getValue(OPTIMIZER_VERSION));
     }
 
     if (options.hasOption(AUTOCOMMIT)) {
@@ -189,11 +189,11 @@ public class SpannerConnectionFactoryProvider implements ConnectionFactoryProvid
     }
 
     if (options.hasOption(OAUTH_TOKEN)) {
-      return this.credentialsHelper.getOauthCredentials(options.getValue(OAUTH_TOKEN));
+      return this.credentialsHelper.getOauthCredentials((String) options.getValue(OAUTH_TOKEN));
     } else if (options.hasOption(CREDENTIALS)) {
-      return this.credentialsHelper.getFileCredentials(options.getValue(CREDENTIALS));
+      return this.credentialsHelper.getFileCredentials((String) options.getValue(CREDENTIALS));
     } else if (options.hasOption(GOOGLE_CREDENTIALS)) {
-      return options.getValue(GOOGLE_CREDENTIALS);
+      return (OAuth2Credentials) options.getValue(GOOGLE_CREDENTIALS);
     } else if (options.hasOption(USE_PLAIN_TEXT)) {
       return NoCredentials.getInstance();
     }

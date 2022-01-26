@@ -58,6 +58,7 @@ import reactor.test.StepVerifier;
 /**
  * R2DBC TCK test implementation.
  */
+@Disabled ("Until missing SPI v0.9 functionality is implemented")
 public class SpannerClientLibraryTestKit implements TestKit<String> {
 
   private static final String DISABLE_UNSUPPORTED_FUNCTIONALITY =
@@ -95,11 +96,11 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
 
     DatabaseId id = DatabaseId.of(
         options.getProjectId(), DatabaseProperties.INSTANCE, DatabaseProperties.DATABASE);
-    createTableIfNeeded(id, "test", " ( value INT64 ) PRIMARY KEY (value)");
+    createTableIfNeeded(id, "test", " ( test_value INT64 ) PRIMARY KEY (test_value)");
     createTableIfNeeded(
         id, "test_two_column", " ( col1 INT64, col2 STRING(MAX) )  PRIMARY KEY (col1)");
-    createTableIfNeeded(id, "blob_test", " ( value BYTES(MAX) )  PRIMARY KEY (value)");
-    createTableIfNeeded(id, "clob_test", " ( value BYTES(MAX) )  PRIMARY KEY (value)");
+    createTableIfNeeded(id, "blob_test", " ( test_value BYTES(MAX) )  PRIMARY KEY (test_value)");
+    createTableIfNeeded(id, "clob_test", " ( test_value BYTES(MAX) )  PRIMARY KEY (test_value)");
   }
 
   private static void createTableIfNeeded(DatabaseId id, String tableName, String definition) {
@@ -221,13 +222,14 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
             .execute())
 
             .flatMap(result -> result
-                .map((row, rowMetadata) -> Arrays.asList(row.get("value"), row.get("VALUE"))))
+                .map((row, rowMetadata) ->
+                    Arrays.asList(row.get("test_value"), row.get("TEST_VALUE"))))
             .flatMapIterable(Function.identity())
 
             .concatWith(close(connection)))
         .as(StepVerifier::create)
-        .expectNext(100L).as("value from col1")
-        .expectNext("hello").as("value from col2")
+        .expectNext(100L).as("test_value from col1")
+        .expectNext("hello").as("test_value from col2")
         .verifyComplete();
   }
 
@@ -366,7 +368,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
   functionality.  */
   Mono<List<Long>> extractColumnsLong(Result result) {
     return Flux.from(result
-        .map((row, rowMetadata) -> row.get("value", Long.class)))
+        .map((row, rowMetadata) -> row.get("test_value", Long.class)))
         .collectList();
   }
 
@@ -392,7 +394,7 @@ public class SpannerClientLibraryTestKit implements TestKit<String> {
                 .flatMap(Result::getRowsUpdated)
                 .thenMany(connection.setAutoCommit(true))
                 .thenMany(connection.createStatement(expand(TestStatement.SELECT_VALUE)).execute())
-                .flatMap(it -> it.map((row, metadata) -> row.get("value")))
+                .flatMap(it -> it.map((row, metadata) -> row.get("test_value")))
                 .concatWith(close(connection))
         )
         .as(StepVerifier::create)

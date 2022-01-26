@@ -43,4 +43,9 @@ class SpannerClientLibraryRow implements Row {
     Assert.requireNonNull(this.rowFields.getType(), "rowFields type must not be null");
     return new SpannerClientLibraryRowMetadata(this.rowFields.getType().getStructFields());
   }
+
+  @Override
+  public RowMetadata getMetadata() {
+    throw new UnsupportedOperationException();
+  }
 }

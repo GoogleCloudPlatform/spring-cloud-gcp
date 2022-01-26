@@ -33,17 +33,17 @@ class SpannerTestKitStatements {
   static final Map<TestStatement, String> STATEMENTS = new HashMap<>();
 
   static {
-    STATEMENTS.put(INSERT_VALUE100, "INSERT INTO test (value) VALUES (100)");
-    STATEMENTS.put(INSERT_VALUE200, "INSERT INTO test (value) VALUES (200)");
+    STATEMENTS.put(INSERT_VALUE100, "INSERT INTO test (test_value) VALUES (100)");
+    STATEMENTS.put(INSERT_VALUE200, "INSERT INTO test (test_value) VALUES (200)");
     STATEMENTS.put(INSERT_TWO_COLUMNS,
         "INSERT INTO test_two_column (col1, col2) VALUES (100, 'hello')");
     STATEMENTS.put(INSERT_BLOB_VALUE_PLACEHOLDER, "INSERT INTO blob_test VALUES (?)");
     STATEMENTS.put(INSERT_CLOB_VALUE_PLACEHOLDER, "INSERT INTO clob_test VALUES (?)");
-    STATEMENTS.put(INSERT_VALUE_PLACEHOLDER, "INSERT INTO test (value) VALUES (%s)");
+    STATEMENTS.put(INSERT_VALUE_PLACEHOLDER, "INSERT INTO test (test_value) VALUES (%s)");
 
     // Spanner column names are case-sensitive
     STATEMENTS.put(SELECT_VALUE_TWO_COLUMNS,
-        "SELECT col1 AS value, col2 AS VALUE FROM test_two_column");
+        "SELECT col1 AS test_value, col2 AS TEST_VALUE FROM test_two_column");
   }
 
   static String expand(TestStatement statement, Object... args) {

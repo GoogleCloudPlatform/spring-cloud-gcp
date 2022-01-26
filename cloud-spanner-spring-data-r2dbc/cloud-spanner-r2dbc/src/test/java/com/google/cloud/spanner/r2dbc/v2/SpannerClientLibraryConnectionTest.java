@@ -26,6 +26,8 @@ import static org.mockito.Mockito.when;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.TimestampBound;
 import io.r2dbc.spi.Batch;
+import io.r2dbc.spi.IsolationLevel;
+import java.time.Duration;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,5 +79,26 @@ class SpannerClientLibraryConnectionTest {
     List<Statement> args = argCaptor.getValue();
     assertThat(args).hasSize(1);
     assertThat(args.get(0).getSql()).isEqualTo("UPDATE tbl SET col1=val1");
+  }
+
+  @Test
+  void beginTransactionCustomDefinitionNotSupported() {
+    StepVerifier.create(
+        this.connection.beginTransaction(IsolationLevel.SERIALIZABLE)
+    ).verifyError(UnsupportedOperationException.class);
+  }
+
+  @Test
+  void setLockWaitTimeoutNotSupported() {
+    StepVerifier.create(
+        this.connection.setLockWaitTimeout(Duration.ofSeconds(1))
+    ).verifyError(UnsupportedOperationException.class);
+  }
+
+  @Test
+  void setStatementTimeoutNotSupported() {
+    StepVerifier.create(
+        this.connection.setStatementTimeout(Duration.ofSeconds(1))
+    ).verifyError(UnsupportedOperationException.class);
   }
 }

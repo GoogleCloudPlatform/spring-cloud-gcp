@@ -244,7 +244,7 @@ public class SpannerConnectionConfiguration {
     @Deprecated
     public Builder setUrl(String url) {
       String databaseString =
-          ConnectionFactoryOptions.parse(url).getValue(ConnectionFactoryOptions.DATABASE);
+          (String) ConnectionFactoryOptions.parse(url).getValue(ConnectionFactoryOptions.DATABASE);
 
       validateFullyQualifiedDatabaseName(databaseString);
       this.fullyQualifiedDatabaseName = databaseString;

@@ -30,5 +30,4 @@ interface DatabaseProperties {
   String URL = String.format(
       "r2dbc:cloudspanner://spanner.googleapis.com:443/projects/%s/instances/%s/databases/%s",
       ServiceOptions.getDefaultProjectId(), INSTANCE, DATABASE);
-
 }

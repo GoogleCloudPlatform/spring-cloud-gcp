@@ -21,6 +21,8 @@ import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -53,5 +55,16 @@ class SpannerClientLibraryResult implements Result {
       }
       return mappingFunction.apply(row, this.rowMetadata);
     });
+  }
+
+  @Override
+  public Result filter(Predicate<Segment> filter) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public <T> Publisher<T> flatMap(
+      Function<Segment, ? extends Publisher<? extends T>> mappingFunction) {
+    return Mono.error(new UnsupportedOperationException());
   }
 }
