@@ -36,7 +36,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /** Tests for the publisher factory. */
-public class DefaultPublisherFactoryTests {
+class DefaultPublisherFactoryTests {
 
   DefaultPublisherFactory factory;
 
