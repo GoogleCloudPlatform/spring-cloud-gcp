@@ -17,7 +17,6 @@
 package com.google.cloud.spring.pubsub.support;
 
 import com.google.cloud.pubsub.v1.Publisher;
-import com.google.cloud.pubsub.v1.PublisherInterface;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -27,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CachingPublisherFactory implements PublisherFactory {
   /** {@link Publisher} cache, enforces only one {@link Publisher} per Pub/Sub topic exists. */
-  private final ConcurrentHashMap<String, PublisherInterface> publishers =
+  private final ConcurrentHashMap<String, Publisher> publishers =
       new ConcurrentHashMap<>();
 
   private PublisherFactory delegate;
@@ -42,14 +41,14 @@ public class CachingPublisherFactory implements PublisherFactory {
   }
 
   @Override
-  public PublisherInterface createPublisher(String topic) {
+  public Publisher createPublisher(String topic) {
     return this.publishers.computeIfAbsent(topic, delegate::createPublisher);
   }
 
   /**
    * Returns the delegate.
    *
-   * @return the delgate.
+   * @return the delegate.
    */
   public PublisherFactory getDelegate() {
     return delegate;

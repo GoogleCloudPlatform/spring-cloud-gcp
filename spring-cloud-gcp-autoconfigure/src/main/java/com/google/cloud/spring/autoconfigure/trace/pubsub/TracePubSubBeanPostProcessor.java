@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
-import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
-import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -35,10 +33,7 @@ class TracePubSubBeanPostProcessor implements BeanPostProcessor {
   @Override
   public Object postProcessBeforeInitialization(Object bean, String beanName)
       throws BeansException {
-    if (bean instanceof PublisherFactory) {
-      return new CachingPublisherFactory(
-          new TracingPublisherFactory(pubSubTracing(), (PublisherFactory) bean));
-    } else if (bean instanceof SubscriberFactory) {
+    if (bean instanceof SubscriberFactory) {
       return new TracingSubscriberFactory(pubSubTracing(), (SubscriberFactory) bean);
     }
     return bean;
