@@ -41,6 +41,7 @@ import org.springframework.util.Assert;
  *     <li>auth_time : Must be in the past</li>
  *     <li>sub : Must not be empty</li>
  * </ul>
+ *
  * @since 1.2.2
  */
 public class FirebaseTokenValidator implements OAuth2TokenValidator<Jwt> {
