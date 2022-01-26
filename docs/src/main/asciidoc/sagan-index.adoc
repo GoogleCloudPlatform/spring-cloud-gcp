@@ -15,6 +15,7 @@ Project features include:
 * Google Cloud Storage (Spring Resource and Spring Integration)
 * Google Cloud Vision API Template
 * Spring Security identity extraction from Google Cloud IAP headers.
+* Spring Security identity extraction from Firebase Authentication headers.
 * Google Cloud BigQuery with Spring Integration
 
 == Getting Started
@@ -95,6 +96,10 @@ A sample of these artifacts are provided below.
 | Extracts IAP identity information from applications deployed to Google Cloud
 | `com.google.cloud:spring-cloud-gcp-starter-security-iap`
 
+| Security - Firebase
+| Extracts IAP identity information from applications deployed to Firebase
+| `com.google.cloud:spring-cloud-gcp-starter-security-firebase`
+
 |===
 
 == Code Samples
@@ -111,7 +116,8 @@ The table below highlights several samples of the most commonly used integration
 
 | Cloud Spanner
 | https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-repository-sample[spring-cloud-gcp-data-spanner-repository-sample]
-| https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample[spring-cloud-gcp-data-spanner-template-sample]
+
+ https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample[spring-cloud-gcp-data-spanner-template-sample]
 
 | Cloud Datastore
 | https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-sample[spring-cloud-gcp-data-datastore-sample]
@@ -136,6 +142,9 @@ The table below highlights several samples of the most commonly used integration
 
 | Cloud Security - IAP
 | https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-security-iap-sample[spring-cloud-gcp-security-iap-sample]
+
+| Cloud Security - Firebase
+| https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-security-firebase-sample[spring-cloud-gcp-security-firebase-sample]
 |===
 
 == Initializr
