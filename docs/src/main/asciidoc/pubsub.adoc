@@ -177,6 +177,10 @@ MaxRpcTimeout puts a limit on the value of the RPC timeout, so that the RpcTimeo
 can't increase the RPC timeout higher than this amount. | No | 0
 |===
 
+==== Programmatic Configuration
+To apply publishing customizations not covered by the properties above, you may provide custom beans of type `PublisherCustomizer` to post-process the `Publisher.Builder` object right before it is built into a `Publisher`.
+The `PublisherCustomizer` beans may be annotated with Spring Framework's `@Order` annotation to ensure they are applied in a particular sequence.
+
 === Spring Boot Actuator Support
 
 ==== Cloud Pub/Sub Health Indicator

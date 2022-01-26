@@ -25,7 +25,10 @@ import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubException;
+import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.util.Assert;
 
 /**
@@ -52,6 +55,8 @@ public class DefaultPublisherFactory implements PublisherFactory {
   private Boolean enableMessageOrdering;
 
   private String endpoint;
+
+  private List<PublisherCustomizer> customizers;
 
   /**
    * Create {@link DefaultPublisherFactory} instance based on the provided {@link
@@ -146,6 +151,29 @@ public class DefaultPublisherFactory implements PublisherFactory {
     this.endpoint = endpoint;
   }
 
+  /**
+   * Accepts a list of {@link Publisher.Builder} customizers.
+   * The customizers are applied in the order provided, so the later customizers can override
+   * any settings provided by the earlier ones.
+   */
+  public void setCustomizers(List<PublisherCustomizer> customizers) {
+    Assert.notNull(customizers, "Non-null customizers expected");
+    this.customizers = Collections.unmodifiableList(customizers);
+  }
+
+  /**
+   * Creates a {@link Publisher} for a given topic.
+   *
+   * <p></p>Configuration precedence:
+   * <ol>
+   *   <li>modifications applied by the factory customizers
+   *   <li>{@code spring.cloud.gcp.pubsub.publisher} configuration options
+   *   <li>client library defaults
+   *</ol>
+   *
+   * @param topic destination topic
+   * @return fully configured publisher
+   */
   @Override
   public Publisher createPublisher(String topic) {
     try {
@@ -153,6 +181,7 @@ public class DefaultPublisherFactory implements PublisherFactory {
           Publisher.newBuilder(PubSubTopicUtils.toTopicName(topic, this.projectId));
 
       applyPublisherSettings(publisherBuilder);
+      applyCustomizers(publisherBuilder, topic);
 
       return publisherBuilder.build();
     } catch (IOException ioe) {
@@ -192,6 +221,16 @@ public class DefaultPublisherFactory implements PublisherFactory {
 
     if (this.endpoint != null) {
       publisherBuilder.setEndpoint(this.endpoint);
+    }
+  }
+
+  void applyCustomizers(Publisher.Builder publisherBuilder, String topic) {
+    if (this.customizers == null) {
+      return;
+    }
+
+    for (PublisherCustomizer customizer : this.customizers) {
+      customizer.apply(publisherBuilder, topic);
     }
   }
 }
