@@ -1,18 +1,20 @@
 :spring-security-ref: https://docs.spring.io/spring-security/reference/
+:spring-security-javadoc: https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/
 
 [#security-firebase]
 == Firebase Authentication
 
-https://firebase.google.com/products/auth[Firebase Authentication] provides a security layer over applications deployed to Firebase.
+https://firebase.google.com/products/auth[Firebase Authentication] provides backend services, easy-to-use SDKs, and ready-made UI libraries to authenticate users to your link:https://firebase.google.com/[Firebase] app. It integrates tightly with other Firebase services and GCP services including Cloud Storage, Cloud Firestore and Cloud Functions.
 
-The Security Firebase starter uses {spring-security-ref}servlet/oauth2/resource-server/index.html[Spring Security OAuth 2.0 Resource Server] functionality to decode and validate signed https://firebase.google.com/[Firebase] JWT token from HTTP header.
-//TODO: verify token name in header.
-The Firebase JWT tokens are validated with rules presented link:https://firebase.google.com/docs/auth/admin/verify-id-tokens[here].
 
-The following claims are validated automatically:
+The Security Firebase starter uses {spring-security-ref}servlet/oauth2/resource-server/index.html[Spring Security OAuth 2.0 Resource Server] functionality to extract user identity from OAuth2 Authorization header.
 
+The Firebase JWT tokens are validated with rules presented link:https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library[here]. The following claims are validated automatically:
+
+* Expiration time: Must be in the future
 * Issued-at time : Must be in the past
-* Audience : Must be the firebase project id
+* Audience : Must be the firebase project id v
+* Issuer: Must be "https://securetoken.google.com/`<projectId>` "
 * Authentication time : Must be in the past
 * Subject : Must not be empty
 
@@ -41,6 +43,8 @@ dependencies {
 === Configuration
 The following properties are available.
 
+CAUTION: Modifying public-keys-endpoint property might be useful for testing, but the defaults should not be changed in production.
+
 |====================================================
 |Name |Description |Required |Default
 
@@ -52,6 +56,10 @@ The following properties are available.
 |`spring.cloud.gcp.security.firebase.public-keys-endpoint`
 |Link to Google's public endpoint containing Firebase public keys.
 |true
-|https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com
+|`https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com`
 
 |====================================================
+
+=== Sample
+
+A link:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-security-firebase-sample[sample application] is available. This sample app provides simple login page using link:https://github.com/firebase/firebaseui-web[firebase-ui] to fetch the JWT token.
