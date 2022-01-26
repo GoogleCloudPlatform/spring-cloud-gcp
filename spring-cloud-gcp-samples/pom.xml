@@ -207,6 +207,7 @@
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
 							<failsOnError>true</failsOnError>
 							<failOnViolation>true</failOnViolation>
+							<skip>true</skip>
 							<suppressionsLocation>../src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
 							<violationSeverity>warning</violationSeverity>
 							<!-- exclude generated Spring AOT classes -->
