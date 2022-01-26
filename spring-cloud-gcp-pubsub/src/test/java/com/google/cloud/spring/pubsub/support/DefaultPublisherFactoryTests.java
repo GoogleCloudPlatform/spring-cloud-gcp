@@ -18,19 +18,22 @@ package com.google.cloud.spring.pubsub.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
+import com.google.api.gax.rpc.ApiCallContext;
+import com.google.api.gax.rpc.TransportChannel;
+import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
 import com.google.pubsub.v1.ProjectTopicName;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for the publisher factory. */
 public class DefaultPublisherFactoryTests {
@@ -38,9 +41,16 @@ public class DefaultPublisherFactoryTests {
   DefaultPublisherFactory factory;
 
   @BeforeEach
-  public void setUp() {
+  public void setUp() throws IOException {
     factory = new DefaultPublisherFactory(() -> "projectId");
     factory.setCredentialsProvider(NoCredentialsProvider.create());
+    TransportChannelProvider mockChannelProvider = mock(TransportChannelProvider.class);
+    TransportChannel mockTransportChannel = mock(TransportChannel.class);
+    when(mockChannelProvider.getTransportChannel()).thenReturn(mockTransportChannel);
+    ApiCallContext mockContext = mock(ApiCallContext.class);
+    when(mockTransportChannel.getEmptyCallContext()).thenReturn(mockContext);
+    when(mockContext.withTransportChannel(any())).thenReturn(mockContext);
+    factory.setChannelProvider(mockChannelProvider);
   }
 
   @Test
@@ -68,7 +78,7 @@ public class DefaultPublisherFactoryTests {
   }
 
   @Test
-  void creatPublisherUsesCustomizersInOrder() {
+  void createPublisherUsesCustomizersInOrder() {
     final AtomicInteger counter = new AtomicInteger(1);
 
     PublisherCustomizer c1 = (pb, t) -> {
@@ -92,13 +102,14 @@ public class DefaultPublisherFactoryTests {
 
     Publisher publisher = factory.createPublisher("testtopic");
 
-    Publisher defaultPublisher = Publisher.newBuilder("testtopic").build();
+    Publisher defaultPublisher = Publisher.newBuilder("testtopic")
+        .setCredentialsProvider(NoCredentialsProvider.create())
+        .build();
     assertThat(publisher.getBatchingSettings()).isSameAs(defaultPublisher.getBatchingSettings());
   }
 
   @Test
   void createPublisherWithExplicitNullCustomizersFails() {
-    DefaultPublisherFactory factory = new DefaultPublisherFactory(() -> "projectId");
     assertThatThrownBy(() -> factory.setCustomizers(null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Non-null customizers expected");
