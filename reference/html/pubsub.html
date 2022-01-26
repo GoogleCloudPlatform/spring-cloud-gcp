@@ -656,6 +656,13 @@ can&#8217;t increase the RPC timeout higher than this amount.</p></td>
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="_programmatic_configuration"><a class="link" href="#_programmatic_configuration">Programmatic Configuration</a></h4>
+<div class="paragraph">
+<p>To apply publishing customizations not covered by the properties above, you may provide custom beans of type <code>PublisherCustomizer</code> to post-process the <code>Publisher.Builder</code> object right before it is built into a <code>Publisher</code>.
+The <code>PublisherCustomizer</code> beans may be annotated with Spring Framework&#8217;s <code>@Order</code> annotation to ensure they are applied in a particular sequence.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_spring_boot_actuator_support"><a class="link" href="#_spring_boot_actuator_support">Spring Boot Actuator Support</a></h3>
