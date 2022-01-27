@@ -24,7 +24,7 @@
 		<!-- Dependency versions -->
 		<spring-native.version>0.10.4</spring-native.version>
 		<google-cloud-graalvm-support.version>0.7.0</google-cloud-graalvm-support.version>
-		<testcontainers.version>1.16.2</testcontainers.version>
+		<testcontainers.version>1.16.3</testcontainers.version>
 
 
 		<!-- Checkstyle versions. Keep in sync with ../pom.xml -->
@@ -214,6 +214,7 @@
 							<configLocation>google_checks.xml</configLocation>
 							<suppressionsLocation>../src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
+							<consoleOutput>true</consoleOutput>
 							<failOnViolation>true</failOnViolation>
 							<violationSeverity>warning</violationSeverity>
 						</configuration>

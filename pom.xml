@@ -49,7 +49,7 @@
 		<maven-failsafe-plugin.version>2.22.1</maven-failsafe-plugin.version>
 		<maven-flatten-plugin.version>1.2.7</maven-flatten-plugin.version>
 		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
-		<maven-jar-plugin.version>3.2.1</maven-jar-plugin.version>
+		<maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
 		<maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
@@ -59,7 +59,7 @@
 		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.2.1</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.10.0</errorprone.version>
+		<errorprone.version>2.11.0</errorprone.version>
 
 		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
@@ -263,6 +263,7 @@
 							<configLocation>google_checks.xml</configLocation>
 							<suppressionsLocation>src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
+							<consoleOutput>true</consoleOutput>
 							<failOnViolation>true</failOnViolation>
 							<violationSeverity>warning</violationSeverity>
 						</configuration>
