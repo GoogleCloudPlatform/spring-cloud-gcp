@@ -30,7 +30,6 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration for Integration tests.
- *
  */
 @Configuration
 public class KmsTestConfiguration {

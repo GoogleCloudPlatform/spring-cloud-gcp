@@ -46,7 +46,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the Spanner database admin template.
- *
  */
 class SpannerDatabaseAdminTemplateTests {
 

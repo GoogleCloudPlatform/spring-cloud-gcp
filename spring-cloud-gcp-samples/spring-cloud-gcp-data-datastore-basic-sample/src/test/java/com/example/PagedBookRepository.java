@@ -23,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 
 /**
  * A Book repository for testing Pages in a Spring Boot setting.
- *
  */
 public interface PagedBookRepository extends DatastoreRepository<Book, Long> {
 

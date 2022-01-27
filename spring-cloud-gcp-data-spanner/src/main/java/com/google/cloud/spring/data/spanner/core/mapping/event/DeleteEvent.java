@@ -22,7 +22,6 @@ import java.util.List;
 
 /**
  * An event signaling a Cloud Spanner delete operation.
- *
  */
 public class DeleteEvent extends MutationEvent {
 

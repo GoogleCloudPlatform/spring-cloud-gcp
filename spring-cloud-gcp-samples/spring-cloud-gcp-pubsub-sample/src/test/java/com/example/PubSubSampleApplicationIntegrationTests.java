@@ -57,7 +57,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Tests for the Pub/Sub sample application.
- *
  */
 @EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
 @ExtendWith(SpringExtension.class)

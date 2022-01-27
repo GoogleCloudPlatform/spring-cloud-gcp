@@ -32,7 +32,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Tests performing many operations at the same time using single instances of the repository.
- *
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})

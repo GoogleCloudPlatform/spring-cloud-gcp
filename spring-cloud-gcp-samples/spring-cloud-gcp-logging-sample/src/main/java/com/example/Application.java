@@ -23,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * Sample spring boot application.
- *
  */
 @SpringBootApplication
 public class Application {

@@ -22,7 +22,6 @@ import org.springframework.data.annotation.Id;
 
 /**
  * A test class that uses embedded relationships to represent a tree.
- *
  */
 @Entity
 public class EmbeddableTreeNode {

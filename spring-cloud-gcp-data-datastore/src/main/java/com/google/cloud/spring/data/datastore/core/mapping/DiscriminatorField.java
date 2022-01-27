@@ -25,7 +25,6 @@ import java.lang.annotation.Target;
 /**
  * Annotation for entities that are root superclasses of inheritance hierarchies of subclass
  * entities.
- *
  */
 @Documented
 @Target(ElementType.TYPE)

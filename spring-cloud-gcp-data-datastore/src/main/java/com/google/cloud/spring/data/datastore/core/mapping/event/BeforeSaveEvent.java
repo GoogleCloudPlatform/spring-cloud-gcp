@@ -20,7 +20,6 @@ import java.util.List;
 
 /**
  * An event published immediately before a save event to Cloud Datastore.
- *
  */
 public class BeforeSaveEvent extends SaveEvent {
   /**

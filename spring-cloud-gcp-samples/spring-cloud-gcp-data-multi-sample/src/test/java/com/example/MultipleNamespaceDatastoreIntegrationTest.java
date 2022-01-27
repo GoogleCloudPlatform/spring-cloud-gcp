@@ -31,7 +31,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Integration test for multiple-namespace support.
- *
  */
 // Please use "-Dit.datastore=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")

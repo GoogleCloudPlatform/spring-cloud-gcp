@@ -18,7 +18,6 @@ package com.google.cloud.spring.pubsub.integration;
 
 /**
  * Determines acknowledgement policy for incoming messages from Google Cloud Pub/Sub.
- *
  */
 public enum AckMode {
 

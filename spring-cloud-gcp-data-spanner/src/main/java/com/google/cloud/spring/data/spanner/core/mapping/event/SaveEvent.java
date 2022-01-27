@@ -22,7 +22,6 @@ import java.util.Set;
 
 /**
  * An event that signals a save operation to Cloud Spanner.
- *
  */
 public class SaveEvent extends MutationEvent {
 

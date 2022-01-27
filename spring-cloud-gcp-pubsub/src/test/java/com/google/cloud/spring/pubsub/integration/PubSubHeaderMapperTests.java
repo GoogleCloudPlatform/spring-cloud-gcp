@@ -29,7 +29,6 @@ import org.springframework.messaging.support.NativeMessageHeaderAccessor;
 
 /**
  * Tests for the Pub/Sub message header.
- *
  */
 public class PubSubHeaderMapperTests {
 

@@ -22,7 +22,6 @@ import org.springframework.core.convert.converter.Converter;
 
 /**
  * Converters for sample app.
- *
  */
 public class ConvertersExample {
 

@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Extracts trace IDs from HTTP requests using the x-cloud-trace-context header.
- *
  */
 public class XCloudTraceIdExtractor implements TraceIdExtractor {
 

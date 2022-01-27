@@ -31,7 +31,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Integration tests for {@link SecretManagerTemplate}.
- *
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {SecretManagerTestConfiguration.class})

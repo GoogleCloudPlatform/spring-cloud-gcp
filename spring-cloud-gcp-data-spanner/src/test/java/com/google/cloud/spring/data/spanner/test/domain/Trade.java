@@ -39,7 +39,6 @@ import java.util.stream.IntStream;
 
 /**
  * A test domain object using many features.
- *
  */
 @Table(name = "#{'trades_'.concat(tableNameSuffix)}")
 public class Trade {

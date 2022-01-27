@@ -34,7 +34,6 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * Tests for the top-level context auto-configuration.
- *
  */
 class GcpContextAutoConfigurationTests {
 

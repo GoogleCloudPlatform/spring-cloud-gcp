@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * A transactional service used for integration tests.
- *
  */
 public class TransactionalTemplateService {
 

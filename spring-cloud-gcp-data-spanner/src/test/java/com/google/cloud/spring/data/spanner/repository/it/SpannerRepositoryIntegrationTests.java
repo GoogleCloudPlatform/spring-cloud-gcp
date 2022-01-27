@@ -68,7 +68,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Integration tests for Spanner Repository that uses many features.
- *
  */
 @RunWith(SpringRunner.class)
 public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {

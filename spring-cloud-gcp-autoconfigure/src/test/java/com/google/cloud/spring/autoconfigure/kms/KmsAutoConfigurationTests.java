@@ -32,7 +32,6 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Unit tests for {@link GcpKmsAutoConfiguration}.
- *
  */
 class KmsAutoConfigurationTests {
 

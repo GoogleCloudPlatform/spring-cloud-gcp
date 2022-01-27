@@ -29,7 +29,6 @@ import org.springframework.context.annotation.Import;
 /**
  * Enables autoconfiguration for {@link
  * com.google.cloud.spring.data.spanner.repository.config.EnableSpannerRepositories}.
- *
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(SpannerRepository.class)

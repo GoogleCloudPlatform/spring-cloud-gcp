@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * A more complete integration test is available in {@code UserAgentHeaderProviderIntegrationTests}.
- *
  */
 class UserAgentHeaderProviderTests {
 

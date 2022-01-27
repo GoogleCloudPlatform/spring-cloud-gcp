@@ -42,7 +42,6 @@ import org.mockito.Mockito;
 
 /**
  * Tests for the Spanner schema utils.
- *
  */
 class SpannerSchemaUtilsTests {
 

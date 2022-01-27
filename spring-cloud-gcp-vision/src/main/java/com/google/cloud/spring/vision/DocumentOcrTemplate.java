@@ -49,7 +49,6 @@ import org.springframework.util.concurrent.SettableListenableFuture;
  * Template providing convenient operations for interfacing with Google Cloud Vision's Document OCR
  * feature, which allows you to run OCR algorithms on documents (PDF or TIFF format) stored on
  * Google Cloud Storage.
- *
  */
 public class DocumentOcrTemplate {
 

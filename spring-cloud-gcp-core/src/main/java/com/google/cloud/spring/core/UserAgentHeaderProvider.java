@@ -23,7 +23,6 @@ import java.util.Map;
 /**
  * Provides the user-agent header to signal to the Google Cloud Client Libraries that requests
  * originate from a Spring Integration.
- *
  */
 public class UserAgentHeaderProvider implements HeaderProvider {
 

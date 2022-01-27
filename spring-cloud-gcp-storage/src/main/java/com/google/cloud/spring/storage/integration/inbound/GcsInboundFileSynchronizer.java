@@ -25,7 +25,6 @@ import org.springframework.integration.metadata.SimpleMetadataStore;
 
 /**
  * An inbound file synchronizer for Google Cloud Storage.
- *
  */
 public class GcsInboundFileSynchronizer extends AbstractInboundFileSynchronizer<BlobInfo> {
 

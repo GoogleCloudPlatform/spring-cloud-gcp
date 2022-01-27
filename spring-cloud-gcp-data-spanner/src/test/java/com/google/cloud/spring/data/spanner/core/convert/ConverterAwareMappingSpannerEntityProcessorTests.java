@@ -47,7 +47,6 @@ import org.springframework.lang.NonNull;
 
 /**
  * Tests for Spanner mapping and converting.
- *
  */
 class ConverterAwareMappingSpannerEntityProcessorTests {
 

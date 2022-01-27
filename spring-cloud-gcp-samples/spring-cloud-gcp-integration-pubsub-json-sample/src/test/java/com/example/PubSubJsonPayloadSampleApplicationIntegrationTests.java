@@ -38,7 +38,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Tests the Pub/Sub Json payload app.
- *
  */
 // Please use "-Dit.pubsub-integration=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")

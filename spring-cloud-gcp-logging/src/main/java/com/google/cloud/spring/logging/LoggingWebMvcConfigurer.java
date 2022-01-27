@@ -25,7 +25,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * MVC Adapter that adds the {@link TraceIdLoggingWebMvcInterceptor}.
- *
  */
 @Configuration(proxyBeanMethods = false)
 public class LoggingWebMvcConfigurer implements WebMvcConfigurer {

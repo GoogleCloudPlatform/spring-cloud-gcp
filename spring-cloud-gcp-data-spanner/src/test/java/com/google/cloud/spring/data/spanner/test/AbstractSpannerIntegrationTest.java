@@ -52,7 +52,6 @@ import org.springframework.test.context.TestExecutionListeners;
  * tests, <code>integration-db</code>. This is automatically created, if doesn't exist. The tables
  * are generated to have a unique suffix, which is updated on the entity annotations as well
  * dynamically to avoid collisions of multiple parallel tests running against the same instance.
- *
  */
 @ContextConfiguration(classes = {IntegrationTestConfiguration.class})
 @TestExecutionListeners(

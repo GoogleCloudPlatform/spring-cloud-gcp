@@ -34,7 +34,6 @@ import org.springframework.test.context.support.TestPropertySourceUtils;
 
 /**
  * Tests for the Cloud Foundry environment post-processor.
- *
  */
 class GcpCloudFoundryEnvironmentPostProcessorTests extends AbstractCfEnvTests {
 

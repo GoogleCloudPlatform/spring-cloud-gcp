@@ -28,7 +28,6 @@ import java.util.TreeMap;
 
 /**
  * Represents the parsed OCR content for an document in the provided range of pages.
- *
  */
 public class DocumentOcrResultSet {
 

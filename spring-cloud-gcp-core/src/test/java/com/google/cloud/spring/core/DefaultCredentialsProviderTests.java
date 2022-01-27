@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the {@link DefaultCredentialsProvider}.
- *
  */
 class DefaultCredentialsProviderTests {
 

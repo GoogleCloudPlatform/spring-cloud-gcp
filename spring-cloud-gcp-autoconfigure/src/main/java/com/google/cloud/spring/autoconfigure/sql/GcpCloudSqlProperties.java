@@ -21,7 +21,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Google Cloud SQL properties.
- *
  */
 @ConfigurationProperties("spring.cloud.gcp.sql")
 public class GcpCloudSqlProperties {

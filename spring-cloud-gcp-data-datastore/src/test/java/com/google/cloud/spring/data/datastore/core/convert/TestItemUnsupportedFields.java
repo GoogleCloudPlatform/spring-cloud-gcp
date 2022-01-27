@@ -22,7 +22,6 @@ import java.util.Objects;
 
 /**
  * A test item with fields that are of unsupported types.
- *
  */
 class TestItemUnsupportedFields {
   private String stringField;

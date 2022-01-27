@@ -35,7 +35,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * Web app for Pub/Sub sample application.
- *
  */
 @RestController
 public class WebController {

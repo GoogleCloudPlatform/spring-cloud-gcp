@@ -23,7 +23,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * Web app for sample app.
- *
  */
 @RestController
 public class WebController {

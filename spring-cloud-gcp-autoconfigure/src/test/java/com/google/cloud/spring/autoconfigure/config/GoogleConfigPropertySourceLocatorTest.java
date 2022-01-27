@@ -38,7 +38,6 @@ import org.springframework.core.env.StandardEnvironment;
 
 /**
  * Tests for the config property source locator.
- *
  */
 class GoogleConfigPropertySourceLocatorTest {
 

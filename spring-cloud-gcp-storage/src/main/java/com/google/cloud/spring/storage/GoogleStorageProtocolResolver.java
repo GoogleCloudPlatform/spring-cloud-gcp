@@ -31,7 +31,6 @@ import org.springframework.core.io.ResourceLoader;
 
 /**
  * A {@link ProtocolResolver} implementation for the {@code gs://} protocol.
- *
  */
 public class GoogleStorageProtocolResolver
     implements ProtocolResolver, BeanFactoryPostProcessor, ResourceLoaderAware {

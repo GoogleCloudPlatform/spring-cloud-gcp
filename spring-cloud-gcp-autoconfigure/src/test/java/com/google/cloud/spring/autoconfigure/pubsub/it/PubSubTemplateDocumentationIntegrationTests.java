@@ -58,7 +58,6 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 /**
  * Documentation tests for Pub/Sub.
- *
  */
 public class PubSubTemplateDocumentationIntegrationTests {
 

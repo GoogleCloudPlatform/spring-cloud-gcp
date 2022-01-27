@@ -22,7 +22,6 @@ import org.springframework.util.Assert;
 
 /**
  * Utilities for parsing KMS properties.
- *
  */
 final class KmsPropertyUtils {
 

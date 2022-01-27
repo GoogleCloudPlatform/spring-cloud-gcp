@@ -22,7 +22,6 @@ import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 
 /**
  * Extended binding properties for Pub/Sub.
- *
  */
 @ConfigurationProperties("spring.cloud.stream.gcp.pubsub")
 public class PubSubExtendedBindingProperties

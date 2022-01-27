@@ -37,7 +37,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Simple integration test to verify the SQL sample application with Postgres.
- *
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(

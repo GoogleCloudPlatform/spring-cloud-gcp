@@ -34,7 +34,6 @@ import org.springframework.util.Assert;
 /**
  * Converts from GCP Pub/Sub message to Spring message and sends the Spring message to the attached
  * channels.
- *
  */
 public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 

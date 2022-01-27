@@ -25,7 +25,6 @@ import org.springframework.util.Assert;
 
 /**
  * A session factory implementation for Google Cloud Storage.
- *
  */
 public class GcsSessionFactory implements SessionFactory<BlobInfo>, SharedSessionCapable {
 

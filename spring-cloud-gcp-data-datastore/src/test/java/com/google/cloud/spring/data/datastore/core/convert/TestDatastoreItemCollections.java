@@ -27,7 +27,6 @@ import org.springframework.util.CollectionUtils;
 
 /**
  * A test entity focused on collections.
- *
  */
 public class TestDatastoreItemCollections {
   private List<Integer> intList;

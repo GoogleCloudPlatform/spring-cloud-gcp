@@ -69,7 +69,6 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 /**
  * Tests for the GQL Query Method.
- *
  */
 class GqlDatastoreQueryTests {
 

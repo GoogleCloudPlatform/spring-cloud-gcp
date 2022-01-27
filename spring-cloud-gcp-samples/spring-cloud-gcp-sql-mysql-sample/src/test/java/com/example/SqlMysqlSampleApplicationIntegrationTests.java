@@ -40,7 +40,6 @@ import org.springframework.test.context.junit4.SpringRunner;
  * set in resources/application.properties.
  *
  * <p>Run with: mvn -Dit.cloudsql test
- *
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(

@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * A transactional service that provides methods run as transactions.
- *
  */
 public class TransactionalRepositoryService {
 

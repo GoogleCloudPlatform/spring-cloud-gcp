@@ -49,7 +49,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Tests the auditing features of the template.
- *
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration

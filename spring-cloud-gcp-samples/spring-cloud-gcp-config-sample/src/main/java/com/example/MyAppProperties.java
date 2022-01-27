@@ -21,7 +21,6 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 /**
  * Sample Configuration class with property values loaded using the Runtime Configurator API.
- *
  */
 @RefreshScope
 @ConfigurationProperties("myapp")

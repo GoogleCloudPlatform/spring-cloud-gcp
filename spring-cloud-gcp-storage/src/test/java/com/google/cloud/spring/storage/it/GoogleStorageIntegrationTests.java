@@ -50,7 +50,6 @@ import org.springframework.util.StreamUtils;
 
 /**
  * Integration for Google Cloud Storage.
- *
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(

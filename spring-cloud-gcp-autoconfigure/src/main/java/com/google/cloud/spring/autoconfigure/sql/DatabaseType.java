@@ -18,7 +18,6 @@ package com.google.cloud.spring.autoconfigure.sql;
 
 /**
  * Enum class containing MySQL and Postgresql constants.
- *
  */
 public enum DatabaseType {
   /** MySQL constants. */

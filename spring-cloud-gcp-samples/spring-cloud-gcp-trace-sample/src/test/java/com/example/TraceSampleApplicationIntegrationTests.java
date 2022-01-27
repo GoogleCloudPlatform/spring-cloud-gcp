@@ -61,7 +61,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Verifies that the logged Traces on the sample application appear in StackDriver.
- *
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(

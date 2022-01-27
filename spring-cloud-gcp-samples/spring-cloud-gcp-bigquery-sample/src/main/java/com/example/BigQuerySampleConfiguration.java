@@ -33,7 +33,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * Sample configuration for using BigQuery with Spring Integration.
- *
  */
 @Configuration
 public class BigQuerySampleConfiguration {

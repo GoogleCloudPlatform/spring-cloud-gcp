@@ -37,7 +37,6 @@ import org.springframework.lang.Nullable;
 
 /**
  * A repository for testing Query Methods that uses many advanced features.
- *
  */
 @Nonnull
 interface TestEntityRepository extends DatastoreRepository<TestEntity, Long> {

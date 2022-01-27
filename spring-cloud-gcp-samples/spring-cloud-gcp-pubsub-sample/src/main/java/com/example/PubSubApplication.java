@@ -21,7 +21,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Pub/Sub sample application.
- *
  */
 @SpringBootApplication
 public class PubSubApplication {

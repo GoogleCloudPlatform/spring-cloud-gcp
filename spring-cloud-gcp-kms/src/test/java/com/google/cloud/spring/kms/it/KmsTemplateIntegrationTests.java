@@ -30,7 +30,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Integration tests for {@link KmsTemplate}.
- *
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {KmsTestConfiguration.class})

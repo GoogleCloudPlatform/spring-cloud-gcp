@@ -100,7 +100,6 @@ import org.springframework.data.util.ClassTypeInformation;
 
 /**
  * Tests for the Datastore Template.
- *
  */
 public class DatastoreTemplateTests {
 

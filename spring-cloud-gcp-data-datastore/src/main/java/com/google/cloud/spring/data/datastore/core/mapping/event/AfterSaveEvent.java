@@ -22,7 +22,6 @@ import java.util.Objects;
 
 /**
  * An event published immediately after a save operation to Cloud Datastore.
- *
  */
 public class AfterSaveEvent extends SaveEvent {
 

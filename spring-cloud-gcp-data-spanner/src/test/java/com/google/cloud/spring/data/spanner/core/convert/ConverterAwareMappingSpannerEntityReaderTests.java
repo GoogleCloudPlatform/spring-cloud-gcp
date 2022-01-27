@@ -49,7 +49,6 @@ import org.springframework.lang.Nullable;
 
 /**
  * Tests for converting and reading Spanner entities and objects.
- *
  */
 public class ConverterAwareMappingSpannerEntityReaderTests {
 

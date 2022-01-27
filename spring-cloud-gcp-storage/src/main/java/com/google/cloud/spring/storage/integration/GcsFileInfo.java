@@ -23,7 +23,6 @@ import org.springframework.util.Assert;
 
 /**
  * An object that holds metadata information for a Cloud Storage file.
- *
  */
 public class GcsFileInfo extends AbstractFileInfo<BlobInfo> {
 

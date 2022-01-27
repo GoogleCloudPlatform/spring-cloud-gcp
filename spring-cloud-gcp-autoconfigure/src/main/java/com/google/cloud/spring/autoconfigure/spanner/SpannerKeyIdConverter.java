@@ -29,7 +29,6 @@ import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 
 /**
  * Settings for key converter used in REST repositories.
- *
  */
 public class SpannerKeyIdConverter implements BackendIdConverter {
 

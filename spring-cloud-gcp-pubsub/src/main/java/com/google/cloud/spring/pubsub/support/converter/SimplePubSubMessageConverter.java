@@ -25,7 +25,6 @@ import java.util.Map;
 /**
  * A simple {@link PubSubMessageConverter} that directly maps payloads of type {@code byte[]},
  * {@code ByteString}, {@code ByteBuffer}, and {@code String} to Pub/Sub messages.
- *
  */
 public class SimplePubSubMessageConverter implements PubSubMessageConverter {
 

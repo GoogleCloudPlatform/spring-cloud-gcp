@@ -26,7 +26,6 @@ import org.springframework.util.Assert;
 
 /**
  * A converter using Jackson JSON.
- *
  */
 public class JacksonPubSubMessageConverter implements PubSubMessageConverter {
 

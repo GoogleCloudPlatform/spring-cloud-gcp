@@ -50,7 +50,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for the streaming message source.
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration

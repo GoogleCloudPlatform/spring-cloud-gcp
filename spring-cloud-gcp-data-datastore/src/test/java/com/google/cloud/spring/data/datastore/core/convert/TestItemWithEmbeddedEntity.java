@@ -26,7 +26,6 @@ import java.util.Objects;
 
 /**
  * A test entity focused on holding embedded entities.
- *
  */
 public class TestItemWithEmbeddedEntity {
   private int intField;

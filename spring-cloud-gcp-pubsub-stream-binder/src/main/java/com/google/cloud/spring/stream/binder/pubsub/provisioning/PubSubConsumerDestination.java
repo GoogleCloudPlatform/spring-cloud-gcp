@@ -20,7 +20,6 @@ import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 
 /**
  * Consumer destination for Pub/Sub.
- *
  */
 public class PubSubConsumerDestination implements ConsumerDestination {
 

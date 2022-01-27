@@ -20,7 +20,6 @@ import com.google.cloud.pubsub.v1.PublisherInterface;
 
 /**
  * The publisher factory interface that can create publishers.
- *
  */
 public interface PublisherFactory {
 

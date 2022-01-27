@@ -23,7 +23,6 @@ import org.springframework.context.ApplicationEvent;
 
 /**
  * An event holding mutations that are submitted to Cloud Spanner.
- *
  */
 public class MutationEvent extends ApplicationEvent {
 

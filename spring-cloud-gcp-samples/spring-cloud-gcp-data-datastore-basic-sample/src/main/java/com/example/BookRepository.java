@@ -22,7 +22,6 @@ import java.util.List;
 /**
  * This interface contains custom-defined query methods of which implementations are generated for
  * you.
- *
  */
 public interface BookRepository extends DatastoreRepository<Book, Long> {
 

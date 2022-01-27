@@ -22,7 +22,6 @@ import org.springframework.context.ApplicationEvent;
 
 /**
  * An event published when entities are saved to Cloud Datastore.
- *
  */
 public class SaveEvent extends ApplicationEvent {
 

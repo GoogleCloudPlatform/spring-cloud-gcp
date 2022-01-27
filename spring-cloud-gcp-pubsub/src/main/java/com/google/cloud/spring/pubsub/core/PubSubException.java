@@ -20,7 +20,6 @@ import org.springframework.core.NestedRuntimeException;
 
 /**
  * The Spring Google Cloud Pub/Sub specific {@link NestedRuntimeException}.
- *
  */
 public class PubSubException extends NestedRuntimeException {
 

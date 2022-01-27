@@ -20,7 +20,6 @@ import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 
 /**
  * Binder-specific properties for Pub/Sub.
- *
  */
 public class PubSubBindingProperties implements BinderSpecificPropertiesProvider {
 

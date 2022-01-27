@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Sample REST Controller to demonstrate Stackdriver Logging.
- *
  */
 @RestController
 public class ExampleController {

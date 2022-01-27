@@ -40,7 +40,6 @@ import org.springframework.data.repository.query.QueryMethodEvaluationContextPro
 
 /**
  * Tests for the Query Method lookup class.
- *
  */
 class DatastoreQueryLookupStrategyTests {
 

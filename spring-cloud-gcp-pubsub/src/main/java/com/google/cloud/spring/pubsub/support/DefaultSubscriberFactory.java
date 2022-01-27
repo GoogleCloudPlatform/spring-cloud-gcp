@@ -43,7 +43,6 @@ import org.threeten.bp.Duration;
 
 /**
  * The default {@link SubscriberFactory} implementation.
- *
  */
 public class DefaultSubscriberFactory implements SubscriberFactory {
 

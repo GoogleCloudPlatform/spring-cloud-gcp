@@ -29,7 +29,6 @@ import org.springframework.data.util.ClassTypeInformation;
 
 /**
  * Tests for the Spanner custom key property.
- *
  */
 public class SpannerKeyPropertyTests {
 

@@ -22,7 +22,6 @@ import java.util.Objects;
 
 /**
  * This event is published immediately following a read-by-query operation on Cloud Spanner.
- *
  */
 public class AfterQueryEvent extends LoadEvent {
 

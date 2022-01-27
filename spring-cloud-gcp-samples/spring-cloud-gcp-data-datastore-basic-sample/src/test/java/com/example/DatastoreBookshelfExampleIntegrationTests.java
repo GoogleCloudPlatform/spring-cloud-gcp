@@ -39,7 +39,6 @@ import org.springframework.util.MultiValueMap;
 
 /**
  * Tests for the Book Shelf sample app.
- *
  */
 // Please use "-Dit.datastore=true" to enable the tests.
 @ExtendWith(SpringExtension.class)

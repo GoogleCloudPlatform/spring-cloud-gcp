@@ -57,7 +57,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * Tests for the Pub/Sub template.
- *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PubSubTemplateTests {

@@ -22,7 +22,6 @@ import java.util.Set;
 
 /**
  * An event published immediately after a read operation has finished.
- *
  */
 public class AfterFindByKeyEvent extends ReadEvent {
 

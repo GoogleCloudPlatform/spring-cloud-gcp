@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Web app controller for sample app.
- *
  */
 @RestController
 public class WebController {

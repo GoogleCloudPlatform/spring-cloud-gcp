@@ -53,7 +53,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * Tests for Pub/Sub Health Indicator autoconfiguration.
- *
  */
 class PubSubHealthIndicatorAutoConfigurationTests {
 

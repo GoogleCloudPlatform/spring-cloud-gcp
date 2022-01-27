@@ -30,7 +30,6 @@ import org.slf4j.MDC;
 
 /**
  * Tests for {@link TraceIdLoggingEnhancer}.
- *
  */
 class TraceIdLoggingEnhancerTests {
 

@@ -55,7 +55,6 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * This class tests that {@link DatastoreTemplate} is using the transction-specific read-write when
  * inside transactions.
- *
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration

@@ -66,7 +66,6 @@ import zipkin2.reporter.stackdriver.StackdriverSender;
 
 /**
  * Tests for auto-config.
- *
  */
 class StackdriverTraceAutoConfigurationTests {
 

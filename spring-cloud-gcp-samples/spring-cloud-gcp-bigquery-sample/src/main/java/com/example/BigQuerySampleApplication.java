@@ -21,7 +21,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Sample application demonstrating loading data into BigQuery using Spring Integration.
- *
  */
 @SpringBootApplication
 public class BigQuerySampleApplication {

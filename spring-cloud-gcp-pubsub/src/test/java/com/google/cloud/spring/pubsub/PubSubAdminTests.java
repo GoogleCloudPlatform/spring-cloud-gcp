@@ -42,7 +42,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * Tests for the Pub/Sub admin operations.
- *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PubSubAdminTests {

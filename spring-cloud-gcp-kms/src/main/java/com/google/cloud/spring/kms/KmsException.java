@@ -20,7 +20,6 @@ import org.springframework.core.NestedRuntimeException;
 
 /**
  * The Spring Google Cloud KMS specific {@link NestedRuntimeException}.
- *
  */
 public class KmsException extends NestedRuntimeException {
 

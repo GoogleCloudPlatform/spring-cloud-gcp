@@ -21,7 +21,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Sample application for MySQL.
- *
  */
 @SpringBootApplication
 public class SqlApplication {

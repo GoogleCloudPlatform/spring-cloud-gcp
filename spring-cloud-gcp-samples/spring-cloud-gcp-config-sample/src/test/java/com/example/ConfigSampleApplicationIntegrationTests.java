@@ -32,7 +32,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 /**
  * Tests for config sample.
- *
  */
 // Please use "-Dit.config=true" to enable the tests.
 @ExtendWith(SpringExtension.class)

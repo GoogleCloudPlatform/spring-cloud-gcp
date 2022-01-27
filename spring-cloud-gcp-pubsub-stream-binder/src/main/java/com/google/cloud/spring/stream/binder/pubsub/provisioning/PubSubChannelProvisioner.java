@@ -40,7 +40,6 @@ import org.springframework.util.StringUtils;
 
 /**
  * Provisioning provider for Pub/Sub.
- *
  */
 public class PubSubChannelProvisioner
     implements ProvisioningProvider<

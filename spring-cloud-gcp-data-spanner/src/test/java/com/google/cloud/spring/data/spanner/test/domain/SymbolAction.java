@@ -18,7 +18,6 @@ package com.google.cloud.spring.data.spanner.test.domain;
 
 /**
  * A small object containing just a stock symbol and action.
- *
  */
 public class SymbolAction {
 

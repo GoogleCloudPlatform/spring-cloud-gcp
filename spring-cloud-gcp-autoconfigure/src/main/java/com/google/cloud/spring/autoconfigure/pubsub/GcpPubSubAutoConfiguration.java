@@ -79,7 +79,6 @@ import org.threeten.bp.Duration;
 
 /**
  * Auto-config for Pub/Sub.
- *
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(GcpContextAutoConfiguration.class)

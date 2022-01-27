@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * Properties for Publisher or Subscriber specific configurations.
- *
  */
 public class PubSubConfiguration {
 

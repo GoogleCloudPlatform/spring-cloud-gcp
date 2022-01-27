@@ -54,7 +54,6 @@ import org.springframework.messaging.support.GenericMessage;
 
 /**
  * {@link PubSubInboundChannelAdapter} unit tests.
- *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PubSubInboundChannelAdapterTests {

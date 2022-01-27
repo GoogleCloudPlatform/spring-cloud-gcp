@@ -24,7 +24,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 /**
  * A sample repository.
- *
  */
 @RepositoryRestResource(collectionResourceRel = "traders_repository", path = "traders")
 public interface TraderRepository extends SpannerRepository<Trader, String> {

@@ -38,7 +38,6 @@ import org.springframework.core.env.PropertiesPropertySource;
 
 /**
  * Converts GCP service broker metadata into Spring Cloud GCP configuration properties.
- *
  */
 public class GcpCloudFoundryEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 

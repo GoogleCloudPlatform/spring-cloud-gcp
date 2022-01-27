@@ -39,7 +39,6 @@ import org.springframework.data.util.ClassTypeInformation;
 
 /**
  * Tests for the Spanner persistent entity.
- *
  */
 public class SpannerPersistentEntityImplTests {
 

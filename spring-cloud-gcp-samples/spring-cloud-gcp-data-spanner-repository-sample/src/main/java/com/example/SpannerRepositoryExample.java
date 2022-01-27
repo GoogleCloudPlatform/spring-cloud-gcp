@@ -31,7 +31,6 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * Example repository usage.
- *
  */
 @SpringBootApplication
 public class SpannerRepositoryExample {

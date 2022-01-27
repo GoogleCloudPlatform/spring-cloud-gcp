@@ -23,7 +23,6 @@ import org.springframework.data.annotation.Id;
 
 /**
  * Represents individual personal musical instruments a {@link Singer} can own.
- *
  */
 @Entity
 public class Instrument {

@@ -27,7 +27,6 @@ import org.springframework.messaging.MessagingException;
 
 /**
  * Example of a sink for the sample app.
- *
  */
 @EnableBinding(Sink.class)
 public class SinkExample {

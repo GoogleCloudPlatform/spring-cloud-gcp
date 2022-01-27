@@ -30,7 +30,6 @@ import org.springframework.cloud.stream.binder.Spy;
 
 /**
  * Integration tests that require the Pub/Sub emulator to be installed.
- *
  */
 public class PubSubMessageChannelBinderEmulatorIntegrationTests
     extends AbstractBinderTests<

@@ -21,7 +21,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Sample Spring Boot Application demonstrating Cloud Vision OCR functionality.
- *
  */
 @SpringBootApplication
 public class Application {

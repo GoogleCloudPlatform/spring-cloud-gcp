@@ -22,7 +22,6 @@ import java.util.Objects;
 
 /**
  * Sample entity for integration tests.
- *
  */
 @Document(collectionName = "phoneNumbers")
 public class PhoneNumber {

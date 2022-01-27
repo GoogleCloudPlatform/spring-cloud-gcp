@@ -20,6 +20,5 @@ import org.springframework.data.repository.CrudRepository;
 
 /**
  * A sample repository for House entities.
- *
  */
 public interface HouseRepository extends CrudRepository<House, Long> {}

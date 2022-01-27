@@ -26,7 +26,6 @@ import org.springframework.data.repository.query.Param;
 
 /**
  * Repository for a child class for integration tests.
- *
  */
 public interface SubTradeRepository extends SpannerRepository<SubTrade, Key> {
 

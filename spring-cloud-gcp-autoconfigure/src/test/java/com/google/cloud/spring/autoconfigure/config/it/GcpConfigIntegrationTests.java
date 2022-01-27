@@ -30,7 +30,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Integration tests for config auto-configuration.
- *
  */
 public class GcpConfigIntegrationTests {
 

@@ -36,7 +36,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * This test sends images to the GCP Vision API and verifies the returned image annotations.
- *
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest

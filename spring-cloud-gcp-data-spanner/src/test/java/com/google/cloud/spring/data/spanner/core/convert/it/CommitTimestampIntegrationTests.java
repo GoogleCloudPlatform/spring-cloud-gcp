@@ -44,7 +44,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Integration tests for the {@link CommitTimestamp} feature.
- *
  */
 @RunWith(SpringRunner.class)
 public class CommitTimestampIntegrationTests extends AbstractSpannerIntegrationTest {

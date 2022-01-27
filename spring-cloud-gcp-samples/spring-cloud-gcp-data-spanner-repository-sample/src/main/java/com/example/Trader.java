@@ -28,7 +28,6 @@ import java.util.Objects;
 
 /**
  * A sample entity.
- *
  */
 @Table(name = "traders_repository")
 public class Trader {

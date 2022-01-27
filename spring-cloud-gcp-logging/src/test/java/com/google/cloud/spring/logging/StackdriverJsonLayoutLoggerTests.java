@@ -42,7 +42,6 @@ import org.slf4j.MarkerFactory;
 
 /**
  * Tests the Stackdriver Json Layout Logger.
- *
  */
 class StackdriverJsonLayoutLoggerTests {
 

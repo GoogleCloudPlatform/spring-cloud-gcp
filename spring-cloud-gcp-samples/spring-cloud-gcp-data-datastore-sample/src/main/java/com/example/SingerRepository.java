@@ -26,7 +26,6 @@ import org.springframework.data.repository.query.Param;
 
 /**
  * Sample repository for app.
- *
  */
 public interface SingerRepository extends DatastoreRepository<Singer, String> {
 

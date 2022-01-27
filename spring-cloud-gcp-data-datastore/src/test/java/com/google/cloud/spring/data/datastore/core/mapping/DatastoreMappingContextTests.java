@@ -30,7 +30,6 @@ import org.springframework.data.util.TypeInformation;
 
 /**
  * Tests for the `DatastoreMappingContext`.
- *
  */
 class DatastoreMappingContextTests {
   @Test

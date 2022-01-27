@@ -29,7 +29,6 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Tests for the Spanner sort and page query options.
- *
  */
 public class SpannerSortPageQueryOptionsTests {
 

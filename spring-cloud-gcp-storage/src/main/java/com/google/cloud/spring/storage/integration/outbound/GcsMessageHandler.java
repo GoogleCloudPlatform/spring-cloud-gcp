@@ -24,7 +24,6 @@ import org.springframework.integration.file.support.FileExistsMode;
 
 /**
  * A file message handler for Google Cloud Storage.
- *
  */
 public class GcsMessageHandler extends FileTransferringMessageHandler<BlobInfo> {
 

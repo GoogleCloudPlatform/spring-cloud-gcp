@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link PubSubSubscriptionUtils}.
- *
  */
 class PubSubSubscriptionUtilsTests {
 

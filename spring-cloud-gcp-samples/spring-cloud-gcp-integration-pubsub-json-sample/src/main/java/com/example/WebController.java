@@ -29,7 +29,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * Provides REST endpoint allowing you to send JSON payloads to a sample Pub/Sub topic for demo.
- *
  */
 @RestController
 public class WebController {

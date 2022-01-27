@@ -34,7 +34,6 @@ import org.junit.runners.Parameterized;
 
 /**
  * Tests for converting Spanner keys.
- *
  */
 @RunWith(Parameterized.class)
 public class KeyConversionTests {

@@ -22,7 +22,6 @@ import java.util.List;
 
 /**
  * An event that is published after a delete operation.
- *
  */
 public class AfterDeleteEvent extends DeleteEvent {
 

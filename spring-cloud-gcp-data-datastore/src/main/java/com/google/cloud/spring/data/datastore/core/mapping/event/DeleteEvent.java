@@ -24,7 +24,6 @@ import org.springframework.context.ApplicationEvent;
 
 /**
  * An event published when Spring Data Cloud Datastore performs a delete operation.
- *
  */
 public class DeleteEvent extends ApplicationEvent {
 

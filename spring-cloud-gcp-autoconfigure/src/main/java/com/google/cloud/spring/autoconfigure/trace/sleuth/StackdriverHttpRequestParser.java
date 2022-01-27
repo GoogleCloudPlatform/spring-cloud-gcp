@@ -27,7 +27,6 @@ import java.net.URI;
  * An {@link HttpRequestParser} that fills information for Stackdriver Trace.
  *
  * <p>Based on {@code org.springframework.cloud.sleuth.instrument.web.SleuthHttpClientParser}.
- *
  */
 public class StackdriverHttpRequestParser implements HttpRequestParser {
 

@@ -38,7 +38,6 @@ import org.springframework.messaging.MessageHandler;
 
 /**
  * Message channel binder for Pub/Sub.
- *
  */
 public class PubSubMessageChannelBinder
     extends AbstractMessageChannelBinder<

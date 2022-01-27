@@ -36,7 +36,6 @@ import org.springframework.integration.file.filters.DiscardAwareFileListFilter;
  * alternative {@link Instant} can be provided via the constructor.
  *
  * <p>When {@link #discardCallback} is provided, it is called for all the rejected files.
- *
  */
 public class GcsAcceptModifiedAfterFileListFilter implements DiscardAwareFileListFilter<BlobInfo> {
 

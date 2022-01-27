@@ -23,7 +23,6 @@ import java.util.List;
 
 /**
  * A sample entity.
- *
  */
 @Table(name = "trades_template")
 public class Trade {

@@ -22,7 +22,6 @@ import org.springframework.data.annotation.Id;
 
 /**
  * A test entity that uses lists of embedded relationships to build a tree.
- *
  */
 public class TreeCollection {
   @Id private long id;

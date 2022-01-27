@@ -29,7 +29,6 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Tests for the Spanner read options.
- *
  */
 public class SpannerReadOptionsTests {
 

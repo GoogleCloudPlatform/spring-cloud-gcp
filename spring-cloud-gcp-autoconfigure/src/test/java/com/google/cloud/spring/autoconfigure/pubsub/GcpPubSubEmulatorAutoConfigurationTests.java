@@ -39,7 +39,6 @@ import org.threeten.bp.Duration;
 
 /**
  * Tests for the Pub/Sub emulator config.
- *
  */
 class GcpPubSubEmulatorAutoConfigurationTests {
 

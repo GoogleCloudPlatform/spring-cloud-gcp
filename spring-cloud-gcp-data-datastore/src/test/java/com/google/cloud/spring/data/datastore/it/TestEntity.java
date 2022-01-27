@@ -24,7 +24,6 @@ import org.springframework.data.annotation.Id;
 
 /**
  * A test entity for Datastore integration tests.
- *
  */
 @Entity(name = "test_entities_#{\"ci\"}")
 class TestEntity {

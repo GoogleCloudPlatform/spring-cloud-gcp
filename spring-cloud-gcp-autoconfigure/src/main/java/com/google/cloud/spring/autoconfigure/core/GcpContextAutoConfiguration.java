@@ -34,7 +34,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Base starter for Google Cloud Projects. Provides defaults for {@link
  * com.google.auth.oauth2.GoogleCredentials}. Binds properties from {@link GcpProperties}.
- *
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(

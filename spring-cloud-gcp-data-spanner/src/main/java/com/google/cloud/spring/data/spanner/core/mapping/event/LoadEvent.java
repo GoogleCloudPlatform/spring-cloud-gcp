@@ -21,7 +21,6 @@ import org.springframework.context.ApplicationEvent;
 
 /**
  * This event read operation on Cloud Spanner.
- *
  */
 public class LoadEvent extends ApplicationEvent {
 

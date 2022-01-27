@@ -20,7 +20,6 @@ import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 
 /**
  * A repository based on the a child object for integration tests.
- *
  */
 public interface SubTradeComponentRepository
     extends SpannerRepository<SubTradeComponent, Object[]> {}

@@ -35,7 +35,6 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Provides client objects for interfacing with BigQuery.
- *
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(GcpContextAutoConfiguration.class)

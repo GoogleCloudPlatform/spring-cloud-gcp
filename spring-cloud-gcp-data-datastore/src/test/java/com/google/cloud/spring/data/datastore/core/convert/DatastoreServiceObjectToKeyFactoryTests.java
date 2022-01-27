@@ -36,7 +36,6 @@ import org.springframework.data.annotation.Id;
 
 /**
  * Tests for the object to key factory.
- *
  */
 public class DatastoreServiceObjectToKeyFactoryTests {
 

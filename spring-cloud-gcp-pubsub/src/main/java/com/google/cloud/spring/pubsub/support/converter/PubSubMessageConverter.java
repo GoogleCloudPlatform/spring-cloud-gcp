@@ -23,7 +23,6 @@ import java.util.Map;
 
 /**
  * Interface for converters that can convert POJOs to and from Pub/Sub messages.
- *
  */
 public interface PubSubMessageConverter {
 

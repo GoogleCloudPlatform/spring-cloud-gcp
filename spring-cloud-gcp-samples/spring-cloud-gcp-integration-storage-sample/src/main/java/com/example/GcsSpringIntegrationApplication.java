@@ -42,7 +42,6 @@ import org.springframework.messaging.MessageHandler;
 
 /**
  * Storage Spring Integration sample app.
- *
  */
 @SpringBootApplication
 public class GcsSpringIntegrationApplication {

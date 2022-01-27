@@ -59,7 +59,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Tests for Spanner Template when using transactional annotation.
- *
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration

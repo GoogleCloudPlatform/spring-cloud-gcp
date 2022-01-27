@@ -22,7 +22,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 /**
  * Sample spring boot application.
- *
  */
 @SpringBootApplication
 @EnableConfigurationProperties(MyAppProperties.class)

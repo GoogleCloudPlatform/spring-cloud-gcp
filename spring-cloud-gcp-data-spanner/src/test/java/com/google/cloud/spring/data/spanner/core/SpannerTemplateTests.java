@@ -85,7 +85,6 @@ import org.springframework.data.domain.Sort;
 
 /**
  * Tests for the Spanner Template.
- *
  */
 public class SpannerTemplateTests {
 

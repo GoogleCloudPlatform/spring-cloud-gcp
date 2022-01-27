@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 /**
  * A projection interface used for integration tests.
- *
  */
 public interface TradeProjection {
 

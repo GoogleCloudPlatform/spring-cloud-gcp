@@ -34,7 +34,6 @@ import org.springframework.util.Assert;
  * <p>By default, filters out headers called "id", "timestamp", "gcp_pubsub_acknowledgement" or
  * "nativeHeaders" on the {@link org.springframework.messaging.Message} to {@link
  * com.google.pubsub.v1.PubsubMessage} header conversion.
- *
  */
 public class PubSubHeaderMapper implements HeaderMapper<Map<String, String>> {
 

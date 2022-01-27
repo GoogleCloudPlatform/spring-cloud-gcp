@@ -92,7 +92,6 @@ import org.springframework.transaction.TransactionSystemException;
 
 /**
  * Integration tests for Datastore that use many features.
- *
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
@@ -1144,7 +1143,6 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 
 /**
  * Test class.
- *
  */
 @Entity
 class ParentEntity {
@@ -1166,7 +1164,6 @@ class ParentEntity {
 
 /**
  * Test class.
- *
  */
 @Entity
 class SubEntity {

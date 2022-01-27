@@ -66,7 +66,6 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Tests for the conversion and mapping of entities for write.
- *
  */
 public class ConverterAwareMappingSpannerEntityWriterTests {
 

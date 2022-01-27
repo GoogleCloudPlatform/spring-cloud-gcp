@@ -25,7 +25,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * Properties for Pub/Sub.
- *
  */
 @ConfigurationProperties("spring.cloud.gcp.pubsub")
 public class GcpPubSubProperties extends PubSubConfiguration implements CredentialsSupplier {

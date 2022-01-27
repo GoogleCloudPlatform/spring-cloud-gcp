@@ -40,7 +40,6 @@ import org.threeten.bp.Duration;
 
 /**
  * Tests for Spanner auto-config.
- *
  */
 public class GcpSpannerAutoConfigurationTests {
 

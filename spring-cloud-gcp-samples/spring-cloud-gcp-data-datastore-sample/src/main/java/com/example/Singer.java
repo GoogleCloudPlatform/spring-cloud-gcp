@@ -31,7 +31,6 @@ import org.springframework.data.annotation.Reference;
 
 /**
  * Sample entity.
- *
  */
 @Entity(name = "singers")
 public class Singer {

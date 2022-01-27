@@ -42,7 +42,6 @@ import org.threeten.bp.Duration;
 
 /**
  * Tests for Pub/Sub autoconfiguration.
- *
  */
 class GcpPubSubAutoConfigurationTests {
 

@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for DML after-execution event.
- *
  */
 class AfterExecuteDmlEventTest {
 

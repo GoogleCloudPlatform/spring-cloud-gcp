@@ -40,7 +40,6 @@ import org.springframework.lang.Nullable;
 
 /**
  * Pub/Sub binder configuration.
- *
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnMissingBean(Binder.class)

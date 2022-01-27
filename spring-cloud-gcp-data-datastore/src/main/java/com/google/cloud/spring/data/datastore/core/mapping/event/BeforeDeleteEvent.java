@@ -20,7 +20,6 @@ import com.google.cloud.datastore.Key;
 
 /**
  * An event published just before Spring Data Cloud Datastore performs a delete operation.
- *
  */
 public class BeforeDeleteEvent extends DeleteEvent {
 

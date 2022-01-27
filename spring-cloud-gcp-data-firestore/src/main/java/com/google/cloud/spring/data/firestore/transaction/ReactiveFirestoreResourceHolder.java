@@ -25,7 +25,6 @@ import org.springframework.transaction.support.ResourceHolderSupport;
 /**
  * Firestore specific resource holder, {@link ReactiveFirestoreTransactionManager} binds instances
  * of this class to the subscriber context.
- *
  */
 public class ReactiveFirestoreResourceHolder extends ResourceHolderSupport {
   private com.google.protobuf.ByteString transactionId;

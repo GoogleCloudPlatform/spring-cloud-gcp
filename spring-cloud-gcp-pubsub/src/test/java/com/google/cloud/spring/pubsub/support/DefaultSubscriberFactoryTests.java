@@ -58,7 +58,6 @@ import org.threeten.bp.Duration;
 
 /**
  * Tests for the subscriber factory.
- *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultSubscriberFactoryTests {

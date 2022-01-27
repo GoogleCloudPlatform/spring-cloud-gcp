@@ -54,7 +54,6 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
  * Tests Spanner Query Method lookups.
- *
  */
 class SpannerQueryLookupStrategyTests {
 

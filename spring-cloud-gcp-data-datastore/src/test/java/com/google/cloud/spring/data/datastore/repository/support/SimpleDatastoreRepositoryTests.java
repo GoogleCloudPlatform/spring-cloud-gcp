@@ -48,7 +48,6 @@ import org.springframework.data.domain.Sort;
 
 /**
  * Tests for the default Datastore Repository implementation.
- *
  */
 public class SimpleDatastoreRepositoryTests {
   /** used to check exception messages and types. */

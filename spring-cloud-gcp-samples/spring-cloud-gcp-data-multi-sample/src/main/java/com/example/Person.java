@@ -22,7 +22,6 @@ import org.springframework.data.annotation.Id;
 /**
  * A test class for Spring Data Datastore. Used to test that it works with Spring Data Cloud Spanner
  * in a single application.
- *
  */
 @Entity
 public class Person {

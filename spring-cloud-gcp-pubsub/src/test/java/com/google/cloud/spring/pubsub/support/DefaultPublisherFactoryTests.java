@@ -30,7 +30,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * Tests for the publisher factory.
- *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultPublisherFactoryTests {

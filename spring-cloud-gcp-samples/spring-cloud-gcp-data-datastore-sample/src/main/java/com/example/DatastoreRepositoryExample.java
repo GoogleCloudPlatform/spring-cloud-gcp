@@ -38,7 +38,6 @@ import org.springframework.data.domain.Slice;
 
 /**
  * Sample app for Datastore repository.
- *
  */
 @SpringBootApplication
 public class DatastoreRepositoryExample {

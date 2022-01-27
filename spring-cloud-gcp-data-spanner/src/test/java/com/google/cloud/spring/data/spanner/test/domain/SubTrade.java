@@ -27,7 +27,6 @@ import java.util.Objects;
 
 /**
  * An interleaved child of {@link Trade}.
- *
  */
 @Table(name = "#{'sub_trades_'.concat(tableNameSuffix)}")
 @Where("disabled = false")

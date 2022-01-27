@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * An extractor that can provide a trace ID from an HTTP request.
- *
  */
 public interface TraceIdExtractor {
 

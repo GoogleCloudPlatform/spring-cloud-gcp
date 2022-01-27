@@ -21,6 +21,5 @@ import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations
 
 /**
  * An abstraction for Google Cloud Pub/Sub for publish and subscribe / pull methods.
- *
  */
 public interface PubSubOperations extends PubSubPublisherOperations, PubSubSubscriberOperations {}

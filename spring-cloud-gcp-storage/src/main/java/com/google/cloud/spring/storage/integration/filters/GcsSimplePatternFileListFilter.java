@@ -21,7 +21,6 @@ import org.springframework.integration.file.filters.AbstractSimplePatternFileLis
 
 /**
  * A simple pattern file lister for Google Cloud Storage.
- *
  */
 public class GcsSimplePatternFileListFilter extends AbstractSimplePatternFileListFilter<BlobInfo> {
 

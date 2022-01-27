@@ -23,7 +23,6 @@ import org.springframework.data.repository.query.Param;
 
 /**
  * Sample repository for testing.
- *
  */
 public interface PersonRepository extends DatastoreRepository<Person, Long> {
 

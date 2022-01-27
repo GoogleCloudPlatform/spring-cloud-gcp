@@ -20,7 +20,6 @@ import com.google.cloud.ServiceOptions;
 
 /**
  * A project ID provider that wraps {@link ServiceOptions#getDefaultProjectId()}.
- *
  */
 public class DefaultGcpProjectIdProvider implements GcpProjectIdProvider {
 

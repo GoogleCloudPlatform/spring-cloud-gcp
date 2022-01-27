@@ -48,7 +48,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 /**
  * Tests for the Spanner transaction manager.
- *
  */
 public class SpannerTransactionManagerTests {
 

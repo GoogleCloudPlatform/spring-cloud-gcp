@@ -35,7 +35,6 @@ import org.springframework.data.repository.core.RepositoryInformation;
 
 /**
  * Tests for the Datastore Repository factory.
- *
  */
 public class DatastoreRepositoryFactoryTests {
 

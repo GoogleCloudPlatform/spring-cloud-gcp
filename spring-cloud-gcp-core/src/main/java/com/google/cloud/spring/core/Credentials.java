@@ -23,7 +23,6 @@ import org.springframework.core.io.Resource;
 
 /**
  * Credentials configuration.
- *
  */
 public class Credentials {
 

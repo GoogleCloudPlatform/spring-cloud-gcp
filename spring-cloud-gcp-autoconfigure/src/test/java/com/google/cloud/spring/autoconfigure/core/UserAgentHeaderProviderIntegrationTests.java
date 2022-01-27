@@ -25,7 +25,6 @@ import org.junit.Test;
 /**
  * This needs to be an integration test and in a different module because the JAR MANIFEST has to be
  * available for this.getClass().getPackage().getImplementationVersion() to work properly.
- *
  */
 public class UserAgentHeaderProviderIntegrationTests {
 

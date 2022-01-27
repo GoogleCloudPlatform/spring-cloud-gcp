@@ -25,7 +25,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * Settings for Storage.
- *
  */
 @ConfigurationProperties("spring.cloud.gcp.storage")
 public class GcpStorageProperties extends GoogleStorageProtocolResolverSettings

@@ -24,7 +24,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * Tests the trace id logging web mvc interceptor.
- *
  */
 class TraceIdLoggingWebMvcInterceptorTests {
 

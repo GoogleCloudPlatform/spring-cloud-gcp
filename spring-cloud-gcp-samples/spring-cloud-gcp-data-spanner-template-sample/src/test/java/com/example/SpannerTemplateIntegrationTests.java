@@ -35,7 +35,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Tests for the Spanner template usage.
- *
  */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)

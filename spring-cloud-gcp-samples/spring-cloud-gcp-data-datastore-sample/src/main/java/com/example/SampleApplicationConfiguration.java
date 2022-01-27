@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 /**
  * Spring Boot configuration for the sample application enabling features like Transactional
  * management and auditing.
- *
  */
 @Configuration
 @EnableTransactionManagement

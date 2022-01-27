@@ -26,7 +26,6 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * Sample application.
- *
  */
 @SpringBootApplication
 public class DemoApplication {

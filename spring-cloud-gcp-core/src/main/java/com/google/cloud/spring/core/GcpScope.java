@@ -18,7 +18,6 @@ package com.google.cloud.spring.core;
 
 /**
  * OAuth2 scopes for Google Cloud Platform services integrated by Spring Cloud GCP.
- *
  */
 public enum GcpScope {
   /** scope for Pub/Sub. * */

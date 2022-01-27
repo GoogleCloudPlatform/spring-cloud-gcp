@@ -53,7 +53,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for the message handler.
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration

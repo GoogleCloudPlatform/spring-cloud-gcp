@@ -41,7 +41,6 @@ import org.springframework.util.StreamUtils;
 
 /**
  * A session implementation for Google Cloud Storage.
- *
  */
 public class GcsSession implements Session<BlobInfo> {
 
