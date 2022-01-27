@@ -284,19 +284,6 @@
 	</dependencyManagement>
 
 	<profiles>
-		<profile>
-			<id>spring</id>
-			<repositories>
-				<repository>
-					<id>spring-releases</id>
-					<name>Spring Releases</name>
-					<url>https://repo.spring.io/release</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-		</profile>
 
     <!--
     		Release profile must be defined here as well since spring-cloud-gcp-dependencies
