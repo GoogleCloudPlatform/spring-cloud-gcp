@@ -249,21 +249,21 @@ public class DatastoreTemplateTests {
       QueryResults testEntityQueryResults) {
     // mocking the converter to return the final objects corresponding to their
     // specific entities.
-    DatastorePersistentEntity testEntityPE =
+    DatastorePersistentEntity testPersistentEntity =
         new DatastoreMappingContext().getDatastorePersistentEntity(TestEntity.class);
-    DatastorePersistentEntity childEntityPE =
+    DatastorePersistentEntity childPersistentEntity =
         new DatastoreMappingContext().getDatastorePersistentEntity(ChildEntity.class);
     when(this.datastoreEntityConverter.read(TestEntity.class, this.e1)).thenReturn(this.ob1);
     when(this.datastoreEntityConverter.getDiscriminationPersistentEntity(TestEntity.class, this.e1))
-        .thenReturn(testEntityPE);
+        .thenReturn(testPersistentEntity);
     when(this.datastoreEntityConverter.read(TestEntity.class, this.e2)).thenReturn(this.ob2);
     when(this.datastoreEntityConverter.getDiscriminationPersistentEntity(TestEntity.class, this.e2))
-        .thenReturn(testEntityPE);
+        .thenReturn(testPersistentEntity);
     when(this.datastoreEntityConverter.read(eq(ChildEntity.class), same(ce1)))
         .thenAnswer(invocationOnMock -> createChildEntity());
     when(this.datastoreEntityConverter.getDiscriminationPersistentEntity(
             eq(ChildEntity.class), same(ce1)))
-        .thenReturn(childEntityPE);
+        .thenReturn(childPersistentEntity);
 
     doAnswer(
             invocation -> {
@@ -522,7 +522,7 @@ public class DatastoreTemplateTests {
     ReferenceTestEntity childEntity = new ReferenceTestEntity();
     ReferenceTestEntity childEntity2 = new ReferenceTestEntity();
 
-    DatastorePersistentEntity referenceTestEntityPE =
+    DatastorePersistentEntity referenceTestPersistentEntity =
         new DatastoreMappingContext().getDatastorePersistentEntity(ReferenceTestEntity.class);
 
     when(this.datastoreEntityConverter.read(
@@ -530,18 +530,18 @@ public class DatastoreTemplateTests {
         .thenAnswer(invocationOnMock -> referenceTestEntity);
     when(this.datastoreEntityConverter.getDiscriminationPersistentEntity(
             eq(ReferenceTestEntity.class), same(referenceTestDatastoreEntity)))
-        .thenReturn(referenceTestEntityPE);
+        .thenReturn(referenceTestPersistentEntity);
 
     when(this.datastoreEntityConverter.read(eq(ReferenceTestEntity.class), same(child)))
         .thenAnswer(invocationOnMock -> childEntity);
     when(this.datastoreEntityConverter.getDiscriminationPersistentEntity(
             eq(ReferenceTestEntity.class), same(child)))
-        .thenReturn(referenceTestEntityPE);
+        .thenReturn(referenceTestPersistentEntity);
     when(this.datastoreEntityConverter.read(eq(ReferenceTestEntity.class), same(child2)))
         .thenAnswer(invocationOnMock -> childEntity2);
     when(this.datastoreEntityConverter.getDiscriminationPersistentEntity(
             eq(ReferenceTestEntity.class), same(child2)))
-        .thenReturn(referenceTestEntityPE);
+        .thenReturn(referenceTestPersistentEntity);
 
     verifyBeforeAndAfterEvents(
         null,

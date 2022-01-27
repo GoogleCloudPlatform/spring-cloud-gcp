@@ -217,7 +217,7 @@ public class SpannerPersistentEntityImplTests {
   }
 
   @Test
-  public void testSpELInvalidName() {
+  public void testSpelInvalidName() {
     this.thrown.expect(SpannerDataException.class);
     this.thrown.expectMessage(
         "Error getting table name for EntityWithExpression; nested exception is "
@@ -320,7 +320,7 @@ public class SpannerPersistentEntityImplTests {
   public void testParentChildPkNamesMismatch() {
     this.thrown.expect(SpannerDataException.class);
     this.thrown.expectMessage(
-        "The child primary key column (ChildBInRelationship.id) at position 1 does not match that "
+        "The child primary key column (ChildBinRelationship.id) at position 1 does not match that "
             + "of its parent (ParentInRelationshipMismatchedKeyName.idNameDifferentThanChildren).");
 
     this.spannerMappingContext.getPersistentEntity(ParentInRelationshipMismatchedKeyName.class);
@@ -346,12 +346,12 @@ public class SpannerPersistentEntityImplTests {
   private static class ParentInRelationship {
     @PrimaryKey String id;
 
-    @Interleaved List<ChildAInRelationship> childrenA;
+    @Interleaved List<ChildAinRelationship> childrenA;
 
-    @Interleaved List<ChildBInRelationship> childrenB;
+    @Interleaved List<ChildBinRelationship> childrenB;
   }
 
-  private static class ChildAInRelationship {
+  private static class ChildAinRelationship {
     @PrimaryKey String id;
 
     @PrimaryKey(keyOrder = 2)
@@ -365,14 +365,14 @@ public class SpannerPersistentEntityImplTests {
     String id2;
   }
 
-  private static class ChildBInRelationship {
+  private static class ChildBinRelationship {
     @Embedded @PrimaryKey EmbeddedKeyComponents embeddedKeyComponents;
   }
 
   private static class ParentInRelationshipMismatchedKeyName {
     @PrimaryKey String idNameDifferentThanChildren;
 
-    @Interleaved List<ChildBInRelationship> childrenA;
+    @Interleaved List<ChildBinRelationship> childrenA;
   }
 
   private static class GrandParentEmbedded {

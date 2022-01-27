@@ -158,7 +158,9 @@ public class BigQueryTemplate implements BigQueryOperations {
     return createJobFuture(writer.getJob());
   }
 
-  /** @return the name of the BigQuery dataset that the template is operating in. */
+  /**
+   * @return the name of the BigQuery dataset that the template is operating in.
+   */
   public String getDatasetName() {
     return this.datasetName;
   }

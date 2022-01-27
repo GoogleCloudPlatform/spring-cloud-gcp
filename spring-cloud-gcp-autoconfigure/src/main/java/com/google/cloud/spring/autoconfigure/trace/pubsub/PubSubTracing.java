@@ -181,8 +181,8 @@ final class PubSubTracing {
   // We can't just skip clearing headers we use because we might inject B3 single, yet have stale B3
   // multi, or visa versa.
   void clearTraceIdHeaders(PubsubMessage.Builder message) {
-    for (String traceIDHeader : traceIdHeaders) {
-      message.removeAttributes(traceIDHeader);
+    for (String traceIdHeader : traceIdHeaders) {
+      message.removeAttributes(traceIdHeader);
     }
   }
 

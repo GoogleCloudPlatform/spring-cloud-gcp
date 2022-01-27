@@ -152,12 +152,11 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
   private void setCredentials(GcpCloudSqlProperties sqlProperties, GcpProperties gcpProperties) {
     Credentials credentials = null;
 
-    // First tries the SQL configuration credential.
     if (sqlProperties.getCredentials().hasKey()) {
+      // First tries the SQL configuration credential.
       credentials = sqlProperties.getCredentials();
-    }
-    // Then, the global credential.
-    else {
+    } else {
+      // Then, the global credential.
       credentials = gcpProperties.getCredentials();
     }
 

@@ -451,14 +451,14 @@ public class DefaultDatastoreEntityConverterTests {
     byte[][] bytes = {{1, 2}, {3, 4}};
     List<byte[]> listByteArray = Arrays.asList(bytes);
 
-    ComparableBeanContextSupport ComparableBeanContextSupport = new ComparableBeanContextSupport();
-    ComparableBeanContextSupport.add("this implementation of Collection");
-    ComparableBeanContextSupport.add("is supported through a custom converter!");
+    ComparableBeanContextSupport comparableBeanContextSupport = new ComparableBeanContextSupport();
+    comparableBeanContextSupport.add("this implementation of Collection");
+    comparableBeanContextSupport.add("is supported through a custom converter!");
 
     TestDatastoreItemCollections item =
         new TestDatastoreItemCollections(
             Arrays.asList(1, 2),
-            ComparableBeanContextSupport,
+            comparableBeanContextSupport,
             new String[] {"abc", "def"},
             new boolean[] {true, false},
             bytes,
@@ -883,7 +883,7 @@ public class DefaultDatastoreEntityConverterTests {
   }
 
   @Test
-  public void PrivateCustomMapExceptionTest() {
+  public void privateCustomMapExceptionTest() {
     ServiceConfigurationPrivateCustomMap config =
         new ServiceConfigurationPrivateCustomMap("a", new PrivateCustomMap());
     DatastoreEntityConverter entityConverter =

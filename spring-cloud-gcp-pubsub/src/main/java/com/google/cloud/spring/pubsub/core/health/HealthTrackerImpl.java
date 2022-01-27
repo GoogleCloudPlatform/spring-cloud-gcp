@@ -29,6 +29,10 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * Health tracker for a Pub/Sub subscription. The tracker will monitor messages being processed and
+ * the subscription's message backlog. If backlog message size exceeds the message backlog
+ * threshold, the tracker will return the number of messages over the threshold.
+ *
  * @since 2.0.6
  */
 public class HealthTrackerImpl implements HealthTracker {

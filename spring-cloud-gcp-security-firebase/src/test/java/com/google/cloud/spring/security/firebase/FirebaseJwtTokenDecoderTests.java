@@ -64,11 +64,11 @@ import org.springframework.web.client.RestOperations;
  */
 class FirebaseJwtTokenDecoderTests {
 
-  private static RSAKeyGeneratorUtils keyGeneratorUtils;
+  private static RsaKeyGeneratorUtils keyGeneratorUtils;
 
   @BeforeAll
   static void setup() throws Exception {
-    keyGeneratorUtils = new RSAKeyGeneratorUtils();
+    keyGeneratorUtils = new RsaKeyGeneratorUtils();
   }
 
   @Test
@@ -78,37 +78,37 @@ class FirebaseJwtTokenDecoderTests {
             .subject("test-subject")
             .expirationTime(Date.from(Instant.now().plusSeconds(60)))
             .build();
-    PlainJWT plainJWT = new PlainJWT(claimsSet);
-    String plainJWTString = plainJWT.serialize();
+    PlainJWT plainJwt = new PlainJWT(claimsSet);
+    String plainJwtString = plainJwt.serialize();
 
     FirebaseJwtTokenDecoder decoder =
         new FirebaseJwtTokenDecoder(
             mock(RestOperations.class), "https://spring.local", mock(OAuth2TokenValidator.class));
     assertThatExceptionOfType(JwtException.class)
-        .isThrownBy(() -> decoder.decode(plainJWTString))
+        .isThrownBy(() -> decoder.decode(plainJwtString))
         .withMessageStartingWith("An error occurred while attempting to decode the Jwt");
   }
 
   @Test
   void signedTokenTests() throws Exception {
-    String signedJWT = signedJwt();
+    String signedJwt = signedJwt();
     OAuth2TokenValidator validator = mock(OAuth2TokenValidator.class);
     when(validator.validate(any())).thenReturn(OAuth2TokenValidatorResult.success());
     FirebaseJwtTokenDecoder decoder =
         new FirebaseJwtTokenDecoder(mockRestOperations(), "https://spring.local", validator);
-    decoder.decode(signedJWT);
+    decoder.decode(signedJwt);
   }
 
   @Test
   void refreshFlowTests() throws Exception {
-    String signedJWT = signedJwt();
+    String signedJwt = signedJwt();
     OAuth2TokenValidator validator = mock(OAuth2TokenValidator.class);
     when(validator.validate(any())).thenReturn(OAuth2TokenValidatorResult.success());
     RestOperations operations = mockRestOperations();
     FirebaseJwtTokenDecoder decoder =
         new FirebaseJwtTokenDecoder(operations, "https://spring.local", validator);
-    decoder.decode(signedJWT);
-    decoder.decode(signedJWT);
+    decoder.decode(signedJwt);
+    decoder.decode(signedJwt);
     verify(operations, times(1))
         .exchange(
             eq("https://spring.local"),
@@ -125,20 +125,20 @@ class FirebaseJwtTokenDecoderTests {
             .subject("test-subject")
             .expirationTime(Date.from(Instant.now().plusSeconds(60)))
             .build();
-    String signedJWT = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
+    String signedJwt = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
 
     OAuth2TokenValidator validator = mock(OAuth2TokenValidator.class);
     when(validator.validate(any())).thenReturn(OAuth2TokenValidatorResult.success());
     FirebaseJwtTokenDecoder decoder =
         new FirebaseJwtTokenDecoder(mockRestOperations(), "https://spring.local", validator);
     assertThatExceptionOfType(JwtException.class)
-        .isThrownBy(() -> decoder.decode(signedJWT))
+        .isThrownBy(() -> decoder.decode(signedJwt))
         .withMessageStartingWith("No certificate found for key: ");
   }
 
   @Test
   void connectionErrorTests() throws Exception {
-    String signedJWT = signedJwt();
+    String signedJwt = signedJwt();
     OAuth2TokenValidator validator = mock(OAuth2TokenValidator.class);
     when(validator.validate(any())).thenReturn(OAuth2TokenValidatorResult.success());
     RestOperations operations = mock(RestOperations.class);
@@ -151,13 +151,13 @@ class FirebaseJwtTokenDecoderTests {
     FirebaseJwtTokenDecoder decoder =
         new FirebaseJwtTokenDecoder(operations, "https://spring.local", validator);
     assertThatExceptionOfType(JwtException.class)
-        .isThrownBy(() -> decoder.decode(signedJWT))
+        .isThrownBy(() -> decoder.decode(signedJwt))
         .withMessageStartingWith("Error fetching public keys");
   }
 
   @Test
   void invalidResponses_nullBody() throws Exception {
-    String signedJWT = signedJwt();
+    String signedJwt = signedJwt();
 
     Map<String, String> payload = null;
     RestOperations operations = mockRestOperations(payload);
@@ -165,7 +165,7 @@ class FirebaseJwtTokenDecoderTests {
         new FirebaseJwtTokenDecoder(
             operations, "https://spring.local", mock(OAuth2TokenValidator.class));
     assertThatExceptionOfType(JwtException.class)
-        .isThrownBy(() -> decoder.decode(signedJWT))
+        .isThrownBy(() -> decoder.decode(signedJwt))
         .withMessageStartingWith("Error fetching public keys")
         .havingRootCause()
         .isInstanceOf(JwtException.class)
@@ -174,7 +174,7 @@ class FirebaseJwtTokenDecoderTests {
 
   @Test
   void invalidResponses_emptyBody() throws Exception {
-    String signedJWT = signedJwt();
+    String signedJwt = signedJwt();
 
     Map<String, String> payload = new HashMap<>();
     RestOperations operations = mockRestOperations(payload);
@@ -182,7 +182,7 @@ class FirebaseJwtTokenDecoderTests {
         new FirebaseJwtTokenDecoder(
             operations, "https://spring.local", mock(OAuth2TokenValidator.class));
     assertThatExceptionOfType(JwtException.class)
-        .isThrownBy(() -> decoder.decode(signedJWT))
+        .isThrownBy(() -> decoder.decode(signedJwt))
         .withMessageStartingWith("Error fetching public keys")
         .havingRootCause()
         .isInstanceOf(JwtException.class)
@@ -197,7 +197,7 @@ class FirebaseJwtTokenDecoderTests {
             .subject("test-subject")
             .expirationTime(Date.from(Instant.now().minusSeconds(3600)))
             .build();
-    String signedJWT = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
+    String signedJwt = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
     List<OAuth2TokenValidator<Jwt>> validators = new ArrayList<>();
     validators.add(new JwtTimestampValidator());
     DelegatingOAuth2TokenValidator<Jwt> validator =
@@ -206,7 +206,7 @@ class FirebaseJwtTokenDecoderTests {
     FirebaseJwtTokenDecoder decoder =
         new FirebaseJwtTokenDecoder(operations, "https://spring.local", validator);
     assertThatExceptionOfType(JwtException.class)
-        .isThrownBy(() -> decoder.decode(signedJWT))
+        .isThrownBy(() -> decoder.decode(signedJwt))
         .withMessageStartingWith(
             "An error occurred while attempting to decode the Jwt: Jwt expired at");
   }
@@ -223,7 +223,7 @@ class FirebaseJwtTokenDecoderTests {
             .issueTime(Date.from(Instant.now().minusSeconds(3600)))
             .claim("auth_time", Instant.now().minusSeconds(3600).getEpochSecond())
             .build();
-    String signedJWT = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
+    String signedJwt = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
     List<OAuth2TokenValidator<Jwt>> validators = new ArrayList<>();
     validators.add(new JwtTimestampValidator());
     validators.add(new JwtIssuerValidator("https://securetoken.google.com/123456"));
@@ -233,7 +233,7 @@ class FirebaseJwtTokenDecoderTests {
     FirebaseJwtTokenDecoder decoder =
         new FirebaseJwtTokenDecoder(operations, "https://spring.local", validator);
     assertThatExceptionOfType(JwtException.class)
-        .isThrownBy(() -> decoder.decode(signedJWT))
+        .isThrownBy(() -> decoder.decode(signedJwt))
         .withMessageStartingWith("An error occurred while attempting to decode the Jwt");
   }
 
@@ -249,7 +249,7 @@ class FirebaseJwtTokenDecoderTests {
             .issueTime(Date.from(Instant.now().minusSeconds(3600)))
             .claim("auth_time", Instant.now().minusSeconds(3600).getEpochSecond())
             .build();
-    String signedJWT = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
+    String signedJwt = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
     List<OAuth2TokenValidator<Jwt>> validators = new ArrayList<>();
     validators.add(new JwtTimestampValidator());
     validators.add(new JwtIssuerValidator("https://securetoken.google.com/123456"));
@@ -259,7 +259,7 @@ class FirebaseJwtTokenDecoderTests {
     RestOperations operations = mockRestOperations();
     FirebaseJwtTokenDecoder decoder =
         new FirebaseJwtTokenDecoder(operations, "https://spring.local", validator);
-    Jwt jwt = decoder.decode(signedJWT);
+    Jwt jwt = decoder.decode(signedJwt);
     assertThat(jwt.getClaims()).isNotEmpty();
   }
 
@@ -275,7 +275,7 @@ class FirebaseJwtTokenDecoderTests {
             .issueTime(Date.from(Instant.now().minusSeconds(3600)))
             .claim("auth_time", Instant.now().minusSeconds(3600).getEpochSecond())
             .build();
-    String signedJWT = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
+    String signedJwt = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
     List<OAuth2TokenValidator<Jwt>> validators = new ArrayList<>();
     validators.add(new JwtTimestampValidator());
     validators.add(new JwtIssuerValidator("https://securetoken.google.com/123456"));
@@ -286,7 +286,7 @@ class FirebaseJwtTokenDecoderTests {
     FirebaseJwtTokenDecoder decoder =
         new FirebaseJwtTokenDecoder(operations, "https://spring.local", validator);
     assertThatExceptionOfType(JwtException.class)
-        .isThrownBy(() -> decoder.decode(signedJWT))
+        .isThrownBy(() -> decoder.decode(signedJwt))
         .withMessageStartingWith(
             "An error occurred while attempting to decode the Jwt: This aud claim is not equal to"
                 + " the configured audience");
@@ -304,7 +304,7 @@ class FirebaseJwtTokenDecoderTests {
             .issueTime(Date.from(Instant.now().plusSeconds(3600)))
             .claim("auth_time", Instant.now().minusSeconds(3600).getEpochSecond())
             .build();
-    String signedJWT = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
+    String signedJwt = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
     List<OAuth2TokenValidator<Jwt>> validators = new ArrayList<>();
     validators.add(new JwtTimestampValidator());
     validators.add(new JwtIssuerValidator("https://securetoken.google.com/123456"));
@@ -315,7 +315,7 @@ class FirebaseJwtTokenDecoderTests {
     FirebaseJwtTokenDecoder decoder =
         new FirebaseJwtTokenDecoder(operations, "https://spring.local", validator);
     assertThatExceptionOfType(JwtException.class)
-        .isThrownBy(() -> decoder.decode(signedJWT))
+        .isThrownBy(() -> decoder.decode(signedJwt))
         .withMessageStartingWith(
             "An error occurred while attempting to decode the Jwt: iat claim header must be in the"
                 + " past");
@@ -332,7 +332,7 @@ class FirebaseJwtTokenDecoderTests {
             .issueTime(Date.from(Instant.now().minusSeconds(3600)))
             .claim("auth_time", Instant.now().minusSeconds(3600).getEpochSecond())
             .build();
-    String signedJWT = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
+    String signedJwt = signedJwt(keyGeneratorUtils.getPrivateKey(), header, claimsSet);
     List<OAuth2TokenValidator<Jwt>> validators = new ArrayList<>();
     validators.add(new JwtTimestampValidator());
     validators.add(new JwtIssuerValidator("https://securetoken.google.com/123456"));
@@ -343,7 +343,7 @@ class FirebaseJwtTokenDecoderTests {
     FirebaseJwtTokenDecoder decoder =
         new FirebaseJwtTokenDecoder(operations, "https://spring.local", validator);
     assertThatExceptionOfType(JwtException.class)
-        .isThrownBy(() -> decoder.decode(signedJWT))
+        .isThrownBy(() -> decoder.decode(signedJwt))
         .withMessageStartingWith(
             "An error occurred while attempting to decode the Jwt: sub claim can not be empty");
   }
@@ -392,8 +392,8 @@ class FirebaseJwtTokenDecoderTests {
 
   private String signedJwt(JWSSigner signer, JWSHeader header, JWTClaimsSet claimsSet)
       throws Exception {
-    SignedJWT signedJWT = new SignedJWT(header, claimsSet);
-    signedJWT.sign(signer);
-    return signedJWT.serialize();
+    SignedJWT signedJwt = new SignedJWT(header, claimsSet);
+    signedJwt.sign(signer);
+    return signedJwt.serialize();
   }
 }

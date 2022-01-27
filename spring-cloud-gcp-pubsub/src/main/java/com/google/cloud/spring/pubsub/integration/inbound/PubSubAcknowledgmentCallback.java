@@ -40,6 +40,12 @@ public class PubSubAcknowledgmentCallback implements AcknowledgmentCallback {
 
   private boolean acknowledged;
 
+  /**
+   * Instantiates a callback for a given message and acknowledgement mode.
+   *
+   * @param message message to acknowledge
+   * @param ackMode whether to ack and/or nack automatically
+   */
   public PubSubAcknowledgmentCallback(AcknowledgeablePubsubMessage message, AckMode ackMode) {
     Assert.notNull(message, "message to be acknowledged cannot be null");
     Assert.notNull(ackMode, "ackMode cannot be null");

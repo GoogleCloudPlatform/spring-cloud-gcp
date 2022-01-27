@@ -31,6 +31,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 
 /**
+ * A registry for the {@link HealthTracker} health trackers created per {@link
+ * ProjectSubscriptionName}.
+ *
  * @since 2.0.6
  */
 public class HealthTrackerRegistryImpl implements HealthTrackerRegistry {
