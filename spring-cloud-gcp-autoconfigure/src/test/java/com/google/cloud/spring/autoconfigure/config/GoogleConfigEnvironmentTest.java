@@ -16,13 +16,12 @@
 
 package com.google.cloud.spring.autoconfigure.config;
 
-import java.util.Base64;
-
-import com.google.cloud.spring.autoconfigure.config.GoogleConfigEnvironment.Variable;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+
+import com.google.cloud.spring.autoconfigure.config.GoogleConfigEnvironment.Variable;
+import java.util.Base64;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the environment config.
@@ -31,19 +30,19 @@ import static org.mockito.Mockito.mock;
  * @author Eddy Kioi
  */
 class GoogleConfigEnvironmentTest {
-	@Test
-	void testSetVariabeValue() {
-		GoogleConfigEnvironment.Variable var = new Variable();
-		String value = "v a l u e";
-		String encodedString = Base64.getEncoder().encodeToString(value.getBytes());
-		var.setValue(encodedString);
-		assertThat(var.getValue()).isEqualTo(value);
-	}
+  @Test
+  void testSetVariabeValue() {
+    GoogleConfigEnvironment.Variable var = new Variable();
+    String value = "v a l u e";
+    String encodedString = Base64.getEncoder().encodeToString(value.getBytes());
+    var.setValue(encodedString);
+    assertThat(var.getValue()).isEqualTo(value);
+  }
 
-	@Test
-	void testSetNullValue() {
-		GoogleConfigEnvironment googleConfigEnvironment = mock(GoogleConfigEnvironment.class);
-		googleConfigEnvironment.setVariables(null);
-		assertThat(googleConfigEnvironment.getVariables()).isEmpty();
-	}
+  @Test
+  void testSetNullValue() {
+    GoogleConfigEnvironment googleConfigEnvironment = mock(GoogleConfigEnvironment.class);
+    googleConfigEnvironment.setVariables(null);
+    assertThat(googleConfigEnvironment.getVariables()).isEmpty();
+  }
 }

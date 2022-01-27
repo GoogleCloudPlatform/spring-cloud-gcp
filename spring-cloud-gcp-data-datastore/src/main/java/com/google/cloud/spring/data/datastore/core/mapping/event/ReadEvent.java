@@ -25,20 +25,22 @@ import org.springframework.context.ApplicationEvent;
  */
 public class ReadEvent extends ApplicationEvent {
 
-	/**
-	 * Constructor.
-	 * @param results A list of results from the read operation where each item was mapped
-	 *     from a Cloud Datastore entity.
-	 */
-	public ReadEvent(Iterable results) {
-		super(results);
-	}
+  /**
+   * Constructor.
+   *
+   * @param results A list of results from the read operation where each item was mapped from a
+   *     Cloud Datastore entity.
+   */
+  public ReadEvent(Iterable results) {
+    super(results);
+  }
 
-	/**
-	 * Get the list of results from the read operation.
-	 * @return the list of results from the read operation.
-	 */
-	public Iterable getResults() {
-		return (Iterable) getSource();
-	}
+  /**
+   * Get the list of results from the read operation.
+   *
+   * @return the list of results from the read operation.
+   */
+  public Iterable getResults() {
+    return (Iterable) getSource();
+  }
 }

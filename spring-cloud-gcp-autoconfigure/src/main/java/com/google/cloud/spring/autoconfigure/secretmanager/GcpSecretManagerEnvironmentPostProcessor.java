@@ -17,40 +17,42 @@
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
 import com.google.protobuf.ByteString;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-/**
- * Registers converters used by Spring Cloud GCP Secret Manager.
- */
+/** Registers converters used by Spring Cloud GCP Secret Manager. */
 public class GcpSecretManagerEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
-	@Override
-	public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-		boolean isSecretManagerEnabled =
-				Boolean.parseBoolean(
-						environment.getProperty("spring.cloud.gcp.secretmanager.enabled", "true"));
+  @Override
+  public void postProcessEnvironment(
+      ConfigurableEnvironment environment, SpringApplication application) {
+    boolean isSecretManagerEnabled =
+        Boolean.parseBoolean(
+            environment.getProperty("spring.cloud.gcp.secretmanager.enabled", "true"));
 
-		if (isSecretManagerEnabled) {
-			// Registers {@link ByteString} type converters to convert to String and byte[].
-			environment.getConversionService().addConverter(
-					new Converter<ByteString, String>() {
-						@Override
-						public String convert(ByteString source) {
-							return source.toStringUtf8();
-						}
-					});
+    if (isSecretManagerEnabled) {
+      // Registers {@link ByteString} type converters to convert to String and byte[].
+      environment
+          .getConversionService()
+          .addConverter(
+              new Converter<ByteString, String>() {
+                @Override
+                public String convert(ByteString source) {
+                  return source.toStringUtf8();
+                }
+              });
 
-			environment.getConversionService().addConverter(
-					new Converter<ByteString, byte[]>() {
-						@Override
-						public byte[] convert(ByteString source) {
-							return source.toByteArray();
-						}
-					});
-		}
-	}
+      environment
+          .getConversionService()
+          .addConverter(
+              new Converter<ByteString, byte[]>() {
+                @Override
+                public byte[] convert(ByteString source) {
+                  return source.toByteArray();
+                }
+              });
+    }
+  }
 }

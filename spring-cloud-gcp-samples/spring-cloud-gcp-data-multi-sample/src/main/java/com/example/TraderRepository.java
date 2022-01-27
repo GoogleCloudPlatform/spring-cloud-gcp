@@ -24,6 +24,4 @@ import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
  * @author Ray Tsang
  * @author Chengyuan Zhao
  */
-public interface TraderRepository extends SpannerRepository<Trader, String> {
-
-}
+public interface TraderRepository extends SpannerRepository<Trader, String> {}

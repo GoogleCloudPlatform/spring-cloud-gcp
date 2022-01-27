@@ -16,33 +16,35 @@
 
 package com.google.cloud.spring.data.datastore.core.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.PathElement;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 class KeyUtilTest {
 
-	@Test
-	void testRemoveAncestors_NamedKeys() {
-		Key namedKey = Key.newBuilder("project", "person", "Smith")
-				.addAncestor(PathElement.of("person", "GrandParent"))
-				.addAncestor(PathElement.of("person", "Parent"))
-				.build();
+  @Test
+  void testRemoveAncestors_NamedKeys() {
+    Key namedKey =
+        Key.newBuilder("project", "person", "Smith")
+            .addAncestor(PathElement.of("person", "GrandParent"))
+            .addAncestor(PathElement.of("person", "Parent"))
+            .build();
 
-		Key processedKey = KeyUtil.getKeyWithoutAncestors(namedKey);
-		assertThat(processedKey.getAncestors()).isEmpty();
-	}
+    Key processedKey = KeyUtil.getKeyWithoutAncestors(namedKey);
+    assertThat(processedKey.getAncestors()).isEmpty();
+  }
 
-	@Test
-	void testRemoveAncestors_IdKeys() {
-		Key idKey = Key.newBuilder("project", "person", 46L)
-				.addAncestor(PathElement.of("person", 22L))
-				.addAncestor(PathElement.of("person", 18L))
-				.build();
+  @Test
+  void testRemoveAncestors_IdKeys() {
+    Key idKey =
+        Key.newBuilder("project", "person", 46L)
+            .addAncestor(PathElement.of("person", 22L))
+            .addAncestor(PathElement.of("person", 18L))
+            .build();
 
-		Key processedKey = KeyUtil.getKeyWithoutAncestors(idKey);
-		assertThat(processedKey.getAncestors()).isEmpty();
-	}
+    Key processedKey = KeyUtil.getKeyWithoutAncestors(idKey);
+    assertThat(processedKey.getAncestors()).isEmpty();
+  }
 }

@@ -16,18 +16,16 @@
 
 package com.google.cloud.spring.pubsub.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
 import org.springframework.integration.history.MessageHistory;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.NativeMessageHeaderAccessor;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for the Pub/Sub message header.
@@ -38,87 +36,82 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class PubSubHeaderMapperTests {
 
-	/**
-	 * used to check for exception messages and types.
-	 */
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+  /** used to check for exception messages and types. */
+  @Rule public ExpectedException expectedException = ExpectedException.none();
 
-	@Test
-	public void testFilterHeaders() {
-		PubSubHeaderMapper mapper = new PubSubHeaderMapper();
-		Map<String, Object> originalHeaders = new HashMap<>();
-		originalHeaders.put("my header", "pantagruel's nativity");
-		originalHeaders.put(NativeMessageHeaderAccessor.NATIVE_HEADERS, "deerhunter");
-		originalHeaders.put(MessageHistory.HEADER_NAME, "I've traveled to the moon");
-		MessageHeaders internalHeaders = new MessageHeaders(originalHeaders);
+  @Test
+  public void testFilterHeaders() {
+    PubSubHeaderMapper mapper = new PubSubHeaderMapper();
+    Map<String, Object> originalHeaders = new HashMap<>();
+    originalHeaders.put("my header", "pantagruel's nativity");
+    originalHeaders.put(NativeMessageHeaderAccessor.NATIVE_HEADERS, "deerhunter");
+    originalHeaders.put(MessageHistory.HEADER_NAME, "I've traveled to the moon");
+    MessageHeaders internalHeaders = new MessageHeaders(originalHeaders);
 
-		Map<String, String> filteredHeaders = new HashMap<>();
-		mapper.fromHeaders(internalHeaders, filteredHeaders);
-		assertThat(filteredHeaders)
-				.hasSize(1)
-				.containsEntry("my header", "pantagruel's nativity");
-	}
+    Map<String, String> filteredHeaders = new HashMap<>();
+    mapper.fromHeaders(internalHeaders, filteredHeaders);
+    assertThat(filteredHeaders).hasSize(1).containsEntry("my header", "pantagruel's nativity");
+  }
 
-	@Test
-	public void testDontFilterHeaders() {
-		PubSubHeaderMapper mapper = new PubSubHeaderMapper();
-		mapper.setOutboundHeaderPatterns("*");
-		Map<String, Object> originalHeaders = new HashMap<>();
-		originalHeaders.put("my header", "pantagruel's nativity");
-		MessageHeaders internalHeaders = new MessageHeaders(originalHeaders);
+  @Test
+  public void testDontFilterHeaders() {
+    PubSubHeaderMapper mapper = new PubSubHeaderMapper();
+    mapper.setOutboundHeaderPatterns("*");
+    Map<String, Object> originalHeaders = new HashMap<>();
+    originalHeaders.put("my header", "pantagruel's nativity");
+    MessageHeaders internalHeaders = new MessageHeaders(originalHeaders);
 
-		Map<String, String> filteredHeaders = new HashMap<>();
-		mapper.fromHeaders(internalHeaders, filteredHeaders);
-		assertThat(filteredHeaders).hasSize(3);
-	}
+    Map<String, String> filteredHeaders = new HashMap<>();
+    mapper.fromHeaders(internalHeaders, filteredHeaders);
+    assertThat(filteredHeaders).hasSize(3);
+  }
 
-	@Test
-	public void testToHeaders() {
-		PubSubHeaderMapper mapper = new PubSubHeaderMapper();
-		Map<String, String> originalHeaders = new HashMap<>();
-		originalHeaders.put(MessageHeaders.ID, "pantagruel's nativity");
-		originalHeaders.put(MessageHeaders.TIMESTAMP, "the moon is down");
-		originalHeaders.put("my header", "don't touch it");
+  @Test
+  public void testToHeaders() {
+    PubSubHeaderMapper mapper = new PubSubHeaderMapper();
+    Map<String, String> originalHeaders = new HashMap<>();
+    originalHeaders.put(MessageHeaders.ID, "pantagruel's nativity");
+    originalHeaders.put(MessageHeaders.TIMESTAMP, "the moon is down");
+    originalHeaders.put("my header", "don't touch it");
 
-		Map<String, Object> internalHeaders = mapper.toHeaders(originalHeaders);
-		assertThat(internalHeaders).hasSize(3);
-	}
+    Map<String, Object> internalHeaders = mapper.toHeaders(originalHeaders);
+    assertThat(internalHeaders).hasSize(3);
+  }
 
-	@Test
-	public void testSetInboundHeaderPatterns() {
-		PubSubHeaderMapper mapper = new PubSubHeaderMapper();
+  @Test
+  public void testSetInboundHeaderPatterns() {
+    PubSubHeaderMapper mapper = new PubSubHeaderMapper();
 
-		mapper.setInboundHeaderPatterns("x-*");
+    mapper.setInboundHeaderPatterns("x-*");
 
-		Map<String, String> originalHeaders = new HashMap<>();
-		String headerValue = "the moon is down";
-		originalHeaders.put("x-" + MessageHeaders.TIMESTAMP, headerValue);
-		originalHeaders.put("my header", "don't touch it");
+    Map<String, String> originalHeaders = new HashMap<>();
+    String headerValue = "the moon is down";
+    originalHeaders.put("x-" + MessageHeaders.TIMESTAMP, headerValue);
+    originalHeaders.put("my header", "don't touch it");
 
-		Map<String, Object> internalHeaders = mapper.toHeaders(originalHeaders);
+    Map<String, Object> internalHeaders = mapper.toHeaders(originalHeaders);
 
-		assertThat(internalHeaders)
-				.hasSize(1)
-				.containsEntry("x-" + MessageHeaders.TIMESTAMP, headerValue)
-				.doesNotContainKey("my header");
-	}
+    assertThat(internalHeaders)
+        .hasSize(1)
+        .containsEntry("x-" + MessageHeaders.TIMESTAMP, headerValue)
+        .doesNotContainKey("my header");
+  }
 
-	@Test
-	public void testSetInboundHeaderPatternsNullPatterns() {
-		this.expectedException.expect(IllegalArgumentException.class);
-		this.expectedException.expectMessage("Header patterns can't be null.");
+  @Test
+  public void testSetInboundHeaderPatternsNullPatterns() {
+    this.expectedException.expect(IllegalArgumentException.class);
+    this.expectedException.expectMessage("Header patterns can't be null.");
 
-		PubSubHeaderMapper mapper = new PubSubHeaderMapper();
-		mapper.setInboundHeaderPatterns(null);
-	}
+    PubSubHeaderMapper mapper = new PubSubHeaderMapper();
+    mapper.setInboundHeaderPatterns(null);
+  }
 
-	@Test
-	public void testSetInboundHeaderPatternsNullPatternElements() {
-		this.expectedException.expect(IllegalArgumentException.class);
-		this.expectedException.expectMessage("No header pattern can be null.");
+  @Test
+  public void testSetInboundHeaderPatternsNullPatternElements() {
+    this.expectedException.expect(IllegalArgumentException.class);
+    this.expectedException.expectMessage("No header pattern can be null.");
 
-		PubSubHeaderMapper mapper = new PubSubHeaderMapper();
-		mapper.setInboundHeaderPatterns(new String[1]);
-	}
+    PubSubHeaderMapper mapper = new PubSubHeaderMapper();
+    mapper.setInboundHeaderPatterns(new String[1]);
+  }
 }

@@ -16,10 +16,9 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping.event;
 
-import java.util.List;
-
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Mutation;
+import java.util.List;
 
 /**
  * An event that is published after a delete operation.
@@ -28,18 +27,19 @@ import com.google.cloud.spanner.Mutation;
  */
 public class BeforeDeleteEvent extends DeleteEvent {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param source the mutations for the event initially occurred. (never {@code null})
-	 * @param targetEntities the target entities that need to be deleted. This may be
-	 *     {@code null} depending on the type of delete request.
-	 * @param targetKeys the target keys that need to be deleted. This may be {@code null}
-	 *     depending on the type of delete request.
-	 * @param targetType the target entity type that needs to be deleted. This may be
-	 *     {@code null} depending on the
-	 */
-	public BeforeDeleteEvent(List<Mutation> source, Iterable targetEntities, KeySet targetKeys, Class targetType) {
-		super(source, targetEntities, targetKeys, targetType);
-	}
+  /**
+   * Constructor.
+   *
+   * @param source the mutations for the event initially occurred. (never {@code null})
+   * @param targetEntities the target entities that need to be deleted. This may be {@code null}
+   *     depending on the type of delete request.
+   * @param targetKeys the target keys that need to be deleted. This may be {@code null} depending
+   *     on the type of delete request.
+   * @param targetType the target entity type that needs to be deleted. This may be {@code null}
+   *     depending on the
+   */
+  public BeforeDeleteEvent(
+      List<Mutation> source, Iterable targetEntities, KeySet targetKeys, Class targetType) {
+    super(source, targetEntities, targetKeys, targetType);
+  }
 }

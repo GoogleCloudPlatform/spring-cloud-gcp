@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.firestore;
 
 import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
-
 import org.springframework.stereotype.Repository;
 
 /**
@@ -26,6 +25,4 @@ import org.springframework.stereotype.Repository;
  * @author Chengyuan Zhao
  */
 @Repository
-public interface FirestoreTestRepository extends FirestoreReactiveRepository {
-
-}
+public interface FirestoreTestRepository extends FirestoreReactiveRepository {}

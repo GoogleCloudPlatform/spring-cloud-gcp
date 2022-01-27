@@ -16,10 +16,13 @@
 
 package com.example;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,32 +30,26 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 /**
  * Tests for config sample.
  *
  * @author Mike Eltsufin
  */
-//Please use "-Dit.config=true" to enable the tests.
+// Please use "-Dit.config=true" to enable the tests.
 @ExtendWith(SpringExtension.class)
 @EnabledIfSystemProperty(named = "it.config", matches = "true")
 @SpringBootTest(
-		classes = { Application.class },
-		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
-)
+    classes = {Application.class},
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class ConfigSampleApplicationIntegrationTests {
-	@Autowired
-	private MockMvc mvc;
+  @Autowired private MockMvc mvc;
 
-	@Test
-	void basicTest() throws Exception {
-		this.mvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(content().json("{'queueSize':200,'featureXEnabled':true}"));
-
-	}
+  @Test
+  void basicTest() throws Exception {
+    this.mvc
+        .perform(get("/").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().json("{'queueSize':200,'featureXEnabled':true}"));
+  }
 }

@@ -18,7 +18,6 @@ package com.example;
 
 import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
-
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 /**
@@ -27,5 +26,4 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
  * @author Chengyuan Zhao
  */
 @RepositoryRestResource(collectionResourceRel = "instruments", path = "instruments")
-public interface InstrumentRepositoryRestResource extends DatastoreRepository<Instrument, Key> {
-}
+public interface InstrumentRepositoryRestResource extends DatastoreRepository<Instrument, Key> {}

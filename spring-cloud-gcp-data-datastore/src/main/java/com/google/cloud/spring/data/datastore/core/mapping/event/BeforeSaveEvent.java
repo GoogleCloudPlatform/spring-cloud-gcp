@@ -24,12 +24,12 @@ import java.util.List;
  * @author Chengyuan Zhao
  */
 public class BeforeSaveEvent extends SaveEvent {
-	/**
-	 * Constructor.
-	 *
-	 * @param javaEntities The original Java entities being saved. Each entity may result in
-	 */
-	public BeforeSaveEvent(List javaEntities) {
-		super(javaEntities);
-	}
+  /**
+   * Constructor.
+   *
+   * @param javaEntities The original Java entities being saved. Each entity may result in
+   */
+  public BeforeSaveEvent(List javaEntities) {
+    super(javaEntities);
+  }
 }

@@ -16,6 +16,14 @@
 
 package com.google.cloud.spring.data.datastore.repository.support;
 
+import com.google.cloud.datastore.Cursor;
+import com.google.cloud.datastore.Key;
+import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
+import com.google.cloud.spring.data.datastore.core.DatastoreQueryOptions;
+import com.google.cloud.spring.data.datastore.core.DatastoreResultsCollection;
+import com.google.cloud.spring.data.datastore.core.DatastoreResultsIterable;
+import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
+import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,16 +34,6 @@ import java.util.function.Function;
 import java.util.function.LongSupplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import com.google.cloud.datastore.Cursor;
-import com.google.cloud.datastore.Key;
-import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
-import com.google.cloud.spring.data.datastore.core.DatastoreQueryOptions;
-import com.google.cloud.spring.data.datastore.core.DatastoreResultsCollection;
-import com.google.cloud.spring.data.datastore.core.DatastoreResultsIterable;
-import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
-import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable;
-
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -45,174 +43,197 @@ import org.springframework.util.Assert;
 
 /**
  * Implementation of {@link DatastoreRepository}.
+ *
  * @param <T> the type of the entities
  * @param <I> the id type of the entities
  * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I> {
 
-	private final DatastoreOperations datastoreTemplate;
+  private final DatastoreOperations datastoreTemplate;
 
-	private final Class<T> entityType;
+  private final Class<T> entityType;
 
-	public SimpleDatastoreRepository(DatastoreOperations datastoreTemplate,
-			Class<T> entityType) {
-		Assert.notNull(datastoreTemplate, "A non-null DatastoreOperations is required.");
-		Assert.notNull(entityType, "A non-null entity type is required.");
-		this.datastoreTemplate = datastoreTemplate;
-		this.entityType = entityType;
-	}
+  public SimpleDatastoreRepository(DatastoreOperations datastoreTemplate, Class<T> entityType) {
+    Assert.notNull(datastoreTemplate, "A non-null DatastoreOperations is required.");
+    Assert.notNull(entityType, "A non-null entity type is required.");
+    this.datastoreTemplate = datastoreTemplate;
+    this.entityType = entityType;
+  }
 
-	@Override
-	public <A> A performTransaction(Function<DatastoreRepository<T, I>, A> operations) {
-		return this.datastoreTemplate.performTransaction(template -> operations
-				.apply(new SimpleDatastoreRepository<>(template, this.entityType)));
-	}
+  @Override
+  public <A> A performTransaction(Function<DatastoreRepository<T, I>, A> operations) {
+    return this.datastoreTemplate.performTransaction(
+        template -> operations.apply(new SimpleDatastoreRepository<>(template, this.entityType)));
+  }
 
-	@Override
-	public Iterable<T> findAll(Sort sort) {
-		Assert.notNull(sort, "A non-null Sort is required.");
-		return this.datastoreTemplate
-				.findAll(this.entityType, new DatastoreQueryOptions.Builder().setSort(sort).build());
-	}
+  @Override
+  public Iterable<T> findAll(Sort sort) {
+    Assert.notNull(sort, "A non-null Sort is required.");
+    return this.datastoreTemplate.findAll(
+        this.entityType, new DatastoreQueryOptions.Builder().setSort(sort).build());
+  }
 
-	@Override
-	public Page<T> findAll(Pageable pageable) {
-		Assert.notNull(pageable, "A non-null Pageable is required.");
-		Collection<T> entities = this.datastoreTemplate
-				.findAll(this.entityType,
-						new DatastoreQueryOptions.Builder().setLimit(pageable.getPageSize())
-								.setOffset((int) pageable.getOffset()).setSort(pageable.getSort())
-								.setCursor(getCursor(pageable)).build());
+  @Override
+  public Page<T> findAll(Pageable pageable) {
+    Assert.notNull(pageable, "A non-null Pageable is required.");
+    Collection<T> entities =
+        this.datastoreTemplate.findAll(
+            this.entityType,
+            new DatastoreQueryOptions.Builder()
+                .setLimit(pageable.getPageSize())
+                .setOffset((int) pageable.getOffset())
+                .setSort(pageable.getSort())
+                .setCursor(getCursor(pageable))
+                .build());
 
-		Long totalCount = getOrComputeTotalCount(pageable, () -> this.datastoreTemplate.count(this.entityType));
-		Pageable cursorPageable = DatastorePageable.from(pageable,
-				entities instanceof DatastoreResultsCollection ? ((DatastoreResultsCollection) entities).getCursor()
-						: null,
-				totalCount);
+    Long totalCount =
+        getOrComputeTotalCount(pageable, () -> this.datastoreTemplate.count(this.entityType));
+    Pageable cursorPageable =
+        DatastorePageable.from(
+            pageable,
+            entities instanceof DatastoreResultsCollection
+                ? ((DatastoreResultsCollection) entities).getCursor()
+                : null,
+            totalCount);
 
-		return new PageImpl<>(entities != null ? new ArrayList<>(entities) : Collections.emptyList(), cursorPageable,
-				totalCount);
-	}
+    return new PageImpl<>(
+        entities != null ? new ArrayList<>(entities) : Collections.emptyList(),
+        cursorPageable,
+        totalCount);
+  }
 
-	@Override
-	public <S extends T> S save(S entity) {
-		return this.datastoreTemplate.save(entity);
-	}
+  @Override
+  public <S extends T> S save(S entity) {
+    return this.datastoreTemplate.save(entity);
+  }
 
-	@Override
-	public <S extends T> Iterable<S> saveAll(Iterable<S> entities) {
-		return this.datastoreTemplate.saveAll(entities);
-	}
+  @Override
+  public <S extends T> Iterable<S> saveAll(Iterable<S> entities) {
+    return this.datastoreTemplate.saveAll(entities);
+  }
 
-	@Override
-	public Optional<T> findById(I id) {
-		return Optional.ofNullable(this.datastoreTemplate.findById(id, this.entityType));
-	}
+  @Override
+  public Optional<T> findById(I id) {
+    return Optional.ofNullable(this.datastoreTemplate.findById(id, this.entityType));
+  }
 
-	@Override
-	public boolean existsById(I id) {
-		return this.datastoreTemplate.existsById(id, this.entityType);
-	}
+  @Override
+  public boolean existsById(I id) {
+    return this.datastoreTemplate.existsById(id, this.entityType);
+  }
 
-	@Override
-	public Iterable<T> findAll() {
-		return this.datastoreTemplate.findAll(this.entityType);
-	}
+  @Override
+  public Iterable<T> findAll() {
+    return this.datastoreTemplate.findAll(this.entityType);
+  }
 
-	@Override
-	public Iterable<T> findAllById(Iterable<I> ids) {
-		return this.datastoreTemplate.findAllById(ids, this.entityType);
-	}
+  @Override
+  public Iterable<T> findAllById(Iterable<I> ids) {
+    return this.datastoreTemplate.findAllById(ids, this.entityType);
+  }
 
-	@Override
-	public long count() {
-		return this.datastoreTemplate.count(this.entityType);
-	}
+  @Override
+  public long count() {
+    return this.datastoreTemplate.count(this.entityType);
+  }
 
-	@Override
-	public void deleteById(I id) {
-		this.datastoreTemplate.deleteById(id, this.entityType);
-	}
+  @Override
+  public void deleteById(I id) {
+    this.datastoreTemplate.deleteById(id, this.entityType);
+  }
 
-	@Override
-	public void delete(T entity) {
-		this.datastoreTemplate.delete(entity);
-	}
+  @Override
+  public void delete(T entity) {
+    this.datastoreTemplate.delete(entity);
+  }
 
-	@Override
-	public void deleteAll(Iterable<? extends T> entities) {
-		this.datastoreTemplate.deleteAll(entities);
-	}
+  @Override
+  public void deleteAll(Iterable<? extends T> entities) {
+    this.datastoreTemplate.deleteAll(entities);
+  }
 
-	@Override
-	public void deleteAll() {
-		this.datastoreTemplate.deleteAll(this.entityType);
-	}
+  @Override
+  public void deleteAll() {
+    this.datastoreTemplate.deleteAll(this.entityType);
+  }
 
-	@Override
-	public <S extends T> Optional<S> findOne(Example<S> example) {
-		Iterable<S> entities = this.datastoreTemplate.queryByExample(example,
-				new DatastoreQueryOptions.Builder().setLimit(1).build());
-		Iterator<S> iterator = entities.iterator();
-		return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
-	}
+  @Override
+  public <S extends T> Optional<S> findOne(Example<S> example) {
+    Iterable<S> entities =
+        this.datastoreTemplate.queryByExample(
+            example, new DatastoreQueryOptions.Builder().setLimit(1).build());
+    Iterator<S> iterator = entities.iterator();
+    return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
+  }
 
-	@Override
-	public <S extends T> Iterable<S> findAll(Example<S> example) {
-		return this.datastoreTemplate.queryByExample(example, null);
-	}
+  @Override
+  public <S extends T> Iterable<S> findAll(Example<S> example) {
+    return this.datastoreTemplate.queryByExample(example, null);
+  }
 
-	@Override
-	public <S extends T> Iterable<S> findAll(Example<S> example, Sort sort) {
-		return this.datastoreTemplate.queryByExample(example,
-				new DatastoreQueryOptions.Builder().setSort(sort).build());
-	}
+  @Override
+  public <S extends T> Iterable<S> findAll(Example<S> example, Sort sort) {
+    return this.datastoreTemplate.queryByExample(
+        example, new DatastoreQueryOptions.Builder().setSort(sort).build());
+  }
 
-	@Override
-	public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
-		Assert.notNull(pageable, "A non-null pageable is required.");
+  @Override
+  public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
+    Assert.notNull(pageable, "A non-null pageable is required.");
 
-		Iterable<S> entities = this.datastoreTemplate.queryByExample(example,
-				new DatastoreQueryOptions.Builder().setLimit(pageable.getPageSize())
-						.setOffset((int) pageable.getOffset()).setSort(pageable.getSort())
-						.setCursor(getCursor(pageable)).build());
-		List<S> result = StreamSupport.stream(entities.spliterator(), false).collect(Collectors.toList());
+    Iterable<S> entities =
+        this.datastoreTemplate.queryByExample(
+            example,
+            new DatastoreQueryOptions.Builder()
+                .setLimit(pageable.getPageSize())
+                .setOffset((int) pageable.getOffset())
+                .setSort(pageable.getSort())
+                .setCursor(getCursor(pageable))
+                .build());
+    List<S> result =
+        StreamSupport.stream(entities.spliterator(), false).collect(Collectors.toList());
 
-		Long totalCount = getOrComputeTotalCount(pageable, () -> count(example));
-		Pageable cursorPageable = DatastorePageable.from(pageable,
-				entities instanceof DatastoreResultsIterable ? ((DatastoreResultsIterable) entities).getCursor() : null,
-				totalCount);
+    Long totalCount = getOrComputeTotalCount(pageable, () -> count(example));
+    Pageable cursorPageable =
+        DatastorePageable.from(
+            pageable,
+            entities instanceof DatastoreResultsIterable
+                ? ((DatastoreResultsIterable) entities).getCursor()
+                : null,
+            totalCount);
 
-		return new PageImpl<>(result, cursorPageable, totalCount);
-	}
+    return new PageImpl<>(result, cursorPageable, totalCount);
+  }
 
-	@Override
-	public <S extends T> long count(Example<S> example) {
-		Iterable<Key> keys = this.datastoreTemplate.keyQueryByExample(example, null);
+  @Override
+  public <S extends T> long count(Example<S> example) {
+    Iterable<Key> keys = this.datastoreTemplate.keyQueryByExample(example, null);
 
-		return StreamSupport.stream(keys.spliterator(), false).count();
-	}
+    return StreamSupport.stream(keys.spliterator(), false).count();
+  }
 
-	@Override
-	public <S extends T> boolean exists(Example<S> example) {
-		Iterable<Key> keys = this.datastoreTemplate.keyQueryByExample(example,
-				new DatastoreQueryOptions.Builder().setLimit(1).build());
-		return StreamSupport.stream(keys.spliterator(), false).findAny().isPresent();
-	}
+  @Override
+  public <S extends T> boolean exists(Example<S> example) {
+    Iterable<Key> keys =
+        this.datastoreTemplate.keyQueryByExample(
+            example, new DatastoreQueryOptions.Builder().setLimit(1).build());
+    return StreamSupport.stream(keys.spliterator(), false).findAny().isPresent();
+  }
 
-	private static Cursor getCursor(Pageable pageable) {
-		return pageable instanceof DatastorePageable ?  ((DatastorePageable) pageable).toCursor() : null;
-	}
+  private static Cursor getCursor(Pageable pageable) {
+    return pageable instanceof DatastorePageable ? ((DatastorePageable) pageable).toCursor() : null;
+  }
 
-	private static Long getOrComputeTotalCount(Pageable pageable, LongSupplier countCall) {
-		return pageable instanceof DatastorePageable ? ((DatastorePageable) pageable).getTotalCount() : countCall.getAsLong();
-	}
+  private static Long getOrComputeTotalCount(Pageable pageable, LongSupplier countCall) {
+    return pageable instanceof DatastorePageable
+        ? ((DatastorePageable) pageable).getTotalCount()
+        : countCall.getAsLong();
+  }
 
-	// TODO: Restore @Override when not supporting Spring Boot 2.4 anymore
-	public void deleteAllById(Iterable<? extends I> iterable) {
-		this.datastoreTemplate.deleteAllById(iterable, entityType);
-	}
+  // TODO: Restore @Override when not supporting Spring Boot 2.4 anymore
+  public void deleteAllById(Iterable<? extends I> iterable) {
+    this.datastoreTemplate.deleteAllById(iterable, entityType);
+  }
 }

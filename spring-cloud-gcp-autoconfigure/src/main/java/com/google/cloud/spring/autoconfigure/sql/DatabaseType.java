@@ -24,41 +24,43 @@ package com.google.cloud.spring.autoconfigure.sql;
  * @author Mike Eltsufin
  */
 public enum DatabaseType {
-	/**
-	 * MySQL constants.
-	 */
-	MYSQL("com.mysql.cj.jdbc.Driver", "jdbc:mysql://google/%s?"
-			+ "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
-			+ "&cloudSqlInstance=%s", "root"),
+  /** MySQL constants. */
+  MYSQL(
+      "com.mysql.cj.jdbc.Driver",
+      "jdbc:mysql://google/%s?"
+          + "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
+          + "&cloudSqlInstance=%s",
+      "root"),
 
-	/**
-	 * Postgresql constants.
-	 */
-	POSTGRESQL("org.postgresql.Driver", "jdbc:postgresql://google/%s?"
-			+ "socketFactory=com.google.cloud.sql.postgres.SocketFactory"
-			+ "&cloudSqlInstance=%s", "postgres");
+  /** Postgresql constants. */
+  POSTGRESQL(
+      "org.postgresql.Driver",
+      "jdbc:postgresql://google/%s?"
+          + "socketFactory=com.google.cloud.sql.postgres.SocketFactory"
+          + "&cloudSqlInstance=%s",
+      "postgres");
 
-	private final String jdbcDriverName;
+  private final String jdbcDriverName;
 
-	private final String jdbcUrlTemplate;
+  private final String jdbcUrlTemplate;
 
-	private final String defaultUsername;
+  private final String defaultUsername;
 
-	DatabaseType(String jdbcDriverName, String jdbcUrlTemplate, String defaultUsername) {
-		this.jdbcDriverName = jdbcDriverName;
-		this.jdbcUrlTemplate = jdbcUrlTemplate;
-		this.defaultUsername = defaultUsername;
-	}
+  DatabaseType(String jdbcDriverName, String jdbcUrlTemplate, String defaultUsername) {
+    this.jdbcDriverName = jdbcDriverName;
+    this.jdbcUrlTemplate = jdbcUrlTemplate;
+    this.defaultUsername = defaultUsername;
+  }
 
-	public String getJdbcDriverName() {
-		return this.jdbcDriverName;
-	}
+  public String getJdbcDriverName() {
+    return this.jdbcDriverName;
+  }
 
-	public String getJdbcUrlTemplate() {
-		return this.jdbcUrlTemplate;
-	}
+  public String getJdbcUrlTemplate() {
+    return this.jdbcUrlTemplate;
+  }
 
-	public String getDefaultUsername() {
-		return defaultUsername;
-	}
+  public String getDefaultUsername() {
+    return defaultUsername;
+  }
 }

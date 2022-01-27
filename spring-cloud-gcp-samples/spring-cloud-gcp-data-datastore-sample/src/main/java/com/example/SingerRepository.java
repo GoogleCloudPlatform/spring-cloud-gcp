@@ -16,12 +16,10 @@
 
 package com.example;
 
-import java.util.List;
-import java.util.stream.Stream;
-
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.query.Query;
-
+import java.util.List;
+import java.util.stream.Stream;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.repository.query.Param;
@@ -33,13 +31,13 @@ import org.springframework.data.repository.query.Param;
  */
 public interface SingerRepository extends DatastoreRepository<Singer, String> {
 
-	@Query("select * from  |com.example.Singer| where last_name = @name")
-	Slice<Singer> findSingersByLastName(@Param("name") String name, Pageable pageable);
+  @Query("select * from  |com.example.Singer| where last_name = @name")
+  Slice<Singer> findSingersByLastName(@Param("name") String name, Pageable pageable);
 
-	@Query("select * from  |com.example.Singer| where firstBand = @band")
-	List<Singer> findSingersByFirstBand(@Param("band") Band band);
+  @Query("select * from  |com.example.Singer| where firstBand = @band")
+  List<Singer> findSingersByFirstBand(@Param("band") Band band);
 
-	List<Singer> findByFirstBand(Band band);
+  List<Singer> findByFirstBand(Band band);
 
-	Stream<Singer> findStreamOfSingersByLastName(String name);
+  Stream<Singer> findStreamOfSingersByLastName(String name);
 }

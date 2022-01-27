@@ -16,6 +16,10 @@
 
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
@@ -24,7 +28,6 @@ import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.protobuf.ByteString;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -32,10 +35,6 @@ import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link GcpSecretManagerBootstrapConfiguration}.
@@ -45,143 +44,147 @@ import static org.mockito.Mockito.when;
  */
 class SecretManagerBootstrapConfigurationTests {
 
-	private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
+  private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
 
-	private SpringApplicationBuilder applicationBuilder =
-			new SpringApplicationBuilder(
-					TestBootstrapConfiguration.class, GcpSecretManagerBootstrapConfiguration.class)
-					.properties(
-							"spring.cloud.gcp.secretmanager.project-id=" + PROJECT_NAME,
-							"spring.cloud.bootstrap.enabled=true",
-							"spring.cloud.gcp.sql.enabled=false")
-					.web(WebApplicationType.NONE);
+  private SpringApplicationBuilder applicationBuilder =
+      new SpringApplicationBuilder(
+              TestBootstrapConfiguration.class, GcpSecretManagerBootstrapConfiguration.class)
+          .properties(
+              "spring.cloud.gcp.secretmanager.project-id=" + PROJECT_NAME,
+              "spring.cloud.bootstrap.enabled=true",
+              "spring.cloud.gcp.sql.enabled=false")
+          .web(WebApplicationType.NONE);
 
-	@Test
-	void testGetProperty() {
-		try (ConfigurableApplicationContext c = applicationBuilder.run()) {
-			String secret = c.getEnvironment().getProperty("sm://my-secret");
-			assertThat(secret).isEqualTo("hello");
-		}
-	}
+  @Test
+  void testGetProperty() {
+    try (ConfigurableApplicationContext c = applicationBuilder.run()) {
+      String secret = c.getEnvironment().getProperty("sm://my-secret");
+      assertThat(secret).isEqualTo("hello");
+    }
+  }
 
-	@Test
-	void testGetProperty_otherVersion() {
-		try (ConfigurableApplicationContext c = applicationBuilder.run()) {
-			String secret = c.getEnvironment().getProperty(
-					"sm://my-secret/1");
-			assertThat(secret).isEqualTo("hello v1");
-		}
-	}
+  @Test
+  void testGetProperty_otherVersion() {
+    try (ConfigurableApplicationContext c = applicationBuilder.run()) {
+      String secret = c.getEnvironment().getProperty("sm://my-secret/1");
+      assertThat(secret).isEqualTo("hello v1");
+    }
+  }
 
-	@Test
-	void testGetProperty_otherProject() {
-		try (ConfigurableApplicationContext c = applicationBuilder.run()) {
-			String secret = c.getEnvironment().getProperty(
-					"sm://projects/other-project/secrets/other-secret/versions/3");
-			assertThat(secret).isEqualTo("goodbye");
-		}
-	}
+  @Test
+  void testGetProperty_otherProject() {
+    try (ConfigurableApplicationContext c = applicationBuilder.run()) {
+      String secret =
+          c.getEnvironment()
+              .getProperty("sm://projects/other-project/secrets/other-secret/versions/3");
+      assertThat(secret).isEqualTo("goodbye");
+    }
+  }
 
-	@Test
-	void testValueAnnotation() {
-		try (ConfigurableApplicationContext c = applicationBuilder.run()) {
-			String secret = c.getBean("secret", String.class);
-			assertThat(secret).isEqualTo("hello");
+  @Test
+  void testValueAnnotation() {
+    try (ConfigurableApplicationContext c = applicationBuilder.run()) {
+      String secret = c.getBean("secret", String.class);
+      assertThat(secret).isEqualTo("hello");
 
-			secret = c.getBean("fullyQualifiedSecret", String.class);
-			assertThat(secret).isEqualTo("hello");
-		}
-	}
+      secret = c.getBean("fullyQualifiedSecret", String.class);
+      assertThat(secret).isEqualTo("hello");
+    }
+  }
 
-	@Test
-	void configurationDisabled() {
-		SpringApplicationBuilder disabledConfigurationApp =
-				new SpringApplicationBuilder(
-						TestBootstrapConfiguration.class, GcpSecretManagerBootstrapConfiguration.class)
-						.properties("spring.cloud.gcp.secretmanager.project-id=" + PROJECT_NAME)
-						.properties("spring.cloud.gcp.secretmanager.enabled=false")
-						.properties("spring.cloud.gcp.sql.enabled=false")
-						.web(WebApplicationType.NONE);
+  @Test
+  void configurationDisabled() {
+    SpringApplicationBuilder disabledConfigurationApp =
+        new SpringApplicationBuilder(
+                TestBootstrapConfiguration.class, GcpSecretManagerBootstrapConfiguration.class)
+            .properties("spring.cloud.gcp.secretmanager.project-id=" + PROJECT_NAME)
+            .properties("spring.cloud.gcp.secretmanager.enabled=false")
+            .properties("spring.cloud.gcp.sql.enabled=false")
+            .web(WebApplicationType.NONE);
 
-		try (ConfigurableApplicationContext c = disabledConfigurationApp.run()) {
-			String secret = c.getEnvironment().getProperty("sm://my-secret");
-			assertThat(secret).isNull();
-		}
-	}
+    try (ConfigurableApplicationContext c = disabledConfigurationApp.run()) {
+      String secret = c.getEnvironment().getProperty("sm://my-secret");
+      assertThat(secret).isNull();
+    }
+  }
 
-	@Configuration
-	static class TestBootstrapConfiguration {
+  @Configuration
+  static class TestBootstrapConfiguration {
 
-		@Value("${sm://my-secret}")
-		private String secret;
+    @Value("${sm://my-secret}")
+    private String secret;
 
-		@Value("${sm://" + PROJECT_NAME + "/my-secret/latest}")
-		private String fullyQualifiedSecret;
+    @Value("${sm://" + PROJECT_NAME + "/my-secret/latest}")
+    private String fullyQualifiedSecret;
 
-		@Bean
-		public String secret() {
-			return secret;
-		}
+    @Bean
+    public String secret() {
+      return secret;
+    }
 
-		@Bean
-		public String fullyQualifiedSecret() {
-			return secret;
-		}
+    @Bean
+    public String fullyQualifiedSecret() {
+      return secret;
+    }
 
-		@Bean
-		public static SecretManagerServiceClient secretManagerClient() {
-			SecretManagerServiceClient client = mock(SecretManagerServiceClient.class);
+    @Bean
+    public static SecretManagerServiceClient secretManagerClient() {
+      SecretManagerServiceClient client = mock(SecretManagerServiceClient.class);
 
-			SecretVersionName secretVersionName =
-					SecretVersionName.newBuilder()
-							.setProject(PROJECT_NAME)
-							.setSecret("my-secret")
-							.setSecretVersion("latest")
-							.build();
+      SecretVersionName secretVersionName =
+          SecretVersionName.newBuilder()
+              .setProject(PROJECT_NAME)
+              .setSecret("my-secret")
+              .setSecretVersion("latest")
+              .build();
 
-			when(client.accessSecretVersion(secretVersionName)).thenReturn(
-					AccessSecretVersionResponse.newBuilder()
-							.setPayload(SecretPayload.newBuilder().setData(ByteString.copyFromUtf8("hello")))
-							.build());
+      when(client.accessSecretVersion(secretVersionName))
+          .thenReturn(
+              AccessSecretVersionResponse.newBuilder()
+                  .setPayload(SecretPayload.newBuilder().setData(ByteString.copyFromUtf8("hello")))
+                  .build());
 
-			secretVersionName =
-					SecretVersionName.newBuilder()
-							.setProject(PROJECT_NAME)
-							.setSecret("my-secret")
-							.setSecretVersion("1")
-							.build();
+      secretVersionName =
+          SecretVersionName.newBuilder()
+              .setProject(PROJECT_NAME)
+              .setSecret("my-secret")
+              .setSecretVersion("1")
+              .build();
 
-			when(client.accessSecretVersion(secretVersionName)).thenReturn(
-					AccessSecretVersionResponse.newBuilder()
-							.setPayload(SecretPayload.newBuilder().setData(ByteString.copyFromUtf8("hello v1")))
-							.build());
+      when(client.accessSecretVersion(secretVersionName))
+          .thenReturn(
+              AccessSecretVersionResponse.newBuilder()
+                  .setPayload(
+                      SecretPayload.newBuilder().setData(ByteString.copyFromUtf8("hello v1")))
+                  .build());
 
-			secretVersionName =
-					SecretVersionName.newBuilder()
-							.setProject("other-project")
-							.setSecret("other-secret")
-							.setSecretVersion("3")
-							.build();
+      secretVersionName =
+          SecretVersionName.newBuilder()
+              .setProject("other-project")
+              .setSecret("other-secret")
+              .setSecretVersion("3")
+              .build();
 
-			when(client.accessSecretVersion(secretVersionName)).thenReturn(
-					AccessSecretVersionResponse.newBuilder()
-							.setPayload(
-									SecretPayload.newBuilder().setData(ByteString.copyFromUtf8("goodbye")))
-							.build());
+      when(client.accessSecretVersion(secretVersionName))
+          .thenReturn(
+              AccessSecretVersionResponse.newBuilder()
+                  .setPayload(
+                      SecretPayload.newBuilder().setData(ByteString.copyFromUtf8("goodbye")))
+                  .build());
 
-			return client;
-		}
+      return client;
+    }
 
-		@Bean
-		public static CredentialsProvider googleCredentials() {
-			return () -> mock(Credentials.class);
-		}
+    @Bean
+    public static CredentialsProvider googleCredentials() {
+      return () -> mock(Credentials.class);
+    }
 
-		// This is added in here to verify that the Secret Manager property source locator bean
-		// still gets created even if another PropertySourceLocator bean exists in the environment.
-		@Bean
-		public static PropertySourceLocator defaultPropertySourceLocator() {
-			return locatorEnvironment -> null;
-		}
-	}
+    // This is added in here to verify that the Secret Manager property source locator bean
+    // still gets created even if another PropertySourceLocator bean exists in the environment.
+    @Bean
+    public static PropertySourceLocator defaultPropertySourceLocator() {
+      return locatorEnvironment -> null;
+    }
+  }
 }

@@ -17,7 +17,6 @@
 package com.google.cloud.spring.storage.integration.filters;
 
 import com.google.cloud.storage.BlobInfo;
-
 import org.springframework.integration.file.filters.AbstractPersistentAcceptOnceFileListFilter;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
 
@@ -29,24 +28,24 @@ import org.springframework.integration.metadata.ConcurrentMetadataStore;
  * @author Lukas Gemela
  */
 public class GcsPersistentAcceptOnceFileListFilter
-		extends AbstractPersistentAcceptOnceFileListFilter<BlobInfo> {
+    extends AbstractPersistentAcceptOnceFileListFilter<BlobInfo> {
 
-	public GcsPersistentAcceptOnceFileListFilter(ConcurrentMetadataStore store, String prefix) {
-		super(store, prefix);
-	}
+  public GcsPersistentAcceptOnceFileListFilter(ConcurrentMetadataStore store, String prefix) {
+    super(store, prefix);
+  }
 
-	@Override
-	protected long modified(BlobInfo blobInfo) {
-		return (blobInfo != null && blobInfo.getUpdateTime() != null) ? blobInfo.getUpdateTime() : -1;
-	}
+  @Override
+  protected long modified(BlobInfo blobInfo) {
+    return (blobInfo != null && blobInfo.getUpdateTime() != null) ? blobInfo.getUpdateTime() : -1;
+  }
 
-	@Override
-	protected String fileName(BlobInfo blobInfo) {
-		return (blobInfo != null) ? blobInfo.getName() : null;
-	}
+  @Override
+  protected String fileName(BlobInfo blobInfo) {
+    return (blobInfo != null) ? blobInfo.getName() : null;
+  }
 
-	@Override
-	protected boolean isDirectory(BlobInfo blobInfo) {
-		return blobInfo.isDirectory();
-	}
+  @Override
+  protected boolean isDirectory(BlobInfo blobInfo) {
+    return blobInfo.isDirectory();
+  }
 }

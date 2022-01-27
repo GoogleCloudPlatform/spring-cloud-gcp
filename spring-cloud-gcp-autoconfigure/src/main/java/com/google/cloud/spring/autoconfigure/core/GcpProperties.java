@@ -18,7 +18,6 @@ package com.google.cloud.spring.autoconfigure.core;
 
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -33,23 +32,23 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ConfigurationProperties("spring.cloud.gcp")
 public class GcpProperties implements CredentialsSupplier {
 
-	/** GCP project ID where services are running. */
-	private String projectId;
+  /** GCP project ID where services are running. */
+  private String projectId;
 
-	/** GCP OAuth2 credentials to authenticate and authorize calls to Google Cloud Client Libraries. */
-	@NestedConfigurationProperty
-	private final Credentials credentials = new Credentials();
+  /**
+   * GCP OAuth2 credentials to authenticate and authorize calls to Google Cloud Client Libraries.
+   */
+  @NestedConfigurationProperty private final Credentials credentials = new Credentials();
 
-	public String getProjectId() {
-		return this.projectId;
-	}
+  public String getProjectId() {
+    return this.projectId;
+  }
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+  public void setProjectId(String projectId) {
+    this.projectId = projectId;
+  }
 
-	public Credentials getCredentials() {
-		return this.credentials;
-	}
-
+  public Credentials getCredentials() {
+    return this.credentials;
+  }
 }

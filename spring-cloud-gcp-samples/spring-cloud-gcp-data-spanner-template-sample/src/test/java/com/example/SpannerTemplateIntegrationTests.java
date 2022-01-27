@@ -16,24 +16,22 @@
 
 package com.example;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for the Spanner template usage.
@@ -45,37 +43,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest
 class SpannerTemplateIntegrationTests {
-	@Autowired
-	private SpannerOperations spannerOperations;
+  @Autowired private SpannerOperations spannerOperations;
 
-	@Autowired
-	private SpannerSchemaUtils spannerSchemaUtils;
+  @Autowired private SpannerSchemaUtils spannerSchemaUtils;
 
-	@Autowired
-	private SpannerTemplateExample spannerTemplateExample;
+  @Autowired private SpannerTemplateExample spannerTemplateExample;
 
-	@BeforeEach
-	@AfterEach
-	void cleanupSpannerTables() {
-		this.spannerTemplateExample.createTablesIfNotExists();
-		this.spannerOperations.delete(Trader.class, KeySet.all());
-		this.spannerOperations.delete(Trade.class, KeySet.all());
-	}
+  @BeforeEach
+  @AfterEach
+  void cleanupSpannerTables() {
+    this.spannerTemplateExample.createTablesIfNotExists();
+    this.spannerOperations.delete(Trader.class, KeySet.all());
+    this.spannerOperations.delete(Trade.class, KeySet.all());
+  }
 
-	@Test
-	void testSpannerTemplateLoadsData() {
-		assertThat(this.spannerOperations.readAll(Trade.class)).isEmpty();
+  @Test
+  void testSpannerTemplateLoadsData() {
+    assertThat(this.spannerOperations.readAll(Trade.class)).isEmpty();
 
-		this.spannerTemplateExample.runExample();
+    this.spannerTemplateExample.runExample();
 
-		Set<String> tradeSpannerKeys = this.spannerOperations.readAll(Trade.class)
-				.stream()
-				.map(t -> this.spannerSchemaUtils.getKey(t).toString())
-				.collect(Collectors.toSet());
+    Set<String> tradeSpannerKeys =
+        this.spannerOperations.readAll(Trade.class).stream()
+            .map(t -> this.spannerSchemaUtils.getKey(t).toString())
+            .collect(Collectors.toSet());
 
-		assertThat(tradeSpannerKeys).containsExactlyInAnyOrder(
-				"[template_trader1,1]",
-				"[template_trader1,2]",
-				"[template_trader2,1]");
-	}
+    assertThat(tradeSpannerKeys)
+        .containsExactlyInAnyOrder(
+            "[template_trader1,1]", "[template_trader1,2]", "[template_trader2,1]");
+  }
 }

@@ -16,16 +16,16 @@
 
 package com.example;
 
-import java.util.List;
-import java.util.UUID;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -34,13 +34,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * Integration test for the sender sample app.
  *
  * @author Dmitry Solomakha
- *
  * @since 1.1
  */
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
@@ -49,37 +46,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext
 class SenderIntegrationTest {
 
-	@Autowired
-	private TestRestTemplate restTemplate;
+  @Autowired private TestRestTemplate restTemplate;
 
-	@Autowired
-	private PubSubTemplate pubSubTemplate;
+  @Autowired private PubSubTemplate pubSubTemplate;
 
-	@Test
-	void testSample() throws Exception {
-		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		String message = "test message " + UUID.randomUUID();
+  @Test
+  void testSample() throws Exception {
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    String message = "test message " + UUID.randomUUID();
 
-		map.add("message", message);
-		map.add("times", 1);
+    map.add("message", message);
+    map.add("times", 1);
 
-		this.restTemplate.postForObject("/postMessage", map, String.class);
+    this.restTemplate.postForObject("/postMessage", map, String.class);
 
-		List<AcknowledgeablePubsubMessage> messages;
+    List<AcknowledgeablePubsubMessage> messages;
 
-		boolean messageReceived = false;
-		for (int i = 0; i < 100; i++) {
-			messages = this.pubSubTemplate.pull("exampleSubscription", 10, true);
-			messages.forEach(BasicAcknowledgeablePubsubMessage::ack);
+    boolean messageReceived = false;
+    for (int i = 0; i < 100; i++) {
+      messages = this.pubSubTemplate.pull("exampleSubscription", 10, true);
+      messages.forEach(BasicAcknowledgeablePubsubMessage::ack);
 
-			if (messages.stream()
-					.anyMatch(m -> m.getPubsubMessage().getData().toStringUtf8().startsWith(message))) {
-				messageReceived = true;
-				break;
-			}
-			Thread.sleep(100);
-		}
-		assertThat(messageReceived).isTrue();
-
-	}
+      if (messages.stream()
+          .anyMatch(m -> m.getPubsubMessage().getData().toStringUtf8().startsWith(message))) {
+        messageReceived = true;
+        break;
+      }
+      Thread.sleep(100);
+    }
+    assertThat(messageReceived).isTrue();
+  }
 }

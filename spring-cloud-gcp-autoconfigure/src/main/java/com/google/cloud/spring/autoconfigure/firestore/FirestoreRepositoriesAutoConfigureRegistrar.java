@@ -16,11 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.firestore;
 
-import java.lang.annotation.Annotation;
-
 import com.google.cloud.spring.data.firestore.repository.config.EnableReactiveFirestoreRepositories;
 import com.google.cloud.spring.data.firestore.repository.config.FirestoreRepositoryConfigurationExtension;
-
+import java.lang.annotation.Annotation;
 import org.springframework.boot.autoconfigure.data.AbstractRepositoryConfigurationSourceSupport;
 import org.springframework.data.repository.config.RepositoryConfigurationExtension;
 
@@ -28,29 +26,26 @@ import org.springframework.data.repository.config.RepositoryConfigurationExtensi
  * Support configuration class for Firestore repositories.
  *
  * @author Chengyuan Zhao
- *
  * @since 1.2
  */
 public class FirestoreRepositoriesAutoConfigureRegistrar
-		extends AbstractRepositoryConfigurationSourceSupport {
+    extends AbstractRepositoryConfigurationSourceSupport {
 
-	@Override
-	protected Class<? extends Annotation> getAnnotation() {
-		return EnableReactiveFirestoreRepositories.class;
-	}
+  @Override
+  protected Class<? extends Annotation> getAnnotation() {
+    return EnableReactiveFirestoreRepositories.class;
+  }
 
-	@Override
-	protected Class<?> getConfiguration() {
-		return EnableFirestoreRepositoriesConfiguration.class;
-	}
+  @Override
+  protected Class<?> getConfiguration() {
+    return EnableFirestoreRepositoriesConfiguration.class;
+  }
 
-	@Override
-	protected RepositoryConfigurationExtension getRepositoryConfigurationExtension() {
-		return new FirestoreRepositoryConfigurationExtension();
-	}
+  @Override
+  protected RepositoryConfigurationExtension getRepositoryConfigurationExtension() {
+    return new FirestoreRepositoryConfigurationExtension();
+  }
 
-	@EnableReactiveFirestoreRepositories
-	private static class EnableFirestoreRepositoriesConfiguration {
-
-	}
+  @EnableReactiveFirestoreRepositories
+  private static class EnableFirestoreRepositoriesConfiguration {}
 }

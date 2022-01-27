@@ -24,6 +24,4 @@ import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
  * @author Chengyuan Zhao
  */
 public interface SubTradeComponentRepository
-		extends SpannerRepository<SubTradeComponent, Object[]> {
-
-}
+    extends SpannerRepository<SubTradeComponent, Object[]> {}

@@ -17,7 +17,6 @@
 package com.google.cloud.spring.data.datastore.core.util;
 
 import java.lang.reflect.Array;
-
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -25,36 +24,34 @@ import org.springframework.util.CollectionUtils;
  *
  * @author Dmitry Solomakha
  * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public final class ValueUtil {
 
-	private ValueUtil() {
-	}
+  private ValueUtil() {}
 
-	public static Object toListIfArray(Object val) {
-		if (val != null && isArrayOfItems(val.getClass())) {
-			//if a property is an array, convert it to list
-			return CollectionUtils.arrayToList(val);
-		}
-		return val;
-	}
+  public static Object toListIfArray(Object val) {
+    if (val != null && isArrayOfItems(val.getClass())) {
+      // if a property is an array, convert it to list
+      return CollectionUtils.arrayToList(val);
+    }
+    return val;
+  }
 
-	public static Class boxIfNeeded(Class propertyType) {
-		if (propertyType == null) {
-			return null;
-		}
-		return propertyType.isPrimitive()
-				? Array.get(Array.newInstance(propertyType, 1), 0).getClass()
-				: propertyType;
-	}
+  public static Class boxIfNeeded(Class propertyType) {
+    if (propertyType == null) {
+      return null;
+    }
+    return propertyType.isPrimitive()
+        ? Array.get(Array.newInstance(propertyType, 1), 0).getClass()
+        : propertyType;
+  }
 
-	public static boolean isCollectionLike(Class type) {
-		return Iterable.class.isAssignableFrom(type) || isArrayOfItems(type);
-	}
+  public static boolean isCollectionLike(Class type) {
+    return Iterable.class.isAssignableFrom(type) || isArrayOfItems(type);
+  }
 
-	private static boolean isArrayOfItems(Class type) {
-		return type.isArray() && type != byte[].class;
-	}
+  private static boolean isArrayOfItems(Class type) {
+    return type.isArray() && type != byte[].class;
+  }
 }

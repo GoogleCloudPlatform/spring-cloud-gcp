@@ -28,65 +28,65 @@ import com.google.cloud.spring.pubsub.integration.AckMode;
  */
 public class PubSubConsumerProperties extends PubSubCommonProperties {
 
-	private AckMode ackMode = AckMode.AUTO;
+  private AckMode ackMode = AckMode.AUTO;
 
-	private Integer maxFetchSize = 1;
+  private Integer maxFetchSize = 1;
 
-	private String subscriptionName = null;
+  private String subscriptionName = null;
 
-	private DeadLetterPolicy deadLetterPolicy = null;
+  private DeadLetterPolicy deadLetterPolicy = null;
 
-	public AckMode getAckMode() {
-		return ackMode;
-	}
+  public AckMode getAckMode() {
+    return ackMode;
+  }
 
-	public void setAckMode(AckMode ackMode) {
-		this.ackMode = ackMode;
-	}
+  public void setAckMode(AckMode ackMode) {
+    this.ackMode = ackMode;
+  }
 
-	public Integer getMaxFetchSize() {
-		return maxFetchSize;
-	}
+  public Integer getMaxFetchSize() {
+    return maxFetchSize;
+  }
 
-	public void setMaxFetchSize(Integer maxFetchSize) {
-		this.maxFetchSize = maxFetchSize;
-	}
+  public void setMaxFetchSize(Integer maxFetchSize) {
+    this.maxFetchSize = maxFetchSize;
+  }
 
-	public String getSubscriptionName() {
-		return subscriptionName;
-	}
+  public String getSubscriptionName() {
+    return subscriptionName;
+  }
 
-	public void setSubscriptionName(String subscriptionName) {
-		this.subscriptionName = subscriptionName;
-	}
+  public void setSubscriptionName(String subscriptionName) {
+    this.subscriptionName = subscriptionName;
+  }
 
-	public DeadLetterPolicy getDeadLetterPolicy() {
-		return deadLetterPolicy;
-	}
+  public DeadLetterPolicy getDeadLetterPolicy() {
+    return deadLetterPolicy;
+  }
 
-	public void setDeadLetterPolicy(DeadLetterPolicy deadLetterPolicy) {
-		this.deadLetterPolicy = deadLetterPolicy;
-	}
+  public void setDeadLetterPolicy(DeadLetterPolicy deadLetterPolicy) {
+    this.deadLetterPolicy = deadLetterPolicy;
+  }
 
-	public static class DeadLetterPolicy {
-		private String deadLetterTopic;
+  public static class DeadLetterPolicy {
+    private String deadLetterTopic;
 
-		private Integer maxDeliveryAttempts;
+    private Integer maxDeliveryAttempts;
 
-		public String getDeadLetterTopic() {
-			return deadLetterTopic;
-		}
+    public String getDeadLetterTopic() {
+      return deadLetterTopic;
+    }
 
-		public void setDeadLetterTopic(String deadLetterTopic) {
-			this.deadLetterTopic = deadLetterTopic;
-		}
+    public void setDeadLetterTopic(String deadLetterTopic) {
+      this.deadLetterTopic = deadLetterTopic;
+    }
 
-		public Integer getMaxDeliveryAttempts() {
-			return maxDeliveryAttempts;
-		}
+    public Integer getMaxDeliveryAttempts() {
+      return maxDeliveryAttempts;
+    }
 
-		public void setMaxDeliveryAttempts(Integer maxDeliveryAttempts) {
-			this.maxDeliveryAttempts = maxDeliveryAttempts;
-		}
-	}
+    public void setMaxDeliveryAttempts(Integer maxDeliveryAttempts) {
+      this.maxDeliveryAttempts = maxDeliveryAttempts;
+    }
+  }
 }

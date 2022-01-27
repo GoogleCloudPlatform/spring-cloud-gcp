@@ -17,7 +17,6 @@
 package com.google.cloud.spring.storage.integration;
 
 import com.google.cloud.storage.BlobInfo;
-
 import org.springframework.integration.file.remote.ClientCallback;
 import org.springframework.integration.file.remote.RemoteFileTemplate;
 import org.springframework.integration.file.remote.session.SessionFactory;
@@ -30,18 +29,18 @@ import org.springframework.integration.file.remote.session.SessionFactory;
  */
 public class GcsRemoteFileTemplate extends RemoteFileTemplate<BlobInfo> {
 
-	/**
-	 * Construct a {@link RemoteFileTemplate} with the supplied session factory.
-	 *
-	 * @param sessionFactory the session factory.
-	 */
-	public GcsRemoteFileTemplate(SessionFactory<BlobInfo> sessionFactory) {
-		super(sessionFactory);
-	}
+  /**
+   * Construct a {@link RemoteFileTemplate} with the supplied session factory.
+   *
+   * @param sessionFactory the session factory.
+   */
+  public GcsRemoteFileTemplate(SessionFactory<BlobInfo> sessionFactory) {
+    super(sessionFactory);
+  }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T, C> T executeWithClient(ClientCallback<C, T> callback) {
-		return callback.doWithClient((C) this.sessionFactory.getSession().getClientInstance());
-	}
+  @Override
+  @SuppressWarnings("unchecked")
+  public <T, C> T executeWithClient(ClientCallback<C, T> callback) {
+    return callback.doWithClient((C) this.sessionFactory.getSession().getClientInstance());
+  }
 }

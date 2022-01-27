@@ -16,41 +16,42 @@
 
 package com.google.cloud.spring.storage;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-/**
- * @author Daniel Zou
- */
+import org.junit.jupiter.api.Test;
+
+/** @author Daniel Zou */
 class GoogleStorageLocationTests {
 
-	@Test
-	void testBadInputsToConstructor() {
-		assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new GoogleStorageLocation(null));
-		assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new GoogleStorageLocation(""));
-		assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new GoogleStorageLocation(" "));
-	}
+  @Test
+  void testBadInputsToConstructor() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new GoogleStorageLocation(null));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new GoogleStorageLocation(""));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new GoogleStorageLocation(" "));
+  }
 
-	@Test
-	void testCorrectLocationForBucket() {
-		GoogleStorageLocation location = GoogleStorageLocation.forBucket("bucketName");
-		assertThat(location.uriString()).isEqualTo("gs://bucketName/");
-		assertThat(location.isBucket()).isTrue();
-	}
+  @Test
+  void testCorrectLocationForBucket() {
+    GoogleStorageLocation location = GoogleStorageLocation.forBucket("bucketName");
+    assertThat(location.uriString()).isEqualTo("gs://bucketName/");
+    assertThat(location.isBucket()).isTrue();
+  }
 
-	@Test
-	void testCorrectLocationForFolder() {
-		GoogleStorageLocation location = GoogleStorageLocation.forFolder("bucketName", "folderName");
-		assertThat(location.uriString()).isEqualTo("gs://bucketName/folderName/");
-		assertThat(location.isFolder()).isTrue();
-	}
+  @Test
+  void testCorrectLocationForFolder() {
+    GoogleStorageLocation location = GoogleStorageLocation.forFolder("bucketName", "folderName");
+    assertThat(location.uriString()).isEqualTo("gs://bucketName/folderName/");
+    assertThat(location.isFolder()).isTrue();
+  }
 
-	@Test
-	void testCorrectLocationForFile() {
-		GoogleStorageLocation location = GoogleStorageLocation.forFile("bucketName", "fileName");
-		assertThat(location.uriString()).isEqualTo("gs://bucketName/fileName");
-		assertThat(location.isFile()).isTrue();
-	}
+  @Test
+  void testCorrectLocationForFile() {
+    GoogleStorageLocation location = GoogleStorageLocation.forFile("bucketName", "fileName");
+    assertThat(location.uriString()).isEqualTo("gs://bucketName/fileName");
+    assertThat(location.isFile()).isTrue();
+  }
 }

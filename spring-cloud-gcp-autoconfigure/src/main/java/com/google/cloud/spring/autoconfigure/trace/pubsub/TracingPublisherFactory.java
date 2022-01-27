@@ -20,18 +20,17 @@ import com.google.cloud.pubsub.v1.PublisherInterface;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
 
 final class TracingPublisherFactory implements PublisherFactory {
-	private final PubSubTracing pubSubTracing;
+  private final PubSubTracing pubSubTracing;
 
-	private final PublisherFactory publisherFactory;
+  private final PublisherFactory publisherFactory;
 
-	TracingPublisherFactory(PubSubTracing pubSubTracing, PublisherFactory publisherFactory) {
-		this.pubSubTracing = pubSubTracing;
-		this.publisherFactory = publisherFactory;
-	}
+  TracingPublisherFactory(PubSubTracing pubSubTracing, PublisherFactory publisherFactory) {
+    this.pubSubTracing = pubSubTracing;
+    this.publisherFactory = publisherFactory;
+  }
 
-	@Override
-	public PublisherInterface createPublisher(String topic) {
-		return pubSubTracing.publisher(publisherFactory.createPublisher(topic),  topic);
-	}
-
+  @Override
+  public PublisherInterface createPublisher(String topic) {
+    return pubSubTracing.publisher(publisherFactory.createPublisher(topic), topic);
+  }
 }

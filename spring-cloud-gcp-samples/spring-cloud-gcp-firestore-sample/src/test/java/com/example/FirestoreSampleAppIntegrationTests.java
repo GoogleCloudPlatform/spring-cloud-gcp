@@ -19,7 +19,6 @@ package com.example;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.output.TeeOutputStream;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
@@ -27,7 +26,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
@@ -37,7 +35,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  * Tests for the Firestore sample application.
  *
  * @author Dmitry Solomakha
- *
  * @since 1.2
  */
 @EnabledIfSystemProperty(named = "it.firestore", matches = "true")
@@ -46,40 +43,41 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext
 class FirestoreSampleAppIntegrationTests {
-	private static final int TIMEOUT = 10;
-	private static PrintStream systemOut;
+  private static final int TIMEOUT = 10;
+  private static PrintStream systemOut;
 
-	private static ByteArrayOutputStream baos;
+  private static ByteArrayOutputStream baos;
 
-	@BeforeAll
-	static void prepare() {
-		systemOut = System.out;
-		baos = new ByteArrayOutputStream();
-		TeeOutputStream out = new TeeOutputStream(systemOut, baos);
-		System.setOut(new PrintStream(out));
-	}
+  @BeforeAll
+  static void prepare() {
+    systemOut = System.out;
+    baos = new ByteArrayOutputStream();
+    TeeOutputStream out = new TeeOutputStream(systemOut, baos);
+    System.setOut(new PrintStream(out));
+  }
 
-	@AfterAll
-	static void bringBack() {
-		System.setOut(systemOut);
-	}
+  @AfterAll
+  static void bringBack() {
+    System.setOut(systemOut);
+  }
 
-	@Test
-	void testSample() {
-		String expectedString =
-				"read: {name=Ada, phones=[123, 456]}\n" +
-				"read: User{name='Joe', phones=[Phone{number=12345, type=CELL}, Phone{number=54321, type=WORK}]}";
+  @Test
+  void testSample() {
+    String expectedString =
+        "read: {name=Ada, phones=[123, 456]}\n"
+            + "read: User{name='Joe', phones=[Phone{number=12345, type=CELL}, Phone{number=54321,"
+            + " type=WORK}]}";
 
-		Awaitility.await()
-				.atMost(TIMEOUT, TimeUnit.SECONDS)
-				.until(() -> baos.toString().contains(expectedString));
+    Awaitility.await()
+        .atMost(TIMEOUT, TimeUnit.SECONDS)
+        .until(() -> baos.toString().contains(expectedString));
 
-		//the following two lines appear in a non-deterministic order, so checking them independently
-		Awaitility.await()
-				.atMost(TIMEOUT, TimeUnit.SECONDS)
-				.until(() -> baos.toString().contains("removing: ada"));
-		Awaitility.await()
-				.atMost(TIMEOUT, TimeUnit.SECONDS)
-				.until(() -> baos.toString().contains("removing: joe"));
-	}
+    // the following two lines appear in a non-deterministic order, so checking them independently
+    Awaitility.await()
+        .atMost(TIMEOUT, TimeUnit.SECONDS)
+        .until(() -> baos.toString().contains("removing: ada"));
+    Awaitility.await()
+        .atMost(TIMEOUT, TimeUnit.SECONDS)
+        .until(() -> baos.toString().contains("removing: joe"));
+  }
 }

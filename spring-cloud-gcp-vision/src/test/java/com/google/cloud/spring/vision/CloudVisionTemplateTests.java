@@ -16,8 +16,10 @@
 
 package com.google.cloud.spring.vision;
 
-import java.io.IOException;
-import java.io.InputStream;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.vision.v1.AnnotateImageRequest;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
@@ -31,148 +33,145 @@ import com.google.cloud.vision.v1.ImageContext;
 import com.google.protobuf.ByteString;
 import com.google.rpc.Status;
 import io.grpc.Status.Code;
+import java.io.IOException;
+import java.io.InputStream;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
-
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for the {@link CloudVisionTemplate}.
  *
  * @author Daniel Zou
- *
  * @since 1.1
  */
 public class CloudVisionTemplateTests {
 
-	/** Used to test exception messages and types. **/
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+  /** Used to test exception messages and types. * */
+  @Rule public ExpectedException expectedException = ExpectedException.none();
 
-	// Resource representing a fake image blob
-	private static final Resource FAKE_IMAGE = new ByteArrayResource("fake_image".getBytes());
+  // Resource representing a fake image blob
+  private static final Resource FAKE_IMAGE = new ByteArrayResource("fake_image".getBytes());
 
-	private static final BatchAnnotateImagesResponse DEFAULT_API_RESPONSE =
-			BatchAnnotateImagesResponse.newBuilder()
-					.addResponses(AnnotateImageResponse.getDefaultInstance())
-					.build();
+  private static final BatchAnnotateImagesResponse DEFAULT_API_RESPONSE =
+      BatchAnnotateImagesResponse.newBuilder()
+          .addResponses(AnnotateImageResponse.getDefaultInstance())
+          .build();
 
-	private ImageAnnotatorClient imageAnnotatorClient;
+  private ImageAnnotatorClient imageAnnotatorClient;
 
-	private CloudVisionTemplate cloudVisionTemplate;
+  private CloudVisionTemplate cloudVisionTemplate;
 
-	@Before
-	public void setupVisionTemplateMock() {
-		this.imageAnnotatorClient = Mockito.mock(ImageAnnotatorClient.class);
-		this.cloudVisionTemplate = new CloudVisionTemplate(this.imageAnnotatorClient);
-	}
+  @Before
+  public void setupVisionTemplateMock() {
+    this.imageAnnotatorClient = Mockito.mock(ImageAnnotatorClient.class);
+    this.cloudVisionTemplate = new CloudVisionTemplate(this.imageAnnotatorClient);
+  }
 
-	@Test
-	public void testAddImageContext_analyzeImage() throws IOException {
-		when(this.imageAnnotatorClient.batchAnnotateImages(any(BatchAnnotateImagesRequest.class)))
-				.thenReturn(DEFAULT_API_RESPONSE);
+  @Test
+  public void testAddImageContext_analyzeImage() throws IOException {
+    when(this.imageAnnotatorClient.batchAnnotateImages(any(BatchAnnotateImagesRequest.class)))
+        .thenReturn(DEFAULT_API_RESPONSE);
 
-		ImageContext imageContext = Mockito.mock(ImageContext.class);
+    ImageContext imageContext = Mockito.mock(ImageContext.class);
 
-		this.cloudVisionTemplate.analyzeImage(FAKE_IMAGE, imageContext, Type.FACE_DETECTION);
+    this.cloudVisionTemplate.analyzeImage(FAKE_IMAGE, imageContext, Type.FACE_DETECTION);
 
-		BatchAnnotateImagesRequest expectedRequest =
-				BatchAnnotateImagesRequest.newBuilder()
-						.addRequests(
-								AnnotateImageRequest.newBuilder()
-										.addFeatures(Feature.newBuilder().setType(Type.FACE_DETECTION))
-										.setImageContext(imageContext)
-										.setImage(Image.newBuilder().setContent(
-												ByteString.readFrom(FAKE_IMAGE.getInputStream())).build()))
-						.build();
+    BatchAnnotateImagesRequest expectedRequest =
+        BatchAnnotateImagesRequest.newBuilder()
+            .addRequests(
+                AnnotateImageRequest.newBuilder()
+                    .addFeatures(Feature.newBuilder().setType(Type.FACE_DETECTION))
+                    .setImageContext(imageContext)
+                    .setImage(
+                        Image.newBuilder()
+                            .setContent(ByteString.readFrom(FAKE_IMAGE.getInputStream()))
+                            .build()))
+            .build();
 
-		verify(this.imageAnnotatorClient, times(1)).batchAnnotateImages(expectedRequest);
-	}
+    verify(this.imageAnnotatorClient, times(1)).batchAnnotateImages(expectedRequest);
+  }
 
-	@Test
-	public void testAddImageContext_extractText() throws IOException {
-		when(this.imageAnnotatorClient.batchAnnotateImages(any(BatchAnnotateImagesRequest.class)))
-				.thenReturn(DEFAULT_API_RESPONSE);
+  @Test
+  public void testAddImageContext_extractText() throws IOException {
+    when(this.imageAnnotatorClient.batchAnnotateImages(any(BatchAnnotateImagesRequest.class)))
+        .thenReturn(DEFAULT_API_RESPONSE);
 
-		ImageContext imageContext = Mockito.mock(ImageContext.class);
+    ImageContext imageContext = Mockito.mock(ImageContext.class);
 
-		this.cloudVisionTemplate.extractTextFromImage(FAKE_IMAGE, imageContext);
+    this.cloudVisionTemplate.extractTextFromImage(FAKE_IMAGE, imageContext);
 
-		BatchAnnotateImagesRequest expectedRequest =
-				BatchAnnotateImagesRequest.newBuilder()
-						.addRequests(
-								AnnotateImageRequest.newBuilder()
-										.addFeatures(Feature.newBuilder().setType(Type.TEXT_DETECTION))
-										.setImageContext(imageContext)
-										.setImage(Image.newBuilder().setContent(ByteString.readFrom(FAKE_IMAGE.getInputStream())).build()))
-						.build();
+    BatchAnnotateImagesRequest expectedRequest =
+        BatchAnnotateImagesRequest.newBuilder()
+            .addRequests(
+                AnnotateImageRequest.newBuilder()
+                    .addFeatures(Feature.newBuilder().setType(Type.TEXT_DETECTION))
+                    .setImageContext(imageContext)
+                    .setImage(
+                        Image.newBuilder()
+                            .setContent(ByteString.readFrom(FAKE_IMAGE.getInputStream()))
+                            .build()))
+            .build();
 
-		verify(this.imageAnnotatorClient, times(1)).batchAnnotateImages(expectedRequest);
-	}
+    verify(this.imageAnnotatorClient, times(1)).batchAnnotateImages(expectedRequest);
+  }
 
-	@Test
-	public void testEmptyClientResponseError() {
-		when(this.imageAnnotatorClient.batchAnnotateImages(any(BatchAnnotateImagesRequest.class)))
-				.thenReturn(BatchAnnotateImagesResponse.getDefaultInstance());
+  @Test
+  public void testEmptyClientResponseError() {
+    when(this.imageAnnotatorClient.batchAnnotateImages(any(BatchAnnotateImagesRequest.class)))
+        .thenReturn(BatchAnnotateImagesResponse.getDefaultInstance());
 
-		this.expectedException.expect(CloudVisionException.class);
-		this.expectedException.expectMessage(
-				"Failed to receive valid response Vision APIs; empty response received.");
+    this.expectedException.expect(CloudVisionException.class);
+    this.expectedException.expectMessage(
+        "Failed to receive valid response Vision APIs; empty response received.");
 
-		this.cloudVisionTemplate.analyzeImage(FAKE_IMAGE, Type.TEXT_DETECTION);
-	}
+    this.cloudVisionTemplate.analyzeImage(FAKE_IMAGE, Type.TEXT_DETECTION);
+  }
 
-	@Test
-	public void testExtractTextError() {
-		AnnotateImageResponse response = AnnotateImageResponse.newBuilder()
-				.setError(
-						Status.newBuilder()
-								.setCode(Code.INTERNAL.value())
-								.setMessage("Error Message from Vision API."))
-				.build();
+  @Test
+  public void testExtractTextError() {
+    AnnotateImageResponse response =
+        AnnotateImageResponse.newBuilder()
+            .setError(
+                Status.newBuilder()
+                    .setCode(Code.INTERNAL.value())
+                    .setMessage("Error Message from Vision API."))
+            .build();
 
-		BatchAnnotateImagesResponse responseBatch = BatchAnnotateImagesResponse
-				.newBuilder()
-				.addResponses(response)
-				.build();
+    BatchAnnotateImagesResponse responseBatch =
+        BatchAnnotateImagesResponse.newBuilder().addResponses(response).build();
 
-		when(this.imageAnnotatorClient.batchAnnotateImages(any(BatchAnnotateImagesRequest.class)))
-				.thenReturn(responseBatch);
+    when(this.imageAnnotatorClient.batchAnnotateImages(any(BatchAnnotateImagesRequest.class)))
+        .thenReturn(responseBatch);
 
-		this.expectedException.expect(CloudVisionException.class);
-		this.expectedException.expectMessage("Error Message from Vision API.");
+    this.expectedException.expect(CloudVisionException.class);
+    this.expectedException.expectMessage("Error Message from Vision API.");
 
-		this.cloudVisionTemplate.extractTextFromImage(FAKE_IMAGE);
-	}
+    this.cloudVisionTemplate.extractTextFromImage(FAKE_IMAGE);
+  }
 
-	@Test
-	public void testIOError() {
-		this.expectedException.expect(CloudVisionException.class);
-		this.expectedException.expectMessage("Failed to read image bytes from provided resource.");
+  @Test
+  public void testIOError() {
+    this.expectedException.expect(CloudVisionException.class);
+    this.expectedException.expectMessage("Failed to read image bytes from provided resource.");
 
-		this.cloudVisionTemplate.analyzeImage(new BadResource(), Type.LABEL_DETECTION);
-	}
+    this.cloudVisionTemplate.analyzeImage(new BadResource(), Type.LABEL_DETECTION);
+  }
 
-	private static final class BadResource extends AbstractResource {
-		@Override
-		public String getDescription() {
-			return "bad resource";
-		}
+  private static final class BadResource extends AbstractResource {
+    @Override
+    public String getDescription() {
+      return "bad resource";
+    }
 
-		@Override
-		public InputStream getInputStream() throws IOException {
-			throw new IOException("Failed to open resource.");
-		}
-	}
-
+    @Override
+    public InputStream getInputStream() throws IOException {
+      throw new IOException("Failed to open resource.");
+    }
+  }
 }

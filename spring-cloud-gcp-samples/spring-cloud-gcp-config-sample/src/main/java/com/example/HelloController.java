@@ -28,14 +28,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
-	private final MyAppProperties sampleConfig;
+  private final MyAppProperties sampleConfig;
 
-	public HelloController(MyAppProperties sampleConfig) {
-		this.sampleConfig = sampleConfig;
-	}
+  public HelloController(MyAppProperties sampleConfig) {
+    this.sampleConfig = sampleConfig;
+  }
 
-	@GetMapping("/")
-	public MyAppProperties json() {
-		return this.sampleConfig;
-	}
+  @GetMapping("/")
+  public MyAppProperties json() {
+    return this.sampleConfig;
+  }
 }

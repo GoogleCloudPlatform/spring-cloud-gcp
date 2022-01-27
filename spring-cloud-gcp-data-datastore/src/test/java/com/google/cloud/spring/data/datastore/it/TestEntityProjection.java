@@ -23,5 +23,5 @@ package com.google.cloud.spring.data.datastore.it;
  */
 public interface TestEntityProjection {
 
-	String getColor();
+  String getColor();
 }

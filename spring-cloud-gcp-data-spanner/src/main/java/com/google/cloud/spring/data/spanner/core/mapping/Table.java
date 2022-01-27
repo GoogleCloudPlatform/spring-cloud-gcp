@@ -28,7 +28,6 @@ import java.lang.annotation.Target;
  *
  * @author Ray Tsang
  * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Documented
@@ -36,10 +35,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Table {
 
-	/**
-	 * The name of the table in Spanner, which can differ from the name of the class which it
-	 * annotates.
-	 * @return The name of the table
-	 */
-	String name() default "";
+  /**
+   * The name of the table in Spanner, which can differ from the name of the class which it
+   * annotates.
+   *
+   * @return The name of the table
+   */
+  String name() default "";
 }

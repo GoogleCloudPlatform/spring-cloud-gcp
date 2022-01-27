@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.pubsub.support;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.pubsub.v1.ProjectTopicName;
@@ -26,8 +28,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * Tests for the publisher factory.
  *
@@ -37,36 +37,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultPublisherFactoryTests {
 
-	/**
-	 * used to test exception messages and types.
-	 */
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+  /** used to test exception messages and types. */
+  @Rule public ExpectedException expectedException = ExpectedException.none();
 
-	@Mock
-	private CredentialsProvider credentialsProvider;
+  @Mock private CredentialsProvider credentialsProvider;
 
-	@Test
-	public void testGetPublisher() {
-		DefaultPublisherFactory factory = new DefaultPublisherFactory(() -> "projectId");
-		factory.setCredentialsProvider(this.credentialsProvider);
-		Publisher publisher = factory.createPublisher("testTopic");
+  @Test
+  public void testGetPublisher() {
+    DefaultPublisherFactory factory = new DefaultPublisherFactory(() -> "projectId");
+    factory.setCredentialsProvider(this.credentialsProvider);
+    Publisher publisher = factory.createPublisher("testTopic");
 
-		assertThat(((ProjectTopicName) publisher.getTopicName()).getTopic()).isEqualTo("testTopic");
-		assertThat(((ProjectTopicName) publisher.getTopicName()).getProject()).isEqualTo("projectId");
-	}
+    assertThat(((ProjectTopicName) publisher.getTopicName()).getTopic()).isEqualTo("testTopic");
+    assertThat(((ProjectTopicName) publisher.getTopicName()).getProject()).isEqualTo("projectId");
+  }
 
-	@Test
-	public void testNewDefaultPublisherFactory_nullProjectIdProvider() {
-		this.expectedException.expect(IllegalArgumentException.class);
-		this.expectedException.expectMessage("The project ID provider can't be null.");
-		new DefaultPublisherFactory(null);
-	}
+  @Test
+  public void testNewDefaultPublisherFactory_nullProjectIdProvider() {
+    this.expectedException.expect(IllegalArgumentException.class);
+    this.expectedException.expectMessage("The project ID provider can't be null.");
+    new DefaultPublisherFactory(null);
+  }
 
-	@Test
-	public void testNewDefaultPublisherFactory_nullProjectId() {
-		this.expectedException.expect(IllegalArgumentException.class);
-		this.expectedException.expectMessage("The project ID can't be null or empty.");
-		new DefaultPublisherFactory(() -> null);
-	}
+  @Test
+  public void testNewDefaultPublisherFactory_nullProjectId() {
+    this.expectedException.expect(IllegalArgumentException.class);
+    this.expectedException.expectMessage("The project ID can't be null or empty.");
+    new DefaultPublisherFactory(() -> null);
+  }
 }
