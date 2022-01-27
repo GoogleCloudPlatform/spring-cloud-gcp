@@ -4,8 +4,7 @@
 [#security-firebase]
 == Firebase Authentication
 
-https://firebase.google.com/products/auth[Firebase Authentication] provides backend services, easy-to-use SDKs, and ready-made UI libraries to authenticate users to your link:https://firebase.google.com/[Firebase] app. It integrates tightly with other Firebase services and link:https://firebase.google.com/firebase-and-gcp[GCP services] including Cloud Storage, Cloud Firestore and Cloud Functions.
-
+https://firebase.google.com/products/auth[Firebase Authentication] provides backend services, easy-to-use SDKs, and ready-made UI libraries to authenticate users to your link:https://firebase.google.com/[Firebase] app.
 
 The Security Firebase starter uses {spring-security-ref}servlet/oauth2/resource-server/index.html[Spring Security OAuth 2.0 Resource Server] functionality to extract user identity from OAuth2 Authorization header.
 
