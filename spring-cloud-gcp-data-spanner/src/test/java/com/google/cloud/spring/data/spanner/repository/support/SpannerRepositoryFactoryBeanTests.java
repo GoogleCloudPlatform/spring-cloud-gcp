@@ -30,7 +30,6 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
 /**
  * Tests Spanner repository factory bean.
  *
- * @author Chengyuan Zhao
  */
 class SpannerRepositoryFactoryBeanTests {
 

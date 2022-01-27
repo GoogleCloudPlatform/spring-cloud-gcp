@@ -50,7 +50,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 /**
  * Integration tests for BigQuery.
  *
- * @author Daniel Zou
  * @since 1.2
  */
 @RunWith(SpringRunner.class)

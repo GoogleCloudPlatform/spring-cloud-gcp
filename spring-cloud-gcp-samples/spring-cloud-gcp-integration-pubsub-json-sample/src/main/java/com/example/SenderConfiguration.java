@@ -31,7 +31,6 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 /**
  * Configuration for sending custom JSON payloads to a Pub/Sub topic.
  *
- * @author Daniel Zou
  */
 @Configuration
 public class SenderConfiguration {

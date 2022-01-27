@@ -31,8 +31,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 /**
  * Integration tests for config auto-configuration.
  *
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 public class GcpConfigIntegrationTests {
 

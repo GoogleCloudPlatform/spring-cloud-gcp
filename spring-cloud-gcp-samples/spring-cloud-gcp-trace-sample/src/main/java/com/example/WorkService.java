@@ -32,7 +32,6 @@ import org.springframework.web.client.RestTemplate;
 /**
  * The busy-work service for the sample application.
  *
- * @author Ray Tsang
  */
 @Service
 public class WorkService {

@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * A REST controller that tests serializing of paged responses.
  *
- * @author Chengyuan Zhao
  */
 @RestController
 public class PagedBooksController {

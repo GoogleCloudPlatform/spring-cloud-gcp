@@ -23,7 +23,6 @@ import java.util.Set;
 /**
  * An event that is published after a save operation to Cloud Spanner.
  *
- * @author Chengyuan Zhao
  */
 public class AfterSaveEvent extends SaveEvent {
   /**

@@ -38,7 +38,6 @@ import org.springframework.util.Assert;
  * <p>- iat : Must be in the past - aud : Must be the firebase project id - auth_time : Must be in
  * the past - sub : Must not be empty
  *
- * @author Vinicius Carvalho
  * @since 1.2.2
  */
 public class FirebaseTokenValidator implements OAuth2TokenValidator<Jwt> {

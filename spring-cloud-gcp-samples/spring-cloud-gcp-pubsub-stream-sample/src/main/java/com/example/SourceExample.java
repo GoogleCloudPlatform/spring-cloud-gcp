@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * An example source for the sample app.
  *
- * @author João André Martins
  */
 @EnableBinding(Source.class)
 @RestController

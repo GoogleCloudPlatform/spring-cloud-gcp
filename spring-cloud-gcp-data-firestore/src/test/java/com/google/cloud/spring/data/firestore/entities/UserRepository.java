@@ -26,7 +26,6 @@ import reactor.core.publisher.Mono;
 /**
  * A test custom repository.
  *
- * @author Chengyuan Zhao
  */
 // tag::repository[]
 public interface UserRepository extends FirestoreReactiveRepository<User> {

@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests to check for new mapping methods that appear in the Spanner client lib.
  *
- * @author Chengyuan Zhao
  */
 class SpannerWriteMethodCoverageTests {
 

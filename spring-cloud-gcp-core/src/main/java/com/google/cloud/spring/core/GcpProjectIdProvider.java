@@ -19,7 +19,6 @@ package com.google.cloud.spring.core;
 /**
  * Functional interface to provide GCP project IDs.
  *
- * @author João André Martins
  */
 @FunctionalInterface
 public interface GcpProjectIdProvider {

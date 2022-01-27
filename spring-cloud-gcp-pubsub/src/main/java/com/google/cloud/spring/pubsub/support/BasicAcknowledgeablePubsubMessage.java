@@ -23,10 +23,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 /**
  * A {@link PubsubMessage} wrapper that allows it to be acknowledged.
  *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Doug Hoard
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public interface BasicAcknowledgeablePubsubMessage {

@@ -28,9 +28,6 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
  * Adds the trace ID and span ID to the logging entry, in its correct format to be displayed in the
  * Logs viewer.
  *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 public class TraceIdLoggingEnhancer implements LoggingEnhancer, LoggingEventEnhancer {
 

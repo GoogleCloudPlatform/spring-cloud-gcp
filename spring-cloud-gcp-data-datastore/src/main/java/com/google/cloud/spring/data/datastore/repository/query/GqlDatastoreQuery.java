@@ -63,7 +63,6 @@ import org.springframework.util.StringUtils;
  * Query Method for GQL queries.
  *
  * @param <T> the return type of the Query Method
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {

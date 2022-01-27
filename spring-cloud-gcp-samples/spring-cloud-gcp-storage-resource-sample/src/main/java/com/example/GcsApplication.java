@@ -23,7 +23,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * An example Spring Boot application that reads and writes files stored in Google Cloud Storage
  * (GCS) using the Spring Resource abstraction and the gs: protocol prefix.
  *
- * @author Mike Eltsufin
  */
 @SpringBootApplication
 public class GcsApplication {

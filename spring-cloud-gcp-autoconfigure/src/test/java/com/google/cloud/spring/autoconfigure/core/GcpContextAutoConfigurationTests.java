@@ -35,9 +35,6 @@ import org.springframework.context.annotation.Bean;
 /**
  * Tests for the top-level context auto-configuration.
  *
- * @author João André Martins
- * @author Chengyuan Zhao
- * @author Serhat Soydan
  */
 class GcpContextAutoConfigurationTests {
 

@@ -23,7 +23,6 @@ import java.util.Objects;
 /**
  * Sample entity.
  *
- * @author Dmitry Solomakha
  */
 @Entity
 public class Album implements Comparable<Album> {

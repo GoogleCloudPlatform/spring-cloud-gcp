@@ -38,8 +38,6 @@ import reactor.core.scheduler.Scheduler;
  * subscription, when the demand is unlimited. The scheduler is not used when there is a specific
  * demand (a.k.a backpressure).
  *
- * @author Elena Felder
- * @author Maurice Zeijen
  * @since 1.2
  */
 public final class PubSubReactiveFactory {

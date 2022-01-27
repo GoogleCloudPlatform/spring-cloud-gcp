@@ -34,7 +34,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * Tests for the Spanner persistent property.
  *
- * @author Chengyuan Zhao
  */
 @RunWith(SpringRunner.class)
 public class SpannerPersistentPropertyImplTests {

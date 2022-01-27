@@ -37,7 +37,6 @@ import java.util.concurrent.TimeUnit
 /**
  * Tests to verify the Kotlin sample app.
  *
- * @author Daniel Zou
  *
  * @since 1.1
  */

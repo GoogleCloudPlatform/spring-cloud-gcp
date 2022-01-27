@@ -53,8 +53,6 @@ import org.springframework.test.context.TestExecutionListeners;
  * are generated to have a unique suffix, which is updated on the entity annotations as well
  * dynamically to avoid collisions of multiple parallel tests running against the same instance.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
  */
 @ContextConfiguration(classes = {IntegrationTestConfiguration.class})
 @TestExecutionListeners(

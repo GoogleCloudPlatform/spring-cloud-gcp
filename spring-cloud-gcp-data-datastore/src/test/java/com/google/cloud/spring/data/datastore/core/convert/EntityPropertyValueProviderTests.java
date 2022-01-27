@@ -35,8 +35,6 @@ import org.junit.rules.ExpectedException;
 /**
  * Tests for the entity value provider.
  *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
  */
 public class EntityPropertyValueProviderTests {
 

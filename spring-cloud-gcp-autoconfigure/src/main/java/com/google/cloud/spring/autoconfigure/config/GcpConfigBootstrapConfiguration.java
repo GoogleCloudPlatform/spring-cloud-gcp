@@ -28,9 +28,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Bootstrap auto configuration for Google Cloud Runtime Configurator Starter.
  *
- * @author Jisha Abubaker
- * @author João André Martins
- * @author Mike Eltsufin
  * @since 1.1
  */
 @Configuration(proxyBeanMethods = false)

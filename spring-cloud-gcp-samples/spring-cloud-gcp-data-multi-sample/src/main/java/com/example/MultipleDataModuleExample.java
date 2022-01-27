@@ -25,7 +25,6 @@ import org.springframework.context.annotation.Bean;
 /**
  * An example demonstrating the use of both Spring Data Cloud Spanner and Datastore.
  *
- * @author Chengyuan Zhao
  */
 @SpringBootApplication
 public class MultipleDataModuleExample {

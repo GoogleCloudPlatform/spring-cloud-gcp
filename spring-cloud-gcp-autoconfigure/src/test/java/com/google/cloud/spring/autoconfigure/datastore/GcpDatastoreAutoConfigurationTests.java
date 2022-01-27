@@ -48,8 +48,6 @@ import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 /**
  * Tests for Datastore auto-config.
  *
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
  */
 public class GcpDatastoreAutoConfigurationTests {
 

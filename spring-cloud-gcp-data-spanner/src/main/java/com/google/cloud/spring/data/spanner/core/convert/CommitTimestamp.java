@@ -32,7 +32,6 @@ import org.springframework.lang.Nullable;
  * option "allow_commit_timestamp" and the business logic needs to manage in runtime when the
  * PENDING_COMMIT_TIMESTAMP should be stored into this field.
  *
- * @author Roman Solodovnichenko
  * @since 1.2.2
  */
 public final class CommitTimestamp {

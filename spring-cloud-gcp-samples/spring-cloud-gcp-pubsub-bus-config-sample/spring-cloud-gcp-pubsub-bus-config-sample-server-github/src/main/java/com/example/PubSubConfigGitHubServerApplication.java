@@ -23,7 +23,6 @@ import org.springframework.cloud.config.server.EnableConfigServer;
 /**
  * Sample Spring Cloud Config server.
  *
- * @author Elena Felder
  */
 @SpringBootApplication
 @EnableConfigServer

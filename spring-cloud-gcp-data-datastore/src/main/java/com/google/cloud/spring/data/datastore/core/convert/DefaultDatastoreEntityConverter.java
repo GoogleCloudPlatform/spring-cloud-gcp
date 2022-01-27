@@ -49,8 +49,6 @@ import org.springframework.util.Assert;
 /**
  * A class for object to entity and entity to object conversions.
  *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter {

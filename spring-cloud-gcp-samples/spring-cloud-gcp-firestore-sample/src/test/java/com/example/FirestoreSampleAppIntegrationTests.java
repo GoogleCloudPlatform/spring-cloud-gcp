@@ -34,7 +34,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 /**
  * Tests for the Firestore sample application.
  *
- * @author Dmitry Solomakha
  * @since 1.2
  */
 @EnabledIfSystemProperty(named = "it.firestore", matches = "true")

@@ -35,7 +35,6 @@ import org.springframework.web.servlet.ModelAndView;
 /**
  * Provides REST endpoint allowing you to load data files to BigQuery using Spring Integration.
  *
- * @author Daniel Zou
  */
 @Controller
 public class WebController {

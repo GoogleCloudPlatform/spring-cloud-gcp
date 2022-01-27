@@ -50,9 +50,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 /**
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- * @author Daniel Zou
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = FirestoreIntegrationTestsConfiguration.class)

@@ -43,10 +43,6 @@ import org.springframework.util.StringUtils;
  *
  * <p>Reference: https://cloud.google.com/logging/docs/agent/configuration#process-payload
  *
- * @author Andreas Berger
- * @author Chengyuan Zhao
- * @author Stefan Dieringer
- * @author Kazuki Shimizu
  */
 public class StackdriverJsonLayout extends JsonLayout {
 

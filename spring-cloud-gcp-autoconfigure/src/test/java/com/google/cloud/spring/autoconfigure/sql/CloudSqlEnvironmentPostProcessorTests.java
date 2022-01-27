@@ -40,10 +40,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 /**
  * Tests for Cloud SQL {@link CloudSqlEnvironmentPostProcessor}.
  *
- * @author João André Martins
- * @author Artem Bilan
- * @author Øystein Urdahl Hardeng
- * @author Mike Eltsufin
  */
 class CloudSqlEnvironmentPostProcessorTests {
   private CloudSqlEnvironmentPostProcessor initializer = new CloudSqlEnvironmentPostProcessor();

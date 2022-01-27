@@ -34,7 +34,6 @@ import org.springframework.expression.spel.SpelEvaluationException;
 /**
  * Tests for the Datastore Persistent Entity.
  *
- * @author Chengyuan Zhao
  */
 public class DatastorePersistentEntityImplTests {
 

@@ -39,8 +39,6 @@ import org.springframework.core.io.Resource;
 /**
  * Config for Storage auto config tests.
  *
- * @author Artem Bilan
- * @author Elena Felder
  */
 public class GcpStorageAutoConfigurationTests {
 

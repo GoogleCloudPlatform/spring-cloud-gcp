@@ -39,9 +39,6 @@ import org.springframework.core.env.StandardEnvironment;
 /**
  * Tests for the config property source locator.
  *
- * @author Jisha Abubaker
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 class GoogleConfigPropertySourceLocatorTest {
 

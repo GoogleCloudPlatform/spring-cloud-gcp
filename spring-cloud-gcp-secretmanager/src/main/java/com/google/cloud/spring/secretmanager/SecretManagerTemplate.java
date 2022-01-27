@@ -35,7 +35,6 @@ import com.google.protobuf.ByteString;
  * Offers convenience methods for performing common operations on Secret Manager including creating
  * and reading secrets.
  *
- * @author Daniel Zou
  * @since 1.2.2
  */
 public class SecretManagerTemplate implements SecretManagerOperations {

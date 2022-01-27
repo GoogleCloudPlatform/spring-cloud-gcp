@@ -51,7 +51,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 /**
- * @author Dmitry Solomakha
  * @since 1.2
  */
 public class FirestoreTemplateTests {

@@ -34,7 +34,6 @@ import reactor.test.StepVerifier;
 /**
  * Tests for the Reactive Pub/Sub sample application.
  *
- * @author Elena Felder
  * @since 1.2
  */
 @EnabledIfSystemProperty(named = "it.pubsub", matches = "true")

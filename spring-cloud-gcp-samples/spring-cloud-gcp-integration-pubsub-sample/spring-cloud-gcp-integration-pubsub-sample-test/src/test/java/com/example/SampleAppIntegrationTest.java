@@ -32,7 +32,6 @@ import org.springframework.web.client.RestTemplate;
 /**
  * These tests verifies that the pubsub-integration-sample works.
  *
- * @author Dmitry Solomakha
  * @since 1.1
  */
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")

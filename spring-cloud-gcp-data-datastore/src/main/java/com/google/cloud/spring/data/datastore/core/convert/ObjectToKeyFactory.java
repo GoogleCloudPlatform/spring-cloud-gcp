@@ -23,7 +23,6 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEn
 /**
  * An interface for creating Datastore Keys from objects and ID values.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public interface ObjectToKeyFactory {

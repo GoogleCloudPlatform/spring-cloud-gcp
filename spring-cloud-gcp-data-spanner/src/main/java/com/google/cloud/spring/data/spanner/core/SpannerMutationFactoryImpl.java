@@ -39,7 +39,6 @@ import org.springframework.util.Assert;
 /**
  * Factory that generates mutations for writing to Spanner.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class SpannerMutationFactoryImpl implements SpannerMutationFactory {

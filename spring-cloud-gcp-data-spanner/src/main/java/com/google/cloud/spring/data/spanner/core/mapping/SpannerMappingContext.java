@@ -30,9 +30,6 @@ import org.springframework.data.util.TypeInformation;
  * A mapping context for Cloud Spanner that provides ways to create persistent entities and
  * properties.
  *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- * @author Balint Pato
  * @since 1.1
  */
 public class SpannerMappingContext

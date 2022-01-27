@@ -23,7 +23,6 @@ import reactor.core.publisher.Flux;
 /**
  * Demonstrates Spring Data Repository support in Firestore.
  *
- * @author Daniel Zou
  */
 @Repository
 public interface UserRepository extends FirestoreReactiveRepository<User> {

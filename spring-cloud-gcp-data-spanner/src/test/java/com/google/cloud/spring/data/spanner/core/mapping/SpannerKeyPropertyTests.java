@@ -30,7 +30,6 @@ import org.springframework.data.util.ClassTypeInformation;
 /**
  * Tests for the Spanner custom key property.
  *
- * @author Chengyuan Zhao
  */
 public class SpannerKeyPropertyTests {
 

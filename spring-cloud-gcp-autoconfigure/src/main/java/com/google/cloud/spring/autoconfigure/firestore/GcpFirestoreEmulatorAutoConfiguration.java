@@ -46,7 +46,6 @@ import reactor.core.publisher.Flux;
  * Provides autoconfiguration to use the Firestore emulator if enabled.
  *
  * @since 1.2.3
- * @author Daniel Zou
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty("spring.cloud.gcp.firestore.emulator.enabled")

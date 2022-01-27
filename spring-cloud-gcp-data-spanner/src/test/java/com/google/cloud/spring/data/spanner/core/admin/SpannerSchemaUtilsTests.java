@@ -43,7 +43,6 @@ import org.mockito.Mockito;
 /**
  * Tests for the Spanner schema utils.
  *
- * @author Chengyuan Zhao
  */
 class SpannerSchemaUtilsTests {
 

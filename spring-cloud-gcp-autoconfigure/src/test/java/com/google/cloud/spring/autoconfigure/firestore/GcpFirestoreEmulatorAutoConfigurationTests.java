@@ -34,7 +34,6 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 /**
  * Tests for the Firestore emulator config.
  *
- * @author Gary Wong
  */
 class GcpFirestoreEmulatorAutoConfigurationTests {
 

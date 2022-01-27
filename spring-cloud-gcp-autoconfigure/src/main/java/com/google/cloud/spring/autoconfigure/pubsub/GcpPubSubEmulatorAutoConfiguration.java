@@ -35,8 +35,6 @@ import org.springframework.context.annotation.Configuration;
  * If <code>spring.cloud.gcp.pubsub.emulator-host</code> is set, spring stream will connect to a
  * running pub/sub emulator.
  *
- * @author Andreas Berger
- * @author Mike Eltsufin
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ManagedChannel.class, PubSubTemplate.class})

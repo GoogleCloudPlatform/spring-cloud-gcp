@@ -44,7 +44,6 @@ import org.springframework.web.client.RestTemplate;
  * <p>Because the test brings in config server/config client source files into a single project,
  * config server bootstrap need to be suppressed in the config client app instance.
  *
- * @author Elena Felder
  * @since 1.2
  */
 @EnabledIfSystemProperty(named = "it.pubsub-bus", matches = "true")

@@ -32,8 +32,6 @@ import org.springframework.data.annotation.Reference;
 /**
  * Sample entity.
  *
- * @author Chengyuan Zhao
- * @author Dmitry Solomakha
  */
 @Entity(name = "singers")
 public class Singer {

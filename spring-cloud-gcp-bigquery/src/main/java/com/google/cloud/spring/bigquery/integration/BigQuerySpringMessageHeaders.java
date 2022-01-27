@@ -20,7 +20,6 @@ package com.google.cloud.spring.bigquery.integration;
  * Spring Integration {@link org.springframework.messaging.Message} headers used with Spring Cloud
  * GCP BigQuery integration.
  *
- * @author Daniel Zou
  * @since 1.2
  */
 public final class BigQuerySpringMessageHeaders {

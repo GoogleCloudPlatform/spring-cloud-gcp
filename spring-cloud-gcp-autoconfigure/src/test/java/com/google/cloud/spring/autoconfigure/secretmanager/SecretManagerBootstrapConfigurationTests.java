@@ -39,8 +39,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Unit tests for {@link GcpSecretManagerBootstrapConfiguration}.
  *
- * @author Mike Eltsufin
- * @author Daniel Zou
  */
 class SecretManagerBootstrapConfigurationTests {
 

@@ -26,8 +26,6 @@ import org.springframework.util.Assert;
 /**
  * Encapsulates Cloud Spanner query options with sort and paging.
  *
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
  * @since 1.1
  */
 public class SpannerPageableQueryOptions extends SpannerQueryOptions {

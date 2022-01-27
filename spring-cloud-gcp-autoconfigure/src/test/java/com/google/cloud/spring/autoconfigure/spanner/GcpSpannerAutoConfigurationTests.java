@@ -41,8 +41,6 @@ import org.threeten.bp.Duration;
 /**
  * Tests for Spanner auto-config.
  *
- * @author Chengyuan Zhao
- * @author João André Martins
  */
 public class GcpSpannerAutoConfigurationTests {
 

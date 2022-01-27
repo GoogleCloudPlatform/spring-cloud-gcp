@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for {@link PubSubTopicUtils}.
  *
- * @author Mike Eltsufin
  */
 class PubSubTopicUtilsTests {
 

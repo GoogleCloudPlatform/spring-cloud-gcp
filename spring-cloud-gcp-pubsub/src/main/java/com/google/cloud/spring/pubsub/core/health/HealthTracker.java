@@ -23,7 +23,6 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
  * the subscription's message backlog. If backlog message size exceeds the message backlog
  * threshold, the tracker will return the number of messages over the threshold.
  *
- * @author Emmanouil Gkatziouras
  * @since 2.0.6
  */
 public interface HealthTracker {

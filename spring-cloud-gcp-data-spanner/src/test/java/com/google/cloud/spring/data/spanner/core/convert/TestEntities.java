@@ -33,8 +33,6 @@ import java.util.List;
 /**
  * Test entities for Spanner tests that hit many features and situations.
  *
- * @author Chengyuan Zhao
- * @author Balint Pato
  */
 class TestEntities {
 

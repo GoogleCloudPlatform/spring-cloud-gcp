@@ -35,10 +35,6 @@ import org.springframework.context.annotation.Configuration;
  * {@link HealthContributorAutoConfiguration Auto-configuration} for {@link
  * DatastoreHealthIndicator}.
  *
- * @author Raghavan N S
- * @author Srinivasa Meenavalli
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  * @since 1.2
  */
 @Configuration(proxyBeanMethods = false)

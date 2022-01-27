@@ -23,7 +23,6 @@ import java.util.List;
  * This interface contains custom-defined query methods of which implementations are generated for
  * you.
  *
- * @author Dmitry Solomakha
  */
 public interface BookRepository extends DatastoreRepository<Book, Long> {
 

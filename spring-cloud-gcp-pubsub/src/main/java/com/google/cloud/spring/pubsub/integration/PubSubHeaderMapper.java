@@ -35,7 +35,6 @@ import org.springframework.util.Assert;
  * "nativeHeaders" on the {@link org.springframework.messaging.Message} to {@link
  * com.google.pubsub.v1.PubsubMessage} header conversion.
  *
- * @author João André Martins
  */
 public class PubSubHeaderMapper implements HeaderMapper<Map<String, String>> {
 

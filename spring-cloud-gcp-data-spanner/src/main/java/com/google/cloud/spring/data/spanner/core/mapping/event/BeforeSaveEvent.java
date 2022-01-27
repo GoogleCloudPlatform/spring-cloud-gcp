@@ -22,7 +22,6 @@ import java.util.Set;
 /**
  * An event that is published just before a save operation is sent to Cloud Spanner.
  *
- * @author Chengyuan Zhao
  */
 public class BeforeSaveEvent extends SaveEvent {
 

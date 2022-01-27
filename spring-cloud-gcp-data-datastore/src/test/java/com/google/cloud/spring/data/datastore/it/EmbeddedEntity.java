@@ -21,7 +21,6 @@ import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 /**
  * A test entity for Datastore integration tests.
  *
- * @author Dmitry Solomakha
  */
 @Entity
 class EmbeddedEntity {

@@ -56,8 +56,6 @@ import org.springframework.data.repository.query.DefaultParameters;
 /**
  * Tests Spanner statement queries.
  *
- * @author Chengyuan Zhao
- * @author Balint Pato
  */
 public class SpannerStatementQueryTests {
 

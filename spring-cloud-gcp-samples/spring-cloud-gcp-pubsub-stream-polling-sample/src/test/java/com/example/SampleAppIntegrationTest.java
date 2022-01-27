@@ -38,7 +38,6 @@ import org.springframework.util.MultiValueMap;
 /**
  * These tests verifies that the pubsub-polling-binder-sample works.
  *
- * @author Elena Felder
  * @since 1.2
  */
 // Please use "-Dit.pubsub=true" to enable the tests

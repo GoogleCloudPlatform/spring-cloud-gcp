@@ -31,7 +31,6 @@ import org.springframework.data.util.TypeInformation;
 /**
  * Tests for the `DatastoreMappingContext`.
  *
- * @author Chengyuan Zhao
  */
 class DatastoreMappingContextTests {
   @Test

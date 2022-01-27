@@ -47,8 +47,6 @@ import org.springframework.util.Assert;
  * The primary class for adding values from entity objects to {@link WriteBuilder} for the purpose
  * of creating mutations for Spanner.
  *
- * @author Chengyuan Zhao
- * @author Balint Pato
  * @since 1.1
  */
 public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWriter {

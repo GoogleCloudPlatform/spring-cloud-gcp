@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 /**
  * Represents a range of pages of the OCR content of a document.
  *
- * @author Daniel Zou
  */
 final class OcrPageRange {
 

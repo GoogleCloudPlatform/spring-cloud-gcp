@@ -26,7 +26,6 @@ import java.util.Objects;
  * used in {@link SubTrade} but is used in {@link SubTradeComponent} to test that nested embedded
  * key properties are resolved properly.
  *
- * @author Chengyuan Zhao
  */
 public class SubTradeIdentifier {
 

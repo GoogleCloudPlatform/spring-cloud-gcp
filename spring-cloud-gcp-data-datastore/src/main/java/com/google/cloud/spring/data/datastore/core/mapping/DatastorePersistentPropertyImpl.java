@@ -31,7 +31,6 @@ import org.springframework.util.StringUtils;
 /**
  * Persistent property metadata implementation for Datastore.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class DatastorePersistentPropertyImpl

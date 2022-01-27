@@ -26,8 +26,6 @@ import com.google.spanner.v1.TypeCode;
 /**
  * A child interleaved table of {@link SubTrade} and a grand-child of {@link Trade}.
  *
- * @author Chengyuan Zhao
- * @author Roman Solodovnichenko
  */
 @Table(name = "#{'sub_trade_component'.concat(tableNameSuffix)}")
 public class SubTradeComponent {

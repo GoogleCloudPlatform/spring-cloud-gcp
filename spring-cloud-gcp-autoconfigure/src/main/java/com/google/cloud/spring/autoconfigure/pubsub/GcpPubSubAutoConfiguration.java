@@ -80,11 +80,6 @@ import org.threeten.bp.Duration;
 /**
  * Auto-config for Pub/Sub.
  *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Daniel Zou
- * @author Maurice Zeijen
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(GcpContextAutoConfiguration.class)

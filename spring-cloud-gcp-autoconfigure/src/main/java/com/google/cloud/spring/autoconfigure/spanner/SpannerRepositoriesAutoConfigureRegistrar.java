@@ -26,7 +26,6 @@ import org.springframework.data.repository.config.RepositoryConfigurationExtensi
  * {@link org.springframework.context.annotation.ImportBeanDefinitionRegistrar} used to
  * auto-configure Spring Data JPA Repositories.
  *
- * @author João André Martins
  */
 public class SpannerRepositoriesAutoConfigureRegistrar
     extends AbstractRepositoryConfigurationSourceSupport {

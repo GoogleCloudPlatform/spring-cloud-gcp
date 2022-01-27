@@ -68,9 +68,6 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 /**
  * Tests for Pub/Sub channel adapters.
  *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Elena Felder
  */
 public class PubSubChannelAdaptersIntegrationTests {
 

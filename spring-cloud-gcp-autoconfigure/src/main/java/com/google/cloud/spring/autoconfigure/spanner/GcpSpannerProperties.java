@@ -25,10 +25,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 /**
  * Settings for Spring Data Cloud Spanner.
  *
- * @author Chengyuan Zhao
- * @author Ray Tsang
- * @author Eddú Meléndez
- * @author Mike Eltsufin
  */
 @ConfigurationProperties("spring.cloud.gcp.spanner")
 public class GcpSpannerProperties implements CredentialsSupplier {

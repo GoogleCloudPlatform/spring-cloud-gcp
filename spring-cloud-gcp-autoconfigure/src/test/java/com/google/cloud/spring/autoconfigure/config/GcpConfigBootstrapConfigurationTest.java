@@ -29,9 +29,6 @@ import org.springframework.context.annotation.Bean;
 /**
  * Tests for Config bootstrap configuration.
  *
- * @author Jisha Abubaker
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 class GcpConfigBootstrapConfigurationTest {
 

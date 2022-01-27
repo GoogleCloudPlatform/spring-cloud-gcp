@@ -101,8 +101,6 @@ import org.springframework.data.util.ClassTypeInformation;
 /**
  * Tests for the Datastore Template.
  *
- * @author Chengyuan Zhao
- * @author Artem Bilan
  */
 public class DatastoreTemplateTests {
 

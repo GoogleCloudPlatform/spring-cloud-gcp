@@ -26,10 +26,6 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Properties for Publisher or Subscriber specific configurations.
  *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Emmanouil Gkatziouras
  */
 public class PubSubConfiguration {
 

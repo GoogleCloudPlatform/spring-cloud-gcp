@@ -24,7 +24,6 @@ import org.springframework.stereotype.Component;
 /**
  * A prompt provider for the sample application web app.
  *
- * @author Dmitry Solomakha
  */
 @Component
 public class CustomPromptProvider implements PromptProvider {

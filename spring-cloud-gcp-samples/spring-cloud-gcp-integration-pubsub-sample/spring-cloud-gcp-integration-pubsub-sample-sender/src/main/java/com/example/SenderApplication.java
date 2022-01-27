@@ -30,7 +30,6 @@ import org.springframework.messaging.MessageHandler;
 /**
  * Spring Integration Channel Adapters for Google Cloud Pub/Sub code sample.
  *
- * @author João André Martins
  */
 @SpringBootApplication
 public class SenderApplication {

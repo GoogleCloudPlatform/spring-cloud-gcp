@@ -27,7 +27,6 @@ import org.springframework.data.annotation.Reference;
 /**
  * A test class that holds references as relationships.
  *
- * @author Dmitry Solomakha
  */
 public class ReferenceEntry {
   @Id Long id;

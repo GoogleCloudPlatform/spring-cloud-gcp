@@ -51,7 +51,6 @@ import org.springframework.util.StreamUtils;
 /**
  * Integration for Google Cloud Storage.
  *
- * @author Chengyuan Zhao
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(

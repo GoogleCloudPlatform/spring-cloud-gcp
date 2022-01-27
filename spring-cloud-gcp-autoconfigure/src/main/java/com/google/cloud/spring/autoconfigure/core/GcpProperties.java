@@ -24,10 +24,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 /**
  * Top-level auto-config settings.
  *
- * @author Vinicius Carvalho
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 @ConfigurationProperties("spring.cloud.gcp")
 public class GcpProperties implements CredentialsSupplier {

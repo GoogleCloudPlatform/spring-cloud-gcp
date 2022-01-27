@@ -24,7 +24,6 @@ import org.springframework.util.Assert;
 /**
  * Various utility methods for dealing with Pub/Sub topics.
  *
- * @author Mike Eltsufin
  * @since 1.2
  */
 public final class PubSubTopicUtils {

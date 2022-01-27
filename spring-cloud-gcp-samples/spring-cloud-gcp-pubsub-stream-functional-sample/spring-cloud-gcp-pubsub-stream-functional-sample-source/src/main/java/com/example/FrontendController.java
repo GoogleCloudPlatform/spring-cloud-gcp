@@ -29,7 +29,6 @@ import reactor.core.publisher.Sinks;
  *
  * <p>The {@link Sinks.Many} is used to locally send messages to {@link Source}.
  *
- * @author Elena Felder
  * @since 1.2
  */
 @RestController

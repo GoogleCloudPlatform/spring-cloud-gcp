@@ -52,8 +52,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 /**
  * Tests for the Pub/Sub Health Indicator.
  *
- * @author Vinicius Carvalho
- * @author Patrik Hörlin
  */
 @ExtendWith(MockitoExtension.class)
 class PubSubHealthIndicatorTests {

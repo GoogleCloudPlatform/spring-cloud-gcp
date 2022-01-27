@@ -25,7 +25,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 /**
  * Defines operations for use with BigQuery.
  *
- * @author Daniel Zou
  * @since 1.2
  */
 public interface BigQueryOperations {

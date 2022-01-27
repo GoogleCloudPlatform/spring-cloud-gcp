@@ -21,7 +21,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * Properties for Pub/Sub Health Indicator.
  *
- * @author Patrik Hörlin
  */
 @ConfigurationProperties("spring.cloud.gcp.pubsub.health")
 public class PubSubHealthIndicatorProperties {

@@ -22,7 +22,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Sample application for a binder.
  *
- * @author Travis Tomsu
  */
 @SpringBootApplication
 public class PubSubDeadLetterTopicApplication {

@@ -23,7 +23,6 @@ import com.google.cloud.spring.data.spanner.core.mapping.Table;
 /**
  * A sample entity.
  *
- * @author Mike Eltsufin
  */
 @Table(name = "traders")
 public class Trader {

@@ -31,7 +31,6 @@ import org.springframework.security.web.authentication.Http403ForbiddenEntryPoin
  * retrieved from Google Cloud IAP header {@code x-goog-iap-jwt-assertion}, and not from the
  * standard OAuth Bearer header.
  *
- * @author Elena Felder
  * @since 1.1
  */
 @Configuration

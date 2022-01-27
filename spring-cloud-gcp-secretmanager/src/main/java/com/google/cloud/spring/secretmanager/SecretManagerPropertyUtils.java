@@ -23,7 +23,6 @@ import org.springframework.util.Assert;
 /**
  * Utilities for parsing Secret Manager properties.
  *
- * @author Daniel Zou
  */
 final class SecretManagerPropertyUtils {
 

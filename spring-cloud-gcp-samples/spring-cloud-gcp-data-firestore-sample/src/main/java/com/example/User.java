@@ -25,7 +25,6 @@ import java.util.Objects;
 /**
  * Example POJO to demonstrate Spring Cloud GCP Spring Data Firestore operations.
  *
- * @author Daniel Zou
  */
 @Document(collectionName = "users")
 public class User {

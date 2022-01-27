@@ -50,7 +50,6 @@ import org.springframework.util.concurrent.SettableListenableFuture;
  * feature, which allows you to run OCR algorithms on documents (PDF or TIFF format) stored on
  * Google Cloud Storage.
  *
- * @author Daniel Zou
  */
 public class DocumentOcrTemplate {
 

@@ -34,7 +34,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Tests for Spanner health check auto-config.
  *
- * @author ikeyat
  * @since 2.0.6
  */
 public class SpannerHealthIndicatorAutoConfigurationTests {

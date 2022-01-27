@@ -37,9 +37,6 @@ import org.springframework.util.Assert;
 /**
  * {@link HealthContributorAutoConfiguration Auto-configuration} for {@link PubSubHealthIndicator}.
  *
- * @author Vinicius Carvalho
- * @author Elena Felder
- * @author Patrik Hörlin
  * @since 1.2.2
  */
 @Configuration(proxyBeanMethods = false)

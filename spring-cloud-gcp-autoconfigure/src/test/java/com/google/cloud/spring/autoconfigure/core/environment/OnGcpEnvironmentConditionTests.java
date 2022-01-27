@@ -37,7 +37,6 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 /**
  * Tests for on-GCP environment conditions.
  *
- * @author Elena Felder
  * @since 1.1
  */
 @RunWith(MockitoJUnitRunner.class)

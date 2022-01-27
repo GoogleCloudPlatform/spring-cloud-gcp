@@ -21,7 +21,6 @@ import com.google.cloud.datastore.Key;
 /**
  * An event published just after Spring Data Cloud Datastore performs a delete operation.
  *
- * @author Chengyuan Zhao
  */
 public class AfterDeleteEvent extends DeleteEvent {
 

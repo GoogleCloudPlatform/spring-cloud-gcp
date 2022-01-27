@@ -34,7 +34,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Tests for auto-config.
  *
- * @author Eddú Meléndez
  */
 class GcpStackdriverMetricsAutoConfigurationTest {
 

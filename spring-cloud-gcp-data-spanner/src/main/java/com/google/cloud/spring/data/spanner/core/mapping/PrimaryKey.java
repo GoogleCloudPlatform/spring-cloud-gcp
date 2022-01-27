@@ -27,7 +27,6 @@ import org.springframework.core.annotation.AliasFor;
  * Annotation for a {@link SpannerPersistentEntity} that allows specifying the primary key columns
  * and their order.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 @Documented

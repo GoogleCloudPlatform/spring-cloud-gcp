@@ -21,7 +21,6 @@ import org.springframework.core.NestedRuntimeException;
 /**
  * Describes error conditions that can occur when interfacing with Cloud Vision APIs.
  *
- * @author Daniel Zou
  * @since 1.1
  */
 public final class CloudVisionException extends NestedRuntimeException {

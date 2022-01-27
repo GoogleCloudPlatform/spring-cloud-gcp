@@ -21,10 +21,6 @@ import com.google.cloud.spring.pubsub.integration.AckMode;
 /**
  * Consumer properties for Pub/Sub.
  *
- * @author João André Martins
- * @author Daniel Zou
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 public class PubSubConsumerProperties extends PubSubCommonProperties {
 

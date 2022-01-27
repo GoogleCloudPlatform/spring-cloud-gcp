@@ -25,7 +25,6 @@ import org.springframework.data.util.ClassTypeInformation;
 /**
  * Tests for {@link FirestorePersistentEntityImpl}.
  *
- * @author Daniel Zou
  */
 class FirestorePersistentEntityImplTests {
 

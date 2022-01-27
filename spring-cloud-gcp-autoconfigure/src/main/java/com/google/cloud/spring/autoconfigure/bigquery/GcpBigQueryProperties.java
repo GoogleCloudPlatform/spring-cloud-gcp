@@ -25,7 +25,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 /**
  * Properties for configuring BigQuery.
  *
- * @author Daniel Zou
  */
 @ConfigurationProperties("spring.cloud.gcp.bigquery")
 public class GcpBigQueryProperties implements CredentialsSupplier {

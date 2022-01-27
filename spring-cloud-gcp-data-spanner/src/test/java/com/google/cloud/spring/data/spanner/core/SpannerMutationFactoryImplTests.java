@@ -46,7 +46,6 @@ import org.junit.rules.ExpectedException;
 /**
  * Tests for the Spanner mutation factory implementation.
  *
- * @author Chengyuan Zhao
  */
 public class SpannerMutationFactoryImplTests {
 

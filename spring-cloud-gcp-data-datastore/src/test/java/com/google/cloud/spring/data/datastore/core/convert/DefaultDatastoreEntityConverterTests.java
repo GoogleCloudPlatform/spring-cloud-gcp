@@ -62,8 +62,6 @@ import org.springframework.lang.Nullable;
 /**
  * Tests for the entity converter.
  *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class DefaultDatastoreEntityConverterTests {

@@ -27,7 +27,6 @@ import java.util.Set;
 /**
  * Abstract class of common Read and Query request settings.
  *
- * @author Chengyuan Zhao
  */
 public class AbstractSpannerRequestOptions<A> implements Serializable {
 

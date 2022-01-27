@@ -33,7 +33,6 @@ import org.springframework.lang.Nullable;
  *
  * <p>When {@link #discardCallback} is provided, it called for all the rejected files.
  *
- * @author Hosain Al Ahmad
  */
 public class GcsDiscardRecentModifiedFileListFilter
     implements DiscardAwareFileListFilter<BlobInfo> {

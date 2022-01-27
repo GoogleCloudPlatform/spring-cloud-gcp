@@ -27,7 +27,6 @@ import java.util.Objects;
 /**
  * A sample entity.
  *
- * @author Mike Eltsufin
  */
 @Table(name = "traders_template")
 public class Trader {

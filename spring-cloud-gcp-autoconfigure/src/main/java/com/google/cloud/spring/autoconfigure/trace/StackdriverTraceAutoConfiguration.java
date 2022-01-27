@@ -66,12 +66,6 @@ import zipkin2.reporter.stackdriver.StackdriverSender.Builder;
 /**
  * Config for Stackdriver Trace.
  *
- * @author Ray Tsang
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Tim Ysewyn
- * @author Vinesh Prasanna M
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({GcpTraceProperties.class})

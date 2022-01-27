@@ -26,9 +26,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for the {@link DefaultCredentialsProvider}.
  *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 class DefaultCredentialsProviderTests {
 

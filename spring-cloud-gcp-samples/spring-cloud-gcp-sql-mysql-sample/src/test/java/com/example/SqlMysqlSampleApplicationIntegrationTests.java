@@ -41,7 +41,6 @@ import org.springframework.test.context.junit4.SpringRunner;
  *
  * <p>Run with: mvn -Dit.cloudsql test
  *
- * @author Daniel Zou
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(

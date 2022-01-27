@@ -25,12 +25,6 @@ import com.google.pubsub.v1.PullRequest;
  * Interface used by the {@link com.google.cloud.spring.pubsub.core.PubSubTemplate} to create
  * supporting objects for consuming messages from Pub/Sub subscriptions.
  *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Artem Bilan
- * @author Doug Hoard
- * @author Chengyuan Zhao
- * @author Maurice Zeijen
  */
 public interface SubscriberFactory {
 

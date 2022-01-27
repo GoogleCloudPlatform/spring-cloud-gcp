@@ -29,7 +29,6 @@ import org.springframework.data.domain.AuditorAware;
 /**
  * The annotation used to activate auditing functionality.
  *
- * @author Chengyuan Zhao
  * @since 1.2
  */
 @Inherited

@@ -31,10 +31,6 @@ import org.springframework.integration.metadata.SimpleMetadataStore;
 /**
  * A streaming message source for Google Cloud Storage.
  *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Lukas Gemela
  */
 public class GcsStreamingMessageSource extends AbstractRemoteFileStreamingMessageSource<BlobInfo> {
 

@@ -34,7 +34,6 @@ import reactor.core.publisher.Mono;
 /**
  * Example controller demonstrating usage of Spring Data Repositories for Firestore.
  *
- * @author Daniel Zou
  */
 @RestController
 @RequestMapping("/users")

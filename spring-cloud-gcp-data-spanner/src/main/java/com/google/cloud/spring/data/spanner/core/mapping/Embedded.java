@@ -27,7 +27,6 @@ import java.lang.annotation.Target;
  * property holds primary key columns, then it should also be annotated with the {@link PrimaryKey}
  * annotation.
  *
- * @author Chengyuan Zhao
  */
 @Documented
 @Target(ElementType.FIELD)

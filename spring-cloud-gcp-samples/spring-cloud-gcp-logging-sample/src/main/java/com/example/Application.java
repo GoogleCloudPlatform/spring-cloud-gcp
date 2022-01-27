@@ -24,7 +24,6 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Sample spring boot application.
  *
- * @author Chengyuan Zhao
  */
 @SpringBootApplication
 public class Application {

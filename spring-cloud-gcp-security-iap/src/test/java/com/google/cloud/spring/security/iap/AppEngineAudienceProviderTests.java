@@ -32,7 +32,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 /**
  * Tests for the AppEngine Audience Provider.
  *
- * @author Elena Felder
  */
 @RunWith(MockitoJUnitRunner.class)
 public class AppEngineAudienceProviderTests {

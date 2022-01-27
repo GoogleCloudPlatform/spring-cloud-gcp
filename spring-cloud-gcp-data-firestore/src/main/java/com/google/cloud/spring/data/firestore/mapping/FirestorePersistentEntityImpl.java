@@ -28,7 +28,6 @@ import org.springframework.util.StringUtils;
  * Metadata class for entities stored in Datastore.
  *
  * @param <T> the type of the persistent entity
- * @author Dmitry Solomakha
  * @since 1.2
  */
 public class FirestorePersistentEntityImpl<T>

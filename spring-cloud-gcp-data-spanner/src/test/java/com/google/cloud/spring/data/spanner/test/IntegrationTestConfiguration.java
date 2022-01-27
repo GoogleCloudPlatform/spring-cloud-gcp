@@ -47,8 +47,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 /**
  * Configuration for integration tets for Spanner.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
  */
 @Configuration
 @EnableTransactionManagement

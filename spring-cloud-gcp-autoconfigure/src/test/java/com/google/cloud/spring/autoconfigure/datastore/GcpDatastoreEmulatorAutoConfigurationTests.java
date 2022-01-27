@@ -30,7 +30,6 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 /**
  * Tests for Datastore Emulator auto-config.
  *
- * @author Lucas Soares
  * @since 1.2
  */
 class GcpDatastoreEmulatorAutoConfigurationTests {

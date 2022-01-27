@@ -33,8 +33,6 @@ import org.springframework.util.Assert;
  *
  * <p>Creates {@link Publisher}s for topics. Use {@link CachingPublisherFactory} to cache them.
  *
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 public class DefaultPublisherFactory implements PublisherFactory {
 

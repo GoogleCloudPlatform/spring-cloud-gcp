@@ -22,9 +22,6 @@ import org.springframework.messaging.Message;
 /**
  * Google Cloud Platform internal headers for Spring Messaging messages.
  *
- * @author João André Martins
- * @author Elena Felder
- * @author Chengyuan Zhao
  */
 public abstract class GcpPubSubHeaders {
 

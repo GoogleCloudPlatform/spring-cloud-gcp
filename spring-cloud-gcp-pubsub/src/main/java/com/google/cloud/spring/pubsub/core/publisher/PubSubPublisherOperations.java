@@ -23,11 +23,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 /**
  * An abstraction for Google Cloud Pub/Sub publisher operations.
  *
- * @author Vinicius Carvalho
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Doug Hoard
  * @since 1.1
  */
 public interface PubSubPublisherOperations {

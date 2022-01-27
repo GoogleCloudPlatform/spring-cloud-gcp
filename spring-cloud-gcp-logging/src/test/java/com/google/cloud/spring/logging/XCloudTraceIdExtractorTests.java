@@ -25,8 +25,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * Tests for the x-cloud trace ID extractor.
  *
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 class XCloudTraceIdExtractorTests {
 

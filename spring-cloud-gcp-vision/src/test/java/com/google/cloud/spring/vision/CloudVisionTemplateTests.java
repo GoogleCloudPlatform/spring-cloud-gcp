@@ -47,7 +47,6 @@ import org.springframework.core.io.Resource;
 /**
  * Unit tests for the {@link CloudVisionTemplate}.
  *
- * @author Daniel Zou
  * @since 1.1
  */
 public class CloudVisionTemplateTests {

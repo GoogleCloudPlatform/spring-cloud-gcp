@@ -23,7 +23,6 @@ import org.springframework.data.repository.config.RepositoryConfigurationExtensi
 /**
  * Registers annotation that enables the use of Datastore repositories.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class DatastoreRepositoriesRegistrar extends RepositoryBeanDefinitionRegistrarSupport {

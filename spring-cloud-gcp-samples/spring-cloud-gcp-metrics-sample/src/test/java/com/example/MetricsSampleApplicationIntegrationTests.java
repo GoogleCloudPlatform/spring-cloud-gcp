@@ -40,7 +40,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 /**
  * Tests for the metrics sample app.
  *
- * @author Eddú Meléndez
  */
 @EnabledIfSystemProperty(named = "it.metrics", matches = "true")
 @ExtendWith(SpringExtension.class)

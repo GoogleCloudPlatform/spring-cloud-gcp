@@ -41,9 +41,6 @@ import org.springframework.lang.Nullable;
 /**
  * Pub/Sub binder configuration.
  *
- * @author João André Martins
- * @author Daniel Zou
- * @author Mike Eltsufin
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnMissingBean(Binder.class)

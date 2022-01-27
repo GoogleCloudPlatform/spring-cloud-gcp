@@ -49,7 +49,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 /**
  * Tests for the logging sample app.
  *
- * @author Daniel Zou
  */
 @EnabledIfSystemProperty(named = "it.logging", matches = "true")
 @ExtendWith(SpringExtension.class)

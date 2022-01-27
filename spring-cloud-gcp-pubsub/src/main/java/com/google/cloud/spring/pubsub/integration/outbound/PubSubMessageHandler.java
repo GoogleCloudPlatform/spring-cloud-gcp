@@ -44,9 +44,6 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
  * <p>It delegates Google Cloud Pub/Sub interaction to {@link
  * com.google.cloud.spring.pubsub.core.PubSubTemplate}.
  *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Artem Bilan
  */
 public class PubSubMessageHandler extends AbstractMessageHandler {
 

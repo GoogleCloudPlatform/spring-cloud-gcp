@@ -43,11 +43,6 @@ import org.springframework.util.ClassUtils;
  * Provides Google Cloud SQL instance connectivity through Spring JDBC by providing only a database
  * and instance connection name.
  *
- * @author João André Martins
- * @author Artem Bilan
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Eddú Meléndez
  */
 public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcessor {
   private static final Log LOGGER = LogFactory.getLog(CloudSqlEnvironmentPostProcessor.class);

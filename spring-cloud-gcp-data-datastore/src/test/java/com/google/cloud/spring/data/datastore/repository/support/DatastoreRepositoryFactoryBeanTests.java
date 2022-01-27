@@ -29,7 +29,6 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
 /**
  * Tests for the Datastore Repository factory bean.
  *
- * @author Chengyuan Zhao
  */
 class DatastoreRepositoryFactoryBeanTests {
 

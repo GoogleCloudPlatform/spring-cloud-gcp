@@ -31,7 +31,6 @@ import org.springframework.lang.NonNull;
 /**
  * A repository for integration tests that holds many complex use cases.
  *
- * @author Chengyuan Zhao
  */
 @Nonnull
 public interface TradeRepository extends SpannerRepository<Trade, Key> {

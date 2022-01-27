@@ -56,7 +56,6 @@ import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 /**
  * Provides Spring Data classes to use with Cloud Spanner.
  *
- * @author Chengyuan Zhao
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(GcpContextAutoConfiguration.class)

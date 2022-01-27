@@ -27,7 +27,6 @@ import org.springframework.data.annotation.QueryAnnotation;
  * Annotation to mark query methods in user-defined repositories that are supplied with Google Query
  * Language custom queries.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -42,8 +42,6 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
 /**
  * Tests for the Datastore transactional annotation manager.
  *
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
  */
 public class DatastoreTransactionManagerTests {
 

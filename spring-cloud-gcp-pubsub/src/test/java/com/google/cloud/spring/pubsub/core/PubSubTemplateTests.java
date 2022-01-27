@@ -58,11 +58,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 /**
  * Tests for the Pub/Sub template.
  *
- * @author João André Martins
- * @author Chengyuan Zhao
- * @author Doug Hoard
- * @author Mike Eltsufin
- * @author SateeshKumar Kota
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PubSubTemplateTests {

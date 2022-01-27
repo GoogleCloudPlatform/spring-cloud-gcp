@@ -22,7 +22,6 @@ import java.util.Objects;
 /**
  * An embedded grouping of columns.
  *
- * @author Chengyuan Zhao
  */
 public class TradeDetail {
 

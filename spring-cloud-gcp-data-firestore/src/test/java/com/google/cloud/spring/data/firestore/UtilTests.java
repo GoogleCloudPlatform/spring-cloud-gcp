@@ -22,7 +22,6 @@ import com.google.cloud.spring.data.firestore.util.Util;
 import org.junit.jupiter.api.Test;
 
 /**
- * @author Dmitry Solomakha
  * @since 1.2
  */
 class UtilTests {
