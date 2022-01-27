@@ -45,7 +45,6 @@ import org.springframework.cloud.stream.provisioning.ProvisioningException;
 /**
  * Tests for Pub/Sub provisioner.
  *
- * @author Mike Eltsufin
  * @since 1.1
  */
 @RunWith(MockitoJUnitRunner.class)

@@ -31,8 +31,6 @@ import org.springframework.data.mapping.PropertyHandler;
 
 /**
  * Tests for the Datastore persistent property.
- *
- * @author Chengyuan Zhao
  */
 public class DatastorePersistentPropertyImplTests {
 

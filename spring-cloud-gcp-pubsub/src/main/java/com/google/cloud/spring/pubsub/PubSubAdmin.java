@@ -38,10 +38,6 @@ import org.springframework.util.Assert;
 
 /**
  * Pub/Sub admin utility that creates new topics and subscriptions on Google Cloud Pub/Sub.
- *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 public class PubSubAdmin implements AutoCloseable {
 

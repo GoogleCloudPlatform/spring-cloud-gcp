@@ -29,8 +29,6 @@ import org.springframework.util.StringUtils;
 /**
  * A Query Method for Spanner.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class SpannerQueryMethod extends QueryMethod {

@@ -31,7 +31,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 /**
  * Auto-configuration for {@link DatastoreTransactionManager}.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 @Configuration(proxyBeanMethods = false)

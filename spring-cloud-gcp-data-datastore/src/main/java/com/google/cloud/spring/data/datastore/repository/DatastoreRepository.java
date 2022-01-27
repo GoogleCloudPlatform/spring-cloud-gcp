@@ -25,7 +25,6 @@ import org.springframework.data.repository.query.QueryByExampleExecutor;
  *
  * @param <T> the type of the domain object
  * @param <I> the type of the ID property in the domain object
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public interface DatastoreRepository<T, I>

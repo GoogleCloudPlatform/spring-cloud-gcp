@@ -36,7 +36,6 @@ package com.google.cloud.spring.secretmanager;
  *
  * <p>5. Shortest form - specify secret ID, use default project and latest version. sm://{secret-id}
  *
- * @author Daniel Zou
  * @since 1.2.2
  */
 public interface SecretManagerOperations {

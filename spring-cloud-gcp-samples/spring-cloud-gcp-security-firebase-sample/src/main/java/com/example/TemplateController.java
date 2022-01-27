@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Controller to output the firebase javascript file. Used in order to allow injection of
  * environment variables into client side javascript
  *
- * @author Vinicius Carvalho
  * @since 1.2.2
  */
 @Controller

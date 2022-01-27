@@ -21,7 +21,6 @@ import org.springframework.dao.DataAccessException;
 /**
  * Exception wrapping errors that occur with BigQuery.
  *
- * @author Daniel Zou
  * @since 1.2
  */
 public class BigQueryException extends DataAccessException {

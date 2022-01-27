@@ -26,7 +26,6 @@ import java.util.function.Supplier;
  *
  * @param <T> the type of objects this supplier produces.
  * @param <U> the type of objects this supplier bases its products on.
- * @author Chengyuan Zhao
  */
 public class CachingComposingSupplier<T, U> implements Supplier<T> {
 

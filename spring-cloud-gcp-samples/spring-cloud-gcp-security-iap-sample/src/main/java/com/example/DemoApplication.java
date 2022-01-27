@@ -22,7 +22,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Sample Spring Boot application.
  *
- * @author Elena Felder
  * @since 1.1
  */
 @SpringBootApplication

@@ -23,8 +23,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for DML before-execution event.
- *
- * @author Chengyuan Zhao
  */
 class BeforeExecuteDmlEventTest {
 

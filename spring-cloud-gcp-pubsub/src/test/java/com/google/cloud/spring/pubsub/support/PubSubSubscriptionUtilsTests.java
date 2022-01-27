@@ -24,8 +24,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link PubSubSubscriptionUtils}.
- *
- * @author Mike Eltsufin
  */
 class PubSubSubscriptionUtilsTests {
 

@@ -73,9 +73,6 @@ import org.springframework.util.Assert;
  * Name-based query method for Cloud Datastore.
  *
  * @param <T> the return type of this Query Method
- * @author Chengyuan Zhao
- * @author Dmitry Solomakha
- * @author Vinicius Carvalho
  * @since 1.1
  */
 public class PartTreeDatastoreQuery<T> extends AbstractDatastoreQuery<T> {

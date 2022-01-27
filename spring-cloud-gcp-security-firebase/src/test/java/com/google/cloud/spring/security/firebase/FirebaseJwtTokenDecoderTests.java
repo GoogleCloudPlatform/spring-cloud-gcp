@@ -60,7 +60,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 
 /**
- * @author Vinicius Carvalho
  * @since 1.2.2
  */
 class FirebaseJwtTokenDecoderTests {

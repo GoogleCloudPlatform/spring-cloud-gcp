@@ -33,7 +33,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 /**
  * Auto-configuration for {@link SpannerTransactionManager}.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 @Configuration(proxyBeanMethods = false)

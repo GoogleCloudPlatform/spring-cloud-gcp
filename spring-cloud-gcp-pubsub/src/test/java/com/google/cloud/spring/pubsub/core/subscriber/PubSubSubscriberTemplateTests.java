@@ -70,11 +70,6 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 /**
  * Unit tests for {@link PubSubSubscriberTemplate}.
- *
- * @author Mike Eltsufin
- * @author Doug Hoard
- * @author Elena Felder
- * @author Maurice Zeijen
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PubSubSubscriberTemplateTests {

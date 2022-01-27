@@ -21,8 +21,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Sample application for a binder.
- *
- * @author João André Martins
  */
 @SpringBootApplication
 public class PubSubBinderApplication {

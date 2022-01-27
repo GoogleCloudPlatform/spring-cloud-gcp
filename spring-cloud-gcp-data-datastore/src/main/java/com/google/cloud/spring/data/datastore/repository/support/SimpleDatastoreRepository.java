@@ -46,7 +46,6 @@ import org.springframework.util.Assert;
  *
  * @param <T> the type of the entities
  * @param <I> the id type of the entities
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I> {

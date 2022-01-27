@@ -41,9 +41,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Integration tests that use many features of the Spanner Template.
- *
- * @author Balint Pato
- * @author Chengyuan Zhao
  */
 @RunWith(SpringRunner.class)
 public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationTest {

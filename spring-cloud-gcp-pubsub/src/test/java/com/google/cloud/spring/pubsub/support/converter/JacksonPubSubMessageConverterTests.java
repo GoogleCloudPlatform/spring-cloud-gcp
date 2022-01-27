@@ -29,9 +29,6 @@ import org.skyscreamer.jsonassert.JSONAssert;
 /**
  * Tests for the Jackson message converter.
  *
- * @author Dmitry Solomakha
- * @author Doug Hoard
- * @author Chengyuan Zhao
  * @since 1.1
  */
 class JacksonPubSubMessageConverterTests {

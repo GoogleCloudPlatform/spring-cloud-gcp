@@ -85,9 +85,6 @@ import org.springframework.data.domain.Sort;
 
 /**
  * Tests for the Spanner Template.
- *
- * @author Chengyuan Zhao
- * @author Roman Solodovnichenko
  */
 public class SpannerTemplateTests {
 

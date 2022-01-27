@@ -31,7 +31,6 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 
 /**
- * @author Vinicius Carvalho
  * @since 1.2.2
  */
 class FirebaseAuthenticationAutoConfigurationTests {

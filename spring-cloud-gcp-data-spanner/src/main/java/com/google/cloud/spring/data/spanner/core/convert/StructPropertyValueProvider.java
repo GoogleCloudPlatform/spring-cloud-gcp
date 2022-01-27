@@ -29,8 +29,6 @@ import org.springframework.data.mapping.model.PropertyValueProvider;
  * ConverterAwareMappingSpannerEntityReader} to convert resulting values from the {@link
  * StructAccessor}.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
  * @since 1.1
  */
 class StructPropertyValueProvider implements PropertyValueProvider<SpannerPersistentProperty> {

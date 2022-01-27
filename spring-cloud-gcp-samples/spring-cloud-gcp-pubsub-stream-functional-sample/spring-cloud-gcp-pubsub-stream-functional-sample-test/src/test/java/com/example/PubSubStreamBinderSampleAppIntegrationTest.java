@@ -37,8 +37,6 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * Integration test for the Pub/Sub functional stream binder sample app.
- *
- * @author Elena Felder
  */
 // Please use "-Dit.pubsub=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.pubsub", matches = "true")

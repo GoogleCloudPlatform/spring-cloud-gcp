@@ -28,9 +28,6 @@ import org.springframework.data.mapping.model.MutablePersistentEntity;
  * table.
  *
  * @param <T> the underlying persistent entity type
- * @author Ray Tsang
- * @author Chengyuan Zhao
- * @author Roman Solodovnichenko
  * @since 1.1
  */
 public interface SpannerPersistentEntity<T>

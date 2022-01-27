@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
- * @author Dmitry Solomakha
  * @since 1.2
  */
 public final class SliceUtil {

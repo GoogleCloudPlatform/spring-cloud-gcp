@@ -23,7 +23,6 @@ import org.springframework.data.repository.core.support.AbstractEntityInformatio
  * Holds a Spanner persistent entity and its key type.
  *
  * @param <T> the type of the underlying entity
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class SpannerPersistentEntityInformation<T> extends AbstractEntityInformation<T, Key> {

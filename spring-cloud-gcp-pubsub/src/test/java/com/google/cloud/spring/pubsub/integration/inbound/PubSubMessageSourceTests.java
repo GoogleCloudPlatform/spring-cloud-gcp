@@ -44,7 +44,6 @@ import org.springframework.messaging.MessageHandlingException;
 /**
  * Tests for {@link PubSubMessageSource}.
  *
- * @author Elena Felder
  * @since 1.2
  */
 @RunWith(MockitoJUnitRunner.class)

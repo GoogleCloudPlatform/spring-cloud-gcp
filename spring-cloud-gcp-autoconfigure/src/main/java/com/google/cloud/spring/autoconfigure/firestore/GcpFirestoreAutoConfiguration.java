@@ -47,8 +47,6 @@ import reactor.core.publisher.Flux;
 /**
  * Provides classes to use with Cloud Firestore.
  *
- * @author Dmitry Solomakha
- * @author Biju Kunjummen
  * @since 1.2
  */
 @Configuration(proxyBeanMethods = false)

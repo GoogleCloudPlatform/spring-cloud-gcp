@@ -31,7 +31,6 @@ import org.springframework.util.Assert;
  * {@link org.springframework.context.annotation.Condition} that determines which GCP environment
  * the application is running on.
  *
- * @author Elena Felder
  * @since 1.1
  */
 public class OnGcpEnvironmentCondition extends SpringBootCondition {

@@ -34,7 +34,6 @@ import org.w3c.dom.Element;
 /**
  * Configures the use of Firestore repositories.
  *
- * @author Chengyuan Zhao
  * @since 1.2
  */
 public class FirestoreRepositoryConfigurationExtension

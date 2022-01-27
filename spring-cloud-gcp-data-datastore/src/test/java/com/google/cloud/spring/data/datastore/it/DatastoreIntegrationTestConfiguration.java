@@ -39,8 +39,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * Config class for the integration tests.
- *
- * @author Chengyuan Zhao
  */
 @Configuration
 @PropertySource("application-test.properties")

@@ -33,7 +33,6 @@ import org.springframework.util.Assert;
 /**
  * Utilities used to support lazy loaded properties.
  *
- * @author Dmitry Solomakha
  * @since 1.2.2
  */
 final class LazyUtil {

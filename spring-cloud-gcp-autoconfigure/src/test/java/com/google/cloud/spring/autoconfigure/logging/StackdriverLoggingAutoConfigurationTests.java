@@ -35,10 +35,6 @@ import zipkin2.reporter.Reporter;
 
 /**
  * Tests for auto-config.
- *
- * @author Mike Eltsufin
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 class StackdriverLoggingAutoConfigurationTests {
 

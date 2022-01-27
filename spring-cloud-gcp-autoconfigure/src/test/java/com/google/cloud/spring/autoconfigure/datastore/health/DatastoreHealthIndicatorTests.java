@@ -31,7 +31,6 @@ import org.springframework.boot.actuate.health.Status;
 /**
  * Tests for {@link DatastoreHealthIndicator}.
  *
- * @author Mike Eltsufin
  * @since 1.2
  */
 @RunWith(MockitoJUnitRunner.class)

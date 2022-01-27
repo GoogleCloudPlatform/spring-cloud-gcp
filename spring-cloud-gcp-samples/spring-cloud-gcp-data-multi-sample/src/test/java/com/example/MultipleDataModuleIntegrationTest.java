@@ -28,8 +28,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Tests that our Spring Data modules can be used with each other.
- *
- * @author Chengyuan
  */
 // Please use "-Dit.multisample=true" to enable the tests
 @ExtendWith(SpringExtension.class)

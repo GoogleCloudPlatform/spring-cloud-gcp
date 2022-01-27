@@ -37,7 +37,6 @@ import org.springframework.util.MultiValueMap;
 /**
  * Integration test for the sender sample app.
  *
- * @author Dmitry Solomakha
  * @since 1.1
  */
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")

@@ -23,7 +23,6 @@ import org.springframework.data.repository.core.support.AbstractEntityInformatio
  *
  * @param <T> the type of the persistent entity
  * @param <I> the ID type of the persistent entity
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class DatastorePersistentEntityInformation<T, I> extends AbstractEntityInformation<T, I> {

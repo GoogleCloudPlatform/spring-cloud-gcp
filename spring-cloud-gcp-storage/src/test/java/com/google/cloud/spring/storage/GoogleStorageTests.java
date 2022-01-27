@@ -53,11 +53,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Tests for Google Cloud Storage.
- *
- * @author Vinicius Carvalho
- * @author Artem Bilan
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 @SpringBootTest(properties = "spring.main.banner-mode=off")
 @RunWith(SpringRunner.class)

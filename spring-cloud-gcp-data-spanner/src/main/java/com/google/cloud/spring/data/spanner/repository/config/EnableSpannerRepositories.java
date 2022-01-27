@@ -30,8 +30,6 @@ import org.springframework.data.repository.config.DefaultRepositoryBaseClass;
 /**
  * Annotation that enables Spanner's Query Method functionality.
  *
- * @author Chengyuan Zhao
- * @author Ray Tsang
  * @since 1.1
  */
 @Target(ElementType.TYPE)

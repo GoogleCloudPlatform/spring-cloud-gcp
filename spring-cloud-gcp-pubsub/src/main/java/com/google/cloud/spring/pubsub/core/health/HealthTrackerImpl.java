@@ -29,7 +29,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * @author Emmanouil Gkatziouras
  * @since 2.0.6
  */
 public class HealthTrackerImpl implements HealthTracker {

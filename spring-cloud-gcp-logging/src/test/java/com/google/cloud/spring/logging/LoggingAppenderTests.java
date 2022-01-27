@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for {@link LoggingAppender}.
  *
- * @author Mike Eltsufin
  * @since 1.2
  */
 class LoggingAppenderTests {

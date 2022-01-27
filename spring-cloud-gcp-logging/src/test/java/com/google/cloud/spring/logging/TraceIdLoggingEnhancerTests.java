@@ -30,8 +30,6 @@ import org.slf4j.MDC;
 
 /**
  * Tests for {@link TraceIdLoggingEnhancer}.
- *
- * @author Mike Eltsufin
  */
 class TraceIdLoggingEnhancerTests {
 

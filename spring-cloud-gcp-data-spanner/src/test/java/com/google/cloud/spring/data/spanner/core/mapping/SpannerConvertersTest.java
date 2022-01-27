@@ -29,8 +29,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for common Spanner custom converters.
- *
- * @author Chengyuan Zhao
  */
 class SpannerConvertersTest {
 

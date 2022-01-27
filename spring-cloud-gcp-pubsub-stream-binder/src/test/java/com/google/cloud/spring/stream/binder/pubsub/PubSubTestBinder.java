@@ -44,9 +44,6 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * Tests the binder for Pub/Sub.
- *
- * @author João André Martins
- * @author Daniel Zou
  */
 public class PubSubTestBinder
     extends AbstractTestBinder<

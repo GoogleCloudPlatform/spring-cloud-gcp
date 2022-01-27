@@ -55,9 +55,6 @@ import reactor.util.context.Context;
 /**
  * An implementation of {@link FirestoreReactiveOperations}.
  *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
  * @since 1.2
  */
 public class FirestoreTemplate implements FirestoreReactiveOperations {

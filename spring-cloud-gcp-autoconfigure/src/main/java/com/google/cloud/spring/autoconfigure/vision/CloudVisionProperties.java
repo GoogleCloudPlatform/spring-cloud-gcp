@@ -25,7 +25,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 /**
  * Additional settings for use with Cloud Vision APIs.
  *
- * @author Daniel Zou
  * @since 1.1
  */
 @ConfigurationProperties("spring.cloud.gcp.vision")

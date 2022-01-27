@@ -79,9 +79,6 @@ import org.springframework.lang.Nullable;
 
 /**
  * Tests for Part-Tree Datastore Query Methods.
- *
- * @author Chengyuan Zhao
- * @author Dmitry Solomakha
  */
 public class PartTreeDatastoreQueryTests {
 

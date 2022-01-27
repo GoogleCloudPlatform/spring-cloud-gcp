@@ -21,7 +21,6 @@ import org.springframework.data.util.TypeInformation;
 /**
  * The various types of properties with respect to their storage as embedded entities.
  *
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public enum EmbeddedType {

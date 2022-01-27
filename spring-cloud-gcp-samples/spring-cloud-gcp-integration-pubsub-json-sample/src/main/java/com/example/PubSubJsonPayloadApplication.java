@@ -24,8 +24,6 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * Entry point into the sample application.
- *
- * @author Daniel Zou
  */
 @SpringBootApplication
 public class PubSubJsonPayloadApplication {

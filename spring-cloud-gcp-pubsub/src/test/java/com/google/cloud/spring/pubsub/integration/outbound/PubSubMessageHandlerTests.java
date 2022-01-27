@@ -49,10 +49,6 @@ import org.springframework.util.concurrent.SettableListenableFuture;
 
 /**
  * Tests for the Pub/Sub message handler.
- *
- * @author João André Martins
- * @author Eric Goetschalckx
- * @author Chengyuan Zhao
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PubSubMessageHandlerTests {

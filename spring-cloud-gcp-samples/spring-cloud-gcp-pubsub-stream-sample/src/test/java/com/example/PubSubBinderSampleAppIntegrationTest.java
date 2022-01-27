@@ -41,7 +41,6 @@ import org.springframework.util.MultiValueMap;
 /**
  * These tests verifies that the pubsub-binder-sample works.
  *
- * @author Dmitry Solomakha
  * @since 1.1
  */
 @RunWith(SpringRunner.class)

@@ -24,7 +24,6 @@ import java.nio.file.Path;
  * <p>See https://cloud.google.com/sdk/gcloud/reference/beta/emulators/datastore/start for the
  * correspondent properties
  *
- * @author Lucas Soares
  * @since 1.2
  */
 public class EmulatorSettings {

@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
  * A sample source application that constructs a {@link UserMessage} object based on a HTTP request,
  * and sends it to a PubSub topic.
  *
- * @author Elena Felder
  * @since 1.2
  */
 @EnableBinding(Source.class)

@@ -24,7 +24,6 @@ import com.google.cloud.spring.core.UserAgentHeaderProvider;
  * A Google Cloud Java Logback {@link com.google.cloud.logging.logback.LoggingAppender} wrapper that
  * configures it for Spring Cloud GCP.
  *
- * @author Mike Eltsufin
  * @since 1.2
  */
 public class LoggingAppender extends com.google.cloud.logging.logback.LoggingAppender {

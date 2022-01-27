@@ -29,7 +29,6 @@ import org.springframework.data.auditing.config.AuditingConfiguration;
  * Registers the annotations and classes for providing auditing support in Spring Data Cloud
  * Datastore.
  *
- * @author Chengyuan Zhao
  * @since 1.2
  */
 public class DatastoreAuditingRegistrar extends AuditingBeanDefinitionRegistrarSupport {

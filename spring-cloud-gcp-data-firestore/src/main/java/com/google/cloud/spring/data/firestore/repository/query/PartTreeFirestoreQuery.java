@@ -59,9 +59,6 @@ import org.springframework.data.repository.query.parser.Part;
 import org.springframework.data.repository.query.parser.PartTree;
 
 /**
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- * @author Daniel Zou
  * @since 1.2
  */
 public class PartTreeFirestoreQuery implements RepositoryQuery {

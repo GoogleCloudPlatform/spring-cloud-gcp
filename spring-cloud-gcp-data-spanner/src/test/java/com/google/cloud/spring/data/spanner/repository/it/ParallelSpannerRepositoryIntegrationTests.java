@@ -34,8 +34,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Tests multiple threads using a single repository instance.
- *
- * @author Chengyuan Zhao
  */
 @RunWith(SpringRunner.class)
 public class ParallelSpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {

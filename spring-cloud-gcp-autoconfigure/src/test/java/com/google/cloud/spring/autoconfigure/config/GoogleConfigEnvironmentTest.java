@@ -25,9 +25,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the environment config.
- *
- * @author Dmitry Solomakha
- * @author Eddy Kioi
  */
 class GoogleConfigEnvironmentTest {
   @Test

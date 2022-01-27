@@ -56,9 +56,6 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenResolv
 /**
  * Tests for IAP auth config.
  *
- * @author Elena Felder
- * @author Marcel Amado
- * @author Eddú Meléndez
  * @since 1.1
  */
 @RunWith(MockitoJUnitRunner.class)

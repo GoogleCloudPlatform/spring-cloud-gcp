@@ -28,8 +28,6 @@ import org.springframework.messaging.Message;
 
 /**
  * Example of a sink for the sample app.
- *
- * @author Travis Tomsu
  */
 @Configuration
 public class SinkExample {

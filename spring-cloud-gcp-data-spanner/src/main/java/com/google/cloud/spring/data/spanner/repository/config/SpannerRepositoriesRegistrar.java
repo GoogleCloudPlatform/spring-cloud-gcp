@@ -23,8 +23,6 @@ import org.springframework.data.repository.config.RepositoryConfigurationExtensi
 /**
  * A boilerplate class to register Spanner repositories.
  *
- * @author Ray Tsang
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class SpannerRepositoriesRegistrar extends RepositoryBeanDefinitionRegistrarSupport {

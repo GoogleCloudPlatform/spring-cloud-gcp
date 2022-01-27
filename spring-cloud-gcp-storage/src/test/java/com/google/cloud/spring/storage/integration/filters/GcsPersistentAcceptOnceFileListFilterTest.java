@@ -26,8 +26,6 @@ import org.springframework.integration.metadata.ConcurrentMetadataStore;
 
 /**
  * Tests for GcsPersistentAcceptOnceFileListFilter.
- *
- * @author Lukas Gemela
  */
 class GcsPersistentAcceptOnceFileListFilterTest {
 

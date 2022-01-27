@@ -40,9 +40,6 @@ import org.springframework.data.repository.query.QueryMethodEvaluationContextPro
 
 /**
  * Tests for the Spanner repository factory.
- *
- * @author Chengyuan Zhao
- * @author Balint Pato
  */
 public class SpannerRepositoryFactoryTests {
 

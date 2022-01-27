@@ -27,8 +27,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 
 /**
  * Tests for the logging-web-mvc configurer.
- *
- * @author Mike Eltsufin
  */
 @RunWith(MockitoJUnitRunner.class)
 public class LoggingWebMvcConfigurerTests {

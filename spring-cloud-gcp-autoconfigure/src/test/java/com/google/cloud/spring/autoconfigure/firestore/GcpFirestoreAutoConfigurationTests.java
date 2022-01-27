@@ -39,7 +39,6 @@ import org.springframework.transaction.TransactionManager;
 /**
  * Tests for Firestore auto-config.
  *
- * @author Dmitry Solomakha
  * @since 1.2
  */
 class GcpFirestoreAutoConfigurationTests {

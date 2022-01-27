@@ -26,7 +26,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Spring Cloud Stream sink that receives {@link UserMessage} objects and acts on them.
  *
- * @author Elena Felder
  * @since 1.2
  */
 @Configuration

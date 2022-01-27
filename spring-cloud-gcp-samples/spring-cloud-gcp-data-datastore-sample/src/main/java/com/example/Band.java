@@ -23,8 +23,6 @@ import org.springframework.data.annotation.Id;
 
 /**
  * A musical group that {@link Singer}s can claim to be a part of.
- *
- * @author Chengyuan Zhao
  */
 @Entity
 @DiscriminatorField(field = "band_type")

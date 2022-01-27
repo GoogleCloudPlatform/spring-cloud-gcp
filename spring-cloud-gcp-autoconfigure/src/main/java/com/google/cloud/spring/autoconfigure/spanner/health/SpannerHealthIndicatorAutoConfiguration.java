@@ -37,7 +37,6 @@ import org.springframework.util.Assert;
 /**
  * {@link HealthContributorAutoConfiguration Auto-configuration} for {@link SpannerHealthIndicator}.
  *
- * @author ikeyat
  * @since 2.0.6
  */
 @Configuration(proxyBeanMethods = false)

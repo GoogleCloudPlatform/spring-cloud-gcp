@@ -60,8 +60,6 @@ import org.springframework.util.StringUtils;
  * A Query Method for Spanner using SQL strings.
  *
  * @param <T> the return type of the Query Method
- * @author Balint Pato
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {

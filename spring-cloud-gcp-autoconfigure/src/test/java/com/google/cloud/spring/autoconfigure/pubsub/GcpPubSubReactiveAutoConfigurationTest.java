@@ -47,8 +47,6 @@ import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
 /**
- * @author Elena Felder
- * @author Maurice Zeijen
  */
 @RunWith(MockitoJUnitRunner.class)
 public class GcpPubSubReactiveAutoConfigurationTest {

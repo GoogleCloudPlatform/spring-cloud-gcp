@@ -33,10 +33,6 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * Example usage of the Spanner Template.
- *
- * @author Balint Pato
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
  */
 @SpringBootApplication
 public class SpannerTemplateExample {

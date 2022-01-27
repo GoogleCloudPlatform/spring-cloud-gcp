@@ -25,7 +25,6 @@ import com.google.cloud.ServiceOptions;
  *
  * <p>Delegates the decision to {@link GcpEnvironment}.
  *
- * @author Elena Felder
  * @since 1.1
  */
 public class DefaultGcpEnvironmentProvider implements GcpEnvironmentProvider {

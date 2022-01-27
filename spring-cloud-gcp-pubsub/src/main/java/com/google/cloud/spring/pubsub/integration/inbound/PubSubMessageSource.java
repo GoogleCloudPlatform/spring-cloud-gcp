@@ -36,7 +36,6 @@ import org.springframework.util.Assert;
  * A <a href="https://cloud.google.com/pubsub/docs/pull#pubsub-pull-messages-sync-java">PubSub
  * Synchronous pull</a> implementation of {@link AbstractMessageSource}.
  *
- * @author Elena Felder
  * @since 1.2
  */
 public class PubSubMessageSource extends AbstractFetchLimitingMessageSource<Object> {

@@ -23,8 +23,6 @@ import com.google.firestore.v1.Value;
 /**
  * An interface used for object mapping for Cloud Firestore.
  *
- * @author Dmitry Solomakha
- * @author Mike Eltsufin
  * @since 1.2.2
  */
 public interface FirestoreClassMapper {

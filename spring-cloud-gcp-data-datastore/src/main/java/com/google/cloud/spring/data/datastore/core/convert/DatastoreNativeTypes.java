@@ -50,8 +50,6 @@ import org.springframework.data.mapping.model.SimpleTypeHolder;
 /**
  * A class to manage Datastore-specific simple type conversions.
  *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
  * @since 1.1
  */
 public abstract class DatastoreNativeTypes {

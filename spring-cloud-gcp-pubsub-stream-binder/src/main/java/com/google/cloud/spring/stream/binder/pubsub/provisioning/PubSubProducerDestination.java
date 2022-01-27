@@ -20,8 +20,6 @@ import org.springframework.cloud.stream.provisioning.ProducerDestination;
 
 /**
  * A producer destination for Pub/Sub.
- *
- * @author João André Martins
  */
 public class PubSubProducerDestination implements ProducerDestination {
 

@@ -33,7 +33,6 @@ import reactor.core.publisher.Flux;
  * Sample controller demonstrating an HTTP endpoint acquiring data from a reactive GCP Pub/Sub
  * stream.
  *
- * @author Elena Felder
  * @since 1.2
  */
 @Controller

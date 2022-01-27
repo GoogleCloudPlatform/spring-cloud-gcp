@@ -44,8 +44,6 @@ import org.springframework.data.domain.Sort;
 
 /**
  * Tests for the standard Spanner repository implementation.
- *
- * @author Chengyuan Zhao
  */
 public class SimpleSpannerRepositoryTests {
 

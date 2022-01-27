@@ -25,9 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Web app controller class for sample application. Contains a function that runs a query and
  * displays the results.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 @RestController
 public class WebController {

@@ -77,8 +77,6 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 /**
  * Tests Spanner SQL Query Methods.
- *
- * @author Chengyuan Zhao
  */
 public class SqlSpannerQueryTests {
 

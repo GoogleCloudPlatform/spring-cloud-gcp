@@ -53,9 +53,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * Tests for Pub/Sub Health Indicator autoconfiguration.
- *
- * @author Elena Felder
- * @author Patrik Hörlin
  */
 class PubSubHealthIndicatorAutoConfigurationTests {
 

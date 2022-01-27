@@ -39,7 +39,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 /**
- * @author Travis Tomsu
  * @since 2.0.2
  */
 @RunWith(SpringRunner.class)

@@ -26,9 +26,6 @@ import java.util.Objects;
 
 /**
  * Sample entity for integration tests.
- *
- * @author Daniel Zou
- * @author Dmitry Solomakha
  */
 // tag::class_definition[]
 // tag::embedded_class_collections[]

@@ -31,8 +31,6 @@ import java.nio.charset.StandardCharsets;
 /**
  * Offers convenience methods for performing common operations on KMS including encrypting and
  * decrypting text.
- *
- * @author Emmanouil Gkatziouras
  */
 public class KmsTemplate implements KmsOperations {
 

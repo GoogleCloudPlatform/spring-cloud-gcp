@@ -23,10 +23,6 @@ import org.springframework.core.io.Resource;
 
 /**
  * Credentials configuration.
- *
- * @author João André Martins
- * @author Stéphane Nicoll
- * @author Chengyuan Zhao
  */
 public class Credentials {
 
