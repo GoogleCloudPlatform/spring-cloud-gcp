@@ -23,7 +23,6 @@ import javax.persistence.Id
 /**
  * Data object representing a registered person.
  *
- *
  * @since 1.1
  */
 @Entity

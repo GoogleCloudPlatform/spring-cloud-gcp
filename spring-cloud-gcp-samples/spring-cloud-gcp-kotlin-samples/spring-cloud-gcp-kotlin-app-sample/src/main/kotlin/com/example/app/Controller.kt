@@ -29,7 +29,6 @@ import org.springframework.web.servlet.view.RedirectView
 /**
  * Creates endpoints for registering and displaying users.
  *
- *
  * @since 1.1
  */
 @RestController

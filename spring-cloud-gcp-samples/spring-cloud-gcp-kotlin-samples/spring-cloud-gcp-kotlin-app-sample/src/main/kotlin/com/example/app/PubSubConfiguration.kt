@@ -39,7 +39,6 @@ import org.springframework.messaging.handler.annotation.Header
 /**
  * Configuration to listen to Pub/Sub topic and register users to the database.
  *
- *
  * @since 1.1
  */
 @Configuration

@@ -37,7 +37,6 @@ import java.util.concurrent.TimeUnit
 /**
  * Tests to verify the Kotlin sample app.
  *
- *
  * @since 1.1
  */
 @RunWith(SpringRunner::class)
