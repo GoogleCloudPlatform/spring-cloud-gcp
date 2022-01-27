@@ -34,7 +34,7 @@
     <suppress checks="AbbreviationAsWordInName" files="/spring-cloud-gcp-samples/"/>
     <suppress checks="OneTopLevelClass" files="/spring-cloud-gcp-samples/"/>
 
-    <!-- Supporessed rules for 2.x branch; addressing would break backwards
+    <!-- Suppressed rules for 2.x branch; addressing would break backwards
         compatibility. Fixed in 3.x -->
     <suppress checks="AbbreviationAsWordInName" files="src/main/java/com/google/cloud/spring/logging/StackdriverJsonLayout.java"/>
     <suppress checks="AbbreviationAsWordInName" files="src/main/java/com/google/cloud/spring/logging/extractors/XCloudTraceIdExtractor.java"/>
