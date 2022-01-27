@@ -80,7 +80,7 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
           .getPropertySources()
           .addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
 
-      CredentialsPropertiesSetter.setCredentials(sqlProperties, propertiesRetriever.getGcpProperties(), LOGGER);
+      CredentialsPropertiesSetter.setCredentials(sqlProperties, propertiesRetriever.getGcpProperties());
 
       // support usage metrics
       CoreSocketFactory.setApplicationName(

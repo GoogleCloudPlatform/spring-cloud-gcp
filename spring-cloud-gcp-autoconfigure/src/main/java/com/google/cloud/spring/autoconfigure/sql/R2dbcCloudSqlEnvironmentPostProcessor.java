@@ -66,7 +66,7 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
           .addFirst(new MapPropertySource("CLOUD_SQL_R2DBC_URL", primaryMap));
 
       CredentialsPropertiesSetter.setCredentials(sqlProperties,
-          propertiesRetriever.getGcpProperties(), LOGGER);
+          propertiesRetriever.getGcpProperties());
     }
   }
 

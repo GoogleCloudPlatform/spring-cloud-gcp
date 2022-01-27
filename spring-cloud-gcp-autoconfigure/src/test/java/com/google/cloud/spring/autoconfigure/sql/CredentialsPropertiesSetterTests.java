@@ -17,12 +17,11 @@
 package com.google.cloud.spring.autoconfigure.sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import java.nio.file.Path;
-import org.apache.commons.logging.Log;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.core.env.ConfigurableEnvironment;
 
@@ -30,9 +29,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
  * Tests for {@link CredentialsPropertiesSetter}.
  */
 class CredentialsPropertiesSetterTests {
-
-  @Mock
-  Log mockLogger;
 
   @TempDir
   Path temporaryDirectory;
@@ -47,7 +43,7 @@ class CredentialsPropertiesSetterTests {
           PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
 
           CredentialsPropertiesSetter.setCredentials(propertiesRetriever.getCloudSqlProperties(),
-              propertiesRetriever.getGcpProperties(), mockLogger);
+              propertiesRetriever.getGcpProperties());
 
           assertThat(environment
               .getProperty(SqlCredentialFactory.CREDENTIAL_ENCODED_KEY_PROPERTY_NAME))
@@ -68,7 +64,7 @@ class CredentialsPropertiesSetterTests {
           PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
 
           CredentialsPropertiesSetter.setCredentials(propertiesRetriever.getCloudSqlProperties(),
-              propertiesRetriever.getGcpProperties(), mockLogger);
+              propertiesRetriever.getGcpProperties());
 
           assertThat(environment
               .getProperty(SqlCredentialFactory.CREDENTIAL_ENCODED_KEY_PROPERTY_NAME))
@@ -91,7 +87,7 @@ class CredentialsPropertiesSetterTests {
           PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
 
           CredentialsPropertiesSetter.setCredentials(propertiesRetriever.getCloudSqlProperties(),
-              propertiesRetriever.getGcpProperties(), mockLogger);
+              propertiesRetriever.getGcpProperties());
 
           assertThat(environment
               .getProperty(SqlCredentialFactory.CREDENTIAL_LOCATION_PROPERTY_NAME))
@@ -113,7 +109,7 @@ class CredentialsPropertiesSetterTests {
           PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
 
           CredentialsPropertiesSetter.setCredentials(propertiesRetriever.getCloudSqlProperties(),
-              propertiesRetriever.getGcpProperties(), mockLogger);
+              propertiesRetriever.getGcpProperties());
 
           assertThat(environment
               .getProperty(SqlCredentialFactory.CREDENTIAL_LOCATION_PROPERTY_NAME))
@@ -122,5 +118,23 @@ class CredentialsPropertiesSetterTests {
               .getProperty(SqlCredentialFactory.CREDENTIAL_FACTORY_PROPERTY))
               .isEqualTo("com.google.cloud.spring.autoconfigure.sql.SqlCredentialFactory");
         });
+  }
+
+  @Test
+  void testSetCredentialsFileProperty_invalidLocation() {
+    ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+        .withPropertyValues("spring.cloud.gcp.credentials.location=invalid/path");
+    contextRunner.run(
+        context -> {
+          ConfigurableEnvironment environment = context.getEnvironment();
+          PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
+          IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+              () -> CredentialsPropertiesSetter.setCredentials(
+                  propertiesRetriever.getCloudSqlProperties(),
+                  propertiesRetriever.getGcpProperties()));
+          assertThat(exception).hasMessageContaining(
+              "Error reading Cloud SQL credentials file: class path resource [invalid/path].");
+        }
+    );
   }
 }

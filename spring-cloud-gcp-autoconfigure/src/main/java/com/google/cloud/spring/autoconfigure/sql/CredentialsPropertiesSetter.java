@@ -21,7 +21,6 @@ import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.sql.CredentialFactory;
 import java.io.File;
 import java.io.IOException;
-import org.apache.commons.logging.Log;
 import org.springframework.core.io.Resource;
 
 /**
@@ -45,10 +44,9 @@ final class CredentialsPropertiesSetter {
    * <p>If user didn't specify credentials, the socket factory already does the right thing by
    * using the application default credentials by default. So we don't need to do anything.
    */
-  static void setCredentials(GcpCloudSqlProperties sqlProperties, GcpProperties gcpProperties,
-      Log logger) {
+  static void setCredentials(GcpCloudSqlProperties sqlProperties, GcpProperties gcpProperties)
+      throws IllegalArgumentException {
     Credentials credentials = null;
-
     if (sqlProperties.getCredentials().hasKey()) {
       // First tries the SQL configuration credential.
       credentials = sqlProperties.getCredentials();
@@ -60,7 +58,7 @@ final class CredentialsPropertiesSetter {
     if (credentials.getEncodedKey() != null) {
       setCredentialsEncodedKeyProperty(credentials.getEncodedKey());
     } else if (credentials.getLocation() != null) {
-      setCredentialsFileProperty(credentials.getLocation(), logger);
+      setCredentialsFileProperty(credentials.getLocation());
     }
     // Else do nothing, let sockets factory use application default credentials.
   }
@@ -73,7 +71,8 @@ final class CredentialsPropertiesSetter {
         SqlCredentialFactory.class.getName());
   }
 
-  private static void setCredentialsFileProperty(Resource credentialsLocation, Log logger) {
+  static void setCredentialsFileProperty(Resource credentialsLocation)
+      throws IllegalArgumentException {
     try {
       // A resource might not be in the filesystem, but the Cloud SQL credential must.
       File credentialsLocationFile = credentialsLocation.getFile();
@@ -85,7 +84,10 @@ final class CredentialsPropertiesSetter {
       System.setProperty(CredentialFactory.CREDENTIAL_FACTORY_PROPERTY,
           SqlCredentialFactory.class.getName());
     } catch (IOException ioe) {
-      logger.info("Error reading Cloud SQL credentials file.", ioe);
+      throw new IllegalArgumentException(
+          String.format(
+              "Error reading Cloud SQL credentials file: %s. Please verify the specified file path.",
+              credentialsLocation));
     }
   }
 }
