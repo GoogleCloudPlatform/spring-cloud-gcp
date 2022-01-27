@@ -1011,8 +1011,6 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
   /**
    * Class to hold caches for read and conversion.
-   *
-   * @author Dmitry Solomakha
    */
   class ReadContext {
     private final Map<BaseKey, Object> convertedEntities = new HashMap<>();

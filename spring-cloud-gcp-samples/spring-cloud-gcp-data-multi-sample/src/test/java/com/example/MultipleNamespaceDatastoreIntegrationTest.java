@@ -74,8 +74,6 @@ class MultipleNamespaceDatastoreIntegrationTest {
 
   /**
    * Configuring custom multiple namespaces.
-   *
-   * @author Chengyuan Zhao
    */
   @Configuration
   static class Config {

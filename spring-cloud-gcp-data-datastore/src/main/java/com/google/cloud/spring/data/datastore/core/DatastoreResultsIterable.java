@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/** @author Dmitry Solomakha */
 public class DatastoreResultsIterable<T> implements Iterable<T> {
   private final Iterator<T> iterator;
   private final Cursor cursor;

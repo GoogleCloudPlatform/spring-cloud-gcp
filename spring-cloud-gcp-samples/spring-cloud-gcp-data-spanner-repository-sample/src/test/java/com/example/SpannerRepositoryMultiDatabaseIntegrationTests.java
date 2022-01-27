@@ -87,8 +87,6 @@ class SpannerRepositoryMultiDatabaseIntegrationTests {
 
   /**
    * Configuring custom multiple database connections.
-   *
-   * @author Chengyuan Zhao
    */
   @Configuration
   static class Config {
