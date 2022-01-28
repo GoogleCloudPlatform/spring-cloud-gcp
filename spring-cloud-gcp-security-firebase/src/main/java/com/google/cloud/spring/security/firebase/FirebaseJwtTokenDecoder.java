@@ -49,11 +49,15 @@ import org.springframework.web.client.RestOperations;
  * keys are cached locally and only refreshed when the expiration time is past. Besides using the
  * RSA keys to validate the token signature, this decoder also uses a pre=configured {@link
  * org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator} to validate all the
- * claims. The following validators are used by this class: {@link
- * org.springframework.security.oauth2.jwt.JwtTimestampValidator} - Validates the expiration date of
- * the Token {@link org.springframework.security.oauth2.jwt.JwtIssuerValidator} - Validates the iss
- * claim header {@link FirebaseTokenValidator} - Validates all other headers according to definition
- * at https://firebase.google.com/docs/auth/admin/verify-id-tokens
+ * claims. The following validators are used by this class:
+ * <ul>
+ *     <li>{@link org.springframework.security.oauth2.jwt.JwtTimestampValidator} - Validates the
+ *     expiration date of the Token </li>
+ *     <li>{@link org.springframework.security.oauth2.jwt.JwtIssuerValidator} - Validates the iss
+ *     claim header</li>
+ *     <li>{@link FirebaseTokenValidator} - Validates all other headers according to definition at
+ *     https://firebase.google.com/docs/auth/admin/verify-id-tokens</li>
+ * </ul>
  *
  * @since 1.2.2
  */
