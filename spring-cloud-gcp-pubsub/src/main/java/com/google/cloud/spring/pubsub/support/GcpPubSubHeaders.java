@@ -28,6 +28,9 @@ public abstract class GcpPubSubHeaders {
 
   private static final String PREFIX = "gcp_pubsub_";
 
+  /** The client header text. */
+  public static final String CLIENT = "googclient_*";
+
   /** The topic header text. */
   public static final String TOPIC = PREFIX + "topic";
 
