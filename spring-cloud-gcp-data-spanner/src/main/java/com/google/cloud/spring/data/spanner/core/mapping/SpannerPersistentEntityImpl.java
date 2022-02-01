@@ -422,6 +422,10 @@ public class SpannerPersistentEntityImpl<T>
     return this.jsonProperties.contains(type);
   }
 
+  public Gson getGsonBean() {
+    return this.spannerMappingContext.getGson();
+  }
+
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.context.addPropertyAccessor(new BeanFactoryAccessor());
     this.context.setBeanResolver(new BeanFactoryResolver(applicationContext));

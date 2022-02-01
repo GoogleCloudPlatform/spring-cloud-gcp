@@ -38,6 +38,7 @@ import com.google.cloud.spring.data.spanner.core.convert.TestEntities.OuterTestH
 import com.google.cloud.spring.data.spanner.core.convert.TestEntities.TestEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.gson.Gson;
 import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Rule;
@@ -62,7 +63,7 @@ public class ConverterAwareMappingSpannerEntityReaderTests {
     this.spannerReadConverter = new SpannerReadConverter();
     this.spannerEntityReader =
         new ConverterAwareMappingSpannerEntityReader(
-            new SpannerMappingContext(), this.spannerReadConverter);
+            new SpannerMappingContext(), this.spannerReadConverter, new Gson());
   }
 
   @Test
@@ -163,7 +164,7 @@ public class ConverterAwareMappingSpannerEntityReaderTests {
                       public Integer convert(Struct source) {
                         return source.getString("string_col").length();
                       }
-                    })))
+                    })), null)
         .read(OuterTestEntityFlatFaulty.class, rowStruct);
   }
 
@@ -190,7 +191,7 @@ public class ConverterAwareMappingSpannerEntityReaderTests {
                           public Integer convert(Struct source) {
                             return source.getString("string_col").length();
                           }
-                        })))
+                        })), null)
             .read(OuterTestEntityFlat.class, rowStruct);
     assertThat(result.id).isEqualTo("key1");
     assertThat(result.innerLengths).hasSize(1);

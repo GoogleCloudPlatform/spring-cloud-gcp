@@ -47,6 +47,7 @@ public class ConverterAwareMappingSpannerEntityProcessor implements SpannerEntit
 
   private final SpannerWriteConverter writeConverter;
 
+  // TODO: verify only used in tests and remove
   public ConverterAwareMappingSpannerEntityProcessor(SpannerMappingContext spannerMappingContext) {
     this(spannerMappingContext, null, null, null);
   }
@@ -64,7 +65,7 @@ public class ConverterAwareMappingSpannerEntityProcessor implements SpannerEntit
     // "A valid Gson object is required.");
     this.readConverter = new SpannerReadConverter(readConverters);
     this.entityReader = new ConverterAwareMappingSpannerEntityReader(spannerMappingContext,
-        this.readConverter);
+        this.readConverter, gson);
     this.writeConverter = new SpannerWriteConverter(writeConverters);
     this.entityWriter = new ConverterAwareMappingSpannerEntityWriter(spannerMappingContext,
         this.writeConverter, gson);

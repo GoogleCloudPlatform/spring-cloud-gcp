@@ -26,6 +26,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntityImpl;
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -206,7 +207,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
 
     return this.isDml
         ? Collections.singletonList(
-            this.spannerTemplate.executeDmlStatement(buildStatementFromQueryAndTags(queryTagValue)))
+        this.spannerTemplate.executeDmlStatement(buildStatementFromQueryAndTags(queryTagValue)))
         : executeReadSql(paramAccessor.getPageable(), paramAccessor.getSort(), queryTagValue);
   }
 
@@ -241,10 +242,10 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
           struct -> new StructAccessor(struct).getSingleValue(0), statement, spannerQueryOptions);
     }
     // check if returnedType is a field annotated as json
-    boolean isJsonField = isJsonFieldType(returnedType);
-    if (isJsonField) {
+    Gson isJsonField = isJsonFieldType(returnedType);
+    if (isJsonField != null) {
       return this.spannerTemplate.query(
-          struct -> new StructAccessor(struct).getSingleJsonValue(0, returnedType),
+          struct -> new StructAccessor(struct, isJsonField).getSingleJsonValue(0, returnedType),
           statement,
           spannerQueryOptions);
     }
@@ -252,14 +253,20 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
     return this.spannerTemplate.query(this.entityType, statement, spannerQueryOptions);
   }
 
-  private boolean isJsonFieldType(Class<?> returnedType) {
+  private Gson isJsonFieldType(Class<?> returnedType) {
     SpannerPersistentEntityImpl<?> persistentEntity =
         (SpannerPersistentEntityImpl<?>)
             this.spannerMappingContext.getPersistentEntity(this.entityType);
     if (persistentEntity == null) {
-      return false;
+      return null;
     }
-    return persistentEntity.isJsonProperty(returnedType);
+    if (persistentEntity.isJsonProperty(returnedType)) {
+      return persistentEntity.getGsonBean();
+    } else {
+      return null;
+    }
+
+    // return persistentEntity.isJsonProperty(returnedType);
   }
 
   private Statement buildStatementFromQueryAndTags(QueryTagValue queryTagValue) {
@@ -281,7 +288,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
     Expression expression =
         this.expressionParser.parseExpression(sql, ParserContext.TEMPLATE_EXPRESSION);
     if (expression instanceof LiteralExpression) {
-      return new Expression[] {expression};
+      return new Expression[]{expression};
     } else if (expression instanceof CompositeStringExpression) {
       return ((CompositeStringExpression) expression).getExpressions();
     } else {

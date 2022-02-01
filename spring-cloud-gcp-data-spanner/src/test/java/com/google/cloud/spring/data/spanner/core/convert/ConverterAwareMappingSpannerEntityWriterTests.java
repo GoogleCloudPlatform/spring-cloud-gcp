@@ -48,6 +48,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
+import com.google.gson.Gson;
 import com.google.spanner.v1.TypeCode;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -77,9 +78,12 @@ public class ConverterAwareMappingSpannerEntityWriterTests {
   @Before
   public void setup() {
     this.writeConverter = new SpannerWriteConverter();
+    SpannerMappingContext spannerMappingContext = new SpannerMappingContext();
+    Gson gson = new Gson();
+    spannerMappingContext.setGson(gson);
     this.spannerEntityWriter =
         new ConverterAwareMappingSpannerEntityWriter(
-            new SpannerMappingContext(), this.writeConverter);
+            spannerMappingContext, this.writeConverter, gson);
   }
 
   @Test

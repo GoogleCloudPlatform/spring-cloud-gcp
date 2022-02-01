@@ -21,6 +21,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
+import com.google.gson.Gson;
 import java.util.Set;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.data.mapping.PreferredConstructor;
@@ -43,15 +44,28 @@ class ConverterAwareMappingSpannerEntityReader implements SpannerEntityReader {
 
   private SpannerReadConverter converter;
 
+  private Gson gson;
+
+  // ConverterAwareMappingSpannerEntityReader(
+  //     SpannerMappingContext spannerMappingContext, SpannerReadConverter spannerReadConverter) {
+  //   this.spannerMappingContext = spannerMappingContext;
+  //
+  //   this.instantiators = new EntityInstantiators();
+  //
+  //   this.converter = spannerReadConverter;
+  // }
+
   ConverterAwareMappingSpannerEntityReader(
-      SpannerMappingContext spannerMappingContext, SpannerReadConverter spannerReadConverter) {
+      SpannerMappingContext spannerMappingContext, SpannerReadConverter spannerReadConverter,
+      Gson gson) {
     this.spannerMappingContext = spannerMappingContext;
 
     this.instantiators = new EntityInstantiators();
 
     this.converter = spannerReadConverter;
-  }
 
+    this.gson = gson;
+  }
   /**
    * Reads a single POJO from a Cloud Spanner row.
    *
@@ -70,7 +84,7 @@ class ConverterAwareMappingSpannerEntityReader implements SpannerEntityReader {
     SpannerPersistentEntity<R> persistentEntity =
         (SpannerPersistentEntity<R>) this.spannerMappingContext.getPersistentEntityOrFail(type);
 
-    StructAccessor structAccessor = new StructAccessor(source);
+    StructAccessor structAccessor = new StructAccessor(source, this.gson);
 
     StructPropertyValueProvider propertyValueProvider =
         new StructPropertyValueProvider(structAccessor, this.converter, this, allowMissingColumns);
