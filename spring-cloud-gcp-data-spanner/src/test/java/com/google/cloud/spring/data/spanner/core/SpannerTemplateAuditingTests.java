@@ -28,6 +28,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.repository.config.EnableSpannerAuditing;
+import com.google.gson.Gson;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -84,6 +85,10 @@ public class SpannerTemplateAuditingTests {
   @Configuration
   @EnableSpannerAuditing
   static class Config {
+    @Bean
+    public Gson gson() {
+      return new Gson();
+    }
 
     @Bean
     public SpannerMappingContext spannerMappingContext() {

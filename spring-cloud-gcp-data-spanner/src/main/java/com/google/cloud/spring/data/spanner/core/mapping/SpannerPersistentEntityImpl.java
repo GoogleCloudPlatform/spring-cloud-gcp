@@ -98,12 +98,13 @@ public class SpannerPersistentEntityImpl<T>
    * @param information type information about the underlying entity type.
    */
   public SpannerPersistentEntityImpl(TypeInformation<T> information) {
-    this(information, null);
+    this(information, new SpannerMappingContext());
   }
 
   public SpannerPersistentEntityImpl(TypeInformation<T> information, SpannerMappingContext spannerMappingContext) {
     this(information, spannerMappingContext,
-        new ConverterAwareMappingSpannerEntityProcessor(new SpannerMappingContext(), spannerMappingContext.getGson()));
+        new ConverterAwareMappingSpannerEntityProcessor(new SpannerMappingContext(),
+            spannerMappingContext.getGson()));
   }
 
   /**

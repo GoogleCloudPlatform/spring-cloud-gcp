@@ -48,6 +48,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.core.mapping.Where;
+import com.google.gson.Gson;
 import com.google.spanner.v1.TypeCode;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -130,7 +131,7 @@ public class SqlSpannerQueryTests {
         sql,
         this.evaluationContextProvider,
         this.expressionParser,
-        new SpannerMappingContext(),
+        this.spannerMappingContext,
         isDml);
   }
 
@@ -604,6 +605,7 @@ public class SqlSpannerQueryTests {
 
   @Test
   public void sqlReturnTypeIsJsonFieldTest() throws NoSuchMethodException {
+    this.spannerMappingContext.setGson(new Gson());
     String sql = "SELECT details from singer where stageName = @stageName";
 
     Object[] params = new Object[] {"STAGENAME"};

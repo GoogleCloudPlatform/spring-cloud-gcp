@@ -46,15 +46,6 @@ class ConverterAwareMappingSpannerEntityReader implements SpannerEntityReader {
 
   private Gson gson;
 
-  // ConverterAwareMappingSpannerEntityReader(
-  //     SpannerMappingContext spannerMappingContext, SpannerReadConverter spannerReadConverter) {
-  //   this.spannerMappingContext = spannerMappingContext;
-  //
-  //   this.instantiators = new EntityInstantiators();
-  //
-  //   this.converter = spannerReadConverter;
-  // }
-
   ConverterAwareMappingSpannerEntityReader(
       SpannerMappingContext spannerMappingContext, SpannerReadConverter spannerReadConverter,
       Gson gson) {
@@ -66,6 +57,7 @@ class ConverterAwareMappingSpannerEntityReader implements SpannerEntityReader {
 
     this.gson = gson;
   }
+
   /**
    * Reads a single POJO from a Cloud Spanner row.
    *
