@@ -54,6 +54,10 @@ public class SpannerMappingContext
     this.gson = gson;
   }
 
+  public Gson getGson() {
+    return gson;
+  }
+
   /**
    * Set the field naming strategy used when creating persistent properties.
    *
@@ -86,7 +90,7 @@ public class SpannerMappingContext
 
   protected <T> SpannerPersistentEntityImpl<T> constructPersistentEntity(
       TypeInformation<T> typeInformation) {
-    return new SpannerPersistentEntityImpl<>(typeInformation, this.gson);
+    return new SpannerPersistentEntityImpl<>(typeInformation, this);
   }
 
   @Override

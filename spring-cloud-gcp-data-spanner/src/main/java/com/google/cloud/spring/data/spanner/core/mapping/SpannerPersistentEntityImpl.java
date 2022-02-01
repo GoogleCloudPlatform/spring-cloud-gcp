@@ -101,9 +101,9 @@ public class SpannerPersistentEntityImpl<T>
     this(information, null);
   }
 
-  public SpannerPersistentEntityImpl(TypeInformation<T> information, Gson gson) {
-    this(information, new SpannerMappingContext(),
-        new ConverterAwareMappingSpannerEntityProcessor(new SpannerMappingContext(), gson));
+  public SpannerPersistentEntityImpl(TypeInformation<T> information, SpannerMappingContext spannerMappingContext) {
+    this(information, spannerMappingContext,
+        new ConverterAwareMappingSpannerEntityProcessor(new SpannerMappingContext(), spannerMappingContext.getGson()));
   }
 
   /**
