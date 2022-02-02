@@ -97,13 +97,14 @@ public class SpannerPersistentEntityImpl<T>
    *
    * @param information type information about the underlying entity type.
    */
+  //TODO: check if used anywhere other than test. if not delete.
   public SpannerPersistentEntityImpl(TypeInformation<T> information) {
     this(information, new SpannerMappingContext());
   }
 
   public SpannerPersistentEntityImpl(TypeInformation<T> information, SpannerMappingContext spannerMappingContext) {
     this(information, spannerMappingContext,
-        new ConverterAwareMappingSpannerEntityProcessor(new SpannerMappingContext(),
+        new ConverterAwareMappingSpannerEntityProcessor(spannerMappingContext,
             spannerMappingContext.getGson()));
   }
 
@@ -421,10 +422,6 @@ public class SpannerPersistentEntityImpl<T>
   // Lookup whether a particular class is a JSON entity property
   public boolean isJsonProperty(Class<?> type) {
     return this.jsonProperties.contains(type);
-  }
-
-  public Gson getGsonBean() {
-    return this.spannerMappingContext.getGson();
   }
 
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
