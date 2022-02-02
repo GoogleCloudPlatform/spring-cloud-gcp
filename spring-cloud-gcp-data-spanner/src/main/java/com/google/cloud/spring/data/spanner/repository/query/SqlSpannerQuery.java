@@ -242,10 +242,10 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
           struct -> new StructAccessor(struct).getSingleValue(0), statement, spannerQueryOptions);
     }
     // check if returnedType is a field annotated as json
-    Gson isJsonField = isJsonFieldType(returnedType);
-    if (isJsonField != null) {
+    boolean isJsonField = isJsonFieldType(returnedType);
+    if (isJsonField) {
       return this.spannerTemplate.query(
-          struct -> new StructAccessor(struct, isJsonField).getSingleJsonValue(0, returnedType),
+          struct -> new StructAccessor(struct, this.spannerMappingContext.getGson()).getSingleJsonValue(0, returnedType),
           statement,
           spannerQueryOptions);
     }
@@ -253,20 +253,14 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
     return this.spannerTemplate.query(this.entityType, statement, spannerQueryOptions);
   }
 
-  private Gson isJsonFieldType(Class<?> returnedType) {
+  private boolean isJsonFieldType(Class<?> returnedType) {
     SpannerPersistentEntityImpl<?> persistentEntity =
         (SpannerPersistentEntityImpl<?>)
             this.spannerMappingContext.getPersistentEntity(this.entityType);
     if (persistentEntity == null) {
-      return null;
+      return false;
     }
-    if (persistentEntity.isJsonProperty(returnedType)) {
-      return persistentEntity.getGsonBean();
-    } else {
-      return null;
-    }
-
-    // return persistentEntity.isJsonProperty(returnedType);
+    return persistentEntity.isJsonProperty(returnedType);
   }
 
   private Statement buildStatementFromQueryAndTags(QueryTagValue queryTagValue) {
