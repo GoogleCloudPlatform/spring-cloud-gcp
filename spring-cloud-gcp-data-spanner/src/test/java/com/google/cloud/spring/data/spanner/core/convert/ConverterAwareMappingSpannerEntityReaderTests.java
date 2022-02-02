@@ -61,9 +61,11 @@ public class ConverterAwareMappingSpannerEntityReaderTests {
   @Before
   public void setup() {
     this.spannerReadConverter = new SpannerReadConverter();
+    SpannerMappingContext mappingContext = new SpannerMappingContext();
+    mappingContext.setGson(new Gson());
     this.spannerEntityReader =
         new ConverterAwareMappingSpannerEntityReader(
-            new SpannerMappingContext(), this.spannerReadConverter, new Gson());
+            mappingContext, this.spannerReadConverter);
   }
 
   @Test
@@ -164,7 +166,7 @@ public class ConverterAwareMappingSpannerEntityReaderTests {
                       public Integer convert(Struct source) {
                         return source.getString("string_col").length();
                       }
-                    })), null)
+                    })))
         .read(OuterTestEntityFlatFaulty.class, rowStruct);
   }
 
@@ -191,7 +193,7 @@ public class ConverterAwareMappingSpannerEntityReaderTests {
                           public Integer convert(Struct source) {
                             return source.getString("string_col").length();
                           }
-                        })), null)
+                        })))
             .read(OuterTestEntityFlat.class, rowStruct);
     assertThat(result.id).isEqualTo("key1");
     assertThat(result.innerLengths).hasSize(1);

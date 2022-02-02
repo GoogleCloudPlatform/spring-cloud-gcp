@@ -83,7 +83,7 @@ public class ConverterAwareMappingSpannerEntityWriterTests {
     spannerMappingContext.setGson(gson);
     this.spannerEntityWriter =
         new ConverterAwareMappingSpannerEntityWriter(
-            spannerMappingContext, this.writeConverter, gson);
+            spannerMappingContext, this.writeConverter);
   }
 
   @Test

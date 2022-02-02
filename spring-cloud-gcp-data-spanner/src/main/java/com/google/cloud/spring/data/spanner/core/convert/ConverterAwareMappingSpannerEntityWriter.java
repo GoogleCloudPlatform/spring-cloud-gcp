@@ -66,16 +66,12 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
                   com.google.cloud.Date.class,
                   BigDecimal.class)));
 
-  /**
-   * A map of types to functions that binds them to `ValueBinder` objects.
-   */
+  /** A map of types to functions that binds them to `ValueBinder` objects. */
   public static final Map<Class<?>, BiFunction<ValueBinder, ?, ?>>
       singleItemTypeValueBinderMethodMap;
 
   static final Map<Class<?>, BiConsumer<ValueBinder<?>, Iterable>> iterablePropertyTypeToMethodMap =
       createIterableTypeMapping();
-
-  private static Gson gson;
 
   @SuppressWarnings("unchecked")
   private static Map<Class<?>, BiConsumer<ValueBinder<?>, Iterable>> createIterableTypeMapping() {
@@ -117,18 +113,10 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 
   private final SpannerWriteConverter writeConverter;
 
-  ConverterAwareMappingSpannerEntityWriter(SpannerMappingContext spannerMappingContext,
-      SpannerWriteConverter writeConverter) {
+  ConverterAwareMappingSpannerEntityWriter(
+      SpannerMappingContext spannerMappingContext, SpannerWriteConverter writeConverter) {
     this.spannerMappingContext = spannerMappingContext;
     this.writeConverter = writeConverter;
-  }
-
-  ConverterAwareMappingSpannerEntityWriter(SpannerMappingContext spannerMappingContext,
-      SpannerWriteConverter writeConverter, Gson gsonBean) {
-    this.spannerMappingContext = spannerMappingContext;
-    this.writeConverter = writeConverter;
-    gson = gsonBean;
-
   }
 
   public static Class<?> findFirstCompatibleSpannerSingleItemNativeType(Predicate<Class> testFunc) {
@@ -374,11 +362,11 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
     return true;
   }
 
-  private static Value covertJsonToValue(Object value) {
+  private Value covertJsonToValue(Object value) {
     if (value == null) {
       return Value.json(null);
     }
-    String jsonString = gson.toJson(value);
+    String jsonString = this.spannerMappingContext.getGson().toJson(value);
     return Value.json(jsonString);
   }
 
@@ -442,7 +430,7 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
                 this.writeConverter);
       } else if (property.getAnnotatedColumnItemType() == Type.Code.JSON) {
         // annotated json column, bind directly
-        valueBinder.to(covertJsonToValue(propertyValue));
+        valueBinder.to(this.covertJsonToValue(propertyValue));
         valueSet = true;
       } else if (property.getAnnotatedColumnItemType() != null) {
         // use the user's annotated column type if possible

@@ -100,7 +100,7 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
         new ConverterAwareMappingSpannerEntityProcessor(
             new SpannerMappingContext(),
             Collections.singletonList(LOCAL_DATE_TIME_WRITE_CONVERTER),
-            Collections.singletonList(LOCAL_DATE_TIME_READ_CONVERTER), null);
+            Collections.singletonList(LOCAL_DATE_TIME_READ_CONVERTER));
 
     Timestamp sourceValue = Timestamp.parseTimestamp("2019-10-12T07:20:50.52Z");
     LocalDateTime dateTime =
@@ -139,7 +139,7 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
         new ConverterAwareMappingSpannerEntityProcessor(
             new SpannerMappingContext(),
             Collections.singletonList(JAVA_TO_SPANNER),
-            Collections.singletonList(SPANNER_TO_JAVA), null);
+            Collections.singletonList(SPANNER_TO_JAVA));
 
     verifyCanConvert(converter, java.util.Date.class, Timestamp.class);
     verifyCanConvert(converter, LocalDate.class, Date.class);

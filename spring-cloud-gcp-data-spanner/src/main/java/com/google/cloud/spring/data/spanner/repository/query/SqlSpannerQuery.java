@@ -26,7 +26,6 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntityImpl;
-import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -207,7 +206,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
 
     return this.isDml
         ? Collections.singletonList(
-        this.spannerTemplate.executeDmlStatement(buildStatementFromQueryAndTags(queryTagValue)))
+            this.spannerTemplate.executeDmlStatement(buildStatementFromQueryAndTags(queryTagValue)))
         : executeReadSql(paramAccessor.getPageable(), paramAccessor.getSort(), queryTagValue);
   }
 
@@ -282,7 +281,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
     Expression expression =
         this.expressionParser.parseExpression(sql, ParserContext.TEMPLATE_EXPRESSION);
     if (expression instanceof LiteralExpression) {
-      return new Expression[]{expression};
+      return new Expression[] {expression};
     } else if (expression instanceof CompositeStringExpression) {
       return ((CompositeStringExpression) expression).getExpressions();
     } else {

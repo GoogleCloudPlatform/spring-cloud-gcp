@@ -21,7 +21,6 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
-import com.google.gson.Gson;
 import java.util.Set;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.data.mapping.PreferredConstructor;
@@ -44,18 +43,13 @@ class ConverterAwareMappingSpannerEntityReader implements SpannerEntityReader {
 
   private SpannerReadConverter converter;
 
-  private Gson gson;
-
   ConverterAwareMappingSpannerEntityReader(
-      SpannerMappingContext spannerMappingContext, SpannerReadConverter spannerReadConverter,
-      Gson gson) {
+      SpannerMappingContext spannerMappingContext, SpannerReadConverter spannerReadConverter) {
     this.spannerMappingContext = spannerMappingContext;
 
     this.instantiators = new EntityInstantiators();
 
     this.converter = spannerReadConverter;
-
-    this.gson = gson;
   }
 
   /**
@@ -76,7 +70,7 @@ class ConverterAwareMappingSpannerEntityReader implements SpannerEntityReader {
     SpannerPersistentEntity<R> persistentEntity =
         (SpannerPersistentEntity<R>) this.spannerMappingContext.getPersistentEntityOrFail(type);
 
-    StructAccessor structAccessor = new StructAccessor(source, this.gson);
+    StructAccessor structAccessor = new StructAccessor(source, this.spannerMappingContext.getGson());
 
     StructPropertyValueProvider propertyValueProvider =
         new StructPropertyValueProvider(structAccessor, this.converter, this, allowMissingColumns);
