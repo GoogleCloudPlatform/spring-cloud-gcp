@@ -48,7 +48,7 @@ public class SpannerPersistentEntityImplTests {
   @Test
   public void testTableName() {
     SpannerPersistentEntityImpl<TestEntity> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(TestEntity.class));
+        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(TestEntity.class), new SpannerMappingContext());
 
     assertThat(entity.tableName()).isEqualTo("custom_test_table");
   }
@@ -56,7 +56,7 @@ public class SpannerPersistentEntityImplTests {
   @Test
   public void testRawTableName() {
     SpannerPersistentEntityImpl<EntityNoCustomName> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityNoCustomName.class));
+        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityNoCustomName.class), new SpannerMappingContext());
 
     assertThat(entity.tableName()).isEqualTo("entityNoCustomName");
   }
@@ -64,7 +64,7 @@ public class SpannerPersistentEntityImplTests {
   @Test
   public void testEmptyCustomTableName() {
     SpannerPersistentEntityImpl<EntityEmptyCustomName> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityEmptyCustomName.class));
+        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityEmptyCustomName.class), new SpannerMappingContext());
 
     assertThat(entity.tableName()).isEqualTo("entityEmptyCustomName");
   }
@@ -83,7 +83,7 @@ public class SpannerPersistentEntityImplTests {
             + "nested exception is org.springframework.expression.spel.SpelEvaluationException: "
             + "EL1007E: Property or field 'tablePostfix' cannot be found on null");
     SpannerPersistentEntityImpl<EntityWithExpression> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityWithExpression.class));
+        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityWithExpression.class), new SpannerMappingContext());
 
     entity.tableName();
   }
@@ -91,7 +91,7 @@ public class SpannerPersistentEntityImplTests {
   @Test
   public void testExpressionResolutionFromApplicationContext() {
     SpannerPersistentEntityImpl<EntityWithExpression> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityWithExpression.class));
+        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityWithExpression.class), new SpannerMappingContext());
 
     ApplicationContext applicationContext = mock(ApplicationContext.class);
     when(applicationContext.getBean("tablePostfix")).thenReturn("something");
@@ -210,7 +210,7 @@ public class SpannerPersistentEntityImplTests {
             + " your_table;");
 
     SpannerPersistentEntityImpl<EntityBadName> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityBadName.class));
+        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityBadName.class), new SpannerMappingContext());
     entity.tableName();
   }
 
@@ -224,7 +224,7 @@ public class SpannerPersistentEntityImplTests {
             + "table_; DROP TABLE your_table;");
 
     SpannerPersistentEntityImpl<EntityWithExpression> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityWithExpression.class));
+        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityWithExpression.class), new SpannerMappingContext());
 
     ApplicationContext applicationContext = mock(ApplicationContext.class);
     when(applicationContext.getBean("tablePostfix")).thenReturn("; DROP TABLE your_table;");
