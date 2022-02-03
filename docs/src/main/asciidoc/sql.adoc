@@ -8,7 +8,9 @@ The Cloud SQL support is provided by Spring Cloud GCP in the form of two Spring 
 The role of the starters is to read configuration from properties and assume default settings so that user experience connecting to MySQL and PostgreSQL is as simple as possible.
 
 === JDBC Support
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven and Gradle coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+
+To use MySQL:
 
 [source,xml]
 ----
@@ -16,18 +18,28 @@ Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud 
     <groupId>com.google.cloud</groupId>
     <artifactId>spring-cloud-gcp-starter-sql-mysql</artifactId>
 </dependency>
-<dependency>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>spring-cloud-gcp-starter-sql-postgresql</artifactId>
-</dependency>
 ----
-
-Gradle coordinates:
 
 [source,subs="normal"]
 ----
 dependencies {
-    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql")
+implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql")
+}
+----
+
+To use PostgreSQL:
+
+[source,xml]
+----
+<dependency>
+<groupId>com.google.cloud</groupId>
+<artifactId>spring-cloud-gcp-starter-sql-postgresql</artifactId>
+</dependency>
+----
+
+[source,subs="normal"]
+----
+dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgresql")
 }
 ----
@@ -36,10 +48,8 @@ dependencies {
 
 In order to use the Spring Boot Starters for Google Cloud SQL, the Google Cloud SQL API must be enabled in your GCP project.
 
-To do that, go to the https://console.cloud.google.com/apis/library[API library page] of the Google Cloud Console, search for "Cloud SQL API", click the first result and enable the API.
+To do that, go to the https://console.cloud.google.com/apis/library[API library page] of the Google Cloud Console, search for "Cloud SQL API" and enable the option that is called "Cloud SQL" .
 
-NOTE: There are several similar "Cloud SQL" results.
-You must access the "Google Cloud SQL API" one and enable the API from there.
 
 === Spring Boot Starter for Google Cloud SQL
 
@@ -82,27 +92,40 @@ You can connect to your database with as little as a database and instance names
 
 == R2DBC Support
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven and Gradle coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+
+To use MySQL:
 
 [source,xml]
 ----
 <dependency>
     <groupId>com.google.cloud</groupId>
-    <artifactId>spring-cloud-gcp-starter-sql-r2dbc-mysql</artifactId>
+    <artifactId>spring-cloud-gcp-starter-sql-mysql-r2dbc</artifactId>
 </dependency>
-<dependency>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>spring-cloud-gcp-starter-sql-r2dbc-postgresql</artifactId>
-</dependency>
-----
 
-Gradle coordinates:
+----
 
 [source,subs="normal"]
 ----
 dependencies {
-    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-r2dbc-mysql")
-    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-r2dbc-postgresql")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql-r2dbc")
+}
+----
+
+To use PostgreSQL:
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>spring-cloud-gcp-starter-sql-postgres-r2dbc</artifactId>
+</dependency>
+----
+
+[source,subs="normal"]
+----
+dependencies {
+    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgres-r2dbc")
 }
 ----
 
@@ -110,26 +133,25 @@ dependencies {
 
 In order to use the Spring Boot Starters for Google Cloud SQL, the Google Cloud SQL API must be enabled in your GCP project.
 
-To do that, go to the https://console.cloud.google.com/apis/library[API library page] of the Google Cloud Console, search for "Cloud SQL API", click the first result and enable the API.
-
-NOTE: There are several similar "Cloud SQL" results.
-You must access the "Google Cloud SQL API" one and enable the API from there.
+To do that, go to the https://console.cloud.google.com/apis/library[API library page] of the Google Cloud Console, search for "Cloud SQL API" and enable the option that is called "Cloud SQL".
 
 === Spring Boot Starter for Google Cloud SQL
 
-The Cloud SQL R2DBC starter provides a customized io.r2dbc.spi.ConnectionFactory[`ConnectionFactory`] bean for connecting to Cloud SQL with the help of the [Cloud SQL Socket Factory](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory).
+The Cloud SQL R2DBC starter provides a customized `io.r2dbc.spi.ConnectionFactory` bean for connecting to Cloud SQL with the help of the https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory[Cloud SQL Socket Factory].
+Similar to the JDBC support, you can connect to your database with as little as a database and instance names.
+
 A higher level convenience object
 https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#r2dbc.core[`R2dbcEntityTemplate`] is also provided for operations such as querying and modifying a database.
 
 [source,java]
 ----
+@Autowired R2dbcEntityTemplate template;
+
 public Flux<String> listUsers() {
   return template.select(User.class).all().map(user -> user.toString());
 }
 ----
 
-You can rely on
-https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database[Spring Boot data source auto-configuration] to configure a `ConnectionFactory` bean.
 Standard R2DBC properties like the SQL username, `spring.r2dbc.username`, and password, `spring.r2dbc.password` can be used.
 There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Configuration Properties" section below).
 
@@ -147,10 +169,9 @@ Spring Cloud GCP starter for Google Cloud SQL registers a `R2dbcCloudSqlEnvironm
 It also provides a default value for `spring.r2dbc.username`, which can be overridden.
 The starter also configures credentials for the R2DBC connection based on the properties below.
 
-The user properties and the properties provided by the `R2dbcCloudSqlEnvironmentPostProcessor` are then used by https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html[Spring Boot] to create the `ConnectionFactory`.
+The user properties and the properties provided by the `R2dbcCloudSqlEnvironmentPostProcessor` are then used by Spring Boot to create the `ConnectionFactory`.
 
 The customized `ConnectionFactory` is then ready to connect to Cloud SQL. The rest of Spring Data R2DBC objects built on it ( `R2dbcEntityTemplate`,  `DatabaseClient`) are automatically configured and operational, ready to interact with your SQL database.
-Similar to the JDBC support, you can connect to your database with as little as a database and instance names.
 
 == Cloud SQL IAM database authentication
 
