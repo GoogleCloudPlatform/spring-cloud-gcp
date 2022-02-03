@@ -211,8 +211,8 @@ public class GcpSpannerAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public SpannerMappingContext spannerMappingContext() {
-      return new SpannerMappingContext();
+    public SpannerMappingContext spannerMappingContext(Gson gson) {
+      return new SpannerMappingContext(gson);
     }
 
     @Bean

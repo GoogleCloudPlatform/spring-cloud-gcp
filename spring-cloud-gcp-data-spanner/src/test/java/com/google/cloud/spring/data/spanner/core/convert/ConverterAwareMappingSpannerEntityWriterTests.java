@@ -78,9 +78,7 @@ public class ConverterAwareMappingSpannerEntityWriterTests {
   @Before
   public void setup() {
     this.writeConverter = new SpannerWriteConverter();
-    SpannerMappingContext spannerMappingContext = new SpannerMappingContext();
-    Gson gson = new Gson();
-    spannerMappingContext.setGson(gson);
+    SpannerMappingContext spannerMappingContext = new SpannerMappingContext(new Gson());
     this.spannerEntityWriter =
         new ConverterAwareMappingSpannerEntityWriter(
             spannerMappingContext, this.writeConverter);

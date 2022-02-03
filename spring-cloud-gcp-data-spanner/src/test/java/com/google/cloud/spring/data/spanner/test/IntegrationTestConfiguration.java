@@ -125,8 +125,8 @@ public class IntegrationTestConfiguration {
   }
 
   @Bean
-  public SpannerMappingContext spannerMappingContext() {
-    return new SpannerMappingContext();
+  public SpannerMappingContext spannerMappingContext(Gson gson) {
+    return new SpannerMappingContext(gson);
   }
 
   @Bean

@@ -89,7 +89,7 @@ public class SqlSpannerQueryTests {
 
   private SpelExpressionParser expressionParser;
 
-  private SpannerMappingContext spannerMappingContext = new SpannerMappingContext();
+  private SpannerMappingContext spannerMappingContext = new SpannerMappingContext(new Gson());
 
   private final Sort sort = Sort.by(Order.asc("COLA"), Order.desc("COLB"));
 
@@ -605,7 +605,6 @@ public class SqlSpannerQueryTests {
 
   @Test
   public void sqlReturnTypeIsJsonFieldTest() throws NoSuchMethodException {
-    this.spannerMappingContext.setGson(new Gson());
     String sql = "SELECT details from singer where stageName = @stageName";
 
     Object[] params = new Object[] {"STAGENAME"};

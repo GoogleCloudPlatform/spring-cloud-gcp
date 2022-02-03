@@ -61,8 +61,7 @@ public class ConverterAwareMappingSpannerEntityReaderTests {
   @Before
   public void setup() {
     this.spannerReadConverter = new SpannerReadConverter();
-    SpannerMappingContext mappingContext = new SpannerMappingContext();
-    mappingContext.setGson(new Gson());
+    SpannerMappingContext mappingContext = new SpannerMappingContext(new Gson());
     this.spannerEntityReader =
         new ConverterAwareMappingSpannerEntityReader(
             mappingContext, this.spannerReadConverter);
