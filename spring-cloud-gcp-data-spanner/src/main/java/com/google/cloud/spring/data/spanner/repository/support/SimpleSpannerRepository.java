@@ -120,7 +120,7 @@ public class SimpleSpannerRepository<T, I> implements SpannerRepository<T, I> {
     }
 
     if (keyCount == 0) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
 
     return this.spannerTemplate.read(this.entityType, builder.build());
