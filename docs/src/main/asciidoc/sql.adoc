@@ -130,7 +130,7 @@ public Flux<String> listUsers() {
 
 You can rely on
 https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database[Spring Boot data source auto-configuration] to configure a `ConnectionFactory` bean.
-In other words, properties like the SQL username, `spring.r2dbc.username`, and password, `spring.r2dbc.password` can be used.
+Standard R2DBC properties like the SQL username, `spring.r2dbc.username`, and password, `spring.r2dbc.password` can be used.
 There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Configuration Properties" section below).
 
 |===
