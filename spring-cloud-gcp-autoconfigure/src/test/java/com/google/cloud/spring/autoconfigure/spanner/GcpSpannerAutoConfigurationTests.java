@@ -43,6 +43,9 @@ import org.threeten.bp.Duration;
 /** Tests for Spanner auto-config. */
 public class GcpSpannerAutoConfigurationTests {
 
+  /** Mock Gson object for use in configuration. */
+  public static Gson MOCK_GSON = mock(Gson.class);
+
   private ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
           .withConfiguration(
@@ -74,11 +77,12 @@ public class GcpSpannerAutoConfigurationTests {
   }
 
   @Test
-  public void testGsonObjectCreated() {
+  public void testUserGsonBean() {
     this.contextRunner.run(
         context -> {
-          assertThat(context.getBean(Gson.class)).isNotNull();
-          assertThat(context.getBean(SpannerMappingContext.class).getGson()).isNotNull();
+          Gson gsonBean = context.getBean(Gson.class);
+          assertThat(gsonBean).isSameAs(MOCK_GSON);
+          assertThat(context.getBean(SpannerMappingContext.class).getGson()).isSameAs(MOCK_GSON);
         });
   }
 
@@ -163,13 +167,20 @@ public class GcpSpannerAutoConfigurationTests {
             });
   }
 
-  /** Mock bean for credentials provider. */
+  /** Spring Boot config for tests. */
   @AutoConfigurationPackage
   static class TestConfiguration {
 
+    /** Mock bean for credentials provider. */
     @Bean
     public CredentialsProvider credentialsProvider() {
       return () -> mock(Credentials.class);
+    }
+
+    /** Mock bean for Gson. */
+    @Bean
+    public Gson customGson() {
+      return MOCK_GSON;
     }
   }
 }
