@@ -117,7 +117,7 @@ You must access the "Google Cloud SQL API" one and enable the API from there.
 
 === Spring Boot Starter for Google Cloud SQL
 
-The Spring Boot Starters for Google Cloud SQL provide an auto-configured https://docs.oracle.com/javaee/7/api/javax/jms/ConnectionFactory.html[`ConnectionFactory`] bean.
+The Cloud SQL R2DBC starter provides a customized io.r2dbc.spi.ConnectionFactory[`ConnectionFactory`] bean for connecting to Cloud SQL with the help of the [Cloud SQL Socket Factory](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory).
 Coupled with Spring R2DBC it produces a
 https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#r2dbc.core[`R2dbcEntityTemplate`] object bean that allows for operations such as querying and modifying a database.
 
