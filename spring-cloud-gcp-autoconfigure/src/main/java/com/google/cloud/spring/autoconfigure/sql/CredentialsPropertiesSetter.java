@@ -44,8 +44,7 @@ final class CredentialsPropertiesSetter {
    * <p>If user didn't specify credentials, the socket factory already does the right thing by
    * using the application default credentials by default. So we don't need to do anything.
    */
-  static void setCredentials(GcpCloudSqlProperties sqlProperties, GcpProperties gcpProperties)
-      throws IllegalArgumentException {
+  static void setCredentials(GcpCloudSqlProperties sqlProperties, GcpProperties gcpProperties) {
     Credentials credentials = null;
     if (sqlProperties.getCredentials().hasKey()) {
       // First tries the SQL configuration credential.
