@@ -149,7 +149,7 @@ The starter also configures credentials for the R2DBC connection based on the pr
 
 The user properties and the properties provided by the `R2dbcCloudSqlEnvironmentPostProcessor` are then used by https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html[Spring Boot] to create the `ConnectionFactory`.
 
-Using the created `ConnectionFactory` in conjunction with Spring R2DBC provides you with a fully configured and operational `R2dbcEntityTemplate` object that you can use to interact with your SQL database.
+The customized `ConnectionFactory` is then ready to connect to Cloud SQL. The rest of Spring Data R2DBC objects built on it ( `R2dbcEntityTemplate`,  `DatabaseClient`) are automatically configured and operational, ready to interact with your SQL database.
 Similar to the JDBC support, you can connect to your database with as little as a database and instance names.
 
 == Cloud SQL IAM database authentication
