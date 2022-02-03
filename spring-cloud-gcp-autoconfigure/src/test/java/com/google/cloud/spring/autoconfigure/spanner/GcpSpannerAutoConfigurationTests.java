@@ -29,6 +29,8 @@ import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.SpannerTransactionManager;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.gson.Gson;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -68,6 +70,15 @@ public class GcpSpannerAutoConfigurationTests {
     this.contextRunner.run(
         context -> {
           assertThat(context.getBean(TestRepository.class)).isNotNull();
+        });
+  }
+
+  @Test
+  public void testGsonObjectCreated() {
+    this.contextRunner.run(
+        context -> {
+          assertThat(context.getBean(Gson.class)).isNotNull();
+          assertThat(context.getBean(SpannerMappingContext.class).getGson()).isNotNull();
         });
   }
 
