@@ -54,8 +54,6 @@ public class ConverterAwareMappingSpannerEntityProcessor implements SpannerEntit
       Collection<Converter> writeConverters, Collection<Converter> readConverters) {
     Assert.notNull(spannerMappingContext,
         "A valid mapping context for Spanner is required.");
-    // Assert.notNull(spannerMappingContext.getGson(),
-    // "A valid Gson object is required.");
     this.readConverter = new SpannerReadConverter(readConverters);
     this.entityReader =
         new ConverterAwareMappingSpannerEntityReader(spannerMappingContext, this.readConverter);
