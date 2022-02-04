@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping;
 
+import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.gson.Gson;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -89,7 +91,9 @@ public class SpannerMappingContext
 
   protected <T> SpannerPersistentEntityImpl<T> constructPersistentEntity(
       TypeInformation<T> typeInformation) {
-    return new SpannerPersistentEntityImpl<>(typeInformation, this);
+    return new SpannerPersistentEntityImpl<>(typeInformation, this,
+        this.applicationContext == null ? new ConverterAwareMappingSpannerEntityProcessor(this)
+            : this.applicationContext.getBean(SpannerEntityProcessor.class));
   }
 
   @Override

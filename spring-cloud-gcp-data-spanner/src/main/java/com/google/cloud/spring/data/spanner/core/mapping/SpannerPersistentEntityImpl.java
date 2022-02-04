@@ -95,17 +95,6 @@ public class SpannerPersistentEntityImpl<T>
    * Creates a {@link SpannerPersistentEntityImpl}.
    *
    * @param information type information about the underlying entity type.
-   * @param spannerMappingContext mapping context used to create this entity.
-   */
-  public SpannerPersistentEntityImpl(TypeInformation<T> information, SpannerMappingContext spannerMappingContext) {
-    this(information, spannerMappingContext,
-        new ConverterAwareMappingSpannerEntityProcessor(spannerMappingContext));
-  }
-
-  /**
-   * Creates a {@link SpannerPersistentEntityImpl}.
-   *
-   * @param information type information about the underlying entity type.
    * @param spannerMappingContext a mapping context that can be used to create persistent entities
    *     from properties of this entity
    * @param spannerEntityProcessor an entity processor used to create keys by converting and

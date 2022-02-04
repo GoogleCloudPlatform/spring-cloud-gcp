@@ -50,10 +50,12 @@ public class ConverterAwareMappingSpannerEntityProcessor implements SpannerEntit
     this(spannerMappingContext, null, null);
   }
 
-  public ConverterAwareMappingSpannerEntityProcessor(SpannerMappingContext spannerMappingContext,
-      Collection<Converter> writeConverters, Collection<Converter> readConverters) {
-    Assert.notNull(spannerMappingContext,
-        "A valid mapping context for Spanner is required.");
+  public ConverterAwareMappingSpannerEntityProcessor(
+      SpannerMappingContext spannerMappingContext,
+      Collection<Converter> writeConverters,
+      Collection<Converter> readConverters) {
+    Assert.notNull(spannerMappingContext, "A valid mapping context for Spanner is required.");
+
     this.readConverter = new SpannerReadConverter(readConverters);
     this.entityReader =
         new ConverterAwareMappingSpannerEntityReader(spannerMappingContext, this.readConverter);
