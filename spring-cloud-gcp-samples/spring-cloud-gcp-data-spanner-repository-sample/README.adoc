@@ -55,3 +55,5 @@ This is achieved using https://projects.spring.io/spring-data-rest/:[Spring Data
 
 You can also write trades using
 `curl -XPOST -H"Content-Type: application/json" -d@test.json http://localhost:8080/trades/` where the file `test.json` holds the JSON representation of a `Trade` object.
+
+You can override the default Gson instance for JSON conversions with a custom Gson bean as shown in SampleConfigurations.

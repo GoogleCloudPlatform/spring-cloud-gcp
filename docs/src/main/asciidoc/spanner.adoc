@@ -485,6 +485,8 @@ Natively supported types:
 
 Spanner supports `JSON` type for columns. `JSON` columns are mapped to custom POJOs annotated with `@Column(spannerType = TypeCode.JSON)`. Read, write and query with custom SQL query are supported for JSON annotated fields.
 
+NOTE: The default Gson instance used to convert to and from JSON representation can be customized by providing a bean of type `Gson`.
+
 [source,java]
 ----
 @Table(name = "traders")
