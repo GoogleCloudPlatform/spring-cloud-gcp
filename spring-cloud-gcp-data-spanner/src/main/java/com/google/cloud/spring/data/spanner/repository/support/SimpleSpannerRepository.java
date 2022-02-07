@@ -22,6 +22,7 @@ import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Function;
 import org.springframework.data.domain.Page;
@@ -108,10 +109,20 @@ public class SimpleSpannerRepository<T, I> implements SpannerRepository<T, I> {
 
   @Override
   public Iterable<T> findAllById(Iterable<I> ids) {
+    Assert.notNull(ids, "IDs must not be null");
+
     KeySet.Builder builder = KeySet.newBuilder();
+    int keyCount = 0;
+
     for (Object id : ids) {
       builder.addKey(toKey(id));
+      keyCount++;
     }
+
+    if (keyCount == 0) {
+      return Collections.emptyList();
+    }
+
     return this.spannerTemplate.read(this.entityType, builder.build());
   }
 
@@ -164,6 +175,7 @@ public class SimpleSpannerRepository<T, I> implements SpannerRepository<T, I> {
 
   @Override
   public void deleteAllById(Iterable<? extends I> ids) {
+    Assert.notNull(ids, "IDs must not be null");
     KeySet.Builder builder = KeySet.newBuilder();
     for (Object id : ids) {
       builder.addKey(toKey(id));
