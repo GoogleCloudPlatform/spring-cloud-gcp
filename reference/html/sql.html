@@ -166,11 +166,27 @@ window.onload = function() {
 <ul class="sectlevel1">
 <li><a href="#cloud-sql">Cloud SQL</a>
 <ul class="sectlevel2">
+<li><a href="#_jdbc_support">JDBC Support</a></li>
 <li><a href="#_prerequisites">Prerequisites</a></li>
 <li><a href="#_spring_boot_starter_for_google_cloud_sql">Spring Boot Starter for Google Cloud SQL</a></li>
-<li><a href="#_samples">Samples</a></li>
 </ul>
 </li>
+<li><a href="#_r2dbc_support">R2DBC Support</a>
+<ul class="sectlevel2">
+<li><a href="#_prerequisites_2">Prerequisites</a></li>
+<li><a href="#_spring_boot_starter_for_google_cloud_sql_2">Spring Boot Starter for Google Cloud SQL</a></li>
+</ul>
+</li>
+<li><a href="#_cloud_sql_iam_database_authentication">Cloud SQL IAM database authentication</a></li>
+<li><a href="#_cloud_sql_configuration_properties">Cloud SQL Configuration Properties</a></li>
+<li><a href="#_troubleshooting_tips">Troubleshooting tips</a>
+<ul class="sectlevel4">
+<li><a href="#connection-issues">Connection issues</a></li>
+<li><a href="#_errors_like_c_g_cloud_sql_core_sslsocketfactory_re_throwing_cached_exception_due_to_attempt_to_refresh_instance_information_too_soon_after_error">Errors like <code>c.g.cloud.sql.core.SslSocketFactory : Re-throwing cached exception due to attempt to refresh instance information too soon after error</code></a></li>
+<li><a href="#_postgresql_java_net_socketexception_already_connected_issue">PostgreSQL: <code>java.net.SocketException: already connected</code> issue</a></li>
+</ul>
+</li>
+<li><a href="#_samples">Samples</a></li>
 </ul>
 </div>
 </div>
@@ -180,36 +196,52 @@ window.onload = function() {
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring Cloud GCP adds integrations with
-<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html">Spring JDBC</a> so you can run your MySQL or PostgreSQL databases in <a href="https://cloud.google.com/sql">Google Cloud SQL</a> using Spring JDBC, or other libraries that depend on it like Spring Data JPA.</p>
+<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html">Spring JDBC</a> and <a href="https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#r2dbc.core">Spring R2DBC</a>  so you can run your MySQL or PostgreSQL databases in <a href="https://cloud.google.com/sql">Google Cloud SQL</a> using Spring JDBC and other libraries that depend on it like Spring Data JPA or Spring Data R2DBC.</p>
 </div>
 <div class="paragraph">
 <p>The Cloud SQL support is provided by Spring Cloud GCP in the form of two Spring Boot starters, one for MySQL and another one for PostgreSQL.
 The role of the starters is to read configuration from properties and assume default settings so that user experience connecting to MySQL and PostgreSQL is as simple as possible.</p>
 </div>
+<div class="sect2">
+<h3 id="_jdbc_support"><a class="link" href="#_jdbc_support">JDBC Support</a></h3>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven and Gradle coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+</div>
+<div class="paragraph">
+<p>To use MySQL:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-sql-mysql&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-cloud-gcp-starter-sql-postgresql&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>Gradle coordinates:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql")
+implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql")
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use PostgreSQL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+&lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+&lt;artifactId&gt;spring-cloud-gcp-starter-sql-postgresql&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgresql")
 }</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -218,20 +250,7 @@ The role of the starters is to read configuration from properties and assume def
 <p>In order to use the Spring Boot Starters for Google Cloud SQL, the Google Cloud SQL API must be enabled in your GCP project.</p>
 </div>
 <div class="paragraph">
-<p>To do that, go to the <a href="https://console.cloud.google.com/apis/library">API library page</a> of the Google Cloud Console, search for "Cloud SQL API", click the first result and enable the API.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-There are several similar "Cloud SQL" results.
-You must access the "Google Cloud SQL API" one and enable the API from there.
-</td>
-</tr>
-</table>
+<p>To do that, go to the <a href="https://console.cloud.google.com/apis/library">API library page</a> of the Google Cloud Console, search for "Cloud SQL API" and enable the option that is called "Cloud SQL" .</p>
 </div>
 </div>
 <div class="sect2">
@@ -252,8 +271,232 @@ Coupled with Spring JDBC, it provides a
 <p>You can rely on
 <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database">Spring Boot data source auto-configuration</a> to configure a <code>DataSource</code> bean.
 In other words, properties like the SQL username, <code>spring.datasource.username</code>, and password, <code>spring.datasource.password</code> can be used.
-There is also some configuration specific to Google Cloud SQL:</p>
+There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Configuration Properties" section below).</p>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Property name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MySQL: <code>root</code>; PostgreSQL: <code>postgres</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.driver-class-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JDBC driver to use.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MySQL: <code>com.mysql.cj.jdbc.Driver</code>; PostgreSQL: <code>org.postgresql.Driver</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you provide your own <code>spring.datasource.url</code>, it will be ignored, unless you disable Cloud SQL auto configuration with <code>spring.cloud.gcp.sql.enabled=false</code> or <code>spring.cloud.gcp.sql.jdbc.enabled=false</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_datasource_creation_flow"><a class="link" href="#_datasource_creation_flow"><code>DataSource</code> creation flow</a></h4>
+<div class="paragraph">
+<p>Spring Boot starter for Google Cloud SQL registers a <code>CloudSqlEnvironmentPostProcessor</code> that provides a correctly formatted <code>spring.datasource.url</code> property to the environment based on the properties mentioned above.
+It also provides defaults for <code>spring.datasource.username</code> and <code>spring.datasource.driver-class-name</code>, which can be overridden.
+The starter also configures credentials for the JDBC connection based on the properties below.</p>
+</div>
+<div class="paragraph">
+<p>The user properties and the properties provided by the <code>CloudSqlEnvironmentPostProcessor</code> are then used by <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html">Spring Boot</a> to create the <code>DataSource</code>.
+You can select the type of connection pool (e.g., Tomcat, HikariCP, etc.) by <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database">adding their dependency to the classpath</a>.</p>
+</div>
+<div class="paragraph">
+<p>Using the created <code>DataSource</code> in conjunction with Spring JDBC provides you with a fully configured and operational <code>JdbcTemplate</code> object that you can use to interact with your SQL database.
+You can connect to your database with as little as a database and instance names.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_r2dbc_support"><a class="link" href="#_r2dbc_support">R2DBC Support</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Maven and Gradle coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+</div>
+<div class="paragraph">
+<p>To use MySQL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-gcp-starter-sql-mysql-r2dbc&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>dependencies {
+    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql-r2dbc")
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use PostgreSQL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-gcp-starter-sql-postgres-r2dbc&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>dependencies {
+    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgres-r2dbc")
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites_2"><a class="link" href="#_prerequisites_2">Prerequisites</a></h3>
+<div class="paragraph">
+<p>In order to use the Spring Boot Starters for Google Cloud SQL, the Google Cloud SQL API must be enabled in your GCP project.</p>
+</div>
+<div class="paragraph">
+<p>To do that, go to the <a href="https://console.cloud.google.com/apis/library">API library page</a> of the Google Cloud Console, search for "Cloud SQL API" and enable the option that is called "Cloud SQL".</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_spring_boot_starter_for_google_cloud_sql_2"><a class="link" href="#_spring_boot_starter_for_google_cloud_sql_2">Spring Boot Starter for Google Cloud SQL</a></h3>
+<div class="paragraph">
+<p>The Cloud SQL R2DBC starter provides a customized <code>io.r2dbc.spi.ConnectionFactory</code> bean for connecting to Cloud SQL with the help of the <a href="https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory">Cloud SQL Socket Factory</a>.
+Similar to the JDBC support, you can connect to your database with as little as a database and instance names.</p>
+</div>
+<div class="paragraph">
+<p>A higher level convenience object
+<a href="https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#r2dbc.core"><code>R2dbcEntityTemplate</code></a> is also provided for operations such as querying and modifying a database.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired R2dbcEntityTemplate template;
+
+public Flux&lt;String&gt; listUsers() {
+  return template.select(User.class).all().map(user -&gt; user.toString());
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Standard R2DBC properties like the SQL username, <code>spring.r2dbc.username</code>, and password, <code>spring.r2dbc.password</code> can be used.
+There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Configuration Properties" section below).</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Property name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.r2dbc.username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MySQL: <code>root</code>; PostgreSQL: <code>postgres</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.r2dbc.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you provide your own <code>spring.r2dbc.url</code>, it will be ignored, unless you disable Cloud SQL auto-configuration for R2DBC with <code>spring.cloud.gcp.sql.enabled=false</code> or <code>spring.cloud.gcp.sql.r2dbc.enabled=false</code> .
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_connectionfactory_creation_flow"><a class="link" href="#_connectionfactory_creation_flow"><code>ConnectionFactory</code> creation flow</a></h4>
+<div class="paragraph">
+<p>Spring Cloud GCP starter for Google Cloud SQL registers a <code>R2dbcCloudSqlEnvironmentPostProcessor</code> that provides a correctly formatted <code>spring.r2dbc.url</code> property to the environment based on the properties mentioned above.
+It also provides a default value for <code>spring.r2dbc.username</code>, which can be overridden.
+The starter also configures credentials for the R2DBC connection based on the properties below.</p>
+</div>
+<div class="paragraph">
+<p>The user properties and the properties provided by the <code>R2dbcCloudSqlEnvironmentPostProcessor</code> are then used by Spring Boot to create the <code>ConnectionFactory</code>.</p>
+</div>
+<div class="paragraph">
+<p>The customized <code>ConnectionFactory</code> is then ready to connect to Cloud SQL. The rest of Spring Data R2DBC objects built on it ( <code>R2dbcEntityTemplate</code>,  <code>DatabaseClient</code>) are automatically configured and operational, ready to interact with your SQL database.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cloud_sql_iam_database_authentication"><a class="link" href="#_cloud_sql_iam_database_authentication">Cloud SQL IAM database authentication</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Currently, Cloud SQL only supports <a href="https://cloud.google.com/sql/docs/postgres/authentication:">IAM database authentication for PostgreSQL</a>.
+It allows you to connect to the database using an IAM account, rather than a predefined database username and password.
+You will need to do the following to enable it:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In your database instance settings, turn on the <code>cloudsql.iam_authentication</code> flag.</p>
+</li>
+<li>
+<p>Add the IAM user or service account to the list of database users.</p>
+</li>
+<li>
+<p>In the application settings, set <code>spring.cloud.gcp.sql.enableIamAuth</code> to <code>true</code>.
+(Note that this will also set the database protocol <code>sslmode</code> to <code>disabled</code>, as it&#8217;s required for IAM authentication to work.
+However, it doesn&#8217;t compromise the security of the communication because the connection is always encrypted.)</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cloud_sql_configuration_properties"><a class="link" href="#_cloud_sql_configuration_properties">Cloud SQL Configuration Properties</a></h2>
+<div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -276,7 +519,13 @@ There is also some configuration specific to Google Cloud SQL:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.jdbc.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables JDBC Cloud SQL auto-configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables Cloud SQL auto-configuration for JDBC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.r2dbc.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables Cloud SQL auto-configuration for R2DBC</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
@@ -318,79 +567,13 @@ Used to authenticate and authorize new connections to a Google Cloud SQL instanc
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>False</code></p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.username</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MySQL: <code>root</code>; PostgreSQL: <code>postgres</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.driver-class-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">JDBC driver to use.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MySQL: <code>com.mysql.cj.jdbc.Driver</code>; PostgreSQL: <code>org.postgresql.Driver</code></p></td>
-</tr>
 </tbody>
 </table>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-If you provide your own <code>spring.datasource.url</code>, it will be ignored, unless you disable Cloud SQL auto configuration with <code>spring.cloud.gcp.sql.enabled=false</code> or <code>spring.cloud.gcp.sql.jdbc.enabled=false</code>.
-</td>
-</tr>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_datasource_creation_flow"><a class="link" href="#_datasource_creation_flow"><code>DataSource</code> creation flow</a></h4>
-<div class="paragraph">
-<p>Spring Boot starter for Google Cloud SQL registers a <code>CloudSqlEnvironmentPostProcessor</code> that provides a correctly formatted <code>spring.datasource.url</code> property to the environment based on the properties defined above.
-It also provides defaults for <code>spring.datasource.username</code> and <code>spring.datasource.driver-class-name</code>, which can be overridden.
-The starter also configures credentials for the JDBC connection based on the properties above.</p>
-</div>
-<div class="paragraph">
-<p>The user properties and the properties provided by the <code>CloudSqlEnvironmentPostProcessor</code> are then used by <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html">Spring Boot</a> to create the <code>DataSource</code>.
-You can select the type of connection pool (e.g., Tomcat, HikariCP, etc.) by <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database">adding their dependency to the classpath</a>.</p>
-</div>
-<div class="paragraph">
-<p>Using the created <code>DataSource</code> in conjunction with Spring JDBC provides you with a fully configured and operational <code>JdbcTemplate</code> object that you can use to interact with your SQL database.
-You can connect to your database with as little as a database and instance names.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_cloud_sql_iam_database_authentication"><a class="link" href="#_cloud_sql_iam_database_authentication">Cloud SQL IAM database authentication</a></h4>
-<div class="paragraph">
-<p>Currently, Cloud SQL only supports <a href="https://cloud.google.com/sql/docs/postgres/authentication:">IAM database authentication for PostgreSQL</a>.
-It allows you to connect to the database using an IAM account, rather than a predefined database username and password.
-You will need to do the following to enable it:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>In your database instance settings, turn on the <code>cloudsql.iam_authentication</code> flag.</p>
-</li>
-<li>
-<p>Add the IAM user or service account to the list of database users.</p>
-</li>
-<li>
-<p>In the application settings, set <code>spring.cloud.gcp.sql.enableIamAuth</code> to <code>true</code>.
-(Note that this will also set the database protocol <code>sslmode</code> to <code>disabled</code>, as it&#8217;s required for IAM authentication to work.
-However, it doesn&#8217;t compromise the security of the communication because the connection is always encrypted.)</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_troubleshooting_tips"><a class="link" href="#_troubleshooting_tips">Troubleshooting tips</a></h4>
+<div class="sect1">
+<h2 id="_troubleshooting_tips"><a class="link" href="#_troubleshooting_tips">Troubleshooting tips</a></h2>
+<div class="sectionbody">
 <div class="sect4">
 <h5 id="connection-issues"><a class="link" href="#connection-issues">Connection issues</a></h5>
 <div class="paragraph">
@@ -441,8 +624,9 @@ For example, in Maven:</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_samples"><a class="link" href="#_samples">Samples</a></h3>
+<div class="sect1">
+<h2 id="_samples"><a class="link" href="#_samples">Samples</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Available sample applications and codelabs:</p>
 </div>
@@ -460,8 +644,13 @@ For example, in Maven:</p>
 <li>
 <p>Codelab: <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-petclinic-cloudsql/index.html">Spring Pet Clinic using Cloud SQL</a></p>
 </li>
+<li>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-r2dbc-sample">R2DBC: Spring Cloud GCP MySQL</a></p>
+</li>
+<li>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-r2dbc-sample">R2DBC: Spring Cloud GCP PostgreSQL</a></p>
+</li>
 </ul>
-</div>
 </div>
 </div>
 </div>
