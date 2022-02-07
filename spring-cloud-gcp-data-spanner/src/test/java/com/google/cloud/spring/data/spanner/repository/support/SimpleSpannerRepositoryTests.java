@@ -17,11 +17,13 @@
 package com.google.cloud.spring.data.spanner.repository.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.spanner.Key;
@@ -41,6 +43,7 @@ import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.util.Assert;
 
 /**
  * Tests for the standard Spanner repository implementation.
@@ -249,6 +252,25 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
+  public void findAllById_failsOnNull() {
+    SimpleSpannerRepository<Object, Key> repo =
+        new SimpleSpannerRepository<>(this.template, Object.class);
+    assertThatThrownBy(() -> repo.findAllById(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("IDs must not be null");
+    verifyNoInteractions(this.template);
+  }
+
+  @Test
+  public void findAllById_shortcutsToEmptyReturn() {
+    SimpleSpannerRepository<Object, Key> repo =
+        new SimpleSpannerRepository<>(this.template, Object.class);
+    assertThat(repo.findAllById(new ArrayList<>()))
+        .isEmpty();
+    verifyNoInteractions(this.template);
+  }
+
+  @Test
   public void countTest() {
     new SimpleSpannerRepository<Object, Key>(this.template, Object.class).count();
     verify(this.template, times(1)).count(Object.class);
@@ -275,6 +297,15 @@ public class SimpleSpannerRepositoryTests {
     verify(this.template).delete(eq(Object.class), argumentCaptor.capture());
     assertThat(argumentCaptor.getValue().getKeys())
         .containsExactlyInAnyOrder(Key.of("key2"), Key.of("key1"));
+  }
+
+  @Test
+  public void deleteAllById_failsOnNull() {
+    SimpleSpannerRepository<Object, Key> repo =
+        new SimpleSpannerRepository<>(this.template, Object.class);
+    assertThatThrownBy(() -> repo.deleteAllById(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("IDs must not be null");
   }
 
   @Test

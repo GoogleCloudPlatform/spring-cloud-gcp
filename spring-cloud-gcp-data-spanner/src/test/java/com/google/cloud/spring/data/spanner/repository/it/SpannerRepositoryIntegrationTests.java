@@ -229,6 +229,15 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
+  public void queryMethodsTest_deleteAllById_doesNothingOnEmptyIds() {
+    List<Trade> trades = insertTrades("trader1", "BUY", 5);
+    assertThat(this.tradeRepository.count()).isEqualTo(5);
+
+    this.tradeRepository.deleteAllById(new ArrayList<>());
+    assertThat(this.tradeRepository.count()).isEqualTo(5);
+  }
+
+  @Test
   public void queryMethodsTest_readsAndCounts() {
     List<Trade> trader1BuyTrades = insertTrades("trader1", "BUY", 3);
     List<Trade> trader1SellTrades = insertTrades("trader1", "SELL", 2);
@@ -576,6 +585,33 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
       // expected exception that causes roll-back;
     }
     assertThat(this.tradeRepository.count()).isZero();
+  }
+
+  @Test
+  public void findAllByIdReturnsOnlyRequestedRows() {
+    insertTrade("trader1", "BUY", 100);
+    Trade trade2 = insertTrade("trader2", "BUY", 101);
+    Trade trade3 = insertTrade("trader2", "SELL", 102);
+    insertTrade("trader2", "SELL", 103);
+
+
+    Iterable<Trade> foundTrades = this.tradeRepository.findAllById(
+        Arrays.asList(
+            Key.of(trade2.getTradeDetail().getId(), trade2.getTraderId()),
+            Key.of(trade3.getTradeDetail().getId(), trade3.getTraderId())
+        ));
+
+    assertThat(foundTrades).containsExactlyInAnyOrder(trade2, trade3);
+  }
+
+  @Test
+  public void findAllByIdReturnsNothingOnEmptyRequestIterable() {
+    insertTrade("trader1", "BUY", 100);
+    insertTrade("trader2", "BUY", 101);
+
+    Iterable<Trade> foundTrades = this.tradeRepository.findAllById(new ArrayList<>());
+
+    assertThat(foundTrades).isEmpty();
   }
 
   private List<Trade> insertTrades(String traderId, String action, int numTrades) {
