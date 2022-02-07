@@ -91,6 +91,12 @@
       "defaultValue": true
     },
     {
+      "name": "spring.cloud.gcp.sql.r2dbc.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enables auto-configuration for R2DBC support in Google Cloud SQL.",
+      "defaultValue": true
+    },
+    {
       "name": "spring.cloud.gcp.secretmanager.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure GCP Secret Manager support components.",

@@ -16,11 +16,10 @@
 
 package com.example;
 
-import io.r2dbc.spi.ConnectionFactory;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 /**
  * Web app controller class for sample application. Contains a function that runs a query and
@@ -29,24 +28,14 @@ import reactor.core.publisher.Mono;
 @RestController
 public class WebController {
 
-  private final ConnectionFactory connectionFactory;
+  private final R2dbcEntityTemplate template;
 
-  public WebController(ConnectionFactory connectionFactory) {
-    this.connectionFactory = connectionFactory;
+  public WebController(R2dbcEntityTemplate template) {
+    this.template = template;
   }
 
   @GetMapping("/getTuples")
   public Flux<String> getTuples() {
-    return Mono.from(connectionFactory.create())
-        .flatMapMany(connection -> connection.createStatement("SELECT * FROM users").execute())
-        .flatMap(
-            result ->
-                result.map(
-                    (row, metadata) ->
-                        String.format(
-                            "[%s, %s, %s]",
-                            row.get("EMAIL", String.class),
-                            row.get("FIRST_NAME", String.class),
-                            row.get("LAST_NAME", String.class))));
+    return template.select(User.class).all().map(user -> user.toString());
   }
 }
