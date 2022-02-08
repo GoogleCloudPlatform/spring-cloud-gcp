@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.sql;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 
+import com.google.cloud.spring.autoconfigure.core.GcpProperties;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -128,10 +129,10 @@ class CredentialsPropertiesSetterTests {
         context -> {
           ConfigurableEnvironment environment = context.getEnvironment();
           PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
+          GcpCloudSqlProperties sqlProperties = propertiesRetriever.getCloudSqlProperties();
+          GcpProperties gcpProperties = propertiesRetriever.getGcpProperties();
           IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-              () -> CredentialsPropertiesSetter.setCredentials(
-                  propertiesRetriever.getCloudSqlProperties(),
-                  propertiesRetriever.getGcpProperties()));
+              () -> CredentialsPropertiesSetter.setCredentials(sqlProperties, gcpProperties));
           assertThat(exception).hasMessageContaining(
               "Error reading Cloud SQL credentials file: class path resource [invalid/path].");
         }
