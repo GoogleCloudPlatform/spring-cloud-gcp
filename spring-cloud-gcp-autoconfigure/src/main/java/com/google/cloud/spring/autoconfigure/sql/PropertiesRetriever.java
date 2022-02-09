@@ -59,6 +59,7 @@ class PropertiesRetriever {
 
   private static class NonSecretsManagerPropertiesPlaceholdersResolver
       implements PlaceholdersResolver {
+
     private PlaceholdersResolver resolver;
 
     NonSecretsManagerPropertiesPlaceholdersResolver(Environment environment) {
