@@ -29,7 +29,6 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
-import com.google.gson.Gson;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;

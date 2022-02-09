@@ -19,7 +19,6 @@ package com.google.cloud.spring.data.spanner.core.mapping;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Type;
 import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
-import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityWriter;
 import java.util.ArrayList;
