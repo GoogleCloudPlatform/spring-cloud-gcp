@@ -28,6 +28,8 @@ import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 import org.springframework.data.util.TypeInformation;
+import org.springframework.lang.NonNull;
+import org.springframework.util.Assert;
 
 /**
  * A mapping context for Cloud Spanner that provides ways to create persistent entities and
@@ -52,9 +54,11 @@ public class SpannerMappingContext
   }
 
   public SpannerMappingContext(Gson gson) {
+    Assert.notNull(gson, "A non-null gson is required.");
     this.gson = gson;
   }
 
+  @NonNull
   public Gson getGson() {
     return gson;
   }
