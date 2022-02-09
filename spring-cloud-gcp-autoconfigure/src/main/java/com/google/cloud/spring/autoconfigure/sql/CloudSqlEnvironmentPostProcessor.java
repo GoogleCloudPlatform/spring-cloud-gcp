@@ -16,12 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.sql;
 
-import com.google.cloud.spring.autoconfigure.core.GcpProperties;
-import com.google.cloud.spring.core.Credentials;
-import com.google.cloud.sql.CredentialFactory;
 import com.google.cloud.sql.core.CoreSocketFactory;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.logging.Log;
@@ -30,7 +25,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.io.Resource;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -86,7 +80,7 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
           .getPropertySources()
           .addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
 
-      setCredentials(sqlProperties, propertiesRetriever.getGcpProperties());
+      CredentialsPropertiesSetter.setCredentials(sqlProperties, propertiesRetriever.getGcpProperties());
 
       // support usage metrics
       CoreSocketFactory.setApplicationName(
@@ -120,59 +114,4 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
     return ClassUtils.isPresent(className, null);
   }
 
-  /**
-   * Set credentials to be used by the Google Cloud SQL socket factory.
-   *
-   * <p>The only way to pass a {@link CredentialFactory} to the socket factory is by passing a class
-   * name through a system property. The socket factory creates an instance of {@link
-   * CredentialFactory} using reflection without any arguments. Because of that, the credential
-   * location needs to be stored somewhere where the class can read it without any context. It could
-   * be possible to pass in a Spring context to {@link SqlCredentialFactory}, but this is a tricky
-   * solution that needs some thinking about.
-   *
-   * <p>If user didn't specify credentials, the socket factory already does the right thing by using
-   * the application default credentials by default. So we don't need to do anything.
-   */
-  private void setCredentials(GcpCloudSqlProperties sqlProperties, GcpProperties gcpProperties) {
-    Credentials credentials = null;
-
-    if (sqlProperties.getCredentials().hasKey()) {
-      // First tries the SQL configuration credential.
-      credentials = sqlProperties.getCredentials();
-    } else {
-      // Then, the global credential.
-      credentials = gcpProperties.getCredentials();
-    }
-
-    if (credentials.getEncodedKey() != null) {
-      setCredentialsEncodedKeyProperty(credentials.getEncodedKey());
-    } else if (credentials.getLocation() != null) {
-      setCredentialsFileProperty(credentials.getLocation());
-    }
-    // Else do nothing, let sockets factory use application default credentials.
-  }
-
-  private void setCredentialsEncodedKeyProperty(String encodedKey) {
-    System.setProperty(SqlCredentialFactory.CREDENTIAL_ENCODED_KEY_PROPERTY_NAME, encodedKey);
-
-    System.setProperty(
-        CredentialFactory.CREDENTIAL_FACTORY_PROPERTY, SqlCredentialFactory.class.getName());
-  }
-
-  private void setCredentialsFileProperty(Resource credentialsLocation) {
-    try {
-      // A resource might not be in the filesystem, but the Cloud SQL credential must.
-      File credentialsLocationFile = credentialsLocation.getFile();
-
-      System.setProperty(
-          SqlCredentialFactory.CREDENTIAL_LOCATION_PROPERTY_NAME,
-          credentialsLocationFile.getAbsolutePath());
-
-      // If there are specified credentials, tell sockets factory to use them.
-      System.setProperty(
-          CredentialFactory.CREDENTIAL_FACTORY_PROPERTY, SqlCredentialFactory.class.getName());
-    } catch (IOException ioe) {
-      LOGGER.info("Error reading Cloud SQL credentials file.", ioe);
-    }
-  }
 }
