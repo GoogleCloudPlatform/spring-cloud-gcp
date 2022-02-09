@@ -19,6 +19,7 @@ package com.google.cloud.spring.data.spanner.core.mapping;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Type;
 import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
+import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityWriter;
 import java.util.ArrayList;
@@ -89,6 +90,19 @@ public class SpannerPersistentEntityImpl<T>
   private final String where;
 
   private final Set<Class<?>> jsonProperties = new HashSet<>();
+
+  /**
+   * Creates a {@link SpannerPersistentEntityImpl}.
+   *
+   * @param information type information about the underlying entity type.
+   */
+  @Deprecated
+  public SpannerPersistentEntityImpl(TypeInformation<T> information) {
+    this(
+        information,
+        new SpannerMappingContext(),
+        new ConverterAwareMappingSpannerEntityProcessor(new SpannerMappingContext()));
+  }
 
   /**
    * Creates a {@link SpannerPersistentEntityImpl}.
