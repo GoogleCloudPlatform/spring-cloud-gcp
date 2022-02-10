@@ -35,13 +35,17 @@ class ClientLibraryDecoder {
   private static final Map<Type, BiFunction<Struct, Integer, Object>> arrayDecodersMap =
       createArrayDecoders();
 
-  // Only 3 primitive array types are supported by client library.
   // Struct type is the same for arrays and lists, so array getters have to live in a separate map.
   private static Map<Type, BiFunction<Struct, Integer, Object>> createArrayDecoders() {
     Map<Type, BiFunction<Struct, Integer, Object>> decoders = new HashMap<>();
     decoders.put(Type.array(Type.int64()), AbstractStructReader::getLongArray);
     decoders.put(Type.array(Type.float64()), AbstractStructReader::getDoubleArray);
     decoders.put(Type.array(Type.bool()), AbstractStructReader::getBooleanArray);
+
+    // Only 3 primitive array types are supported by client library; the rest have to be converted.
+    decoders.put(
+        Type.array(Type.string()),
+        (struct, index) -> struct.getStringList(index).toArray(new String[0]));
     return decoders;
   }
 

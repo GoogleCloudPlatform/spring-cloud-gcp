@@ -17,17 +17,19 @@
 package com.google.cloud.spanner.r2dbc.v2;
 
 import com.google.cloud.spanner.Statement.Builder;
+import com.google.cloud.spanner.r2dbc.SpannerType;
 
-interface ClientLibraryTypeBinder<T> {
+interface ClientLibraryTypeBinder {
 
   /**
    * Indicates if the binder can bind a value of a given type.
    *
    * @param type input data object type
+   * @param spannerType optional {@link SpannerType} hint.
    *
    * @return true if the codec can encode value, false otherwise
    */
-  boolean canBind(Class<T> type);
+  boolean canBind(Class<?> type, SpannerType spannerType);
 
   /**
    * Bind a value.
@@ -36,5 +38,5 @@ interface ClientLibraryTypeBinder<T> {
    * @param name parameter name
    * @param value the value to bind
    */
-  void bind(Builder builder, String name, T value);
+  void bind(Builder builder, String name, Object value, SpannerType spannerType);
 }

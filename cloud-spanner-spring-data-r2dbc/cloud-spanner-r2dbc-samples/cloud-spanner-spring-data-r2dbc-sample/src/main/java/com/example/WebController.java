@@ -58,21 +58,12 @@ public class WebController {
   }
 
   @PostMapping("/add")
-  public Mono<Void> addBook(@RequestBody String bookTitle) {
-    return r2dbcEntityTemplate.insert(Book.class)
-        .using(new Book(bookTitle, null, null))
+  public Mono<Void> addBook(@RequestBody Book book) {
+    return r2dbcEntityTemplate
+        .insert(Book.class)
+        .using(book)
         .log()
         .then();
-  }
-
-  @PostMapping(value = "/add-book-with-json",
-          consumes = MediaType.APPLICATION_JSON_VALUE)
-  public Mono<Void> addBookJson(@RequestBody Book book) {
-    return r2dbcEntityTemplate
-            .insert(Book.class)
-            .using(book)
-            .log()
-            .then();
   }
 
   /**

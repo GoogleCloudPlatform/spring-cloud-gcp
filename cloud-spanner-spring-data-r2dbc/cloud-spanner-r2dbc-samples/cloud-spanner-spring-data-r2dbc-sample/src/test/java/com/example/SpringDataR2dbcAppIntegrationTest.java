@@ -2,6 +2,8 @@ package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.ServiceOptions;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
@@ -29,20 +31,29 @@ class SpringDataR2dbcAppIntegrationTest {
   @Autowired
   private WebTestClient webTestClient;
 
+  @Autowired
+  private ObjectMapper objectMapper;
+
   @AfterEach
   void deleteRecords() {
     this.webTestClient.get().uri("delete-all").exchange().expectStatus().is2xxSuccessful();
   }
 
   @Test
-  void testBasicWebEndpoints() {
+  void testBasicWebEndpoints() throws JsonProcessingException {
 
     // initially empty table
     this.webTestClient.get().uri("/list").exchange()
         .expectBody(Book[].class).isEqualTo(new Book[0]);
 
-    this.webTestClient.post().uri("/add").body(Mono.just("Call of the wild"), String.class)
-        .exchange().expectStatus().is2xxSuccessful();
+    Book newBook = new Book("Call of the wild", null, null);
+    this.webTestClient.post()
+        .uri("/add")
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(Mono.just(objectMapper.writeValueAsString(newBook)), String.class)
+        .exchange()
+        .expectStatus()
+        .is2xxSuccessful();
 
     AtomicReference<String> id = new AtomicReference<>();
     this.webTestClient.get().uri("/list").exchange()
@@ -64,7 +75,7 @@ class SpringDataR2dbcAppIntegrationTest {
   void testJsonWebEndpoints() {
     this.webTestClient
         .post()
-        .uri("/add-book-with-json")
+        .uri("/add")
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .body(
             Mono.just(
@@ -77,7 +88,7 @@ class SpringDataR2dbcAppIntegrationTest {
 
     this.webTestClient
         .post()
-        .uri("/add-book-with-json")
+        .uri("/add")
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .body(
             Mono.just(

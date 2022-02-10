@@ -99,6 +99,7 @@ class TestDatabaseHelper {
                 + "  AUTHOR STRING(256),"
                 + "  SYNOPSIS STRING(MAX),"
                 + "  EDITIONS ARRAY<STRING(MAX)>,"
+                + "  AWARDS ARRAY<STRING(MAX)>,"
                 + "  FICTION BOOL,"
                 + "  PUBLISHED DATE,"
                 + "  WORDS_PER_SENTENCE FLOAT64,"

@@ -16,6 +16,8 @@
 
 package com.example;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -41,6 +43,9 @@ public class Book {
   @Column("REVIEWS")
   private Review review;
 
+  @Column("CATEGORIES")
+  private List<String> categories;
+
   public Book(String title, Map<String, String> extraDetails, Review review) {
     this.id = UUID.randomUUID().toString();
     this.title = title;
@@ -65,12 +70,21 @@ public class Book {
     return review;
   }
 
+  public List<String> getCategories() {
+    return categories;
+  }
+
+  public void setCategories(List<String> categories) {
+    this.categories = categories;
+  }
+
   @Override
   public String toString() {
     return "Book{" +
             "id='" + id + '\'' +
             ", title='" + title + '\'' +
-            ", extraDetails=" +(extraDetails == null ? "" : extraDetails.toString()) +
+            ", extraDetails=" + (extraDetails == null ? "" : extraDetails.toString()) +
+            ", categories=" + (categories == null ? "" : categories) +
             '}';
   }
 }

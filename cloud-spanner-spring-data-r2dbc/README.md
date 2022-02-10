@@ -168,9 +168,13 @@ Cloud Spanner R2DBC Driver supports the following types:
 |`STRING`        |`java.lang.String`   |
 |`JSON`          |`com.google.cloud.spanner.r2dbc.v2.JsonWrapper`   |
 |`TIMESTAMP`     |`java.time.LocalDateTime` |
-|`ARRAY`         |Array-Variant of the corresponding Java type (e.g. `Long[]` for `ARRAY<INT64>`) `ARRAY<JSON>` is not supported.|
+|`ARRAY`         |Arrays or `Iterable` collections with hint. `ARRAY<JSON>` is not supported.|
 
-Null values mapping is supported in both directions. 
+Null values mapping is supported in both directions.
+See [Cloud Spanner documentation](https://cloud.google.com/spanner/docs/data-types) to learn more about Spanner types.
+
+
+### JSON Mapping
 
 `JSON` Spanner type is supported through `JsonWrapper.class`. This is a wrapper class around String representation of the Json value. Below are the basic usages wrapping and un-wrapping string: 
 ```java
@@ -184,7 +188,20 @@ Null values mapping is supported in both directions.
 
 If using Spring Data, default converters to/from `Map` are ready to use out-of-box for key or value type of `String`, `Boolean` and `Double`. Custom converters can be used to allow Json conversion directly to/from collections or user-defined types. Examples of using `Map` and custom class `Review` for Json field are provided in the [Spring Data sample application](https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/tree/main/cloud-spanner-r2dbc-samples/cloud-spanner-spring-data-r2dbc-sample)
 
-See [Cloud Spanner documentation](https://cloud.google.com/spanner/docs/data-types) to learn more about Spanner types.
+### Array Mapping
+
+Cloud Spanner arrays can be mapped to/from either primitive Java arrays or `Iterable` collections of wrapper types. For example, a column of type `ARRAY<INT64>` can be represented as `long[]` or `List<Long>`.
+
+However, binding `Iterable` parameters requires a `SpannerType` hint for the specific `com.google.cloud.spanner.Type` to use.
+
+```
+  List value = ...;
+  SpannerType typeHint = SpannerType.of( Type.array(Type.string()) );
+  statement.bind("columnName", Parameters.in(typeHint, value));
+```
+This is not a concern when using Spring Data, as collections will automatically be converted to typed arrays by the framework.
+
+NOTE: Using `long` and `double` arrays is more efficient than using `int` and `float`, as the latter need to get converted for every element.
 
 ## Connections
 

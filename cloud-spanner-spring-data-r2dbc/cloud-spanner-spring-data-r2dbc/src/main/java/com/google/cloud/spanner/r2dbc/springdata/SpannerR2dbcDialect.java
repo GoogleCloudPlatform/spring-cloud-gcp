@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.springframework.data.r2dbc.dialect.R2dbcDialect;
 import org.springframework.data.relational.core.dialect.AbstractDialect;
+import org.springframework.data.relational.core.dialect.ArrayColumns;
 import org.springframework.data.relational.core.dialect.LimitClause;
 import org.springframework.data.relational.core.dialect.LockClause;
 import org.springframework.data.relational.core.sql.LockOptions;
@@ -102,6 +103,11 @@ public class SpannerR2dbcDialect extends AbstractDialect implements R2dbcDialect
   @Override
   public Collection<Object> getConverters() {
     return Arrays.asList(new JsonToMapConverter<>(this.gson), new MapToJsonConverter<>(this.gson));
+  }
+
+  @Override
+  public ArrayColumns getArraySupport() {
+    return new SpannerArrayColumns();
   }
 
 }

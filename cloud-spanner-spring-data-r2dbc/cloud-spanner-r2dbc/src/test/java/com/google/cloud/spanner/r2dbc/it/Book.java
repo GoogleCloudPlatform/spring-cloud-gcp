@@ -16,8 +16,10 @@
 
 package com.google.cloud.spanner.r2dbc.it;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -35,6 +37,8 @@ public class Book {
 
   private final String[] editions;
 
+  private final List<String> awards;
+
   private final Boolean fiction;
 
   private final LocalDate published;
@@ -42,6 +46,8 @@ public class Book {
   private final Double wordsPerSentence;
 
   private final Integer category;
+
+  private final BigDecimal price;
 
   /**
    * Constructor.
@@ -51,23 +57,26 @@ public class Book {
    * @param author author
    * @param synopsis text
    * @param editions edition array
+   * @awards awards awards list
    * @param fiction boolean
    * @param published local date
    * @param wordsPerSentence double
    * @param category integer
    */
   public Book(String id, String title, String author, String synopsis,
-      String[] editions, Boolean fiction, LocalDate published, Double wordsPerSentence,
-      Integer category) {
+      String[] editions, List<String> awards, Boolean fiction, LocalDate published,
+      Double wordsPerSentence, Integer category, BigDecimal price) {
     this.id = id;
     this.title = title;
     this.author = author;
     this.synopsis = synopsis;
     this.editions = editions;
+    this.awards = awards;
     this.fiction = fiction;
     this.published = published;
     this.wordsPerSentence = wordsPerSentence;
     this.category = category;
+    this.price = price;
   }
 
   public String getId() {
@@ -90,6 +99,10 @@ public class Book {
     return this.editions;
   }
 
+  public List<String> getAwards() {
+    return this.awards;
+  }
+
   public Boolean getFiction() {
     return this.fiction;
   }
@@ -104,6 +117,10 @@ public class Book {
 
   public Integer getCategory() {
     return this.category;
+  }
+
+  public BigDecimal getPrice() {
+    return this.price;
   }
 
   @Override

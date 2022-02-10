@@ -27,6 +27,7 @@ import com.google.cloud.ServiceOptions;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.Type;
+import com.google.cloud.spanner.r2dbc.SpannerType;
 import com.google.cloud.spanner.r2dbc.api.SpannerConnection;
 import com.google.cloud.spanner.r2dbc.v2.JsonWrapper;
 import com.google.cloud.spanner.r2dbc.v2.SpannerClientLibraryConnectionFactory;
@@ -36,11 +37,14 @@ import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
+import io.r2dbc.spi.Parameters;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
 import io.r2dbc.spi.ValidationDepth;
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
@@ -171,8 +175,9 @@ class ClientLibraryBasedIntegrationTest {
     Connection conn = Mono.from(connectionFactory.create()).block();
 
     String id = "abc123-" + this.random.nextInt();
-    String query = "INSERT BOOKS (UUID, TITLE, CATEGORY, WORDS_PER_SENTENCE, PRICE) "
-        + "VALUES (@uuid, @title, @category, @wordCount, @price)";
+    String query = "INSERT BOOKS "
+        + "(UUID, TITLE, CATEGORY, WORDS_PER_SENTENCE, PRICE, EDITIONS, AWARDS) "
+        + "VALUES (@uuid, @title, @category, @wordCount, @price, @editions, @awards)";
 
     StepVerifier.create(
         Mono.from(
@@ -182,6 +187,12 @@ class ClientLibraryBasedIntegrationTest {
                 .bind("category", 100L)
                 .bind("wordCount", 20.8)
                 .bind("price", new BigDecimal("123.99"))
+                .bind("editions", new String[] { "first", "second" })
+                .bind("awards",
+                    Parameters.in(
+                        SpannerType.of(Type.array(Type.string())),
+                        Arrays.asList("Hugo", "Nebula"))
+                )
                 .execute())
             .flatMapMany(rs -> rs.getRowsUpdated())
     ).expectNext(1).verifyComplete();
@@ -193,18 +204,31 @@ class ClientLibraryBasedIntegrationTest {
         .verifyComplete();
     StepVerifier.create(
         Mono.from(
-            conn.createStatement("SELECT WORDS_PER_SENTENCE FROM BOOKS WHERE UUID = @uuid")
+            conn.createStatement("SELECT * FROM BOOKS WHERE UUID = @uuid")
                 .bind("uuid", id)
                 .execute()
-        ).flatMapMany(rs -> rs.map((row, rmeta) -> row.get(1, Double.class))))
-        .expectNext(20.8d).verifyComplete();
-    StepVerifier.create(
-        Mono.from(
-            conn.createStatement("SELECT PRICE FROM BOOKS WHERE UUID = @uuid")
-                .bind("uuid", id)
-                .execute()
-        ).flatMapMany(rs -> rs.map((row, rmeta) -> row.get(1, BigDecimal.class))))
-        .expectNext(new BigDecimal("123.99")).verifyComplete();
+        ).flatMapMany(
+            rs -> rs.map(
+                (row, rmeta) ->
+                  new Book(
+                      row.get("UUID", String.class),
+                      row.get("TITLE", String.class),
+                      row.get("AUTHOR", String.class),
+                      null,
+                      row.get("EDITIONS", String[].class),
+                      row.get("AWARDS", List.class),
+                      false,
+                      null,
+                      row.get("WORDS_PER_SENTENCE", Double.class),
+                      row.get("CATEGORY", Integer.class),
+                      row.get("PRICE", BigDecimal.class)
+                  )))
+        ).assertNext(book -> {
+          assertThat(book.getWordsPerSentence()).isEqualTo(20.8);
+          assertThat(book.getPrice()).isEqualTo(new BigDecimal("123.99"));
+          assertThat(book.getEditions()).containsExactly("first", "second");
+          assertThat(book.getAwards()).containsExactly("Hugo", "Nebula");
+        }).verifyComplete();
   }
 
   @Test
