@@ -95,6 +95,9 @@ public class SpannerPersistentEntityImpl<T>
    * Creates a {@link SpannerPersistentEntityImpl}.
    *
    * @param information type information about the underlying entity type.
+   * @deprecated remove on next major release. use
+   *     {@link #SpannerPersistentEntityImpl(TypeInformation,
+   *     SpannerMappingContext, SpannerEntityProcessor)} instead.
    */
   @Deprecated
   public SpannerPersistentEntityImpl(TypeInformation<T> information) {
