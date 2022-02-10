@@ -98,11 +98,12 @@ public class SpannerMappingContext
     SpannerEntityProcessor processor;
     if (this.applicationContext == null) {
       processor = new ConverterAwareMappingSpannerEntityProcessor(this);
+    } else if (!this.applicationContext.containsBean("spannerConverter")) {
+      processor = new ConverterAwareMappingSpannerEntityProcessor(this);
     } else {
       processor = this.applicationContext.getBean(SpannerEntityProcessor.class);
     }
-    return new SpannerPersistentEntityImpl<>(typeInformation, this,
-        processor);
+    return new SpannerPersistentEntityImpl<>(typeInformation, this, processor);
   }
 
   @Override
