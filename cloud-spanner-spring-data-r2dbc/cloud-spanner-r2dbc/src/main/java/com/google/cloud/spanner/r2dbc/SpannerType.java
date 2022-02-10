@@ -30,7 +30,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * An R2DBC {@link io.r2dbc.spi.Type}-compatible wrapper around Cloud Spanner's {@Type}.
+ * An R2DBC {@link io.r2dbc.spi.Type}-compatible wrapper around Cloud Spanner's {@link Type}.
  */
 public abstract class SpannerType implements io.r2dbc.spi.Type {
 
