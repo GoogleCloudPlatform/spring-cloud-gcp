@@ -96,9 +96,7 @@ public class SpannerMappingContext
   protected <T> SpannerPersistentEntityImpl<T> constructPersistentEntity(
       TypeInformation<T> typeInformation) {
     SpannerEntityProcessor processor;
-    if (this.applicationContext == null) {
-      processor = new ConverterAwareMappingSpannerEntityProcessor(this);
-    } else if (!this.applicationContext.containsBean("spannerConverter")) {
+    if (this.applicationContext == null || !this.applicationContext.containsBean("spannerConverter")) {
       processor = new ConverterAwareMappingSpannerEntityProcessor(this);
     } else {
       processor = this.applicationContext.getBean(SpannerEntityProcessor.class);
