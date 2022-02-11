@@ -107,12 +107,17 @@ public final class SpannerStatementQueryExecutor {
   private static Map<String, Parameter> preparePartTreeSqlTagParameterMap(
       Parameter[] paramsMetadata, SqlStringAndPlaceholders sqlStringAndPlaceholders) {
     Map<String, Parameter> paramMetadataMap = new HashMap<>();
+    int pageSortIdx = paramsMetadata.length;
     for (int i = 0; i < paramsMetadata.length; i++) {
       Parameter param = paramsMetadata[i];
       // Skip Pageable and Sort parameters because they don't need to be bound to the tags in the
       // query.
       // They are processed separately in applySort and buildLimit methods.
-      if (param.getType() != Pageable.class && param.getType() != Sort.class) {
+      if (param.getType() == Pageable.class || param.getType() == Sort.class) {
+        pageSortIdx = i;
+      } else if (i > pageSortIdx) {
+        paramMetadataMap.put(sqlStringAndPlaceholders.getPlaceholders().get(i-1), param);
+      } else {
         paramMetadataMap.put(sqlStringAndPlaceholders.getPlaceholders().get(i), param);
       }
     }
