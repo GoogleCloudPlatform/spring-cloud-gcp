@@ -244,7 +244,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
     boolean isJsonField = isJsonFieldType(returnedType);
     if (isJsonField) {
       return this.spannerTemplate.query(
-          struct -> new StructAccessor(struct).getSingleJsonValue(0, returnedType),
+          struct -> new StructAccessor(struct, this.spannerMappingContext.getGson()).getSingleJsonValue(0, returnedType),
           statement,
           spannerQueryOptions);
     }

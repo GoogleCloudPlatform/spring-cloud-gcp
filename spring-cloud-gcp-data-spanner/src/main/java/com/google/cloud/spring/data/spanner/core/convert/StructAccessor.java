@@ -104,11 +104,17 @@ public class StructAccessor {
 
   private Set<String> columnNamesIndex;
 
-  private static final Gson gson = new Gson();
+  private Gson gson;
 
   public StructAccessor(Struct struct) {
     this.struct = struct;
     this.columnNamesIndex = indexColumnNames();
+  }
+
+  public StructAccessor(Struct struct, Gson gson) {
+    this.struct = struct;
+    this.columnNamesIndex = indexColumnNames();
+    this.gson = gson;
   }
 
   Object getSingleValue(String colName) {

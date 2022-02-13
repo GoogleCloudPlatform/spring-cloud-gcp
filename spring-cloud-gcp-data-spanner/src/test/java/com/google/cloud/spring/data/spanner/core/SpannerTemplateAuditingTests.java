@@ -91,6 +91,11 @@ public class SpannerTemplateAuditingTests {
     }
 
     @Bean
+    public SpannerEntityProcessor spannerEntityProcessor() {
+      return mock(SpannerEntityProcessor.class);
+    }
+
+    @Bean
     public SpannerTemplate spannerTemplate(SpannerMappingContext spannerMappingContext) {
       SpannerEntityProcessor objectMapper = mock(SpannerEntityProcessor.class);
       SpannerMutationFactory mutationFactory = mock(SpannerMutationFactory.class);
