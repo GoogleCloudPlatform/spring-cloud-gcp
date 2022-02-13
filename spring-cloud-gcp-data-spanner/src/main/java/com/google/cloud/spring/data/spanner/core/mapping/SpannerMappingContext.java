@@ -16,6 +16,9 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping;
 
+import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.gson.Gson;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -25,6 +28,8 @@ import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 import org.springframework.data.util.TypeInformation;
+import org.springframework.lang.NonNull;
+import org.springframework.util.Assert;
 
 /**
  * A mapping context for Cloud Spanner that provides ways to create persistent entities and
@@ -42,6 +47,21 @@ public class SpannerMappingContext
   private FieldNamingStrategy fieldNamingStrategy = DEFAULT_NAMING_STRATEGY;
 
   private ApplicationContext applicationContext;
+
+  private Gson gson;
+
+  public SpannerMappingContext() {
+  }
+
+  public SpannerMappingContext(Gson gson) {
+    Assert.notNull(gson, "A non-null gson is required.");
+    this.gson = gson;
+  }
+
+  @NonNull
+  public Gson getGson() {
+    return gson;
+  }
 
   /**
    * Set the field naming strategy used when creating persistent properties.
@@ -75,7 +95,13 @@ public class SpannerMappingContext
 
   protected <T> SpannerPersistentEntityImpl<T> constructPersistentEntity(
       TypeInformation<T> typeInformation) {
-    return new SpannerPersistentEntityImpl<>(typeInformation);
+    SpannerEntityProcessor processor;
+    if (this.applicationContext == null || !this.applicationContext.containsBean("spannerConverter")) {
+      processor = new ConverterAwareMappingSpannerEntityProcessor(this);
+    } else {
+      processor = this.applicationContext.getBean(SpannerEntityProcessor.class);
+    }
+    return new SpannerPersistentEntityImpl<>(typeInformation, this, processor);
   }
 
   @Override

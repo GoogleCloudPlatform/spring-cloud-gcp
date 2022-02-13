@@ -48,6 +48,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.core.mapping.Where;
+import com.google.gson.Gson;
 import com.google.spanner.v1.TypeCode;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -88,7 +89,7 @@ public class SqlSpannerQueryTests {
 
   private SpelExpressionParser expressionParser;
 
-  private SpannerMappingContext spannerMappingContext = new SpannerMappingContext();
+  private SpannerMappingContext spannerMappingContext = new SpannerMappingContext(new Gson());
 
   private final Sort sort = Sort.by(Order.asc("COLA"), Order.desc("COLB"));
 
@@ -130,7 +131,7 @@ public class SqlSpannerQueryTests {
         sql,
         this.evaluationContextProvider,
         this.expressionParser,
-        new SpannerMappingContext(),
+        this.spannerMappingContext,
         isDml);
   }
 

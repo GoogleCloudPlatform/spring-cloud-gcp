@@ -29,6 +29,8 @@ import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.SpannerTransactionManager;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.gson.Gson;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -40,6 +42,9 @@ import org.threeten.bp.Duration;
 
 /** Tests for Spanner auto-config. */
 public class GcpSpannerAutoConfigurationTests {
+
+  /** Mock Gson object for use in configuration. */
+  public static Gson MOCK_GSON = mock(Gson.class);
 
   private ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
@@ -68,6 +73,16 @@ public class GcpSpannerAutoConfigurationTests {
     this.contextRunner.run(
         context -> {
           assertThat(context.getBean(TestRepository.class)).isNotNull();
+        });
+  }
+
+  @Test
+  public void testUserGsonBean() {
+    this.contextRunner.run(
+        context -> {
+          Gson gsonBean = context.getBean(Gson.class);
+          assertThat(gsonBean).isSameAs(MOCK_GSON);
+          assertThat(context.getBean(SpannerMappingContext.class).getGson()).isSameAs(MOCK_GSON);
         });
   }
 
@@ -152,13 +167,20 @@ public class GcpSpannerAutoConfigurationTests {
             });
   }
 
-  /** Mock bean for credentials provider. */
+  /** Spring Boot config for tests. */
   @AutoConfigurationPackage
   static class TestConfiguration {
 
+    /** Mock bean for credentials provider. */
     @Bean
     public CredentialsProvider credentialsProvider() {
       return () -> mock(Credentials.class);
+    }
+
+    /** Mock bean for Gson. */
+    @Bean
+    public Gson customGson() {
+      return MOCK_GSON;
     }
   }
 }

@@ -29,7 +29,6 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
-import com.google.gson.Gson;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
@@ -72,8 +71,6 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 
   static final Map<Class<?>, BiConsumer<ValueBinder<?>, Iterable>> iterablePropertyTypeToMethodMap =
       createIterableTypeMapping();
-
-  private static final Gson gson = new Gson();
 
   @SuppressWarnings("unchecked")
   private static Map<Class<?>, BiConsumer<ValueBinder<?>, Iterable>> createIterableTypeMapping() {
@@ -364,11 +361,11 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
     return true;
   }
 
-  private static Value covertJsonToValue(Object value) {
+  private Value covertJsonToValue(Object value) {
     if (value == null) {
       return Value.json(null);
     }
-    String jsonString = gson.toJson(value);
+    String jsonString = this.spannerMappingContext.getGson().toJson(value);
     return Value.json(jsonString);
   }
 
@@ -432,7 +429,7 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
                 this.writeConverter);
       } else if (property.getAnnotatedColumnItemType() == Type.Code.JSON) {
         // annotated json column, bind directly
-        valueBinder.to(covertJsonToValue(propertyValue));
+        valueBinder.to(this.covertJsonToValue(propertyValue));
         valueSet = true;
       } else if (property.getAnnotatedColumnItemType() != null) {
         // use the user's annotated column type if possible
