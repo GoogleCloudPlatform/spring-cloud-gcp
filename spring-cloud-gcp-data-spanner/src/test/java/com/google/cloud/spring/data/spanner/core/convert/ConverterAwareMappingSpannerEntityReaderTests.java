@@ -38,6 +38,7 @@ import com.google.cloud.spring.data.spanner.core.convert.TestEntities.OuterTestH
 import com.google.cloud.spring.data.spanner.core.convert.TestEntities.TestEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.gson.Gson;
 import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Rule;
@@ -60,9 +61,10 @@ public class ConverterAwareMappingSpannerEntityReaderTests {
   @Before
   public void setup() {
     this.spannerReadConverter = new SpannerReadConverter();
+    SpannerMappingContext mappingContext = new SpannerMappingContext(new Gson());
     this.spannerEntityReader =
         new ConverterAwareMappingSpannerEntityReader(
-            new SpannerMappingContext(), this.spannerReadConverter);
+            mappingContext, this.spannerReadConverter);
   }
 
   @Test

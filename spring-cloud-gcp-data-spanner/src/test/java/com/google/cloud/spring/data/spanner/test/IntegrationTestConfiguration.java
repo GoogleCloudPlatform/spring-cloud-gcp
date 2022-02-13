@@ -37,6 +37,7 @@ import com.google.cloud.spring.data.spanner.core.it.SpannerTemplateIntegrationTe
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.repository.config.EnableSpannerRepositories;
 import com.google.cloud.spring.data.spanner.repository.it.SpannerRepositoryIntegrationTests.TradeRepositoryTransactionalService;
+import com.google.gson.Gson;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -119,8 +120,13 @@ public class IntegrationTestConfiguration {
   }
 
   @Bean
-  public SpannerMappingContext spannerMappingContext() {
-    return new SpannerMappingContext();
+  public Gson gson() {
+    return new Gson();
+  }
+
+  @Bean
+  public SpannerMappingContext spannerMappingContext(Gson gson) {
+    return new SpannerMappingContext(gson);
   }
 
   @Bean
