@@ -329,6 +329,8 @@ public class SpannerStatementQueryTests {
     // where Pageable is not the last parameter
     Object[] params = new Object[] {"BUY", PageRequest.of(1, 10, Sort.by("traderId")), "STOCK1"};
     Method method = QueryHolder.class.getMethod("repositoryMethod7", String.class, Pageable.class, String.class);
+
+    when(this.queryMethod.getQueryMethod()).thenReturn(method);
     String expectedSql =
         "SELECT shares, trader_id, ticker, price, action, id, value "
             + "FROM trades "
@@ -366,7 +368,7 @@ public class SpannerStatementQueryTests {
     doReturn(null).when(this.partTreeSpannerQuery).convertToSimpleReturnType(any(), any());
 
     this.partTreeSpannerQuery.execute(params);
-    verify(this.spannerTemplate, times(1)).query((Class) any(), any(), any());
+    verify(this.spannerTemplate).query((Class) any(), any(), any());
   }
 
   @Test
