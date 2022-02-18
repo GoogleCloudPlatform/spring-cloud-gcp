@@ -20,6 +20,7 @@ import com.google.cloud.spanner.Key;
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import com.google.cloud.spring.data.spanner.repository.query.Query;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
@@ -43,4 +44,6 @@ public interface TradeRepository extends SpannerRepository<Trade, Key> {
   // This method uses the query from the properties file instead of one generated based on
   // name.
   List<Trade> fetchByActionNamedQuery(@Param("tag0") String action);
+
+  List<Trade> findByActionAndSymbol(Pageable pageable, String action, String symbol);
 }
