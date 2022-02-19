@@ -171,6 +171,9 @@ public class DefaultPublisherFactory implements PublisherFactory {
    *   <li>client library defaults
    *</ol>
    *
+   * <p>Note that it is the responsibility of the caller to shut down the retrieved {@link Publisher}
+   * once it is noonger needed.
+   *
    * @param topic destination topic
    * @return fully configured publisher
    */

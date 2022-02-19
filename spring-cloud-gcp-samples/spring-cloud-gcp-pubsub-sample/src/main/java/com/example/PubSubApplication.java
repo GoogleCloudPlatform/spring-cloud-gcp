@@ -18,12 +18,20 @@ package com.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /** Pub/Sub sample application. */
 @SpringBootApplication
 public class PubSubApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(PubSubApplication.class, args);
+  public static void main(String[] args) throws Exception {
+    ConfigurableApplicationContext ctx = SpringApplication.run(PubSubApplication.class, args);
+    System.out.println("press key to close context");
+    System.in.read();
+    ctx.close();
+
+    System.out.println("press key to stop app ");
+
+    System.in.read();
   }
 }
