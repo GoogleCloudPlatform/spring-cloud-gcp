@@ -17,6 +17,7 @@
 package com.example;
 
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
+import com.google.protobuf.ByteString;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +40,7 @@ public class SecretManagerWebController {
 
   // Application secrets can be accessed using @Value and using the "sm://" syntax.
   @Value("${sm://application-secret}")
-  private String appSecret;
+  private ByteString appSecret;
 
   // Multiple ways of loading the application-secret are demonstrated in bootstrap.properties.
   // Try it with my-app-secret-1 or my-app-secret-2
