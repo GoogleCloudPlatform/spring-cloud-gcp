@@ -113,9 +113,7 @@ public final class SpannerStatementQueryExecutor {
       // Skip Pageable and Sort parameters because they don't need to be bound to the tags in the
       // query.
       // They are processed separately in applySort and buildLimit methods.
-      if (param.getType() == Pageable.class || param.getType() == Sort.class) {
-        continue;
-      } else {
+      if (param.getType() != Pageable.class && param.getType() != Sort.class) {
         paramMetadataMap.put(sqlStringAndPlaceholders.getPlaceholders().get(nextPlaceholderIdx++), param);
       }
     }
