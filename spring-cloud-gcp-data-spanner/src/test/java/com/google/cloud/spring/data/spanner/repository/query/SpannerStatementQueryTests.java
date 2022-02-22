@@ -324,6 +324,54 @@ public class SpannerStatementQueryTests {
   }
 
   @Test
+  public void pageableNotLastParameterTest() throws NoSuchMethodException {
+    // Test that preparePartTreeSqlTagParameterMap() can process cases
+    // where Pageable is not the last parameter
+    Object[] params = new Object[] {"BUY", PageRequest.of(1, 10, Sort.by("traderId")), "STOCK1"};
+    Method method = QueryHolder.class.getMethod("repositoryMethod7", String.class, Pageable.class, String.class);
+
+    when(this.queryMethod.getQueryMethod()).thenReturn(method);
+    String expectedSql =
+        "SELECT shares, trader_id, ticker, price, action, id, value "
+            + "FROM trades "
+            + "WHERE ( action=@tag0 AND ticker=@tag1 ) "
+            + "ORDER BY trader_id ASC LIMIT 10 OFFSET 10";
+
+
+    when(this.queryMethod.getName()).thenReturn("findByActionAndSymbol");
+    this.partTreeSpannerQuery = spy(createQuery());
+
+    when(this.spannerTemplate.query((Function<Struct, Object>) any(), any(), any()))
+        .thenReturn(Collections.singletonList(1L));
+
+    doReturn(new DefaultParameters(method)).when(this.queryMethod).getParameters();
+
+    when(this.spannerTemplate.query((Class) any(), any(), any()))
+        .thenAnswer(
+            invocation -> {
+              Statement statement = invocation.getArgument(1);
+
+              assertThat(statement.getSql()).isEqualTo(expectedSql);
+
+              Map<String, Value> paramMap = statement.getParameters();
+
+              assertThat(paramMap.get("tag0").getString()).isEqualTo(params[0]);
+              // Correctly skips Pageable parameter because it doesn't need to be bound to
+              // the tags in the query.
+              assertThat(paramMap.get("tag1").getString()).isEqualTo(params[2]);
+              assertThat(paramMap).hasSize(2);
+
+              return null;
+            });
+
+    doReturn(Object.class).when(this.partTreeSpannerQuery).getReturnedSimpleConvertableItemType();
+    doReturn(null).when(this.partTreeSpannerQuery).convertToSimpleReturnType(any(), any());
+
+    this.partTreeSpannerQuery.execute(params);
+    verify(this.spannerTemplate).query((Class) any(), any(), any());
+  }
+
+  @Test
   public void unspecifiedParametersTest() throws NoSuchMethodException {
     this.expectedEx.expect(IllegalArgumentException.class);
     this.expectedEx.expectMessage("The number of tags does not match the number of params.");
@@ -466,6 +514,10 @@ public class SpannerStatementQueryTests {
     }
 
     public long repositoryMethod6(Double tag0, Sort tag1) {
+      return 0;
+    }
+
+    public long repositoryMethod7(String tag0, Pageable tag1, String tag2) {
       return 0;
     }
   }
