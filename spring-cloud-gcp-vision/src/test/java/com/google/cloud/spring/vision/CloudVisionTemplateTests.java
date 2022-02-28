@@ -21,8 +21,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.cloud.vision.v1.AnnotateFileRequest;
+import com.google.cloud.vision.v1.AnnotateFileResponse;
 import com.google.cloud.vision.v1.AnnotateImageRequest;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
+import com.google.cloud.vision.v1.BatchAnnotateFilesRequest;
+import com.google.cloud.vision.v1.BatchAnnotateFilesResponse;
 import com.google.cloud.vision.v1.BatchAnnotateImagesRequest;
 import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
 import com.google.cloud.vision.v1.Feature;
@@ -30,6 +34,7 @@ import com.google.cloud.vision.v1.Feature.Type;
 import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageContext;
+import com.google.cloud.vision.v1.InputConfig;
 import com.google.protobuf.ByteString;
 import com.google.rpc.Status;
 import io.grpc.Status.Code;
@@ -56,10 +61,19 @@ public class CloudVisionTemplateTests {
 
   // Resource representing a fake image blob
   private static final Resource FAKE_IMAGE = new ByteArrayResource("fake_image".getBytes());
+  private static final Resource FAKE_PDF = new ByteArrayResource("fake_pdf".getBytes());
 
   private static final BatchAnnotateImagesResponse DEFAULT_API_RESPONSE =
       BatchAnnotateImagesResponse.newBuilder()
           .addResponses(AnnotateImageResponse.getDefaultInstance())
+          .build();
+
+  private static final BatchAnnotateFilesResponse DEFAULT_FILES_API_RESPONSE =
+      BatchAnnotateFilesResponse.newBuilder()
+          .addResponses(
+              AnnotateFileResponse.newBuilder()
+                  .addResponses(AnnotateImageResponse.getDefaultInstance())
+                  .build())
           .build();
 
   private ImageAnnotatorClient imageAnnotatorClient;
@@ -121,6 +135,29 @@ public class CloudVisionTemplateTests {
   }
 
   @Test
+  public void testAddInputConfig_extractText() throws IOException {
+    when(this.imageAnnotatorClient.batchAnnotateFiles(any(BatchAnnotateFilesRequest.class)))
+        .thenReturn(DEFAULT_FILES_API_RESPONSE);
+
+    this.cloudVisionTemplate.extractTextFromPdf(FAKE_PDF);
+
+    BatchAnnotateFilesRequest expectedRequest =
+        BatchAnnotateFilesRequest.newBuilder()
+            .addRequests(
+                AnnotateFileRequest.newBuilder()
+                    .addFeatures(Feature.newBuilder().setType(Type.TEXT_DETECTION))
+                    .setInputConfig(
+                        InputConfig.newBuilder()
+                            .setMimeType("application/pdf")
+                            .setContent(ByteString.readFrom(FAKE_PDF.getInputStream()))
+                            .build())
+                    .build())
+            .build();
+
+    verify(this.imageAnnotatorClient, times(1)).batchAnnotateFiles(expectedRequest);
+  }
+
+  @Test
   public void testEmptyClientResponseError() {
     when(this.imageAnnotatorClient.batchAnnotateImages(any(BatchAnnotateImagesRequest.class)))
         .thenReturn(BatchAnnotateImagesResponse.getDefaultInstance());
@@ -130,6 +167,18 @@ public class CloudVisionTemplateTests {
         "Failed to receive valid response Vision APIs; empty response received.");
 
     this.cloudVisionTemplate.analyzeImage(FAKE_IMAGE, Type.TEXT_DETECTION);
+  }
+
+  @Test
+  public void testEmptyClientAnnotateFileResponseError() {
+    when(this.imageAnnotatorClient.batchAnnotateFiles(any(BatchAnnotateFilesRequest.class)))
+        .thenReturn(BatchAnnotateFilesResponse.getDefaultInstance());
+
+    this.expectedException.expect(CloudVisionException.class);
+    this.expectedException.expectMessage(
+        "Failed to receive valid response Vision APIs; empty response received.");
+
+    this.cloudVisionTemplate.analyzeFile(FAKE_PDF, "application/pdf", Type.TEXT_DETECTION);
   }
 
   @Test
@@ -160,6 +209,15 @@ public class CloudVisionTemplateTests {
     this.expectedException.expectMessage("Failed to read image bytes from provided resource.");
 
     this.cloudVisionTemplate.analyzeImage(new BadResource(), Type.LABEL_DETECTION);
+  }
+
+  @Test
+  public void testFileResourceReadingError() {
+    this.expectedException.expect(CloudVisionException.class);
+    this.expectedException.expectMessage("Failed to read image bytes from provided resource.");
+
+    this.cloudVisionTemplate.analyzeFile(
+        new BadResource(), "application/pdf", Type.LABEL_DETECTION);
   }
 
   private static final class BadResource extends AbstractResource {
