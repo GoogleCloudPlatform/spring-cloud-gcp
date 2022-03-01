@@ -46,6 +46,9 @@ import org.springframework.util.Assert;
  */
 public class CloudVisionTemplate {
 
+  public static final String EMPTY_RESPONSE_ERROR_MESSAGE =
+      "Failed to receive valid response Vision APIs; empty response received.";
+
   private final ImageAnnotatorClient imageAnnotatorClient;
 
   public CloudVisionTemplate(ImageAnnotatorClient imageAnnotatorClient) {
@@ -68,10 +71,10 @@ public class CloudVisionTemplate {
    * Extract the text out of a pdf and return the result as a String.
    *
    * @param fileResource the pdf one wishes to analyze
-   * @return the text extracted from the pdf aggregated to a String
+   * @return the text extracted from the pdf as a string per page
    * @throws CloudVisionException if the image could not be read or if text extraction failed
    */
-  public String extractTextFromPdf(Resource fileResource) {
+  public List<String> extractTextFromPdf(Resource fileResource) {
     return extractTextFromFile(fileResource, "application/pdf");
   }
 
@@ -98,20 +101,23 @@ public class CloudVisionTemplate {
    * Extract the text out of a file and return the result as a String.
    *
    * @param fileResource the file one wishes to analyze
-   * @param mimeType the mime type of the fileResource
-   * @return the text extracted from the pdf aggregated to a String
+   * @param mimeType the mime type of the fileResource. Currently, only "application/pdf",
+   *     "image/tiff" and "image/gif" are supported.
+   * @return the text extracted from the pdf as a string per page
    * @throws CloudVisionException if the image could not be read or if text extraction failed
    */
-  public String extractTextFromFile(Resource fileResource, String mimeType) {
+  public List<String> extractTextFromFile(Resource fileResource, String mimeType) {
     AnnotateFileResponse response = analyzeFile(fileResource, mimeType, Type.TEXT_DETECTION);
 
     List<AnnotateImageResponse> annotateImageResponses = response.getResponsesList();
     if (annotateImageResponses.isEmpty()) {
-      throw new CloudVisionException(
-          "Failed to receive valid response Vision APIs; empty response received.");
+      throw new CloudVisionException(EMPTY_RESPONSE_ERROR_MESSAGE);
     }
 
-    String result = annotateImageResponses.get(0).getFullTextAnnotation().getText();
+    List<String> result =
+        annotateImageResponses.stream()
+            .map(annotateImageResponse -> annotateImageResponse.getFullTextAnnotation().getText())
+            .collect(Collectors.toList());
     if (result.isEmpty() && response.getError().getCode() != Code.OK.getNumber()) {
       throw new CloudVisionException(response.getError().getMessage());
     }
@@ -184,8 +190,7 @@ public class CloudVisionTemplate {
     if (!annotateImageResponses.isEmpty()) {
       return annotateImageResponses.get(0);
     } else {
-      throw new CloudVisionException(
-          "Failed to receive valid response Vision APIs; empty response received.");
+      throw new CloudVisionException(EMPTY_RESPONSE_ERROR_MESSAGE);
     }
   }
 
@@ -198,7 +203,8 @@ public class CloudVisionTemplate {
    *
    * @param fileResource the file one wishes to analyze. The Cloud Vision APIs support image formats
    *     described here: https://cloud.google.com/vision/docs/supported-files
-   * @param mimeType the mime type of the fileResource
+   * @param mimeType the mime type of the fileResource. Currently, only "application/pdf",
+   *     "image/tiff" and "image/gif" are supported.
    * @param featureTypes the types of image analysis to perform on the image
    * @return the results of file analyse
    * @throws CloudVisionException if the file could not be read or if a malformed response is
@@ -236,8 +242,7 @@ public class CloudVisionTemplate {
     if (!annotateFileResponses.isEmpty()) {
       return annotateFileResponses.get(0);
     } else {
-      throw new CloudVisionException(
-          "Failed to receive valid response Vision APIs; empty response received.");
+      throw new CloudVisionException(EMPTY_RESPONSE_ERROR_MESSAGE);
     }
   }
 }

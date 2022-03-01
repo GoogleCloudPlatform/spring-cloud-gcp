@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.vision;
 
+import static com.google.cloud.spring.vision.CloudVisionTemplate.EMPTY_RESPONSE_ERROR_MESSAGE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -163,8 +164,7 @@ public class CloudVisionTemplateTests {
         .thenReturn(BatchAnnotateImagesResponse.getDefaultInstance());
 
     this.expectedException.expect(CloudVisionException.class);
-    this.expectedException.expectMessage(
-        "Failed to receive valid response Vision APIs; empty response received.");
+    this.expectedException.expectMessage(EMPTY_RESPONSE_ERROR_MESSAGE);
 
     this.cloudVisionTemplate.analyzeImage(FAKE_IMAGE, Type.TEXT_DETECTION);
   }
@@ -175,8 +175,7 @@ public class CloudVisionTemplateTests {
         .thenReturn(BatchAnnotateFilesResponse.getDefaultInstance());
 
     this.expectedException.expect(CloudVisionException.class);
-    this.expectedException.expectMessage(
-        "Failed to receive valid response Vision APIs; empty response received.");
+    this.expectedException.expectMessage(EMPTY_RESPONSE_ERROR_MESSAGE);
 
     this.cloudVisionTemplate.analyzeFile(FAKE_PDF, "application/pdf", Type.TEXT_DETECTION);
   }
