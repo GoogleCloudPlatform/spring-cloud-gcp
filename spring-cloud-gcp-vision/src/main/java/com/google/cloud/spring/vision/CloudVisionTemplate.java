@@ -46,6 +46,8 @@ import org.springframework.util.Assert;
  */
 public class CloudVisionTemplate {
 
+  public static final String READ_BYTES_ERROR_MESSAGE =
+      "Failed to read bytes from provided resource.";
   public static final String EMPTY_RESPONSE_ERROR_MESSAGE =
       "Failed to receive valid response Vision APIs; empty response received.";
 
@@ -164,7 +166,7 @@ public class CloudVisionTemplate {
     try {
       imgBytes = ByteString.readFrom(imageResource.getInputStream());
     } catch (IOException ex) {
-      throw new CloudVisionException("Failed to read image bytes from provided resource.", ex);
+      throw new CloudVisionException(READ_BYTES_ERROR_MESSAGE, ex);
     }
 
     Image image = Image.newBuilder().setContent(imgBytes).build();
@@ -216,7 +218,7 @@ public class CloudVisionTemplate {
     try {
       imgBytes = ByteString.readFrom(fileResource.getInputStream());
     } catch (IOException ex) {
-      throw new CloudVisionException("Failed to read image bytes from provided resource.", ex);
+      throw new CloudVisionException(READ_BYTES_ERROR_MESSAGE, ex);
     }
 
     InputConfig inputConfig =

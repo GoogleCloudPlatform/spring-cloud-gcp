@@ -17,6 +17,7 @@
 package com.google.cloud.spring.vision;
 
 import static com.google.cloud.spring.vision.CloudVisionTemplate.EMPTY_RESPONSE_ERROR_MESSAGE;
+import static com.google.cloud.spring.vision.CloudVisionTemplate.READ_BYTES_ERROR_MESSAGE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -205,7 +206,7 @@ public class CloudVisionTemplateTests {
   @Test
   public void testResourceReadingError() {
     this.expectedException.expect(CloudVisionException.class);
-    this.expectedException.expectMessage("Failed to read image bytes from provided resource.");
+    this.expectedException.expectMessage(READ_BYTES_ERROR_MESSAGE);
 
     this.cloudVisionTemplate.analyzeImage(new BadResource(), Type.LABEL_DETECTION);
   }
@@ -213,7 +214,7 @@ public class CloudVisionTemplateTests {
   @Test
   public void testFileResourceReadingError() {
     this.expectedException.expect(CloudVisionException.class);
-    this.expectedException.expectMessage("Failed to read image bytes from provided resource.");
+    this.expectedException.expectMessage(READ_BYTES_ERROR_MESSAGE);
 
     this.cloudVisionTemplate.analyzeFile(
         new BadResource(), "application/pdf", Type.LABEL_DETECTION);
