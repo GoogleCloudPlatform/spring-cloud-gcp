@@ -147,7 +147,7 @@ public class CloudVisionTemplateTests {
         BatchAnnotateFilesRequest.newBuilder()
             .addRequests(
                 AnnotateFileRequest.newBuilder()
-                    .addFeatures(Feature.newBuilder().setType(Type.TEXT_DETECTION))
+                    .addFeatures(Feature.newBuilder().setType(Type.DOCUMENT_TEXT_DETECTION))
                     .setInputConfig(
                         InputConfig.newBuilder()
                             .setMimeType("application/pdf")

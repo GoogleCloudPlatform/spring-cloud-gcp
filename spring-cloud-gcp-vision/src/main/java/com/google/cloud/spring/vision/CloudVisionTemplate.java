@@ -109,7 +109,8 @@ public class CloudVisionTemplate {
    * @throws CloudVisionException if the image could not be read or if text extraction failed
    */
   public List<String> extractTextFromFile(Resource fileResource, String mimeType) {
-    AnnotateFileResponse response = analyzeFile(fileResource, mimeType, Type.TEXT_DETECTION);
+    AnnotateFileResponse response =
+        analyzeFile(fileResource, mimeType, Type.DOCUMENT_TEXT_DETECTION);
 
     List<AnnotateImageResponse> annotateImageResponses = response.getResponsesList();
     if (annotateImageResponses.isEmpty()) {
@@ -204,7 +205,8 @@ public class CloudVisionTemplate {
    * found in {@link Feature.Type}.
    *
    * @param fileResource the file one wishes to analyze. The Cloud Vision APIs support image formats
-   *     described here: https://cloud.google.com/vision/docs/supported-files
+   *     described here: https://cloud.google.com/vision/docs/supported-files. Documents with more
+   *     than 5 pages are not supported.
    * @param mimeType the mime type of the fileResource. Currently, only "application/pdf",
    *     "image/tiff" and "image/gif" are supported.
    * @param featureTypes the types of image analysis to perform on the image
