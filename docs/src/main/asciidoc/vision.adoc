@@ -99,7 +99,28 @@ For example, if you analyzed an image using the `LABEL_DETECTION` feature, you w
 `AnnotateImageResponse` is provided by the Google Cloud Vision libraries; please consult the https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#google.cloud.vision.v1.AnnotateImageResponse[RPC reference] or https://googleapis.github.io/googleapis/java/all/latest/apidocs/com/google/cloud/vision/v1/AnnotateImageResponse.html[Javadoc] for more details.
 Additionally, you may consult the https://cloud.google.com/vision/docs/[Cloud Vision docs] to familiarize yourself with the concepts and features of the API.
 
-=== PDF, TIFF and GIF Analysis
+==== Detect Image Labels Example
+
+https://cloud.google.com/vision/docs/detecting-labels[Image labeling] refers to producing labels that describe the contents of an image.
+Below is a code sample of how this is done using the Cloud Vision Spring Template.
+
+[source,java]
+----
+@Autowired
+private ResourceLoader resourceLoader;
+
+@Autowired
+private CloudVisionTemplate cloudVisionTemplate;
+
+public void processImage() {
+  Resource imageResource = this.resourceLoader.getResource("my_image.jpg");
+  AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(
+      imageResource, Type.LABEL_DETECTION);
+  System.out.println("Image Classification results: " + response.getLabelAnnotationsList());
+}
+----
+
+=== File Analysis
 
 The `CloudVisionTemplate` allows you to easily analyze PDF, TIFF and GIF documents; it provides the following method for interfacing with Cloud Vision:
 
@@ -128,9 +149,9 @@ For example, if you analysed an PDF using the `DOCUMENT_TEXT_DETECTION` feature,
 `AnnotateFileResponse` is provided by the Google Cloud Vision libraries; please consult the https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#google.cloud.vision.v1.AnnotateFileResponse[RPC reference] or https://googleapis.dev/java/google-cloud-vision/latest/index.html?com/google/cloud/vision/v1/AnnotateFileResponse.html[Javadoc] for more details.
 Additionally, you may consult the https://cloud.google.com/vision/docs/[Cloud Vision docs] to familiarize yourself with the concepts and features of the API.
 
-==== Detect Image Labels Example
+==== Running Text Detection Example
 
-https://cloud.google.com/vision/docs/detecting-labels[Image labeling] refers to producing labels that describe the contents of an image.
+https://cloud.google.com/vision/docs/file-small-batch[Detect text in files] refers to extracting text from small document such as PDF or TIFF.
 Below is a code sample of how this is done using the Cloud Vision Spring Template.
 
 [source,java]
@@ -141,11 +162,17 @@ private ResourceLoader resourceLoader;
 @Autowired
 private CloudVisionTemplate cloudVisionTemplate;
 
-public void processImage() {
-  Resource imageResource = this.resourceLoader.getResource("my_image.jpg");
-  AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(
-      imageResource, Type.LABEL_DETECTION);
-  System.out.println("Image Classification results: " + response.getLabelAnnotationsList());
+public void processPdf() {
+  Resource imageResource = this.resourceLoader.getResource("my_file.pdf");
+  AnnotateFileResponse response =
+    this.cloudVisionTemplate.analyzeFile(
+        imageResource, "application/pdf", Type.DOCUMENT_TEXT_DETECTION);
+
+  response
+    .getResponsesList()
+    .forEach(
+        annotateImageResponse ->
+            System.out.println(annotateImageResponse.getFullTextAnnotation().getText()));
 }
 ----
 
