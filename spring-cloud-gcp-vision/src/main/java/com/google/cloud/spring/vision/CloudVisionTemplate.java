@@ -16,8 +16,12 @@
 
 package com.google.cloud.spring.vision;
 
+import com.google.cloud.vision.v1.AnnotateFileRequest;
+import com.google.cloud.vision.v1.AnnotateFileResponse;
 import com.google.cloud.vision.v1.AnnotateImageRequest;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
+import com.google.cloud.vision.v1.BatchAnnotateFilesRequest;
+import com.google.cloud.vision.v1.BatchAnnotateFilesResponse;
 import com.google.cloud.vision.v1.BatchAnnotateImagesRequest;
 import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
 import com.google.cloud.vision.v1.Feature;
@@ -25,6 +29,7 @@ import com.google.cloud.vision.v1.Feature.Type;
 import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageContext;
+import com.google.cloud.vision.v1.InputConfig;
 import com.google.protobuf.ByteString;
 import com.google.rpc.Code;
 import java.io.IOException;
@@ -40,6 +45,11 @@ import org.springframework.util.Assert;
  * @since 1.1
  */
 public class CloudVisionTemplate {
+
+  public static final String READ_BYTES_ERROR_MESSAGE =
+      "Failed to read bytes from provided resource.";
+  public static final String EMPTY_RESPONSE_ERROR_MESSAGE =
+      "Failed to receive valid response Vision APIs; empty response received.";
 
   private final ImageAnnotatorClient imageAnnotatorClient;
 
@@ -60,6 +70,17 @@ public class CloudVisionTemplate {
   }
 
   /**
+   * Extract the text out of a pdf and return the result as a String.
+   *
+   * @param fileResource the pdf one wishes to analyze
+   * @return the text extracted from the pdf as a string per page
+   * @throws CloudVisionException if the image could not be read or if text extraction failed
+   */
+  public List<String> extractTextFromPdf(Resource fileResource) {
+    return extractTextFromFile(fileResource, "application/pdf");
+  }
+
+  /**
    * Extract the text out of an image and return the result as a String.
    *
    * @param imageResource the image one wishes to analyze
@@ -71,6 +92,35 @@ public class CloudVisionTemplate {
     AnnotateImageResponse response = analyzeImage(imageResource, imageContext, Type.TEXT_DETECTION);
 
     String result = response.getFullTextAnnotation().getText();
+    if (result.isEmpty() && response.getError().getCode() != Code.OK.getNumber()) {
+      throw new CloudVisionException(response.getError().getMessage());
+    }
+
+    return result;
+  }
+
+  /**
+   * Extract the text out of a file and return the result as a String.
+   *
+   * @param fileResource the file one wishes to analyze
+   * @param mimeType the mime type of the fileResource. Currently, only "application/pdf",
+   *     "image/tiff" and "image/gif" are supported.
+   * @return the text extracted from the pdf as a string per page
+   * @throws CloudVisionException if the image could not be read or if text extraction failed
+   */
+  public List<String> extractTextFromFile(Resource fileResource, String mimeType) {
+    AnnotateFileResponse response =
+        analyzeFile(fileResource, mimeType, Type.DOCUMENT_TEXT_DETECTION);
+
+    List<AnnotateImageResponse> annotateImageResponses = response.getResponsesList();
+    if (annotateImageResponses.isEmpty()) {
+      throw new CloudVisionException(EMPTY_RESPONSE_ERROR_MESSAGE);
+    }
+
+    List<String> result =
+        annotateImageResponses.stream()
+            .map(annotateImageResponse -> annotateImageResponse.getFullTextAnnotation().getText())
+            .collect(Collectors.toList());
     if (result.isEmpty() && response.getError().getCode() != Code.OK.getNumber()) {
       throw new CloudVisionException(response.getError().getMessage());
     }
@@ -117,7 +167,7 @@ public class CloudVisionTemplate {
     try {
       imgBytes = ByteString.readFrom(imageResource.getInputStream());
     } catch (IOException ex) {
-      throw new CloudVisionException("Failed to read image bytes from provided resource.", ex);
+      throw new CloudVisionException(READ_BYTES_ERROR_MESSAGE, ex);
     }
 
     Image image = Image.newBuilder().setContent(imgBytes).build();
@@ -143,8 +193,60 @@ public class CloudVisionTemplate {
     if (!annotateImageResponses.isEmpty()) {
       return annotateImageResponses.get(0);
     } else {
-      throw new CloudVisionException(
-          "Failed to receive valid response Vision APIs; empty response received.");
+      throw new CloudVisionException(EMPTY_RESPONSE_ERROR_MESSAGE);
+    }
+  }
+
+  /**
+   * Analyze a file and extract the features of the image specified by {@code featureTypes}.
+   *
+   * <p>A feature describes the kind of Cloud Vision analysis one wishes to perform on a file, such
+   * as text detection, image labelling, facial detection, etc. A full list of feature types can be
+   * found in {@link Feature.Type}.
+   *
+   * @param fileResource the file one wishes to analyze. The Cloud Vision APIs support image formats
+   *     described here: https://cloud.google.com/vision/docs/supported-files. Documents with more
+   *     than 5 pages are not supported.
+   * @param mimeType the mime type of the fileResource. Currently, only "application/pdf",
+   *     "image/tiff" and "image/gif" are supported.
+   * @param featureTypes the types of image analysis to perform on the image
+   * @return the results of file analyse
+   * @throws CloudVisionException if the file could not be read or if a malformed response is
+   *     received from the Cloud Vision APIs
+   */
+  public AnnotateFileResponse analyzeFile(
+      Resource fileResource, String mimeType, Feature.Type... featureTypes) {
+    ByteString imgBytes;
+    try {
+      imgBytes = ByteString.readFrom(fileResource.getInputStream());
+    } catch (IOException ex) {
+      throw new CloudVisionException(READ_BYTES_ERROR_MESSAGE, ex);
+    }
+
+    InputConfig inputConfig =
+        InputConfig.newBuilder().setMimeType(mimeType).setContent(imgBytes).build();
+
+    List<Feature> featureList =
+        Arrays.stream(featureTypes)
+            .map(featureType -> Feature.newBuilder().setType(featureType).build())
+            .collect(Collectors.toList());
+
+    BatchAnnotateFilesRequest request =
+        BatchAnnotateFilesRequest.newBuilder()
+            .addRequests(
+                AnnotateFileRequest.newBuilder()
+                    .addAllFeatures(featureList)
+                    .setInputConfig(inputConfig)
+                    .build())
+            .build();
+
+    BatchAnnotateFilesResponse response = this.imageAnnotatorClient.batchAnnotateFiles(request);
+    List<AnnotateFileResponse> annotateFileResponses = response.getResponsesList();
+
+    if (!annotateFileResponses.isEmpty()) {
+      return annotateFileResponses.get(0);
+    } else {
+      throw new CloudVisionException(EMPTY_RESPONSE_ERROR_MESSAGE);
     }
   }
 }
