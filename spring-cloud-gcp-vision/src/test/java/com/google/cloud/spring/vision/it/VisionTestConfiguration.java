@@ -20,6 +20,7 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
+import com.google.cloud.spring.vision.CloudVisionTemplate;
 import com.google.cloud.spring.vision.DocumentOcrTemplate;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
@@ -69,5 +70,11 @@ public class VisionTestConfiguration {
         .setProjectId(this.projectId)
         .build()
         .getService();
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public CloudVisionTemplate cloudVisionTemplate(ImageAnnotatorClient imageAnnotatorClient) {
+    return new CloudVisionTemplate(imageAnnotatorClient);
   }
 }
