@@ -353,8 +353,9 @@ window.onload = function() {
 <li><a href="#dependency-setup">24.1. Dependency Setup</a></li>
 <li><a href="#configuration-10">24.2. Configuration</a></li>
 <li><a href="#image-analysis">24.3. Image Analysis</a></li>
-<li><a href="#document-ocr-template">24.4. Document OCR Template</a></li>
-<li><a href="#sample-12">24.5. Sample</a></li>
+<li><a href="#file-analysis">24.4. File Analysis</a></li>
+<li><a href="#document-ocr-template">24.5. Document OCR Template</a></li>
+<li><a href="#sample-12">24.6. Sample</a></li>
 </ul>
 </li>
 <li><a href="#secret-manager">25. Secret Manager</a>
@@ -10354,7 +10355,7 @@ Modifying registry, algorithm, and header properties might be useful for testing
 <div class="ulist">
 <ul>
 <li>
-<p>Allows you to easily send images to the API as Spring Resources.</p>
+<p>Allows you to easily send images, PDF, TIFF and GIF documents to the API as Spring Resources.</p>
 </li>
 <li>
 <p>Offers convenience methods for common operations, such as classifying content of an image.</p>
@@ -10533,7 +10534,83 @@ public void processImage() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="document-ocr-template"><a class="anchor" href="#document-ocr-template"></a><a class="link" href="#document-ocr-template">24.4. Document OCR Template</a></h3>
+<h3 id="file-analysis"><a class="anchor" href="#file-analysis"></a><a class="link" href="#file-analysis">24.4. File Analysis</a></h3>
+<div class="paragraph">
+<p>The <code>CloudVisionTemplate</code> allows you to easily analyze PDF, TIFF and GIF documents; it provides the following method for interfacing with Cloud Vision:</p>
+</div>
+<div class="paragraph">
+<p><code>public AnnotateFileResponse analyzeFile(Resource fileResource, String mimeType, Feature.Type&#8230;&#8203; featureTypes)</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Parameters:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Resource fileResource</code> refers to the Spring Resource of the PDF, TIFF or GIF object you wish to analyze.
+Documents with more than 5 pages are not supported.</p>
+</li>
+<li>
+<p><code>String mimeType</code> is the mime type of the fileResource.
+Currently, only <code>application/pdf</code>, <code>image/tiff</code> and <code>image/gif</code> are supported.</p>
+</li>
+<li>
+<p><code>Feature.Type&#8230;&#8203; featureTypes</code> refers to a var-arg array of Cloud Vision Features to extract from the document.
+A feature refers to a kind of image analysis one wishes to perform on a document, such as label detection, OCR recognition, facial detection, etc.
+One may specify multiple features to analyze within one request.
+A full list of Cloud Vision Features is provided in the <a href="https://cloud.google.com/vision/docs/features">Cloud Vision Feature docs</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Returns:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#google.cloud.vision.v1.AnnotateFileResponse"><code>AnnotateFileResponse</code></a> contains the results of all the feature analyses that were specified in the request.
+For each page of the analysed document the response will contain an <code>AnnotateImageResponse</code> object which you can retrieve using <code>annotateFileResponse.getResponsesList()</code>.
+For each feature type that you provide in the request, <code>AnnotateImageResponse</code> provides a getter method to get the result of that feature analysis.
+For example, if you analysed an PDF using the <code>DOCUMENT_TEXT_DETECTION</code> feature, you would retrieve the results from the response using <code>annotateImageResponse.getFullTextAnnotation().getText()</code>.</p>
+<div class="paragraph">
+<p><code>AnnotateFileResponse</code> is provided by the Google Cloud Vision libraries; please consult the <a href="https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#google.cloud.vision.v1.AnnotateFileResponse">RPC reference</a> or <a href="https://googleapis.dev/java/google-cloud-vision/latest/index.html?com/google/cloud/vision/v1/AnnotateFileResponse.html">Javadoc</a> for more details.
+Additionally, you may consult the <a href="https://cloud.google.com/vision/docs/">Cloud Vision docs</a> to familiarize yourself with the concepts and features of the API.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="running-text-detection-example"><a class="anchor" href="#running-text-detection-example"></a><a class="link" href="#running-text-detection-example">24.4.1. Running Text Detection Example</a></h4>
+<div class="paragraph">
+<p><a href="https://cloud.google.com/vision/docs/file-small-batch">Detect text in files</a> refers to extracting text from small document such as PDF or TIFF.
+Below is a code sample of how this is done using the Cloud Vision Spring Template.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+private ResourceLoader resourceLoader;
+
+@Autowired
+private CloudVisionTemplate cloudVisionTemplate;
+
+public void processPdf() {
+  Resource imageResource = this.resourceLoader.getResource("my_file.pdf");
+  AnnotateFileResponse response =
+    this.cloudVisionTemplate.analyzeFile(
+        imageResource, "application/pdf", Type.DOCUMENT_TEXT_DETECTION);
+
+  response
+    .getResponsesList()
+    .forEach(
+        annotateImageResponse -&gt;
+            System.out.println(annotateImageResponse.getFullTextAnnotation().getText()));
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="document-ocr-template"><a class="anchor" href="#document-ocr-template"></a><a class="link" href="#document-ocr-template">24.5. Document OCR Template</a></h3>
 <div class="paragraph">
 <p>The <code>DocumentOcrTemplate</code> allows you to easily run <a href="https://cloud.google.com/vision/docs/pdf">optical character recognition (OCR)</a> on your PDF and TIFF documents stored in your Google Storage bucket.</p>
 </div>
@@ -10541,7 +10618,7 @@ public void processImage() {
 <p>First, you will need to create a bucket in <a href="https://console.cloud.google.com/storage">Google Cloud Storage</a> and <a href="https://cloud.google.com/storage/docs/uploading-objects#storage-upload-object-java">upload the documents you wish to process into the bucket</a>.</p>
 </div>
 <div class="sect3">
-<h4 id="running-ocr-on-a-document"><a class="anchor" href="#running-ocr-on-a-document"></a><a class="link" href="#running-ocr-on-a-document">24.4.1. Running OCR on a Document</a></h4>
+<h4 id="running-ocr-on-a-document"><a class="anchor" href="#running-ocr-on-a-document"></a><a class="link" href="#running-ocr-on-a-document">24.5.1. Running OCR on a Document</a></h4>
 <div class="paragraph">
 <p>When OCR is run on a document, the Cloud Vision APIs will output a collection of OCR output files in JSON which describe the text content, bounding rectangles of words and letters, and other information about the document.</p>
 </div>
@@ -10570,7 +10647,7 @@ It is recommended to register callbacks to the returned ListenableFuture or igno
 </div>
 </div>
 <div class="sect3">
-<h4 id="running-ocr-example"><a class="anchor" href="#running-ocr-example"></a><a class="link" href="#running-ocr-example">24.4.2. Running OCR Example</a></h4>
+<h4 id="running-ocr-example"><a class="anchor" href="#running-ocr-example"></a><a class="link" href="#running-ocr-example">24.5.2. Running OCR Example</a></h4>
 <div class="paragraph">
 <p>Below is a code snippet of how to run OCR on a document stored in a Google Storage bucket and read the text in the first page of the document.</p>
 </div>
@@ -10598,7 +10675,7 @@ public void runOcrOnDocument() {
 </div>
 </div>
 <div class="sect3">
-<h4 id="reading-ocr-output-files"><a class="anchor" href="#reading-ocr-output-files"></a><a class="link" href="#reading-ocr-output-files">24.4.3. Reading OCR Output Files</a></h4>
+<h4 id="reading-ocr-output-files"><a class="anchor" href="#reading-ocr-output-files"></a><a class="link" href="#reading-ocr-output-files">24.5.3. Reading OCR Output Files</a></h4>
 <div class="paragraph">
 <p>In some use-cases, you may need to directly read OCR output files stored in Google Cloud Storage.</p>
 </div>
@@ -10620,7 +10697,7 @@ Reads a single OCR output file and returns the parsed contents.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="reading-ocr-output-files-example"><a class="anchor" href="#reading-ocr-output-files-example"></a><a class="link" href="#reading-ocr-output-files-example">24.4.4. Reading OCR Output Files Example</a></h4>
+<h4 id="reading-ocr-output-files-example"><a class="anchor" href="#reading-ocr-output-files-example"></a><a class="link" href="#reading-ocr-output-files-example">24.5.4. Reading OCR Output Files Example</a></h4>
 <div class="paragraph">
 <p>The code snippet below describes how to read the OCR output files of a single document.</p>
 </div>
@@ -10651,7 +10728,7 @@ public void parseSingleOutputFile() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-12"><a class="anchor" href="#sample-12"></a><a class="link" href="#sample-12">24.5. Sample</a></h3>
+<h3 id="sample-12"><a class="anchor" href="#sample-12"></a><a class="link" href="#sample-12">24.6. Sample</a></h3>
 <div class="paragraph">
 <p>Samples are provided to show example usages of Spring Cloud GCP with Google Cloud Vision.</p>
 </div>
