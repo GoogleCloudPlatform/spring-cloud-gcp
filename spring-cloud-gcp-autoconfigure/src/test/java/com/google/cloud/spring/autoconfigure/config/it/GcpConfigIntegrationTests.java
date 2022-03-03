@@ -17,36 +17,31 @@
 package com.google.cloud.spring.autoconfigure.config.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 
 import com.google.cloud.spring.autoconfigure.config.GcpConfigBootstrapConfiguration;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /** Integration tests for config auto-configuration. */
-public class GcpConfigIntegrationTests {
+@EnabledIfSystemProperty(named = "it.config", matches = "true")
+class GcpConfigIntegrationTests {
 
   private ConfigurableApplicationContext context;
 
-  @BeforeClass
-  public static void enableTests() {
-    assumeThat(System.getProperty("it.config")).isEqualTo("true");
-  }
-
-  @After
-  public void close() {
+  @AfterEach
+  void close() {
     if (this.context != null) {
       this.context.close();
     }
   }
 
   @Test
-  public void testConfiguration() {
+  void testConfiguration() {
     this.context =
         new SpringApplicationBuilder()
             .sources(GcpContextAutoConfiguration.class, GcpConfigBootstrapConfiguration.class)
