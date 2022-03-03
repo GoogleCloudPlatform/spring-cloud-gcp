@@ -16,13 +16,16 @@
 
 package com.google.cloud.spanner.r2dbc.statement;
 
+import com.google.cloud.spanner.Dialect;
+
 /**
  * Parses SQL statements to determine what type of statement it is.
  */
 public class StatementParser {
 
-  private static com.google.cloud.spanner.connection.StatementParser clientLibraryParser =
-      com.google.cloud.spanner.connection.StatementParser.INSTANCE;
+  private static com.google.cloud.spanner.connection.AbstractStatementParser clientLibraryParser =
+      com.google.cloud.spanner.connection.AbstractStatementParser.getInstance(
+          Dialect.GOOGLE_STANDARD_SQL);
 
   private StatementParser() {
     // Prevent instantiation.
