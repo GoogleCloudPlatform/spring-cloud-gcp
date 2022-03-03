@@ -78,4 +78,15 @@ public class VisionController {
 
     return new ModelAndView("result", map);
   }
+
+  @GetMapping("/extractTextFromPdf")
+  public ModelAndView extractTextFromPdf(String pdfUrl, ModelMap map) {
+    List<String> texts =
+        this.cloudVisionTemplate.extractTextFromPdf(this.resourceLoader.getResource(pdfUrl));
+
+    map.addAttribute("texts", texts);
+    map.addAttribute("pdfUrl", pdfUrl);
+
+    return new ModelAndView("result_pdf", map);
+  }
 }
