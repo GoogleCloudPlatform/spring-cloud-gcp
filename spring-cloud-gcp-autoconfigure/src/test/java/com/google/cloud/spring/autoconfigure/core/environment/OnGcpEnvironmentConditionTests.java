@@ -18,16 +18,19 @@ package com.google.cloud.spring.autoconfigure.core.environment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.spring.core.GcpEnvironment;
 import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import java.util.Collections;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
@@ -39,8 +42,8 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
  *
  * @since 1.1
  */
-@RunWith(MockitoJUnitRunner.class)
-public class OnGcpEnvironmentConditionTests {
+@ExtendWith(MockitoExtension.class)
+class OnGcpEnvironmentConditionTests {
 
   OnGcpEnvironmentCondition onGcpEnvironmentCondition = new OnGcpEnvironmentCondition();
 
@@ -52,15 +55,16 @@ public class OnGcpEnvironmentConditionTests {
 
   @Mock GcpEnvironmentProvider mockGcpEnvironmentProvider;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     when(this.mockContext.getBeanFactory()).thenReturn(this.mockBeanFactory);
     when(this.mockBeanFactory.getBean(GcpEnvironmentProvider.class))
         .thenReturn(this.mockGcpEnvironmentProvider);
   }
 
   @Test
-  public void nullArgumentsTriggerAssertErrors() {
+  @MockitoSettings(strictness = Strictness.LENIENT)
+  void nullArgumentsTriggerAssertErrors() {
     assertThatThrownBy(() -> onGcpEnvironmentCondition.getMatchOutcome(null, mockMetadata))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Application context cannot be null.");
@@ -71,7 +75,8 @@ public class OnGcpEnvironmentConditionTests {
   }
 
   @Test
-  public void nullBeanContextTriggerAssertErrors() {
+  @MockitoSettings(strictness = Strictness.LENIENT)
+  void nullBeanContextTriggerAssertErrors() {
     when(mockContext.getBeanFactory()).thenReturn(null);
 
     assertThatThrownBy(() -> onGcpEnvironmentCondition.getMatchOutcome(mockContext, mockMetadata))
@@ -80,7 +85,7 @@ public class OnGcpEnvironmentConditionTests {
   }
 
   @Test
-  public void testNoEnvironmentsMatchWhenMissingEnvironmentProvider() {
+  void testNoEnvironmentsMatchWhenMissingEnvironmentProvider() {
 
     setUpAnnotationValue(new GcpEnvironment[] {GcpEnvironment.UNKNOWN});
     when(this.mockBeanFactory.getBean(GcpEnvironmentProvider.class))
@@ -93,7 +98,8 @@ public class OnGcpEnvironmentConditionTests {
   }
 
   @Test
-  public void testExceptionThrownWhenWrongAttributeType() {
+  @MockitoSettings(strictness = Strictness.LENIENT)
+  void testExceptionThrownWhenWrongAttributeType() {
 
     setUpAnnotationValue("invalid type");
     assertThatThrownBy(
@@ -103,7 +109,8 @@ public class OnGcpEnvironmentConditionTests {
   }
 
   @Test
-  public void testExceptionThrownWhenMissingAttributeType() {
+  @MockitoSettings(strictness = Strictness.LENIENT)
+  void testExceptionThrownWhenMissingAttributeType() {
 
     // Should never happen in real life, as annotation value is not optional.
     setUpAnnotationValue(null);
@@ -114,7 +121,8 @@ public class OnGcpEnvironmentConditionTests {
   }
 
   @Test
-  public void testExceptionThrownWhenAnnotationNotDeclared() {
+  @MockitoSettings(strictness = Strictness.LENIENT)
+  void testExceptionThrownWhenAnnotationNotDeclared() {
 
     when(mockMetadata.getAnnotationAttributes(ConditionalOnGcpEnvironment.class.getName()))
         .thenReturn(null);
@@ -125,7 +133,7 @@ public class OnGcpEnvironmentConditionTests {
   }
 
   @Test
-  public void testExceptionThrownWhenEnvironmentProviderBeanMissing() {
+  void testExceptionThrownWhenEnvironmentProviderBeanMissing() {
 
     setUpAnnotationValue(new GcpEnvironment[] {GcpEnvironment.COMPUTE_ENGINE});
     when(mockBeanFactory.getBean(GcpEnvironmentProvider.class)).thenReturn(null);
@@ -137,7 +145,7 @@ public class OnGcpEnvironmentConditionTests {
   }
 
   @Test
-  public void testNegativeOutcome() {
+  void testNegativeOutcome() {
     setUpAnnotationValue(new GcpEnvironment[] {GcpEnvironment.COMPUTE_ENGINE});
     when(this.mockGcpEnvironmentProvider.getCurrentEnvironment())
         .thenReturn(GcpEnvironment.UNKNOWN);
@@ -151,7 +159,7 @@ public class OnGcpEnvironmentConditionTests {
   }
 
   @Test
-  public void testNegativeOutcomeForMultipleEnvironments() {
+  void testNegativeOutcomeForMultipleEnvironments() {
     setUpAnnotationValue(
         new GcpEnvironment[] {GcpEnvironment.COMPUTE_ENGINE, GcpEnvironment.KUBERNETES_ENGINE});
     when(this.mockGcpEnvironmentProvider.getCurrentEnvironment())
@@ -166,7 +174,7 @@ public class OnGcpEnvironmentConditionTests {
   }
 
   @Test
-  public void testPositiveOutcomeForMultipleEnvironments() {
+  void testPositiveOutcomeForMultipleEnvironments() {
     setUpAnnotationValue(
         new GcpEnvironment[] {GcpEnvironment.COMPUTE_ENGINE, GcpEnvironment.KUBERNETES_ENGINE});
     when(this.mockGcpEnvironmentProvider.getCurrentEnvironment())
@@ -180,7 +188,7 @@ public class OnGcpEnvironmentConditionTests {
   }
 
   @Test
-  public void testPositiveOutcome() {
+  void testPositiveOutcome() {
     setUpAnnotationValue(new GcpEnvironment[] {GcpEnvironment.COMPUTE_ENGINE});
     when(this.mockGcpEnvironmentProvider.getCurrentEnvironment())
         .thenReturn(GcpEnvironment.COMPUTE_ENGINE);
