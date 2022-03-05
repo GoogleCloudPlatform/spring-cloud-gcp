@@ -18,7 +18,6 @@ package com.google.cloud.spring.autoconfigure.core.environment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.spring.core.GcpEnvironment;
