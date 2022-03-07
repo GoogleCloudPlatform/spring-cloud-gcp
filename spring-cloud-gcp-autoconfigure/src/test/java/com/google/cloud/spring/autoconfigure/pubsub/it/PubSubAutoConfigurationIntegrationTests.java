@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.pubsub.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
@@ -34,14 +33,16 @@ import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.threeten.bp.Duration;
 
-public class PubSubAutoConfigurationIntegrationTests {
+@EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
+class PubSubAutoConfigurationIntegrationTests {
 
   private static final Log LOGGER =
       LogFactory.getLog(PubSubAutoConfigurationIntegrationTests.class);
@@ -71,14 +72,13 @@ public class PubSubAutoConfigurationIntegrationTests {
               AutoConfigurations.of(
                   GcpContextAutoConfiguration.class, GcpPubSubAutoConfiguration.class));
 
-  @BeforeClass
-  public static void enableTests() {
-    assumeThat(System.getProperty("it.pubsub")).isEqualTo("true");
+  @BeforeAll
+  static void enableTests() {
     projectIdProvider = new DefaultGcpProjectIdProvider();
   }
 
   @Test
-  public void testPull() {
+  void testPull() {
 
     this.contextRunner.run(
         context -> {
@@ -150,7 +150,7 @@ public class PubSubAutoConfigurationIntegrationTests {
   }
 
   @Test
-  public void testSubscribe() {
+  void testSubscribe() {
     this.contextRunner.run(
         context -> {
           PubSubAdmin pubSubAdmin = context.getBean(PubSubAdmin.class);

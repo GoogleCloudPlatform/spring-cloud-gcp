@@ -28,12 +28,12 @@ import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.spring.pubsub.reactive.PubSubReactiveFactory;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import java.util.Arrays;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -46,21 +46,21 @@ import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
-@RunWith(MockitoJUnitRunner.class)
-public class GcpPubSubReactiveAutoConfigurationTest {
+@ExtendWith(MockitoExtension.class)
+class GcpPubSubReactiveAutoConfigurationTest {
 
   @Mock PubSubSubscriberTemplate mockSubscriberTemplate;
 
   @Mock AcknowledgeablePubsubMessage mockMessage;
 
-  @Before
-  public void setUpMocks() {
+  @BeforeEach
+  void setUpMocks() {
     this.mockSubscriberTemplate = Mockito.mock(PubSubSubscriberTemplate.class);
     this.mockMessage = Mockito.mock(AcknowledgeablePubsubMessage.class);
   }
 
   @Test
-  public void reactiveFactoryAutoconfiguredByDefault() {
+  void reactiveFactoryAutoconfiguredByDefault() {
 
     ApplicationContextRunner contextRunner =
         new ApplicationContextRunner().withConfiguration(AutoConfigurations.of(TestConfig.class));
@@ -71,7 +71,7 @@ public class GcpPubSubReactiveAutoConfigurationTest {
   }
 
   @Test
-  public void reactiveConfigDisabledWhenPubSubDisabled() {
+  void reactiveConfigDisabledWhenPubSubDisabled() {
 
     ApplicationContextRunner contextRunner =
         new ApplicationContextRunner()
@@ -85,7 +85,7 @@ public class GcpPubSubReactiveAutoConfigurationTest {
   }
 
   @Test
-  public void reactiveConfigDisabledWhenReactivePubSubDisabled() {
+  void reactiveConfigDisabledWhenReactivePubSubDisabled() {
 
     ApplicationContextRunner contextRunner =
         new ApplicationContextRunner()
@@ -99,7 +99,7 @@ public class GcpPubSubReactiveAutoConfigurationTest {
   }
 
   @Test
-  public void defaultSchedulerUsedWhenNoneProvided() {
+  void defaultSchedulerUsedWhenNoneProvided() {
     setUpThreadPrefixVerification("parallel");
 
     ApplicationContextRunner contextRunner =
@@ -111,7 +111,7 @@ public class GcpPubSubReactiveAutoConfigurationTest {
   }
 
   @Test
-  public void customSchedulerUsedWhenAvailable() {
+  void customSchedulerUsedWhenAvailable() {
 
     setUpThreadPrefixVerification("myCustomScheduler");
 
