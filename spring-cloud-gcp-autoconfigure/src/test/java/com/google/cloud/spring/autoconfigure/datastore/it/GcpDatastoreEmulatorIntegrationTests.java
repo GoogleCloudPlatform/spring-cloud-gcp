@@ -18,8 +18,6 @@ package com.google.cloud.spring.autoconfigure.datastore.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
@@ -38,8 +36,8 @@ import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreEmulatorAutoC
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import java.util.function.Supplier;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -52,19 +50,11 @@ import org.springframework.data.annotation.Id;
  *
  * @since 1.2
  */
-public class GcpDatastoreEmulatorIntegrationTests {
-
-  @BeforeClass
-  public static void checkToRun() {
-    assumeThat(
-        "Google Cloud Datastore integration tests are disabled. "
-            + "Please use '-Dit.datastore=true' to enable them. ",
-        System.getProperty("it.datastore"),
-        is("true"));
-  }
+@EnabledIfSystemProperty(named = "it.datastore", matches = "true")
+class GcpDatastoreEmulatorIntegrationTests {
 
   @Test
-  public void testDatastoreEmulatorConfiguration() {
+  void testDatastoreEmulatorConfiguration() {
     DatastoreOptions.Builder builder = DatastoreOptions.newBuilder();
 
     new ApplicationContextRunner()
