@@ -23,7 +23,7 @@ import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import io.micrometer.stackdriver.StackdriverConfig;
 import io.micrometer.stackdriver.StackdriverMeterRegistry;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.stackdriver.StackdriverMetricsExportAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
