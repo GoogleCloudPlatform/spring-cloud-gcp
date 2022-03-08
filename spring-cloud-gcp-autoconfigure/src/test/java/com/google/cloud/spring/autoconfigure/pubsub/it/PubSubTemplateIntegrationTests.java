@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.pubsub.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.awaitility.Awaitility.await;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -52,15 +51,16 @@ import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.awaitility.Awaitility;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /** Integration tests for Pub/Sub template. */
-public class PubSubTemplateIntegrationTests {
+@EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
+class PubSubTemplateIntegrationTests {
 
   private static final Log LOGGER = LogFactory.getLog(PubSubTemplateIntegrationTests.class);
 
@@ -71,13 +71,8 @@ public class PubSubTemplateIntegrationTests {
               AutoConfigurations.of(
                   GcpContextAutoConfiguration.class, GcpPubSubAutoConfiguration.class));
 
-  @BeforeClass
-  public static void enableTests() {
-    assumeThat(System.getProperty("it.pubsub")).isEqualTo("true");
-  }
-
   @Test
-  public void testCreatePublishPullNextAndDelete() {
+  void testCreatePublishPullNextAndDelete() {
     this.contextRunner.run(
         context -> {
           PubSubAdmin pubSubAdmin = context.getBean(PubSubAdmin.class);
@@ -141,7 +136,7 @@ public class PubSubTemplateIntegrationTests {
   }
 
   @Test
-  public void testPullAndAck() {
+  void testPullAndAck() {
     this.contextRunner.run(
         context -> {
           PubSubAdmin pubSubAdmin = context.getBean(PubSubAdmin.class);
@@ -219,7 +214,7 @@ public class PubSubTemplateIntegrationTests {
   }
 
   @Test
-  public void testPubSubTemplateLoadsMessageConverter() {
+  void testPubSubTemplateLoadsMessageConverter() {
     this.contextRunner
         .withUserConfiguration(JsonPayloadTestConfiguration.class)
         .run(

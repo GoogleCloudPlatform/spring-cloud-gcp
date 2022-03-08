@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.pubsub.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.awaitility.Awaitility.await;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,8 +45,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.awaitility.Awaitility;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -57,7 +56,8 @@ import org.springframework.messaging.support.GenericMessage;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 /** Documentation tests for Pub/Sub. */
-public class PubSubTemplateDocumentationIntegrationTests {
+@EnabledIfSystemProperty(named = "it.pubsub-docs", matches = "true")
+class PubSubTemplateDocumentationIntegrationTests {
 
   private ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
@@ -69,13 +69,8 @@ public class PubSubTemplateDocumentationIntegrationTests {
               AutoConfigurations.of(
                   GcpContextAutoConfiguration.class, GcpPubSubAutoConfiguration.class));
 
-  @BeforeClass
-  public static void enableTests() {
-    assumeThat(System.getProperty("it.pubsub-docs")).isEqualTo("true");
-  }
-
   @Test
-  public void testCreatePublishPullNextAndDelete() {
+  void testCreatePublishPullNextAndDelete() {
     pubSubTest(
         (AssertableApplicationContext context,
             PubSubTemplate pubSubTemplate,
@@ -102,7 +97,7 @@ public class PubSubTemplateDocumentationIntegrationTests {
   }
 
   @Test
-  public void testCreatePublishPullNextAndDelete_ordering() {
+  void testCreatePublishPullNextAndDelete_ordering() {
     pubSubTest(
         (AssertableApplicationContext context,
             PubSubTemplate pubSubTemplate,
@@ -207,7 +202,7 @@ public class PubSubTemplateDocumentationIntegrationTests {
   }
 
   @Test
-  public void subscribeSimpleTest() {
+  void subscribeSimpleTest() {
     pubSubTest(
         (AssertableApplicationContext context,
             PubSubTemplate pubSubTemplate,
@@ -239,7 +234,7 @@ public class PubSubTemplateDocumentationIntegrationTests {
   }
 
   @Test
-  public void testPubSubTemplatePull() {
+  void testPubSubTemplatePull() {
     pubSubTest(
         (AssertableApplicationContext context,
             PubSubTemplate pubSubTemplate,
@@ -277,7 +272,7 @@ public class PubSubTemplateDocumentationIntegrationTests {
   }
 
   @Test
-  public void testPubSubTemplateLoadsMessageConverter() {
+  void testPubSubTemplateLoadsMessageConverter() {
     pubSubTest(
         (AssertableApplicationContext context,
             PubSubTemplate pubSubTemplate,
@@ -322,7 +317,7 @@ public class PubSubTemplateDocumentationIntegrationTests {
   }
 
   @Test
-  public void testSpelExpressionMessageRouting() {
+  void testSpelExpressionMessageRouting() {
     pubSubTest(
         (AssertableApplicationContext context,
             PubSubTemplate pubSubTemplate,
