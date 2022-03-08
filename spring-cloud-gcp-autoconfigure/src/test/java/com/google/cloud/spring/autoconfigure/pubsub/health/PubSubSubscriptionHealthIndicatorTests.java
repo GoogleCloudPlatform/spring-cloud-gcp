@@ -27,16 +27,16 @@ import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistryImpl;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.concurrent.ConcurrentHashMap;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
 
-@RunWith(MockitoJUnitRunner.class)
-public class PubSubSubscriptionHealthIndicatorTests {
+@ExtendWith(MockitoExtension.class)
+class PubSubSubscriptionHealthIndicatorTests {
 
   @Mock private MetricServiceClient metricServiceClient;
 
@@ -50,8 +50,8 @@ public class PubSubSubscriptionHealthIndicatorTests {
   private ConcurrentHashMap<ProjectSubscriptionName, HealthTracker> healthTrackers =
       new ConcurrentHashMap<>();
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() throws Exception {
     ExecutorProvider executorProvider = mock(ExecutorProvider.class);
     HealthTrackerRegistry trackerRegistry =
         new HealthTrackerRegistryImpl(
@@ -67,7 +67,7 @@ public class PubSubSubscriptionHealthIndicatorTests {
   }
 
   @Test
-  public void testHealthCheckFailure() throws Exception {
+  void testHealthCheckFailure() throws Exception {
     ProjectSubscriptionName goodSubscription =
         ProjectSubscriptionName.of("project", "good-subscription");
     HealthTracker goodTracker = mock(HealthTracker.class);
@@ -92,7 +92,7 @@ public class PubSubSubscriptionHealthIndicatorTests {
   }
 
   @Test
-  public void testHealthCheckSucceeded() throws Exception {
+  void testHealthCheckSucceeded() throws Exception {
     ProjectSubscriptionName key = ProjectSubscriptionName.of("project", "good-subscription");
     HealthTracker healthTracker = mock(HealthTracker.class);
     when(healthTracker.messagesOverThreshold()).thenReturn(0L);
