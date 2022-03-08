@@ -28,8 +28,8 @@ import com.google.cloud.bigquery.Schema;
 import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import java.io.InputStream;
 import java.util.Collections;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -37,14 +37,14 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.SettableListenableFuture;
 
-public class BigQueryFileMessageHandlerTests {
+class BigQueryFileMessageHandlerTests {
 
   private BigQueryTemplate bigQueryTemplate;
 
   private BigQueryFileMessageHandler messageHandler;
 
-  @Before
-  public void setup() {
+  @BeforeEach
+  void setup() {
     bigQueryTemplate = mock(BigQueryTemplate.class);
     SettableListenableFuture<Job> result = new SettableListenableFuture<>();
     result.set(mock(Job.class));
@@ -54,7 +54,7 @@ public class BigQueryFileMessageHandlerTests {
   }
 
   @Test
-  public void testHandleMessage_async() {
+  void testHandleMessage_async() {
     messageHandler.setTableName("testTable");
     messageHandler.setFormatOptions(FormatOptions.csv());
     messageHandler.setSync(false);
@@ -72,7 +72,7 @@ public class BigQueryFileMessageHandlerTests {
   }
 
   @Test
-  public void testHandleMessage_sync() {
+  void testHandleMessage_sync() {
     messageHandler.setTableName("testTable");
     messageHandler.setFormatOptions(FormatOptions.csv());
     messageHandler.setSync(true);
