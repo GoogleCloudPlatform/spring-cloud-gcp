@@ -32,7 +32,6 @@ import com.google.cloud.spring.security.iap.AudienceValidator;
 import java.time.Instant;
 import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -86,22 +85,16 @@ class IapAuthenticationAutoConfigurationTests {
 
   @Mock static MetadataProvider mockMetadataProvider;
 
-  @BeforeEach
-  void httpRequestSetup() {
-    when(this.mockIapRequest.getHeader("x-goog-iap-jwt-assertion")).thenReturn("very fake jwt");
-  }
-
   @Test
   void testIapAutoconfiguredBeansExistInContext() {
+    when(this.mockIapRequest.getHeader("x-goog-iap-jwt-assertion")).thenReturn("very fake jwt");
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.security.iap.audience=unused")
         .run(this::verifyJwtBeans);
   }
 
   @Test
-  @MockitoSettings(strictness = Strictness.LENIENT)
   void testAutoconfiguredBeansMissingWhenGatingPropertyFalse() {
-
     assertThatThrownBy(() -> this.contextRunner.withPropertyValues("spring.cloud.gcp.security.iap.enabled=false").run(context -> context.getBean(JwtDecoder.class)))
             .isInstanceOf(NoSuchBeanDefinitionException.class)
             .hasMessage("No qualifying bean of type "
@@ -111,6 +104,7 @@ class IapAuthenticationAutoConfigurationTests {
 
   @Test
   void testIapBeansReturnedWhenBothIapAndSpringSecurityConfigPresent() {
+    when(this.mockIapRequest.getHeader("x-goog-iap-jwt-assertion")).thenReturn("very fake jwt");
     new ApplicationContextRunner()
         .withPropertyValues("spring.cloud.gcp.security.iap.audience=unused")
         .withConfiguration(
@@ -122,10 +116,8 @@ class IapAuthenticationAutoConfigurationTests {
   }
 
   @Test
-  @MockitoSettings(strictness = Strictness.LENIENT)
   void testIapBeansReturnedWhenBothIapWithMultipleAudiencesAndSpringSecurityConfigPresent() {
     when(mockJwt.getAudience()).thenReturn(Collections.singletonList("aud1"));
-
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.security.iap.audience=aud1, aud2")
         .run(
@@ -137,7 +129,6 @@ class IapAuthenticationAutoConfigurationTests {
   }
 
   @Test
-  @MockitoSettings(strictness = Strictness.LENIENT)
   void testUserBeansReturnedUserConfigPresent() {
     this.contextRunner
         .withUserConfiguration(UserConfiguration.class)
@@ -157,7 +148,6 @@ class IapAuthenticationAutoConfigurationTests {
   }
 
   @Test
-  @MockitoSettings(strictness = Strictness.LENIENT)
   void testCustomPropertyOverridesDefault() {
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.security.iap.header=some-other-header")
@@ -175,9 +165,7 @@ class IapAuthenticationAutoConfigurationTests {
   }
 
   @Test
-  @MockitoSettings(strictness = Strictness.LENIENT)
   void testContextFailsWhenAudienceValidatorNotAvailable() throws Exception {
-
     this.contextRunner.run(
         context -> {
           assertThat(context)
@@ -190,11 +178,9 @@ class IapAuthenticationAutoConfigurationTests {
   }
 
   @Test
-  @MockitoSettings(strictness = Strictness.LENIENT)
   void testFixedStringAudienceValidatorAddedWhenAvailable() throws Exception {
     when(mockJwt.getExpiresAt()).thenReturn(Instant.now().plusSeconds(10));
     when(mockJwt.getNotBefore()).thenReturn(Instant.now().minusSeconds(10));
-
     this.contextRunner
         .withUserConfiguration(FixedAudienceValidatorConfiguration.class)
         .run(
@@ -213,11 +199,9 @@ class IapAuthenticationAutoConfigurationTests {
   }
 
   @Test
-  @MockitoSettings(strictness = Strictness.LENIENT)
   void testAppEngineAudienceValidatorAddedWhenAvailable() {
     when(this.mockEnvironmentProvider.getCurrentEnvironment())
         .thenReturn(GcpEnvironment.APP_ENGINE_FLEXIBLE);
-
     this.contextRunner
         .withUserConfiguration(FixedAudienceValidatorConfiguration.class)
         .run(
