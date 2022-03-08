@@ -31,7 +31,7 @@ import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTempl
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.gson.Gson;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.FilteredClassLoader;
@@ -41,7 +41,7 @@ import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 import org.threeten.bp.Duration;
 
 /** Tests for Spanner auto-config. */
-public class GcpSpannerAutoConfigurationTests {
+class GcpSpannerAutoConfigurationTests {
 
   /** Mock Gson object for use in configuration. */
   public static Gson MOCK_GSON = mock(Gson.class);
@@ -61,7 +61,7 @@ public class GcpSpannerAutoConfigurationTests {
               "spring.cloud.gcp.spanner.database=testDatabase");
 
   @Test
-  public void testSpannerOperationsCreated() {
+  void testSpannerOperationsCreated() {
     this.contextRunner.run(
         context -> {
           assertThat(context.getBean(SpannerOperations.class)).isNotNull();
@@ -69,7 +69,7 @@ public class GcpSpannerAutoConfigurationTests {
   }
 
   @Test
-  public void testTestRepositoryCreated() {
+  void testTestRepositoryCreated() {
     this.contextRunner.run(
         context -> {
           assertThat(context.getBean(TestRepository.class)).isNotNull();
@@ -77,7 +77,7 @@ public class GcpSpannerAutoConfigurationTests {
   }
 
   @Test
-  public void testUserGsonBean() {
+  void testUserGsonBean() {
     this.contextRunner.run(
         context -> {
           Gson gsonBean = context.getBean(Gson.class);
@@ -87,7 +87,7 @@ public class GcpSpannerAutoConfigurationTests {
   }
 
   @Test
-  public void testDatabaseAdminClientCreated() {
+  void testDatabaseAdminClientCreated() {
     this.contextRunner.run(
         context -> {
           assertThat(context.getBean(SpannerDatabaseAdminTemplate.class)).isNotNull();
@@ -95,7 +95,7 @@ public class GcpSpannerAutoConfigurationTests {
   }
 
   @Test
-  public void testSchemaUtilsCreated() {
+  void testSchemaUtilsCreated() {
     this.contextRunner.run(
         context -> {
           assertThat(context.getBean(SpannerSchemaUtils.class)).isNotNull();
@@ -103,7 +103,7 @@ public class GcpSpannerAutoConfigurationTests {
   }
 
   @Test
-  public void testIdConverterCreated() {
+  void testIdConverterCreated() {
     this.contextRunner.run(
         context -> {
           BackendIdConverter idConverter = context.getBean(BackendIdConverter.class);
@@ -113,7 +113,7 @@ public class GcpSpannerAutoConfigurationTests {
   }
 
   @Test
-  public void spannerTransactionManagerCreated() {
+  void spannerTransactionManagerCreated() {
     this.contextRunner.run(
         context -> {
           SpannerTransactionManager transactionManager =
@@ -124,14 +124,14 @@ public class GcpSpannerAutoConfigurationTests {
   }
 
   @Test
-  public void testIdConverterNotCreated() {
+  void testIdConverterNotCreated() {
     this.contextRunner
         .withClassLoader(new FilteredClassLoader("org.springframework.data.rest.webmvc.spi"))
         .run(context -> assertThat(context.getBeansOfType(BackendIdConverter.class)).isEmpty());
   }
 
   @Test
-  public void testSpannerCustomizerProvided() {
+  void testSpannerCustomizerProvided() {
     Duration duration = Duration.ofSeconds(42);
     this.contextRunner
         .withBean(

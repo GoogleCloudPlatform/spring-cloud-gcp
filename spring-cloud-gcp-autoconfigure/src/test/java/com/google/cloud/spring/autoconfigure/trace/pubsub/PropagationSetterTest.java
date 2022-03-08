@@ -19,13 +19,13 @@ package com.google.cloud.spring.autoconfigure.trace.pubsub;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import brave.propagation.Propagation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 // Copied from:
 // https://github.com/openzipkin/brave/blob/master/brave-tests/src/main/java/brave/test/propagation/PropagationSetterTest.java
 // Brought this class internally as temporary fix
 // for assertj related test errors to unblock other upgrades.
-public abstract class PropagationSetterTest<R> {
+abstract class PropagationSetterTest<R> {
   protected final Propagation<String> propagation = Propagation.B3_STRING;
 
   protected abstract R request();
@@ -35,21 +35,21 @@ public abstract class PropagationSetterTest<R> {
   protected abstract Iterable<String> read(R request, String key);
 
   @Test
-  public void set() {
+  void set() {
     setter().put(request(), "X-B3-TraceId", "48485a3953bb6124");
 
     assertThat(read(request(), "X-B3-TraceId")).containsExactly("48485a3953bb6124");
   }
 
   @Test
-  public void set128() {
+  void set128() {
     setter().put(request(), "X-B3-TraceId", "463ac35c9f6413ad48485a3953bb6124");
 
     assertThat(read(request(), "X-B3-TraceId")).containsExactly("463ac35c9f6413ad48485a3953bb6124");
   }
 
   @Test
-  public void setTwoKeys() {
+  void setTwoKeys() {
     setter().put(request(), "X-B3-TraceId", "463ac35c9f6413ad48485a3953bb6124");
     setter().put(request(), "X-B3-SpanId", "48485a3953bb6124");
 
@@ -58,7 +58,7 @@ public abstract class PropagationSetterTest<R> {
   }
 
   @Test
-  public void reset() {
+  void reset() {
     setter().put(request(), "X-B3-TraceId", "48485a3953bb6124");
     setter().put(request(), "X-B3-TraceId", "463ac35c9f6413ad");
 
