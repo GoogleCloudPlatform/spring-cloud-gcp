@@ -18,6 +18,7 @@ package com.google.cloud.spring.autoconfigure.datastore;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
@@ -32,9 +33,7 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
 import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager;
 import java.util.function.Supplier;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -46,13 +45,10 @@ import org.springframework.core.ResolvableType;
 import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 
 /** Tests for Datastore auto-config. */
-public class GcpDatastoreAutoConfigurationTests {
+class GcpDatastoreAutoConfigurationTests {
 
   /** Mock datastore for use in configuration. */
   public static Datastore MOCK_CLIENT = mock(Datastore.class);
-
-  /** used to check exception messages and types. */
-  @Rule public ExpectedException expectedException = ExpectedException.none();
 
   private ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
@@ -71,7 +67,7 @@ public class GcpDatastoreAutoConfigurationTests {
               "management.health.datastore.enabled=false");
 
   @Test
-  public void testUserDatastoreBean() {
+  void testUserDatastoreBean() {
     ApplicationContextRunner runner =
         new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(GcpDatastoreAutoConfiguration.class))
@@ -89,7 +85,7 @@ public class GcpDatastoreAutoConfigurationTests {
   }
 
   @Test
-  public void testUserDatastoreBeanNamespace() {
+  void testUserDatastoreBeanNamespace() {
     ApplicationContextRunner runner =
         new ApplicationContextRunner()
             .withConfiguration(
@@ -102,17 +98,18 @@ public class GcpDatastoreAutoConfigurationTests {
                 "spring.cloud.gcp.datastore.host=localhost:8081",
                 "management.health.datastore.enabled=false");
 
-    this.expectedException.expectMessage("failed to start");
-    runner.run(context -> getDatastoreBean(context));
+    assertThatThrownBy(() -> runner.run(context -> getDatastoreBean(context)))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("failed to start");
   }
 
   @Test
-  public void testDatastoreSimpleClient() {
+  void testDatastoreSimpleClient() {
     this.contextRunner.run(context -> assertThat(context.getBean(Datastore.class)).isNotNull());
   }
 
   @Test
-  public void testDatastoreOptionsCorrectlySet() {
+  void testDatastoreOptionsCorrectlySet() {
     this.contextRunner.run(
         context -> {
           DatastoreOptions datastoreOptions = getDatastoreBean(context).getOptions();
@@ -123,7 +120,7 @@ public class GcpDatastoreAutoConfigurationTests {
   }
 
   @Test
-  public void testDatastoreEmulatorCredentialsConfig() {
+  void testDatastoreEmulatorCredentialsConfig() {
     this.contextRunner.run(
         context -> {
           CredentialsProvider defaultCredentialsProvider =
@@ -136,19 +133,19 @@ public class GcpDatastoreAutoConfigurationTests {
   }
 
   @Test
-  public void testDatastoreOperationsCreated() {
+  void testDatastoreOperationsCreated() {
     this.contextRunner.run(
         context -> assertThat(context.getBean(DatastoreOperations.class)).isNotNull());
   }
 
   @Test
-  public void testTestRepositoryCreated() {
+  void testTestRepositoryCreated() {
     this.contextRunner.run(
         context -> assertThat(context.getBean(TestRepository.class)).isNotNull());
   }
 
   @Test
-  public void testIdConverterCreated() {
+  void testIdConverterCreated() {
     this.contextRunner.run(
         context -> {
           BackendIdConverter idConverter = context.getBean(BackendIdConverter.class);
@@ -158,7 +155,7 @@ public class GcpDatastoreAutoConfigurationTests {
   }
 
   @Test
-  public void datastoreTransactionManagerCreated() {
+  void datastoreTransactionManagerCreated() {
     this.contextRunner.run(
         context -> {
           DatastoreTransactionManager transactionManager =
@@ -169,7 +166,7 @@ public class GcpDatastoreAutoConfigurationTests {
   }
 
   @Test
-  public void testDatastoreHealthIndicatorNotCreated() {
+  void testDatastoreHealthIndicatorNotCreated() {
     this.contextRunner.run(
         context ->
             assertThatExceptionOfType(NoSuchBeanDefinitionException.class)
