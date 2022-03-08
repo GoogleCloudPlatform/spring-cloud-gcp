@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.firestore.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentSnapshot;
@@ -30,15 +29,16 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 /**
  * @since 1.2
  */
-public class FirestoreDocumentationIntegrationTests {
+@EnabledIfSystemProperty(named = "it.firestore", matches = "true")
+class FirestoreDocumentationIntegrationTests {
   private final ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
           .withConfiguration(
@@ -47,13 +47,8 @@ public class FirestoreDocumentationIntegrationTests {
                   FirestoreTransactionManagerAutoConfiguration.class,
                   GcpFirestoreAutoConfiguration.class));
 
-  @BeforeClass
-  public static void enableTests() {
-    assumeThat(System.getProperty("it.firestore")).isEqualTo("true");
-  }
-
   @Test
-  public void writeDocumentFromObject() throws ExecutionException, InterruptedException {
+  void writeDocumentFromObject() throws ExecutionException, InterruptedException {
     this.contextRunner.run(
         context -> {
           Firestore firestore = context.getBean(Firestore.class);
