@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.pubsub.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -41,16 +40,15 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.awaitility.Awaitility;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.boot.test.system.OutputCaptureRule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -66,14 +64,12 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 /** Tests for Pub/Sub channel adapters. */
-public class PubSubChannelAdaptersIntegrationTests {
+@EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
+class PubSubChannelAdaptersIntegrationTests {
 
   private static final int RECEIVE_TIMEOUT_MS = 10000;
 
   static PubSubAdmin pubSubAdmin;
-
-  /** Capture output for verification. */
-  @Rule public OutputCaptureRule outputCaptureRule = new OutputCaptureRule();
 
   String topicName;
 
@@ -81,18 +77,16 @@ public class PubSubChannelAdaptersIntegrationTests {
 
   ApplicationContextRunner contextRunner;
 
-  @BeforeClass
-  public static void enableTests() throws IOException {
-    assumeThat(System.getProperty("it.pubsub")).isEqualTo("true");
-
+  @BeforeAll
+  static void enableTests() throws IOException {
     pubSubAdmin =
         new PubSubAdmin(
             new DefaultGcpProjectIdProvider(),
             new DefaultCredentialsProvider(() -> new Credentials()));
   }
 
-  @Before
-  public void setUpPubSubResources() {
+  @BeforeEach
+  void setUpPubSubResources() {
     this.topicName = "desafinado-" + UUID.randomUUID();
     this.subscriptionName = "doralice-" + UUID.randomUUID();
 
@@ -113,14 +107,14 @@ public class PubSubChannelAdaptersIntegrationTests {
             .withBean("subscriptionName", String.class, this.subscriptionName);
   }
 
-  @After
-  public void tearDownPubSubResources() {
+  @AfterEach
+  void tearDownPubSubResources() {
     pubSubAdmin.deleteSubscription(this.subscriptionName);
     pubSubAdmin.deleteTopic(this.topicName);
   }
 
   @Test
-  public void sendAndReceiveMessageAsString() {
+  void sendAndReceiveMessageAsString() {
     this.contextRunner
         .withUserConfiguration(PollableConfiguration.class, CommonConfiguration.class)
         .run(
@@ -155,7 +149,7 @@ public class PubSubChannelAdaptersIntegrationTests {
   }
 
   @Test
-  public void sendAndReceiveMessage() {
+  void sendAndReceiveMessage() {
     this.contextRunner
         .withUserConfiguration(PollableConfiguration.class, CommonConfiguration.class)
         .run(
@@ -179,7 +173,7 @@ public class PubSubChannelAdaptersIntegrationTests {
   }
 
   @Test
-  public void sendAndReceiveMessageManualAck() {
+  void sendAndReceiveMessageManualAck() {
     this.contextRunner
         .withUserConfiguration(PollableConfiguration.class, CommonConfiguration.class)
         .run(
@@ -222,7 +216,7 @@ public class PubSubChannelAdaptersIntegrationTests {
   // results in ackDeadline being extended by 60 seconds even when maxAckExtensionPeriod is zero,
   // making minimum redelivery time is ackDeadline + 60.
   @Test
-  public void sendAndReceiveMessageAutoAckWithFailure() {
+  void sendAndReceiveMessageAutoAckWithFailure() {
 
     this.contextRunner
         .withUserConfiguration(SubscribableConfiguration.class, CommonConfiguration.class)
@@ -266,7 +260,7 @@ public class PubSubChannelAdaptersIntegrationTests {
 
   @Test
   @SuppressWarnings("deprecation")
-  public void sendAndReceiveMessageManualAckThroughAcknowledgementHeader() {
+  void sendAndReceiveMessageManualAckThroughAcknowledgementHeader() {
     this.contextRunner
         .withUserConfiguration(PollableConfiguration.class, CommonConfiguration.class)
         .run(
@@ -296,7 +290,7 @@ public class PubSubChannelAdaptersIntegrationTests {
   }
 
   @Test
-  public void sendAndReceiveMessagePublishCallback() {
+  void sendAndReceiveMessagePublishCallback() {
     this.contextRunner
         .withUserConfiguration(PollableConfiguration.class, CommonConfiguration.class)
         .run(
