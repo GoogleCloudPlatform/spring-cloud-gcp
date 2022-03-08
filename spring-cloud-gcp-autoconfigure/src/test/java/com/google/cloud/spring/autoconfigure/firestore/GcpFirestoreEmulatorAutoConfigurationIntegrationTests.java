@@ -17,19 +17,18 @@
 package com.google.cloud.spring.autoconfigure.firestore;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 /** Tests for Firestore Emulator autoconfiguration. */
-public class GcpFirestoreEmulatorAutoConfigurationIntegrationTests {
+@EnabledIfSystemProperty(named = "it.firestore", matches = "true")
+class GcpFirestoreEmulatorAutoConfigurationIntegrationTests {
 
   ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
@@ -40,17 +39,8 @@ public class GcpFirestoreEmulatorAutoConfigurationIntegrationTests {
                   GcpFirestoreAutoConfiguration.class,
                   FirestoreTransactionManagerAutoConfiguration.class));
 
-  @BeforeClass
-  public static void checkToRun() {
-    assumeThat(
-        "Firestore emulator integration tests are disabled. "
-            + "Please use '-Dit.firestore=true' to enable them. ",
-        System.getProperty("it.firestore"),
-        is("true"));
-  }
-
   @Test
-  public void testAutoConfigurationEnabled() {
+  void testAutoConfigurationEnabled() {
     contextRunner
         .withPropertyValues(
             "spring.cloud.gcp.firestore.project-id=",
@@ -70,7 +60,7 @@ public class GcpFirestoreEmulatorAutoConfigurationIntegrationTests {
   }
 
   @Test
-  public void testAutoConfigurationDisabled() {
+  void testAutoConfigurationDisabled() {
     contextRunner.run(
         context -> {
           FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
@@ -82,7 +72,7 @@ public class GcpFirestoreEmulatorAutoConfigurationIntegrationTests {
   }
 
   @Test
-  public void testThatIfProjectIdIsGivenItWillBeUsed() {
+  void testThatIfProjectIdIsGivenItWillBeUsed() {
     contextRunner
         .withPropertyValues(
             "spring.cloud.gcp.firestore.project-id=demo",
