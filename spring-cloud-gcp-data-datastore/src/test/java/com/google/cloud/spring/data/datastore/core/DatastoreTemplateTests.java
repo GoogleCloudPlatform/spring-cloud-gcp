@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.datastore.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.notNull;
@@ -82,7 +83,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
@@ -99,7 +101,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.util.ClassTypeInformation;
 
 /** Tests for the Datastore Template. */
-public class DatastoreTemplateTests {
+class DatastoreTemplateTests {
 
   private final Datastore datastore = mock(Datastore.class);
   private final DatastoreEntityConverter datastoreEntityConverter =
@@ -129,8 +131,6 @@ public class DatastoreTemplateTests {
           .set("singularReference", this.keyChild1)
           .set("multipleReference", Collections.singletonList(KeyValue.of(this.keyChild1)))
           .build();
-  /** used to check exception messages and types. */
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
 
   private DatastoreTemplate datastoreTemplate;
   private ChildEntity childEntity2;
@@ -155,8 +155,8 @@ public class DatastoreTemplateTests {
     return new KeyFactory("project").setKind("custom_test_kind").newKey(val);
   }
 
-  @Before
-  public void setup() {
+  @BeforeEach
+  void setup() {
     this.datastoreTemplate =
         new DatastoreTemplate(
             () -> this.datastore,
@@ -346,7 +346,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void multipleNamespaceTest() {
+  void multipleNamespaceTest() {
     Datastore databaseClient1 = mock(Datastore.class);
     Datastore databaseClient2 = mock(Datastore.class);
 
@@ -391,7 +391,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void performTransactionTest() {
+  void performTransactionTest() {
 
     DatastoreReaderWriter transactionContext = mock(DatastoreReaderWriter.class);
 
@@ -419,7 +419,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void findAllByIdTestNotNull() {
+  void findAllByIdTestNotNull() {
     assertThat(
             this.datastoreTemplate.findAllById(
                 Collections.singletonList(this.badKey), TestEntity.class))
@@ -427,7 +427,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void findByIdTest() {
+  void findByIdTest() {
     verifyBeforeAndAfterEvents(
         null,
         new AfterFindByKeyEvent(
@@ -443,7 +443,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void findByIdNotFoundTest() {
+  void findByIdNotFoundTest() {
     when(this.datastore.fetch(ArgumentMatchers.<Key[]>any()))
         .thenReturn(Collections.singletonList(null));
     verifyBeforeAndAfterEvents(
@@ -456,7 +456,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void findAllByIdTest() {
+  void findAllByIdTest() {
     when(this.datastore.fetch(this.key2, this.key1)).thenReturn(Arrays.asList(this.e1, this.e2));
     List<Key> keys = Arrays.asList(this.key1, this.key2);
 
@@ -470,7 +470,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void findAllByIdReferenceConsistencyTest() {
+  void findAllByIdReferenceConsistencyTest() {
     when(this.objectToKeyFactory.getKeyFromObject(eq(this.childEntity1), any()))
         .thenReturn(this.childEntity1.id);
 
@@ -499,7 +499,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void findAllReferenceLoopTest() {
+  void findAllReferenceLoopTest() {
 
     Entity referenceTestDatastoreEntity =
         Entity.newBuilder(this.key1)
@@ -565,7 +565,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void saveReferenceLoopTest() {
+  void saveReferenceLoopTest() {
     ReferenceTestEntity referenceTestEntity = new ReferenceTestEntity();
     referenceTestEntity.id = 1L;
     referenceTestEntity.sibling = referenceTestEntity;
@@ -590,12 +590,12 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void saveTest() {
+  void saveTest() {
     saveTestCommon(this.ob1, false);
   }
 
   @Test
-  public void saveTestCollectionLazy() {
+  void saveTestCollectionLazy() {
     this.ob1.lazyMultipleReference =
         LazyUtil.wrapSimpleLazyProxy(
             () -> Collections.singletonList(this.childEntity7),
@@ -605,7 +605,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void saveTestNotInterfaceLazy() {
+  void saveTestNotInterfaceLazy() {
     ArrayList<ChildEntity> arrayList = new ArrayList();
     arrayList.add(this.childEntity7);
     this.ob1.lazyMultipleReference =
@@ -688,15 +688,16 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void saveTestNonKeyId() {
-    this.expectedEx.expect(DatastoreDataException.class);
-    this.expectedEx.expectMessage("Only Key types are allowed for descendants id");
+  void saveTestNonKeyId() {
 
-    this.datastoreTemplate.save(this.ob1, createFakeKey("key0"));
+    assertThatThrownBy(() -> this.datastoreTemplate.save(this.ob1, createFakeKey("key0")))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("Only Key types are allowed for descendants id");
+
   }
 
   @Test
-  public void saveTestNullDescendantsAndReferences() {
+  void saveTestNullDescendantsAndReferences() {
     // making sure save works when descendants are null
     assertThat(this.ob2.childEntities).isNull();
     assertThat(this.ob2.singularReference).isNull();
@@ -717,17 +718,18 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void saveTestKeyNoAncestor() {
-    this.expectedEx.expect(DatastoreDataException.class);
-    this.expectedEx.expectMessage("Descendant object has a key without current ancestor");
+  void saveTestKeyNoAncestor() {
 
     when(this.objectToKeyFactory.getKeyFromObject(eq(this.childEntity1), any()))
         .thenReturn(this.childEntity1.id);
-    this.datastoreTemplate.save(this.childEntity1, createFakeKey("key0"));
+
+    assertThatThrownBy(() -> this.datastoreTemplate.save(this.childEntity1, createFakeKey("key0")))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("Descendant object has a key without current ancestor");
   }
 
   @Test
-  public void saveTestKeyWithAncestor() {
+  void saveTestKeyWithAncestor() {
     Key key0 = createFakeKey("key0");
     Key keyA =
         Key.newBuilder(key0)
@@ -754,7 +756,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void saveAndAllocateIdTest() {
+  void saveAndAllocateIdTest() {
     when(this.objectToKeyFactory.allocateKeyForObject(same(this.ob1), any())).thenReturn(this.key1);
     Entity writtenEntity1 =
         Entity.newBuilder(this.key1)
@@ -794,7 +796,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void saveAllTest() {
+  void saveAllTest() {
     when(this.objectToKeyFactory.allocateKeyForObject(same(this.ob1), any())).thenReturn(this.key1);
     when(this.objectToKeyFactory.getKeyFromObject(same(this.ob2), any())).thenReturn(this.key2);
     Entity writtenEntity1 =
@@ -859,7 +861,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void saveAllMaxWriteSizeTest() {
+  void saveAllMaxWriteSizeTest() {
     when(this.objectToKeyFactory.allocateKeyForObject(same(this.ob1), any())).thenReturn(this.key1);
     when(this.objectToKeyFactory.getKeyFromObject(same(this.ob2), any())).thenReturn(this.key2);
     Entity writtenEntity1 =
@@ -932,7 +934,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void findAllTest() {
+  void findAllTest() {
     verifyBeforeAndAfterEvents(
         null,
         new AfterQueryEvent(Arrays.asList(this.ob1, this.ob2), this.findAllTestEntityQuery),
@@ -943,7 +945,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void queryTest() {
+  void queryTest() {
     verifyBeforeAndAfterEvents(
         null,
         new AfterQueryEvent(Arrays.asList(this.ob1, this.ob2), this.testEntityQuery),
@@ -957,14 +959,14 @@ public class DatastoreTemplateTests {
 
   @Test
   @SuppressWarnings("ReturnValueIgnored")
-  public void queryKeysTest() {
+  void queryKeysTest() {
     KeyQuery keyQuery = GqlQuery.newKeyQueryBuilder().build();
     this.datastoreTemplate.queryKeys(keyQuery).iterator();
     verify(this.datastore, times(1)).run(keyQuery);
   }
 
   @Test
-  public void nextPageTest() {
+  void nextPageTest() {
     assertThat(nextPageTest(true)).isTrue();
     assertThat(nextPageTest(false)).isFalse();
   }
@@ -1001,7 +1003,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void countTest() {
+  void countTest() {
     QueryResults<Key> queryResults = mock(QueryResults.class);
     when(queryResults.getResultClass()).thenReturn((Class) Key.class);
     doAnswer(
@@ -1019,13 +1021,13 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void existsByIdTest() {
+  void existsByIdTest() {
     assertThat(this.datastoreTemplate.existsById(this.key1, TestEntity.class)).isTrue();
     assertThat(this.datastoreTemplate.existsById(this.badKey, TestEntity.class)).isFalse();
   }
 
   @Test
-  public void deleteByIdTest() {
+  void deleteByIdTest() {
     when(this.objectToKeyFactory.getKeyFromId(same(this.key1), any())).thenReturn(this.key1);
 
     verifyBeforeAndAfterEvents(
@@ -1038,7 +1040,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void deleteAllByIdTest() {
+  void deleteAllByIdTest() {
     when(this.objectToKeyFactory.getKeyFromId(same(this.key1), any())).thenReturn(this.key1);
     when(this.objectToKeyFactory.getKeyFromId(same(this.key2), any())).thenReturn(this.key2);
 
@@ -1060,7 +1062,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void deleteObjectTest() {
+  void deleteObjectTest() {
     verifyBeforeAndAfterEvents(
         new BeforeDeleteEvent(
             new Key[] {this.key1}, TestEntity.class, null, Collections.singletonList(this.ob1)),
@@ -1071,7 +1073,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void deleteMultipleObjectsTest() {
+  void deleteMultipleObjectsTest() {
     verifyBeforeAndAfterEvents(
         new BeforeDeleteEvent(
             new Key[] {this.key1, this.key2}, null, null, Arrays.asList(this.ob1, this.ob2)),
@@ -1082,7 +1084,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void deleteAllTest() {
+  void deleteAllTest() {
     QueryResults<Key> queryResults = mock(QueryResults.class);
     when(queryResults.getResultClass()).thenReturn((Class) Key.class);
     doAnswer(
@@ -1142,7 +1144,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void findAllTestLimitOffset() {
+  void findAllTestLimitOffset() {
     EntityQuery.Builder builder = Query.newEntityQueryBuilder().setKind("custom_test_kind");
 
     this.datastoreTemplate.findAll(
@@ -1154,7 +1156,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void findAllDiscrimination() {
+  void findAllDiscrimination() {
     EntityQuery.Builder builder = Query.newEntityQueryBuilder().setKind("test_kind");
 
     this.datastoreTemplate.findAll(SimpleDiscriminationTestEntity.class);
@@ -1163,7 +1165,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void combineFiltersDiscrimination() {
+  void combineFiltersDiscrimination() {
     PropertyFilter propertyFilter = PropertyFilter.eq("field", "some value");
     EntityQuery.Builder builder =
         Query.newEntityQueryBuilder().setKind("test_kind").setFilter(propertyFilter);
@@ -1182,7 +1184,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void findAllTestSort() {
+  void findAllTestSort() {
     EntityQuery.Builder builder = Query.newEntityQueryBuilder().setKind("custom_test_kind");
 
     this.datastoreTemplate.findAll(
@@ -1211,7 +1213,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void findAllTestSortLimitOffset() {
+  void findAllTestSortLimitOffset() {
     EntityQuery.Builder builder = Query.newEntityQueryBuilder().setKind("custom_test_kind");
 
     this.datastoreTemplate.findAll(
@@ -1233,7 +1235,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void queryByExampleSimpleEntityTest() {
+  void queryByExampleSimpleEntityTest() {
     EntityQuery.Builder builder = Query.newEntityQueryBuilder().setKind("test_kind");
     StructuredQuery.CompositeFilter filter =
         StructuredQuery.CompositeFilter.and(
@@ -1250,7 +1252,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void queryByExampleIgnoreFieldTest() {
+  void queryByExampleIgnoreFieldTest() {
     EntityQuery.Builder builder = Query.newEntityQueryBuilder().setKind("test_kind");
     this.datastoreTemplate.queryByExample(
         Example.of(
@@ -1264,16 +1266,16 @@ public class DatastoreTemplateTests {
 
   @Test
   public void queryByExampleDeepPathTest() {
-    this.expectedEx.expect(DatastoreDataException.class);
-    this.expectedEx.expectMessage("Ignored paths deeper than 1 are not supported");
 
-    this.datastoreTemplate.queryByExample(
-        Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnorePaths("intField.a")),
-        null);
+    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(
+            Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnorePaths("intField.a")),
+            null))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("Ignored paths deeper than 1 are not supported");
   }
 
   @Test
-  public void queryByExampleIncludeNullValuesTest() {
+  void queryByExampleIncludeNullValuesTest() {
     EntityQuery.Builder builder = Query.newEntityQueryBuilder().setKind("test_kind");
     this.datastoreTemplate.queryByExample(
         Example.of(
@@ -1289,7 +1291,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void queryByExampleNoNullValuesTest() {
+  void queryByExampleNoNullValuesTest() {
     EntityQuery.Builder builder = Query.newEntityQueryBuilder().setKind("test_kind");
     this.datastoreTemplate.queryByExample(
         Example.of(
@@ -1300,74 +1302,73 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void queryByExampleExactMatchTest() {
-    this.expectedEx.expect(DatastoreDataException.class);
-    this.expectedEx.expectMessage(
-        "Unsupported StringMatcher. Only EXACT and DEFAULT are supported");
+  void queryByExampleExactMatchTest() {
 
-    this.datastoreTemplate.queryByExample(
-        Example.of(
-            new SimpleTestEntity(),
-            ExampleMatcher.matching().withStringMatcher(ExampleMatcher.StringMatcher.REGEX)),
-        null);
+    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(
+            Example.of(
+                    new SimpleTestEntity(),
+                    ExampleMatcher.matching().withStringMatcher(ExampleMatcher.StringMatcher.REGEX)),
+            null))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("Unsupported StringMatcher. Only EXACT and DEFAULT are supported");
   }
 
   @Test
-  public void queryByExampleIgnoreCaseTest() {
-    this.expectedEx.expect(DatastoreDataException.class);
-    this.expectedEx.expectMessage("Ignore case matching is not supported");
+  void queryByExampleIgnoreCaseTest() {
 
-    this.datastoreTemplate.queryByExample(
-        Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnoreCase()), null);
+    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(
+            Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnoreCase()), null))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("Ignore case matching is not supported");
   }
 
   @Test
   public void queryByExampleAllMatchTest() {
-    this.expectedEx.expect(DatastoreDataException.class);
-    this.expectedEx.expectMessage("Unsupported MatchMode. Only MatchMode.ALL is supported");
 
-    this.datastoreTemplate.queryByExample(
-        Example.of(new SimpleTestEntity(), ExampleMatcher.matchingAny()), null);
+    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(
+            Example.of(new SimpleTestEntity(), ExampleMatcher.matchingAny()), null))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("Unsupported MatchMode. Only MatchMode.ALL is supported");
   }
 
   @Test
-  public void queryByExamplePropertyMatchersTest() {
-    this.expectedEx.expect(DatastoreDataException.class);
-    this.expectedEx.expectMessage("Property matchers are not supported");
+  void queryByExamplePropertyMatchersTest() {
 
-    this.datastoreTemplate.queryByExample(
-        Example.of(
-            new SimpleTestEntity(),
-            ExampleMatcher.matching()
-                .withMatcher(
-                    "id",
-                    ExampleMatcher.GenericPropertyMatcher.of(ExampleMatcher.StringMatcher.REGEX))),
-        null);
+    assertThatThrownBy(() ->   this.datastoreTemplate.queryByExample(
+            Example.of(
+                    new SimpleTestEntity(),
+                    ExampleMatcher.matching()
+                            .withMatcher(
+                                    "id",
+                                    ExampleMatcher.GenericPropertyMatcher.of(ExampleMatcher.StringMatcher.REGEX))),
+            null))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("Property matchers are not supported");
   }
 
   @Test
-  public void queryByExampleCaseSensitiveTest() {
-    this.expectedEx.expect(DatastoreDataException.class);
-    this.expectedEx.expectMessage("Property matchers are not supported");
+  void queryByExampleCaseSensitiveTest() {
 
-    this.datastoreTemplate.queryByExample(
-        Example.of(
-            new SimpleTestEntity(),
-            ExampleMatcher.matching()
-                .withMatcher("id", ExampleMatcher.GenericPropertyMatcher::caseSensitive)),
-        null);
+    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(
+            Example.of(
+                    new SimpleTestEntity(),
+                    ExampleMatcher.matching()
+                            .withMatcher("id", ExampleMatcher.GenericPropertyMatcher::caseSensitive)),
+            null))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("Property matchers are not supported");
   }
 
   @Test
-  public void queryByExampleNullTest() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("A non-null example is expected");
+  void queryByExampleNullTest() {
 
-    this.datastoreTemplate.queryByExample(null, null);
+    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(null, null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A non-null example is expected");
   }
 
   @Test
-  public void queryByExampleOptions() {
+  void queryByExampleOptions() {
     EntityQuery.Builder builder = Query.newEntityQueryBuilder().setKind("test_kind");
     this.datastoreTemplate.queryByExample(
         Example.of(this.simpleTestEntity, ExampleMatcher.matching().withIgnorePaths("id")),
@@ -1391,7 +1392,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void writeMapTest() {
+  void writeMapTest() {
     Map<String, Long> map = new HashMap<>();
     map.put("field1", 1L);
     Key keyForMap = createFakeKey("map1");
@@ -1405,7 +1406,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void findByIdAsMapTest() {
+  void findByIdAsMapTest() {
     Key keyForMap = createFakeKey("map1");
 
     Entity datastoreEntity = Entity.newBuilder(keyForMap).set("field1", 1L).build();
@@ -1417,7 +1418,7 @@ public class DatastoreTemplateTests {
   }
 
   @Test
-  public void createKeyTest() {
+  void createKeyTest() {
     this.datastoreTemplate.createKey("kind1", 1L);
     verify(this.objectToKeyFactory, times(1)).getKeyFromId(1L, "kind1");
   }
