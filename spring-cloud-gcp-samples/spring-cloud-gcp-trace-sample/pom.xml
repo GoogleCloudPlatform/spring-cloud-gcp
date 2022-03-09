@@ -97,6 +97,157 @@
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
             </plugin>
+
+            <!-- These plugins enable building the application to a JAR *not* using Native Image -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>dependency-jars/</classpathPrefix>
+                            <mainClass>trace.TraceSampleApplication</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/dependency-jars/
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>native</id>
+            <dependencies>
+                <dependency>
+                    <!-- TODO: remove this when it's no longer needed -->
+                    <groupId>com.google.cloud</groupId>
+                    <artifactId>native-image-support</artifactId>
+                    <version>0.12.8</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.google.cloud</groupId>
+                    <artifactId>spring-cloud-gcp-native-support</artifactId>
+                    <!-- spring-cloud-gcp-native-support is not part of the
+                      spring-cloud-gcp-dependencies BOM -->
+                    <version>${project.version}</version>
+                </dependency>
+                <dependency>
+                    <!-- Wtihout this dependency, spring-aot-maven-plugin fails
+                    with NoClassDefFoundError: org/springframework/nativex/utils/NativeUtils
+                    -->
+                    <groupId>org.springframework.experimental</groupId>
+                    <artifactId>spring-native</artifactId>
+                    <version>0.11.3</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                    <version>5.8.2</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.graalvm.buildtools</groupId>
+                    <artifactId>junit-platform-native</artifactId>
+                    <version>0.9.9</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <!-- Because Spring Boot's JAR file has special directory
+                    structure with 'BOOT-INF/' we need this plugin
+                    https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#getting-started-native-build-tools
+                    -->
+                    <plugin>
+                        <groupId>org.springframework.experimental</groupId>
+                        <artifactId>spring-aot-maven-plugin</artifactId>
+                        <!-- Latest 0.11.3 failed with ClassCastException: class java.lang.Integer cannot be cast to class java.util.List (java.lang.Integer and java.util.List are in module java.base of loader 'bootstrap') -->
+                        <version>0.10.6</version>
+                        <executions>
+                            <execution>
+                                <id>generate</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>test-generate</id>
+                                <goals>
+                                    <goal>test-generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Avoid a clash between Spring Boot repackaging and native-maven-plugin -->
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <classifier>exec</classifier>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <!-- Must use older version of surefire plugin for native-image testing. -->
+                        <version>2.22.2</version>
+                        <configuration>
+                            <includes>
+                                <include>**/IT*</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.graalvm.buildtools</groupId>
+                        <artifactId>native-maven-plugin</artifactId>
+                        <version>0.9.9</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <mainClass>com.example.Application</mainClass>
+                            <buildArgs>
+                                <buildArg>--no-fallback</buildArg>
+                                <buildArg>--no-server</buildArg>
+                                <buildArg>--initialize-at-build-time</buildArg>
+                            </buildArgs>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>build-native</id>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                            <execution>
+                                <id>test-native</id>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <phase>test</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
