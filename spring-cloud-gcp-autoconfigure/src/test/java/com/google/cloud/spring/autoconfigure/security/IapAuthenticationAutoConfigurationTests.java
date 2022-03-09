@@ -36,8 +36,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -95,7 +93,9 @@ class IapAuthenticationAutoConfigurationTests {
 
   @Test
   void testAutoconfiguredBeansMissingWhenGatingPropertyFalse() {
-    assertThatThrownBy(() -> this.contextRunner.withPropertyValues("spring.cloud.gcp.security.iap.enabled=false").run(context -> context.getBean(JwtDecoder.class)))
+
+    ApplicationContextRunner contextRunnerNew = this.contextRunner.withPropertyValues("spring.cloud.gcp.security.iap.enabled=false");
+    assertThatThrownBy(() -> contextRunnerNew.run(context -> context.getBean(JwtDecoder.class)))
             .isInstanceOf(NoSuchBeanDefinitionException.class)
             .hasMessage("No qualifying bean of type "
                     + "'org.springframework.security.oauth2.jwt.JwtDecoder' available");
