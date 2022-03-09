@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.datastore.health;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -57,15 +58,13 @@ class DatastoreHealthIndicatorTests {
     DatastoreHealthIndicator datastoreHealthIndicator =
         new DatastoreHealthIndicator(() -> datastore);
 
-    try {
-      datastore.run(any());
-    } catch (Exception e) {
-      throw new RuntimeException("Cloud Datastore is down!!!");
-    }
+    when(datastore.run(any())).thenThrow(new RuntimeException("Cloud Datastore is down!!!"));
 
     Health.Builder builder = new Health.Builder();
 
-    datastoreHealthIndicator.doHealthCheck(builder);
+    assertThatThrownBy(() -> datastoreHealthIndicator.doHealthCheck(builder))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessage("Cloud Datastore is down!!!");
   }
 
   @Test
