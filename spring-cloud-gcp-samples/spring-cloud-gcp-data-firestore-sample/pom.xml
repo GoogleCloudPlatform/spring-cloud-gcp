@@ -103,6 +103,7 @@
       </activation>
       <properties>
         <checkstyle.skip>true</checkstyle.skip>
+        <java.version>11</java.version>
         <!-- Include only native tests, exclude all others -->
         <integration-test.tags.include>native</integration-test.tags.include>
         <integration-test.tags.exclude/>
