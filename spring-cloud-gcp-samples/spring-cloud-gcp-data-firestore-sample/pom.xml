@@ -127,8 +127,8 @@
         </dependency>
         <dependency>
           <groupId>com.google.cloud</groupId>
-          <artifactId>google-cloud-graalvm-support</artifactId>
-          <version>${google-cloud-graalvm-support.version}</version>
+          <artifactId>native-image-support</artifactId>
+          <version>0.12.9</version>
         </dependency>
         <dependency>
           <groupId>org.springframework</groupId>
