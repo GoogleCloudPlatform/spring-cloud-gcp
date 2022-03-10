@@ -102,6 +102,7 @@
           </property>
       </activation>
       <properties>
+        <checkstyle.skip>true</checkstyle.skip>
         <!-- Include only native tests, exclude all others -->
         <integration-test.tags.include>native</integration-test.tags.include>
         <integration-test.tags.exclude/>
