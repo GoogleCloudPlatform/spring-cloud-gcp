@@ -1264,15 +1264,6 @@ class DatastoreTemplateTests {
   }
 
   @Test
-  void queryByExampleDeepPathTest() {
-
-    Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnorePaths("intField.a"));
-    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Ignored paths deeper than 1 are not supported");
-  }
-
-  @Test
   void queryByExampleIncludeNullValuesTest() {
     EntityQuery.Builder builder = Query.newEntityQueryBuilder().setKind("test_kind");
     this.datastoreTemplate.queryByExample(
