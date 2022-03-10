@@ -66,23 +66,6 @@ public class DatastoreQueryByExampleTests {
   }
 
   @Test
-  void queryByExamplePropertyMatchersTest() {
-
-    Example testExample = Example.of(
-        new SimpleTestEntity(),
-        ExampleMatcher.matching()
-            .withMatcher(
-                "id",
-                ExampleMatcher.GenericPropertyMatcher.of(ExampleMatcher.StringMatcher.REGEX)));
-    AbstractThrowableAssert<?, ?> resultAssert = assertThatThrownBy(() ->   this.datastoreTemplate.queryByExample(testExample, null));
-
-    resultAssert
-        .isInstanceOf(DatastoreDataException.class)
-        .hasMessage("Property matchers are not supported");
-  }
-
-
-  @Test
   void queryByExampleDeepPathTest() {
 
     Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnorePaths("intField.a"));
