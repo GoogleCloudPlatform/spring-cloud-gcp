@@ -582,8 +582,7 @@ class DefaultDatastoreEntityConverterTests {
   @Test
   void testCollectionFieldsUnsupportedWriteReadException() {
 
-    TestItemUnsupportedFields.CollectionOfUnsupportedTypes item =
-        getCollectionOfUnsupportedTypesItem();
+    TestItemUnsupportedFields.CollectionOfUnsupportedTypes item = getCollectionOfUnsupportedTypesItem();
 
     DatastoreEntityConverter entityConverter =
         new DefaultDatastoreEntityConverter(
@@ -601,14 +600,14 @@ class DefaultDatastoreEntityConverterTests {
     Class parameter = TestItemUnsupportedFields.CollectionOfUnsupportedTypes.class;
 
     assertThatThrownBy(() -> entityConverter.read(parameter, entity))
-            .isInstanceOf(DatastoreDataException.class)
             .hasMessageContaining("Unable to read property unsupportedElts")
             .hasMessageContaining("Unable process elements of a collection")
             .hasMessageContaining("No converter found capable of converting from type [java.lang.Integer] "
                     + "to type [com.google.cloud.spring.data.datastore.core.convert."
                     + "TestItemUnsupportedFields$NewType]")
             .hasMessageContaining("Unable to read com.google.cloud.spring.data.datastore.core.convert."
-                    + "TestItemUnsupportedFields$CollectionOfUnsupportedTypes entity");
+                    + "TestItemUnsupportedFields$CollectionOfUnsupportedTypes entity")
+            .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
