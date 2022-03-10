@@ -14,6 +14,10 @@
         <version>3.2.0-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <spring.native.version>0.11.3</spring.native.version>
+    </properties>
+
     <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
     <dependencyManagement>
         <dependencies>
@@ -97,38 +101,26 @@
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
             </plugin>
-
-            <!-- These plugins enable building the application to a JAR *not* using Native Image -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.2</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>dependency-jars/</classpathPrefix>
-                            <mainClass>trace.TraceSampleApplication</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.2.0</version>
+                <groupId>org.springframework.experimental</groupId>
+                <artifactId>spring-aot-maven-plugin</artifactId>
+                <version>${spring.native.version}</version>
                 <executions>
                     <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
+                        <id>generate</id>
                         <goals>
-                            <goal>copy-dependencies</goal>
+                            <goal>generate</goal>
                         </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/dependency-jars/
-                            </outputDirectory>
-                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-generate</id>
+                        <goals>
+                            <goal>test-generate</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -158,7 +150,7 @@
                     -->
                     <groupId>org.springframework.experimental</groupId>
                     <artifactId>spring-native</artifactId>
-                    <version>0.11.3</version>
+                    <version>${spring.native.version}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.junit.vintage</groupId>
@@ -186,8 +178,7 @@
                     <plugin>
                         <groupId>org.springframework.experimental</groupId>
                         <artifactId>spring-aot-maven-plugin</artifactId>
-                        <!-- Latest 0.11.3 failed with ClassCastException: class java.lang.Integer cannot be cast to class java.util.List (java.lang.Integer and java.util.List are in module java.base of loader 'bootstrap') -->
-                        <version>0.10.6</version>
+                        <version>${spring.native.version}</version>
                         <executions>
                             <execution>
                                 <id>generate</id>
@@ -225,18 +216,8 @@
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
-                        <version>0.9.9</version>
+                        <version>0.9.10</version>
                         <extensions>true</extensions>
-                        <configuration>
-                            <mainClass>com.example.Application</mainClass>
-                            <buildArgs>
-                                <buildArg>--no-fallback</buildArg>
-                                <buildArg>--no-server</buildArg>
-                                <buildArg>--initialize-at-build-time</buildArg>
-                                <!-- Added this for the error https://gist.github.com/suztomo/b348ae17a09e0a5ef8bd698c237c1a69 -->
-                                <buildArg>--initialize-at-run-time=com.sun.jmx.mbeanserver.JmxMBeanServer</buildArg>
-                            </buildArgs>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>build-native</id>
@@ -253,6 +234,8 @@
                                 <phase>test</phase>
                             </execution>
                         </executions>
+                        <configuration>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
