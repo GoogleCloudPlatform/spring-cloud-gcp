@@ -25,6 +25,7 @@ import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.core.mapping.Field;
+import org.assertj.core.api.AbstractThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.annotation.Id;
@@ -53,30 +54,15 @@ public class DatastoreQueryByExampleTests {
   }
 
   @Test
-  void queryByExampleExactMatchTest() {
+  void basicThrowableAssert() {
+    Exception testException = new RuntimeException("seriously?");
 
-    Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withStringMatcher(ExampleMatcher.StringMatcher.REGEX));
-    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-        .isInstanceOf(DatastoreDataException.class)
-        .hasMessage("Unsupported StringMatcher. Only EXACT and DEFAULT are supported");
-  }
-
-  @Test
-  void queryByExampleIgnoreCaseTest() {
-
-    Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnoreCase());
-    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-        .isInstanceOf(DatastoreDataException.class)
-        .hasMessage("Ignore case matching is not supported");
-  }
-
-  @Test
-  void queryByExampleAllMatchTest() {
-
-    Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matchingAny());
-    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-        .isInstanceOf(DatastoreDataException.class)
-        .hasMessage("Unsupported MatchMode. Only MatchMode.ALL is supported");
+    assertThatThrownBy(() -> {
+      throw testException;
+    }
+    )
+        .isInstanceOf(RuntimeException.class)
+        .hasMessage("seriously?");
   }
 
   @Test
@@ -88,29 +74,11 @@ public class DatastoreQueryByExampleTests {
             .withMatcher(
                 "id",
                 ExampleMatcher.GenericPropertyMatcher.of(ExampleMatcher.StringMatcher.REGEX)));
-    assertThatThrownBy(() ->   this.datastoreTemplate.queryByExample(testExample, null))
+    AbstractThrowableAssert<?, ?> resultAssert = assertThatThrownBy(() ->   this.datastoreTemplate.queryByExample(testExample, null));
+
+    resultAssert
         .isInstanceOf(DatastoreDataException.class)
         .hasMessage("Property matchers are not supported");
-  }
-
-  @Test
-  void queryByExampleCaseSensitiveTest() {
-
-    Example testExample =  Example.of(
-        new SimpleTestEntity(),
-        ExampleMatcher.matching()
-            .withMatcher("id", ExampleMatcher.GenericPropertyMatcher::caseSensitive));
-    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-        .isInstanceOf(DatastoreDataException.class)
-        .hasMessage("Property matchers are not supported");
-  }
-
-  @Test
-  void queryByExampleNullTest() {
-
-    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(null, null))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("A non-null example is expected");
   }
 
 
