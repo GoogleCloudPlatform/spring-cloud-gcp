@@ -1268,8 +1268,8 @@ class DatastoreTemplateTests {
 
     Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnorePaths("intField.a"));
     assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Ignored paths deeper than 1 are not supported");
+            .hasMessage("Ignored paths deeper than 1 are not supported")
+            .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
@@ -1304,8 +1304,8 @@ class DatastoreTemplateTests {
 
     Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withStringMatcher(ExampleMatcher.StringMatcher.REGEX));
     assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Unsupported StringMatcher. Only EXACT and DEFAULT are supported");
+            .hasMessage("Unsupported StringMatcher. Only EXACT and DEFAULT are supported")
+            .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
@@ -1313,8 +1313,8 @@ class DatastoreTemplateTests {
 
     Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnoreCase());
     assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Ignore case matching is not supported");
+            .hasMessage("Ignore case matching is not supported")
+            .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
@@ -1322,8 +1322,8 @@ class DatastoreTemplateTests {
 
     Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matchingAny());
     assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Unsupported MatchMode. Only MatchMode.ALL is supported");
+            .hasMessage("Unsupported MatchMode. Only MatchMode.ALL is supported")
+            .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
@@ -1336,8 +1336,8 @@ class DatastoreTemplateTests {
                             "id",
                             ExampleMatcher.GenericPropertyMatcher.of(ExampleMatcher.StringMatcher.REGEX)));
     assertThatThrownBy(() ->   this.datastoreTemplate.queryByExample(testExample, null))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Property matchers are not supported");
+            .hasMessage("Property matchers are not supported")
+            .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
@@ -1348,8 +1348,8 @@ class DatastoreTemplateTests {
             ExampleMatcher.matching()
                     .withMatcher("id", ExampleMatcher.GenericPropertyMatcher::caseSensitive));
     assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Property matchers are not supported");
+            .hasMessage("Property matchers are not supported")
+            .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
