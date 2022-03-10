@@ -690,7 +690,8 @@ class DatastoreTemplateTests {
   @Test
   void saveTestNonKeyId() {
 
-    assertThatThrownBy(() -> this.datastoreTemplate.save(this.ob1, createFakeKey("key0")))
+    Key testKey = createFakeKey("key0");
+    assertThatThrownBy(() -> this.datastoreTemplate.save(this.ob1, testKey))
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("Only Key types are allowed for descendants id");
 
@@ -723,7 +724,8 @@ class DatastoreTemplateTests {
     when(this.objectToKeyFactory.getKeyFromObject(eq(this.childEntity1), any()))
         .thenReturn(this.childEntity1.id);
 
-    assertThatThrownBy(() -> this.datastoreTemplate.save(this.childEntity1, createFakeKey("key0")))
+    Key testKey = createFakeKey("key0");
+    assertThatThrownBy(() -> this.datastoreTemplate.save(this.childEntity1, testKey))
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("Descendant object has a key without current ancestor");
   }
@@ -1265,11 +1267,10 @@ class DatastoreTemplateTests {
   }
 
   @Test
-  public void queryByExampleDeepPathTest() {
+  void queryByExampleDeepPathTest() {
 
-    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(
-            Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnorePaths("intField.a")),
-            null))
+    Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnorePaths("intField.a"));
+    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("Ignored paths deeper than 1 are not supported");
   }
@@ -1304,11 +1305,8 @@ class DatastoreTemplateTests {
   @Test
   void queryByExampleExactMatchTest() {
 
-    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(
-            Example.of(
-                    new SimpleTestEntity(),
-                    ExampleMatcher.matching().withStringMatcher(ExampleMatcher.StringMatcher.REGEX)),
-            null))
+    Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withStringMatcher(ExampleMatcher.StringMatcher.REGEX));
+    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("Unsupported StringMatcher. Only EXACT and DEFAULT are supported");
   }
@@ -1316,17 +1314,17 @@ class DatastoreTemplateTests {
   @Test
   void queryByExampleIgnoreCaseTest() {
 
-    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(
-            Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnoreCase()), null))
+    Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnoreCase());
+    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("Ignore case matching is not supported");
   }
 
   @Test
-  public void queryByExampleAllMatchTest() {
+  void queryByExampleAllMatchTest() {
 
-    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(
-            Example.of(new SimpleTestEntity(), ExampleMatcher.matchingAny()), null))
+    Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matchingAny());
+    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("Unsupported MatchMode. Only MatchMode.ALL is supported");
   }
@@ -1334,14 +1332,13 @@ class DatastoreTemplateTests {
   @Test
   void queryByExamplePropertyMatchersTest() {
 
-    assertThatThrownBy(() ->   this.datastoreTemplate.queryByExample(
-            Example.of(
-                    new SimpleTestEntity(),
-                    ExampleMatcher.matching()
-                            .withMatcher(
-                                    "id",
-                                    ExampleMatcher.GenericPropertyMatcher.of(ExampleMatcher.StringMatcher.REGEX))),
-            null))
+    Example testExample = Example.of(
+            new SimpleTestEntity(),
+            ExampleMatcher.matching()
+                    .withMatcher(
+                            "id",
+                            ExampleMatcher.GenericPropertyMatcher.of(ExampleMatcher.StringMatcher.REGEX)));
+    assertThatThrownBy(() ->   this.datastoreTemplate.queryByExample(testExample, null))
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("Property matchers are not supported");
   }
@@ -1349,12 +1346,11 @@ class DatastoreTemplateTests {
   @Test
   void queryByExampleCaseSensitiveTest() {
 
-    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(
-            Example.of(
-                    new SimpleTestEntity(),
-                    ExampleMatcher.matching()
-                            .withMatcher("id", ExampleMatcher.GenericPropertyMatcher::caseSensitive)),
-            null))
+    Example testExample =  Example.of(
+            new SimpleTestEntity(),
+            ExampleMatcher.matching()
+                    .withMatcher("id", ExampleMatcher.GenericPropertyMatcher::caseSensitive));
+    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("Property matchers are not supported");
   }
