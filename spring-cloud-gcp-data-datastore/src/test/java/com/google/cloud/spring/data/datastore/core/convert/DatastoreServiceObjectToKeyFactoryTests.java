@@ -91,8 +91,9 @@ class DatastoreServiceObjectToKeyFactoryTests {
   void getKeyNoIdTest() {
 
     DatastorePersistentEntity dpeTest = this.datastoreMappingContext.getPersistentEntity(TestEntityNoId.class);
+    Object entity = new TestEntityNoId();
 
-    assertThatThrownBy(() -> this.datastoreServiceObjectToKeyFactory.getKeyFromObject(new TestEntityNoId(), dpeTest))
+    assertThatThrownBy(() -> this.datastoreServiceObjectToKeyFactory.getKeyFromObject(entity, dpeTest))
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("An ID property was required but does not exist for the type: "
                     + "class com.google.cloud.spring.data.datastore.core.convert."
