@@ -100,7 +100,7 @@ class DatastoreTransactionManagerTests {
   }
 
   @Test
-  public void testDoCommitFailure() {
+  void testDoCommitFailure() {
 
     when(this.transaction.isActive()).thenReturn(true);
     when(this.transaction.commit()).thenThrow(new DatastoreException(0, "", ""));
