@@ -414,7 +414,7 @@
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-compiler-plugin</artifactId>
-							<version>3.10.0</version>
+							<version>3.10.1</version>
 							<configuration>
 								<source>${maven.compiler.source}</source>
 								<target>${maven.compiler.target}</target>
@@ -463,7 +463,7 @@
 					<plugins>
 						<plugin>
 							<artifactId>maven-compiler-plugin</artifactId>
-							<version>3.10.0</version>
+							<version>3.10.1</version>
 							<configuration>
 								<fork>true</fork>
 								<compilerArgs combine.children="append">
