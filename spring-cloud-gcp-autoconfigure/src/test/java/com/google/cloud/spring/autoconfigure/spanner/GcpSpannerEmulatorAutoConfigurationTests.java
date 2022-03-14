@@ -23,12 +23,12 @@ import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.threeten.bp.Duration;
 
-public class GcpSpannerEmulatorAutoConfigurationTests {
+class GcpSpannerEmulatorAutoConfigurationTests {
 
   private ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
@@ -40,7 +40,7 @@ public class GcpSpannerEmulatorAutoConfigurationTests {
           .withPropertyValues("spring.cloud.gcp.spanner.project-id=test-project");
 
   @Test
-  public void testEmulatorAutoConfigurationEnabled() {
+  void testEmulatorAutoConfigurationEnabled() {
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.spanner.emulator.enabled=true")
         .run(
@@ -54,7 +54,7 @@ public class GcpSpannerEmulatorAutoConfigurationTests {
   }
 
   @Test
-  public void testEmulatorAutoConfigurationEnabledCustomHostPort() {
+  void testEmulatorAutoConfigurationEnabledCustomHostPort() {
     this.contextRunner
         .withPropertyValues(
             "spring.cloud.gcp.spanner.emulator.enabled=true",
@@ -67,7 +67,7 @@ public class GcpSpannerEmulatorAutoConfigurationTests {
   }
 
   @Test
-  public void testEmulatorAutoConfigurationDisabled() {
+  void testEmulatorAutoConfigurationDisabled() {
     this.contextRunner
         .withUserConfiguration(GcpSpannerAutoConfigurationTests.TestConfiguration.class)
         .run(
@@ -78,7 +78,7 @@ public class GcpSpannerEmulatorAutoConfigurationTests {
   }
 
   @Test
-  public void testEmulatorSpannerCustomizerProvided() {
+  void testEmulatorSpannerCustomizerProvided() {
     Duration duration = Duration.ofSeconds(42);
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.spanner.emulator.enabled=true")
