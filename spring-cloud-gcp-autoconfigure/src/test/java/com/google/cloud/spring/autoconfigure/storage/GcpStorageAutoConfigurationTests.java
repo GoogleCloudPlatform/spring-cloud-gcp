@@ -28,7 +28,7 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Storage;
 import java.io.IOException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
 /** Config for Storage auto config tests. */
-public class GcpStorageAutoConfigurationTests {
+class GcpStorageAutoConfigurationTests {
 
   private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
 
@@ -48,7 +48,7 @@ public class GcpStorageAutoConfigurationTests {
           .withUserConfiguration(TestConfiguration.class);
 
   @Test
-  public void testValidObject() throws Exception {
+  void testValidObject() throws Exception {
     this.contextRunner.run(
         context -> {
           Resource resource = context.getBean("mockResource", Resource.class);
@@ -57,7 +57,7 @@ public class GcpStorageAutoConfigurationTests {
   }
 
   @Test
-  public void testAutoCreateFilesTrueByDefault() throws IOException {
+  void testAutoCreateFilesTrueByDefault() throws IOException {
     this.contextRunner.run(
         context -> {
           Resource resource = context.getBean("mockResource", Resource.class);
@@ -66,7 +66,7 @@ public class GcpStorageAutoConfigurationTests {
   }
 
   @Test
-  public void testAutoCreateFilesRespectsProperty() throws IOException {
+  void testAutoCreateFilesRespectsProperty() throws IOException {
 
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.storage.auto-create-files=false")
