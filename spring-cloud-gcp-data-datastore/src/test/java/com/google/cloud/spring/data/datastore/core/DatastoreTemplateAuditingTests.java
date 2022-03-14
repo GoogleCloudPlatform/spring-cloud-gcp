@@ -35,8 +35,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,12 +45,12 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests the auditing features of the template. */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration
-public class DatastoreTemplateAuditingTests {
+class DatastoreTemplateAuditingTests {
 
   private static final LocalDateTime LONG_AGO = LocalDate.parse("2000-01-01").atStartOfDay();
 
@@ -58,7 +58,7 @@ public class DatastoreTemplateAuditingTests {
   @Autowired Datastore datastore;
 
   @Test
-  public void testModifiedNullProperties() {
+  void testModifiedNullProperties() {
     TestEntity testEntity = new TestEntity();
     testEntity.id = "a";
     // intentionally leaving the other two audit properties untouched.
@@ -67,7 +67,7 @@ public class DatastoreTemplateAuditingTests {
   }
 
   @Test
-  public void testModifiedPrevProperties() {
+  void testModifiedPrevProperties() {
     TestEntity testEntity = new TestEntity();
     testEntity.id = "a";
     testEntity.lastTouched = LONG_AGO;
@@ -79,7 +79,7 @@ public class DatastoreTemplateAuditingTests {
   }
 
   @Test
-  public void testInTransaction() {
+  void testInTransaction() {
     when(datastore.runInTransaction(any()))
         .thenAnswer(
             invocation -> {
