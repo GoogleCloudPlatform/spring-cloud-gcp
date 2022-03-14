@@ -19,8 +19,6 @@ package com.google.cloud.spring.bigquery.integration.outbound;
 import static com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.Field;
@@ -39,11 +37,11 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
@@ -52,13 +50,14 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.concurrent.ListenableFuture;
 
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.bigquery", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = BigQueryTestConfiguration.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-public class BigQueryFileMessageHandlerIntegrationTests {
+class BigQueryFileMessageHandlerIntegrationTests {
 
   private static final String TABLE_NAME = "test_table";
 
@@ -68,24 +67,15 @@ public class BigQueryFileMessageHandlerIntegrationTests {
 
   @Autowired private BigQueryFileMessageHandler messageHandler;
 
-  @BeforeClass
-  public static void prepare() {
-    assumeThat(
-        "BigQuery integration tests are disabled. "
-            + "Please use '-Dit.bigquery=true' to enable them.",
-        System.getProperty("it.bigquery"),
-        is("true"));
-  }
-
-  @Before
-  @After
-  public void setup() {
+  @BeforeEach
+  @AfterEach
+  void setup() {
     // Clear the previous dataset before beginning the test.
     this.bigquery.delete(TableId.of(DATASET_NAME, TABLE_NAME));
   }
 
   @Test
-  public void testLoadFileWithSchema() throws InterruptedException, ExecutionException {
+  void testLoadFileWithSchema() throws InterruptedException, ExecutionException {
     Schema schema =
         Schema.of(
             Field.newBuilder("CountyId", StandardSQLTypeName.STRING).setMode(Mode.NULLABLE).build(),
@@ -127,7 +117,7 @@ public class BigQueryFileMessageHandlerIntegrationTests {
   }
 
   @Test
-  public void testLoadFile() throws InterruptedException, ExecutionException {
+  void testLoadFile() throws InterruptedException, ExecutionException {
     HashMap<String, Object> messageHeaders = new HashMap<>();
     this.messageHandler.setTableName(TABLE_NAME);
     this.messageHandler.setFormatOptions(FormatOptions.csv());
@@ -161,7 +151,7 @@ public class BigQueryFileMessageHandlerIntegrationTests {
   }
 
   @Test
-  public void testLoadFile_sync() throws InterruptedException {
+  void testLoadFile_sync() throws InterruptedException {
     this.messageHandler.setSync(true);
 
     HashMap<String, Object> messageHeaders = new HashMap<>();
@@ -182,7 +172,7 @@ public class BigQueryFileMessageHandlerIntegrationTests {
   }
 
   @Test
-  public void testLoadFile_cancel() {
+  void testLoadFile_cancel() {
     HashMap<String, Object> messageHeaders = new HashMap<>();
     messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_NAME, TABLE_NAME);
     messageHeaders.put(BigQuerySpringMessageHeaders.FORMAT_OPTIONS, FormatOptions.csv());
