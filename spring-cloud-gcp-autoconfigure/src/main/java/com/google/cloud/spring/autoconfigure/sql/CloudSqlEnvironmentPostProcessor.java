@@ -80,11 +80,15 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
           .getPropertySources()
           .addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
 
-      CredentialsPropertiesSetter.setCredentials(sqlProperties, propertiesRetriever.getGcpProperties());
+      CredentialsPropertiesSetter.setCredentials(sqlProperties,
+          propertiesRetriever.getGcpProperties());
 
       // support usage metrics
-      CoreSocketFactory.setApplicationName(
-          "spring-cloud-gcp-sql/" + this.getClass().getPackage().getImplementationVersion());
+      String applicationName =
+          "spring-cloud-gcp-sql/" + this.getClass().getPackage().getImplementationVersion();
+      if (!CoreSocketFactory.getApplicationName().contains(applicationName)) {
+        CoreSocketFactory.setApplicationName(applicationName);
+      }
     }
   }
 
