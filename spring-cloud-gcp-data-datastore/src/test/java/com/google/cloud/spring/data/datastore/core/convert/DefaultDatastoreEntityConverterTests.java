@@ -732,7 +732,7 @@ class DefaultDatastoreEntityConverterTests {
   }
 
   @Test
-  public void testEmbeddedEntity() {
+  void testEmbeddedEntity() {
     EmbeddedEntity embeddedEntityA = new EmbeddedEntity("item 0");
     EmbeddedEntity embeddedEntityB = new EmbeddedEntity("item 1");
 
@@ -865,7 +865,7 @@ class DefaultDatastoreEntityConverterTests {
   }
 
   @Test
-  public void privateCustomMapExceptionTest() {
+  void privateCustomMapExceptionTest() {
     ServiceConfigurationPrivateCustomMap config =
         new ServiceConfigurationPrivateCustomMap("a", new PrivateCustomMap());
     DatastoreEntityConverter entityConverter =
