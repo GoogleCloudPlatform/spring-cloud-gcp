@@ -17,14 +17,15 @@
 package com.google.cloud.spring.autoconfigure.datastore.health;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.datastore.Datastore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
 
@@ -33,13 +34,13 @@ import org.springframework.boot.actuate.health.Status;
  *
  * @since 1.2
  */
-@RunWith(MockitoJUnitRunner.class)
-public class DatastoreHealthIndicatorTests {
+@ExtendWith(MockitoExtension.class)
+class DatastoreHealthIndicatorTests {
 
   @Mock private Datastore datastore;
 
   @Test
-  public void testdoHealthCheckUp() throws Exception {
+  void testdoHealthCheckUp() throws Exception {
     DatastoreHealthIndicator datastoreHealthIndicator =
         new DatastoreHealthIndicator(() -> datastore);
 
@@ -52,8 +53,8 @@ public class DatastoreHealthIndicatorTests {
     assertThat(builder.build().getStatus()).isSameAs(Status.UP);
   }
 
-  @Test(expected = Exception.class)
-  public void testdoHealthCheckDown() throws Exception {
+  @Test
+  void testdoHealthCheckDown() {
     DatastoreHealthIndicator datastoreHealthIndicator =
         new DatastoreHealthIndicator(() -> datastore);
 
@@ -61,11 +62,13 @@ public class DatastoreHealthIndicatorTests {
 
     Health.Builder builder = new Health.Builder();
 
-    datastoreHealthIndicator.doHealthCheck(builder);
+    assertThatThrownBy(() -> datastoreHealthIndicator.doHealthCheck(builder))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessage("Cloud Datastore is down!!!");
   }
 
   @Test
-  public void testHealthy() {
+  void testHealthy() {
     DatastoreHealthIndicator datastoreHealthIndicator =
         new DatastoreHealthIndicator(() -> datastore);
 
@@ -75,7 +78,7 @@ public class DatastoreHealthIndicatorTests {
   }
 
   @Test
-  public void testUnhealthy() {
+  void testUnhealthy() {
     DatastoreHealthIndicator datastoreHealthIndicator =
         new DatastoreHealthIndicator(() -> datastore);
 
