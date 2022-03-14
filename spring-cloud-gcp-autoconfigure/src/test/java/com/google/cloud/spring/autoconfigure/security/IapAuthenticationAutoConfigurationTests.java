@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.resourcemanager.Project;
@@ -31,13 +32,10 @@ import com.google.cloud.spring.security.iap.AudienceValidator;
 import java.time.Instant;
 import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -58,11 +56,8 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenResolv
  *
  * @since 1.1
  */
-@RunWith(MockitoJUnitRunner.class)
-public class IapAuthenticationAutoConfigurationTests {
-
-  /** used to check exception messages and types. */
-  @Rule public ExpectedException expectedException = ExpectedException.none();
+@ExtendWith(MockitoExtension.class)
+class IapAuthenticationAutoConfigurationTests {
 
   static final String FAKE_USER_TOKEN = "lol cats forever";
 
@@ -88,33 +83,28 @@ public class IapAuthenticationAutoConfigurationTests {
 
   @Mock static MetadataProvider mockMetadataProvider;
 
-  @Before
-  public void httpRequestSetup() {
-    when(this.mockIapRequest.getHeader("x-goog-iap-jwt-assertion")).thenReturn("very fake jwt");
-  }
-
   @Test
-  public void testIapAutoconfiguredBeansExistInContext() {
+  void testIapAutoconfiguredBeansExistInContext() {
+    when(this.mockIapRequest.getHeader("x-goog-iap-jwt-assertion")).thenReturn("very fake jwt");
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.security.iap.audience=unused")
         .run(this::verifyJwtBeans);
   }
 
   @Test
-  public void testAutoconfiguredBeansMissingWhenGatingPropertyFalse() {
+  void testAutoconfiguredBeansMissingWhenGatingPropertyFalse() {
 
-    this.expectedException.expect(NoSuchBeanDefinitionException.class);
-    this.expectedException.expectMessage(
-        "No qualifying bean of type "
-            + "'org.springframework.security.oauth2.jwt.JwtDecoder' available");
+    ApplicationContextRunner contextRunnerNew = this.contextRunner.withPropertyValues("spring.cloud.gcp.security.iap.enabled=false");
+    assertThatThrownBy(() -> contextRunnerNew.run(context -> context.getBean(JwtDecoder.class)))
+            .isInstanceOf(NoSuchBeanDefinitionException.class)
+            .hasMessage("No qualifying bean of type "
+                    + "'org.springframework.security.oauth2.jwt.JwtDecoder' available");
 
-    this.contextRunner
-        .withPropertyValues("spring.cloud.gcp.security.iap.enabled=false")
-        .run(context -> context.getBean(JwtDecoder.class));
   }
 
   @Test
-  public void testIapBeansReturnedWhenBothIapAndSpringSecurityConfigPresent() {
+  void testIapBeansReturnedWhenBothIapAndSpringSecurityConfigPresent() {
+    when(this.mockIapRequest.getHeader("x-goog-iap-jwt-assertion")).thenReturn("very fake jwt");
     new ApplicationContextRunner()
         .withPropertyValues("spring.cloud.gcp.security.iap.audience=unused")
         .withConfiguration(
@@ -126,9 +116,8 @@ public class IapAuthenticationAutoConfigurationTests {
   }
 
   @Test
-  public void testIapBeansReturnedWhenBothIapWithMultipleAudiencesAndSpringSecurityConfigPresent() {
+  void testIapBeansReturnedWhenBothIapWithMultipleAudiencesAndSpringSecurityConfigPresent() {
     when(mockJwt.getAudience()).thenReturn(Collections.singletonList("aud1"));
-
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.security.iap.audience=aud1, aud2")
         .run(
@@ -140,7 +129,7 @@ public class IapAuthenticationAutoConfigurationTests {
   }
 
   @Test
-  public void testUserBeansReturnedUserConfigPresent() {
+  void testUserBeansReturnedUserConfigPresent() {
     this.contextRunner
         .withUserConfiguration(UserConfiguration.class)
         .withPropertyValues("spring.cloud.gcp.security.iap.audience=unused")
@@ -159,7 +148,7 @@ public class IapAuthenticationAutoConfigurationTests {
   }
 
   @Test
-  public void testCustomPropertyOverridesDefault() {
+  void testCustomPropertyOverridesDefault() {
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.security.iap.header=some-other-header")
         .withPropertyValues("spring.cloud.gcp.security.iap.audience=unused")
@@ -176,8 +165,7 @@ public class IapAuthenticationAutoConfigurationTests {
   }
 
   @Test
-  public void testContextFailsWhenAudienceValidatorNotAvailable() throws Exception {
-
+  void testContextFailsWhenAudienceValidatorNotAvailable() throws Exception {
     this.contextRunner.run(
         context -> {
           assertThat(context)
@@ -190,10 +178,9 @@ public class IapAuthenticationAutoConfigurationTests {
   }
 
   @Test
-  public void testFixedStringAudienceValidatorAddedWhenAvailable() throws Exception {
+  void testFixedStringAudienceValidatorAddedWhenAvailable() throws Exception {
     when(mockJwt.getExpiresAt()).thenReturn(Instant.now().plusSeconds(10));
     when(mockJwt.getNotBefore()).thenReturn(Instant.now().minusSeconds(10));
-
     this.contextRunner
         .withUserConfiguration(FixedAudienceValidatorConfiguration.class)
         .run(
@@ -212,10 +199,9 @@ public class IapAuthenticationAutoConfigurationTests {
   }
 
   @Test
-  public void testAppEngineAudienceValidatorAddedWhenAvailable() {
+  void testAppEngineAudienceValidatorAddedWhenAvailable() {
     when(this.mockEnvironmentProvider.getCurrentEnvironment())
         .thenReturn(GcpEnvironment.APP_ENGINE_FLEXIBLE);
-
     this.contextRunner
         .withUserConfiguration(FixedAudienceValidatorConfiguration.class)
         .run(
