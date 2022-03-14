@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.datastore.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -35,18 +36,16 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingConte
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.Id;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -56,9 +55,9 @@ import org.springframework.transaction.annotation.Transactional;
  * This class tests that {@link DatastoreTemplate} is using the transction-specific read-write when
  * inside transactions.
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration
-public class DatastoreTransactionTemplateTests {
+class DatastoreTransactionTemplateTests {
 
   private final Key key = Key.newBuilder("a", "b", "c").build();
 
@@ -70,11 +69,8 @@ public class DatastoreTransactionTemplateTests {
 
   @MockBean ObjectToKeyFactory objectToKeyFactory;
 
-  /** Used to check exception messages and types. */
-  @Rule public ExpectedException expectedException = ExpectedException.none();
-
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     when(this.datastore.newTransaction()).thenReturn(this.transaction);
     when(this.transaction.isActive()).thenReturn(true);
 
@@ -105,7 +101,7 @@ public class DatastoreTransactionTemplateTests {
   }
 
   @Test
-  public void newTransaction() {
+  void newTransaction() {
     this.transactionalService.doInTransaction(new TestEntity(), new TestEntity());
     verify(this.datastore, times(1)).newTransaction();
     verify(this.transaction, times(1)).commit();
@@ -116,7 +112,7 @@ public class DatastoreTransactionTemplateTests {
   }
 
   @Test
-  public void rollBackTransaction() {
+  void rollBackTransaction() {
     Exception exception = null;
     try {
       this.transactionalService.doInTransactionWithException(new TestEntity(), new TestEntity());
@@ -130,7 +126,7 @@ public class DatastoreTransactionTemplateTests {
   }
 
   @Test
-  public void doWithoutTransactionTest() {
+  void doWithoutTransactionTest() {
     this.transactionalService.doWithoutTransaction(new TestEntity(), new TestEntity());
     verify(this.transaction, never()).commit();
     verify(this.transaction, never()).rollback();
@@ -141,22 +137,21 @@ public class DatastoreTransactionTemplateTests {
   }
 
   @Test
-  public void unsupportedIsolationTest() {
-    this.expectedException.expect(IllegalStateException.class);
-    this.expectedException.expectMessage(
-        "DatastoreTransactionManager supports only "
-            + "isolation level TransactionDefinition.ISOLATION_DEFAULT or ISOLATION_SERIALIZABLE");
+  void unsupportedIsolationTest() {
 
-    this.transactionalService.doNothingUnsupportedIsolation();
+    assertThatThrownBy(() -> this.transactionalService.doNothingUnsupportedIsolation())
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("DatastoreTransactionManager supports only "
+                    + "isolation level TransactionDefinition.ISOLATION_DEFAULT or ISOLATION_SERIALIZABLE");
   }
 
   @Test
-  public void unsupportedPropagationTest() {
-    this.expectedException.expect(IllegalStateException.class);
-    this.expectedException.expectMessage(
-        "DatastoreTransactionManager supports only "
-            + "propagation behavior TransactionDefinition.PROPAGATION_REQUIRED");
-    this.transactionalService.doNothingUnsupportedPropagation();
+  void unsupportedPropagationTest() {
+
+    assertThatThrownBy(() -> this.transactionalService.doNothingUnsupportedPropagation())
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("DatastoreTransactionManager supports only "
+                    + "propagation behavior TransactionDefinition.PROPAGATION_REQUIRED");
   }
 
   /** Spring config for the tests. */
