@@ -18,8 +18,6 @@ package com.google.cloud.spring.bigquery.core;
 
 import static com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.Field;
@@ -35,16 +33,17 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.concurrent.ListenableFuture;
 
 /**
@@ -52,9 +51,12 @@ import org.springframework.util.concurrent.ListenableFuture;
  *
  * @since 1.2
  */
-@RunWith(SpringRunner.class)
+//Please create a table "test_dataset" in BigQuery to run the tests successfully
+@EnabledIfSystemProperty(named = "it.bigquery", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = BigQueryTestConfiguration.class)
-public class BigQueryTemplateIntegrationTests {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class BigQueryTemplateIntegrationTests {
 
   private static final String SELECT_FORMAT = "SELECT * FROM %s";
 
@@ -69,30 +71,21 @@ public class BigQueryTemplateIntegrationTests {
 
   private String selectQuery;
 
-  @BeforeClass
-  public static void prepare() {
-    assumeThat(
-        "BigQuery integration tests are disabled. "
-            + "Please use '-Dit.bigquery=true' to enable them.",
-        System.getProperty("it.bigquery"),
-        is("true"));
-  }
-
-  @Before
-  public void generateRandomTableName() {
+  @BeforeAll
+  void generateRandomTableName() {
     String uuid = UUID.randomUUID().toString().replace("-", "");
     this.tableName = "template_test_table_" + uuid;
     this.selectQuery = String.format(SELECT_FORMAT, DATASET_NAME + "." + tableName);
   }
 
-  @After
-  public void cleanupTestEnvironment() {
+  @AfterAll
+  void cleanupTestEnvironment() {
     // Delete table after test.
     this.bigQuery.delete(TableId.of(DATASET_NAME, tableName));
   }
 
   @Test
-  public void testLoadFileWithSchema() throws Exception {
+  void testLoadFileWithSchema() throws Exception {
     Schema schema =
         Schema.of(
             Field.of("CountyId", StandardSQLTypeName.INT64),
@@ -116,7 +109,7 @@ public class BigQueryTemplateIntegrationTests {
   }
 
   @Test
-  public void testLoadFile() throws IOException, ExecutionException, InterruptedException {
+  void testLoadFile() throws IOException, ExecutionException, InterruptedException {
     ListenableFuture<Job> bigQueryJobFuture =
         bigQueryTemplate.writeDataToTable(
             this.tableName, dataFile.getInputStream(), FormatOptions.csv());
@@ -134,7 +127,7 @@ public class BigQueryTemplateIntegrationTests {
   }
 
   @Test
-  public void testLoadBytes() throws ExecutionException, InterruptedException {
+  void testLoadBytes() throws ExecutionException, InterruptedException {
     byte[] byteArray = "CountyId,State,County\n1001,Alabama,Autauga County\n".getBytes();
     ByteArrayInputStream byteStream = new ByteArrayInputStream(byteArray);
 
