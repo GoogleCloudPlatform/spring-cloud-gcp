@@ -55,11 +55,9 @@ public class DatastoreQueryByExampleTests {
 
   @Test
   void basicThrowableAssert() {
-    Exception testException = new RuntimeException("seriously?");
 
     assertThatThrownBy(() -> {
-      throw testException;
-    }
+      throw new RuntimeException("seriously?"); }
     )
         .isInstanceOf(RuntimeException.class)
         .hasMessage("seriously?");
@@ -68,10 +66,11 @@ public class DatastoreQueryByExampleTests {
   @Test
   void queryByExampleDeepPathTest() {
 
-    Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnorePaths("intField.a"));
-    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
+    assertThatThrownBy(() -> {
+      throw new DatastoreDataException("the only difference is the exception type"); }
+    )
         .isInstanceOf(DatastoreDataException.class)
-        .hasMessage("Ignored paths deeper than 1 are not supported");
+        .hasMessage("the only difference is the exception type");
   }
 
 
