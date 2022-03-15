@@ -32,7 +32,8 @@ class SpannerReadOptionsTests {
   @Test
   void addNullReadOptionTest() {
 
-    assertThatThrownBy(() -> new SpannerReadOptions().addReadOption(null))
+    SpannerReadOptions testSpannerReadOptions = new SpannerReadOptions();
+    assertThatThrownBy(() -> testSpannerReadOptions.addReadOption(null))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Valid read option is required!");
   }

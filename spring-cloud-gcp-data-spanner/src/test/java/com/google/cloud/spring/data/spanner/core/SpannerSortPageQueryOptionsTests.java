@@ -32,7 +32,8 @@ class SpannerSortPageQueryOptionsTests {
   @Test
   void addNullQueryOptionTest() {
 
-    assertThatThrownBy(() -> new SpannerQueryOptions().addQueryOption(null))
+    SpannerQueryOptions testSpannerQueryOptions = new SpannerQueryOptions();
+    assertThatThrownBy(() -> testSpannerQueryOptions.addQueryOption(null))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Valid query option is required!");
   }
