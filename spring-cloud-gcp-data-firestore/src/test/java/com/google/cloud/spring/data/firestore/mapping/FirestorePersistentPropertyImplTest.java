@@ -22,18 +22,18 @@ import static org.mockito.Mockito.when;
 import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.firestore.annotation.DocumentId;
 import java.util.Optional;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests for {@link FirestorePersistentPropertyImpl}. */
-@RunWith(MockitoJUnitRunner.class)
-public class FirestorePersistentPropertyImplTest {
+@ExtendWith(SpringExtension.class)
+class FirestorePersistentPropertyImplTest {
 
   @Mock Property mockProperty;
 
@@ -42,7 +42,7 @@ public class FirestorePersistentPropertyImplTest {
   @Mock SimpleTypeHolder mockSimpleTypeHolder;
 
   @Test
-  public void testGetFieldName_isIdProperty() throws NoSuchFieldException {
+  void testGetFieldName_isIdProperty() throws NoSuchFieldException {
     when(mockProperty.getName()).thenReturn("id");
     when(mockProperty.getField()).thenReturn(Optional.of(TestEntity.class.getField("id")));
     when(mockPersistentEntity.getTypeInformation())

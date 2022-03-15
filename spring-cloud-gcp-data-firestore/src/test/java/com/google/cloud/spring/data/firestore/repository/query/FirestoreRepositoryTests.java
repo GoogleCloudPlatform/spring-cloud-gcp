@@ -34,8 +34,8 @@ import com.google.firestore.v1.StructuredQuery;
 import com.google.firestore.v1.StructuredQuery.Direction;
 import com.google.firestore.v1.StructuredQuery.FieldReference;
 import com.google.firestore.v1.StructuredQuery.Order;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,20 +45,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = FirestoreRepositoryTestsConfiguration.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class FirestoreRepositoryTests {
+class FirestoreRepositoryTests {
 
   @Autowired private UserRepository userRepository;
 
   @Autowired private FirestoreTemplate template;
 
   @Test
-  public void testSortQuery_sortParameter() {
+  void testSortQuery_sortParameter() {
     userRepository.findByAgeGreaterThan(0, Sort.by("name")).blockLast();
 
     ArgumentCaptor<StructuredQuery.Builder> captor =
@@ -76,7 +76,7 @@ public class FirestoreRepositoryTests {
   }
 
   @Test
-  public void testSortQuery_methodName_sortByAge() {
+  void testSortQuery_methodName_sortByAge() {
     userRepository.findAllByOrderByAge().blockLast();
 
     ArgumentCaptor<StructuredQuery.Builder> captor =
@@ -93,7 +93,7 @@ public class FirestoreRepositoryTests {
   }
 
   @Test
-  public void testSortQuery_methodName_sortByDocumentId() {
+  void testSortQuery_methodName_sortByDocumentId() {
     userRepository.findByAgeOrderByNameDesc(0).blockLast();
 
     ArgumentCaptor<StructuredQuery.Builder> captor =
