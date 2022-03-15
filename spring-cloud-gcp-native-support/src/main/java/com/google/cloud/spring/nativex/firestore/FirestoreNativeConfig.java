@@ -20,9 +20,9 @@ import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreEmulatorAutoC
 import com.google.cloud.spring.autoconfigure.firestore.FirestoreRepositoriesAutoConfiguration;
 import com.google.cloud.spring.data.firestore.SimpleFirestoreReactiveRepository;
 import com.google.cloud.spring.data.firestore.repository.support.FirestoreRepositoryFactoryBean;
-import org.springframework.nativex.hint.TypeAccess;
 import org.springframework.nativex.hint.JdkProxyHint;
 import org.springframework.nativex.hint.NativeHint;
+import org.springframework.nativex.hint.TypeAccess;
 import org.springframework.nativex.hint.TypeHint;
 import org.springframework.nativex.type.NativeConfiguration;
 
@@ -43,7 +43,7 @@ import org.springframework.nativex.type.NativeConfiguration;
               GcpDatastoreEmulatorAutoConfiguration.class
             },
             typeNames = {"com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext"},
-            access = { TypeAccess.DECLARED_CONSTRUCTORS, TypeAccess.DECLARED_METHODS }),
+            access = {TypeAccess.DECLARED_CONSTRUCTORS, TypeAccess.DECLARED_METHODS}),
     jdkProxies =
         @JdkProxyHint(
             typeNames = {
