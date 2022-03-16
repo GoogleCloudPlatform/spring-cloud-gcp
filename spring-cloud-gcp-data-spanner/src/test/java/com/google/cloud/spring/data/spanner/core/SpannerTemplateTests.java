@@ -286,7 +286,7 @@ class SpannerTemplateTests {
 
 
   @Test
-  <T> void readOnlyTransactionDmlTest() {
+  void readOnlyTransactionDmlTest() {
 
     ReadOnlyTransaction readOnlyTransaction = mock(ReadOnlyTransaction.class);
     when(this.databaseClient.readOnlyTransaction(
@@ -295,7 +295,7 @@ class SpannerTemplateTests {
         .thenReturn(readOnlyTransaction);
 
     SpannerReadOptions testSpannerReadOptions = new SpannerReadOptions().setTimestamp(Timestamp.ofTimeMicroseconds(333));
-    Function<SpannerTemplate, T> testSpannerOperations = spannerOperations -> {
+    Function<SpannerTemplate, Void> testSpannerOperations = spannerOperations -> {
       spannerOperations.executeDmlStatement(Statement.of("fail"));
       return null;
     };
@@ -306,7 +306,7 @@ class SpannerTemplateTests {
   }
 
   @Test
-  <T> void readOnlyTransactionPartitionedDmlTest() {
+  void readOnlyTransactionPartitionedDmlTest() {
 
     ReadOnlyTransaction readOnlyTransaction = mock(ReadOnlyTransaction.class);
     when(this.databaseClient.readOnlyTransaction(
@@ -314,14 +314,14 @@ class SpannerTemplateTests {
         .thenReturn(readOnlyTransaction);
 
     SpannerReadOptions testSpannerReadOptions = new SpannerReadOptions().setTimestamp(Timestamp.ofTimeMicroseconds(333));
-    Function<SpannerTemplate, T> testSpannerOperations = spannerOperations -> {
+    Function<SpannerTemplate, Void> testSpannerOperations = spannerOperations -> {
       spannerOperations.executePartitionedDmlStatement(Statement.of("fail"));
       return null;
     };
 
     assertThatThrownBy(() -> this.spannerTemplate.performReadOnlyTransaction(
             testSpannerOperations, testSpannerReadOptions))
-            .hasMessage("A read-only transaction template cannot execute partitioned" + " DML.");
+            .hasMessage("A read-only transaction template cannot execute partitioned DML.");
   }
 
   @Test
@@ -369,11 +369,7 @@ class SpannerTemplateTests {
   void nullObjectMapperTest() {
 
     assertThatThrownBy(() ->  new SpannerTemplate(
-            () -> this.databaseClient,
-            this.mappingContext,
-            null,
-            this.mutationFactory,
-            this.schemaUtils))
+            () -> this.databaseClient, this.mappingContext, null, this.mutationFactory, this.schemaUtils))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("A valid entity processor for Spanner is required.");
   }
