@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.datastore.core.convert;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Blob;
@@ -27,13 +28,12 @@ import com.google.cloud.datastore.testing.LocalDatastoreHelper;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for the entity value provider. */
-public class EntityPropertyValueProviderTests {
+class EntityPropertyValueProviderTests {
 
   private static final LocalDatastoreHelper HELPER = LocalDatastoreHelper.create(1.0);
 
@@ -44,21 +44,18 @@ public class EntityPropertyValueProviderTests {
   private TwoStepsConversions twoStepsConversion =
       new TwoStepsConversions(new DatastoreCustomConversions(), null, this.datastoreMappingContext);
 
-  /** used to check exception messages and types. */
-  @Rule public ExpectedException expectedException = ExpectedException.none();
-
   private DatastorePersistentEntity<TestDatastoreItem> persistentEntity =
       (DatastorePersistentEntity<TestDatastoreItem>)
           this.datastoreMappingContext.getPersistentEntity(TestDatastoreItem.class);
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     this.datastore =
         HELPER.getOptions().toBuilder().setNamespace("ghijklmnop").build().getService();
   }
 
   @Test
-  public void getPropertyValue() {
+  void getPropertyValue() {
     byte[] bytes = {1, 2, 3};
     Entity entity =
         Entity.newBuilder(this.datastore.newKeyFactory().setKind("aKind").newKey("1"))
@@ -116,12 +113,8 @@ public class EntityPropertyValueProviderTests {
   }
 
   @Test
-  public void testException() {
-    this.expectedException.expect(DatastoreDataException.class);
-    this.expectedException.expectMessage(
-        "Unable to read property boolField; nested exception is "
-            + "com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException: "
-            + "Unable to convert class java.lang.Long to class java.lang.Boolean");
+  void testException() {
+
     Entity entity =
         Entity.newBuilder(this.datastore.newKeyFactory().setKind("aKind").newKey("1"))
             .set("boolField", 123L)
@@ -130,6 +123,12 @@ public class EntityPropertyValueProviderTests {
     EntityPropertyValueProvider provider =
         new EntityPropertyValueProvider(entity, this.twoStepsConversion);
 
-    provider.getPropertyValue(this.persistentEntity.getPersistentProperty("boolField"));
+    DatastorePersistentProperty testDpe = this.persistentEntity.getPersistentProperty("boolField");
+
+    assertThatThrownBy(() -> provider.getPropertyValue(testDpe))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("Unable to read property boolField; nested exception is "
+                    + "com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException: "
+                    + "Unable to convert class java.lang.Long to class java.lang.Boolean");
   }
 }
