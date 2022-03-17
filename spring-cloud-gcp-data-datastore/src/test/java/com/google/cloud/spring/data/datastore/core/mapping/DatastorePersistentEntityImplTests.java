@@ -17,12 +17,11 @@
 package com.google.cloud.spring.data.datastore.core.mapping;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -32,22 +31,19 @@ import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.expression.spel.SpelEvaluationException;
 
 /** Tests for the Datastore Persistent Entity. */
-public class DatastorePersistentEntityImplTests {
-
-  /** used to check exception messages and types. */
-  @Rule public ExpectedException expectedException = ExpectedException.none();
+class DatastorePersistentEntityImplTests {
 
   private final DatastoreMappingContext datastoreMappingContext = new DatastoreMappingContext();
 
   @Test
-  public void testTableName() {
+  void testTableName() {
     DatastorePersistentEntityImpl<TestEntity> entity =
         new DatastorePersistentEntityImpl<>(ClassTypeInformation.from(TestEntity.class), null);
     assertThat(entity.kindName()).isEqualTo("custom_test_kind");
   }
 
   @Test
-  public void testRawTableName() {
+  void testRawTableName() {
     DatastorePersistentEntityImpl<EntityNoCustomName> entity =
         new DatastorePersistentEntityImpl<>(
             ClassTypeInformation.from(EntityNoCustomName.class), null);
@@ -56,7 +52,7 @@ public class DatastorePersistentEntityImplTests {
   }
 
   @Test
-  public void testEmptyCustomTableName() {
+  void testEmptyCustomTableName() {
     DatastorePersistentEntityImpl<EntityEmptyCustomName> entity =
         new DatastorePersistentEntityImpl<>(
             ClassTypeInformation.from(EntityEmptyCustomName.class), null);
@@ -65,18 +61,18 @@ public class DatastorePersistentEntityImplTests {
   }
 
   @Test
-  public void testExpressionResolutionWithoutApplicationContext() {
-    this.expectedException.expect(SpelEvaluationException.class);
-    this.expectedException.expectMessage("Property or field 'kindPostfix' cannot be found on null");
+  void testExpressionResolutionWithoutApplicationContext() {
     DatastorePersistentEntityImpl<EntityWithExpression> entity =
         new DatastorePersistentEntityImpl<>(
             ClassTypeInformation.from(EntityWithExpression.class), null);
 
-    entity.kindName();
+    assertThatThrownBy(() -> entity.kindName())
+            .isInstanceOf(SpelEvaluationException.class)
+            .hasMessageContaining("Property or field 'kindPostfix' cannot be found on null");
   }
 
   @Test
-  public void testExpressionResolutionFromApplicationContext() {
+  void testExpressionResolutionFromApplicationContext() {
     DatastorePersistentEntityImpl<EntityWithExpression> entity =
         new DatastorePersistentEntityImpl<>(
             ClassTypeInformation.from(EntityWithExpression.class), null);
@@ -90,30 +86,34 @@ public class DatastorePersistentEntityImplTests {
   }
 
   @Test
-  public void testHasIdProperty() {
+  void testHasIdProperty() {
     assertThat(new DatastoreMappingContext().getPersistentEntity(TestEntity.class).hasIdProperty())
         .isTrue();
   }
 
   @Test
-  public void testHasNoIdProperty() {
+  void testHasNoIdProperty() {
     assertThat(
             new DatastoreMappingContext().getPersistentEntity(EntityWithNoId.class).hasIdProperty())
         .isFalse();
   }
 
   @Test
-  public void testGetIdPropertyOrFail() {
-    this.expectedException.expect(DatastoreDataException.class);
-    this.expectedException.expectMessage(
-        "An ID property was required but does not exist for the type: "
-            + "class com.google.cloud.spring.data.datastore.core.mapping."
-            + "DatastorePersistentEntityImplTests$EntityWithNoId");
-    new DatastoreMappingContext().getPersistentEntity(EntityWithNoId.class).getIdPropertyOrFail();
+  void testGetIdPropertyOrFail() {
+
+    DatastorePersistentEntity testEntity = new DatastoreMappingContext().getPersistentEntity(EntityWithNoId.class);
+
+    assertThatThrownBy(() ->  testEntity.getIdPropertyOrFail())
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("An ID property was required but does not exist for the type: "
+                    + "class com.google.cloud.spring.data.datastore.core.mapping."
+                    + "DatastorePersistentEntityImplTests$EntityWithNoId");
+
+
   }
 
   @Test
-  public void testIgnoredProperty() {
+  void testIgnoredProperty() {
     TestEntity t = new TestEntity();
     t.id = "a";
     t.something = "a";
@@ -128,7 +128,7 @@ public class DatastorePersistentEntityImplTests {
   }
 
   @Test
-  public void testDiscriminationMetadata() {
+  void testDiscriminationMetadata() {
     DatastorePersistentEntity base =
         this.datastoreMappingContext.getPersistentEntity(TestEntity.class);
     DatastorePersistentEntity a1 =
@@ -160,22 +160,23 @@ public class DatastorePersistentEntityImplTests {
   }
 
   @Test
-  public void testConflictingDiscriminationFieldNames() {
-    this.expectedException.expect(DatastoreDataException.class);
-    this.expectedException.expectMessage(
-        "This class and its super class both have "
-            + "discrimination fields but they are different fields: ");
+  void testConflictingDiscriminationFieldNames() {
 
-    this.datastoreMappingContext.getPersistentEntity(DiscrimEntityB.class);
+    assertThatThrownBy(() -> this.datastoreMappingContext.getPersistentEntity(DiscrimEntityB.class))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessageContaining("This class and its super class both have "
+                    + "discrimination fields but they are different fields: ");
+
   }
 
   @Test
-  public void testEntityMissingDiscriminationSuperclass() {
-    this.expectedException.expect(DatastoreDataException.class);
-    this.expectedException.expectMessage(
-        "This class expects a discrimination field but none are designated");
+  void testEntityMissingDiscriminationSuperclass() {
 
-    this.datastoreMappingContext.getPersistentEntity(TestEntityNoSuperclass.class).kindName();
+    DatastorePersistentEntity dpe = this.datastoreMappingContext.getPersistentEntity(TestEntityNoSuperclass.class);
+
+    assertThatThrownBy(() -> dpe.kindName())
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessageContaining("This class expects a discrimination field but none are designated");
   }
 
   @Entity
