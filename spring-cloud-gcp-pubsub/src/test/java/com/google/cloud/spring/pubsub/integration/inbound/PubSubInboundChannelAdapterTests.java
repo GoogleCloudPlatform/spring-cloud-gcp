@@ -127,8 +127,7 @@ class PubSubInboundChannelAdapterTests {
 
     verify(mockAcknowledgeableMessage).nack();
 
-    assertThat(capturedOutput).contains("failed; message nacked automatically");
-    assertThat(capturedOutput).contains(EXCEPTION_MESSAGE);
+    assertThat(capturedOutput).contains("failed; message nacked automatically").contains(EXCEPTION_MESSAGE);
   }
 
   @Test
@@ -167,9 +166,9 @@ class PubSubInboundChannelAdapterTests {
     verify(mockAcknowledgeableMessage).nack();
     verify(mockAcknowledgeableMessage, times(0)).ack();
 
-    assertThat(capturedOutput).contains("failed; message nacked automatically");
     // original message handling exception
-    assertThat(capturedOutput).contains(EXCEPTION_MESSAGE);
+    assertThat(capturedOutput).contains("failed; message nacked automatically").contains(EXCEPTION_MESSAGE);
+
   }
 
   @Test
@@ -186,8 +185,7 @@ class PubSubInboundChannelAdapterTests {
     verify(mockAcknowledgeableMessage, times(0)).ack();
     verify(mockAcknowledgeableMessage, times(0)).nack();
 
-    assertThat(capturedOutput).contains("failed; message neither acked nor nacked");
-    assertThat(capturedOutput).contains(EXCEPTION_MESSAGE);
+    assertThat(capturedOutput).contains("failed; message neither acked nor nacked").contains(EXCEPTION_MESSAGE);
   }
 
   @Test
