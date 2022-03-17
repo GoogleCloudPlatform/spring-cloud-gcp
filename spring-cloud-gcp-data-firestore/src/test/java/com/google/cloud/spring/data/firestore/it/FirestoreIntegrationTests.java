@@ -17,8 +17,6 @@
 package com.google.cloud.spring.data.firestore.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -35,48 +33,44 @@ import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTrans
 import io.grpc.StatusRuntimeException;
 import java.util.List;
 import java.util.UUID;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.firestore", matches = "true")
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = FirestoreIntegrationTestsConfiguration.class)
-public class FirestoreIntegrationTests {
+class FirestoreIntegrationTests {
 
   @Autowired FirestoreTemplate firestoreTemplate;
 
   @Autowired ReactiveFirestoreTransactionManager txManager;
 
-  @BeforeClass
-  public static void checkToRun() {
-    assumeThat(
-        "Firestore-sample tests are disabled. "
-            + "Please use '-Dit.firestore=true' to enable them. ",
-        System.getProperty("it.firestore"),
-        is("true"));
-
+  @BeforeAll
+  static void setLogger() {
     ch.qos.logback.classic.Logger root =
         (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("io.grpc.netty");
     root.setLevel(Level.INFO);
   }
 
-  @Before
-  public void cleanTestEnvironment() {
+  @BeforeEach
+  void cleanTestEnvironment() {
     this.firestoreTemplate.deleteAll(User.class).block();
   }
 
   @Test
-  public void generateIdTest() {
+  void generateIdTest() {
     User user = new User(null, 29);
     User bob = new User("Bob", 60);
 
@@ -89,7 +83,7 @@ public class FirestoreIntegrationTests {
   }
 
   @Test
-  public void updateTimeTest() {
+  void updateTimeTest() {
     User bob = new User("Bob", 60, null);
     this.firestoreTemplate.saveAll(Flux.just(bob)).collectList().block();
 
@@ -99,7 +93,7 @@ public class FirestoreIntegrationTests {
   }
 
   @Test
-  public void optimisticLockingTest() {
+  void optimisticLockingTest() {
     User bob = new User("Bob", 60, null);
 
     this.firestoreTemplate.saveAll(Flux.just(bob)).collectList().block();
@@ -138,7 +132,7 @@ public class FirestoreIntegrationTests {
   }
 
   @Test
-  public void optimisticLockingTransactionTest() {
+  void optimisticLockingTransactionTest() {
     User bob = new User("Bob", 60, null);
 
     TransactionalOperator operator = TransactionalOperator.create(txManager);
@@ -187,7 +181,7 @@ public class FirestoreIntegrationTests {
   }
 
   @Test
-  public void transactionTest() {
+  void transactionTest() {
     User alice = new User("Alice", 29);
     User bob = new User("Bob", 60);
 
@@ -254,7 +248,7 @@ public class FirestoreIntegrationTests {
   }
 
   @Test
-  public void writeReadDeleteTest() {
+  void writeReadDeleteTest() {
     User alice = new User("Alice", 29);
     User bob = new User("Bob", 60);
 
@@ -307,7 +301,7 @@ public class FirestoreIntegrationTests {
   }
 
   @Test
-  public void deleteAllByIdTest() {
+  void deleteAllByIdTest() {
     User alice = new User("Alice", 29);
     User bob = new User("Bob", 60);
 
@@ -323,7 +317,7 @@ public class FirestoreIntegrationTests {
   }
 
   @Test
-  public void saveTest() {
+  void saveTest() {
     assertThat(this.firestoreTemplate.count(User.class).block()).isZero();
 
     User u1 = new User("Cloud", 22);
@@ -334,7 +328,7 @@ public class FirestoreIntegrationTests {
   }
 
   @Test
-  public void saveAllTest() {
+  void saveAllTest() {
     User u1 = new User("Cloud", 22);
     User u2 = new User("Squall", 17);
     Flux<User> users = Flux.fromArray(new User[] {u1, u2});
@@ -348,7 +342,7 @@ public class FirestoreIntegrationTests {
   }
 
   @Test
-  public void saveAllBulkTest() {
+  void saveAllBulkTest() {
     int numEntities = 1000;
     Flux<User> users =
         Flux.create(
@@ -367,7 +361,7 @@ public class FirestoreIntegrationTests {
   }
 
   @Test
-  public void deleteTest() {
+  void deleteTest() {
     this.firestoreTemplate.save(new User("alpha", 45)).block();
     this.firestoreTemplate.save(new User("beta", 23)).block();
     this.firestoreTemplate.save(new User("gamma", 44)).block();

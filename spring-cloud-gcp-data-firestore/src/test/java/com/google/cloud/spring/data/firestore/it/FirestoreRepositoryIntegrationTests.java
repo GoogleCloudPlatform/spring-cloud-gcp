@@ -17,8 +17,6 @@
 package com.google.cloud.spring.data.firestore.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -33,16 +31,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -50,9 +48,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.firestore", matches = "true")
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = FirestoreIntegrationTestsConfiguration.class)
-public class FirestoreRepositoryIntegrationTests {
+class FirestoreRepositoryIntegrationTests {
   // tag::autowire[]
   @Autowired UserRepository userRepository;
   // end::autowire[]
@@ -67,23 +66,14 @@ public class FirestoreRepositoryIntegrationTests {
 
   @Autowired ReactiveFirestoreTransactionManager transactionManager;
 
-  @BeforeClass
-  public static void checkToRun() {
-    assumeThat(
-        "Firestore-sample tests are disabled. "
-            + "Please use '-Dit.firestore=true' to enable them. ",
-        System.getProperty("it.firestore"),
-        is("true"));
-  }
-
-  @Before
-  public void cleanTestEnvironment() {
+  @BeforeEach
+  void cleanTestEnvironment() {
     this.userRepository.deleteAll().block();
     reset(this.transactionManager);
   }
 
   @Test
-  public void countTest() {
+  void countTest() {
     Flux<User> users =
         Flux.fromStream(IntStream.range(1, 10).boxed()).map(n -> new User("blah-person" + n, n));
 
@@ -95,7 +85,7 @@ public class FirestoreRepositoryIntegrationTests {
 
   @Test
   // tag::repository_built_in[]
-  public void writeReadDeleteTest() {
+  void writeReadDeleteTest() {
     List<User.Address> addresses =
         Arrays.asList(
             new User.Address("123 Alice st", "US"), new User.Address("1 Alice ave", "US"));
@@ -127,7 +117,7 @@ public class FirestoreRepositoryIntegrationTests {
   // end::repository_built_in[]
 
   @Test
-  public void transactionalOperatorTest() {
+  void transactionalOperatorTest() {
     // tag::repository_transactional_operator[]
     DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
     transactionDefinition.setReadOnly(false);
@@ -163,7 +153,7 @@ public class FirestoreRepositoryIntegrationTests {
 
   @Test
   // tag::repository_part_tree[]
-  public void partTreeRepositoryMethodTest() {
+  void partTreeRepositoryMethodTest() {
     User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
     u1.favoriteDrink = "tea";
     User u2 =
@@ -203,7 +193,7 @@ public class FirestoreRepositoryIntegrationTests {
   // end::repository_part_tree[]
 
   @Test
-  public void pageableQueryTest() {
+  void pageableQueryTest() {
     Flux<User> users =
         Flux.fromStream(IntStream.range(1, 11).boxed()).map(n -> new User("blah-person" + n, n));
     this.userRepository.saveAll(users).blockLast();
@@ -221,7 +211,7 @@ public class FirestoreRepositoryIntegrationTests {
   }
 
   @Test
-  public void sortQueryTest() {
+  void sortQueryTest() {
     Flux<User> users =
         Flux.fromStream(IntStream.range(1, 11).boxed()).map(n -> new User("blah-person" + n, n));
     this.userRepository.saveAll(users).blockLast();
@@ -238,7 +228,7 @@ public class FirestoreRepositoryIntegrationTests {
   }
 
   @Test
-  public void testOrderBy() {
+  void testOrderBy() {
     User alice = new User("Alice", 99);
     User bob = new User("Bob", 99);
     User zelda = new User("Zelda", 99);
@@ -261,7 +251,7 @@ public class FirestoreRepositoryIntegrationTests {
   }
 
   @Test
-  public void inFilterQueryTest() {
+  void inFilterQueryTest() {
     User u1 = new User("Cloud", 22);
     User u2 = new User("Squall", 17);
     Flux<User> users = Flux.fromArray(new User[] {u1, u2});
@@ -324,7 +314,7 @@ public class FirestoreRepositoryIntegrationTests {
   }
 
   @Test
-  public void containsFilterQueryTest() {
+  void containsFilterQueryTest() {
     User u1 = new User("Cloud", 22, Arrays.asList("cat", "dog"));
     User u2 = new User("Squall", 17, Collections.singletonList("pony"));
     Flux<User> users = Flux.fromArray(new User[] {u1, u2});
@@ -369,7 +359,7 @@ public class FirestoreRepositoryIntegrationTests {
   }
 
   @Test
-  public void declarativeTransactionRollbackTest() {
+  void declarativeTransactionRollbackTest() {
     this.userService.deleteUsers().onErrorResume(throwable -> Mono.empty()).block();
 
     verify(this.transactionManager, times(0)).commit(any());
@@ -378,7 +368,7 @@ public class FirestoreRepositoryIntegrationTests {
   }
 
   @Test
-  public void declarativeTransactionCommitTest() {
+  void declarativeTransactionCommitTest() {
     User alice = new User("Alice", 29);
     User bob = new User("Bob", 60);
 
@@ -395,7 +385,7 @@ public class FirestoreRepositoryIntegrationTests {
   }
 
   @Test
-  public void transactionPropagationTest() {
+  void transactionPropagationTest() {
     User alice = new User("Alice", 29);
     User bob = new User("Bob", 60);
 
@@ -412,7 +402,7 @@ public class FirestoreRepositoryIntegrationTests {
   }
 
   @Test
-  public void testDoubleSub() {
+  void testDoubleSub() {
     User alice = new User("Alice", 29);
     User bob = new User("Bob", 60);
     this.userRepository.save(alice).then(this.userRepository.save(bob)).block();
