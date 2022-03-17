@@ -42,12 +42,12 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import io.grpc.stub.StreamObserver;
 import java.time.Duration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-public class ReactiveFirestoreTransactionManagerTest {
+class ReactiveFirestoreTransactionManagerTest {
 
   private final FirestoreGrpc.FirestoreStub firestoreStub = mock(FirestoreGrpc.FirestoreStub.class);
 
@@ -57,7 +57,7 @@ public class ReactiveFirestoreTransactionManagerTest {
       new FirestoreDefaultClassMapper(new FirestoreMappingContext());
 
   @Test
-  public void triggerCommitCorrectly() {
+  void triggerCommitCorrectly() {
 
     FirestoreTemplate template = getFirestoreTemplate();
 
@@ -94,7 +94,7 @@ public class ReactiveFirestoreTransactionManagerTest {
   }
 
   @Test
-  public void triggerRollbackCorrectly() {
+  void triggerRollbackCorrectly() {
 
     FirestoreTemplate template = getFirestoreTemplate();
 
@@ -121,7 +121,7 @@ public class ReactiveFirestoreTransactionManagerTest {
   }
 
   @Test
-  public void writeTransaction() {
+  void writeTransaction() {
 
     FirestoreTemplate template = getFirestoreTemplate();
 
