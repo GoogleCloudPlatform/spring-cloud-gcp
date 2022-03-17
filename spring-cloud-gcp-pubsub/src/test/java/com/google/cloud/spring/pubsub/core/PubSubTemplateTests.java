@@ -46,21 +46,22 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.concurrent.ListenableFuture;
 
 /** Tests for the Pub/Sub template. */
-@RunWith(MockitoJUnitRunner.class)
-public class PubSubTemplateTests {
-
-  /** used to check exception messages and types. */
-  @Rule public ExpectedException expectedException = ExpectedException.none();
+@ExtendWith(MockitoExtension.class)
+class PubSubTemplateTests {
 
   @Mock private PublisherFactory mockPublisherFactory;
 
@@ -91,24 +92,18 @@ public class PubSubTemplateTests {
     return pubSubPublisherTemplate;
   }
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     this.pubSubTemplate = createTemplate();
-    when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
     this.settableApiFuture = SettableApiFuture.create();
-    when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
-
-    when(this.mockSubscriberFactory.createSubscriber(
-            eq("testSubscription"), isA(MessageReceiver.class)))
-        .thenReturn(this.mockSubscriber);
-    when(this.mockSubscriber.startAsync()).thenReturn(mock(ApiService.class));
-
     this.pubsubMessage =
         PubsubMessage.newBuilder().setData(ByteString.copyFrom("permanating".getBytes())).build();
   }
 
   @Test
   public void testPublish() throws ExecutionException, InterruptedException {
+    when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
+    when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
     this.settableApiFuture.set("result");
     ListenableFuture<String> future = this.pubSubTemplate.publish("testTopic", this.pubsubMessage);
 
@@ -117,6 +112,8 @@ public class PubSubTemplateTests {
 
   @Test
   public void testPublish_String() {
+    when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
+    when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
     this.pubSubTemplate.publish("testTopic", "testPayload");
 
     verify(this.mockPublisher, times(1)).publish(isA(PubsubMessage.class));
@@ -124,13 +121,15 @@ public class PubSubTemplateTests {
 
   @Test
   public void testPublish_Bytes() {
+    when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
+    when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
     this.pubSubTemplate.publish("testTopic", "testPayload".getBytes());
 
     verify(this.mockPublisher, times(1)).publish(isA(PubsubMessage.class));
   }
 
   @Test
-  public void testPublish_Object() throws IOException {
+  void testPublish_Object() throws IOException {
     AllowedPayload allowedPayload = new AllowedPayload();
     allowedPayload.name = "allowed";
     allowedPayload.value = 12345;
@@ -149,7 +148,7 @@ public class PubSubTemplateTests {
         .when(pubSubPublisherTemplate)
         .publish(eq("test"), any());
 
-    pubSubPublisherTemplate.publish("test", allowedPayload);
+    pubSubPublisherTemplate.publish("test", allowedPayload, null);
     verify(pubSubPublisherTemplate, times(1)).publish(eq("test"), isA(PubsubMessage.class));
   }
 
@@ -158,6 +157,9 @@ public class PubSubTemplateTests {
     Map<String, String> headers = new HashMap<>();
     headers.put("emperor of sand", "sultan's curse");
     headers.put("remission", "elephant man");
+
+    when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
+    when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
 
     this.pubSubTemplate.publish("testTopic", "jaguar god", headers);
 
@@ -171,16 +173,20 @@ public class PubSubTemplateTests {
 
   @Test
   public void testSend_noPublisher() {
-    this.expectedException.expect(PubSubException.class);
-    this.expectedException.expectMessage("couldn't create the publisher.");
     when(this.mockPublisherFactory.createPublisher("testTopic"))
         .thenThrow(new PubSubException("couldn't create the publisher."));
 
-    this.pubSubTemplate.publish("testTopic", this.pubsubMessage);
+    assertThatThrownBy(() -> this.pubSubTemplate.publish("testTopic", this.pubsubMessage))
+            .isInstanceOf(PubSubException.class)
+            .hasMessage("couldn't create the publisher.");
+
   }
 
   @Test
   public void testSend_onFailure() {
+
+    when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
+    when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
     ListenableFuture<String> future = this.pubSubTemplate.publish("testTopic", this.pubsubMessage);
     this.settableApiFuture.setException(new Exception("future failed."));
 
@@ -191,6 +197,8 @@ public class PubSubTemplateTests {
 
   @Test
   public void testPublish_onFailureWithPayload() {
+    when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
+    when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
     ListenableFuture<String> future = this.pubSubTemplate.publish("testTopic", this.pubsubMessage);
     this.settableApiFuture.setException(new Exception("Publish failed"));
     assertThatThrownBy(() -> future.get())
@@ -201,6 +209,12 @@ public class PubSubTemplateTests {
 
   @Test
   public void testSubscribe() {
+
+    when(this.mockSubscriberFactory.createSubscriber(
+            eq("testSubscription"), isA(MessageReceiver.class)))
+            .thenReturn(this.mockSubscriber);
+    when(this.mockSubscriber.startAsync()).thenReturn(mock(ApiService.class));
+
     Subscriber subscriber = this.pubSubTemplate.subscribe("testSubscription", message -> {});
     assertThat(subscriber).isEqualTo(this.mockSubscriber);
     verify(this.mockSubscriber, times(1)).startAsync();
