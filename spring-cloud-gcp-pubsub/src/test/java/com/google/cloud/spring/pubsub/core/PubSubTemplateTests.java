@@ -46,16 +46,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import org.junit.Rule;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.concurrent.ListenableFuture;
 
@@ -101,7 +95,7 @@ class PubSubTemplateTests {
   }
 
   @Test
-  public void testPublish() throws ExecutionException, InterruptedException {
+  void testPublish() throws ExecutionException, InterruptedException {
     when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
     when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
     this.settableApiFuture.set("result");
@@ -111,7 +105,7 @@ class PubSubTemplateTests {
   }
 
   @Test
-  public void testPublish_String() {
+  void testPublish_String() {
     when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
     when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
     this.pubSubTemplate.publish("testTopic", "testPayload");
@@ -120,7 +114,7 @@ class PubSubTemplateTests {
   }
 
   @Test
-  public void testPublish_Bytes() {
+  void testPublish_Bytes() {
     when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
     when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
     this.pubSubTemplate.publish("testTopic", "testPayload".getBytes());
@@ -153,7 +147,7 @@ class PubSubTemplateTests {
   }
 
   @Test
-  public void testPublish_withHeaders() {
+  void testPublish_withHeaders() {
     Map<String, String> headers = new HashMap<>();
     headers.put("emperor of sand", "sultan's curse");
     headers.put("remission", "elephant man");
@@ -172,7 +166,7 @@ class PubSubTemplateTests {
   }
 
   @Test
-  public void testSend_noPublisher() {
+  void testSend_noPublisher() {
     when(this.mockPublisherFactory.createPublisher("testTopic"))
         .thenThrow(new PubSubException("couldn't create the publisher."));
 
@@ -183,7 +177,7 @@ class PubSubTemplateTests {
   }
 
   @Test
-  public void testSend_onFailure() {
+  void testSend_onFailure() {
 
     when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
     when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
@@ -196,7 +190,7 @@ class PubSubTemplateTests {
   }
 
   @Test
-  public void testPublish_onFailureWithPayload() {
+  void testPublish_onFailureWithPayload() {
     when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
     when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
     ListenableFuture<String> future = this.pubSubTemplate.publish("testTopic", this.pubsubMessage);
@@ -208,7 +202,7 @@ class PubSubTemplateTests {
   }
 
   @Test
-  public void testSubscribe() {
+  void testSubscribe() {
 
     when(this.mockSubscriberFactory.createSubscriber(
             eq("testSubscription"), isA(MessageReceiver.class)))
