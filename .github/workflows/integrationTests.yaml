@@ -63,7 +63,7 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-unified-${{ steps.date.outputs.date }}
       - name: Setup gcloud
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v0
         with:
           version: latest
           project_id: spring-cloud-gcp-ci
