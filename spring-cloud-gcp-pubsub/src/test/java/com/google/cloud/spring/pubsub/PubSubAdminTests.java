@@ -35,21 +35,21 @@ import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.TopicName;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for the Pub/Sub admin operations. */
-@RunWith(MockitoJUnitRunner.class)
-public class PubSubAdminTests {
+@ExtendWith(MockitoExtension.class)
+class PubSubAdminTests {
 
   @Mock private TopicAdminClient mockTopicAdminClient;
 
   @Mock private SubscriptionAdminClient mockSubscriptionAdminClient;
 
   @Test
-  public void testNewPubSubAdmin_nullProjectProvider() {
+  void testNewPubSubAdmin_nullProjectProvider() {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(
             () ->
@@ -58,7 +58,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testNewPubSubAdmin_nullTopicAdminClient() {
+  void testNewPubSubAdmin_nullTopicAdminClient() {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(
             () -> new PubSubAdmin(() -> "test-project", null, this.mockSubscriptionAdminClient))
@@ -66,19 +66,19 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testNewPubSubAdmin_nullSubscriptionAdminClient() {
+  void testNewPubSubAdmin_nullSubscriptionAdminClient() {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> new PubSubAdmin(() -> "test-project", this.mockTopicAdminClient, null))
         .withMessage("The subscription administration client can't be null");
   }
 
   @Test
-  public void testNewPubSubAdmin() throws IOException {
+  void testNewPubSubAdmin() throws IOException {
     assertThat(new PubSubAdmin(() -> "test-project", NoCredentials::getInstance)).isNotNull();
   }
 
   @Test
-  public void testCreateTopic() {
+  void testCreateTopic() {
     new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .createTopic("fooTopic");
@@ -86,7 +86,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testCreateTopic_fullName() {
+  void testCreateTopic_fullName() {
     new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .createTopic("projects/differentProject/topics/fooTopic");
@@ -94,7 +94,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testGetTopic() {
+  void testGetTopic() {
     new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .getTopic("fooTopic");
@@ -102,7 +102,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testGetTopic_fullName() {
+  void testGetTopic_fullName() {
     new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .getTopic("projects/differentProject/topics/fooTopic");
@@ -110,7 +110,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testGetTopic_notFound() {
+  void testGetTopic_notFound() {
     when(this.mockTopicAdminClient.getTopic(any(TopicName.class)))
         .thenThrow(new ApiException(null, GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND), false));
     assertThat(
@@ -124,7 +124,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testGetTopic_serviceDown() {
+  void testGetTopic_serviceDown() {
     when(this.mockTopicAdminClient.getTopic(any(TopicName.class)))
         .thenThrow(
             new ApiException(null, GrpcStatusCode.of(io.grpc.Status.Code.UNAVAILABLE), false));
@@ -137,7 +137,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testDeleteTopic() {
+  void testDeleteTopic() {
     new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .deleteTopic("fooTopic");
@@ -145,7 +145,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testDeleteTopic_fullName() {
+  void testDeleteTopic_fullName() {
     new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .deleteTopic("projects/differentProject/topics/fooTopic");
@@ -153,7 +153,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testListTopic() throws ExecutionException, InterruptedException {
+  void testListTopic() throws ExecutionException, InterruptedException {
     when(this.mockTopicAdminClient.listTopics(any(ProjectName.class)))
         .thenReturn(mock(TopicAdminClient.ListTopicsPagedResponse.class));
 
@@ -164,7 +164,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testCreateSubscription_nullArgs() {
+  void testCreateSubscription_nullArgs() {
     PubSubAdmin psa =
         new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient);
@@ -176,7 +176,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testCreateSubscription() {
+  void testCreateSubscription() {
     new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .createSubscription("testSubscription", "testTopic");
@@ -191,7 +191,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testCreateSubscription_ackDeadline() {
+  void testCreateSubscription_ackDeadline() {
     PubSubAdmin psa =
         new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient);
@@ -215,7 +215,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testCreateSubscription_pushEndpoint() {
+  void testCreateSubscription_pushEndpoint() {
     new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .createSubscription("testSubscription", "testTopic", "endpoint");
@@ -231,7 +231,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testGetSubscription() {
+  void testGetSubscription() {
     new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .getSubscription("fooSubscription");
@@ -240,7 +240,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testGetSubscription_fullName() {
+  void testGetSubscription_fullName() {
     new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .getSubscription("projects/differentProject/subscriptions/fooSubscription");
@@ -249,7 +249,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testGetSubscription_notFound() {
+  void testGetSubscription_notFound() {
     when(this.mockSubscriptionAdminClient.getSubscription(any(ProjectSubscriptionName.class)))
         .thenThrow(new ApiException(null, GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND), false));
     assertThat(
@@ -264,7 +264,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testGetSubscription_serviceDown() {
+  void testGetSubscription_serviceDown() {
     when(this.mockSubscriptionAdminClient.getSubscription(any(ProjectSubscriptionName.class)))
         .thenThrow(
             new ApiException(null, GrpcStatusCode.of(io.grpc.Status.Code.UNAVAILABLE), false));
@@ -279,7 +279,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testDeleteSubscription() {
+  void testDeleteSubscription() {
     new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .deleteSubscription("fooSubscription");
@@ -288,7 +288,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testDeleteSubscription_fullName() {
+  void testDeleteSubscription_fullName() {
     new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .deleteSubscription("projects/differentProject/subscriptions/fooSubscription");
@@ -297,7 +297,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testListSubscription() {
+  void testListSubscription() {
     when(this.mockSubscriptionAdminClient.listSubscriptions(any(ProjectName.class)))
         .thenReturn(mock(SubscriptionAdminClient.ListSubscriptionsPagedResponse.class));
 
@@ -308,7 +308,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testDefaultAckDeadline() throws IOException {
+  void testDefaultAckDeadline() throws IOException {
     PubSubAdmin psa = new PubSubAdmin(() -> "test-project", NoCredentials::getInstance);
     int defaultAckDeadline = psa.getDefaultAckDeadline();
     psa.setDefaultAckDeadline(defaultAckDeadline + 1);
@@ -319,7 +319,7 @@ public class PubSubAdminTests {
   }
 
   @Test
-  public void testClose() throws Exception {
+  void testClose() throws Exception {
     new PubSubAdmin(
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .close();
