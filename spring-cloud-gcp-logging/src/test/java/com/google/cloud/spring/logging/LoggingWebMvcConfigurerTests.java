@@ -19,20 +19,20 @@ package com.google.cloud.spring.logging;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 
 /** Tests for the logging-web-mvc configurer. */
-@RunWith(MockitoJUnitRunner.class)
-public class LoggingWebMvcConfigurerTests {
+@ExtendWith(MockitoExtension.class)
+class LoggingWebMvcConfigurerTests {
 
   @Mock private TraceIdLoggingWebMvcInterceptor interceptor;
 
   @Test
-  public void testAddInterceptors() {
+  void testAddInterceptors() {
     LoggingWebMvcConfigurer adapter =
         new LoggingWebMvcConfigurer(this.interceptor, () -> "remission");
     TestInterceptorRegistry registry = new TestInterceptorRegistry();
