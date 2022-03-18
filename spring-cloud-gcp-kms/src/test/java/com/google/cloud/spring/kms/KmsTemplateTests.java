@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.kms;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,23 +33,23 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Int64Value;
 import java.util.Base64;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class KmsTemplateTests {
+class KmsTemplateTests {
 
   private KeyManagementServiceClient client;
 
   private KmsTemplate kmsTemplate;
 
-  @Before
-  public void setupMocks() {
+  @BeforeEach
+  void setupMocks() {
     this.client = mock(KeyManagementServiceClient.class);
     this.kmsTemplate = new KmsTemplate(this.client, () -> "my-project");
   }
 
   @Test
-  public void testEncryptDecrypt() {
+  void testEncryptDecrypt() {
     EncryptResponse encryptResponse = createEncryptResponse();
     DecryptResponse decryptResponse = createDecryptResponse();
 
@@ -63,8 +64,8 @@ public class KmsTemplateTests {
     Assert.assertEquals("1234", decryptedText);
   }
 
-  @Test(expected = com.google.cloud.spring.kms.KmsException.class)
-  public void testEncryptCorrupt() {
+  @Test
+  void testEncryptCorrupt() {
     EncryptResponse encryptResponse =
         EncryptResponse.newBuilder()
             .setCiphertext(ByteString.copyFromUtf8("invalid"))
@@ -74,11 +75,14 @@ public class KmsTemplateTests {
     when(this.client.encrypt(any(EncryptRequest.class))).thenReturn(encryptResponse);
 
     String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/key-id";
-    kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
+
+    assertThatThrownBy(() -> kmsTemplate.encryptText(cryptoKeyNameStr, "1234"))
+            .isInstanceOf(com.google.cloud.spring.kms.KmsException.class);
+
   }
 
-  @Test(expected = com.google.cloud.spring.kms.KmsException.class)
-  public void testDecryptCorrupt() {
+  @Test
+  void testDecryptCorrupt() {
     DecryptResponse decryptResponse =
         DecryptResponse.newBuilder()
             .setPlaintext(ByteString.copyFromUtf8("1234"))
@@ -88,11 +92,13 @@ public class KmsTemplateTests {
     when(this.client.decrypt(any(DecryptRequest.class))).thenReturn(decryptResponse);
 
     String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/key-id";
-    kmsTemplate.decryptText(cryptoKeyNameStr, "1234".getBytes());
+
+    assertThatThrownBy(() -> kmsTemplate.decryptText(cryptoKeyNameStr, "1234".getBytes()))
+            .isInstanceOf(com.google.cloud.spring.kms.KmsException.class);
   }
 
-  @Test(expected = com.google.api.gax.rpc.InvalidArgumentException.class)
-  public void testEncryptDecryptMissMatch() {
+  @Test
+  void testEncryptDecryptMissMatch() {
     EncryptResponse encryptResponse = createEncryptResponse();
 
     when(this.client.encrypt(any(EncryptRequest.class))).thenReturn(encryptResponse);
@@ -101,27 +107,31 @@ public class KmsTemplateTests {
     String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/key-id";
 
     byte[] encryptedBytes = kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
-    kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes);
+
+    assertThatThrownBy(() -> kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes))
+            .isInstanceOf(com.google.api.gax.rpc.InvalidArgumentException.class);
   }
 
-  @Test(expected = com.google.api.gax.rpc.PermissionDeniedException.class)
-  public void testEncryptPermissionDenied() {
+  @Test
+  void testEncryptPermissionDenied() {
     when(this.client.encrypt(any(EncryptRequest.class))).thenThrow(PermissionDeniedException.class);
 
     String cryptoKeyNameStr = "test-project/europe-west2/no-access/key-id";
 
-    byte[] encryptedBytes = kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
-    kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes);
+    assertThatThrownBy(() -> kmsTemplate.encryptText(cryptoKeyNameStr, "1234"))
+            .isInstanceOf(com.google.api.gax.rpc.PermissionDeniedException.class);
+
   }
 
-  @Test(expected = com.google.api.gax.rpc.NotFoundException.class)
-  public void testEncryptNotFound() {
+  @Test
+  void testEncryptNotFound() {
     when(this.client.encrypt(any(EncryptRequest.class))).thenThrow(NotFoundException.class);
 
     String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/not-found";
 
-    byte[] encryptedBytes = kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
-    kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes);
+    assertThatThrownBy(() -> kmsTemplate.encryptText(cryptoKeyNameStr, "1234"))
+            .isInstanceOf(com.google.api.gax.rpc.NotFoundException.class);
+
   }
 
   private DecryptResponse createDecryptResponse() {
