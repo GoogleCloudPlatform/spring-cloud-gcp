@@ -71,7 +71,7 @@ class PubSubInboundChannelAdapterTests {
 
   @BeforeEach
   @SuppressWarnings("unchecked")
-  void primarySetup() {
+  void setUp() {
 
     this.adapter =
         new PubSubInboundChannelAdapter(this.mockPubSubSubscriberOperations, "testSubscription");
@@ -80,7 +80,7 @@ class PubSubInboundChannelAdapterTests {
 
   }
 
-  void secondarySetup() {
+  void setupSubscribeAndConvert() {
     when(this.mockMessageChannel.send(any())).thenReturn(true);
 
     when(mockAcknowledgeableMessage.getPubsubMessage())
@@ -116,7 +116,7 @@ class PubSubInboundChannelAdapterTests {
 
   @Test
   void testAckModeAuto_nacksWhenDownstreamProcessingFails(CapturedOutput capturedOutput) {
-    secondarySetup();
+    setupSubscribeAndConvert();
 
     when(this.mockMessageChannel.send(any())).thenThrow(new RuntimeException(EXCEPTION_MESSAGE));
 
@@ -133,7 +133,7 @@ class PubSubInboundChannelAdapterTests {
   @Test
   void testAckModeAuto_nacksWhenDownstreamProcessingFailsWhenContextShutdown(CapturedOutput capturedOutput) {
 
-    secondarySetup();
+    setupSubscribeAndConvert();
     this.adapter.setAckMode(AckMode.AUTO);
     this.adapter.setOutputChannel(this.mockMessageChannel);
 
@@ -174,7 +174,7 @@ class PubSubInboundChannelAdapterTests {
   @Test
   void testAckModeAutoAck_neitherAcksNorNacksWhenMessageProcessingFails(CapturedOutput capturedOutput) {
 
-    secondarySetup();
+    setupSubscribeAndConvert();
     when(this.mockMessageChannel.send(any())).thenThrow(new RuntimeException(EXCEPTION_MESSAGE));
 
     this.adapter.setAckMode(AckMode.AUTO_ACK);
@@ -191,7 +191,7 @@ class PubSubInboundChannelAdapterTests {
   @Test
   void testSetHealthRegistry_Success() {
 
-    secondarySetup();
+    setupSubscribeAndConvert();
     HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
     adapter.setHealthTrackerRegistry(healthTrackerRegistry);
     adapter.doStart();
@@ -202,7 +202,7 @@ class PubSubInboundChannelAdapterTests {
   @Test
   void testMessageProcessed_successWhenRegistrySet() {
 
-    secondarySetup();
+    setupSubscribeAndConvert();
     HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
     adapter.setHealthTrackerRegistry(healthTrackerRegistry);
     adapter.doStart();
@@ -218,7 +218,7 @@ class PubSubInboundChannelAdapterTests {
   @Test
   void testAddingSubscription_successWhenSubscriberAdded() {
 
-    secondarySetup();
+    setupSubscribeAndConvert();
     HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);
     adapter.setHealthTrackerRegistry(healthTrackerRegistry);
     adapter.doStart();
@@ -230,7 +230,7 @@ class PubSubInboundChannelAdapterTests {
   @SuppressWarnings("unchecked")
   void customMessageBuilderFactoryUsedWhenAvailable() {
 
-    secondarySetup();
+    setupSubscribeAndConvert();
     MutableMessageBuilderFactory factory = mock(MutableMessageBuilderFactory.class);
     when(factory.withPayload(any()))
         .thenReturn(MutableMessageBuilder.withPayload("custom payload"));
@@ -248,7 +248,7 @@ class PubSubInboundChannelAdapterTests {
   @Test
   void consumeMessageAttachesOriginalMessageHeaderInManualMode() {
 
-    secondarySetup();
+    setupSubscribeAndConvert();
     this.adapter.setAckMode(AckMode.MANUAL);
     this.adapter.start();
     verifyOriginalMessage();
@@ -258,7 +258,7 @@ class PubSubInboundChannelAdapterTests {
   @Test
   void consumeMessageAttachesOriginalMessageHeaderInAutoMode() {
 
-    secondarySetup();
+    setupSubscribeAndConvert();
     this.adapter.setAckMode(AckMode.AUTO);
     this.adapter.start();
     verifyOriginalMessage();
@@ -268,7 +268,7 @@ class PubSubInboundChannelAdapterTests {
   @Test
   void consumeMessageAttachesOriginalMessageHeaderInAutoAckMode() {
 
-    secondarySetup();
+    setupSubscribeAndConvert();
     this.adapter.setAckMode(AckMode.AUTO_ACK);
     this.adapter.start();
     verifyOriginalMessage();
