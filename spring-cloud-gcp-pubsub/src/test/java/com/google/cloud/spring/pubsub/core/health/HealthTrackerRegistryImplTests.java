@@ -32,17 +32,17 @@ import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for HealthTrackerRegistryImpl. */
-@RunWith(MockitoJUnitRunner.class)
-public class HealthTrackerRegistryImplTests {
+@ExtendWith(MockitoExtension.class)
+class HealthTrackerRegistryImplTests {
 
   @Mock private MetricServiceClient metricServiceClient;
 
@@ -60,8 +60,8 @@ public class HealthTrackerRegistryImplTests {
   private ConcurrentHashMap<ProjectSubscriptionName, HealthTracker> healthTrackers =
       new ConcurrentHashMap<>();
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() throws Exception {
     healthTrackerRegistry =
         new HealthTrackerRegistryImpl(
             DEFAULT_PROJECT_ID,
@@ -75,7 +75,7 @@ public class HealthTrackerRegistryImplTests {
   }
 
   @Test
-  public void testRegisterTrackerGivenProjectSubscriptionName() {
+  void testRegisterTrackerGivenProjectSubscriptionName() {
     String projectId = "project-id";
     String subscriptionId = "subscription-id";
 
@@ -87,7 +87,7 @@ public class HealthTrackerRegistryImplTests {
   }
 
   @Test
-  public void testRegisterTrackerGivenSubscriptionName() {
+  void testRegisterTrackerGivenSubscriptionName() {
     String projectId = "project-id";
     String subscriptionId = "subscription-id";
 
@@ -99,7 +99,7 @@ public class HealthTrackerRegistryImplTests {
   }
 
   @Test
-  public void testHealthTrackers() {
+  void testHealthTrackers() {
     String projectId = "project-id";
     String subscriptionId = "subscription-id";
 
@@ -113,7 +113,7 @@ public class HealthTrackerRegistryImplTests {
   }
 
   @Test
-  public void testIsTracked() {
+  void testIsTracked() {
     String projectId = "project-id";
     String subscriptionId = "subscription-id";
 
@@ -127,7 +127,7 @@ public class HealthTrackerRegistryImplTests {
   }
 
   @Test
-  public void testProcessedMessage() {
+  void testProcessedMessage() {
     String projectId = "project-id";
     String subscription = "bad-subscription";
 
@@ -142,7 +142,7 @@ public class HealthTrackerRegistryImplTests {
   }
 
   @Test
-  public void testAddListener() {
+  void testAddListener() {
     String projectId = "project-id";
     String subscriptionId = "subscription-id";
 
@@ -167,7 +167,7 @@ public class HealthTrackerRegistryImplTests {
   }
 
   @Test
-  public void testAddListenerNoHealthTracker() {
+  void testAddListenerNoHealthTracker() {
     String projectId = "project-id";
     String subscriptionId = "non-registered-subscription-id";
 
@@ -183,7 +183,7 @@ public class HealthTrackerRegistryImplTests {
   }
 
   @Test
-  public void testWrap() {
+  void testWrap() {
     String projectId = "project-id";
     String subscriptionId = "subscription-id";
 
@@ -198,7 +198,7 @@ public class HealthTrackerRegistryImplTests {
   }
 
   @Test
-  public void testProcessedMessageNoHealthTracker() {
+  void testProcessedMessageNoHealthTracker() {
     String projectId = "project-id";
     String subscriptionId = "non-registered-subscription-id";
 
