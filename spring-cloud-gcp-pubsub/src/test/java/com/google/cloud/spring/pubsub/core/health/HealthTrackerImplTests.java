@@ -33,15 +33,15 @@ import com.google.monitoring.v3.TimeSeries;
 import com.google.monitoring.v3.TypedValue;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.concurrent.locks.LockSupport;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for HealthTrackerImpl. */
-@RunWith(MockitoJUnitRunner.class)
-public class HealthTrackerImplTests {
+@ExtendWith(MockitoExtension.class)
+class HealthTrackerImplTests {
 
   private static final String PROJECT_ID = "project-id";
   private static final String SUBSCRIPTION_ID = "subscription-id";
@@ -53,8 +53,8 @@ public class HealthTrackerImplTests {
 
   private HealthTracker healthTracker;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() throws Exception {
     metricServiceClient = mock(MetricServiceClient.class);
     healthTracker =
         new HealthTrackerImpl(
@@ -66,21 +66,21 @@ public class HealthTrackerImplTests {
   }
 
   @Test
-  public void getSubscription() {
+  void getSubscription() {
     healthTracker.subscription();
     assertThat(healthTracker.subscription())
         .isEqualTo(ProjectSubscriptionName.of(PROJECT_ID, SUBSCRIPTION_ID));
   }
 
   @Test
-  public void noMessagesOverThresholdAfterProcessing() {
+  void noMessagesOverThresholdAfterProcessing() {
     healthTracker.processedMessage();
     long messagesOverThreshold = healthTracker.messagesOverThreshold();
     assertThat(messagesOverThreshold).isZero();
   }
 
   @Test
-  public void noMessagesOverThresholdNoProcessing() throws InterruptedException {
+  void noMessagesOverThresholdNoProcessing() throws InterruptedException {
     LockSupport.parkNanos(1001 * 1000000);
     ListTimeSeriesPagedResponse listTimeSeriesPagedResponse =
         mock(ListTimeSeriesPagedResponse.class);
@@ -108,7 +108,7 @@ public class HealthTrackerImplTests {
   }
 
   @Test
-  public void noMessagesOverThresholdNoProcessingNoBacklogMessages() throws InterruptedException {
+  void noMessagesOverThresholdNoProcessingNoBacklogMessages() throws InterruptedException {
     LockSupport.parkNanos(1001 * 1000000);
     ListTimeSeriesPagedResponse listTimeSeriesPagedResponse =
         mock(ListTimeSeriesPagedResponse.class);
@@ -127,7 +127,7 @@ public class HealthTrackerImplTests {
   }
 
   @Test
-  public void messagesOverThresholdNoProcessing() throws InterruptedException {
+  void messagesOverThresholdNoProcessing() throws InterruptedException {
     LockSupport.parkNanos(1001 * 1000000);
     ListTimeSeriesPagedResponse listTimeSeriesPagedResponse =
         mock(ListTimeSeriesPagedResponse.class);
