@@ -17,24 +17,20 @@
 package com.google.cloud.spring.pubsub.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 import org.springframework.integration.history.MessageHistory;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.NativeMessageHeaderAccessor;
 
 /** Tests for the Pub/Sub message header. */
-public class PubSubHeaderMapperTests {
-
-  /** used to check for exception messages and types. */
-  @Rule public ExpectedException expectedException = ExpectedException.none();
+class PubSubHeaderMapperTests {
 
   @Test
-  public void testFilterGoogleClientHeaders() {
+  void testFilterGoogleClientHeaders() {
     PubSubHeaderMapper mapper = new PubSubHeaderMapper();
     Map<String, Object> originalHeaders = new HashMap<>();
     originalHeaders.put("my header", "pantagruel's nativity");
@@ -49,7 +45,7 @@ public class PubSubHeaderMapperTests {
   }
 
   @Test
-  public void testFilterHeaders() {
+  void testFilterHeaders() {
     PubSubHeaderMapper mapper = new PubSubHeaderMapper();
     Map<String, Object> originalHeaders = new HashMap<>();
     originalHeaders.put("my header", "pantagruel's nativity");
@@ -63,7 +59,7 @@ public class PubSubHeaderMapperTests {
   }
 
   @Test
-  public void testDontFilterHeaders() {
+  void testDontFilterHeaders() {
     PubSubHeaderMapper mapper = new PubSubHeaderMapper();
     mapper.setOutboundHeaderPatterns("*");
     Map<String, Object> originalHeaders = new HashMap<>();
@@ -76,7 +72,7 @@ public class PubSubHeaderMapperTests {
   }
 
   @Test
-  public void testToHeaders() {
+  void testToHeaders() {
     PubSubHeaderMapper mapper = new PubSubHeaderMapper();
     Map<String, String> originalHeaders = new HashMap<>();
     originalHeaders.put(MessageHeaders.ID, "pantagruel's nativity");
@@ -88,7 +84,7 @@ public class PubSubHeaderMapperTests {
   }
 
   @Test
-  public void testSetInboundHeaderPatterns() {
+  void testSetInboundHeaderPatterns() {
     PubSubHeaderMapper mapper = new PubSubHeaderMapper();
 
     mapper.setInboundHeaderPatterns("x-*");
@@ -107,20 +103,22 @@ public class PubSubHeaderMapperTests {
   }
 
   @Test
-  public void testSetInboundHeaderPatternsNullPatterns() {
-    this.expectedException.expect(IllegalArgumentException.class);
-    this.expectedException.expectMessage("Header patterns can't be null.");
+  void testSetInboundHeaderPatternsNullPatterns() {
 
     PubSubHeaderMapper mapper = new PubSubHeaderMapper();
-    mapper.setInboundHeaderPatterns(null);
+
+    assertThatThrownBy(() -> mapper.setInboundHeaderPatterns(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Header patterns can't be null.");
   }
 
   @Test
-  public void testSetInboundHeaderPatternsNullPatternElements() {
-    this.expectedException.expect(IllegalArgumentException.class);
-    this.expectedException.expectMessage("No header pattern can be null.");
+  void testSetInboundHeaderPatternsNullPatternElements() {
 
     PubSubHeaderMapper mapper = new PubSubHeaderMapper();
-    mapper.setInboundHeaderPatterns(new String[1]);
+
+    assertThatThrownBy(() -> mapper.setInboundHeaderPatterns(new String[1]))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("No header pattern can be null.");
   }
 }
