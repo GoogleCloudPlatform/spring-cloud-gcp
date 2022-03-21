@@ -28,32 +28,25 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /** Tests for converting Spanner keys. */
-@RunWith(Parameterized.class)
-public class KeyConversionTests {
+
+class KeyConversionTests {
   private final SpannerWriteConverter writeConverter;
 
   private final ConverterAwareMappingSpannerEntityWriter spannerEntityWriter;
 
-  private Object objectToTest;
+  public KeyConversionTests() {
 
-  private Object expectedResult;
-
-  public KeyConversionTests(String testCaseName, Object objectToTest, Object expectedResult) {
-    this.objectToTest = objectToTest;
-    this.expectedResult = expectedResult;
     this.writeConverter = new SpannerWriteConverter();
     this.spannerEntityWriter =
         new ConverterAwareMappingSpannerEntityWriter(
             new SpannerMappingContext(), this.writeConverter);
   }
 
-  @Parameterized.Parameters(name = "{index}: {0}")
-  public static Collection<Object[]> types() {
+  static Collection<Object[]> types() {
     return Arrays.asList(
         new Object[][] {
           {"single boolean", true, Key.of(true)},
@@ -96,15 +89,16 @@ public class KeyConversionTests {
         });
   }
 
-  @Test
-  public void keyWritingTestCase() {
+  @ParameterizedTest(name = "{index}: {0}")
+  @MethodSource("types")
+  void keyWritingTestCase(String testCaseName, Object objectToTest, Object expectedResult) {
     try {
-      Key key = this.spannerEntityWriter.convertToKey(this.objectToTest);
-      assertThat(key).isEqualTo(this.expectedResult);
+      Key key = this.spannerEntityWriter.convertToKey(objectToTest);
+      assertThat(key).isEqualTo(expectedResult);
     } catch (Exception ex) {
       assertThat(ex.getClass())
-          .as("Unexpected exception: " + ex + "\nexpected: " + this.expectedResult)
-          .isEqualTo(this.expectedResult);
+          .as("Unexpected exception: " + ex + "\nexpected: " + expectedResult)
+          .isEqualTo(expectedResult);
     }
   }
 }
