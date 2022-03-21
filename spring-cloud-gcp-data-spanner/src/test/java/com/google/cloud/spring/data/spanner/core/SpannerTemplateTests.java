@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.spanner.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -71,11 +72,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationEvent;
@@ -84,12 +84,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 /** Tests for the Spanner Template. */
-public class SpannerTemplateTests {
+class SpannerTemplateTests {
 
   private static final Statement DML = Statement.of("update statement");
-
-  /** used for checking exception messages and tests. */
-  @Rule public ExpectedException expectedException = ExpectedException.none();
 
   private DatabaseClient databaseClient;
 
@@ -105,8 +102,8 @@ public class SpannerTemplateTests {
 
   private SpannerSchemaUtils schemaUtils;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     this.databaseClient = mock(DatabaseClient.class);
     this.mappingContext = new SpannerMappingContext();
     this.objectMapper = mock(SpannerEntityProcessor.class);
@@ -125,7 +122,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void multipleDatabaseClientTest() {
+  void multipleDatabaseClientTest() {
     DatabaseClient databaseClient1 = mock(DatabaseClient.class);
     DatabaseClient databaseClient2 = mock(DatabaseClient.class);
 
@@ -166,7 +163,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void executeDmlTest() {
+  void executeDmlTest() {
     TransactionContext context = mock(TransactionContext.class);
     TransactionRunner transactionRunner = mock(TransactionRunner.class);
     when(this.databaseClient.readWriteTransaction()).thenReturn(transactionRunner);
@@ -189,7 +186,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void executePartitionedDmlTest() {
+  void executePartitionedDmlTest() {
     when(this.databaseClient.executePartitionedUpdate(DML)).thenReturn(333L);
     verifyBeforeAndAfterEvents(
         new BeforeExecuteDmlEvent(DML),
@@ -199,7 +196,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void readWriteTransactionTest() {
+  void readWriteTransactionTest() {
 
     TransactionRunner transactionRunner = mock(TransactionRunner.class);
     when(this.databaseClient.readWriteTransaction()).thenReturn(transactionRunner);
@@ -231,7 +228,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void existsByIdTest() {
+  void existsByIdTest() {
     ResultSet results = mock(ResultSet.class);
     when(results.next()).thenReturn(true);
 
@@ -248,7 +245,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void existsByIdEmbeddedKeyTest() {
+  void existsByIdEmbeddedKeyTest() {
     ResultSet results = mock(ResultSet.class);
     when(results.next()).thenReturn(false);
 
@@ -265,7 +262,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void readOnlyTransactionTest() {
+  void readOnlyTransactionTest() {
 
     ReadOnlyTransaction readOnlyTransaction = mock(ReadOnlyTransaction.class);
     when(this.databaseClient.readOnlyTransaction(
@@ -287,10 +284,9 @@ public class SpannerTemplateTests {
     verify(readOnlyTransaction, times(2)).read(eq("custom_test_table"), any(), any());
   }
 
-  @Test
-  public void readOnlyTransactionDmlTest() {
 
-    this.expectedException.expectMessage("A read-only transaction template cannot execute DML.");
+  @Test
+  void readOnlyTransactionDmlTest() {
 
     ReadOnlyTransaction readOnlyTransaction = mock(ReadOnlyTransaction.class);
     when(this.databaseClient.readOnlyTransaction(
@@ -298,38 +294,38 @@ public class SpannerTemplateTests {
             TimestampBound.ofReadTimestamp(Timestamp.ofTimeMicroseconds(333))))
         .thenReturn(readOnlyTransaction);
 
-    this.spannerTemplate.performReadOnlyTransaction(
-        spannerOperations -> {
-          spannerOperations.executeDmlStatement(Statement.of("fail"));
-          return null;
-        },
-        new SpannerReadOptions().setTimestamp(Timestamp.ofTimeMicroseconds(333)));
+    SpannerReadOptions testSpannerReadOptions = new SpannerReadOptions().setTimestamp(Timestamp.ofTimeMicroseconds(333));
+    Function<SpannerTemplate, Void> testSpannerOperations = spannerOperations -> {
+      spannerOperations.executeDmlStatement(Statement.of("fail"));
+      return null;
+    };
+
+    assertThatThrownBy(() -> this.spannerTemplate.performReadOnlyTransaction(
+            testSpannerOperations, testSpannerReadOptions))
+            .hasMessage("A read-only transaction template cannot execute DML.");
   }
 
   @Test
-  public void readOnlyTransactionPartitionedDmlTest() {
-
-    this.expectedException.expectMessage(
-        "A read-only transaction template cannot execute partitioned" + " DML.");
+  void readOnlyTransactionPartitionedDmlTest() {
 
     ReadOnlyTransaction readOnlyTransaction = mock(ReadOnlyTransaction.class);
     when(this.databaseClient.readOnlyTransaction(
             TimestampBound.ofReadTimestamp(Timestamp.ofTimeMicroseconds(333))))
         .thenReturn(readOnlyTransaction);
 
-    this.spannerTemplate.performReadOnlyTransaction(
-        spannerOperations -> {
-          spannerOperations.executePartitionedDmlStatement(Statement.of("fail"));
-          return null;
-        },
-        new SpannerReadOptions().setTimestamp(Timestamp.ofTimeMicroseconds(333)));
+    SpannerReadOptions testSpannerReadOptions = new SpannerReadOptions().setTimestamp(Timestamp.ofTimeMicroseconds(333));
+    Function<SpannerTemplate, Void> testSpannerOperations = spannerOperations -> {
+      spannerOperations.executePartitionedDmlStatement(Statement.of("fail"));
+      return null;
+    };
+
+    assertThatThrownBy(() -> this.spannerTemplate.performReadOnlyTransaction(
+            testSpannerOperations, testSpannerReadOptions))
+            .hasMessage("A read-only transaction template cannot execute partitioned DML.");
   }
 
   @Test
-  public void readWriteTransactionPartitionedDmlTest() {
-
-    this.expectedException.expectMessage(
-        "A read-write transaction template cannot execute partitioned" + " DML.");
+  void readWriteTransactionPartitionedDmlTest() {
 
     TransactionRunner transactionRunner = mock(TransactionRunner.class);
     when(this.databaseClient.readWriteTransaction()).thenReturn(transactionRunner);
@@ -342,65 +338,58 @@ public class SpannerTemplateTests {
               TransactionCallable transactionCallable = invocation.getArgument(0);
               return transactionCallable.run(transactionContext);
             });
+    Function<SpannerTemplate, String> testSpannerOperations = spannerTemplate -> {
+      spannerTemplate.executePartitionedDmlStatement(Statement.of("DML statement here"));
+      return "all done";
+    };
 
-    this.spannerTemplate.performReadWriteTransaction(
-        spannerTemplate -> {
-          spannerTemplate.executePartitionedDmlStatement(Statement.of("DML statement here"));
-          return "all done";
-        });
+    assertThatThrownBy(() -> this.spannerTemplate.performReadWriteTransaction(testSpannerOperations))
+            .hasMessage("A read-write transaction template cannot execute partitioned" + " DML.");
   }
 
   @Test
-  public void nullDatabaseClientTest() {
+  void nullDatabaseClientTest() {
 
-    this.expectedException.expect(IllegalArgumentException.class);
-    this.expectedException.expectMessage("A valid database client for Spanner is required.");
-
-    new SpannerTemplate(
-        null, this.mappingContext, this.objectMapper, this.mutationFactory, this.schemaUtils);
+    assertThatThrownBy(() -> new SpannerTemplate(
+            null, this.mappingContext, this.objectMapper, this.mutationFactory, this.schemaUtils))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A valid database client for Spanner is required.");
   }
 
   @Test
-  public void nullMappingContextTest() {
+  void nullMappingContextTest() {
 
-    this.expectedException.expect(IllegalArgumentException.class);
-    this.expectedException.expectMessage("A valid mapping context for Spanner is required.");
-
-    new SpannerTemplate(
-        () -> this.databaseClient, null, this.objectMapper, this.mutationFactory, this.schemaUtils);
+    assertThatThrownBy(() ->  new SpannerTemplate(
+            () -> this.databaseClient, null, this.objectMapper, this.mutationFactory, this.schemaUtils))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A valid mapping context for Spanner is required.");
   }
 
   @Test
-  public void nullObjectMapperTest() {
+  void nullObjectMapperTest() {
 
-    this.expectedException.expect(IllegalArgumentException.class);
-    this.expectedException.expectMessage("A valid entity processor for Spanner is required.");
-
-    new SpannerTemplate(
-        () -> this.databaseClient,
-        this.mappingContext,
-        null,
-        this.mutationFactory,
-        this.schemaUtils);
+    assertThatThrownBy(() ->  new SpannerTemplate(
+            () -> this.databaseClient, this.mappingContext, null, this.mutationFactory, this.schemaUtils))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A valid entity processor for Spanner is required.");
   }
 
   @Test
-  public void nullMutationFactoryTest() {
+  void nullMutationFactoryTest() {
 
-    this.expectedException.expect(IllegalArgumentException.class);
-    this.expectedException.expectMessage("A valid Spanner mutation factory is required.");
-
-    new SpannerTemplate(
-        () -> this.databaseClient, this.mappingContext, this.objectMapper, null, this.schemaUtils);
+    assertThatThrownBy(() ->  new SpannerTemplate(
+            () -> this.databaseClient, this.mappingContext, this.objectMapper, null, this.schemaUtils))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A valid Spanner mutation factory is required.");
   }
 
   @Test
-  public void getMappingContextTest() {
+  void getMappingContextTest() {
     assertThat(this.spannerTemplate.getMappingContext()).isSameAs(this.mappingContext);
   }
 
   @Test
-  public void findSingleKeyNullTest() {
+  void findSingleKeyNullTest() {
     when(this.readContext.read(any(), any(), any())).thenReturn(null);
     Key key = Key.of("key");
     KeySet keys = KeySet.newBuilder().addKey(key).build();
@@ -412,7 +401,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void queryTest() {
+  void queryTest() {
     when(this.readContext.read(any(), any(), any())).thenReturn(null);
     Statement query = Statement.of("test");
     verifyAfterEvents(
@@ -423,7 +412,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void queryFuncTest() {
+  void queryFuncTest() {
     ResultSet resultSet = mock(ResultSet.class);
     when(resultSet.next()).thenReturn(false);
     Statement query = Statement.of("test");
@@ -435,7 +424,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void findSingleKeyTest() {
+  void findSingleKeyTest() {
     SpannerTemplate spyTemplate = spy(this.spannerTemplate);
     spyTemplate.read(TestEntity.class, Key.of("key"));
     verify(spyTemplate, times(1)).read(TestEntity.class, Key.of("key"), null);
@@ -443,7 +432,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void findKeySetTest() {
+  void findKeySetTest() {
     SpannerTemplate spyTemplate = spy(this.spannerTemplate);
     KeySet keys = KeySet.newBuilder().addKey(Key.of("key1")).addKey(Key.of("key2")).build();
     spyTemplate.read(TestEntity.class, keys);
@@ -452,7 +441,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void findKeySetTestEagerOptions() {
+  void findKeySetTestEagerOptions() {
     SpannerTemplate spyTemplate = spy(this.spannerTemplate);
     KeySet keys = KeySet.newBuilder().addKey(Key.of("key1")).addKey(Key.of("key2")).build();
     SpannerReadOptions options = new SpannerReadOptions();
@@ -462,7 +451,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void findKeySetTestEager() {
+  void findKeySetTestEager() {
     SpannerTemplate spyTemplate = spy(this.spannerTemplate);
     KeySet keys = KeySet.newBuilder().addKey(Key.of("key1")).addKey(Key.of("key2")).build();
     spyTemplate.read(ParentEntity.class, keys);
@@ -482,7 +471,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void readAllTestEager() {
+  void readAllTestEager() {
     SpannerTemplate spyTemplate = spy(this.spannerTemplate);
     spyTemplate.readAll(ParentEntity.class);
     Statement statement =
@@ -497,7 +486,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void findMultipleKeysTest() {
+  void findMultipleKeysTest() {
     ResultSet results = mock(ResultSet.class);
     ReadOption readOption = mock(ReadOption.class);
     SpannerReadOptions options =
@@ -525,7 +514,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void findMultipleKeysWithIndexTest() {
+  void findMultipleKeysWithIndexTest() {
     ResultSet results = mock(ResultSet.class);
     ReadOption readOption = mock(ReadOption.class);
     SpannerReadOptions options =
@@ -542,7 +531,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void findAllTest() {
+  void findAllTest() {
     SpannerTemplate spyTemplate = spy(this.spannerTemplate);
     SpannerReadOptions options = new SpannerReadOptions();
     spyTemplate.readAll(TestEntity.class, options);
@@ -551,7 +540,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void insertTest() {
+  void insertTest() {
     Mutation mutation = Mutation.newInsertBuilder("custom_test_table").build();
     TestEntity entity = new TestEntity();
     List<Mutation> mutations = Collections.singletonList(mutation);
@@ -565,7 +554,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void insertAllTest() {
+  void insertAllTest() {
     Mutation mutation = Mutation.newInsertOrUpdateBuilder("custom_test_table").build();
     TestEntity entity = new TestEntity();
     List<Mutation> mutations = Arrays.asList(mutation, mutation, mutation);
@@ -580,7 +569,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void updateTest() {
+  void updateTest() {
     Mutation mutation = Mutation.newUpdateBuilder("custom_test_table").build();
     TestEntity entity = new TestEntity();
     List<Mutation> mutations = Collections.singletonList(mutation);
@@ -594,7 +583,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void updateAllTest() {
+  void updateAllTest() {
     Mutation mutation = Mutation.newInsertOrUpdateBuilder("custom_test_table").build();
     TestEntity entity = new TestEntity();
     List<Mutation> mutations = Arrays.asList(mutation, mutation, mutation);
@@ -610,7 +599,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void updateColumnsArrayTest() {
+  void updateColumnsArrayTest() {
     Mutation mutation = Mutation.newInsertOrUpdateBuilder("custom_test_table").build();
     List<Mutation> mutations = Collections.singletonList(mutation);
     TestEntity entity = new TestEntity();
@@ -625,7 +614,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void updateColumnsSetTest() {
+  void updateColumnsSetTest() {
     Mutation mutation = Mutation.newInsertOrUpdateBuilder("custom_test_table").build();
     TestEntity entity = new TestEntity();
     Set<String> cols = new HashSet<>(Arrays.asList("a", "b"));
@@ -640,7 +629,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void upsertTest() {
+  void upsertTest() {
     Mutation mutation = Mutation.newInsertOrUpdateBuilder("custom_test_table").build();
     TestEntity entity = new TestEntity();
     List<Mutation> mutations = Collections.singletonList(mutation);
@@ -654,7 +643,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void upsertAllTest() {
+  void upsertAllTest() {
     Mutation mutation = Mutation.newInsertOrUpdateBuilder("custom_test_table").build();
     TestEntity entity = new TestEntity();
     List<Mutation> mutations = Arrays.asList(mutation, mutation, mutation);
@@ -670,7 +659,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void upsertColumnsArrayTest() {
+  void upsertColumnsArrayTest() {
     Mutation mutation = Mutation.newInsertOrUpdateBuilder("custom_test_table").build();
     TestEntity entity = new TestEntity();
     Set<String> cols = new HashSet<>(Arrays.asList("a", "b"));
@@ -686,7 +675,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void upsertColumnsSetTest() {
+  void upsertColumnsSetTest() {
     Mutation mutation = Mutation.newInsertOrUpdateBuilder("custom_test_table").build();
     TestEntity entity = new TestEntity();
     List<Mutation> mutations = Collections.singletonList(mutation);
@@ -702,7 +691,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void deleteByKeyTest() {
+  void deleteByKeyTest() {
     Key key = Key.of("key");
     Mutation mutation = Mutation.delete("custom_test_table", key);
     KeySet keys = KeySet.newBuilder().addKey(key).build();
@@ -717,7 +706,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void deleteObjectTest() {
+  void deleteObjectTest() {
     Mutation mutation = Mutation.delete("custom_test_table", Key.of("key"));
     List<Mutation> mutations = Collections.singletonList(mutation);
     TestEntity entity = new TestEntity();
@@ -731,7 +720,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void deleteAllObjectTest() {
+  void deleteAllObjectTest() {
     Mutation mutation = Mutation.delete("custom_test_table", Key.of("key"));
     TestEntity entity = new TestEntity();
     List entities = Arrays.asList(entity, entity, entity);
@@ -746,7 +735,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void deleteKeysTest() {
+  void deleteKeysTest() {
     KeySet keys = KeySet.newBuilder().addKey(Key.of("key1")).addKey(Key.of("key2")).build();
     Mutation mutation = Mutation.delete("custom_test_table", keys);
     List<Mutation> mutations = Collections.singletonList(mutation);
@@ -760,7 +749,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void countTest() {
+  void countTest() {
     ResultSet results = mock(ResultSet.class);
     when(this.readContext.executeQuery(Statement.of("SELECT COUNT(*) FROM custom_test_table")))
         .thenReturn(results);
@@ -771,7 +760,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void findAllPageableTest() {
+  void findAllPageableTest() {
     SpannerTemplate spyTemplate = spy(this.spannerTemplate);
     Sort sort = mock(Sort.class);
     Pageable pageable = mock(Pageable.class);
@@ -814,7 +803,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void resolveChildEntityTest() {
+  void resolveChildEntityTest() {
     ParentEntity p = new ParentEntity();
     p.id = "key";
     p.id2 = "key2";
@@ -859,7 +848,7 @@ public class SpannerTemplateTests {
   }
 
   @Test
-  public void lazyFetchChildrenTest() {
+  void lazyFetchChildrenTest() {
     ChildEntity c = new ChildEntity();
     c.id = "key";
     c.id_2 = "key2";
