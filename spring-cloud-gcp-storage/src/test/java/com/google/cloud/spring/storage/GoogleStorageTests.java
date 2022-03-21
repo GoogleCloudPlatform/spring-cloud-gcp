@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.storage;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -37,10 +38,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,15 +48,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests for Google Cloud Storage. */
 @SpringBootTest(properties = "spring.main.banner-mode=off")
-@RunWith(SpringRunner.class)
-public class GoogleStorageTests {
-
-  /** Used to test exception messages and types. */
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
+@ExtendWith(SpringExtension.class)
+class GoogleStorageTests {
 
   @Value("gs://test-spring/images/spring.png")
   private Resource remoteResource;
@@ -71,21 +67,23 @@ public class GoogleStorageTests {
   @Autowired private Storage mockStorage;
 
   @Test
-  public void testEmptyPath() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("Invalid location: gs://");
-    new GoogleStorageResource(this.mockStorage, "gs://", false);
+  void testEmptyPath() {
+
+    assertThatThrownBy(() -> new GoogleStorageResource(this.mockStorage, "gs://", false))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Invalid location: gs://");
   }
 
   @Test
-  public void testSlashPath() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("No bucket specified in the location: gs:///");
-    new GoogleStorageResource(this.mockStorage, "gs:///", false);
+  void testSlashPath() {
+
+    assertThatThrownBy(() -> new GoogleStorageResource(this.mockStorage, "gs:///", false))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("No bucket specified in the location: gs:///");
   }
 
   @Test
-  public void testValidObject() throws Exception {
+  void testValidObject() throws Exception {
     BlobId validBlobId = BlobId.of("test-spring", "images/spring.png");
     Blob mockedBlob = mock(Blob.class);
     when(mockedBlob.getSize()).thenReturn(4096L);
@@ -96,7 +94,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testValidObjectWithUnderscore() throws Exception {
+  void testValidObjectWithUnderscore() throws Exception {
     BlobId validBlobWithUnderscore = BlobId.of("test_spring", "images/spring.png");
     Blob mockedBlob = mock(Blob.class);
     when(mockStorage.get(validBlobWithUnderscore)).thenReturn(mockedBlob);
@@ -105,7 +103,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testValidBucket() throws IOException {
+  void testValidBucket() throws IOException {
     Assert.assertEquals("gs://test-spring/", this.bucketResource.getDescription());
     Assert.assertEquals("test-spring", this.bucketResource.getFilename());
     Assert.assertEquals("gs://test-spring/", this.bucketResource.getURI().toString());
@@ -123,12 +121,12 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testBucketNotEndingInSlash() {
+  void testBucketNotEndingInSlash() {
     Assert.assertTrue(new GoogleStorageResource(this.mockStorage, "gs://test-spring").isBucket());
   }
 
   @Test
-  public void testSpecifyBucketCorrect() {
+  void testSpecifyBucketCorrect() {
 
     Bucket mockedBucket = mock(Bucket.class);
     when(this.mockStorage.get("test-spring")).thenReturn(mockedBucket);
@@ -146,7 +144,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testSpecifyPathCorrect() {
+  void testSpecifyPathCorrect() {
     BlobId validBlobId = BlobId.of("test-spring", "images/spring.png");
     Blob mockedBlob = mock(Blob.class);
     when(this.mockStorage.get(validBlobId)).thenReturn(mockedBlob);
@@ -158,46 +156,47 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testBucketOutputStream() throws IOException {
-    this.expectedEx.expect(IllegalStateException.class);
-    this.expectedEx.expectMessage("Cannot open an output stream to a bucket: 'gs://test-spring/'");
-    ((WritableResource) this.bucketResource).getOutputStream();
+  void testBucketOutputStream() throws IOException {
+
+    assertThatThrownBy(() ->  ((WritableResource) this.bucketResource).getOutputStream())
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("Cannot open an output stream to a bucket: 'gs://test-spring/'");
   }
 
   @Test
-  public void testBucketNoBlobInputStream() throws IOException {
-    this.expectedEx.expect(IllegalStateException.class);
-    this.expectedEx.expectMessage("Cannot open an input stream to a bucket: 'gs://test-spring/'");
-    this.bucketResource.getInputStream();
+  void testBucketNoBlobInputStream() throws IOException {
+
+    assertThatThrownBy(() ->  this.bucketResource.getInputStream())
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("Cannot open an input stream to a bucket: 'gs://test-spring/'");
   }
 
   @Test
-  public void testBucketNoBlobContentLength() throws IOException {
-    this.expectedEx.expect(IllegalStateException.class);
-    this.expectedEx.expectMessage(
-        "No blob id specified in the location: "
-            + "'gs://test-spring/', and the operation is not allowed on buckets.");
-    this.bucketResource.contentLength();
+  void testBucketNoBlobContentLength() throws IOException {
+
+    assertThatThrownBy(() -> this.bucketResource.contentLength())
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("No blob id specified in the location: 'gs://test-spring/', and the operation is not allowed on buckets.");
   }
 
   @Test
-  public void testBucketNoBlobFile() throws IOException {
-    this.expectedEx.expect(UnsupportedOperationException.class);
-    this.expectedEx.expectMessage("gs://test-spring/ cannot be resolved to absolute file path");
-    this.bucketResource.getFile();
+  void testBucketNoBlobFile() throws IOException {
+
+    assertThatThrownBy(() -> this.bucketResource.getFile())
+            .isInstanceOf(UnsupportedOperationException.class)
+            .hasMessage("gs://test-spring/ cannot be resolved to absolute file path");
   }
 
   @Test
-  public void testBucketNoBlobLastModified() throws IOException {
-    this.expectedEx.expect(IllegalStateException.class);
-    this.expectedEx.expectMessage(
-        "No blob id specified in the location: 'gs://test-spring/', "
-            + "and the operation is not allowed on buckets.");
-    this.bucketResource.lastModified();
+  void testBucketNoBlobLastModified() throws IOException {
+
+    assertThatThrownBy(() ->  this.bucketResource.lastModified())
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("No blob id specified in the location: 'gs://test-spring/', and the operation is not allowed on buckets.");
   }
 
   @Test
-  public void testBucketNoBlobResourceStatuses() throws IOException {
+  void testBucketNoBlobResourceStatuses() throws IOException {
     Assert.assertFalse(this.bucketResource.isOpen());
     Assert.assertFalse(this.bucketResource.isReadable());
     Assert.assertFalse(((WritableResource) this.bucketResource).isWritable());
@@ -205,7 +204,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testWritable() throws Exception {
+  void testWritable() throws Exception {
     WriteChannel writeChannel = mock(WriteChannel.class);
     when(this.mockStorage.writer(any(BlobInfo.class))).thenReturn(writeChannel);
 
@@ -216,7 +215,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testWritableOutputStream() throws Exception {
+  void testWritableOutputStream() throws Exception {
     String location = "gs://test-spring/test";
     Blob blob = mock(Blob.class);
     WriteChannel writeChannel = mock(WriteChannel.class);
@@ -230,18 +229,20 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testWritableOutputStreamNoAutoCreateOnNullBlob() throws Exception {
-    this.expectedEx.expect(FileNotFoundException.class);
-    this.expectedEx.expectMessage("The blob was not found: gs://test-spring/test");
+  void testWritableOutputStreamNoAutoCreateOnNullBlob() throws Exception {
+
     String location = "gs://test-spring/test";
     when(this.mockStorage.get(BlobId.of("test-spring", "test"))).thenReturn(null);
 
     GoogleStorageResource resource = new GoogleStorageResource(this.mockStorage, location, false);
-    resource.getOutputStream();
+
+    assertThatThrownBy(() -> resource.getOutputStream())
+            .isInstanceOf(FileNotFoundException.class)
+            .hasMessage("The blob was not found: gs://test-spring/test");
   }
 
   @Test
-  public void testWritableOutputStreamWithAutoCreateOnNullBlob() throws Exception {
+  void testWritableOutputStreamWithAutoCreateOnNullBlob() throws Exception {
     String location = "gs://test-spring/test";
     BlobId blobId = BlobId.of("test-spring", "test");
     when(this.mockStorage.get(blobId)).thenReturn(null);
@@ -258,7 +259,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testWritableOutputStreamWithAutoCreateOnNonExistantBlob() throws Exception {
+  void testWritableOutputStreamWithAutoCreateOnNonExistantBlob() throws Exception {
     String location = "gs://test-spring/test";
     BlobId blobId = BlobId.of("test-spring", "test");
     Blob nonExistantBlob = mock(Blob.class);
@@ -277,7 +278,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testCreateBlobWithContents() {
+  void testCreateBlobWithContents() {
     Storage mockStorage = mock(Storage.class);
     String location = "gs://test-bucket/filename";
     byte[] contentBytes = "test contents".getBytes();
@@ -290,19 +291,21 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testGetInputStreamOnNullBlob() throws Exception {
-    this.expectedEx.expect(FileNotFoundException.class);
-    this.expectedEx.expectMessage("The blob was not found: gs://test-spring/test");
+  void testGetInputStreamOnNullBlob() throws Exception {
     String location = "gs://test-spring/test";
     Storage storage = mock(Storage.class);
     when(storage.get(BlobId.of("test-spring", "test"))).thenReturn(null);
 
     GoogleStorageResource resource = new GoogleStorageResource(storage, location, false);
-    resource.getInputStream();
+
+    assertThatThrownBy(() -> resource.getOutputStream())
+            .isInstanceOf(FileNotFoundException.class)
+            .hasMessage("The blob was not found: gs://test-spring/test");
+
   }
 
   @Test
-  public void testGetFilenameOnNonExistingBlob() throws Exception {
+  void testGetFilenameOnNonExistingBlob() throws Exception {
     String location = "gs://test-spring/test";
     Storage storage = mock(Storage.class);
     when(storage.get(BlobId.of("test-spring", "test"))).thenReturn(null);
@@ -312,7 +315,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testisAutoCreateFilesGetterSetter() {
+  void testisAutoCreateFilesGetterSetter() {
     String location = "gs://test-spring/test";
     Storage storage = mock(Storage.class);
     GoogleStorageResource resource = new GoogleStorageResource(storage, location);
@@ -320,7 +323,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testCreateRelative() throws IOException {
+  void testCreateRelative() throws IOException {
     String location = "gs://test-spring/test.png";
     Storage storage = mock(Storage.class);
     GoogleStorageResource resource = new GoogleStorageResource(storage, location);
@@ -330,7 +333,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testCreateRelativeSubdirs() throws IOException {
+  void testCreateRelativeSubdirs() throws IOException {
     String location = "gs://test-spring/t1/test.png";
     Storage storage = mock(Storage.class);
     GoogleStorageResource resource = new GoogleStorageResource(storage, location);
@@ -340,7 +343,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void nullSignedUrlForNullBlob() throws IOException {
+  void nullSignedUrlForNullBlob() throws IOException {
     String location = "gs://test-spring/t1/test.png";
     Storage storage = mock(Storage.class);
     GoogleStorageResource resource = new GoogleStorageResource(storage, location, false);
@@ -349,7 +352,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void signedUrlFunctionCalled() throws IOException {
+  void signedUrlFunctionCalled() throws IOException {
     String location = "gs://test-spring/t1/test.png";
     Storage storage = mock(Storage.class);
     Blob blob = mock(Blob.class);
@@ -363,7 +366,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testBucketDoesNotExist() {
+  void testBucketDoesNotExist() {
     Bucket mockedBucket = mock(Bucket.class);
     when(this.mockStorage.create(BucketInfo.newBuilder("non-existing").build()))
         .thenReturn(mockedBucket);
@@ -378,7 +381,7 @@ public class GoogleStorageTests {
   }
 
   @Test
-  public void testBucketExistsButResourceDoesNot() {
+  void testBucketExistsButResourceDoesNot() {
     GoogleStorageResource resource =
         new GoogleStorageResource(this.mockStorage, "gs://test-spring/file1");
 

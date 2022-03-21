@@ -32,10 +32,10 @@ import com.google.cloud.storage.Storage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
+import java.nio.file.Path;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,12 +49,12 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests for the message handler. */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration
-public class GcsMessageHandlerTests {
+class GcsMessageHandlerTests {
 
   private static Storage GCS;
 
@@ -62,27 +62,27 @@ public class GcsMessageHandlerTests {
   @Qualifier("siGcsTestChannel")
   private MessageChannel channel;
 
-  /** the temporary folder used for the tests. */
-  @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
   @Test
-  public void testNewFiles() throws IOException {
-    File testFile = this.temporaryFolder.newFile("benfica");
+  void testNewFiles(@TempDir Path tempDir) throws IOException {
+
+    Path testFileOld = tempDir.resolve("benfica");
+    File testFile = testFileOld.toFile();
+    testFile.createNewFile();
 
     BlobInfo expectedCreateBlobInfo =
-        BlobInfo.newBuilder(BlobId.of("testGcsBucket", "benfica.writing")).build();
+            BlobInfo.newBuilder(BlobId.of("testGcsBucket", "benfica.writing")).build();
     WriteChannel writeChannel = mock(WriteChannel.class);
     willAnswer(invocationOnMock -> writeChannel).given(GCS).writer(expectedCreateBlobInfo);
     willAnswer(invocationOnMock -> 10).given(writeChannel).write(isA(ByteBuffer.class));
 
     CopyWriter copyWriter = mock(CopyWriter.class);
     ArgumentCaptor<Storage.CopyRequest> copyRequestCaptor =
-        ArgumentCaptor.forClass(Storage.CopyRequest.class);
+            ArgumentCaptor.forClass(Storage.CopyRequest.class);
     willAnswer(invocationOnMock -> copyWriter).given(GCS).copy(isA(Storage.CopyRequest.class));
 
     willAnswer(invocationOnMock -> true)
-        .given(GCS)
-        .delete(BlobId.of("testGcsBucket", "benfica.writing"));
+            .given(GCS)
+            .delete(BlobId.of("testGcsBucket", "benfica.writing"));
 
     this.channel.send(new GenericMessage<Object>(testFile));
 
@@ -92,9 +92,9 @@ public class GcsMessageHandlerTests {
 
     Storage.CopyRequest expectedCopyRequest = copyRequestCaptor.getValue();
     assertThat(expectedCopyRequest.getSource())
-        .isEqualTo(BlobId.of("testGcsBucket", "benfica.writing"));
+            .isEqualTo(BlobId.of("testGcsBucket", "benfica.writing"));
     assertThat(expectedCopyRequest.getTarget().getBlobId())
-        .isEqualTo(BlobId.of("testGcsBucket", "benfica"));
+            .isEqualTo(BlobId.of("testGcsBucket", "benfica"));
   }
 
   /** Spring config for the tests. */
