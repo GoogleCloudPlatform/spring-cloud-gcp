@@ -17,36 +17,29 @@
 package com.google.cloud.spring.secretmanager.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.awaitility.Awaitility.await;
 
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.time.Duration;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Integration tests for {@link SecretManagerTemplate}. */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.secretmanager", matches = "true")
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SecretManagerTestConfiguration.class})
-public class SecretManagerTemplateIntegrationTests {
+class SecretManagerTemplateIntegrationTests {
 
   @Autowired SecretManagerTemplate secretManagerTemplate;
 
-  @BeforeClass
-  public static void prepare() {
-    assumeThat(System.getProperty("it.secretmanager"))
-        .as(
-            "Secret manager integration tests are disabled. "
-                + "Please use '-Dit.secretmanager=true' to enable them.")
-        .isEqualTo("true");
-  }
-
   @Test
-  public void testReadWriteSecrets() {
+  void testReadWriteSecrets() {
     secretManagerTemplate.createSecret("test-secret-1234", "1234");
 
     await()
@@ -61,13 +54,15 @@ public class SecretManagerTemplateIntegrationTests {
             });
   }
 
-  @Test(expected = com.google.api.gax.rpc.NotFoundException.class)
-  public void testReadMissingSecret() {
-    secretManagerTemplate.getSecretBytes("test-NON-EXISTING-secret");
+  @Test
+  void testReadMissingSecret() {
+
+    assertThatThrownBy(() -> secretManagerTemplate.getSecretBytes("test-NON-EXISTING-secret"))
+              .isInstanceOf(com.google.api.gax.rpc.NotFoundException.class);
   }
 
   @Test
-  public void testUpdateSecrets() {
+  void testUpdateSecrets() {
     secretManagerTemplate.createSecret("test-update-secret", "5555");
     await()
         .atMost(Duration.ofSeconds(5))
