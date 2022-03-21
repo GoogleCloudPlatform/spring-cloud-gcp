@@ -163,6 +163,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
 
   @Test
   void readConvertedNestedStructTest() {
+
     Struct colStruct = Struct.newBuilder().set("string_col").to(Value.string("value")).build();
     Struct rowStruct =
         Struct.newBuilder()
