@@ -36,13 +36,13 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.scheduling.annotation.AsyncResult;
 import reactor.test.StepVerifier;
 import reactor.test.scheduler.VirtualTimeScheduler;
@@ -52,20 +52,20 @@ import reactor.test.scheduler.VirtualTimeScheduler;
  *
  * @since 1.2
  */
-@RunWith(MockitoJUnitRunner.class)
-public class PubSubReactiveFactoryTests {
+@ExtendWith(MockitoExtension.class)
+class PubSubReactiveFactoryTests {
 
   @Mock PubSubSubscriberOperations subscriberOperations;
 
   PubSubReactiveFactory factory;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     factory = new PubSubReactiveFactory(subscriberOperations, VirtualTimeScheduler.getOrSet());
   }
 
   @Test
-  public void testIllegalArgumentExceptionWithMaxMessagesLessThanOne() {
+  void testIllegalArgumentExceptionWithMaxMessagesLessThanOne() {
     VirtualTimeScheduler vts = VirtualTimeScheduler.getOrSet();
     assertThatThrownBy(() -> new PubSubReactiveFactory(subscriberOperations, vts, 0))
         .isInstanceOf(IllegalArgumentException.class)
@@ -73,7 +73,7 @@ public class PubSubReactiveFactoryTests {
   }
 
   @Test
-  public void testSequentialRequests() throws InterruptedException {
+  void testSequentialRequests() throws InterruptedException {
     setUpMessages("msg1", "msg2", "msg3", "msg4");
 
     StepVerifier.withVirtualTime(() -> factory.poll("sub1", 10).map(this::messageToString), 1)
@@ -92,7 +92,7 @@ public class PubSubReactiveFactoryTests {
   }
 
   @Test
-  public void testSequentialRequestWithInsufficientDemandGetsSplitIntoTwoRequests()
+  void testSequentialRequestWithInsufficientDemandGetsSplitIntoTwoRequests()
       throws InterruptedException {
     setUpMessages("msg1", "stop", "msg2", "msg3", "msg4");
 
@@ -110,7 +110,7 @@ public class PubSubReactiveFactoryTests {
   }
 
   @Test
-  public void testDeadlineExceededCausesRetry() throws InterruptedException {
+  void testDeadlineExceededCausesRetry() throws InterruptedException {
     setUpMessages("timeout", "msg1", "msg2");
 
     StepVerifier.withVirtualTime(() -> factory.poll("sub1", 10).map(this::messageToString), 2)
@@ -126,7 +126,7 @@ public class PubSubReactiveFactoryTests {
   }
 
   @Test
-  public void testExceptionThrownByPubSubClientResultingInErrorStream()
+  void testExceptionThrownByPubSubClientResultingInErrorStream()
       throws InterruptedException {
     setUpMessages("msg1", "msg2", "throw");
 
@@ -143,7 +143,7 @@ public class PubSubReactiveFactoryTests {
   }
 
   @Test
-  public void testUnlimitedDemand() throws InterruptedException {
+  void testUnlimitedDemand() throws InterruptedException {
     setUpMessages("msg1", "msg2", "stop", "msg3", "msg4", "stop", "msg5", "stop");
 
     StepVerifier.withVirtualTime(() -> factory.poll("sub1", 10).map(this::messageToString))
@@ -164,7 +164,7 @@ public class PubSubReactiveFactoryTests {
   }
 
   @Test
-  public void testUnlimitedDemandWithMaxMessages() throws InterruptedException {
+  void testUnlimitedDemandWithMaxMessages() throws InterruptedException {
     setUpMessages("msg1", "msg2", "stop", "msg3", "stop", "msg4", "msg5", "msg6", "stop");
 
     PubSubReactiveFactory factory =
@@ -188,7 +188,7 @@ public class PubSubReactiveFactoryTests {
   }
 
   @Test
-  public void testUnlimitedDemandWithException() throws InterruptedException {
+  void testUnlimitedDemandWithException() throws InterruptedException {
     setUpMessages("msg1", "msg2", "stop", "throw");
 
     StepVerifier.withVirtualTime(() -> factory.poll("sub1", 10).map(this::messageToString))

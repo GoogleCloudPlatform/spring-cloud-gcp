@@ -39,11 +39,11 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -71,8 +71,8 @@ import org.springframework.messaging.MessageChannel;
  *
  * @since 1.1
  */
-@RunWith(MockitoJUnitRunner.class)
-public class PubSubMessageChannelBinderTests {
+@ExtendWith(MockitoExtension.class)
+class PubSubMessageChannelBinderTests {
   private static final Log LOGGER = LogFactory.getLog(PubSubMessageChannelBinderTests.class);
 
   PubSubMessageChannelBinder binder;
@@ -103,25 +103,20 @@ public class PubSubMessageChannelBinderTests {
               AutoConfigurations.of(
                   PubSubBinderConfiguration.class, PubSubExtendedBindingProperties.class));
 
-  @Before
-  public void before() {
-    this.binder =
-        new PubSubMessageChannelBinder(
-            new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
-
-    when(producerDestination.getName()).thenReturn("test-topic");
-    when(consumerDestination.getName()).thenReturn("test-subscription");
-  }
-
   @Test
-  public void testAfterUnbindConsumer() {
+  void testAfterUnbindConsumer() {
+
+    this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
     this.binder.afterUnbindConsumer(this.consumerDestination, "group1", this.consumerProperties);
 
     verify(this.channelProvisioner).afterUnbindConsumer(this.consumerDestination);
   }
 
   @Test
-  public void producerSyncPropertyFalseByDefault() {
+  void producerSyncPropertyFalseByDefault() {
+
+    this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
+    when(producerDestination.getName()).thenReturn("test-topic");
     baseContext.run(
         ctx -> {
           PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
@@ -139,7 +134,10 @@ public class PubSubMessageChannelBinderTests {
   }
 
   @Test
-  public void producerSyncPropertyPropagatesToMessageHandler() {
+  void producerSyncPropertyPropagatesToMessageHandler() {
+
+    this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
+    when(producerDestination.getName()).thenReturn("test-topic");
     baseContext
         .withPropertyValues("spring.cloud.stream.gcp.pubsub.default.producer.sync=true")
         .run(
@@ -161,7 +159,9 @@ public class PubSubMessageChannelBinderTests {
   }
 
   @Test
-  public void consumerMaxFetchPropertyPropagatesToMessageSource() {
+  void consumerMaxFetchPropertyPropagatesToMessageSource() {
+    this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
+    when(consumerDestination.getName()).thenReturn("test-subscription");
     baseContext
         .withPropertyValues("spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize=20")
         .run(
@@ -181,7 +181,10 @@ public class PubSubMessageChannelBinderTests {
   }
 
   @Test
-  public void testCreateConsumerWithRegistry() {
+  void testCreateConsumerWithRegistry() {
+
+    this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
+    when(consumerDestination.getName()).thenReturn("test-subscription");
     baseContext.run(
         ctx -> {
           PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
@@ -204,7 +207,9 @@ public class PubSubMessageChannelBinderTests {
   }
 
   @Test
-  public void testProducerAndConsumerCustomizers() {
+  void testProducerAndConsumerCustomizers() {
+
+    this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
     baseContext
         .withUserConfiguration(PubSubBinderTestConfig.class)
         .withPropertyValues("spring.cloud.stream.bindings.input.group=testGroup")
@@ -233,7 +238,10 @@ public class PubSubMessageChannelBinderTests {
   }
 
   @Test
-  public void testConsumerEndpointCreation() {
+  void testConsumerEndpointCreation() {
+
+    this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
+    when(consumerDestination.getName()).thenReturn("test-subscription");
     baseContext
         .withPropertyValues(
             "spring.cloud.stream.bindings.input.group=testGroup",

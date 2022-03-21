@@ -17,6 +17,7 @@
 package com.google.cloud.spring.pubsub.support.converter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
@@ -28,80 +29,75 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONException;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.converter.Converter;
 
 /** Tests for the simple message converter. */
-public class SimplePubSubMessageConverterTests {
+class SimplePubSubMessageConverterTests {
 
   private static final String TEST_STRING = "test";
 
   private static final Map<String, String> TEST_HEADERS =
       new MapBuilder<String, String>().put("key1", "value1").put("key2", "value2").build();
 
-  /** used to test exception messages and types. */
-  @Rule public ExpectedException expectedException = ExpectedException.none();
-
   @Test
-  public void testToString() {
+  void testToString() {
     doToTestForType(String.class, a -> a);
   }
 
   @Test
-  public void testFromString() {
+  void testFromString() {
     doFromTest(TEST_STRING);
   }
 
   @Test
-  public void testToByteString() {
+  void testToByteString() {
     doToTestForType(ByteString.class, a -> new String(a.toByteArray()));
   }
 
   @Test
-  public void testFromByteString() {
+  void testFromByteString() {
     doFromTest(ByteString.copyFrom(TEST_STRING.getBytes()));
   }
 
   @Test
-  public void testToByteArray() {
+  void testToByteArray() {
     doToTestForType(byte[].class, a -> new String(a));
   }
 
   @Test
-  public void testFromByteArray() {
+  void testFromByteArray() {
     doFromTest(TEST_STRING.getBytes());
   }
 
   @Test
-  public void testToByteBuffer() {
+  void testToByteBuffer() {
     doToTestForType(ByteBuffer.class, a -> new String(a.array()));
   }
 
   @Test
-  public void testFromByteBuffer() {
+  void testFromByteBuffer() {
     doFromTest(ByteBuffer.wrap(TEST_STRING.getBytes()));
   }
 
   @Test
-  public void testToUnknown() {
-    this.expectedException.expect(PubSubMessageConversionException.class);
-    this.expectedException.expectMessage(
-        "Unable to convert Pub/Sub message to " + "payload of type java.lang.Integer.");
-    doToTestForType(Integer.class, a -> toString());
+  void testToUnknown() {
+
+    assertThatThrownBy(() -> doToTestForType(Integer.class, a -> toString()))
+            .isInstanceOf(PubSubMessageConversionException.class)
+            .hasMessage("Unable to convert Pub/Sub message to " + "payload of type java.lang.Integer.");
   }
 
   @Test
-  public void testFromUnknown() {
-    this.expectedException.expect(PubSubMessageConversionException.class);
-    this.expectedException.expectMessage(
-        "Unable to convert payload of type java.lang.Class " + "to byte[] for sending to Pub/Sub.");
-    doFromTest(Integer.class);
+  void testFromUnknown() {
+
+    assertThatThrownBy(() ->   doFromTest(Integer.class))
+            .isInstanceOf(PubSubMessageConversionException.class)
+            .hasMessage("Unable to convert payload of type java.lang.Class " + "to byte[] for sending to Pub/Sub.");
   }
 
   @Test
-  public void testNullHeaders() {
+  void testNullHeaders() {
     SimplePubSubMessageConverter converter = new SimplePubSubMessageConverter();
     PubsubMessage pubsubMessage = converter.toPubSubMessage(TEST_STRING, null);
 
@@ -137,7 +133,7 @@ public class SimplePubSubMessageConverterTests {
   }
 
   @Test
-  public void testOrderingKeyHeader() throws JSONException {
+  void testOrderingKeyHeader() throws JSONException {
     SimplePubSubMessageConverter converter = new SimplePubSubMessageConverter();
     PubsubMessage pubsubMessage =
         converter.toPubSubMessage(
