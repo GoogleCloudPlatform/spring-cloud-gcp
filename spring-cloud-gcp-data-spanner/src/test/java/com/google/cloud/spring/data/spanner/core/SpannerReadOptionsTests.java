@@ -31,7 +31,6 @@ class SpannerReadOptionsTests {
 
   @Test
   void addNullReadOptionTest() {
-
     SpannerReadOptions testSpannerReadOptions = new SpannerReadOptions();
     assertThatThrownBy(() -> testSpannerReadOptions.addReadOption(null))
             .isInstanceOf(IllegalArgumentException.class)
