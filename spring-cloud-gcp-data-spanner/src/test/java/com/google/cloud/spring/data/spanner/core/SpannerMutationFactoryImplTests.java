@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.spanner.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 import com.google.cloud.spanner.Key;
@@ -38,16 +39,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for the Spanner mutation factory implementation. */
-public class SpannerMutationFactoryImplTests {
-
-  /** used to check for exception messages and types. */
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
+class SpannerMutationFactoryImplTests {
 
   private SpannerMappingContext mappingContext;
 
@@ -57,8 +53,8 @@ public class SpannerMutationFactoryImplTests {
 
   private SpannerMutationFactoryImpl spannerMutationFactory;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     this.mappingContext = new SpannerMappingContext();
     this.objectMapper = mock(SpannerEntityProcessor.class);
     this.spannerSchemaUtils = new SpannerSchemaUtils(this.mappingContext, this.objectMapper, true);
@@ -98,7 +94,7 @@ public class SpannerMutationFactoryImplTests {
 
   @Test
   @SuppressWarnings("ReturnValueIgnored")
-  public void lazyWriteTest() {
+  void lazyWriteTest() {
     TestEntity t = new TestEntity();
     t.id = "a";
     ChildEntity c1 = new ChildEntity();
@@ -137,20 +133,12 @@ public class SpannerMutationFactoryImplTests {
   }
 
   @Test
-  public void insertTest() {
+  void insertTest() {
     executeWriteTest(t -> this.spannerMutationFactory.insert(t), Op.INSERT);
   }
 
   @Test
-  public void insertChildrenMismatchIdTest() {
-
-    this.expectedEx.expect(SpannerDataException.class);
-    this.expectedEx.expectMessage(
-        "A child entity's common primary key parts with its parent must have the same values."
-            + " Primary key component 1 does not match for entities: class"
-            + " com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$TestEntity"
-            + " class"
-            + " com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$ChildEntity");
+  void insertChildrenMismatchIdTest() {
 
     TestEntity t = new TestEntity();
     t.id = "a";
@@ -161,21 +149,27 @@ public class SpannerMutationFactoryImplTests {
     t.childEntities = Collections.singletonList(c1);
     // throws exception because child entity's id column does not match that of its
     // parent.
-    this.spannerMutationFactory.insert(t);
+    assertThatThrownBy(() -> this.spannerMutationFactory.insert(t))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("A child entity's common primary key parts with its parent must have the same values."
+                    + " Primary key component 1 does not match for entities: class"
+                    + " com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$TestEntity"
+                    + " class"
+                    + " com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$ChildEntity");
   }
 
   @Test
-  public void updateTest() {
+  void updateTest() {
     executeWriteTest(t -> this.spannerMutationFactory.update(t, null), Op.UPDATE);
   }
 
   @Test
-  public void upsertTest() {
+  void upsertTest() {
     executeWriteTest(t -> this.spannerMutationFactory.upsert(t, null), Op.INSERT_OR_UPDATE);
   }
 
   @Test
-  public void deleteEntitiesTest() {
+  void deleteEntitiesTest() {
     TestEntity t1 = new TestEntity();
     t1.id = "key1";
     TestEntity t2 = new TestEntity();
@@ -196,7 +190,7 @@ public class SpannerMutationFactoryImplTests {
   }
 
   @Test
-  public void deleteEntityTest() {
+  void deleteEntityTest() {
     TestEntity t1 = new TestEntity();
     t1.id = "key1";
 
@@ -215,7 +209,7 @@ public class SpannerMutationFactoryImplTests {
   }
 
   @Test
-  public void deleteKeysTest() {
+  void deleteKeysTest() {
     KeySet keySet = KeySet.newBuilder().addKey(Key.of("key1")).addKey(Key.of("key2")).build();
     Mutation mutation = this.spannerMutationFactory.delete(TestEntity.class, keySet);
     assertThat(mutation.getTable()).isEqualTo("custom_test_table");
@@ -232,7 +226,7 @@ public class SpannerMutationFactoryImplTests {
   }
 
   @Test
-  public void deleteKeyTest() {
+  void deleteKeyTest() {
     Key key = Key.of("key1");
     Mutation mutation = this.spannerMutationFactory.delete(TestEntity.class, key);
     assertThat(mutation.getTable()).isEqualTo("custom_test_table");

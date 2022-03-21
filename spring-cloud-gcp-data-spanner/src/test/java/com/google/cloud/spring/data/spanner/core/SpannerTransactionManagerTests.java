@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.data.spanner.core;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -32,10 +33,8 @@ import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionManager;
 import com.google.cloud.spanner.TransactionManager.TransactionState;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -47,10 +46,7 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /** Tests for the Spanner transaction manager. */
-public class SpannerTransactionManagerTests {
-
-  /** checks the exception for messages and types. */
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
+class SpannerTransactionManagerTests {
 
   @Mock DatabaseClient databaseClient;
 
@@ -64,8 +60,8 @@ public class SpannerTransactionManagerTests {
 
   SpannerTransactionManager manager;
 
-  @Before
-  public void initMocks() {
+  @BeforeEach
+  void initMocks() {
     MockitoAnnotations.initMocks(this);
 
     this.manager = new SpannerTransactionManager(() -> this.databaseClient);
@@ -80,7 +76,7 @@ public class SpannerTransactionManagerTests {
   }
 
   @Test
-  public void testDoGetTransactionStarted() {
+  void testDoGetTransactionStarted() {
     when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
     tx.transactionManager = transactionManager;
     tx.transactionContext = transactionContext;
@@ -91,7 +87,7 @@ public class SpannerTransactionManagerTests {
   }
 
   @Test
-  public void testDoGetTransactionStartedReadOnly() {
+  void testDoGetTransactionStartedReadOnly() {
     tx.transactionManager = transactionManager;
     tx.transactionContext = transactionContext;
     tx.isReadOnly = true;
@@ -102,7 +98,7 @@ public class SpannerTransactionManagerTests {
   }
 
   @Test
-  public void testDoGetTransactionAborted() {
+  void testDoGetTransactionAborted() {
     TransactionManager transactionManagerAborted = mock(TransactionManager.class);
     when(transactionManagerAborted.getState()).thenReturn(TransactionState.ABORTED);
 
@@ -118,7 +114,7 @@ public class SpannerTransactionManagerTests {
   }
 
   @Test
-  public void testDoBegin() {
+  void testDoBegin() {
     when(transactionManager.begin()).thenReturn(transactionContext);
 
     TransactionSynchronizationManager.unbindResource(this.databaseClient);
@@ -135,7 +131,7 @@ public class SpannerTransactionManagerTests {
   }
 
   @Test
-  public void testDoBeginReadOnly() {
+  void testDoBeginReadOnly() {
     when(transactionManager.begin()).thenReturn(transactionContext);
 
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -155,7 +151,7 @@ public class SpannerTransactionManagerTests {
   }
 
   @Test
-  public void testDoCommit() {
+  void testDoCommit() {
     when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
     when(transactionManager.begin()).thenReturn(this.transactionContext);
     doNothing().when(transactionManager).commit();
@@ -169,7 +165,7 @@ public class SpannerTransactionManagerTests {
   }
 
   @Test
-  public void testDoCommitNotStarted() {
+  void testDoCommitNotStarted() {
     tx.transactionManager = transactionManager;
     tx.transactionContext = transactionContext;
 
@@ -180,28 +176,21 @@ public class SpannerTransactionManagerTests {
   }
 
   @Test
-  public void testDoCommitRollbackExceptions() {
-
-    this.expectedEx.expect(UnexpectedRollbackException.class);
-    this.expectedEx.expectMessage(
-        "Transaction Got Rolled Back; "
-            + "nested exception is com.google.cloud.spanner.AbortedException");
+  void testDoCommitRollbackExceptions() {
 
     when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
     Mockito.doThrow(AbortedException.class).when(transactionManager).commit();
 
     tx.transactionManager = transactionManager;
 
-    manager.doCommit(status);
+    assertThatThrownBy(() -> manager.doCommit(status))
+            .isInstanceOf(UnexpectedRollbackException.class)
+            .hasMessage("Transaction Got Rolled Back; "
+            + "nested exception is com.google.cloud.spanner.AbortedException");
   }
 
   @Test
-  public void testDoCommitDupeException() {
-
-    this.expectedEx.expect(DuplicateKeyException.class);
-    this.expectedEx.expectMessage(
-        "ALREADY_EXISTS; nested exception is "
-            + "com.google.cloud.spanner.SpannerException: ALREADY_EXISTS: this is from a test");
+  void testDoCommitDupeException() {
 
     SpannerException exception =
         SpannerExceptionFactory.newSpannerException(
@@ -212,11 +201,14 @@ public class SpannerTransactionManagerTests {
 
     tx.transactionManager = transactionManager;
 
-    manager.doCommit(status);
+    assertThatThrownBy(() -> manager.doCommit(status))
+            .isInstanceOf(DuplicateKeyException.class)
+            .hasMessage("ALREADY_EXISTS; nested exception is "
+                    + "com.google.cloud.spanner.SpannerException: ALREADY_EXISTS: this is from a test");
   }
 
   @Test
-  public void testDoRollback() {
+  void testDoRollback() {
     when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
     when(transactionManager.begin()).thenReturn(this.transactionContext);
     doNothing().when(transactionManager).rollback();
@@ -230,7 +222,7 @@ public class SpannerTransactionManagerTests {
   }
 
   @Test
-  public void testDoRollbackNotStarted() {
+  void testDoRollbackNotStarted() {
     tx.transactionManager = transactionManager;
 
     manager.doRollback(status);

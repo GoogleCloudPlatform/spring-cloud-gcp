@@ -17,33 +17,28 @@
 package com.google.cloud.spring.data.spanner.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 import com.google.cloud.spanner.Options.ReadOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 /** Tests for the Spanner read options. */
-public class SpannerReadOptionsTests {
-
-  /** checks the exception for messages and types. */
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
+class SpannerReadOptionsTests {
 
   @Test
-  public void addNullReadOptionTest() {
-
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("Valid read option is required!");
-
-    new SpannerReadOptions().addReadOption(null);
+  void addNullReadOptionTest() {
+    SpannerReadOptions testSpannerReadOptions = new SpannerReadOptions();
+    assertThatThrownBy(() -> testSpannerReadOptions.addReadOption(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Valid read option is required!");
   }
 
   @Test
-  public void addReadOptionTest() {
+  void addReadOptionTest() {
     SpannerReadOptions spannerReadOptions = new SpannerReadOptions();
     ReadOption r1 = mock(ReadOption.class);
     ReadOption r2 = mock(ReadOption.class);
@@ -52,7 +47,7 @@ public class SpannerReadOptionsTests {
   }
 
   @Test
-  public void includePropertiesTest() {
+  void includePropertiesTest() {
     SpannerReadOptions spannerReadOptions = new SpannerReadOptions();
     Set<String> includeProperties = Collections.emptySet();
     assertThat(spannerReadOptions.getIncludeProperties()).isNull();
