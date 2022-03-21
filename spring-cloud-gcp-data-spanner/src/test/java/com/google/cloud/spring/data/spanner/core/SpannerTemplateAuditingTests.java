@@ -33,8 +33,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -43,12 +43,12 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests the auditing features of the template. */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration
-public class SpannerTemplateAuditingTests {
+class SpannerTemplateAuditingTests {
 
   private static final List<Mutation> UPSERT_MUTATION =
       Arrays.asList(Mutation.newInsertOrUpdateBuilder("custom_test_table").build());
@@ -58,7 +58,7 @@ public class SpannerTemplateAuditingTests {
   @Autowired SpannerTemplate spannerTemplate;
 
   @Test
-  public void testModifiedNullProperties() {
+  void testModifiedNullProperties() {
     TestEntity testEntity = new TestEntity();
     testEntity.id = "a";
     // intentionally leaving the other two audit properties untouched.
@@ -69,7 +69,7 @@ public class SpannerTemplateAuditingTests {
   }
 
   @Test
-  public void testModifiedPrevProperties() {
+  void testModifiedPrevProperties() {
     TestEntity testEntity = new TestEntity();
     testEntity.id = "a";
     testEntity.lastTouched = LONG_AGO;

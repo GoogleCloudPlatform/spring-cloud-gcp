@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.spanner.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -41,11 +42,9 @@ import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,14 +52,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 /** Tests for Spanner Template when using transactional annotation. */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration
-public class SpannerTemplateTransactionManagerTests {
+class SpannerTemplateTransactionManagerTests {
   private static final List<Mutation> INSERT_MUTATION =
       Arrays.asList(Mutation.newInsertBuilder("custom_test_table").build());
 
@@ -74,9 +73,6 @@ public class SpannerTemplateTransactionManagerTests {
   private final AtomicReference<TransactionManager.TransactionState> transactionState =
       new AtomicReference<>();
 
-  /** Used to test for exception messages and types. */
-  @Rule public ExpectedException expectedException = ExpectedException.none();
-
   @MockBean DatabaseClient databaseClient;
 
   @MockBean ReadContext readContext;
@@ -89,8 +85,8 @@ public class SpannerTemplateTransactionManagerTests {
 
   @Mock ReadOnlyTransaction readOnlyTransaction;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     when(this.databaseClient.singleUse()).thenReturn(this.readContext);
     this.transactionManager = Mockito.spy(TransactionManager.class);
     Mockito.doAnswer(
@@ -125,7 +121,7 @@ public class SpannerTemplateTransactionManagerTests {
   }
 
   @Test
-  public void readOnlyTest() {
+  void readOnlyTest() {
     // The transactionManager will NOT be started in readonly
     when(this.transactionManager.getState())
         .thenReturn(TransactionManager.TransactionState.COMMITTED);
@@ -139,7 +135,7 @@ public class SpannerTemplateTransactionManagerTests {
   }
 
   @Test
-  public void greenPathTransaction() {
+  void greenPathTransaction() {
     TestEntity entity1 = new TestEntity();
     TestEntity entity2 = new TestEntity();
     this.transactionalService.doInTransaction(entity1, entity2);
@@ -162,7 +158,7 @@ public class SpannerTemplateTransactionManagerTests {
   }
 
   @Test
-  public void rollBackTransaction() {
+  void rollBackTransaction() {
     TestEntity entity1 = new TestEntity();
     TestEntity entity2 = new TestEntity();
     Exception exception = null;
@@ -190,7 +186,7 @@ public class SpannerTemplateTransactionManagerTests {
   }
 
   @Test
-  public void doWithoutTransaction() {
+  void doWithoutTransaction() {
     TestEntity entity1 = new TestEntity();
     TestEntity entity2 = new TestEntity();
     this.transactionalService.doWithoutTransaction(entity1, entity2);
@@ -210,30 +206,27 @@ public class SpannerTemplateTransactionManagerTests {
   }
 
   @Test
-  public void readOnlySaveTest() {
-    this.expectedException.expectMessage(
-        "Spanner transaction cannot apply mutations because it is in readonly mode");
-    this.transactionalService.writingInReadOnly(new TestEntity());
+  void readOnlySaveTest() {
+    assertThatThrownBy(() -> this.transactionalService.writingInReadOnly(new TestEntity()))
+            .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
   }
 
   @Test
-  public void readOnlyDeleteTest() {
-    this.expectedException.expectMessage(
-        "Spanner transaction cannot apply mutations because it is in readonly mode");
-    this.transactionalService.deleteInReadOnly(new TestEntity());
+  void readOnlyDeleteTest() {
+    assertThatThrownBy(() -> this.transactionalService.deleteInReadOnly(new TestEntity()))
+            .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
   }
 
   @Test
-  public void readOnlyDmlTest() {
-    this.expectedException.expectMessage(
-        "Spanner transaction cannot execute DML because it is in readonly mode");
-    this.transactionalService.dmlInReadOnly();
+  void readOnlyDmlTest() {
+    assertThatThrownBy(() -> this.transactionalService.dmlInReadOnly())
+            .hasMessage("Spanner transaction cannot execute DML because it is in readonly mode");
   }
 
   @Test
-  public void partitionedDmlInTransactionTest() {
-    this.expectedException.expectMessage("Cannot execute partitioned DML in a transaction.");
-    this.transactionalService.partitionedDmlInTransaction();
+  void partitionedDmlInTransactionTest() {
+    assertThatThrownBy(() -> this.transactionalService.partitionedDmlInTransaction())
+            .hasMessage("Cannot execute partitioned DML in a transaction.");
   }
 
   /** Spring config for the tests. */
