@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.spanner.core.convert;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -60,23 +61,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for the conversion and mapping of entities for write. */
-public class ConverterAwareMappingSpannerEntityWriterTests {
-
-  /** used for checking exception messages and types. */
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
+class ConverterAwareMappingSpannerEntityWriterTests {
 
   private SpannerEntityWriter spannerEntityWriter;
 
   private SpannerWriteConverter writeConverter;
 
-  @Before
-  public void setup() {
+  @BeforeEach
+  void setup() {
     this.writeConverter = new SpannerWriteConverter();
     SpannerMappingContext spannerMappingContext = new SpannerMappingContext(new Gson());
     this.spannerEntityWriter =
@@ -86,7 +82,7 @@ public class ConverterAwareMappingSpannerEntityWriterTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void writeTest() {
+  void writeTest() {
     TestEntity t = new TestEntity();
     t.id = "key1";
     t.enumField = TestEntity.Color.WHITE;
@@ -281,7 +277,7 @@ public class ConverterAwareMappingSpannerEntityWriterTests {
   }
 
   @Test
-  public void writeNullColumnsTest() {
+  void writeNullColumnsTest() {
     TestEntity t = new TestEntity();
 
     t.dateField = null;
@@ -307,7 +303,7 @@ public class ConverterAwareMappingSpannerEntityWriterTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void writeSomeColumnsTest() {
+  void writeSomeColumnsTest() {
     TestEntity t = new TestEntity();
     t.id = "key1";
     t.enumField = TestEntity.Color.BLACK;
@@ -335,7 +331,7 @@ public class ConverterAwareMappingSpannerEntityWriterTests {
   }
 
   @Test
-  public void writeJsonTest() {
+  void writeJsonTest() {
     TestEntities.Params parameters = new TestEntities.Params("some value", "some other value");
     TestEntities.TestEntityJson testEntity = new TestEntities.TestEntityJson("id1", parameters);
 
@@ -352,7 +348,7 @@ public class ConverterAwareMappingSpannerEntityWriterTests {
   }
 
   @Test
-  public void writeNullJsonTest() {
+  void writeNullJsonTest() {
     TestEntities.TestEntityJson testEntity = new TestEntities.TestEntityJson("id1", null);
 
     WriteBuilder writeBuilder = mock(WriteBuilder.class);
@@ -368,52 +364,59 @@ public class ConverterAwareMappingSpannerEntityWriterTests {
   }
 
   @Test
-  public void writeUnsupportedTypeIterableTest() {
-    this.expectedEx.expect(SpannerDataException.class);
-    this.expectedEx.expectMessage("Unsupported mapping for type: interface java.util.List");
+  void writeUnsupportedTypeIterableTest() {
+
     FaultyTestEntity2 ft = new FaultyTestEntity2();
     ft.listWithUnsupportedInnerType = new ArrayList<>();
     WriteBuilder writeBuilder = Mutation.newInsertBuilder("faulty_test_table_2");
-    this.spannerEntityWriter.write(ft, writeBuilder::set);
+
+    assertThatThrownBy(() -> this.spannerEntityWriter.write(ft, writeBuilder::set))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("Unsupported mapping for type: interface java.util.List");
   }
 
   @Test
-  public void writeIncompatibleTypeTest() {
-    this.expectedEx.expect(SpannerDataException.class);
-    this.expectedEx.expectMessage(
-        "Unsupported mapping for type: "
-            + "class com.google.cloud.spring.data.spanner.core.convert.TestEntities$TestEntity");
+  void writeIncompatibleTypeTest() {
+
     FaultyTestEntity ft = new FaultyTestEntity();
     ft.fieldWithUnsupportedType = new TestEntity();
     WriteBuilder writeBuilder = Mutation.newInsertBuilder("faulty_test_table");
-    this.spannerEntityWriter.write(ft, writeBuilder::set);
+
+    assertThatThrownBy(() -> this.spannerEntityWriter.write(ft, writeBuilder::set))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("Unsupported mapping for type: "
+                    + "class com.google.cloud.spring.data.spanner.core.convert.TestEntities$TestEntity");
+
   }
 
   @Test
-  public void writingNullToKeyShouldThrowException() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("Key of an entity to be written cannot be null!");
-    this.spannerEntityWriter.convertToKey(null);
+  void writingNullToKeyShouldThrowException() {
+
+    assertThatThrownBy(() -> this.spannerEntityWriter.convertToKey(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Key of an entity to be written cannot be null!");
   }
 
   @Test
-  public void writeValidColumnToKey() {
+  void writeValidColumnToKey() {
     Key key = this.spannerEntityWriter.convertToKey(true);
     assertThat(key).isEqualTo(Key.of(true));
   }
 
   @Test
-  public void testUserSetUnconvertableColumnType() {
-    this.expectedEx.expect(SpannerDataException.class);
-    this.expectedEx.expectMessage("Unsupported mapping for type: boolean");
+  void testUserSetUnconvertableColumnType() {
+
     UserSetUnconvertableColumnType userSetUnconvertableColumnType =
         new UserSetUnconvertableColumnType();
     WriteBuilder writeBuilder = Mutation.newInsertBuilder("faulty_test_table");
-    this.spannerEntityWriter.write(userSetUnconvertableColumnType, writeBuilder::set);
+
+    assertThatThrownBy(() -> this.spannerEntityWriter.write(userSetUnconvertableColumnType, writeBuilder::set))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("Unsupported mapping for type: boolean");
   }
 
   @Test
-  public void testCommitTimestampsType() {
+  void testCommitTimestampsType() {
     CommitTimestamps entity = new CommitTimestamps();
 
     doWithFields(
