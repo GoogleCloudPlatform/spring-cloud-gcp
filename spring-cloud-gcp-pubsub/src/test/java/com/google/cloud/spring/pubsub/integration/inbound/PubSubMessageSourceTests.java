@@ -30,11 +30,13 @@ import com.google.cloud.spring.pubsub.support.converter.ConvertedAcknowledgeable
 import com.google.pubsub.v1.PubsubMessage;
 import java.util.Arrays;
 import java.util.Collections;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.integration.IntegrationMessageHeaderAccessor;
 import org.springframework.integration.acks.AcknowledgmentCallback;
 import org.springframework.integration.endpoint.MessageSourcePollingTemplate;
@@ -46,8 +48,9 @@ import org.springframework.messaging.MessageHandlingException;
  *
  * @since 1.2
  */
-@RunWith(MockitoJUnitRunner.class)
-public class PubSubMessageSourceTests {
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+class PubSubMessageSourceTests {
 
   private PubSubSubscriberOperations mockPubSubSubscriberOperations;
 
@@ -57,8 +60,8 @@ public class PubSubMessageSourceTests {
 
   @Mock private ConvertedAcknowledgeablePubsubMessage<String> msg3;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     this.mockPubSubSubscriberOperations = mock(PubSubSubscriberOperations.class);
 
     when(this.msg1.getPayload()).thenReturn("msg1");
@@ -74,7 +77,7 @@ public class PubSubMessageSourceTests {
   }
 
   @Test
-  public void doReceive_returnsNullWhenNoMessagesAvailable() {
+  void doReceive_returnsNullWhenNoMessagesAvailable() {
     when(this.mockPubSubSubscriberOperations.pullAndConvert("sub1", 1, true, String.class))
         .thenReturn(Collections.emptyList());
 
@@ -90,7 +93,7 @@ public class PubSubMessageSourceTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void doReceive_callsPubsubAndCachesCorrectly() {
+  void doReceive_callsPubsubAndCachesCorrectly() {
     when(this.mockPubSubSubscriberOperations.pullAndConvert("sub1", 3, true, String.class))
         .thenReturn(Arrays.asList(this.msg1, this.msg2, this.msg3));
     PubSubMessageSource pubSubMessageSource =
@@ -115,7 +118,7 @@ public class PubSubMessageSourceTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void doReceive_pullsOneAtAtimeWhenMaxFetchSizeZero() {
+  void doReceive_pullsOneAtAtimeWhenMaxFetchSizeZero() {
     PubSubMessageSource pubSubMessageSource =
         new PubSubMessageSource(this.mockPubSubSubscriberOperations, "sub1");
     pubSubMessageSource.setPayloadType(String.class);
@@ -131,7 +134,7 @@ public class PubSubMessageSourceTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void doReceive_pullsOneAtAtimeWhenMaxFetchSizeNegative() {
+  void doReceive_pullsOneAtAtimeWhenMaxFetchSizeNegative() {
     PubSubMessageSource pubSubMessageSource =
         new PubSubMessageSource(this.mockPubSubSubscriberOperations, "sub1");
     pubSubMessageSource.setPayloadType(String.class);
@@ -147,7 +150,7 @@ public class PubSubMessageSourceTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void doReceive_manualAckModeAppliesAcknowledgmentHeaderAndDoesNotAck() {
+  void doReceive_manualAckModeAppliesAcknowledgmentHeaderAndDoesNotAck() {
 
     PubSubMessageSource pubSubMessageSource =
         new PubSubMessageSource(this.mockPubSubSubscriberOperations, "sub1");
@@ -173,7 +176,7 @@ public class PubSubMessageSourceTests {
   }
 
   @Test
-  public void doReceive_autoModeAcksAndAddsOriginalMessageHeader() {
+  void doReceive_autoModeAcksAndAddsOriginalMessageHeader() {
 
     PubSubMessageSource pubSubMessageSource =
         new PubSubMessageSource(this.mockPubSubSubscriberOperations, "sub1");
@@ -194,7 +197,7 @@ public class PubSubMessageSourceTests {
   }
 
   @Test
-  public void doReceive_autoAckModeAcksAndAddsOriginalMessageHeader() {
+  void doReceive_autoAckModeAcksAndAddsOriginalMessageHeader() {
 
     PubSubMessageSource pubSubMessageSource =
         new PubSubMessageSource(this.mockPubSubSubscriberOperations, "sub1");
@@ -215,7 +218,7 @@ public class PubSubMessageSourceTests {
   }
 
   @Test
-  public void doReceive_autoAckModeIsDefault() {
+  void doReceive_autoAckModeIsDefault() {
     PubSubMessageSource pubSubMessageSource =
         new PubSubMessageSource(this.mockPubSubSubscriberOperations, "sub1");
     pubSubMessageSource.setMaxFetchSize(1);
@@ -235,7 +238,7 @@ public class PubSubMessageSourceTests {
   }
 
   @Test
-  public void doReceive_autoModeNacksAutomatically() {
+  void doReceive_autoModeNacksAutomatically() {
 
     PubSubMessageSource pubSubMessageSource =
         new PubSubMessageSource(this.mockPubSubSubscriberOperations, "sub1");
@@ -257,7 +260,7 @@ public class PubSubMessageSourceTests {
   }
 
   @Test
-  public void doReceive_autoAckModeDoesNotNackAutomatically() {
+  void doReceive_autoAckModeDoesNotNackAutomatically() {
 
     PubSubMessageSource pubSubMessageSource =
         new PubSubMessageSource(this.mockPubSubSubscriberOperations, "sub1");
@@ -280,7 +283,7 @@ public class PubSubMessageSourceTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void blockOnPullSetsReturnImmediatelyToFalse() {
+  void blockOnPullSetsReturnImmediatelyToFalse() {
 
     when(this.mockPubSubSubscriberOperations.pullAndConvert("sub1", 1, false, String.class))
         .thenReturn(Collections.singletonList(msg1));

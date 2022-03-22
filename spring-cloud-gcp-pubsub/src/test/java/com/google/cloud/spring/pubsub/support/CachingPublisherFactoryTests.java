@@ -22,14 +22,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.pubsub.v1.Publisher;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for the {@link CachingPublisherFactory}. */
-@RunWith(MockitoJUnitRunner.class)
-public class CachingPublisherFactoryTests {
+@ExtendWith(MockitoExtension.class)
+class CachingPublisherFactoryTests {
 
   @Mock private PublisherFactory delegate;
 
@@ -38,7 +38,7 @@ public class CachingPublisherFactoryTests {
   @Mock private Publisher publisher2;
 
   @Test
-  public void testGetPublisherCaching() {
+  void testGetPublisherCaching() {
     CachingPublisherFactory cachingPublisherFactory = new CachingPublisherFactory(delegate);
 
     when(delegate.createPublisher("topic1")).thenReturn(publisher1);
