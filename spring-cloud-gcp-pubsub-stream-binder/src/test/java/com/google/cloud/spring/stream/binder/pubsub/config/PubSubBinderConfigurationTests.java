@@ -29,7 +29,7 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.stream.binder.pubsub.PubSubMessageChannelBinder;
 import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
@@ -38,10 +38,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 /** Tests for PubSubBinderConfiguration and its interaction with other autoconfiguration classes. */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class PubSubBinderConfigurationTests {
+class PubSubBinderConfigurationTests {
 
   @Test
-  public void testEverythingEnabled_implicit() {
+  void testEverythingEnabled_implicit() {
     ApplicationContextRunner baseContext =
         new ApplicationContextRunner()
             // no property values specified
@@ -55,7 +55,7 @@ public class PubSubBinderConfigurationTests {
   }
 
   @Test
-  public void testEverythingEnabled_explicit() {
+  void testEverythingEnabled_explicit() {
     ApplicationContextRunner baseContext =
         new ApplicationContextRunner()
             .withPropertyValues(
@@ -73,7 +73,7 @@ public class PubSubBinderConfigurationTests {
   }
 
   @Test
-  public void testBinderDisabled() {
+  void testBinderDisabled() {
     ApplicationContextRunner baseContext =
         new ApplicationContextRunner()
             .withPropertyValues(
@@ -89,7 +89,7 @@ public class PubSubBinderConfigurationTests {
   }
 
   @Test
-  public void testPubSubDisabled_noReplacements() {
+  void testPubSubDisabled_noReplacements() {
     ApplicationContextRunner baseContext =
         new ApplicationContextRunner()
             .withPropertyValues(
@@ -105,7 +105,7 @@ public class PubSubBinderConfigurationTests {
   }
 
   @Test
-  public void testPubSubDisabled_withReplacements() {
+  void testPubSubDisabled_withReplacements() {
     ApplicationContextRunner baseContext =
         new ApplicationContextRunner()
             .withPropertyValues(
@@ -123,7 +123,7 @@ public class PubSubBinderConfigurationTests {
   }
 
   @Test
-  public void testBothDisabled() {
+  void testBothDisabled() {
     ApplicationContextRunner baseContext =
         new ApplicationContextRunner()
             .withPropertyValues(
@@ -139,7 +139,7 @@ public class PubSubBinderConfigurationTests {
   }
 
   @Test
-  public void test_healthRegistryEnabled() {
+  void test_healthRegistryEnabled() {
     ApplicationContextRunner baseContext =
         new ApplicationContextRunner()
             .withPropertyValues(
