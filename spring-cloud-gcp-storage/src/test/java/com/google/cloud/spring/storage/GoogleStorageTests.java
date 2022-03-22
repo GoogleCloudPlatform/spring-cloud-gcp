@@ -298,7 +298,7 @@ class GoogleStorageTests {
 
     GoogleStorageResource resource = new GoogleStorageResource(storage, location, false);
 
-    assertThatThrownBy(() -> resource.getOutputStream())
+    assertThatThrownBy(() -> resource.getInputStream())
             .isInstanceOf(FileNotFoundException.class)
             .hasMessage("The blob was not found: gs://test-spring/test");
 

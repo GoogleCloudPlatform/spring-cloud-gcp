@@ -65,8 +65,8 @@ class GcsMessageHandlerTests {
   @Test
   void testNewFiles(@TempDir Path tempDir) throws IOException {
 
-    Path testFileOld = tempDir.resolve("benfica");
-    File testFile = testFileOld.toFile();
+    Path testPath = tempDir.resolve("benfica");
+    File testFile = testPath.toFile();
     testFile.createNewFile();
 
     BlobInfo expectedCreateBlobInfo =
