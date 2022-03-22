@@ -65,12 +65,10 @@ public class PubSubHealthIndicatorAutoConfiguration
 
   @Override
   protected PubSubHealthIndicator createIndicator(PubSubTemplate pubSubTemplate) {
-    PubSubHealthIndicator indicator =
-        new PubSubHealthIndicator(
+    return new PubSubHealthIndicator(
             pubSubTemplate,
             this.pubSubHealthProperties.getSubscription(),
             this.pubSubHealthProperties.getTimeoutMillis(),
             this.pubSubHealthProperties.isAcknowledgeMessages());
-    return indicator;
   }
 }
