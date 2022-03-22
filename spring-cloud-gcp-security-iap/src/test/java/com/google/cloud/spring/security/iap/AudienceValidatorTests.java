@@ -17,12 +17,11 @@
 package com.google.cloud.spring.security.iap;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -35,25 +34,22 @@ import org.springframework.security.oauth2.jwt.Jwt;
  *
  * @since 1.1
  */
-public class AudienceValidatorTests {
+class AudienceValidatorTests {
 
   private ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
           .withConfiguration(AutoConfigurations.of(TestConfiguration.class));
 
-  /** used to test for exception messages and types. */
-  @Rule public ExpectedException thrown = ExpectedException.none();
-
   @Test
-  public void testNullAudienceDisallowedInConstructor() {
-    this.thrown.expect(IllegalArgumentException.class);
-    this.thrown.expectMessage("Audience Provider cannot be null");
+  void testNullAudienceDisallowedInConstructor() {
 
-    new AudienceValidator(null);
+    assertThatThrownBy(() -> new AudienceValidator(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Audience Provider cannot be null");
   }
 
   @Test
-  public void testCorrectAudienceMatches() {
+  void testCorrectAudienceMatches() {
     Jwt mockJwt = Mockito.mock(Jwt.class);
     when(mockJwt.getAudience()).thenReturn(Arrays.asList("cats"));
 
@@ -65,7 +61,7 @@ public class AudienceValidatorTests {
   }
 
   @Test
-  public void testWrongAudienceDoesNotMatch() {
+  void testWrongAudienceDoesNotMatch() {
     Jwt mockJwt = Mockito.mock(Jwt.class);
     when(mockJwt.getAudience()).thenReturn(Arrays.asList("dogs"));
 

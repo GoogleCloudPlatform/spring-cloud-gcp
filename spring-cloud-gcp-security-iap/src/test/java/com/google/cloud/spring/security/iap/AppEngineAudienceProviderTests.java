@@ -23,15 +23,15 @@ import static org.mockito.Mockito.when;
 import com.google.cloud.resourcemanager.Project;
 import com.google.cloud.resourcemanager.ResourceManager;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for the AppEngine Audience Provider. */
-@RunWith(MockitoJUnitRunner.class)
-public class AppEngineAudienceProviderTests {
+@ExtendWith(MockitoExtension.class)
+class AppEngineAudienceProviderTests {
 
   @Mock GcpProjectIdProvider mockProjectIdProvider;
 
@@ -39,13 +39,8 @@ public class AppEngineAudienceProviderTests {
 
   @Mock Project mockProject;
 
-  @Before
-  public void setUp() {
-    when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
-  }
-
   @Test
-  public void testNullProjectIdProviderDisallowed() {
+  void testNullProjectIdProviderDisallowed() {
 
     assertThatThrownBy(() -> new AppEngineAudienceProvider(null))
         .isInstanceOf(IllegalArgumentException.class)
@@ -53,7 +48,7 @@ public class AppEngineAudienceProviderTests {
   }
 
   @Test
-  public void testNullResourceManagerDisallowed() {
+  void testNullResourceManagerDisallowed() {
     AppEngineAudienceProvider audienceProvider =
         new AppEngineAudienceProvider(this.mockProjectIdProvider);
     assertThatThrownBy(() -> audienceProvider.setResourceManager(null))
@@ -62,7 +57,8 @@ public class AppEngineAudienceProviderTests {
   }
 
   @Test
-  public void testNullProjectDisallowed() {
+  void testNullProjectDisallowed() {
+    when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
     AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
     provider.setResourceManager(this.mockResourceManager);
     assertThatThrownBy(provider::getAudience)
@@ -72,7 +68,8 @@ public class AppEngineAudienceProviderTests {
   }
 
   @Test
-  public void testNullProjectNumberDisallowed() {
+  void testNullProjectNumberDisallowed() {
+    when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
     when(mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
     when(this.mockResourceManager.get("steal-spaceship")).thenReturn(this.mockProject);
     when(this.mockProject.getProjectNumber()).thenReturn(null);
@@ -85,7 +82,8 @@ public class AppEngineAudienceProviderTests {
   }
 
   @Test
-  public void testNullProjectIdDisallowed() {
+  void testNullProjectIdDisallowed() {
+    when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
     when(mockProjectIdProvider.getProjectId()).thenReturn(null);
     when(this.mockResourceManager.get(null)).thenReturn(this.mockProject);
     when(this.mockProject.getProjectNumber()).thenReturn(42L);
@@ -98,7 +96,8 @@ public class AppEngineAudienceProviderTests {
   }
 
   @Test
-  public void testAudienceFormatCorrect() {
+  void testAudienceFormatCorrect() {
+    when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
     when(this.mockResourceManager.get("steal-spaceship")).thenReturn(this.mockProject);
     when(this.mockProject.getProjectNumber()).thenReturn(42L);
 
