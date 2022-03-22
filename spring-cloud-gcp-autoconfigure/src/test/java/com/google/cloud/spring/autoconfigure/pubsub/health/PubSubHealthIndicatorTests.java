@@ -157,14 +157,4 @@ class PubSubHealthIndicatorTests {
     testHealth(e, "testSubscription", Status.DOWN);
   }
 
-  @Test
-  void validateHealth() throws Exception {
-    doThrow(new RuntimeException()).when(future).get(anyLong(), any());
-    when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
-
-    PubSubHealthIndicator healthIndicator =
-        new PubSubHealthIndicator(pubSubTemplate, "test", 1000, true);
-    assertThatThrownBy(() -> healthIndicator.validateHealthCheck())
-        .isInstanceOf(BeanInitializationException.class);
-  }
 }
