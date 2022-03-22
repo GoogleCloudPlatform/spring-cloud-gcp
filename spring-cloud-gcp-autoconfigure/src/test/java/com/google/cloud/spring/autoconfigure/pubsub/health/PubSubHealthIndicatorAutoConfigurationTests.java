@@ -69,10 +69,6 @@ class PubSubHealthIndicatorAutoConfigurationTests {
   @Test
   void healthIndicatorPresent_defaults() throws Exception {
     PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
-    ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
-
-    when(future.get(anyLong(), any())).thenReturn(Collections.emptyList());
-    when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 
     this.baseContextRunner
         .withBean("pubSubTemplate", PubSubTemplate.class, () -> mockPubSubTemplate)
@@ -84,19 +80,13 @@ class PubSubHealthIndicatorAutoConfigurationTests {
               assertThat(healthIndicator.getTimeoutMillis()).isEqualTo(2000);
               assertThat(healthIndicator.isAcknowledgeMessages()).isFalse();
               assertThat(healthIndicator.isSpecifiedSubscription()).isFalse();
-              verify(mockPubSubTemplate).pullAsync(healthIndicator.getSubscription(), 1, true);
-              verify(future).get(healthIndicator.getTimeoutMillis(), TimeUnit.MILLISECONDS);
             });
   }
 
   @SuppressWarnings("unchecked")
   @Test
-  void healthIndicatorPresent_customConfig() throws Exception {
+  void healthIndicatorPresent_customConfig() {
     PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
-    ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
-
-    when(future.get(anyLong(), any())).thenReturn(Collections.emptyList());
-    when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 
     this.baseContextRunner
         .withBean("pubSubTemplate", PubSubTemplate.class, () -> mockPubSubTemplate)
@@ -113,8 +103,6 @@ class PubSubHealthIndicatorAutoConfigurationTests {
               assertThat(healthIndicator.getTimeoutMillis()).isEqualTo(1500);
               assertThat(healthIndicator.isAcknowledgeMessages()).isTrue();
               assertThat(healthIndicator.isSpecifiedSubscription()).isTrue();
-              verify(mockPubSubTemplate).pullAsync(healthIndicator.getSubscription(), 1, true);
-              verify(future).get(healthIndicator.getTimeoutMillis(), TimeUnit.MILLISECONDS);
             });
   }
 
@@ -149,96 +137,6 @@ class PubSubHealthIndicatorAutoConfigurationTests {
               assertThat(healthContributor.stream().map(c -> c.getName()))
                   .containsExactlyInAnyOrder("pubSubTemplate1", "pubSubTemplate2");
             });
-  }
-
-  @SuppressWarnings("unchecked")
-  @Test
-  void apiExceptionWhenValidating_userSubscriptionSpecified_healthAutoConfigurationFails()
-      throws Exception {
-    PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
-    PubSubHealthIndicatorAutoConfiguration p =
-        new PubSubHealthIndicatorAutoConfiguration(properties);
-    properties.setSubscription("test");
-
-    PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
-    ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
-    Exception e =
-        new ApiException(
-            new IllegalStateException("Illegal State"),
-            GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
-            false);
-
-    when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
-    doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
-
-    Map<String, PubSubTemplate> pubSubTemplates =
-        Collections.singletonMap("pubSubTemplate", mockPubSubTemplate);
-    assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates))
-        .isInstanceOf(BeanInitializationException.class);
-  }
-
-  @SuppressWarnings("unchecked")
-  @Test
-  void apiExceptionWhenValidating_userSubscriptionNotSpecified_healthAutoConfigurationSucceeds()
-      throws Exception {
-    PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
-    PubSubHealthIndicatorAutoConfiguration p =
-        new PubSubHealthIndicatorAutoConfiguration(properties);
-
-    PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
-    ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
-    Exception e =
-        new ApiException(
-            new IllegalStateException("Illegal State"),
-            GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
-            false);
-
-    when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
-    doThrow(new ExecutionException(e)).when(future).get(anyLong(), any());
-
-    Map<String, PubSubTemplate> pubSubTemplates =
-        Collections.singletonMap("pubSubTemplate", mockPubSubTemplate);
-    assertThatCode(() -> p.pubSubHealthContributor(pubSubTemplates)).doesNotThrowAnyException();
-  }
-
-  @SuppressWarnings("unchecked")
-  @Test
-  void runtimeExceptionWhenValidating_healthAutoConfigurationFails() throws Exception {
-    PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
-    PubSubHealthIndicatorAutoConfiguration p =
-        new PubSubHealthIndicatorAutoConfiguration(properties);
-
-    PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
-    ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
-    Exception e = new RuntimeException("Runtime exception");
-
-    when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
-    doThrow(e).when(future).get(anyLong(), any());
-
-    Map<String, PubSubTemplate> pubSubTemplates =
-        Collections.singletonMap("pubSubTemplate", mockPubSubTemplate);
-    assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates))
-        .isInstanceOf(BeanInitializationException.class);
-  }
-
-  @SuppressWarnings("unchecked")
-  @Test
-  void interruptedExceptionWhenValidating_healthAutoConfigurationFails() throws Exception {
-    PubSubHealthIndicatorProperties properties = new PubSubHealthIndicatorProperties();
-    PubSubHealthIndicatorAutoConfiguration p =
-        new PubSubHealthIndicatorAutoConfiguration(properties);
-
-    PubSubTemplate mockPubSubTemplate = mock(PubSubTemplate.class);
-    ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
-    InterruptedException e = new InterruptedException("interrupted");
-
-    when(mockPubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
-    doThrow(e).when(future).get(anyLong(), any());
-
-    Map<String, PubSubTemplate> pubSubTemplates =
-        Collections.singletonMap("pubSubTemplate", mockPubSubTemplate);
-    assertThatThrownBy(() -> p.pubSubHealthContributor(pubSubTemplates))
-        .isInstanceOf(BeanInitializationException.class);
   }
 
   @Test

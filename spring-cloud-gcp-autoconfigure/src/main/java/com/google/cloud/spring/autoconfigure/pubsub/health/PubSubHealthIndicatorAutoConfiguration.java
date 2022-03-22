@@ -71,7 +71,6 @@ public class PubSubHealthIndicatorAutoConfiguration
             this.pubSubHealthProperties.getSubscription(),
             this.pubSubHealthProperties.getTimeoutMillis(),
             this.pubSubHealthProperties.isAcknowledgeMessages());
-    indicator.validateHealthCheck();
     return indicator;
   }
 }
