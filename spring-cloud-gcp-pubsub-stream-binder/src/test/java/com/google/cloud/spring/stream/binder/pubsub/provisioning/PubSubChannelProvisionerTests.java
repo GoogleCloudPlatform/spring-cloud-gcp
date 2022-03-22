@@ -33,12 +33,14 @@ import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerPro
 import com.google.pubsub.v1.DeadLetterPolicy;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.Topic;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.provisioning.ProvisioningException;
 
@@ -47,8 +49,9 @@ import org.springframework.cloud.stream.provisioning.ProvisioningException;
  *
  * @since 1.1
  */
-@RunWith(MockitoJUnitRunner.class)
-public class PubSubChannelProvisionerTests {
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+class PubSubChannelProvisionerTests {
 
   @Mock PubSubAdmin pubSubAdminMock;
 
@@ -59,8 +62,8 @@ public class PubSubChannelProvisionerTests {
   // class under test
   PubSubChannelProvisioner pubSubChannelProvisioner;
 
-  @Before
-  public void setup() {
+  @BeforeEach
+  void setup() {
     when(this.pubSubAdminMock.getSubscription(any())).thenReturn(null);
     doAnswer(
             invocation -> {
@@ -89,7 +92,7 @@ public class PubSubChannelProvisionerTests {
   }
 
   @Test
-  public void testProvisionConsumerDestination_specifiedGroup() {
+  void testProvisionConsumerDestination_specifiedGroup() {
     PubSubConsumerDestination result =
         (PubSubConsumerDestination)
             this.pubSubChannelProvisioner.provisionConsumerDestination(
@@ -105,7 +108,7 @@ public class PubSubChannelProvisionerTests {
   }
 
   @Test
-  public void testProvisionConsumerDestination_specifiedGroupTopicInDifferentProject() {
+  void testProvisionConsumerDestination_specifiedGroupTopicInDifferentProject() {
     String fullTopicName = "projects/differentProject/topics/topic_A";
     when(this.pubSubAdminMock.getTopic(fullTopicName))
         .thenReturn(Topic.newBuilder().setName(fullTopicName).build());
@@ -126,7 +129,7 @@ public class PubSubChannelProvisionerTests {
   }
 
   @Test
-  public void testProvisionConsumerDestination_customSubscription() {
+  void testProvisionConsumerDestination_customSubscription() {
     when(this.properties.getExtension()).thenReturn(this.pubSubConsumerProperties);
     when(this.pubSubConsumerProperties.getSubscriptionName()).thenReturn("my-custom-subscription");
 
@@ -139,7 +142,7 @@ public class PubSubChannelProvisionerTests {
   }
 
   @Test
-  public void testProvisionConsumerDestination_noTopicException() {
+  void testProvisionConsumerDestination_noTopicException() {
     when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(false);
     when(this.pubSubAdminMock.getTopic("topic_A")).thenReturn(null);
 
@@ -152,7 +155,7 @@ public class PubSubChannelProvisionerTests {
   }
 
   @Test
-  public void testProvisionConsumerDestination_noSubscriptionException() {
+  void testProvisionConsumerDestination_noSubscriptionException() {
     when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(false);
 
     assertThatExceptionOfType(ProvisioningException.class)
@@ -164,7 +167,7 @@ public class PubSubChannelProvisionerTests {
   }
 
   @Test
-  public void testProvisionConsumerDestination_wrongTopicException() {
+  void testProvisionConsumerDestination_wrongTopicException() {
     when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(false);
     when(this.pubSubAdminMock.getSubscription("topic_A.group_A"))
         .thenReturn(Subscription.newBuilder().setTopic("topic_B").build());
@@ -178,7 +181,7 @@ public class PubSubChannelProvisionerTests {
   }
 
   @Test
-  public void testProvisionConsumerDestination_anonymousGroup() {
+  void testProvisionConsumerDestination_anonymousGroup() {
     // should work with auto-create = false
     when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(false);
 
@@ -199,7 +202,7 @@ public class PubSubChannelProvisionerTests {
   }
 
   @Test
-  public void testProvisionConsumerDestination_deadLetterQueue() {
+  void testProvisionConsumerDestination_deadLetterQueue() {
     PubSubConsumerProperties.DeadLetterPolicy dlp = new PubSubConsumerProperties.DeadLetterPolicy();
     dlp.setDeadLetterTopic("deadLetterTopic");
     dlp.setMaxDeliveryAttempts(12);
@@ -227,7 +230,7 @@ public class PubSubChannelProvisionerTests {
   }
 
   @Test
-  public void testAfterUnbindConsumer_anonymousGroup() {
+  void testAfterUnbindConsumer_anonymousGroup() {
     PubSubConsumerDestination result =
         (PubSubConsumerDestination)
             this.pubSubChannelProvisioner.provisionConsumerDestination(
@@ -239,7 +242,7 @@ public class PubSubChannelProvisionerTests {
   }
 
   @Test
-  public void testAfterUnbindConsumer_twice() {
+  void testAfterUnbindConsumer_twice() {
     PubSubConsumerDestination result =
         (PubSubConsumerDestination)
             this.pubSubChannelProvisioner.provisionConsumerDestination(
@@ -252,7 +255,7 @@ public class PubSubChannelProvisionerTests {
   }
 
   @Test
-  public void testAfterUnbindConsumer_nonAnonymous() {
+  void testAfterUnbindConsumer_nonAnonymous() {
     PubSubConsumerDestination result =
         (PubSubConsumerDestination)
             this.pubSubChannelProvisioner.provisionConsumerDestination(
@@ -264,7 +267,7 @@ public class PubSubChannelProvisionerTests {
   }
 
   @Test
-  public void testProvisionConsumerDestination_concurrentTopicCreation() {
+  void testProvisionConsumerDestination_concurrentTopicCreation() {
     when(this.pubSubAdminMock.createTopic(any())).thenThrow(AlreadyExistsException.class);
     when(this.pubSubAdminMock.getTopic("already_existing_topic"))
         .thenReturn(null)
@@ -278,7 +281,7 @@ public class PubSubChannelProvisionerTests {
   }
 
   @Test
-  public void testProvisionConsumerDestination_recursiveExistCalls() {
+  void testProvisionConsumerDestination_recursiveExistCalls() {
     when(this.pubSubAdminMock.getTopic("new_topic")).thenReturn(null);
     when(this.pubSubAdminMock.createTopic(any())).thenThrow(AlreadyExistsException.class);
 

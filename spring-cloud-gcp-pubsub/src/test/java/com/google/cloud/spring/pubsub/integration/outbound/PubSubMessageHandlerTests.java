@@ -17,6 +17,7 @@
 package com.google.cloud.spring.pubsub.integration.outbound;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
@@ -32,13 +33,13 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 import org.awaitility.Awaitility;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
 import org.springframework.integration.expression.ValueExpression;
@@ -48,8 +49,9 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.util.concurrent.SettableListenableFuture;
 
 /** Tests for the Pub/Sub message handler. */
-@RunWith(MockitoJUnitRunner.class)
-public class PubSubMessageHandlerTests {
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+class PubSubMessageHandlerTests {
 
   @Mock private PubSubOperations pubSubTemplate;
 
@@ -57,11 +59,8 @@ public class PubSubMessageHandlerTests {
 
   private Message<?> message;
 
-  /** used to check exception messages and types. */
-  @Rule public ExpectedException expectedException = ExpectedException.none();
-
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     this.message =
         new GenericMessage<byte[]>(
             "testPayload".getBytes(),
@@ -74,13 +73,13 @@ public class PubSubMessageHandlerTests {
   }
 
   @Test
-  public void testPublish() {
+  void testPublish() {
     this.adapter.handleMessage(this.message);
     verify(this.pubSubTemplate).publish(eq("testTopic"), eq("testPayload".getBytes()), anyMap());
   }
 
   @Test
-  public void testPublishDynamicTopic() {
+  void testPublishDynamicTopic() {
     Message<?> dynamicMessage =
         new GenericMessage<byte[]>(
             "testPayload".getBytes(),
@@ -94,7 +93,7 @@ public class PubSubMessageHandlerTests {
   }
 
   @Test
-  public void testSendToExpressionTopic() {
+  void testSendToExpressionTopic() {
     this.adapter.setTopicExpressionString("headers['sendToTopic']");
     this.adapter.onInit();
     Message<?> expressionMessage =
@@ -111,7 +110,7 @@ public class PubSubMessageHandlerTests {
   }
 
   @Test
-  public void testPublishSync() {
+  void testPublishSync() {
     this.adapter.setSync(true);
     Expression timeout = spy(this.adapter.getPublishTimeoutExpression());
     this.adapter.setPublishTimeoutExpression(timeout);
@@ -121,7 +120,7 @@ public class PubSubMessageHandlerTests {
   }
 
   @Test
-  public void testPublishCallback() {
+  void testPublishCallback() {
     ListenableFutureCallback<String> callbackSpy =
         spy(
             new ListenableFutureCallback<String>() {
@@ -142,15 +141,15 @@ public class PubSubMessageHandlerTests {
   }
 
   @Test
-  public void testSetPublishTimeoutExpressionStringWithNull() {
-    this.expectedException.expect(IllegalArgumentException.class);
-    this.expectedException.expectMessage("Publish timeout expression can't be null.");
+  void testSetPublishTimeoutExpressionStringWithNull() {
 
-    this.adapter.setPublishTimeoutExpressionString(null);
+    assertThatThrownBy(() -> this.adapter.setPublishTimeoutExpressionString(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Publish timeout expression can't be null.");
   }
 
   @Test
-  public void testPublishTimeoutExpressionString() {
+  void testPublishTimeoutExpressionString() {
     String expressionString = "15";
 
     this.adapter.setPublishTimeoutExpressionString(expressionString);
@@ -161,7 +160,7 @@ public class PubSubMessageHandlerTests {
   }
 
   @Test
-  public void testPublishTimeout() {
+  void testPublishTimeout() {
     long timeout = 15;
 
     this.adapter.setPublishTimeout(timeout);
@@ -172,7 +171,7 @@ public class PubSubMessageHandlerTests {
   }
 
   @Test
-  public void testIsSync() {
+  void testIsSync() {
     this.adapter.setSync(true);
 
     assertThat(this.adapter.isSync()).isTrue();
@@ -183,15 +182,16 @@ public class PubSubMessageHandlerTests {
   }
 
   @Test
-  public void testTopicWithNull() {
-    this.expectedException.expect(IllegalArgumentException.class);
-    this.expectedException.expectMessage("The topic can't be null or empty");
+  void testTopicWithNull() {
 
-    this.adapter.setTopic(null);
+    assertThatThrownBy(() -> this.adapter.setTopic(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("The topic can't be null or empty");
+
   }
 
   @Test
-  public void testTopic() {
+  void testTopic() {
     String topic = "pubsub";
     this.adapter.setTopic(topic);
 
@@ -202,7 +202,7 @@ public class PubSubMessageHandlerTests {
   }
 
   @Test
-  public void testTopicExpression() {
+  void testTopicExpression() {
     Expression expected = new ValueExpression<>("topic");
 
     this.adapter.setTopicExpression(expected);
@@ -211,15 +211,15 @@ public class PubSubMessageHandlerTests {
   }
 
   @Test
-  public void testSetHeaderMapperWithNull() {
-    this.expectedException.expect(IllegalArgumentException.class);
-    this.expectedException.expectMessage("The header mapper can't be null.");
+  void testSetHeaderMapperWithNull() {
 
-    this.adapter.setHeaderMapper(null);
+    assertThatThrownBy(() ->  this.adapter.setHeaderMapper(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("The header mapper can't be null.");
   }
 
   @Test
-  public void testPublishWithOrderingKey() {
+  void testPublishWithOrderingKey() {
     this.message =
         new GenericMessage<byte[]>(
             "testPayload".getBytes(),
@@ -234,7 +234,7 @@ public class PubSubMessageHandlerTests {
   }
 
   @Test
-  public void publishWithSuccessCallback() throws Exception {
+  void publishWithSuccessCallback() throws Exception {
 
     SettableListenableFuture<String> future = new SettableListenableFuture<>();
     future.set("published12345");
@@ -261,7 +261,7 @@ public class PubSubMessageHandlerTests {
   }
 
   @Test
-  public void publishWithFailureCallback() throws Exception {
+  void publishWithFailureCallback() throws Exception {
 
     SettableListenableFuture<String> future = new SettableListenableFuture<>();
     future.setException(new RuntimeException("boom!"));

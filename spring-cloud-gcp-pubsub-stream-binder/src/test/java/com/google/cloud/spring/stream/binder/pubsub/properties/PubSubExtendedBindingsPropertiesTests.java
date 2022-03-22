@@ -34,8 +34,8 @@ import com.google.cloud.spring.stream.binder.pubsub.PubSubMessageChannelBinder;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingsPropertiesTests.PubSubBindingsTestConfiguration;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.Topic;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,10 +50,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.SubscribableChannel;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests for extended binding properties. */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.NONE,
     classes = {PubSubBindingsTestConfiguration.class, BindingServiceConfiguration.class},
@@ -62,12 +62,12 @@ import org.springframework.test.context.junit4.SpringRunner;
       "spring.cloud.stream.gcp.pubsub.bindings.input.consumer.auto-create-resources=true",
       "spring.cloud.stream.gcp.pubsub.default.consumer.auto-create-resources=false"
     })
-public class PubSubExtendedBindingsPropertiesTests {
+class PubSubExtendedBindingsPropertiesTests {
 
   @Autowired private ConfigurableApplicationContext context;
 
   @Test
-  public void testExtendedPropertiesOverrideDefaults() {
+  void testExtendedPropertiesOverrideDefaults() {
     BinderFactory binderFactory = this.context.getBeanFactory().getBean(BinderFactory.class);
     PubSubMessageChannelBinder binder =
         (PubSubMessageChannelBinder) binderFactory.getBinder("pubsub", MessageChannel.class);
