@@ -21,14 +21,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.google.cloud.spring.storage.GoogleStorageLocation;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringRunner.class)
-public class DocumentOcrTemplateTests {
+@ExtendWith(SpringExtension.class)
+class DocumentOcrTemplateTests {
 
   private Storage storage;
 
@@ -36,16 +36,15 @@ public class DocumentOcrTemplateTests {
 
   private DocumentOcrTemplate documentOcrTemplate;
 
-  @Before
-  public void setupDocumentTemplateMocks() {
+  @BeforeEach
+  void setupDocumentTemplateMocks() {
     this.storage = Mockito.mock(Storage.class);
     this.imageAnnotatorClient = Mockito.mock(ImageAnnotatorClient.class);
-    this.documentOcrTemplate =
-        new DocumentOcrTemplate(imageAnnotatorClient, storage, Runnable::run, 10);
+    this.documentOcrTemplate = new DocumentOcrTemplate(imageAnnotatorClient, storage, Runnable::run, 10);
   }
 
   @Test
-  public void testValidateGcsFileInputs() {
+  void testValidateGcsFileInputs() {
     GoogleStorageLocation folder = GoogleStorageLocation.forFolder("bucket", "path/to/folder/");
 
     assertThatThrownBy(() -> this.documentOcrTemplate.runOcrForDocument(folder, folder))
