@@ -18,12 +18,12 @@ package com.google.cloud.spring.secretmanager.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assumptions.assumeThat;
 
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import io.grpc.StatusRuntimeException;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -31,7 +31,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-public class SecretManagerPropertySourceIntegrationTests {
+@EnabledIfSystemProperty(named = "it.secretmanager", matches = "true")
+class SecretManagerPropertySourceIntegrationTests {
 
   private ConfigurableApplicationContext context =
       new SpringApplicationBuilder(SecretManagerTestConfiguration.class, TestConfiguration.class)
@@ -41,14 +42,8 @@ public class SecretManagerPropertySourceIntegrationTests {
 
   private static final String TEST_SECRET_ID = "spring-cloud-gcp-it-secret";
 
-  @BeforeClass
-  public static void prepare() {
-    assumeThat(System.getProperty("it.secretmanager"))
-        .as(
-            "Secret manager integration tests are disabled. "
-                + "Please use '-Dit.secretmanager=true' to enable them.")
-        .isEqualTo("true");
-
+  @BeforeAll
+  static void prepare() {
     // Create the test secret if it does not already currently exist.
     ConfigurableApplicationContext setupContext =
         new SpringApplicationBuilder(SecretManagerTestConfiguration.class)
@@ -63,7 +58,7 @@ public class SecretManagerPropertySourceIntegrationTests {
   }
 
   @Test
-  public void testConfiguration() {
+  void testConfiguration() {
     assertThat(context.getEnvironment().getProperty("sm://" + TEST_SECRET_ID))
         .isEqualTo("the secret data.");
 
@@ -73,13 +68,13 @@ public class SecretManagerPropertySourceIntegrationTests {
   }
 
   @Test
-  public void testValueAnnotation() {
+  void testValueAnnotation() {
     String secret = context.getBean("secret", String.class);
     assertThat(secret).isEqualTo("the secret data.");
   }
 
   @Test
-  public void testMissingSecret() {
+  void testMissingSecret() {
     assertThatThrownBy(
             () -> context.getEnvironment().getProperty("sm://missing-secret/10", String.class))
         .hasCauseInstanceOf(StatusRuntimeException.class)
