@@ -27,7 +27,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
-import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.util.Assert;
@@ -91,10 +90,6 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
     this.acknowledgeMessages = acknowledgeMessages;
   }
 
-  void validateHealthCheck() {
-    doHealthCheck(() -> {}, this::validationFailed, this::validationFailed);
-  }
-
   @Override
   protected void doHealthCheck(Health.Builder builder) {
     doHealthCheck(builder::up, builder::down, e -> builder.withException(e).unknown());
@@ -142,10 +137,6 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
       return errorCode == StatusCode.Code.NOT_FOUND || errorCode == Code.PERMISSION_DENIED;
     }
     return false;
-  }
-
-  private void validationFailed(Throwable e) {
-    throw new BeanInitializationException("Validation of health indicator failed", e);
   }
 
   boolean isSpecifiedSubscription() {
