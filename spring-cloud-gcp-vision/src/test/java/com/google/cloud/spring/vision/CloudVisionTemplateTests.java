@@ -201,7 +201,8 @@ class CloudVisionTemplateTests {
   @Test
   void testResourceReadingError() {
 
-    assertThatThrownBy(() -> this.cloudVisionTemplate.analyzeImage(new BadResource(), Type.LABEL_DETECTION))
+    Resource imageResource = new BadResource();
+    assertThatThrownBy(() -> this.cloudVisionTemplate.analyzeImage(imageResource, Type.LABEL_DETECTION))
             .isInstanceOf(CloudVisionException.class)
             .hasMessageContaining(READ_BYTES_ERROR_MESSAGE);
   }
@@ -209,7 +210,8 @@ class CloudVisionTemplateTests {
   @Test
   void testFileResourceReadingError() {
 
-    assertThatThrownBy(() ->  this.cloudVisionTemplate.analyzeFile(new BadResource(), "application/pdf", Type.LABEL_DETECTION))
+    Resource imageResource = new BadResource();
+    assertThatThrownBy(() ->  this.cloudVisionTemplate.analyzeFile(imageResource, "application/pdf", Type.LABEL_DETECTION))
             .isInstanceOf(CloudVisionException.class)
             .hasMessageContaining(READ_BYTES_ERROR_MESSAGE);
   }
