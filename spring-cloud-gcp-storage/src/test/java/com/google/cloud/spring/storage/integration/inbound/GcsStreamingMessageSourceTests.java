@@ -30,8 +30,8 @@ import java.io.InputStream;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,19 +46,19 @@ import org.springframework.integration.file.remote.RemoteFileTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests for the streaming message source. */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration
-public class GcsStreamingMessageSourceTests {
+class GcsStreamingMessageSourceTests {
 
   @Autowired private PollableChannel unsortedChannel;
 
   @Autowired private PollableChannel sortedChannel;
 
   @Test
-  public void testInboundStreamingChannelAdapter() {
+  void testInboundStreamingChannelAdapter() {
     Message<?> message = this.unsortedChannel.receive(5000);
     assertThat(message).isNotNull();
     assertThat(message.getPayload()).isInstanceOf(InputStream.class);
@@ -77,7 +77,7 @@ public class GcsStreamingMessageSourceTests {
   }
 
   @Test
-  public void testSortedInboundChannelAdapter() {
+  void testSortedInboundChannelAdapter() {
     // This uses the channel adapter with a custom comparator.
     // Files will be processed in ascending order by name: alpha/alpha, beta, gamma
     Message<?> message = this.sortedChannel.receive(5000);

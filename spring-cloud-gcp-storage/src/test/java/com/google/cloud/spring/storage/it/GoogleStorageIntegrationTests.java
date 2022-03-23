@@ -17,8 +17,6 @@
 package com.google.cloud.spring.storage.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.spring.core.Credentials;
@@ -33,10 +31,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -45,14 +43,16 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.StreamUtils;
 
 /** Integration for Google Cloud Storage. */
-@RunWith(SpringRunner.class)
+
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(
     classes = {GoogleStorageIntegrationTests.GoogleStorageIntegrationTestsConfiguration.class})
-public class GoogleStorageIntegrationTests {
+@EnabledIfSystemProperty(named = "it.storage", matches = "true")
+class GoogleStorageIntegrationTests {
 
   private static final String CHILD_RELATIVE_NAME = "child";
 
@@ -60,15 +60,6 @@ public class GoogleStorageIntegrationTests {
 
   @Value("gs://${test.integration.storage.bucket}/integration-test")
   private Resource resource;
-
-  @BeforeClass
-  public static void checkToRun() {
-    assumeThat(
-        "Storage integration tests are disabled. Please use '-Dit.storage=true' "
-            + "to enable them. ",
-        System.getProperty("it.storage"),
-        is("true"));
-  }
 
   private GoogleStorageResource thisResource() {
     return (GoogleStorageResource) this.resource;
@@ -84,14 +75,14 @@ public class GoogleStorageIntegrationTests {
     }
   }
 
-  @Before
-  public void setUp() throws IOException {
+  @BeforeEach
+  void setUp() throws IOException {
     deleteResource(thisResource());
     deleteResource(getChildResource());
   }
 
   @Test
-  public void createAndWriteTest() throws IOException {
+  void createAndWriteTest() throws IOException {
 
     String message = "test message";
 
@@ -105,7 +96,7 @@ public class GoogleStorageIntegrationTests {
   }
 
   @Test
-  public void createWithContent() throws IOException {
+  void createWithContent() throws IOException {
 
     String message = "test message";
 
