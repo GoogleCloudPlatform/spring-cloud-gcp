@@ -28,6 +28,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.PageRequest;
 
 /**
  * Example repository usage.
@@ -79,6 +80,15 @@ public class SpannerRepositoryExample {
 
     LOGGER.info("All trades:");
     for (Trade t : allTrades) {
+      LOGGER.info(t);
+    }
+
+    LOGGER.info("Make a pageable query:");
+    List<Trade> tradesPageOne = this.tradeRepository.findByActionAndSymbol(PageRequest.of(0, 1),
+        "BUY",
+        "STOCK1"
+        );
+    for (Trade t : tradesPageOne) {
       LOGGER.info(t);
     }
 

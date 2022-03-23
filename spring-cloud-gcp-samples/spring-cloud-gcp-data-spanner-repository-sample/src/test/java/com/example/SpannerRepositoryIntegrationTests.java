@@ -38,6 +38,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -139,6 +140,11 @@ class SpannerRepositoryIntegrationTests {
             "demo_trader_json3");
 
     assertThat(this.tradeRepository.findAll()).hasSize(8);
+
+    assertThat(this.tradeRepository.findByActionAndSymbol(PageRequest.of(0, 1),
+        "BUY",
+        "STOCK1"
+    )).hasSize(1);
 
     Set<String> tradeSpannerKeys = new HashSet<>();
     this.tradeRepository
