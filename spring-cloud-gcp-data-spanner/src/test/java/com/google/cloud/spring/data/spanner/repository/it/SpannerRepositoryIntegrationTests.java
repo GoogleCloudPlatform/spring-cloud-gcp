@@ -47,10 +47,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.util.Sets;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -62,12 +62,12 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 /** Integration tests for Spanner Repository that uses many features. */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {
 
   @Autowired TradeRepository tradeRepository;
@@ -82,14 +82,14 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 
   @SpyBean SpannerTemplate spannerTemplate;
 
-  @Before
-  @After
-  public void cleanUpData() {
+  @BeforeEach
+  @AfterEach
+  void cleanUpData() {
     this.tradeRepository.deleteAll();
   }
 
   @Test
-  public void queryOptionalSingleValueTest() {
+  void queryOptionalSingleValueTest() {
     Trade trade = Trade.makeTrade(null, 0);
     this.spannerOperations.insert(trade);
 
@@ -101,7 +101,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_simple() {
+  void queryMethodsTest_simple() {
     final int subTrades = 42;
     Trade trade = Trade.makeTrade(null, subTrades);
     this.spannerOperations.insert(trade);
@@ -135,7 +135,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_updateActionTradeById() {
+  void queryMethodsTest_updateActionTradeById() {
     List<Trade> trader1BuyTrades = insertTrades("trader1", "BUY", 3);
 
     Trade buyTrade1 = trader1BuyTrades.get(0);
@@ -155,7 +155,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_BoundParameters() {
+  void queryMethodsTest_BoundParameters() {
     insertTrades("trader1", "BUY", 3);
     insertTrades("trader1", "SELL", 2);
     insertTrades("trader2", "SELL", 3);
@@ -179,7 +179,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_deleteByAction() {
+  void queryMethodsTest_deleteByAction() {
     insertTrades("trader1", "BUY", 3);
     insertTrades("trader1", "SELL", 2);
     insertTrades("trader2", "SELL", 3);
@@ -189,7 +189,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_deleteBySymbol() {
+  void queryMethodsTest_deleteBySymbol() {
     insertTrades("trader1", "SELL", 2);
     insertTrades("trader2", "SELL", 3);
 
@@ -198,7 +198,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_deleteBySymbolAndAction() {
+  void queryMethodsTest_deleteBySymbolAndAction() {
     insertTrades("trader1", "SELL", 2);
     insertTrades("trader2", "SELL", 3);
 
@@ -208,7 +208,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_deleteAllById() {
+  void queryMethodsTest_deleteAllById() {
     List<Trade> trades = insertTrades("trader1", "BUY", 5);
 
     Trade someTrade1 = trades.get(0);
@@ -227,7 +227,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_deleteAllById_doesNothingOnEmptyIds() {
+  void queryMethodsTest_deleteAllById_doesNothingOnEmptyIds() {
     List<Trade> trades = insertTrades("trader1", "BUY", 5);
     assertThat(this.tradeRepository.count()).isEqualTo(5);
 
@@ -236,7 +236,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_readsAndCounts() {
+  void queryMethodsTest_readsAndCounts() {
     List<Trade> trader1BuyTrades = insertTrades("trader1", "BUY", 3);
     List<Trade> trader1SellTrades = insertTrades("trader1", "SELL", 2);
     List<Trade> trader2Trades = insertTrades("trader2", "SELL", 3);
@@ -258,7 +258,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_Trader2() {
+  void queryMethodsTest_Trader2() {
     List<Trade> trader2Trades = insertTrades("trader2", "SELL", 3);
 
     List<Trade> trader2TradesRetrieved = this.tradeRepository.findByTraderId("trader2");
@@ -301,7 +301,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_caseSensitive() {
+  void queryMethodsTest_caseSensitive() {
     insertTrades("trader1", "BUY", 3);
 
     List<TradeProjection> tradeProjectionsRetrieved =
@@ -314,7 +314,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_sortingAndPaging() {
+  void queryMethodsTest_sortingAndPaging() {
     List<Trade> trader1BuyTrades = insertTrades("trader1", "BUY", 3);
     insertTrades("trader1", "SELL", 2);
     insertTrades("trader2", "SELL", 3);
@@ -347,7 +347,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_CustomSort() {
+  void queryMethodsTest_CustomSort() {
     insertTrades("trader1", "BUY", 3);
     insertTrades("trader1", "SELL", 2);
     insertTrades("trader2", "SELL", 3);
@@ -361,7 +361,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_Wildcards() {
+  void queryMethodsTest_Wildcards() {
     insertTrades("trader1", "BUY", 3);
 
     this.tradeRepository
@@ -383,7 +383,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_NullColumns() {
+  void queryMethodsTest_NullColumns() {
     insertTrades("trader1", "BUY", 3);
 
     Trade someTrade = this.tradeRepository.findBySymbolContains("ABCD").get(0);
@@ -401,7 +401,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_ParentChildOperations() {
+  void queryMethodsTest_ParentChildOperations() {
     insertTrades("trader1", "BUY", 3);
 
     Trade someTrade = this.tradeRepository.findBySymbolContains("ABCD").get(0);
@@ -471,7 +471,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_EagerFetch() {
+  void queryMethodsTest_EagerFetch() {
     Mockito.clearInvocations(spannerTemplate);
 
     final Trade aTrade = Trade.makeTrade("trader1", 0, 0);
@@ -492,7 +492,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void queryMethodsTest_SoftDelete() {
+  void queryMethodsTest_SoftDelete() {
     Trade someTrade = insertTrade("trader1", "BUY", 1);
     SubTrade subTrade1 =
         new SubTrade(someTrade.getTradeDetail().getId(), someTrade.getTraderId(), "subTrade1");
@@ -524,7 +524,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void existsTest() {
+  void existsTest() {
     Trade trade = Trade.makeTrade();
     this.tradeRepository.save(trade);
     SpannerPersistentEntity<?> persistentEntity =
@@ -538,14 +538,14 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void testNonNull() {
+  void testNonNull() {
     assertThatThrownBy(() -> this.tradeRepository.getByAction("non-existing-action"))
         .isInstanceOf(EmptyResultDataAccessException.class)
         .hasMessageMatching("Result must not be null!");
   }
 
   @Test
-  public void testWithJsonField() {
+  void testWithJsonField() {
     Trade trade1 = Trade.makeTrade();
     trade1.setOptionalDetails(new Details("abc", "def"));
     trade1.setBackupDetails(new Details("backup context", "backup context continued"));
@@ -569,13 +569,13 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void testTransaction() {
+  void testTransaction() {
     this.tradeRepositoryTransactionalService.testTransactionalAnnotation(2);
     assertThat(this.tradeRepository.count()).isEqualTo(1L);
   }
 
   @Test
-  public void testTransactionRolledBack() {
+  void testTransactionRolledBack() {
     assertThat(this.tradeRepository.count()).isZero();
     try {
       this.tradeRepositoryTransactionalService.testTransactionRolledBack();
@@ -586,7 +586,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void findAllByIdReturnsOnlyRequestedRows() {
+  void findAllByIdReturnsOnlyRequestedRows() {
     insertTrade("trader1", "BUY", 100);
     Trade trade2 = insertTrade("trader2", "BUY", 101);
     Trade trade3 = insertTrade("trader2", "SELL", 102);
@@ -603,7 +603,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  public void findAllByIdReturnsNothingOnEmptyRequestIterable() {
+  void findAllByIdReturnsNothingOnEmptyRequestIterable() {
     insertTrade("trader1", "BUY", 100);
     insertTrade("trader2", "BUY", 101);
 

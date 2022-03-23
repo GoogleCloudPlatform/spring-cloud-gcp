@@ -25,8 +25,8 @@ import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
 import com.google.cloud.spring.data.spanner.test.domain.Trade;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -53,6 +53,7 @@ import org.springframework.test.context.TestExecutionListeners;
  * are generated to have a unique suffix, which is updated on the entity annotations as well
  * dynamically to avoid collisions of multiple parallel tests running against the same instance.
  */
+@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ContextConfiguration(classes = {IntegrationTestConfiguration.class})
 @TestExecutionListeners(
     listeners = SpannerTestExecutionListener.class,
@@ -68,15 +69,6 @@ public abstract class AbstractSpannerIntegrationTest {
   @Autowired protected SpannerSchemaUtils spannerSchemaUtils;
 
   @Autowired SpannerMappingContext spannerMappingContext;
-
-  @BeforeClass
-  public static void checkToRun() {
-    assumeThat(System.getProperty("it.spanner"))
-        .as(
-            "Spanner integration tests are disabled. Please use '-Dit.spanner=true' to enable"
-                + " them.")
-        .isEqualTo("true");
-  }
 
   @Test
   public void tableCreatedTest() {

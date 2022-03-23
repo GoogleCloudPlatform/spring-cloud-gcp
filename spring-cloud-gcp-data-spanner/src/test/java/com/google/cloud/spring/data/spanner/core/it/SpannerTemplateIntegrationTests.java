@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.spanner.core.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
@@ -30,26 +31,22 @@ import com.google.cloud.spring.data.spanner.test.domain.Trade;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import org.awaitility.Awaitility;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 /** Integration tests that use many features of the Spanner Template. */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationTest {
-
-  /** used for checking exception messages and types. */
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
 
   @Autowired TemplateTransactionalService transactionalService;
 
   @Test
-  public void testReadOnlyOperation() {
+  void testReadOnlyOperation() {
     // Integration tests are configured with 10 sessions max. This will hang and fail if there
     // is a leak.
     for (int i = 0; i < 20; i++) {
@@ -64,7 +61,7 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
   }
 
   @Test
-  public void insertAndDeleteSequence() {
+  void insertAndDeleteSequence() {
 
     this.spannerOperations.delete(Trade.class, KeySet.all());
 
@@ -105,7 +102,7 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
   }
 
   @Test
-  public void insertAndDeleteWithJsonField() {
+  void insertAndDeleteWithJsonField() {
 
     this.spannerOperations.delete(Trade.class, KeySet.all());
     assertThat(this.spannerOperations.count(Trade.class)).isZero();
@@ -135,7 +132,7 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
   }
 
   @Test
-  public void readWriteTransactionTest() {
+  void readWriteTransactionTest() {
     Trade trade = Trade.makeTrade();
     this.spannerOperations.performReadWriteTransaction(
         transactionOperations -> {
@@ -153,19 +150,21 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
   }
 
   @Test
-  public void readOnlyTransactionTest() {
-
-    this.expectedEx.expect(SpannerDataException.class);
-    this.expectedEx.expectMessage("A read-only transaction template cannot perform mutations.");
+  void readOnlyTransactionTest() {
 
     Trade trade = Trade.makeTrade();
-    this.spannerOperations.performReadOnlyTransaction(
-        transactionOperations -> {
-          // cannot do mutate in a read-only transaction
-          transactionOperations.insert(trade);
-          return null;
-        },
-        new SpannerReadOptions());
+
+    Function<SpannerTemplate, Void> operation =  transactionOperations -> {
+      // cannot do mutate in a read-only transaction
+      transactionOperations.insert(trade);
+      return null;
+    };
+    SpannerReadOptions readOptions = new SpannerReadOptions();
+
+    assertThatThrownBy(() -> this.spannerOperations.performReadOnlyTransaction(operation, readOptions))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("A read-only transaction template cannot perform mutations.");
+
   }
 
   /** a transactional service for testing annotated transaction methods. */

@@ -23,21 +23,21 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
 import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.data.util.TypeInformation;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests for the Spanner mapping context. */
-@RunWith(SpringRunner.class)
-public class SpannerMappingContextTests {
+@ExtendWith(SpringExtension.class)
+class SpannerMappingContextTests {
 
   @Test
-  public void testNullSetFieldNamingStrategy() {
+  void testNullSetFieldNamingStrategy() {
     SpannerMappingContext context = new SpannerMappingContext();
 
     context.setFieldNamingStrategy(null);
@@ -46,7 +46,7 @@ public class SpannerMappingContextTests {
   }
 
   @Test
-  public void testSetFieldNamingStrategy() {
+  void testSetFieldNamingStrategy() {
     SpannerMappingContext context = new SpannerMappingContext();
     FieldNamingStrategy strat = mock(FieldNamingStrategy.class);
     context.setFieldNamingStrategy(strat);
@@ -54,7 +54,7 @@ public class SpannerMappingContextTests {
   }
 
   @Test
-  public void testApplicationContextPassing() {
+  void testApplicationContextPassing() {
     SpannerPersistentEntityImpl mockEntity = mock(SpannerPersistentEntityImpl.class);
     SpannerMappingContext context = createSpannerMappingContextWith(mockEntity);
     ApplicationContext applicationContext = mock(ApplicationContext.class);
@@ -66,7 +66,7 @@ public class SpannerMappingContextTests {
   }
 
   @Test
-  public void testApplicationContextIsNotSet() {
+  void testApplicationContextIsNotSet() {
     SpannerPersistentEntityImpl mockEntity = mock(SpannerPersistentEntityImpl.class);
     SpannerMappingContext context = createSpannerMappingContextWith(mockEntity);
 
@@ -76,7 +76,7 @@ public class SpannerMappingContextTests {
   }
 
   @Test
-  public void testGetInvalidSpannerEntity() {
+  void testGetInvalidSpannerEntity() {
     SpannerPersistentEntityImpl mockEntity = mock(SpannerPersistentEntityImpl.class);
     SpannerMappingContext context = createSpannerMappingContextWith(mockEntity);
 

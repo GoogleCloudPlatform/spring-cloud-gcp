@@ -36,22 +36,22 @@ import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
 import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.UUID;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Integration tests for the {@link CommitTimestamp} feature. */
-@RunWith(SpringRunner.class)
-public class CommitTimestampIntegrationTests extends AbstractSpannerIntegrationTest {
+@ExtendWith(SpringExtension.class)
+class CommitTimestampIntegrationTests extends AbstractSpannerIntegrationTest {
 
   @Autowired private SpannerOperations spannerOperations;
   @Autowired private DatabaseClient databaseClient;
   @Autowired private SpannerMutationFactory mutationFactory;
 
   @Test
-  public void testCommitTimestamp() {
+  void testCommitTimestamp() {
 
     final CommitTimestamps entity = new CommitTimestamps();
     final String id = UUID.randomUUID().toString();

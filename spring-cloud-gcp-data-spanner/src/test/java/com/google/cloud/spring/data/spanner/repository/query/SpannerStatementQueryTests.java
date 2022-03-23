@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.spanner.repository.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -43,10 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -54,7 +53,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.repository.query.DefaultParameters;
 
 /** Tests Spanner statement queries. */
-public class SpannerStatementQueryTests {
+class SpannerStatementQueryTests {
 
   private static final Object[] EMPTY_PARAMETERS = new Object[0];
 
@@ -66,11 +65,8 @@ public class SpannerStatementQueryTests {
 
   private PartTreeSpannerQuery partTreeSpannerQuery;
 
-  /** Checks exceptions for messages and types. */
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
-
-  @Before
-  public void initMocks() throws NoSuchMethodException {
+  @BeforeEach
+  void initMocks() throws NoSuchMethodException {
     this.queryMethod = mock(SpannerQueryMethod.class);
     // this is a dummy object. it is not mockable otherwise.
     Method method = Object.class.getMethod("toString");
@@ -88,7 +84,7 @@ public class SpannerStatementQueryTests {
   }
 
   @Test
-  public void compoundNameConventionTest() throws NoSuchMethodException {
+  void compoundNameConventionTest() throws NoSuchMethodException {
     when(this.queryMethod.getName())
         .thenReturn(
             "findTop3DistinctByActionIgnoreCaseAndSymbolOrTraderIdAndPriceLessThanOrPriceGreater"
@@ -184,7 +180,7 @@ public class SpannerStatementQueryTests {
   }
 
   @Test
-  public void compoundNameConventionCountTest() throws NoSuchMethodException {
+  void compoundNameConventionCountTest() throws NoSuchMethodException {
     when(this.queryMethod.getName())
         .thenReturn(
             "existsDistinctByActionIgnoreCaseAndSymbolOrTraderIdAndPriceLessThanOrPriceGreater"
@@ -266,7 +262,7 @@ public class SpannerStatementQueryTests {
   }
 
   @Test
-  public void pageableTest() throws NoSuchMethodException {
+  void pageableTest() throws NoSuchMethodException {
     Object[] params = new Object[] {8.88, PageRequest.of(1, 10, Sort.by("traderId"))};
     Method method = QueryHolder.class.getMethod("repositoryMethod5", Double.class, Pageable.class);
     String expectedSql =
@@ -278,7 +274,7 @@ public class SpannerStatementQueryTests {
   }
 
   @Test
-  public void sortTest() throws NoSuchMethodException {
+  void sortTest() throws NoSuchMethodException {
     Object[] params =
         new Object[] {
           8.88, Sort.by(Order.desc("traderId"), Order.asc("price"), Order.desc("action"))
@@ -324,7 +320,7 @@ public class SpannerStatementQueryTests {
   }
 
   @Test
-  public void pageableNotLastParameterTest() throws NoSuchMethodException {
+  void pageableNotLastParameterTest() throws NoSuchMethodException {
     // Test that preparePartTreeSqlTagParameterMap() can process cases
     // where Pageable is not the last parameter
     Object[] params = new Object[] {"BUY", PageRequest.of(1, 10, Sort.by("traderId")), "STOCK1"};
@@ -372,9 +368,8 @@ public class SpannerStatementQueryTests {
   }
 
   @Test
-  public void unspecifiedParametersTest() throws NoSuchMethodException {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("The number of tags does not match the number of params.");
+  void unspecifiedParametersTest() throws NoSuchMethodException {
+
     when(this.queryMethod.getName())
         .thenReturn(
             "findTop3DistinctIdActionPriceByActionAndSymbolOrTraderIdAndPriceLessThanOrPriceGreater"
@@ -390,15 +385,13 @@ public class SpannerStatementQueryTests {
           "BUY", "abcd", "abc123",
         };
 
-    this.partTreeSpannerQuery.execute(params);
+    assertThatThrownBy(() -> this.partTreeSpannerQuery.execute(params))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("The number of tags does not match the number of params.");
   }
 
   @Test
-  public void unsupportedParamTypeTest() throws NoSuchMethodException {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage(
-        "is not a supported type: class com.google."
-            + "cloud.spring.data.spanner.repository.query.SpannerStatementQueryTests$Trade");
+  void unsupportedParamTypeTest() throws NoSuchMethodException {
     when(this.queryMethod.getName())
         .thenReturn(
             "findTop3DistinctIdActionPriceByActionAndSymbolOrTraderIdAndPriceLessThanOrPriceGreater"
@@ -423,20 +416,23 @@ public class SpannerStatementQueryTests {
           "BUY", "abcd", "abc123", 8.88, 3.33, new Trade(), "ignored",
         };
 
-    this.partTreeSpannerQuery.execute(params);
+    assertThatThrownBy(() -> this.partTreeSpannerQuery.execute(params))
+              .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("is not a supported type: class com.google."
+                    + "cloud.spring.data.spanner.repository.query.SpannerStatementQueryTests$Trade");
   }
 
   @Test
-  public void unSupportedPredicateTest() throws NoSuchMethodException {
-    this.expectedEx.expect(UnsupportedOperationException.class);
-    this.expectedEx.expectMessage(
-        "The statement type: BETWEEN (2): [IsBetween, " + "Between] is not supported.");
+  void unSupportedPredicateTest() throws NoSuchMethodException {
     when(this.queryMethod.getName()).thenReturn("countByTraderIdBetween");
     Method method = Object.class.getMethod("toString");
     doReturn(new DefaultParameters(method)).when(this.queryMethod).getParameters();
 
     this.partTreeSpannerQuery = createQuery();
-    this.partTreeSpannerQuery.execute(EMPTY_PARAMETERS);
+
+    assertThatThrownBy(() -> this.partTreeSpannerQuery.execute(EMPTY_PARAMETERS))
+            .isInstanceOf(UnsupportedOperationException.class)
+            .hasMessage("The statement type: BETWEEN (2): [IsBetween, " + "Between] is not supported.");
   }
 
   @Table(name = "trades")

@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.spanner.core.mapping;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -29,9 +30,7 @@ import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSp
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.spanner.v1.TypeCode;
 import java.util.List;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
@@ -40,23 +39,20 @@ import org.springframework.data.mapping.SimplePropertyHandler;
 import org.springframework.data.util.ClassTypeInformation;
 
 /** Tests for the Spanner persistent entity. */
-public class SpannerPersistentEntityImplTests {
-
-  /** tests the messages and types of exceptions. */
-  @Rule public ExpectedException thrown = ExpectedException.none();
+class SpannerPersistentEntityImplTests {
 
   private final SpannerMappingContext spannerMappingContext;
 
   private final SpannerEntityProcessor spannerEntityProcessor;
 
-  public SpannerPersistentEntityImplTests() {
+  SpannerPersistentEntityImplTests() {
     this.spannerMappingContext = new SpannerMappingContext();
     this.spannerEntityProcessor = new ConverterAwareMappingSpannerEntityProcessor(
         this.spannerMappingContext);
   }
 
   @Test
-  public void testTableName() {
+  void testTableName() {
     SpannerPersistentEntityImpl<TestEntity> entity =
         new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(TestEntity.class),
             this.spannerMappingContext, this.spannerEntityProcessor);
@@ -65,7 +61,7 @@ public class SpannerPersistentEntityImplTests {
   }
 
   @Test
-  public void testRawTableName() {
+  void testRawTableName() {
     SpannerPersistentEntityImpl<EntityNoCustomName> entity =
         new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityNoCustomName.class),
             this.spannerMappingContext, this.spannerEntityProcessor);
@@ -74,7 +70,7 @@ public class SpannerPersistentEntityImplTests {
   }
 
   @Test
-  public void testEmptyCustomTableName() {
+  void testEmptyCustomTableName() {
     SpannerPersistentEntityImpl<EntityEmptyCustomName> entity =
         new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityEmptyCustomName.class),
             this.spannerMappingContext, this.spannerEntityProcessor);
@@ -83,27 +79,24 @@ public class SpannerPersistentEntityImplTests {
   }
 
   @Test
-  public void testColumns() {
+  void testColumns() {
     assertThat(new SpannerMappingContext().getPersistentEntity(TestEntity.class).columns())
         .containsExactlyInAnyOrder("id", "custom_col");
   }
 
   @Test
-  public void testExpressionResolutionWithoutApplicationContext() {
-    this.thrown.expect(SpannerDataException.class);
-    this.thrown.expectMessage(
-        "Error getting table name for EntityWithExpression; "
-            + "nested exception is org.springframework.expression.spel.SpelEvaluationException: "
-            + "EL1007E: Property or field 'tablePostfix' cannot be found on null");
+  void testExpressionResolutionWithoutApplicationContext() {
+
     SpannerPersistentEntityImpl<EntityWithExpression> entity =
         new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityWithExpression.class),
             this.spannerMappingContext, this.spannerEntityProcessor);
-
-    entity.tableName();
+    assertThatThrownBy(() -> entity.tableName())
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("Error getting table name for EntityWithExpression; nested exception is org.springframework.expression.spel.SpelEvaluationException: EL1007E: Property or field 'tablePostfix' cannot be found on null");
   }
 
   @Test
-  public void testExpressionResolutionFromApplicationContext() {
+  void testExpressionResolutionFromApplicationContext() {
     SpannerPersistentEntityImpl<EntityWithExpression> entity =
         new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityWithExpression.class),
             this.spannerMappingContext, this.spannerEntityProcessor);
@@ -117,48 +110,46 @@ public class SpannerPersistentEntityImplTests {
   }
 
   @Test
-  public void testDuplicatePrimaryKeyOrder() {
-    this.thrown.expect(SpannerDataException.class);
-    this.thrown.expectMessage(
-        "Two properties were annotated with the same primary key order: "
-            + "id2 and id in EntityWithDuplicatePrimaryKeyOrder.");
+  void testDuplicatePrimaryKeyOrder() {
 
-    new SpannerMappingContext().getPersistentEntity(EntityWithDuplicatePrimaryKeyOrder.class);
+    assertThatThrownBy(() -> new SpannerMappingContext().getPersistentEntity(EntityWithDuplicatePrimaryKeyOrder.class))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("Two properties were annotated with the same primary key order: id2 and id in EntityWithDuplicatePrimaryKeyOrder.");
   }
 
   @Test
-  public void testInvalidPrimaryKeyOrder() {
-    this.thrown.expect(SpannerDataException.class);
-    this.thrown.expectMessage(
-        "The primary key columns were not given a consecutive order. "
-            + "There is no property annotated with order 2 in EntityWithWronglyOrderedKeys.");
+  void testInvalidPrimaryKeyOrder() {
 
-    new SpannerMappingContext()
-        .getPersistentEntity(EntityWithWronglyOrderedKeys.class)
-        .getIdProperty();
+
+    SpannerMappingContext spannerPersistentEntity = new SpannerMappingContext();
+
+    assertThatThrownBy(() -> spannerPersistentEntity.getPersistentEntity(EntityWithWronglyOrderedKeys.class).getIdProperty())
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("The primary key columns were not given a consecutive order. There is no property annotated with order 2 in EntityWithWronglyOrderedKeys.");
+
   }
 
   @Test
-  public void testNoIdEntity() {
+  void testNoIdEntity() {
     assertThat(
             new SpannerMappingContext().getPersistentEntity(EntityWithNoId.class).getIdProperty())
         .isNotNull();
   }
 
   @Test
-  public void testGetIdProperty() {
+  void testGetIdProperty() {
     assertThat(new SpannerMappingContext().getPersistentEntity(TestEntity.class).getIdProperty())
         .isInstanceOf(SpannerCompositeKeyProperty.class);
   }
 
   @Test
-  public void testHasIdProperty() {
+  void testHasIdProperty() {
     assertThat(new SpannerMappingContext().getPersistentEntity(TestEntity.class).hasIdProperty())
         .isTrue();
   }
 
   @Test
-  public void testSetIdProperty() {
+  void testSetIdProperty() {
     SpannerPersistentEntity entity =
         new SpannerMappingContext().getPersistentEntity(MultiIdsEntity.class);
 
@@ -173,10 +164,7 @@ public class SpannerPersistentEntityImplTests {
   }
 
   @Test
-  public void testSetIdPropertyLongerKey() {
-    this.thrown.expect(SpannerDataException.class);
-    this.thrown.expectMessage(
-        "The number of key parts is not equal to the number of primary key properties");
+  void testSetIdPropertyLongerKey() {
 
     SpannerPersistentEntity entity =
         new SpannerMappingContext().getPersistentEntity(MultiIdsEntity.class);
@@ -184,14 +172,15 @@ public class SpannerPersistentEntityImplTests {
     PersistentProperty idProperty = entity.getIdProperty();
 
     MultiIdsEntity t = new MultiIdsEntity();
-    entity.getPropertyAccessor(t).setProperty(idProperty, Key.of("blah", 123L, 123.45D, "abc"));
+    PersistentPropertyAccessor propertyAccessor = entity.getPropertyAccessor(t);
+
+    assertThatThrownBy(() -> propertyAccessor.setProperty(idProperty, Key.of("blah", 123L, 123.45D, "abc")))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("The number of key parts is not equal to the number of primary key properties");
   }
 
   @Test
-  public void testSetIdPropertyNullKey() {
-    this.thrown.expect(SpannerDataException.class);
-    this.thrown.expectMessage(
-        "The number of key parts is not equal to the number of primary key properties");
+  void testSetIdPropertyNullKey() {
 
     SpannerPersistentEntity entity =
         new SpannerMappingContext().getPersistentEntity(MultiIdsEntity.class);
@@ -199,11 +188,16 @@ public class SpannerPersistentEntityImplTests {
     PersistentProperty idProperty = entity.getIdProperty();
 
     MultiIdsEntity t = new MultiIdsEntity();
-    entity.getPropertyAccessor(t).setProperty(idProperty, null);
+    PersistentPropertyAccessor propertyAccessor = entity.getPropertyAccessor(t);
+
+    assertThatThrownBy(() -> propertyAccessor.setProperty(idProperty, null))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("The number of key parts is not equal to the number of primary key properties");
+
   }
 
   @Test
-  public void testIgnoredProperty() {
+  void testIgnoredProperty() {
     TestEntity t = new TestEntity();
     t.id = "a";
     t.something = "a";
@@ -216,28 +210,21 @@ public class SpannerPersistentEntityImplTests {
   }
 
   @Test
-  public void testInvalidTableName() {
-    this.thrown.expect(SpannerDataException.class);
-    this.thrown.expectMessage(
-        "Error getting table name for EntityBadName; nested exception is"
-            + " com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException: Only"
-            + " letters, numbers, and underscores are allowed in table names: ;DROP TABLE"
-            + " your_table;");
+  void testInvalidTableName() {
 
     SpannerPersistentEntityImpl<EntityBadName> entity =
         new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityBadName.class),
             this.spannerMappingContext, this.spannerEntityProcessor);
-    entity.tableName();
+
+    assertThatThrownBy(() -> entity.tableName())
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("Error getting table name for EntityBadName; nested exception is com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException: Only"
+                    + " letters, numbers, and underscores are allowed in table names: ;DROP TABLE"
+                    + " your_table;");
   }
 
   @Test
-  public void testSpelInvalidName() {
-    this.thrown.expect(SpannerDataException.class);
-    this.thrown.expectMessage(
-        "Error getting table name for EntityWithExpression; nested exception is "
-            + "com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException: "
-            + "Only letters, numbers, and underscores are allowed in table names: "
-            + "table_; DROP TABLE your_table;");
+  void testSpelInvalidName() {
 
     SpannerPersistentEntityImpl<EntityWithExpression> entity =
         new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityWithExpression.class),
@@ -248,21 +235,29 @@ public class SpannerPersistentEntityImplTests {
     when(applicationContext.containsBean("tablePostfix")).thenReturn(true);
 
     entity.setApplicationContext(applicationContext);
-    entity.tableName();
+
+    assertThatThrownBy(() -> entity.tableName())
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("Error getting table name for EntityWithExpression; nested exception is "
+                    + "com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException: "
+                    + "Only letters, numbers, and underscores are allowed in table names: "
+                    + "table_; DROP TABLE your_table;");
+
+
   }
 
   @Test
-  public void testDuplicateEmbeddedColumnName() {
-    this.thrown.expect(SpannerDataException.class);
-    this.thrown.expectMessage(
-        "Two properties resolve to the same column name: "
-            + "other in EmbeddedParentDuplicateColumn");
+  void testDuplicateEmbeddedColumnName() {
 
-    this.spannerMappingContext.getPersistentEntity(EmbeddedParentDuplicateColumn.class);
+
+    assertThatThrownBy(() ->   this.spannerMappingContext.getPersistentEntity(EmbeddedParentDuplicateColumn.class))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("Two properties resolve to the same column name: other in EmbeddedParentDuplicateColumn");
+
   }
 
   @Test
-  public void testEmbeddedParentKeys() {
+  void testEmbeddedParentKeys() {
     GrandParentEmbedded grandParentEmbedded = new GrandParentEmbedded();
     grandParentEmbedded.id = "1";
 
@@ -297,25 +292,21 @@ public class SpannerPersistentEntityImplTests {
   }
 
   @Test
-  public void testEmbeddedCollection() {
-    this.thrown.expect(SpannerDataException.class);
-    this.thrown.expectMessage("Embedded properties cannot be collections:");
+  void testEmbeddedCollection() {
 
-    this.thrown.expectMessage(
-        "com.google.cloud.spring.data.spanner.core.mapping."
-            + "SpannerPersistentEntityImplTests$ChildCollectionEmbedded.parentEmbedded");
-
-    this.spannerMappingContext.getPersistentEntity(ChildCollectionEmbedded.class);
+    assertThatThrownBy(() -> this.spannerMappingContext.getPersistentEntity(ChildCollectionEmbedded.class))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessageContaining("Embedded properties cannot be collections: ");
   }
 
   @Test
-  public void testExcludeEmbeddedColumnNames() {
+  void testExcludeEmbeddedColumnNames() {
     assertThat(this.spannerMappingContext.getPersistentEntity(ChildEmbedded.class).columns())
         .containsExactlyInAnyOrder("id", "id2", "id3", "id4", "id5");
   }
 
   @Test
-  public void doWithChildrenCollectionsTest() {
+  void doWithChildrenCollectionsTest() {
     PropertyHandler<SpannerPersistentProperty> mockHandler = mock(PropertyHandler.class);
     SpannerPersistentEntity spannerPersistentEntity =
         this.spannerMappingContext.getPersistentEntity(ParentInRelationship.class);
@@ -332,17 +323,16 @@ public class SpannerPersistentEntityImplTests {
   }
 
   @Test
-  public void testParentChildPkNamesMismatch() {
-    this.thrown.expect(SpannerDataException.class);
-    this.thrown.expectMessage(
-        "The child primary key column (ChildBinRelationship.id) at position 1 does not match that "
-            + "of its parent (ParentInRelationshipMismatchedKeyName.idNameDifferentThanChildren).");
+  void testParentChildPkNamesMismatch() {
 
-    this.spannerMappingContext.getPersistentEntity(ParentInRelationshipMismatchedKeyName.class);
+    assertThatThrownBy(() ->   this.spannerMappingContext.getPersistentEntity(ParentInRelationshipMismatchedKeyName.class))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("The child primary key column (ChildBinRelationship.id) at position 1 does not match that "
+                    + "of its parent (ParentInRelationshipMismatchedKeyName.idNameDifferentThanChildren).");
   }
 
   @Test
-  public void testGetJsonPropertyName() {
+  void testGetJsonPropertyName() {
     SpannerPersistentEntityImpl<EntityWithJsonField> entityWithJsonField =
         (SpannerPersistentEntityImpl<EntityWithJsonField>)
             this.spannerMappingContext.getPersistentEntity(EntityWithJsonField.class);
