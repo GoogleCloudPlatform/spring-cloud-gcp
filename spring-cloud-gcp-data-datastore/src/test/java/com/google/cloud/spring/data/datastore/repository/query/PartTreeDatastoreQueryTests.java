@@ -318,7 +318,7 @@ class PartTreeDatastoreQueryTests {
   }
 
   @Test
-  public void nullPageable() throws NoSuchMethodException {
+  void nullPageable() throws NoSuchMethodException {
     queryWithMockResult(
             "findTop333ByActionAndSymbolAndPriceLessThanAndPriceGreater"
                     + "ThanEqualAndIdIsNullOrderByIdDesc",
@@ -359,7 +359,7 @@ class PartTreeDatastoreQueryTests {
   }
 
   @Test
-  public void ambiguousSort() throws NoSuchMethodException {
+  void ambiguousSort() throws NoSuchMethodException {
     queryWithMockResult(
             "findByActionAndSymbolAndPriceLessThanAndPriceGreater"
                     + "ThanEqualAndIdIsNullOrderByIdDesc",
@@ -395,7 +395,7 @@ class PartTreeDatastoreQueryTests {
   }
 
   @Test
-  public void nullSort() throws NoSuchMethodException {
+  void nullSort() throws NoSuchMethodException {
     queryWithMockResult(
             "findByActionAndSymbolAndPriceLessThanAndPriceGreater"
                     + "ThanEqualAndIdIsNullOrderByIdDesc",

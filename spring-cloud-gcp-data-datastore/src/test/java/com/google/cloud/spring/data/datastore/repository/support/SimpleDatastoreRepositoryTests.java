@@ -304,7 +304,9 @@ class SimpleDatastoreRepositoryTests {
   @Test
   void findAllByExamplePageNull() {
 
-    assertThatThrownBy(() ->  this.simpleDatastoreRepository.findAll(Example.of(new Object()), (Pageable) null))
+    Example<Object> example =  Example.of(new Object());
+
+    assertThatThrownBy(() ->  this.simpleDatastoreRepository.findAll(example, (Pageable) null))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("A non-null pageable is required.");
 
