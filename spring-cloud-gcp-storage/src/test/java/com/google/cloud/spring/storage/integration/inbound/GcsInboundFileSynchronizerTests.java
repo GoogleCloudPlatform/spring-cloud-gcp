@@ -33,10 +33,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -45,20 +45,21 @@ import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.file.filters.AcceptOnceFileListFilter;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /** Tests for inbound file synchronizer. */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration
-public class GcsInboundFileSynchronizerTests {
+class GcsInboundFileSynchronizerTests {
 
   @Autowired private Storage gcs;
 
   private static final Log LOGGER = LogFactory.getLog(GcsInboundFileSynchronizerTests.class);
 
-  @After
-  @Before
-  public void cleanUp() throws IOException {
+  @AfterEach
+  @BeforeEach
+  void cleanUp() throws IOException {
     Path testDirectory = Paths.get("test");
 
     if (Files.exists(testDirectory)) {
@@ -80,7 +81,7 @@ public class GcsInboundFileSynchronizerTests {
   }
 
   @Test
-  public void testCopyFiles() throws Exception {
+  void testCopyFiles() throws Exception {
     File localDirectory = new File("test");
     GcsInboundFileSynchronizer synchronizer = new GcsInboundFileSynchronizer(this.gcs);
     synchronizer.setRemoteDirectory("test-bucket");
