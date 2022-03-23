@@ -269,6 +269,17 @@
 							<violationSeverity>warning</violationSeverity>
 						</configuration>
 					</execution>
+					<execution>
+						<id>validate-custom</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<configLocation>src/checkstyle/custom-checks.xml</configLocation>
+							<headerLocation>src/checkstyle/java.header</headerLocation>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
