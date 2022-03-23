@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.datastore.repository.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -38,9 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,9 +48,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 
 /** Tests for the default Datastore Repository implementation. */
-public class SimpleDatastoreRepositoryTests {
-  /** used to check exception messages and types. */
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
+class SimpleDatastoreRepositoryTests {
 
   private final DatastoreTemplate datastoreTemplate = mock(DatastoreTemplate.class);
 
@@ -62,81 +59,81 @@ public class SimpleDatastoreRepositoryTests {
       spy(new SimpleDatastoreRepository<>(this.datastoreTemplate, Object.class));
 
   @Test
-  public void saveTest() {
+  void saveTest() {
     Object object = new Object();
     this.simpleDatastoreRepository.save(object);
     verify(this.datastoreTemplate).save(same(object));
   }
 
   @Test
-  public void saveAllTest() {
+  void saveAllTest() {
     Iterable entities = Arrays.asList();
     this.simpleDatastoreRepository.saveAll(entities);
     verify(this.datastoreTemplate).saveAll(same(entities));
   }
 
   @Test
-  public void findByIdTest() {
+  void findByIdTest() {
     String id = "key";
     this.simpleDatastoreRepository.findById(id);
     verify(this.datastoreTemplate).findById(id, Object.class);
   }
 
   @Test
-  public void existsByIdTest() {
+  void existsByIdTest() {
     String id = "key";
     this.simpleDatastoreRepository.existsById(id);
     verify(this.datastoreTemplate).existsById(id, Object.class);
   }
 
   @Test
-  public void findAllTest() {
+  void findAllTest() {
     this.simpleDatastoreRepository.findAll();
     verify(this.datastoreTemplate).findAll(Object.class);
   }
 
   @Test
-  public void findAllByIdTest() {
+  void findAllByIdTest() {
     List<String> keys = Arrays.asList("1", "2");
     this.simpleDatastoreRepository.findAllById(keys);
     verify(this.datastoreTemplate).findAllById(keys, Object.class);
   }
 
   @Test
-  public void countTest() {
+  void countTest() {
     this.simpleDatastoreRepository.count();
     verify(this.datastoreTemplate).count(Object.class);
   }
 
   @Test
-  public void deleteByIdTest() {
+  void deleteByIdTest() {
     String id = "key";
     this.simpleDatastoreRepository.deleteById(id);
     verify(this.datastoreTemplate).deleteById(id, Object.class);
   }
 
   @Test
-  public void deleteTest() {
+  void deleteTest() {
     Object object = new Object();
     this.simpleDatastoreRepository.delete(object);
     verify(this.datastoreTemplate).delete(same(object));
   }
 
   @Test
-  public void deleteAllTest() {
+  void deleteAllTest() {
     Iterable entities = Arrays.asList();
     this.simpleDatastoreRepository.deleteAll(entities);
     verify(this.datastoreTemplate).deleteAll(same(entities));
   }
 
   @Test
-  public void deleteAllClassTest() {
+  void deleteAllClassTest() {
     this.simpleDatastoreRepository.deleteAll();
     verify(this.datastoreTemplate).deleteAll(Object.class);
   }
 
   @Test
-  public void runTransactionCallableTest() {
+  void runTransactionCallableTest() {
     when(this.datastoreTemplate.performTransaction(any()))
         .thenAnswer(
             invocation -> {
@@ -151,7 +148,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findAllPageableAsc() {
+  void findAllPageableAsc() {
     this.simpleDatastoreRepository.findAll(PageRequest.of(0, 5, Sort.Direction.ASC, "property1"));
 
     verify(this.datastoreTemplate)
@@ -166,7 +163,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findAllPageableDesc() {
+  void findAllPageableDesc() {
     this.simpleDatastoreRepository.findAll(
         PageRequest.of(1, 5, Sort.Direction.DESC, "property1", "property2"));
     verify(this.datastoreTemplate)
@@ -185,7 +182,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findAllPageableCursor() {
+  void findAllPageableCursor() {
     Cursor cursor = Cursor.copyFrom("abc".getBytes());
     Pageable pageable =
         DatastorePageable.from(
@@ -207,14 +204,14 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findAllByExample() {
+  void findAllByExample() {
     Example<Object> example = Example.of(new Object());
     this.simpleDatastoreRepository.findAll(example);
     verify(this.datastoreTemplate).queryByExample(same(example), isNull());
   }
 
   @Test
-  public void findAllByExampleSort() {
+  void findAllByExampleSort() {
     Example<Object> example = Example.of(new Object());
     Sort sort = Sort.by("id");
     this.simpleDatastoreRepository.findAll(example, sort);
@@ -224,7 +221,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findAllByExamplePage() {
+  void findAllByExamplePage() {
     Example<Object> example = Example.of(new Object());
     Sort sort = Sort.by("id");
 
@@ -250,7 +247,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findAllByExamplePageCursor() {
+  void findAllByExamplePageCursor() {
     Example<Object> example = Example.of(new Object());
     Sort sort = Sort.by("id");
     Cursor cursor = Cursor.copyFrom("abc".getBytes());
@@ -305,15 +302,16 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findAllByExamplePageNull() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("A non-null pageable is required.");
+  void findAllByExamplePageNull() {
 
-    this.simpleDatastoreRepository.findAll(Example.of(new Object()), (Pageable) null);
+    assertThatThrownBy(() ->  this.simpleDatastoreRepository.findAll(Example.of(new Object()), (Pageable) null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A non-null pageable is required.");
+
   }
 
   @Test
-  public void findOneByExample() {
+  void findOneByExample() {
     Example<Object> example = Example.of(new Object());
 
     doAnswer(invocationOnMock -> new DatastoreResultsIterable(Arrays.asList(1), null))
@@ -327,7 +325,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void existsByExampleTrue() {
+  void existsByExampleTrue() {
     Example<Object> example2 = Example.of(new Object());
 
     doAnswer(invocationOnMock -> Arrays.asList(1))
@@ -343,7 +341,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void existsByExampleFalse() {
+  void existsByExampleFalse() {
     Example<Object> example2 = Example.of(new Object());
 
     doAnswer(invocationOnMock -> Arrays.asList())
@@ -359,7 +357,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void countByExample() {
+  void countByExample() {
     Example<Object> example2 = Example.of(new Object());
 
     doAnswer(invocationOnMock -> Arrays.asList(1, 2, 3))
@@ -372,7 +370,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void countByExampleZero() {
+  void countByExampleZero() {
     Example<Object> example1 = Example.of(new Object());
 
     doAnswer(invocationOnMock -> new ArrayList<>())
@@ -385,7 +383,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findAllSortAsc() {
+  void findAllSortAsc() {
     this.simpleDatastoreRepository.findAll(
         Sort.by(
             new Sort.Order(Sort.Direction.DESC, "property1"),
@@ -401,14 +399,14 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void deleteAllById() {
+  void deleteAllById() {
     List<String> keys = Arrays.asList("1", "2");
     this.simpleDatastoreRepository.deleteAllById(keys);
     verify(this.datastoreTemplate).deleteAllById(keys, Object.class);
   }
 
   @Test
-  public void findByExampleFluentQueryAll() {
+  void findByExampleFluentQueryAll() {
     Example<Object> example = Example.of(new Object());
     Sort sort = Sort.by("id");
     Iterable entities = Arrays.asList();
@@ -422,7 +420,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findByExampleFluentQueryOneValue() {
+  void findByExampleFluentQueryOneValue() {
     Example<Object> example = Example.of(new Object());
     Iterable entities = Arrays.asList();
     doAnswer(invocationOnMock -> new DatastoreResultsIterable(entities, null))
@@ -433,7 +431,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findByExampleFluentQuerySortAndFirstValue() {
+  void findByExampleFluentQuerySortAndFirstValue() {
     Example<Object> example = Example.of(new Object());
     Sort sort = Sort.by("id");
     Iterable entities = Arrays.asList(1);
@@ -449,7 +447,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findByExampleFluentQueryExists() {
+  void findByExampleFluentQueryExists() {
     Example<Object> example = Example.of(new Object());
     doAnswer(invocationOnMock -> Arrays.asList())
         .when(this.datastoreTemplate)
@@ -461,7 +459,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findByExampleFluentQueryCount() {
+  void findByExampleFluentQueryCount() {
     Example<Object> example = Example.of(new Object());
     doAnswer(invocationOnMock -> Arrays.asList(1, 2, 3))
         .when(this.datastoreTemplate)
@@ -472,7 +470,7 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findByExampleFluentQueryPage() {
+  void findByExampleFluentQueryPage() {
     Example<Object> example = Example.of(new Object());
     Sort sort = Sort.by("id");
 
@@ -492,16 +490,19 @@ public class SimpleDatastoreRepositoryTests {
   }
 
   @Test
-  public void findByExampleFluentQueryAsUnsupported() {
-    this.expectedEx.expect(UnsupportedOperationException.class);
+  void findByExampleFluentQueryAsUnsupported() {
+
     Example<Object> example = Example.of(new Object());
-    this.simpleDatastoreRepository.findBy(example, q -> q.as(Object.class).all());
+
+    assertThatThrownBy(() -> this.simpleDatastoreRepository.findBy(example, q -> q.as(Object.class).all()))
+            .isInstanceOf(UnsupportedOperationException.class);
   }
 
   @Test
-  public void findByExampleFluentQueryProjectUnsupported() {
-    this.expectedEx.expect(UnsupportedOperationException.class);
+  void findByExampleFluentQueryProjectUnsupported() {
     Example<Object> example = Example.of(new Object());
-    this.simpleDatastoreRepository.findBy(example, q -> q.project("firstProperty").all());
+
+    assertThatThrownBy(() -> this.simpleDatastoreRepository.findBy(example, q -> q.project("firstProperty").all()))
+            .isInstanceOf(UnsupportedOperationException.class);
   }
 }
