@@ -50,6 +50,7 @@ import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,7 @@ import org.springframework.test.util.AopTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 /** Integration tests for Spanner Repository that uses many features. */
+@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
 public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {
 

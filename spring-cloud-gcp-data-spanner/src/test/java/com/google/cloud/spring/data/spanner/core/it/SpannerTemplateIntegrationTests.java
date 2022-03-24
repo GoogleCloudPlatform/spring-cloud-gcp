@@ -34,12 +34,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 /** Integration tests that use many features of the Spanner Template. */
+@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
 public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationTest {
 

@@ -28,11 +28,13 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests multiple threads using a single repository instance. */
+@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
 public class ParallelSpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {
 

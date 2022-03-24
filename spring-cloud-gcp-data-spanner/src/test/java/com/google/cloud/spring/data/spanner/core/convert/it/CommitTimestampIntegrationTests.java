@@ -37,12 +37,14 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Integration tests for the {@link CommitTimestamp} feature. */
+@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
 class CommitTimestampIntegrationTests extends AbstractSpannerIntegrationTest {
 
