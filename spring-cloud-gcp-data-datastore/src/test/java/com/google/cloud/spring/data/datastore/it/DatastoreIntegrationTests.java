@@ -19,8 +19,6 @@ package com.google.cloud.spring.data.datastore.it;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.reset;
@@ -67,13 +65,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -88,14 +85,15 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.transaction.TransactionSystemException;
 
 /** Integration tests for Datastore that use many features. */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.datastore", matches = "true")
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
-public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
+class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   // This value is multiplied against recorded actual times needed to wait for eventual
   // consistency.
@@ -132,20 +130,8 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   private final List<TestEntity> allTestEntities =
       Arrays.asList(this.testEntityA, this.testEntityB, this.testEntityC, this.testEntityD);
 
-  /** Used to check exception types and messages. */
-  @Rule public ExpectedException expectedException = ExpectedException.none();
-
-  @BeforeClass
-  public static void checkToRun() {
-    assumeThat(
-        "Datastore integration tests are disabled. Please use '-Dit.datastore=true' "
-            + "to enable them. ",
-        System.getProperty("it.datastore"),
-        is("true"));
-  }
-
-  @After
-  public void deleteAll() {
+  @AfterEach
+  void deleteAll() {
     this.datastoreTemplate.deleteAll(EmbeddableTreeNode.class);
     this.datastoreTemplate.deleteAll(AncestorEntity.class);
     this.datastoreTemplate.deleteAll(AncestorEntity.DescendantEntry.class);
@@ -165,8 +151,8 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
     }
   }
 
-  @Before
-  public void saveEntities() {
+  @BeforeEach
+  void saveEntities() {
     this.testEntityRepository.saveAll(this.allTestEntities);
     await()
         .atMost(20, TimeUnit.SECONDS)
@@ -174,7 +160,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testFindByExampleReference() {
+  void testFindByExampleReference() {
     Store store1 = new Store("store1");
     Product product1 = new Product(store1);
 
@@ -208,7 +194,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testFindByExample() {
+  void testFindByExample() {
     assertThat(
             this.testEntityRepository.findAll(
                 Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null))))
@@ -279,7 +265,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testSlice() {
+  void testSlice() {
     Slice<TestEntity> slice =
         this.testEntityRepository.findEntitiesWithCustomQuerySlice("red", PageRequest.of(0, 1));
 
@@ -308,7 +294,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testNextPageAwareQuery() {
+  void testNextPageAwareQuery() {
     DatastorePersistentEntity<?> persistentEntity =
         this.mappingContext.getPersistentEntity(TestEntity.class);
 
@@ -337,7 +323,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testPage() {
+  void testPage() {
     Page<TestEntity> page =
         this.testEntityRepository.findEntitiesWithCustomQueryPage("red", PageRequest.of(0, 2));
 
@@ -361,7 +347,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testProjectionPage() {
+  void testProjectionPage() {
     Page<String> page =
         this.testEntityRepository.getColorsPage(
             PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "color")));
@@ -382,7 +368,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testSliceSort() {
+  void testSliceSort() {
     List<TestEntity> results =
         this.testEntityRepository.findEntitiesWithCustomQuerySort(Sort.by("color"));
 
@@ -393,7 +379,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testSliceSortDesc() {
+  void testSliceSortDesc() {
     List<TestEntity> results =
         this.testEntityRepository.findEntitiesWithCustomQuerySort(
             Sort.by(Sort.Direction.DESC, "color"));
@@ -405,7 +391,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testFinds() {
+  void testFinds() {
     assertThat(this.testEntityRepository.findByEmbeddedEntityStringField("c"))
         .containsExactly(this.testEntityC);
     assertThat(this.testEntityRepository.findByEmbeddedEntityStringField("d"))
@@ -463,7 +449,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testGets() {
+  void testGets() {
     assertThat(this.testEntityRepository.getByColor("green")).isNull();
     assertThat(this.testEntityRepository.getByColor("blue")).isEqualTo(this.testEntityB);
     assertThat(this.testEntityRepository.getByColorAndIdGreaterThanEqualOrderById("red", 3L))
@@ -482,19 +468,19 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testDeleteSomeButNotAll() {
+  void testDeleteSomeButNotAll() {
     assertThat(this.testEntityRepository.deleteBySize(1L)).isEqualTo(3);
     assertThat(this.testEntityRepository.countBySize(1L)).isZero();
   }
 
   @Test
-  public void testDeleteAllBySize() {
+  void testDeleteAllBySize() {
     this.testEntityRepository.deleteBySizeEquals(1L);
     assertThat(this.testEntityRepository.countBySize(1L)).isZero();
   }
 
   @Test
-  public void testRemoveByColor() {
+  void testRemoveByColor() {
     List<Long> removedId =
         this.testEntityRepository.removeByColor("red").stream()
             .map(TestEntity::getId)
@@ -503,7 +489,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testUpdateBlobFields() {
+  void testUpdateBlobFields() {
     assertThat(this.testEntityRepository.findById(1L))
         .isPresent()
         .get()
@@ -519,7 +505,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testWithCustomQuery() {
+  void testWithCustomQuery() {
     assertThat(
             this.testEntityRepository.findEntitiesWithCustomQueryWithId(
                 1L, this.datastoreTemplate.createKey(TestEntity.class, 1L)))
@@ -543,7 +529,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testCounting() {
+  void testCounting() {
     assertThat(this.testEntityRepository.countBySizeAndColor(2, "blue")).isEqualTo(1);
     assertThat(this.testEntityRepository.getBySize(2L).getColor()).isEqualTo("blue");
     assertThat(this.testEntityRepository.countBySizeAndColor(1, "red")).isEqualTo(3);
@@ -555,7 +541,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testClearBlobField() {
+  void testClearBlobField() {
     this.testEntityA.setBlobField(null);
     this.testEntityRepository.save(this.testEntityA);
     assertThat(this.testEntityRepository.findById(1L))
@@ -565,14 +551,14 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testDelete() {
+  void testDelete() {
     assertThat(this.testEntityRepository.findAllById(Arrays.asList(1L, 2L))).hasSize(2);
     this.testEntityRepository.delete(this.testEntityA);
     assertThat(this.testEntityRepository.findById(1L)).isNotPresent();
   }
 
   @Test
-  public void deleteAllByIdTest() {
+  void deleteAllByIdTest() {
     assertThat(this.testEntityRepository.findAllById(Arrays.asList(1L, 2L))).hasSize(2);
     // cast to SimpleDatastoreRepository for method be reachable with Spring Boot 2.4
     SimpleDatastoreRepository simpleRepository =
@@ -583,7 +569,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testTransactions() {
+  void testTransactions() {
     this.testEntityRepository.deleteAll();
 
     this.transactionalTemplateService.testSaveAndStateConstantInTransaction(
@@ -619,7 +605,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void projectionTest() {
+  void projectionTest() {
     reset(datastoreTemplate);
     assertThat(this.testEntityRepository.findBySize(2L).getColor()).isEqualTo("blue");
 
@@ -635,7 +621,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void embeddedEntitiesTest() {
+  void embeddedEntitiesTest() {
     EmbeddableTreeNode treeNode10 = new EmbeddableTreeNode(10, null, null);
     EmbeddableTreeNode treeNode8 = new EmbeddableTreeNode(8, null, null);
     EmbeddableTreeNode treeNode9 = new EmbeddableTreeNode(9, treeNode8, treeNode10);
@@ -649,7 +635,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void embeddedCollectionTest() {
+  void embeddedCollectionTest() {
     EmbeddableTreeNode treeNode10 = new EmbeddableTreeNode(10, null, null);
     EmbeddableTreeNode treeNode8 = new EmbeddableTreeNode(8, null, null);
     EmbeddableTreeNode treeNode9 = new EmbeddableTreeNode(9, treeNode8, treeNode10);
@@ -666,7 +652,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void ancestorsTest() {
+  void ancestorsTest() {
     AncestorEntity.DescendantEntry descendantEntryA = new AncestorEntity.DescendantEntry("a");
     AncestorEntity.DescendantEntry descendantEntryB = new AncestorEntity.DescendantEntry("b");
     AncestorEntity.DescendantEntry descendantEntryC = new AncestorEntity.DescendantEntry("c");
@@ -701,7 +687,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void referenceTest() {
+  void referenceTest() {
     ReferenceEntry parent = saveEntitiesGraph();
 
     ReferenceEntry loadedParent = this.datastoreTemplate.findById(parent.id, ReferenceEntry.class);
@@ -724,7 +710,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void lazyReferenceCollectionTest() {
+  void lazyReferenceCollectionTest() {
     ReferenceEntry parent = saveEntitiesGraph();
 
     ReferenceEntry lazyParent = this.datastoreTemplate.findById(parent.id, ReferenceEntry.class);
@@ -739,7 +725,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void lazyReferenceTest() throws InterruptedException {
+  void lazyReferenceTest() throws InterruptedException {
     LazyEntity lazyParentEntity = new LazyEntity(new LazyEntity(new LazyEntity()));
     this.datastoreTemplate.save(lazyParentEntity);
 
@@ -754,7 +740,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void singularLazyPropertyTest() {
+  void singularLazyPropertyTest() {
     LazyEntity lazyParentEntity = new LazyEntity(new LazyEntity(new LazyEntity()));
     this.datastoreTemplate.save(lazyParentEntity);
 
@@ -764,7 +750,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void lazyReferenceTransactionTest() {
+  void lazyReferenceTransactionTest() {
     ReferenceEntry parent = saveEntitiesGraph();
 
     // Exception should be produced if a lazy loaded property accessed outside of the initial
@@ -792,7 +778,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void allocateIdTest() {
+  void allocateIdTest() {
     // intentionally null ID value
     TestEntity testEntity = new TestEntity(null, "red", 1L, Shape.CIRCLE, null);
     assertThat(testEntity.getId()).isNull();
@@ -802,7 +788,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void mapTest() {
+  void mapTest() {
     Map<String, Long> map = new HashMap<>();
     map.put("field1", 1L);
     map.put("field2", 2L);
@@ -817,7 +803,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void recursiveSave() {
+  void recursiveSave() {
     SubEntity subEntity1 = new SubEntity();
     SubEntity subEntity2 = new SubEntity();
     SubEntity subEntity3 = new SubEntity();
@@ -870,7 +856,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void nullPropertyTest() {
+  void nullPropertyTest() {
     SubEntity subEntity1 = new SubEntity();
     subEntity1.stringList = Arrays.asList("a", "b", null, "c");
     subEntity1.stringProperty = null;
@@ -884,7 +870,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void inheritanceTest() {
+  void inheritanceTest() {
     PetOwner petOwner = new PetOwner();
     petOwner.pets = Arrays.asList(new Cat("Alice"), new Cat("Bob"), new Pug("Bob"), new Dog("Bob"));
 
@@ -913,7 +899,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void inheritanceTestFindAll() {
+  void inheritanceTestFindAll() {
     this.datastoreTemplate.saveAll(
         Arrays.asList(new Cat("Cat1"), new Dog("Dog1"), new Pug("Dog2")));
 
@@ -931,7 +917,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void enumKeys() {
+  void enumKeys() {
     Map<CommunicationChannels, String> phone = new HashMap<>();
     phone.put(CommunicationChannels.SMS, "123456");
 
@@ -951,7 +937,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void mapSubclass() {
+  void mapSubclass() {
     CustomMap customMap1 = new CustomMap();
     customMap1.put("key1", "val1");
     ServiceConfiguration service1 = new ServiceConfiguration("service1", customMap1);
@@ -970,26 +956,28 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void readOnlySaveTest() {
-    this.expectedException.expect(TransactionSystemException.class);
-    this.expectedException.expectMessage("Cloud Datastore transaction failed to commit.");
-    this.transactionalTemplateService.writingInReadOnly();
+  void readOnlySaveTest() {
+
+    assertThatThrownBy(() -> this.transactionalTemplateService.writingInReadOnly())
+            .isInstanceOf(TransactionSystemException.class)
+            .hasMessageContaining("Cloud Datastore transaction failed to commit.");
   }
 
   @Test
-  public void readOnlyDeleteTest() {
-    this.expectedException.expect(TransactionSystemException.class);
-    this.expectedException.expectMessage("Cloud Datastore transaction failed to commit.");
-    this.transactionalTemplateService.deleteInReadOnly();
+  void readOnlyDeleteTest() {
+
+    assertThatThrownBy(() -> this.transactionalTemplateService.deleteInReadOnly())
+            .isInstanceOf(TransactionSystemException.class)
+            .hasMessageContaining("Cloud Datastore transaction failed to commit.");
   }
 
   @Test
-  public void readOnlyCountTest() {
+  void readOnlyCountTest() {
     assertThat(this.transactionalTemplateService.findByIdInReadOnly(1)).isEqualTo(this.testEntityA);
   }
 
   @Test
-  public void sameClassDescendantsTest() {
+  void sameClassDescendantsTest() {
     Employee entity3 = new Employee(Collections.EMPTY_LIST);
     Employee entity2 = new Employee(Collections.EMPTY_LIST);
     Employee entity1 = new Employee(Arrays.asList(entity2, entity3));
@@ -1007,7 +995,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testSlicedEntityProjections() {
+  void testSlicedEntityProjections() {
     reset(datastoreTemplate);
     Slice<TestEntityProjection> testEntityProjectionSlice =
         this.testEntityRepository.findBySize(2L, PageRequest.of(0, 1));
@@ -1034,7 +1022,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testPageableGqlEntityProjectionsPage() {
+  void testPageableGqlEntityProjectionsPage() {
     Page<TestEntityProjection> page =
         this.testEntityRepository.getBySizePage(2L, PageRequest.of(0, 3));
 
@@ -1047,7 +1035,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testPageableGqlEntityProjectionsSlice() {
+  void testPageableGqlEntityProjectionsSlice() {
     Slice<TestEntityProjection> slice =
         this.testEntityRepository.getBySizeSlice(2L, PageRequest.of(0, 3));
 
@@ -1059,8 +1047,9 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
     assertThat(testEntityProjections.get(0).getColor()).isEqualTo("blue");
   }
 
-  @Test(timeout = 10000L)
-  public void testSliceString() {
+  @Timeout(10000L)
+  @Test
+  void testSliceString() {
     try {
       Slice<String> slice =
           this.testEntityRepository.getSliceStringBySize(2L, PageRequest.of(0, 3));
@@ -1080,8 +1069,9 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
     }
   }
 
-  @Test(timeout = 10000L)
-  public void testUnindex() {
+  @Timeout(10000L)
+  @Test
+  void testUnindex() {
     SubEntity childSubEntity = new SubEntity();
     childSubEntity.stringList = Collections.singletonList(generateString(1600));
     childSubEntity.stringProperty = generateString(1600);
@@ -1095,7 +1085,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void newFieldTest() {
+  void newFieldTest() {
     Company company = new Company(1L, Collections.emptyList());
     company.name = "name1";
     this.datastoreTemplate.save(company);
@@ -1107,21 +1097,21 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void returnStreamPartTreeTest() {
+  void returnStreamPartTreeTest() {
     this.testEntityRepository.saveAll(this.allTestEntities);
     Stream<TestEntity> resultStream = this.testEntityRepository.findPartTreeStreamByColor("red");
     assertThat(resultStream).hasSize(3).contains(testEntityA, testEntityC, testEntityD);
   }
 
   @Test
-  public void returnStreamGqlTest() {
+  void returnStreamGqlTest() {
     this.testEntityRepository.saveAll(this.allTestEntities);
     Stream<TestEntity> resultStream = this.testEntityRepository.findGqlStreamByColor("red");
     assertThat(resultStream).hasSize(3).contains(testEntityA, testEntityC, testEntityD);
   }
 
   @Test
-  public void queryByTimestampTest() {
+  void queryByTimestampTest() {
     Timestamp date1 = Timestamp.parseTimestamp("2020-08-04T00:00:00Z");
     Timestamp date2 = Timestamp.parseTimestamp("2021-08-04T00:00:00Z");
     TestEntity testEntity1 = new TestEntity(1L, "red", 1L, date1);
@@ -1142,7 +1132,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
   }
 
   @Test
-  public void testFindByExampleFluent() {
+  void testFindByExampleFluent() {
     Example<TestEntity> exampleRedCircle =
         Example.of(new TestEntity(null, "red", null, Shape.CIRCLE, null));
     Example<TestEntity> exampleRed = Example.of(new TestEntity(null, "red", null, null, null));

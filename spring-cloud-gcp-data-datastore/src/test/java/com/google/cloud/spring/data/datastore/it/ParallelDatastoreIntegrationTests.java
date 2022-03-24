@@ -17,48 +17,38 @@
 package com.google.cloud.spring.data.datastore.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests performing many operations at the same time using single instances of the repository. */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.datastore", matches = "true")
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
-public class ParallelDatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
+class ParallelDatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   private static final int PARALLEL_OPERATIONS = 10;
 
   @Autowired TestEntityRepository testEntityRepository;
 
-  @BeforeClass
-  public static void checkToRun() {
-    assumeThat(
-        "Datastore integration tests are disabled. Please use '-Dit.datastore=true' "
-            + "to enable them. ",
-        System.getProperty("it.datastore"),
-        is("true"));
-  }
-
-  @After
-  public void deleteAll() {
+  @AfterEach
+  void deleteAll() {
     this.testEntityRepository.deleteAll();
   }
 
   @Test
-  public void testParallelOperations() {
+  void testParallelOperations() {
     performOperation(
-        x ->
-            this.testEntityRepository.save(
-                new TestEntity((long) x, "color", (long) x, null, null)));
+            x ->
+                    this.testEntityRepository.save(
+                            new TestEntity((long) x, "color", (long) x, null, null)));
 
     waitUntilTrue(() -> this.testEntityRepository.count() == PARALLEL_OPERATIONS - 1);
 
