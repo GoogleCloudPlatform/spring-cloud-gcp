@@ -36,7 +36,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 /** Tests multiple threads using a single repository instance. */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
-public class ParallelSpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {
+class ParallelSpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {
 
   private static final int PARALLEL_OPERATIONS = 2;
 

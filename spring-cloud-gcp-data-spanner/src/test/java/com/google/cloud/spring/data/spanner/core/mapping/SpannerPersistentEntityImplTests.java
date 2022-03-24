@@ -112,7 +112,8 @@ class SpannerPersistentEntityImplTests {
   @Test
   void testDuplicatePrimaryKeyOrder() {
 
-    assertThatThrownBy(() -> new SpannerMappingContext().getPersistentEntity(EntityWithDuplicatePrimaryKeyOrder.class))
+    SpannerMappingContext spannerMappingContext = new SpannerMappingContext();
+    assertThatThrownBy(() -> spannerMappingContext.getPersistentEntity(EntityWithDuplicatePrimaryKeyOrder.class))
             .isInstanceOf(SpannerDataException.class)
             .hasMessage("Two properties were annotated with the same primary key order: id2 and id in EntityWithDuplicatePrimaryKeyOrder.");
   }
@@ -120,10 +121,9 @@ class SpannerPersistentEntityImplTests {
   @Test
   void testInvalidPrimaryKeyOrder() {
 
+    SpannerMappingContext spannerMappingContext = new SpannerMappingContext();
 
-    SpannerMappingContext spannerPersistentEntity = new SpannerMappingContext();
-
-    assertThatThrownBy(() -> spannerPersistentEntity.getPersistentEntity(EntityWithWronglyOrderedKeys.class).getIdProperty())
+    assertThatThrownBy(() -> spannerMappingContext.getPersistentEntity(EntityWithWronglyOrderedKeys.class))
             .isInstanceOf(SpannerDataException.class)
             .hasMessage("The primary key columns were not given a consecutive order. There is no property annotated with order 2 in EntityWithWronglyOrderedKeys.");
 
@@ -174,7 +174,9 @@ class SpannerPersistentEntityImplTests {
     MultiIdsEntity t = new MultiIdsEntity();
     PersistentPropertyAccessor propertyAccessor = entity.getPropertyAccessor(t);
 
-    assertThatThrownBy(() -> propertyAccessor.setProperty(idProperty, Key.of("blah", 123L, 123.45D, "abc")))
+    Key testKey = Key.of("blah", 123L, 123.45D, "abc");
+
+    assertThatThrownBy(() -> propertyAccessor.setProperty(idProperty, testKey))
             .isInstanceOf(SpannerDataException.class)
             .hasMessage("The number of key parts is not equal to the number of primary key properties");
   }
