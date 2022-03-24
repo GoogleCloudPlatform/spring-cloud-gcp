@@ -26,19 +26,21 @@ import com.google.cloud.spring.data.spanner.test.IntegrationTestConfiguration;
 import com.google.cloud.spring.data.spanner.test.domain.Singer;
 import com.google.cloud.spring.data.spanner.test.domain.SingerRepository;
 import java.util.Collections;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Integration tests for Spanner Repository. */
-@RunWith(SpringRunner.class)
+
+@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {IntegrationTestConfiguration.class})
-public class SpannerRepositoryInsertIntegrationTests {
+class SpannerRepositoryInsertIntegrationTests {
 
   @Autowired SingerRepository singerRepository;
 
@@ -48,17 +50,8 @@ public class SpannerRepositoryInsertIntegrationTests {
 
   @Autowired SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
 
-  @BeforeClass
-  public static void checkToRun() {
-    assumeThat(System.getProperty("it.spanner"))
-        .as(
-            "Spanner integration tests are disabled. "
-                + "Please use '-Dit.spanner=true' to enable them. ")
-        .isEqualTo("true");
-  }
-
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     if (!this.spannerDatabaseAdminTemplate.tableExists("singers_list")) {
       this.spannerDatabaseAdminTemplate.executeDdlStrings(
           Collections.singleton(this.spannerSchemaUtils.getCreateTableDdlString(Singer.class)),
@@ -67,13 +60,13 @@ public class SpannerRepositoryInsertIntegrationTests {
     this.singerRepository.deleteAll();
   }
 
-  @After
-  public void clearData() {
+  @AfterEach
+  void clearData() {
     this.singerRepository.deleteAll();
   }
 
   @Test
-  public void insertTest() {
+  void insertTest() {
     singerRepository.insert(1, "Cher", null);
     Iterable<Singer> singers = singerRepository.findAll();
     assertThat(singers).containsExactly(new Singer(1, "Cher", null));

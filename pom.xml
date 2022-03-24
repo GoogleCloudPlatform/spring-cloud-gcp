@@ -229,6 +229,7 @@
 						<includes>
 							<include>${integration-test.pattern}</include>
 						</includes>
+						<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
