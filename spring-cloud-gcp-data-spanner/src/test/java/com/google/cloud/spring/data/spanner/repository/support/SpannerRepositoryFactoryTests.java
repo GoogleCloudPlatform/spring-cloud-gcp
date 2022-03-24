@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.spanner.repository.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 import com.google.cloud.spanner.Key;
@@ -27,10 +28,8 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.repository.query.SpannerQueryLookupStrategy;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.data.mapping.MappingException;
 import org.springframework.data.repository.core.EntityInformation;
@@ -39,17 +38,14 @@ import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 
 /** Tests for the Spanner repository factory. */
-public class SpannerRepositoryFactoryTests {
+class SpannerRepositoryFactoryTests {
 
   private SpannerRepositoryFactory spannerRepositoryFactory;
 
   private SpannerTemplate spannerTemplate;
 
-  /** used to check exception messages and types. */
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
-
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     SpannerMappingContext spannerMappingContext = new SpannerMappingContext();
     this.spannerTemplate = mock(SpannerTemplate.class);
     this.spannerRepositoryFactory =
@@ -57,7 +53,7 @@ public class SpannerRepositoryFactoryTests {
   }
 
   @Test
-  public void getEntityInformationTest() {
+  void getEntityInformationTest() {
     EntityInformation<TestEntity, Key> entityInformation =
         this.spannerRepositoryFactory.getEntityInformation(TestEntity.class);
     assertThat(entityInformation.getJavaType()).isEqualTo(TestEntity.class);
@@ -71,19 +67,19 @@ public class SpannerRepositoryFactoryTests {
   }
 
   @Test
-  public void getEntityInformationNotAvailableTest() {
-    this.expectedEx.expect(MappingException.class);
-    this.expectedEx.expectMessage(
-        "Could not lookup mapping metadata for domain "
-            + "class com.google.cloud.spring.data.spanner.repository.support."
-            + "SpannerRepositoryFactoryTests$TestEntity!");
+  void getEntityInformationNotAvailableTest() {
     SpannerRepositoryFactory factory =
         new SpannerRepositoryFactory(mock(SpannerMappingContext.class), this.spannerTemplate);
-    factory.getEntityInformation(TestEntity.class);
+
+    assertThatThrownBy(() -> factory.getEntityInformation(TestEntity.class))
+            .isInstanceOf(MappingException.class)
+            .hasMessage("Could not lookup mapping metadata for domain "
+                    + "class com.google.cloud.spring.data.spanner.repository.support."
+                    + "SpannerRepositoryFactoryTests$TestEntity!");
   }
 
   @Test
-  public void getTargetRepositoryTest() {
+  void getTargetRepositoryTest() {
     RepositoryInformation repoInfo = mock(RepositoryInformation.class);
     // @formatter:off
     Mockito.<Class<?>>when(repoInfo.getRepositoryBaseClass())
@@ -95,13 +91,13 @@ public class SpannerRepositoryFactoryTests {
   }
 
   @Test
-  public void getRepositoryBaseClassTest() {
+  void getRepositoryBaseClassTest() {
     Class baseClass = this.spannerRepositoryFactory.getRepositoryBaseClass(null);
     assertThat(baseClass).isEqualTo(SimpleSpannerRepository.class);
   }
 
   @Test
-  public void getQueryLookupStrategyTest() {
+  void getQueryLookupStrategyTest() {
     Optional<QueryLookupStrategy> qls =
         this.spannerRepositoryFactory.getQueryLookupStrategy(
             null, mock(QueryMethodEvaluationContextProvider.class));
