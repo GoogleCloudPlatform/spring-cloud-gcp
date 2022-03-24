@@ -56,9 +56,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import org.assertj.core.data.Offset;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -77,7 +77,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 /** Tests Spanner SQL Query Methods. */
-public class SqlSpannerQueryTests {
+class SqlSpannerQueryTests {
 
   private static final Offset<Double> DELTA = Offset.offset(0.00001);
 
@@ -99,11 +99,8 @@ public class SqlSpannerQueryTests {
 
   private final DatabaseClient databaseClient = mock(DatabaseClient.class);
 
-  /** checks messages and types for exceptions. */
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
-
-  @Before
-  public void initMocks() throws NoSuchMethodException {
+  @BeforeEach
+  void initMocks() throws NoSuchMethodException {
     this.queryMethod = mock(SpannerQueryMethod.class);
     // this is a dummy object. it is not mockable otherwise.
     Method method = Object.class.getMethod("toString");
@@ -136,7 +133,7 @@ public class SqlSpannerQueryTests {
   }
 
   @Test
-  public void noPageableParamQueryTest() throws NoSuchMethodException {
+  void noPageableParamQueryTest() throws NoSuchMethodException {
     String sql =
         "SELECT DISTINCT * FROM "
             + ":com.google.cloud.spring.data.spanner.repository.query.SqlSpannerQueryTests$Trade:";
@@ -185,7 +182,7 @@ public class SqlSpannerQueryTests {
   }
 
   @Test
-  public void pageableParamQueryTest() throws NoSuchMethodException {
+  void pageableParamQueryTest() throws NoSuchMethodException {
 
     String sql =
         "SELECT * FROM"
@@ -249,7 +246,7 @@ public class SqlSpannerQueryTests {
   }
 
   @Test
-  public void sortParamQueryTest() throws NoSuchMethodException {
+  void sortParamQueryTest() throws NoSuchMethodException {
 
     String sql =
         "SELECT * FROM"
@@ -312,7 +309,7 @@ public class SqlSpannerQueryTests {
   }
 
   @Test
-  public void sortAndPageableQueryTest() throws NoSuchMethodException {
+  void sortAndPageableQueryTest() throws NoSuchMethodException {
 
     String sql =
         "SELECT * FROM"
@@ -376,7 +373,7 @@ public class SqlSpannerQueryTests {
   }
 
   @Test
-  public void compoundNameConventionTest() throws NoSuchMethodException {
+  void compoundNameConventionTest() throws NoSuchMethodException {
 
     String sql =
         "SELECT DISTINCT * FROM "
@@ -507,7 +504,7 @@ public class SqlSpannerQueryTests {
   }
 
   @Test
-  public void dmlTest() throws NoSuchMethodException {
+  void dmlTest() throws NoSuchMethodException {
     String sql = "dml statement here";
 
     TransactionContext context = mock(TransactionContext.class);
@@ -537,7 +534,7 @@ public class SqlSpannerQueryTests {
   }
 
   @Test
-  public void sqlCountWithWhereTest() throws NoSuchMethodException {
+  void sqlCountWithWhereTest() throws NoSuchMethodException {
     String sql =
         "SELECT count(1) FROM"
             + " :com.google.cloud.spring.data.spanner.repository.query.SqlSpannerQueryTests$Child:"
@@ -604,7 +601,7 @@ public class SqlSpannerQueryTests {
   }
 
   @Test
-  public void sqlReturnTypeIsJsonFieldTest() throws NoSuchMethodException {
+  void sqlReturnTypeIsJsonFieldTest() throws NoSuchMethodException {
     String sql = "SELECT details from singer where stageName = @stageName";
 
     Object[] params = new Object[] {"STAGENAME"};

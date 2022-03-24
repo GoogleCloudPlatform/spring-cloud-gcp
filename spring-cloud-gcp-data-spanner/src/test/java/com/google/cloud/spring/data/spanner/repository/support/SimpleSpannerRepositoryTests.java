@@ -36,17 +36,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.util.Assert;
 
 /** Tests for the standard Spanner repository implementation. */
-public class SimpleSpannerRepositoryTests {
+class SimpleSpannerRepositoryTests {
 
   private SpannerTemplate template;
 
@@ -54,32 +51,31 @@ public class SimpleSpannerRepositoryTests {
 
   private static final Key A_KEY = Key.of("key");
 
-  /** checks exceptions for messages and types. */
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
-
-  @Before
-  public void setup() {
+  @BeforeEach
+  void setup() {
     this.template = mock(SpannerTemplate.class);
     this.entityProcessor = mock(SpannerEntityProcessor.class);
     when(this.template.getSpannerEntityProcessor()).thenReturn(this.entityProcessor);
   }
 
   @Test
-  public void constructorNullSpannerOperationsTest() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("A valid SpannerTemplate object is required.");
-    new SimpleSpannerRepository<Object, Key>(null, Object.class);
+  void constructorNullSpannerOperationsTest() {
+
+    assertThatThrownBy(() -> new SimpleSpannerRepository<Object, Key>(null, Object.class))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A valid SpannerTemplate object is required.");
   }
 
   @Test
-  public void constructorNullEntityTypeTest() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("A valid entity type is required.");
-    new SimpleSpannerRepository<Object, Key>(this.template, null);
+  void constructorNullEntityTypeTest() {
+
+    assertThatThrownBy(() -> new SimpleSpannerRepository<Object, Key>(this.template, null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A valid entity type is required.");
   }
 
   @Test
-  public void getSpannerOperationsTest() {
+  void getSpannerOperationsTest() {
     assertThat(this.template)
         .isSameAs(
             new SimpleSpannerRepository<Object, Key>(this.template, Object.class)
@@ -87,56 +83,79 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void saveNullObjectTest() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("A non-null entity is required for saving.");
-    new SimpleSpannerRepository<Object, Key>(this.template, Object.class).save(null);
+  void saveNullObjectTest() {
+    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+
+    assertThatThrownBy(() -> spannerRepository.save(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A non-null entity is required for saving.");
   }
 
   @Test
-  public void findNullIdTest() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("A non-null ID is required.");
-    new SimpleSpannerRepository<Object, Key>(this.template, Object.class).findById(null);
+  void findNullIdTest() {
+    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+
+    assertThatThrownBy(() -> spannerRepository.findById(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A non-null ID is required.");
+
+
   }
 
   @Test
-  public void existsNullIdTest() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("A non-null ID is required.");
-    new SimpleSpannerRepository<Object, Key>(this.template, Object.class).existsById(null);
+  void existsNullIdTest() {
+
+    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+
+    assertThatThrownBy(() -> spannerRepository.existsById(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A non-null ID is required.");
+
   }
 
   @Test
-  public void deleteNullIdTest() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("A non-null ID is required.");
-    new SimpleSpannerRepository<Object, Key>(this.template, Object.class).deleteById(null);
+  void deleteNullIdTest() {
+
+    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+
+    assertThatThrownBy(() -> spannerRepository.deleteById(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A non-null ID is required.");
   }
 
   @Test
-  public void deleteNullEntityTest() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("A non-null entity is required.");
-    new SimpleSpannerRepository<Object, Key>(this.template, Object.class).delete(null);
+  void deleteNullEntityTest() {
+
+    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+
+    assertThatThrownBy(() -> spannerRepository.delete(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A non-null entity is required.");
+
   }
 
   @Test
-  public void deleteAllNullEntityTest() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("A non-null list of entities is required.");
-    new SimpleSpannerRepository<Object, Key>(this.template, Object.class).deleteAll(null);
+  void deleteAllNullEntityTest() {
+
+    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+
+    assertThatThrownBy(() -> spannerRepository.deleteAll(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A non-null list of entities is required.");
   }
 
   @Test
-  public void saveAllNullEntityTest() {
-    this.expectedEx.expect(IllegalArgumentException.class);
-    this.expectedEx.expectMessage("A non-null list of entities is required for saving.");
-    new SimpleSpannerRepository<Object, Key>(this.template, Object.class).saveAll(null);
+  void saveAllNullEntityTest() {
+
+    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+
+    assertThatThrownBy(() -> spannerRepository.saveAll(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A non-null list of entities is required for saving.");
   }
 
   @Test
-  public void saveTest() {
+  void saveTest() {
     Object ob = new Object();
     assertThat(new SimpleSpannerRepository<Object, Key>(this.template, Object.class).save(ob))
         .isEqualTo(ob);
@@ -144,7 +163,7 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void saveAllTest() {
+  void saveAllTest() {
     Object ob = new Object();
     Object ob2 = new Object();
     Iterable<Object> ret =
@@ -155,7 +174,7 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void findByIdTest() {
+  void findByIdTest() {
     Object ret = new Object();
     when(this.entityProcessor.convertToKey(A_KEY)).thenReturn(A_KEY);
     when(this.template.read(Object.class, A_KEY)).thenReturn(ret);
@@ -166,15 +185,18 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void findByIdKeyWritingThrowsAnException() {
-    this.expectedEx.expect(SpannerDataException.class);
+  void findByIdKeyWritingThrowsAnException() {
     when(this.entityProcessor.convertToKey(any())).thenThrow(SpannerDataException.class);
-    new SimpleSpannerRepository<Object, Object[]>(this.template, Object.class)
-        .findById(new Object[] {});
+
+    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Object[]>(this.template, Object.class);
+
+    assertThatThrownBy(() -> spannerRepository.findById(new Object[] {}))
+            .isInstanceOf(SpannerDataException.class);
   }
 
+
   @Test
-  public void existsByIdTestFound() {
+  void existsByIdTestFound() {
     when(this.entityProcessor.convertToKey(A_KEY)).thenReturn(A_KEY);
     when(this.template.existsById(Object.class, A_KEY)).thenReturn(true);
     assertThat(
@@ -183,7 +205,7 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void existsByIdTestNotFound() {
+  void existsByIdTestNotFound() {
     when(this.entityProcessor.convertToKey(A_KEY)).thenReturn(A_KEY);
     when(this.template.existsById(Object.class, A_KEY)).thenReturn(false);
     assertThat(
@@ -192,13 +214,13 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void findAllTest() {
+  void findAllTest() {
     new SimpleSpannerRepository<Object, Key>(this.template, Object.class).findAll();
     verify(this.template, times(1)).readAll(Object.class);
   }
 
   @Test
-  public void findAllSortTest() {
+  void findAllSortTest() {
     Sort sort = mock(Sort.class);
     when(this.template.queryAll(eq(Object.class), any()))
         .thenAnswer(
@@ -212,7 +234,7 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void findAllPageableTest() {
+  void findAllPageableTest() {
     Pageable pageable = mock(Pageable.class);
     Sort sort = mock(Sort.class);
     when(pageable.getSort()).thenReturn(sort);
@@ -232,7 +254,7 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void findAllByIdTest() {
+  void findAllByIdTest() {
     List<Key> unconvertedKey = Arrays.asList(Key.of("key1"), Key.of("key2"));
 
     when(this.entityProcessor.convertToKey(Key.of("key1"))).thenReturn(Key.of("key1"));
@@ -250,7 +272,7 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void findAllById_failsOnNull() {
+  void findAllById_failsOnNull() {
     SimpleSpannerRepository<Object, Key> repo =
         new SimpleSpannerRepository<>(this.template, Object.class);
     assertThatThrownBy(() -> repo.findAllById(null))
@@ -260,7 +282,7 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void findAllById_shortcutsToEmptyReturn() {
+  void findAllById_shortcutsToEmptyReturn() {
     SimpleSpannerRepository<Object, Key> repo =
         new SimpleSpannerRepository<>(this.template, Object.class);
     assertThat(repo.findAllById(new ArrayList<>()))
@@ -269,13 +291,13 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void countTest() {
+  void countTest() {
     new SimpleSpannerRepository<Object, Key>(this.template, Object.class).count();
     verify(this.template, times(1)).count(Object.class);
   }
 
   @Test
-  public void deleteByIdTest() {
+  void deleteByIdTest() {
     when(this.entityProcessor.convertToKey(A_KEY)).thenReturn(A_KEY);
     new SimpleSpannerRepository<Object, Key>(this.template, Object.class).deleteById(A_KEY);
     verify(this.template, times(1)).delete(Object.class, A_KEY);
@@ -283,7 +305,7 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void deleteAllByIdTest() {
+  void deleteAllByIdTest() {
     List<String> unconvertedKey = Arrays.asList("key1", "key2");
 
     when(this.entityProcessor.convertToKey("key1")).thenReturn(Key.of("key1"));
@@ -298,7 +320,7 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void deleteAllById_failsOnNull() {
+  void deleteAllById_failsOnNull() {
     SimpleSpannerRepository<Object, Key> repo =
         new SimpleSpannerRepository<>(this.template, Object.class);
     assertThatThrownBy(() -> repo.deleteAllById(null))
@@ -307,20 +329,20 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void deleteTest() {
+  void deleteTest() {
     Object ob = new Object();
     new SimpleSpannerRepository<Object, Key>(this.template, Object.class).delete(ob);
     verify(this.template, times(1)).delete(ob);
   }
 
   @Test
-  public void deleteAllTest() {
+  void deleteAllTest() {
     new SimpleSpannerRepository<Object, Key>(this.template, Object.class).deleteAll();
     verify(this.template, times(1)).delete(Object.class, KeySet.all());
   }
 
   @Test
-  public void readOnlyTransactionTest() {
+  void readOnlyTransactionTest() {
     when(this.template.performReadOnlyTransaction(any(), any()))
         .thenAnswer(
             invocation -> {
@@ -335,7 +357,7 @@ public class SimpleSpannerRepositoryTests {
   }
 
   @Test
-  public void readWriteTransactionTest() {
+  void readWriteTransactionTest() {
     when(this.template.performReadWriteTransaction(any()))
         .thenAnswer(
             invocation -> {
