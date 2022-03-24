@@ -17,7 +17,6 @@
 package com.google.cloud.spring.vision.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 
 import com.google.cloud.spring.storage.GoogleStorageLocation;
 import com.google.cloud.spring.vision.DocumentOcrResultSet;
@@ -29,31 +28,23 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.concurrent.ListenableFuture;
 
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.vision", matches = "true")
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {VisionTestConfiguration.class})
-public class DocumentOcrTemplateIntegrationTests {
+class DocumentOcrTemplateIntegrationTests {
 
   @Autowired private DocumentOcrTemplate documentOcrTemplate;
 
-  @BeforeClass
-  public static void prepare() {
-    assumeThat(System.getProperty("it.vision"))
-        .as(
-            "Vision Sample integration tests are disabled. "
-                + "Please use '-Dit.vision=true' to enable them.")
-        .isEqualTo("true");
-  }
-
   @Test
-  public void testDocumentOcrTemplate()
+  void testDocumentOcrTemplate()
       throws ExecutionException, InterruptedException, InvalidProtocolBufferException,
           TimeoutException {
 
@@ -89,7 +80,7 @@ public class DocumentOcrTemplateIntegrationTests {
   }
 
   @Test
-  public void testParseOcrResultSet() throws InvalidProtocolBufferException {
+  void testParseOcrResultSet() throws InvalidProtocolBufferException {
     GoogleStorageLocation ocrOutputPrefix =
         GoogleStorageLocation.forFolder("vision-integration-test-bucket", "json_output_set/");
 
@@ -100,7 +91,7 @@ public class DocumentOcrTemplateIntegrationTests {
   }
 
   @Test
-  public void testParseOcrFile() throws InvalidProtocolBufferException {
+  void testParseOcrFile() throws InvalidProtocolBufferException {
     GoogleStorageLocation ocrOutputFile =
         GoogleStorageLocation.forFile(
             "vision-integration-test-bucket", "json_output_set/test_output-2-to-2.json");
