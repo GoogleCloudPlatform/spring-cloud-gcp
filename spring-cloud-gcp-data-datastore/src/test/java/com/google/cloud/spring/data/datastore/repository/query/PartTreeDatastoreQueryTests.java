@@ -169,11 +169,14 @@ class PartTreeDatastoreQueryTests {
                             String.class));
 
     Object[] params =
-            new Object[]{
-              "BUY", "abcd",
-              // this int param requires custom conversion
-              8, 3.33, "abc"
-            };
+        new Object[] {
+          "BUY",
+          "abcd",
+          // this int param requires custom conversion
+          8,
+          3.33,
+          "abc"
+        };
 
     when(this.datastoreTemplate.queryKeysOrEntities(any(), any()))
             .thenAnswer(
@@ -862,13 +865,10 @@ class PartTreeDatastoreQueryTests {
 
   @Test
   void unSupportedOrTest() {
-
+    //PartTreeDatastoreQuery constructor will fail as part of queryWithMockResult setup
     assertThatThrownBy(() -> queryWithMockResult("countByTraderIdOrPrice", null, getClass().getMethod("traderAndPrice")))
             .hasMessage("Cloud Datastore only supports multiple filters combined with AND.");
 
-
-    // this.partTreeDatastoreQuery = createQuery();
-    //this.partTreeDatastoreQuery.execute(new Object[] {123L, 45L});
   }
 
   @Test
