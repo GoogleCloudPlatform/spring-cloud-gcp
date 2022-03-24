@@ -17,8 +17,6 @@
 package com.google.cloud.spring.data.datastore.it.subclasses.descendants;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
@@ -32,20 +30,21 @@ import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @Repository
 interface SubclassesDescendantsEntityArepository extends DatastoreRepository<EntityA, Key> {}
 
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.datastore", matches = "true")
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
 public class SubclassesDescendantsIntegrationTests extends AbstractDatastoreIntegrationTests {
 
@@ -54,24 +53,15 @@ public class SubclassesDescendantsIntegrationTests extends AbstractDatastoreInte
 
   @Autowired private DatastoreTemplate datastoreTemplate;
 
-  @BeforeClass
-  public static void checkToRun() {
-    assumeThat(
-        "Datastore integration tests are disabled. Please use '-Dit.datastore=true' "
-            + "to enable them. ",
-        System.getProperty("it.datastore"),
-        is("true"));
-  }
-
-  @After
-  public void deleteAll() {
+  @AfterEach
+  void deleteAll() {
     datastoreTemplate.deleteAll(EntityA.class);
     datastoreTemplate.deleteAll(EntityB.class);
     datastoreTemplate.deleteAll(EntityC.class);
   }
 
   @Test
-  public void testEntityCcontainsReferenceToEntityB() {
+  void testEntityCcontainsReferenceToEntityB() {
     EntityB entityB1 = new EntityB();
     EntityC entityC1 = new EntityC();
     entityB1.addEntityC(entityC1);
