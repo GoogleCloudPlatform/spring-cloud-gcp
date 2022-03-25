@@ -20,8 +20,11 @@ import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.pubsub.v1.ProjectSubscriptionName;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import javax.annotation.PostConstruct;
 
 /** Properties for Publisher or Subscriber specific configurations. */
 public class PubSubConfiguration {
@@ -31,7 +34,7 @@ public class PubSubConfiguration {
 
   private static final Long DEFAULT_MAX_ACK_EXTENSION_PERIOD = 0L;
 
-  private final ConcurrentHashMap<String, Subscriber> subscription = new ConcurrentHashMap<>();
+  private final Map<String, Subscriber> subscription = new HashMap<>();
 
   /** Contains global and default subscriber settings. */
   private final Subscriber globalSubscriber = new Subscriber();
@@ -54,7 +57,7 @@ public class PubSubConfiguration {
     return health;
   }
 
-  public ConcurrentMap<String, Subscriber> getSubscription() {
+  public Map<String, Subscriber> getSubscription() {
     return this.subscription;
   }
 
@@ -93,9 +96,8 @@ public class PubSubConfiguration {
    * @param projectId project id
    * @return flow control settings
    */
-  public FlowControl computeSubscriberFlowControlSettings(
-      String subscriptionName, String projectId) {
-    FlowControl flowControl = getSubscriber(subscriptionName, projectId).getFlowControl();
+  public FlowControl computeSubscriberFlowControlSettings(FlowControl flowControl) {
+   // FlowControl flowControl = getSubscriber(subscriptionName, projectId).getFlowControl();
     FlowControl globalFlowControl = this.globalSubscriber.getFlowControl();
     if (flowControl.getMaxOutstandingRequestBytes() == null) {
       flowControl.setMaxOutstandingRequestBytes(globalFlowControl.getMaxOutstandingRequestBytes());
@@ -183,8 +185,9 @@ public class PubSubConfiguration {
    * @param projectId project id
    * @return retry settings
    */
-  public Retry computeSubscriberRetrySettings(String subscriptionName, String projectId) {
-    Retry retry = getSubscriber(subscriptionName, projectId).getRetry();
+  public Retry computeSubscriberRetrySettings(Retry retry) {
+  //  TODO: actually calculate retry
+   // Retry retry = getSubscriber(subscriptionName, projectId).getRetry();
     Retry globalRetry = this.globalSubscriber.getRetry();
     if (retry.getTotalTimeoutSeconds() == null) {
       retry.setTotalTimeoutSeconds(globalRetry.getTotalTimeoutSeconds());
@@ -640,4 +643,6 @@ public class PubSubConfiguration {
       return this.flowControl;
     }
   }
+
+
 }

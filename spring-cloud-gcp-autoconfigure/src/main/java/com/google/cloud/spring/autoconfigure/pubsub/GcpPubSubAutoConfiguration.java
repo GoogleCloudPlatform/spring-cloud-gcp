@@ -39,6 +39,7 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
+import com.google.cloud.spring.pubsub.core.PubSubConfiguration.Subscriber;
 import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
@@ -55,6 +56,7 @@ import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -110,6 +112,8 @@ public class GcpPubSubAutoConfiguration {
   private final ConcurrentHashMap<String, ExecutorProvider> executorProviderMap =
       new ConcurrentHashMap<>();
 
+  private Map<ProjectSubscriptionName, Subscriber> fullyQualifiedSubscribers;
+
   private final ApplicationContext applicationContext;
 
   private ThreadPoolTaskScheduler globalScheduler;
@@ -145,6 +149,8 @@ public class GcpPubSubAutoConfiguration {
       // for this particular case.
       this.finalCredentialsProvider = NoCredentialsProvider.create();
     }
+
+    computeFullyQualifiedSubscriptionProperties(this.finalProjectIdProvider, this.gcpPubSubProperties.getSubscription());
   }
 
   @Bean
@@ -509,13 +515,12 @@ public class GcpPubSubAutoConfiguration {
    * @param context application context
    */
   private void registerSelectiveSchedulerBeans(GenericApplicationContext context) {
-    Map<String, PubSubConfiguration.Subscriber> subscriberMap =
-        this.gcpPubSubProperties.getSubscription();
-    for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription :
-        subscriberMap.entrySet()) {
-      ProjectSubscriptionName fullSubscriptionName = getFullSubscriptionName(subscription.getKey());
+    /*Map<String, PubSubConfiguration.Subscriber> subscriberMap =
+        this.gcpPubSubProperties.getSubscription();*/
+    for (ProjectSubscriptionName fullSubscriptionName : this.fullyQualifiedSubscribers.keySet()) {
+     // ProjectSubscriptionName fullSubscriptionName = getFullSubscriptionName(subscription.getKey());
       String subscriptionName = fullSubscriptionName.getSubscription();
-      PubSubConfiguration.Subscriber selectiveSubscriber = subscriberMap.get(subscriptionName);
+      PubSubConfiguration.Subscriber selectiveSubscriber = this.fullyQualifiedSubscribers.get(fullSubscriptionName);
       Integer selectiveExecutorThreads = selectiveSubscriber.getExecutorThreads();
       if (selectiveExecutorThreads != null) {
         String threadName = "gcp-pubsub-subscriber-" + subscriptionName;
@@ -567,21 +572,20 @@ public class GcpPubSubAutoConfiguration {
   }
 
   private void createAndRegisterSelectiveFlowControlSettings(GenericApplicationContext context) {
-    Map<String, PubSubConfiguration.Subscriber> subscriberMap =
-        this.gcpPubSubProperties.getSubscription();
-    for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription :
-        subscriberMap.entrySet()) {
-      ProjectSubscriptionName fullSubscriptionName = getFullSubscriptionName(subscription.getKey());
-      String subscriptionName = fullSubscriptionName.getSubscription();
+   /* Map<String, PubSubConfiguration.Subscriber> subscriberMap =
+        this.gcpPubSubProperties.getSubscription();*/
+    // mySubscription
+    // topics/myTopic/subscriptions/mySubscription
+    for (ProjectSubscriptionName fullSubscriptionName : this.fullyQualifiedSubscribers.keySet()) {
+      String shortName = fullSubscriptionName.getSubscription();
       PubSubConfiguration.FlowControl flowControl =
-          this.gcpPubSubProperties.computeSubscriberFlowControlSettings(
-              subscriptionName, this.finalProjectIdProvider.getProjectId());
+          this.gcpPubSubProperties.computeSubscriberFlowControlSettings(this.fullyQualifiedSubscribers.get(fullSubscriptionName).getFlowControl());
       FlowControlSettings flowControlSettings = buildFlowControlSettings(flowControl);
       if (flowControlSettings != null
           && !flowControlSettings.equals(this.globalFlowControlSettings)) {
         this.subscriberFlowControlSettingsMap.putIfAbsent(
             fullSubscriptionName.toString(), flowControlSettings);
-        String beanName = "subscriberFlowControlSettings-" + subscriptionName;
+        String beanName = "subscriberFlowControlSettings-" + shortName;
         context.registerBeanDefinition(
             beanName,
             BeanDefinitionBuilder.genericBeanDefinition(
@@ -620,18 +624,16 @@ public class GcpPubSubAutoConfiguration {
   }
 
   private void createAndRegisterSelectiveRetrySettings(GenericApplicationContext context) {
-    Map<String, PubSubConfiguration.Subscriber> subscriberMap =
-        this.gcpPubSubProperties.getSubscription();
-    for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription :
-        subscriberMap.entrySet()) {
-      ProjectSubscriptionName fullyQualifiedName = getFullSubscriptionName(subscription.getKey());
-      String subscriptionName = fullyQualifiedName.getSubscription();
+   /* Map<String, PubSubConfiguration.Subscriber> subscriberMap =
+        this.gcpPubSubProperties.getSubscription();*/
+    for (ProjectSubscriptionName fullSubscriptionName : this.fullyQualifiedSubscribers.keySet()) {
+      //ProjectSubscriptionName fullyQualifiedName = getFullSubscriptionName(subscription.getKey());
+      String subscriptionName = fullSubscriptionName.getSubscription();
       PubSubConfiguration.Retry retry =
-          this.gcpPubSubProperties.computeSubscriberRetrySettings(
-              subscriptionName, this.finalProjectIdProvider.getProjectId());
+          this.gcpPubSubProperties.computeSubscriberRetrySettings(this.fullyQualifiedSubscribers.get(fullSubscriptionName).getRetry());
       RetrySettings retrySettings = buildRetrySettings(retry);
       if (retrySettings != null && !retrySettings.equals(this.globalRetrySettings)) {
-        this.subscriberRetrySettingsMap.putIfAbsent(fullyQualifiedName.toString(), retrySettings);
+        this.subscriberRetrySettingsMap.putIfAbsent(fullSubscriptionName.toString(), retrySettings);
         String beanName = "subscriberRetrySettings-" + subscriptionName;
         context.registerBeanDefinition(
             beanName,
@@ -649,5 +651,24 @@ public class GcpPubSubAutoConfiguration {
   private ProjectSubscriptionName getFullSubscriptionName(String subscriptionName) {
     return PubSubSubscriptionUtils.toProjectSubscriptionName(
         subscriptionName, this.finalProjectIdProvider.getProjectId());
+  }
+
+  private void computeFullyQualifiedSubscriptionProperties(GcpProjectIdProvider projectIdProvider, Map<String, Subscriber> properties) {
+    // this.finalProjectIdProvider, this.gcpPubSubProperties.getSubscription()
+    System.out.println("****** HELLO! Current properties: " + properties);
+
+    String projectId = projectIdProvider.getProjectId();
+    Map<ProjectSubscriptionName, Subscriber> fullyQualifiedProperties = new HashMap<>();
+    for (String subscriptionName : properties.keySet()) {
+      System.out.println("*************** In post-construct: subscription name = " + subscriptionName);
+      ProjectSubscriptionName fullyQualifiedName =
+          PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId);
+      fullyQualifiedProperties.put(fullyQualifiedName, properties.get(subscriptionName));
+    }
+
+    System.out.println("****** HELLO! New properties: " + fullyQualifiedProperties);
+
+    this.fullyQualifiedSubscribers = Collections.unmodifiableMap(fullyQualifiedProperties);
+
   }
 }

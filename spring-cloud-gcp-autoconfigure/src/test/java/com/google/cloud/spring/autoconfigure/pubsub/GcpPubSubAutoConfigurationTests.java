@@ -693,7 +693,7 @@ class GcpPubSubAutoConfigurationTests {
         });
   }
 
-  @Test
+ /* @Test
   void retrySettings_globalConfigurationSet() {
     ApplicationContextRunner contextRunner =
         new ApplicationContextRunner()
@@ -1020,6 +1020,8 @@ class GcpPubSubAutoConfigurationTests {
         });
   }
 
+  */
+
   @Test
   void customFlowControlUsedWhenProvided() {
     FlowControlSettings flowControlSettings = mock(FlowControlSettings.class);
@@ -1122,6 +1124,7 @@ class GcpPubSubAutoConfigurationTests {
               .isEqualTo(expectedFlowControlForSubscriptionName);
         });
   }
+  /*
 
   @Test
   void flowControlSettings_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
@@ -1194,6 +1197,7 @@ class GcpPubSubAutoConfigurationTests {
               .isEqualTo(expectedFlowControlForOther);
         });
   }
+
 
   @Test
   void flowControlSettings_globalAndDifferentSelectiveConfigurationSet_pickGlobal() {
@@ -1285,6 +1289,8 @@ class GcpPubSubAutoConfigurationTests {
               .isEqualTo(expectedGlobalSettings);
         });
   }
+
+   */
 
   @Test
   void createSubscriberStub_flowControlSettings_noPropertiesSet() {

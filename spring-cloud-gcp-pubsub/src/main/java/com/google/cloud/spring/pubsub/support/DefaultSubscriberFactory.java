@@ -504,6 +504,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     if (this.parallelPullCount != null) {
       return this.parallelPullCount;
     }
+
+    // TODO: figure out how to treat compute* methods called while the app is running, not during autoconfiguration
     return this.pubSubConfiguration.computeParallelPullCount(subscriptionName, projectId);
   }
 

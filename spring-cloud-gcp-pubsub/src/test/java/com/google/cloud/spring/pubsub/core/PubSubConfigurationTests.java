@@ -118,6 +118,7 @@ class PubSubConfigurationTests {
     assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(1L);
     assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(2L);
   }
+  /*
 
   @Test
   void testComputeFlowControlSettings_returnCustom() {
@@ -159,6 +160,7 @@ class PubSubConfigurationTests {
     assertThat(result.getMaxOutstandingElementCount()).isEqualTo(1L);
     assertThat(result.getMaxOutstandingRequestBytes()).isEqualTo(2L);
   }
+  */
 
   @Test
   void testComputeParallelPullCount_returnCustom() {
@@ -270,7 +272,7 @@ class PubSubConfigurationTests {
     assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(14.0);
     assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(9L);
   }
-
+/*
   @Test
   void testComputeSubscriberRetrySettings_returnCustom() {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
@@ -331,7 +333,7 @@ class PubSubConfigurationTests {
     assertThat(result.getInitialRpcTimeoutSeconds()).isEqualTo(11L);
     assertThat(result.getRpcTimeoutMultiplier()).isEqualTo(14.0);
     assertThat(result.getMaxRpcTimeoutSeconds()).isEqualTo(9L);
-  }
+  }*/
 
   @Test
   void testComputeRetryableCodes_returnsGlobal() {
