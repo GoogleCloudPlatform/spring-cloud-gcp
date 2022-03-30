@@ -110,6 +110,10 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
     this.headerMapper = headerMapper;
   }
 
+  public HeaderMapper<Map<String, String>> getHeaderMapper() {
+    return this.headerMapper;
+  }
+
   @Override
   protected void doStart() {
     super.doStart();

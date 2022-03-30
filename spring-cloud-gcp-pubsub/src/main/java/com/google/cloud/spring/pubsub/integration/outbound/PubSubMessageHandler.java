@@ -209,6 +209,10 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
     this.headerMapper = headerMapper;
   }
 
+  public HeaderMapper<Map<String, String>> getHeaderMapper() {
+    return this.headerMapper;
+  }
+
   @Override
   protected void handleMessageInternal(Message<?> message) {
     Object payload = message.getPayload();

@@ -35,32 +35,26 @@ public class SinkExample {
   @Bean
   public Consumer<Message<UserMessage>> logUserMessage() {
     return message -> {
-      UserMessage userMessage = message.getPayload();
       BasicAcknowledgeablePubsubMessage nackable =
           GcpPubSubHeaders.getOriginalMessage(message)
               .orElseThrow(
                   () -> new IllegalStateException("Could not find original PubSubMessage."));
       Integer deliveryAttempt = Subscriber.getDeliveryAttempt(nackable.getPubsubMessage());
-
+      System.out.println(" **********the headers are as follows ************ " + message.getHeaders());
       // Typically you wouldn't nack() every message, but this demonstrates the Pub/Sub system
       // retrying delivery
       // some number of times before the message is routed to the dead letter queue.
       log.info(
           "Nacking message (attempt {}) from {} at {}: {}",
-          deliveryAttempt,
-          userMessage.getUsername(),
-          userMessage.getCreatedAt(),
-          userMessage.getBody());
+          deliveryAttempt);
       nackable.nack();
     };
   }
 
   @Bean
-  public Consumer<UserMessage> deadLetterMessages() {
-    return userMessage ->
+  public Consumer<Message<UserMessage>> deadLetterMessages() {
+    return message ->
         log.info(
-            "Received message on dead letter topic from {}: {}",
-            userMessage.getUsername(),
-            userMessage.getBody());
+            "Received message on dead letter topic from {}: {}");
   }
 }

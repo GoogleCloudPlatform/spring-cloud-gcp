@@ -18,6 +18,7 @@ package com.google.cloud.spring.stream.binder.pubsub;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
+import com.google.cloud.spring.pubsub.integration.PubSubHeaderMapper;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubMessageSource;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
@@ -75,8 +76,13 @@ public class PubSubMessageChannelBinder
       ExtendedProducerProperties<PubSubProducerProperties> producerProperties,
       MessageChannel errorChannel) {
 
-    PubSubMessageHandler messageHandler =
-        new PubSubMessageHandler(this.pubSubTemplate, destination.getName());
+    PubSubMessageHandler messageHandler = new PubSubMessageHandler(this.pubSubTemplate, destination.getName());
+
+    PubSubHeaderMapper mapper = (PubSubHeaderMapper) messageHandler.getHeaderMapper();
+    if (producerProperties.getExtension().getAllowedHeaders() != null) {
+      mapper.setOutboundHeaderPatterns(producerProperties.getExtension().getAllowedHeaders());
+    }
+
     messageHandler.setBeanFactory(getBeanFactory());
     messageHandler.setSync(producerProperties.getExtension().isSync());
     return messageHandler;
@@ -90,6 +96,11 @@ public class PubSubMessageChannelBinder
 
     PubSubInboundChannelAdapter adapter =
         new PubSubInboundChannelAdapter(this.pubSubTemplate, destination.getName());
+
+    PubSubHeaderMapper mapper = (PubSubHeaderMapper) adapter.getHeaderMapper();
+    if (properties.getExtension().getAllowedHeaders() != null) {
+      mapper.setInboundHeaderPatterns(properties.getExtension().getAllowedHeaders());
+    }
 
     if (healthTrackerRegistry != null) {
       adapter.setHealthTrackerRegistry(healthTrackerRegistry);
