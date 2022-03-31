@@ -229,7 +229,6 @@
 						<includes>
 							<include>${integration-test.pattern}</include>
 						</includes>
-						<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -409,6 +408,18 @@
 								<excludes>
 									<exclude>${integration-test.pattern}</exclude>
 								</excludes>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-failsafe-plugin</artifactId>
+							<version>${maven-failsafe-plugin.version}</version>
+							<configuration>
+								<skip>${skip.failsafe.tests}</skip>
+								<includes>
+									<include>${integration-test.pattern}</include>
+								</includes>
+								<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED</argLine>
 							</configuration>
 						</plugin>
 					</plugins>
