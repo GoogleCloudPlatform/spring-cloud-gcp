@@ -612,7 +612,7 @@ You can refer to nested fields using <a href="https://docs.spring.io/spring-data
 
   @Autowired UserRepository userRepository;
 
-  public void writeReadDeleteTest() {
+  void writeReadDeleteTest() {
     List&lt;User.Address&gt; addresses =
         Arrays.asList(
             new User.Address("123 Alice st", "US"), new User.Address("1 Alice ave", "US"));
@@ -713,7 +713,7 @@ public class FirestoreTemplateExample {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
-  public void partTreeRepositoryMethodTest() {
+  void partTreeRepositoryMethodTest() {
     User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
     u1.favoriteDrink = "tea";
     User u2 =
