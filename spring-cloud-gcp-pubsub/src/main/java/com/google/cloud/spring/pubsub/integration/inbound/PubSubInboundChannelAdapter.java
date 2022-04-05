@@ -47,6 +47,8 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
 
   private AckMode ackMode = AckMode.AUTO;
 
+  private String[] allowedHeaders;
+
   private HeaderMapper<Map<String, String>> headerMapper = new PubSubHeaderMapper();
 
   private Class<?> payloadType = byte[].class;
@@ -74,6 +76,12 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
   public void setAckMode(AckMode ackMode) {
     Assert.notNull(ackMode, "The acknowledgement mode can't be null.");
     this.ackMode = ackMode;
+  }
+
+  public String[] getAllowedHeaders() {return this.allowedHeaders;}
+
+  public void setAllowedHeaders(String[] allowedHeaders) {
+    this.allowedHeaders = allowedHeaders;
   }
 
   public void setHealthTrackerRegistry(HealthTrackerRegistry healthTrackerRegistry) {
@@ -108,10 +116,6 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
   public void setHeaderMapper(HeaderMapper<Map<String, String>> headerMapper) {
     Assert.notNull(headerMapper, "The header mapper can't be null.");
     this.headerMapper = headerMapper;
-  }
-
-  public HeaderMapper<Map<String, String>> getHeaderMapper() {
-    return this.headerMapper;
   }
 
   @Override

@@ -26,6 +26,7 @@ import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerPro
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
 import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
+import java.util.Map;
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
 import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
@@ -34,6 +35,7 @@ import org.springframework.cloud.stream.binder.ExtendedPropertiesBinder;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.integration.core.MessageProducer;
+import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
@@ -78,11 +80,13 @@ public class PubSubMessageChannelBinder
 
     PubSubMessageHandler messageHandler = new PubSubMessageHandler(this.pubSubTemplate, destination.getName());
 
-    PubSubHeaderMapper mapper = (PubSubHeaderMapper) messageHandler.getHeaderMapper();
-    if (producerProperties.getExtension().getAllowedHeaders() != null) {
-      mapper.setOutboundHeaderPatterns(producerProperties.getExtension().getAllowedHeaders());
-    }
+    HeaderMapper<Map<String, String>> headerMapper = new PubSubHeaderMapper();
 
+    if (producerProperties.getExtension().getAllowedHeaders() != null) {
+      ((PubSubHeaderMapper) headerMapper).setOutboundHeaderPatterns(producerProperties.getExtension().getAllowedHeaders());
+      messageHandler.setAllowedHeaders(producerProperties.getExtension().getAllowedHeaders());
+    }
+    messageHandler.setHeaderMapper(headerMapper);
     messageHandler.setBeanFactory(getBeanFactory());
     messageHandler.setSync(producerProperties.getExtension().isSync());
     return messageHandler;
@@ -97,10 +101,13 @@ public class PubSubMessageChannelBinder
     PubSubInboundChannelAdapter adapter =
         new PubSubInboundChannelAdapter(this.pubSubTemplate, destination.getName());
 
-    PubSubHeaderMapper mapper = (PubSubHeaderMapper) adapter.getHeaderMapper();
+    HeaderMapper<Map<String, String>> headerMapper = new PubSubHeaderMapper();
+
     if (properties.getExtension().getAllowedHeaders() != null) {
-      mapper.setInboundHeaderPatterns(properties.getExtension().getAllowedHeaders());
+      ((PubSubHeaderMapper) headerMapper).setInboundHeaderPatterns(properties.getExtension().getAllowedHeaders());
+      adapter.setAllowedHeaders(properties.getExtension().getAllowedHeaders());
     }
+    adapter.setHeaderMapper(headerMapper);
 
     if (healthTrackerRegistry != null) {
       adapter.setHealthTrackerRegistry(healthTrackerRegistry);

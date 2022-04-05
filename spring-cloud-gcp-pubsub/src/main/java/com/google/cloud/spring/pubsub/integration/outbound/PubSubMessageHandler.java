@@ -54,6 +54,8 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 
   private boolean sync;
 
+  private String[] allowedHeaders;
+
   private EvaluationContext evaluationContext;
 
   private Expression publishTimeoutExpression = new ValueExpression<>(DEFAULT_PUBLISH_TIMEOUT);
@@ -94,6 +96,11 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
     this.sync = sync;
   }
 
+  public String[] getAllowedHeaders() {return this.allowedHeaders;}
+
+  public void setAllowedHeaders(String[] allowedHeaders) {
+    this.allowedHeaders = allowedHeaders;
+  }
   public Expression getPublishTimeoutExpression() {
     return this.publishTimeoutExpression;
   }
@@ -207,10 +214,6 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
   public void setHeaderMapper(HeaderMapper<Map<String, String>> headerMapper) {
     Assert.notNull(headerMapper, "The header mapper can't be null.");
     this.headerMapper = headerMapper;
-  }
-
-  public HeaderMapper<Map<String, String>> getHeaderMapper() {
-    return this.headerMapper;
   }
 
   @Override

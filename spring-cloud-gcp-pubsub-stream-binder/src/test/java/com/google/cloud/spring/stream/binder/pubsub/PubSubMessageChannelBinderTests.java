@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -158,6 +158,30 @@ class PubSubMessageChannelBinderTests {
             });
   }
 
+    @Test
+    void producerHeaderPropertyPropagatesToMessageHandler() {
+        this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
+        when(producerDestination.getName()).thenReturn("test-topic");
+        baseContext
+                .withPropertyValues("spring.cloud.stream.gcp.pubsub.default.producer.allowedHeaders=foo4,foo5")
+                .run(
+                        ctx -> {
+                            PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
+
+                            PubSubExtendedBindingProperties props =
+                                    ctx.getBean(
+                                            "pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
+                            PubSubMessageHandler messageHandler =
+                                    (PubSubMessageHandler)
+                                            binder.createProducerMessageHandler(
+                                                    producerDestination,
+                                                    new ExtendedProducerProperties<>(
+                                                            props.getExtendedProducerProperties("test")),
+                                                    errorChannel);
+                            Assert.assertArrayEquals(messageHandler.getAllowedHeaders(),new String[]{"foo4","foo5"});
+                        });
+    }
+
   @Test
   void consumerMaxFetchPropertyPropagatesToMessageSource() {
     this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
@@ -270,6 +294,34 @@ class PubSubMessageChannelBinderTests {
               assertThat(inboundChannelAdapter.getErrorChannel()).isNotNull();
             });
   }
+
+    @Test
+    void testConsumerEndpointCreationWithHeadersProvided() {
+
+        this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
+        when(consumerDestination.getName()).thenReturn("test-subscription");
+        baseContext
+                .withPropertyValues("spring.cloud.stream.gcp.pubsub.default.consumer.allowedHeaders=foo2,foo3")
+                .run(
+                        ctx -> {
+                            PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
+                            PubSubExtendedBindingProperties props =
+                                    ctx.getBean(
+                                            "pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
+
+                            assertThat(binder).isNotNull();
+                            MessageProducer messageProducer =
+                                    binder.createConsumerEndpoint(
+                                            consumerDestination,
+                                            "testGroup",
+                                            new ExtendedConsumerProperties<>(
+                                                    props.getExtendedConsumerProperties("test")));
+                            assertThat(messageProducer).isInstanceOf(PubSubInboundChannelAdapter.class);
+                            PubSubInboundChannelAdapter inboundChannelAdapter =
+                                    (PubSubInboundChannelAdapter) messageProducer;
+                            Assert.assertArrayEquals(inboundChannelAdapter.getAllowedHeaders(),new String[]{"foo2","foo3"});
+                        });
+    }
 
   public interface PollableSource {
     @Input
