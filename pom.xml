@@ -80,6 +80,7 @@
 	<dependencyManagement>
 		<dependencies>
 
+			<!-- Addresses https://tanzu.vmware.com/security/cve-2022-22963 -->
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-function-dependencies</artifactId>
