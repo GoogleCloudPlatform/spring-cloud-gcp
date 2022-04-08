@@ -31,7 +31,8 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>spring-cloud-gcp-starter-pubsub</artifactId>
     </dependency>
-    <!-- intentionally redundant dependency to force parent POM version -->
+    <!-- intentionally redundant dependency to force version lookup in
+         this pom's dependencyManagement, and not in spring-cloud-stream -->
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-function-context</artifactId>
