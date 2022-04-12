@@ -400,12 +400,12 @@ The following properties are available:</p>
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceIdMdcField</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceIdMDCField</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The MDC field name for retrieving a trace id</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spanIdMdcField</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spanIdMDCField</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spanId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">the MDC field name for retrieving a span id</p></td>
 </tr>
@@ -498,8 +498,8 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
       &lt;layout class="com.google.cloud.spring.logging.StackdriverJsonLayout"&gt;
         &lt;projectId&gt;${projectId}&lt;/projectId&gt;
 
-        &lt;!--&lt;traceIdMdcField&gt;traceId&lt;/traceIdMdcField&gt;--&gt;
-        &lt;!--&lt;spanIdMdcField&gt;spanId&lt;/spanIdMdcField&gt;--&gt;
+        &lt;!--&lt;traceIdMDCField&gt;traceId&lt;/traceIdMDCField&gt;--&gt;
+        &lt;!--&lt;spanIdMDCField&gt;spanId&lt;/spanIdMDCField&gt;--&gt;
         &lt;!--&lt;includeTraceId&gt;true&lt;/includeTraceId&gt;--&gt;
         &lt;!--&lt;includeSpanId&gt;true&lt;/includeSpanId&gt;--&gt;
         &lt;!--&lt;includeLevel&gt;true&lt;/includeLevel&gt;--&gt;

@@ -1597,9 +1597,6 @@ It enables dynamic query generation based on a user-provided object. See <a href
 <li>
 <p>Embedded entities matching is not supported.</p>
 </li>
-<li>
-<p>Projection is not supported.</p>
-</li>
 </ol>
 </div>
 <div class="paragraph">
@@ -1618,18 +1615,6 @@ It enables dynamic query generation based on a user-provided object. See <a href
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">userRepository.findAll(
     Example.of(new User(null, null, "Smith"), ExampleMatcher.matching().withIncludeNullValues())</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can also extend query specification initially defined by an example in FluentQuery&#8217;s chaining style:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>userRepository.findBy(
-    Example.of(new User(null, null, "Smith")), q -&gt; q.sortBy(Sort.by("firstName")).firstValue());
-
-userRepository.findBy(
-    Example.of(new User(null, null, "Smith")), FetchableFluentQuery::stream);</pre>
 </div>
 </div>
 </div>
