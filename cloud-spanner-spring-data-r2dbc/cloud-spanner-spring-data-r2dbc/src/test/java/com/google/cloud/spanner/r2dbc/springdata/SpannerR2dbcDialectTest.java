@@ -20,8 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.cloud.ByteArray;
+import com.google.cloud.Date;
+import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.r2dbc.v2.JsonWrapper;
 import java.util.Collection;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 import org.springframework.data.relational.core.dialect.LimitClause;
@@ -73,7 +77,8 @@ class SpannerR2dbcDialectTest {
   void testSimpleType() {
     SpannerR2dbcDialect dialect = new SpannerR2dbcDialect();
     SimpleTypeHolder simpleTypeHolder = dialect.getSimpleTypeHolder();
-    assertThat(simpleTypeHolder.isSimpleType(JsonWrapper.class)).isTrue();
+    assertThat(Stream.of(JsonWrapper.class, Timestamp.class, Date.class, ByteArray.class)
+        .allMatch(simpleTypeHolder::isSimpleType)).isTrue();
   }
 
   @Test

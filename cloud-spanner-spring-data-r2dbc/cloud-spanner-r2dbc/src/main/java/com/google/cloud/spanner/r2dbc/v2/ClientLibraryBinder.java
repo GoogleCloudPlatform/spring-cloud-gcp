@@ -21,6 +21,7 @@ import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Value;
+import com.google.cloud.spanner.ValueBinder;
 import com.google.cloud.spanner.r2dbc.BindingFailureException;
 import com.google.cloud.spanner.r2dbc.SpannerType;
 import com.google.cloud.spanner.r2dbc.statement.TypedNull;
@@ -40,30 +41,23 @@ class ClientLibraryBinder {
     binders.add(
         new SingleTypeBinder<>(Integer.class,
             (binder, val) -> binder.to(longFromInteger(val))));
-    binders.add(new SingleTypeBinder<>(Long.class, (binder, val) -> binder.to(val)));
-    binders.add(new SingleTypeBinder<>(Double.class, (binder, val) -> binder.to(val)));
-    binders.add(new SingleTypeBinder<>(Boolean.class, (binder, val) -> binder.to(val)));
-    binders.add(
-        new SingleTypeBinder<>(ByteArray.class, (binder, val) -> binder.to(val)));
-    binders.add(new SingleTypeBinder<>(Date.class, (binder, val) -> binder.to(val)));
-    binders.add(new SingleTypeBinder<>(String.class, (binder, val) -> binder.to(val)));
-    binders.add(
-        new SingleTypeBinder<>(Timestamp.class, (binder, val) -> binder.to(val)));
-    binders.add(
-        new SingleTypeBinder<>(BigDecimal.class, (binder, val) -> binder.to(val)));
-
+    binders.add(new SingleTypeBinder<>(Long.class, ValueBinder::to));
+    binders.add(new SingleTypeBinder<>(Double.class, ValueBinder::to));
+    binders.add(new SingleTypeBinder<>(Boolean.class, ValueBinder::to));
+    binders.add(new SingleTypeBinder<>(ByteArray.class, ValueBinder::to));
+    binders.add(new SingleTypeBinder<>(Date.class, ValueBinder::to));
+    binders.add(new SingleTypeBinder<>(String.class, ValueBinder::to));
+    binders.add(new SingleTypeBinder<>(Timestamp.class, ValueBinder::to));
+    binders.add(new SingleTypeBinder<>(BigDecimal.class, ValueBinder::to));
     binders.add(
         new SingleTypeBinder<>(
             JsonWrapper.class,
             (binder, val) -> binder.to(val == null ? Value.json(null) : val.getJsonVal())));
 
     // Primitive arrays
-    binders.add(new SingleTypeBinder<>(
-        boolean[].class, (binder, val) -> binder.toBoolArray(val)));
-    binders.add(new SingleTypeBinder<>(
-        long[].class, (binder, val) -> binder.toInt64Array(val)));
-    binders.add(new SingleTypeBinder<>(
-        double[].class, (binder, val) -> binder.toFloat64Array(val)));
+    binders.add(new SingleTypeBinder<>(boolean[].class, ValueBinder::toBoolArray));
+    binders.add(new SingleTypeBinder<>(long[].class, ValueBinder::toInt64Array));
+    binders.add(new SingleTypeBinder<>(double[].class, ValueBinder::toFloat64Array));
 
     // Primitive arrays that have to expand element size to 64 bits to match Spanner types.
     binders.add(new SingleTypeBinder<>(
@@ -72,18 +66,12 @@ class ClientLibraryBinder {
         float[].class, (binder, val) -> binder.toFloat64Array(toDoubleArray(val))));
 
     // Object arrays
-    binders.add(new ArrayToIterableBinder<>(Boolean[].class,
-        (binder, iterable) -> binder.toBoolArray(iterable)));
-    binders.add(new ArrayToIterableBinder<>(ByteArray[].class,
-        (binder, iterable) -> binder.toBytesArray(iterable)));
-    binders.add(new ArrayToIterableBinder<>(
-        Date[].class, (binder, iterable) -> binder.toDateArray(iterable)));
-    binders.add(new ArrayToIterableBinder<>(String[].class,
-        (binder, iterable) -> binder.toStringArray(iterable)));
-    binders.add(new ArrayToIterableBinder<>(
-        Timestamp[].class, (binder, iterable) -> binder.toTimestampArray(iterable)));
-    binders.add(new ArrayToIterableBinder<>(
-        BigDecimal[].class, (binder, iterable) -> binder.toNumericArray(iterable)));
+    binders.add(new ArrayToIterableBinder<>(Boolean[].class, ValueBinder::toBoolArray));
+    binders.add(new ArrayToIterableBinder<>(ByteArray[].class, ValueBinder::toBytesArray));
+    binders.add(new ArrayToIterableBinder<>(Date[].class, ValueBinder::toDateArray));
+    binders.add(new ArrayToIterableBinder<>(String[].class, ValueBinder::toStringArray));
+    binders.add(new ArrayToIterableBinder<>(Timestamp[].class, ValueBinder::toTimestampArray));
+    binders.add(new ArrayToIterableBinder<>(BigDecimal[].class, ValueBinder::toNumericArray));
 
     // STRUCT not supported
 

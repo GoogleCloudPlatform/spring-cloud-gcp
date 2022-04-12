@@ -161,18 +161,24 @@ Cloud Spanner R2DBC Driver supports the following types:
 |----------------|---------------------|
 |`BOOL`          |`java.lang.Boolean`  |
 |`BYTES`         |`java.nio.ByteBuffer`|
-|`DATE`          |`java.time.LocalDate`|
+|`DATE`          |`com.google.cloud.Date`|
 |`FLOAT64`       |`java.lang.Double`   |
 |`INT64`         |`java.lang.Long`     |
 |`INT64`         |`java.lang.Integer`  |
 |`STRING`        |`java.lang.String`   |
 |`JSON`          |`com.google.cloud.spanner.r2dbc.v2.JsonWrapper`   |
-|`TIMESTAMP`     |`java.time.LocalDateTime` |
+|`TIMESTAMP`     |`com.google.cloud.Timestamp` |
 |`ARRAY`         |Arrays or `Iterable` collections with hint. `ARRAY<JSON>` is not supported.|
 
 Null values mapping is supported in both directions.
 See [Cloud Spanner documentation](https://cloud.google.com/spanner/docs/data-types) to learn more about Spanner types.
 
+### TIMESTAMP and DATE Mapping
+
+`TIMESTAMP` and `DATE` Spanner column types are supported via `com.google.cloud.Timestamp` and `com.google.cloud.Date` classes.
+
+Custom converters need to be implemented and registered if you want to use other Time/Date classes.
+For examples, please refer to the following integration test: [SpannerR2dbcDialectDateTimeBindingIntegrationTest.java](https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/blob/main/cloud-spanner-spring-data-r2dbc/src/test/java/com/google/cloud/spanner/r2dbc/springdata/it/SpannerR2dbcDialectDateTimeBindingIntegrationTest.java)
 
 ### JSON Mapping
 
