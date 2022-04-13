@@ -61,6 +61,7 @@ public class PubSubConfiguration {
     return this.subscription;
   }
 
+  // TODO: remove this method
   public Subscriber getSubscriber(String name, String projectId) {
     ProjectSubscriptionName fullyQualifiedName =
         PubSubSubscriptionUtils.toProjectSubscriptionName(name, projectId);

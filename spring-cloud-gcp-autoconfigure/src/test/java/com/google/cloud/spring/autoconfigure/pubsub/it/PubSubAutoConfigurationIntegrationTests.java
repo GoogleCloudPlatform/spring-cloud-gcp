@@ -420,6 +420,7 @@ class PubSubAutoConfigurationIntegrationTests {
   }
 
 */
+  // THIS TEST SHOWS ISSUES WELL
   @Test
   void testSubscribe() {
     this.contextRunner.run(
