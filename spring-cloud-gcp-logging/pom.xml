@@ -9,7 +9,7 @@
 	</parent>
 
 	<properties>
-		<logstash.version>7.0.1</logstash.version>
+		<logstash.version>7.1.1</logstash.version>
 	</properties>
 
 	<artifactId>spring-cloud-gcp-logging</artifactId>
