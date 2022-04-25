@@ -78,10 +78,10 @@ public class PubSubMessageChannelBinder
 
     PubSubMessageHandler messageHandler = new PubSubMessageHandler(this.pubSubTemplate, destination.getName());
 
-    String [] headers = producerProperties.getExtension().getAllowedHeaders();
-    if (producerProperties.getExtension() != null && headers != null) {
+    PubSubProducerProperties props = producerProperties.getExtension();
+    if (props != null && props.getAllowedHeaders() != null) {
       PubSubHeaderMapper headerMapper = new PubSubHeaderMapper();
-      headerMapper.setOutboundHeaderPatterns(headers);
+      headerMapper.setOutboundHeaderPatterns(props.getAllowedHeaders());
       messageHandler.setHeaderMapper(headerMapper);
     }
 
@@ -99,10 +99,10 @@ public class PubSubMessageChannelBinder
     PubSubInboundChannelAdapter adapter =
         new PubSubInboundChannelAdapter(this.pubSubTemplate, destination.getName());
 
-    String [] headers =  properties.getExtension().getAllowedHeaders();
-    if (properties.getExtension() != null && headers != null) {
+    PubSubConsumerProperties props = properties.getExtension();
+    if (props != null && props.getAllowedHeaders() != null) {
       PubSubHeaderMapper headerMapper = new PubSubHeaderMapper();
-      headerMapper.setInboundHeaderPatterns(headers);
+      headerMapper.setInboundHeaderPatterns(props.getAllowedHeaders());
       adapter.setHeaderMapper(headerMapper);
     }
 

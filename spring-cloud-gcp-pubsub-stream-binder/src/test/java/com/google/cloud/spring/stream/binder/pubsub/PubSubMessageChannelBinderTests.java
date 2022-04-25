@@ -299,6 +299,35 @@ class PubSubMessageChannelBinderTests {
   }
 
   @Test
+  void testConsumerEndpointCreationWithNoHeadersProvided() {
+
+    this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
+    when(consumerDestination.getName()).thenReturn("test-subscription");
+    baseContext
+        .run(
+             ctx -> {
+               PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
+               PubSubExtendedBindingProperties props =
+                                    ctx.getBean(
+                                            "pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
+
+               assertThat(binder).isNotNull();
+               MessageProducer messageProducer =
+                                    binder.createConsumerEndpoint(
+                                            consumerDestination,
+                                            "testGroup",
+                                            new ExtendedConsumerProperties<>(
+                                                    props.getExtendedConsumerProperties("test")));
+               assertThat(messageProducer).isInstanceOf(PubSubInboundChannelAdapter.class);
+               PubSubInboundChannelAdapter inboundChannelAdapter =
+                                    (PubSubInboundChannelAdapter) messageProducer;
+               PubSubHeaderMapper mapper = (PubSubHeaderMapper) FieldUtils.readField(inboundChannelAdapter, "headerMapper", true);
+               String [] headersToCheck = (String[]) FieldUtils.readField(mapper, "inboundHeaderPatterns", true);
+               Assert.assertArrayEquals(headersToCheck, (String[]) FieldUtils.readField(mapper, "inboundHeaderPatterns", true));
+          });
+  }
+
+  @Test
   void testConsumerEndpointCreationWithHeadersProvided() {
 
     this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
