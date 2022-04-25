@@ -23,9 +23,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
@@ -36,29 +35,27 @@ public class SourceExample {
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-  @Autowired private Sinks.Many<Message<UserMessage>> postOffice;
+  @Autowired private Sinks.Many<UserMessage> postOffice;
 
   @PostMapping("/newMessage")
-  public Message sendMessage() {
-    UserMessage userMessage = new UserMessage("hello", "USER", LocalDateTime.now());
-    Message<UserMessage> message1 = MessageBuilder.withPayload(userMessage)
-            .setHeader("foo2", "bar2")
-            .setHeader("foo3", "bar3")
-            .build();
-    this.postOffice.tryEmitNext(message1);
-    return message1;
+  public UserMessage sendMessage(
+      @RequestParam("messageBody") String messageBody, @RequestParam("username") String username) {
+    UserMessage userMessage = new UserMessage(messageBody, username, LocalDateTime.now());
+    log.info("Publishing message from {}", username);
+    this.postOffice.tryEmitNext(userMessage);
+    return userMessage;
   }
 
   @Configuration
   public static class SourceConfig {
 
     @Bean
-    public Sinks.Many<Message<UserMessage>> postOffice() {
+    public Sinks.Many<UserMessage> postOffice() {
       return Sinks.many().unicast().onBackpressureBuffer();
     }
 
     @Bean
-    Supplier<Flux<Message<UserMessage>>> generateUserMessages(Sinks.Many<Message<UserMessage>> postOffice) {
+    Supplier<Flux<UserMessage>> generateUserMessages(Sinks.Many<UserMessage> postOffice) {
       return postOffice::asFlux;
     }
   }
