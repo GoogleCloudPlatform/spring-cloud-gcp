@@ -138,9 +138,8 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
     Assert.isTrue(latch.await(5, TimeUnit.SECONDS), "Failed to receive message");
 
     assertThat(inboundMessageRef.get().getPayload()).isEqualTo("insert some random stuff here".getBytes());
-    assertThat(inboundMessageRef.get().getHeaders().get("secondHeader")).isEqualTo(null);
-    assertThat(inboundMessageRef.get().getHeaders().get("firstHeader")
-            .toString()).isEqualTo("firstHeaderValue");
+    assertThat(inboundMessageRef.get().getHeaders().get("secondHeader")).isNull();
+    assertThat(inboundMessageRef.get().getHeaders().get("firstHeader")).hasToString("firstHeaderValue");
 
     producerBinding.unbind();
     consumerBinding.unbind();
@@ -192,9 +191,8 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
     Assert.isTrue(latch.await(5, TimeUnit.SECONDS), "Failed to receive message");
 
     assertThat(inboundMessageRef.get().getPayload()).isEqualTo("insert some random stuff here".getBytes());
-    assertThat(inboundMessageRef.get().getHeaders().get("firstHeader")).isEqualTo(null);
-    assertThat(inboundMessageRef.get().getHeaders().get("secondHeader")
-            .toString()).isEqualTo("secondHeaderValue");
+    assertThat(inboundMessageRef.get().getHeaders().get("firstHeader")).isNull();
+    assertThat(inboundMessageRef.get().getHeaders().get("secondHeader")).hasToString("secondHeaderValue");
 
     producerBinding.unbind();
     consumerBinding.unbind();
