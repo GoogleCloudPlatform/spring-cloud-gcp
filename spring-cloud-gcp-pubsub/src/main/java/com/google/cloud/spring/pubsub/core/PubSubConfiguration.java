@@ -20,18 +20,33 @@ import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.Subscription;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
+import org.springframework.util.Assert;
 
 /** Properties for Publisher or Subscriber specific configurations. */
 public class PubSubConfiguration {
 
+  // TODO: was this always unused?
   /** Default number of executor threads. */
   public static final int DEFAULT_EXECUTOR_THREADS = 4;
 
   private static final Long DEFAULT_MAX_ACK_EXTENSION_PERIOD = 0L;
 
-  private final ConcurrentHashMap<String, Subscriber> subscription = new ConcurrentHashMap<>();
+  /** Automatically extracted user-provided properties. Can contain mixed, short and fully qualified
+   *  user-provided properties, therefore do not use except in initialize().
+   */
+  private final Map<String, Subscriber> subscription = new HashMap<>();
+
+  /** Properties keyed by fully qualified subscription name.
+   * Initialized once; effectively a singleton.
+   */
+  private Map<ProjectSubscriptionName, Subscriber> fullyQualifiedSubscriptionProperties;
 
   /** Contains global and default subscriber settings. */
   private final Subscriber globalSubscriber = new Subscriber();
@@ -54,34 +69,64 @@ public class PubSubConfiguration {
     return health;
   }
 
-  public ConcurrentMap<String, Subscriber> getSubscription() {
+  /**
+   * breaking change
+   * @return
+   */
+
+  // In the future, there should be no getters for user-provided subscription property map
+  public Map<String, Subscriber> getSubscription() {
     return this.subscription;
+/*    //Assert.notNull(this.fullyQualifiedSubscriptionProperties, "Please call initialize() prior to retrieving properties.");
+    System.out.println("********** DO NOT CALL THIS");
+    Map<String, Subscriber> stringMap = new HashMap<>();
+    for (ProjectSubscriptionName psn : this.fullyQualifiedSubscriptionProperties.keySet()) {
+      // fully qualified string, which may be different from before
+      stringMap.put(psn.toString(), this.fullyQualifiedSubscriptionProperties.get(psn));
+    }
+    return Collections.unmodifiableMap(stringMap);*/
+  }
+
+  public Map<ProjectSubscriptionName, Subscriber> getFullyQualifiedSubscriberProperties() {
+    Assert.notNull(this.fullyQualifiedSubscriptionProperties, "Please call initialize() prior to retrieving properties.");
+    return this.fullyQualifiedSubscriptionProperties;
+  }
+
+  /**
+   * Standardizes all subscription properties to be fully qualified.
+   */
+  public void initialize(String defaultProjectId) {
+    if (this.fullyQualifiedSubscriptionProperties != null) {
+      // TODO: log warning; should only be done once
+      return;
+    }
+
+    // TODO: re-key properties, see PR
+    System.out.println("****** initialize(); before turning fully qualified: " + this.subscription);
+
+    Map<ProjectSubscriptionName, Subscriber> props = new HashMap<>();
+    for (String subscriptionName : this.subscription.keySet()) {
+      System.out.println("*************** In initialize: subscription name = " + subscriptionName);
+      // Subscription name could be either short or fully qualified here.
+      ProjectSubscriptionName fullyQualifiedName =
+          PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, defaultProjectId);
+      props.put(fullyQualifiedName, this.subscription.get(subscriptionName));
+    }
+
+    System.out.println("****** HELLO! New properties: " + props);
+
+    this.fullyQualifiedSubscriptionProperties = Collections.unmodifiableMap(props);
   }
 
   public Subscriber getSubscriber(String name, String projectId) {
     ProjectSubscriptionName fullyQualifiedName =
         PubSubSubscriptionUtils.toProjectSubscriptionName(name, projectId);
-    String fullyQualifiedSubscriptionKey = fullyQualifiedName.toString();
 
-    if (this.subscription.containsKey(fullyQualifiedSubscriptionKey)) {
-      return this.subscription.get(fullyQualifiedSubscriptionKey);
+    if (this.fullyQualifiedSubscriptionProperties.containsKey(fullyQualifiedName)) {
+      return this.fullyQualifiedSubscriptionProperties.get(fullyQualifiedName);
     }
 
-    String subscriptionName = fullyQualifiedName.getSubscription();
-    String projectIdFromFullName = fullyQualifiedName.getProject();
-
-    // Check that subscription name is present in map and the current project Id matches
-    // the one parsed from the fully qualified name
-    if (this.subscription.containsKey(subscriptionName)
-        && projectIdFromFullName.equals(projectId)) {
-      this.subscription.putIfAbsent(
-          fullyQualifiedSubscriptionKey, this.subscription.get(subscriptionName));
-      this.subscription.remove(subscriptionName);
-      return this.subscription.get(fullyQualifiedSubscriptionKey);
-    }
-
-    return this.subscription.computeIfAbsent(
-        fullyQualifiedSubscriptionKey, k -> this.globalSubscriber);
+    return globalSubscriber;
   }
 
   /**
@@ -94,6 +139,7 @@ public class PubSubConfiguration {
    * @return flow control settings
    */
   public FlowControl computeSubscriberFlowControlSettings(
+      // Technically, the (String,String) signature can be deprecated in favor of using ProjectSubscriptionName. But out of scope rn.
       String subscriptionName, String projectId) {
     FlowControl flowControl = getSubscriber(subscriptionName, projectId).getFlowControl();
     FlowControl globalFlowControl = this.globalSubscriber.getFlowControl();
@@ -640,4 +686,6 @@ public class PubSubConfiguration {
       return this.flowControl;
     }
   }
+
+
 }

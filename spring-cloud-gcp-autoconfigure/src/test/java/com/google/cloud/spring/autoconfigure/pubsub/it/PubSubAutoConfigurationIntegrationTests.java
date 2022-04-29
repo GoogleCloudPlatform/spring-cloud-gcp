@@ -153,8 +153,11 @@ class PubSubAutoConfigurationIntegrationTests {
   void testSubscribe() {
     this.contextRunner.run(
         context -> {
+
           PubSubAdmin pubSubAdmin = context.getBean(PubSubAdmin.class);
           PubSubTemplate pubSubTemplate = context.getBean(PubSubTemplate.class);
+
+          String projectId = projectIdProvider.getProjectId();
 
           String topicName = "test-topic";
           String subscriptionName = "test-sub-2";
@@ -193,7 +196,7 @@ class PubSubAutoConfigurationIntegrationTests {
                   .setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore)
                   .build();
           assertThat(
-                  (FlowControlSettings) context.getBean("subscriberFlowControlSettings-test-sub-2"))
+                  (FlowControlSettings) context.getBean("subscriberFlowControlSettings-projects/" + projectId + "/subscriptions/test-sub-2"))
               .isEqualTo(flowControlSettings);
           assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(1L);
           assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(1L);
@@ -208,15 +211,15 @@ class PubSubAutoConfigurationIntegrationTests {
                       subscriptionName, projectIdProvider.getProjectId()))
               .isEqualTo(1);
           ThreadPoolTaskScheduler scheduler =
-              (ThreadPoolTaskScheduler) context.getBean("threadPoolScheduler_test-sub-2");
+              (ThreadPoolTaskScheduler) context.getBean("threadPoolScheduler_projects/" + projectId + "/subscriptions/test-sub-2");
           assertThat(scheduler).isNotNull();
-          assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-test-sub-2");
+          assertThat(scheduler.getThreadNamePrefix()).isEqualTo("gcp-pubsub-subscriber-projects/" + projectId + "/subscriptions/test-sub-2");
           assertThat(scheduler.isDaemon()).isTrue();
           assertThat(
                   (ThreadPoolTaskScheduler)
                       context.getBean("globalPubSubSubscriberThreadPoolScheduler"))
               .isNotNull();
-          assertThat((ExecutorProvider) context.getBean("subscriberExecutorProvider-test-sub-2"))
+          assertThat((ExecutorProvider) context.getBean("subscriberExecutorProvider-projects/" + projectId + "/subscriptions/test-sub-2"))
               .isNotNull();
           assertThat((ExecutorProvider) context.getBean("globalSubscriberExecutorProvider"))
               .isNotNull();

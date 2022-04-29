@@ -145,6 +145,8 @@ public class GcpPubSubAutoConfiguration {
       // for this particular case.
       this.finalCredentialsProvider = NoCredentialsProvider.create();
     }
+
+    this.gcpPubSubProperties.initialize(this.finalProjectIdProvider.getProjectId());
   }
 
   @Bean
@@ -509,17 +511,17 @@ public class GcpPubSubAutoConfiguration {
    * @param context application context
    */
   private void registerSelectiveSchedulerBeans(GenericApplicationContext context) {
-    Map<String, PubSubConfiguration.Subscriber> subscriberMap =
-        this.gcpPubSubProperties.getSubscription();
-    for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription :
-        subscriberMap.entrySet()) {
-      ProjectSubscriptionName fullSubscriptionName = getFullSubscriptionName(subscription.getKey());
-      String subscriptionName = fullSubscriptionName.getSubscription();
-      PubSubConfiguration.Subscriber selectiveSubscriber = subscriberMap.get(subscriptionName);
-      Integer selectiveExecutorThreads = selectiveSubscriber.getExecutorThreads();
+    Map<ProjectSubscriptionName, PubSubConfiguration.Subscriber> propertyMap =
+        this.gcpPubSubProperties.getFullyQualifiedSubscriberProperties();
+    // TODO halfway done, try to use fq where possiblel
+    for (ProjectSubscriptionName fullSubscriptionName : propertyMap.keySet()) {
+      //String subscriptionName = fullSubscriptionName.getSubscription();
+      PubSubConfiguration.Subscriber subscriberProps = propertyMap.get(fullSubscriptionName);
+      Integer selectiveExecutorThreads = subscriberProps.getExecutorThreads();
       if (selectiveExecutorThreads != null) {
-        String threadName = "gcp-pubsub-subscriber-" + subscriptionName;
-        String beanName = "threadPoolScheduler_" + subscriptionName;
+        String suffix = fullSubscriptionName.toString(); // will include slashes
+        String threadName = "gcp-pubsub-subscriber-" + suffix;
+        String beanName = "threadPoolScheduler_" + suffix;
         ThreadPoolTaskScheduler selectiveScheduler =
             createAndRegisterSchedulerBean(selectiveExecutorThreads, threadName, beanName, context);
         this.threadPoolTaskSchedulerMap.putIfAbsent(
@@ -567,21 +569,20 @@ public class GcpPubSubAutoConfiguration {
   }
 
   private void createAndRegisterSelectiveFlowControlSettings(GenericApplicationContext context) {
-    Map<String, PubSubConfiguration.Subscriber> subscriberMap =
-        this.gcpPubSubProperties.getSubscription();
-    for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription :
-        subscriberMap.entrySet()) {
-      ProjectSubscriptionName fullSubscriptionName = getFullSubscriptionName(subscription.getKey());
-      String subscriptionName = fullSubscriptionName.getSubscription();
+    Map<ProjectSubscriptionName, PubSubConfiguration.Subscriber> propertyMap =
+        this.gcpPubSubProperties.getFullyQualifiedSubscriberProperties();
+
+    for (ProjectSubscriptionName fullSubscriptionName : propertyMap.keySet()) {
+      String fullSubscriptionNameString = fullSubscriptionName.toString();
       PubSubConfiguration.FlowControl flowControl =
           this.gcpPubSubProperties.computeSubscriberFlowControlSettings(
-              subscriptionName, this.finalProjectIdProvider.getProjectId());
+              fullSubscriptionNameString, this.finalProjectIdProvider.getProjectId());
       FlowControlSettings flowControlSettings = buildFlowControlSettings(flowControl);
       if (flowControlSettings != null
           && !flowControlSettings.equals(this.globalFlowControlSettings)) {
         this.subscriberFlowControlSettingsMap.putIfAbsent(
-            fullSubscriptionName.toString(), flowControlSettings);
-        String beanName = "subscriberFlowControlSettings-" + subscriptionName;
+            fullSubscriptionNameString, flowControlSettings);
+        String beanName = "subscriberFlowControlSettings-" + fullSubscriptionNameString;
         context.registerBeanDefinition(
             beanName,
             BeanDefinitionBuilder.genericBeanDefinition(
@@ -600,7 +601,7 @@ public class GcpPubSubAutoConfiguration {
         ThreadPoolTaskScheduler scheduler = schedulerSet.getValue();
         ExecutorProvider executorProvider =
             createAndRegisterExecutorProvider(
-                "subscriberExecutorProvider-" + fullSubscriptionName.getSubscription(),
+                "subscriberExecutorProvider-" + fullyQualifiedName,
                 scheduler,
                 context);
         this.executorProviderMap.putIfAbsent(fullyQualifiedName, executorProvider);
@@ -620,19 +621,19 @@ public class GcpPubSubAutoConfiguration {
   }
 
   private void createAndRegisterSelectiveRetrySettings(GenericApplicationContext context) {
-    Map<String, PubSubConfiguration.Subscriber> subscriberMap =
-        this.gcpPubSubProperties.getSubscription();
-    for (Map.Entry<String, PubSubConfiguration.Subscriber> subscription :
-        subscriberMap.entrySet()) {
-      ProjectSubscriptionName fullyQualifiedName = getFullSubscriptionName(subscription.getKey());
-      String subscriptionName = fullyQualifiedName.getSubscription();
+    Map<ProjectSubscriptionName, PubSubConfiguration.Subscriber> propertyMap =
+        this.gcpPubSubProperties.getFullyQualifiedSubscriberProperties();
+
+    for (ProjectSubscriptionName fullSubscriptionName : propertyMap.keySet()) {
+      String fullSubscriptionNameString = fullSubscriptionName.toString();
+
       PubSubConfiguration.Retry retry =
           this.gcpPubSubProperties.computeSubscriberRetrySettings(
-              subscriptionName, this.finalProjectIdProvider.getProjectId());
+              fullSubscriptionNameString, this.finalProjectIdProvider.getProjectId());
       RetrySettings retrySettings = buildRetrySettings(retry);
       if (retrySettings != null && !retrySettings.equals(this.globalRetrySettings)) {
-        this.subscriberRetrySettingsMap.putIfAbsent(fullyQualifiedName.toString(), retrySettings);
-        String beanName = "subscriberRetrySettings-" + subscriptionName;
+        this.subscriberRetrySettingsMap.putIfAbsent(fullSubscriptionNameString, retrySettings);
+        String beanName = "subscriberRetrySettings-" + fullSubscriptionNameString;
         context.registerBeanDefinition(
             beanName,
             BeanDefinitionBuilder.genericBeanDefinition(RetrySettings.class, () -> retrySettings)
