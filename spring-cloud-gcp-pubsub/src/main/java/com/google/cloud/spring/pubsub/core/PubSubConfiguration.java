@@ -104,18 +104,20 @@ public class PubSubConfiguration {
     // TODO: re-key properties, see PR
     System.out.println("****** initialize(); before turning fully qualified: " + this.subscription);
 
-    Map<ProjectSubscriptionName, Subscriber> props = new HashMap<>();
-    for (String subscriptionName : this.subscription.keySet()) {
-      System.out.println("*************** In initialize: subscription name = " + subscriptionName);
-      // Subscription name could be either short or fully qualified here.
+    Map<ProjectSubscriptionName, Subscriber> fullyQualifiedProps = new HashMap<>();
+    for (String subscriptionKey : this.subscription.keySet()) {
+      System.out.println("*************** In initialize: subscription name = " + subscriptionKey);
+      // Subscription name is either a valid short name, or a made-up name with fully-qualified provided as a property
+      Subscriber subProps = this.subscription.get(subscriptionKey);
+      String realSubscriptionName = subProps.fullyQualifiedName == null ? subscriptionKey : subProps.fullyQualifiedName;
       ProjectSubscriptionName fullyQualifiedName =
-          PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, defaultProjectId);
-      props.put(fullyQualifiedName, this.subscription.get(subscriptionName));
+          PubSubSubscriptionUtils.toProjectSubscriptionName(realSubscriptionName, defaultProjectId);
+      fullyQualifiedProps.put(fullyQualifiedName, subProps);
     }
 
-    System.out.println("****** HELLO! New properties: " + props);
+    System.out.println("****** HELLO! New properties: " + fullyQualifiedProps);
 
-    this.fullyQualifiedSubscriptionProperties = Collections.unmodifiableMap(props);
+    this.fullyQualifiedSubscriptionProperties = Collections.unmodifiableMap(fullyQualifiedProps);
   }
 
   public Subscriber getSubscriber(String name, String projectId) {
@@ -316,6 +318,9 @@ public class PubSubConfiguration {
   /** Subscriber settings. */
   public static class Subscriber {
 
+    /** Fully qualified subscription name to use as key in property maps */
+    private String fullyQualifiedName;
+
     /** Number of threads used by every subscriber. */
     private Integer executorThreads;
 
@@ -339,6 +344,14 @@ public class PubSubConfiguration {
 
     /** RPC status codes that should be retried when pulling messages. */
     private Code[] retryableCodes = null;
+
+    public String getFullyQualifiedName() {
+      return fullyQualifiedName;
+    }
+
+    public void setFullyQualifiedName(String fullyQualifiedName) {
+      this.fullyQualifiedName = fullyQualifiedName;
+    }
 
     public Retry getRetry() {
       return this.retry;
@@ -400,6 +413,7 @@ public class PubSubConfiguration {
     public void setMaxAcknowledgementThreads(int maxAcknowledgementThreads) {
       this.maxAcknowledgementThreads = maxAcknowledgementThreads;
     }
+
   }
 
   /** Health Check settings. */
