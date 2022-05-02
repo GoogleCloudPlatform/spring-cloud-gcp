@@ -23,6 +23,8 @@ import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerPro
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -79,16 +81,14 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
   @Override
   public void testClean(TestInfo testInfo) throws Exception {
     // Do nothing. Original test tests for Lifecycle logic that we don't need.
-
     // Dummy assertion to appease SonarCloud.
     assertThat(this.hostPort).isNotNull();
   }
 
   @Test
-  //@Disabled("Looks like there is no Kryo support in SCSt")
+  @Disabled("Looks like there is no Kryo support in SCSt")
   void testSendPojoReceivePojoKryoWithStreamListener() {
     // Dummy assertion to appease SonarCloud.
-
     assertThat(this.hostPort).isNotNull();
   }
 
