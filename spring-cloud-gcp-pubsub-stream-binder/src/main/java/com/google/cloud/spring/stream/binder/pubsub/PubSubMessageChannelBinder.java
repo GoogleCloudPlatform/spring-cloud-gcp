@@ -18,6 +18,7 @@ package com.google.cloud.spring.stream.binder.pubsub;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
+import com.google.cloud.spring.pubsub.integration.PubSubHeaderMapper;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubMessageSource;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
@@ -75,8 +76,15 @@ public class PubSubMessageChannelBinder
       ExtendedProducerProperties<PubSubProducerProperties> producerProperties,
       MessageChannel errorChannel) {
 
-    PubSubMessageHandler messageHandler =
-        new PubSubMessageHandler(this.pubSubTemplate, destination.getName());
+    PubSubMessageHandler messageHandler = new PubSubMessageHandler(this.pubSubTemplate, destination.getName());
+
+    PubSubProducerProperties props = producerProperties.getExtension();
+    if (props != null && props.getAllowedHeaders() != null) {
+      PubSubHeaderMapper headerMapper = new PubSubHeaderMapper();
+      headerMapper.setOutboundHeaderPatterns(props.getAllowedHeaders());
+      messageHandler.setHeaderMapper(headerMapper);
+    }
+
     messageHandler.setBeanFactory(getBeanFactory());
     messageHandler.setSync(producerProperties.getExtension().isSync());
     return messageHandler;
@@ -90,6 +98,13 @@ public class PubSubMessageChannelBinder
 
     PubSubInboundChannelAdapter adapter =
         new PubSubInboundChannelAdapter(this.pubSubTemplate, destination.getName());
+
+    PubSubConsumerProperties props = properties.getExtension();
+    if (props != null && props.getAllowedHeaders() != null) {
+      PubSubHeaderMapper headerMapper = new PubSubHeaderMapper();
+      headerMapper.setInboundHeaderPatterns(props.getAllowedHeaders());
+      adapter.setHeaderMapper(headerMapper);
+    }
 
     if (healthTrackerRegistry != null) {
       adapter.setHealthTrackerRegistry(healthTrackerRegistry);
