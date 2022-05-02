@@ -3710,7 +3710,35 @@ spring.cloud.stream.bindings.events.group=consumerGroup1</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="endpoint-customization"><a class="anchor" href="#endpoint-customization"></a><a class="link" href="#endpoint-customization">13.2.4. Endpoint Customization</a></h4>
+<h4 id="header-mapping-2"><a class="anchor" href="#header-mapping-2"></a><a class="link" href="#header-mapping-2">13.2.4. Header Mapping</a></h4>
+<div class="paragraph">
+<p>You can filter incoming and outgoing message headers with <code>allowHeaders</code> property.
+For example, for a consumer to allow only two headers, provide a comma separated list like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.properties</div>
+<div class="content">
+<pre>spring.cloud.stream.gcp.pubsub.bindings.&lt;consumerFunction&gt;-in-0.consumer.allowedHeaders=allowed1, allowed2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where &lt;consumerFunction&gt; should be replaced by the method which is consuming/reading messages from Cloud Pub/Sub and allowed1, allowed2 is the comma separated list of headers that the user wants to keep.</p>
+</div>
+<div class="paragraph">
+<p>A similar style is applicable for producers as well. For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.properties</div>
+<div class="content">
+<pre>spring.cloud.stream.gcp.pubsub.bindings.&lt;producerFunction&gt;-out-0.producer.allowedHeaders=allowed3,allowed4</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where &lt;producerFunction&gt; should be replaced by the method which is producing/sending messages to Cloud Pub/Sub and allowed3, allowed4 is the comma separated list of headers that user wants to map. All other headers will be removed before the message is sent to Cloud Pub/Sub.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="endpoint-customization"><a class="anchor" href="#endpoint-customization"></a><a class="link" href="#endpoint-customization">13.2.5. Endpoint Customization</a></h4>
 <div class="paragraph">
 <p>You may customize channel routing by defining a <code>ConsumerEndpointCustomizer</code> in your autoconfiguration. This is useful if you want to customize the default configurations provided by the Pub/Sub Spring Cloud Stream Binder.</p>
 </div>
