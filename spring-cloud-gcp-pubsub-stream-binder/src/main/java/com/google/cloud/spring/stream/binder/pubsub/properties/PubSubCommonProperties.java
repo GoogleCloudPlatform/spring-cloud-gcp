@@ -32,4 +32,15 @@ public class PubSubCommonProperties {
   public void setAutoCreateResources(boolean autoCreateResources) {
     this.autoCreateResources = autoCreateResources;
   }
+
+  private  String[] allowedHeaders;
+
+  public  String[] getAllowedHeaders() {
+    return this.allowedHeaders;
+  }
+
+  public void setAllowedHeaders(String[] headers) {
+    this.allowedHeaders = headers;
+  }
+
 }
