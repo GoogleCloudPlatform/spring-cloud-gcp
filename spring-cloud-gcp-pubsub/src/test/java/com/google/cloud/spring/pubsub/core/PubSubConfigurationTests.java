@@ -20,6 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.rpc.StatusCode.Code;
+import com.google.cloud.spring.pubsub.core.PubSubConfiguration.Subscriber;
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import java.util.Map;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Test;
 
 class PubSubConfigurationTests {
@@ -27,6 +31,7 @@ class PubSubConfigurationTests {
   @Test
   void testDefaultHealthProperties() {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+    pubSubConfiguration.initialize("projectId");
     PubSubConfiguration.Health health = pubSubConfiguration.getHealth();
 
     assertThat(health.getLagThreshold()).isNull();
@@ -38,6 +43,7 @@ class PubSubConfigurationTests {
   @Test
   void testDefaultSubscriberProperties() {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+    pubSubConfiguration.initialize("projectId");
     PubSubConfiguration.Subscriber subscriber = pubSubConfiguration.getSubscriber();
     PubSubConfiguration.FlowControl flowControl = subscriber.getFlowControl();
     PubSubConfiguration.Retry retrySettings = subscriber.getRetry();
@@ -77,6 +83,8 @@ class PubSubConfigurationTests {
     subscriber.setRetryableCodes(
         new Code[] {Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL});
 
+    pubSubConfiguration.initialize("projectId");
+
     assertThat(subscriber.getExecutorThreads()).isEqualTo(1);
     assertThat(subscriber.getMaxAcknowledgementThreads()).isEqualTo(3);
     assertThat(subscriber.getParallelPullCount()).isEqualTo(1);
@@ -97,6 +105,8 @@ class PubSubConfigurationTests {
     health.setLookUpInterval(6);
     health.setExecutorThreads(5);
 
+    pubSubConfiguration.initialize("projectId");
+
     assertThat(pubSubConfiguration.getHealth().getLagThreshold()).isEqualTo(3);
     assertThat(pubSubConfiguration.getHealth().getBacklogThreshold()).isEqualTo(4);
     assertThat(pubSubConfiguration.getHealth().getLookUpInterval()).isEqualTo(6);
@@ -113,6 +123,8 @@ class PubSubConfigurationTests {
     flowControl.setMaxOutstandingElementCount(1L);
     flowControl.setMaxOutstandingRequestBytes(2L);
 
+    pubSubConfiguration.initialize("projectId");
+
     assertThat(flowControl.getLimitExceededBehavior())
         .isEqualTo(FlowController.LimitExceededBehavior.Ignore);
     assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(1L);
@@ -122,6 +134,7 @@ class PubSubConfigurationTests {
   @Test
   void testComputeFlowControlSettings_returnCustom() {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     PubSubConfiguration.FlowControl selectiveFlowControl = subscriber.getFlowControl();
 
@@ -129,9 +142,10 @@ class PubSubConfigurationTests {
     selectiveFlowControl.setMaxOutstandingElementCount(1L);
     selectiveFlowControl.setMaxOutstandingRequestBytes(2L);
 
-    pubSubConfiguration
-        .getSubscription()
+    getUserSubscriptionMap(pubSubConfiguration)
         .put("projects/projectId/subscriptions/subscription-name", subscriber);
+    pubSubConfiguration.initialize("projectId");
+
     PubSubConfiguration.FlowControl result =
         pubSubConfiguration.computeSubscriberFlowControlSettings("subscription-name", "projectId");
 
@@ -139,6 +153,15 @@ class PubSubConfigurationTests {
         .isEqualTo(FlowController.LimitExceededBehavior.Ignore);
     assertThat(result.getMaxOutstandingElementCount()).isEqualTo(1L);
     assertThat(result.getMaxOutstandingRequestBytes()).isEqualTo(2L);
+  }
+
+  private Map<String, Subscriber> getUserSubscriptionMap(PubSubConfiguration config) {
+    try {
+      return (Map<String, Subscriber>) FieldUtils.readField(config, "subscription", true);
+    } catch (IllegalAccessException e) {
+      System.out.println("Failed to read private field PubSubConfiguration.subscription");
+      throw new RuntimeException(e);
+    }
   }
 
   @Test
@@ -150,6 +173,8 @@ class PubSubConfigurationTests {
     globalFlowControl.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore);
     globalFlowControl.setMaxOutstandingElementCount(1L);
     globalFlowControl.setMaxOutstandingRequestBytes(2L);
+
+    pubSubConfiguration.initialize("projectId");
 
     PubSubConfiguration.FlowControl result =
         pubSubConfiguration.computeSubscriberFlowControlSettings("subscription-name", "projectId");
@@ -165,9 +190,11 @@ class PubSubConfigurationTests {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setParallelPullCount(2);
-    pubSubConfiguration
-        .getSubscription()
+    getUserSubscriptionMap(pubSubConfiguration)
         .put("projects/projectId/subscriptions/subscription-name", subscriber);
+
+    pubSubConfiguration.initialize("projectId");
+
     Integer result = pubSubConfiguration.computeParallelPullCount("subscription-name", "projectId");
 
     assertThat(result).isEqualTo(2);
@@ -178,6 +205,7 @@ class PubSubConfigurationTests {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
     PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
     globalSubscriber.setParallelPullCount(2);
+    pubSubConfiguration.initialize("projectId");
 
     Integer result = pubSubConfiguration.computeParallelPullCount("subscription-name", "projectId");
 
@@ -189,9 +217,11 @@ class PubSubConfigurationTests {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setPullEndpoint("endpoint");
-    pubSubConfiguration
-        .getSubscription()
+    getUserSubscriptionMap(pubSubConfiguration)
         .put("projects/projectId/subscriptions/subscription-name", subscriber);
+
+    pubSubConfiguration.initialize("projectId");
+
     String result = pubSubConfiguration.computePullEndpoint("subscription-name", "projectId");
 
     assertThat(result).isEqualTo("endpoint");
@@ -202,6 +232,7 @@ class PubSubConfigurationTests {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
     PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
     globalSubscriber.setPullEndpoint("endpoint");
+    pubSubConfiguration.initialize("projectId");
 
     String result = pubSubConfiguration.computePullEndpoint("subscription-name", "projectId");
 
@@ -213,9 +244,11 @@ class PubSubConfigurationTests {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setMaxAckExtensionPeriod(1L);
-    pubSubConfiguration
-        .getSubscription()
+    getUserSubscriptionMap(pubSubConfiguration)
         .put("projects/projectId/subscriptions/subscription-name", subscriber);
+
+    pubSubConfiguration.initialize("projectId");
+
     Long result =
         pubSubConfiguration.computeMaxAckExtensionPeriod("subscription-name", "projectId");
 
@@ -227,6 +260,7 @@ class PubSubConfigurationTests {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
     PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
     globalSubscriber.setMaxAckExtensionPeriod(2L);
+    pubSubConfiguration.initialize("projectId");
 
     Long result =
         pubSubConfiguration.computeMaxAckExtensionPeriod("subscription-name", "projectId");
@@ -237,6 +271,7 @@ class PubSubConfigurationTests {
   @Test
   void testComputeMaxAckExtensionPeriod_returnDefault() {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+    pubSubConfiguration.initialize("projectId");
 
     Long result =
         pubSubConfiguration.computeMaxAckExtensionPeriod("subscription-name", "projectId");
@@ -259,6 +294,8 @@ class PubSubConfigurationTests {
     retrySettings.setInitialRpcTimeoutSeconds(11L);
     retrySettings.setRpcTimeoutMultiplier(14.0);
     retrySettings.setMaxRpcTimeoutSeconds(9L);
+
+    pubSubConfiguration.initialize("projectId");
 
     assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(10L);
     assertThat(retrySettings.getInitialRetryDelaySeconds()).isEqualTo(15L);
@@ -287,9 +324,11 @@ class PubSubConfigurationTests {
     retry.setRpcTimeoutMultiplier(14.0);
     retry.setMaxRpcTimeoutSeconds(9L);
 
-    pubSubConfiguration
-        .getSubscription()
+    getUserSubscriptionMap(pubSubConfiguration)
         .put("projects/projectId/subscriptions/subscription-name", subscriber);
+
+    pubSubConfiguration.initialize("projectId");
+
     PubSubConfiguration.Retry result =
         pubSubConfiguration.computeSubscriberRetrySettings("subscription-name", "projectId");
 
@@ -320,6 +359,8 @@ class PubSubConfigurationTests {
     retry.setRpcTimeoutMultiplier(14.0);
     retry.setMaxRpcTimeoutSeconds(9L);
 
+    pubSubConfiguration.initialize("projectId");
+
     PubSubConfiguration.Retry result =
         pubSubConfiguration.computeSubscriberRetrySettings("subscription-name", "projectId");
 
@@ -339,6 +380,7 @@ class PubSubConfigurationTests {
     PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
 
     globalSubscriber.setRetryableCodes(new Code[] {Code.INTERNAL});
+    pubSubConfiguration.initialize("projectId");
 
     assertThat(pubSubConfiguration.computeRetryableCodes("subscription-name", "projectId"))
         .containsExactly(Code.INTERNAL);
@@ -349,31 +391,29 @@ class PubSubConfigurationTests {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setRetryableCodes(new Code[] {Code.INTERNAL});
-    pubSubConfiguration
-        .getSubscription()
+    getUserSubscriptionMap(pubSubConfiguration)
         .put("projects/projectId/subscriptions/subscription-name", subscriber);
+    pubSubConfiguration.initialize("projectId");
 
     assertThat(pubSubConfiguration.computeRetryableCodes("subscription-name", "projectId"))
         .containsExactly(Code.INTERNAL);
   }
 
+  // ATTENTION: this test shows a change in behavior. In the past, specific subscription properties
+  // would get derived from global properties if the subscription itself had none defined by user.
+  // Now the fully-qualified subscription map only contains user-specified properties.
   @Test
   void testSubscriberMapProperties_defaultOrGlobal_addToMap() {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+    pubSubConfiguration.initialize("projectId");
 
-    assertThat(pubSubConfiguration.getSubscription()).isEmpty();
+    assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).isEmpty();
     assertThat(
             pubSubConfiguration
                 .getSubscriber("subscription-name", "projectId")
                 .getExecutorThreads())
         .isNull();
-    assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
-    assertThat(
-            pubSubConfiguration
-                .getSubscription()
-                .get("projects/projectId/subscriptions/subscription-name")
-                .getExecutorThreads())
-        .isNull();
+    assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).hasSize(0);
   }
 
   @Test
@@ -382,19 +422,22 @@ class PubSubConfigurationTests {
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setExecutorThreads(8);
 
-    pubSubConfiguration.getSubscription().put("subscription-name", subscriber);
+    getUserSubscriptionMap(pubSubConfiguration).put("subscription-name", subscriber);
 
-    assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
+    pubSubConfiguration.initialize("projectId");
+
+    assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).hasSize(1);
     assertThat(
             pubSubConfiguration
                 .getSubscriber("subscription-name", "projectId")
                 .getExecutorThreads())
         .isEqualTo(8);
-    assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
+    // asserts that map did not change from a getter. Might not be needed now that map is immutable.
+    assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).hasSize(1);
     assertThat(
             pubSubConfiguration
-                .getSubscription()
-                .get("projects/projectId/subscriptions/subscription-name")
+                .getFullyQualifiedSubscriberProperties()
+                .get(ProjectSubscriptionName.parse("projects/projectId/subscriptions/subscription-name"))
                 .getExecutorThreads())
         .isEqualTo(8);
   }
@@ -405,11 +448,12 @@ class PubSubConfigurationTests {
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setExecutorThreads(8);
 
-    pubSubConfiguration
-        .getSubscription()
+    getUserSubscriptionMap(pubSubConfiguration)
         .put("projects/projectId/subscriptions/subscription-name", subscriber);
 
-    assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
+    pubSubConfiguration.initialize("projectId");
+
+    assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).hasSize(1);
     assertThat(
             pubSubConfiguration
                 .getSubscriber("projects/projectId/subscriptions/subscription-name", "projectId")
@@ -417,8 +461,8 @@ class PubSubConfigurationTests {
         .isEqualTo(8);
     assertThat(
             pubSubConfiguration
-                .getSubscription()
-                .get("projects/projectId/subscriptions/subscription-name")
+                .getFullyQualifiedSubscriberProperties()
+                .get(ProjectSubscriptionName.parse("projects/projectId/subscriptions/subscription-name"))
                 .getExecutorThreads())
         .isEqualTo(8);
   }
@@ -429,11 +473,12 @@ class PubSubConfigurationTests {
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setExecutorThreads(8);
 
-    pubSubConfiguration
-        .getSubscription()
+    getUserSubscriptionMap(pubSubConfiguration)
         .put("projects/otherProjectId/subscriptions/subscription-name", subscriber);
 
-    assertThat(pubSubConfiguration.getSubscription()).hasSize(1);
+    pubSubConfiguration.initialize("projectId");
+
+    assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).hasSize(1);
     assertThat(
             pubSubConfiguration
                 .getSubscriber(
@@ -442,8 +487,8 @@ class PubSubConfigurationTests {
         .isEqualTo(8);
     assertThat(
             pubSubConfiguration
-                .getSubscription()
-                .get("projects/otherProjectId/subscriptions/subscription-name")
+                .getFullyQualifiedSubscriberProperties()
+                .get(ProjectSubscriptionName.parse("projects/otherProjectId/subscriptions/subscription-name"))
                 .getExecutorThreads())
         .isEqualTo(8);
   }
@@ -454,6 +499,8 @@ class PubSubConfigurationTests {
     PubSubConfiguration.Publisher publisher = pubSubConfiguration.getPublisher();
     PubSubConfiguration.Batching batching = publisher.getBatching();
     PubSubConfiguration.Retry retrySettings = publisher.getRetry();
+
+    pubSubConfiguration.initialize("projectId");
 
     assertThat(publisher.getExecutorThreads()).isEqualTo(4);
     assertThat(publisher.getEnableMessageOrdering()).isNull();
@@ -484,6 +531,8 @@ class PubSubConfigurationTests {
     publisher.setEnableMessageOrdering(true);
     publisher.setEndpoint("fake-endpoint");
 
+    pubSubConfiguration.initialize("projectId");
+
     assertThat(publisher.getExecutorThreads()).isEqualTo(5);
     assertThat(publisher.getEnableMessageOrdering()).isTrue();
     assertThat(publisher.getEndpoint()).isEqualTo("fake-endpoint");
@@ -503,6 +552,8 @@ class PubSubConfigurationTests {
     flowControl.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore);
     flowControl.setMaxOutstandingElementCount(6L);
     flowControl.setMaxOutstandingRequestBytes(3L);
+
+    pubSubConfiguration.initialize("projectId");
 
     assertThat(batching.getElementCountThreshold()).isEqualTo(1L);
     assertThat(batching.getRequestByteThreshold()).isEqualTo(5L);
@@ -528,6 +579,8 @@ class PubSubConfigurationTests {
     retrySettings.setInitialRpcTimeoutSeconds(6L);
     retrySettings.setRpcTimeoutMultiplier(12.0);
     retrySettings.setMaxRpcTimeoutSeconds(8L);
+
+    pubSubConfiguration.initialize("projectId");
 
     assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(3L);
     assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(12.0);

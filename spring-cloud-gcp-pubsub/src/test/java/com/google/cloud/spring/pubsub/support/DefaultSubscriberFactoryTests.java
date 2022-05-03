@@ -74,6 +74,14 @@ class DefaultSubscriberFactoryTests {
 
   @Mock private HealthTrackerRegistry healthTrackerRegistry;
 
+  private PubSubConfiguration pubSubConfig;
+
+  @BeforeEach
+  void setUp() {
+    this.pubSubConfig = new PubSubConfiguration();
+    this.pubSubConfig.initialize("some-project");
+  }
+
   @Test
   void testNewSubscriber() {
     DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust");
@@ -89,7 +97,7 @@ class DefaultSubscriberFactoryTests {
   void testNewSubscriber_constructorWithPubSubConfiguration() {
     GcpProjectIdProvider projectIdProvider = () -> "angeldust";
     DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
+        new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
 
     Subscriber subscriber = factory.createSubscriber("midnight cowboy", (message, consumer) -> {});
@@ -252,7 +260,7 @@ class DefaultSubscriberFactoryTests {
   void testGetRetrySettings_notPresentInMap_pickGlobal() {
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
+        new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
     RetrySettings expectedRetrySettings =
         RetrySettings.newBuilder()
             .setTotalTimeout(Duration.ofSeconds(10L))
@@ -292,7 +300,7 @@ class DefaultSubscriberFactoryTests {
             .setMaxRpcTimeout(Duration.ofSeconds(10L))
             .build();
     DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(() -> "project", new PubSubConfiguration());
+        new DefaultSubscriberFactory(() -> "project", this.pubSubConfig);
     factory.setSubscriberStubRetrySettings(expectedRetrySettings);
 
     SubscriberStubSettings subscriberStubSettings = factory.buildGlobalSubscriberStubSettings();
@@ -450,7 +458,7 @@ class DefaultSubscriberFactoryTests {
   void testGetMaxAckExtensionPeriod_newConfiguration() {
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
+        new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
 
     assertThat(factory.getMaxAckExtensionPeriod("subscription-name"))
         .isEqualTo(Duration.ofSeconds(0L));
@@ -482,7 +490,7 @@ class DefaultSubscriberFactoryTests {
   void testGetParallelPullCount_newConfiguration() {
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
+        new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
 
     assertThat(factory.getPullCount("subscription-name")).isNull();
   }
@@ -512,7 +520,7 @@ class DefaultSubscriberFactoryTests {
   @Test
   void testGetPullEndpoint_newConfiguration() {
     DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(() -> "project", new PubSubConfiguration());
+        new DefaultSubscriberFactory(() -> "project", this.pubSubConfig);
 
     assertThat(factory.getPullEndpoint("subscription-name")).isNull();
   }
@@ -521,7 +529,7 @@ class DefaultSubscriberFactoryTests {
   void testBuildGlobalSubscriberStubSettings_pullEndpoint_pickUserProvidedBean()
       throws IOException {
     DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(() -> "project", new PubSubConfiguration());
+        new DefaultSubscriberFactory(() -> "project", this.pubSubConfig);
     factory.setPullEndpoint("my-endpoint");
     SubscriberStubSettings globalSubscriberSettings = factory.buildGlobalSubscriberStubSettings();
     assertThat(globalSubscriberSettings.getEndpoint()).isEqualTo("my-endpoint");
@@ -544,7 +552,7 @@ class DefaultSubscriberFactoryTests {
       throws IllegalAccessException, IOException {
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
+        new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
     factory.setRetryableCodes(new Code[] {Code.INTERNAL});
 
     assertThat(FieldUtils.readField(factory, "retryableCodes", true))
@@ -575,7 +583,7 @@ class DefaultSubscriberFactoryTests {
       throws IOException, IllegalAccessException {
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
+        new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
     factory.setRetryableCodes(new Code[] {Code.INTERNAL});
 
     assertThat(FieldUtils.readField(factory, "retryableCodes", true))
@@ -607,7 +615,7 @@ class DefaultSubscriberFactoryTests {
 
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
+        new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
     factory.setChannelProvider(FixedTransportChannelProvider.create(this.mockTransportChannel));
     factory.setCredentialsProvider(() -> NoCredentials.getInstance());
 
@@ -624,7 +632,7 @@ class DefaultSubscriberFactoryTests {
 
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
+        new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
     factory.setChannelProvider(FixedTransportChannelProvider.create(this.mockTransportChannel));
     factory.setCredentialsProvider(() -> NoCredentials.getInstance());
 
@@ -636,7 +644,7 @@ class DefaultSubscriberFactoryTests {
   void createSubscriberStubFailsOnBadCredentials() throws IOException {
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(projectIdProvider, new PubSubConfiguration());
+        new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
     factory.setChannelProvider(FixedTransportChannelProvider.create(this.mockTransportChannel));
 
     CredentialsProvider mockCredentialsProvider = mock(CredentialsProvider.class);

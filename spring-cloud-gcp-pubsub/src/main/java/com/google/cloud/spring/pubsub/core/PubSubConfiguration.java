@@ -38,10 +38,10 @@ public class PubSubConfiguration {
 
   private static final Long DEFAULT_MAX_ACK_EXTENSION_PERIOD = 0L;
 
-  /** Automatically extracted user-provided properties. Can contain mixed, short and fully qualified
+  /** Automatically extracted user-provided properties. Contains only short subscription keys
    *  user-provided properties, therefore do not use except in initialize().
    */
-  private final Map<String, Subscriber> subscription = new HashMap<>();
+  private Map<String, Subscriber> subscription = new HashMap<>();
 
   /** Properties keyed by fully qualified subscription name.
    * Initialized once; effectively a singleton.
@@ -69,22 +69,26 @@ public class PubSubConfiguration {
     return health;
   }
 
-  /**
-   * breaking change
-   * @return
-   */
+ // TODO: In the future, there should be no getters for user-provided subscription property map
 
-  // In the future, there should be no getters for user-provided subscription property map
-  public Map<String, Subscriber> getSubscription() {
+/*  *//**
+   * Spring Framework uses reflection, so will be able to get this
+   *//*
+  Map<String, Subscriber> getSubscription() {
+    System.out.println("$$$$$$$$$$$$$$$$$ ******* DO NOT CALL THIS *****************");
     return this.subscription;
-/*    //Assert.notNull(this.fullyQualifiedSubscriptionProperties, "Please call initialize() prior to retrieving properties.");
-    System.out.println("********** DO NOT CALL THIS");
-    Map<String, Subscriber> stringMap = new HashMap<>();
-    for (ProjectSubscriptionName psn : this.fullyQualifiedSubscriptionProperties.keySet()) {
-      // fully qualified string, which may be different from before
-      stringMap.put(psn.toString(), this.fullyQualifiedSubscriptionProperties.get(psn));
-    }
-    return Collections.unmodifiableMap(stringMap);*/
+  }*/
+
+  /**
+   * This method will be called by Spring Framework when binding user properties.
+   * Also potentially useful for tests.
+   * @param map map of user-defined properties.
+   */
+  public void setSubscription(Map<String, Subscriber> map) {
+    Assert.isNull(this.fullyQualifiedSubscriptionProperties,
+        "Pub/Sub properties have already been initialized; cannot update subscription properties");
+
+    this.subscription = map;
   }
 
   public Map<ProjectSubscriptionName, Subscriber> getFullyQualifiedSubscriberProperties() {
@@ -121,6 +125,8 @@ public class PubSubConfiguration {
   }
 
   public Subscriber getSubscriber(String name, String projectId) {
+    Assert.notNull(this.fullyQualifiedSubscriptionProperties, "Please call initialize() prior to retrieving properties.");
+
     ProjectSubscriptionName fullyQualifiedName =
         PubSubSubscriptionUtils.toProjectSubscriptionName(name, projectId);
 
