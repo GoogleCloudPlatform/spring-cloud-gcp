@@ -31,6 +31,7 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.BeforeAll;
@@ -192,7 +193,7 @@ class PubSubAutoConfigurationIntegrationTests {
           GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
           PubSubConfiguration.FlowControl flowControl =
               gcpPubSubProperties.computeSubscriberFlowControlSettings(
-                  subscriptionName, projectId);
+                  ProjectSubscriptionName.of(subscriptionName, projectId));
           FlowControlSettings flowControlSettings =
               FlowControlSettings.newBuilder()
                   .setMaxOutstandingElementCount(1L)

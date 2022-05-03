@@ -20,13 +20,9 @@ import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.pubsub.v1.ProjectSubscriptionName;
-import com.google.pubsub.v1.Subscription;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
 import org.springframework.util.Assert;
 
 /** Properties for Publisher or Subscriber specific configurations. */
@@ -69,19 +65,10 @@ public class PubSubConfiguration {
     return health;
   }
 
- // TODO: In the future, there should be no getters for user-provided subscription property map
-
-/*  *//**
-   * Spring Framework uses reflection, so will be able to get this
-   *//*
-  Map<String, Subscriber> getSubscription() {
-    System.out.println("$$$$$$$$$$$$$$$$$ ******* DO NOT CALL THIS *****************");
-    return this.subscription;
-  }*/
-
   /**
    * This method will be called by Spring Framework when binding user properties.
    * Also potentially useful for tests.
+   *
    * @param map map of user-defined properties.
    */
   public void setSubscription(Map<String, Subscriber> map) {
@@ -124,14 +111,23 @@ public class PubSubConfiguration {
     this.fullyQualifiedSubscriptionProperties = Collections.unmodifiableMap(fullyQualifiedProps);
   }
 
+  /**
+   * @Deprecated use {@link #getSubscriptionProperties(ProjectSubscriptionName)} instead.
+   *
+   * @param name short subscription name
+   * @param projectId subscription project name
+   * @return user-provided subscription properties
+   */
+  @Deprecated
   public Subscriber getSubscriber(String name, String projectId) {
+    return getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(name, projectId));
+  }
+
+  public Subscriber getSubscriptionProperties(ProjectSubscriptionName psn) {
     Assert.notNull(this.fullyQualifiedSubscriptionProperties, "Please call initialize() prior to retrieving properties.");
 
-    ProjectSubscriptionName fullyQualifiedName =
-        PubSubSubscriptionUtils.toProjectSubscriptionName(name, projectId);
-
-    if (this.fullyQualifiedSubscriptionProperties.containsKey(fullyQualifiedName)) {
-      return this.fullyQualifiedSubscriptionProperties.get(fullyQualifiedName);
+    if (this.fullyQualifiedSubscriptionProperties.containsKey(psn)) {
+      return this.fullyQualifiedSubscriptionProperties.get(psn);
     }
 
     return globalSubscriber;
@@ -142,15 +138,13 @@ public class PubSubConfiguration {
    * both global and subscription-specific properties are set. If subscription-specific settings are
    * not set then global settings are picked.
    *
-   * @param subscriptionName subscription name
-   * @param projectId project id
-   * @return flow control settings
+   * @param psn Fully qualified subscription name
+   * @return flow control settings defaulting to global where not provided
    */
-  public FlowControl computeSubscriberFlowControlSettings(
-      // Technically, the (String,String) signature can be deprecated in favor of using ProjectSubscriptionName. But out of scope rn.
-      String subscriptionName, String projectId) {
-    FlowControl flowControl = getSubscriber(subscriptionName, projectId).getFlowControl();
+  public FlowControl computeSubscriberFlowControlSettings(ProjectSubscriptionName psn) {
+    FlowControl flowControl = getSubscriptionProperties(psn).getFlowControl();
     FlowControl globalFlowControl = this.globalSubscriber.getFlowControl();
+    // it's possible for flowControl and globalFlowControl to be the same object
     if (flowControl.getMaxOutstandingRequestBytes() == null) {
       flowControl.setMaxOutstandingRequestBytes(globalFlowControl.getMaxOutstandingRequestBytes());
     }

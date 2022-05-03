@@ -142,12 +142,13 @@ class PubSubConfigurationTests {
     selectiveFlowControl.setMaxOutstandingElementCount(1L);
     selectiveFlowControl.setMaxOutstandingRequestBytes(2L);
 
+    ProjectSubscriptionName psn = ProjectSubscriptionName.parse("projects/projectId/subscriptions/subscription-name");
     getUserSubscriptionMap(pubSubConfiguration)
         .put("projects/projectId/subscriptions/subscription-name", subscriber);
     pubSubConfiguration.initialize("projectId");
 
     PubSubConfiguration.FlowControl result =
-        pubSubConfiguration.computeSubscriberFlowControlSettings("subscription-name", "projectId");
+        pubSubConfiguration.computeSubscriberFlowControlSettings(psn);
 
     assertThat(result.getLimitExceededBehavior())
         .isEqualTo(FlowController.LimitExceededBehavior.Ignore);
@@ -176,8 +177,9 @@ class PubSubConfigurationTests {
 
     pubSubConfiguration.initialize("projectId");
 
+    ProjectSubscriptionName psn = ProjectSubscriptionName.of("subscription-name", "projectId");
     PubSubConfiguration.FlowControl result =
-        pubSubConfiguration.computeSubscriberFlowControlSettings("subscription-name", "projectId");
+        pubSubConfiguration.computeSubscriberFlowControlSettings(psn);
 
     assertThat(result.getLimitExceededBehavior())
         .isEqualTo(FlowController.LimitExceededBehavior.Ignore);

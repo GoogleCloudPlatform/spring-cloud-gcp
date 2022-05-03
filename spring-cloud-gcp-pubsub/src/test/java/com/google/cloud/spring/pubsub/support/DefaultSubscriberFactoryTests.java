@@ -163,9 +163,9 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 
-    ConcurrentHashMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
+    ConcurrentHashMap<ProjectSubscriptionName, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
     executorProviderMap.put(
-        "projects/project/subscriptions/subscription-name", mockExecutorProvider);
+        ProjectSubscriptionName.parse("projects/project/subscriptions/subscription-name"), mockExecutorProvider);
     factory.setExecutorProviderMap(executorProviderMap);
 
     assertThat(factory.getExecutorProvider("subscription-name")).isSameAs(mockExecutorProvider);
@@ -176,9 +176,9 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 
-    ConcurrentHashMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
+    ConcurrentHashMap<ProjectSubscriptionName, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
     executorProviderMap.put(
-        "projects/project/subscriptions/subscription-name", mockExecutorProvider);
+        ProjectSubscriptionName.parse("projects/project/subscriptions/subscription-name"), mockExecutorProvider);
     factory.setExecutorProviderMap(executorProviderMap);
     factory.setExecutorProvider(mockGlobalExecutorProvider);
 
@@ -240,8 +240,8 @@ class DefaultSubscriberFactoryTests {
             .setRpcTimeoutMultiplier(10)
             .setMaxRpcTimeout(Duration.ofSeconds(10))
             .build();
-    ConcurrentHashMap<String, RetrySettings> settingsMap = new ConcurrentHashMap<>();
-    settingsMap.put("projects/project/subscriptions/mySubscription", expectedRetrySettings);
+    ConcurrentHashMap<ProjectSubscriptionName, RetrySettings> settingsMap = new ConcurrentHashMap<>();
+    settingsMap.put(ProjectSubscriptionName.parse("projects/project/subscriptions/mySubscription"), expectedRetrySettings);
     factory.setRetrySettingsMap(settingsMap);
 
     RetrySettings actualRetrySettings = factory.getRetrySettings("mySubscription");
@@ -401,10 +401,10 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 
-    ConcurrentHashMap<String, FlowControlSettings> settingsMap = new ConcurrentHashMap<>();
+    ConcurrentHashMap<ProjectSubscriptionName, FlowControlSettings> settingsMap = new ConcurrentHashMap<>();
     FlowControlSettings expectedFlowSettings =
         FlowControlSettings.newBuilder().setMaxOutstandingRequestBytes(10L).build();
-    settingsMap.put("projects/project/subscriptions/defaultSubscription1", expectedFlowSettings);
+    settingsMap.put(ProjectSubscriptionName.parse("projects/project/subscriptions/defaultSubscription1"), expectedFlowSettings);
     factory.setFlowControlSettingsMap(settingsMap);
 
     FlowControlSettings actualFlowSettings = factory.getFlowControlSettings("defaultSubscription1");

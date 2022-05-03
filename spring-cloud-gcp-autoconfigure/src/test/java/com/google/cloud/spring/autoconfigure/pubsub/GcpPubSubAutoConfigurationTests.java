@@ -1144,7 +1144,7 @@ class GcpPubSubAutoConfigurationTests {
           // property set
           PubSubConfiguration.FlowControl flowControl =
               gcpPubSubProperties.computeSubscriberFlowControlSettings(
-                  "subscription-name", projectIdProvider.getProjectId());
+                  ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name"));
           assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
           assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
           assertThat(flowControl.getLimitExceededBehavior())
@@ -1154,7 +1154,7 @@ class GcpPubSubAutoConfigurationTests {
           // settings property set
           PubSubConfiguration.FlowControl flowControlForOtherSubscriber =
               gcpPubSubProperties.computeSubscriberFlowControlSettings(
-                  "other", projectIdProvider.getProjectId());
+                  ProjectSubscriptionName.of("other", projectIdProvider.getProjectId()));
           assertThat(flowControlForOtherSubscriber.getMaxOutstandingElementCount()).isEqualTo(10L);
           assertThat(flowControlForOtherSubscriber.getMaxOutstandingRequestBytes()).isEqualTo(10L);
           assertThat(flowControlForOtherSubscriber.getLimitExceededBehavior())
@@ -1211,7 +1211,7 @@ class GcpPubSubAutoConfigurationTests {
 
           PubSubConfiguration.FlowControl flowControl =
               gcpPubSubProperties.computeSubscriberFlowControlSettings(
-                  "subscription-name", projectIdProvider.getProjectId());
+                  ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name"));
           assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
           assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
           assertThat(flowControl.getLimitExceededBehavior())
@@ -1255,7 +1255,7 @@ class GcpPubSubAutoConfigurationTests {
 
           PubSubConfiguration.FlowControl flowControl =
               gcpPubSubProperties.computeSubscriberFlowControlSettings(
-                  "subscription-name", projectIdProvider.getProjectId());
+                  ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name"));
           assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
           assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
           assertThat(flowControl.getLimitExceededBehavior())
