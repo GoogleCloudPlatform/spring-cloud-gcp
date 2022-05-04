@@ -1154,7 +1154,7 @@ class GcpPubSubAutoConfigurationTests {
           // settings property set
           PubSubConfiguration.FlowControl flowControlForOtherSubscriber =
               gcpPubSubProperties.computeSubscriberFlowControlSettings(
-                  ProjectSubscriptionName.of("other", projectIdProvider.getProjectId()));
+                  ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "other"));
           assertThat(flowControlForOtherSubscriber.getMaxOutstandingElementCount()).isEqualTo(10L);
           assertThat(flowControlForOtherSubscriber.getMaxOutstandingRequestBytes()).isEqualTo(10L);
           assertThat(flowControlForOtherSubscriber.getLimitExceededBehavior())

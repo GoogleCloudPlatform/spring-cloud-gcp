@@ -85,6 +85,8 @@ public class PubSubConfiguration {
 
   /**
    * Standardizes all subscription properties to be fully qualified.
+   *
+   * @param defaultProjectId Project to use with short subscription names
    */
   public void initialize(String defaultProjectId) {
     if (this.fullyQualifiedSubscriptionProperties != null) {
@@ -112,11 +114,10 @@ public class PubSubConfiguration {
   }
 
   /**
-   * @Deprecated use {@link #getSubscriptionProperties(ProjectSubscriptionName)} instead.
-   *
    * @param name short subscription name
    * @param projectId subscription project name
    * @return user-provided subscription properties
+   * @deprecated use {@link #getSubscriptionProperties(ProjectSubscriptionName)} instead.
    */
   @Deprecated
   public Subscriber getSubscriber(String name, String projectId) {

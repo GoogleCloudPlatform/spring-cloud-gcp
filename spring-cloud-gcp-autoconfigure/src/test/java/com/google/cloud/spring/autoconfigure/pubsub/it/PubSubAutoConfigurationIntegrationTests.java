@@ -193,7 +193,7 @@ class PubSubAutoConfigurationIntegrationTests {
           GcpPubSubProperties gcpPubSubProperties = context.getBean(GcpPubSubProperties.class);
           PubSubConfiguration.FlowControl flowControl =
               gcpPubSubProperties.computeSubscriberFlowControlSettings(
-                  ProjectSubscriptionName.of(subscriptionName, projectId));
+                  ProjectSubscriptionName.of(projectId, subscriptionName));
           FlowControlSettings flowControlSettings =
               FlowControlSettings.newBuilder()
                   .setMaxOutstandingElementCount(1L)

@@ -177,7 +177,7 @@ class PubSubConfigurationTests {
 
     pubSubConfiguration.initialize("projectId");
 
-    ProjectSubscriptionName psn = ProjectSubscriptionName.of("subscription-name", "projectId");
+    ProjectSubscriptionName psn = ProjectSubscriptionName.of("projectId", "subscription-name");
     PubSubConfiguration.FlowControl result =
         pubSubConfiguration.computeSubscriberFlowControlSettings(psn);
 
