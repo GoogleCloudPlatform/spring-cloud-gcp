@@ -32,7 +32,7 @@ echo ${PROJECT_VERSION}
 # Install docuploader package
 python3 -m pip install --upgrade six
 python3 -m pip install --upgrade protobuf
-python3 -m pip install --upgrade gcp-docuploader
+python3 -m pip install gcp-docuploader==0.6.2
 
 python3 -m docuploader --version
 
