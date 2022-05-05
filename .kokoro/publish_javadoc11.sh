@@ -32,7 +32,9 @@ echo ${PROJECT_VERSION}
 # Install docuploader package
 python3 -m pip install --upgrade six
 python3 -m pip install --upgrade protobuf
-python3 -m pip install gcp-docuploader
+python3 -m pip install --upgrade gcp-docuploader
+
+python3 -m docuploader --version
 
 # Build the javadocs
 ./mvnw clean javadoc:aggregate -Drelease=true -P docFX
@@ -44,6 +46,10 @@ python3 -m docuploader create-metadata \
     --name spring-cloud-gcp \
     --version ${PROJECT_VERSION} \
     --language java
+
+# try to debug
+python3 -m docuploader upload --help
+
 
 python3 -m docuploader upload . \
     --credentials ${CREDENTIALS} \
