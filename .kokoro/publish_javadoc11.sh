@@ -47,7 +47,7 @@ python3 -m docuploader create-metadata \
 
 python3 -m docuploader upload . \
     --credentials ${CREDENTIALS} \
-    --staging-bucket ${STAGING_BUCKET_V2}
+    --staging-bucket ${STAGING_BUCKET_V2}\
     --destination-prefix docfx
 
 popd
