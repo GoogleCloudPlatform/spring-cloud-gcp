@@ -133,13 +133,30 @@ public class PubSubConfiguration {
    * both global and subscription-specific properties are set. If subscription-specific settings are
    * not set then global settings are picked.
    *
+   * @param subscriptionName subscription name
+   * @param projectId project id
+   * @return flow control settings
+   * @deprecated use {@link #computeSubscriberFlowControlSettings(ProjectSubscriptionName)}
+   */
+  @Deprecated
+  public FlowControl computeSubscriberFlowControlSettings(
+      String subscriptionName, String projectId) {
+    return computeSubscriberFlowControlSettings(ProjectSubscriptionName.of(projectId, subscriptionName));
+  }
+
+  /**
+   * Computes flow control settings to use. The subscription-specific property takes precedence if
+   * both global and subscription-specific properties are set. If subscription-specific settings are
+   * not set then global settings are picked.
+   *
    * @param psn Fully qualified subscription name
    * @return flow control settings defaulting to global where not provided
    */
   public FlowControl computeSubscriberFlowControlSettings(ProjectSubscriptionName psn) {
     FlowControl flowControl = getSubscriptionProperties(psn).getFlowControl();
     FlowControl globalFlowControl = this.globalSubscriber.getFlowControl();
-    // it's possible for flowControl and globalFlowControl to be the same object
+    // It is possible for flowControl and globalFlowControl to be the same object;
+    // can just return it here if that's the case.
     if (flowControl.getMaxOutstandingRequestBytes() == null) {
       flowControl.setMaxOutstandingRequestBytes(globalFlowControl.getMaxOutstandingRequestBytes());
     }
@@ -408,7 +425,6 @@ public class PubSubConfiguration {
     public void setMaxAcknowledgementThreads(int maxAcknowledgementThreads) {
       this.maxAcknowledgementThreads = maxAcknowledgementThreads;
     }
-
   }
 
   /** Health Check settings. */

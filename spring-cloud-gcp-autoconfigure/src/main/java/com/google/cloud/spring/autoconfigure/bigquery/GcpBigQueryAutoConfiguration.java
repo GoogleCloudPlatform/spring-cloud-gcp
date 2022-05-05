@@ -74,6 +74,7 @@ public class GcpBigQueryAutoConfiguration {
             .setProjectId(this.projectId)
             .setCredentials(this.credentialsProvider.getCredentials())
             .setHeaderProvider(new UserAgentHeaderProvider(GcpBigQueryAutoConfiguration.class))
+            .set
             .build();
     return bigQueryOptions.getService();
   }
