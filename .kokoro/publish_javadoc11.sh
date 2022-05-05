@@ -13,7 +13,8 @@ fi
 # switch to java 11
 sudo update-java-alternatives --set java-1.11.0-openjdk-amd64
 $JAVA_HOME/bin/javac -version
-
+export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64
+$JAVA_HOME/bin/javac -version
 
 pyenv global 3.7.2
 
