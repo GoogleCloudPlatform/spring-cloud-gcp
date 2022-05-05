@@ -355,6 +355,7 @@
 					<!-- activate with -P docFX -->
 					<name>docFX</name>
 				</property>
+				<jdk>11</jdk>
 			</activation>
 			<properties>
 				<!-- default config values -->
