@@ -22,6 +22,7 @@ import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration.Subscriber;
 import com.google.pubsub.v1.ProjectSubscriptionName;
+import java.util.Collections;
 import java.util.Map;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Test;
@@ -142,9 +143,10 @@ class PubSubConfigurationTests {
     selectiveFlowControl.setMaxOutstandingElementCount(1L);
     selectiveFlowControl.setMaxOutstandingRequestBytes(2L);
 
-    ProjectSubscriptionName psn = ProjectSubscriptionName.parse("projects/projectId/subscriptions/subscription-name");
-    getUserSubscriptionMap(pubSubConfiguration)
-        .put("projects/projectId/subscriptions/subscription-name", subscriber);
+    ProjectSubscriptionName psn =
+        ProjectSubscriptionName.parse("projects/projectId/subscriptions/subscription-name");
+    pubSubConfiguration.setSubscription(
+        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
     pubSubConfiguration.initialize("projectId");
 
     PubSubConfiguration.FlowControl result =
@@ -154,15 +156,6 @@ class PubSubConfigurationTests {
         .isEqualTo(FlowController.LimitExceededBehavior.Ignore);
     assertThat(result.getMaxOutstandingElementCount()).isEqualTo(1L);
     assertThat(result.getMaxOutstandingRequestBytes()).isEqualTo(2L);
-  }
-
-  private Map<String, Subscriber> getUserSubscriptionMap(PubSubConfiguration config) {
-    try {
-      return (Map<String, Subscriber>) FieldUtils.readField(config, "subscription", true);
-    } catch (IllegalAccessException e) {
-      System.out.println("Failed to read private field PubSubConfiguration.subscription");
-      throw new RuntimeException(e);
-    }
   }
 
   @Test
@@ -192,8 +185,8 @@ class PubSubConfigurationTests {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setParallelPullCount(2);
-    getUserSubscriptionMap(pubSubConfiguration)
-        .put("projects/projectId/subscriptions/subscription-name", subscriber);
+    pubSubConfiguration.setSubscription(
+        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
 
     pubSubConfiguration.initialize("projectId");
 
@@ -219,8 +212,8 @@ class PubSubConfigurationTests {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setPullEndpoint("endpoint");
-    getUserSubscriptionMap(pubSubConfiguration)
-        .put("projects/projectId/subscriptions/subscription-name", subscriber);
+    pubSubConfiguration.setSubscription(
+        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
 
     pubSubConfiguration.initialize("projectId");
 
@@ -246,8 +239,8 @@ class PubSubConfigurationTests {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setMaxAckExtensionPeriod(1L);
-    getUserSubscriptionMap(pubSubConfiguration)
-        .put("projects/projectId/subscriptions/subscription-name", subscriber);
+    pubSubConfiguration.setSubscription(
+        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
 
     pubSubConfiguration.initialize("projectId");
 
@@ -326,8 +319,8 @@ class PubSubConfigurationTests {
     retry.setRpcTimeoutMultiplier(14.0);
     retry.setMaxRpcTimeoutSeconds(9L);
 
-    getUserSubscriptionMap(pubSubConfiguration)
-        .put("projects/projectId/subscriptions/subscription-name", subscriber);
+    pubSubConfiguration.setSubscription(
+        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
 
     pubSubConfiguration.initialize("projectId");
 
@@ -393,8 +386,8 @@ class PubSubConfigurationTests {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setRetryableCodes(new Code[] {Code.INTERNAL});
-    getUserSubscriptionMap(pubSubConfiguration)
-        .put("projects/projectId/subscriptions/subscription-name", subscriber);
+    pubSubConfiguration.setSubscription(
+        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
     pubSubConfiguration.initialize("projectId");
 
     assertThat(pubSubConfiguration.computeRetryableCodes("subscription-name", "projectId"))
@@ -424,7 +417,8 @@ class PubSubConfigurationTests {
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setExecutorThreads(8);
 
-    getUserSubscriptionMap(pubSubConfiguration).put("subscription-name", subscriber);
+    pubSubConfiguration.setSubscription(
+        Collections.singletonMap("subscription-name", subscriber));
 
     pubSubConfiguration.initialize("projectId");
 
@@ -450,8 +444,8 @@ class PubSubConfigurationTests {
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setExecutorThreads(8);
 
-    getUserSubscriptionMap(pubSubConfiguration)
-        .put("projects/projectId/subscriptions/subscription-name", subscriber);
+    pubSubConfiguration.setSubscription(
+        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
 
     pubSubConfiguration.initialize("projectId");
 
@@ -475,8 +469,8 @@ class PubSubConfigurationTests {
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setExecutorThreads(8);
 
-    getUserSubscriptionMap(pubSubConfiguration)
-        .put("projects/otherProjectId/subscriptions/subscription-name", subscriber);
+    pubSubConfiguration.setSubscription(Collections.singletonMap(
+        "projects/otherProjectId/subscriptions/subscription-name", subscriber));
 
     pubSubConfiguration.initialize("projectId");
 

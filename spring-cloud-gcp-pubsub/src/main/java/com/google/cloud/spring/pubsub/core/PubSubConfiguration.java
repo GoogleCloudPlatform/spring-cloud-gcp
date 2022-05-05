@@ -94,12 +94,8 @@ public class PubSubConfiguration {
       return;
     }
 
-    // TODO: re-key properties, see PR
-    System.out.println("****** initialize(); before turning fully qualified: " + this.subscription);
-
     Map<ProjectSubscriptionName, Subscriber> fullyQualifiedProps = new HashMap<>();
     for (String subscriptionKey : this.subscription.keySet()) {
-      System.out.println("*************** In initialize: subscription name = " + subscriptionKey);
       // Subscription name is either a valid short name, or a made-up name with fully-qualified provided as a property
       Subscriber subProps = this.subscription.get(subscriptionKey);
       String realSubscriptionName = subProps.fullyQualifiedName == null ? subscriptionKey : subProps.fullyQualifiedName;
@@ -107,8 +103,6 @@ public class PubSubConfiguration {
           PubSubSubscriptionUtils.toProjectSubscriptionName(realSubscriptionName, defaultProjectId);
       fullyQualifiedProps.put(fullyQualifiedName, subProps);
     }
-
-    System.out.println("****** HELLO! New properties: " + fullyQualifiedProps);
 
     this.fullyQualifiedSubscriptionProperties = Collections.unmodifiableMap(fullyQualifiedProps);
   }
