@@ -10,6 +10,8 @@ if [[ -z "${STAGING_BUCKET_V2}" ]]; then
   exit 1
 fi
 
+sudo update-java-alternatives --set java-1.11.0-openjdk-amd64
+
 pyenv global 3.7.2
 
 # Get into the spring-cloud-gcp repo directory
