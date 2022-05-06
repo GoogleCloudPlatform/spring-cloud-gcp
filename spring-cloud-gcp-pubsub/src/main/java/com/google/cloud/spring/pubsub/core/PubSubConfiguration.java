@@ -23,6 +23,7 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -98,19 +99,21 @@ public class PubSubConfiguration {
     }
 
     Map<ProjectSubscriptionName, Subscriber> fullyQualifiedProps = new HashMap<>();
-    for (String subscriptionKey : this.subscription.keySet()) {
+    for (Entry<String, Subscriber> entry : this.subscription.entrySet()) {
       // Subscription name is either a valid short name, or a made-up name with fully-qualified provided as a property
-      Subscriber subProps = this.subscription.get(subscriptionKey);
-      String realSubscriptionName = subProps.fullyQualifiedName == null ? subscriptionKey : subProps.fullyQualifiedName;
-      ProjectSubscriptionName fullyQualifiedName =
-          PubSubSubscriptionUtils.toProjectSubscriptionName(realSubscriptionName, defaultProjectId);
-      fullyQualifiedProps.put(fullyQualifiedName, subProps);
+      Subscriber subProps = entry.getValue();
+      String qualifiedName = subProps.fullyQualifiedName == null ? entry.getKey() : subProps.fullyQualifiedName;
+      ProjectSubscriptionName psn =
+          PubSubSubscriptionUtils.toProjectSubscriptionName(qualifiedName, defaultProjectId);
+      fullyQualifiedProps.put(psn, subProps);
     }
 
     this.fullyQualifiedSubscriptionProperties = Collections.unmodifiableMap(fullyQualifiedProps);
   }
 
   /**
+   * Returns properties for the specified subscription name and project ID.
+   *
    * @param name short subscription name
    * @param projectId subscription project name
    * @return user-provided subscription properties
@@ -158,8 +161,8 @@ public class PubSubConfiguration {
   public FlowControl computeSubscriberFlowControlSettings(ProjectSubscriptionName psn) {
     FlowControl flowControl = getSubscriptionProperties(psn).getFlowControl();
     FlowControl globalFlowControl = this.globalSubscriber.getFlowControl();
-    // It is possible for flowControl and globalFlowControl to be the same object;
-    // can just return it here if that's the case.
+    // It is possible for flowControl and globalFlowControl to be the same object.
+    // In the future, can return it here if that's the case.
     if (flowControl.getMaxOutstandingRequestBytes() == null) {
       flowControl.setMaxOutstandingRequestBytes(globalFlowControl.getMaxOutstandingRequestBytes());
     }
@@ -182,7 +185,10 @@ public class PubSubConfiguration {
    * @return parallel pull count
    */
   public Integer computeParallelPullCount(String subscriptionName, String projectId) {
-    Integer parallelPullCount = getSubscriber(subscriptionName, projectId).getParallelPullCount();
+    Integer parallelPullCount =
+        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+            .getParallelPullCount();
+
     return parallelPullCount != null
         ? parallelPullCount
         : this.globalSubscriber.getParallelPullCount();
@@ -198,7 +204,9 @@ public class PubSubConfiguration {
    * @return retryable codes
    */
   public Code[] computeRetryableCodes(String subscriptionName, String projectId) {
-    Code[] retryableCodes = getSubscriber(subscriptionName, projectId).getRetryableCodes();
+    Code[] retryableCodes =
+        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+            .getRetryableCodes();
     return retryableCodes != null ? retryableCodes : this.globalSubscriber.getRetryableCodes();
   }
 
@@ -213,7 +221,9 @@ public class PubSubConfiguration {
    */
   public Long computeMaxAckExtensionPeriod(String subscriptionName, String projectId) {
     Long maxAckExtensionPeriod =
-        getSubscriber(subscriptionName, projectId).getMaxAckExtensionPeriod();
+        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+        .getMaxAckExtensionPeriod();
+
     if (maxAckExtensionPeriod != null) {
       return maxAckExtensionPeriod;
     }
@@ -233,7 +243,9 @@ public class PubSubConfiguration {
    * @return pull endpoint
    */
   public String computePullEndpoint(String subscriptionName, String projectId) {
-    String pullEndpoint = getSubscriber(subscriptionName, projectId).getPullEndpoint();
+    String pullEndpoint =
+        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+        .getPullEndpoint();
     return pullEndpoint != null ? pullEndpoint : this.globalSubscriber.getPullEndpoint();
   }
 

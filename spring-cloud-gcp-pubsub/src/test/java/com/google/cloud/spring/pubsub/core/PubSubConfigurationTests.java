@@ -408,7 +408,7 @@ class PubSubConfigurationTests {
                 .getSubscriber("subscription-name", "projectId")
                 .getExecutorThreads())
         .isNull();
-    assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).hasSize(0);
+    assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).isEmpty();
   }
 
   @Test
