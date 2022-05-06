@@ -23,12 +23,15 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 /** Properties for Publisher or Subscriber specific configurations. */
 public class PubSubConfiguration {
 
-  // TODO: was this always unused?
+  private static final Logger logger = LoggerFactory.getLogger(PubSubConfiguration.class);
+
   /** Default number of executor threads. */
   public static final int DEFAULT_EXECUTOR_THREADS = 4;
 
@@ -90,7 +93,7 @@ public class PubSubConfiguration {
    */
   public void initialize(String defaultProjectId) {
     if (this.fullyQualifiedSubscriptionProperties != null) {
-      // TODO: log warning; should only be done once
+      logger.warn("Pub/Sub configuration can only be initialized once; ignoring request.");
       return;
     }
 
@@ -242,9 +245,23 @@ public class PubSubConfiguration {
    * @param subscriptionName subscription name
    * @param projectId project id
    * @return retry settings
+   * @deprecated Use {{@link #computeSubscriberRetrySettings(ProjectSubscriptionName)}}
    */
+  @Deprecated
   public Retry computeSubscriberRetrySettings(String subscriptionName, String projectId) {
-    Retry retry = getSubscriber(subscriptionName, projectId).getRetry();
+    return computeSubscriberRetrySettings(ProjectSubscriptionName.of(projectId, subscriptionName));
+  }
+
+  /**
+   * Computes the retry settings. The subscription-specific property takes precedence if both global
+   * and subscription-specific properties are set. If subscription-specific settings are not set
+   * then the global settings are picked.
+   *
+   * @param psn The fully qualified subscription name
+   * @return retry settings
+   */
+  public Retry computeSubscriberRetrySettings(ProjectSubscriptionName psn) {
+    Retry retry = getSubscriptionProperties(psn).getRetry();
     Retry globalRetry = this.globalSubscriber.getRetry();
     if (retry.getTotalTimeoutSeconds() == null) {
       retry.setTotalTimeoutSeconds(globalRetry.getTotalTimeoutSeconds());
