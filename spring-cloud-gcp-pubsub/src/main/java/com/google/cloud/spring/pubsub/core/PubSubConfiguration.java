@@ -88,7 +88,7 @@ public class PubSubConfiguration {
   }
 
   /**
-   * Standardizes all subscription properties to be fully qualified.
+   * Standardizes all subscription properties to be fully qualified. Not thread-safe.
    *
    * @param defaultProjectId Project to use with short subscription names
    */
@@ -105,7 +105,12 @@ public class PubSubConfiguration {
       String qualifiedName = subProps.fullyQualifiedName == null ? entry.getKey() : subProps.fullyQualifiedName;
       ProjectSubscriptionName psn =
           PubSubSubscriptionUtils.toProjectSubscriptionName(qualifiedName, defaultProjectId);
-      fullyQualifiedProps.put(psn, subProps);
+      if (fullyQualifiedProps.containsKey(psn)) {
+        logger.warn("Found multiple configurations for " + psn
+            + "; ignoring properties with key " + entry.getKey());
+      } else {
+        fullyQualifiedProps.put(psn, subProps);
+      }
     }
 
     this.fullyQualifiedSubscriptionProperties = Collections.unmodifiableMap(fullyQualifiedProps);

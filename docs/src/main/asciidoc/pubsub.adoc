@@ -96,6 +96,7 @@ This is useful in conjunction with enabling message ordering because sending mes
 
 |===
 | Name | Description | Required | Default value
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].fully-qualified-name` | The fully-qualified subscription name in the `projects/[PROJECT]/subscriptions/[SUBSCRIPTION]` format. When this property is present, the `[subscription-name]` key does not have to match any actual resources; it's used only for logical grouping. | No | 1
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].parallel-pull-count` | The number of pull workers. | No | 1
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].max-ack-extension-period` | The maximum period a message ack deadline will be extended, in seconds. | No | 0
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].pull-endpoint` | The endpoint for synchronous pulling messages. | No | pubsub.googleapis.com:443

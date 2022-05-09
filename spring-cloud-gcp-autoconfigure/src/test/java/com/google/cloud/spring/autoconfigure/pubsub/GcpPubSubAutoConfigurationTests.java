@@ -42,8 +42,11 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.List;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -52,6 +55,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.threeten.bp.Duration;
 
 /** Tests for Pub/Sub autoconfiguration. */
+@ExtendWith(OutputCaptureExtension.class)
 class GcpPubSubAutoConfigurationTests {
 
   ApplicationContextRunner baseContextRunner = new ApplicationContextRunner()
@@ -1324,6 +1328,37 @@ class GcpPubSubAutoConfigurationTests {
           assertThat(testPublisher.getBatchingSettings()).isSameAs(TEST_BATCHING_SETTINGS);
         });
   }
+
+  @Test
+  void flowControlSettings_multipleKeysForSameSubscription_firstOneUsed(CapturedOutput output) {
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+            .withPropertyValues(
+                "spring.cloud.gcp.pubsub.subscription.subscription-name.flow-control.max-outstanding-element-Count=100",
+                "spring.cloud.gcp.pubsub.subscription.synthetic-sub-name.flow-control.max-outstanding-element-Count=200",
+                "spring.cloud.gcp.pubsub.subscription.synthetic-sub-name.fully-qualified-name=projects/fake project/subscriptions/subscription-name")
+            .withUserConfiguration(TestConfig.class);
+
+    contextRunner.run(
+        ctx -> {
+          GcpPubSubProperties gcpPubSubProperties = ctx.getBean(GcpPubSubProperties.class);
+          GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
+
+          ProjectSubscriptionName psn = ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name");
+          PubSubConfiguration.FlowControl flowControl =
+              gcpPubSubProperties
+                  .getSubscriptionProperties(psn)
+                  .getFlowControl();
+          assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(100L);
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties())
+              .hasSize(1)
+              .containsKey(psn);
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties().get(psn).getFlowControl().getMaxOutstandingElementCount()).isEqualTo(100L);
+          assertThat(output).contains("Found multiple configurations for projects/fake project/subscriptions/subscription-name; ignoring properties with key synthetic-sub-name");
+        });
+  }
+
 
   @Configuration
   static class CustomizerConfig {
