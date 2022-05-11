@@ -45,6 +45,8 @@ cp CHANGELOG.md target/docfx-yml/history.md
 sed "s/{project-version}/${PROJECT_VERSION}/g" docs/src/main/md/index.md > target/docfx-yml/documentation.md
 #cp docs/src/main/md/index.md target/docfx-yml/overview.md
 
+# check change to documentation.md -- remove after verified
+head -20 target/docfx-yml/documentation.md
 
 # Move into generated yml directory
 pushd target/docfx-yml
@@ -55,9 +57,11 @@ function insertAfter # file line newText
    local file="$1" line="$2" newText="$3"
    sed -i -e "/^$line$/a"$'\\\n'"$newText"$'\n' "$file"
 }
-insertAfter tol.yml \
+insertAfter toc.yml \
 "  items:" "  - name: \"Documentation\"\n    href: \"documentation.md\""
 
+# check change to toc.yml -- remove after verified
+head -20 toc.yml
 
 python3 -m docuploader create-metadata \
     --name spring-cloud-gcp \

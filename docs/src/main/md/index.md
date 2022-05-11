@@ -1,13 +1,6 @@
-[//]: # (**{project-version}**)
-[project-version]: 3.3.0
+{project-version}
 
 # Introduction
-
-[project-version]
-
-Here is the [first link][var1]
-
-[var1]: https://example.org
 
 The Spring Cloud GCP project makes the Spring Framework a first-class
 citizen of Google Cloud Platform (GCP).
