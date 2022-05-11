@@ -38,17 +38,35 @@ python3 -m docuploader --version
 
 # Build the javadocs
 ./mvnw clean javadoc:aggregate -Drelease=true -P docFX
+# copy CHANGELOG
+cp CHANGELOG.md target/docfx-yml/history.md
+
+# copy and replace {project-version} documentation
+sed "s/{project-version}/${PROJECT_VERSION}/g" docs/src/main/md/index.md > target/docfx-yml/documentation.md
+#cp docs/src/main/md/index.md target/docfx-yml/overview.md
+
 
 # Move into generated yml directory
 pushd target/docfx-yml
 
+# add documentation.md to tol
+function insertAfter # file line newText
+{
+   local file="$1" line="$2" newText="$3"
+   sed -i -e "/^$line$/a"$'\\\n'"$newText"$'\n' "$file"
+}
+insertAfter tol.yml \
+"  items:" "  - name: \"Documentation\"\n    href: \"documentation.md\""
+
+
 python3 -m docuploader create-metadata \
     --name spring-cloud-gcp \
     --version ${PROJECT_VERSION} \
-    --language java
+    --language java \
+    --stem "/java/docs/spring-cloud-gcp/reference"
 
-# try to debug
-python3 -m docuploader upload --help
+## try to debug
+#python3 -m docuploader upload --help
 
 
 python3 -m docuploader upload . \
