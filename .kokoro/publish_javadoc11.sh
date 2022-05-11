@@ -67,7 +67,7 @@ python3 -m docuploader create-metadata \
     --name spring-cloud-gcp \
     --version ${PROJECT_VERSION} \
     --language java \
-    --stem "/java/docs/spring-cloud-gcp/reference"
+#    --stem "/java/docs/spring-cloud-gcp/reference"
 
 ## try to debug
 #python3 -m docuploader upload --help
