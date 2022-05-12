@@ -1,6 +1,6 @@
 {project-version}
 
-# Introduction
+## Introduction
 
 The Spring Cloud GCP project makes the Spring Framework a first-class
 citizen of Google Cloud Platform (GCP).
@@ -36,12 +36,12 @@ Spring Framework to:
   - Analyze your images for text, objects, and other content with Google
     Cloud Vision
 
-# Getting Started
+## Getting Started
 
 This section describes how to get up to speed with Spring Cloud GCP
 libraries.
 
-## Compatibility with Spring Project Versions
+### Compatibility with Spring Project Versions
 
 Spring Cloud GCP has dependency and transitive dependencies on Spring
 Projects. The table below outlines the versions of Spring Cloud, Spring
@@ -53,7 +53,7 @@ Spring Cloud GCP version.
 | 2.x                         | [2020.0.x](https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes) (3.0/Illford) | 2.4.x, 2.5.x | 5.3.x            |
 | 3.0 (next expected release) | [2021.0.x](https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes) (3.1/Jubilee) | 2.6.x        | 5.3.x            |
 
-## Setting up Dependencies
+### Setting up Dependencies
 
 All Spring Cloud GCP artifacts are made available through Maven Central.
 The following resources are provided to help you setup the libraries for
@@ -67,7 +67,7 @@ You may also consult our [Github
 project](https://github.com/GoogleCloudPlatform/spring-cloud-gcp) to
 examine the code or build directly from source.
 
-### Bill of Materials
+#### Bill of Materials
 
 The Spring Cloud GCP Bill of Materials (BOM) contains the versions of
 all the dependencies it uses.
@@ -103,7 +103,7 @@ available version and Maven repository.
 In the following sections, it will be assumed you are using the Spring
 Cloud GCP BOM and the dependency snippets will not contain versions.
 
-### Starter Dependencies
+#### Starter Dependencies
 
 Spring Cloud GCP offers [starter
 dependencies](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters)
@@ -135,7 +135,7 @@ A summary of these artifacts are provided below.
 | Security - IAP           | Provides a security layer over applications deployed to Google Cloud              | [com.google.cloud:spring-cloud-gcp-starter-security-iap](#cloud-iap)                                   |
 | Security - Firebase      | Provides a security layer over applications deployed to Firebase                  | [com.google.cloud:spring-cloud-gcp-starter-security-firebase](security-firebase.xml#security-firebase) |
 
-### Spring Initializr
+#### Spring Initializr
 
 [Spring Initializr](https://start.spring.io/) is a tool which generates
 the scaffolding code for a new Spring Boot project. It handles the work
@@ -156,12 +156,12 @@ can use to generate your project.
   - **GCP Storage**: Google Cloud Storage integrations work out of the
     box.
 
-## Learning Spring Cloud GCP
+### Learning Spring Cloud GCP
 
 There are a variety of resources to help you learn how to use Spring
 Cloud GCP libraries.
 
-### Sample Applications
+#### Sample Applications
 
 The easiest way to learn how to use Spring Cloud GCP is to consult the
 [sample applications on
@@ -235,7 +235,7 @@ AppEngine](https://codelabs.developers.google.com/codelabs/cloud-app-engine-spri
 and [to Google Kubernetes
 Engine](https://codelabs.developers.google.com/codelabs/cloud-springboot-kubernetes/index.html).
 
-### Codelabs
+#### Codelabs
 
 For a more hands-on approach, there are several guides and codelabs to
 help you get up to speed. These guides provide step-by-step instructions
@@ -258,7 +258,7 @@ Some examples include:
 The full collection of Spring codelabs can be found on the [Google
 Developer Codelabs page](https://codelabs.developers.google.com/spring).
 
-# Spring Cloud GCP Core
+## Spring Cloud GCP Core
 
 Each Spring Cloud GCP module uses `GcpProjectIdProvider` and
 `CredentialsProvider` to get the GCP project ID and access credentials.
@@ -281,7 +281,7 @@ Gradle coordinates:
         implementation("com.google.cloud:spring-cloud-gcp-starter")
     }
 
-## Configuration
+### Configuration
 
 The following options may be configured with Spring Cloud core.
 
@@ -290,7 +290,7 @@ The following options may be configured with Spring Cloud core.
 | Name                            | Description                                     | Required | Default value |
 | `spring.cloud.gcp.core.enabled` | Enables or disables GCP core auto configuration | No       | `true`        |
 
-## Project ID
+### Project ID
 
 `GcpProjectIdProvider` is a functional interface that returns a GCP
 project ID string.
@@ -325,7 +325,7 @@ rules](https://googlecloudplatform.github.io/google-cloud-java/google-cloud-clie
 5.  The Google Compute Engine project ID, from the Google Compute Engine
     Metadata Server
 
-## Credentials
+### Credentials
 
 `CredentialsProvider` is a functional interface that returns the
 credentials to authenticate and authorize calls to Google Cloud Client
@@ -381,7 +381,7 @@ Service
 Account](https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#using_the_compute_engine_default_service_account)
 is used.
 
-### Scopes
+#### Scopes
 
 By default, the credentials provided by the Spring Cloud GCP Starter
 contain scopes for every service supported by Spring Cloud GCP.
@@ -419,7 +419,7 @@ to add.
 
     spring.cloud.gcp.credentials.scopes=DEFAULT_SCOPES,https://www.googleapis.com/auth/cloud-vision
 
-## Environment
+### Environment
 
 `GcpEnvironmentProvider` is a functional interface, auto-configured by
 the Spring Cloud GCP starter, that returns a `GcpEnvironment` enum. The
@@ -433,7 +433,7 @@ public interface GcpEnvironmentProvider {
 }
 ```
 
-## Customizing bean scope
+### Customizing bean scope
 
 Spring Cloud GCP starters autoconfigure all necessary beans in the
 default singleton scope. If you need a particular bean or set of beans
@@ -476,12 +476,12 @@ public void onRefreshScope(RefreshScopeRefreshedEvent event) {
 
 </div>
 
-## Spring Initializr
+### Spring Initializr
 
 This starter is available from [Spring
 Initializr](https://start.spring.io/) through the `GCP Support` entry.
 
-# Cloud Storage
+## Cloud Storage
 
 [Google Cloud Storage](https://cloud.google.com/storage/docs) allows
 storing any types of files in single or multiple regions. A Spring Boot
@@ -505,7 +505,7 @@ Gradle coordinates:
 This starter is also available from [Spring
 Initializr](https://start.spring.io/) through the `GCP Storage` entry.
 
-## Using Cloud Storage
+### Using Cloud Storage
 
 The starter automatically configures and registers a `Storage` bean in
 the Spring application context. The `Storage` bean
@@ -527,7 +527,7 @@ public void createFile() {
 }
 ```
 
-## Cloud Storage Objects As Spring Resources
+### Cloud Storage Objects As Spring Resources
 
 [Spring
 Resources](https://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html)
@@ -598,7 +598,7 @@ The Spring Boot Starter for Google Cloud Storage auto-configures the
 `Storage` bean required by the `spring-cloud-gcp-storage` module, based
 on the `CredentialsProvider` provided by the Spring Boot GCP starter.
 
-### Setting the Content Type
+#### Setting the Content Type
 
 You can set the content-type of Google Cloud Storage files from their
 corresponding `Resource` objects:
@@ -607,7 +607,7 @@ corresponding `Resource` objects:
 ((GoogleStorageResource)gcsResource).getBlob().toBuilder().setContentType("text/html").build().update();
 ```
 
-## Configuration
+### Configuration
 
 The Spring Boot Starter for Google Cloud Storage provides the following
 configuration options:
@@ -621,7 +621,7 @@ configuration options:
 | `spring.cloud.gcp.storage.credentials.encoded-key` | Base64-encoded contents of OAuth2 account private key for authenticating with the Google Cloud Storage API, if different from the ones in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core) | No       |                                                                                                         |
 | `spring.cloud.gcp.storage.credentials.scopes`      | [OAuth2 scope](https://developers.google.com/identity/protocols/googlescopes) for Spring Cloud GCP Storage credentials                                                                               | No       | [www.googleapis.com/auth/devstorage.read\_write](https://www.googleapis.com/auth/devstorage.read_write) |
 
-## Sample
+### Sample
 
 A [sample
 application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-storage-resource-sample)
@@ -629,7 +629,7 @@ and a
 [codelab](https://codelabs.developers.google.com/codelabs/spring-cloud-gcp-gcs/index.html)
 are available.
 
-# Cloud SQL
+## Cloud SQL
 
 Spring Cloud GCP adds integrations with [Spring
 JDBC](https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html)
@@ -645,7 +645,7 @@ role of the starters is to read configuration from properties and assume
 default settings so that user experience connecting to MySQL and
 PostgreSQL is as simple as possible.
 
-## JDBC Support
+### JDBC Support
 
 Maven and Gradle coordinates, using [Spring Cloud GCP
 BOM](#bill-of-materials):
@@ -676,7 +676,7 @@ To use PostgreSQL:
         implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgresql")
     }
 
-## Prerequisites
+### Prerequisites
 
 In order to use the Spring Boot Starters for Google Cloud SQL, the
 Google Cloud SQL API must be enabled in your GCP project.
@@ -686,7 +686,7 @@ page](https://console.cloud.google.com/apis/library) of the Google Cloud
 Console, search for "Cloud SQL API" and enable the option that is called
 "Cloud SQL" .
 
-## Spring Boot Starter for Google Cloud SQL
+### Spring Boot Starter for Google Cloud SQL
 
 The Spring Boot Starters for Google Cloud SQL provide an auto-configured
 [`DataSource`](https://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html)
@@ -725,7 +725,7 @@ unless you disable Cloud SQL auto configuration with
 
 </div>
 
-### `DataSource` creation flow
+#### `DataSource` creation flow
 
 Spring Boot starter for Google Cloud SQL registers a
 `CloudSqlEnvironmentPostProcessor` that provides a correctly formatted
@@ -747,7 +747,7 @@ you with a fully configured and operational `JdbcTemplate` object that
 you can use to interact with your SQL database. You can connect to your
 database with as little as a database and instance names.
 
-# R2DBC Support
+## R2DBC Support
 
 Maven and Gradle coordinates, using [Spring Cloud GCP
 BOM](#bill-of-materials):
@@ -778,7 +778,7 @@ To use PostgreSQL:
         implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgres-r2dbc")
     }
 
-## Prerequisites
+### Prerequisites
 
 In order to use the Spring Boot Starters for Google Cloud SQL, the
 Google Cloud SQL API must be enabled in your GCP project.
@@ -788,7 +788,7 @@ page](https://console.cloud.google.com/apis/library) of the Google Cloud
 Console, search for "Cloud SQL API" and enable the option that is called
 "Cloud SQL".
 
-## Spring Boot Starter for Google Cloud SQL
+### Spring Boot Starter for Google Cloud SQL
 
 The Cloud SQL R2DBC starter provides a customized
 `io.r2dbc.spi.ConnectionFactory` bean for connecting to Cloud SQL with
@@ -830,7 +830,7 @@ you disable Cloud SQL auto-configuration for R2DBC with
 
 </div>
 
-### `ConnectionFactory` creation flow
+#### `ConnectionFactory` creation flow
 
 Spring Cloud GCP starter for Google Cloud SQL registers a
 `R2dbcCloudSqlEnvironmentPostProcessor` that provides a correctly
@@ -849,7 +849,7 @@ SQL. The rest of Spring Data R2DBC objects built on it (
 `R2dbcEntityTemplate`, `DatabaseClient`) are automatically configured
 and operational, ready to interact with your SQL database.
 
-# Cloud SQL IAM database authentication
+## Cloud SQL IAM database authentication
 
 Currently, Cloud SQL only supports [IAM database authentication for
 PostgreSQL](https://cloud.google.com/sql/docs/postgres/authentication:).
@@ -869,7 +869,7 @@ the following to enable it:
     compromise the security of the communication because the connection
     is always encrypted.)
 
-# Cloud SQL Configuration Properties
+## Cloud SQL Configuration Properties
 
 |                                                 |                                                                                                                                                                                                                                                                                                                                           |          |                                                             |
 | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------- |
@@ -884,9 +884,9 @@ the following to enable it:
 | `spring.cloud.gcp.sql.credentials.encoded-key`  | Base64-encoded contents of OAuth2 account private key in JSON format. Used to authenticate and authorize new connections to a Google Cloud SQL instance.                                                                                                                                                                                  | No       | Default credentials provided by the Spring GCP Boot starter |
 | `spring.cloud.gcp.sql.enableIamAuth`            | Specifies whether to enable IAM database authentication (PostgreSQL only).                                                                                                                                                                                                                                                                | No       | `False`                                                     |
 
-# Troubleshooting tips
+## Troubleshooting tips
 
-## Connection issues
+### Connection issues
 
 If you’re not able to connect to a database and see an endless loop of
 `Connecting to Cloud SQL instance […​] on IP […​]`, it’s likely that
@@ -905,7 +905,7 @@ file to your application resources folder, that looks like this:
 </configuration>
 ```
 
-## Errors like `c.g.cloud.sql.core.SslSocketFactory : Re-throwing cached exception due to attempt to refresh instance information too soon after error`
+### Errors like `c.g.cloud.sql.core.SslSocketFactory : Re-throwing cached exception due to attempt to refresh instance information too soon after error`
 
 If you see a lot of errors like this in a loop and can’t connect to your
 database, this is usually a symptom that something isn’t right with the
@@ -917,7 +917,7 @@ roles](https://cloud.google.com/sql/docs/mysql/project-access-control#roles).
 To find out what’s causing the issue, you can enable DEBUG logging level
 as mentioned [above](#connection-issues).
 
-## PostgreSQL: `java.net.SocketException: already connected` issue
+### PostgreSQL: `java.net.SocketException: already connected` issue
 
 We found this exception to be common if your Maven project’s parent is
 `spring-boot` version `1.5.x`, or in any other circumstance that would
@@ -935,7 +935,7 @@ example, in Maven:
 </dependency>
 ```
 
-# Samples
+## Samples
 
 Available sample applications and codelabs:
 
@@ -957,7 +957,7 @@ Available sample applications and codelabs:
   - [R2DBC: Spring Cloud GCP
     PostgreSQL](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-r2dbc-sample)
 
-# Cloud Pub/Sub
+## Cloud Pub/Sub
 
 Spring Cloud GCP provides an abstraction layer to publish to and
 subscribe from Google Cloud Pub/Sub topics and to create, list or delete
@@ -984,12 +984,12 @@ Gradle coordinates:
 This starter is also available from [Spring
 Initializr](https://start.spring.io) through the `GCP Messaging` entry.
 
-## Configuration
+### Configuration
 
 The Spring Boot starter for Google Cloud Pub/Sub provides the following
 configuration options.
 
-### Spring Cloud GCP Pub/Sub API Configuration
+#### Spring Cloud GCP Pub/Sub API Configuration
 
 This section describes options for enabling the integration, specifying
 the GCP project and credentials, and setting whether the APIs should
@@ -1005,7 +1005,7 @@ connect to an emulator for local testing.
 | `spring.cloud.gcp.pubsub.credentials.encoded-key` | Base64-encoded contents of OAuth2 account private key for authenticating with the Google Cloud Pub/Sub API, if different from the ones in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core)  | No       |                                                                          |
 | `spring.cloud.gcp.pubsub.credentials.scopes`      | [OAuth2 scope](https://developers.google.com/identity/protocols/googlescopes) for Spring Cloud GCP Pub/Sub credentials                                                                                | No       | [www.googleapis.com/auth/pubsub](https://www.googleapis.com/auth/pubsub) |
 
-### Publisher/Subscriber Configuration
+#### Publisher/Subscriber Configuration
 
 This section describes configuration options to customize the behavior
 of the application’s Pub/Sub publishers and subscribers. Subscriber
@@ -1041,7 +1041,7 @@ is not set then the global or default configuration will be used.
 | `spring.cloud.gcp.pubsub.publisher.enable-message-ordering`                                          | Enables message ordering.                                                                                                                                                                                                                                    | No       | false                     |
 | `spring.cloud.gcp.pubsub.publisher.endpoint`                                                         | The publisher endpoint. Example: `"us-east1-pubsub.googleapis.com:443"`. This is useful in conjunction with enabling message ordering because sending messages to the same region ensures they are received in order even when multiple publishers are used. | No       | pubsub.googleapis.com:443 |
 
-#### Subscription-specific Configurations
+##### Subscription-specific Configurations
 
 |                                                                                                       |                                                                                                                                                                                                                                                         |          |                           |
 | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------- |
@@ -1054,7 +1054,7 @@ is not set then the global or default configuration will be used.
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].flow-control.max-outstanding-request-bytes` | Maximum number of outstanding bytes to keep in memory before enforcing flow control.                                                                                                                                                                    | No       | unlimited                 |
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].flow-control.limit-exceeded-behavior`       | The behavior when the specified limits are exceeded.                                                                                                                                                                                                    | No       | Block                     |
 
-### GRPC Connection Settings
+#### GRPC Connection Settings
 
 The Pub/Sub API uses the
 [GRPC](https://cloud.google.com/pubsub/docs/reference/service_apis_overview#grpc_api)
@@ -1102,7 +1102,7 @@ Subscription-specific Configuration
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.rpc-timeout-multiplier`      | RpcTimeoutMultiplier controls the change in RPC timeout. The timeout of the previous call is multiplied by the RpcTimeoutMultiplier to calculate the timeout for the next call.                                                               | No       | 1                           |
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.max-rpc-timeout-seconds`     | MaxRpcTimeout puts a limit on the value of the RPC timeout, so that the RpcTimeoutMultiplier can’t increase the RPC timeout higher than this amount.                                                                                          | No       | 0                           |
 
-### Programmatic Configuration
+#### Programmatic Configuration
 
 To apply publishing customizations not covered by the properties above,
 you may provide custom beans of type `PublisherCustomizer` to
@@ -1111,9 +1111,9 @@ into a `Publisher`. The `PublisherCustomizer` beans may be annotated
 with Spring Framework’s `@Order` annotation to ensure they are applied
 in a particular sequence.
 
-## Spring Boot Actuator Support
+### Spring Boot Actuator Support
 
-### Cloud Pub/Sub Health Indicator
+#### Cloud Pub/Sub Health Indicator
 
 If you are using Spring Boot Actuator, you can take advantage of the
 Cloud Pub/Sub health indicator called `pubsub`. The health indicator
@@ -1169,7 +1169,7 @@ impact, or instead leave the custom subscription out completely.
 | `spring.cloud.gcp.pubsub.health.timeout-millis`       | Milliseconds to wait for response from Pub/Sub before timing out                  | No       | `2000`                                              |
 | `spring.cloud.gcp.pubsub.health.acknowledge-messages` | Whether to acknowledge messages pulled from the optionally specified subscription | No       | `false`                                             |
 
-### Cloud Pub/Sub Subscription Health Indicator
+#### Cloud Pub/Sub Subscription Health Indicator
 
 If you are using Spring Boot Actuator, you can take advantage of the
 Cloud Pub/Sub subscription health indicator called `pubsub-subscriber`.
@@ -1230,7 +1230,7 @@ is reached.
 | `spring.cloud.gcp.pubsub.health.lookUpInterval`   | The optional interval in seconds for subscription backlog lookup | No       | `1`                                                 |
 | `spring.cloud.gcp.pubsub.health.executorThreads`  | Number of threads used for Health Check Executors                | No       | `4`                                                 |
 
-## Pub/Sub Operations & Template
+### Pub/Sub Operations & Template
 
 `PubSubOperations` is an abstraction that allows Spring users to use
 Google Cloud Pub/Sub without depending on any Google Cloud Pub/Sub API
@@ -1241,7 +1241,7 @@ Client for
 Pub/Sub](https://github.com/GoogleCloudPlatform/google-cloud-java/tree/main/google-cloud-pubsub)
 to interact with Google Cloud Pub/Sub.
 
-### Publishing to a topic
+#### Publishing to a topic
 
 `PubSubTemplate` provides asynchronous methods to publish messages to a
 Google Cloud Pub/Sub topic. The `publish()` method takes in a topic name
@@ -1262,7 +1262,7 @@ By default, the `SimplePubSubMessageConverter` is used to convert
 payloads of type `byte[]`, `ByteString`, `ByteBuffer`, and `String` to
 Pub/Sub messages.
 
-#### Ordering messages
+##### Ordering messages
 
 If you are relying on message converters and would like to provide an
 ordering key, use the `GcpPubSubHeaders.ORDERING_KEY` header. You will
@@ -1277,7 +1277,7 @@ messages are sent to the same region and received in order.
 Unresolved directive in pubsub.adoc - include::{project-root}/spring-cloud-gcp-autoconfigure/src/test/java/com/google/cloud/spring/autoconfigure/pubsub/it/PubSubTemplateDocumentationIntegrationTests.java[tag=publish_ordering]
 ```
 
-### Subscribing to a subscription
+#### Subscribing to a subscription
 
 Google Cloud Pub/Sub allows many subscriptions to be associated to the
 same topic. `PubSubTemplate` allows you to listen to subscriptions via
@@ -1289,7 +1289,7 @@ fully-qualified name referring to a subscription in a different project
 using the `projects/<project_name>/subscriptions/<subscription_name>`
 format.
 
-#### Example
+##### Example
 
 Subscribe to a subscription with a message handler:
 
@@ -1297,7 +1297,7 @@ Subscribe to a subscription with a message handler:
 Unresolved directive in pubsub.adoc - include::{project-root}/spring-cloud-gcp-autoconfigure/src/test/java/com/google/cloud/spring/autoconfigure/pubsub/it/PubSubTemplateDocumentationIntegrationTests.java[tag=subscribe]
 ```
 
-#### Subscribe methods
+##### Subscribe methods
 
 `PubSubTemplate` provides the following subscribe methods:
 
@@ -1319,13 +1319,13 @@ applications that would like to shut down once their work is done.
 
 </div>
 
-### Pulling messages from a subscription
+#### Pulling messages from a subscription
 
 Google Cloud Pub/Sub supports synchronous pulling of messages from a
 subscription. This is different from subscribing to a subscription, in
 the sense that subscribing is an asynchronous task.
 
-#### Example
+##### Example
 
 Pull up to 10 messages:
 
@@ -1333,7 +1333,7 @@ Pull up to 10 messages:
 Unresolved directive in pubsub.adoc - include::{project-root}/spring-cloud-gcp-autoconfigure/src/test/java/com/google/cloud/spring/autoconfigure/pubsub/it/PubSubTemplateDocumentationIntegrationTests.java[tag=pull]
 ```
 
-#### Pull methods
+##### Pull methods
 
 `PubsubTemplate` provides the following pull methods:
 
@@ -1375,7 +1375,7 @@ or using `subscribe` methods from the previous section.
 
 </div>
 
-#### Acknowledging messages
+##### Acknowledging messages
 
 There are two ways to acknowledge messages.
 
@@ -1398,7 +1398,7 @@ returning a `ListenableFuture<Void>` to enable asynchronous processing.
 
 </div>
 
-#### Dead Letter Topics
+##### Dead Letter Topics
 
 Your application may occasionally receive a message it cannot process.
 If you [create your `Subscription`](#creating-a-subscription) passing
@@ -1430,7 +1430,7 @@ permissions](https://cloud.google.com/pubsub/docs/dead-letter-topics#granting_fo
 are necessary to ensure the Cloud Pub/Sub service can successfully `ack`
 the original message and re-`publish` it on the dead letter topic.
 
-### JSON support
+#### JSON support
 
 For serialization and deserialization of POJOs using Jackson JSON,
 configure a `PubSubMessageConverter` bean, and the Spring Boot starter
@@ -1471,7 +1471,7 @@ Please refer to our [Pub/Sub JSON Payload Sample
 App](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-json-sample)
 as a reference for using this functionality.
 
-## Reactive Stream Subscriber
+### Reactive Stream Subscriber
 
 It is also possible to acquire a reactive stream backed by a
 subscription. To do so, a Project Reactor dependency
@@ -1517,7 +1517,7 @@ Messages flowing through the `Flux` should be manually acknowledged.
 flux.doOnNext(AcknowledgeablePubsubMessage::ack);
 ```
 
-## Pub/Sub management
+### Pub/Sub management
 
 `PubSubAdmin` is the abstraction provided by Spring Cloud GCP to manage
 Google Cloud Pub/Sub resources. It allows for the creation, deletion and
@@ -1537,7 +1537,7 @@ The Spring Boot starter for GCP Pub/Sub auto-configures a `PubSubAdmin`
 object using the `GcpProjectIdProvider` and the `CredentialsProvider`
 auto-configured by the Spring Boot GCP Core starter.
 
-### Creating a topic
+#### Creating a topic
 
 `PubSubAdmin` implements a method to create topics:
 
@@ -1553,7 +1553,7 @@ public void newTopic() {
 }
 ```
 
-### Deleting a topic
+#### Deleting a topic
 
 `PubSubAdmin` implements a method to delete topics:
 
@@ -1569,7 +1569,7 @@ public void deleteTopic() {
 }
 ```
 
-### Listing topics
+#### Listing topics
 
 `PubSubAdmin` implements a method to list topics:
 
@@ -1584,7 +1584,7 @@ in a project:
 Unresolved directive in pubsub.adoc - include::{project-root}/spring-cloud-gcp-autoconfigure/src/test/java/com/google/cloud/spring/autoconfigure/pubsub/it/PubSubTemplateDocumentationIntegrationTests.java[tag=list_topics]
 ```
 
-### Creating a subscription
+#### Creating a subscription
 
 `PubSubAdmin` implements several methods to create subscriptions to
 existing topics:
@@ -1612,7 +1612,7 @@ public Subscription newSubscription() {
 }
 ```
 
-### Deleting a subscription
+#### Deleting a subscription
 
 `PubSubAdmin` implements a method to delete subscriptions:
 
@@ -1628,7 +1628,7 @@ public void deleteSubscription() {
 }
 ```
 
-### Listing subscriptions
+#### Listing subscriptions
 
 `PubSubAdmin` implements a method to list subscriptions:
 
@@ -1642,7 +1642,7 @@ Here is an example of how to list every subscription name in a project:
 Unresolved directive in pubsub.adoc - include::{project-root}/spring-cloud-gcp-autoconfigure/src/test/java/com/google/cloud/spring/autoconfigure/pubsub/it/PubSubTemplateDocumentationIntegrationTests.java[tag=list_subscriptions]
 ```
 
-## Sample
+### Sample
 
 Sample applications for [using the
 template](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-sample)
@@ -1650,13 +1650,13 @@ and [using a subscription-backed reactive
 stream](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-reactive-sample)
 are available.
 
-# Spring Integration
+## Spring Integration
 
 Spring Cloud GCP provides Spring Integration adapters that allow your
 applications to use Enterprise Integration Patterns backed up by Google
 Cloud Platform services.
 
-## Channel Adapters for Cloud Pub/Sub
+### Channel Adapters for Cloud Pub/Sub
 
 The channel adapters for Google Cloud Pub/Sub connect your Spring
 [`MessageChannels`](https://docs.spring.io/spring-integration/reference/html/channel.html)
@@ -1689,7 +1689,7 @@ Gradle coordinates:
         implementation("org.springframework.integration:spring-integration-core")
     }
 
-### Inbound channel adapter (using Pub/Sub Streaming Pull)
+#### Inbound channel adapter (using Pub/Sub Streaming Pull)
 
 `PubSubInboundChannelAdapter` is the inbound channel adapter for GCP
 Pub/Sub that listens to a GCP Pub/Sub subscription for new messages. It
@@ -1739,7 +1739,7 @@ channel we just created and a `SubscriberFactory`, which creates
 Spring Boot starter for GCP Pub/Sub provides a configured
 `PubSubSubscriberOperations` object.
 
-#### Acknowledging messages and handling failures
+##### Acknowledging messages and handling failures
 
 When working with Cloud Pub/Sub, it is important to understand the
 concept of `ackDeadline` — the amount of time Cloud Pub/Sub will wait
@@ -1793,7 +1793,7 @@ behavior (nacking in `AUTO` mode; neither acking nor nacking in
 `AUTO_ACK` mode), propagate the error back to the adapter by throwing an
 exception from the [Error Handling flow](#error-handling).
 
-##### Manual acking/nacking
+###### Manual acking/nacking
 
 The adapter attaches a `BasicAcknowledgeablePubsubMessage` object to the
 `Message` headers. Users can extract the
@@ -1814,7 +1814,7 @@ public MessageHandler messageReceiver() {
 }
 ```
 
-##### Error Handling
+###### Error Handling
 
 If you want to have more control over message processing in case of an
 error, you need to associate the `PubSubInboundChannelAdapter` with a
@@ -1870,7 +1870,7 @@ public void pubsubErrorHandler(Message<MessagingException> exceptionMessage) {
 }
 ```
 
-### Pollable Message Source (using Pub/Sub Synchronous Pull)
+#### Pollable Message Source (using Pub/Sub Synchronous Pull)
 
 While `PubSubInboundChannelAdapter`, through the underlying Asynchronous
 Pull Pub/Sub mechanism, provides the best performance for high-volume
@@ -1941,7 +1941,7 @@ processing.
 
 </div>
 
-### Outbound channel adapter
+#### Outbound channel adapter
 
 `PubSubMessageHandler` is the outbound channel adapter for GCP Pub/Sub
 that listens for new messages on a Spring `MessageChannel`. It uses
@@ -2008,7 +2008,7 @@ It is also possible to set an SpEL expression for the topic with the
 Unresolved directive in spring-integration-pubsub.adoc - include::{project-root}/spring-cloud-gcp-autoconfigure/src/test/java/com/google/cloud/spring/autoconfigure/pubsub/it/PubSubTemplateDocumentationIntegrationTests.java[tag=message_router]
 ```
 
-### Header mapping
+#### Header mapping
 
 These channel adapters contain header mappers that allow you to map, or
 filter out, headers from Spring to Google Cloud Pub/Sub messages, and
@@ -2058,7 +2058,7 @@ In the previous example, the `"*"` pattern means every header is mapped.
 However, because it comes last in the list, [the previous patterns take
 precedence](https://docs.spring.io/spring-integration/api/org/springframework/integration/support/utils/PatternMatchUtils.html).
 
-### Samples
+#### Samples
 
 Available examples:
 
@@ -2071,7 +2071,7 @@ Available examples:
   - [Spring Integration and Pub/Sub
     Codelab](https://codelabs.developers.google.com/codelabs/cloud-spring-cloud-gcp-pubsub-integration/index.html)
 
-## Channel Adapters for Google Cloud Storage
+### Channel Adapters for Google Cloud Storage
 
 The channel adapters for Google Cloud Storage allow you to read and
 write files to Google Cloud Storage through `MessageChannels`.
@@ -2108,7 +2108,7 @@ Gradle coordinates:
         implementation("org.springframework.integration:spring-integration-file")
     }
 
-### Inbound channel adapter
+#### Inbound channel adapter
 
 The Google Cloud Storage inbound channel adapter polls a Google Cloud
 Storage bucket for new files and sends each of them in a `Message`
@@ -2134,7 +2134,7 @@ public MessageSource<File> synchronizerAdapter(Storage gcs) {
 }
 ```
 
-### Inbound streaming channel adapter
+#### Inbound streaming channel adapter
 
 The inbound streaming channel adapter is similar to the normal inbound
 channel adapter, except it does not require files to be stored in the
@@ -2158,7 +2158,7 @@ If you would like to process the files in your bucket in a specific
 order, you may pass in a `Comparator<BlobInfo>` to the constructor
 `GcsStreamingMessageSource` to sort the files being processed.
 
-### Outbound channel adapter
+#### Outbound channel adapter
 
 The outbound channel adapter allows files to be written to Google Cloud
 Storage. When it receives a `Message` containing a payload of type
@@ -2179,12 +2179,12 @@ public MessageHandler outboundChannelAdapter(Storage gcs) {
 }
 ```
 
-### Sample
+#### Sample
 
 See the [Spring Integration with Google Cloud Storage Sample
 Code](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-integration-storage-sample).
 
-# Spring Cloud Stream
+## Spring Cloud Stream
 
 Spring Cloud GCP provides a [Spring Cloud
 Stream](https://cloud.spring.io/spring-cloud-stream/) binder to Google
@@ -2209,7 +2209,7 @@ Gradle coordinates:
         implementation("com.google.cloud:spring-cloud-gcp-pubsub-stream-binder")
     }
 
-## Overview
+### Overview
 
 This binder binds producers to Google Cloud Pub/Sub topics and consumers
 to subscriptions.
@@ -2220,7 +2220,7 @@ Partitioning is currently not supported by this binder.
 
 </div>
 
-## Configuration
+### Configuration
 
 You can configure the Spring Cloud Stream Binder for Google Cloud
 Pub/Sub to automatically generate the underlying resources, like the
@@ -2246,7 +2246,7 @@ host and port via `spring.cloud.gcp.pubsub.emulator-host`.
 
 </div>
 
-### Producer Synchronous Sending Configuration
+#### Producer Synchronous Sending Configuration
 
 By default, this binder will send messages to Cloud Pub/Sub
 asynchronously. If synchronous sending is preferred (for example, to
@@ -2254,7 +2254,7 @@ allow propagating errors back to the sender), set
 `spring.cloud.stream.gcp.pubsub.default.producer.sync` property to
 `true`.
 
-### Producer Destination Configuration
+#### Producer Destination Configuration
 
 If automatic resource creation is turned ON and the topic corresponding
 to the destination name does not exist, it will be created.
@@ -2267,7 +2267,7 @@ would be created.
     spring.cloud.stream.bindings.events.destination=myEvents
     spring.cloud.stream.gcp.pubsub.bindings.events.producer.auto-create-resources=true
 
-### Consumer Destination Configuration
+#### Consumer Destination Configuration
 
 A `PubSubInboundChannelAdapter` will be configured for your consumer
 endpoint. You may adjust the ack mode of the consumer endpoint using the
@@ -2327,7 +2327,7 @@ These resources will be created:
 
   - A subscription named `myEvents.consumerGroup1`
 
-### Endpoint Customization
+#### Endpoint Customization
 
 You may customize channel routing by defining a
 `ConsumerEndpointCustomizer` in your autoconfiguration. This is useful
@@ -2348,7 +2348,7 @@ public ConsumerEndpointCustomizer<PubSubInboundChannelAdapter> messageChannelAda
 }
 ```
 
-## Binding with Functions
+### Binding with Functions
 
 Since version 3.0, Spring Cloud Stream supports a functional programming
 model natively. This means that the only requirement for turning your
@@ -2375,7 +2375,7 @@ stream, which will be used as is.
 A processor application works similarly to a source application, except
 it is triggered by presence of a `Function` bean.
 
-## Binding with Annotations
+### Binding with Annotations
 
 <div class="note">
 
@@ -2410,7 +2410,7 @@ provided by Spring Cloud Stream.
         }
     }
 
-## Streaming vs. Polled Input
+### Streaming vs. Polled Input
 
 Many Spring Cloud Stream applications will use the built-in `Sink`
 binding, which triggers the *streaming* input binder creation. Messages
@@ -2454,7 +2454,7 @@ By default, the polling will only get 1 message at a time. Use the
 `spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize` property
 to fetch additional messages per network roundtrip.
 
-## Sample
+### Sample
 
 Sample applications are available:
 
@@ -2467,7 +2467,7 @@ Sample applications are available:
   - For [polled
     input](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-polling-sample).
 
-# Spring Cloud Bus
+## Spring Cloud Bus
 
 Using [Cloud Pub/Sub](https://cloud.google.com/pubsub/) as the [Spring
 Cloud Bus](https://spring.io/projects/spring-cloud-bus) implementation
@@ -2498,7 +2498,7 @@ dependencies {
 }
 ```
 
-## Configuration Management with Spring Cloud Config and Spring Cloud Bus
+### Configuration Management with Spring Cloud Config and Spring Cloud Bus
 
 Spring Cloud Bus can be used to push configuration changes from a Spring
 Cloud Config server to the clients listening on the same bus.
@@ -2552,7 +2552,7 @@ configuration management with Spring Cloud Bus: one monitoring a local
 file system, and the other retrieving configuration from a GitHub
 repository.
 
-# Cloud Trace
+## Cloud Trace
 
 Google Cloud Platform provides a managed distributed tracing service
 called [Cloud Trace](https://cloud.google.com/trace/), and [Spring Cloud
@@ -2598,7 +2598,7 @@ those traces to Cloud Trace without modifying existing applications.
 
 </div>
 
-## Tracing
+### Tracing
 
 Spring Cloud Sleuth uses the [Brave
 tracer](https://github.com/openzipkin/brave) to generate traces. This
@@ -2638,7 +2638,7 @@ If a `x-cloud-trace-context` key isn’t found,
 `StackdriverTracePropagation` falls back to tracing with the [X-B3
 headers](https://github.com/openzipkin/b3-propagation).
 
-## Spring Boot Starter for Cloud Trace
+### Spring Boot Starter for Cloud Trace
 
 Spring Boot Starter for Cloud Trace uses Spring Cloud Sleuth and
 auto-configures a
@@ -2701,7 +2701,7 @@ Spring Cloud GCP Trace does override some Sleuth configurations:
   - Uses `StackdriverHttpRequestParser` by default to populate
     Stackdriver related fields.
 
-## Overriding the auto-configuration
+### Overriding the auto-configuration
 
 Spring Cloud Sleuth supports sending traces to multiple tracing systems
 as of version 2.1.0. In order to get this to work, every tracing system
@@ -2711,7 +2711,7 @@ can use respectively
 `StackdriverTraceAutoConfiguration.REPORTER_BEAN_NAME` and
 `StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME`.
 
-## Customizing spans
+### Customizing spans
 
 You can add additional tags and annotations to spans by using the
 `brave.SpanCustomizer`, which is available in the application context.
@@ -2748,7 +2748,7 @@ public class Application implements WebMvcConfigurer {
 You can then search and filter traces based on these additional tags in
 the Cloud Trace service.
 
-## Integration with Logging
+### Integration with Logging
 
 Integration with Cloud Logging is available through the [Cloud Logging
 Support](logging.adoc). If the Trace integration is used together with
@@ -2758,7 +2758,7 @@ corresponding traces. The trace logs can be viewed by going to the
 List](https://console.cloud.google.com/traces/traces), selecting a trace
 and pressing the `Logs → View` link in the `Details` section.
 
-## Pub/Sub Trace Instrumentation (Experimental)
+### Pub/Sub Trace Instrumentation (Experimental)
 
 You can enable trace instrumentation and propagation for Pub/Sub
 messages by using the `spring.cloud.gcp.trace.pubsub.enabled=true`
@@ -2774,7 +2774,7 @@ Spring Integration channel adapters, and the Spring Cloud Stream Binder.
     # You should disable Spring Integration instrumentation by Sleuth as it's unnecessary when Pub/Sub tracing is enabled
     spring.sleuth.integration.enabled=false
 
-## Sample
+### Sample
 
 A [sample
 application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample)
@@ -2782,7 +2782,7 @@ and a
 [codelab](https://codelabs.developers.google.com/codelabs/cloud-spring-cloud-gcp-trace/index.html)
 are available.
 
-# Cloud Logging
+## Cloud Logging
 
 Maven coordinates, using [Spring Cloud GCP BOM](#bill-of-materials):
 
@@ -2825,7 +2825,7 @@ application-default login` commands, respectively.
 
 </div>
 
-## Web MVC Interceptor
+### Web MVC Interceptor
 
 For use in Web MVC-based applications, `TraceIdLoggingWebMvcInterceptor`
 is provided that extracts the request trace ID from an HTTP request
@@ -2849,13 +2849,13 @@ the `x-cloud-trace-context` header, which will be included in log
 entries. However, if Sleuth is used the trace ID will be picked up from
 the MDC.
 
-## Logback Support
+### Logback Support
 
 Currently, only Logback is supported and there are 2 possibilities to
 log to Cloud Logging via this library with Logback: via direct API calls
 and through JSON-formatted console logs.
 
-### Log via API
+#### Log via API
 
 A Cloud Logging appender is available using
 `com/google/cloud/spring/logging/logback-appender.xml`. This appender
@@ -2885,7 +2885,7 @@ configure the appender. The following properties are available:
 | `log`        | `spring.log`  | The Cloud Logging Log name. This can also be set via the `STACKDRIVER_LOG_NAME` environmental variable.                                                                                     |
 | `flushLevel` | `WARN`        | If a log entry with this level is encountered, trigger a flush of locally buffered log to Cloud Logging. This can also be set via the `STACKDRIVER_LOG_FLUSH_LEVEL` environmental variable. |
 
-### Asynchronous Logging
+#### Asynchronous Logging
 
 If you would like to send logs asynchronously to Cloud Logging, you can
 use the `AsyncAppender`.
@@ -2906,7 +2906,7 @@ Your configuration may then look like this:
 </configuration>
 ```
 
-### Log via Console
+#### Log via Console
 
 For Logback, a
 `com/google/cloud/spring/logging/logback-json-appender.xml` file is made
@@ -3081,13 +3081,13 @@ This is an example of such an Logback configuration:
 </configuration>
 ```
 
-## Sample
+### Sample
 
 A [Sample Spring Boot
 Application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-logging-sample)
 is provided to show how to use the Cloud logging starter.
 
-# Cloud Monitoring
+## Cloud Monitoring
 
 Google Cloud Platform provides a service called [Cloud
 Monitoring](https://cloud.google.com/monitoring/), and
@@ -3121,7 +3121,7 @@ for your project and make sure it’s enabled.
 
 Spring Boot Starter for Cloud Monitoring uses Micrometer.
 
-## Configuration
+### Configuration
 
 All configurations are optional:
 
@@ -3139,13 +3139,13 @@ frequency, etc. Read [Spring Boot Actuator
 documentation](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-export-stackdriver)
 for more information on Stackdriver Actuator configurations.
 
-## Sample
+### Sample
 
 A [sample
 application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-metrics-sample)
 is available.
 
-# Spring Data Cloud Spanner
+## Spring Data Cloud Spanner
 
 [Spring Data](https://projects.spring.io/spring-data/) is an abstraction
 for storing and retrieving POJOs in numerous storage technologies.
@@ -3191,7 +3191,7 @@ Gradle:
 This setup takes care of bringing in the latest compatible version of
 Cloud Java Cloud Spanner libraries as well.
 
-## Configuration
+### Configuration
 
 To setup Spring Data Cloud Spanner, you have to configure the following:
 
@@ -3199,7 +3199,7 @@ To setup Spring Data Cloud Spanner, you have to configure the following:
 
   - Enable Spring Data Repositories (optional).
 
-### Cloud Spanner settings
+#### Cloud Spanner settings
 
 You can use the Spring Boot Starter for Spring Data Spanner to
 autoconfigure Google Cloud Spanner in your Spring application. It
@@ -3238,7 +3238,7 @@ necessary.
 
 </div>
 
-### Repository settings
+#### Repository settings
 
 Spring Data Repositories can be configured via the
 `@EnableSpannerRepositories` annotation on your main `@Configuration`
@@ -3248,7 +3248,7 @@ to add it to any other class, unless there is a need to override finer
 grain configuration parameters provided by
 [`@EnableSpannerRepositories`](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/blob/main/spring-cloud-gcp-data-spanner/src/main/java/com/google/cloud/spring/data/spanner/repository/config/EnableSpannerRepositories.java).
 
-### Autoconfiguration
+#### Autoconfiguration
 
 Our Spring Boot autoconfiguration creates the following beans available
 in the Spring application context:
@@ -3266,7 +3266,7 @@ in the Spring application context:
   - an instance of `DatabaseClient` from the Google Cloud Java Client
     for Spanner, for convenience and lower level API access
 
-## Object Mapping
+### Object Mapping
 
 Spring Data Cloud Spanner allows you to map domain POJOs to Cloud
 Spanner tables via annotations:
@@ -3292,7 +3292,7 @@ Spring Data Cloud Spanner will ignore any property annotated with
 `@NotMapped`. These properties will not be written to or read from
 Spanner.
 
-### Constructors
+#### Constructors
 
 Simple constructors are supported on POJOs. The constructor arguments
 can be a subset of the persistent properties. Every constructor argument
@@ -3322,14 +3322,14 @@ public class Trader {
 }
 ```
 
-### Table
+#### Table
 
 The `@Table` annotation can provide the name of the Cloud Spanner table
 that stores instances of the annotated class, one per row. This
 annotation is optional, and if not given, the name of the table is
 inferred from the class name with the first character uncapitalized.
 
-#### SpEL expressions for table names
+##### SpEL expressions for table names
 
 In some cases, you might want the `@Table` table name to be determined
 dynamically. To do that, you can use [Spring Expression
@@ -3349,7 +3349,7 @@ in the Spring application context is defined. For example, if
 `tableNameSuffix` has the value "123", the table name will resolve to
 `trades_123`.
 
-### Primary Keys
+#### Primary Keys
 
 For a simple table, you may only have a primary key consisting of a
 single column. Even in that case, the `@PrimaryKey` annotation is
@@ -3404,7 +3404,7 @@ hotspots in the system. Read [Spanner Primary Keys
 documentation](https://cloud.google.com/spanner/docs/schema-and-data-model#primary_keys)
 for a better understanding of primary keys and recommended practices.
 
-### Columns
+#### Columns
 
 All accessible properties on POJOs are automatically recognized as a
 Cloud Spanner column. Column naming is generated by the
@@ -3431,7 +3431,7 @@ other settings:
     corresponds to an auto-populated commit timestamp column. Any value
     set in this property will be ignored when writing to Cloud Spanner.
 
-### Embedded Objects
+#### Embedded Objects
 
 If an object of type `B` is embedded as a property of `A`, then the
 columns of `B` will be saved in the same Cloud Spanner table as those of
@@ -3502,7 +3502,7 @@ objects:
     restriction when you use Kotlin’s data class to hold an embedded
     property.
 
-### Relationships
+#### Relationships
 
 Spring Data Cloud Spanner supports parent-child relationships using the
 Cloud Spanner [parent-child interleaved table
@@ -3608,7 +3608,7 @@ referenced children objects are also updated or inserted in the same
 request, respectively. On read, all of the interleaved child rows are
 also all read.
 
-#### Lazy Fetch
+##### Lazy Fetch
 
 `@Interleaved` properties are retrieved eagerly by default, but can be
 fetched lazily for performance in both read and write:
@@ -3626,7 +3626,7 @@ If used inside a transaction, subsequent operations on lazily-fetched
 properties use the same transaction context as that of the original
 parent entity.
 
-#### Declarative Filtering with `@Where`
+##### Declarative Filtering with `@Where`
 
 The `@Where` annotation could be applied to an entity class or to an
 interleaved property. This annotation provides an SQL where clause that
@@ -3659,7 +3659,7 @@ public class Agreement {
 }
 ```
 
-### Supported Types
+#### Supported Types
 
 Spring Data Cloud Spanner natively supports the following types for
 regular fields but also utilizes custom converters (detailed in
@@ -3700,7 +3700,7 @@ Natively supported types:
 
   - `java.time.LocalDateTime`
 
-### JSON fields
+#### JSON fields
 
 Spanner supports `JSON` type for columns. `JSON` columns are mapped to
 custom POJOs annotated with `@Column(spannerType = TypeCode.JSON)`.
@@ -3733,7 +3733,7 @@ public class Details {
 }
 ```
 
-### Lists
+#### Lists
 
 Spanner supports `ARRAY` types for columns. `ARRAY` columns are mapped
 to `List` fields in POJOs.
@@ -3746,7 +3746,7 @@ List<Double> curve;
 
 The types inside the lists can be any singular property type.
 
-### Lists of Structs
+#### Lists of Structs
 
 Cloud Spanner queries can [construct STRUCT
 values](https://cloud.google.com/spanner/docs/query-syntax#using-structs-with-select)
@@ -3771,7 +3771,7 @@ class TwoInts {
 }
 ```
 
-### Custom types
+#### Custom types
 
 Custom converters can be used to extend the type support for user
 defined types.
@@ -3880,12 +3880,12 @@ operations use the first `Converter<U, …​>` from the write Converters
 and read operations use the first `Converter<…​, U>` from the read
 Converters.
 
-### Custom Converter for Struct Array Columns
+#### Custom Converter for Struct Array Columns
 
 If a `Converter<Struct, A>` is provided, then properties of type
 `List<A>` can be used in your entity types.
 
-## Spanner Operations & Template
+### Spanner Operations & Template
 
 `SpannerOperations` and its implementation, `SpannerTemplate`, provides
 the Template pattern familiar to Spring developers. It provides:
@@ -3951,7 +3951,7 @@ The Template API provides convenience methods for:
 
   - Locking read-write transactions
 
-### SQL Query
+#### SQL Query
 
 Cloud Spanner has SQL support for running read-only queries. All the
 query related methods start with `query` on `SpannerTemplate`. By using
@@ -3961,7 +3961,7 @@ query related methods start with `query` on `SpannerTemplate`. By using
 List<Trade> trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT * FROM trades"));
 ```
 
-### Read
+#### Read
 
 Spanner exposes a [Read
 API](https://cloud.google.com/spanner/docs/reads) for reading single row
@@ -3979,9 +3979,9 @@ pattern of keys is much easier using the features of the
 [`KeySet`](https://github.com/GoogleCloudPlatform/google-cloud-java/blob/main/google-cloud-spanner/src/main/java/com/google/cloud/spanner/KeySet.java)
 class.
 
-### Advanced reads
+#### Advanced reads
 
-#### Stale read
+##### Stale read
 
 All reads and queries are **strong reads** by default. A **strong read**
 is a read at a current time and is guaranteed to see all data that has
@@ -4016,7 +4016,7 @@ the query and read options objects. Bounded staleness lets Cloud Spanner
 choose any point in time later than or equal to the given
 timestampBound, but it cannot be used inside transactions.
 
-#### Read from a secondary index
+##### Read from a secondary index
 
 Using a [secondary
 index](https://cloud.google.com/spanner/docs/secondary-indexes) is
@@ -4032,7 +4032,7 @@ SpannerReadOptions spannerReadOptions = new SpannerReadOptions().setIndex("Trade
 List<Trade> trades = this.spannerTemplate.readAll(Trade.class, spannerReadOptions);
 ```
 
-#### Read with offsets and limits
+##### Read with offsets and limits
 
 Limits and offsets are only supported by Queries. The following will get
 only the first two rows of the query:
@@ -4045,7 +4045,7 @@ List<Trade> trades = this.spannerTemplate.query(Trade.class, Statement.of("SELEC
 Note that the above is equivalent of running `SELECT * FROM trades
 LIMIT 2 OFFSET 3`.
 
-#### Sorting
+##### Sorting
 
 Reads by keys do not support sorting. However, queries on the Template
 API support sorting through standard SQL and also via Spring Data Sort
@@ -4065,7 +4065,7 @@ Spanner types STRING and BYTES can be done while ignoring case:
 Sort.by(Order.desc("action").ignoreCase())
 ```
 
-#### Partial read
+##### Partial read
 
 Partial read is only possible when using Queries. In case the rows
 returned by the query have fewer columns than the entity that it will be
@@ -4081,7 +4081,7 @@ List<Trade> trades = this.spannerTemplate.query(Trade.class, Statement.of("SELEC
 If the setting is set to `false`, then an exception will be thrown if
 there are missing columns in the query result.
 
-#### Summary of options for Query vs Read
+##### Summary of options for Query vs Read
 
 |                        |                   |                  |
 | ---------------------- | ----------------- | ---------------- |
@@ -4094,7 +4094,7 @@ there are missing columns in the query result.
 | Read using index range | no                | yes              |
 | Sorting                | yes               | no               |
 
-### Write / Update
+#### Write / Update
 
 The write methods of `SpannerOperations` accept a POJO and writes all of
 its properties to Spanner. The corresponding Spanner table and entity
@@ -4105,7 +4105,7 @@ values were changed and then written or updated, the operation will
 occur as if against a row with the new primary key values. The row with
 the original primary key values will not be affected.
 
-#### Insert
+##### Insert
 
 The `insert` method of `SpannerOperations` accepts a POJO and writes all
 of its properties to Spanner, which means the operation will fail if a
@@ -4116,7 +4116,7 @@ Trade t = new Trade();
 this.spannerTemplate.insert(t);
 ```
 
-#### Update
+##### Update
 
 The `update` method of `SpannerOperations` accepts a POJO and writes all
 of its properties to Spanner, which means the operation will fail if the
@@ -4127,7 +4127,7 @@ POJO’s primary key does not already exist in the table.
 this.spannerTemplate.update(t);
 ```
 
-#### Upsert
+##### Upsert
 
 The `upsert` method of `SpannerOperations` accepts a POJO and writes all
 of its properties to Spanner using update-or-insert.
@@ -4137,7 +4137,7 @@ of its properties to Spanner using update-or-insert.
 this.spannerTemplate.upsert(t);
 ```
 
-#### Partial Update
+##### Partial Update
 
 The update methods of `SpannerOperations` operate by default on all
 properties within the given object, but also accept `String[]` and
@@ -4151,7 +4151,7 @@ written.
 this.spannerTemplate.update(t, "symbol", "action");
 ```
 
-### DML
+#### DML
 
 DML statements can be run by using
 `SpannerOperations.executeDmlStatement`. Inserts, updates, and deletions
@@ -4163,13 +4163,13 @@ using the `executePartitionedDmlStatement` method. Partitioned DML
 queries have performance benefits but also have restrictions and cannot
 be used inside transactions.
 
-### Transactions
+#### Transactions
 
 `SpannerOperations` provides methods to run `java.util.Function` objects
 within a single transaction while making available the read and write
 methods from `SpannerOperations`.
 
-#### Read/Write Transaction
+##### Read/Write Transaction
 
 Read and write transactions are provided by `SpannerOperations` via the
 `performReadWriteTransaction` method:
@@ -4206,7 +4206,7 @@ As these read-write transactions are locking, it is recommended that you
 use the `performReadOnlyTransaction` if your function does not perform
 any writes.
 
-#### Read-only Transaction
+##### Read-only Transaction
 
 The `performReadOnlyTransaction` method is used to perform read-only
 transactions using a `SpannerOperations`:
@@ -4250,7 +4250,7 @@ Because read-only transactions are non-locking and can be performed on
 points in time in the past, these are recommended for functions that do
 not perform write operations.
 
-#### Declarative Transactions with @Transactional Annotation
+##### Declarative Transactions with @Transactional Annotation
 
 This feature requires a bean of `SpannerTransactionManager`, which is
 provided when using `spring-cloud-gcp-starter-data-spanner`.
@@ -4265,7 +4265,7 @@ same transaction. `performReadOnlyTransaction` and
 annotated methods because Cloud Spanner does not support transactions
 within transactions.
 
-### DML Statements
+#### DML Statements
 
 `SpannerTemplate` supports
 [DML](https://cloud.google.com/spanner/docs/dml-tasks:) `Statements`.
@@ -4273,7 +4273,7 @@ DML statements can also be run in transactions by using
 `performReadWriteTransaction` or by using the `@Transactional`
 annotation.
 
-## Repositories
+### Repositories
 
 [Spring Data
 Repositories](https://docs.spring.io/spring-data/data-commons/docs/current/reference/html/#repositories)
@@ -4337,12 +4337,12 @@ public class MyApplication {
 }
 ```
 
-### CRUD Repository
+#### CRUD Repository
 
 `CrudRepository` methods work as expected, with one thing Spanner
 specific: the `save` and `saveAll` methods work as update-or-insert.
 
-### Paging and Sorting Repository
+#### Paging and Sorting Repository
 
 You can also use `PagingAndSortingRepository` with Spanner Spring Data.
 The sorting and pageable `findAll` methods available from this interface
@@ -4350,7 +4350,7 @@ operate on the current state of the Spanner database. As a result,
 beware that the state of the database (and the results) might change
 when moving page to page.
 
-### Spanner Repository
+#### Spanner Repository
 
 The `SpannerRepository` extends the `PagingAndSortingRepository`, but
 adds the read-only and the read-write transaction functionality provided
@@ -4381,7 +4381,7 @@ methods, you can extend `SpannerRepository` to access Cloud
 Spanner-specific features as well as all features from
 `PagingAndSortingRepository` and `CrudRepository`.
 
-## Query Methods
+### Query Methods
 
 `SpannerRepository` supports Query Methods. Described in the following
 sections, these are methods residing in your custom repository
@@ -4395,7 +4395,7 @@ type-conversion logic as used to create write mutations. Comparisons
 using Struct parameters are limited to [what is available with Cloud
 Spanner](https://cloud.google.com/spanner/docs/data-types#limited-comparisons-for-struct).
 
-### Query methods by convention
+#### Query methods by convention
 
 ``` java
 public interface TradeRepository extends SpannerRepository<Trade, String[]> {
@@ -4499,7 +4499,7 @@ Delete queries can have the following return types: \* An integer type
 that is the number of entities deleted \* A collection of entities that
 were deleted \* `void`
 
-### Custom SQL/DML query methods
+#### Custom SQL/DML query methods
 
 The example above for `List<Trade> fetchByActionNamedQuery(String
 action)` does not match the [Spring Data Query creation naming
@@ -4574,7 +4574,7 @@ the query method is run as a DML statement.
     long deleteByActionQuery(String action);
 ```
 
-#### Query methods with named queries properties
+##### Query methods with named queries properties
 
 By default, the `namedQueriesLocation` attribute on
 `@EnableSpannerRepositories` points to the
@@ -4593,7 +4593,7 @@ public interface TradeRepository extends SpannerRepository<Trade, String[]> {
 }
 ```
 
-#### Query methods with annotation
+##### Query methods with annotation
 
 Using the `@Query` annotation:
 
@@ -4632,7 +4632,7 @@ UNNEST(@iterableParam)` to specify a single `Iterable` parameter. You
 can also use a fixed number of singular parameters such as `IN
 (@stringParam1, @stringParam2)`.
 
-### Projections
+#### Projections
 
 Spring Data Spanner supports
 [projections](https://docs.spring.io/spring-data/data-commons/docs/current/reference/html/#projections).
@@ -4668,7 +4668,7 @@ Properties of projection types defined using SpEL use the fixed name
 `target` for the underlying domain object. As a result accessing
 underlying properties take the form `target.<property-name>`.
 
-### Empty result handling in repository methods
+#### Empty result handling in repository methods
 
 Java `java.util.Optional` can be used to indicate the potential absence
 of a return value.
@@ -4686,7 +4686,7 @@ docs](https://docs.spring.io/spring/docs/current/spring-framework-reference/core
 
 </div>
 
-### REST Repositories
+#### REST Repositories
 
 When running with Spring Boot, repositories can be exposed as REST
 services by simply adding this dependency to your pom file:
@@ -4738,7 +4738,7 @@ You can also write trades using `curl -XPOST -H"Content-Type:
 application/json" -d@test.json http://<server>:<port>/trades/` where the
 file `test.json` holds the JSON representation of a `Trade` object.
 
-## Database and Schema Admin
+### Database and Schema Admin
 
 Databases and tables inside Spanner instances can be created
 automatically from `SpannerPersistentEntity` objects:
@@ -4763,7 +4763,7 @@ public void createTable(SpannerPersistentEntity entity) {
 Schemas can be generated for entire object hierarchies with interleaved
 relationships and composite keys.
 
-## Events
+### Events
 
 Spring Data Cloud Spanner publishes events extending the Spring
 Framework’s `ApplicationEvent` to the context that can be received by
@@ -4780,7 +4780,7 @@ Framework’s `ApplicationEvent` to the context that can be received by
 | `BeforeDeleteEvent`     | Published immediately before delete operations are executed by `SpannerTemplate`               | The mutations to be sent to Cloud Spanner. The target entities, keys, or entity type originally specified for the delete operation. |
 | `AfterDeleteEvent`      | Published immediately after delete operations are executed by `SpannerTemplate`                | The mutations sent to Cloud Spanner. The target entities, keys, or entity type originally specified for the delete operation.       |
 
-## Auditing
+### Auditing
 
 Spring Data Cloud Spanner supports the `@LastModifiedDate` and
 `@LastModifiedBy` auditing annotations for properties:
@@ -4843,7 +4843,7 @@ You can also set a custom provider for properties annotated
 providing the bean name to `@EnableSpannerAuditing(dateTimeProviderRef =
 "customDateTimeProviderBean")`.
 
-## Multi-Instance Usage
+### Multi-Instance Usage
 
 Your application can be configured to use multiple Cloud Spanner
 instances or databases by providing a custom bean for
@@ -4871,9 +4871,9 @@ If you would like to configure every aspect of each connection (such as
 pool size and retry settings), you can supply a bean for
 `Supplier<DatabaseClient>`.
 
-## Spring Boot Actuator Support
+### Spring Boot Actuator Support
 
-### Cloud Spanner Health Indicator
+#### Cloud Spanner Health Indicator
 
 If you are using Spring Boot Actuator, you can take advantage of the
 Cloud Spanner health indicator called `spanner`. The health indicator
@@ -4913,7 +4913,7 @@ query. A query to validate can be configured via
 | `management.health.spanner.enabled`     | Whether to enable the Spanner health indicator | No       | `true` with Spring Boot Actuator, `false` otherwise |
 | `spring.cloud.gcp.spanner.health.query` | A query to validate                            | No       | `SELECT 1`                                          |
 
-## Cloud Spanner Emulator
+### Cloud Spanner Emulator
 
 The [Cloud SDK](https://cloud.google.com/sdk) provides a local,
 in-memory emulator for Cloud Spanner, which you can use to develop and
@@ -4936,7 +4936,7 @@ application:
     spring.cloud.gcp.spanner.emulator.enabled=true
     spring.cloud.gcp.spanner.emulator-host=${EMULATOR_HOSTPORT}
 
-## Sample
+### Sample
 
 There are two sample applications available:
 
@@ -4946,7 +4946,7 @@ There are two sample applications available:
 2.  [Sample application using higher-level Spanner Repository
     capabilities](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-repository-sample)
 
-# Spring Data Cloud Datastore
+## Spring Data Cloud Datastore
 
 <div class="note">
 
@@ -5000,14 +5000,14 @@ Gradle:
 This setup takes care of bringing in the latest compatible version of
 Cloud Java Cloud Datastore libraries as well.
 
-## Configuration
+### Configuration
 
 To setup Spring Data Cloud Datastore, you have to configure the
 following:
 
   - Setup the connection details to Google Cloud Datastore.
 
-### Cloud Datastore settings
+#### Cloud Datastore settings
 
 You can use the [Spring Boot Starter for Spring Data
 Datastore](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-datastore)
@@ -5032,7 +5032,7 @@ available:
 | `spring.cloud.gcp.datastore.emulator.store-on-disk`  | Configures whether or not the emulator should persist any data to disk.                                                                                                                                                                                                                                                             | No       | `true`                                                                                                                                                                                                         |
 | `spring.cloud.gcp.datastore.emulator.data-dir`       | The directory to be used to store/retrieve data/config for an emulator run.                                                                                                                                                                                                                                                         | No       | The default value is `<USER_CONFIG_DIR>/emulators/datastore`. See the [gcloud documentation](https://cloud.google.com/sdk/gcloud/reference/beta/emulators/datastore/start) for finding your `USER_CONFIG_DIR`. |
 
-### Repository settings
+#### Repository settings
 
 Spring Data Repositories can be configured via the
 `@EnableDatastoreRepositories` annotation on your main `@Configuration`
@@ -5042,7 +5042,7 @@ required to add it to any other class, unless there is a need to
 override finer grain configuration parameters provided by
 [`@EnableDatastoreRepositories`](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/blob/main/spring-cloud-gcp-data-datastore/src/main/java/com/google/cloud/spring/data/datastore/repository/config/EnableDatastoreRepositories.java).
 
-### Autoconfiguration
+#### Autoconfiguration
 
 Our Spring Boot autoconfiguration creates the following beans available
 in the Spring application context:
@@ -5058,7 +5058,7 @@ in the Spring application context:
   - an instance of `Datastore` from the Google Cloud Java Client for
     Datastore, for convenience and lower level API access
 
-### Datastore Emulator Autoconfiguration
+#### Datastore Emulator Autoconfiguration
 
 This Spring Boot autoconfiguration can also configure and start a local
 Datastore Emulator server if enabled by property.
@@ -5075,7 +5075,7 @@ to the emulator for convenience and lower level API for local access.
 The emulator will be properly stopped after the Spring application
 context shutdown.
 
-## Object Mapping
+### Object Mapping
 
 Spring Data Cloud Datastore allows you to map domain POJOs to Cloud
 Datastore kinds and entities via annotations:
@@ -5101,7 +5101,7 @@ Spring Data Cloud Datastore will ignore any property annotated with
 `@Transient`. These properties will not be written to or read from Cloud
 Datastore.
 
-### Constructors
+#### Constructors
 
 Simple constructors are supported on POJOs. The constructor arguments
 can be a subset of the persistent properties. Every constructor argument
@@ -5132,12 +5132,12 @@ public class Trader {
 }
 ```
 
-### Kind
+#### Kind
 
 The `@Entity` annotation can provide the name of the Cloud Datastore
 kind that stores instances of the annotated class, one per row.
 
-### Keys
+#### Keys
 
 `@Id` identifies the property corresponding to the ID value.
 
@@ -5171,7 +5171,7 @@ newly allocated ID value from Cloud Datastore and set that in the POJO
 for saving. Because primitive `long` ID properties cannot be `null` and
 default to `0`, keys will not be allocated.
 
-### Fields
+#### Fields
 
 All accessible properties on POJOs are automatically recognized as a
 Cloud Datastore field. Field naming is generated by the
@@ -5179,7 +5179,7 @@ Cloud Datastore field. Field naming is generated by the
 `DatastoreMappingContext` bean. The `@Field` annotation optionally
 provides a different field name than that of the property.
 
-### Supported Types
+#### Supported Types
 
 Spring Data Cloud Datastore supports the following types for regular
 fields and elements of collections:
@@ -5204,7 +5204,7 @@ table by
 `org.springframework.core.convert.support.DefaultConversionService` are
 supported.
 
-### Custom types
+#### Custom types
 
 Custom converters can be used extending the type support for user
 defined types.
@@ -5286,7 +5286,7 @@ public class ConverterConfiguration {
 }
 ```
 
-### Collections and arrays
+#### Collections and arrays
 
 Arrays and collections (types that implement `java.util.Collection`) of
 supported types are supported. They are stored as
@@ -5294,7 +5294,7 @@ supported types are supported. They are stored as
 Datastore supported types individually. `byte[]` is an exception, it is
 converted to `com.google.cloud.datastore.Blob`.
 
-### Custom Converter for collections
+#### Custom Converter for collections
 
 Users can provide converters from `List<?>` to the custom collection
 type. Only read converter is necessary, the Collection API is used on
@@ -5350,7 +5350,7 @@ public class ConverterConfiguration {
 }
 ```
 
-### Inheritance Hierarchies
+#### Inheritance Hierarchies
 
 Java entity types related by inheritance can be stored in the same Kind.
 When reading and querying entities using `DatastoreRepository` or
@@ -5410,7 +5410,7 @@ be convertible to a collection or array of `String`. Any value set in
 the discrimination field will be overwritten upon write to Cloud
 Datastore.
 
-## Relationships
+### Relationships
 
 There are three ways to represent relationships between entities that
 are described in this section:
@@ -5427,7 +5427,7 @@ are described in this section:
     lazy-loaded when the property is accessed. (Note that the keys of
     the children are retrieved when the parent entity is loaded.)
 
-### Embedded Entities
+#### Embedded Entities
 
 Fields whose types are also annotated with `@Entity` are converted to
 `EntityValue` and stored inside the parent entity.
@@ -5506,7 +5506,7 @@ public class EmbeddableTreeNode {
 }
 ```
 
-#### Maps
+##### Maps
 
 Maps will be stored as embedded entities where the key values become the
 field names in the embedded entity. The value types in these maps can be
@@ -5555,7 +5555,7 @@ entities:
   - Maps in the value are further stored as embedded entities with the
     same rules applied recursively for their values.
 
-### Ancestor-Descendant Relationships
+#### Ancestor-Descendant Relationships
 
 Parent-child relationships are supported via the `@Descendants`
 annotation.
@@ -5651,7 +5651,7 @@ entity appears in the property of multiple parent entities. Because
 entity keys are immutable in Cloud Datastore, to change the key of a
 child you must delete the existing one and re-save it with the new key.
 
-### Key Reference Relationships
+#### Key Reference Relationships
 
 General relationships can be stored using the `@Reference` annotation.
 
@@ -5708,7 +5708,7 @@ of an entity and the keys that entity holds as references. The order of
 collection-like reference properties is not preserved when reading back
 from Cloud Datastore.
 
-## Datastore Operations & Template
+### Datastore Operations & Template
 
 `DatastoreOperations` and its implementation, `DatastoreTemplate`,
 provides the Template pattern familiar to Spring developers.
@@ -5744,7 +5744,7 @@ The Template API provides convenience methods for:
 
   - Read-write transactions
 
-### GQL Query
+#### GQL Query
 
 In addition to retrieving entities by their IDs, you can also submit
 queries.
@@ -5766,7 +5766,7 @@ These methods, respectively, allow querying for:
 
   - only the Cloud Datastore keys of the entities found by the query
 
-### Find by ID(s)
+#### Find by ID(s)
 
 Using `DatastoreTemplate` you can find entities by id. For example:
 
@@ -5783,7 +5783,7 @@ queries with eventual consistency. In the example above the first two
 reads utilize keys, while the third is run by using a query based on the
 corresponding Kind of `Trader`.
 
-#### Indexes
+##### Indexes
 
 By default, all fields are indexed. To disable indexing on a particular
 field, `@Unindexed` annotation can be used.
@@ -5810,7 +5810,7 @@ indexes](https://cloud.google.com/datastore/docs/concepts/indexes) if
 the select statement is not `SELECT *` or if there is more than one
 filtering condition in the `WHERE` clause.
 
-#### Read with offsets, limits, and sorting
+##### Read with offsets, limits, and sorting
 
 `DatastoreRepository` and custom-defined entity repositories implement
 the Spring Data `PagingAndSortingRepository`, which supports offsets and
@@ -5818,11 +5818,11 @@ limits using page numbers and page sizes. Paging and sorting options are
 also supported in `DatastoreTemplate` by supplying a
 `DatastoreQueryOptions` to `findAll`.
 
-#### Partial read
+##### Partial read
 
 This feature is not supported yet.
 
-### Write / Update
+#### Write / Update
 
 The write methods of `DatastoreOperations` accept a POJO and writes all
 of its properties to Datastore. The required Datastore kind and entity
@@ -5840,11 +5840,11 @@ this.datastoreTemplate.save(t);
 
 The `save` method behaves as update-or-insert.
 
-#### Partial Update
+##### Partial Update
 
 This feature is not supported yet.
 
-### Transactions
+#### Transactions
 
 Read and write transactions are provided by `DatastoreOperations` via
 the `performTransaction` method:
@@ -5877,7 +5877,7 @@ Because of Cloud Datastore’s consistency guarantees, there are
 to the operations and relationships among entities used inside
 transactions.
 
-#### Declarative Transactions with @Transactional Annotation
+##### Declarative Transactions with @Transactional Annotation
 
 This feature requires a bean of `DatastoreTransactionManager`, which is
 provided when using `spring-cloud-gcp-starter-data-datastore`.
@@ -5891,7 +5891,7 @@ same transaction. `performTransaction` cannot be used in
 `@Transactional` annotated methods because Cloud Datastore does not
 support transactions within transactions.
 
-### Read-Write Support for Maps
+#### Read-Write Support for Maps
 
 You can work with Maps of type `Map<String, ?>` instead of with entity
 objects by directly reading and writing them to and from Cloud
@@ -5926,7 +5926,7 @@ datastoreTemplate.writeMap(keyForMap, map);
 Map<String, Long> loadedMap = datastoreTemplate.findByIdAsMap(keyForMap, Long.class);
 ```
 
-## Repositories
+### Repositories
 
 [Spring Data
 Repositories](https://docs.spring.io/spring-data/data-commons/docs/current/reference/html/#repositories)
@@ -5972,7 +5972,7 @@ following sections) for retrieving, counting, and deleting based on
 filtering and paging parameters. Filtering parameters can be of types
 supported by your configured custom converters.
 
-### Query methods by convention
+#### Query methods by convention
 
 ``` java
 public interface TradeRepository extends DatastoreRepository<Trade, String[]> {
@@ -6077,7 +6077,7 @@ run any additional queries and, therefore, are much more efficient.
 
 </div>
 
-### Empty result handling in repository methods
+#### Empty result handling in repository methods
 
 Java `java.util.Optional` can be used to indicate the potential absence
 of a return value.
@@ -6095,7 +6095,7 @@ docs](https://docs.spring.io/spring/docs/current/spring-framework-reference/core
 
 </div>
 
-### Query by example
+#### Query by example
 
 Query by Example is an alternative querying technique. It enables
 dynamic query generation based on a user-provided object. See [Spring
@@ -6103,7 +6103,7 @@ Data
 Documentation](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#query-by-example)
 for details.
 
-#### Unsupported features:
+##### Unsupported features:
 
 1.  Currently, only equality queries are supported (no ignore-case
     matching, regexp matching, etc.).
@@ -6139,7 +6139,7 @@ in FluentQuery’s chaining style:
     userRepository.findBy(
         Example.of(new User(null, null, "Smith")), FetchableFluentQuery::stream);
 
-### Custom GQL query methods
+#### Custom GQL query methods
 
 Custom GQL queries can be mapped to repository methods in one of two
 ways:
@@ -6148,7 +6148,7 @@ ways:
 
   - using the `@Query` annotation
 
-#### Query methods with annotation
+##### Query methods with annotation
 
 Using the `@Query` annotation:
 
@@ -6288,7 +6288,7 @@ the `@Entity` annotation. For example:
 List<Trade> fetchByActionNamedQuery(@Param("act") String action);
 ```
 
-#### Query methods with named queries properties
+##### Query methods with named queries properties
 
 You can also specify queries with Cloud Datastore parameter tags and
 SpEL expressions in properties files.
@@ -6320,7 +6320,7 @@ public interface TraderRepository extends DatastoreRepository<Trader, String> {
 }
 ```
 
-### Transactions
+#### Transactions
 
 These transactions work very similarly to those of
 `DatastoreOperations`, but is specific to the repository’s domain type
@@ -6344,7 +6344,7 @@ public String doWorkInsideTransaction() {
 }
 ```
 
-### Projections
+#### Projections
 
 Spring Data Cloud Datastore supports
 [projections](https://docs.spring.io/spring-data/data-commons/docs/current/reference/html/#projections).
@@ -6382,7 +6382,7 @@ Properties of projection types defined using SpEL use the fixed name
 `target` for the underlying domain object. As a result, accessing
 underlying properties take the form `target.<property-name>`.
 
-### REST Repositories
+#### REST Repositories
 
 When running with Spring Boot, repositories can be exposed as REST
 services by simply adding this dependency to your pom file:
@@ -6414,7 +6414,7 @@ file `test.json` holds the JSON representation of a `Trade` object.
 To delete trades, you can use `curl -XDELETE
 http://<server>:<port>/trades/<trader_id>`
 
-## Events
+### Events
 
 Spring Data Cloud Datastore publishes events extending the Spring
 Framework’s `ApplicationEvent` to the context that can be received by
@@ -6429,7 +6429,7 @@ Framework’s `ApplicationEvent` to the context that can be received by
 | `BeforeDeleteEvent`   | Published immediately before delete operations are run by `DatastoreTemplate`      | The keys to be sent to Cloud Datastore. The target entities, ID values, or entity type originally specified for the delete operation. |
 | `AfterDeleteEvent`    | Published immediately after delete operations are run by `DatastoreTemplate`       | The keys sent to Cloud Datastore. The target entities, ID values, or entity type originally specified for the delete operation.       |
 
-## Auditing
+### Auditing
 
 Spring Data Cloud Datastore supports the `@LastModifiedDate` and
 `@LastModifiedBy` auditing annotations for properties:
@@ -6492,7 +6492,7 @@ You can also set a custom provider for properties annotated
 providing the bean name to `@EnableDatastoreAuditing(dateTimeProviderRef
 = "customDateTimeProviderBean")`.
 
-## Partitioning Data by Namespace
+### Partitioning Data by Namespace
 
 You can [partition your data by using more than one
 namespace](https://cloud.google.com/datastore/docs/concepts/multitenancy).
@@ -6514,9 +6514,9 @@ perform will utilize the namespace provided by this supplier.
 Note that your provided namespace in `application.properties` will be
 ignored if you define a namespace provider bean.
 
-## Spring Boot Actuator Support
+### Spring Boot Actuator Support
 
-### Cloud Datastore Health Indicator
+#### Cloud Datastore Health Indicator
 
 If you are using Spring Boot Actuator, you can take advantage of the
 Cloud Datastore health indicator called `datastore`. The health
@@ -6533,7 +6533,7 @@ to your project.
 </dependency>
 ```
 
-## Sample
+### Sample
 
 A [Simple Spring Boot
 Application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-basic-sample)
@@ -6542,7 +6542,7 @@ Application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/s
 are provided to show how to use the Spring Data Cloud Datastore starter
 and template.
 
-# Spring Data Cloud Firestore
+## Spring Data Cloud Firestore
 
 <div class="note">
 
@@ -6592,9 +6592,9 @@ Gradle coordinates:
       implementation("com.google.cloud:spring-cloud-gcp-starter-data-firestore")
     }
 
-## Configuration
+### Configuration
 
-### Properties
+#### Properties
 
 The Spring Boot starter for Google Cloud Firestore provides the
 following configuration options:
@@ -6610,7 +6610,7 @@ following configuration options:
 | `spring.cloud.gcp.firestore.credentials.encoded-key` | Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core)                              | No       |                                                                                |
 | `spring.cloud.gcp.firestore.credentials.scopes`      | [OAuth2 scope](https://developers.google.com/identity/protocols/googlescopes) for Spring Cloud GCP Cloud Firestore credentials                                                                                  | No       | [www.googleapis.com/auth/datastore](https://www.googleapis.com/auth/datastore) |
 
-### Supported types
+#### Supported types
 
 You may use the following field types when defining your persistent
 entities or when binding query parameters:
@@ -6643,7 +6643,7 @@ entities or when binding query parameters:
 
   - `com.google.cloud.firestore.Blob`
 
-### Reactive Repository settings
+#### Reactive Repository settings
 
 Spring Data Repositories can be configured via the
 `@EnableReactiveFirestoreRepositories` annotation on your main
@@ -6653,7 +6653,7 @@ added. It is not required to add it to any other class, unless there is
 a need to override finer grain configuration parameters provided by
 [`@EnableReactiveFirestoreRepositories`](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/blob/main/spring-cloud-gcp-data-firestore/src/main/java/com/google/cloud/spring/data/firestore/repository/config/EnableReactiveFirestoreRepositories.java).
 
-### Autoconfiguration
+#### Autoconfiguration
 
 Our Spring Boot autoconfiguration creates the following beans available
 in the Spring application context:
@@ -6670,7 +6670,7 @@ in the Spring application context:
     from the Google Cloud Java Client for Firestore, for convenience and
     lower level API access
 
-## Object Mapping
+### Object Mapping
 
 Spring Data Cloud Firestore allows you to map domain POJOs to [Cloud
 Firestore
@@ -6707,7 +6707,7 @@ for supported annotations.
 
 </div>
 
-### Embedded entities and lists
+#### Embedded entities and lists
 
 Spring Data Cloud Firestore supports embedded properties of custom types
 and lists. Given a custom POJO definition, you can have properties of
@@ -6720,7 +6720,7 @@ Example:
 Unresolved directive in firestore.adoc - include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google/cloud/spring/data/firestore/entities/User.java[tag=embedded_class_collections]
 ```
 
-## Reactive Repositories
+### Reactive Repositories
 
 [Spring Data
 Repositories](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/reactive/ReactiveCrudRepository.html)
@@ -6765,7 +6765,7 @@ no query language in Cloud Firestore
 
 </div>
 
-## Firestore Operations & Template
+### Firestore Operations & Template
 
 `FirestoreOperations` and its implementation, `FirestoreTemplate`,
 provides the Template pattern familiar to Spring developers.
@@ -6804,7 +6804,7 @@ The Template API provides support for:
 
   - [Subcollections](#subcollections) operations
 
-## Query methods by convention
+### Query methods by convention
 
 ``` java
 public class MyApplication {
@@ -6852,7 +6852,7 @@ After writing a custom repository interface specifying just the
 signatures of these methods, implementations are generated for you and
 can be used with an auto-wired instance of the repository.
 
-## Transactions
+### Transactions
 
 Read-only and read-write transactions are provided by
 `TransactionalOperator` (see this [blog
@@ -6893,7 +6893,7 @@ operation is performed.
 
 </div>
 
-### Declarative Transactions with @Transactional Annotation
+#### Declarative Transactions with @Transactional Annotation
 
 This feature requires a bean of `SpannerTransactionManager`, which is
 provided when using `spring-cloud-gcp-starter-data-firestore`.
@@ -6942,7 +6942,7 @@ occurs during the execution of a method annotated with `@Transactional`,
 the transaction will be rolled back. If no error occurs, the transaction
 will be committed.
 
-## Subcollections
+### Subcollections
 
 A subcollection is a collection associated with a specific entity.
 Documents in subcollections can contain subcollections as well, allowing
@@ -6975,7 +6975,7 @@ object with a custom parent:
 Unresolved directive in firestore.adoc - include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google/cloud/spring/data/firestore/it/FirestoreIntegrationTests.java[tag=subcollection]
 ```
 
-## Update Time and Optimistic Locking
+### Update Time and Optimistic Locking
 
 Firestore stores update time for every document. If you would like to
 retrieve it, you can add a field of `com.google.cloud.Timestamp` type to
@@ -6986,7 +6986,7 @@ your entity and annotate it with `@UpdateTime` annotation.
 Timestamp updateTime;
 ```
 
-### Using update time for optimistic locking
+#### Using update time for optimistic locking
 
 A field annotated with `@UpdateTime` can be used for optimistic locking.
 To enable that, you need to set `version` parameter to `true`:
@@ -7006,7 +7006,7 @@ If the field is empty, a precondition would check that the document with
 the same id does not exist to ensure you don’t overwrite existing
 documents unintentionally.
 
-## Cloud Firestore Spring Boot Starter
+### Cloud Firestore Spring Boot Starter
 
 If you prefer using Firestore client only, Spring Cloud GCP provides a
 convenience starter which automatically configures authentication
@@ -7034,7 +7034,7 @@ Gradle coordinates:
       implementation("com.google.cloud:spring-cloud-gcp-starter-firestore")
     }
 
-### Using Cloud Firestore
+#### Using Cloud Firestore
 
 The starter automatically configures and registers a `Firestore` bean in
 the Spring application context. To start using it, simply use the
@@ -7049,7 +7049,7 @@ Unresolved directive in firestore.adoc - include::{project-root}/spring-cloud-gc
 Unresolved directive in firestore.adoc - include::{project-root}/spring-cloud-gcp-autoconfigure/src/test/java/com/google/cloud/spring/autoconfigure/firestore/it/FirestoreDocumentationIntegrationTests.java[tag=read]
 ```
 
-## Emulator Usage
+### Emulator Usage
 
 The Google Cloud Firebase SDK provides a local, in-memory emulator for
 Cloud Firestore, which you can use to develop and test your application.
@@ -7076,7 +7076,7 @@ application:
 From this point onward, your application will connect to your locally
 running emulator instance instead of the real Firestore service.
 
-## Samples
+### Samples
 
 Spring Cloud GCP provides Firestore sample applications to demonstrate
 API usage:
@@ -7087,9 +7087,9 @@ API usage:
   - [Firestore Client Library sample
     application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-firestore-sample)
 
-# Cloud Memorystore for Redis
+## Cloud Memorystore for Redis
 
-## Spring Caching
+### Spring Caching
 
 [Cloud Memorystore for Redis](https://cloud.google.com/memorystore/)
 provides a fully managed in-memory data store service. Cloud Memorystore
@@ -7139,7 +7139,7 @@ codelab](https://codelabs.developers.google.com/codelabs/cloud-spring-cache-memo
 Cloud Memorystore documentation can be found
 [here](https://cloud.google.com/memorystore/docs/redis/).
 
-# BigQuery
+## BigQuery
 
 [Google Cloud BigQuery](https://cloud.google.com/bigquery) is a fully
 managed, petabyte scale, low cost analytics data warehouse.
@@ -7168,7 +7168,7 @@ Gradle coordinates:
         implementation("com.google.cloud:spring-cloud-gcp-starter-bigquery")
     }
 
-## Configuration
+### Configuration
 
 The following application properties may be configured with Spring Cloud
 GCP BigQuery libraries.
@@ -7181,7 +7181,7 @@ GCP BigQuery libraries.
 | `spring.cloud.gcp.bigquery.project-id`           | GCP project ID of the project using BigQuery APIs, if different from the one in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core).                                | No       | Project ID is typically inferred from [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/config/set) configuration.                                                                                      |
 | `spring.cloud.gcp.bigquery.credentials.location` | Credentials file location for authenticating with the Google Cloud BigQuery APIs, if different from the ones in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core) | No       | Inferred from [Application Default Credentials](https://cloud.google.com/docs/authentication/production), typically set by [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default). |
 
-### BigQuery Client Object
+#### BigQuery Client Object
 
 The `GcpBigQueryAutoConfiguration` class configures an instance of
 [`BigQuery`](https://googleapis.dev/java/google-cloud-clients/latest/com/google/cloud/bigquery/BigQuery.html)
@@ -7213,7 +7213,7 @@ This object is used to interface with all BigQuery services. For more
 information, see the [BigQuery Client Library usage
 examples](https://cloud.google.com/bigquery/docs/reference/libraries#using_the_client_library).
 
-### BigQueryTemplate
+#### BigQueryTemplate
 
 The `BigQueryTemplate` class is a wrapper over the `BigQuery` client
 object and makes it easier to load data into BigQuery tables. A
@@ -7241,7 +7241,7 @@ public void loadData(InputStream dataInputStream, String tableName) {
 }
 ```
 
-## Spring Integration
+### Spring Integration
 
 Spring Cloud GCP BigQuery also provides a Spring Integration message
 handler `BigQueryFileMessageHandler`. This is useful for incorporating
@@ -7271,7 +7271,7 @@ public MessageHandler messageSender(BigQueryTemplate bigQueryTemplate) {
 }
 ```
 
-### BigQuery Message Handling
+#### BigQuery Message Handling
 
 The `BigQueryFileMessageHandler` accepts the following message payload
 types for loading into BigQuery: `java.io.File`, `byte[]`,
@@ -7294,7 +7294,7 @@ Alternatively, you may omit these headers and explicitly set the table
 name or format options by calling `setTableName(…​)` and
 `setFormatOptions(…​)`.
 
-### BigQuery Message Reply
+#### BigQuery Message Reply
 
 After the `BigQueryFileMessageHandler` processes a message to load data
 to your BigQuery table, it will respond with a `Job` on the reply
@@ -7321,13 +7321,13 @@ support rather than rely on async handling of the gateway.
 
 </div>
 
-## Sample
+### Sample
 
 A BigQuery [sample
 application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-bigquery-sample)
 is available.
 
-# Cloud IAP
+## Cloud IAP
 
 [Cloud Identity-Aware Proxy (IAP)](https://cloud.google.com/iap/)
 provides a security layer over applications deployed to Google Cloud.
@@ -7403,7 +7403,7 @@ Starter Gradle coordinates:
         implementation("com.google.cloud:spring-cloud-gcp-starter-security-iap")
     }
 
-## Configuration
+### Configuration
 
 The following properties are available.
 
@@ -7422,13 +7422,13 @@ testing, but the defaults should not be changed in production.
 | `spring.cloud.gcp.security.iap.issuer`    | JWK issuer to verify.                            | true                                 | `cloud.google.com/iap`                      |
 | `spring.cloud.gcp.security.iap.audience`  | Custom JWK audience to verify.                   | false on App Engine; true on GCE/GKE |                                             |
 
-## Sample
+### Sample
 
 A [sample
 application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-security-iap-sample)
 is available.
 
-# Cloud Vision
+## Cloud Vision
 
 The [Google Cloud Vision API](https://cloud.google.com/vision/) allows
 users to leverage machine learning algorithms for processing images and
@@ -7455,7 +7455,7 @@ Spring Cloud GCP provides:
     (OCR)](https://cloud.google.com/vision/docs/pdf) on PDF and TIFF
     documents.
 
-## Dependency Setup
+### Dependency Setup
 
 To begin using this library, add the `spring-cloud-gcp-starter-vision`
 artifact to your project.
@@ -7475,7 +7475,7 @@ Gradle coordinates:
       implementation("com.google.cloud:spring-cloud-gcp-starter-vision")
     }
 
-## Configuration
+### Configuration
 
 The following options may be configured with Spring Cloud GCP Vision
 libraries.
@@ -7487,7 +7487,7 @@ libraries.
 | `spring.cloud.gcp.vision.executors-threads-count` | Number of threads used during document OCR processing for waiting on long-running OCR operations | No       | 1             |
 | `spring.cloud.gcp.vision.json-output-batch-size`  | Number of document pages to include in each OCR output file.                                     | No       | 20            |
 
-### Cloud Vision OCR Dependencies
+#### Cloud Vision OCR Dependencies
 
 If you are interested in applying optical character recognition (OCR) on
 documents for your project, you’ll need to add both
@@ -7516,7 +7516,7 @@ Gradle coordinates:
       implementation("com.google.cloud:spring-cloud-gcp-starter-storage")
     }
 
-## Image Analysis
+### Image Analysis
 
 The `CloudVisionTemplate` allows you to easily analyze images; it
 provides the following method for interfacing with Cloud Vision:
@@ -7559,7 +7559,7 @@ Feature.Type…​ featureTypes)`
     docs](https://cloud.google.com/vision/docs/) to familiarize yourself
     with the concepts and features of the API.
 
-### Detect Image Labels Example
+#### Detect Image Labels Example
 
 [Image labeling](https://cloud.google.com/vision/docs/detecting-labels)
 refers to producing labels that describe the contents of an image. Below
@@ -7581,7 +7581,7 @@ public void processImage() {
 }
 ```
 
-## File Analysis
+### File Analysis
 
 The `CloudVisionTemplate` allows you to easily analyze PDF, TIFF and GIF
 documents; it provides the following method for interfacing with Cloud
@@ -7630,7 +7630,7 @@ mimeType, Feature.Type…​ featureTypes)`
     docs](https://cloud.google.com/vision/docs/) to familiarize yourself
     with the concepts and features of the API.
 
-### Running Text Detection Example
+#### Running Text Detection Example
 
 [Detect text in
 files](https://cloud.google.com/vision/docs/file-small-batch) refers to
@@ -7658,7 +7658,7 @@ public void processPdf() {
 }
 ```
 
-## Document OCR Template
+### Document OCR Template
 
 The `DocumentOcrTemplate` allows you to easily run [optical character
 recognition (OCR)](https://cloud.google.com/vision/docs/pdf) on your PDF
@@ -7669,7 +7669,7 @@ Storage](https://console.cloud.google.com/storage) and [upload the
 documents you wish to process into the
 bucket](https://cloud.google.com/storage/docs/uploading-objects#storage-upload-object-java).
 
-### Running OCR on a Document
+#### Running OCR on a Document
 
 When OCR is run on a document, the Cloud Vision APIs will output a
 collection of OCR output files in JSON which describe the text content,
@@ -7698,7 +7698,7 @@ using `readOcrOutputFile` or `readOcrOutputFileSet`.
 
 </div>
 
-### Running OCR Example
+#### Running OCR Example
 
 Below is a code snippet of how to run OCR on a document stored in a
 Google Storage bucket and read the text in the first page of the
@@ -7723,7 +7723,7 @@ document.
         System.out.println(page1Text);
     }
 
-### Reading OCR Output Files
+#### Reading OCR Output Files
 
 In some use-cases, you may need to directly read OCR output files stored
 in Google Cloud Storage.
@@ -7739,7 +7739,7 @@ processing OCR output files:
   - `readOcrOutputFile(GoogleStorageLocation jsonFile)`: Reads a single
     OCR output file and returns the parsed contents.
 
-### Reading OCR Output Files Example
+#### Reading OCR Output Files Example
 
 The code snippet below describes how to read the OCR output files of a
 single document.
@@ -7765,7 +7765,7 @@ single document.
       System.out.println("Page 2 text: " + result.getPage(2).getText());
     }
 
-## Sample
+### Sample
 
 Samples are provided to show example usages of Spring Cloud GCP with
 Google Cloud Vision.
@@ -7781,7 +7781,7 @@ Google Cloud Vision.
     shows how you can apply OCR processing on your PDF/TIFF documents in
     order to extract their text contents.
 
-# Secret Manager
+## Secret Manager
 
 [Google Cloud Secret Manager](https://cloud.google.com/secret-manager)
 is a secure and convenient method for storing API keys, passwords,
@@ -7799,7 +7799,7 @@ Spring Cloud GCP provides:
   - A `SecretManagerTemplate` which allows you to read, write, and
     update secrets in Secret Manager.
 
-## Dependency Setup
+### Dependency Setup
 
 To begin using this library, add the
 `spring-cloud-gcp-starter-secretmanager` artifact to your project.
@@ -7819,7 +7819,7 @@ Gradle coordinates:
       implementation("com.google.cloud:spring-cloud-gcp-starter-secretmanager")
     }
 
-### Configuration
+#### Configuration
 
 By default, Spring Cloud GCP Secret Manager will authenticate using
 Application Default Credentials. This can be overridden using the
@@ -7842,7 +7842,7 @@ configure settings for bootstrap-phase Spring configuration.
 | `spring.cloud.gcp.secretmanager.credentials.encoded-key` | Base64-encoded contents of OAuth2 account private key for authenticating to the Google Cloud Secret Manager API. | No       | By default, infers credentials from [Application Default Credentials](https://cloud.google.com/docs/authentication/production). |
 | `spring.cloud.gcp.secretmanager.project-id`              | The default GCP Project used to access Secret Manager API for the template and property source.                  | No       | By default, infers the project from [Application Default Credentials](https://cloud.google.com/docs/authentication/production). |
 
-## Secret Manager Property Source
+### Secret Manager Property Source
 
 The Spring Cloud GCP integration for Google Cloud Secret Manager enables
 you to use Secret Manager as a bootstrap property source.
@@ -7887,7 +7887,7 @@ You can use this syntax in the following places:
         // Example of using shortest form syntax.
         @Value("${sm://my-secret}")
 
-## Secret Manager Template
+### Secret Manager Template
 
 The `SecretManagerTemplate` class simplifies operations of creating,
 updating, and reading secrets.
@@ -7905,14 +7905,14 @@ Please consult
 for information on what operations are available for the Secret Manager
 template.
 
-## Sample
+### Sample
 
 A [Secret Manager Sample
 Application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-secretmanager-sample)
 is provided which demonstrates basic property source loading and usage
 of the template class.
 
-# Google Cloud Key Management Service
+## Google Cloud Key Management Service
 
 The [Google Cloud Key Management Service
 (KMS)](https://cloud.google.com/kms/docs) allows you to create, import,
@@ -7922,7 +7922,7 @@ single centralized cloud service.
 Spring Cloud GCP offers a utility template class `KmsTemplate` which
 allows you to conveniently encrypt and decrypt binary or text data.
 
-## Dependency Setup
+### Dependency Setup
 
 To begin using this library, add the `spring-cloud-gcp-starter-kms`
 artifact to your project.
@@ -7942,7 +7942,7 @@ Gradle coordinates:
       implementation("com.google.cloud:spring-cloud-gcp-starter-kms")
     }
 
-## Configuration
+### Configuration
 
 The following options may be configured with Spring Cloud GCP KMS
 libraries.
@@ -7954,7 +7954,7 @@ libraries.
 | `spring.cloud.gcp.kms.project-id`           | GCP project ID of the project using Cloud KMS APIs, if different from the one in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core).                   | No       | Project ID is typically inferred from [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/config/set) configuration.                                                                                      |
 | `spring.cloud.gcp.kms.credentials.location` | Credentials file location for authenticating with the Cloud KMS APIs, if different from the ones in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core) | No       | Inferred from [Application Default Credentials](https://cloud.google.com/docs/authentication/production), typically set by [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default). |
 
-## Basic Usage
+### Basic Usage
 
 Once you have added the `spring-cloud-gcp-starter-kms` to your project,
 the autoconfiguration class
@@ -7970,7 +7970,7 @@ encryption/decryption with it.
 The template class automatically validates the CRC32 checksums received
 responses from Cloud KMS APIs to verify correctness of the response.
 
-### Cloud KMS Key ID format
+#### Cloud KMS Key ID format
 
 Spring Cloud GCP offers the following key syntax to specify Cloud KMS
 keys in your project:
@@ -7999,14 +7999,14 @@ keys in your project:
  projects/{project-id}/locations/{location-id}/keyRings/{key-ring-id}/cryptoKeys/{key-id}
 ```
 
-## Sample
+### Sample
 
 A [Cloud KMS Sample
 Application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-kms-sample)
 is provided which demonstrates basic encryption and decryption
 operations.
 
-# Cloud Runtime Configuration API
+## Cloud Runtime Configuration API
 
 <div class="warning">
 
@@ -8045,7 +8045,7 @@ Gradle coordinates:
         version: '{project-version}'
     }
 
-## Configuration
+### Configuration
 
 The following parameters are configurable in Spring Cloud GCP Config:
 
@@ -8077,7 +8077,7 @@ Config.
 
 </div>
 
-## Quick start
+### Quick start
 
 1.  Create a configuration in the Google Runtime Configuration API that
     is called `${spring.application.name}_${spring.profiles.active}`. In
@@ -8120,7 +8120,7 @@ Config.
 When your Spring application starts, the `queueSize` field value will be
 set to 25 for the above `SampleConfig` bean.
 
-## Refreshing the configuration at runtime
+### Refreshing the configuration at runtime
 
 [Spring
 Cloud](https://cloud.spring.io/spring-cloud-static/docs/1.0.x/spring-cloud.html#_endpoints)
@@ -8159,7 +8159,7 @@ POST request to `/actuator/refresh` endpoint.
     
         $ curl -XPOST https://myapp.host.com/actuator/refresh
 
-## Sample
+### Sample
 
 A [sample
 application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-config-sample)
@@ -8167,7 +8167,7 @@ and a
 [codelab](https://codelabs.developers.google.com/codelabs/cloud-spring-runtime-config/index.html)
 are available.
 
-# Cloud Foundry
+## Cloud Foundry
 
 Spring Cloud GCP provides support for Cloud Foundry’s [GCP Service
 Broker](https://docs.pivotal.io/partners/gcp-sb/index.html). Our
@@ -8212,7 +8212,7 @@ invalid JDBC URL (i.e., `jdbc:mysql://null/null`).
 
 </div>
 
-## User-Provided Services
+### User-Provided Services
 
 [User-provided
 services](https://docs.cloudfoundry.org/devguide/services/user-provided.html)
@@ -8254,7 +8254,7 @@ below:
 | [Cloud Sql (MySQL)](https://cloud.google.com/sql)           | `google-cloudsql-mysql`                |
 | [Cloud Sql (PostgreSQL)](https://cloud.google.com/sql)      | `google-cloudsql-postgres`             |
 
-# Kotlin Support
+## Kotlin Support
 
 The latest version of the Spring Framework provides first-class support
 for Kotlin. For Kotlin users of Spring, the Spring Cloud GCP libraries
@@ -8265,7 +8265,7 @@ For more information on building a Spring application in Kotlin, please
 consult the [Spring Kotlin
 documentation](https://docs.spring.io/spring/docs/current/spring-framework-reference/languages.html#kotlin).
 
-## Prerequisites
+### Prerequisites
 
 Ensure that your Kotlin application is properly set up. Based on your
 build system, you will need to include the correct Kotlin build plugin
@@ -8293,21 +8293,21 @@ Once your Kotlin project is properly configured, the Spring Cloud GCP
 libraries will work within your application without any additional
 setup.
 
-## Sample
+### Sample
 
 A [Kotlin sample
 application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-kotlin-samples/spring-cloud-gcp-kotlin-app-sample)
 is provided to demonstrate a working Maven setup and various Spring
 Cloud GCP integrations from within Kotlin.
 
-# Configuration properties
+## Configuration properties
 
 To see the list of all GCP related configuration properties please check
 [the Appendix page](appendix.html).
 
-# Migration Guide from Spring Cloud GCP 1.x to 2.x
+## Migration Guide from Spring Cloud GCP 1.x to 2.x
 
-## Maven Group ID Change
+### Maven Group ID Change
 
 Spring Cloud
 [unbundled](https://spring.io/blog/2019/07/24/simplifying-the-spring-cloud-release-train)
@@ -8373,13 +8373,13 @@ use the newly unbundled libraries, add the
     `spring-cloud-gcp-starter-pubsub` or
     `spring-cloud-gcp-starter-storage`)
 
-## Java Package Name Change
+### Java Package Name Change
 
 All code in Spring Cloud GCP has been moved from
 `org.springframework.cloud.gcp` over to the `com.google.cloud.spring`
 package.
 
-## Deprecated Items Removed
+### Deprecated Items Removed
 
   - Property `spring.cloud.gcp.datastore.emulatorHost`  
     Use `spring.cloud.gcp.datastore.host` instead

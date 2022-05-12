@@ -9,20 +9,22 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
-# 3.2.0.BUILD-SNAPSHOT
+## 3.3.0
 
-## Spanner
+## 3.2.0
+
+### Spanner
 
   - Fixed a spec bug for `SimpleSpannerRepository.findAllById()`: on an
     empty `Iterable` input, it used to return all rows. New behavior is
     to return empty output on an empty input. ⚠ behavior change
     [\#934](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/934)[\#934](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/934)
 
-# 2.0.9.BUILD-SNAPSHOT
+## 2.0.9
 
-# 3.1.0
+## 3.1.0
 
-## Cloud SQL
+### Cloud SQL
 
   - Added starters for accessing Cloud SQL with Spring Data R2DBC
     ([\#772](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/772)):
@@ -35,21 +37,21 @@ on GitHub.
     Cloud SQL autoconfiguration
     ([\#903](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/903))
 
-## Pub/Sub
+### Pub/Sub
 
   - Added ability to change `Publisher.Builder` settings prior to
     `Publisher` object being constructed by providing
     `PublisherCustomizer` beans
     ([\#900](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/900)).
 
-## Spanner
+### Spanner
 
   - Fixed session leak in Spanner actuator healthcheck
     ([\#902](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/902)).
 
-# 2.0.8
+## 2.0.8
 
-## General
+### General
 
   - Updated `gcp-libraries-bom.version` to 24.2.0
     ([\#863](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/863)).
@@ -57,13 +59,13 @@ on GitHub.
   - Updated `cloud-sql-socket-factory.version` 1.4.2
     ([\#852](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/852)).
 
-## Pub/Sub
+### Pub/Sub
 
   - Exclude `googclient_` prefixed attributes from outbound Pub/Sub
     messages in Spring Cloud Stream
     ([\#919](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/919)).
 
-## Spanner
+### Spanner
 
   - Fixed session leak in Spanner actuator healthcheck
     ([\#918](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/918)).
@@ -72,23 +74,23 @@ on GitHub.
     ([\#815](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/815)).
     ⚠️ **breaking change**
 
-# 3.0.0
+## 3.0.0
 
 **This release introduces Spring Boot 2.6 and Spring Cloud 2021.0
 Compatibility.**
 
-## General
+### General
 
   - Updated `gcp-libraries-bom.version` to 24.2.0
     ([\#861](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/861)).
 
-## Datastore
+### Datastore
 
   - `SimpleDatastoreRepository` now supports `findBy()` with fluent
     query semantics
     ([\#836](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/836))
 
-## Logging
+### Logging
 
   - Renamed methods
     ([\#865](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/865))
@@ -109,24 +111,24 @@ Compatibility.**
     
       - setSpanIdMDCField() → setSpanIdMdcField().
 
-## Pub/Sub
+### Pub/Sub
 
   - Spring Integration and Spring Cloud Stream outgoing adapters will
     now exclude headers with `googclient_` prefix from being propagated
     to Cloud Pub/Sub
     ([\#845](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/845)).
 
-## Spanner
+### Spanner
 
   - Reduced visibility and renamed `SpannerQueryMethod.getMethod()`
     ([/\#815](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull815))
     ⚠️ **breaking change**
 
-# 2.0.7
+## 2.0.7
 
 This is a maintenance release upgrading dependency versions.
 
-## General
+### General
 
   - Switched to explicitly defining Spring Boot version as 2.5.x train
     ([\#804](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/804)).
@@ -141,13 +143,13 @@ This is a maintenance release upgrading dependency versions.
   - Updated `cloud-sql-socket-factory.version` to 1.4.1
     ([\#773](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/773))
 
-# 2.0.6
+## 2.0.6
 
-## General
+### General
 
   - Updated `gcp-libraries-bom.version` to 24.0.0.
 
-## Datastore
+### Datastore
 
   - Added Blob to byte\[\] conversion on read
     ([\#729](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/729)).
@@ -155,12 +157,12 @@ This is a maintenance release upgrading dependency versions.
   - Removed unused array input handling logic in `TwoStepsConversions`
     ([\#733](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/733)).
 
-## Logging
+### Logging
 
   - Fixed potential NPE for a null message in `StackdriverJsonLayout`
     ([\#694](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/694)).
 
-## Pub/Sub
+### Pub/Sub
 
   - Added support for per-subscription configurations for Subscriber
     settings.
@@ -178,12 +180,12 @@ This is a maintenance release upgrading dependency versions.
     under threshold.
     ([\#613](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/613)).
 
-## Spanner
+### Spanner
 
   - Added Spanner health indicator
     ([\#643](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/643)).
 
-## Trace
+### Trace
 
   - Exposed `spring.cloud.gcp.trace.server-response-timeout-ms` property
     ([\#698](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/698)).
@@ -191,20 +193,20 @@ This is a maintenance release upgrading dependency versions.
 Thanks to our community contributors: @gkatzioura, @ikeyat, @mirehasfun
 and @mvpzone\!
 
-# 2.0.5 (2021-10-25)
+## 2.0.5 (2021-10-25)
 
-## Pub/Sub
+### Pub/Sub
 
   - Fixed: Allow overriding Pub/Sub retryableCodes in pull settings
     ([\#670](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/670)).
 
-# 2.0.4 (2021-08-11)
+## 2.0.4 (2021-08-11)
 
-## General
+### General
 
   - Updated `gcp-libraries-bom.version` to 20.9.0.
 
-## Datastore
+### Datastore
 
   - Added support for `Stream` return type in both GQL and method
     name-based queries
@@ -213,7 +215,7 @@ and @mvpzone\!
   - Made `DatastorePageable` compatible with Spring Data 2.5.x
     ([\#569](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/569)).
 
-## Firestore
+### Firestore
 
   - Fixed: Unable to query by document ID.
     ([\#506](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/506)).
@@ -225,7 +227,7 @@ and @mvpzone\!
   - Added support for `OrderBy` clause in method name.
     ([\#516](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/516)).
 
-## Pub/Sub
+### Pub/Sub
 
   - Fixed: bean factory propagation in consumer binding
     ([\#515](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/515)).
@@ -240,7 +242,7 @@ and @mvpzone\!
   - Added IDE discovery for `management.health.pubsub.enabled` property
     ([\#543](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/543))
 
-## Secret Manager
+### Secret Manager
 
   - Fixed: `ByteString` value conversion compatibility with Spring Boot
     2.5.x
@@ -249,9 +251,9 @@ and @mvpzone\!
 Thanks to our community contributors, @artemptushkin, @garywg04 and
 @alos\!
 
-# 2.0.3 (2021-06-08)
+## 2.0.3 (2021-06-08)
 
-## General
+### General
 
   - Upgraded to GCP Libraries BOM 20.6.0
 
@@ -259,7 +261,7 @@ Thanks to our community contributors, @artemptushkin, @garywg04 and
     `com.google.cloud.sql:jdbc-socket-factory-core`
     ([\#466](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/466))
 
-## Cloud Pub/Sub
+### Cloud Pub/Sub
 
   - Exposed publisher endpoint for message ordering
     ([\#421](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/421))
@@ -278,7 +280,7 @@ Thanks to our community contributors, @artemptushkin, @garywg04 and
     The old `PubSubMessageHandler.setPublishCallback()` method is now
     deprecated.
 
-## Cloud Spanner
+### Cloud Spanner
 
   - Stopped Cloud Spanner emulator autoconfiguration from triggering
     default credentials creation
@@ -288,7 +290,7 @@ Thanks to our community contributors, @artemptushkin, @garywg04 and
     configuring a `SpannerOptionsCustomizer` bean
     ([\#489](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/489)).
 
-## Cloud SQL
+### Cloud SQL
 
   - Added IAM authentication option for PostgreSQL
     ([\#488](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/488)).
@@ -298,9 +300,9 @@ Thanks to our community contributors, @artemptushkin, @garywg04 and
 
 Thanks to our community contributors, @herder and @melburne\!
 
-# 2.0.2 (2021-03-25)
+## 2.0.2 (2021-03-25)
 
-## General
+### General
 
   - Upgraded to Spring Cloud 2020.0.2 and Spring Boot 2.4.4
 
@@ -311,7 +313,7 @@ Thanks to our community contributors, @herder and @melburne\!
 
   - Various code quality improvements with the help of SonarCloud.
 
-## Cloud SQL
+### Cloud SQL
 
   - Disabled `CloudSqlEnvironmentPostProcessor` in bootstrap context
     ([\#273](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/273))
@@ -319,13 +321,13 @@ Thanks to our community contributors, @herder and @melburne\!
       - This enables the use of Secrets Manager property placeholders
         together with Cloud SQL configuration.
 
-## BigQuery
+### BigQuery
 
   - Fixed a bug in the `BigQueryFileMessageHandler` where it referenced
     the wrong variable in the setter
     ([\#270](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/270))
 
-## Datastore
+### Datastore
 
   - Added `storeOnDisk` and `dataDir` configuration properties for
     Datastore Emulator
@@ -334,18 +336,18 @@ Thanks to our community contributors, @herder and @melburne\!
   - Fixed resolution of references and descendants for subclasses
     ([\#377](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/377))
 
-## Firestore
+### Firestore
 
   - Modified `Firestore.withParent()` to accept `String` instead of
     `Object`
     ([\#315](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/315))
 
-## Logging
+### Logging
 
   - Fixed the JSON layout logging levels mapping
     ([\#314](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/314))
 
-## Pub/Sub
+### Pub/Sub
 
   - In Cloud Stream Pub/Sub Binder, added support for specifying a
     custom subscription as a consumer endpoint
@@ -371,27 +373,27 @@ Thanks to our community contributors, @herder and @melburne\!
         `spring.cloud.gcp.pubsub.publisher.enable-message-ordering` and
         `GcpPubSubHeaders.ORDERING_KEY` header
 
-## Storage
+### Storage
 
   - Fixed: `PathResourceResolver` can’t resolve a
     `GoogleStorageResource` due to no Google Storage `UrlStreamHandler`
     ([\#210](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/210))
 
-# 2.0.1 (2021-02-04)
+## 2.0.1 (2021-02-04)
 
-## General
+### General
 
   - Upgraded to Spring Cloud 2020.0.1 and Spring Boot 2.4.2
     ([\#233](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/233))
 
   - Multiple code quality improvements with help from SonarCloud
 
-## Firestore
+### Firestore
 
   - Fixed: Firestore emulator not using configured project id
     ([\#211](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/211))
 
-## Logging
+### Logging
 
   - Fixed: Trace ID not populated when using `AsyncAppender`
     ([\#196](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/196))
@@ -402,20 +404,20 @@ Thanks to our community contributors, @herder and @melburne\!
     
       - Added an extension for Logstash markers support
 
-## Pub/Sub
+### Pub/Sub
 
   - Fixed: Spring Cloud Stream unable to setup subscription to a topic
     in a different GCP project
     ([\#232](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/232))
 
-## Spanner
+### Spanner
 
   - Fixed session leak with aborted read/write transactions
     ([\#251](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/251))
 
-# 2.0.0 (2021-01-06)
+## 2.0.0 (2021-01-06)
 
-## General
+### General
 
   - Compatible with Spring Cloud `2020.0.0` (Ilford release train)
 
@@ -429,13 +431,13 @@ Thanks to our community contributors, @herder and @melburne\!
 For a full list, please see the [2.x migration
 guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/index.html#migration-guide-from-spring-cloud-gcp-1-x-to-2-x).
 
-## Cloud SQL
+### Cloud SQL
 
   - Replaced `CloudSqlAutoConfiguration` with
     `CloudSqlEnvironmentPostProcessor`
     ([\#131](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/131))
 
-## Datastore
+### Datastore
 
   - Fixed auditing when running through
     `DatastoreTemplate.performTransaction()`
@@ -445,7 +447,7 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
     fields
     ([\#177](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/177))
 
-## Firestore
+### Firestore
 
   - Resolved 10 simultaneous writes limitation
     ([\#135](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/135))
@@ -453,49 +455,49 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
   - Added update time and optimistic locking support
     ([\#171](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/171))
 
-## KMS
+### KMS
 
   - Added Cloud Key Management Service (KMS) support
     ([\#175](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/175))
     
       - Spring Boot starter, sample, and documentation included
 
-## Logging
+### Logging
 
   - Added support for trace with async logging
     ([\#197](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/197))
 
-## Metrics
+### Metrics
 
   - Multiple fixes for the metrics auto-config and sample
     ([\#121](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/121))
 
-## Pub/Sub
+### Pub/Sub
 
   - Addded support for binder customizers
     ([\#186](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/186))
 
-## Secret Manager
+### Secret Manager
 
   - Changed secret manager module to use v1 instead of v1beta
     ([\#173](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/173))
 
-## Spanner
+### Spanner
 
   - Added support `spring.cloud.gcp.project-id` property for Spanner
     Emulator config
     ([\#123](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/123))
 
-# 1.2.7 (TBD)
+## 1.2.7 (TBD)
 
-## Pub/Sub
+### Pub/Sub
 
   - Fixed Pub/Sub emulator `ManagedChannel` shutdown
     ([\#2583](https://github.com/spring-cloud/spring-cloud-gcp/issues/2583))
 
-# 1.2.6.RELEASE (2020-11-09)
+## 1.2.6.RELEASE (2020-11-09)
 
-## General
+### General
 
   - Added `proxyBeanMethods = false` to configuration classes for better
     GraalVM support
@@ -504,7 +506,7 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
   - Updated `gcp-libraries-bom.version` to 13.4.0
     ([\#2571](https://github.com/spring-cloud/spring-cloud-gcp/issues/2571))
 
-## Pub/Sub
+### Pub/Sub
 
   - Differentiate between Publisher and Subscriber
     `TransportChannelProvider`
@@ -526,7 +528,7 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
     `IllegalArgumentException`
     ([\#2562](https://github.com/spring-cloud/spring-cloud-gcp/issues/2562))
 
-## Cloud SQL
+### Cloud SQL
 
   - Added support for configuring Cloud SQL ipTypes with the
     `spring.cloud.gcp.sql.ip-types` property
@@ -535,12 +537,12 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
   - Fixed: starter-sql-mysql doesn’t override `spring.datasource.url`
     ([\#2537](https://github.com/spring-cloud/spring-cloud-gcp/issues/2537))
 
-## Spanner
+### Spanner
 
   - Added NUMERIC data type support for Spanner (BigDecimal)
     ([\#2515](https://github.com/spring-cloud/spring-cloud-gcp/issues/2515))
 
-## Firestore
+### Firestore
 
   - Fixed: StructuredQuery.from cannot have more than one collection
     selector
@@ -554,9 +556,9 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
     based queries
     ([\#2563](https://github.com/spring-cloud/spring-cloud-gcp/issues/2563))
 
-# 1.2.5.RELEASE (2020-08-28)
+## 1.2.5.RELEASE (2020-08-28)
 
-## Secret Manager
+### Secret Manager
 
   - Fixed: Spring GCP Secrets references not working when using Spring
     Cloud Server
@@ -566,25 +568,25 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
     library without spring-cloud-gcp-starter-secretmanager
     ([\#2506](https://github.com/spring-cloud/spring-cloud-gcp/issues/2506))
 
-## Pub/Sub
+### Pub/Sub
 
   - Added support for composite actuator contributor for multiple
     Pub/Sub templates
     ([\#2493](https://github.com/spring-cloud/spring-cloud-gcp/issues/2493))
 
-## Datastore
+### Datastore
 
   - Added value nullity check to avoid NPE with primitive types
     ([\#2505](https://github.com/spring-cloud/spring-cloud-gcp/issues/2505))
 
-# 1.2.4.RELEASE (2020-07-31)
+## 1.2.4.RELEASE (2020-07-31)
 
-## General
+### General
 
   - Upgraded GCP libraries BOM and other dependencies
     ([\#2477](https://github.com/spring-cloud/spring-cloud-gcp/issues/2477))
 
-## Metrics
+### Metrics
 
   - New Spring Cloud GCP starter, `spring-cloud-gcp-starter-metrics`,
     configures Micrometer Stackdriver to automatically pick up project
@@ -593,12 +595,12 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
   - Added Metrics Sample App
     ([\#2455](https://github.com/spring-cloud/spring-cloud-gcp/issues/2455))
 
-## Firebase Security
+### Firebase Security
 
   - Allow `projectId` override in Firebase Authentication
     ([\#2405](https://github.com/spring-cloud/spring-cloud-gcp/issues/2405))
 
-## Spanner
+### Spanner
 
   - Allow `Pageable` and `Sort` in method-style (part-tree) queries
     ([\#2394](https://github.com/spring-cloud/spring-cloud-gcp/issues/2394))
@@ -607,12 +609,12 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
     nullable column
     ([\#2448](https://github.com/spring-cloud/spring-cloud-gcp/issues/2448))
 
-## Secret Manager
+### Secret Manager
 
   - Added additional operations for managing secret versions with
     `SecretManagerTemplate` (thanks to @kioie)
 
-## Storage
+### Storage
 
   - Added the `spring.cloud.gcp.storage.project-id` autoconfig property
     ([\#2440](https://github.com/spring-cloud/spring-cloud-gcp/issues/2440))
@@ -621,7 +623,7 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
     `GcsAcceptModifiedAfterFileListFilter` and
     `GcsDiscardRecentModifiedFileListFilter` (thanks to @hosainnet)
 
-## Datastore
+### Datastore
 
   - Fixed: Unable to exclude indexes on nested properties of embedded
     entity
@@ -633,7 +635,7 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
   - Fixed `null` handling for ID in query-by-example
     ([\#2471](https://github.com/spring-cloud/spring-cloud-gcp/issues/2471))
 
-## Pub/Sub
+### Pub/Sub
 
   - Added `maxMessages` to `PubSubReactiveFactory.poll`
     ([\#2441](https://github.com/spring-cloud/spring-cloud-gcp/issues/2441))
@@ -641,7 +643,7 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
   - Control sync/async publish in Spring Cloud Stream binder
     ([\#2473](https://github.com/spring-cloud/spring-cloud-gcp/issues/2473))
 
-## Firestore
+### Firestore
 
   - Add subcollection support for `FirestoreTemplate`
     ([\#2434](https://github.com/spring-cloud/spring-cloud-gcp/issues/2434))
@@ -652,9 +654,9 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
   - Added `FirestoreTemplate` reference documentation
     ([\#2480](https://github.com/spring-cloud/spring-cloud-gcp/issues/2480))
 
-# 1.2.3.RELEASE (2020-05-29)
+## 1.2.3.RELEASE (2020-05-29)
 
-## General
+### General
 
   - Upgrade to latest libraries bom and sql socket factory
     ([\#2373](https://github.com/spring-cloud/spring-cloud-gcp/issues/2373))
@@ -663,7 +665,7 @@ guide](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/ind
     and Datastore
     ([\#2376](https://github.com/spring-cloud/spring-cloud-gcp/issues/2376))
 
-## Logging
+### Logging
 
 <div class="note">
 
@@ -677,7 +679,7 @@ to `JsonPayload` instead of `StringPayload`.
 
 </div>
 
-## Secret Manager
+### Secret Manager
 
 <div class="note">
 
@@ -701,7 +703,7 @@ for the new way for accessing secrets as properties.
   - Add secret manager autoconfigure property
     ([\#2363](https://github.com/spring-cloud/spring-cloud-gcp/issues/2363))
 
-## Pub/Sub
+### Pub/Sub
 
   - New async pull methods in `Pub/Sub Template`, as well as fully
     asynchronous `PubSubReactiveFactory.poll()`
@@ -713,12 +715,12 @@ for the new way for accessing secrets as properties.
   - Make 403 an allowable Pub/Sub UP status
     ([\#2385](https://github.com/spring-cloud/spring-cloud-gcp/issues/2385))
 
-## Trace
+### Trace
 
   - Support Extra Propagation Fields with Trace
     ([\#2290](https://github.com/spring-cloud/spring-cloud-gcp/issues/2290))
 
-## Spanner
+### Spanner
 
   - Fix @Where with ORDER BY query generation
     ([\#2267](https://github.com/spring-cloud/spring-cloud-gcp/issues/2267))
@@ -726,7 +728,7 @@ for the new way for accessing secrets as properties.
   - Add SpannerOptions auto-configuration for emulator
     ([\#2356](https://github.com/spring-cloud/spring-cloud-gcp/issues/2356))
 
-## Datastore
+### Datastore
 
   - Support for nested properties in PartTree methods
     ([\#2307](https://github.com/spring-cloud/spring-cloud-gcp/issues/2307))
@@ -738,7 +740,7 @@ for the new way for accessing secrets as properties.
   - Support custom maps
     ([\#2345](https://github.com/spring-cloud/spring-cloud-gcp/issues/2345))
 
-## Firestore
+### Firestore
 
   - Firestore nested properties
     ([\#2300](https://github.com/spring-cloud/spring-cloud-gcp/issues/2300))
@@ -752,21 +754,21 @@ for the new way for accessing secrets as properties.
   - Add child collection to the entity class in Firestore sample
     ([\#2388](https://github.com/spring-cloud/spring-cloud-gcp/issues/2388))
 
-## Vision
+### Vision
 
   - Allow users to provide the ImageContext in CloudVisionTemplate
     ([\#2286](https://github.com/spring-cloud/spring-cloud-gcp/issues/2286))
 
-## Firebase Security
+### Firebase Security
 
   - Make Firebase Security Autoconfiguration conditional
     ([\#2258](https://github.com/spring-cloud/spring-cloud-gcp/issues/2258))
     Thank you to the contributors from our user community:
     @eddumelendez, @mzeijen, @s13o, @acet, @guillaumeblaquiere
 
-# 1.2.2.RELEASE (2020-03-04)
+## 1.2.2.RELEASE (2020-03-04)
 
-## General
+### General
 
   - Switched to using GCP Libraries BOM for managing GCP library
     versions
@@ -780,7 +782,7 @@ for the new way for accessing secrets as properties.
 
   - Two new modules: Firebase Auth and Secret Manager
 
-## Datastore
+### Datastore
 
   - Support lazy loading entities using @LazyReference
     ([\#2104](https://github.com/spring-cloud/spring-cloud-gcp/issues/2104))
@@ -800,17 +802,17 @@ for the new way for accessing secrets as properties.
   - Fixed delete for void repository method return type
     ([\#2169](https://github.com/spring-cloud/spring-cloud-gcp/issues/2169))
 
-## Firebase (NEW)
+### Firebase (NEW)
 
   - Introduced Firebase Authentication module
     ([\#2111](https://github.com/spring-cloud/spring-cloud-gcp/issues/2111))
 
-## Firestore
+### Firestore
 
   - Added IN support in name-based queries
     ([\#2054](https://github.com/spring-cloud/spring-cloud-gcp/issues/2054))
 
-## Pub/Sub
+### Pub/Sub
 
   - ACK\_MODE is now configurable using stream binders
     ([\#2079](https://github.com/spring-cloud/spring-cloud-gcp/issues/2079))
@@ -825,7 +827,7 @@ for the new way for accessing secrets as properties.
       - NOTE: previously silently ignored exceptions are now forwarded
         to the Flux
 
-## Secret Manager (NEW)
+### Secret Manager (NEW)
 
   - Bootstrap Property Source which loads secrets from Secret Manager to
     be accessible as environment properties to your application
@@ -837,7 +839,7 @@ for the new way for accessing secrets as properties.
   - New Secret Manager sample app
     ([\#2190](https://github.com/spring-cloud/spring-cloud-gcp/issues/2190))
 
-## Spanner
+### Spanner
 
   - Fixed java.util.Date conversion and added LocalDate and
     LocalDateTime support
@@ -853,7 +855,7 @@ for the new way for accessing secrets as properties.
   - Enable using PENDING\_COMMIT\_TIMESTAMP in Spring Data Spanner
     ([\#2203](https://github.com/spring-cloud/spring-cloud-gcp/issues/2203))
 
-## Storage
+### Storage
 
   - Added ability to provide initial file contents on blob creation
     ([\#2097](https://github.com/spring-cloud/spring-cloud-gcp/issues/2097))
@@ -865,26 +867,26 @@ for the new way for accessing secrets as properties.
   - Fixed GCS emulator BlobInfo update time initialization
     ([\#2113](https://github.com/spring-cloud/spring-cloud-gcp/issues/2113))
 
-## Trace
+### Trace
 
   - Hid trace scheduler from Spring Sleuth
     ([\#2158](https://github.com/spring-cloud/spring-cloud-gcp/issues/2158))
 
-# 1.2.1.RELEASE (2019-12-20)
+## 1.2.1.RELEASE (2019-12-20)
 
-## Spanner
+### Spanner
 
   - Fixed java.sql.Timestamp to com.google.cloud.Timestamp conversion
     ([\#2064](https://github.com/spring-cloud/spring-cloud-gcp/issues/2064))
 
-## Pub/Sub
+### Pub/Sub
 
   - Fixed AUTO\_ACK acking behavior in PubSubInboundChannelAdapter
     ([\#2075](https://github.com/spring-cloud/spring-cloud-gcp/issues/2075))
 
-# 1.2.0.RELEASE (2019-11-26)
+## 1.2.0.RELEASE (2019-11-26)
 
-## BigQuery
+### BigQuery
 
   - New module
 
@@ -894,12 +896,12 @@ for the new way for accessing secrets as properties.
   - A Spring Integration message handler for loading data into BigQuery
     tables in your Spring integration pipelines
 
-## Cloud Foundry
+### Cloud Foundry
 
   - Created a separate starter for Cloud Foundry:
     spring-cloud-gcp-starter-cloudfoundry
 
-## Datastore
+### Datastore
 
   - Datastore emulator support and auto-configuration
 
@@ -918,13 +920,13 @@ for the new way for accessing secrets as properties.
   - Spring Boot Actuator Support for Datastore Health Indicator
     ([\#1423](https://github.com/spring-cloud/spring-cloud-gcp/issues/1423))
 
-## Firestore
+### Firestore
 
   - Spring Data Reactive Repositories for Cloud Firestore
 
   - Cloud Firestore Spring Boot Starter
 
-## Logging
+### Logging
 
   - Additional metadata support for JSON logging
     ([\#1310](https://github.com/spring-cloud/spring-cloud-gcp/issues/1310))
@@ -936,7 +938,7 @@ for the new way for accessing secrets as properties.
   - A separate module for Logging outside of autoconfiguration
     ([\#1455](https://github.com/spring-cloud/spring-cloud-gcp/issues/1455))
 
-## Pub/Sub
+### Pub/Sub
 
   - PubsubTemplate publish to topics in other projects
     ([\#1678](https://github.com/spring-cloud/spring-cloud-gcp/issues/1678))
@@ -969,12 +971,12 @@ for the new way for accessing secrets as properties.
   - Added original message to the throwable for Pub/Sub publish failures
     ([\#2020](https://github.com/spring-cloud/spring-cloud-gcp/issues/2020))
 
-## IAP
+### IAP
 
   - Added support to allow multiple IAP audience claims
     ([\#1856](https://github.com/spring-cloud/spring-cloud-gcp/issues/1856))
 
-## Spanner
+### Spanner
 
   - Expose Spanner failIfPoolExhausted property
     ([\#1889](https://github.com/spring-cloud/spring-cloud-gcp/issues/1889))
@@ -1002,21 +1004,21 @@ for the new way for accessing secrets as properties.
     key property is set
     ([\#2053](https://github.com/spring-cloud/spring-cloud-gcp/issues/2053))
 
-## Spring Cloud Bus
+### Spring Cloud Bus
 
   - Spring Cloud Config and Bus over Pub/Sub sample/docs
     ([\#1550](https://github.com/spring-cloud/spring-cloud-gcp/issues/1550))
 
-## Vision
+### Vision
 
   - Cloud Vision Document OCR support
 
-# 1.1.0.RELEASE (2019-01-22)
+## 1.1.0.RELEASE (2019-01-22)
 
   - [1.1
     announcement](https://cloud.google.com/blog/products/application-development/announcing-spring-cloud-gcp-1-1-deepening-ties-pivotals-spring-framework)
 
-# 1.0.0.RELEASE (2018-09-18)
+## 1.0.0.RELEASE (2018-09-18)
 
   - [1.0
     announcement](https://cloud.google.com/blog/products/gcp/calling-java-developers-spring-cloud-gcp-1-0-is-now-generally-available)
