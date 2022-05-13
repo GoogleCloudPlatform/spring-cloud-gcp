@@ -5,7 +5,45 @@ https://spring.io/projects/spring-cloud-gcp[Spring Cloud GCP] is a set of integr
 This document provides a high-level overview of the changes introduced in Spring Cloud GCP by release.
 For a detailed view of what has changed, refer to the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main[commit history] on GitHub.
 
-== 2.0.8.BUILD-SNAPSHOT
+== 2.0.11-BUILD-SNAPSHOT
+
+== 2.0.10
+
+### General
+
+* Spring Cloud GCP BOM (`spring-cloud-gcp-dependencies`) overrides `spring-cloud-function` dependencies to version `3.1.7` to address [CVE-2022-22963](https://tanzu.vmware.com/security/cve-2022-22963) (#1061).
+* Updated `cloud-sql-socket-factory.version` to 1.5.0 (#1053)
+
+== 2.0.9
+
+### General
+* Version updates:
+  * Spring Boot to 2.5.12  (transitively, Spring Framework 5.3.18). See Spring [blog post](https://spring.io/blog/2022/03/31/spring-boot-2-5-12-available-now) for details.
+  * `guava-bom` to 31.1-jre (#969).
+  * `cloud-sql-socket-factory.version` to 1.4.4 (#972).
+  * `gcp-libraries-bom.version` to 24.4.0 (#973)
+* Overrode &lt;url&gt; field in maven POM files to point to the same root URL, preventing maven from generating invalid URLs by concatenating root URL with module name (#1029).
+
+### Pub/Sub
+* Removed a forced startup-time validation for Pub/Sub Actuator Health Indicator that could prevent application startup [#1025].
+
+### Spanner
+* Fixed a spec bug for `SimpleSpannerRepository.findAllById()`: on an empty `Iterable` input, it used to return all rows. New behavior is to return empty output on an empty input (#940). ⚠ behavior change
+* Allowed `Pageable` parameter appear in any position in query method argument list (#1030).
+
+== 2.0.8
+
+### General
+* Updated `gcp-libraries-bom.version` to 24.2.0 (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/863[#863]).
+* Updated `cloud-sql-socket-factory.version` 1.4.2 (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/852[#852]).
+
+### Pub/Sub
+* Exclude `googclient_` prefixed attributes from outbound Pub/Sub messages in Spring Cloud Stream (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/919[#919]).
+
+
+### Spanner
+* Fixed session leak in Spanner actuator healthcheck (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/918[#918]).
+* Reduced visibility and renamed `SpannerQueryMethod.getMethod()` (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/815[#815]). ⚠️ **breaking change**
 
 == 2.0.7
 
