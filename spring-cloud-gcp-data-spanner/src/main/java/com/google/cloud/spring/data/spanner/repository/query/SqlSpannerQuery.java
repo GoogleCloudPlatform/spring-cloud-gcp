@@ -47,6 +47,7 @@ import org.springframework.data.repository.query.ParameterAccessor;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.ParametersParameterAccessor;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
+import org.springframework.data.util.Pair;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ParserContext;
@@ -241,8 +242,14 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
           struct -> new StructAccessor(struct).getSingleValue(0), statement, spannerQueryOptions);
     }
     // check if returnedType is a field annotated as json
-    boolean isJsonField = isJsonFieldType(returnedType);
-    if (isJsonField) {
+    Pair<Boolean, Boolean> isJsonField = isJsonFieldType(returnedType);
+    if (isJsonField.getSecond()) {
+      return this.spannerTemplate.query(
+          struct -> new StructAccessor(struct,
+              this.spannerMappingContext.getGson()).getListJsonValue(0, returnedType),
+          statement,
+          spannerQueryOptions);
+    } else if (isJsonField.getFirst()) {
       return this.spannerTemplate.query(
           struct -> new StructAccessor(struct, this.spannerMappingContext.getGson()).getSingleJsonValue(0, returnedType),
           statement,
@@ -252,14 +259,15 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
     return this.spannerTemplate.query(this.entityType, statement, spannerQueryOptions);
   }
 
-  private boolean isJsonFieldType(Class<?> returnedType) {
+  private Pair<Boolean, Boolean> isJsonFieldType(Class<?> returnedType) {
     SpannerPersistentEntityImpl<?> persistentEntity =
         (SpannerPersistentEntityImpl<?>)
             this.spannerMappingContext.getPersistentEntity(this.entityType);
     if (persistentEntity == null) {
-      return false;
+      return Pair.of(false, false);
     }
-    return persistentEntity.isJsonProperty(returnedType);
+    return Pair.of(persistentEntity.isJsonProperty(returnedType),
+        persistentEntity.isArrayJsonProperty(returnedType));
   }
 
   private Statement buildStatementFromQueryAndTags(QueryTagValue queryTagValue) {

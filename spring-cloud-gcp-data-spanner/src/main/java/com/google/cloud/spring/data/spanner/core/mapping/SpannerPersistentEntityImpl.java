@@ -91,6 +91,8 @@ public class SpannerPersistentEntityImpl<T>
 
   private final Set<Class<?>> jsonProperties = new HashSet<>();
 
+  private final Set<Class<?>> arrayJsonProperties = new HashSet<>();
+
   /**
    * Creates a {@link SpannerPersistentEntityImpl}.
    *
@@ -188,7 +190,9 @@ public class SpannerPersistentEntityImpl<T>
           });
     }
 
-    if (property.getAnnotatedColumnItemType() == Type.Code.JSON) {
+    if (property.getAnnotatedColumnItemType() == Type.Code.JSON && property.isCollectionLike()) {
+      this.arrayJsonProperties.add(property.getColumnInnerType());
+    } else if (property.getAnnotatedColumnItemType() == Type.Code.JSON) {
       this.jsonProperties.add(property.getType());
     }
   }
@@ -421,6 +425,15 @@ public class SpannerPersistentEntityImpl<T>
   // Lookup whether a particular class is a JSON entity property
   public boolean isJsonProperty(Class<?> type) {
     return this.jsonProperties.contains(type);
+  }
+
+  /**
+   * Lookup whether a class is an innertype of a JSONARRAY entity property
+   * @param type
+   * @return
+   */
+  public boolean isArrayJsonProperty(Class<?> type) {
+    return this.arrayJsonProperties.contains(type);
   }
 
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
