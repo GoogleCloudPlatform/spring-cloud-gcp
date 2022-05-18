@@ -27,6 +27,7 @@ import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.gson.Gson;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -151,6 +152,30 @@ public class StructAccessor {
     Class clazz = SpannerTypeMapper.getSimpleJavaClassFor(innerTypeCode);
     BiFunction<Struct, String, List> readMethod = readIterableMapping.get(clazz);
     return readMethod.apply(this.struct, colName);
+  }
+
+  <T> List<T> getListJsonValue(String colName, Class<T> colType) {
+    if (this.struct.getColumnType(colName).getCode() != Code.ARRAY) {
+      throw new SpannerDataException("Column is not an ARRAY type: " + colName);
+    }
+    List<String> jsonStringList = this.struct.getJsonList(colName);
+    List<T> result = new ArrayList<>();
+    jsonStringList.forEach(item -> {
+      result.add(gson.fromJson(item, colType));
+    });
+    return result;
+  }
+
+  public <T> List<T> getListJsonValue(int colIndex, Class<T> colType) {
+    if (this.struct.getColumnType(colIndex).getCode() != Code.ARRAY) {
+      throw new SpannerDataException("Column is not an ARRAY type: " + colIndex);
+    }
+    List<String> jsonStringList = this.struct.getJsonList(colIndex);
+    List<T> result = new ArrayList<>();
+    jsonStringList.forEach(item -> {
+      result.add(gson.fromJson(item, colType));
+    });
+    return result;
   }
 
   boolean hasColumn(String columnName) {

@@ -125,6 +125,12 @@ class StructPropertyValueProvider implements PropertyValueProvider<SpannerPersis
   private <T> Iterable<T> readIterableWithConversion(
       SpannerPersistentProperty spannerPersistentProperty) {
     String colName = spannerPersistentProperty.getColumnName();
+    Type.Code spannerColumnType = spannerPersistentProperty.getAnnotatedColumnItemType();
+    if (spannerColumnType == Type.Code.JSON) {
+      List<T> value = (List<T>) this.structAccessor.getListJsonValue(colName,
+          spannerPersistentProperty.getColumnInnerType());
+      return value;
+    }
     List<?> listValue = this.structAccessor.getListValue(colName);
     return listValue.stream()
         .map(item -> convertOrRead((Class<T>) spannerPersistentProperty.getColumnInnerType(), item))
