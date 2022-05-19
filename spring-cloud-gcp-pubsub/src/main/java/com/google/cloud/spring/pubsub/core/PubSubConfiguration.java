@@ -73,22 +73,35 @@ public class PubSubConfiguration {
    * This method will be called by Spring Framework when binding user properties.
    * Also potentially useful for tests.
    *
-   * @param map map of user-defined properties.
+   * @param subscriberProperties map of user-defined properties.
    */
-  public void setSubscription(Map<String, Subscriber> map) {
+  public void setSubscription(Map<String, Subscriber> subscriberProperties) {
     Assert.isNull(this.fullyQualifiedSubscriptionProperties,
         "Pub/Sub properties have already been initialized; cannot update subscription properties");
 
-    this.subscription = map;
+    this.subscription = subscriberProperties;
   }
 
+  /**
+   * Returns an immutable map of subscription properties keyed by the fully-qualified
+   * {@link ProjectSubscriptionName}.
+   *
+   * <p>Cannot be called before {@link #initialize(String)}.
+   *
+   * @return map of subscription properties
+   */
   public Map<ProjectSubscriptionName, Subscriber> getFullyQualifiedSubscriberProperties() {
     Assert.notNull(this.fullyQualifiedSubscriptionProperties, "Please call initialize() prior to retrieving properties.");
     return this.fullyQualifiedSubscriptionProperties;
   }
 
   /**
-   * Standardizes all subscription properties to be fully qualified. Not thread-safe.
+   * Standardizes all subscription properties to be keyed by their fully qualified subscription
+   * names. Not thread-safe.
+   *
+   * <p>If a `fully-qualified-name` property is present, it is used as a key for all subscription
+   * properties under the same group. Otherwise, the provided configuration group key is assumed to
+   * be the short subscription name in the current project.
    *
    * @param defaultProjectId Project to use with short subscription names
    */
@@ -101,15 +114,16 @@ public class PubSubConfiguration {
     Map<ProjectSubscriptionName, Subscriber> fullyQualifiedProps = new HashMap<>();
     for (Entry<String, Subscriber> entry : this.subscription.entrySet()) {
       // Subscription name is either a valid short name, or a made-up name with fully-qualified provided as a property
-      Subscriber subProps = entry.getValue();
-      String qualifiedName = subProps.fullyQualifiedName == null ? entry.getKey() : subProps.fullyQualifiedName;
-      ProjectSubscriptionName psn =
+      Subscriber subscriberProperties = entry.getValue();
+      String qualifiedName = subscriberProperties.fullyQualifiedName != null
+          ? subscriberProperties.fullyQualifiedName : entry.getKey();
+      ProjectSubscriptionName projectSubscriptionName =
           PubSubSubscriptionUtils.toProjectSubscriptionName(qualifiedName, defaultProjectId);
-      if (fullyQualifiedProps.containsKey(psn)) {
-        logger.warn("Found multiple configurations for " + psn
+      if (fullyQualifiedProps.containsKey(projectSubscriptionName)) {
+        logger.warn("Found multiple configurations for " + projectSubscriptionName
             + "; ignoring properties with key " + entry.getKey());
       } else {
-        fullyQualifiedProps.put(psn, subProps);
+        fullyQualifiedProps.put(projectSubscriptionName, subscriberProperties);
       }
     }
 
@@ -129,11 +143,17 @@ public class PubSubConfiguration {
     return getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(name, projectId));
   }
 
-  public Subscriber getSubscriptionProperties(ProjectSubscriptionName psn) {
+  /**
+   * Returns properties for the specified fully-qualified {@link ProjectSubscriptionName}.
+   *
+   * @param projectSubscriptionName fully-qualified {@link ProjectSubscriptionName}
+   * @return user-provided subscription properties
+   */
+  public Subscriber getSubscriptionProperties(ProjectSubscriptionName projectSubscriptionName) {
     Assert.notNull(this.fullyQualifiedSubscriptionProperties, "Please call initialize() prior to retrieving properties.");
 
-    if (this.fullyQualifiedSubscriptionProperties.containsKey(psn)) {
-      return this.fullyQualifiedSubscriptionProperties.get(psn);
+    if (this.fullyQualifiedSubscriptionProperties.containsKey(projectSubscriptionName)) {
+      return this.fullyQualifiedSubscriptionProperties.get(projectSubscriptionName);
     }
 
     return globalSubscriber;
@@ -160,11 +180,11 @@ public class PubSubConfiguration {
    * both global and subscription-specific properties are set. If subscription-specific settings are
    * not set then global settings are picked.
    *
-   * @param psn Fully qualified subscription name
+   * @param projectSubscriptionName Fully qualified subscription name
    * @return flow control settings defaulting to global where not provided
    */
-  public FlowControl computeSubscriberFlowControlSettings(ProjectSubscriptionName psn) {
-    FlowControl flowControl = getSubscriptionProperties(psn).getFlowControl();
+  public FlowControl computeSubscriberFlowControlSettings(ProjectSubscriptionName projectSubscriptionName) {
+    FlowControl flowControl = getSubscriptionProperties(projectSubscriptionName).getFlowControl();
     FlowControl globalFlowControl = this.globalSubscriber.getFlowControl();
     // It is possible for flowControl and globalFlowControl to be the same object.
     // In the future, can return it here if that's the case.
@@ -274,11 +294,11 @@ public class PubSubConfiguration {
    * and subscription-specific properties are set. If subscription-specific settings are not set
    * then the global settings are picked.
    *
-   * @param psn The fully qualified subscription name
+   * @param projectSubscriptionName The fully qualified subscription name
    * @return retry settings
    */
-  public Retry computeSubscriberRetrySettings(ProjectSubscriptionName psn) {
-    Retry retry = getSubscriptionProperties(psn).getRetry();
+  public Retry computeSubscriberRetrySettings(ProjectSubscriptionName projectSubscriptionName) {
+    Retry retry = getSubscriptionProperties(projectSubscriptionName).getRetry();
     Retry globalRetry = this.globalSubscriber.getRetry();
     if (retry.getTotalTimeoutSeconds() == null) {
       retry.setTotalTimeoutSeconds(globalRetry.getTotalTimeoutSeconds());

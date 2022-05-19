@@ -20,14 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.rpc.StatusCode.Code;
-import com.google.cloud.spring.pubsub.core.PubSubConfiguration.Subscriber;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.Collections;
-import java.util.Map;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Test;
 
 class PubSubConfigurationTests {
+
+  static final String QUALIFIED_SUBSCRIPTION_NAME = "projects/projectId/subscriptions/subscription-name";
 
   @Test
   void testDefaultHealthProperties() {
@@ -143,14 +142,14 @@ class PubSubConfigurationTests {
     selectiveFlowControl.setMaxOutstandingElementCount(1L);
     selectiveFlowControl.setMaxOutstandingRequestBytes(2L);
 
-    ProjectSubscriptionName psn =
-        ProjectSubscriptionName.parse("projects/projectId/subscriptions/subscription-name");
+    ProjectSubscriptionName projectSubscriptionName =
+        ProjectSubscriptionName.parse(QUALIFIED_SUBSCRIPTION_NAME);
     pubSubConfiguration.setSubscription(
-        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
+        Collections.singletonMap(QUALIFIED_SUBSCRIPTION_NAME, subscriber));
     pubSubConfiguration.initialize("projectId");
 
     PubSubConfiguration.FlowControl result =
-        pubSubConfiguration.computeSubscriberFlowControlSettings(psn);
+        pubSubConfiguration.computeSubscriberFlowControlSettings(projectSubscriptionName);
 
     assertThat(result.getLimitExceededBehavior())
         .isEqualTo(FlowController.LimitExceededBehavior.Ignore);
@@ -170,9 +169,9 @@ class PubSubConfigurationTests {
 
     pubSubConfiguration.initialize("projectId");
 
-    ProjectSubscriptionName psn = ProjectSubscriptionName.of("projectId", "subscription-name");
+    ProjectSubscriptionName projectSubscriptionName = ProjectSubscriptionName.of("projectId", "subscription-name");
     PubSubConfiguration.FlowControl result =
-        pubSubConfiguration.computeSubscriberFlowControlSettings(psn);
+        pubSubConfiguration.computeSubscriberFlowControlSettings(projectSubscriptionName);
 
     assertThat(result.getLimitExceededBehavior())
         .isEqualTo(FlowController.LimitExceededBehavior.Ignore);
@@ -186,7 +185,7 @@ class PubSubConfigurationTests {
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setParallelPullCount(2);
     pubSubConfiguration.setSubscription(
-        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
+        Collections.singletonMap(QUALIFIED_SUBSCRIPTION_NAME, subscriber));
 
     pubSubConfiguration.initialize("projectId");
 
@@ -213,7 +212,7 @@ class PubSubConfigurationTests {
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setPullEndpoint("endpoint");
     pubSubConfiguration.setSubscription(
-        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
+        Collections.singletonMap(QUALIFIED_SUBSCRIPTION_NAME, subscriber));
 
     pubSubConfiguration.initialize("projectId");
 
@@ -240,7 +239,7 @@ class PubSubConfigurationTests {
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setMaxAckExtensionPeriod(1L);
     pubSubConfiguration.setSubscription(
-        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
+        Collections.singletonMap(QUALIFIED_SUBSCRIPTION_NAME, subscriber));
 
     pubSubConfiguration.initialize("projectId");
 
@@ -320,7 +319,7 @@ class PubSubConfigurationTests {
     retry.setMaxRpcTimeoutSeconds(9L);
 
     pubSubConfiguration.setSubscription(
-        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
+        Collections.singletonMap(QUALIFIED_SUBSCRIPTION_NAME, subscriber));
 
     pubSubConfiguration.initialize("projectId");
 
@@ -387,18 +386,15 @@ class PubSubConfigurationTests {
     PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
     subscriber.setRetryableCodes(new Code[] {Code.INTERNAL});
     pubSubConfiguration.setSubscription(
-        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
+        Collections.singletonMap(QUALIFIED_SUBSCRIPTION_NAME, subscriber));
     pubSubConfiguration.initialize("projectId");
 
     assertThat(pubSubConfiguration.computeRetryableCodes("subscription-name", "projectId"))
         .containsExactly(Code.INTERNAL);
   }
 
-  // ATTENTION: this test shows a change in behavior. In the past, specific subscription properties
-  // would get derived from global properties if the subscription itself had none defined by user.
-  // Now the fully-qualified subscription map only contains user-specified properties.
   @Test
-  void testSubscriberMapProperties_defaultOrGlobal_addToMap() {
+  void testSubscriberMapProperties_defaultOrGlobal_notAddedToMap() {
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
     pubSubConfiguration.initialize("projectId");
 
@@ -433,7 +429,7 @@ class PubSubConfigurationTests {
     assertThat(
             pubSubConfiguration
                 .getFullyQualifiedSubscriberProperties()
-                .get(ProjectSubscriptionName.parse("projects/projectId/subscriptions/subscription-name"))
+                .get(ProjectSubscriptionName.parse(QUALIFIED_SUBSCRIPTION_NAME))
                 .getExecutorThreads())
         .isEqualTo(8);
   }
@@ -445,20 +441,20 @@ class PubSubConfigurationTests {
     subscriber.setExecutorThreads(8);
 
     pubSubConfiguration.setSubscription(
-        Collections.singletonMap("projects/projectId/subscriptions/subscription-name", subscriber));
+        Collections.singletonMap(QUALIFIED_SUBSCRIPTION_NAME, subscriber));
 
     pubSubConfiguration.initialize("projectId");
 
     assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).hasSize(1);
     assertThat(
             pubSubConfiguration
-                .getSubscriber("projects/projectId/subscriptions/subscription-name", "projectId")
+                .getSubscriber(QUALIFIED_SUBSCRIPTION_NAME, "projectId")
                 .getExecutorThreads())
         .isEqualTo(8);
     assertThat(
             pubSubConfiguration
                 .getFullyQualifiedSubscriberProperties()
-                .get(ProjectSubscriptionName.parse("projects/projectId/subscriptions/subscription-name"))
+                .get(ProjectSubscriptionName.parse(QUALIFIED_SUBSCRIPTION_NAME))
                 .getExecutorThreads())
         .isEqualTo(8);
   }

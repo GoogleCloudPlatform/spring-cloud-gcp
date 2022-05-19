@@ -454,10 +454,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     if (this.executorProvider != null) {
       return this.executorProvider;
     }
-    ProjectSubscriptionName psn =
+    ProjectSubscriptionName projectSubscriptionName =
         PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId);
-    if (this.executorProviderMap.containsKey(psn)) {
-      return this.executorProviderMap.get(psn);
+    if (this.executorProviderMap.containsKey(projectSubscriptionName)) {
+      return this.executorProviderMap.get(projectSubscriptionName);
     }
     return this.globalExecutorProvider;
   }
@@ -474,10 +474,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     if (this.subscriberStubRetrySettings != null) {
       return this.subscriberStubRetrySettings;
     }
-    ProjectSubscriptionName psn =
+    ProjectSubscriptionName projectSubscriptionName =
         PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId);
-    if (retrySettingsMap.containsKey(psn)) {
-      return this.retrySettingsMap.get(psn);
+    if (retrySettingsMap.containsKey(projectSubscriptionName)) {
+      return this.retrySettingsMap.get(projectSubscriptionName);
     }
     return this.globalRetrySettings;
   }
@@ -491,13 +491,13 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
    * @return flow control settings for subscriber
    */
   public FlowControlSettings getFlowControlSettings(String subscriptionName) {
-    ProjectSubscriptionName psn =
+    ProjectSubscriptionName projectSubscriptionName =
         PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId);
     if (this.flowControlSettings != null) {
       return this.flowControlSettings;
     }
-    if (flowControlSettingsMap.containsKey(psn)) {
-      return this.flowControlSettingsMap.get(psn);
+    if (flowControlSettingsMap.containsKey(projectSubscriptionName)) {
+      return this.flowControlSettingsMap.get(projectSubscriptionName);
     }
     return this.globalFlowControlSettings;
   }

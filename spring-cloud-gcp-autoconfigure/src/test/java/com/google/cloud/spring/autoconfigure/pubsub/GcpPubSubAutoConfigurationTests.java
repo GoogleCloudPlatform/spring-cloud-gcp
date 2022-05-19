@@ -1345,16 +1345,16 @@ class GcpPubSubAutoConfigurationTests {
           GcpPubSubProperties gcpPubSubProperties = ctx.getBean(GcpPubSubProperties.class);
           GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
 
-          ProjectSubscriptionName psn = ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name");
+          ProjectSubscriptionName projectSubscriptionName = ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name");
           PubSubConfiguration.FlowControl flowControl =
               gcpPubSubProperties
-                  .getSubscriptionProperties(psn)
+                  .getSubscriptionProperties(projectSubscriptionName)
                   .getFlowControl();
           assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(100L);
           assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties())
               .hasSize(1)
-              .containsKey(psn);
-          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties().get(psn).getFlowControl().getMaxOutstandingElementCount()).isEqualTo(100L);
+              .containsKey(projectSubscriptionName);
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties().get(projectSubscriptionName).getFlowControl().getMaxOutstandingElementCount()).isEqualTo(100L);
           assertThat(output).contains("Found multiple configurations for projects/fake project/subscriptions/subscription-name; ignoring properties with key synthetic-sub-name");
         });
   }
