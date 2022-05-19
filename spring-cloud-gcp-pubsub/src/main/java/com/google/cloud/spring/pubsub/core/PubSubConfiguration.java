@@ -120,8 +120,8 @@ public class PubSubConfiguration {
       ProjectSubscriptionName projectSubscriptionName =
           PubSubSubscriptionUtils.toProjectSubscriptionName(qualifiedName, defaultProjectId);
       if (fullyQualifiedProps.containsKey(projectSubscriptionName)) {
-        logger.warn("Found multiple configurations for " + projectSubscriptionName
-            + "; ignoring properties with key " + entry.getKey());
+        logger.warn("Found multiple configurations for {}; ignoring properties with key {}",
+            projectSubscriptionName, entry.getKey());
       } else {
         fullyQualifiedProps.put(projectSubscriptionName, subscriberProperties);
       }
