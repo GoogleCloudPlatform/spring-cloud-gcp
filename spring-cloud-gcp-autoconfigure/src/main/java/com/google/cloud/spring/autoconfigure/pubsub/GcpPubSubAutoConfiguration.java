@@ -596,12 +596,12 @@ public class GcpPubSubAutoConfiguration {
     for (Map.Entry<ProjectSubscriptionName, ThreadPoolTaskScheduler> schedulerSet :
         this.threadPoolTaskSchedulerMap.entrySet()) {
       ProjectSubscriptionName fullSubscriptionName = schedulerSet.getKey();
-      String fullyQualifiedName = fullSubscriptionName.toString();
+      String qualifiedName = fullSubscriptionName.toString();
       if (!this.executorProviderMap.containsKey(fullSubscriptionName)) {
         ThreadPoolTaskScheduler scheduler = schedulerSet.getValue();
         ExecutorProvider executorProvider =
             createAndRegisterExecutorProvider(
-                "subscriberExecutorProvider-" + fullyQualifiedName,
+                "subscriberExecutorProvider-" + qualifiedName,
                 scheduler,
                 context);
         this.executorProviderMap.putIfAbsent(fullSubscriptionName, executorProvider);
@@ -626,14 +626,14 @@ public class GcpPubSubAutoConfiguration {
 
     for (Map.Entry<ProjectSubscriptionName, PubSubConfiguration.Subscriber> subscription :
         subscriberMap.entrySet()) {
-      ProjectSubscriptionName fullyQualifiedName = subscription.getKey();
+      ProjectSubscriptionName qualifiedName = subscription.getKey();
 
       PubSubConfiguration.Retry retry =
-          this.gcpPubSubProperties.computeSubscriberRetrySettings(fullyQualifiedName);
+          this.gcpPubSubProperties.computeSubscriberRetrySettings(qualifiedName);
       RetrySettings retrySettings = buildRetrySettings(retry);
       if (retrySettings != null && !retrySettings.equals(this.globalRetrySettings)) {
-        this.subscriberRetrySettingsMap.putIfAbsent(fullyQualifiedName, retrySettings);
-        String beanName = "subscriberRetrySettings-" + fullyQualifiedName.toString();
+        this.subscriberRetrySettingsMap.putIfAbsent(qualifiedName, retrySettings);
+        String beanName = "subscriberRetrySettings-" + qualifiedName.toString();
         context.registerBeanDefinition(
             beanName,
             BeanDefinitionBuilder.genericBeanDefinition(RetrySettings.class, () -> retrySettings)
