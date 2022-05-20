@@ -42,7 +42,6 @@ public class CloudVisionTemplateIntegrationTests {
   public void testExtractTextFromMultiPagePdf() {
     Resource dummyPdf = new ClassPathResource("documents/multi-page-dummy.pdf");
 
-    String юникод = "haha parse this";
     List<String> extractedTexts = cloudVisionTemplate.extractTextFromPdf(dummyPdf);
 
     assertThat(extractedTexts)
