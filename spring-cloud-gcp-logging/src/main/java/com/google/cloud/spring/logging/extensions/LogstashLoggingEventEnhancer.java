@@ -20,6 +20,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.logback.LoggingEventEnhancer;
 import com.google.cloud.spring.logging.JsonLoggingEventEnhancer;
+import com.google.common.base.Splitter;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -42,13 +43,19 @@ public class LogstashLoggingEventEnhancer
   public void enhanceLogEntry(LogEntry.Builder builder, ILoggingEvent event) {
     addLogstashMarkerIfNecessary(
         event.getMarker(),
-        marker -> builder.addLabel(marker.getFieldName(), marker.getFieldValue().toString()));
+        marker -> {
+          String markerValue = Splitter.on("=").trimResults().splitToList(marker.toStringSelf()).get(1);
+          builder.addLabel(marker.getFieldName(), markerValue);
+        });
   }
 
   @Override
   public void enhanceJsonLogEntry(Map<String, Object> jsonMap, ILoggingEvent event) {
     addLogstashMarkerIfNecessary(
-        event.getMarker(), marker -> jsonMap.put(marker.getFieldName(), marker.getFieldValue()));
+        event.getMarker(), marker -> {
+          String markerValue = Splitter.on("=").trimResults().splitToList(marker.toStringSelf()).get(1);
+          jsonMap.put(marker.getFieldName(), markerValue);
+        });
   }
 
   private void addLogstashMarkerIfNecessary(
