@@ -35,7 +35,7 @@ public class CloudVisionTemplateIntegrationTests {
 
     List<String> extractedTexts = cloudVisionTemplate.extractTextFromPdf(dummyPdf);
 
-    assertThat(extractedTexts).hasSize(1).contains("Dummy PDF File\n");
+    assertThat(extractedTexts).hasSize(1).contains("Dummy PDF File");
   }
 
   @Test
@@ -46,7 +46,7 @@ public class CloudVisionTemplateIntegrationTests {
 
     assertThat(extractedTexts)
         .hasSize(2)
-        .contains("Dummy PDF File Page 1\n")
-        .contains("Dummy PDF File Page 2\n");
+        .contains("Dummy PDF File Page 1")
+        .contains("Dummy PDF File Page 2");
   }
 }
