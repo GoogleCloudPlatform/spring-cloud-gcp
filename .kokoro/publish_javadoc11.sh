@@ -38,7 +38,8 @@ python3 -m docuploader --version
 
 # Install asciidoctor and pandoc for adoc convertion
 sudo apt update
-sudo apt install -q -y asciidoctor=2.0.16-2
+apt --version
+sudo apt install -q -y asciidoctor
 sudo apt install -q -y pandoc=2.9.2.1-3+build2
 
 # Build the javadocs
