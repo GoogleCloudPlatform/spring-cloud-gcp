@@ -38,11 +38,20 @@ python3 -m docuploader --version
 
 # Build the javadocs
 ./mvnw clean javadoc:aggregate -Drelease=true -P docFX
-# copy CHANGELOG
-cp CHANGELOG.md target/docfx-yml/history.md
+## copy CHANGELOG
+#cp CHANGELOG.md target/docfx-yml/history.md
+
+# Install asciidoctor and pandoc for adoc convertion
+apt install asciidoctor
+apt install pandoc
+
+# convert doc to md
+asciidoctor -b docbook docs/src/main/asciidoc/index.adoc
+pandoc -f docbook -t gfm docs/src/main/asciidoc/index.xml -o docs/src/main/asciidoc/index.md --shift-heading-level-by=1
+
 
 # copy and replace {project-version} documentation
-sed "s/{project-version}/${PROJECT_VERSION}/g" docs/src/main/md/index.md > target/docfx-yml/documentation.md
+sed "s/{project-version}/${PROJECT_VERSION}/g" docs/src/main/asciidoc/index.md> target/docfx-yml/documentation.md
 #cp docs/src/main/md/index.md target/docfx-yml/overview.md
 
 # check change to documentation.md -- remove after verified
@@ -51,7 +60,7 @@ head -20 target/docfx-yml/documentation.md
 # Move into generated yml directory
 pushd target/docfx-yml
 
-# add documentation.md to tol
+# add documentation.md to tol (after the first `  items:`)
 function insertAfter # file line newText
 {
    local file="$1" line="$2" newText="$3"
