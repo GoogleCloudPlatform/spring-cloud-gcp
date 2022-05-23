@@ -36,14 +36,15 @@ python3 -m pip install gcp-docuploader==0.6.2
 
 python3 -m docuploader --version
 
+# Install asciidoctor and pandoc for adoc convertion
+sudo apt update
+sudo apt install -q -y asciidoctor
+sudo apt install -q -y pandoc
+
 # Build the javadocs
 ./mvnw clean javadoc:aggregate -Drelease=true -P docFX
 ## copy CHANGELOG
 #cp CHANGELOG.md target/docfx-yml/history.md
-
-# Install asciidoctor and pandoc for adoc convertion
-sudo apt install -q -y asciidoctor
-sudo apt install -q -y pandoc
 
 # convert doc to md
 asciidoctor -b docbook docs/src/main/asciidoc/index.adoc
