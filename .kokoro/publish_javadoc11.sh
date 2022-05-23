@@ -36,21 +36,10 @@ python3 -m pip install gcp-docuploader==0.6.2
 
 python3 -m docuploader --version
 
-# Install asciidoctor and pandoc for adoc convertion
-sudo apt update
-apt --version
-sudo apt install -q -y asciidoctor
-sudo apt install -q -y pandoc=2.9.2.1-3+build2
-
 # Build the javadocs
 ./mvnw clean javadoc:aggregate -Drelease=true -P docFX
 ## copy CHANGELOG
 #cp CHANGELOG.md target/docfx-yml/history.md
-
-# convert doc to md
-asciidoctor -b docbook docs/src/main/asciidoc/index.adoc
-pandoc -f docbook -t gfm docs/src/main/asciidoc/index.xml -o docs/src/main/asciidoc/index.md --shift-heading-level-by=1
-
 
 # copy and replace {project-version} documentation
 sed "s/{project-version}/${PROJECT_VERSION}/g" docs/src/main/asciidoc/index.md> target/docfx-yml/documentation.md
