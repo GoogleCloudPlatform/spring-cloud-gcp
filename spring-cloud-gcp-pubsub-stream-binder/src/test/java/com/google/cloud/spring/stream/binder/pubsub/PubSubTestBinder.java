@@ -81,6 +81,7 @@ public class PubSubTestBinder
       throw new RuntimeException("Couldn't build test binder.", ioe);
     }
     PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+    pubSubConfiguration.initialize(projectIdProvider.getProjectId());
     DefaultSubscriberFactory subscriberFactory =
         new DefaultSubscriberFactory(projectIdProvider, pubSubConfiguration);
     subscriberFactory.setChannelProvider(transportChannelProvider);
