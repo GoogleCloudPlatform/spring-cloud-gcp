@@ -38,11 +38,15 @@ import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.List;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -51,6 +55,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.threeten.bp.Duration;
 
 /** Tests for Pub/Sub autoconfiguration. */
+@ExtendWith(OutputCaptureExtension.class)
 class GcpPubSubAutoConfigurationTests {
 
   ApplicationContextRunner baseContextRunner = new ApplicationContextRunner()
@@ -383,11 +388,11 @@ class GcpPubSubAutoConfigurationTests {
 
           // Verify that selective and global beans have been created
           ThreadPoolTaskScheduler selectiveScheduler =
-              (ThreadPoolTaskScheduler) ctx.getBean("threadPoolScheduler_subscription-name");
+              (ThreadPoolTaskScheduler) ctx.getBean("threadPoolScheduler_projects/fake project/subscriptions/subscription-name");
           ThreadPoolTaskScheduler globalScheduler =
               (ThreadPoolTaskScheduler) ctx.getBean("globalPubSubSubscriberThreadPoolScheduler");
           assertThat(selectiveScheduler.getThreadNamePrefix())
-              .isEqualTo("gcp-pubsub-subscriber-subscription-name");
+              .isEqualTo("gcp-pubsub-subscriber-projects/fake project/subscriptions/subscription-name");
           assertThat(selectiveScheduler.isDaemon()).isTrue();
           assertThat(FieldUtils.readField(selectiveScheduler, "poolSize", true)).isEqualTo(7);
           assertThat(globalScheduler.getThreadNamePrefix())
@@ -411,7 +416,7 @@ class GcpPubSubAutoConfigurationTests {
           DefaultSubscriberFactory factory =
               (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
           ExecutorProvider selectiveExecutorProvider =
-              (ExecutorProvider) ctx.getBean("subscriberExecutorProvider-subscription-name");
+              (ExecutorProvider) ctx.getBean("subscriberExecutorProvider-projects/fake project/subscriptions/subscription-name");
           ExecutorProvider globalExecutorProvider =
               (ExecutorProvider) ctx.getBean("globalSubscriberExecutorProvider");
 
@@ -437,11 +442,11 @@ class GcpPubSubAutoConfigurationTests {
 
           // Verify that selective and global beans have been created
           ThreadPoolTaskScheduler selectiveScheduler =
-              (ThreadPoolTaskScheduler) ctx.getBean("threadPoolScheduler_subscription-name");
+              (ThreadPoolTaskScheduler) ctx.getBean("threadPoolScheduler_projects/fake project/subscriptions/subscription-name");
           ThreadPoolTaskScheduler globalScheduler =
               (ThreadPoolTaskScheduler) ctx.getBean("globalPubSubSubscriberThreadPoolScheduler");
           assertThat(selectiveScheduler.getThreadNamePrefix())
-              .isEqualTo("gcp-pubsub-subscriber-subscription-name");
+              .isEqualTo("gcp-pubsub-subscriber-projects/fake project/subscriptions/subscription-name");
           assertThat(FieldUtils.readField(selectiveScheduler, "poolSize", true)).isEqualTo(3);
           assertThat(selectiveScheduler.isDaemon()).isTrue();
           assertThat(globalScheduler.getThreadNamePrefix())
@@ -514,7 +519,7 @@ class GcpPubSubAutoConfigurationTests {
           DefaultSubscriberFactory factory =
               (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
           ExecutorProvider selectiveExecutorProvider =
-              (ExecutorProvider) ctx.getBean("subscriberExecutorProvider-subscription-name");
+              (ExecutorProvider) ctx.getBean("subscriberExecutorProvider-projects/fake project/subscriptions/subscription-name");
           ExecutorProvider globalExecutorProvider =
               (ExecutorProvider) ctx.getBean("globalSubscriberExecutorProvider");
 
@@ -587,8 +592,9 @@ class GcpPubSubAutoConfigurationTests {
                   gcpPubSubProperties.computePullEndpoint(
                       "subscription-name", projectIdProvider.getProjectId()))
               .isEqualTo("my-endpoint");
-          assertThat(gcpPubSubProperties.getSubscription())
-              .containsKey("projects/fake project/subscriptions/subscription-name");
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties())
+              .containsKey(ProjectSubscriptionName.parse(
+                  "projects/fake project/subscriptions/subscription-name"));
         });
   }
 
@@ -635,11 +641,9 @@ class GcpPubSubAutoConfigurationTests {
                       "other", projectIdProvider.getProjectId()))
               .isEqualTo("other-endpoint");
 
-          assertThat(gcpPubSubProperties.getSubscription()).hasSize(2);
-          assertThat(gcpPubSubProperties.getSubscription())
-              .containsKey("projects/fake project/subscriptions/subscription-name");
-          assertThat(gcpPubSubProperties.getSubscription())
-              .containsKey("projects/fake project/subscriptions/other");
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties()).hasSize(1);
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties())
+              .containsKey(ProjectSubscriptionName.parse("projects/fake project/subscriptions/subscription-name"));
         });
   }
 
@@ -671,8 +675,8 @@ class GcpPubSubAutoConfigurationTests {
                   gcpPubSubProperties.computePullEndpoint(
                       "subscription-name", projectIdProvider.getProjectId()))
               .isEqualTo("other-endpoint");
-          assertThat(gcpPubSubProperties.getSubscription())
-              .containsKey("projects/fake project/subscriptions/subscription-name");
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties())
+              .containsKey(ProjectSubscriptionName.parse("projects/fake project/subscriptions/subscription-name"));
         });
   }
 
@@ -780,9 +784,9 @@ class GcpPubSubAutoConfigurationTests {
           assertThat(retrySettings.getInitialRpcTimeoutSeconds()).isEqualTo(6);
           assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(7);
           assertThat(retrySettings.getMaxRpcTimeoutSeconds()).isEqualTo(8);
-          assertThat(gcpPubSubProperties.getSubscription()).hasSize(1);
-          assertThat(gcpPubSubProperties.getSubscription())
-              .containsKey("projects/fake project/subscriptions/subscription-name");
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties()).hasSize(1);
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties())
+              .containsKey(ProjectSubscriptionName.parse("projects/fake project/subscriptions/subscription-name"));
 
           DefaultSubscriberFactory subscriberFactory =
               ctx.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
@@ -799,7 +803,7 @@ class GcpPubSubAutoConfigurationTests {
                   .build();
           assertThat(subscriberFactory.getRetrySettings("subscription-name"))
               .isEqualTo(expectedRetrySettings);
-          assertThat(ctx.getBean("subscriberRetrySettings-subscription-name", RetrySettings.class))
+          assertThat(ctx.getBean("subscriberRetrySettings-projects/fake project/subscriptions/subscription-name", RetrySettings.class))
               .isEqualTo(expectedRetrySettings);
         });
   }
@@ -838,8 +842,8 @@ class GcpPubSubAutoConfigurationTests {
           PubSubConfiguration.Retry retrySettings =
               gcpPubSubProperties.computeSubscriberRetrySettings(
                   "subscription-name", projectIdProvider.getProjectId());
-          assertThat(gcpPubSubProperties.getSubscription())
-              .containsKey("projects/fake project/subscriptions/subscription-name");
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties())
+              .containsKey(ProjectSubscriptionName.parse("projects/fake project/subscriptions/subscription-name"));
           assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(1L);
           assertThat(retrySettings.getInitialRetryDelaySeconds()).isEqualTo(2L);
           assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(3);
@@ -864,11 +868,9 @@ class GcpPubSubAutoConfigurationTests {
           assertThat(retrySettingsForOtherSubscriber.getInitialRpcTimeoutSeconds()).isEqualTo(10);
           assertThat(retrySettingsForOtherSubscriber.getRpcTimeoutMultiplier()).isEqualTo(10);
           assertThat(retrySettingsForOtherSubscriber.getMaxRpcTimeoutSeconds()).isEqualTo(10);
-          assertThat(gcpPubSubProperties.getSubscription()).hasSize(2);
-          assertThat(gcpPubSubProperties.getSubscription())
-              .containsKey("projects/fake project/subscriptions/subscription-name");
-          assertThat(gcpPubSubProperties.getSubscription())
-              .containsKey("projects/fake project/subscriptions/other");
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties()).hasSize(1);
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties())
+              .containsKey(ProjectSubscriptionName.parse("projects/fake project/subscriptions/subscription-name"));
 
           // Verify that beans for selective and global retry settings are created. Also
           // verify that selective retry setting takes precedence.
@@ -898,7 +900,7 @@ class GcpPubSubAutoConfigurationTests {
                   .build();
           assertThat(subscriberFactory.getRetrySettings("subscription-name"))
               .isEqualTo(expectedRetrySettingsForSubscriptionName);
-          assertThat(ctx.getBean("subscriberRetrySettings-subscription-name", RetrySettings.class))
+          assertThat(ctx.getBean("subscriberRetrySettings-projects/fake project/subscriptions/subscription-name", RetrySettings.class))
               .isEqualTo(expectedRetrySettingsForSubscriptionName);
           assertThat(subscriberFactory.getRetrySettings("other"))
               .isEqualTo(expectedRetrySettingsForOther);
@@ -1013,7 +1015,7 @@ class GcpPubSubAutoConfigurationTests {
               RetrySettings.newBuilder().setTotalTimeout(Duration.ofSeconds(10L)).build();
           assertThat(subscriberFactory.getRetrySettings("subscription-name"))
               .isEqualTo(expectedRetrySettingsForSubscriptionName);
-          assertThat(ctx.getBean("subscriberRetrySettings-subscription-name", RetrySettings.class))
+          assertThat(ctx.getBean("subscriberRetrySettings-projects/fake project/subscriptions/subscription-name", RetrySettings.class))
               .isEqualTo(expectedRetrySettingsForSubscriptionName);
           assertThat(ctx.getBean("globalSubscriberRetrySettings", RetrySettings.class))
               .isEqualTo(expectedGlobalRetrySettings);
@@ -1102,9 +1104,9 @@ class GcpPubSubAutoConfigurationTests {
           assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
           assertThat(flowControl.getLimitExceededBehavior())
               .isEqualTo(FlowController.LimitExceededBehavior.Ignore);
-          assertThat(gcpPubSubProperties.getSubscription()).hasSize(1);
-          assertThat(gcpPubSubProperties.getSubscription())
-              .containsKey("projects/fake project/subscriptions/subscription-name");
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties()).hasSize(1);
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties())
+              .containsKey(ProjectSubscriptionName.parse("projects/fake project/subscriptions/subscription-name"));
 
           DefaultSubscriberFactory subscriberFactory =
               ctx.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
@@ -1118,7 +1120,7 @@ class GcpPubSubAutoConfigurationTests {
               .isEqualTo(expectedFlowControlForSubscriptionName);
           assertThat(
                   ctx.getBean(
-                      "subscriberFlowControlSettings-subscription-name", FlowControlSettings.class))
+                      "subscriberFlowControlSettings-projects/fake project/subscriptions/subscription-name", FlowControlSettings.class))
               .isEqualTo(expectedFlowControlForSubscriptionName);
         });
   }
@@ -1146,7 +1148,7 @@ class GcpPubSubAutoConfigurationTests {
           // property set
           PubSubConfiguration.FlowControl flowControl =
               gcpPubSubProperties.computeSubscriberFlowControlSettings(
-                  "subscription-name", projectIdProvider.getProjectId());
+                  ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name"));
           assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
           assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
           assertThat(flowControl.getLimitExceededBehavior())
@@ -1156,16 +1158,15 @@ class GcpPubSubAutoConfigurationTests {
           // settings property set
           PubSubConfiguration.FlowControl flowControlForOtherSubscriber =
               gcpPubSubProperties.computeSubscriberFlowControlSettings(
-                  "other", projectIdProvider.getProjectId());
+                  ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "other"));
           assertThat(flowControlForOtherSubscriber.getMaxOutstandingElementCount()).isEqualTo(10L);
           assertThat(flowControlForOtherSubscriber.getMaxOutstandingRequestBytes()).isEqualTo(10L);
           assertThat(flowControlForOtherSubscriber.getLimitExceededBehavior())
               .isEqualTo(FlowController.LimitExceededBehavior.Block);
-          assertThat(gcpPubSubProperties.getSubscription()).hasSize(2);
-          assertThat(gcpPubSubProperties.getSubscription())
-              .containsKey("projects/fake project/subscriptions/subscription-name");
-          assertThat(gcpPubSubProperties.getSubscription())
-              .containsKey("projects/fake project/subscriptions/other");
+          // Change in behavior: calculated properties don't get stored
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties()).hasSize(1);
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties())
+              .containsKey(ProjectSubscriptionName.parse("projects/fake project/subscriptions/subscription-name"));
 
           // Verify that beans for selective and global flow control settings are created.
           DefaultSubscriberFactory subscriberFactory =
@@ -1186,7 +1187,7 @@ class GcpPubSubAutoConfigurationTests {
               .isEqualTo(expectedFlowControlForSubscriptionName);
           assertThat(
                   ctx.getBean(
-                      "subscriberFlowControlSettings-subscription-name", FlowControlSettings.class))
+                      "subscriberFlowControlSettings-projects/fake project/subscriptions/subscription-name", FlowControlSettings.class))
               .isEqualTo(expectedFlowControlForSubscriptionName);
           assertThat(subscriberFactory.getFlowControlSettings("other"))
               .isEqualTo(expectedFlowControlForOther);
@@ -1214,14 +1215,14 @@ class GcpPubSubAutoConfigurationTests {
 
           PubSubConfiguration.FlowControl flowControl =
               gcpPubSubProperties.computeSubscriberFlowControlSettings(
-                  "subscription-name", projectIdProvider.getProjectId());
+                  ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name"));
           assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
           assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
           assertThat(flowControl.getLimitExceededBehavior())
               .isEqualTo(FlowController.LimitExceededBehavior.Ignore);
-          assertThat(gcpPubSubProperties.getSubscription()).hasSize(1);
-          assertThat(gcpPubSubProperties.getSubscription())
-              .containsKey("projects/fake project/subscriptions/subscription-name");
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties()).hasSize(1);
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties())
+              .containsKey(ProjectSubscriptionName.parse("projects/fake project/subscriptions/subscription-name"));
 
           // Verify that bean for global flow control settings is created.
           DefaultSubscriberFactory subscriberFactory =
@@ -1258,7 +1259,7 @@ class GcpPubSubAutoConfigurationTests {
 
           PubSubConfiguration.FlowControl flowControl =
               gcpPubSubProperties.computeSubscriberFlowControlSettings(
-                  "subscription-name", projectIdProvider.getProjectId());
+                  ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name"));
           assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(11L);
           assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(12L);
           assertThat(flowControl.getLimitExceededBehavior())
@@ -1279,7 +1280,7 @@ class GcpPubSubAutoConfigurationTests {
               .isEqualTo(expectedFlowControlForSubscriptionName);
           assertThat(
                   ctx.getBean(
-                      "subscriberFlowControlSettings-subscription-name", FlowControlSettings.class))
+                      "subscriberFlowControlSettings-projects/fake project/subscriptions/subscription-name", FlowControlSettings.class))
               .isEqualTo(expectedFlowControlForSubscriptionName);
           assertThat(ctx.getBean("globalSubscriberFlowControlSettings", FlowControlSettings.class))
               .isEqualTo(expectedGlobalSettings);
@@ -1327,6 +1328,37 @@ class GcpPubSubAutoConfigurationTests {
           assertThat(testPublisher.getBatchingSettings()).isSameAs(TEST_BATCHING_SETTINGS);
         });
   }
+
+  @Test
+  void flowControlSettings_multipleKeysForSameSubscription_firstOneUsed(CapturedOutput output) {
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+            .withPropertyValues(
+                "spring.cloud.gcp.pubsub.subscription.subscription-name.flow-control.max-outstanding-element-Count=100",
+                "spring.cloud.gcp.pubsub.subscription.synthetic-sub-name.flow-control.max-outstanding-element-Count=200",
+                "spring.cloud.gcp.pubsub.subscription.synthetic-sub-name.fully-qualified-name=projects/fake project/subscriptions/subscription-name")
+            .withUserConfiguration(TestConfig.class);
+
+    contextRunner.run(
+        ctx -> {
+          GcpPubSubProperties gcpPubSubProperties = ctx.getBean(GcpPubSubProperties.class);
+          GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
+
+          ProjectSubscriptionName projectSubscriptionName = ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name");
+          PubSubConfiguration.FlowControl flowControl =
+              gcpPubSubProperties
+                  .getSubscriptionProperties(projectSubscriptionName)
+                  .getFlowControl();
+          assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(100L);
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties())
+              .hasSize(1)
+              .containsKey(projectSubscriptionName);
+          assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties().get(projectSubscriptionName).getFlowControl().getMaxOutstandingElementCount()).isEqualTo(100L);
+          assertThat(output).contains("Found multiple configurations for projects/fake project/subscriptions/subscription-name; ignoring properties with key synthetic-sub-name");
+        });
+  }
+
 
   @Configuration
   static class CustomizerConfig {

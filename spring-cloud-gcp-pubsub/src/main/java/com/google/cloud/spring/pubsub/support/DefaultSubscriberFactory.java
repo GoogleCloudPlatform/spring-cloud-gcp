@@ -36,8 +36,9 @@ import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PullRequest;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import org.springframework.util.Assert;
 import org.threeten.bp.Duration;
 
@@ -72,16 +73,16 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
   private PubSubConfiguration pubSubConfiguration;
 
-  private ConcurrentMap<String, FlowControlSettings> flowControlSettingsMap =
-      new ConcurrentHashMap<>();
+  private Map<ProjectSubscriptionName, FlowControlSettings> flowControlSettingsMap =
+      new HashMap<>();
 
-  private ConcurrentMap<String, RetrySettings> retrySettingsMap = new ConcurrentHashMap<>();
+  private Map<ProjectSubscriptionName, RetrySettings> retrySettingsMap = new ConcurrentHashMap<>();
 
   private FlowControlSettings globalFlowControlSettings;
 
   private RetrySettings globalRetrySettings;
 
-  private ConcurrentMap<String, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
+  private Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
 
   private ExecutorProvider globalExecutorProvider;
 
@@ -96,7 +97,16 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
    */
   @Deprecated
   public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
-    this(projectIdProvider, new PubSubConfiguration());
+    this(projectIdProvider, getBlankConfiguration(projectIdProvider));
+  }
+
+  private static PubSubConfiguration getBlankConfiguration(GcpProjectIdProvider projectIdProvider) {
+    if (projectIdProvider == null) {
+      return null;
+    }
+    PubSubConfiguration config = new PubSubConfiguration();
+    config.initialize(projectIdProvider.getProjectId());
+    return config;
   }
 
   /**
@@ -444,10 +454,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     if (this.executorProvider != null) {
       return this.executorProvider;
     }
-    String fullyQualifiedName =
-        PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId).toString();
-    if (this.executorProviderMap.containsKey(fullyQualifiedName)) {
-      return this.executorProviderMap.get(fullyQualifiedName);
+    ProjectSubscriptionName projectSubscriptionName =
+        PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId);
+    if (this.executorProviderMap.containsKey(projectSubscriptionName)) {
+      return this.executorProviderMap.get(projectSubscriptionName);
     }
     return this.globalExecutorProvider;
   }
@@ -464,10 +474,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     if (this.subscriberStubRetrySettings != null) {
       return this.subscriberStubRetrySettings;
     }
-    String fullyQualifiedName =
-        PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId).toString();
-    if (retrySettingsMap.containsKey(fullyQualifiedName)) {
-      return this.retrySettingsMap.get(fullyQualifiedName);
+    ProjectSubscriptionName projectSubscriptionName =
+        PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId);
+    if (retrySettingsMap.containsKey(projectSubscriptionName)) {
+      return this.retrySettingsMap.get(projectSubscriptionName);
     }
     return this.globalRetrySettings;
   }
@@ -481,13 +491,13 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
    * @return flow control settings for subscriber
    */
   public FlowControlSettings getFlowControlSettings(String subscriptionName) {
-    String fullyQualifiedName =
-        PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId).toString();
+    ProjectSubscriptionName projectSubscriptionName =
+        PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId);
     if (this.flowControlSettings != null) {
       return this.flowControlSettings;
     }
-    if (flowControlSettingsMap.containsKey(fullyQualifiedName)) {
-      return this.flowControlSettingsMap.get(fullyQualifiedName);
+    if (flowControlSettingsMap.containsKey(projectSubscriptionName)) {
+      return this.flowControlSettingsMap.get(projectSubscriptionName);
     }
     return this.globalFlowControlSettings;
   }
@@ -521,7 +531,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     return this.pubSubConfiguration.computeRetryableCodes(subscriptionName, projectId);
   }
 
-  public void setExecutorProviderMap(ConcurrentMap<String, ExecutorProvider> executorProviderMap) {
+  public void setExecutorProviderMap(Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap) {
     this.executorProviderMap = executorProviderMap;
   }
 
@@ -534,7 +544,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   }
 
   public void setFlowControlSettingsMap(
-      ConcurrentMap<String, FlowControlSettings> flowControlSettingsMap) {
+      Map<ProjectSubscriptionName, FlowControlSettings> flowControlSettingsMap) {
     this.flowControlSettingsMap = flowControlSettingsMap;
   }
 
@@ -542,7 +552,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     this.globalFlowControlSettings = flowControlSettings;
   }
 
-  public void setRetrySettingsMap(ConcurrentMap<String, RetrySettings> retrySettingsMap) {
+  public void setRetrySettingsMap(Map<ProjectSubscriptionName, RetrySettings> retrySettingsMap) {
     this.retrySettingsMap = retrySettingsMap;
   }
 
