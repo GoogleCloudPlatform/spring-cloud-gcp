@@ -39,7 +39,7 @@ python3 -m docuploader --version
 # Build the javadocs
 ./mvnw clean javadoc:aggregate -Drelease=true -P docFX
 ## copy CHANGELOG
-#cp CHANGELOG.md target/docfx-yml/history.md
+cp history.md target/docfx-yml/history.md
 
 # copy and replace {project-version} documentation
 sed "s/{project-version}/${PROJECT_VERSION}/g" docs/src/main/asciidoc/index.md> target/docfx-yml/documentation.md
@@ -65,7 +65,10 @@ sed -i '4,2000 s/^/  /' toc.yml
 # Add Javadocs dir
 insertAfter toc.yml \
 "  items:" "  - name: \"JavaDocs\"\n    items:"
-# add documentation.md to tol (after the first `  items:`)
+# add changelog to toc
+insertAfter toc.yml \
+"  items:" "  - name: \"Version history\"\n    href: \"history.md\""
+# add documentation.md to toc (after the first `  items:`)
 insertAfter toc.yml \
 "  items:" "  - name: \"Documentation\"\n    href: \"documentation.md\""
 
