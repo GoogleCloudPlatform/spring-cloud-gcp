@@ -1983,6 +1983,12 @@ This is useful in conjunction with enabling message ordering because sending mes
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].fully-qualified-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The fully-qualified subscription name in the <code>projects/[PROJECT]/subscriptions/[SUBSCRIPTION]</code> format. When this property is present, the <code>[subscription-name]</code> key does not have to match any actual resources; it&#8217;s used only for logical grouping.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].parallel-pull-count</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The number of pull workers.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
