@@ -1,4 +1,4 @@
-# Changelog
+# Spring Cloud GCP Changelog
 
 [Spring Cloud GCP](https://spring.io/projects/spring-cloud-gcp) is a set
 of integrations between Spring Framework and Google Cloud Platform. It
@@ -50,31 +50,6 @@ on GitHub.
 
   - Fixed session leak in Spanner actuator healthcheck
     ([\#902](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/902)).
-
-## 2.0.8
-
-### General
-
-  - Updated `gcp-libraries-bom.version` to 24.2.0
-    ([\#863](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/863)).
-
-  - Updated `cloud-sql-socket-factory.version` 1.4.2
-    ([\#852](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/852)).
-
-### Pub/Sub
-
-  - Exclude `googclient_` prefixed attributes from outbound Pub/Sub
-    messages in Spring Cloud Stream
-    ([\#919](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/919)).
-
-### Spanner
-
-  - Fixed session leak in Spanner actuator healthcheck
-    ([\#918](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/918)).
-
-  - Reduced visibility and renamed `SpannerQueryMethod.getMethod()`
-    ([\#815](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/815)).
-    ⚠️ **breaking change**
 
 ## 3.0.0
 

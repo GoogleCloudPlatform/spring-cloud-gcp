@@ -51,12 +51,24 @@ head -20 target/docfx-yml/documentation.md
 # Move into generated yml directory
 pushd target/docfx-yml
 
-# add documentation.md to tol
-function insertAfter # file line newText
+### manual changes to generated toc.yml,
+# group all javadocs to dir and add documentation to fron
+
+# insert after line starting with
+function insertAfter
 {
    local file="$1" line="$2" newText="$3"
    sed -i -e "/^$line$/a"$'\\\n'"$newText"$'\n' "$file"
 }
+# From line 4-2000, add 2 spaces to the front.
+sed -i '4,2000 s/^/  /' toc.yml
+# Add Javadocs dir
+insertAfter toc.yml \
+"  items:" "  - name: \"JavaDocs\"\n    items:"
+# add changelog to toc
+insertAfter toc.yml \
+"  items:" "  - name: \"Version history\"\n    href: \"history.md\""
+# add documentation.md to toc (after the first `  items:`)
 insertAfter toc.yml \
 "  items:" "  - name: \"Documentation\"\n    href: \"documentation.md\""
 
