@@ -7,7 +7,19 @@ https://spring.io/projects/spring-cloud-gcp[Spring Cloud GCP] is a set of integr
 This document provides a high-level overview of the changes introduced in Spring Cloud GCP by release.
 For a detailed view of what has changed, refer to the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main[commit history] on GitHub.
 
-== 3.3.0.BUILD-SNAPSHOT
+== 3.4.0.BUILD-SNAPSHOT
+== 3.3.0
+
+### General
+  * Bump spring-cloud-dependencies to 2021.0.2 (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1109)
+  * Bump spring-boot-dependencies from 2.6.7 to 2.6.8 (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1130)
+  * Bump cloud-sql-socket-factory.version from 1.5.0 to 1.6.0 (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1111)
+  * Bump libraries-bom from 25.2.0 to 25.3.0 (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1123)
+ 
+### Pub/Sub
+  
+    * Allow customizing Pub/Sub Spring Cloud Stream header mapping (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1038)
+    * Fully qualified subscription configuration support + immutable configuration in Pub/Sub (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1110)
 
 == 3.2.1
 
