@@ -76,7 +76,7 @@ insertAfter toc.yml \
 head -20 toc.yml
 
 python3 -m docuploader create-metadata \
-    --name spring-cloud-gcp-3.x \
+    --name spring-cloud-gcp \
     --version ${PROJECT_VERSION} \
     --language java \
     --stem "/java/docs/spring-cloud-gcp/reference"
