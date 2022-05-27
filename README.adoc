@@ -9,9 +9,9 @@ image:https://sonarcloud.io/api/project_badges/measure?project=GoogleCloudPlatfo
 This project makes it easy for Spring users to run their applications on Google Cloud Platform.
 You can check our project website https://spring.io/projects/spring-cloud-gcp[here].
 
-For a deep dive into the project, refer to the Spring Cloud GCP Reference documentation below or the https://googleapis.dev/java/spring-cloud-gcp/2.0.10/index.html[Javadocs 2.0.10].
+For a deep dive into the project, refer to the Spring Cloud GCP Reference documentation below or the https://googleapis.dev/java/spring-cloud-gcp/2.0.11/index.html[Javadocs 2.0.11].
 
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/2.0.10/reference/html/index.html[Spring Cloud GCP 2.0.10]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/2.0.11/reference/html/index.html[Spring Cloud GCP 2.0.11]
 
 If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[Spring Cloud GCP sample applications] or the https://codelabs.developers.google.com/spring[Spring on GCP codelabs].
 
@@ -76,7 +76,7 @@ This will allow you to not specify versions for any of the Maven dependencies an
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-dependencies</artifactId>
-            <version>2.0.10</version>
+            <version>2.0.11</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
