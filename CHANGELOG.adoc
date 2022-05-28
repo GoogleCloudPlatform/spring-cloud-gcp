@@ -5,7 +5,15 @@ https://spring.io/projects/spring-cloud-gcp[Spring Cloud GCP] is a set of integr
 This document provides a high-level overview of the changes introduced in Spring Cloud GCP by release.
 For a detailed view of what has changed, refer to the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main[commit history] on GitHub.
 
-== 2.0.11-BUILD-SNAPSHOT
+== 2.0.11
+
+Maintenance release pulling in the https://spring.io/blog/2022/05/19/spring-boot-2-5-14-available-now[last version of Spring Boot in the 2.5.x line]
+
+### General
+* Bump spring-boot-dependencies from 2.5.13 to 2.5.14 (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1126)
+* Bump cloud-sql-socket-factory.version from 1.5.0 to 1.6.0 (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1112)
+
+
 
 == 2.0.10
 
