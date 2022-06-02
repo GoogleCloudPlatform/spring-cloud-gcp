@@ -48,6 +48,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.core.mapping.Where;
+import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.google.spanner.v1.TypeCode;
 import java.lang.reflect.Method;
@@ -56,10 +57,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import org.assertj.core.data.Offset;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.data.domain.PageRequest;
@@ -654,12 +653,78 @@ class SqlSpannerQueryTests {
         .thenReturn(Type.struct(Arrays.asList(Type.StructField.of("details", Type.json()))));
     when(row.getColumnType(0)).thenReturn(Type.json());
     when(row.getJson(0)).thenReturn("{\"p1\":\"address line\",\"p2\":\"5\"}");
+    when(row.getColumnType("detailsList")).thenReturn(Type.array(Type.json()));
 
     Object result = rowFunc.apply(row);
 
     assertThat(result).isInstanceOf(Detail.class);
     assertThat(((Detail) result).p1).isEqualTo("address line");
     assertThat(((Detail) result).p2).isEqualTo("5");
+  }
+
+  @Test
+  void sqlReturnTypeIsArrayJsonFieldTest() throws NoSuchMethodException {
+    String sql = "SELECT detailsList from singer where stageName = @stageName";
+
+    Object[] params = new Object[]{"STAGENAME"};
+    String[] paramNames = new String[]{"stageName"};
+
+    when(queryMethod.isCollectionQuery()).thenReturn(true);
+    ResultProcessor resultProcessor = mock(ResultProcessor.class);
+    ReturnedType returnedType = mock(ReturnedType.class);
+    when(this.queryMethod.getResultProcessor()).thenReturn(resultProcessor);
+    when(resultProcessor.getReturnedType()).thenReturn(returnedType);
+    when(returnedType.getReturnedType()).thenReturn((Class) Detail.class);
+
+    EvaluationContext evaluationContext = new StandardEvaluationContext();
+
+    evaluationContext.setVariable(paramNames[0], params[0]);
+    when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
+        .thenReturn(evaluationContext);
+
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Singer.class, false);
+
+    doAnswer(
+        invocation -> {
+          Statement statement = invocation.getArgument(1);
+          assertThat(statement.getSql()).isEqualTo(sql);
+          Map<String, Value> paramMap = statement.getParameters();
+          assertThat(paramMap.get("stageName").getString()).isEqualTo(params[0]);
+
+          return null;
+        })
+        .when(this.spannerTemplate)
+        .query((Function<Struct, Object>) any(), any(), any());
+
+    // This dummy method was created so the metadata for the ARRAY param inner type is
+    // provided.
+    Method arrayParameterTriggeringMethod =
+        QueryHolder.class.getMethod("dummyMethod6", String.class);
+    when(this.queryMethod.getQueryMethod()).thenReturn(arrayParameterTriggeringMethod);
+    Mockito.<Parameters>when(this.queryMethod.getParameters())
+        .thenReturn(new DefaultParameters(arrayParameterTriggeringMethod));
+
+    sqlSpannerQuery.execute(params);
+    // capturing the row function and verifying it's the correct one with mock data
+    ArgumentCaptor<Function<Struct, Object>> argumentCaptor =
+        ArgumentCaptor.forClass(Function.class);
+    verify(this.spannerTemplate).query(argumentCaptor.capture(), any(), any());
+    Function<Struct, Object> rowFunc = argumentCaptor.getValue();
+
+    Struct row = mock(Struct.class);
+    when(row.getType())
+        .thenReturn(Type.struct(
+            Arrays.asList(Type.StructField.of("detailsList", Type.array(Type.json())))));
+    when(row.getColumnType(0)).thenReturn(Type.array(Type.json()));
+    when(row.getJsonList(0)).thenReturn(Arrays.asList("{\"p1\":\"address line\",\"p2\":\"5\"}",
+        "{\"p1\":\"address line 2\",\"p2\":\"6\"}"));
+    when(row.getColumnType("detailsList")).thenReturn(Type.array(Type.json()));
+
+    Object result = rowFunc.apply(row);
+
+    assertThat(result).isInstanceOf(List.class);
+    assertThat((List<Detail>) result).hasSize(2)
+        .containsExactly(new Detail("address line", "5"), new Detail("address line 2", "6"));
   }
 
   private static class Singer {
@@ -669,6 +734,9 @@ class SqlSpannerQueryTests {
 
     @Column(spannerType = TypeCode.JSON)
     Detail details;
+
+    @Column(spannerType = TypeCode.JSON)
+    List<Detail> detailsList;
   }
 
   private class Detail {
@@ -679,6 +747,24 @@ class SqlSpannerQueryTests {
     Detail(String p1, String p2) {
       this.p1 = p1;
       this.p2 = p2;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (!(o instanceof Detail)) {
+        return false;
+      }
+      Detail detail = (Detail) o;
+      return Objects.equal(p1, detail.p1)
+          && Objects.equal(p2, detail.p2);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(p1, p2);
     }
   }
 
