@@ -241,17 +241,11 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
       return this.spannerTemplate.query(
           struct -> new StructAccessor(struct).getSingleValue(0), statement, spannerQueryOptions);
     }
-    // check if returnedType is a field annotated as json
-    Pair<Boolean, Boolean> isJsonField = isJsonFieldType(returnedType);
-    if (isJsonField.getSecond()) {
+    // check if returnedType is a field annotated as json or is inner-type of a field annotated as json
+    if (isJsonFieldType(returnedType)) {
       return this.spannerTemplate.query(
           struct -> new StructAccessor(struct,
-              this.spannerMappingContext.getGson()).getListJsonValue(0, returnedType),
-          statement,
-          spannerQueryOptions);
-    } else if (isJsonField.getFirst()) {
-      return this.spannerTemplate.query(
-          struct -> new StructAccessor(struct, this.spannerMappingContext.getGson()).getSingleJsonValue(0, returnedType),
+              this.spannerMappingContext.getGson()).getJsonValue(0, returnedType),
           statement,
           spannerQueryOptions);
     }
@@ -259,15 +253,14 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
     return this.spannerTemplate.query(this.entityType, statement, spannerQueryOptions);
   }
 
-  private Pair<Boolean, Boolean> isJsonFieldType(Class<?> returnedType) {
+  private boolean isJsonFieldType(Class<?> returnedType) {
     SpannerPersistentEntityImpl<?> persistentEntity =
         (SpannerPersistentEntityImpl<?>)
             this.spannerMappingContext.getPersistentEntity(this.entityType);
     if (persistentEntity == null) {
-      return Pair.of(false, false);
+      return false;
     }
-    return Pair.of(persistentEntity.isJsonProperty(returnedType),
-        persistentEntity.isArrayJsonProperty(returnedType));
+    return persistentEntity.isJsonProperty(returnedType);
   }
 
   private Statement buildStatementFromQueryAndTags(QueryTagValue queryTagValue) {

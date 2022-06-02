@@ -166,7 +166,14 @@ public class StructAccessor {
     return result;
   }
 
-  public <T> List<T> getListJsonValue(int colIndex, Class<T> colType) {
+  public  <T> Object getJsonValue(int colIndex, Class<T> colType) {
+    if (this.struct.getColumnType(colIndex).getCode() != Code.ARRAY) {
+      return getSingleJsonValue(colIndex, colType);
+    }
+    return getListJsonValue(colIndex, colType);
+  }
+
+  private  <T> List<T> getListJsonValue(int colIndex, Class<T> colType) {
     if (this.struct.getColumnType(colIndex).getCode() != Code.ARRAY) {
       throw new SpannerDataException("Column is not an ARRAY type: " + colIndex);
     }
@@ -209,7 +216,7 @@ public class StructAccessor {
     return gson.fromJson(jsonString, colType);
   }
 
-  public <T> T getSingleJsonValue(int colIndex, Class<T> colType) {
+  private  <T> T getSingleJsonValue(int colIndex, Class<T> colType) {
     if (this.struct.getColumnType(colIndex).getCode() != Code.JSON) {
       throw new SpannerDataException("Column of index " + colIndex + " not an JSON type.");
     }
