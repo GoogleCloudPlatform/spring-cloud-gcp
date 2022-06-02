@@ -378,6 +378,9 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 
   private Iterable<String> covertIterableJsonToValue(Iterable<Object> value) {
     List<String> result = new ArrayList<>();
+    if (value == null) {
+      return null;
+    }
     value.forEach(item -> result.add(this.spannerMappingContext.getGson().toJson(item)));
     return result;
   }
