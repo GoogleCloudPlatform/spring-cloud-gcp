@@ -28,9 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestExecutionListener;
 
+@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 public class SpannerTestExecutionListener implements TestExecutionListener {
 
   private static final Log LOGGER = LogFactory.getLog(SpannerTestExecutionListener.class);
@@ -41,11 +43,6 @@ public class SpannerTestExecutionListener implements TestExecutionListener {
 
   @Override
   public void beforeTestClass(TestContext testContext) throws Exception {
-    // This runs before the JUnit @BeforeClass method, so this property needs to be checked here,
-    // too.
-    if (!"true".equalsIgnoreCase(System.getProperty("it.spanner"))) {
-      return;
-    }
 
     spannerDatabaseAdminTemplate =
         testContext.getApplicationContext().getBean(SpannerDatabaseAdminTemplate.class);
@@ -55,9 +52,6 @@ public class SpannerTestExecutionListener implements TestExecutionListener {
 
   @Override
   public void afterTestClass(TestContext testContext) throws Exception {
-    if (!"true".equalsIgnoreCase(System.getProperty("it.spanner"))) {
-      return;
-    }
 
     SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate =
         testContext.getApplicationContext().getBean(SpannerDatabaseAdminTemplate.class);
