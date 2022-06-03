@@ -28,11 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestExecutionListener;
 
-@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 public class SpannerTestExecutionListener implements TestExecutionListener {
 
   private static final Log LOGGER = LogFactory.getLog(SpannerTestExecutionListener.class);
