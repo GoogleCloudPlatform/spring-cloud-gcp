@@ -119,14 +119,18 @@ public class GcpPubSubAutoConfiguration {
 
   private ExecutorProvider globalExecutorProvider;
 
+  private ObjectProvider<SelectiveSchedulerThreadNameProvider> selectiveSchedulerThreadNameProvider;
+
   public GcpPubSubAutoConfiguration(
       GcpPubSubProperties gcpPubSubProperties,
       GcpProjectIdProvider gcpProjectIdProvider,
       CredentialsProvider credentialsProvider,
+      ObjectProvider<SelectiveSchedulerThreadNameProvider> selectiveSchedulerThreadNameProvider,
       ApplicationContext applicationContext)
       throws IOException {
     this.gcpPubSubProperties = gcpPubSubProperties;
     this.applicationContext = applicationContext;
+    this.selectiveSchedulerThreadNameProvider = selectiveSchedulerThreadNameProvider;
     this.finalProjectIdProvider =
         (gcpPubSubProperties.getProjectId() != null)
             ? gcpPubSubProperties::getProjectId
@@ -519,7 +523,10 @@ public class GcpPubSubAutoConfiguration {
       Integer selectiveExecutorThreads = selectiveSubscriber.getExecutorThreads();
       if (selectiveExecutorThreads != null) {
         String qualifiedName = fullSubscriptionName.toString(); // will include slashes
-        String threadName = "gcp-pubsub-subscriber-" + qualifiedName;
+        String threadName = selectiveSchedulerThreadNameProvider
+            .getIfAvailable(
+                () -> subscriptionName -> "gcp-pubsub-subscriber-" + subscriptionName.toString())
+            .getThreadName(fullSubscriptionName);
         String beanName = "threadPoolScheduler_" + qualifiedName;
         ThreadPoolTaskScheduler selectiveScheduler =
             createAndRegisterSchedulerBean(selectiveExecutorThreads, threadName, beanName, context);
