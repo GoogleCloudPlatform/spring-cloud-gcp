@@ -216,7 +216,8 @@ public class StructAccessor {
     return gson.fromJson(jsonString, colType);
   }
 
-  private  <T> T getSingleJsonValue(int colIndex, Class<T> colType) {
+  //TODO: change this to private in next major release
+  public  <T> T getSingleJsonValue(int colIndex, Class<T> colType) {
     if (this.struct.getColumnType(colIndex).getCode() != Code.JSON) {
       throw new SpannerDataException("Column of index " + colIndex + " not an JSON type.");
     }
