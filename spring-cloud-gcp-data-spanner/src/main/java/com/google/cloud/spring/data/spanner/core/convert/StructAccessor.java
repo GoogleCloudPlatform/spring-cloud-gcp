@@ -100,6 +100,7 @@ public class StructAccessor {
           .build();
 
   // @formatter:on
+  private static final String EXCEPTION_NARRATIVE_COL_NOT_ARRAY = "Column is not an ARRAY type: ";
 
   private Struct struct;
 
@@ -146,7 +147,7 @@ public class StructAccessor {
 
   List getListValue(String colName) {
     if (this.struct.getColumnType(colName).getCode() != Code.ARRAY) {
-      throw new SpannerDataException("Column is not an ARRAY type: " + colName);
+      throw new SpannerDataException(EXCEPTION_NARRATIVE_COL_NOT_ARRAY + colName);
     }
     Type.Code innerTypeCode = this.struct.getColumnType(colName).getArrayElementType().getCode();
     Class clazz = SpannerTypeMapper.getSimpleJavaClassFor(innerTypeCode);
@@ -156,13 +157,12 @@ public class StructAccessor {
 
   <T> List<T> getListJsonValue(String colName, Class<T> colType) {
     if (this.struct.getColumnType(colName).getCode() != Code.ARRAY) {
-      throw new SpannerDataException("Column is not an ARRAY type: " + colName);
+      throw new SpannerDataException(EXCEPTION_NARRATIVE_COL_NOT_ARRAY + colName);
     }
     List<String> jsonStringList = this.struct.getJsonList(colName);
     List<T> result = new ArrayList<>();
-    jsonStringList.forEach(item -> {
-      result.add(gson.fromJson(item, colType));
-    });
+    jsonStringList.forEach(item ->
+        result.add(gson.fromJson(item, colType)));
     return result;
   }
 
@@ -175,13 +175,12 @@ public class StructAccessor {
 
   private  <T> List<T> getListJsonValue(int colIndex, Class<T> colType) {
     if (this.struct.getColumnType(colIndex).getCode() != Code.ARRAY) {
-      throw new SpannerDataException("Column is not an ARRAY type: " + colIndex);
+      throw new SpannerDataException(EXCEPTION_NARRATIVE_COL_NOT_ARRAY + colIndex);
     }
     List<String> jsonStringList = this.struct.getJsonList(colIndex);
     List<T> result = new ArrayList<>();
-    jsonStringList.forEach(item -> {
-      result.add(gson.fromJson(item, colType));
-    });
+    jsonStringList.forEach(item ->
+        result.add(gson.fromJson(item, colType)));
     return result;
   }
 

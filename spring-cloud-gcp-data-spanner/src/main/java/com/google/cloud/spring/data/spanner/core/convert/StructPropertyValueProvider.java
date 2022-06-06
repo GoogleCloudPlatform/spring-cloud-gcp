@@ -127,9 +127,8 @@ class StructPropertyValueProvider implements PropertyValueProvider<SpannerPersis
     String colName = spannerPersistentProperty.getColumnName();
     Type.Code spannerColumnType = spannerPersistentProperty.getAnnotatedColumnItemType();
     if (spannerColumnType == Type.Code.JSON) {
-      List<T> value = (List<T>) this.structAccessor.getListJsonValue(colName,
+      return (List<T>) this.structAccessor.getListJsonValue(colName,
           spannerPersistentProperty.getColumnInnerType());
-      return value;
     }
     List<?> listValue = this.structAccessor.getListValue(colName);
     return listValue.stream()
