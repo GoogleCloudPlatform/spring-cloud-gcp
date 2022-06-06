@@ -403,6 +403,27 @@ class GcpPubSubAutoConfigurationTests {
   }
 
   @Test
+  void threadPoolTaskScheduler_selectiveThreadNameConfiguration() {
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+            .withPropertyValues(
+                "spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=7")
+            .withUserConfiguration(TestConfig.class)
+            .withBean(SelectiveSchedulerThreadNameProvider.class,
+                () -> subscriptionName -> "custom-" + subscriptionName.getSubscription());
+
+    contextRunner.run(
+        ctx -> {
+          ThreadPoolTaskScheduler selectiveScheduler =
+              (ThreadPoolTaskScheduler) ctx.getBean(
+                  "threadPoolScheduler_projects/fake project/subscriptions/subscription-name");
+          assertThat(selectiveScheduler.getThreadNamePrefix()).isEqualTo(
+              "custom-subscription-name");
+        });
+  }
+
+  @Test
   void subscriberExecutorProvider_selectiveConfigurationSet() {
     ApplicationContextRunner contextRunner =
         new ApplicationContextRunner()
