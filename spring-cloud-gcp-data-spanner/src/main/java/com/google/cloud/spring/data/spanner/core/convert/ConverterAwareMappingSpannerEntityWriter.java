@@ -326,7 +326,7 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 
     if (spannerPersistentProperty.getAnnotatedColumnItemType() == Type.Code.JSON) {
       // if column annotated with JSON, convert directly
-      valueBinder.toJsonArray(this.covertIterableJsonToValue(value));
+      valueBinder.toJsonArray(this.convertIterableJsonToValue(value));
       valueSet = true;
     } else if (spannerPersistentProperty.getAnnotatedColumnItemType() != null) {
       // use the annotated column type if possible.
@@ -376,7 +376,7 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
     return Value.json(jsonString);
   }
 
-  private Iterable<String> covertIterableJsonToValue(Iterable<Object> value) {
+  private Iterable<String> convertIterableJsonToValue(Iterable<Object> value) {
     List<String> result = new ArrayList<>();
     if (value == null) {
       return null;
