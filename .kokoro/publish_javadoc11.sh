@@ -44,6 +44,7 @@ cp CHANGELOG.md target/docfx-yml/history.md
 # copy and replace {project-version} documentation
 sed "s/{project-version}/${PROJECT_VERSION}/g" docs/src/main/md/index.md > target/docfx-yml/documentation.md
 # copy image to target folder
+mkdir target/docfx-yml/images
 cp docs/src/main/asciidoc/images/spring_cloud_bus_over_pubsub.png target/docfx-yml/images/spring_cloud_bus_over_pubsub.png
 
 # check change to documentation.md -- remove after verified
