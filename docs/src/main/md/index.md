@@ -2615,7 +2615,7 @@ server and the configuration client need the
 All other configuration is standard to [Spring Cloud
 Config](https://spring.io/projects/spring-cloud-config).
 
-![spring cloud bus over pubsub](images/spring_cloud_bus_over_pubsub.png)
+![spring cloud bus over pubsub](../images/spring_cloud_bus_over_pubsub.png)
 
 Spring Cloud Config Server typically runs on port `8888`, and can read
 configuration from a [variety of source control
