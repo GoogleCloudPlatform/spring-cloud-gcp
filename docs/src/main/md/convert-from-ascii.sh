@@ -28,6 +28,7 @@
   convertascii  memorystore
   convertascii  bigquery
   convertascii  security-iap
+  convertascii  security-firebase
   convertascii  vision
   convertascii  secretmanager
   convertascii  kms
@@ -37,5 +38,5 @@
   convertascii  configuration
   convertascii  migration-guide-1.x
 
-  convertascii  _configprops
+  convertascii  appendix
   convertascii  first-page
