@@ -210,195 +210,182 @@ window.onload = function() {
 <li><a href="#cloud-sql">5. Cloud SQL</a>
 <ul class="sectlevel2">
 <li><a href="#jdbc-support">5.1. JDBC Support</a></li>
-<li><a href="#prerequisites">5.2. Prerequisites</a></li>
-<li><a href="#spring-boot-starter-for-google-cloud-sql">5.3. Spring Boot Starter for Google Cloud SQL</a></li>
+<li><a href="#r2dbc-support">5.2. R2DBC Support</a></li>
+<li><a href="#cloud-sql-iam-database-authentication">5.3. Cloud SQL IAM database authentication</a></li>
+<li><a href="#cloud-sql-configuration-properties">5.4. Cloud SQL Configuration Properties</a></li>
+<li><a href="#troubleshooting-tips">5.5. Troubleshooting tips</a></li>
+<li><a href="#samples">5.6. Samples</a></li>
 </ul>
 </li>
-<li><a href="#r2dbc-support">6. R2DBC Support</a>
+<li><a href="#cloud-pubsub">6. Cloud Pub/Sub</a>
 <ul class="sectlevel2">
-<li><a href="#prerequisites-2">6.1. Prerequisites</a></li>
-<li><a href="#spring-boot-starter-for-google-cloud-sql-2">6.2. Spring Boot Starter for Google Cloud SQL</a></li>
+<li><a href="#pubsub-configuration">6.1. Configuration</a></li>
+<li><a href="#spring-boot-actuator-support">6.2. Spring Boot Actuator Support</a></li>
+<li><a href="#pubsub-operations-template">6.3. Pub/Sub Operations &amp; Template</a></li>
+<li><a href="#reactive-stream-subscriber">6.4. Reactive Stream Subscriber</a></li>
+<li><a href="#pubsub-management">6.5. Pub/Sub management</a></li>
+<li><a href="#sample-2">6.6. Sample</a></li>
 </ul>
 </li>
-<li><a href="#cloud-sql-iam-database-authentication">7. Cloud SQL IAM database authentication</a></li>
-<li><a href="#cloud-sql-configuration-properties">8. Cloud SQL Configuration Properties</a></li>
-<li><a href="#troubleshooting-tips">9. Troubleshooting tips</a>
-<ul class="sectlevel4">
-<li><a href="#connection-issues">Connection issues</a></li>
-<li><a href="#errors-like-c-g-cloud-sql-core-sslsocketfactory-re-throwing-cached-exception-due-to-attempt-to-refresh-instance-information-too-soon-after-error">Errors like <code>c.g.cloud.sql.core.SslSocketFactory : Re-throwing cached exception due to attempt to refresh instance information too soon after error</code></a></li>
-<li><a href="#postgresql-java-net-socketexception-already-connected-issue">PostgreSQL: <code>java.net.SocketException: already connected</code> issue</a></li>
-</ul>
-</li>
-<li><a href="#samples">10. Samples</a></li>
-<li><a href="#cloud-pubsub">11. Cloud Pub/Sub</a>
+<li><a href="#spring-integration">7. Spring Integration</a>
 <ul class="sectlevel2">
-<li><a href="#pubsub-configuration">11.1. Configuration</a></li>
-<li><a href="#spring-boot-actuator-support">11.2. Spring Boot Actuator Support</a></li>
-<li><a href="#pubsub-operations-template">11.3. Pub/Sub Operations &amp; Template</a></li>
-<li><a href="#reactive-stream-subscriber">11.4. Reactive Stream Subscriber</a></li>
-<li><a href="#pubsub-management">11.5. Pub/Sub management</a></li>
-<li><a href="#sample-2">11.6. Sample</a></li>
+<li><a href="#channel-adapters-for-cloud-pubsub">7.1. Channel Adapters for Cloud Pub/Sub</a></li>
+<li><a href="#channel-adapters-for-google-cloud-storage">7.2. Channel Adapters for Google Cloud Storage</a></li>
 </ul>
 </li>
-<li><a href="#spring-integration">12. Spring Integration</a>
+<li><a href="#spring-cloud-stream">8. Spring Cloud Stream</a>
 <ul class="sectlevel2">
-<li><a href="#channel-adapters-for-cloud-pubsub">12.1. Channel Adapters for Cloud Pub/Sub</a></li>
-<li><a href="#channel-adapters-for-google-cloud-storage">12.2. Channel Adapters for Google Cloud Storage</a></li>
+<li><a href="#overview">8.1. Overview</a></li>
+<li><a href="#configuration-3">8.2. Configuration</a></li>
+<li><a href="#binding-with-functions">8.3. Binding with Functions</a></li>
+<li><a href="#binding-with-annotations">8.4. Binding with Annotations</a></li>
+<li><a href="#streaming-vs-polled-input">8.5. Streaming vs. Polled Input</a></li>
+<li><a href="#sample-4">8.6. Sample</a></li>
 </ul>
 </li>
-<li><a href="#spring-cloud-stream">13. Spring Cloud Stream</a>
+<li><a href="#spring-cloud-bus">9. Spring Cloud Bus</a>
 <ul class="sectlevel2">
-<li><a href="#overview">13.1. Overview</a></li>
-<li><a href="#configuration-3">13.2. Configuration</a></li>
-<li><a href="#binding-with-functions">13.3. Binding with Functions</a></li>
-<li><a href="#binding-with-annotations">13.4. Binding with Annotations</a></li>
-<li><a href="#streaming-vs-polled-input">13.5. Streaming vs. Polled Input</a></li>
-<li><a href="#sample-4">13.6. Sample</a></li>
+<li><a href="#configuration-management-with-spring-cloud-config-and-spring-cloud-bus">9.1. Configuration Management with Spring Cloud Config and Spring Cloud Bus</a></li>
 </ul>
 </li>
-<li><a href="#spring-cloud-bus">14. Spring Cloud Bus</a>
+<li><a href="#cloud-trace">10. Cloud Trace</a>
 <ul class="sectlevel2">
-<li><a href="#configuration-management-with-spring-cloud-config-and-spring-cloud-bus">14.1. Configuration Management with Spring Cloud Config and Spring Cloud Bus</a></li>
+<li><a href="#tracing">10.1. Tracing</a></li>
+<li><a href="#spring-boot-starter-for-cloud-trace">10.2. Spring Boot Starter for Cloud Trace</a></li>
+<li><a href="#overriding-the-auto-configuration">10.3. Overriding the auto-configuration</a></li>
+<li><a href="#customizing-spans">10.4. Customizing spans</a></li>
+<li><a href="#integration-with-logging">10.5. Integration with Logging</a></li>
+<li><a href="#pubsub-trace-instrumentation-experimental">10.6. Pub/Sub Trace Instrumentation (Experimental)</a></li>
+<li><a href="#sample-5">10.7. Sample</a></li>
 </ul>
 </li>
-<li><a href="#cloud-trace">15. Cloud Trace</a>
+<li><a href="#cloud-logging">11. Cloud Logging</a>
 <ul class="sectlevel2">
-<li><a href="#tracing">15.1. Tracing</a></li>
-<li><a href="#spring-boot-starter-for-cloud-trace">15.2. Spring Boot Starter for Cloud Trace</a></li>
-<li><a href="#overriding-the-auto-configuration">15.3. Overriding the auto-configuration</a></li>
-<li><a href="#customizing-spans">15.4. Customizing spans</a></li>
-<li><a href="#integration-with-logging">15.5. Integration with Logging</a></li>
-<li><a href="#pubsub-trace-instrumentation-experimental">15.6. Pub/Sub Trace Instrumentation (Experimental)</a></li>
-<li><a href="#sample-5">15.7. Sample</a></li>
+<li><a href="#web-mvc-interceptor">11.1. Web MVC Interceptor</a></li>
+<li><a href="#logback-support">11.2. Logback Support</a></li>
+<li><a href="#sample-6">11.3. Sample</a></li>
 </ul>
 </li>
-<li><a href="#cloud-logging">16. Cloud Logging</a>
+<li><a href="#cloud-monitoring">12. Cloud Monitoring</a>
 <ul class="sectlevel2">
-<li><a href="#web-mvc-interceptor">16.1. Web MVC Interceptor</a></li>
-<li><a href="#logback-support">16.2. Logback Support</a></li>
-<li><a href="#sample-6">16.3. Sample</a></li>
+<li><a href="#configuration-4">12.1. Configuration</a></li>
+<li><a href="#sample-7">12.2. Sample</a></li>
 </ul>
 </li>
-<li><a href="#cloud-monitoring">17. Cloud Monitoring</a>
+<li><a href="#spring-data-cloud-spanner">13. Spring Data Cloud Spanner</a>
 <ul class="sectlevel2">
-<li><a href="#configuration-4">17.1. Configuration</a></li>
-<li><a href="#sample-7">17.2. Sample</a></li>
+<li><a href="#configuration-5">13.1. Configuration</a></li>
+<li><a href="#object-mapping">13.2. Object Mapping</a></li>
+<li><a href="#spanner-operations-template">13.3. Spanner Operations &amp; Template</a></li>
+<li><a href="#repositories">13.4. Repositories</a></li>
+<li><a href="#query-methods">13.5. Query Methods</a></li>
+<li><a href="#database-and-schema-admin">13.6. Database and Schema Admin</a></li>
+<li><a href="#events">13.7. Events</a></li>
+<li><a href="#auditing">13.8. Auditing</a></li>
+<li><a href="#multi-instance-usage">13.9. Multi-Instance Usage</a></li>
+<li><a href="#spring-boot-actuator-support-2">13.10. Spring Boot Actuator Support</a></li>
+<li><a href="#cloud-spanner-emulator">13.11. Cloud Spanner Emulator</a></li>
+<li><a href="#sample-8">13.12. Sample</a></li>
 </ul>
 </li>
-<li><a href="#spring-data-cloud-spanner">18. Spring Data Cloud Spanner</a>
+<li><a href="#spring-data-cloud-datastore">14. Spring Data Cloud Datastore</a>
 <ul class="sectlevel2">
-<li><a href="#configuration-5">18.1. Configuration</a></li>
-<li><a href="#object-mapping">18.2. Object Mapping</a></li>
-<li><a href="#spanner-operations-template">18.3. Spanner Operations &amp; Template</a></li>
-<li><a href="#repositories">18.4. Repositories</a></li>
-<li><a href="#query-methods">18.5. Query Methods</a></li>
-<li><a href="#database-and-schema-admin">18.6. Database and Schema Admin</a></li>
-<li><a href="#events">18.7. Events</a></li>
-<li><a href="#auditing">18.8. Auditing</a></li>
-<li><a href="#multi-instance-usage">18.9. Multi-Instance Usage</a></li>
-<li><a href="#spring-boot-actuator-support-2">18.10. Spring Boot Actuator Support</a></li>
-<li><a href="#cloud-spanner-emulator">18.11. Cloud Spanner Emulator</a></li>
-<li><a href="#sample-8">18.12. Sample</a></li>
+<li><a href="#configuration-6">14.1. Configuration</a></li>
+<li><a href="#object-mapping-2">14.2. Object Mapping</a></li>
+<li><a href="#relationships-2">14.3. Relationships</a></li>
+<li><a href="#datastore-operations-template">14.4. Datastore Operations &amp; Template</a></li>
+<li><a href="#repositories-2">14.5. Repositories</a></li>
+<li><a href="#events-2">14.6. Events</a></li>
+<li><a href="#auditing-2">14.7. Auditing</a></li>
+<li><a href="#partitioning-data-by-namespace">14.8. Partitioning Data by Namespace</a></li>
+<li><a href="#spring-boot-actuator-support-3">14.9. Spring Boot Actuator Support</a></li>
+<li><a href="#sample-9">14.10. Sample</a></li>
 </ul>
 </li>
-<li><a href="#spring-data-cloud-datastore">19. Spring Data Cloud Datastore</a>
+<li><a href="#spring-data-cloud-firestore">15. Spring Data Cloud Firestore</a>
 <ul class="sectlevel2">
-<li><a href="#configuration-6">19.1. Configuration</a></li>
-<li><a href="#object-mapping-2">19.2. Object Mapping</a></li>
-<li><a href="#relationships-2">19.3. Relationships</a></li>
-<li><a href="#datastore-operations-template">19.4. Datastore Operations &amp; Template</a></li>
-<li><a href="#repositories-2">19.5. Repositories</a></li>
-<li><a href="#events-2">19.6. Events</a></li>
-<li><a href="#auditing-2">19.7. Auditing</a></li>
-<li><a href="#partitioning-data-by-namespace">19.8. Partitioning Data by Namespace</a></li>
-<li><a href="#spring-boot-actuator-support-3">19.9. Spring Boot Actuator Support</a></li>
-<li><a href="#sample-9">19.10. Sample</a></li>
+<li><a href="#configuration-7">15.1. Configuration</a></li>
+<li><a href="#object-mapping-3">15.2. Object Mapping</a></li>
+<li><a href="#reactive-repositories">15.3. Reactive Repositories</a></li>
+<li><a href="#firestore-operations-template">15.4. Firestore Operations &amp; Template</a></li>
+<li><a href="#query-methods-by-convention-3">15.5. Query methods by convention</a></li>
+<li><a href="#transactions-4">15.6. Transactions</a></li>
+<li><a href="#subcollections">15.7. Subcollections</a></li>
+<li><a href="#update-time-and-optimistic-locking">15.8. Update Time and Optimistic Locking</a></li>
+<li><a href="#cloud-firestore-spring-boot-starter">15.9. Cloud Firestore Spring Boot Starter</a></li>
+<li><a href="#emulator-usage">15.10. Emulator Usage</a></li>
+<li><a href="#samples-3">15.11. Samples</a></li>
 </ul>
 </li>
-<li><a href="#spring-data-cloud-firestore">20. Spring Data Cloud Firestore</a>
+<li><a href="#cloud-memorystore-for-redis">16. Cloud Memorystore for Redis</a>
 <ul class="sectlevel2">
-<li><a href="#configuration-7">20.1. Configuration</a></li>
-<li><a href="#object-mapping-3">20.2. Object Mapping</a></li>
-<li><a href="#reactive-repositories">20.3. Reactive Repositories</a></li>
-<li><a href="#firestore-operations-template">20.4. Firestore Operations &amp; Template</a></li>
-<li><a href="#query-methods-by-convention-3">20.5. Query methods by convention</a></li>
-<li><a href="#transactions-4">20.6. Transactions</a></li>
-<li><a href="#subcollections">20.7. Subcollections</a></li>
-<li><a href="#update-time-and-optimistic-locking">20.8. Update Time and Optimistic Locking</a></li>
-<li><a href="#cloud-firestore-spring-boot-starter">20.9. Cloud Firestore Spring Boot Starter</a></li>
-<li><a href="#emulator-usage">20.10. Emulator Usage</a></li>
-<li><a href="#samples-3">20.11. Samples</a></li>
+<li><a href="#spring-caching">16.1. Spring Caching</a></li>
 </ul>
 </li>
-<li><a href="#cloud-memorystore-for-redis">21. Cloud Memorystore for Redis</a>
+<li><a href="#bigquery">17. BigQuery</a>
 <ul class="sectlevel2">
-<li><a href="#spring-caching">21.1. Spring Caching</a></li>
+<li><a href="#configuration-8">17.1. Configuration</a></li>
+<li><a href="#spring-integration-2">17.2. Spring Integration</a></li>
+<li><a href="#sample-10">17.3. Sample</a></li>
 </ul>
 </li>
-<li><a href="#bigquery">22. BigQuery</a>
+<li><a href="#cloud-iap">18. Cloud IAP</a>
 <ul class="sectlevel2">
-<li><a href="#configuration-8">22.1. Configuration</a></li>
-<li><a href="#spring-integration-2">22.2. Spring Integration</a></li>
-<li><a href="#sample-10">22.3. Sample</a></li>
+<li><a href="#configuration-9">18.1. Configuration</a></li>
+<li><a href="#sample-11">18.2. Sample</a></li>
 </ul>
 </li>
-<li><a href="#cloud-iap">23. Cloud IAP</a>
+<li><a href="#cloud-vision">19. Cloud Vision</a>
 <ul class="sectlevel2">
-<li><a href="#configuration-9">23.1. Configuration</a></li>
-<li><a href="#sample-11">23.2. Sample</a></li>
+<li><a href="#dependency-setup">19.1. Dependency Setup</a></li>
+<li><a href="#configuration-10">19.2. Configuration</a></li>
+<li><a href="#image-analysis">19.3. Image Analysis</a></li>
+<li><a href="#file-analysis">19.4. File Analysis</a></li>
+<li><a href="#document-ocr-template">19.5. Document OCR Template</a></li>
+<li><a href="#sample-12">19.6. Sample</a></li>
 </ul>
 </li>
-<li><a href="#cloud-vision">24. Cloud Vision</a>
+<li><a href="#secret-manager">20. Secret Manager</a>
 <ul class="sectlevel2">
-<li><a href="#dependency-setup">24.1. Dependency Setup</a></li>
-<li><a href="#configuration-10">24.2. Configuration</a></li>
-<li><a href="#image-analysis">24.3. Image Analysis</a></li>
-<li><a href="#file-analysis">24.4. File Analysis</a></li>
-<li><a href="#document-ocr-template">24.5. Document OCR Template</a></li>
-<li><a href="#sample-12">24.6. Sample</a></li>
+<li><a href="#dependency-setup-2">20.1. Dependency Setup</a></li>
+<li><a href="#secret-manager-property-source">20.2. Secret Manager Property Source</a></li>
+<li><a href="#secret-manager-template">20.3. Secret Manager Template</a></li>
+<li><a href="#sample-13">20.4. Sample</a></li>
 </ul>
 </li>
-<li><a href="#secret-manager">25. Secret Manager</a>
+<li><a href="#google-cloud-key-management-service">21. Google Cloud Key Management Service</a>
 <ul class="sectlevel2">
-<li><a href="#dependency-setup-2">25.1. Dependency Setup</a></li>
-<li><a href="#secret-manager-property-source">25.2. Secret Manager Property Source</a></li>
-<li><a href="#secret-manager-template">25.3. Secret Manager Template</a></li>
-<li><a href="#sample-13">25.4. Sample</a></li>
+<li><a href="#dependency-setup-3">21.1. Dependency Setup</a></li>
+<li><a href="#configuration-12">21.2. Configuration</a></li>
+<li><a href="#basic-usage">21.3. Basic Usage</a></li>
+<li><a href="#sample-14">21.4. Sample</a></li>
 </ul>
 </li>
-<li><a href="#google-cloud-key-management-service">26. Google Cloud Key Management Service</a>
+<li><a href="#cloud-runtime-configuration-api">22. Cloud Runtime Configuration API</a>
 <ul class="sectlevel2">
-<li><a href="#dependency-setup-3">26.1. Dependency Setup</a></li>
-<li><a href="#configuration-12">26.2. Configuration</a></li>
-<li><a href="#basic-usage">26.3. Basic Usage</a></li>
-<li><a href="#sample-14">26.4. Sample</a></li>
+<li><a href="#configuration-13">22.1. Configuration</a></li>
+<li><a href="#quick-start">22.2. Quick start</a></li>
+<li><a href="#refreshing-the-configuration-at-runtime">22.3. Refreshing the configuration at runtime</a></li>
+<li><a href="#sample-15">22.4. Sample</a></li>
 </ul>
 </li>
-<li><a href="#cloud-runtime-configuration-api">27. Cloud Runtime Configuration API</a>
+<li><a href="#cloud-foundry">23. Cloud Foundry</a>
 <ul class="sectlevel2">
-<li><a href="#configuration-13">27.1. Configuration</a></li>
-<li><a href="#quick-start">27.2. Quick start</a></li>
-<li><a href="#refreshing-the-configuration-at-runtime">27.3. Refreshing the configuration at runtime</a></li>
-<li><a href="#sample-15">27.4. Sample</a></li>
+<li><a href="#user-provided-services">23.1. User-Provided Services</a></li>
 </ul>
 </li>
-<li><a href="#cloud-foundry">28. Cloud Foundry</a>
+<li><a href="#kotlin-support">24. Kotlin Support</a>
 <ul class="sectlevel2">
-<li><a href="#user-provided-services">28.1. User-Provided Services</a></li>
+<li><a href="#prerequisites-3">24.1. Prerequisites</a></li>
+<li><a href="#sample-16">24.2. Sample</a></li>
 </ul>
 </li>
-<li><a href="#kotlin-support">29. Kotlin Support</a>
+<li><a href="#configuration-properties">25. Configuration properties</a></li>
+<li><a href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x">26. Migration Guide from Spring Cloud GCP 1.x to 2.x</a>
 <ul class="sectlevel2">
-<li><a href="#prerequisites-3">29.1. Prerequisites</a></li>
-<li><a href="#sample-16">29.2. Sample</a></li>
-</ul>
-</li>
-<li><a href="#configuration-properties">30. Configuration properties</a></li>
-<li><a href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x">31. Migration Guide from Spring Cloud GCP 1.x to 2.x</a>
-<ul class="sectlevel2">
-<li><a href="#maven-group-id-change">31.1. Maven Group ID Change</a></li>
-<li><a href="#java-package-name-change">31.2. Java Package Name Change</a></li>
-<li><a href="#deprecated-items-removed">31.3. Deprecated Items Removed</a></li>
+<li><a href="#maven-group-id-change">26.1. Maven Group ID Change</a></li>
+<li><a href="#java-package-name-change">26.2. Java Package Name Change</a></li>
+<li><a href="#deprecated-items-removed">26.3. Deprecated Items Removed</a></li>
 </ul>
 </li>
 </ul>
@@ -1335,9 +1322,8 @@ implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql")
 }</code></pre>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="prerequisites"><a class="anchor" href="#prerequisites"></a><a class="link" href="#prerequisites">5.2. Prerequisites</a></h3>
+<div class="sect3">
+<h4 id="prerequisites"><a class="anchor" href="#prerequisites"></a><a class="link" href="#prerequisites">5.1.1. Prerequisites</a></h4>
 <div class="paragraph">
 <p>In order to use the Spring Boot Starters for Google Cloud SQL, the Google Cloud SQL API must be enabled in your GCP project.</p>
 </div>
@@ -1345,8 +1331,8 @@ implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql")
 <p>To do that, go to the <a href="https://console.cloud.google.com/apis/library">API library page</a> of the Google Cloud Console, search for "Cloud SQL API" and enable the option that is called "Cloud SQL" .</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="spring-boot-starter-for-google-cloud-sql"><a class="anchor" href="#spring-boot-starter-for-google-cloud-sql"></a><a class="link" href="#spring-boot-starter-for-google-cloud-sql">5.3. Spring Boot Starter for Google Cloud SQL</a></h3>
+<div class="sect3">
+<h4 id="spring-boot-starter-for-google-cloud-sql"><a class="anchor" href="#spring-boot-starter-for-google-cloud-sql"></a><a class="link" href="#spring-boot-starter-for-google-cloud-sql">5.1.2. Spring Boot Starter for Google Cloud SQL</a></h4>
 <div class="paragraph">
 <p>The Spring Boot Starters for Google Cloud SQL provide an auto-configured <a href="https://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html"><code>DataSource</code></a> object.
 Coupled with Spring JDBC, it provides a
@@ -1411,8 +1397,8 @@ If you provide your own <code>spring.datasource.url</code>, it will be ignored, 
 </tr>
 </table>
 </div>
-<div class="sect3">
-<h4 id="datasource-creation-flow"><a class="anchor" href="#datasource-creation-flow"></a><a class="link" href="#datasource-creation-flow">5.3.1. <code>DataSource</code> creation flow</a></h4>
+<div class="sect4">
+<h5 id="datasource-creation-flow"><a class="anchor" href="#datasource-creation-flow"></a><a class="link" href="#datasource-creation-flow"><code>DataSource</code> creation flow</a></h5>
 <div class="paragraph">
 <p>Spring Boot starter for Google Cloud SQL registers a <code>CloudSqlEnvironmentPostProcessor</code> that provides a correctly formatted <code>spring.datasource.url</code> property to the environment based on the properties mentioned above.
 It also provides defaults for <code>spring.datasource.username</code> and <code>spring.datasource.driver-class-name</code>, which can be overridden.
@@ -1429,10 +1415,8 @@ You can connect to your database with as little as a database and instance names
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="r2dbc-support"><a class="anchor" href="#r2dbc-support"></a><a class="link" href="#r2dbc-support">6. R2DBC Support</a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="r2dbc-support"><a class="anchor" href="#r2dbc-support"></a><a class="link" href="#r2dbc-support">5.2. R2DBC Support</a></h3>
 <div class="paragraph">
 <p>Maven and Gradle coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
 </div>
@@ -1472,8 +1456,8 @@ You can connect to your database with as little as a database and instance names
 }</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="prerequisites-2"><a class="anchor" href="#prerequisites-2"></a><a class="link" href="#prerequisites-2">6.1. Prerequisites</a></h3>
+<div class="sect3">
+<h4 id="prerequisites-2"><a class="anchor" href="#prerequisites-2"></a><a class="link" href="#prerequisites-2">5.2.1. Prerequisites</a></h4>
 <div class="paragraph">
 <p>In order to use the Spring Boot Starters for Google Cloud SQL, the Google Cloud SQL API must be enabled in your GCP project.</p>
 </div>
@@ -1481,8 +1465,8 @@ You can connect to your database with as little as a database and instance names
 <p>To do that, go to the <a href="https://console.cloud.google.com/apis/library">API library page</a> of the Google Cloud Console, search for "Cloud SQL API" and enable the option that is called "Cloud SQL".</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="spring-boot-starter-for-google-cloud-sql-2"><a class="anchor" href="#spring-boot-starter-for-google-cloud-sql-2"></a><a class="link" href="#spring-boot-starter-for-google-cloud-sql-2">6.2. Spring Boot Starter for Google Cloud SQL</a></h3>
+<div class="sect3">
+<h4 id="spring-boot-starter-for-google-cloud-sql-2"><a class="anchor" href="#spring-boot-starter-for-google-cloud-sql-2"></a><a class="link" href="#spring-boot-starter-for-google-cloud-sql-2">5.2.2. Spring Boot Starter for Google Cloud SQL</a></h4>
 <div class="paragraph">
 <p>The Cloud SQL R2DBC starter provides a customized <code>io.r2dbc.spi.ConnectionFactory</code> bean for connecting to Cloud SQL with the help of the <a href="https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory">Cloud SQL Socket Factory</a>.
 Similar to the JDBC support, you can connect to your database with as little as a database and instance names.</p>
@@ -1544,8 +1528,8 @@ If you provide your own <code>spring.r2dbc.url</code>, it will be ignored, unles
 </tr>
 </table>
 </div>
-<div class="sect3">
-<h4 id="connectionfactory-creation-flow"><a class="anchor" href="#connectionfactory-creation-flow"></a><a class="link" href="#connectionfactory-creation-flow">6.2.1. <code>ConnectionFactory</code> creation flow</a></h4>
+<div class="sect4">
+<h5 id="connectionfactory-creation-flow"><a class="anchor" href="#connectionfactory-creation-flow"></a><a class="link" href="#connectionfactory-creation-flow"><code>ConnectionFactory</code> creation flow</a></h5>
 <div class="paragraph">
 <p>Spring Cloud GCP starter for Google Cloud SQL registers a <code>R2dbcCloudSqlEnvironmentPostProcessor</code> that provides a correctly formatted <code>spring.r2dbc.url</code> property to the environment based on the properties mentioned above.
 It also provides a default value for <code>spring.r2dbc.username</code>, which can be overridden.
@@ -1560,10 +1544,8 @@ The starter also configures credentials for the R2DBC connection based on the pr
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="cloud-sql-iam-database-authentication"><a class="anchor" href="#cloud-sql-iam-database-authentication"></a><a class="link" href="#cloud-sql-iam-database-authentication">7. Cloud SQL IAM database authentication</a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="cloud-sql-iam-database-authentication"><a class="anchor" href="#cloud-sql-iam-database-authentication"></a><a class="link" href="#cloud-sql-iam-database-authentication">5.3. Cloud SQL IAM database authentication</a></h3>
 <div class="paragraph">
 <p>Currently, Cloud SQL only supports <a href="https://cloud.google.com/sql/docs/postgres/authentication:">IAM database authentication for PostgreSQL</a>.
 It allows you to connect to the database using an IAM account, rather than a predefined database username and password.
@@ -1585,10 +1567,8 @@ However, it doesn&#8217;t compromise the security of the communication because t
 </ol>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="cloud-sql-configuration-properties"><a class="anchor" href="#cloud-sql-configuration-properties"></a><a class="link" href="#cloud-sql-configuration-properties">8. Cloud SQL Configuration Properties</a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="cloud-sql-configuration-properties"><a class="anchor" href="#cloud-sql-configuration-properties"></a><a class="link" href="#cloud-sql-configuration-properties">5.4. Cloud SQL Configuration Properties</a></h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -1662,12 +1642,10 @@ Used to authenticate and authorize new connections to a Google Cloud SQL instanc
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="troubleshooting-tips"><a class="anchor" href="#troubleshooting-tips"></a><a class="link" href="#troubleshooting-tips">9. Troubleshooting tips</a></h2>
-<div class="sectionbody">
-<div class="sect4">
-<h5 id="connection-issues"><a class="anchor" href="#connection-issues"></a><a class="link" href="#connection-issues">Connection issues</a></h5>
+<div class="sect2">
+<h3 id="troubleshooting-tips"><a class="anchor" href="#troubleshooting-tips"></a><a class="link" href="#troubleshooting-tips">5.5. Troubleshooting tips</a></h3>
+<div class="sect3">
+<h4 id="connection-issues"><a class="anchor" href="#connection-issues"></a><a class="link" href="#connection-issues">5.5.1. Connection issues</a></h4>
 <div class="paragraph">
 <p>If you&#8217;re not able to connect to a database and see an endless loop of <code>Connecting to Cloud SQL instance [&#8230;&#8203;] on IP [&#8230;&#8203;]</code>, it&#8217;s likely that exceptions are being thrown and logged at a level lower than your logger&#8217;s level.
 This may be the case with HikariCP, if your logger is set to INFO or higher level.</p>
@@ -1685,8 +1663,8 @@ This may be the case with HikariCP, if your logger is set to INFO or higher leve
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="errors-like-c-g-cloud-sql-core-sslsocketfactory-re-throwing-cached-exception-due-to-attempt-to-refresh-instance-information-too-soon-after-error"><a class="anchor" href="#errors-like-c-g-cloud-sql-core-sslsocketfactory-re-throwing-cached-exception-due-to-attempt-to-refresh-instance-information-too-soon-after-error"></a><a class="link" href="#errors-like-c-g-cloud-sql-core-sslsocketfactory-re-throwing-cached-exception-due-to-attempt-to-refresh-instance-information-too-soon-after-error">Errors like <code>c.g.cloud.sql.core.SslSocketFactory : Re-throwing cached exception due to attempt to refresh instance information too soon after error</code></a></h5>
+<div class="sect3">
+<h4 id="errors-like-c-g-cloud-sql-core-sslsocketfactory-re-throwing-cached-exception-due-to-attempt-to-refresh-instance-information-too-soon-after-error"><a class="anchor" href="#errors-like-c-g-cloud-sql-core-sslsocketfactory-re-throwing-cached-exception-due-to-attempt-to-refresh-instance-information-too-soon-after-error"></a><a class="link" href="#errors-like-c-g-cloud-sql-core-sslsocketfactory-re-throwing-cached-exception-due-to-attempt-to-refresh-instance-information-too-soon-after-error">5.5.2. Errors like <code>c.g.cloud.sql.core.SslSocketFactory : Re-throwing cached exception due to attempt to refresh instance information too soon after error</code></a></h4>
 <div class="paragraph">
 <p>If you see a lot of errors like this in a loop and can&#8217;t connect to your database, this is usually a symptom that something isn&#8217;t right with the permissions of your credentials or the Google Cloud SQL API is not enabled.
 Verify that the Google Cloud SQL API is enabled in the Cloud Console and that your service account has the <a href="https://cloud.google.com/sql/docs/mysql/project-access-control#roles">necessary IAM roles</a>.</p>
@@ -1695,8 +1673,8 @@ Verify that the Google Cloud SQL API is enabled in the Cloud Console and that yo
 <p>To find out what&#8217;s causing the issue, you can enable DEBUG logging level as mentioned <a href="#connection-issues">above</a>.</p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="postgresql-java-net-socketexception-already-connected-issue"><a class="anchor" href="#postgresql-java-net-socketexception-already-connected-issue"></a><a class="link" href="#postgresql-java-net-socketexception-already-connected-issue">PostgreSQL: <code>java.net.SocketException: already connected</code> issue</a></h5>
+<div class="sect3">
+<h4 id="postgresql-java-net-socketexception-already-connected-issue"><a class="anchor" href="#postgresql-java-net-socketexception-already-connected-issue"></a><a class="link" href="#postgresql-java-net-socketexception-already-connected-issue">5.5.3. PostgreSQL: <code>java.net.SocketException: already connected</code> issue</a></h4>
 <div class="paragraph">
 <p>We found this exception to be common if your Maven project&#8217;s parent is <code>spring-boot</code> version <code>1.5.x</code>, or in any other circumstance that would cause the version of the <code>org.postgresql:postgresql</code> dependency to be an older one (e.g., <code>9.4.1212.jre7</code>).</p>
 </div>
@@ -1715,10 +1693,8 @@ For example, in Maven:</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="samples"><a class="anchor" href="#samples"></a><a class="link" href="#samples">10. Samples</a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="samples"><a class="anchor" href="#samples"></a><a class="link" href="#samples">5.6. Samples</a></h3>
 <div class="paragraph">
 <p>Available sample applications and codelabs:</p>
 </div>
@@ -1746,8 +1722,9 @@ For example, in Maven:</p>
 </div>
 </div>
 </div>
+</div>
 <div class="sect1">
-<h2 id="cloud-pubsub"><a class="anchor" href="#cloud-pubsub"></a><a class="link" href="#cloud-pubsub">11. Cloud Pub/Sub</a></h2>
+<h2 id="cloud-pubsub"><a class="anchor" href="#cloud-pubsub"></a><a class="link" href="#cloud-pubsub">6. Cloud Pub/Sub</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring Cloud GCP provides an abstraction layer to publish to and subscribe from Google Cloud Pub/Sub topics and to create, list or delete Google Cloud Pub/Sub topics and subscriptions.</p>
@@ -1780,12 +1757,12 @@ For example, in Maven:</p>
 <p>This starter is also available from <a href="https://start.spring.io">Spring Initializr</a> through the <code>GCP Messaging</code> entry.</p>
 </div>
 <div class="sect2">
-<h3 id="pubsub-configuration"><a class="anchor" href="#pubsub-configuration"></a><a class="link" href="#pubsub-configuration">11.1. Configuration</a></h3>
+<h3 id="pubsub-configuration"><a class="anchor" href="#pubsub-configuration"></a><a class="link" href="#pubsub-configuration">6.1. Configuration</a></h3>
 <div class="paragraph">
 <p>The Spring Boot starter for Google Cloud Pub/Sub provides the following configuration options.</p>
 </div>
 <div class="sect3">
-<h4 id="spring-cloud-gcp-pubsub-api-configuration"><a class="anchor" href="#spring-cloud-gcp-pubsub-api-configuration"></a><a class="link" href="#spring-cloud-gcp-pubsub-api-configuration">11.1.1. Spring Cloud GCP Pub/Sub API Configuration</a></h4>
+<h4 id="spring-cloud-gcp-pubsub-api-configuration"><a class="anchor" href="#spring-cloud-gcp-pubsub-api-configuration"></a><a class="link" href="#spring-cloud-gcp-pubsub-api-configuration">6.1.1. Spring Cloud GCP Pub/Sub API Configuration</a></h4>
 <div class="paragraph">
 <p>This section describes options for enabling the integration, specifying the GCP project and credentials, and setting whether the APIs should connect to an emulator for local testing.</p>
 </div>
@@ -1849,7 +1826,7 @@ Pub/Sub credentials</p></td>
 </table>
 </div>
 <div class="sect3">
-<h4 id="publishersubscriber-configuration"><a class="anchor" href="#publishersubscriber-configuration"></a><a class="link" href="#publishersubscriber-configuration">11.1.2. Publisher/Subscriber Configuration</a></h4>
+<h4 id="publishersubscriber-configuration"><a class="anchor" href="#publishersubscriber-configuration"></a><a class="link" href="#publishersubscriber-configuration">6.1.2. Publisher/Subscriber Configuration</a></h4>
 <div class="paragraph">
 <p>This section describes configuration options to customize the behavior of the application&#8217;s Pub/Sub publishers and subscribers.
 Subscriber settings can be either global or subscription-specific.</p>
@@ -2048,7 +2025,7 @@ This can be customized, by registering a <code>SelectiveSchedulerThreadNameProvi
 </div>
 </div>
 <div class="sect3">
-<h4 id="grpc-connection-settings"><a class="anchor" href="#grpc-connection-settings"></a><a class="link" href="#grpc-connection-settings">11.1.3. GRPC Connection Settings</a></h4>
+<h4 id="grpc-connection-settings"><a class="anchor" href="#grpc-connection-settings"></a><a class="link" href="#grpc-connection-settings">6.1.3. GRPC Connection Settings</a></h4>
 <div class="paragraph">
 <p>The Pub/Sub API uses the <a href="https://cloud.google.com/pubsub/docs/reference/service_apis_overview#grpc_api">GRPC</a> protocol to send API requests to the Pub/Sub service.
 This section describes configuration options for customizing the GRPC behavior.</p>
@@ -2244,7 +2221,7 @@ can&#8217;t increase the RPC timeout higher than this amount.</p></td>
 </table>
 </div>
 <div class="sect3">
-<h4 id="programmatic-configuration"><a class="anchor" href="#programmatic-configuration"></a><a class="link" href="#programmatic-configuration">11.1.4. Programmatic Configuration</a></h4>
+<h4 id="programmatic-configuration"><a class="anchor" href="#programmatic-configuration"></a><a class="link" href="#programmatic-configuration">6.1.4. Programmatic Configuration</a></h4>
 <div class="paragraph">
 <p>To apply publishing customizations not covered by the properties above, you may provide custom beans of type <code>PublisherCustomizer</code> to post-process the <code>Publisher.Builder</code> object right before it is built into a <code>Publisher</code>.
 The <code>PublisherCustomizer</code> beans may be annotated with Spring Framework&#8217;s <code>@Order</code> annotation to ensure they are applied in a particular sequence.</p>
@@ -2252,9 +2229,9 @@ The <code>PublisherCustomizer</code> beans may be annotated with Spring Framewor
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-boot-actuator-support"><a class="anchor" href="#spring-boot-actuator-support"></a><a class="link" href="#spring-boot-actuator-support">11.2. Spring Boot Actuator Support</a></h3>
+<h3 id="spring-boot-actuator-support"><a class="anchor" href="#spring-boot-actuator-support"></a><a class="link" href="#spring-boot-actuator-support">6.2. Spring Boot Actuator Support</a></h3>
 <div class="sect3">
-<h4 id="cloud-pubsub-health-indicator"><a class="anchor" href="#cloud-pubsub-health-indicator"></a><a class="link" href="#cloud-pubsub-health-indicator">11.2.1. Cloud Pub/Sub Health Indicator</a></h4>
+<h4 id="cloud-pubsub-health-indicator"><a class="anchor" href="#cloud-pubsub-health-indicator"></a><a class="link" href="#cloud-pubsub-health-indicator">6.2.1. Cloud Pub/Sub Health Indicator</a></h4>
 <div class="paragraph">
 <p>If you are using Spring Boot Actuator, you can take advantage of the Cloud Pub/Sub health indicator called <code>pubsub</code>.
 The health indicator will verify whether Cloud Pub/Sub is up and accessible by your application.
@@ -2338,7 +2315,7 @@ So, take care not to configure a subscription that has a business impact, or ins
 </table>
 </div>
 <div class="sect3">
-<h4 id="cloud-pubsub-subscription-health-indicator"><a class="anchor" href="#cloud-pubsub-subscription-health-indicator"></a><a class="link" href="#cloud-pubsub-subscription-health-indicator">11.2.2. Cloud Pub/Sub Subscription Health Indicator</a></h4>
+<h4 id="cloud-pubsub-subscription-health-indicator"><a class="anchor" href="#cloud-pubsub-subscription-health-indicator"></a><a class="link" href="#cloud-pubsub-subscription-health-indicator">6.2.2. Cloud Pub/Sub Subscription Health Indicator</a></h4>
 <div class="paragraph">
 <p>If you are using Spring Boot Actuator, you can take advantage of the Cloud Pub/Sub subscription health indicator called <code>pubsub-subscriber</code>.
 The subscription health indicator will verify whether Pub/Sub subscriptions are actively processing messages from the subscription&#8217;s backlog.
@@ -2430,14 +2407,14 @@ The health indicator will not behave entirely as expected if Dead Letter Queuein
 </div>
 </div>
 <div class="sect2">
-<h3 id="pubsub-operations-template"><a class="anchor" href="#pubsub-operations-template"></a><a class="link" href="#pubsub-operations-template">11.3. Pub/Sub Operations &amp; Template</a></h3>
+<h3 id="pubsub-operations-template"><a class="anchor" href="#pubsub-operations-template"></a><a class="link" href="#pubsub-operations-template">6.3. Pub/Sub Operations &amp; Template</a></h3>
 <div class="paragraph">
 <p><code>PubSubOperations</code> is an abstraction that allows Spring users to use Google Cloud Pub/Sub without depending on any Google Cloud Pub/Sub API semantics.
 It provides the common set of operations needed to interact with Google Cloud Pub/Sub.
 <code>PubSubTemplate</code> is the default implementation of <code>PubSubOperations</code> and it uses the <a href="https://github.com/GoogleCloudPlatform/google-cloud-java/tree/main/google-cloud-pubsub">Google Cloud Java Client for Pub/Sub</a> to interact with Google Cloud Pub/Sub.</p>
 </div>
 <div class="sect3">
-<h4 id="publishing-to-a-topic"><a class="anchor" href="#publishing-to-a-topic"></a><a class="link" href="#publishing-to-a-topic">11.3.1. Publishing to a topic</a></h4>
+<h4 id="publishing-to-a-topic"><a class="anchor" href="#publishing-to-a-topic"></a><a class="link" href="#publishing-to-a-topic">6.3.1. Publishing to a topic</a></h4>
 <div class="paragraph">
 <p><code>PubSubTemplate</code> provides asynchronous methods to publish messages to a Google Cloud Pub/Sub topic.
 The <code>publish()</code> method takes in a topic name to post the message to, a payload of a generic type and, optionally, a map with the message headers.
@@ -2473,7 +2450,7 @@ pubSubTemplate.publish(topicName, "message2", headers).get();</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="subscribing-to-a-subscription"><a class="anchor" href="#subscribing-to-a-subscription"></a><a class="link" href="#subscribing-to-a-subscription">11.3.2. Subscribing to a subscription</a></h4>
+<h4 id="subscribing-to-a-subscription"><a class="anchor" href="#subscribing-to-a-subscription"></a><a class="link" href="#subscribing-to-a-subscription">6.3.2. Subscribing to a subscription</a></h4>
 <div class="paragraph">
 <p>Google Cloud Pub/Sub allows many subscriptions to be associated to the same topic.
 <code>PubSubTemplate</code> allows you to listen to subscriptions via the <code>subscribe()</code> method.
@@ -2541,7 +2518,7 @@ This default behavior has been overridden in Spring Cloud GCP for consistency wi
 </div>
 </div>
 <div class="sect3">
-<h4 id="pulling-messages-from-a-subscription"><a class="anchor" href="#pulling-messages-from-a-subscription"></a><a class="link" href="#pulling-messages-from-a-subscription">11.3.3. Pulling messages from a subscription</a></h4>
+<h4 id="pulling-messages-from-a-subscription"><a class="anchor" href="#pulling-messages-from-a-subscription"></a><a class="link" href="#pulling-messages-from-a-subscription">6.3.3. Pulling messages from a subscription</a></h4>
 <div class="paragraph">
 <p>Google Cloud Pub/Sub supports synchronous pulling of messages from a subscription.
 This is different from subscribing to a subscription, in the sense that subscribing is an asynchronous task.</p>
@@ -2676,7 +2653,7 @@ See <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics">here</a> f
 </div>
 </div>
 <div class="sect3">
-<h4 id="json-support"><a class="anchor" href="#json-support"></a><a class="link" href="#json-support">11.3.4. JSON support</a></h4>
+<h4 id="json-support"><a class="anchor" href="#json-support"></a><a class="link" href="#json-support">6.3.4. JSON support</a></h4>
 <div class="paragraph">
 <p>For serialization and deserialization of POJOs using Jackson JSON, configure a <code>PubSubMessageConverter</code> bean, and the Spring Boot starter for GCP Pub/Sub will automatically wire it into the <code>PubSubTemplate</code>.</p>
 </div>
@@ -2769,7 +2746,7 @@ TestUser receivedTestUser = message.getPayload();</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="reactive-stream-subscriber"><a class="anchor" href="#reactive-stream-subscriber"></a><a class="link" href="#reactive-stream-subscriber">11.4. Reactive Stream Subscriber</a></h3>
+<h3 id="reactive-stream-subscriber"><a class="anchor" href="#reactive-stream-subscriber"></a><a class="link" href="#reactive-stream-subscriber">6.4. Reactive Stream Subscriber</a></h3>
 <div class="paragraph">
 <p>It is also possible to acquire a reactive stream backed by a subscription.
 To do so, a Project Reactor dependency (<code>io.projectreactor:reactor-core</code>) must be added to the project.
@@ -2815,7 +2792,7 @@ For example, if you only want to fetch 5 messages, you can use <code>limitReques
 </div>
 </div>
 <div class="sect2">
-<h3 id="pubsub-management"><a class="anchor" href="#pubsub-management"></a><a class="link" href="#pubsub-management">11.5. Pub/Sub management</a></h3>
+<h3 id="pubsub-management"><a class="anchor" href="#pubsub-management"></a><a class="link" href="#pubsub-management">6.5. Pub/Sub management</a></h3>
 <div class="paragraph">
 <p><code>PubSubAdmin</code> is the abstraction provided by Spring Cloud GCP to manage Google Cloud Pub/Sub resources.
 It allows for the creation, deletion and listing of topics and subscriptions.</p>
@@ -2836,7 +2813,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 <p>The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</code> object using the <code>GcpProjectIdProvider</code> and the <code>CredentialsProvider</code> auto-configured by the Spring Boot GCP Core starter.</p>
 </div>
 <div class="sect3">
-<h4 id="creating-a-topic"><a class="anchor" href="#creating-a-topic"></a><a class="link" href="#creating-a-topic">11.5.1. Creating a topic</a></h4>
+<h4 id="creating-a-topic"><a class="anchor" href="#creating-a-topic"></a><a class="link" href="#creating-a-topic">6.5.1. Creating a topic</a></h4>
 <div class="paragraph">
 <p><code>PubSubAdmin</code> implements a method to create topics:</p>
 </div>
@@ -2857,7 +2834,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 </div>
 <div class="sect3">
-<h4 id="deleting-a-topic"><a class="anchor" href="#deleting-a-topic"></a><a class="link" href="#deleting-a-topic">11.5.2. Deleting a topic</a></h4>
+<h4 id="deleting-a-topic"><a class="anchor" href="#deleting-a-topic"></a><a class="link" href="#deleting-a-topic">6.5.2. Deleting a topic</a></h4>
 <div class="paragraph">
 <p><code>PubSubAdmin</code> implements a method to delete topics:</p>
 </div>
@@ -2878,7 +2855,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 </div>
 <div class="sect3">
-<h4 id="listing-topics"><a class="anchor" href="#listing-topics"></a><a class="link" href="#listing-topics">11.5.3. Listing topics</a></h4>
+<h4 id="listing-topics"><a class="anchor" href="#listing-topics"></a><a class="link" href="#listing-topics">6.5.3. Listing topics</a></h4>
 <div class="paragraph">
 <p><code>PubSubAdmin</code> implements a method to list topics:</p>
 </div>
@@ -2898,7 +2875,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 </div>
 <div class="sect3">
-<h4 id="creating-a-subscription"><a class="anchor" href="#creating-a-subscription"></a><a class="link" href="#creating-a-subscription">11.5.4. Creating a subscription</a></h4>
+<h4 id="creating-a-subscription"><a class="anchor" href="#creating-a-subscription"></a><a class="link" href="#creating-a-subscription">6.5.4. Creating a subscription</a></h4>
 <div class="paragraph">
 <p><code>PubSubAdmin</code> implements several methods to create subscriptions to existing topics:</p>
 </div>
@@ -2930,7 +2907,7 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 </div>
 <div class="sect3">
-<h4 id="deleting-a-subscription"><a class="anchor" href="#deleting-a-subscription"></a><a class="link" href="#deleting-a-subscription">11.5.5. Deleting a subscription</a></h4>
+<h4 id="deleting-a-subscription"><a class="anchor" href="#deleting-a-subscription"></a><a class="link" href="#deleting-a-subscription">6.5.5. Deleting a subscription</a></h4>
 <div class="paragraph">
 <p><code>PubSubAdmin</code> implements a method to delete subscriptions:</p>
 </div>
@@ -2951,7 +2928,7 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 </div>
 <div class="sect3">
-<h4 id="listing-subscriptions"><a class="anchor" href="#listing-subscriptions"></a><a class="link" href="#listing-subscriptions">11.5.6. Listing subscriptions</a></h4>
+<h4 id="listing-subscriptions"><a class="anchor" href="#listing-subscriptions"></a><a class="link" href="#listing-subscriptions">6.5.6. Listing subscriptions</a></h4>
 <div class="paragraph">
 <p><code>PubSubAdmin</code> implements a method to list subscriptions:</p>
 </div>
@@ -2974,7 +2951,7 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-2"><a class="anchor" href="#sample-2"></a><a class="link" href="#sample-2">11.6. Sample</a></h3>
+<h3 id="sample-2"><a class="anchor" href="#sample-2"></a><a class="link" href="#sample-2">6.6. Sample</a></h3>
 <div class="paragraph">
 <p>Sample applications for <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-sample">using the template</a> and <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-reactive-sample">using a subscription-backed reactive stream</a> are available.</p>
 </div>
@@ -2982,13 +2959,13 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-integration"><a class="anchor" href="#spring-integration"></a><a class="link" href="#spring-integration">12. Spring Integration</a></h2>
+<h2 id="spring-integration"><a class="anchor" href="#spring-integration"></a><a class="link" href="#spring-integration">7. Spring Integration</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring Cloud GCP provides Spring Integration adapters that allow your applications to use Enterprise Integration Patterns backed up by Google Cloud Platform services.</p>
 </div>
 <div class="sect2">
-<h3 id="channel-adapters-for-cloud-pubsub"><a class="anchor" href="#channel-adapters-for-cloud-pubsub"></a><a class="link" href="#channel-adapters-for-cloud-pubsub">12.1. Channel Adapters for Cloud Pub/Sub</a></h3>
+<h3 id="channel-adapters-for-cloud-pubsub"><a class="anchor" href="#channel-adapters-for-cloud-pubsub"></a><a class="link" href="#channel-adapters-for-cloud-pubsub">7.1. Channel Adapters for Cloud Pub/Sub</a></h3>
 <div class="paragraph">
 <p>The channel adapters for Google Cloud Pub/Sub connect your Spring <a href="https://docs.spring.io/spring-integration/reference/html/channel.html"><code>MessageChannels</code></a> to Google Cloud Pub/Sub topics and subscriptions.
 This enables messaging between different processes, applications or micro-services backed up by Google Cloud Pub/Sub.</p>
@@ -3023,7 +3000,7 @@ This enables messaging between different processes, applications or micro-servic
 </div>
 </div>
 <div class="sect3">
-<h4 id="inbound-channel-adapter-using-pubsub-streaming-pull"><a class="anchor" href="#inbound-channel-adapter-using-pubsub-streaming-pull"></a><a class="link" href="#inbound-channel-adapter-using-pubsub-streaming-pull">12.1.1. Inbound channel adapter (using Pub/Sub Streaming Pull)</a></h4>
+<h4 id="inbound-channel-adapter-using-pubsub-streaming-pull"><a class="anchor" href="#inbound-channel-adapter-using-pubsub-streaming-pull"></a><a class="link" href="#inbound-channel-adapter-using-pubsub-streaming-pull">7.1.1. Inbound channel adapter (using Pub/Sub Streaming Pull)</a></h4>
 <div class="paragraph">
 <p><code>PubSubInboundChannelAdapter</code> is the inbound channel adapter for GCP Pub/Sub that listens to a GCP Pub/Sub subscription for new messages.
 It converts new messages to an internal Spring <a href="https://docs.spring.io/spring-integration/reference/html/messaging-construction-chapter.html#message"><code>Message</code></a> and then sends it to the bound output channel.</p>
@@ -3230,7 +3207,7 @@ public void pubsubErrorHandler(Message&lt;MessagingException&gt; exceptionMessag
 </div>
 </div>
 <div class="sect3">
-<h4 id="pollable-message-source-using-pubsub-synchronous-pull"><a class="anchor" href="#pollable-message-source-using-pubsub-synchronous-pull"></a><a class="link" href="#pollable-message-source-using-pubsub-synchronous-pull">12.1.2. Pollable Message Source (using Pub/Sub Synchronous Pull)</a></h4>
+<h4 id="pollable-message-source-using-pubsub-synchronous-pull"><a class="anchor" href="#pollable-message-source-using-pubsub-synchronous-pull"></a><a class="link" href="#pollable-message-source-using-pubsub-synchronous-pull">7.1.2. Pollable Message Source (using Pub/Sub Synchronous Pull)</a></h4>
 <div class="paragraph">
 <p>While <code>PubSubInboundChannelAdapter</code>, through the underlying Asynchronous Pull Pub/Sub mechanism, provides the best performance for high-volume applications that receive a steady flow of messages, it can create load balancing anomalies due to message caching.
 This behavior is most obvious when publishing a large batch of small messages that take a long time to process individually.
@@ -3299,7 +3276,7 @@ Streaming pull does not expose this information due to limitations of the underl
 </div>
 </div>
 <div class="sect3">
-<h4 id="outbound-channel-adapter"><a class="anchor" href="#outbound-channel-adapter"></a><a class="link" href="#outbound-channel-adapter">12.1.3. Outbound channel adapter</a></h4>
+<h4 id="outbound-channel-adapter"><a class="anchor" href="#outbound-channel-adapter"></a><a class="link" href="#outbound-channel-adapter">7.1.3. Outbound channel adapter</a></h4>
 <div class="paragraph">
 <p><code>PubSubMessageHandler</code> is the outbound channel adapter for GCP Pub/Sub that listens for new messages on a Spring <code>MessageChannel</code>.
 It uses <code>PubSubTemplate</code> to post them to a GCP Pub/Sub topic.</p>
@@ -3374,7 +3351,7 @@ adapter.setTopicExpressionString("headers['sendToTopic']");</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="header-mapping"><a class="anchor" href="#header-mapping"></a><a class="link" href="#header-mapping">12.1.4. Header mapping</a></h4>
+<h4 id="header-mapping"><a class="anchor" href="#header-mapping"></a><a class="link" href="#header-mapping">7.1.4. Header mapping</a></h4>
 <div class="paragraph">
 <p>These channel adapters contain header mappers that allow you to map, or filter out, headers from Spring to Google Cloud Pub/Sub messages, and vice-versa.
 By default, the inbound channel adapter maps every header on the Google Cloud Pub/Sub messages to the Spring messages produced by the adapter.
@@ -3419,7 +3396,7 @@ However, because it comes last in the list, <a href="https://docs.spring.io/spri
 </div>
 </div>
 <div class="sect3">
-<h4 id="samples-2"><a class="anchor" href="#samples-2"></a><a class="link" href="#samples-2">12.1.5. Samples</a></h4>
+<h4 id="samples-2"><a class="anchor" href="#samples-2"></a><a class="link" href="#samples-2">7.1.5. Samples</a></h4>
 <div class="paragraph">
 <p>Available examples:</p>
 </div>
@@ -3439,7 +3416,7 @@ However, because it comes last in the list, <a href="https://docs.spring.io/spri
 </div>
 </div>
 <div class="sect2">
-<h3 id="channel-adapters-for-google-cloud-storage"><a class="anchor" href="#channel-adapters-for-google-cloud-storage"></a><a class="link" href="#channel-adapters-for-google-cloud-storage">12.2. Channel Adapters for Google Cloud Storage</a></h3>
+<h3 id="channel-adapters-for-google-cloud-storage"><a class="anchor" href="#channel-adapters-for-google-cloud-storage"></a><a class="link" href="#channel-adapters-for-google-cloud-storage">7.2. Channel Adapters for Google Cloud Storage</a></h3>
 <div class="paragraph">
 <p>The channel adapters for Google Cloud Storage allow you to read and write files to Google Cloud Storage through <code>MessageChannels</code>.</p>
 </div>
@@ -3479,7 +3456,7 @@ However, because it comes last in the list, <a href="https://docs.spring.io/spri
 </div>
 </div>
 <div class="sect3">
-<h4 id="inbound-channel-adapter"><a class="anchor" href="#inbound-channel-adapter"></a><a class="link" href="#inbound-channel-adapter">12.2.1. Inbound channel adapter</a></h4>
+<h4 id="inbound-channel-adapter"><a class="anchor" href="#inbound-channel-adapter"></a><a class="link" href="#inbound-channel-adapter">7.2.1. Inbound channel adapter</a></h4>
 <div class="paragraph">
 <p>The Google Cloud Storage inbound channel adapter polls a Google Cloud Storage bucket for new files and sends each of them in a <code>Message</code> payload to the <code>MessageChannel</code> specified in the <code>@InboundChannelAdapter</code> annotation.
 The files are temporarily stored in a folder in the local file system.</p>
@@ -3505,7 +3482,7 @@ public MessageSource&lt;File&gt; synchronizerAdapter(Storage gcs) {
 </div>
 </div>
 <div class="sect3">
-<h4 id="inbound-streaming-channel-adapter"><a class="anchor" href="#inbound-streaming-channel-adapter"></a><a class="link" href="#inbound-streaming-channel-adapter">12.2.2. Inbound streaming channel adapter</a></h4>
+<h4 id="inbound-streaming-channel-adapter"><a class="anchor" href="#inbound-streaming-channel-adapter"></a><a class="link" href="#inbound-streaming-channel-adapter">7.2.2. Inbound streaming channel adapter</a></h4>
 <div class="paragraph">
 <p>The inbound streaming channel adapter is similar to the normal inbound channel adapter, except it does not require files to be stored in the file system.</p>
 </div>
@@ -3529,7 +3506,7 @@ public MessageSource&lt;InputStream&gt; streamingAdapter(Storage gcs) {
 </div>
 </div>
 <div class="sect3">
-<h4 id="outbound-channel-adapter-2"><a class="anchor" href="#outbound-channel-adapter-2"></a><a class="link" href="#outbound-channel-adapter-2">12.2.3. Outbound channel adapter</a></h4>
+<h4 id="outbound-channel-adapter-2"><a class="anchor" href="#outbound-channel-adapter-2"></a><a class="link" href="#outbound-channel-adapter-2">7.2.3. Outbound channel adapter</a></h4>
 <div class="paragraph">
 <p>The outbound channel adapter allows files to be written to Google Cloud Storage.
 When it receives a <code>Message</code> containing a payload of type <code>File</code>, it writes that file to the Google Cloud Storage bucket specified in the adapter.</p>
@@ -3551,7 +3528,7 @@ public MessageHandler outboundChannelAdapter(Storage gcs) {
 </div>
 </div>
 <div class="sect3">
-<h4 id="sample-3"><a class="anchor" href="#sample-3"></a><a class="link" href="#sample-3">12.2.4. Sample</a></h4>
+<h4 id="sample-3"><a class="anchor" href="#sample-3"></a><a class="link" href="#sample-3">7.2.4. Sample</a></h4>
 <div class="paragraph">
 <p>See the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-integration-storage-sample">Spring Integration with Google Cloud Storage Sample Code</a>.</p>
 </div>
@@ -3560,7 +3537,7 @@ public MessageHandler outboundChannelAdapter(Storage gcs) {
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-cloud-stream"><a class="anchor" href="#spring-cloud-stream"></a><a class="link" href="#spring-cloud-stream">13. Spring Cloud Stream</a></h2>
+<h2 id="spring-cloud-stream"><a class="anchor" href="#spring-cloud-stream"></a><a class="link" href="#spring-cloud-stream">8. Spring Cloud Stream</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring Cloud GCP provides a <a href="https://cloud.spring.io/spring-cloud-stream/">Spring Cloud Stream</a> binder to Google Cloud Pub/Sub.</p>
@@ -3590,7 +3567,7 @@ public MessageHandler outboundChannelAdapter(Storage gcs) {
 </div>
 </div>
 <div class="sect2">
-<h3 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">13.1. Overview</a></h3>
+<h3 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">8.1. Overview</a></h3>
 <div class="paragraph">
 <p>This binder binds producers to Google Cloud Pub/Sub topics and consumers to subscriptions.</p>
 </div>
@@ -3608,7 +3585,7 @@ Partitioning is currently not supported by this binder.
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-3"><a class="anchor" href="#configuration-3"></a><a class="link" href="#configuration-3">13.2. Configuration</a></h3>
+<h3 id="configuration-3"><a class="anchor" href="#configuration-3"></a><a class="link" href="#configuration-3">8.2. Configuration</a></h3>
 <div class="paragraph">
 <p>You can configure the Spring Cloud Stream Binder for Google Cloud Pub/Sub to automatically generate the underlying resources, like the Google Cloud Pub/Sub topics and subscriptions for producers and consumers.
 For that, you can use the <code>spring.cloud.stream.gcp.pubsub.bindings.&lt;channelName&gt;.&lt;consumer|producer&gt;.auto-create-resources</code> property, which is turned ON by default.</p>
@@ -3632,14 +3609,14 @@ To use this binder with a <a href="https://cloud.google.com/pubsub/docs/emulator
 </table>
 </div>
 <div class="sect3">
-<h4 id="producer-synchronous-sending-configuration"><a class="anchor" href="#producer-synchronous-sending-configuration"></a><a class="link" href="#producer-synchronous-sending-configuration">13.2.1. Producer Synchronous Sending Configuration</a></h4>
+<h4 id="producer-synchronous-sending-configuration"><a class="anchor" href="#producer-synchronous-sending-configuration"></a><a class="link" href="#producer-synchronous-sending-configuration">8.2.1. Producer Synchronous Sending Configuration</a></h4>
 <div class="paragraph">
 <p>By default, this binder will send messages to Cloud Pub/Sub asynchronously.
 If synchronous sending is preferred (for example, to allow propagating errors back to the sender), set <code>spring.cloud.stream.gcp.pubsub.default.producer.sync</code> property to <code>true</code>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="producer-destination-configuration"><a class="anchor" href="#producer-destination-configuration"></a><a class="link" href="#producer-destination-configuration">13.2.2. Producer Destination Configuration</a></h4>
+<h4 id="producer-destination-configuration"><a class="anchor" href="#producer-destination-configuration"></a><a class="link" href="#producer-destination-configuration">8.2.2. Producer Destination Configuration</a></h4>
 <div class="paragraph">
 <p>If automatic resource creation is turned ON and the topic corresponding to the destination name does not exist, it will be created.</p>
 </div>
@@ -3655,7 +3632,7 @@ spring.cloud.stream.gcp.pubsub.bindings.events.producer.auto-create-resources=tr
 </div>
 </div>
 <div class="sect3">
-<h4 id="consumer-destination-configuration"><a class="anchor" href="#consumer-destination-configuration"></a><a class="link" href="#consumer-destination-configuration">13.2.3. Consumer Destination Configuration</a></h4>
+<h4 id="consumer-destination-configuration"><a class="anchor" href="#consumer-destination-configuration"></a><a class="link" href="#consumer-destination-configuration">8.2.3. Consumer Destination Configuration</a></h4>
 <div class="paragraph">
 <p>A <code>PubSubInboundChannelAdapter</code> will be configured for your consumer endpoint.
 You may adjust the ack mode of the consumer endpoint using the <code>ack-mode</code> property.
@@ -3729,7 +3706,7 @@ spring.cloud.stream.bindings.events.group=consumerGroup1</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="header-mapping-2"><a class="anchor" href="#header-mapping-2"></a><a class="link" href="#header-mapping-2">13.2.4. Header Mapping</a></h4>
+<h4 id="header-mapping-2"><a class="anchor" href="#header-mapping-2"></a><a class="link" href="#header-mapping-2">8.2.4. Header Mapping</a></h4>
 <div class="paragraph">
 <p>You can filter incoming and outgoing message headers with <code>allowHeaders</code> property.
 For example, for a consumer to allow only two headers, provide a comma separated list like this:</p>
@@ -3757,7 +3734,7 @@ For example, for a consumer to allow only two headers, provide a comma separated
 </div>
 </div>
 <div class="sect3">
-<h4 id="endpoint-customization"><a class="anchor" href="#endpoint-customization"></a><a class="link" href="#endpoint-customization">13.2.5. Endpoint Customization</a></h4>
+<h4 id="endpoint-customization"><a class="anchor" href="#endpoint-customization"></a><a class="link" href="#endpoint-customization">8.2.5. Endpoint Customization</a></h4>
 <div class="paragraph">
 <p>You may customize channel routing by defining a <code>ConsumerEndpointCustomizer</code> in your autoconfiguration. This is useful if you want to customize the default configurations provided by the Pub/Sub Spring Cloud Stream Binder.</p>
 </div>
@@ -3779,7 +3756,7 @@ public ConsumerEndpointCustomizer&lt;PubSubInboundChannelAdapter&gt; messageChan
 </div>
 </div>
 <div class="sect2">
-<h3 id="binding-with-functions"><a class="anchor" href="#binding-with-functions"></a><a class="link" href="#binding-with-functions">13.3. Binding with Functions</a></h3>
+<h3 id="binding-with-functions"><a class="anchor" href="#binding-with-functions"></a><a class="link" href="#binding-with-functions">8.3. Binding with Functions</a></h3>
 <div class="paragraph">
 <p>Since version 3.0, Spring Cloud Stream supports a functional programming model natively.
 This means that the only requirement for turning your application into a sink is presence of a <code>java.util.function.Consumer</code> bean in the application context.</p>
@@ -3812,7 +3789,7 @@ Supplier&lt;Flux&lt;UserMessage&gt;&gt; generateUserMessages() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="binding-with-annotations"><a class="anchor" href="#binding-with-annotations"></a><a class="link" href="#binding-with-annotations">13.4. Binding with Annotations</a></h3>
+<h3 id="binding-with-annotations"><a class="anchor" href="#binding-with-annotations"></a><a class="link" href="#binding-with-annotations">8.4. Binding with Annotations</a></h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -3859,7 +3836,7 @@ public class SourceExample {
 </div>
 </div>
 <div class="sect2">
-<h3 id="streaming-vs-polled-input"><a class="anchor" href="#streaming-vs-polled-input"></a><a class="link" href="#streaming-vs-polled-input">13.5. Streaming vs. Polled Input</a></h3>
+<h3 id="streaming-vs-polled-input"><a class="anchor" href="#streaming-vs-polled-input"></a><a class="link" href="#streaming-vs-polled-input">8.5. Streaming vs. Polled Input</a></h3>
 <div class="paragraph">
 <p>Many Spring Cloud Stream applications will use the built-in <code>Sink</code> binding, which triggers the <em>streaming</em> input binder creation.
 Messages can then be consumed with an input handler marked by <code>@StreamListener(Sink.INPUT)</code> annotation, at whatever rate Pub/Sub sends them.</p>
@@ -3904,7 +3881,7 @@ Use the <code>spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize</code
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-4"><a class="anchor" href="#sample-4"></a><a class="link" href="#sample-4">13.6. Sample</a></h3>
+<h3 id="sample-4"><a class="anchor" href="#sample-4"></a><a class="link" href="#sample-4">8.6. Sample</a></h3>
 <div class="paragraph">
 <p>Sample applications are available:</p>
 </div>
@@ -3925,7 +3902,7 @@ Use the <code>spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize</code
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-cloud-bus"><a class="anchor" href="#spring-cloud-bus"></a><a class="link" href="#spring-cloud-bus">14. Spring Cloud Bus</a></h2>
+<h2 id="spring-cloud-bus"><a class="anchor" href="#spring-cloud-bus"></a><a class="link" href="#spring-cloud-bus">9. Spring Cloud Bus</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Using <a href="https://cloud.google.com/pubsub/">Cloud Pub/Sub</a> as the <a href="https://spring.io/projects/spring-cloud-bus">Spring Cloud Bus</a> implementation is as simple as importing the <code>spring-cloud-gcp-starter-bus-pubsub</code> starter.</p>
@@ -3957,7 +3934,7 @@ The binder also creates anonymous subscriptions for each project using the <code
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-management-with-spring-cloud-config-and-spring-cloud-bus"><a class="anchor" href="#configuration-management-with-spring-cloud-config-and-spring-cloud-bus"></a><a class="link" href="#configuration-management-with-spring-cloud-config-and-spring-cloud-bus">14.1. Configuration Management with Spring Cloud Config and Spring Cloud Bus</a></h3>
+<h3 id="configuration-management-with-spring-cloud-config-and-spring-cloud-bus"><a class="anchor" href="#configuration-management-with-spring-cloud-config-and-spring-cloud-bus"></a><a class="link" href="#configuration-management-with-spring-cloud-config-and-spring-cloud-bus">9.1. Configuration Management with Spring Cloud Config and Spring Cloud Bus</a></h3>
 <div class="paragraph">
 <p>Spring Cloud Bus can be used to push configuration changes from a Spring Cloud Config server to the clients listening on the same bus.</p>
 </div>
@@ -4003,7 +3980,7 @@ The sample contains two examples of configuration management with Spring Cloud B
 </div>
 </div>
 <div class="sect1">
-<h2 id="cloud-trace"><a class="anchor" href="#cloud-trace"></a><a class="link" href="#cloud-trace">15. Cloud Trace</a></h2>
+<h2 id="cloud-trace"><a class="anchor" href="#cloud-trace"></a><a class="link" href="#cloud-trace">10. Cloud Trace</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Google Cloud Platform provides a managed distributed tracing service called <a href="https://cloud.google.com/trace/">Cloud Trace</a>, and <a href="https://cloud.spring.io/spring-cloud-sleuth/">Spring Cloud Sleuth</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
@@ -4055,7 +4032,7 @@ Navigate to the <a href="https://console.cloud.google.com/apis/api/cloudtrace.go
 </table>
 </div>
 <div class="sect2">
-<h3 id="tracing"><a class="anchor" href="#tracing"></a><a class="link" href="#tracing">15.1. Tracing</a></h3>
+<h3 id="tracing"><a class="anchor" href="#tracing"></a><a class="link" href="#tracing">10.1. Tracing</a></h3>
 <div class="paragraph">
 <p>Spring Cloud Sleuth uses the <a href="https://github.com/openzipkin/brave">Brave tracer</a> to generate traces.
 This integration enables Brave to use the <a href="https://github.com/openzipkin/zipkin-gcp/tree/main/propagation-stackdriver"><code>StackdriverTracePropagation</code></a> propagation.</p>
@@ -4095,7 +4072,7 @@ This field forces the decision of whether or not to trace the request; if omitte
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-boot-starter-for-cloud-trace"><a class="anchor" href="#spring-boot-starter-for-cloud-trace"></a><a class="link" href="#spring-boot-starter-for-cloud-trace">15.2. Spring Boot Starter for Cloud Trace</a></h3>
+<h3 id="spring-boot-starter-for-cloud-trace"><a class="anchor" href="#spring-boot-starter-for-cloud-trace"></a><a class="link" href="#spring-boot-starter-for-cloud-trace">10.2. Spring Boot Starter for Cloud Trace</a></h3>
 <div class="paragraph">
 <p>Spring Boot Starter for Cloud Trace uses Spring Cloud Sleuth and auto-configures a <a href="https://github.com/openzipkin/zipkin-gcp/blob/main/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java">StackdriverSender</a> that sends the Sleuth’s trace information to Cloud Trace.</p>
 </div>
@@ -4255,7 +4232,7 @@ Cloud Trace requires that every Span ID within a Trace to be unique, so Span joi
 </div>
 </div>
 <div class="sect2">
-<h3 id="overriding-the-auto-configuration"><a class="anchor" href="#overriding-the-auto-configuration"></a><a class="link" href="#overriding-the-auto-configuration">15.3. Overriding the auto-configuration</a></h3>
+<h3 id="overriding-the-auto-configuration"><a class="anchor" href="#overriding-the-auto-configuration"></a><a class="link" href="#overriding-the-auto-configuration">10.3. Overriding the auto-configuration</a></h3>
 <div class="paragraph">
 <p>Spring Cloud Sleuth supports sending traces to multiple tracing systems as of version 2.1.0.
 In order to get this to work, every tracing system needs to have a <code>Reporter&lt;Span&gt;</code> and <code>Sender</code>.
@@ -4264,7 +4241,7 @@ To do this you can use respectively <code>StackdriverTraceAutoConfiguration.REPO
 </div>
 </div>
 <div class="sect2">
-<h3 id="customizing-spans"><a class="anchor" href="#customizing-spans"></a><a class="link" href="#customizing-spans">15.4. Customizing spans</a></h3>
+<h3 id="customizing-spans"><a class="anchor" href="#customizing-spans"></a><a class="link" href="#customizing-spans">10.4. Customizing spans</a></h3>
 <div class="paragraph">
 <p>You can add additional tags and annotations to spans by using the <code>brave.SpanCustomizer</code>, which is available in the application context.</p>
 </div>
@@ -4303,7 +4280,7 @@ public class Application implements WebMvcConfigurer {
 </div>
 </div>
 <div class="sect2">
-<h3 id="integration-with-logging"><a class="anchor" href="#integration-with-logging"></a><a class="link" href="#integration-with-logging">15.5. Integration with Logging</a></h3>
+<h3 id="integration-with-logging"><a class="anchor" href="#integration-with-logging"></a><a class="link" href="#integration-with-logging">10.5. Integration with Logging</a></h3>
 <div class="paragraph">
 <p>Integration with Cloud Logging is available through the <a href="logging.adoc">Cloud Logging Support</a>.
 If the Trace integration is used together with the Logging one, the request logs will be associated to the corresponding traces.
@@ -4311,7 +4288,7 @@ The trace logs can be viewed by going to the <a href="https://console.cloud.goog
 </div>
 </div>
 <div class="sect2">
-<h3 id="pubsub-trace-instrumentation-experimental"><a class="anchor" href="#pubsub-trace-instrumentation-experimental"></a><a class="link" href="#pubsub-trace-instrumentation-experimental">15.6. Pub/Sub Trace Instrumentation (Experimental)</a></h3>
+<h3 id="pubsub-trace-instrumentation-experimental"><a class="anchor" href="#pubsub-trace-instrumentation-experimental"></a><a class="link" href="#pubsub-trace-instrumentation-experimental">10.6. Pub/Sub Trace Instrumentation (Experimental)</a></h3>
 <div class="paragraph">
 <p>You can enable trace instrumentation and propagation for Pub/Sub messages by using the <code>spring.cloud.gcp.trace.pubsub.enabled=true</code> property.
 It&#8217;s set to <code>false</code> by default, but when set to <code>true</code>, trace spans will be created and propagated to Cloud Trace whenever the application sends or receives messages through <code>PubSubTemplate</code> or any other integration that builds on top of <code>PubSubTemplate</code>, such as the Spring Integration channel adapters, and the Spring Cloud Stream Binder.</p>
@@ -4327,7 +4304,7 @@ spring.sleuth.integration.enabled=false</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-5"><a class="anchor" href="#sample-5"></a><a class="link" href="#sample-5">15.7. Sample</a></h3>
+<h3 id="sample-5"><a class="anchor" href="#sample-5"></a><a class="link" href="#sample-5">10.7. Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample">sample application</a> and a <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-cloud-gcp-trace/index.html">codelab</a> are available.</p>
 </div>
@@ -4335,7 +4312,7 @@ spring.sleuth.integration.enabled=false</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="cloud-logging"><a class="anchor" href="#cloud-logging"></a><a class="link" href="#cloud-logging">16. Cloud Logging</a></h2>
+<h2 id="cloud-logging"><a class="anchor" href="#cloud-logging"></a><a class="link" href="#cloud-logging">11. Cloud Logging</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
@@ -4382,7 +4359,7 @@ You can do this easily if you&#8217;re using the <a href="https://cloud.google.c
 </table>
 </div>
 <div class="sect2">
-<h3 id="web-mvc-interceptor"><a class="anchor" href="#web-mvc-interceptor"></a><a class="link" href="#web-mvc-interceptor">16.1. Web MVC Interceptor</a></h3>
+<h3 id="web-mvc-interceptor"><a class="anchor" href="#web-mvc-interceptor"></a><a class="link" href="#web-mvc-interceptor">11.1. Web MVC Interceptor</a></h3>
 <div class="paragraph">
 <p>For use in Web MVC-based applications, <code>TraceIdLoggingWebMvcInterceptor</code> is provided that extracts the request trace ID from an HTTP request using a <code>TraceIdExtractor</code> and stores it in a thread-local, which can then be used in a logging appender to add the trace ID metadata to log messages.</p>
 </div>
@@ -4407,12 +4384,12 @@ However, if Sleuth is used the trace ID will be picked up from the MDC.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="logback-support"><a class="anchor" href="#logback-support"></a><a class="link" href="#logback-support">16.2. Logback Support</a></h3>
+<h3 id="logback-support"><a class="anchor" href="#logback-support"></a><a class="link" href="#logback-support">11.2. Logback Support</a></h3>
 <div class="paragraph">
 <p>Currently, only Logback is supported and there are 2 possibilities to log to Cloud Logging via this library with Logback: via direct API calls and through JSON-formatted console logs.</p>
 </div>
 <div class="sect3">
-<h4 id="log-via-api"><a class="anchor" href="#log-via-api"></a><a class="link" href="#log-via-api">16.2.1. Log via API</a></h4>
+<h4 id="log-via-api"><a class="anchor" href="#log-via-api"></a><a class="link" href="#log-via-api">11.2.1. Log via API</a></h4>
 <div class="paragraph">
 <p>A Cloud Logging appender is available using <code>com/google/cloud/spring/logging/logback-appender.xml</code>.
 This appender builds a Cloud Logging log entry from a JUL or Logback log entry, adds a trace ID to it and sends it to Cloud Logging.</p>
@@ -4468,7 +4445,7 @@ This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmen
 </table>
 </div>
 <div class="sect3">
-<h4 id="asynchronous-logging"><a class="anchor" href="#asynchronous-logging"></a><a class="link" href="#asynchronous-logging">16.2.2. Asynchronous Logging</a></h4>
+<h4 id="asynchronous-logging"><a class="anchor" href="#asynchronous-logging"></a><a class="link" href="#asynchronous-logging">11.2.2. Asynchronous Logging</a></h4>
 <div class="paragraph">
 <p>If you would like to send logs asynchronously to Cloud Logging, you can use the <code>AsyncAppender</code>.</p>
 </div>
@@ -4492,7 +4469,7 @@ This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmen
 </div>
 </div>
 <div class="sect3">
-<h4 id="log-via-console"><a class="anchor" href="#log-via-console"></a><a class="link" href="#log-via-console">16.2.3. Log via Console</a></h4>
+<h4 id="log-via-console"><a class="anchor" href="#log-via-console"></a><a class="link" href="#log-via-console">11.2.3. Log via Console</a></h4>
 <div class="paragraph">
 <p>For Logback, a <code>com/google/cloud/spring/logging/logback-json-appender.xml</code> file is made available for import to make it easier to configure the JSON Logback appender.</p>
 </div>
@@ -4685,7 +4662,7 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-6"><a class="anchor" href="#sample-6"></a><a class="link" href="#sample-6">16.3. Sample</a></h3>
+<h3 id="sample-6"><a class="anchor" href="#sample-6"></a><a class="link" href="#sample-6">11.3. Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-logging-sample">Sample Spring Boot Application</a> is provided to show how to use the Cloud logging starter.</p>
 </div>
@@ -4693,7 +4670,7 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
 </div>
 </div>
 <div class="sect1">
-<h2 id="cloud-monitoring"><a class="anchor" href="#cloud-monitoring"></a><a class="link" href="#cloud-monitoring">17. Cloud Monitoring</a></h2>
+<h2 id="cloud-monitoring"><a class="anchor" href="#cloud-monitoring"></a><a class="link" href="#cloud-monitoring">12. Cloud Monitoring</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Google Cloud Platform provides a service called <a href="https://cloud.google.com/monitoring/">Cloud Monitoring</a>, and <a href="https://micrometer.io/docs/registry/stackdriver">Micrometer</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
@@ -4732,7 +4709,7 @@ Navigate to the <a href="https://console.cloud.google.com/apis/api/monitoring.go
 <p>Spring Boot Starter for Cloud Monitoring uses Micrometer.</p>
 </div>
 <div class="sect2">
-<h3 id="configuration-4"><a class="anchor" href="#configuration-4"></a><a class="link" href="#configuration-4">17.1. Configuration</a></h3>
+<h3 id="configuration-4"><a class="anchor" href="#configuration-4"></a><a class="link" href="#configuration-4">12.1. Configuration</a></h3>
 <div class="paragraph">
 <p>All configurations are optional:</p>
 </div>
@@ -4788,7 +4765,7 @@ Read <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsing
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-7"><a class="anchor" href="#sample-7"></a><a class="link" href="#sample-7">17.2. Sample</a></h3>
+<h3 id="sample-7"><a class="anchor" href="#sample-7"></a><a class="link" href="#sample-7">12.2. Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-metrics-sample">sample application</a> is available.</p>
 </div>
@@ -4796,7 +4773,7 @@ Read <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsing
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-data-cloud-spanner"><a class="anchor" href="#spring-data-cloud-spanner"></a><a class="link" href="#spring-data-cloud-spanner">18. Spring Data Cloud Spanner</a></h2>
+<h2 id="spring-data-cloud-spanner"><a class="anchor" href="#spring-data-cloud-spanner"></a><a class="link" href="#spring-data-cloud-spanner">13. Spring Data Cloud Spanner</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a href="https://projects.spring.io/spring-data/">Spring Data</a> is an abstraction for storing and retrieving POJOs in numerous storage technologies.
@@ -4852,7 +4829,7 @@ To use the starter, see the coordinates see below.</p>
 <p>This setup takes care of bringing in the latest compatible version of Cloud Java Cloud Spanner libraries as well.</p>
 </div>
 <div class="sect2">
-<h3 id="configuration-5"><a class="anchor" href="#configuration-5"></a><a class="link" href="#configuration-5">18.1. Configuration</a></h3>
+<h3 id="configuration-5"><a class="anchor" href="#configuration-5"></a><a class="link" href="#configuration-5">13.1. Configuration</a></h3>
 <div class="paragraph">
 <p>To setup Spring Data Cloud Spanner, you have to configure the following:</p>
 </div>
@@ -4867,7 +4844,7 @@ To use the starter, see the coordinates see below.</p>
 </ul>
 </div>
 <div class="sect3">
-<h4 id="cloud-spanner-settings"><a class="anchor" href="#cloud-spanner-settings"></a><a class="link" href="#cloud-spanner-settings">18.1.1. Cloud Spanner settings</a></h4>
+<h4 id="cloud-spanner-settings"><a class="anchor" href="#cloud-spanner-settings"></a><a class="link" href="#cloud-spanner-settings">13.1.1. Cloud Spanner settings</a></h4>
 <div class="paragraph">
 <p>You can use the Spring Boot Starter for Spring Data Spanner to autoconfigure Google Cloud Spanner in your Spring application.
 It contains all the necessary setup that makes it easy to authenticate with your Google Cloud project.
@@ -5017,7 +4994,7 @@ For further customization of the client library <code>SpannerOptions</code>, pro
 </div>
 </div>
 <div class="sect3">
-<h4 id="repository-settings"><a class="anchor" href="#repository-settings"></a><a class="link" href="#repository-settings">18.1.2. Repository settings</a></h4>
+<h4 id="repository-settings"><a class="anchor" href="#repository-settings"></a><a class="link" href="#repository-settings">13.1.2. Repository settings</a></h4>
 <div class="paragraph">
 <p>Spring Data Repositories can be configured via the <code>@EnableSpannerRepositories</code> annotation on your main <code>@Configuration</code> class.
 With our Spring Boot Starter for Spring Data Cloud Spanner, <code>@EnableSpannerRepositories</code> is automatically added.
@@ -5025,7 +5002,7 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 </div>
 <div class="sect3">
-<h4 id="autoconfiguration"><a class="anchor" href="#autoconfiguration"></a><a class="link" href="#autoconfiguration">18.1.3. Autoconfiguration</a></h4>
+<h4 id="autoconfiguration"><a class="anchor" href="#autoconfiguration"></a><a class="link" href="#autoconfiguration">13.1.3. Autoconfiguration</a></h4>
 <div class="paragraph">
 <p>Our Spring Boot autoconfiguration creates the following beans available in the Spring application context:</p>
 </div>
@@ -5048,7 +5025,7 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 </div>
 <div class="sect2">
-<h3 id="object-mapping"><a class="anchor" href="#object-mapping"></a><a class="link" href="#object-mapping">18.2. Object Mapping</a></h3>
+<h3 id="object-mapping"><a class="anchor" href="#object-mapping"></a><a class="link" href="#object-mapping">13.2. Object Mapping</a></h3>
 <div class="paragraph">
 <p>Spring Data Cloud Spanner allows you to map domain POJOs to Cloud Spanner tables via annotations:</p>
 </div>
@@ -5075,7 +5052,7 @@ public class Trader {
 These properties will not be written to or read from Spanner.</p>
 </div>
 <div class="sect3">
-<h4 id="constructors"><a class="anchor" href="#constructors"></a><a class="link" href="#constructors">18.2.1. Constructors</a></h4>
+<h4 id="constructors"><a class="anchor" href="#constructors"></a><a class="link" href="#constructors">13.2.1. Constructors</a></h4>
 <div class="paragraph">
 <p>Simple constructors are supported on POJOs.
 The constructor arguments can be a subset of the persistent properties.
@@ -5106,7 +5083,7 @@ public class Trader {
 </div>
 </div>
 <div class="sect3">
-<h4 id="table"><a class="anchor" href="#table"></a><a class="link" href="#table">18.2.2. Table</a></h4>
+<h4 id="table"><a class="anchor" href="#table"></a><a class="link" href="#table">13.2.2. Table</a></h4>
 <div class="paragraph">
 <p>The <code>@Table</code> annotation can provide the name of the Cloud Spanner table that stores instances of the annotated class, one per row.
 This annotation is optional, and if not given, the name of the table is inferred from the class name with the first character uncapitalized.</p>
@@ -5135,7 +5112,7 @@ For example, if <code>tableNameSuffix</code> has the value "123", the table name
 </div>
 </div>
 <div class="sect3">
-<h4 id="primary-keys"><a class="anchor" href="#primary-keys"></a><a class="link" href="#primary-keys">18.2.3. Primary Keys</a></h4>
+<h4 id="primary-keys"><a class="anchor" href="#primary-keys"></a><a class="link" href="#primary-keys">13.2.3. Primary Keys</a></h4>
 <div class="paragraph">
 <p>For a simple table, you may only have a primary key consisting of a single column.
 Even in that case, the <code>@PrimaryKey</code> annotation is required.
@@ -5191,7 +5168,7 @@ Read <a href="https://cloud.google.com/spanner/docs/schema-and-data-model#primar
 </div>
 </div>
 <div class="sect3">
-<h4 id="columns"><a class="anchor" href="#columns"></a><a class="link" href="#columns">18.2.4. Columns</a></h4>
+<h4 id="columns"><a class="anchor" href="#columns"></a><a class="link" href="#columns">13.2.4. Columns</a></h4>
 <div class="paragraph">
 <p>All accessible properties on POJOs are automatically recognized as a Cloud Spanner column.
 Column naming is generated by the <code>PropertyNameFieldNamingStrategy</code> by default defined on the <code>SpannerMappingContext</code> bean.
@@ -5222,7 +5199,7 @@ Any value set in this property will be ignored when writing to Cloud Spanner.</p
 </div>
 </div>
 <div class="sect3">
-<h4 id="embedded-objects"><a class="anchor" href="#embedded-objects"></a><a class="link" href="#embedded-objects">18.2.5. Embedded Objects</a></h4>
+<h4 id="embedded-objects"><a class="anchor" href="#embedded-objects"></a><a class="link" href="#embedded-objects">13.2.5. Embedded Objects</a></h4>
 <div class="paragraph">
 <p>If an object of type <code>B</code> is embedded as a property of <code>A</code>, then the columns of <code>B</code> will be saved in the same Cloud Spanner table as those of <code>A</code>.</p>
 </div>
@@ -5298,7 +5275,7 @@ Be careful about this restriction when you use Kotlin&#8217;s data class to hold
 </div>
 </div>
 <div class="sect3">
-<h4 id="relationships"><a class="anchor" href="#relationships"></a><a class="link" href="#relationships">18.2.6. Relationships</a></h4>
+<h4 id="relationships"><a class="anchor" href="#relationships"></a><a class="link" href="#relationships">13.2.6. Relationships</a></h4>
 <div class="paragraph">
 <p>Spring Data Cloud Spanner supports parent-child relationships using the Cloud Spanner <a href="https://cloud.google.com/spanner/docs/schema-and-data-model#creating-interleaved-tables">parent-child interleaved table mechanism</a>.
 Cloud Spanner interleaved tables enforce the one-to-many relationship and provide efficient queries and operations on entities of a single domain parent entity.
@@ -5448,7 +5425,7 @@ public class Agreement {
 </div>
 </div>
 <div class="sect3">
-<h4 id="supported-types"><a class="anchor" href="#supported-types"></a><a class="link" href="#supported-types">18.2.7. Supported Types</a></h4>
+<h4 id="supported-types"><a class="anchor" href="#supported-types"></a><a class="link" href="#supported-types">13.2.7. Supported Types</a></h4>
 <div class="paragraph">
 <p>Spring Data Cloud Spanner natively supports the following types for regular fields but also utilizes custom converters (detailed in following sections) and dozens of pre-defined Spring Data custom converters to handle other common Java types.</p>
 </div>
@@ -5509,7 +5486,7 @@ public class Agreement {
 </div>
 </div>
 <div class="sect3">
-<h4 id="json-fields"><a class="anchor" href="#json-fields"></a><a class="link" href="#json-fields">18.2.8. JSON fields</a></h4>
+<h4 id="json-fields"><a class="anchor" href="#json-fields"></a><a class="link" href="#json-fields">13.2.8. JSON fields</a></h4>
 <div class="paragraph">
 <p>Spanner supports <code>JSON</code> type for columns. <code>JSON</code> columns are mapped to custom POJOs annotated with <code>@Column(spannerType = TypeCode.JSON)</code>. Read, write and query with custom SQL query are supported for JSON annotated fields.</p>
 </div>
@@ -5547,7 +5524,7 @@ public class Details {
 </div>
 </div>
 <div class="sect3">
-<h4 id="lists"><a class="anchor" href="#lists"></a><a class="link" href="#lists">18.2.9. Lists</a></h4>
+<h4 id="lists"><a class="anchor" href="#lists"></a><a class="link" href="#lists">13.2.9. Lists</a></h4>
 <div class="paragraph">
 <p>Spanner supports <code>ARRAY</code> types for columns.
 <code>ARRAY</code> columns are mapped to <code>List</code> fields in POJOs.</p>
@@ -5565,7 +5542,7 @@ public class Details {
 </div>
 </div>
 <div class="sect3">
-<h4 id="lists-of-structs"><a class="anchor" href="#lists-of-structs"></a><a class="link" href="#lists-of-structs">18.2.10. Lists of Structs</a></h4>
+<h4 id="lists-of-structs"><a class="anchor" href="#lists-of-structs"></a><a class="link" href="#lists-of-structs">13.2.10. Lists of Structs</a></h4>
 <div class="paragraph">
 <p>Cloud Spanner queries can <a href="https://cloud.google.com/spanner/docs/query-syntax#using-structs-with-select">construct STRUCT values</a> that appear as columns in the result.
 Cloud Spanner requires STRUCT values appear in ARRAYs at the root level: <code>SELECT ARRAY(SELECT STRUCT(1 as val1, 2 as val2)) as pair FROM Users</code>.</p>
@@ -5588,7 +5565,7 @@ Cloud Spanner requires STRUCT values appear in ARRAYs at the root level: <code>S
 </div>
 </div>
 <div class="sect3">
-<h4 id="custom-types"><a class="anchor" href="#custom-types"></a><a class="link" href="#custom-types">18.2.11. Custom types</a></h4>
+<h4 id="custom-types"><a class="anchor" href="#custom-types"></a><a class="link" href="#custom-types">13.2.11. Custom types</a></h4>
 <div class="paragraph">
 <p>Custom converters can be used to extend the type support for user defined types.</p>
 </div>
@@ -5720,14 +5697,14 @@ This means that, for a user-defined class <code>U</code>, write operations use t
 </div>
 </div>
 <div class="sect3">
-<h4 id="custom-converter-for-struct-array-columns"><a class="anchor" href="#custom-converter-for-struct-array-columns"></a><a class="link" href="#custom-converter-for-struct-array-columns">18.2.12. Custom Converter for Struct Array Columns</a></h4>
+<h4 id="custom-converter-for-struct-array-columns"><a class="anchor" href="#custom-converter-for-struct-array-columns"></a><a class="link" href="#custom-converter-for-struct-array-columns">13.2.12. Custom Converter for Struct Array Columns</a></h4>
 <div class="paragraph">
 <p>If a <code>Converter&lt;Struct, A&gt;</code> is provided, then properties of type <code>List&lt;A&gt;</code> can be used in your entity types.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="spanner-operations-template"><a class="anchor" href="#spanner-operations-template"></a><a class="link" href="#spanner-operations-template">18.3. Spanner Operations &amp; Template</a></h3>
+<h3 id="spanner-operations-template"><a class="anchor" href="#spanner-operations-template"></a><a class="link" href="#spanner-operations-template">13.3. Spanner Operations &amp; Template</a></h3>
 <div class="paragraph">
 <p><code>SpannerOperations</code> and its implementation, <code>SpannerTemplate</code>, provides the Template pattern familiar to Spring developers.
 It provides:</p>
@@ -5829,7 +5806,7 @@ SpannerQueryOptions</p>
 </ul>
 </div>
 <div class="sect3">
-<h4 id="sql-query"><a class="anchor" href="#sql-query"></a><a class="link" href="#sql-query">18.3.1. SQL Query</a></h4>
+<h4 id="sql-query"><a class="anchor" href="#sql-query"></a><a class="link" href="#sql-query">13.3.1. SQL Query</a></h4>
 <div class="paragraph">
 <p>Cloud Spanner has SQL support for running read-only queries.
 All the query related methods start with <code>query</code> on <code>SpannerTemplate</code>.
@@ -5842,7 +5819,7 @@ By using <code>SpannerTemplate</code>, you can run SQL queries that map to POJOs
 </div>
 </div>
 <div class="sect3">
-<h4 id="read"><a class="anchor" href="#read"></a><a class="link" href="#read">18.3.2. Read</a></h4>
+<h4 id="read"><a class="anchor" href="#read"></a><a class="link" href="#read">13.3.2. Read</a></h4>
 <div class="paragraph">
 <p>Spanner exposes a <a href="https://cloud.google.com/spanner/docs/reads">Read API</a> for reading single row or multiple rows in a table or in a secondary index.</p>
 </div>
@@ -5859,7 +5836,7 @@ By using <code>SpannerTemplate</code>, you can run SQL queries that map to POJOs
 </div>
 </div>
 <div class="sect3">
-<h4 id="advanced-reads"><a class="anchor" href="#advanced-reads"></a><a class="link" href="#advanced-reads">18.3.3. Advanced reads</a></h4>
+<h4 id="advanced-reads"><a class="anchor" href="#advanced-reads"></a><a class="link" href="#advanced-reads">13.3.3. Advanced reads</a></h4>
 <div class="sect4">
 <h5 id="stale-read"><a class="anchor" href="#stale-read"></a><a class="link" href="#stale-read">Stale read</a></h5>
 <div class="paragraph">
@@ -6018,7 +5995,7 @@ This setting also applies to nested structs and their corresponding nested POJO 
 </div>
 </div>
 <div class="sect3">
-<h4 id="write-update"><a class="anchor" href="#write-update"></a><a class="link" href="#write-update">18.3.4. Write / Update</a></h4>
+<h4 id="write-update"><a class="anchor" href="#write-update"></a><a class="link" href="#write-update">13.3.4. Write / Update</a></h4>
 <div class="paragraph">
 <p>The write methods of <code>SpannerOperations</code> accept a POJO and writes all of its properties to Spanner.
 The corresponding Spanner table and entity metadata is obtained from the given object&#8217;s actual type.</p>
@@ -6079,7 +6056,7 @@ this.spannerTemplate.update(t, "symbol", "action");</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="dml"><a class="anchor" href="#dml"></a><a class="link" href="#dml">18.3.5. DML</a></h4>
+<h4 id="dml"><a class="anchor" href="#dml"></a><a class="link" href="#dml">13.3.5. DML</a></h4>
 <div class="paragraph">
 <p>DML statements can be run by using <code>SpannerOperations.executeDmlStatement</code>.
 Inserts, updates, and deletions can affect any number of rows and entities.</p>
@@ -6090,7 +6067,7 @@ Partitioned DML queries have performance benefits but also have restrictions and
 </div>
 </div>
 <div class="sect3">
-<h4 id="transactions"><a class="anchor" href="#transactions"></a><a class="link" href="#transactions">18.3.6. Transactions</a></h4>
+<h4 id="transactions"><a class="anchor" href="#transactions"></a><a class="link" href="#transactions">13.3.6. Transactions</a></h4>
 <div class="paragraph">
 <p><code>SpannerOperations</code> provides methods to run <code>java.util.Function</code> objects within a single transaction while making available the read and write methods from <code>SpannerOperations</code>.</p>
 </div>
@@ -6196,7 +6173,7 @@ If a method annotated with <code>@Transactional</code> calls another method also
 </div>
 </div>
 <div class="sect3">
-<h4 id="dml-statements"><a class="anchor" href="#dml-statements"></a><a class="link" href="#dml-statements">18.3.7. DML Statements</a></h4>
+<h4 id="dml-statements"><a class="anchor" href="#dml-statements"></a><a class="link" href="#dml-statements">13.3.7. DML Statements</a></h4>
 <div class="paragraph">
 <p><code>SpannerTemplate</code> supports <a href="https://cloud.google.com/spanner/docs/dml-tasks:">DML</a> <code>Statements</code>.
 DML statements can also be run in transactions by using <code>performReadWriteTransaction</code> or by using the <code>@Transactional</code> annotation.</p>
@@ -6204,7 +6181,7 @@ DML statements can also be run in transactions by using <code>performReadWriteTr
 </div>
 </div>
 <div class="sect2">
-<h3 id="repositories"><a class="anchor" href="#repositories"></a><a class="link" href="#repositories">18.4. Repositories</a></h3>
+<h3 id="repositories"><a class="anchor" href="#repositories"></a><a class="link" href="#repositories">13.4. Repositories</a></h3>
 <div class="paragraph">
 <p><a href="https://docs.spring.io/spring-data/data-commons/docs/current/reference/html/#repositories">Spring Data Repositories</a> are a powerful abstraction that can save you a lot of boilerplate code.</p>
 </div>
@@ -6269,13 +6246,13 @@ If the domain POJO type only has a single primary key column, then the primary k
 </div>
 </div>
 <div class="sect3">
-<h4 id="crud-repository"><a class="anchor" href="#crud-repository"></a><a class="link" href="#crud-repository">18.4.1. CRUD Repository</a></h4>
+<h4 id="crud-repository"><a class="anchor" href="#crud-repository"></a><a class="link" href="#crud-repository">13.4.1. CRUD Repository</a></h4>
 <div class="paragraph">
 <p><code>CrudRepository</code> methods work as expected, with one thing Spanner specific: the <code>save</code> and <code>saveAll</code> methods work as update-or-insert.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="paging-and-sorting-repository"><a class="anchor" href="#paging-and-sorting-repository"></a><a class="link" href="#paging-and-sorting-repository">18.4.2. Paging and Sorting Repository</a></h4>
+<h4 id="paging-and-sorting-repository"><a class="anchor" href="#paging-and-sorting-repository"></a><a class="link" href="#paging-and-sorting-repository">13.4.2. Paging and Sorting Repository</a></h4>
 <div class="paragraph">
 <p>You can also use <code>PagingAndSortingRepository</code> with Spanner Spring Data.
 The sorting and pageable <code>findAll</code> methods available from this interface operate on the current state of the Spanner database.
@@ -6283,7 +6260,7 @@ As a result, beware that the state of the database (and the results) might chang
 </div>
 </div>
 <div class="sect3">
-<h4 id="spanner-repository"><a class="anchor" href="#spanner-repository"></a><a class="link" href="#spanner-repository">18.4.3. Spanner Repository</a></h4>
+<h4 id="spanner-repository"><a class="anchor" href="#spanner-repository"></a><a class="link" href="#spanner-repository">13.4.3. Spanner Repository</a></h4>
 <div class="paragraph">
 <p>The <code>SpannerRepository</code> extends the <code>PagingAndSortingRepository</code>, but adds the read-only and the read-write transaction functionality provided by Spanner.
 These transactions work very similarly to those of <code>SpannerOperations</code>, but is specific to the repository&#8217;s domain type and provides repository functions instead of template functions.</p>
@@ -6314,7 +6291,7 @@ public String doWorkInsideTransaction() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="query-methods"><a class="anchor" href="#query-methods"></a><a class="link" href="#query-methods">18.5. Query Methods</a></h3>
+<h3 id="query-methods"><a class="anchor" href="#query-methods"></a><a class="link" href="#query-methods">13.5. Query Methods</a></h3>
 <div class="paragraph">
 <p><code>SpannerRepository</code> supports Query Methods.
 Described in the following sections, these are methods residing in your custom repository interfaces of which implementations are generated based on their names and annotations.
@@ -6325,7 +6302,7 @@ If a POJO is given as a parameter, it will be converted to a <code>Struct</code>
 Comparisons using Struct parameters are limited to <a href="https://cloud.google.com/spanner/docs/data-types#limited-comparisons-for-struct">what is available with Cloud Spanner</a>.</p>
 </div>
 <div class="sect3">
-<h4 id="query-methods-by-convention"><a class="anchor" href="#query-methods-by-convention"></a><a class="link" href="#query-methods-by-convention">18.5.1. Query methods by convention</a></h4>
+<h4 id="query-methods-by-convention"><a class="anchor" href="#query-methods-by-convention"></a><a class="link" href="#query-methods-by-convention">13.5.1. Query methods by convention</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
@@ -6451,7 +6428,7 @@ The delete operation happens in a single transaction.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="custom-sqldml-query-methods"><a class="anchor" href="#custom-sqldml-query-methods"></a><a class="link" href="#custom-sqldml-query-methods">18.5.2. Custom SQL/DML query methods</a></h4>
+<h4 id="custom-sqldml-query-methods"><a class="anchor" href="#custom-sqldml-query-methods"></a><a class="link" href="#custom-sqldml-query-methods">13.5.2. Custom SQL/DML query methods</a></h4>
 <div class="paragraph">
 <p>The example above for <code>List&lt;Trade&gt; fetchByActionNamedQuery(String action)</code> does not match the <a href="https://docs.spring.io/spring-data/data-commons/docs/current/reference/html#repositories.query-methods.query-creation">Spring Data Query creation naming convention</a>, so we have to map a parametrized Spanner SQL query to it.</p>
 </div>
@@ -6599,7 +6576,7 @@ You can also use a fixed number of singular parameters such as <code>IN (@string
 </div>
 </div>
 <div class="sect3">
-<h4 id="projections"><a class="anchor" href="#projections"></a><a class="link" href="#projections">18.5.3. Projections</a></h4>
+<h4 id="projections"><a class="anchor" href="#projections"></a><a class="link" href="#projections">13.5.3. Projections</a></h4>
 <div class="paragraph">
 <p>Spring Data Spanner supports <a href="https://docs.spring.io/spring-data/data-commons/docs/current/reference/html/#projections">projections</a>.
 You can define projection interfaces based on domain types and add query methods that return them in your repository:</p>
@@ -6635,7 +6612,7 @@ As a result accessing underlying properties take the form <code>target.&lt;prope
 </div>
 </div>
 <div class="sect3">
-<h4 id="empty-result-handling-in-repository-methods"><a class="anchor" href="#empty-result-handling-in-repository-methods"></a><a class="link" href="#empty-result-handling-in-repository-methods">18.5.4. Empty result handling in repository methods</a></h4>
+<h4 id="empty-result-handling-in-repository-methods"><a class="anchor" href="#empty-result-handling-in-repository-methods"></a><a class="link" href="#empty-result-handling-in-repository-methods">13.5.4. Empty result handling in repository methods</a></h4>
 <div class="paragraph">
 <p>Java <code>java.util.Optional</code> can be used to indicate the potential absence of a return value.</p>
 </div>
@@ -6658,7 +6635,7 @@ You can enable nullability checks. For more details please see <a href="https://
 </div>
 </div>
 <div class="sect3">
-<h4 id="rest-repositories"><a class="anchor" href="#rest-repositories"></a><a class="link" href="#rest-repositories">18.5.5. REST Repositories</a></h4>
+<h4 id="rest-repositories"><a class="anchor" href="#rest-repositories"></a><a class="link" href="#rest-repositories">13.5.5. REST Repositories</a></h4>
 <div class="paragraph">
 <p>When running with Spring Boot, repositories can be exposed as REST services by simply adding this dependency to your pom file:</p>
 </div>
@@ -6716,7 +6693,7 @@ class MySpecialIdConverter extends SpannerKeyIdConverter {
 </div>
 </div>
 <div class="sect2">
-<h3 id="database-and-schema-admin"><a class="anchor" href="#database-and-schema-admin"></a><a class="link" href="#database-and-schema-admin">18.6. Database and Schema Admin</a></h3>
+<h3 id="database-and-schema-admin"><a class="anchor" href="#database-and-schema-admin"></a><a class="link" href="#database-and-schema-admin">13.6. Database and Schema Admin</a></h3>
 <div class="paragraph">
 <p>Databases and tables inside Spanner instances can be created automatically from <code>SpannerPersistentEntity</code> objects:</p>
 </div>
@@ -6743,7 +6720,7 @@ public void createTable(SpannerPersistentEntity entity) {
 </div>
 </div>
 <div class="sect2">
-<h3 id="events"><a class="anchor" href="#events"></a><a class="link" href="#events">18.7. Events</a></h3>
+<h3 id="events"><a class="anchor" href="#events"></a><a class="link" href="#events">13.7. Events</a></h3>
 <div class="paragraph">
 <p>Spring Data Cloud Spanner publishes events extending the Spring Framework&#8217;s <code>ApplicationEvent</code> to the context that can be received by <code>ApplicationListener</code> beans you register.</p>
 </div>
@@ -6805,7 +6782,7 @@ public void createTable(SpannerPersistentEntity entity) {
 </table>
 </div>
 <div class="sect2">
-<h3 id="auditing"><a class="anchor" href="#auditing"></a><a class="link" href="#auditing">18.8. Auditing</a></h3>
+<h3 id="auditing"><a class="anchor" href="#auditing"></a><a class="link" href="#auditing">13.8. Auditing</a></h3>
 <div class="paragraph">
 <p>Spring Data Cloud Spanner supports the <code>@LastModifiedDate</code> and <code>@LastModifiedBy</code> auditing annotations for properties:</p>
 </div>
@@ -6867,7 +6844,7 @@ One alternative is to use Spring Security&#8217;s <code>User</code> type:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="multi-instance-usage"><a class="anchor" href="#multi-instance-usage"></a><a class="link" href="#multi-instance-usage">18.9. Multi-Instance Usage</a></h3>
+<h3 id="multi-instance-usage"><a class="anchor" href="#multi-instance-usage"></a><a class="link" href="#multi-instance-usage">13.9. Multi-Instance Usage</a></h3>
 <div class="paragraph">
 <p>Your application can be configured to use multiple Cloud Spanner instances or databases by providing a custom bean for <code>DatabaseIdProvider</code>.
 The default bean uses the instance ID, database name, and project ID options you configured in <code>application.properties</code>.</p>
@@ -6892,9 +6869,9 @@ By providing a custom implementation of this bean (for example, supplying a thre
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-boot-actuator-support-2"><a class="anchor" href="#spring-boot-actuator-support-2"></a><a class="link" href="#spring-boot-actuator-support-2">18.10. Spring Boot Actuator Support</a></h3>
+<h3 id="spring-boot-actuator-support-2"><a class="anchor" href="#spring-boot-actuator-support-2"></a><a class="link" href="#spring-boot-actuator-support-2">13.10. Spring Boot Actuator Support</a></h3>
 <div class="sect3">
-<h4 id="cloud-spanner-health-indicator"><a class="anchor" href="#cloud-spanner-health-indicator"></a><a class="link" href="#cloud-spanner-health-indicator">18.10.1. Cloud Spanner Health Indicator</a></h4>
+<h4 id="cloud-spanner-health-indicator"><a class="anchor" href="#cloud-spanner-health-indicator"></a><a class="link" href="#cloud-spanner-health-indicator">13.10.1. Cloud Spanner Health Indicator</a></h4>
 <div class="paragraph">
 <p>If you are using Spring Boot Actuator, you can take advantage of the Cloud Spanner health indicator called <code>spanner</code>.
 The health indicator will verify whether Cloud Spanner is up and accessible by your application.
@@ -6959,7 +6936,7 @@ A query to validate can be configured via <code>spring.cloud.gcp.spanner.health.
 </div>
 </div>
 <div class="sect2">
-<h3 id="cloud-spanner-emulator"><a class="anchor" href="#cloud-spanner-emulator"></a><a class="link" href="#cloud-spanner-emulator">18.11. Cloud Spanner Emulator</a></h3>
+<h3 id="cloud-spanner-emulator"><a class="anchor" href="#cloud-spanner-emulator"></a><a class="link" href="#cloud-spanner-emulator">13.11. Cloud Spanner Emulator</a></h3>
 <div class="paragraph">
 <p>The <a href="https://cloud.google.com/sdk">Cloud SDK</a> provides a local, in-memory emulator for Cloud Spanner, which you can use to develop and test your application. As the emulator stores data only in memory, it will not persist data across runs. It is intended to help you use Cloud Spanner for local development and testing, not for production deployments.</p>
 </div>
@@ -6985,7 +6962,7 @@ spring.cloud.gcp.spanner.emulator-host=${EMULATOR_HOSTPORT}</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-8"><a class="anchor" href="#sample-8"></a><a class="link" href="#sample-8">18.12. Sample</a></h3>
+<h3 id="sample-8"><a class="anchor" href="#sample-8"></a><a class="link" href="#sample-8">13.12. Sample</a></h3>
 <div class="paragraph">
 <p>There are two sample applications available:</p>
 </div>
@@ -7003,7 +6980,7 @@ spring.cloud.gcp.spanner.emulator-host=${EMULATOR_HOSTPORT}</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-data-cloud-datastore"><a class="anchor" href="#spring-data-cloud-datastore"></a><a class="link" href="#spring-data-cloud-datastore">19. Spring Data Cloud Datastore</a></h2>
+<h2 id="spring-data-cloud-datastore"><a class="anchor" href="#spring-data-cloud-datastore"></a><a class="link" href="#spring-data-cloud-datastore">14. Spring Data Cloud Datastore</a></h2>
 <div class="sectionbody">
 <div class="admonitionblock note">
 <table>
@@ -7071,7 +7048,7 @@ To use the starter, see the coordinates below.</p>
 <p>This setup takes care of bringing in the latest compatible version of Cloud Java Cloud Datastore libraries as well.</p>
 </div>
 <div class="sect2">
-<h3 id="configuration-6"><a class="anchor" href="#configuration-6"></a><a class="link" href="#configuration-6">19.1. Configuration</a></h3>
+<h3 id="configuration-6"><a class="anchor" href="#configuration-6"></a><a class="link" href="#configuration-6">14.1. Configuration</a></h3>
 <div class="paragraph">
 <p>To setup Spring Data Cloud Datastore, you have to configure the following:</p>
 </div>
@@ -7083,7 +7060,7 @@ To use the starter, see the coordinates below.</p>
 </ul>
 </div>
 <div class="sect3">
-<h4 id="cloud-datastore-settings"><a class="anchor" href="#cloud-datastore-settings"></a><a class="link" href="#cloud-datastore-settings">19.1.1. Cloud Datastore settings</a></h4>
+<h4 id="cloud-datastore-settings"><a class="anchor" href="#cloud-datastore-settings"></a><a class="link" href="#cloud-datastore-settings">14.1.1. Cloud Datastore settings</a></h4>
 <div class="paragraph">
 <p>You can use the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-datastore">Spring Boot Starter for Spring Data Datastore</a> to autoconfigure Google Cloud Datastore in your Spring application.
 It contains all the necessary setup that makes it easy to authenticate with your Google Cloud project.
@@ -7179,7 +7156,7 @@ The following configuration options are available:</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="repository-settings-2"><a class="anchor" href="#repository-settings-2"></a><a class="link" href="#repository-settings-2">19.1.2. Repository settings</a></h4>
+<h4 id="repository-settings-2"><a class="anchor" href="#repository-settings-2"></a><a class="link" href="#repository-settings-2">14.1.2. Repository settings</a></h4>
 <div class="paragraph">
 <p>Spring Data Repositories can be configured via the <code>@EnableDatastoreRepositories</code> annotation on your main <code>@Configuration</code> class.
 With our Spring Boot Starter for Spring Data Cloud Datastore, <code>@EnableDatastoreRepositories</code> is automatically added.
@@ -7187,7 +7164,7 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 </div>
 <div class="sect3">
-<h4 id="autoconfiguration-2"><a class="anchor" href="#autoconfiguration-2"></a><a class="link" href="#autoconfiguration-2">19.1.3. Autoconfiguration</a></h4>
+<h4 id="autoconfiguration-2"><a class="anchor" href="#autoconfiguration-2"></a><a class="link" href="#autoconfiguration-2">14.1.3. Autoconfiguration</a></h4>
 <div class="paragraph">
 <p>Our Spring Boot autoconfiguration creates the following beans available in the Spring application context:</p>
 </div>
@@ -7206,7 +7183,7 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 </div>
 <div class="sect3">
-<h4 id="datastore-emulator-autoconfiguration"><a class="anchor" href="#datastore-emulator-autoconfiguration"></a><a class="link" href="#datastore-emulator-autoconfiguration">19.1.4. Datastore Emulator Autoconfiguration</a></h4>
+<h4 id="datastore-emulator-autoconfiguration"><a class="anchor" href="#datastore-emulator-autoconfiguration"></a><a class="link" href="#datastore-emulator-autoconfiguration">14.1.4. Datastore Emulator Autoconfiguration</a></h4>
 <div class="paragraph">
 <p>This Spring Boot autoconfiguration can also configure and start a local Datastore Emulator server if enabled by property.</p>
 </div>
@@ -7223,7 +7200,7 @@ The emulator will be properly stopped after the Spring application context shutd
 </div>
 </div>
 <div class="sect2">
-<h3 id="object-mapping-2"><a class="anchor" href="#object-mapping-2"></a><a class="link" href="#object-mapping-2">19.2. Object Mapping</a></h3>
+<h3 id="object-mapping-2"><a class="anchor" href="#object-mapping-2"></a><a class="link" href="#object-mapping-2">14.2. Object Mapping</a></h3>
 <div class="paragraph">
 <p>Spring Data Cloud Datastore allows you to map domain POJOs to Cloud Datastore kinds and entities via annotations:</p>
 </div>
@@ -7250,7 +7227,7 @@ public class Trader {
 These properties will not be written to or read from Cloud Datastore.</p>
 </div>
 <div class="sect3">
-<h4 id="constructors-2"><a class="anchor" href="#constructors-2"></a><a class="link" href="#constructors-2">19.2.1. Constructors</a></h4>
+<h4 id="constructors-2"><a class="anchor" href="#constructors-2"></a><a class="link" href="#constructors-2">14.2.1. Constructors</a></h4>
 <div class="paragraph">
 <p>Simple constructors are supported on POJOs.
 The constructor arguments can be a subset of the persistent properties.
@@ -7282,13 +7259,13 @@ public class Trader {
 </div>
 </div>
 <div class="sect3">
-<h4 id="kind"><a class="anchor" href="#kind"></a><a class="link" href="#kind">19.2.2. Kind</a></h4>
+<h4 id="kind"><a class="anchor" href="#kind"></a><a class="link" href="#kind">14.2.2. Kind</a></h4>
 <div class="paragraph">
 <p>The <code>@Entity</code> annotation can provide the name of the Cloud Datastore kind that stores instances of the annotated class, one per row.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="keys"><a class="anchor" href="#keys"></a><a class="link" href="#keys">19.2.3. Keys</a></h4>
+<h4 id="keys"><a class="anchor" href="#keys"></a><a class="link" href="#keys">14.2.3. Keys</a></h4>
 <div class="paragraph">
 <p><code>@Id</code> identifies the property corresponding to the ID value.</p>
 </div>
@@ -7323,7 +7300,7 @@ Because primitive <code>long</code> ID properties cannot be <code>null</code> an
 </div>
 </div>
 <div class="sect3">
-<h4 id="fields"><a class="anchor" href="#fields"></a><a class="link" href="#fields">19.2.4. Fields</a></h4>
+<h4 id="fields"><a class="anchor" href="#fields"></a><a class="link" href="#fields">14.2.4. Fields</a></h4>
 <div class="paragraph">
 <p>All accessible properties on POJOs are automatically recognized as a Cloud Datastore field.
 Field naming is generated by the <code>PropertyNameFieldNamingStrategy</code> by default defined on the <code>DatastoreMappingContext</code> bean.
@@ -7331,7 +7308,7 @@ The <code>@Field</code> annotation optionally provides a different field name th
 </div>
 </div>
 <div class="sect3">
-<h4 id="supported-types-2"><a class="anchor" href="#supported-types-2"></a><a class="link" href="#supported-types-2">19.2.5. Supported Types</a></h4>
+<h4 id="supported-types-2"><a class="anchor" href="#supported-types-2"></a><a class="link" href="#supported-types-2">14.2.5. Supported Types</a></h4>
 <div class="paragraph">
 <p>Spring Data Cloud Datastore supports the following types for regular fields and elements of collections:</p>
 </div>
@@ -7403,7 +7380,7 @@ The <code>@Field</code> annotation optionally provides a different field name th
 </div>
 </div>
 <div class="sect3">
-<h4 id="custom-types-2"><a class="anchor" href="#custom-types-2"></a><a class="link" href="#custom-types-2">19.2.6. Custom types</a></h4>
+<h4 id="custom-types-2"><a class="anchor" href="#custom-types-2"></a><a class="link" href="#custom-types-2">14.2.6. Custom types</a></h4>
 <div class="paragraph">
 <p>Custom converters can be used extending the type support for user defined types.</p>
 </div>
@@ -7496,7 +7473,7 @@ public class ConverterConfiguration {
 </div>
 </div>
 <div class="sect3">
-<h4 id="collections-and-arrays"><a class="anchor" href="#collections-and-arrays"></a><a class="link" href="#collections-and-arrays">19.2.7. Collections and arrays</a></h4>
+<h4 id="collections-and-arrays"><a class="anchor" href="#collections-and-arrays"></a><a class="link" href="#collections-and-arrays">14.2.7. Collections and arrays</a></h4>
 <div class="paragraph">
 <p>Arrays and collections (types that implement <code>java.util.Collection</code>) of supported types are supported.
 They are stored as <code>com.google.cloud.datastore.ListValue</code>.
@@ -7505,7 +7482,7 @@ Elements are converted to Cloud Datastore supported types individually. <code>by
 </div>
 </div>
 <div class="sect3">
-<h4 id="custom-converter-for-collections"><a class="anchor" href="#custom-converter-for-collections"></a><a class="link" href="#custom-converter-for-collections">19.2.8. Custom Converter for collections</a></h4>
+<h4 id="custom-converter-for-collections"><a class="anchor" href="#custom-converter-for-collections"></a><a class="link" href="#custom-converter-for-collections">14.2.8. Custom Converter for collections</a></h4>
 <div class="paragraph">
 <p>Users can provide converters from  <code>List&lt;?&gt;</code> to the custom collection type.
 Only read converter is necessary, the Collection API is used on the write side to convert a collection to the internal list type.</p>
@@ -7568,7 +7545,7 @@ public class ConverterConfiguration {
 </div>
 </div>
 <div class="sect3">
-<h4 id="inheritance-hierarchies"><a class="anchor" href="#inheritance-hierarchies"></a><a class="link" href="#inheritance-hierarchies">19.2.9. Inheritance Hierarchies</a></h4>
+<h4 id="inheritance-hierarchies"><a class="anchor" href="#inheritance-hierarchies"></a><a class="link" href="#inheritance-hierarchies">14.2.9. Inheritance Hierarchies</a></h4>
 <div class="paragraph">
 <p>Java entity types related by inheritance can be stored in the same Kind.
 When reading and querying entities using <code>DatastoreRepository</code> or <code>DatastoreTemplate</code> with a superclass as the type parameter, you can receive instances of subclasses if you annotate the superclass and its subclasses with <code>DiscriminatorField</code> and <code>DiscriminatorValue</code>:</p>
@@ -7624,7 +7601,7 @@ Any value set in the discrimination field will be overwritten upon write to Clou
 </div>
 </div>
 <div class="sect2">
-<h3 id="relationships-2"><a class="anchor" href="#relationships-2"></a><a class="link" href="#relationships-2">19.3. Relationships</a></h3>
+<h3 id="relationships-2"><a class="anchor" href="#relationships-2"></a><a class="link" href="#relationships-2">14.3. Relationships</a></h3>
 <div class="paragraph">
 <p>There are three ways to represent relationships between entities that are described in this section:</p>
 </div>
@@ -7646,7 +7623,7 @@ Any value set in the discrimination field will be overwritten upon write to Clou
 </ul>
 </div>
 <div class="sect3">
-<h4 id="embedded-entities"><a class="anchor" href="#embedded-entities"></a><a class="link" href="#embedded-entities">19.3.1. Embedded Entities</a></h4>
+<h4 id="embedded-entities"><a class="anchor" href="#embedded-entities"></a><a class="link" href="#embedded-entities">14.3.1. Embedded Entities</a></h4>
 <div class="paragraph">
 <p>Fields whose types are also annotated with <code>@Entity</code> are converted to <code>EntityValue</code> and stored inside the parent entity.</p>
 </div>
@@ -7794,7 +7771,7 @@ public class EmbeddableTreeNode {
 </div>
 </div>
 <div class="sect3">
-<h4 id="ancestor-descendant-relationships"><a class="anchor" href="#ancestor-descendant-relationships"></a><a class="link" href="#ancestor-descendant-relationships">19.3.2. Ancestor-Descendant Relationships</a></h4>
+<h4 id="ancestor-descendant-relationships"><a class="anchor" href="#ancestor-descendant-relationships"></a><a class="link" href="#ancestor-descendant-relationships">14.3.2. Ancestor-Descendant Relationships</a></h4>
 <div class="paragraph">
 <p>Parent-child relationships are supported via the <code>@Descendants</code> annotation.</p>
 </div>
@@ -7898,7 +7875,7 @@ Because entity keys are immutable in Cloud Datastore, to change the key of a chi
 </div>
 </div>
 <div class="sect3">
-<h4 id="key-reference-relationships"><a class="anchor" href="#key-reference-relationships"></a><a class="link" href="#key-reference-relationships">19.3.3. Key Reference Relationships</a></h4>
+<h4 id="key-reference-relationships"><a class="anchor" href="#key-reference-relationships"></a><a class="link" href="#key-reference-relationships">14.3.3. Key Reference Relationships</a></h4>
 <div class="paragraph">
 <p>General relationships can be stored using the <code>@Reference</code> annotation.</p>
 </div>
@@ -7957,7 +7934,7 @@ The order of collection-like reference properties is not preserved when reading 
 </div>
 </div>
 <div class="sect2">
-<h3 id="datastore-operations-template"><a class="anchor" href="#datastore-operations-template"></a><a class="link" href="#datastore-operations-template">19.4. Datastore Operations &amp; Template</a></h3>
+<h3 id="datastore-operations-template"><a class="anchor" href="#datastore-operations-template"></a><a class="link" href="#datastore-operations-template">14.4. Datastore Operations &amp; Template</a></h3>
 <div class="paragraph">
 <p><code>DatastoreOperations</code> and its implementation, <code>DatastoreTemplate</code>, provides the Template pattern familiar to Spring developers.</p>
 </div>
@@ -7999,7 +7976,7 @@ public class DatastoreTemplateExample {
 </ul>
 </div>
 <div class="sect3">
-<h4 id="gql-query"><a class="anchor" href="#gql-query"></a><a class="link" href="#gql-query">19.4.1. GQL Query</a></h4>
+<h4 id="gql-query"><a class="anchor" href="#gql-query"></a><a class="link" href="#gql-query">14.4.1. GQL Query</a></h4>
 <div class="paragraph">
 <p>In addition to retrieving entities by their IDs, you can also submit queries.</p>
 </div>
@@ -8030,7 +8007,7 @@ public class DatastoreTemplateExample {
 </div>
 </div>
 <div class="sect3">
-<h4 id="find-by-ids"><a class="anchor" href="#find-by-ids"></a><a class="link" href="#find-by-ids">19.4.2. Find by ID(s)</a></h4>
+<h4 id="find-by-ids"><a class="anchor" href="#find-by-ids"></a><a class="link" href="#find-by-ids">14.4.2. Find by ID(s)</a></h4>
 <div class="paragraph">
 <p>Using <code>DatastoreTemplate</code> you can find entities by id. For example:</p>
 </div>
@@ -8090,7 +8067,7 @@ Paging and sorting options are also supported in <code>DatastoreTemplate</code> 
 </div>
 </div>
 <div class="sect3">
-<h4 id="write-update-2"><a class="anchor" href="#write-update-2"></a><a class="link" href="#write-update-2">19.4.3. Write / Update</a></h4>
+<h4 id="write-update-2"><a class="anchor" href="#write-update-2"></a><a class="link" href="#write-update-2">14.4.3. Write / Update</a></h4>
 <div class="paragraph">
 <p>The write methods of <code>DatastoreOperations</code> accept a POJO and writes all of its properties to Datastore.
 The required Datastore kind and entity metadata is obtained from the given object&#8217;s actual type.</p>
@@ -8116,7 +8093,7 @@ this.datastoreTemplate.save(t);</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="transactions-2"><a class="anchor" href="#transactions-2"></a><a class="link" href="#transactions-2">19.4.4. Transactions</a></h4>
+<h4 id="transactions-2"><a class="anchor" href="#transactions-2"></a><a class="link" href="#transactions-2">14.4.4. Transactions</a></h4>
 <div class="paragraph">
 <p>Read and write transactions are provided by <code>DatastoreOperations</code> via the <code>performTransaction</code> method:</p>
 </div>
@@ -8165,7 +8142,7 @@ If a method annotated with <code>@Transactional</code> calls another method also
 </div>
 </div>
 <div class="sect3">
-<h4 id="read-write-support-for-maps"><a class="anchor" href="#read-write-support-for-maps"></a><a class="link" href="#read-write-support-for-maps">19.4.5. Read-Write Support for Maps</a></h4>
+<h4 id="read-write-support-for-maps"><a class="anchor" href="#read-write-support-for-maps"></a><a class="link" href="#read-write-support-for-maps">14.4.5. Read-Write Support for Maps</a></h4>
 <div class="paragraph">
 <p>You can work with Maps of type <code>Map&lt;String, ?&gt;</code> instead of with entity objects by directly reading and writing them to and from Cloud Datastore.</p>
 </div>
@@ -8208,7 +8185,7 @@ Map&lt;String, Long&gt; loadedMap = datastoreTemplate.findByIdAsMap(keyForMap, L
 </div>
 </div>
 <div class="sect2">
-<h3 id="repositories-2"><a class="anchor" href="#repositories-2"></a><a class="link" href="#repositories-2">19.5. Repositories</a></h3>
+<h3 id="repositories-2"><a class="anchor" href="#repositories-2"></a><a class="link" href="#repositories-2">14.5. Repositories</a></h3>
 <div class="paragraph">
 <p><a href="https://docs.spring.io/spring-data/data-commons/docs/current/reference/html/#repositories">Spring Data Repositories</a> are an abstraction that can reduce boilerplate code.</p>
 </div>
@@ -8255,7 +8232,7 @@ The second type parameter, <code>String</code> in this case, refers to the type 
 Filtering parameters can be of types supported by your configured custom converters.</p>
 </div>
 <div class="sect3">
-<h4 id="query-methods-by-convention-2"><a class="anchor" href="#query-methods-by-convention-2"></a><a class="link" href="#query-methods-by-convention-2">19.5.1. Query methods by convention</a></h4>
+<h4 id="query-methods-by-convention-2"><a class="anchor" href="#query-methods-by-convention-2"></a><a class="link" href="#query-methods-by-convention-2">14.5.1. Query methods by convention</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&gt; {
@@ -8376,7 +8353,7 @@ Methods that return <code>Slice</code>, on the other hand, do not run any additi
 </div>
 </div>
 <div class="sect3">
-<h4 id="empty-result-handling-in-repository-methods-2"><a class="anchor" href="#empty-result-handling-in-repository-methods-2"></a><a class="link" href="#empty-result-handling-in-repository-methods-2">19.5.2. Empty result handling in repository methods</a></h4>
+<h4 id="empty-result-handling-in-repository-methods-2"><a class="anchor" href="#empty-result-handling-in-repository-methods-2"></a><a class="link" href="#empty-result-handling-in-repository-methods-2">14.5.2. Empty result handling in repository methods</a></h4>
 <div class="paragraph">
 <p>Java <code>java.util.Optional</code> can be used to indicate the potential absence of a return value.</p>
 </div>
@@ -8399,7 +8376,7 @@ You can enable nullability checks. For more details please see <a href="https://
 </div>
 </div>
 <div class="sect3">
-<h4 id="query-by-example"><a class="anchor" href="#query-by-example"></a><a class="link" href="#query-by-example">19.5.3. Query by example</a></h4>
+<h4 id="query-by-example"><a class="anchor" href="#query-by-example"></a><a class="link" href="#query-by-example">14.5.3. Query by example</a></h4>
 <div class="paragraph">
 <p>Query by Example is an alternative querying technique.
 It enables dynamic query generation based on a user-provided object. See <a href="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#query-by-example">Spring Data Documentation</a> for details.</p>
@@ -8455,7 +8432,7 @@ userRepository.findBy(
 </div>
 </div>
 <div class="sect3">
-<h4 id="custom-gql-query-methods"><a class="anchor" href="#custom-gql-query-methods"></a><a class="link" href="#custom-gql-query-methods">19.5.4. Custom GQL query methods</a></h4>
+<h4 id="custom-gql-query-methods"><a class="anchor" href="#custom-gql-query-methods"></a><a class="link" href="#custom-gql-query-methods">14.5.4. Custom GQL query methods</a></h4>
 <div class="paragraph">
 <p>Custom GQL queries can be mapped to repository methods in one of two ways:</p>
 </div>
@@ -8679,7 +8656,7 @@ annotated with <code>DiscriminatorField</code>.
 </div>
 </div>
 <div class="sect3">
-<h4 id="transactions-3"><a class="anchor" href="#transactions-3"></a><a class="link" href="#transactions-3">19.5.5. Transactions</a></h4>
+<h4 id="transactions-3"><a class="anchor" href="#transactions-3"></a><a class="link" href="#transactions-3">14.5.5. Transactions</a></h4>
 <div class="paragraph">
 <p>These transactions work very similarly to those of <code>DatastoreOperations</code>, but is specific to the repository&#8217;s domain type and provides repository functions instead of template functions.</p>
 </div>
@@ -8705,7 +8682,7 @@ public String doWorkInsideTransaction() {
 </div>
 </div>
 <div class="sect3">
-<h4 id="projections-2"><a class="anchor" href="#projections-2"></a><a class="link" href="#projections-2">19.5.6. Projections</a></h4>
+<h4 id="projections-2"><a class="anchor" href="#projections-2"></a><a class="link" href="#projections-2">14.5.6. Projections</a></h4>
 <div class="paragraph">
 <p>Spring Data Cloud Datastore supports <a href="https://docs.spring.io/spring-data/data-commons/docs/current/reference/html/#projections">projections</a>.
 You can define projection interfaces based on domain types and add query methods that return them in your repository:</p>
@@ -8742,7 +8719,7 @@ As a result, accessing underlying properties take the form <code>target.&lt;prop
 </div>
 </div>
 <div class="sect3">
-<h4 id="rest-repositories-2"><a class="anchor" href="#rest-repositories-2"></a><a class="link" href="#rest-repositories-2">19.5.7. REST Repositories</a></h4>
+<h4 id="rest-repositories-2"><a class="anchor" href="#rest-repositories-2"></a><a class="link" href="#rest-repositories-2">14.5.7. REST Repositories</a></h4>
 <div class="paragraph">
 <p>When running with Spring Boot, repositories can be exposed as REST services by simply adding this dependency to your pom file:</p>
 </div>
@@ -8776,7 +8753,7 @@ public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&
 </div>
 </div>
 <div class="sect2">
-<h3 id="events-2"><a class="anchor" href="#events-2"></a><a class="link" href="#events-2">19.6. Events</a></h3>
+<h3 id="events-2"><a class="anchor" href="#events-2"></a><a class="link" href="#events-2">14.6. Events</a></h3>
 <div class="paragraph">
 <p>Spring Data Cloud Datastore publishes events extending the Spring Framework&#8217;s <code>ApplicationEvent</code> to the context that can be received by <code>ApplicationListener</code> beans you register.</p>
 </div>
@@ -8828,7 +8805,7 @@ public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&
 </table>
 </div>
 <div class="sect2">
-<h3 id="auditing-2"><a class="anchor" href="#auditing-2"></a><a class="link" href="#auditing-2">19.7. Auditing</a></h3>
+<h3 id="auditing-2"><a class="anchor" href="#auditing-2"></a><a class="link" href="#auditing-2">14.7. Auditing</a></h3>
 <div class="paragraph">
 <p>Spring Data Cloud Datastore supports the <code>@LastModifiedDate</code> and <code>@LastModifiedBy</code> auditing annotations for properties:</p>
 </div>
@@ -8890,7 +8867,7 @@ One alternative is to use Spring Security&#8217;s <code>User</code> type:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="partitioning-data-by-namespace"><a class="anchor" href="#partitioning-data-by-namespace"></a><a class="link" href="#partitioning-data-by-namespace">19.8. Partitioning Data by Namespace</a></h3>
+<h3 id="partitioning-data-by-namespace"><a class="anchor" href="#partitioning-data-by-namespace"></a><a class="link" href="#partitioning-data-by-namespace">14.8. Partitioning Data by Namespace</a></h3>
 <div class="paragraph">
 <p>You can <a href="https://cloud.google.com/datastore/docs/concepts/multitenancy">partition your data by using more than one namespace</a>.
 This is the recommended method for multi-tenancy in Cloud Datastore.</p>
@@ -8913,9 +8890,9 @@ Every read, write, query, and transaction you perform will utilize the namespace
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-boot-actuator-support-3"><a class="anchor" href="#spring-boot-actuator-support-3"></a><a class="link" href="#spring-boot-actuator-support-3">19.9. Spring Boot Actuator Support</a></h3>
+<h3 id="spring-boot-actuator-support-3"><a class="anchor" href="#spring-boot-actuator-support-3"></a><a class="link" href="#spring-boot-actuator-support-3">14.9. Spring Boot Actuator Support</a></h3>
 <div class="sect3">
-<h4 id="cloud-datastore-health-indicator"><a class="anchor" href="#cloud-datastore-health-indicator"></a><a class="link" href="#cloud-datastore-health-indicator">19.9.1. Cloud Datastore Health Indicator</a></h4>
+<h4 id="cloud-datastore-health-indicator"><a class="anchor" href="#cloud-datastore-health-indicator"></a><a class="link" href="#cloud-datastore-health-indicator">14.9.1. Cloud Datastore Health Indicator</a></h4>
 <div class="paragraph">
 <p>If you are using Spring Boot Actuator, you can take advantage of the Cloud Datastore health indicator called <code>datastore</code>.
 The health indicator will verify whether Cloud Datastore is up and accessible by your application.
@@ -8932,7 +8909,7 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-9"><a class="anchor" href="#sample-9"></a><a class="link" href="#sample-9">19.10. Sample</a></h3>
+<h3 id="sample-9"><a class="anchor" href="#sample-9"></a><a class="link" href="#sample-9">14.10. Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-basic-sample">Simple Spring Boot Application</a> and more advanced <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-sample">Sample Spring Boot Application</a> are provided to show how to use the Spring Data Cloud Datastore starter and template.</p>
 </div>
@@ -8940,7 +8917,7 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-data-cloud-firestore"><a class="anchor" href="#spring-data-cloud-firestore"></a><a class="link" href="#spring-data-cloud-firestore">20. Spring Data Cloud Firestore</a></h2>
+<h2 id="spring-data-cloud-firestore"><a class="anchor" href="#spring-data-cloud-firestore"></a><a class="link" href="#spring-data-cloud-firestore">15. Spring Data Cloud Firestore</a></h2>
 <div class="sectionbody">
 <div class="admonitionblock note">
 <table>
@@ -9002,9 +8979,9 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-7"><a class="anchor" href="#configuration-7"></a><a class="link" href="#configuration-7">20.1. Configuration</a></h3>
+<h3 id="configuration-7"><a class="anchor" href="#configuration-7"></a><a class="link" href="#configuration-7">15.1. Configuration</a></h3>
 <div class="sect3">
-<h4 id="properties"><a class="anchor" href="#properties"></a><a class="link" href="#properties">20.1.1. Properties</a></h4>
+<h4 id="properties"><a class="anchor" href="#properties"></a><a class="link" href="#properties">15.1.1. Properties</a></h4>
 <div class="paragraph">
 <p>The Spring Boot starter for Google Cloud Firestore provides the following configuration options:</p>
 </div>
@@ -9068,7 +9045,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </table>
 </div>
 <div class="sect3">
-<h4 id="supported-types-3"><a class="anchor" href="#supported-types-3"></a><a class="link" href="#supported-types-3">20.1.2. Supported types</a></h4>
+<h4 id="supported-types-3"><a class="anchor" href="#supported-types-3"></a><a class="link" href="#supported-types-3">15.1.2. Supported types</a></h4>
 <div class="paragraph">
 <p>You may use the following field types when defining your persistent entities or when binding query parameters:</p>
 </div>
@@ -9120,7 +9097,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 </div>
 <div class="sect3">
-<h4 id="reactive-repository-settings"><a class="anchor" href="#reactive-repository-settings"></a><a class="link" href="#reactive-repository-settings">20.1.3. Reactive Repository settings</a></h4>
+<h4 id="reactive-repository-settings"><a class="anchor" href="#reactive-repository-settings"></a><a class="link" href="#reactive-repository-settings">15.1.3. Reactive Repository settings</a></h4>
 <div class="paragraph">
 <p>Spring Data Repositories can be configured via the <code>@EnableReactiveFirestoreRepositories</code> annotation on your main <code>@Configuration</code> class.
 With our Spring Boot Starter for Spring Data Cloud Firestore, <code>@EnableReactiveFirestoreRepositories</code> is automatically added.
@@ -9128,7 +9105,7 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 </div>
 <div class="sect3">
-<h4 id="autoconfiguration-3"><a class="anchor" href="#autoconfiguration-3"></a><a class="link" href="#autoconfiguration-3">20.1.4. Autoconfiguration</a></h4>
+<h4 id="autoconfiguration-3"><a class="anchor" href="#autoconfiguration-3"></a><a class="link" href="#autoconfiguration-3">15.1.4. Autoconfiguration</a></h4>
 <div class="paragraph">
 <p>Our Spring Boot autoconfiguration creates the following beans available in the Spring application context:</p>
 </div>
@@ -9148,7 +9125,7 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 </div>
 <div class="sect2">
-<h3 id="object-mapping-3"><a class="anchor" href="#object-mapping-3"></a><a class="link" href="#object-mapping-3">20.2. Object Mapping</a></h3>
+<h3 id="object-mapping-3"><a class="anchor" href="#object-mapping-3"></a><a class="link" href="#object-mapping-3">15.2. Object Mapping</a></h3>
 <div class="paragraph">
 <p>Spring Data Cloud Firestore allows you to map domain POJOs to <a href="https://firebase.google.com/docs/firestore/data-model#collections">Cloud Firestore collections</a> and documents via annotations:</p>
 </div>
@@ -9220,7 +9197,7 @@ Internally we use Firestore client library object mapping. See <a href="https://
 </table>
 </div>
 <div class="sect3">
-<h4 id="embedded-entities-and-lists"><a class="anchor" href="#embedded-entities-and-lists"></a><a class="link" href="#embedded-entities-and-lists">20.2.1. Embedded entities and lists</a></h4>
+<h4 id="embedded-entities-and-lists"><a class="anchor" href="#embedded-entities-and-lists"></a><a class="link" href="#embedded-entities-and-lists">15.2.1. Embedded entities and lists</a></h4>
 <div class="paragraph">
 <p>Spring Data Cloud Firestore supports embedded properties of custom types and lists.
 Given a custom POJO definition, you can have properties of this type or lists of this type in your entities.
@@ -9292,7 +9269,7 @@ public class User {
 </div>
 </div>
 <div class="sect2">
-<h3 id="reactive-repositories"><a class="anchor" href="#reactive-repositories"></a><a class="link" href="#reactive-repositories">20.3. Reactive Repositories</a></h3>
+<h3 id="reactive-repositories"><a class="anchor" href="#reactive-repositories"></a><a class="link" href="#reactive-repositories">15.3. Reactive Repositories</a></h3>
 <div class="paragraph">
 <p><a href="https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/reactive/ReactiveCrudRepository.html">Spring Data Repositories</a> is an abstraction that can reduce boilerplate code.</p>
 </div>
@@ -9417,7 +9394,7 @@ Custom queries with <code>@Query</code> annotation are not supported since there
 </div>
 </div>
 <div class="sect2">
-<h3 id="firestore-operations-template"><a class="anchor" href="#firestore-operations-template"></a><a class="link" href="#firestore-operations-template">20.4. Firestore Operations &amp; Template</a></h3>
+<h3 id="firestore-operations-template"><a class="anchor" href="#firestore-operations-template"></a><a class="link" href="#firestore-operations-template">15.4. Firestore Operations &amp; Template</a></h3>
 <div class="paragraph">
 <p><code>FirestoreOperations</code> and its implementation, <code>FirestoreTemplate</code>, provides the Template pattern familiar to Spring developers.</p>
 </div>
@@ -9465,7 +9442,7 @@ public class FirestoreTemplateExample {
 </div>
 </div>
 <div class="sect2">
-<h3 id="query-methods-by-convention-3"><a class="anchor" href="#query-methods-by-convention-3"></a><a class="link" href="#query-methods-by-convention-3">20.5. Query methods by convention</a></h3>
+<h3 id="query-methods-by-convention-3"><a class="anchor" href="#query-methods-by-convention-3"></a><a class="link" href="#query-methods-by-convention-3">15.5. Query methods by convention</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
@@ -9566,7 +9543,7 @@ If <code>in</code> operation is used in combination with <code>contains</code> o
 </div>
 </div>
 <div class="sect2">
-<h3 id="transactions-4"><a class="anchor" href="#transactions-4"></a><a class="link" href="#transactions-4">20.6. Transactions</a></h3>
+<h3 id="transactions-4"><a class="anchor" href="#transactions-4"></a><a class="link" href="#transactions-4">15.6. Transactions</a></h3>
 <div class="paragraph">
 <p>Read-only and read-write transactions are provided by <code>TransactionalOperator</code> (see this <a href="https://spring.io/blog/2019/05/16/reactive-transactions-with-spring">blog post</a> on reactive transactions for details).
 In order to use it, you would need to autowire <code>ReactiveFirestoreTransactionManager</code> like this:</p>
@@ -9636,7 +9613,7 @@ Otherwise, the commit operation is performed.
 </table>
 </div>
 <div class="sect3">
-<h4 id="declarative-transactions-with-transactional-annotation-3"><a class="anchor" href="#declarative-transactions-with-transactional-annotation-3"></a><a class="link" href="#declarative-transactions-with-transactional-annotation-3">20.6.1. Declarative Transactions with @Transactional Annotation</a></h4>
+<h4 id="declarative-transactions-with-transactional-annotation-3"><a class="anchor" href="#declarative-transactions-with-transactional-annotation-3"></a><a class="link" href="#declarative-transactions-with-transactional-annotation-3">15.6.1. Declarative Transactions with @Transactional Annotation</a></h4>
 <div class="paragraph">
 <p>This feature requires a bean of <code>SpannerTransactionManager</code>, which is provided when using <code>spring-cloud-gcp-starter-data-firestore</code>.</p>
 </div>
@@ -9709,7 +9686,7 @@ If no error occurs, the transaction will be committed.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="subcollections"><a class="anchor" href="#subcollections"></a><a class="link" href="#subcollections">20.7. Subcollections</a></h3>
+<h3 id="subcollections"><a class="anchor" href="#subcollections"></a><a class="link" href="#subcollections">15.7. Subcollections</a></h3>
 <div class="paragraph">
 <p>A subcollection is a collection associated with a specific entity.
 Documents in subcollections can contain subcollections as well, allowing you to further nest data. You can nest data up to 100 levels deep.</p>
@@ -9758,7 +9735,7 @@ assertThat(bobTemplate.findAll(PhoneNumber.class).collectList().block()).isEmpty
 </div>
 </div>
 <div class="sect2">
-<h3 id="update-time-and-optimistic-locking"><a class="anchor" href="#update-time-and-optimistic-locking"></a><a class="link" href="#update-time-and-optimistic-locking">20.8. Update Time and Optimistic Locking</a></h3>
+<h3 id="update-time-and-optimistic-locking"><a class="anchor" href="#update-time-and-optimistic-locking"></a><a class="link" href="#update-time-and-optimistic-locking">15.8. Update Time and Optimistic Locking</a></h3>
 <div class="paragraph">
 <p>Firestore stores update time for every document.
 If you would like to retrieve it, you can add a field of <code>com.google.cloud.Timestamp</code> type to your entity and annotate it with <code>@UpdateTime</code> annotation.</p>
@@ -9791,7 +9768,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 </div>
 </div>
 <div class="sect2">
-<h3 id="cloud-firestore-spring-boot-starter"><a class="anchor" href="#cloud-firestore-spring-boot-starter"></a><a class="link" href="#cloud-firestore-spring-boot-starter">20.9. Cloud Firestore Spring Boot Starter</a></h3>
+<h3 id="cloud-firestore-spring-boot-starter"><a class="anchor" href="#cloud-firestore-spring-boot-starter"></a><a class="link" href="#cloud-firestore-spring-boot-starter">15.9. Cloud Firestore Spring Boot Starter</a></h3>
 <div class="paragraph">
 <p>If you prefer using Firestore client only, Spring Cloud GCP provides a convenience starter which automatically configures authentication settings and client objects needed to begin using <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in native mode.</p>
 </div>
@@ -9823,7 +9800,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 </div>
 </div>
 <div class="sect3">
-<h4 id="using-cloud-firestore"><a class="anchor" href="#using-cloud-firestore"></a><a class="link" href="#using-cloud-firestore">20.9.1. Using Cloud Firestore</a></h4>
+<h4 id="using-cloud-firestore"><a class="anchor" href="#using-cloud-firestore"></a><a class="link" href="#using-cloud-firestore">15.9.1. Using Cloud Firestore</a></h4>
 <div class="paragraph">
 <p>The starter automatically configures and registers a <code>Firestore</code> bean in the Spring application context. To start using it, simply use the <code>@Autowired</code> annotation.</p>
 </div>
@@ -9859,7 +9836,7 @@ Firestore firestore;
 </div>
 </div>
 <div class="sect2">
-<h3 id="emulator-usage"><a class="anchor" href="#emulator-usage"></a><a class="link" href="#emulator-usage">20.10. Emulator Usage</a></h3>
+<h3 id="emulator-usage"><a class="anchor" href="#emulator-usage"></a><a class="link" href="#emulator-usage">15.10. Emulator Usage</a></h3>
 <div class="paragraph">
 <p>The Google Cloud Firebase SDK provides a local, in-memory emulator for Cloud Firestore, which you can use to develop and test your application.</p>
 </div>
@@ -9892,7 +9869,7 @@ spring.cloud.gcp.firestore.host-port=${EMULATOR_HOSTPORT}</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="samples-3"><a class="anchor" href="#samples-3"></a><a class="link" href="#samples-3">20.11. Samples</a></h3>
+<h3 id="samples-3"><a class="anchor" href="#samples-3"></a><a class="link" href="#samples-3">15.11. Samples</a></h3>
 <div class="paragraph">
 <p>Spring Cloud GCP provides Firestore sample applications to demonstrate API usage:</p>
 </div>
@@ -9910,10 +9887,10 @@ spring.cloud.gcp.firestore.host-port=${EMULATOR_HOSTPORT}</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="cloud-memorystore-for-redis"><a class="anchor" href="#cloud-memorystore-for-redis"></a><a class="link" href="#cloud-memorystore-for-redis">21. Cloud Memorystore for Redis</a></h2>
+<h2 id="cloud-memorystore-for-redis"><a class="anchor" href="#cloud-memorystore-for-redis"></a><a class="link" href="#cloud-memorystore-for-redis">16. Cloud Memorystore for Redis</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="spring-caching"><a class="anchor" href="#spring-caching"></a><a class="link" href="#spring-caching">21.1. Spring Caching</a></h3>
+<h3 id="spring-caching"><a class="anchor" href="#spring-caching"></a><a class="link" href="#spring-caching">16.1. Spring Caching</a></h3>
 <div class="paragraph">
 <p><a href="https://cloud.google.com/memorystore/">Cloud Memorystore for Redis</a> provides a fully managed in-memory data store service.
 Cloud Memorystore is compatible with the Redis protocol, allowing easy integration with <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-caching.html">Spring Caching</a>.</p>
@@ -9972,7 +9949,7 @@ public String hello(@PathVariable String name) {
 </div>
 </div>
 <div class="sect1">
-<h2 id="bigquery"><a class="anchor" href="#bigquery"></a><a class="link" href="#bigquery">22. BigQuery</a></h2>
+<h2 id="bigquery"><a class="anchor" href="#bigquery"></a><a class="link" href="#bigquery">17. BigQuery</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a href="https://cloud.google.com/bigquery">Google Cloud BigQuery</a> is a fully managed, petabyte scale, low cost analytics data warehouse.</p>
@@ -10012,7 +9989,7 @@ public String hello(@PathVariable String name) {
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-8"><a class="anchor" href="#configuration-8"></a><a class="link" href="#configuration-8">22.1. Configuration</a></h3>
+<h3 id="configuration-8"><a class="anchor" href="#configuration-8"></a><a class="link" href="#configuration-8">17.1. Configuration</a></h3>
 <div class="paragraph">
 <p>The following application properties may be configured with Spring Cloud GCP BigQuery libraries.</p>
 </div>
@@ -10057,7 +10034,7 @@ public String hello(@PathVariable String name) {
 </tbody>
 </table>
 <div class="sect3">
-<h4 id="bigquery-client-object"><a class="anchor" href="#bigquery-client-object"></a><a class="link" href="#bigquery-client-object">22.1.1. BigQuery Client Object</a></h4>
+<h4 id="bigquery-client-object"><a class="anchor" href="#bigquery-client-object"></a><a class="link" href="#bigquery-client-object">17.1.1. BigQuery Client Object</a></h4>
 <div class="paragraph">
 <p>The <code>GcpBigQueryAutoConfiguration</code> class configures an instance of <a href="https://googleapis.dev/java/google-cloud-clients/latest/com/google/cloud/bigquery/BigQuery.html"><code>BigQuery</code></a> for you by inferring your credentials and Project ID from the machine&#8217;s environment.</p>
 </div>
@@ -10090,7 +10067,7 @@ For more information, see the <a href="https://cloud.google.com/bigquery/docs/re
 </div>
 </div>
 <div class="sect3">
-<h4 id="bigquerytemplate"><a class="anchor" href="#bigquerytemplate"></a><a class="link" href="#bigquerytemplate">22.1.2. BigQueryTemplate</a></h4>
+<h4 id="bigquerytemplate"><a class="anchor" href="#bigquerytemplate"></a><a class="link" href="#bigquerytemplate">17.1.2. BigQueryTemplate</a></h4>
 <div class="paragraph">
 <p>The <code>BigQueryTemplate</code> class is a wrapper over the <code>BigQuery</code> client object and makes it easier to load data into BigQuery tables.
 A <code>BigQueryTemplate</code> is scoped to a single dataset.
@@ -10120,7 +10097,7 @@ public void loadData(InputStream dataInputStream, String tableName) {
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-integration-2"><a class="anchor" href="#spring-integration-2"></a><a class="link" href="#spring-integration-2">22.2. Spring Integration</a></h3>
+<h3 id="spring-integration-2"><a class="anchor" href="#spring-integration-2"></a><a class="link" href="#spring-integration-2">17.2. Spring Integration</a></h3>
 <div class="paragraph">
 <p>Spring Cloud GCP BigQuery also provides a Spring Integration message handler <code>BigQueryFileMessageHandler</code>.
 This is useful for incorporating BigQuery data loading operations in a Spring Integration pipeline.</p>
@@ -10151,7 +10128,7 @@ public MessageHandler messageSender(BigQueryTemplate bigQueryTemplate) {
 </div>
 </div>
 <div class="sect3">
-<h4 id="bigquery-message-handling"><a class="anchor" href="#bigquery-message-handling"></a><a class="link" href="#bigquery-message-handling">22.2.1. BigQuery Message Handling</a></h4>
+<h4 id="bigquery-message-handling"><a class="anchor" href="#bigquery-message-handling"></a><a class="link" href="#bigquery-message-handling">17.2.1. BigQuery Message Handling</a></h4>
 <div class="paragraph">
 <p>The <code>BigQueryFileMessageHandler</code> accepts the following message payload types for loading into BigQuery: <code>java.io.File</code>, <code>byte[]</code>, <code>org.springframework.core.io.Resource</code>, and <code>java.io.InputStream</code>.
 The message payload will be streamed and written to the BigQuery table you specify.</p>
@@ -10185,7 +10162,7 @@ The headers are specified by the class <code>BigQuerySpringMessageHeaders</code>
 </div>
 </div>
 <div class="sect3">
-<h4 id="bigquery-message-reply"><a class="anchor" href="#bigquery-message-reply"></a><a class="link" href="#bigquery-message-reply">22.2.2. BigQuery Message Reply</a></h4>
+<h4 id="bigquery-message-reply"><a class="anchor" href="#bigquery-message-reply"></a><a class="link" href="#bigquery-message-reply">17.2.2. BigQuery Message Reply</a></h4>
 <div class="paragraph">
 <p>After the <code>BigQueryFileMessageHandler</code> processes a message to load data to your BigQuery table, it will respond with a <code>Job</code> on the reply channel.
 The <a href="https://googleapis.dev/java/google-cloud-clients/latest/index.html?com/google/cloud/bigquery/package-summary.html">Job object</a> provides metadata and information about the load file operation.</p>
@@ -10213,7 +10190,7 @@ This is needed to indicate that you wish to reply on the built-in async support 
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-10"><a class="anchor" href="#sample-10"></a><a class="link" href="#sample-10">22.3. Sample</a></h3>
+<h3 id="sample-10"><a class="anchor" href="#sample-10"></a><a class="link" href="#sample-10">17.3. Sample</a></h3>
 <div class="paragraph">
 <p>A BigQuery <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-bigquery-sample">sample application</a> is available.</p>
 </div>
@@ -10221,7 +10198,7 @@ This is needed to indicate that you wish to reply on the built-in async support 
 </div>
 </div>
 <div class="sect1">
-<h2 id="cloud-iap"><a class="anchor" href="#cloud-iap"></a><a class="link" href="#cloud-iap">23. Cloud IAP</a></h2>
+<h2 id="cloud-iap"><a class="anchor" href="#cloud-iap"></a><a class="link" href="#cloud-iap">18. Cloud IAP</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a href="https://cloud.google.com/iap/">Cloud Identity-Aware Proxy (IAP)</a> provides a security layer over applications deployed to Google Cloud.</p>
@@ -10310,7 +10287,7 @@ If you create a custom <a href="https://docs.spring.io/spring-security/site/docs
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-9"><a class="anchor" href="#configuration-9"></a><a class="link" href="#configuration-9">23.1. Configuration</a></h3>
+<h3 id="configuration-9"><a class="anchor" href="#configuration-9"></a><a class="link" href="#configuration-9">18.1. Configuration</a></h3>
 <div class="paragraph">
 <p>The following properties are available.</p>
 </div>
@@ -10376,7 +10353,7 @@ Modifying registry, algorithm, and header properties might be useful for testing
 </table>
 </div>
 <div class="sect2">
-<h3 id="sample-11"><a class="anchor" href="#sample-11"></a><a class="link" href="#sample-11">23.2. Sample</a></h3>
+<h3 id="sample-11"><a class="anchor" href="#sample-11"></a><a class="link" href="#sample-11">18.2. Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-security-iap-sample">sample application</a> is available.</p>
 </div>
@@ -10384,7 +10361,7 @@ Modifying registry, algorithm, and header properties might be useful for testing
 </div>
 </div>
 <div class="sect1">
-<h2 id="cloud-vision"><a class="anchor" href="#cloud-vision"></a><a class="link" href="#cloud-vision">24. Cloud Vision</a></h2>
+<h2 id="cloud-vision"><a class="anchor" href="#cloud-vision"></a><a class="link" href="#cloud-vision">19. Cloud Vision</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The <a href="https://cloud.google.com/vision/">Google Cloud Vision API</a> allows users to leverage machine learning algorithms for processing images and documents including: image classification, face detection, text extraction, optical character recognition, and others.</p>
@@ -10416,7 +10393,7 @@ Modifying registry, algorithm, and header properties might be useful for testing
 </ul>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup"><a class="anchor" href="#dependency-setup"></a><a class="link" href="#dependency-setup">24.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup"><a class="anchor" href="#dependency-setup"></a><a class="link" href="#dependency-setup">19.1. Dependency Setup</a></h3>
 <div class="paragraph">
 <p>To begin using this library, add the <code>spring-cloud-gcp-starter-vision</code> artifact to your project.</p>
 </div>
@@ -10443,7 +10420,7 @@ Modifying registry, algorithm, and header properties might be useful for testing
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-10"><a class="anchor" href="#configuration-10"></a><a class="link" href="#configuration-10">24.2. Configuration</a></h3>
+<h3 id="configuration-10"><a class="anchor" href="#configuration-10"></a><a class="link" href="#configuration-10">19.2. Configuration</a></h3>
 <div class="paragraph">
 <p>The following options may be configured with Spring Cloud GCP Vision libraries.</p>
 </div>
@@ -10482,7 +10459,7 @@ Modifying registry, algorithm, and header properties might be useful for testing
 </tbody>
 </table>
 <div class="sect3">
-<h4 id="cloud-vision-ocr-dependencies"><a class="anchor" href="#cloud-vision-ocr-dependencies"></a><a class="link" href="#cloud-vision-ocr-dependencies">24.2.1. Cloud Vision OCR Dependencies</a></h4>
+<h4 id="cloud-vision-ocr-dependencies"><a class="anchor" href="#cloud-vision-ocr-dependencies"></a><a class="link" href="#cloud-vision-ocr-dependencies">19.2.1. Cloud Vision OCR Dependencies</a></h4>
 <div class="paragraph">
 <p>If you are interested in applying optical character recognition (OCR) on documents for your project, you&#8217;ll need to add both <code>spring-cloud-gcp-starter-vision</code> and <code>spring-cloud-gcp-starter-storage</code> to your dependencies.
 The storage starter is necessary because the Cloud Vision API will process your documents and write OCR output files all within your Google Cloud Storage buckets.</p>
@@ -10516,7 +10493,7 @@ The storage starter is necessary because the Cloud Vision API will process your 
 </div>
 </div>
 <div class="sect2">
-<h3 id="image-analysis"><a class="anchor" href="#image-analysis"></a><a class="link" href="#image-analysis">24.3. Image Analysis</a></h3>
+<h3 id="image-analysis"><a class="anchor" href="#image-analysis"></a><a class="link" href="#image-analysis">19.3. Image Analysis</a></h3>
 <div class="paragraph">
 <p>The <code>CloudVisionTemplate</code> allows you to easily analyze images; it provides the following method for interfacing with Cloud Vision:</p>
 </div>
@@ -10557,7 +10534,7 @@ Additionally, you may consult the <a href="https://cloud.google.com/vision/docs/
 </ul>
 </div>
 <div class="sect3">
-<h4 id="detect-image-labels-example"><a class="anchor" href="#detect-image-labels-example"></a><a class="link" href="#detect-image-labels-example">24.3.1. Detect Image Labels Example</a></h4>
+<h4 id="detect-image-labels-example"><a class="anchor" href="#detect-image-labels-example"></a><a class="link" href="#detect-image-labels-example">19.3.1. Detect Image Labels Example</a></h4>
 <div class="paragraph">
 <p><a href="https://cloud.google.com/vision/docs/detecting-labels">Image labeling</a> refers to producing labels that describe the contents of an image.
 Below is a code sample of how this is done using the Cloud Vision Spring Template.</p>
@@ -10581,7 +10558,7 @@ public void processImage() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="file-analysis"><a class="anchor" href="#file-analysis"></a><a class="link" href="#file-analysis">24.4. File Analysis</a></h3>
+<h3 id="file-analysis"><a class="anchor" href="#file-analysis"></a><a class="link" href="#file-analysis">19.4. File Analysis</a></h3>
 <div class="paragraph">
 <p>The <code>CloudVisionTemplate</code> allows you to easily analyze PDF, TIFF and GIF documents; it provides the following method for interfacing with Cloud Vision:</p>
 </div>
@@ -10627,7 +10604,7 @@ Additionally, you may consult the <a href="https://cloud.google.com/vision/docs/
 </ul>
 </div>
 <div class="sect3">
-<h4 id="running-text-detection-example"><a class="anchor" href="#running-text-detection-example"></a><a class="link" href="#running-text-detection-example">24.4.1. Running Text Detection Example</a></h4>
+<h4 id="running-text-detection-example"><a class="anchor" href="#running-text-detection-example"></a><a class="link" href="#running-text-detection-example">19.4.1. Running Text Detection Example</a></h4>
 <div class="paragraph">
 <p><a href="https://cloud.google.com/vision/docs/file-small-batch">Detect text in files</a> refers to extracting text from small document such as PDF or TIFF.
 Below is a code sample of how this is done using the Cloud Vision Spring Template.</p>
@@ -10657,7 +10634,7 @@ public void processPdf() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="document-ocr-template"><a class="anchor" href="#document-ocr-template"></a><a class="link" href="#document-ocr-template">24.5. Document OCR Template</a></h3>
+<h3 id="document-ocr-template"><a class="anchor" href="#document-ocr-template"></a><a class="link" href="#document-ocr-template">19.5. Document OCR Template</a></h3>
 <div class="paragraph">
 <p>The <code>DocumentOcrTemplate</code> allows you to easily run <a href="https://cloud.google.com/vision/docs/pdf">optical character recognition (OCR)</a> on your PDF and TIFF documents stored in your Google Storage bucket.</p>
 </div>
@@ -10665,7 +10642,7 @@ public void processPdf() {
 <p>First, you will need to create a bucket in <a href="https://console.cloud.google.com/storage">Google Cloud Storage</a> and <a href="https://cloud.google.com/storage/docs/uploading-objects#storage-upload-object-java">upload the documents you wish to process into the bucket</a>.</p>
 </div>
 <div class="sect3">
-<h4 id="running-ocr-on-a-document"><a class="anchor" href="#running-ocr-on-a-document"></a><a class="link" href="#running-ocr-on-a-document">24.5.1. Running OCR on a Document</a></h4>
+<h4 id="running-ocr-on-a-document"><a class="anchor" href="#running-ocr-on-a-document"></a><a class="link" href="#running-ocr-on-a-document">19.5.1. Running OCR on a Document</a></h4>
 <div class="paragraph">
 <p>When OCR is run on a document, the Cloud Vision APIs will output a collection of OCR output files in JSON which describe the text content, bounding rectangles of words and letters, and other information about the document.</p>
 </div>
@@ -10694,7 +10671,7 @@ It is recommended to register callbacks to the returned ListenableFuture or igno
 </div>
 </div>
 <div class="sect3">
-<h4 id="running-ocr-example"><a class="anchor" href="#running-ocr-example"></a><a class="link" href="#running-ocr-example">24.5.2. Running OCR Example</a></h4>
+<h4 id="running-ocr-example"><a class="anchor" href="#running-ocr-example"></a><a class="link" href="#running-ocr-example">19.5.2. Running OCR Example</a></h4>
 <div class="paragraph">
 <p>Below is a code snippet of how to run OCR on a document stored in a Google Storage bucket and read the text in the first page of the document.</p>
 </div>
@@ -10722,7 +10699,7 @@ public void runOcrOnDocument() {
 </div>
 </div>
 <div class="sect3">
-<h4 id="reading-ocr-output-files"><a class="anchor" href="#reading-ocr-output-files"></a><a class="link" href="#reading-ocr-output-files">24.5.3. Reading OCR Output Files</a></h4>
+<h4 id="reading-ocr-output-files"><a class="anchor" href="#reading-ocr-output-files"></a><a class="link" href="#reading-ocr-output-files">19.5.3. Reading OCR Output Files</a></h4>
 <div class="paragraph">
 <p>In some use-cases, you may need to directly read OCR output files stored in Google Cloud Storage.</p>
 </div>
@@ -10744,7 +10721,7 @@ Reads a single OCR output file and returns the parsed contents.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="reading-ocr-output-files-example"><a class="anchor" href="#reading-ocr-output-files-example"></a><a class="link" href="#reading-ocr-output-files-example">24.5.4. Reading OCR Output Files Example</a></h4>
+<h4 id="reading-ocr-output-files-example"><a class="anchor" href="#reading-ocr-output-files-example"></a><a class="link" href="#reading-ocr-output-files-example">19.5.4. Reading OCR Output Files Example</a></h4>
 <div class="paragraph">
 <p>The code snippet below describes how to read the OCR output files of a single document.</p>
 </div>
@@ -10775,7 +10752,7 @@ public void parseSingleOutputFile() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-12"><a class="anchor" href="#sample-12"></a><a class="link" href="#sample-12">24.6. Sample</a></h3>
+<h3 id="sample-12"><a class="anchor" href="#sample-12"></a><a class="link" href="#sample-12">19.6. Sample</a></h3>
 <div class="paragraph">
 <p>Samples are provided to show example usages of Spring Cloud GCP with Google Cloud Vision.</p>
 </div>
@@ -10794,7 +10771,7 @@ The application generates labels describing the content inside the images you sp
 </div>
 </div>
 <div class="sect1">
-<h2 id="secret-manager"><a class="anchor" href="#secret-manager"></a><a class="link" href="#secret-manager">25. Secret Manager</a></h2>
+<h2 id="secret-manager"><a class="anchor" href="#secret-manager"></a><a class="link" href="#secret-manager">20. Secret Manager</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a href="https://cloud.google.com/secret-manager">Google Cloud Secret Manager</a> is a secure and convenient method for storing API keys, passwords, certificates, and other sensitive data.
@@ -10814,7 +10791,7 @@ A detailed summary of its features can be found in the <a href="https://cloud.go
 </ul>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-2"><a class="anchor" href="#dependency-setup-2"></a><a class="link" href="#dependency-setup-2">25.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup-2"><a class="anchor" href="#dependency-setup-2"></a><a class="link" href="#dependency-setup-2">20.1. Dependency Setup</a></h3>
 <div class="paragraph">
 <p>To begin using this library, add the <code>spring-cloud-gcp-starter-secretmanager</code> artifact to your project.</p>
 </div>
@@ -10840,7 +10817,7 @@ A detailed summary of its features can be found in the <a href="https://cloud.go
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-11"><a class="anchor" href="#configuration-11"></a><a class="link" href="#configuration-11">25.1.1. Configuration</a></h4>
+<h4 id="configuration-11"><a class="anchor" href="#configuration-11"></a><a class="link" href="#configuration-11">20.1.1. Configuration</a></h4>
 <div class="paragraph">
 <p>By default, Spring Cloud GCP Secret Manager will authenticate using Application Default Credentials.
 This can be overridden using the authentication properties.</p>
@@ -10900,7 +10877,7 @@ All of the below settings must be specified in a <a href="https://cloud.spring.i
 </div>
 </div>
 <div class="sect2">
-<h3 id="secret-manager-property-source"><a class="anchor" href="#secret-manager-property-source"></a><a class="link" href="#secret-manager-property-source">25.2. Secret Manager Property Source</a></h3>
+<h3 id="secret-manager-property-source"><a class="anchor" href="#secret-manager-property-source"></a><a class="link" href="#secret-manager-property-source">20.2. Secret Manager Property Source</a></h3>
 <div class="paragraph">
 <p>The Spring Cloud GCP integration for Google Cloud Secret Manager enables you to use Secret Manager as a bootstrap property source.</p>
 </div>
@@ -10959,7 +10936,7 @@ spring.datasource.password=${sm://projects/my-gcp-project/secrets/my-secret}</co
 </div>
 </div>
 <div class="sect2">
-<h3 id="secret-manager-template"><a class="anchor" href="#secret-manager-template"></a><a class="link" href="#secret-manager-template">25.3. Secret Manager Template</a></h3>
+<h3 id="secret-manager-template"><a class="anchor" href="#secret-manager-template"></a><a class="link" href="#secret-manager-template">20.3. Secret Manager Template</a></h3>
 <div class="paragraph">
 <p>The <code>SecretManagerTemplate</code> class simplifies operations of creating, updating, and reading secrets.</p>
 </div>
@@ -10977,7 +10954,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-13"><a class="anchor" href="#sample-13"></a><a class="link" href="#sample-13">25.4. Sample</a></h3>
+<h3 id="sample-13"><a class="anchor" href="#sample-13"></a><a class="link" href="#sample-13">20.4. Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-secretmanager-sample">Secret Manager Sample Application</a> is provided which demonstrates basic property source loading and usage of the template class.</p>
 </div>
@@ -10985,7 +10962,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="google-cloud-key-management-service"><a class="anchor" href="#google-cloud-key-management-service"></a><a class="link" href="#google-cloud-key-management-service">26. Google Cloud Key Management Service</a></h2>
+<h2 id="google-cloud-key-management-service"><a class="anchor" href="#google-cloud-key-management-service"></a><a class="link" href="#google-cloud-key-management-service">21. Google Cloud Key Management Service</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The <a href="https://cloud.google.com/kms/docs">Google Cloud Key Management Service (KMS)</a> allows you to create, import, and manage cryptographic keys and perform cryptographic operations in a single centralized cloud service.</p>
@@ -10994,7 +10971,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 <p>Spring Cloud GCP offers a utility template class <code>KmsTemplate</code> which allows you to conveniently encrypt and decrypt binary or text data.</p>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-3"><a class="anchor" href="#dependency-setup-3"></a><a class="link" href="#dependency-setup-3">26.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup-3"><a class="anchor" href="#dependency-setup-3"></a><a class="link" href="#dependency-setup-3">21.1. Dependency Setup</a></h3>
 <div class="paragraph">
 <p>To begin using this library, add the <code>spring-cloud-gcp-starter-kms</code> artifact to your project.</p>
 </div>
@@ -11021,7 +10998,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-12"><a class="anchor" href="#configuration-12"></a><a class="link" href="#configuration-12">26.2. Configuration</a></h3>
+<h3 id="configuration-12"><a class="anchor" href="#configuration-12"></a><a class="link" href="#configuration-12">21.2. Configuration</a></h3>
 <div class="paragraph">
 <p>The following options may be configured with Spring Cloud GCP KMS libraries.</p>
 </div>
@@ -11061,7 +11038,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </table>
 </div>
 <div class="sect2">
-<h3 id="basic-usage"><a class="anchor" href="#basic-usage"></a><a class="link" href="#basic-usage">26.3. Basic Usage</a></h3>
+<h3 id="basic-usage"><a class="anchor" href="#basic-usage"></a><a class="link" href="#basic-usage">21.3. Basic Usage</a></h3>
 <div class="paragraph">
 <p>Once you have added the <code>spring-cloud-gcp-starter-kms</code> to your project, the autoconfiguration class <code>com.google.cloud.spring.autoconfigure.kms.GcpKmsAutoConfiguration</code> will be activated for your project.</p>
 </div>
@@ -11072,7 +11049,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 <p>The template class automatically validates the CRC32 checksums received responses from Cloud KMS APIs to verify correctness of the response.</p>
 </div>
 <div class="sect3">
-<h4 id="cloud-kms-key-id-format"><a class="anchor" href="#cloud-kms-key-id-format"></a><a class="link" href="#cloud-kms-key-id-format">26.3.1. Cloud KMS Key ID format</a></h4>
+<h4 id="cloud-kms-key-id-format"><a class="anchor" href="#cloud-kms-key-id-format"></a><a class="link" href="#cloud-kms-key-id-format">21.3.1. Cloud KMS Key ID format</a></h4>
 <div class="paragraph">
 <p>Spring Cloud GCP offers the following key syntax to specify Cloud KMS keys in your project:</p>
 </div>
@@ -11104,7 +11081,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-14"><a class="anchor" href="#sample-14"></a><a class="link" href="#sample-14">26.4. Sample</a></h3>
+<h3 id="sample-14"><a class="anchor" href="#sample-14"></a><a class="link" href="#sample-14">21.4. Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-kms-sample">Cloud KMS Sample Application</a> is provided which demonstrates basic encryption and decryption operations.</p>
 </div>
@@ -11112,7 +11089,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="cloud-runtime-configuration-api"><a class="anchor" href="#cloud-runtime-configuration-api"></a><a class="link" href="#cloud-runtime-configuration-api">27. Cloud Runtime Configuration API</a></h2>
+<h2 id="cloud-runtime-configuration-api"><a class="anchor" href="#cloud-runtime-configuration-api"></a><a class="link" href="#cloud-runtime-configuration-api">22. Cloud Runtime Configuration API</a></h2>
 <div class="sectionbody">
 <div class="admonitionblock warning">
 <table>
@@ -11158,7 +11135,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">27.1. Configuration</a></h3>
+<h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">22.1. Configuration</a></h3>
 <div class="paragraph">
 <p>The following parameters are configurable in Spring Cloud GCP Config:</p>
 </div>
@@ -11254,7 +11231,7 @@ Core properties, as described in <a href="#spring-cloud-gcp-core">Spring Cloud G
 </div>
 </div>
 <div class="sect2">
-<h3 id="quick-start"><a class="anchor" href="#quick-start"></a><a class="link" href="#quick-start">27.2. Quick start</a></h3>
+<h3 id="quick-start"><a class="anchor" href="#quick-start"></a><a class="link" href="#quick-start">22.2. Quick start</a></h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -11308,7 +11285,7 @@ public class SampleConfig {
 </div>
 </div>
 <div class="sect2">
-<h3 id="refreshing-the-configuration-at-runtime"><a class="anchor" href="#refreshing-the-configuration-at-runtime"></a><a class="link" href="#refreshing-the-configuration-at-runtime">27.3. Refreshing the configuration at runtime</a></h3>
+<h3 id="refreshing-the-configuration-at-runtime"><a class="anchor" href="#refreshing-the-configuration-at-runtime"></a><a class="link" href="#refreshing-the-configuration-at-runtime">22.3. Refreshing the configuration at runtime</a></h3>
 <div class="paragraph">
 <p><a href="https://cloud.spring.io/spring-cloud-static/docs/1.0.x/spring-cloud.html#_endpoints">Spring Cloud</a> provides support to have configuration parameters be reloadable with the POST request to <code>/actuator/refresh</code> endpoint.</p>
 </div>
@@ -11366,7 +11343,7 @@ public class SampleConfig {
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-15"><a class="anchor" href="#sample-15"></a><a class="link" href="#sample-15">27.4. Sample</a></h3>
+<h3 id="sample-15"><a class="anchor" href="#sample-15"></a><a class="link" href="#sample-15">22.4. Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-config-sample">sample application</a> and a <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-runtime-config/index.html">codelab</a> are available.</p>
 </div>
@@ -11374,7 +11351,7 @@ public class SampleConfig {
 </div>
 </div>
 <div class="sect1">
-<h2 id="cloud-foundry"><a class="anchor" href="#cloud-foundry"></a><a class="link" href="#cloud-foundry">28. Cloud Foundry</a></h2>
+<h2 id="cloud-foundry"><a class="anchor" href="#cloud-foundry"></a><a class="link" href="#cloud-foundry">23. Cloud Foundry</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring Cloud GCP provides support for Cloud Foundry&#8217;s <a href="https://docs.pivotal.io/partners/gcp-sb/index.html">GCP Service Broker</a>.
@@ -11423,7 +11400,7 @@ Otherwise, Cloud Foundry will produce a <code>DataSource</code> with an invalid 
 </table>
 </div>
 <div class="sect2">
-<h3 id="user-provided-services"><a class="anchor" href="#user-provided-services"></a><a class="link" href="#user-provided-services">28.1. User-Provided Services</a></h3>
+<h3 id="user-provided-services"><a class="anchor" href="#user-provided-services"></a><a class="link" href="#user-provided-services">23.1. User-Provided Services</a></h3>
 <div class="paragraph">
 <p><a href="https://docs.cloudfoundry.org/devguide/services/user-provided.html">User-provided services</a> enable developers to use services that are not available in the marketplace with their apps running on Cloud Foundry.
 For example, you may want to use a user-provided service that points to a shared Google Service (like Cloud Spanner) used across your organization.</p>
@@ -11498,7 +11475,7 @@ The tag should simply be the Cloud Foundry name for the Google Service.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="kotlin-support"><a class="anchor" href="#kotlin-support"></a><a class="link" href="#kotlin-support">29. Kotlin Support</a></h2>
+<h2 id="kotlin-support"><a class="anchor" href="#kotlin-support"></a><a class="link" href="#kotlin-support">24. Kotlin Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The latest version of the Spring Framework provides first-class support for Kotlin.
@@ -11508,7 +11485,7 @@ For Kotlin users of Spring, the Spring Cloud GCP libraries work out-of-the-box a
 <p>For more information on building a Spring application in Kotlin, please consult the <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/languages.html#kotlin">Spring Kotlin documentation</a>.</p>
 </div>
 <div class="sect2">
-<h3 id="prerequisites-3"><a class="anchor" href="#prerequisites-3"></a><a class="link" href="#prerequisites-3">29.1. Prerequisites</a></h3>
+<h3 id="prerequisites-3"><a class="anchor" href="#prerequisites-3"></a><a class="link" href="#prerequisites-3">24.1. Prerequisites</a></h3>
 <div class="paragraph">
 <p>Ensure that your Kotlin application is properly set up.
 Based on your build system, you will need to include the correct Kotlin build plugin in your project:</p>
@@ -11541,7 +11518,7 @@ Based on your build system, you will need to include the correct Kotlin build pl
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-16"><a class="anchor" href="#sample-16"></a><a class="link" href="#sample-16">29.2. Sample</a></h3>
+<h3 id="sample-16"><a class="anchor" href="#sample-16"></a><a class="link" href="#sample-16">24.2. Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-kotlin-samples/spring-cloud-gcp-kotlin-app-sample">Kotlin sample application</a> is provided to demonstrate a working Maven setup and various Spring Cloud GCP integrations from within Kotlin.</p>
 </div>
@@ -11549,7 +11526,7 @@ Based on your build system, you will need to include the correct Kotlin build pl
 </div>
 </div>
 <div class="sect1">
-<h2 id="configuration-properties"><a class="anchor" href="#configuration-properties"></a><a class="link" href="#configuration-properties">30. Configuration properties</a></h2>
+<h2 id="configuration-properties"><a class="anchor" href="#configuration-properties"></a><a class="link" href="#configuration-properties">25. Configuration properties</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To see the list of all GCP related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
@@ -11557,10 +11534,10 @@ Based on your build system, you will need to include the correct Kotlin build pl
 </div>
 </div>
 <div class="sect1">
-<h2 id="migration-guide-from-spring-cloud-gcp-1-x-to-2-x"><a class="anchor" href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x"></a><a class="link" href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x">31. Migration Guide from Spring Cloud GCP 1.x to 2.x</a></h2>
+<h2 id="migration-guide-from-spring-cloud-gcp-1-x-to-2-x"><a class="anchor" href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x"></a><a class="link" href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x">26. Migration Guide from Spring Cloud GCP 1.x to 2.x</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="maven-group-id-change"><a class="anchor" href="#maven-group-id-change"></a><a class="link" href="#maven-group-id-change">31.1. Maven Group ID Change</a></h3>
+<h3 id="maven-group-id-change"><a class="anchor" href="#maven-group-id-change"></a><a class="link" href="#maven-group-id-change">26.1. Maven Group ID Change</a></h3>
 <div class="paragraph">
 <p>Spring Cloud  <a href="https://spring.io/blog/2019/07/24/simplifying-the-spring-cloud-release-train">unbundled</a> Spring Cloud GCP and other cloud providers from their release train.
 To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencies</code> bill of materials (BOM) and change the <code>spring-cloud-gcp</code> group IDs in your <code>pom.xml</code> files:</p>
@@ -11634,13 +11611,13 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 </div>
 </div>
 <div class="sect2">
-<h3 id="java-package-name-change"><a class="anchor" href="#java-package-name-change"></a><a class="link" href="#java-package-name-change">31.2. Java Package Name Change</a></h3>
+<h3 id="java-package-name-change"><a class="anchor" href="#java-package-name-change"></a><a class="link" href="#java-package-name-change">26.2. Java Package Name Change</a></h3>
 <div class="paragraph">
 <p>All code in Spring Cloud GCP has been moved from <code>org.springframework.cloud.gcp</code> over to the <code>com.google.cloud.spring</code> package.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="deprecated-items-removed"><a class="anchor" href="#deprecated-items-removed"></a><a class="link" href="#deprecated-items-removed">31.3. Deprecated Items Removed</a></h3>
+<h3 id="deprecated-items-removed"><a class="anchor" href="#deprecated-items-removed"></a><a class="link" href="#deprecated-items-removed">26.3. Deprecated Items Removed</a></h3>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Property <code>spring.cloud.gcp.datastore.emulatorHost</code> </dt>
