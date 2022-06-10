@@ -1,0 +1,31 @@
+input-files:
+  - first-page.md
+  - getting-started.md
+  - core.md
+  - storage.md
+  - sql.md
+  - pubsub.md
+  - spring-integration.md
+  - spring-stream.md
+  - spring-cloud-bus-pubsub.md
+  - trace.md
+  - logging.md
+  - metrics.md
+  - spanner.md
+  - datastore.md
+  - firestore.md
+  - memorystore.md
+  - bigquery.md
+  - security-iap.md
+  - vision.md
+  - secretmanager.md
+  - kms.md
+  - config.md
+  - cloudfoundry.md
+  - kotlin.md
+#  - configuration.md
+  - migration-guide-1.x.md
+writer:
+  gfm
+output-file:
+  documentation.md
