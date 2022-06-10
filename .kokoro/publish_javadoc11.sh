@@ -72,7 +72,7 @@ sudo pandoc \
   docs/src/main/md/kotlin.md              \
   docs/src/main/md/configuration.md       \
   docs/src/main/md/migration-guide-1.x.md \
-  -t gfm -o docs/src/main/md/documentation.md
+  -t markdown_github -o docs/src/main/md/documentation.md
 
 # copy and replace {project-version} documentation
 sed "s/{project-version}/${PROJECT_VERSION}/g" docs/src/main/md/documentation.md > target/docfx-yml/documentation.md
