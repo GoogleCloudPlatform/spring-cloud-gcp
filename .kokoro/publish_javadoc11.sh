@@ -19,15 +19,8 @@ $JAVA_HOME/bin/javac -version
 pyenv global 3.7.2
 
 # install pandoc for combining md files
-sudo apt update
-apt --version
-sudo apt list --all-versions pandoc
-sudo apt install -q -y pandoc
-pandoc --version
-sudo apt install pandoc=2.9.2.1
+sudo apt install pandoc
 
-
-sudo apt install -q -y pandoc
 # Install docuploader package
 python3 -m pip install --upgrade six
 python3 -m pip install --upgrade protobuf
@@ -52,7 +45,34 @@ echo ${PROJECT_VERSION}
 cp CHANGELOG.md target/docfx-yml/history.md
 
 # combine all doc to documentation.md
-pandoc --defaults docs/src/main/md/toc.yaml
+pandoc -t \
+  docs/src/main/md/first-page.md          \
+  docs/src/main/md/getting-started.md     \
+  docs/src/main/md/core.md                \
+  docs/src/main/md/storage.md             \
+  docs/src/main/md/sql.md                 \
+  docs/src/main/md/pubsub.md              \
+  docs/src/main/md/spring-integration.md  \
+  docs/src/main/md/spring-stream.md       \
+  docs/src/main/md/spring-cloud-bus-pubsub\
+  docs/src/main/md/trace.md               \
+  docs/src/main/md/logging.md             \
+  docs/src/main/md/metrics.md             \
+  docs/src/main/md/spanner.md             \
+  docs/src/main/md/datastore.md           \
+  docs/src/main/md/firestore.md           \
+  docs/src/main/md/memorystore.md         \
+  docs/src/main/md/bigquery.md            \
+  docs/src/main/md/security-iap.md        \
+  docs/src/main/md/vision.md              \
+  docs/src/main/md/secretmanager.md       \
+  docs/src/main/md/kms.md                 \
+  docs/src/main/md/config.md              \
+  docs/src/main/md/cloudfoundry.md        \
+  docs/src/main/md/kotlin.md              \
+  docs/src/main/md/configuration.md       \
+  docs/src/main/md/migration-guide-1.x.md \
+  gfm -o docs/src/main/md/documentation.md
 
 # copy and replace {project-version} documentation
 sed "s/{project-version}/${PROJECT_VERSION}/g" docs/src/main/md/documentation.md > target/docfx-yml/documentation.md
