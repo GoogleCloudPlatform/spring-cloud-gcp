@@ -44,14 +44,14 @@ dependencies {
 }
 ----
 
-=== Prerequisites
+==== Prerequisites
 
 In order to use the Spring Boot Starters for Google Cloud SQL, the Google Cloud SQL API must be enabled in your GCP project.
 
 To do that, go to the https://console.cloud.google.com/apis/library[API library page] of the Google Cloud Console, search for "Cloud SQL API" and enable the option that is called "Cloud SQL" .
 
 
-=== Spring Boot Starter for Google Cloud SQL
+==== Spring Boot Starter for Google Cloud SQL
 
 The Spring Boot Starters for Google Cloud SQL provide an auto-configured https://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html[`DataSource`] object.
 Coupled with Spring JDBC, it provides a
@@ -78,7 +78,7 @@ There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Co
 
 NOTE: If you provide your own `spring.datasource.url`, it will be ignored, unless you disable Cloud SQL auto configuration with `spring.cloud.gcp.sql.enabled=false` or `spring.cloud.gcp.sql.jdbc.enabled=false`.
 
-==== `DataSource` creation flow
+===== `DataSource` creation flow
 
 Spring Boot starter for Google Cloud SQL registers a `CloudSqlEnvironmentPostProcessor` that provides a correctly formatted `spring.datasource.url` property to the environment based on the properties mentioned above.
 It also provides defaults for `spring.datasource.username` and `spring.datasource.driver-class-name`, which can be overridden.
