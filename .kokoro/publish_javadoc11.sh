@@ -19,7 +19,7 @@ $JAVA_HOME/bin/javac -version
 pyenv global 3.7.2
 
 # install pandoc for combining md files
-sudo apt install pandoc
+sudo apt install -q -y pandoc
 
 # Install docuploader package
 python3 -m pip install --upgrade six
