@@ -1,3 +1,5 @@
+# script for manual use: convert asciidoc to markdown
+
   # some replacements to fix code links with {project-root}
   sed -i "s/{project-root}/..\/..\/..\/../g" ../asciidoc/firestore.adoc
   sed -i "s/{project-root}/..\/..\/..\/../g" ../asciidoc/pubsub.adoc
@@ -11,7 +13,7 @@
   sudo pandoc -f docbook -t gfm ../asciidoc/$1.xml -o $1.md --shift-heading-level-by=1
   }
 
-  convertascii getting-started
+  convertascii  getting-started
   convertascii  core
   convertascii  storage
   convertascii  sql

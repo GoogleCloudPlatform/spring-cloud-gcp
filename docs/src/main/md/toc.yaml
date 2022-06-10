@@ -1,3 +1,5 @@
+# yaml file to use in publishing script,
+#  use with `pandoc --defaults docs/src/main/md/toc.yaml`
 input-files:
   - docs/src/main/md/first-page.md
   - docs/src/main/md/getting-started.md
