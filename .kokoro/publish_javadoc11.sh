@@ -45,7 +45,7 @@ echo ${PROJECT_VERSION}
 cp CHANGELOG.md target/docfx-yml/history.md
 
 # combine all doc to documentation.md
-pandoc -t \
+sudo pandoc \
   docs/src/main/md/first-page.md          \
   docs/src/main/md/getting-started.md     \
   docs/src/main/md/core.md                \
@@ -54,7 +54,7 @@ pandoc -t \
   docs/src/main/md/pubsub.md              \
   docs/src/main/md/spring-integration.md  \
   docs/src/main/md/spring-stream.md       \
-  docs/src/main/md/spring-cloud-bus-pubsub\
+  docs/src/main/md/spring-cloud-bus-pubsub.md\
   docs/src/main/md/trace.md               \
   docs/src/main/md/logging.md             \
   docs/src/main/md/metrics.md             \
@@ -72,7 +72,7 @@ pandoc -t \
   docs/src/main/md/kotlin.md              \
   docs/src/main/md/configuration.md       \
   docs/src/main/md/migration-guide-1.x.md \
-  gfm -o docs/src/main/md/documentation.md
+  -t gfm -o docs/src/main/md/documentation.md
 
 # copy and replace {project-version} documentation
 sed "s/{project-version}/${PROJECT_VERSION}/g" docs/src/main/md/documentation.md > target/docfx-yml/documentation.md
