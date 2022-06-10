@@ -29,6 +29,9 @@ pushd $dir/../
 PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
 echo ${PROJECT_VERSION}
 
+# install pandoc for combining md files
+sudo apt install -q -y pandoc
+
 # Install docuploader package
 python3 -m pip install --upgrade six
 python3 -m pip install --upgrade protobuf
@@ -41,8 +44,6 @@ python3 -m docuploader --version
 # copy CHANGELOG
 cp CHANGELOG.md target/docfx-yml/history.md
 
-# install pandoc for combining md files
-apt install pandoc
 # combine all doc to documentation.md
 pandoc --defaults docs/src/main/md/toc.yaml
 
