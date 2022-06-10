@@ -90,7 +90,7 @@ You can select the type of connection pool (e.g., Tomcat, HikariCP, etc.) by htt
 Using the created `DataSource` in conjunction with Spring JDBC provides you with a fully configured and operational `JdbcTemplate` object that you can use to interact with your SQL database.
 You can connect to your database with as little as a database and instance names.
 
-== R2DBC Support
+=== R2DBC Support
 
 Maven and Gradle coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
 
@@ -129,13 +129,13 @@ dependencies {
 }
 ----
 
-=== Prerequisites
+==== Prerequisites
 
 In order to use the Spring Boot Starters for Google Cloud SQL, the Google Cloud SQL API must be enabled in your GCP project.
 
 To do that, go to the https://console.cloud.google.com/apis/library[API library page] of the Google Cloud Console, search for "Cloud SQL API" and enable the option that is called "Cloud SQL".
 
-=== Spring Boot Starter for Google Cloud SQL
+==== Spring Boot Starter for Google Cloud SQL
 
 The Cloud SQL R2DBC starter provides a customized `io.r2dbc.spi.ConnectionFactory` bean for connecting to Cloud SQL with the help of the https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory[Cloud SQL Socket Factory].
 Similar to the JDBC support, you can connect to your database with as little as a database and instance names.
@@ -163,7 +163,7 @@ There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Co
 
 NOTE: If you provide your own `spring.r2dbc.url`, it will be ignored, unless you disable Cloud SQL auto-configuration for R2DBC with `spring.cloud.gcp.sql.enabled=false` or `spring.cloud.gcp.sql.r2dbc.enabled=false` .
 
-==== `ConnectionFactory` creation flow
+===== `ConnectionFactory` creation flow
 
 Spring Cloud GCP starter for Google Cloud SQL registers a `R2dbcCloudSqlEnvironmentPostProcessor` that provides a correctly formatted `spring.r2dbc.url` property to the environment based on the properties mentioned above.
 It also provides a default value for `spring.r2dbc.username`, which can be overridden.
@@ -173,7 +173,7 @@ The user properties and the properties provided by the `R2dbcCloudSqlEnvironment
 
 The customized `ConnectionFactory` is then ready to connect to Cloud SQL. The rest of Spring Data R2DBC objects built on it ( `R2dbcEntityTemplate`,  `DatabaseClient`) are automatically configured and operational, ready to interact with your SQL database.
 
-== Cloud SQL IAM database authentication
+=== Cloud SQL IAM database authentication
 
 Currently, Cloud SQL only supports https://cloud.google.com/sql/docs/postgres/authentication:[IAM database authentication for PostgreSQL].
 It allows you to connect to the database using an IAM account, rather than a predefined database username and password.
@@ -185,7 +185,7 @@ You will need to do the following to enable it:
 (Note that this will also set the database protocol `sslmode` to `disabled`, as it's required for IAM authentication to work.
 However, it doesn't compromise the security of the communication because the connection is always encrypted.)
 
-== Cloud SQL Configuration Properties
+=== Cloud SQL Configuration Properties
 
 |===
 | Property name | Description | Required | Default value
@@ -205,10 +205,10 @@ Used to authenticate and authorize new connections to a Google Cloud SQL instanc
 | `spring.cloud.gcp.sql.enableIamAuth` | Specifies whether to enable IAM database authentication (PostgreSQL only). | No | `False`
 |===
 
-== Troubleshooting tips
+=== Troubleshooting tips
 
 [#connection-issues]
-===== Connection issues
+==== Connection issues
 If you're not able to connect to a database and see an endless loop of `Connecting to Cloud SQL instance [...] on IP [...]`, it's likely that exceptions are being thrown and logged at a level lower than your logger's level.
 This may be the case with HikariCP, if your logger is set to INFO or higher level.
 
@@ -223,14 +223,14 @@ To see what's going on in the background, you should add a `logback.xml` file to
 </configuration>
 ----
 
-=====  Errors like `c.g.cloud.sql.core.SslSocketFactory : Re-throwing cached exception due to attempt to refresh instance information too soon after error`
+====  Errors like `c.g.cloud.sql.core.SslSocketFactory : Re-throwing cached exception due to attempt to refresh instance information too soon after error`
 
 If you see a lot of errors like this in a loop and can't connect to your database, this is usually a symptom that something isn't right with the permissions of your credentials or the Google Cloud SQL API is not enabled.
 Verify that the Google Cloud SQL API is enabled in the Cloud Console and that your service account has the https://cloud.google.com/sql/docs/mysql/project-access-control#roles[necessary IAM roles].
 
 To find out what's causing the issue, you can enable DEBUG logging level as mentioned link:#connection-issues[above].
 
-===== PostgreSQL: `java.net.SocketException: already connected` issue
+==== PostgreSQL: `java.net.SocketException: already connected` issue
 
 We found this exception to be common if your Maven project's parent is `spring-boot` version `1.5.x`, or in any other circumstance that would cause the version of the `org.postgresql:postgresql` dependency to be an older one (e.g., `9.4.1212.jre7`).
 
@@ -247,7 +247,7 @@ For example, in Maven:
 ----
 
 
-== Samples
+=== Samples
 
 Available sample applications and codelabs:
 
