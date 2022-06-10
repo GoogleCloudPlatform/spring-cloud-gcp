@@ -18,6 +18,18 @@ $JAVA_HOME/bin/javac -version
 
 pyenv global 3.7.2
 
+# install pandoc for combining md files
+sudo apt install -q -y pandoc
+apt --version
+pandoc --version
+
+# Install docuploader package
+python3 -m pip install --upgrade six
+python3 -m pip install --upgrade protobuf
+python3 -m pip install gcp-docuploader==0.6.2
+
+python3 -m docuploader --version
+
 # Get into the spring-cloud-gcp repo directory
 dir=$(dirname "$0")
 pushd $dir/../
@@ -28,16 +40,6 @@ pushd $dir/../
 # Compute the project version.
 PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
 echo ${PROJECT_VERSION}
-
-# install pandoc for combining md files
-sudo apt install -q -y pandoc
-
-# Install docuploader package
-python3 -m pip install --upgrade six
-python3 -m pip install --upgrade protobuf
-python3 -m pip install gcp-docuploader==0.6.2
-
-python3 -m docuploader --version
 
 # Build the javadocs
 ./mvnw clean javadoc:aggregate -Drelease=true -P docFX
