@@ -239,9 +239,24 @@ This integration enables Brave to use the <a href="https://github.com/openzipkin
 </div>
 <div class="paragraph">
 <p>A propagation is responsible for extracting trace context from an entity (e.g., an HTTP servlet request) and injecting trace context into an entity.
-A canonical example of the propagation usage is a web server that receives an HTTP request, which triggers other HTTP requests from the server before returning an HTTP response to the original caller.
-In the case of <code>StackdriverTracePropagation</code>, first it looks for trace context in the <code>x-cloud-trace-context</code> key (e.g., an HTTP request header).
-The value of the <code>x-cloud-trace-context</code> key can be formatted in three different ways:</p>
+A canonical example of the propagation usage is a web server that receives an HTTP request, which triggers other HTTP requests from the server before returning an HTTP response to the original caller.</p>
+</div>
+<div class="paragraph">
+<p>In the case of <code>StackdriverTracePropagation</code>, first it looks for trace context in the <a href="https://github.com/openzipkin/b3-propagation">X-B3 headers</a> (<code>X-B3-TraceId</code>, <code>X-B3-SpanId</code>).
+If those are not found, <code>StackdriverTracePropagation</code> will fall back on <code>x-cloud-trace-context</code> key (e.g., an HTTP request header).</p>
+</div>
+<div class="paragraph">
+<p>If you need different propagation behavior (e.g. relying primarily on <code>x-cloud-trace-context</code> in a mixed Spring / non-Spring application environment), Spring Cloud Sleuth allows such customization through the <a href="https://docs.spring.io/spring-cloud-sleuth/docs/current/reference/html/howto.html#how-to-change-context-propagation"><code>CUSTOM</code> propagation type</a>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The value of the <code>x-cloud-trace-context</code> key can be formatted in three different ways:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -267,8 +282,9 @@ Since Cloud Trace doesn&#8217;t support span joins, a new span ID is always gene
 <p><code>TRACE_TRUE</code> can either be <code>0</code> if the entity should be untraced, or <code>1</code> if it should be traced.
 This field forces the decision of whether or not to trace the request; if omitted then the decision is deferred to the sampler.</p>
 </div>
-<div class="paragraph">
-<p>If a <code>x-cloud-trace-context</code> key isn&#8217;t found, <code>StackdriverTracePropagation</code> falls back to tracing with the <a href="https://github.com/openzipkin/b3-propagation">X-B3 headers</a>.</p>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
