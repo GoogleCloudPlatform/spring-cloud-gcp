@@ -41,6 +41,20 @@ echo ${PROJECT_VERSION}
 
 # Build the javadocs
 ./mvnw clean javadoc:aggregate -Drelease=true -P docFX
+
+# remove BUILD-SNAPSHOT contents from changelog, this will
+# not be needed when switched to release-please
+
+# remove everything between line ending with `BUILD-SNAPSHOT`
+# and starting with `##`
+sed -i '/BUILD-SNAPSHOT$/,/^## /{/^## /!d}' CHANGELOG.md
+# remove line ending with `BUILD-SNAPSHOT`
+sed -i '/BUILD-SNAPSHOT$/d' CHANGELOG.md
+
+# print 20 lines to verify
+head -20 CHANGELOG.md
+# end remove BUILD-SNAPSHOT contents from changelog
+
 # copy CHANGELOG
 cp CHANGELOG.md target/docfx-yml/history.md
 
@@ -109,20 +123,17 @@ insertAfter toc.yml \
 # check change to toc.yml -- remove after verified
 head -20 toc.yml
 
-python3 -m docuploader create-metadata \
-    --name spring-cloud-gcp \
-    --version ${PROJECT_VERSION} \
-    --language java \
-    --stem "/java/docs/spring-cloud-gcp/reference"
-
-## try to debug
-#python3 -m docuploader upload --help
-
-
-python3 -m docuploader upload . \
-    --credentials ${CREDENTIALS} \
-    --staging-bucket ${STAGING_BUCKET_V2}\
-    --destination-prefix docfx
+#python3 -m docuploader create-metadata \
+#    --name spring-cloud-gcp \
+#    --version ${PROJECT_VERSION} \
+#    --language java \
+#    --stem "/java/docs/spring-cloud-gcp/reference"
+#
+#
+#python3 -m docuploader upload . \
+#    --credentials ${CREDENTIALS} \
+#    --staging-bucket ${STAGING_BUCKET_V2}\
+#    --destination-prefix docfx
 
 popd
 popd

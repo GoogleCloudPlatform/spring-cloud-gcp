@@ -16,6 +16,23 @@ on GitHub.
 
 ## 3.4.0.BUILD-SNAPSHOT
 
+### General
+
+- Bump spring-cloud-dependencies to 2021.0.2
+  (<https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1109>)
+
+- Bump spring-boot-dependencies from 2.6.7 to 2.6.8
+  (<https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1130>)
+
+### Test content
+
+- Bump spring-cloud-dependencies to 2021.0.2
+  (<https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1109>)
+
+- Bump spring-boot-dependencies from 2.6.7 to 2.6.8
+  (<https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1130>)
+
+
 ## 3.3.0
 
 ### General
