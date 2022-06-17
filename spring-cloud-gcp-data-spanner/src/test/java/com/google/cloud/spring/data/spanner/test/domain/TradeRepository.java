@@ -113,6 +113,8 @@ public interface TradeRepository extends SpannerRepository<Trade, Key> {
 
   List<Trade> findBySymbolNotContains(String symbolFragment);
 
+  List<Trade> findAllByActionIsNotNull(String actionNotUsed);
+
   @Query(
       "SELECT * FROM :com.google.cloud.spring.data.spanner.test.domain.Trade:"
           + " WHERE STRUCT(symbol,action) = @pairTag ORDER BY LOWER(action) DESC")

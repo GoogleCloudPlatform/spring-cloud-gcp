@@ -614,6 +614,17 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
     assertThat(foundTrades).isEmpty();
   }
 
+  @Test
+  void findAllByActionIsNotNull() {
+    insertTrades("trader1", "SELL", 2);
+    insertTrades("trader2", null, 3);
+
+    assertThat(this.tradeRepository.count()).isEqualTo(5L);
+
+    List<Trade> tradesWithActionNotNull = this.tradeRepository.findAllByActionIsNotNull("not used");
+    assertThat(tradesWithActionNotNull).hasSize(2);
+  }
+
   private List<Trade> insertTrades(String traderId, String action, int numTrades) {
     List<Trade> trades = new ArrayList<>();
     for (int i = 0; i < numTrades; i++) {
