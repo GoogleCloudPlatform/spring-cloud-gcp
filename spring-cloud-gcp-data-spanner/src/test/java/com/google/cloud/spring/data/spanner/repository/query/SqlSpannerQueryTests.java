@@ -382,7 +382,7 @@ class SqlSpannerQueryTests {
             + " WHERE price=#{#tag3 * -1} AND price<>#{#tag3 * -1} OR "
             + "price<>#{#tag4 * -1} AND "
             + "( action=@tag0 AND ticker=@tag1 ) OR "
-            + "( trader_id=@tag2 AND price<@tag3 ) OR ( price>=@tag4 AND id<>NULL AND "
+            + "( trader_id=@tag2 AND price<@tag3 ) OR ( price>=@tag4 AND id IS NOT NULL AND "
             + "trader_id=NULL AND trader_id LIKE %@tag5 AND price=TRUE AND price=FALSE AND "
             + "struct_val = @tag8 AND struct_val = @tag9 "
             + "price>@tag6 AND price<=@tag7 and price in unnest(@tag10)) ORDER BY id DESC LIMIT 3;";
@@ -396,7 +396,7 @@ class SqlSpannerQueryTests {
             + " children FROM (SELECT DISTINCT * FROM trades@{index=fakeindex} WHERE"
             + " price=@SpELtag1 AND price<>@SpELtag1 OR price<>@SpELtag2 AND ( action=@tag0 AND"
             + " ticker=@tag1 ) OR ( trader_id=@tag2 AND price<@tag3 ) OR ( price>=@tag4 AND"
-            + " id<>NULL AND trader_id=NULL AND trader_id LIKE %@tag5 AND price=TRUE AND"
+            + " id IS NOT NULL AND trader_id=NULL AND trader_id LIKE %@tag5 AND price=TRUE AND"
             + " price=FALSE AND struct_val = @tag8 AND struct_val = @tag9 price>@tag6 AND"
             + " price<=@tag7 and price in unnest(@tag10)) ORDER BY id DESC LIMIT 3) trades ORDER BY"
             + " COLA ASC , COLB DESC LIMIT 10 OFFSET 30";
