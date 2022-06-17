@@ -120,7 +120,7 @@ class SpannerStatementQueryTests {
               String expectedQuery =
                   "SELECT DISTINCT shares, trader_id, ticker, price, action, id, value FROM trades"
                       + " WHERE ( LOWER(action)=LOWER(@tag0) AND ticker=@tag1 ) OR ("
-                      + " trader_id=@tag2 AND price<@tag3 ) OR ( price>=@tag4 AND id<>NULL AND"
+                      + " trader_id=@tag2 AND price<@tag3 ) OR ( price>=@tag4 AND id IS NOT NULL AND"
                       + " trader_id=NULL AND trader_id LIKE @tag7 AND price=TRUE AND price=FALSE"
                       + " AND price>@tag10 AND price<=@tag11 AND price IN UNNEST(@tag12) AND"
                       + " value<@tag13 ) ORDER BY id DESC LIMIT 3";
@@ -231,7 +231,7 @@ class SpannerStatementQueryTests {
               String expectedSql =
                   "SELECT EXISTS(SELECT DISTINCT shares, trader_id, ticker, price, action, id,"
                       + " value FROM trades WHERE ( LOWER(action)=LOWER(@tag0) AND ticker=@tag1 )"
-                      + " OR ( trader_id=@tag2 AND price<@tag3 ) OR ( price>=@tag4 AND id<>NULL AND"
+                      + " OR ( trader_id=@tag2 AND price<@tag3 ) OR ( price>=@tag4 AND id IS NOT NULL AND"
                       + " trader_id=NULL AND trader_id LIKE @tag7 AND price=TRUE AND price=FALSE"
                       + " AND price>@tag10 AND price<=@tag11 ) ORDER BY id DESC LIMIT 1)";
               assertThat(statement.getSql()).isEqualTo(expectedSql);
