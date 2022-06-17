@@ -689,7 +689,7 @@ public final class SpannerStatementQueryExecutor {
                           andString += "<" + insertedTag;
                           break;
                         case IS_NOT_NULL:
-                          andString += "<>NULL";
+                          andString += " IS NOT NULL";
                           break;
                         case LESS_THAN_EQUAL:
                           andString += "<=" + insertedTag;
