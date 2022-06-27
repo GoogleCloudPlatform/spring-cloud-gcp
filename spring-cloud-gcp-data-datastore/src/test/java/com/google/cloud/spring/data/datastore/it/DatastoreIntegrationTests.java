@@ -415,7 +415,7 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 
     assertThatThrownBy(() -> this.testEntityRepository.findByColor("green"))
         .isInstanceOf(EmptyResultDataAccessException.class)
-        .hasMessageMatching("Result must not be null!");
+        .hasMessageMatching("Result must not be null");
 
     assertThat(
             this.testEntityRepository.findByShape(Shape.SQUARE).stream()

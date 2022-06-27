@@ -543,7 +543,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   public void testNonNull() {
     assertThatThrownBy(() -> this.tradeRepository.getByAction("non-existing-action"))
         .isInstanceOf(EmptyResultDataAccessException.class)
-        .hasMessageMatching("Result must not be null!");
+        .hasMessageMatching("Result must not be null");
   }
 
   @Test
