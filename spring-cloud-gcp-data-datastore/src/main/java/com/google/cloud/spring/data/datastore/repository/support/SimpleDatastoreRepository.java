@@ -256,8 +256,8 @@ public class SimpleDatastoreRepository<T, I> implements DatastoreRepository<T, I
   @Override
   public <S extends T, R> R findBy(
       Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
-    Assert.notNull(example, "Example must not be null!");
-    Assert.notNull(queryFunction, "Query function must not be null!");
+    Assert.notNull(example, "Example must not be null");
+    Assert.notNull(queryFunction, "Query function must not be null");
 
     return queryFunction.apply(new DatastoreFluentQueryByExample<>(example));
   }
