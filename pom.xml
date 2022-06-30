@@ -38,7 +38,7 @@
 	<properties>
 
 		<!-- Dependency versions -->
-		<spring-cloud-dependencies.version>2020.0.5</spring-cloud-dependencies.version>
+		<spring-cloud-dependencies.version>2020.0.6</spring-cloud-dependencies.version>
 		<spring-boot-dependencies.version>2.5.14</spring-boot-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.0</java-cfenv.version>
