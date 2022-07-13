@@ -43,10 +43,10 @@ port 8080, and send some (`N`) messages to the GCP Pub/Sub topic.
 The messages sent will all start with the message text provided, and end with a number from `0` to `N-1`.
 Observe that nothing is received by the sample application, since there are no subscribers yet.
 
-7. In another terminal, open a connection to `/getmessages` streaming endpoint.
+7. In another terminal, open a connection to `/getMessages` streaming endpoint.
 This stream will remain open until you stop it with `Ctrl+C`.
 
-  curl localhost:8080/getmessages
+  curl localhost:8080/getMessages
 
 8. Verify that the `curl` terminal received the messages, while the application itself logged their IDs.
 
