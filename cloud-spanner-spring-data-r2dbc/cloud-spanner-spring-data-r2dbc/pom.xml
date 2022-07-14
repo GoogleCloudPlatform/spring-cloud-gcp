@@ -14,7 +14,7 @@
 
   <properties>
     <spring-data-r2dbc.version>1.5.1</spring-data-r2dbc.version>
-    <spring-test.version>5.3.21</spring-test.version>
+    <spring-test.version>5.3.22</spring-test.version>
   </properties>
 
   <dependencies>
