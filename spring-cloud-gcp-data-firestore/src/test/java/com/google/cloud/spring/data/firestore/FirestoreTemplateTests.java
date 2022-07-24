@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.data.firestore;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -112,6 +114,37 @@ public class FirestoreTemplateTests {
 
     builder.addWrites(Write.newBuilder().setUpdate(buildDocument("e1", 100L)).build());
     builder.addWrites(Write.newBuilder().setUpdate(buildDocument("e2", 200L)).build());
+
+    verify(this.firestoreStub, times(1)).commit(eq(builder.build()), any());
+  }
+
+  @Test
+  void saveNoId() {
+    mockCommitMethod();
+
+    TestEntity entity1 = new TestEntity(null, 100L);
+    TestEntity entity2 = new TestEntity(null, 200L);
+    assertNull(entity1.getIdField());
+    assertNull(entity2.getIdField());
+
+    StepVerifier.create(
+            this.firestoreTemplate.saveAll(
+                Flux.just(entity1, entity2)))
+        .assertNext(e1 -> assertNotNull(e1.getIdField()))
+        .assertNext(e2 -> assertNotNull(e2.getIdField()))
+        .verifyComplete();
+
+    CommitRequest.Builder builder =
+        CommitRequest.newBuilder().setDatabase("projects/my-project/databases/(default)");
+
+    builder.addWrites(Write.newBuilder()
+        .setUpdate(buildDocument(entity1.getIdField(), 100L))
+        .setCurrentDocument(Precondition.newBuilder().setExists(false).build())
+        .build());
+    builder.addWrites(Write.newBuilder()
+        .setUpdate(buildDocument(entity2.getIdField(), 200L))
+        .setCurrentDocument(Precondition.newBuilder().setExists(false).build())
+        .build());
 
     verify(this.firestoreStub, times(1)).commit(eq(builder.build()), any());
   }
