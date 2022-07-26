@@ -50,7 +50,7 @@ import org.springframework.transaction.reactive.TransactionContext;
 import org.springframework.util.Assert;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.context.Context;
+import reactor.util.context.ContextView;
 
 /**
  * An implementation of {@link FirestoreReactiveOperations}.
@@ -180,8 +180,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
    */
   @Override
   public <T> Flux<T> saveAll(Publisher<T> instances) {
-    return Mono.subscriberContext()
-        .flatMapMany(
+    return Flux.deferContextual(
             ctx -> {
               Optional<TransactionContext> transactionContext =
                   ctx.getOrEmpty(TransactionContext.class);
@@ -299,8 +298,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
   }
 
   private Flux<String> deleteDocumentsByName(Flux<String> documentNames) {
-    return Mono.subscriberContext()
-        .flatMapMany(
+    return Flux.deferContextual(
             ctx -> {
               Optional<TransactionContext> transactionContext =
                   ctx.getOrEmpty(TransactionContext.class);
@@ -354,8 +352,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
   private <T> Flux<Document> findAllDocuments(
       Class<T> clazz, StructuredQuery.Projection projection, StructuredQuery.Builder queryBuilder) {
-    return Mono.subscriberContext()
-        .flatMapMany(
+    return Flux.deferContextual(
             ctx -> {
               FirestorePersistentEntity<?> persistentEntity =
                   this.mappingContext.getPersistentEntity(clazz);
@@ -387,8 +384,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
   }
 
   private Mono<Document> getDocument(String id, Class clazz, DocumentMask documentMask) {
-    return Mono.subscriberContext()
-        .flatMap(
+    return Mono.deferContextual(
             ctx -> {
               FirestorePersistentEntity<?> persistentEntity =
                   this.mappingContext.getPersistentEntity(clazz);
@@ -410,7 +406,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
   }
 
   private void doIfTransaction(
-      Context ctx, Consumer<ReactiveFirestoreResourceHolder> holderConsumer) {
+      ContextView ctx, Consumer<ReactiveFirestoreResourceHolder> holderConsumer) {
     Optional<TransactionContext> transactionContext = ctx.getOrEmpty(TransactionContext.class);
     transactionContext.ifPresent(
         transactionCtx -> {
