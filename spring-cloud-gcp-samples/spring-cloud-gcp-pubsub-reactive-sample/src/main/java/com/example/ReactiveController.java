@@ -47,7 +47,8 @@ public class ReactiveController {
    */
   public static final int MAX_RESPONSE_ITEMS = 100;
 
-  @Autowired PubSubReactiveFactory reactiveFactory;
+  @Autowired
+  PubSubReactiveFactory reactiveFactory;
 
   @GetMapping(value = "/getMessages", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public Flux<String> getMessages() {
@@ -58,7 +59,7 @@ public class ReactiveController {
     AtomicInteger count = new AtomicInteger(0);
 
     return flux.limitRate(10)
-        .limitRequest(MAX_RESPONSE_ITEMS)
+        .take(MAX_RESPONSE_ITEMS, true)
         .map(
             message -> {
               message.ack();
