@@ -41,6 +41,7 @@ import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField;
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.core.mapping.LazyReference;
 import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
 import com.google.cloud.spring.data.datastore.entities.CustomMap;
 import com.google.cloud.spring.data.datastore.entities.Product;
@@ -145,6 +146,8 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
     this.datastoreTemplate.deleteAll(LazyEntity.class);
     this.datastoreTemplate.deleteAll(Product.class);
     this.datastoreTemplate.deleteAll(Store.class);
+    this.datastoreTemplate.deleteAll(ChildEntity.class);
+    this.datastoreTemplate.deleteAll(ParentEntityWithLazyChild.class);
     this.testEntityRepository.deleteAll();
     if (this.keyForMap != null) {
       this.datastore.delete(this.keyForMap);
@@ -737,6 +740,45 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
     loadedParent = this.datastoreTemplate.findById(loadedParent.id, LazyEntity.class);
     assertThat(loadedParent).isEqualTo(lazyParentEntity);
+  }
+
+  @Test
+  void lazyReferenceUpdateAndSaveParentTest() {
+    LazyEntity lazyParentEntity = new LazyEntity(new LazyEntity(new LazyEntity()));
+    this.datastoreTemplate.save(lazyParentEntity);
+
+    LazyEntity loadedParent =
+        this.datastoreTemplate.findById(lazyParentEntity.id, LazyEntity.class);
+
+    // update lazyReferenced property
+    LazyEntity newChild = new LazyEntity();
+    loadedParent.setLazyChild(newChild);
+    this.datastoreTemplate.save(loadedParent);
+
+    loadedParent = this.datastoreTemplate.findById(loadedParent.id, LazyEntity.class);
+    assertThat(loadedParent.getLazyChild()).isEqualTo(newChild);
+  }
+
+  @Test
+  void lazyReferenceWithStringIdUpdateChildTest() {
+
+    ChildEntity child = new ChildEntity("child-entity-id-string", "child value");
+    // child.id = "abcdse";
+    ParentEntityWithLazyChild parentEntityWithLazyChild = new ParentEntityWithLazyChild(child);
+    this.datastoreTemplate.save(parentEntityWithLazyChild);
+
+    ParentEntityWithLazyChild loadedParent = this.datastoreTemplate.findById(
+        parentEntityWithLazyChild.id, ParentEntityWithLazyChild.class);
+    ChildEntity lazyChild = loadedParent.getLazyChild();
+
+    lazyChild.setValue("updated child");
+    this.datastoreTemplate.save(lazyChild);
+
+    loadedParent = this.datastoreTemplate.findById(
+        parentEntityWithLazyChild.id, ParentEntityWithLazyChild.class);
+    assertThat(loadedParent.getLazyChild().getId()).isEqualTo("child-entity-id-string");
+    assertThat(loadedParent.getLazyChild().getValue()).isEqualTo("updated child");
+
   }
 
   @Test
@@ -1393,6 +1435,24 @@ class Employee {
                 .collect(Collectors.toList())
             : null)
         + '}';
+  }
+}
+
+@Entity
+class ParentEntityWithLazyChild {
+  @Id Long id;
+
+  @LazyReference
+  ChildEntity lazyChild;
+
+  public ParentEntityWithLazyChild() {}
+
+  ParentEntityWithLazyChild(ChildEntity child) {
+    this.lazyChild = child;
+  }
+
+  ChildEntity getLazyChild() {
+    return this.lazyChild;
   }
 }
 

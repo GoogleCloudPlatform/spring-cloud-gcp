@@ -90,6 +90,12 @@ final class LazyUtil {
     return false;
   }
 
+  /**
+   * Check if the object is a lazy loaded proxy.
+   *
+   * @param object an object
+   * @return true if the object is a proxy
+   */
   static boolean isLazy(Object object) {
     SimpleLazyDynamicInvocationHandler handler = getProxy(object);
     if (handler != null) {
@@ -98,9 +104,14 @@ final class LazyUtil {
     return false;
   }
 
+  /**
+   * Loads the value provided by the proxy supplier.
+   *
+   * @param object an object that is a proxy
+   * @return value provided by the proxy supplier.
+   */
   static Object getLazyValue(Object object) {
-    // validate it's object is lazy.
-    Assert.isTrue(isLazy(object), "A lazy loaded object is required.");
+    Assert.isTrue(isLazy(object), "A proxy object is required.");
 
     SimpleLazyDynamicInvocationHandler proxy = getProxy(object);
     return proxy.getValue();
