@@ -523,11 +523,16 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
   private List<Entity> convertToEntityForSave(
       Object entity, Set<Key> persistedEntities, Key... ancestors) {
-    if (ancestors != null) {
+    if (ancestors.length != 0) {
       for (Key ancestor : ancestors) {
         validateKey(entity, keyToPathElement(ancestor));
       }
     }
+    // If entity is lazy referenced, now load all properties before attempt to save
+    if (LazyUtil.isLazy(entity)) {
+      entity = LazyUtil.getLazyValue(entity);
+    }
+
     Key key = getKey(entity, true, ancestors);
     Builder builder = Entity.newBuilder(key);
     List<Entity> entitiesToSave = new ArrayList<>();
@@ -565,6 +570,10 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
                 value = ListValue.of(keyValues);
 
               } else {
+                // If property is lazy referenced, now load it before attempt to save.
+                if (LazyUtil.isLazy(val)) {
+                  val = LazyUtil.getLazyValue(val);
+                }
                 entitiesToSave.addAll(
                     getEntitiesForSave(Collections.singletonList(val), persistedEntities));
                 Key key = getKey(val, false);

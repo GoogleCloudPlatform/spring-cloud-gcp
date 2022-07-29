@@ -90,6 +90,22 @@ final class LazyUtil {
     return false;
   }
 
+  static boolean isLazy(Object object) {
+    SimpleLazyDynamicInvocationHandler handler = getProxy(object);
+    if (handler != null) {
+      return handler.getKeys() != null;
+    }
+    return false;
+  }
+
+  static Object getLazyValue(Object object) {
+    // validate it's object is lazy.
+    Assert.isTrue(isLazy(object), "A lazy loaded object is required.");
+
+    SimpleLazyDynamicInvocationHandler proxy = getProxy(object);
+    return proxy.getValue();
+  }
+
   /**
    * Extract keys from a proxy object.
    *
@@ -143,6 +159,10 @@ final class LazyUtil {
 
     public Value getKeys() {
       return this.keys;
+    }
+
+    T getValue() {
+      return value;
     }
 
     @Override
