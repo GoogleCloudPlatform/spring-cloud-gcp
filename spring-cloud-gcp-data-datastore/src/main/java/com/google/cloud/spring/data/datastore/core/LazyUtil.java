@@ -113,8 +113,11 @@ final class LazyUtil {
   static Object getLazyValue(Object object) {
     Assert.isTrue(isLazy(object), "A proxy object is required.");
 
-    SimpleLazyDynamicInvocationHandler proxy = getProxy(object);
-    return proxy.getValue();
+    SimpleLazyDynamicInvocationHandler handler = getProxy(object);
+    if (handler != null) {
+      return handler.getValue();
+    }
+    return null;
   }
 
   /**
