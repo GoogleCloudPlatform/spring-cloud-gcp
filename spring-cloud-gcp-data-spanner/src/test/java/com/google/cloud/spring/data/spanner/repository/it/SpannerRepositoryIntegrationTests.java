@@ -625,6 +625,17 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
     assertThat(tradesWithActionNotNull).hasSize(2);
   }
 
+  @Test
+  void queryMethodsTest_sqlQueryReturnNull() {
+    Trade sellTradeWithNullSymbol = Trade.makeTrade("trader1", 0, 4);
+    sellTradeWithNullSymbol.setAction("SELL");
+    sellTradeWithNullSymbol.setSymbol(null);
+    this.spannerOperations.insert(sellTradeWithNullSymbol);
+
+    Optional<String> symbol = this.tradeRepository.getSymbolById(sellTradeWithNullSymbol.getId());
+    assertThat(symbol).isEmpty();
+  }
+
   private List<Trade> insertTrades(String traderId, String action, int numTrades) {
     List<Trade> trades = new ArrayList<>();
     for (int i = 0; i < numTrades; i++) {
