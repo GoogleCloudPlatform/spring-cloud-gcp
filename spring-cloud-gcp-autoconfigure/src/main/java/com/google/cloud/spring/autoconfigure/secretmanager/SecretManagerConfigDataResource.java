@@ -17,22 +17,24 @@
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataResource;
 
 public class SecretManagerConfigDataResource extends ConfigDataResource {
 
-  private final SecretManagerServiceClient secretManagerServiceClient;
+  //private final SecretManagerServiceClient secretManagerServiceClient;
+  private final SecretManagerTemplate secretManagerTemplate;
   private final ConfigDataLocation location;
 
-  public SecretManagerConfigDataResource(SecretManagerServiceClient secretManagerServiceClient,
+  public SecretManagerConfigDataResource(SecretManagerTemplate secretManagerTemplate,
       ConfigDataLocation location) {
-    this.secretManagerServiceClient = secretManagerServiceClient;
+    this.secretManagerTemplate = secretManagerTemplate;
     this.location = location;
   }
 
-  public SecretManagerServiceClient getSecretManagerServiceClient() {
-    return secretManagerServiceClient;
+  public SecretManagerTemplate secretManagerTemplate() {
+    return secretManagerTemplate;
   }
 
   public ConfigDataLocation getLocation() {

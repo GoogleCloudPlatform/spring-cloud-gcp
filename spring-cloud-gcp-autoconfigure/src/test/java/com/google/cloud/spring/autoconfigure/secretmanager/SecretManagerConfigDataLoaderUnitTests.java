@@ -20,6 +20,7 @@ import org.springframework.boot.context.config.ConfigDataResourceNotFoundExcepti
 /**
  * Unit tests for {@link SecretManagerConfigDataLoader}.
  */
+/*
 public class SecretManagerConfigDataLoaderUnitTests {
 
   public static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
@@ -57,3 +58,4 @@ public class SecretManagerConfigDataLoaderUnitTests {
     return client;
   }
 }
+*/

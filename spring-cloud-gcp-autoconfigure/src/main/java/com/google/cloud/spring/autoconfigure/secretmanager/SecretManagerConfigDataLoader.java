@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
-import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerPropertySource;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.io.IOException;
@@ -31,12 +30,8 @@ import org.springframework.context.annotation.Configuration;
 public class SecretManagerConfigDataLoader implements
     ConfigDataLoader<SecretManagerConfigDataResource> {
 
-  private SecretManagerTemplate template;
-  private GcpProjectIdProvider idProvider;
-
-  SecretManagerConfigDataLoader(SecretManagerTemplate template, GcpProjectIdProvider idProvider) {
-    this.template = template;
-    this.idProvider = idProvider;
+  SecretManagerConfigDataLoader() {
+    System.out.println("*** NEW WAY: SecretManagerConfigDataLoader constructor");
   }
 
   @Override
@@ -44,6 +39,7 @@ public class SecretManagerConfigDataLoader implements
       ConfigDataLoaderContext context,
       SecretManagerConfigDataResource resource)
       throws IOException, ConfigDataResourceNotFoundException {
+    System.out.println("*** NEW WAY: SecretManagerConfigDataLoader.load()");
     // SecretManagerServiceClient secretManagerServiceClient =
     //     resource.getSecretManagerServiceClient();
     //
@@ -52,11 +48,13 @@ public class SecretManagerConfigDataLoader implements
     //
     // SecretManagerTemplate template = new SecretManagerTemplate(secretManagerServiceClient,
     //     projectIdProvider);
-    if (!template.secretExists(resource.getLocation().toString())) {
+    SecretManagerTemplate secretManagerTemplate = resource.secretManagerTemplate();
+  /*
+    if (!secretManagerTemplate.secretExists( resource.getLocation().toString())) {
       throw new ConfigDataResourceNotFoundException(resource);
-    }
+    }*/
     SecretManagerPropertySource propertySource = new SecretManagerPropertySource(
-        "spring-cloud-gcp-secret-manager", template, idProvider);
+        "spring-cloud-gcp-secret-manager", secretManagerTemplate, secretManagerTemplate.getProjectIdProvider());
 
     return new ConfigData(Collections.singleton(propertySource));
   }

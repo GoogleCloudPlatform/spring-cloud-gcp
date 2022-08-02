@@ -51,6 +51,7 @@ public class GcpSecretManagerBootstrapConfiguration {
   public GcpSecretManagerBootstrapConfiguration(
       GcpSecretManagerProperties properties, ConfigurableEnvironment configurableEnvironment) {
 
+    System.out.println("*** OLD WAY boostrap config GcpSecretManagerBootstrapConfiguration constructor ");
     this.gcpProjectIdProvider =
         properties.getProjectId() != null
             ? properties::getProjectId
@@ -68,6 +69,7 @@ public class GcpSecretManagerBootstrapConfiguration {
   @ConditionalOnMissingBean
   public SecretManagerServiceClient secretManagerClient(CredentialsProvider googleCredentials)
       throws IOException {
+    System.out.println("*** OLD WAY boostrap config GcpSecretManagerBootstrapConfiguration.secretManagerClient ");
     SecretManagerServiceSettings settings =
         SecretManagerServiceSettings.newBuilder()
             .setCredentialsProvider(googleCredentials)
@@ -88,6 +90,7 @@ public class GcpSecretManagerBootstrapConfiguration {
   @ConditionalOnMissingBean
   public SecretManagerPropertySourceLocator secretManagerPropertySourceLocator(
       SecretManagerTemplate secretManagerTemplate) {
+    System.out.println("*** OLD WAY: SM bootstrap configuration secretManagerPropertySourceLocator");
     return new SecretManagerPropertySourceLocator(secretManagerTemplate, this.gcpProjectIdProvider);
   }
 

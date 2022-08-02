@@ -44,6 +44,10 @@ public class SecretManagerTemplate implements SecretManagerOperations {
 
   private final SecretManagerServiceClient secretManagerServiceClient;
 
+  public GcpProjectIdProvider getProjectIdProvider() {
+    return projectIdProvider;
+  }
+
   private final GcpProjectIdProvider projectIdProvider;
 
   public SecretManagerTemplate(

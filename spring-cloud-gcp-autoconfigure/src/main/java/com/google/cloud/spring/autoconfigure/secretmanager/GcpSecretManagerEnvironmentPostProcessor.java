@@ -28,6 +28,7 @@ public class GcpSecretManagerEnvironmentPostProcessor implements EnvironmentPost
   @Override
   public void postProcessEnvironment(
       ConfigurableEnvironment environment, SpringApplication application) {
+    System.out.println("*** OLD WAY GcpSecretManagerEnvironmentPostProcessor.postProcessEnvironment");
     boolean isSecretManagerEnabled =
         Boolean.parseBoolean(
             environment.getProperty("spring.cloud.gcp.secretmanager.enabled", "true"));
