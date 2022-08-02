@@ -90,4 +90,10 @@ public class GcpSecretManagerBootstrapConfiguration {
       SecretManagerTemplate secretManagerTemplate) {
     return new SecretManagerPropertySourceLocator(secretManagerTemplate, this.gcpProjectIdProvider);
   }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public GcpProjectIdProvider gcpProjectIdProvider() {
+    return gcpProjectIdProvider;
+  }
 }

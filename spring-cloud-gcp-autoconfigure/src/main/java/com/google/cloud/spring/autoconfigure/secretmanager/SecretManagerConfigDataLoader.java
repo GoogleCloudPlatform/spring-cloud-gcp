@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerPropertySource;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
@@ -26,28 +25,38 @@ import org.springframework.boot.context.config.ConfigData;
 import org.springframework.boot.context.config.ConfigDataLoader;
 import org.springframework.boot.context.config.ConfigDataLoaderContext;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 public class SecretManagerConfigDataLoader implements
     ConfigDataLoader<SecretManagerConfigDataResource> {
+
+  private SecretManagerTemplate template;
+  private GcpProjectIdProvider idProvider;
+
+  SecretManagerConfigDataLoader(SecretManagerTemplate template, GcpProjectIdProvider idProvider) {
+    this.template = template;
+    this.idProvider = idProvider;
+  }
 
   @Override
   public ConfigData load(
       ConfigDataLoaderContext context,
       SecretManagerConfigDataResource resource)
       throws IOException, ConfigDataResourceNotFoundException {
-    SecretManagerServiceClient secretManagerServiceClient =
-        resource.getSecretManagerServiceClient();
-
-    GcpProjectIdProvider projectIdProvider =
-        context.getBootstrapContext().get(GcpProjectIdProvider.class);
-
-    SecretManagerTemplate template = new SecretManagerTemplate(secretManagerServiceClient,
-        projectIdProvider);
+    // SecretManagerServiceClient secretManagerServiceClient =
+    //     resource.getSecretManagerServiceClient();
+    //
+    // GcpProjectIdProvider projectIdProvider =
+    //     context.getBootstrapContext().get(GcpProjectIdProvider.class);
+    //
+    // SecretManagerTemplate template = new SecretManagerTemplate(secretManagerServiceClient,
+    //     projectIdProvider);
     if (!template.secretExists(resource.getLocation().toString())) {
       throw new ConfigDataResourceNotFoundException(resource);
     }
     SecretManagerPropertySource propertySource = new SecretManagerPropertySource(
-        "spring-cloud-gcp-secret-manager", template, projectIdProvider);
+        "spring-cloud-gcp-secret-manager", template, idProvider);
 
     return new ConfigData(Collections.singleton(propertySource));
   }
