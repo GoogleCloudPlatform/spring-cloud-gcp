@@ -29,12 +29,12 @@ com.google.cloud.spring.autoconfigure.pubsub.health.PubSubHealthIndicatorAutoCon
 com.google.cloud.spring.autoconfigure.metrics.GcpStackdriverMetricsAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.kms.GcpKmsAutoConfiguration
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-com.google.cloud.spring.autoconfigure.config.GcpConfigBootstrapConfiguration,\
-com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManagerBootstrapConfiguration
+com.google.cloud.spring.autoconfigure.config.GcpConfigBootstrapConfiguration
+#com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManagerBootstrapConfiguration
 org.springframework.boot.env.EnvironmentPostProcessor=\
 com.google.cloud.spring.autoconfigure.sql.CloudSqlEnvironmentPostProcessor,\
-com.google.cloud.spring.autoconfigure.sql.R2dbcCloudSqlEnvironmentPostProcessor,\
-com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManagerEnvironmentPostProcessor
+com.google.cloud.spring.autoconfigure.sql.R2dbcCloudSqlEnvironmentPostProcessor
+#com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManagerEnvironmentPostProcessor
 # ConfigData Location Resolvers
 org.springframework.boot.context.config.ConfigDataLocationResolver=\
 com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolver

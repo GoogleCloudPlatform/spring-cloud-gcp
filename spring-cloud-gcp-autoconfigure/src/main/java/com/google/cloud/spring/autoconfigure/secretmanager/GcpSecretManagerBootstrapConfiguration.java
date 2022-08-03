@@ -40,6 +40,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
  *
  * @since 1.2.2
  */
+@Deprecated
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(GcpSecretManagerProperties.class)
 @ConditionalOnClass({SecretManagerServiceClient.class, SecretManagerTemplate.class})
@@ -90,7 +91,6 @@ public class GcpSecretManagerBootstrapConfiguration {
   @ConditionalOnMissingBean
   public SecretManagerPropertySourceLocator secretManagerPropertySourceLocator(
       SecretManagerTemplate secretManagerTemplate) {
-    System.out.println("*** OLD WAY: SM bootstrap configuration secretManagerPropertySourceLocator");
     return new SecretManagerPropertySourceLocator(secretManagerTemplate, this.gcpProjectIdProvider);
   }
 
