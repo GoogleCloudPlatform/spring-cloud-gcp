@@ -35,8 +35,6 @@ public class SecretManagerPropertySource extends EnumerablePropertySource<Secret
       SecretManagerTemplate secretManagerTemplate,
       GcpProjectIdProvider projectIdProvider) {
     super(propertySourceName, secretManagerTemplate);
-
-    System.out.println("*** WHO KNOWS - SecretManagerPropertySource constructor");
     this.projectIdProvider = projectIdProvider;
   }
 
