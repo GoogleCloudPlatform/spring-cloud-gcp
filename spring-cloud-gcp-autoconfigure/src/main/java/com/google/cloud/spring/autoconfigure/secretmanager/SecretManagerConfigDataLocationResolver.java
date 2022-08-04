@@ -49,8 +49,7 @@ public class SecretManagerConfigDataLocationResolver implements
       return false;
     }
 
-    return context.getBinder().bind(GcpSecretManagerProperties.PREFIX + ".enabled", Boolean.class)
-        .orElse(true);
+    return true;
   }
 
   @Override
