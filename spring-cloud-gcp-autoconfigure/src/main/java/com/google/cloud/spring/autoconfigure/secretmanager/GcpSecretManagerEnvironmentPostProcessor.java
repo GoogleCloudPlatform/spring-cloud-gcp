@@ -22,14 +22,14 @@ import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-/** Registers converters used by Spring Cloud GCP Secret Manager. */
-@Deprecated
+/**
+ * Registers converters used by Spring Cloud GCP Secret Manager.
+ */
 public class GcpSecretManagerEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
   @Override
   public void postProcessEnvironment(
       ConfigurableEnvironment environment, SpringApplication application) {
-
     boolean isSecretManagerEnabled =
         Boolean.parseBoolean(
             environment.getProperty("spring.cloud.gcp.secretmanager.enabled", "true"));
@@ -39,12 +39,22 @@ public class GcpSecretManagerEnvironmentPostProcessor implements EnvironmentPost
       environment
           .getConversionService()
           .addConverter(
-              (Converter<ByteString, String>) ByteString::toStringUtf8);
+              new Converter<ByteString, String>() {
+                @Override
+                public String convert(ByteString source) {
+                  return source.toStringUtf8();
+                }
+              });
 
       environment
           .getConversionService()
           .addConverter(
-              (Converter<ByteString, byte[]>) ByteString::toByteArray);
+              new Converter<ByteString, byte[]>() {
+                @Override
+                public byte[] convert(ByteString source) {
+                  return source.toByteArray();
+                }
+              });
     }
   }
 }
