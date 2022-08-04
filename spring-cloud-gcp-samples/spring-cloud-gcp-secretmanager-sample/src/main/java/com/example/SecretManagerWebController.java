@@ -32,7 +32,8 @@ import org.springframework.web.util.HtmlUtils;
 public class SecretManagerWebController {
 
   private final SecretManagerTemplate secretManagerTemplate;
-  // Application secrets can be accessed using configuration properties class.
+  // Application secrets can be accessed using configuration properties class,
+  // secret can be refreshed when decorated with @RefreshScope on the class.
   private final SecretConfiguration configuration;
 
   // Application secrets can be accessed using @Value syntax.
