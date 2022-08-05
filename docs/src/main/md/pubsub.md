@@ -297,10 +297,10 @@ to interact with Google Cloud Pub/Sub.
 `PubSubTemplate` provides asynchronous methods to publish messages to a
 Google Cloud Pub/Sub topic. The `publish()` method takes in a topic name
 to post the message to, a payload of a generic type and, optionally, a
-map with the message headers. The topic name could either be a canonical
+map with the message headers. The topic name could either be a short
 topic name within the current project, or the fully-qualified name
 referring to a topic in a different project using the
-`projects/<project_name>/topics/<topic_name>` format.
+`projects/[project_name]/topics/[topic_name]` format.
 
 Here is an example of how to publish a message to a Google Cloud Pub/Sub
 topic:
@@ -339,9 +339,9 @@ same topic. `PubSubTemplate` allows you to listen to subscriptions via
 the `subscribe()` method. When listening to a subscription, messages
 will be pulled from Google Cloud Pub/Sub asynchronously and passed to a
 user provided message handler. The subscription name could either be a
-canonical subscription name within the current project, or the
+short subscription name within the current project, or the
 fully-qualified name referring to a subscription in a different project
-using the `projects/<project_name>/subscriptions/<subscription_name>`
+using the `projects/[project_name]/subscriptions/<subscription_name>`
 format.
 
 ##### Example
@@ -645,7 +645,7 @@ Generally when referring to topics and subscriptions, you can either use
 the short canonical name within the current project, or the
 fully-qualified name referring to a topic or subscription in a different
 project using the
-`projects/<project_name>/(topics|subscriptions)/<name>` format.
+`projects/[project_name]/(topics|subscriptions)/<name>` format.
 
 </div>
 

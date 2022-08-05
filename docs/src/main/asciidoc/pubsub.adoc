@@ -273,7 +273,7 @@ It provides the common set of operations needed to interact with Google Cloud Pu
 
 `PubSubTemplate` provides asynchronous methods to publish messages to a Google Cloud Pub/Sub topic.
 The `publish()` method takes in a topic name to post the message to, a payload of a generic type and, optionally, a map with the message headers.
-The topic name could either be a canonical topic name within the current project, or the fully-qualified name referring to a topic in a different project using the `projects/<project_name>/topics/<topic_name>` format.
+The topic name could either be a short topic name within the current project, or the fully-qualified name referring to a topic in a different project using the `projects/[project_name]/topics/[topic_name]` format.
 
 Here is an example of how to publish a message to a Google Cloud Pub/Sub topic:
 
@@ -300,7 +300,7 @@ include::{project-root}/spring-cloud-gcp-autoconfigure/src/test/java/com/google/
 Google Cloud Pub/Sub allows many subscriptions to be associated to the same topic.
 `PubSubTemplate` allows you to listen to subscriptions via the `subscribe()` method.
 When listening to a subscription, messages will be pulled from Google Cloud Pub/Sub asynchronously and passed to a user provided message handler.
-The subscription name could either be a canonical subscription name within the current project, or the fully-qualified name referring to a subscription in a different project using the `projects/<project_name>/subscriptions/<subscription_name>` format.
+The subscription name could either be a short subscription name within the current project, or the fully-qualified name referring to a subscription in a different project using the `projects/[project_name]/subscriptions/<subscription_name>` format.
 
 ===== Example
 Subscribe to a subscription with a message handler:
@@ -477,7 +477,7 @@ flux.doOnNext(AcknowledgeablePubsubMessage::ack);
 `PubSubAdmin` is the abstraction provided by Spring Cloud GCP to manage Google Cloud Pub/Sub resources.
 It allows for the creation, deletion and listing of topics and subscriptions.
 
-NOTE: Generally when referring to topics and subscriptions, you can either use the short canonical name within the current project, or the fully-qualified name referring to a topic or subscription in a different project using the `projects/<project_name>/(topics|subscriptions)/<name>` format.
+NOTE: Generally when referring to topics and subscriptions, you can either use the short canonical name within the current project, or the fully-qualified name referring to a topic or subscription in a different project using the `projects/[project_name]/(topics|subscriptions)/<name>` format.
 
 The Spring Boot starter for GCP Pub/Sub auto-configures a `PubSubAdmin` object using the `GcpProjectIdProvider` and the `CredentialsProvider` auto-configured by the Spring Boot GCP Core starter.
 
