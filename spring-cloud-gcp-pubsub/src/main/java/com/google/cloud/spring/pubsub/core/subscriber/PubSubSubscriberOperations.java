@@ -41,7 +41,7 @@ public interface PubSubSubscriberOperations {
    *
    * @param subscription short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @param messageConsumer the callback method triggered when new messages arrive
    * @return subscriber listening to new messages
    * @since 1.1
@@ -57,7 +57,7 @@ public interface PubSubSubscriberOperations {
    *
    * @param subscription short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @param messageConsumer the callback method triggered when new messages arrive
    * @param payloadType the type to which the payload of the Pub/Sub message should be converted
    * @param <T> the type of the payload
@@ -74,7 +74,7 @@ public interface PubSubSubscriberOperations {
    *
    * @param subscription short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @param maxMessages the maximum number of pulled messages. If this value is null then up to
    *     Integer.MAX_VALUE messages will be requested.
    * @param returnImmediately returns immediately even if subscription doesn't contain enough
@@ -91,7 +91,7 @@ public interface PubSubSubscriberOperations {
    *
    * @param subscription short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @param maxMessages the maximum number of pulled messages. If this value is null then up to
    *     Integer.MAX_VALUE messages will be requested.
    * @param returnImmediately returns immediately even if subscription doesn't contain enough
@@ -109,7 +109,7 @@ public interface PubSubSubscriberOperations {
    *
    * @param subscription short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @param maxMessages the maximum number of pulled messages. If this value is null then up to
    *     Integer.MAX_VALUE messages will be requested.
    * @param returnImmediately returns immediately even if subscription doesn't contain enough
@@ -125,7 +125,7 @@ public interface PubSubSubscriberOperations {
    *
    * @param subscription short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @param maxMessages the maximum number of pulled messages. If this value is null then up to
    *     Integer.MAX_VALUE messages will be requested.
    * @param returnImmediately returns immediately even if subscription doesn't contain enough
@@ -144,7 +144,7 @@ public interface PubSubSubscriberOperations {
    *
    * @param subscription short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @param maxMessages the maximum number of pulled messages. If this value is null then up to
    *     Integer.MAX_VALUE messages will be requested.
    * @param returnImmediately returns immediately even if subscription doesn't contain enough
@@ -164,7 +164,7 @@ public interface PubSubSubscriberOperations {
    *
    * @param subscription short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @param maxMessages the maximum number of pulled messages. If this value is null then up to
    *     Integer.MAX_VALUE messages will be requested.
    * @param returnImmediately returns immediately even if subscription doesn't contain enough
@@ -184,7 +184,7 @@ public interface PubSubSubscriberOperations {
    *
    * @param subscription short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @return a received message, or {@code null} if none exists in the subscription
    */
   PubsubMessage pullNext(String subscription);
@@ -194,7 +194,7 @@ public interface PubSubSubscriberOperations {
    *
    * @param subscription short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @return the ListenableFuture for the asynchronous execution, returning a received message, or
    *     {@code null} if none exists in the subscription
    * @since 1.2.3

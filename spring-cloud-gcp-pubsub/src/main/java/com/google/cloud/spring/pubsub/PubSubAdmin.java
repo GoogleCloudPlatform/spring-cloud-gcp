@@ -178,7 +178,7 @@ public class PubSubAdmin implements AutoCloseable {
    *
    * @param subscriptionName short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @param topicName short topic name, e.g., "topicName", or the fully-qualified topic name in
    *     the {@code projects/[project_name]/topics/[topic_name]} format
    * @return the created subscription
@@ -192,7 +192,7 @@ public class PubSubAdmin implements AutoCloseable {
    *
    * @param subscriptionName short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @param topicName short topic name, e.g., "topicName", or the fully-qualified topic name in
    *     the {@code projects/[project_name]/topics/[topic_name]} format
    * @param ackDeadline deadline in seconds before a message is resent, must be between 10 and 600
@@ -209,7 +209,7 @@ public class PubSubAdmin implements AutoCloseable {
    *
    * @param subscriptionName short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @param topicName short topic name, e.g., "topicName", or the fully-qualified topic name in
    *     the {@code projects/[project_name]/topics/[topic_name]} format
    * @param pushEndpoint the URL of the service receiving the push messages. If not provided, uses
@@ -226,7 +226,7 @@ public class PubSubAdmin implements AutoCloseable {
    *
    * @param subscriptionName short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @param topicName short topic name, e.g., "topicName", or the fully-qualified topic name in
    *     the {@code projects/[project_name]/topics/[topic_name]} format
    * @param ackDeadline deadline in seconds before a message is resent, must be between 10 and 600
@@ -283,7 +283,7 @@ public class PubSubAdmin implements AutoCloseable {
    *
    * @param subscriptionName short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    * @return subscription configuration or {@code null} if subscription doesn't exist
    */
   public Subscription getSubscription(String subscriptionName) {
@@ -306,7 +306,7 @@ public class PubSubAdmin implements AutoCloseable {
    *
    * @param subscriptionName short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
-   *     projects/[project_name]/subscriptions/<subscription_name>} format
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    */
   public void deleteSubscription(String subscriptionName) {
     Assert.hasText(subscriptionName, "No subscription name was specified");

@@ -341,7 +341,7 @@ will be pulled from Google Cloud Pub/Sub asynchronously and passed to a
 user provided message handler. The subscription name could either be a
 short subscription name within the current project, or the
 fully-qualified name referring to a subscription in a different project
-using the `projects/[project_name]/subscriptions/<subscription_name>`
+using the `projects/[project_name]/subscriptions/[subscription_name]`
 format.
 
 ##### Example

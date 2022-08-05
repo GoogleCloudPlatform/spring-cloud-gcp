@@ -300,7 +300,7 @@ include::{project-root}/spring-cloud-gcp-autoconfigure/src/test/java/com/google/
 Google Cloud Pub/Sub allows many subscriptions to be associated to the same topic.
 `PubSubTemplate` allows you to listen to subscriptions via the `subscribe()` method.
 When listening to a subscription, messages will be pulled from Google Cloud Pub/Sub asynchronously and passed to a user provided message handler.
-The subscription name could either be a short subscription name within the current project, or the fully-qualified name referring to a subscription in a different project using the `projects/[project_name]/subscriptions/<subscription_name>` format.
+The subscription name could either be a short subscription name within the current project, or the fully-qualified name referring to a subscription in a different project using the `projects/[project_name]/subscriptions/[subscription_name]` format.
 
 ===== Example
 Subscribe to a subscription with a message handler:
