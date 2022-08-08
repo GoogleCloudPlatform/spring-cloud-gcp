@@ -5,7 +5,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.Credentials;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.DefaultBootstrapContext;
@@ -61,7 +60,7 @@ public class SecretManagerConfigDataLocationResolverUnitTests {
 
     @Bean
     public static CredentialsProvider googleCredentials() {
-      return () -> mock(Credentials.class);
+      return mock(CredentialsProvider.class);
     }
   }
 }
