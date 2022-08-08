@@ -2,6 +2,7 @@
 
 This sample application demonstrates performing DDL, DML, and SQL operations on https://cloud.google.com/spanner/[Google Cloud Spanner] using a the Cloud Spanner R2DBC driver.
 
+image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fcloud-spanner-r2dbc&cloudshell_open_in_editor=cloud-spanner-r2dbc-samples/cloud-spanner-r2dbc-sample/README.adoc]
 
 == Setup & Configuration
 1. Create a Google Cloud Platform Project
