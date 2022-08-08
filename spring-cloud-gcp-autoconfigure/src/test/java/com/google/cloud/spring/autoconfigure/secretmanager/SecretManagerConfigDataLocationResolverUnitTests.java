@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.DefaultBootstrapContext;
 import org.springframework.boot.WebApplicationType;
@@ -37,6 +38,7 @@ public class SecretManagerConfigDataLocationResolverUnitTests {
     assertThat(resolver.isResolvable(context, ConfigDataLocation.of("sm://"))).isTrue();
   }
 
+  @Disabled
   @Test
   public void resolveReturnsConfigDataLocation() {
     SpringApplicationBuilder applicationBuilder =
