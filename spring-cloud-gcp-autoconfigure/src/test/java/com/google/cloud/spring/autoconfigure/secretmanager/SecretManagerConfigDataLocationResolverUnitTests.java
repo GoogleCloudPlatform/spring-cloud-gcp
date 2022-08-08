@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.auth.Credentials;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.DefaultBootstrapContext;
@@ -15,7 +16,6 @@ import org.springframework.boot.context.config.ConfigDataLocationResolverContext
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Unit tests for {@link SecretManagerConfigDataLocationResolver}.
@@ -40,8 +40,7 @@ public class SecretManagerConfigDataLocationResolverUnitTests {
   @Test
   public void resolveReturnsConfigDataLocation() {
     SpringApplicationBuilder applicationBuilder =
-        new SpringApplicationBuilder(
-            TestSecretManagerConfiguration.class)
+        new SpringApplicationBuilder(TestSecretManagerConfiguration.class)
             .properties("spring.cloud.gcp.sql.enabled=false")
             .web(WebApplicationType.NONE);
     try (ConfigurableApplicationContext c = applicationBuilder.run()) {
@@ -55,12 +54,11 @@ public class SecretManagerConfigDataLocationResolverUnitTests {
     }
   }
 
-  @Configuration
-  static class TestSecretManagerConfiguration {
+  private static class TestSecretManagerConfiguration {
 
     @Bean
-    public static CredentialsProvider googleCredentials() {
-      return mock(CredentialsProvider.class);
+    public CredentialsProvider googleCredentials() {
+      return () -> mock(Credentials.class);
     }
   }
 }
