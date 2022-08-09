@@ -527,7 +527,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
   private List<Entity> convertToEntityForSave(
       Object entity, Set<Key> persistedEntities, Key... ancestors) {
-    if (ancestors.length != 0) {
+    if (ancestors != null) {
       for (Key ancestor : ancestors) {
         validateKey(entity, keyToPathElement(ancestor));
       }
