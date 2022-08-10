@@ -112,7 +112,7 @@ public class SecretManagerConfigDataLocationResolver implements
       SecretManagerServiceSettings settings = SecretManagerServiceSettings.newBuilder()
           .setCredentialsProvider(credentialsProvider)
           .setHeaderProvider(
-              new UserAgentHeaderProvider(GcpSecretManagerBootstrapConfiguration.class))
+              new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class))
           .build();
       secretManagerServiceClient = SecretManagerServiceClient.create(settings);
 

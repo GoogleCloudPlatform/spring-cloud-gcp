@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
+import java.util.Objects;
 import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataResource;
 
@@ -27,7 +28,27 @@ public class SecretManagerConfigDataResource extends ConfigDataResource {
     this.location = location;
   }
 
-  public ConfigDataLocation getLocation() {
-    return location;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof SecretManagerConfigDataResource)) {
+      return false;
+    }
+    SecretManagerConfigDataResource that = (SecretManagerConfigDataResource) o;
+    return location.equals(that.location);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(location);
+  }
+
+  @Override
+  public String toString() {
+    return "SecretManagerConfigDataResource{"
+        + "location=" + location
+        + '}';
   }
 }

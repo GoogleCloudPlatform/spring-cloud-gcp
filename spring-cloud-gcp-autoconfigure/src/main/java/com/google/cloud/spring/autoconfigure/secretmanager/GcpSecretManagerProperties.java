@@ -31,6 +31,7 @@ public class GcpSecretManagerProperties implements CredentialsSupplier {
    * Configuration prefix for Secret Manager properties.
    */
   public static final String PREFIX = "spring.cloud.gcp.secretmanager";
+
   /**
    * Overrides the GCP OAuth2 credentials specified in the Core module.
    */

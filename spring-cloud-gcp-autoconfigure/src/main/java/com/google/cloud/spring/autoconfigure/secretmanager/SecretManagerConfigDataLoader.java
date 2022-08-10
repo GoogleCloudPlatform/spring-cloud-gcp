@@ -34,16 +34,13 @@ public class SecretManagerConfigDataLoader implements
       ConfigDataLoaderContext context,
       SecretManagerConfigDataResource resource)
       throws IOException, ConfigDataResourceNotFoundException {
-    SecretManagerTemplate secretManagerTemplate = getImperativeInfrastructure(context,
-        SecretManagerTemplate.class);
-    GcpProjectIdProvider projectIdProvider = getImperativeInfrastructure(context,
-        GcpProjectIdProvider.class);
+    SecretManagerTemplate secretManagerTemplate = context.getBootstrapContext()
+        .get(SecretManagerTemplate.class);
+
+    GcpProjectIdProvider projectIdProvider = context.getBootstrapContext()
+        .get(GcpProjectIdProvider.class);
 
     return new ConfigData(Collections.singleton(new SecretManagerPropertySource(
         "spring-cloud-gcp-secret-manager", secretManagerTemplate, projectIdProvider)));
-  }
-
-  private <T> T getImperativeInfrastructure(ConfigDataLoaderContext context, Class<T> clazz) {
-    return context.getBootstrapContext().get(clazz);
   }
 }

@@ -39,6 +39,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
  * into the application {@link org.springframework.core.env.Environment}.
  *
  * @since 1.2.2
+ * @deprecated since external resources should be using Spring Boot's Config Data API, more info in
+ *     <a href="https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4">here</a>.
  */
 @Deprecated
 @Configuration(proxyBeanMethods = false)
@@ -52,7 +54,6 @@ public class GcpSecretManagerBootstrapConfiguration {
   public GcpSecretManagerBootstrapConfiguration(
       GcpSecretManagerProperties properties, ConfigurableEnvironment configurableEnvironment) {
 
-    System.out.println("*** OLD WAY boostrap config GcpSecretManagerBootstrapConfiguration constructor ");
     this.gcpProjectIdProvider =
         properties.getProjectId() != null
             ? properties::getProjectId
@@ -70,7 +71,6 @@ public class GcpSecretManagerBootstrapConfiguration {
   @ConditionalOnMissingBean
   public SecretManagerServiceClient secretManagerClient(CredentialsProvider googleCredentials)
       throws IOException {
-    System.out.println("*** OLD WAY boostrap config GcpSecretManagerBootstrapConfiguration.secretManagerClient ");
     SecretManagerServiceSettings settings =
         SecretManagerServiceSettings.newBuilder()
             .setCredentialsProvider(googleCredentials)
@@ -92,11 +92,5 @@ public class GcpSecretManagerBootstrapConfiguration {
   public SecretManagerPropertySourceLocator secretManagerPropertySourceLocator(
       SecretManagerTemplate secretManagerTemplate) {
     return new SecretManagerPropertySourceLocator(secretManagerTemplate, this.gcpProjectIdProvider);
-  }
-
-  @Bean
-  @ConditionalOnMissingBean
-  public GcpProjectIdProvider gcpProjectIdProvider() {
-    return gcpProjectIdProvider;
   }
 }
