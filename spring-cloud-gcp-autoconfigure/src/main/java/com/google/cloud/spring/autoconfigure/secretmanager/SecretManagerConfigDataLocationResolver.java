@@ -41,15 +41,15 @@ public class SecretManagerConfigDataLocationResolver implements
    * ConfigData Prefix for Google Cloud Secret Manager.
    */
   public static final String PREFIX = "sm://";
+  /**
+   * A static client to avoid creating another client after refreshing.
+   */
+  private static SecretManagerServiceClient secretManagerServiceClient;
 
   @Override
   public boolean isResolvable(ConfigDataLocationResolverContext context,
       ConfigDataLocation location) {
-    if (!location.hasPrefix(PREFIX)) {
-      return false;
-    }
-
-    return true;
+    return location.hasPrefix(PREFIX);
   }
 
   @Override
@@ -100,6 +100,10 @@ public class SecretManagerConfigDataLocationResolver implements
 
   private static SecretManagerServiceClient createSecretManagerClient(
       ConfigDataLocationResolverContext context) {
+    if (secretManagerServiceClient != null && !secretManagerServiceClient.isTerminated()) {
+      return secretManagerServiceClient;
+    }
+
     try {
       GcpSecretManagerProperties properties = context.getBootstrapContext()
           .get(GcpSecretManagerProperties.class);
@@ -110,7 +114,9 @@ public class SecretManagerConfigDataLocationResolver implements
           .setHeaderProvider(
               new UserAgentHeaderProvider(GcpSecretManagerBootstrapConfiguration.class))
           .build();
-      return SecretManagerServiceClient.create(settings);
+      secretManagerServiceClient = SecretManagerServiceClient.create(settings);
+
+      return secretManagerServiceClient;
     } catch (IOException e) {
       throw new RuntimeException(
           "Failed to create the Secret Manager Client for ConfigData loading.");
