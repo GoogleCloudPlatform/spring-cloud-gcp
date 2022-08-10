@@ -39,7 +39,7 @@
 
 		<!-- Dependency versions -->
 		<spring-cloud-dependencies.version>2021.0.3</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>2.6.9</spring-boot-dependencies.version>
+		<spring-boot-dependencies.version>2.6.10</spring-boot-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.0</java-cfenv.version>
 		<spring-native.version>0.10.5</spring-native.version>
@@ -60,7 +60,7 @@
 		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.14.0</errorprone.version>
+		<errorprone.version>2.15.0</errorprone.version>
 
 
 		<!-- All checks except for javadoc enforced by default -->

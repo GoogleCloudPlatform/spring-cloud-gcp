@@ -148,6 +148,9 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
     this.datastoreTemplate.deleteAll(Store.class);
     this.datastoreTemplate.deleteAll(ChildEntity.class);
     this.datastoreTemplate.deleteAll(ParentEntityWithLazyChild.class);
+    this.datastoreTemplate.deleteAll(Company.class);
+    this.datastoreTemplate.deleteAll(Employee.class);
+    this.datastoreTemplate.deleteAll(ServiceConfiguration.class);
     this.testEntityRepository.deleteAll();
     if (this.keyForMap != null) {
       this.datastore.delete(this.keyForMap);

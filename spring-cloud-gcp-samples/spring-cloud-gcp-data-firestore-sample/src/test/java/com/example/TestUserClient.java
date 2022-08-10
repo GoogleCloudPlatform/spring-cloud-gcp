@@ -63,7 +63,7 @@ public class TestUserClient {
     restTemplate.getForEntity("/users/removePhonesForUser?name=" + name, String.class);
   }
 
-  public void saveUser(User user, List<PhoneNumber> phoneNumbers) {
+  public User saveUser(User user, List<PhoneNumber> phoneNumbers) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -80,6 +80,6 @@ public class TestUserClient {
         phoneNumbers.stream().map(PhoneNumber::getNumber).collect(Collectors.joining(",")));
 
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
-    this.restTemplate.postForObject("/users/saveUser", request, User.class);
+    return this.restTemplate.postForObject("/users/saveUser", request, User.class);
   }
 }
