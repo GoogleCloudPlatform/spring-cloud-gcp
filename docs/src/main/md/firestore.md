@@ -797,3 +797,7 @@ API usage:
 
   - [Firestore Client Library sample
     application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-firestore-sample)
+
+### Test
+
+`Testcontainers` provides a `gcloud` module which offers `FirestoreEmulatorContainer`. See more at the [docs](https://www.testcontainers.org/modules/gcloud/#firestore)

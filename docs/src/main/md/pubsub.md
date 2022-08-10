@@ -769,3 +769,7 @@ template](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spri
 and [using a subscription-backed reactive
 stream](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-reactive-sample)
 are available.
+
+### Test
+
+`Testcontainers` provides a `gcloud` module which offers `PubSubEmulatorContainer`. See more at the [docs](https://www.testcontainers.org/modules/gcloud/#pubsub)
