@@ -31,7 +31,7 @@
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 
 		<!-- App engine plugin version, used to deploy sample apps -->
-		<app-engine-maven-plugin.version>2.4.3</app-engine-maven-plugin.version>
+		<app-engine-maven-plugin.version>2.4.4</app-engine-maven-plugin.version>
 
 		<!-- Deploy plugin is skipped for all samples but exists -->
 		<maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
