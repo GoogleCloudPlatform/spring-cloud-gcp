@@ -19,6 +19,8 @@ package com.google.cloud.spring.bigquery.core;
 import com.google.cloud.bigquery.FormatOptions;
 import com.google.cloud.bigquery.Job;
 import com.google.cloud.bigquery.Schema;
+import com.google.protobuf.Descriptors.DescriptorValidationException;
+import java.io.IOException;
 import java.io.InputStream;
 import org.springframework.util.concurrent.ListenableFuture;
 
@@ -67,4 +69,19 @@ public interface BigQueryOperations {
    */
   ListenableFuture<Job> writeDataToTable(
       String tableName, InputStream inputStream, FormatOptions dataFormatOptions, Schema schema);
+
+  /**
+   * @param projectId name of the project to write to
+   * @param dataSetId name of the dataset to write to
+   * @param tableName name of the table to write to
+   * @param jsonInputStream input stream of the json file to be written
+   * @return {@link ListenableFuture} containing the WriteApiResponse indicating completion of
+   *     operation
+   * @throws IOException if errors occur when loading data to the BigQuery table
+   * @throws DescriptorValidationException if errors occur when loading data to the BigQuery table
+   * @throws InterruptedException if errors occur when loading data to the BigQuery table
+   */
+  ListenableFuture<WriteApiResponse> writeJsonStream(
+      String projectId, String dataSetId, String tableName, InputStream jsonInputStream)
+      throws IOException, DescriptorValidationException, InterruptedException;
 }
