@@ -16,7 +16,8 @@ import org.springframework.boot.context.config.ConfigDataLocation;
  * Unit tests for {@link SecretManagerConfigDataLoader}.
  */
 
-public class SecretManagerConfigDataLoaderUnitTests {
+class SecretManagerConfigDataLoaderUnitTests {
+
   private final ConfigDataLoaderContext loaderContext = mock(ConfigDataLoaderContext.class);
   private final GcpProjectIdProvider idProvider = mock(GcpProjectIdProvider.class);
   private final SecretManagerTemplate template = mock(SecretManagerTemplate.class);
@@ -25,7 +26,7 @@ public class SecretManagerConfigDataLoaderUnitTests {
   private final SecretManagerConfigDataLoader loader = new SecretManagerConfigDataLoader();
 
   @Test
-  public void loadIncorrectResourceThrowsException() {
+  void loadIncorrectResourceThrowsException() {
     when(loaderContext.getBootstrapContext()).thenReturn(bootstrapContext);
     when(bootstrapContext.get(GcpProjectIdProvider.class)).thenReturn(idProvider);
     when(bootstrapContext.get(SecretManagerTemplate.class)).thenReturn(template);

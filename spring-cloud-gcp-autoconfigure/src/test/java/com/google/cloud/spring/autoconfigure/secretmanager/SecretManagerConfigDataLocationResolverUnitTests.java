@@ -5,62 +5,52 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.Credentials;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import java.util.List;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.BootstrapRegistry;
 import org.springframework.boot.DefaultBootstrapContext;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataLocationResolverContext;
 import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 
 /**
  * Unit tests for {@link SecretManagerConfigDataLocationResolver}.
  */
-public class SecretManagerConfigDataLocationResolverUnitTests {
+class SecretManagerConfigDataLocationResolverUnitTests {
 
   private final SecretManagerConfigDataLocationResolver resolver = new SecretManagerConfigDataLocationResolver();
   private final ConfigDataLocationResolverContext context = mock(
       ConfigDataLocationResolverContext.class);
 
   @Test
-  public void isResolvableReturnsFalseWithIncorrectPrefix() {
+  void isResolvableReturnsFalseWithIncorrectPrefix() {
     assertThat(resolver.isResolvable(context, ConfigDataLocation.of("test://"))).isFalse();
     assertThat(resolver.isResolvable(context, ConfigDataLocation.of("sm:"))).isFalse();
   }
 
   @Test
-  public void isResolvableReturnsFalseWithCorrectPrefix() {
+  void isResolvableReturnsFalseWithCorrectPrefix() {
     assertThat(resolver.isResolvable(context, ConfigDataLocation.of("sm://"))).isTrue();
   }
 
-  @Disabled
   @Test
-  public void resolveReturnsConfigDataLocation() {
-    SpringApplicationBuilder applicationBuilder =
-        new SpringApplicationBuilder(TestSecretManagerConfiguration.class)
-            .properties("spring.cloud.gcp.sql.enabled=false")
-            .web(WebApplicationType.NONE);
-    try (ConfigurableApplicationContext c = applicationBuilder.run()) {
-      when(context.getBinder()).thenReturn(new Binder());
-      when(context.getBootstrapContext()).thenReturn(new DefaultBootstrapContext());
-      List<SecretManagerConfigDataResource> locations = resolver.resolve(context,
-          ConfigDataLocation.of("sm://my-secret"));
-      assertThat(locations.size()).isEqualTo(1);
-      assertThat(locations).first().extracting("location")
-          .isEqualTo(ConfigDataLocation.of("sm://my-secret"));
-    }
-  }
+  void resolveReturnsConfigDataLocation() {
+    CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
+    SecretManagerServiceClient secretManagerServiceClient = mock(SecretManagerServiceClient.class);
+    DefaultBootstrapContext defaultBootstrapContext = new DefaultBootstrapContext();
+    defaultBootstrapContext.register(CredentialsProvider.class,
+        BootstrapRegistry.InstanceSupplier.of(credentialsProvider));
+    defaultBootstrapContext.register(SecretManagerServiceClient.class,
+        BootstrapRegistry.InstanceSupplier.of(secretManagerServiceClient));
 
-  private static class TestSecretManagerConfiguration {
+    when(context.getBinder()).thenReturn(new Binder());
+    when(context.getBootstrapContext()).thenReturn(defaultBootstrapContext);
 
-    @Bean
-    public CredentialsProvider googleCredentials() {
-      return () -> mock(Credentials.class);
-    }
+    List<SecretManagerConfigDataResource> locations = resolver.resolve(context,
+        ConfigDataLocation.of("sm://my-secret"));
+    assertThat(locations).hasSize(1);
+    assertThat(locations).first().extracting("location")
+        .isEqualTo(ConfigDataLocation.of("sm://my-secret"));
   }
 }
