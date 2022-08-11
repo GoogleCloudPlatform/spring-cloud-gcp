@@ -1517,3 +1517,7 @@ There are two sample applications available:
 1. https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample[ Sample application using Spanner Template directly]
 
 2. https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-repository-sample[ Sample application using higher-level Spanner Repository capabilities]
+
+=== Test
+
+`Testcontainers` provides a `gcloud` module which offers `SpannerEmulatorContainer`. See more at the https://www.testcontainers.org/modules/gcloud/#spanner[docs]
