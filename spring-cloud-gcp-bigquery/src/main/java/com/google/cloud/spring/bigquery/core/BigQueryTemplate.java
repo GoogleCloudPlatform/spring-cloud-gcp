@@ -25,12 +25,23 @@ import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.TableDataWriteChannel;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.WriteChannelConfiguration;
+import com.google.cloud.bigquery.storage.v1.BatchCommitWriteStreamsRequest;
+import com.google.cloud.bigquery.storage.v1.BatchCommitWriteStreamsResponse;
+import com.google.cloud.bigquery.storage.v1.BigQueryWriteClient;
+import com.google.cloud.bigquery.storage.v1.StorageError;
+import com.google.cloud.bigquery.storage.v1.TableName;
+import com.google.protobuf.Descriptors.DescriptorValidationException;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.time.Duration;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.util.Assert;
@@ -56,6 +67,8 @@ public class BigQueryTemplate implements BigQueryOperations {
   private WriteDisposition writeDisposition = WriteDisposition.WRITE_APPEND;
 
   private Duration jobPollInterval = Duration.ofSeconds(2);
+
+  private static final int JSON_STREAM_WRITER_BATCH_SIZE = 1000; // write records in batches of 1000
 
   /**
    * Creates the {@link BigQuery} template.
@@ -158,9 +171,87 @@ public class BigQueryTemplate implements BigQueryOperations {
     return createJobFuture(writer.getJob());
   }
 
-  /**
-   * @return the name of the BigQuery dataset that the template is operating in.
-   */
+  @Override
+  // TODO(prasmish): Check if is it suggested to take all these 3 params (projectId, dataSetId,
+  // tableName) as arg will be helpful for the developers.
+  public ListenableFuture<WriteApiResponse> writeJsonStream(
+      String projectId, String dataSetId, String tableName, InputStream jsonInputStream)
+      throws DescriptorValidationException, IOException, InterruptedException {
+    WriteApiResponse apiResponse = new WriteApiResponse();
+    BigQueryWriteClient client = BigQueryWriteClient.create();
+    TableName parentTable = TableName.of(projectId, dataSetId, tableName);
+
+    BigQueryJsonDataWriter writer = new BigQueryJsonDataWriter();
+    // One time initialization.
+    writer.initialize(parentTable, client);
+
+    try {
+      // Write data in batches. Ref: https://cloud.google.com/bigquery/quotas#write-api-limits
+      long offset = 0;
+      int currentBatchSize = 0;
+
+      BufferedReader jsonReader = new BufferedReader(new InputStreamReader(jsonInputStream));
+      String jsonLine = null;
+      JSONArray jsonBatch = new JSONArray();
+      while ((jsonLine = jsonReader.readLine()) != null) { // read the input stream line by line
+        JSONObject jsonObj = new JSONObject(jsonLine); // cast the JSON string into JSON Object
+        jsonBatch.put(jsonObj);
+        currentBatchSize++;
+        if (currentBatchSize
+            == JSON_STREAM_WRITER_BATCH_SIZE) { // append the batch, increment the offset and reset
+          // the batch
+          writer.append(jsonBatch, offset);
+          offset += jsonBatch.length();
+          jsonBatch = new JSONArray();
+          currentBatchSize = 0;
+        }
+      }
+
+      if (jsonBatch.length()
+          != 0) { // there might be records less than JSON_STREAM_WRITER_BATCH_SIZE, append those as
+        // well
+        writer.append(jsonBatch, offset);
+        offset += jsonBatch.length();
+      }
+
+    } catch (ExecutionException e) {
+      // If the wrapped exception is a StatusRuntimeException, check the state of the operation.
+      // If the state is INTERNAL, CANCELLED, or ABORTED, you can retry. For more information, see:
+      // https://grpc.github.io/grpc-java/javadoc/io/grpc/StatusRuntimeException.html
+      throw new BigQueryException("Failed to append records. \n" + e);
+    }
+
+    // Final cleanup for the stream.
+    writer.cleanup(client);
+    // TODO(prasmish): Add logger @ Level.FINE to print offset and msg
+
+    // Once all streams are done, if all writes were successful, commit all of them in one request.
+    // If any streams failed, their workload may be
+    // retried on a new stream, and then only the successful stream should be included in the
+    // commit.
+    BatchCommitWriteStreamsRequest commitRequest =
+        BatchCommitWriteStreamsRequest.newBuilder()
+            .setParent(parentTable.toString())
+            .addWriteStreams(writer.getStreamName())
+            .build();
+    BatchCommitWriteStreamsResponse commitResponse = client.batchCommitWriteStreams(commitRequest);
+    // If the response does not have a commit time, it means the commit operation failed.
+    if (commitResponse.hasCommitTime() == false) {
+      for (StorageError err : commitResponse.getStreamErrorsList()) {
+        apiResponse.addError(err); // this object is returned to the user
+      }
+    }
+
+    // set isSucccessful flag to true of there were no errors
+    if (apiResponse.getErrors().size() == 0) {
+      apiResponse.setSuccessful(true);
+    }
+
+    // TODO(prasmish): Currently we are returning null, program for ListenableFuture
+    return null;
+  }
+
+  // @return the name of the BigQuery dataset that the template is operating in.
   public String getDatasetName() {
     return this.datasetName;
   }
