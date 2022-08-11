@@ -410,3 +410,7 @@ Spring Cloud GCP provides Firestore sample applications to demonstrate API usage
 
 - https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-firestore-sample[Reactive Firestore Repository sample application]:
 - https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-firestore-sample[Firestore Client Library sample application]
+
+=== Test
+
+`Testcontainers` provides a `gcloud` module which offers `FirestoreEmulatorContainer`. See more at the https://www.testcontainers.org/modules/gcloud/#firestore[docs]

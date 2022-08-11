@@ -598,3 +598,7 @@ include::{project-root}/spring-cloud-gcp-autoconfigure/src/test/java/com/google/
 === Sample
 
 Sample applications for https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-sample[using the template] and https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-reactive-sample[using a subscription-backed reactive stream] are available.
+
+=== Test
+
+`Testcontainers` provides a `gcloud` module which offers `PubSubEmulatorContainer`. See more at the https://www.testcontainers.org/modules/gcloud/#pubsub[docs]
