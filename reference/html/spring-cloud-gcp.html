@@ -225,6 +225,7 @@ window.onload = function() {
 <li><a href="#reactive-stream-subscriber">6.4. Reactive Stream Subscriber</a></li>
 <li><a href="#pubsub-management">6.5. Pub/Sub management</a></li>
 <li><a href="#sample-2">6.6. Sample</a></li>
+<li><a href="#test">6.7. Test</a></li>
 </ul>
 </li>
 <li><a href="#spring-integration">7. Spring Integration</a>
@@ -286,6 +287,7 @@ window.onload = function() {
 <li><a href="#spring-boot-actuator-support-2">13.10. Spring Boot Actuator Support</a></li>
 <li><a href="#cloud-spanner-emulator">13.11. Cloud Spanner Emulator</a></li>
 <li><a href="#sample-8">13.12. Sample</a></li>
+<li><a href="#test-2">13.13. Test</a></li>
 </ul>
 </li>
 <li><a href="#spring-data-cloud-datastore">14. Spring Data Cloud Datastore</a>
@@ -300,6 +302,7 @@ window.onload = function() {
 <li><a href="#partitioning-data-by-namespace">14.8. Partitioning Data by Namespace</a></li>
 <li><a href="#spring-boot-actuator-support-3">14.9. Spring Boot Actuator Support</a></li>
 <li><a href="#sample-9">14.10. Sample</a></li>
+<li><a href="#test-3">14.11. Test</a></li>
 </ul>
 </li>
 <li><a href="#spring-data-cloud-firestore">15. Spring Data Cloud Firestore</a>
@@ -315,6 +318,7 @@ window.onload = function() {
 <li><a href="#cloud-firestore-spring-boot-starter">15.9. Cloud Firestore Spring Boot Starter</a></li>
 <li><a href="#emulator-usage">15.10. Emulator Usage</a></li>
 <li><a href="#samples-3">15.11. Samples</a></li>
+<li><a href="#test-4">15.12. Test</a></li>
 </ul>
 </li>
 <li><a href="#cloud-memorystore-for-redis">16. Cloud Memorystore for Redis</a>
@@ -2954,6 +2958,12 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 <h3 id="sample-2"><a class="anchor" href="#sample-2"></a><a class="link" href="#sample-2">6.6. Sample</a></h3>
 <div class="paragraph">
 <p>Sample applications for <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-sample">using the template</a> and <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-reactive-sample">using a subscription-backed reactive stream</a> are available.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="test"><a class="anchor" href="#test"></a><a class="link" href="#test">6.7. Test</a></h3>
+<div class="paragraph">
+<p><code>Testcontainers</code> provides a <code>gcloud</code> module which offers <code>PubSubEmulatorContainer</code>. See more at the <a href="https://www.testcontainers.org/modules/gcloud/#pubsub">docs</a></p>
 </div>
 </div>
 </div>
@@ -6993,6 +7003,12 @@ spring.cloud.gcp.spanner.emulator-host=${EMULATOR_HOSTPORT}</pre>
 </ol>
 </div>
 </div>
+<div class="sect2">
+<h3 id="test-2"><a class="anchor" href="#test-2"></a><a class="link" href="#test-2">13.13. Test</a></h3>
+<div class="paragraph">
+<p><code>Testcontainers</code> provides a <code>gcloud</code> module which offers <code>SpannerEmulatorContainer</code>. See more at the <a href="https://www.testcontainers.org/modules/gcloud/#spanner">docs</a></p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -8930,6 +8946,12 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-basic-sample">Simple Spring Boot Application</a> and more advanced <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-sample">Sample Spring Boot Application</a> are provided to show how to use the Spring Data Cloud Datastore starter and template.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="test-3"><a class="anchor" href="#test-3"></a><a class="link" href="#test-3">14.11. Test</a></h3>
+<div class="paragraph">
+<p><code>Testcontainers</code> provides a <code>gcloud</code> module which offers <code>DatastoreEmulatorContainer</code>. See more at the <a href="https://www.testcontainers.org/modules/gcloud/#datastore">docs</a></p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -9898,6 +9920,12 @@ spring.cloud.gcp.firestore.host-port=${EMULATOR_HOSTPORT}</pre>
 <p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-firestore-sample">Firestore Client Library sample application</a></p>
 </li>
 </ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="test-4"><a class="anchor" href="#test-4"></a><a class="link" href="#test-4">15.12. Test</a></h3>
+<div class="paragraph">
+<p><code>Testcontainers</code> provides a <code>gcloud</code> module which offers <code>FirestoreEmulatorContainer</code>. See more at the <a href="https://www.testcontainers.org/modules/gcloud/#firestore">docs</a></p>
 </div>
 </div>
 </div>
