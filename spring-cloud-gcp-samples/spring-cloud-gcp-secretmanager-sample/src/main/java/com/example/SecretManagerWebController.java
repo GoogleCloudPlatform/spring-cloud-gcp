@@ -37,7 +37,7 @@ public class SecretManagerWebController {
   private final SecretConfiguration configuration;
 
   // Application secrets can be accessed using @Value syntax.
-  @Value("${example.property}")
+  @Value("${application.secret}")
   private String appSecret;
 
   public SecretManagerWebController(SecretManagerTemplate secretManagerTemplate,
