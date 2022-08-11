@@ -70,7 +70,8 @@ public class SecretManagerConfigDataLocationResolver implements
     registerAndPromoteBean(
         context,
         SecretManagerServiceClient.class,
-        BootstrapRegistry.InstanceSupplier.of(createSecretManagerClient(context)));
+        // lazy register the client solely for unit test.
+        BootstrapRegistry.InstanceSupplier.from(() -> createSecretManagerClient(context)));
     // Register the GCP Project ID provider.
     registerAndPromoteBean(
         context,
@@ -98,7 +99,7 @@ public class SecretManagerConfigDataLocationResolver implements
         ? properties::getProjectId : new DefaultGcpProjectIdProvider();
   }
 
-  private static SecretManagerServiceClient createSecretManagerClient(
+  private static synchronized SecretManagerServiceClient createSecretManagerClient(
       ConfigDataLocationResolverContext context) {
     if (secretManagerServiceClient != null && !secretManagerServiceClient.isTerminated()) {
       return secretManagerServiceClient;
