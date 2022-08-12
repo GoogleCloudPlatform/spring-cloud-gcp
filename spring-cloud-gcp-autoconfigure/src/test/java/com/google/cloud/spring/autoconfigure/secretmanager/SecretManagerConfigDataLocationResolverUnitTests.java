@@ -1,14 +1,11 @@
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
-import com.google.cloud.spring.core.Credentials;
-import com.google.cloud.spring.core.GcpScope;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,12 +45,6 @@ class SecretManagerConfigDataLocationResolverUnitTests {
   }
 
   @Test
-  void createSecretManagerClientWithoutPresetClientTest() {
-    assertThatCode(() -> SecretManagerConfigDataLocationResolver.createSecretManagerClient(
-        context)).doesNotThrowAnyException();
-  }
-
-  @Test
   void resolveReturnsConfigDataLocation() {
     List<SecretManagerConfigDataResource> locations = resolver.resolve(context,
         ConfigDataLocation.of("sm://my-secret"));
@@ -64,7 +55,6 @@ class SecretManagerConfigDataLocationResolverUnitTests {
 
   @BeforeEach
   void registerBean() {
-    Credentials credentials = new Credentials(GcpScope.CLOUD_PLATFORM.getUrl());
     GcpSecretManagerProperties properties = mock(GcpSecretManagerProperties.class);
     CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
     SecretManagerServiceClient secretManagerServiceClient = mock(SecretManagerServiceClient.class);
@@ -79,6 +69,5 @@ class SecretManagerConfigDataLocationResolverUnitTests {
 
     when(context.getBinder()).thenReturn(new Binder());
     when(context.getBootstrapContext()).thenReturn(defaultBootstrapContext);
-    when(properties.getCredentials()).thenReturn(credentials);
   }
 }
