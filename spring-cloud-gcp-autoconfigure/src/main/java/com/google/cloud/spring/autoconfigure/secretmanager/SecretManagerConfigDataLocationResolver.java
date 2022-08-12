@@ -26,6 +26,7 @@ import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import org.apache.arrow.util.VisibleForTesting;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.BootstrapRegistry;
 import org.springframework.boot.context.config.ConfigDataLocation;
@@ -99,7 +100,8 @@ public class SecretManagerConfigDataLocationResolver implements
         ? properties::getProjectId : new DefaultGcpProjectIdProvider();
   }
 
-  private static synchronized SecretManagerServiceClient createSecretManagerClient(
+  @VisibleForTesting
+  static synchronized SecretManagerServiceClient createSecretManagerClient(
       ConfigDataLocationResolverContext context) {
     if (secretManagerServiceClient != null && !secretManagerServiceClient.isTerminated()) {
       return secretManagerServiceClient;
@@ -161,5 +163,10 @@ public class SecretManagerConfigDataLocationResolver implements
         factory.registerSingleton(beanName, instance);
       }
     });
+  }
+
+  @VisibleForTesting
+  static void setSecretManagerServiceClient(SecretManagerServiceClient client) {
+    secretManagerServiceClient = client;
   }
 }
