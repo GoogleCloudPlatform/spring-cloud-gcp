@@ -50,7 +50,7 @@ public class SecretManagerWebController {
   @GetMapping("/")
   public ModelAndView renderIndex(ModelMap map) {
     map.put("applicationSecret", appSecret);
-    map.put("myApplicationSecret", configuration.getProperty());
+    map.put("myApplicationSecret", configuration.getSecret());
     return new ModelAndView("index.html", map);
   }
 

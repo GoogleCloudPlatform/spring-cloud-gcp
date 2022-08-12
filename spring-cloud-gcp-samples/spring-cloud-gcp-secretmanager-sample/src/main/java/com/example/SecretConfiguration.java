@@ -19,17 +19,17 @@ package com.example;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
-@ConfigurationProperties("example")
+@ConfigurationProperties("application")
 @RefreshScope
 public class SecretConfiguration {
 
-  private String property;
+  private String secret;
 
-  public void setProperty(String property) {
-    this.property = property;
+  public void setSecret(String secret) {
+    this.secret = secret;
   }
 
-  public String getProperty() {
-    return property;
+  public String getSecret() {
+    return secret;
   }
 }
