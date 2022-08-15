@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2022-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,13 +57,13 @@ public class SecretManagerConfigDataLocationResolver implements
   public List<SecretManagerConfigDataResource> resolve(ConfigDataLocationResolverContext context,
       ConfigDataLocation location)
       throws ConfigDataLocationNotFoundException, ConfigDataResourceNotFoundException {
-    registerImperativeInfrastructure(context);
+    registerSecretManagerBeans(context);
 
     return Collections.singletonList(
         new SecretManagerConfigDataResource(location));
   }
 
-  private static void registerImperativeInfrastructure(ConfigDataLocationResolverContext context) {
+  private static void registerSecretManagerBeans(ConfigDataLocationResolverContext context) {
     // Register the Secret Manager properties.
     registerBean(
         context, GcpSecretManagerProperties.class, getSecretManagerProperties(context));

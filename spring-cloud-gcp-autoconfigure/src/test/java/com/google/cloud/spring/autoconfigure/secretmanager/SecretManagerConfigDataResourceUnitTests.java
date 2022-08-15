@@ -5,13 +5,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.config.ConfigDataLocation;
 
-public class SecretManagerConfigDataResourceUnitTests {
+class SecretManagerConfigDataResourceUnitTests {
 
   private ConfigDataLocation location = ConfigDataLocation.of("test");
+  private final SecretManagerConfigDataResource resource = new SecretManagerConfigDataResource(
+      location);
 
   @Test
   void resourceShouldBeEqualToItself() {
-    SecretManagerConfigDataResource resource = new SecretManagerConfigDataResource(location);
     assertThat(resource.equals(resource)).isTrue();
   }
 
@@ -22,8 +23,13 @@ public class SecretManagerConfigDataResourceUnitTests {
 
   @Test
   void twoResourcesWithSameLocationShouldBeEqual() {
-    SecretManagerConfigDataResource resource = new SecretManagerConfigDataResource(location);
     assertThat(resource.equals(new SecretManagerConfigDataResource(location))).isTrue();
+  }
+
+  @Test
+  void twoResourcesWithSameLocationShouldHaveSameHashcode() {
+    assertThat(resource.hashCode()).isEqualTo(
+        new SecretManagerConfigDataResource(location).hashCode());
   }
 
   @Test
@@ -33,8 +39,7 @@ public class SecretManagerConfigDataResourceUnitTests {
         + "location="
         + location
         + "}";
-    assertThat(new SecretManagerConfigDataResource(location)
-        .toString())
-        .isEqualTo(expectedString);
+    assertThat(resource)
+        .hasToString(expectedString);
   }
 }
