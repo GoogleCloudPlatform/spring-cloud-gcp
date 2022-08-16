@@ -90,7 +90,7 @@
     <r2dbc.version>0.9.0.RELEASE</r2dbc.version>
     <reactor.version>2020.0.22</reactor.version>
 
-    <mockito.version>4.6.1</mockito.version>
+    <mockito.version>4.7.0</mockito.version>
     <slf4j.version>1.7.36</slf4j.version>
 
     <!-- Test dependencies -->
