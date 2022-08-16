@@ -172,14 +172,13 @@ public class BigQueryTemplate implements BigQueryOperations {
   }
 
   @Override
-  // TODO(prasmish): Check if is it suggested to take all these 3 params (projectId, dataSetId,
-  // tableName) as arg will be helpful for the developers.
   public ListenableFuture<WriteApiResponse> writeJsonStream(
-      String projectId, String dataSetId, String tableName, InputStream jsonInputStream)
+      String tableName, InputStream jsonInputStream)
       throws DescriptorValidationException, IOException, InterruptedException {
     WriteApiResponse apiResponse = new WriteApiResponse();
     BigQueryWriteClient client = BigQueryWriteClient.create();
-    TableName parentTable = TableName.of(projectId, dataSetId, tableName);
+    TableName parentTable =
+        TableName.of(bigQuery.getOptions().getProjectId(), datasetName, tableName);
 
     BigQueryJsonDataWriter writer = new BigQueryJsonDataWriter();
     // One time initialization.
