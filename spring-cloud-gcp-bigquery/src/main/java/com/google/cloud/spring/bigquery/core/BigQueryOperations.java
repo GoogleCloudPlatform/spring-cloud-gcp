@@ -71,8 +71,6 @@ public interface BigQueryOperations {
       String tableName, InputStream inputStream, FormatOptions dataFormatOptions, Schema schema);
 
   /**
-   * @param projectId name of the project to write to
-   * @param dataSetId name of the dataset to write to
    * @param tableName name of the table to write to
    * @param jsonInputStream input stream of the json file to be written
    * @return {@link ListenableFuture} containing the WriteApiResponse indicating completion of
@@ -81,7 +79,6 @@ public interface BigQueryOperations {
    * @throws DescriptorValidationException if errors occur when loading data to the BigQuery table
    * @throws InterruptedException if errors occur when loading data to the BigQuery table
    */
-  ListenableFuture<WriteApiResponse> writeJsonStream(
-      String projectId, String dataSetId, String tableName, InputStream jsonInputStream)
+  ListenableFuture<WriteApiResponse> writeJsonStream(String tableName, InputStream jsonInputStream)
       throws IOException, DescriptorValidationException, InterruptedException;
 }
