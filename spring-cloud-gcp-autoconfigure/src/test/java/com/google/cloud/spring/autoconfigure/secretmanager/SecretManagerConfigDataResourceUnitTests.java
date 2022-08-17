@@ -28,8 +28,8 @@ class SecretManagerConfigDataResourceUnitTests {
 
   @Test
   void twoResourcesWithSameLocationShouldHaveSameHashcode() {
-    assertThat(resource.hashCode()).isEqualTo(
-        new SecretManagerConfigDataResource(location).hashCode());
+    assertThat(resource).hasSameHashCodeAs(
+        new SecretManagerConfigDataResource(location));
   }
 
   @Test
