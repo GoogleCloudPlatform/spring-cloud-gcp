@@ -12,9 +12,10 @@ image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.goo
 2. Enable the Secret Manager API from the "APIs & Services" menu of the Google Cloud Console.
 This can be done using the `gcloud` command line tool:
 +
-```
+[source]
+----
 gcloud services enable secretmanager.googleapis.com
-```
+----
 
 3. Authenticate in one of two ways:
 
@@ -35,13 +36,50 @@ Instructions for using the Secret Manager UI can be found in the https://cloud.g
 on port 8080. Your secret value is injected into your application through the `WebController` and you will see it
 displayed.
 +
-```
+[source]
+----
 applicationSecret: Hello world.
-```
+----
 +
 You will also see some web forms that allow you to create, read, and update secrets in Secret Manager.
 This is done by using the `SecretManagerTemplate`.
 +
 Finally, you can view all of your secrets using the https://console.cloud.google.com/security/secret-manager[Secret Manager Cloud Console UI], which is the source of truth for all of your secrets in Secret Manager.
+
+8. Refresh the secrets without restart the application:
+
+a. Before running your application, change the project's configuration files as follows:
++
+add the actuator starter dependency to your project,
++
+[source]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+----
+add the following property to your project's `application.properties`,
++
+[source]
+----
+management.endpoints.web.exposure.include=refresh
+----
++
+finally, add the following property to your project's `bootstrap.properties` to enable https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4[Spring Boot's Config Data API].
++
+[source]
+----
+spring.cloud.gcp.secretmanager.legacy=false
+----
+
+b. After running the application, change your secrets using https://console.cloud.google.com/security/secret-manager[Secret Manager Cloud Console UI].
+
+c. To refresh the secret, send the following command to your server from which hosting the application:
++
+[source]
+----
+curl -X POST http://[ip]:[port]/actuator/refresh
+----
 
 
