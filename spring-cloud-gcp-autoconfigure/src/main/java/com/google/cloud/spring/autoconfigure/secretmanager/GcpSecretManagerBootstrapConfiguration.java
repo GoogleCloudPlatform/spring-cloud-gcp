@@ -89,6 +89,7 @@ public class GcpSecretManagerBootstrapConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
+  @ConditionalOnProperty(value = "spring.cloud.gcp.secretmanager.legacy", matchIfMissing = true)
   public SecretManagerPropertySourceLocator secretManagerPropertySourceLocator(
       SecretManagerTemplate secretManagerTemplate) {
     return new SecretManagerPropertySourceLocator(secretManagerTemplate, this.gcpProjectIdProvider);
