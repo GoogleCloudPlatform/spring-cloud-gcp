@@ -56,6 +56,8 @@ delegates the conversion to the desired payload type to the
 
 To use the inbound channel adapter, a `PubSubInboundChannelAdapter` must
 be provided and configured on the user application side.
+> **NOTE:** The subscription name could either be a short subscription name within the current project, or the fully-qualified name referring to a subscription in a different project using the `projects/[project_name]/subscriptions/[subscription_name]` format.
+
 
 ``` java
 @Bean
@@ -245,6 +247,9 @@ By default, `PubSubMessageSource` pulls from the subscription one
 message at a time. To pull a batch of messages on each request, use the
 `setMaxFetchSize()` method to set the batch size.
 
+> **NOTE:** The subscription name could either be a short subscription name within the current project, or the fully-qualified name referring to a subscription in a different project using the `projects/[project_name]/subscriptions/[subscription_name]` format.
+
+
 ``` java
 @Bean
 @InboundChannelAdapter(channel = "pubsubInputChannel", poller = @Poller(fixedDelay = "100"))
@@ -306,6 +311,8 @@ to the `PubSubTemplate`. To customize the conversion, you can specify a
 
 To use the outbound channel adapter, a `PubSubMessageHandler` bean must
 be provided and configured on the user application side.
+
+> **NOTE:**  The topic name could either be a short topic name within the current project, or the fully-qualified name referring to a topic in a different project using the `projects/[project_name]/topics/[topic_name]` format.
 
 ``` java
 @Bean

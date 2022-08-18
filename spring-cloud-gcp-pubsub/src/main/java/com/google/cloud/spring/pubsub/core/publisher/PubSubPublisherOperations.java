@@ -30,8 +30,8 @@ public interface PubSubPublisherOperations {
   /**
    * Send a message to Pub/Sub.
    *
-   * @param topic canonical topic name, e.g., "topicName", or the fully-qualified topic name in the
-   *     {@code projects/<project_name>/topics/<topic_name>} format
+   * @param topic short topic name, e.g., "topicName", or the fully-qualified topic name in the
+   *     {@code projects/[project_name]/topics/[topic_name]} format
    * @param payload an object that will be serialized and sent
    * @param headers the headers to publish
    * @param <T> the type of the payload to publish
@@ -42,8 +42,8 @@ public interface PubSubPublisherOperations {
   /**
    * Send a message to Pub/Sub.
    *
-   * @param topic canonical topic name, e.g., "topicName", or the fully-qualified topic name in the
-   *     {@code projects/<project_name>/topics/<topic_name>} format
+   * @param topic short topic name, e.g., "topicName", or the fully-qualified topic name in the
+   *     {@code projects/[project_name]/topics/[topic_name]} format
    * @param payload an object that will be serialized and sent
    * @param <T> the type of the payload to publish
    * @return the listenable future of the call
@@ -53,8 +53,8 @@ public interface PubSubPublisherOperations {
   /**
    * Send a message to Pub/Sub.
    *
-   * @param topic canonical topic name, e.g., "topicName", or the fully-qualified topic name in the
-   *     {@code projects/<project_name>/topics/<topic_name>} format
+   * @param topic short topic name, e.g., "topicName", or the fully-qualified topic name in the
+   *     {@code projects/[project_name]/topics/[topic_name]} format
    * @param pubsubMessage a Google Cloud Pub/Sub API message
    * @return the listenable future of the call
    */
