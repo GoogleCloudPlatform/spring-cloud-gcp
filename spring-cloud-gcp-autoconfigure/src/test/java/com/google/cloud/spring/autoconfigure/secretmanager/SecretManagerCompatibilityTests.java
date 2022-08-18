@@ -18,7 +18,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 /**
  * Unit tests to check compatibility of Secret Manager.
  */
-public class SecretManagerCompatibilityTests {
+class SecretManagerCompatibilityTests {
 
   private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
 
