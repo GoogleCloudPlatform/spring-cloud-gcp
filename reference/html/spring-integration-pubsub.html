@@ -219,6 +219,18 @@ The <code>PubSubInboundChannelAdapter</code> delegates the conversion to the des
 <div class="paragraph">
 <p>To use the inbound channel adapter, a <code>PubSubInboundChannelAdapter</code> must be provided and configured on the user application side.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The subscription name could either be a short subscription name within the current project, or the fully-qualified name referring to a subscription in a different project using the <code>projects/[project_name]/subscriptions/[subscription_name]</code> format.
+</td>
+</tr>
+</table>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Bean
@@ -433,6 +445,18 @@ This can be overridden by using <code>setBlockOnPull()</code> method to wait for
 <p>By default, <code>PubSubMessageSource</code> pulls from the subscription one message at a time.
 To pull a batch of messages on each request, use the <code>setMaxFetchSize()</code> method to set the batch size.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The subscription name could either be a short subscription name within the current project, or the fully-qualified name referring to a subscription in a different project using the <code>projects/[project_name]/subscriptions/[subscription_name]</code> format.
+</td>
+</tr>
+</table>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Bean
@@ -493,6 +517,18 @@ To customize the conversion, you can specify a <code>PubSubMessageConverter</cod
 </div>
 <div class="paragraph">
 <p>To use the outbound channel adapter, a <code>PubSubMessageHandler</code> bean must be provided and configured on the user application side.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The topic name could either be a short topic name within the current project, or the fully-qualified name referring to a topic in a different project using the <code>projects/[project_name]/topics/[topic_name]</code> format.
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="content">
