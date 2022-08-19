@@ -95,12 +95,14 @@ Your configuration may then look like this:
 ```
 
 If you want to have more control over the log output, you can further
-configure the appender. The following properties are available:
+configure the appender. The following properties are available  (see [java-logging-logback project](https://github.com/googleapis/java-logging-logback) for the full list):
 
-| Property     | Default Value | Description                                                                                                                                                                                 |
-| ------------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `log`        | `spring.log`  | The Cloud Logging Log name. This can also be set via the `STACKDRIVER_LOG_NAME` environmental variable.                                                                                     |
-| `flushLevel` | `WARN`        | If a log entry with this level is encountered, trigger a flush of locally buffered log to Cloud Logging. This can also be set via the `STACKDRIVER_LOG_FLUSH_LEVEL` environmental variable. |
+| Property    | Default Value | Description                                                                                                                                                                                                                                 |
+|-------------|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `log`       | `spring.log` | The Cloud Logging Log name. This can also be set via the `STACKDRIVER_LOG_NAME` environmental variable.                                                                                                                                     |
+| `flushLevel` | `WARN`      | If a log entry with this level is encountered, trigger a flush of locally buffered log to Cloud Logging. This can also be set via the `STACKDRIVER_LOG_FLUSH_LEVEL` environmental variable.                                                 |
+| `enhancer`  |             | Fully qualified class name for customizing a logging entry; must implement `com.google.cloud.logging.LoggingEnhancer`.                                                                                                                      |
+| `loggingEventEnhancer`  |             | Fully qualified class name for customizing a logging entry given an [`ILoggingEvent`](https://logback.qos.ch/apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html); must implement `com.google.cloud.logging.logback.LoggingEventEnhancer`. |
 
 #### Asynchronous Logging
 
