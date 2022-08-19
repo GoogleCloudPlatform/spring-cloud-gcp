@@ -43,7 +43,7 @@ import org.springframework.util.MultiValueMap;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = DatastoreBookshelfExample.class,
-    properties = {"spring.shell.interactive.enabled=" + false},
+    properties = "spring.shell.interactive.enabled=false",
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
 class DatastoreBookshelfExampleIntegrationTests {
