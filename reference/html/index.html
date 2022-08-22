@@ -5550,7 +5550,7 @@ public class Agreement {
 <div class="sect3">
 <h4 id="json-fields"><a class="anchor" href="#json-fields"></a><a class="link" href="#json-fields">13.2.8. JSON fields</a></h4>
 <div class="paragraph">
-<p>Spanner supports <code>JSON</code> type for columns. <code>JSON</code> columns are mapped to custom POJOs annotated with <code>@Column(spannerType = TypeCode.JSON)</code>. Read, write and query with custom SQL query are supported for JSON annotated fields.</p>
+<p>Spanner supports <code>JSON</code> and <code>ARRAY&lt;JSON&gt;</code> type for columns. Such property needs to be annotated with <code>@Column(spannerType = TypeCode.JSON)</code>. <code>JSON</code> columns are mapped to custom POJOs and <code>ARRAY&lt;JSON&gt;</code> columns are mapped to List of custom POJOs. Read, write and query with custom SQL query are supported for JSON annotated fields.</p>
 </div>
 <div class="admonitionblock note">
 <table>
