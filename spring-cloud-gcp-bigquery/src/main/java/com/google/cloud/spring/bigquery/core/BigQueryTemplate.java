@@ -186,7 +186,7 @@ public class BigQueryTemplate implements BigQueryOperations {
   public ListenableFuture<WriteApiResponse> writeJsonStream(
       String tableName, InputStream jsonInputStream, Schema schema)
       throws DescriptorValidationException, IOException, InterruptedException {
-
+    // TODO(prasmish): add table create logic
     return writeJsonStream(tableName, jsonInputStream);
   }
   /**
