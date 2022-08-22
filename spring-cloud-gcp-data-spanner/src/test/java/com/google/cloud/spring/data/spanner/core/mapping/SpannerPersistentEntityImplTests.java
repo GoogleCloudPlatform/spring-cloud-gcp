@@ -348,6 +348,12 @@ class SpannerPersistentEntityImplTests {
 
     assertThat(entityWithNoJsonField.isJsonProperty(String.class)).isFalse();
     assertThat(entityWithNoJsonField.isJsonProperty(long.class)).isFalse();
+
+    SpannerPersistentEntityImpl<EntityWithArrayJsonField> entityWithArrayJsonField =
+        (SpannerPersistentEntityImpl<EntityWithArrayJsonField>)
+            this.spannerMappingContext.getPersistentEntity(EntityWithArrayJsonField.class);
+    assertThat(entityWithArrayJsonField.isJsonProperty(JsonEntity.class)).isTrue();
+    assertThat(entityWithArrayJsonField.isJsonProperty(String.class)).isFalse();
   }
 
   private static class ParentInRelationship {
@@ -510,6 +516,13 @@ class SpannerPersistentEntityImplTests {
 
     @Column(spannerType = TypeCode.JSON)
     JsonEntity jsonField;
+  }
+
+  private static class EntityWithArrayJsonField {
+    @PrimaryKey String id;
+
+    @Column(spannerType = TypeCode.JSON)
+    List<JsonEntity> jsonListField;
   }
 
   private static class JsonEntity {}

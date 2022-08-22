@@ -144,6 +144,11 @@ public interface TradeRepository extends SpannerRepository<Trade, Key> {
           + " where trader_id = @trader_id")
   Optional<Details> getOptionalDetailsById(@Param("trader_id") String traderId);
 
+  @Query(
+      "SELECT additionalDetails from :com.google.cloud.spring.data.spanner.test.domain.Trade:"
+          + " where trader_id = @trader_id")
+  List<List<Details>> getAdditionalDetailsById(@Param("trader_id") String traderId);
+
   @NonNull
   Trade getByAction(String s);
 }
