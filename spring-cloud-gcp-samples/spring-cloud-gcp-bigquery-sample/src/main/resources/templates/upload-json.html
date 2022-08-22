@@ -33,7 +33,7 @@
 </head>
 
 <body>
-<h1>Upload JSON file to BigQuery using BigQuery Storage Read API</h1>
+<h1>Upload JSON file to BigQuery using BigQuery Storage Write API</h1>
 
 <div class="panel">
   This application will be working within your BigQuery dataset: <b>[[${datasetName}]]</b>
@@ -46,8 +46,7 @@
     You can upload newline delimited JSON data files from your computer to a BigQuery table of your choosing.
     Please refer to <a href="https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json" target="_blank">https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json</a>
     and <a href="http://jsonlines.org/" target="_blank">http://jsonlines.org</a> for more details about this format.
-    </br>If the BigQuery table does not exist, it will be created for you; the
-    schema of the table will be inferred from the first JSON Object you upload to the table.
+    </br>Please make sure that a table with schema matching with the payload JSON file already exists.
   </p>
 
   <div class="panel highlight">
@@ -66,11 +65,12 @@
 <div class="panel">
   <p>
     You can also try directly typing newline delimited JSON data into the text field and loading
-    data this way.
+    data this way. If the #3 checkbox is checked then the table will be automatically created
+    with this Schema: <i>(CompanyName: String, Description: String, SerialNumber: Integer, EmpName: String)</i>
   </p>
 
   <div class="panel highlight">
-    <form method="POST" action="/uploadCsvText">
+    <form method="POST" action="/uploadJsonText">
       <ol>
         <li>
           newline delimited JSON rows to upload:
@@ -80,6 +80,7 @@
 {&quot;CompanyName&quot;:&quot;MY&quot;,&quot;Description&quot;:&quot;M&quot;,&quot;SerialNumber&quot;:9780,&quot;Leave&quot;:0,&quot;EmpName&quot;:&quot;Mark&quot;}</textarea>
         </li>
         <li>BigQuery table name: <input type="text" name="tableName"/></li>
+        <li>Create table automatically with the default schema : <input type="checkbox" name="createTable" value="creatTable" checked/></li>
         <li><input type="submit" value="upload"/></li>
       </ol>
     </form>
