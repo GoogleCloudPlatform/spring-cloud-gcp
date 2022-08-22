@@ -22,8 +22,12 @@ import com.google.cloud.bigquery.Job;
 import com.google.cloud.bigquery.JobInfo.WriteDisposition;
 import com.google.cloud.bigquery.JobStatus.State;
 import com.google.cloud.bigquery.Schema;
+import com.google.cloud.bigquery.StandardTableDefinition;
+import com.google.cloud.bigquery.Table;
 import com.google.cloud.bigquery.TableDataWriteChannel;
+import com.google.cloud.bigquery.TableDefinition;
 import com.google.cloud.bigquery.TableId;
+import com.google.cloud.bigquery.TableInfo;
 import com.google.cloud.bigquery.WriteChannelConfiguration;
 import com.google.cloud.bigquery.storage.v1.BatchCommitWriteStreamsRequest;
 import com.google.cloud.bigquery.storage.v1.BatchCommitWriteStreamsResponse;
@@ -186,8 +190,19 @@ public class BigQueryTemplate implements BigQueryOperations {
   public ListenableFuture<WriteApiResponse> writeJsonStream(
       String tableName, InputStream jsonInputStream, Schema schema)
       throws DescriptorValidationException, IOException, InterruptedException {
-    // TODO(prasmish): add table create logic
+    createTable(tableName, schema); // create table if it's not already created
     return writeJsonStream(tableName, jsonInputStream);
+  }
+
+  private void createTable(
+      String tableName, Schema schema) { // create table if it's not already created
+    TableId tableId = TableId.of(datasetName, tableName);
+    Table table = bigQuery.getTable(TableId.of(datasetName, tableName));
+    if (table == null || !table.exists()) {
+      TableDefinition tableDefinition = StandardTableDefinition.of(schema);
+      TableInfo tableInfo = TableInfo.newBuilder(tableId, tableDefinition).build();
+      bigQuery.create(tableInfo);
+    }
   }
   /**
    * This method uses BigQuery Storage Write API to write new line delimited JSON file to the
