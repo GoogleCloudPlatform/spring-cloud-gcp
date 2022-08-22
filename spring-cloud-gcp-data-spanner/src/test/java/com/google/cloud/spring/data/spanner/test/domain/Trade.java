@@ -78,6 +78,9 @@ public class Trade {
   @Column(spannerType = TypeCode.JSON)
   private Details backupDetails;
 
+  @Column(spannerType = TypeCode.JSON)
+  private List<Details> additionalDetails;
+
   /**
    * Partial constructor. Intentionally tests a field that is left null sometimes.
    *
@@ -316,6 +319,15 @@ public class Trade {
 
   public void setOptionalDetails(Details optionalDetails) {
     this.optionalDetails = optionalDetails;
+  }
+
+  public List<Details> getAdditionalDetails() {
+    return additionalDetails;
+  }
+
+  public void setAdditionalDetails(
+      List<Details> additionalDetails) {
+    this.additionalDetails = additionalDetails;
   }
 
   public void setBackupDetails(Details backupDetails) {

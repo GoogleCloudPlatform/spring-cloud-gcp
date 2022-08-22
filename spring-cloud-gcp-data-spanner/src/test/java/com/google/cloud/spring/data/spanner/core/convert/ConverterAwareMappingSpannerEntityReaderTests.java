@@ -393,4 +393,35 @@ class ConverterAwareMappingSpannerEntityReaderTests {
     assertThat(result.params.p1).isEqualTo("address line");
     assertThat(result.params.p2).isEqualTo("5");
   }
+
+  @Test
+  void readArrayJsonFieldTest() {
+    Struct row = mock(Struct.class);
+    when(row.getString("id")).thenReturn("1234");
+    when(row.getType())
+        .thenReturn(
+            Type.struct(
+                Arrays.asList(
+                    Type.StructField.of("id", Type.string()),
+                    Type.StructField.of("paramsList", Type.array(Type.json())))));
+    when(row.getColumnType("id")).thenReturn(Type.string());
+
+    when(row.getColumnType("paramsList")).thenReturn(Type.array(Type.json()));
+    when(row.getJsonList("paramsList")).thenReturn(
+        Arrays.asList("{\"p1\":\"address line\",\"p2\":\"5\"}",
+            "{\"p1\":\"address line 2\",\"p2\":\"6\"}", null));
+
+    TestEntities.TestEntityJsonArray result =
+        this.spannerEntityReader.read(TestEntities.TestEntityJsonArray.class, row);
+
+    assertThat(result.id).isEqualTo("1234");
+
+    assertThat(result.paramsList.get(0).p1).isEqualTo("address line");
+    assertThat(result.paramsList.get(0).p2).isEqualTo("5");
+
+    assertThat(result.paramsList.get(1).p1).isEqualTo("address line 2");
+    assertThat(result.paramsList.get(1).p2).isEqualTo("6");
+
+    assertThat(result.paramsList.get(2)).isNull();
+  }
 }

@@ -30,10 +30,12 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -308,7 +310,7 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 
   // @formatter:off
 
-  private static boolean attemptSetIterableValue(
+  private boolean attemptSetIterableValue(
       Iterable<Object> value,
       ValueBinder<WriteBuilder> valueBinder,
       SpannerPersistentProperty spannerPersistentProperty,
@@ -321,8 +323,13 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 
     boolean valueSet = false;
 
-    // use the annotated column type if possible.
-    if (spannerPersistentProperty.getAnnotatedColumnItemType() != null) {
+
+    if (spannerPersistentProperty.getAnnotatedColumnItemType() == Type.Code.JSON) {
+      // if column annotated with JSON, convert directly
+      valueBinder.toJsonArray(this.convertIterableJsonToValue(value));
+      valueSet = true;
+    } else if (spannerPersistentProperty.getAnnotatedColumnItemType() != null) {
+      // use the annotated column type if possible.
       valueSet =
           attemptSetIterablePropertyWithTypeConversion(
               value,
@@ -361,12 +368,21 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
     return true;
   }
 
-  private Value covertJsonToValue(Object value) {
+  private Value convertJsonToValue(Object value) {
     if (value == null) {
       return Value.json(null);
     }
     String jsonString = this.spannerMappingContext.getGson().toJson(value);
     return Value.json(jsonString);
+  }
+
+  private Iterable<String> convertIterableJsonToValue(Iterable<Object> value) {
+    List<String> result = new ArrayList<>();
+    if (value == null) {
+      return null;
+    }
+    value.forEach(item -> result.add(this.spannerMappingContext.getGson().toJson(item)));
+    return result;
   }
 
   /**
@@ -429,7 +445,7 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
                 this.writeConverter);
       } else if (property.getAnnotatedColumnItemType() == Type.Code.JSON) {
         // annotated json column, bind directly
-        valueBinder.to(this.covertJsonToValue(propertyValue));
+        valueBinder.to(this.convertJsonToValue(propertyValue));
         valueSet = true;
       } else if (property.getAnnotatedColumnItemType() != null) {
         // use the user's annotated column type if possible
