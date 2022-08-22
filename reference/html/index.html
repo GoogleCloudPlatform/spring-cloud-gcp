@@ -4475,7 +4475,7 @@ This appender builds a Cloud Logging log entry from a JUL or Logback log entry, 
 </div>
 <div class="paragraph">
 <p>If you want to have more control over the log output, you can further configure the appender.
-The following properties are available:</p>
+The following properties are available (see <a href="https://github.com/googleapis/java-logging-logback">java-logging-logback project</a> for the full list):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -4502,6 +4502,16 @@ This can also be set via the <code>STACKDRIVER_LOG_NAME</code> environmental var
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If a log entry with this level is encountered, trigger a flush of locally buffered log to Cloud Logging.
 This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmental variable.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enhancer</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fully qualified class name for customizing a logging entry; must implement <code>com.google.cloud.logging.LoggingEnhancer</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>loggingEventEnhancer</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fully qualified class name for customizing a logging entry given an <a href="https://logback.qos.ch/apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html"><code>ILoggingEvent</code></a>; must implement <code>com.google.cloud.logging.logback.LoggingEventEnhancer</code>.</p></td>
 </tr>
 </tbody>
 </table>
