@@ -71,6 +71,10 @@ public interface BigQueryOperations {
       String tableName, InputStream inputStream, FormatOptions dataFormatOptions, Schema schema);
 
   /**
+   * This method uses BigQuery Storage Write API to write new line delimited JSON file to the
+   * specified table. The Table should already be created as BigQuery Storage Write API doesn't
+   * create it automatically.
+   *
    * @param tableName name of the table to write to
    * @param jsonInputStream input stream of the json file to be written
    * @return {@link ListenableFuture} containing the WriteApiResponse indicating completion of
@@ -81,4 +85,20 @@ public interface BigQueryOperations {
    */
   ListenableFuture<WriteApiResponse> writeJsonStream(String tableName, InputStream jsonInputStream)
       throws IOException, DescriptorValidationException, InterruptedException;
+
+  /**
+   * This method uses BigQuery Storage Write API to write new line delimited JSON file to the
+   * specified table. This method creates a table with the specified schema.
+   *
+   * @param tableName name of the table to write to
+   * @param jsonInputStream input stream of the json file to be written
+   * @return {@link ListenableFuture} containing the WriteApiResponse indicating completion of
+   *     operation
+   * @throws IOException if errors occur when loading data to the BigQuery table
+   * @throws DescriptorValidationException if errors occur when loading data to the BigQuery table
+   * @throws InterruptedException if errors occur when loading data to the BigQuery table
+   */
+  public ListenableFuture<WriteApiResponse> writeJsonStream(
+      String tableName, InputStream jsonInputStream, Schema schema)
+      throws DescriptorValidationException, IOException, InterruptedException;
 }
