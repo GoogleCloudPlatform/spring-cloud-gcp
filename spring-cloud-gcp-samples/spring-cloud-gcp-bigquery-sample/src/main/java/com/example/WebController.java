@@ -71,15 +71,29 @@ public class WebController {
    */
   @PostMapping("/uploadJsonFile")
   public ModelAndView handleJsonFileUpload(
-      @RequestParam("file") MultipartFile file, @RequestParam("tableName") String tableName)
+      @RequestParam("file") MultipartFile file,
+      @RequestParam("tableName") String tableName,
+      @RequestParam("createTable") String createDefaultTable)
       throws IOException, DescriptorValidationException, InterruptedException {
-
-    ListenableFuture<WriteApiResponse> writeApiRes =
-        this.bigQueryTemplate.writeJsonStream(tableName, file.getInputStream());
-
+    ListenableFuture<WriteApiResponse> writeApiRes = null;
+    if (createDefaultTable != null
+        && createDefaultTable.equals("createTable")) { // create the default table
+      writeApiRes =
+          this.bigQueryTemplate.writeJsonStream(
+              tableName, file.getInputStream(), getDefaultSchema());
+    } else { // we are expecting the table to be already existing
+      writeApiRes = this.bigQueryTemplate.writeJsonStream(tableName, file.getInputStream());
+    }
     return getWriteApiResponse(writeApiRes, tableName);
   }
 
+  private Schema getDefaultSchema() {
+    return Schema.of(
+        Field.of("CompanyName", StandardSQLTypeName.STRING),
+        Field.of("Description", StandardSQLTypeName.STRING),
+        Field.of("SerialNumber", StandardSQLTypeName.NUMERIC),
+        Field.of("EmpName", StandardSQLTypeName.STRING));
+  }
   /**
    * Handles JSON data upload using using {@link BigQueryTemplate}.
    *
@@ -93,38 +107,19 @@ public class WebController {
       @RequestParam("tableName") String tableName,
       @RequestParam("createTable") String createDefaultTable)
       throws DescriptorValidationException, IOException, InterruptedException {
-
+    ListenableFuture<WriteApiResponse> writeApiRes = null;
     if (createDefaultTable != null
         && createDefaultTable.equals("createTable")) { // create the default table
-      Schema defaultSchema =
-          Schema.of(
-              Field.of("CompanyName", StandardSQLTypeName.STRING),
-              Field.of("Description", StandardSQLTypeName.STRING),
-              Field.of("SerialNumber", StandardSQLTypeName.NUMERIC),
-              Field.of("EmpName", StandardSQLTypeName.STRING));
+      writeApiRes =
+          this.bigQueryTemplate.writeJsonStream(
+              tableName, new ByteArrayInputStream(jsonRows.getBytes()), getDefaultSchema());
+    } else { // we are expecting the table to be already existing
+      writeApiRes =
+          this.bigQueryTemplate.writeJsonStream(
+              tableName, new ByteArrayInputStream(jsonRows.getBytes()));
     }
-
-    ListenableFuture<WriteApiResponse> writeApiRes =
-        this.bigQueryTemplate.writeJsonStream(
-            tableName, new ByteArrayInputStream(jsonRows.getBytes()));
-
     return getWriteApiResponse(writeApiRes, tableName);
   }
-
-  /*  @GetMapping("/test")
-  public ModelAndView test()
-      throws DescriptorValidationException, IOException, InterruptedException {
-    String tableName = "test2";
-    String jsonRows =
-        "{\"CompanyName\":\"TALES OF SHIVA\",\"Description\":\"mark\",\"SerialNumber\":9788190073396,\"Leave\":0,\"EmpName\":\"Mark\"}";
-    ListenableFuture<WriteApiResponse> writeApiRes =
-    this.bigQueryTemplate.writeJsonStream(
-        tableName, new ByteArrayInputStream(jsonRows.getBytes()));
-    System.out.println("ModelAndView test()");
-
-    return new ModelAndView("index.html", new HashMap<>());
-    //  return getWriteApiResponse(writeApiRes, tableName);
-  }*/
 
   private ModelAndView getWriteApiResponse(
       ListenableFuture<WriteApiResponse> writeApiRes, String tableName) {
