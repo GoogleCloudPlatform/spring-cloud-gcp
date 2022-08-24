@@ -38,7 +38,7 @@ public class SecretManagerWebController {
 
   // Application secrets can be accessed using @Value syntax.
   @Value("${sm://application-secret}")
-  private String appSecret;
+  private String appSecretFromValue;
 
   public SecretManagerWebController(SecretManagerTemplate secretManagerTemplate,
       SecretConfiguration configuration
@@ -49,8 +49,8 @@ public class SecretManagerWebController {
 
   @GetMapping("/")
   public ModelAndView renderIndex(ModelMap map) {
-    map.put("applicationSecret", appSecret);
-    map.put("myApplicationSecret", configuration.getSecret());
+    map.put("applicationSecretFromValue", appSecretFromValue);
+    map.put("applicationSecretFromConfigurationProperties", configuration.getSecret());
     return new ModelAndView("index.html", map);
   }
 
@@ -96,7 +96,7 @@ public class SecretManagerWebController {
       this.secretManagerTemplate.createSecret(secretId, secretPayload.getBytes(), projectId);
     }
 
-    map.put("applicationSecret", this.appSecret);
+    map.put("applicationSecretFromValue", this.appSecretFromValue);
     map.put("message", "Secret created!");
     return new ModelAndView("index.html", map);
   }
@@ -111,7 +111,7 @@ public class SecretManagerWebController {
     } else {
       this.secretManagerTemplate.deleteSecret(secretId, projectId);
     }
-    map.put("applicationSecret", this.appSecret);
+    map.put("applicationSecretFromValue", this.appSecretFromValue);
     map.put("message", "Secret deleted!");
     return new ModelAndView("index.html", map);
   }

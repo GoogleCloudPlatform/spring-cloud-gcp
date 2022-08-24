@@ -46,40 +46,14 @@ This is done by using the `SecretManagerTemplate`.
 +
 Finally, you can view all of your secrets using the https://console.cloud.google.com/security/secret-manager[Secret Manager Cloud Console UI], which is the source of truth for all of your secrets in Secret Manager.
 
-8. Refresh the secrets without restart the application:
+8. Refresh the secrets without restarting the application:
 
-a. Before running your application, change the project's configuration files as follows:
-+
-add the actuator starter dependency to your project,
+a. After running the application, change your secrets using https://console.cloud.google.com/security/secret-manager[Secret Manager Cloud Console UI].
+
+b. To refresh the secret, send the following command to your server from which hosting the application:
 +
 [source]
 ----
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-actuator</artifactId>
-</dependency>
+curl -X POST http://localhost:8080/actuator/refresh
 ----
-add the following property to your project's `application.properties`,
-+
-[source]
-----
-management.endpoints.web.exposure.include=refresh
-----
-+
-finally, add the following property to your project's `bootstrap.properties` to enable https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4[Spring Boot's Config Data API].
-+
-[source]
-----
-spring.cloud.gcp.secretmanager.legacy=false
-----
-
-b. After running the application, change your secrets using https://console.cloud.google.com/security/secret-manager[Secret Manager Cloud Console UI].
-
-c. To refresh the secret, send the following command to your server from which hosting the application:
-+
-[source]
-----
-curl -X POST http://[ip]:[port]/actuator/refresh
-----
-
-
+Note that only `@ConfigurationProperties` annotated with `@RefreshScope` got the updated value.

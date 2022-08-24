@@ -44,8 +44,8 @@
   At the bootstrap phase, we loaded the following secret into the application context:
   <br/>
   <br/>
-  <b>application-secret:</b> <i>[[${applicationSecret}]]</i><br/>
-  <b>my-application-secret:</b> <i>[[${myApplicationSecret}]]</i>
+  <b>Application secret from @Value:</b> <i>[[${applicationSecretFromValue}]]</i><br/>
+  <b>Application secret from @ConfigurationProperties:</b> <i>[[${applicationSecretFromConfigurationProperties}]]</i>
 </div>
 
 <div class="panel">
@@ -80,8 +80,8 @@
   <div class="panel highlight">
     <h3>Create/Update Secret</h3>
     <p>
-      This will create a secret if the provided secret ID does not exists.
-      Otherwise it will create version under the provided secret ID.
+      This will create a secret if the provided secret ID does not exist.
+      Otherwise, it will create version under the provided secret ID.
     </p>
     <form method="POST" action="/createSecret">
       <ol>
