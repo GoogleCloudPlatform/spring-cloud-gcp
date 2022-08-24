@@ -42,8 +42,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.scheduling.TaskScheduler;
@@ -73,6 +76,8 @@ public class BigQueryTemplate implements BigQueryOperations {
   private Duration jobPollInterval = Duration.ofSeconds(2);
 
   private static final int JSON_STREAM_WRITER_BATCH_SIZE = 1000; // write records in batches of 1000
+
+  private final Logger logger = Logger.getLogger(this.getClass().getName());
 
   /**
    * Creates the {@link BigQuery} template.
@@ -174,6 +179,7 @@ public class BigQueryTemplate implements BigQueryOperations {
 
     return createJobFuture(writer.getJob());
   }
+
   /**
    * This method uses BigQuery Storage Write API to write new line delimited JSON file to the
    * specified table. This method creates a table with the specified schema.
@@ -188,8 +194,7 @@ public class BigQueryTemplate implements BigQueryOperations {
    */
   @Override
   public ListenableFuture<WriteApiResponse> writeJsonStream(
-      String tableName, InputStream jsonInputStream, Schema schema)
-      throws DescriptorValidationException, IOException, InterruptedException {
+      String tableName, InputStream jsonInputStream, Schema schema) {
     createTable(tableName, schema); // create table if it's not already created
     return writeJsonStream(tableName, jsonInputStream);
   }
@@ -204,6 +209,7 @@ public class BigQueryTemplate implements BigQueryOperations {
       bigQuery.create(tableInfo);
     }
   }
+
   /**
    * This method uses BigQuery Storage Write API to write new line delimited JSON file to the
    * specified table. The Table should already be created as BigQuery Storage Write API doesn't
@@ -219,7 +225,35 @@ public class BigQueryTemplate implements BigQueryOperations {
    */
   @Override
   public ListenableFuture<WriteApiResponse> writeJsonStream(
-      String tableName, InputStream jsonInputStream)
+      String tableName, InputStream jsonInputStream) {
+
+    SettableListenableFuture<WriteApiResponse> writeApiFutureResponse =
+        new SettableListenableFuture<WriteApiResponse>();
+    CompletableFuture<Void> completableFuture =
+        CompletableFuture.runAsync(
+            () -> {
+              try {
+                WriteApiResponse apiResponse = getWriteApiResponse(tableName, jsonInputStream);
+                writeApiFutureResponse.set(apiResponse);
+              } catch (DescriptorValidationException | IOException | InterruptedException e) {
+                writeApiFutureResponse.setException(e);
+                logger.log(Level.WARNING, String.format("Error: %s\n", e.getMessage()));
+              }
+            });
+
+    // register success and failure callback
+    writeApiFutureResponse.addCallback(
+        (res) -> {
+          // no action to be performed in the callback if the operation has been completed
+        },
+        (res) -> {
+          completableFuture.cancel(true); // interrupt the completableFuture
+        });
+
+    return writeApiFutureResponse;
+  }
+
+  private WriteApiResponse getWriteApiResponse(String tableName, InputStream jsonInputStream)
       throws DescriptorValidationException, IOException, InterruptedException {
     WriteApiResponse apiResponse = new WriteApiResponse();
     BigQueryWriteClient client = BigQueryWriteClient.create();
@@ -227,9 +261,8 @@ public class BigQueryTemplate implements BigQueryOperations {
         TableName.of(bigQuery.getOptions().getProjectId(), datasetName, tableName);
 
     BigQueryJsonDataWriter writer = new BigQueryJsonDataWriter();
-    // One time initialization.
+    // Initialize a write stream for the specified table.
     writer.initialize(parentTable, client);
-
     try {
       // Write data in batches. Ref: https://cloud.google.com/bigquery/quotas#write-api-limits
       long offset = 0;
@@ -268,7 +301,6 @@ public class BigQueryTemplate implements BigQueryOperations {
 
     // Final cleanup for the stream.
     writer.cleanup(client);
-    // TODO(prasmish): Add logger @ Level.FINE to print offset and msg
 
     // Once all streams are done, if all writes were successful, commit all of them in one request.
     // If any streams failed, their workload may be
@@ -292,8 +324,7 @@ public class BigQueryTemplate implements BigQueryOperations {
       apiResponse.setSuccessful(true);
     }
 
-    // TODO(prasmish): Currently we are returning null, program for ListenableFuture
-    return null;
+    return apiResponse;
   }
 
   // @return the name of the BigQuery dataset that the template is operating in.
@@ -304,7 +335,6 @@ public class BigQueryTemplate implements BigQueryOperations {
   private SettableListenableFuture<Job> createJobFuture(Job pendingJob) {
     // Prepare the polling task for the ListenableFuture result returned to end-user
     SettableListenableFuture<Job> result = new SettableListenableFuture<>();
-
     ScheduledFuture<?> scheduledFuture =
         taskScheduler.scheduleAtFixedRate(
             () -> {
