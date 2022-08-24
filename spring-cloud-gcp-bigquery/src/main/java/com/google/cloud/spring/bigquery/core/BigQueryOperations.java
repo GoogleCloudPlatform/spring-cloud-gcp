@@ -19,8 +19,6 @@ package com.google.cloud.spring.bigquery.core;
 import com.google.cloud.bigquery.FormatOptions;
 import com.google.cloud.bigquery.Job;
 import com.google.cloud.bigquery.Schema;
-import com.google.protobuf.Descriptors.DescriptorValidationException;
-import java.io.IOException;
 import java.io.InputStream;
 import org.springframework.util.concurrent.ListenableFuture;
 
@@ -79,12 +77,8 @@ public interface BigQueryOperations {
    * @param jsonInputStream input stream of the json file to be written
    * @return {@link ListenableFuture} containing the WriteApiResponse indicating completion of
    *     operation
-   * @throws IOException if errors occur when loading data to the BigQuery table
-   * @throws DescriptorValidationException if errors occur when loading data to the BigQuery table
-   * @throws InterruptedException if errors occur when loading data to the BigQuery table
    */
-  ListenableFuture<WriteApiResponse> writeJsonStream(String tableName, InputStream jsonInputStream)
-      throws IOException, DescriptorValidationException, InterruptedException;
+  ListenableFuture<WriteApiResponse> writeJsonStream(String tableName, InputStream jsonInputStream);
 
   /**
    * This method uses BigQuery Storage Write API to write new line delimited JSON file to the
@@ -94,11 +88,7 @@ public interface BigQueryOperations {
    * @param jsonInputStream input stream of the json file to be written
    * @return {@link ListenableFuture} containing the WriteApiResponse indicating completion of
    *     operation
-   * @throws IOException if errors occur when loading data to the BigQuery table
-   * @throws DescriptorValidationException if errors occur when loading data to the BigQuery table
-   * @throws InterruptedException if errors occur when loading data to the BigQuery table
    */
-  public ListenableFuture<WriteApiResponse> writeJsonStream(
-      String tableName, InputStream jsonInputStream, Schema schema)
-      throws DescriptorValidationException, IOException, InterruptedException;
+  ListenableFuture<WriteApiResponse> writeJsonStream(
+      String tableName, InputStream jsonInputStream, Schema schema);
 }
