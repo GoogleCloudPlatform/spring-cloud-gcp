@@ -16,14 +16,20 @@
 
 package com.example;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
-@SpringBootApplication
-@EnableConfigurationProperties(SecretConfiguration.class)
-public class SecretManagerApplication {
-  public static void main(String[] args) {
-    SpringApplication.run(SecretManagerApplication.class, args);
+@ConfigurationProperties("application")
+@RefreshScope
+public class SecretConfiguration {
+
+  private String secret;
+
+  public void setSecret(String secret) {
+    this.secret = secret;
+  }
+
+  public String getSecret() {
+    return secret;
   }
 }

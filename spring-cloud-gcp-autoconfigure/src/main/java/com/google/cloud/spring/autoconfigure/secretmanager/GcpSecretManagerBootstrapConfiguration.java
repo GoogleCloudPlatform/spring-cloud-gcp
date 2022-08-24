@@ -39,7 +39,10 @@ import org.springframework.core.env.ConfigurableEnvironment;
  * into the application {@link org.springframework.core.env.Environment}.
  *
  * @since 1.2.2
+ * @deprecated since external resources should be using Spring Boot's Config Data API, more info in
+ *     <a href="https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4">here</a>.
  */
+@Deprecated
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(GcpSecretManagerProperties.class)
 @ConditionalOnClass({SecretManagerServiceClient.class, SecretManagerTemplate.class})
@@ -86,6 +89,7 @@ public class GcpSecretManagerBootstrapConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
+  @ConditionalOnProperty(value = "spring.cloud.gcp.secretmanager.legacy", matchIfMissing = true)
   public SecretManagerPropertySourceLocator secretManagerPropertySourceLocator(
       SecretManagerTemplate secretManagerTemplate) {
     return new SecretManagerPropertySourceLocator(secretManagerTemplate, this.gcpProjectIdProvider);

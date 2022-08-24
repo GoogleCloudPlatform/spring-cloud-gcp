@@ -123,6 +123,36 @@ Please consult
 for information on what operations are available for the Secret Manager
 template.
 
+### Refresh secrets without restarting the application
+
+1. Before running your application, change the project's configuration files as follows:
+
+- import the actuator starter dependency to your project,
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+- add the following property to your project's `application.properties`. The latter is used to enable [Spring Boot's Config Data API](https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4).
+
+        management.endpoints.web.exposure.include=refresh
+        spring.config.import=sm://
+
+- finally, add the following property to your project's `bootstrap.properties` to disable
+  Secret Manager boostrap phrase.
+ 
+        spring.cloud.gcp.secretmanager.legacy=false
+
+
+2. After running the application, update your secret stored in the Secret Manager.
+
+3. To refresh the secret, send the following command to your application sever:
+
+         curl -X POST http://[host]:[port]/actuator/refresh
+
+    Note that only `@ConfigurationProperties` annotated with `@RefreshScope` support updating secrets without restarting the application.
+
 ### Sample
 
 A [Secret Manager Sample
