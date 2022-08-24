@@ -38,3 +38,8 @@ Such as: `spring.cloud.gcp.credentials.location=file:/path/to/creds.json`
    on port 8080 and try loading some data into a BigQuery table under your dataset.
    The application accepts CSV file uploads or CSV data inputted into the text area.
    If the table does not already exist under the BigQuery dataset, it will be created for you.
+
+10. Go to http://localhost:8080/write-api-json-upload in your browser or click the `Web Preview` button in Cloud Shell to preview the app
+    on port 8080 and try loading some data into a BigQuery table under your dataset.
+    The application accepts newline delimited JSON file uploads (you can use the sample file _spring-cloud-gcp/spring-cloud-gcp-bigquery/src/test/resources/data.json_) or newline delimited JSON into the text area.
+    Table will be required to be created by the developer, as the write API doesn't support automatic table creation, however if you are using this sample with the default data then the table can be automatically created by checking the checkbox at #3.
