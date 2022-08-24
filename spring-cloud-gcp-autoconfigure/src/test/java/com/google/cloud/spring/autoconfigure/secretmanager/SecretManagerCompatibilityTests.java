@@ -25,7 +25,9 @@ class SecretManagerCompatibilityTests {
   /**
    * Users with the legacy configuration (i.e., bootstrap phrase) should get {@link
    * com.google.cloud.spring.secretmanager.SecretManagerTemplate} autoconfiguration and properties
-   * resolved.
+   * resolved. Note that {@link SecretManagerBootstrapConfigurationTests.TestBootstrapConfiguration}
+   * is automatically picked to create a mock {@link SecretManagerServiceClient} object as it is
+   * specified in spring.factories.
    */
   @Test
   void testLegacyConfiguration() {
@@ -60,7 +62,8 @@ class SecretManagerCompatibilityTests {
     when(client.accessSecretVersion(secretVersionName))
         .thenReturn(
             AccessSecretVersionResponse.newBuilder()
-                .setPayload(SecretPayload.newBuilder().setData(ByteString.copyFromUtf8("hello")))
+                .setPayload(
+                    SecretPayload.newBuilder().setData(ByteString.copyFromUtf8("newSecret")))
                 .build());
 
     SpringApplicationBuilder newApplication = new SpringApplicationBuilder(
@@ -79,7 +82,7 @@ class SecretManagerCompatibilityTests {
         .web(WebApplicationType.NONE);
     try (ConfigurableApplicationContext applicationContext = newApplication.run()) {
       String secret = applicationContext.getEnvironment().getProperty("sm://my-secret");
-      assertThat(secret).isEqualTo("hello");
+      assertThat(secret).isEqualTo("newSecret");
     }
   }
 }
