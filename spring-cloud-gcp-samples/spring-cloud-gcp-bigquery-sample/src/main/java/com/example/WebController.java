@@ -24,7 +24,6 @@ import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
 import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import com.google.cloud.spring.bigquery.core.WriteApiResponse;
-import com.google.protobuf.Descriptors.DescriptorValidationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +54,7 @@ public class WebController {
     return new ModelAndView("index.html", map);
   }
 
-  @GetMapping("/uploadJson")
+  @GetMapping("/write-api-json-upload")
   public ModelAndView renderUploadJson(ModelMap map) {
     map.put("datasetName", this.datasetName);
     return new ModelAndView("upload-json.html", map);
@@ -73,8 +72,8 @@ public class WebController {
   public ModelAndView handleJsonFileUpload(
       @RequestParam("file") MultipartFile file,
       @RequestParam("tableName") String tableName,
-      @RequestParam("createTable") String createDefaultTable)
-      throws IOException, DescriptorValidationException, InterruptedException {
+      @RequestParam(name = "createTable", required = false) String createDefaultTable)
+      throws IOException {
     ListenableFuture<WriteApiResponse> writeApiRes = null;
     if (createDefaultTable != null
         && createDefaultTable.equals("createTable")) { // create the default table
@@ -92,8 +91,10 @@ public class WebController {
         Field.of("CompanyName", StandardSQLTypeName.STRING),
         Field.of("Description", StandardSQLTypeName.STRING),
         Field.of("SerialNumber", StandardSQLTypeName.NUMERIC),
+        Field.of("Leave", StandardSQLTypeName.NUMERIC),
         Field.of("EmpName", StandardSQLTypeName.STRING));
   }
+
   /**
    * Handles JSON data upload using using {@link BigQueryTemplate}.
    *
@@ -105,15 +106,17 @@ public class WebController {
   public ModelAndView handleJsonTextUpload(
       @RequestParam("jsonRows") String jsonRows,
       @RequestParam("tableName") String tableName,
-      @RequestParam("createTable") String createDefaultTable)
-      throws DescriptorValidationException, IOException, InterruptedException {
+      @RequestParam(name = "createTable", required = false) String createDefaultTable) {
     ListenableFuture<WriteApiResponse> writeApiRes = null;
     if (createDefaultTable != null
         && createDefaultTable.equals("createTable")) { // create the default table
+
+      System.out.println("Create table and write JSON Text " + createDefaultTable);
       writeApiRes =
           this.bigQueryTemplate.writeJsonStream(
               tableName, new ByteArrayInputStream(jsonRows.getBytes()), getDefaultSchema());
     } else { // we are expecting the table to be already existing
+      System.out.println("DO NOT Create table and write JSON Text " + createDefaultTable);
       writeApiRes =
           this.bigQueryTemplate.writeJsonStream(
               tableName, new ByteArrayInputStream(jsonRows.getBytes()));
@@ -122,12 +125,12 @@ public class WebController {
   }
 
   private ModelAndView getWriteApiResponse(
-      ListenableFuture<WriteApiResponse> writeApiRes, String tableName) {
+      ListenableFuture<WriteApiResponse> writeApiFuture, String tableName) {
     String message = null;
     try {
-      WriteApiResponse apiResponse = writeApiRes.get();
+      WriteApiResponse apiResponse = writeApiFuture.get();
       if (apiResponse.isSuccessful()) {
-        message = "Successfully loaded data file to " + tableName;
+        message = "Successfully loaded data to " + tableName;
       } else if (apiResponse.getErrors() != null && apiResponse.getErrors().size() > 0) {
         message =
             String.format(
@@ -139,8 +142,7 @@ public class WebController {
       e.printStackTrace();
       message = "Error: " + e.getMessage();
     }
-
-    return new ModelAndView("index")
+    return new ModelAndView("upload-json.html")
         .addObject("datasetName", this.datasetName)
         .addObject("message", message);
   }
