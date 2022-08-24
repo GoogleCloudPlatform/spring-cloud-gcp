@@ -134,22 +134,24 @@ template.
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-- add the following property to your project's `application.properties`,
+- add the following property to your project's `application.properties`. The latter is used to enable [Spring Boot's Config Data API](https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4).
 
         management.endpoints.web.exposure.include=refresh
+        spring.config.import=sm://
 
-- finally, add the following property to your project's `bootstrap.properties` to enable [Spring Boot's Config Data API](https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4).
+- finally, add the following property to your project's `bootstrap.properties` to disable
+  Secret Manager boostrap phrase.
  
         spring.cloud.gcp.secretmanager.legacy=false
 
 
-2. After running the application, change your secrets using [Secret Manager Cloud Console UI](https://console.cloud.google.com/security/secret-manager).
+2. After running the application, updates your secret stored in the Secret Manager.
 
 3. To refresh the secret, send the following command to your server from which hosting the application:
 
          curl -X POST http://[host]:[port]/actuator/refresh
 
-    Note that only `@ConfigurationProperties` annotated with `@RefreshScope` got the updated value.
+    Note that only `@ConfigurationProperties` annotated with `@RefreshScope` support updating secrets without restarting the application.
 
 ### Sample
 
