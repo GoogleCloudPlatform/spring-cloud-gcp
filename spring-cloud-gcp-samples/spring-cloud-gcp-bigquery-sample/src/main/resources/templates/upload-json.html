@@ -46,7 +46,8 @@
     You can upload newline delimited JSON data files from your computer to a BigQuery table of your choosing.
     Please refer to <a href="https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json" target="_blank">https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json</a>
     and <a href="http://jsonlines.org/" target="_blank">http://jsonlines.org</a> for more details about this format.
-    </br>Please make sure that a table with schema matching with the payload JSON file already exists, unless using the provided sample file <i>spring-cloud-gcp-bigquery/src/test/resources/data.json</i>.
+    </br>Please make sure that a table with schema matching with the payload JSON file already exists, unless using the provided sample file
+    <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-bigquery/src/test/resources/data.json" target="_blank"><i>spring-cloud-gcp-bigquery/src/test/resources/data.json</i></a> .
   </p>
 
   <div class="panel highlight">
@@ -55,7 +56,10 @@
       <ol>
         <li>File to upload: <input type="file" name="file"/></li>
         <li>BigQuery table name: <input type="text" name="tableName"/></li>
-        <li>Create table automatically with the default schema (Check this while uploading the bundled sample file <i>spring-cloud-gcp-bigquery/src/test/resources/data.json</i>): <input type="checkbox" name="createTable" value="createTable" /></li>
+        <li>Create table automatically with the default schema (Check this while uploading the bundled sample file
+          <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-bigquery/src/test/resources/data.json" target="_blank"><i>spring-cloud-gcp-bigquery/src/test/resources/data.json</i></a>):
+          <input type="checkbox" name="createTable" value="createTable" />
+        </li>
         <li><input type="submit" value="upload"/></li>
       </ol>
 
