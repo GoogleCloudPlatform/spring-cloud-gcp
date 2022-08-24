@@ -354,7 +354,8 @@ window.onload = function() {
 <li><a href="#dependency-setup-2">20.1. Dependency Setup</a></li>
 <li><a href="#secret-manager-property-source">20.2. Secret Manager Property Source</a></li>
 <li><a href="#secret-manager-template">20.3. Secret Manager Template</a></li>
-<li><a href="#sample-13">20.4. Sample</a></li>
+<li><a href="#refresh-secrets-without-restarting-the-application">20.4. Refresh secrets without restarting the application</a></li>
+<li><a href="#sample-13">20.5. Sample</a></li>
 </ul>
 </li>
 <li><a href="#google-cloud-key-management-service">21. Google Cloud Key Management Service</a>
@@ -11096,7 +11097,60 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="sample-13"><a class="anchor" href="#sample-13"></a><a class="link" href="#sample-13">20.4. Sample</a></h3>
+<h3 id="refresh-secrets-without-restarting-the-application"><a class="anchor" href="#refresh-secrets-without-restarting-the-application"></a><a class="link" href="#refresh-secrets-without-restarting-the-application">20.4. Refresh secrets without restarting the application</a></h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Before running your application, change the project&#8217;s configuration files as follows:</p>
+<div class="paragraph">
+<p>import the actuator starter dependency to your project,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>add the following properties to your project&#8217;s <code>application.properties</code>. The latter is used to enable <a href="https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4">Spring Boot&#8217;s Config Data API</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>management.endpoints.web.exposure.include=refresh
+spring.config.import=sm://</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>finally, add the following property to your project&#8217;s <code>bootstrap.properties</code> to disable
+Secret Manager boostrap phrase.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>spring.cloud.gcp.secretmanager.legacy=false</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>After running the application, update your secret stored in the Secret Manager.</p>
+</li>
+<li>
+<p>To refresh the secret, send the following command to your application sever:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>curl -X POST http://[host]:[port]/actuator/refresh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that only <code>@ConfigurationProperties</code> annotated with <code>@RefreshScope</code> support updating secrets without restarting the application.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sample-13"><a class="anchor" href="#sample-13"></a><a class="link" href="#sample-13">20.5. Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-secretmanager-sample">Secret Manager Sample Application</a> is provided which demonstrates basic property source loading and usage of the template class.</p>
 </div>
