@@ -46,7 +46,7 @@
     You can upload newline delimited JSON data files from your computer to a BigQuery table of your choosing.
     Please refer to <a href="https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json" target="_blank">https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json</a>
     and <a href="http://jsonlines.org/" target="_blank">http://jsonlines.org</a> for more details about this format.
-    </br>Please make sure that a table with schema matching with the payload JSON file already exists.
+    </br>Please make sure that a table with schema matching with the payload JSON file already exists, unless using the provided sample file <i>spring-cloud-gcp-bigquery/src/test/resources/data.json</i>.
   </p>
 
   <div class="panel highlight">
@@ -55,6 +55,7 @@
       <ol>
         <li>File to upload: <input type="file" name="file"/></li>
         <li>BigQuery table name: <input type="text" name="tableName"/></li>
+        <li>Create table automatically with the default schema (Check this while uploading the bundled sample file <i>spring-cloud-gcp-bigquery/src/test/resources/data.json</i>): <input type="checkbox" name="createTable" value="createTable" /></li>
         <li><input type="submit" value="upload"/></li>
       </ol>
 
@@ -75,12 +76,12 @@
         <li>
           newline delimited JSON rows to upload:
           <br>
-          <textarea name="jsonRows" rows="8" cols="80">{&quot;CompanyName&quot;:&quot;TALES&quot;,&quot;Description&quot;:&quot;mark&quot;,&quot;SerialNumber&quot;:97,&quot;Leave&quot;:0,&quot;EmpName&quot;:&quot;Mark&quot;}
+          <textarea name="jsonRows" rows="8" cols="90">{&quot;CompanyName&quot;:&quot;TALES&quot;,&quot;Description&quot;:&quot;mark&quot;,&quot;SerialNumber&quot;:97,&quot;Leave&quot;:0,&quot;EmpName&quot;:&quot;Mark&quot;}
 {&quot;CompanyName&quot;:&quot;1Q84&quot;,&quot;Description&quot;:&quot;ark&quot;,&quot;SerialNumber&quot;:978,&quot;Leave&quot;:0,&quot;EmpName&quot;:&quot;HARUKI&quot;}
 {&quot;CompanyName&quot;:&quot;MY&quot;,&quot;Description&quot;:&quot;M&quot;,&quot;SerialNumber&quot;:9780,&quot;Leave&quot;:0,&quot;EmpName&quot;:&quot;Mark&quot;}</textarea>
         </li>
         <li>BigQuery table name: <input type="text" name="tableName"/></li>
-        <li>Create table automatically with the default schema : <input type="checkbox" name="createTable" value="creatTable" checked/></li>
+        <li>Create table automatically with the default schema : <input type="checkbox" name="createTable" value="createTable" checked/></li>
         <li><input type="submit" value="upload"/></li>
       </ol>
     </form>
