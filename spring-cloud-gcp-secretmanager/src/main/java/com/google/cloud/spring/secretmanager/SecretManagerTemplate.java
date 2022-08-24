@@ -39,11 +39,12 @@ import com.google.protobuf.ByteString;
  */
 public class SecretManagerTemplate implements SecretManagerOperations {
 
-  /** Default value for the latest version of the secret. */
+  /**
+   * Default value for the latest version of the secret.
+   */
   public static final String LATEST_VERSION = "latest";
 
   private final SecretManagerServiceClient secretManagerServiceClient;
-
   private final GcpProjectIdProvider projectIdProvider;
 
   public SecretManagerTemplate(

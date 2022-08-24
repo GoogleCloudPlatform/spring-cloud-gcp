@@ -18,9 +18,7 @@ package com.example;
 
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,23 +31,26 @@ import org.springframework.web.util.HtmlUtils;
 @Controller
 public class SecretManagerWebController {
 
-  @Autowired private Environment environment;
+  private final SecretManagerTemplate secretManagerTemplate;
+  // Application secrets can be accessed using configuration properties class,
+  // secret can be refreshed when decorated with @RefreshScope on the class.
+  private final SecretConfiguration configuration;
 
-  @Autowired private SecretManagerTemplate secretManagerTemplate;
-
-  // Application secrets can be accessed using @Value and using the "sm://" syntax.
+  // Application secrets can be accessed using @Value syntax.
   @Value("${sm://application-secret}")
-  private String appSecret;
+  private String appSecretFromValue;
 
-  // Multiple ways of loading the application-secret are demonstrated in bootstrap.properties.
-  // Try it with my-app-secret-1 or my-app-secret-2
-  @Value("${my-app-secret-1}")
-  private String myAppSecret;
+  public SecretManagerWebController(SecretManagerTemplate secretManagerTemplate,
+      SecretConfiguration configuration
+  ) {
+    this.secretManagerTemplate = secretManagerTemplate;
+    this.configuration = configuration;
+  }
 
   @GetMapping("/")
   public ModelAndView renderIndex(ModelMap map) {
-    map.put("applicationSecret", this.appSecret);
-    map.put("myApplicationSecret", this.myAppSecret);
+    map.put("applicationSecretFromValue", appSecretFromValue);
+    map.put("applicationSecretFromConfigurationProperties", configuration.getSecret());
     return new ModelAndView("index.html", map);
   }
 
@@ -95,8 +96,7 @@ public class SecretManagerWebController {
       this.secretManagerTemplate.createSecret(secretId, secretPayload.getBytes(), projectId);
     }
 
-    map.put("applicationSecret", this.appSecret);
-    map.put("myApplicationSecret", this.myAppSecret);
+    map.put("applicationSecretFromValue", this.appSecretFromValue);
     map.put("message", "Secret created!");
     return new ModelAndView("index.html", map);
   }
@@ -111,7 +111,7 @@ public class SecretManagerWebController {
     } else {
       this.secretManagerTemplate.deleteSecret(secretId, projectId);
     }
-    map.put("applicationSecret", this.appSecret);
+    map.put("applicationSecretFromValue", this.appSecretFromValue);
     map.put("message", "Secret deleted!");
     return new ModelAndView("index.html", map);
   }
