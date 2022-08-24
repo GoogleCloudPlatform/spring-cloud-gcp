@@ -145,9 +145,9 @@ template.
         spring.cloud.gcp.secretmanager.legacy=false
 
 
-2. After running the application, updates your secret stored in the Secret Manager.
+2. After running the application, update your secret stored in the Secret Manager.
 
-3. To refresh the secret, send the following command to your server from which hosting the application:
+3. To refresh the secret, send the following command to your application sever:
 
          curl -X POST http://[host]:[port]/actuator/refresh
 
