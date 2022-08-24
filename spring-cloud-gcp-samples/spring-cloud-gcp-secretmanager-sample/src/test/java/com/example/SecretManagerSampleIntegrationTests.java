@@ -32,7 +32,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-/** Application secret named "application-secret" must exist and have a value of "Hello world.". */
+/**
+ * Application secret named "application-secret" must exist and have a value of "Hello world.".
+ */
 @EnabledIfSystemProperty(named = "it.secretmanager", matches = "true")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
@@ -42,15 +44,20 @@ class SecretManagerSampleIntegrationTests {
 
   private static final String SECRET_TO_DELETE = "secret-manager-sample-delete-secret";
 
-  @Autowired private SecretManagerTemplate secretManagerTemplate;
+  @Autowired
+  private SecretManagerTemplate secretManagerTemplate;
 
-  @Autowired private TestRestTemplate testRestTemplate;
+  @Autowired
+  private TestRestTemplate testRestTemplate;
 
   @Test
   void testApplicationStartup() {
     ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
     assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-    assertThat(response.getBody()).contains("<b>application-secret:</b> <i>Hello world.</i>");
+    assertThat(response.getBody()).contains(
+        "<b>Application secret from @Value:</b> <i>Hello world.</i>");
+    assertThat(response.getBody()).contains(
+        "<b>Application secret from @ConfigurationProperties:</b> <i>Hello world.</i>");
   }
 
   @Test
