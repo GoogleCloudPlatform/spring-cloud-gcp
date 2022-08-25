@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 import javax.annotation.concurrent.GuardedBy;
 import org.json.JSONArray;
 
+/** Helper class for using BigQuery storage write API in exactly once delivery mode */
 public class BigQueryJsonDataWriter {
 
   private JsonStreamWriter streamWriter;
