@@ -188,9 +188,6 @@ public class BigQueryTemplate implements BigQueryOperations {
    * @param jsonInputStream input stream of the json file to be written
    * @return {@link ListenableFuture} containing the WriteApiResponse indicating completion of
    *     operation
-   * @throws IOException if errors occur when loading data to the BigQuery table
-   * @throws DescriptorValidationException if errors occur when loading data to the BigQuery table
-   * @throws InterruptedException if errors occur when loading data to the BigQuery table
    */
   @Override
   public ListenableFuture<WriteApiResponse> writeJsonStream(
@@ -219,32 +216,33 @@ public class BigQueryTemplate implements BigQueryOperations {
    * @param jsonInputStream input stream of the json file to be written
    * @return {@link ListenableFuture} containing the WriteApiResponse indicating completion of
    *     operation
-   * @throws IOException if errors occur when loading data to the BigQuery table
-   * @throws DescriptorValidationException if errors occur when loading data to the BigQuery table
-   * @throws InterruptedException if errors occur when loading data to the BigQuery table
    */
   @Override
   public ListenableFuture<WriteApiResponse> writeJsonStream(
       String tableName, InputStream jsonInputStream) {
 
     SettableListenableFuture<WriteApiResponse> writeApiFutureResponse =
-        new SettableListenableFuture<WriteApiResponse>();
+        new SettableListenableFuture<>();
     CompletableFuture<Void> completableFuture =
         CompletableFuture.runAsync(
             () -> {
               try {
                 WriteApiResponse apiResponse = getWriteApiResponse(tableName, jsonInputStream);
                 writeApiFutureResponse.set(apiResponse);
-              } catch (DescriptorValidationException | IOException | InterruptedException e) {
+              } catch (DescriptorValidationException | IOException e) {
                 writeApiFutureResponse.setException(e);
                 logger.log(Level.WARNING, String.format("Error: %s\n", e.getMessage()));
+              } catch (InterruptedException e) {
+                writeApiFutureResponse.setException(e);
+                // Restore interrupted state in case of an InterruptedException
+                Thread.currentThread().interrupt();
               }
             });
 
     // register success and failure callback
     writeApiFutureResponse.addCallback(
         (res) -> {
-          // no action to be performed in the callback if the operation has been completed
+          completableFuture.cancel(true); // interrupt the completableFuture
         },
         (res) -> {
           completableFuture.cancel(true); // interrupt the completableFuture
@@ -293,19 +291,13 @@ public class BigQueryTemplate implements BigQueryOperations {
       }
 
     } catch (ExecutionException e) {
-      // If the wrapped exception is a StatusRuntimeException, check the state of the operation.
-      // If the state is INTERNAL, CANCELLED, or ABORTED, you can retry. For more information, see:
-      // https://grpc.github.io/grpc-java/javadoc/io/grpc/StatusRuntimeException.html
       throw new BigQueryException("Failed to append records. \n" + e);
     }
 
     // Final cleanup for the stream.
     writer.cleanup(client);
 
-    // Once all streams are done, if all writes were successful, commit all of them in one request.
-    // If any streams failed, their workload may be
-    // retried on a new stream, and then only the successful stream should be included in the
-    // commit.
+    // commit the stream
     BatchCommitWriteStreamsRequest commitRequest =
         BatchCommitWriteStreamsRequest.newBuilder()
             .setParent(parentTable.toString())
