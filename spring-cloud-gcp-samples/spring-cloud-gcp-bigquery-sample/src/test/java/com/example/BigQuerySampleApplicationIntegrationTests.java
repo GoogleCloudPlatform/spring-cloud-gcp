@@ -58,6 +58,8 @@ class BigQuerySampleApplicationIntegrationTests {
 
   private static final String TABLE_NAME = "bigquery_sample_test_table";
 
+  private static final String JSON_TEST_TABLE_NAME = "bigquery_sample_json_test_table";
+
   @Autowired BigQuery bigQuery;
 
   @Autowired TestRestTemplate restTemplate;
@@ -65,11 +67,79 @@ class BigQuerySampleApplicationIntegrationTests {
   @Value("classpath:test.csv")
   Resource csvFile;
 
+  @Value("classpath:test.json")
+  Resource jsonFile;
+
   @BeforeEach
   @AfterEach
   void cleanupTestEnvironment() {
     // Clear the previous dataset before beginning the test.
     this.bigQuery.delete(TableId.of(DATASET_NAME, TABLE_NAME));
+    this.bigQuery.delete(TableId.of(DATASET_NAME, JSON_TEST_TABLE_NAME));
+  }
+
+  @Test
+  void testJsonTextUpload() throws InterruptedException {
+    String jsonTxt =
+        "{\"CompanyName\":\"TALES\",\"Description\":\"mark\",\"SerialNumber\":97,\"Leave\":0,\"EmpName\":\"Mark\"}\n"
+            + "{\"CompanyName\":\"1Q84\",\"Description\":\"ark\",\"SerialNumber\":978,\"Leave\":0,\"EmpName\":\"HARUKI\"}\n"
+            + "{\"CompanyName\":\"MY\",\"Description\":\"M\",\"SerialNumber\":9780,\"Leave\":0,\"EmpName\":\"Mark\"}";
+
+    LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    map.add("jsonRows", jsonTxt);
+    map.add("tableName", JSON_TEST_TABLE_NAME);
+    map.add("createTable", "createTable");
+
+    HttpHeaders headers = new HttpHeaders();
+    HttpEntity<LinkedMultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+    ResponseEntity<String> response =
+        this.restTemplate.postForEntity("/uploadJsonText", request, String.class);
+    assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+    QueryJobConfiguration queryJobConfiguration =
+        QueryJobConfiguration.newBuilder(
+                "SELECT * FROM "
+                    + DATASET_NAME
+                    + "."
+                    + JSON_TEST_TABLE_NAME
+                    + " order by SerialNumber desc")
+            .build();
+
+    TableResult queryResult = this.bigQuery.query(queryJobConfiguration);
+    assertThat(queryResult.getTotalRows()).isEqualTo(3);
+    FieldValueList row = queryResult.getValues().iterator().next(); // match the first record
+    assertThat(row.get("SerialNumber").getLongValue() == 9780);
+    assertThat(row.get("EmpName").getStringValue()).isEqualTo("Mark");
+  }
+
+  @Test
+  void testJsonFileUpload() throws InterruptedException, IOException {
+    LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    map.add("file", jsonFile);
+    map.add("tableName", JSON_TEST_TABLE_NAME);
+    map.add("createTable", "createTable");
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+    HttpEntity<LinkedMultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+    ResponseEntity<String> response =
+        this.restTemplate.postForEntity("/uploadJsonFile", request, String.class);
+    assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+
+    QueryJobConfiguration queryJobConfiguration =
+        QueryJobConfiguration.newBuilder(
+                "SELECT * FROM "
+                    + DATASET_NAME
+                    + "."
+                    + JSON_TEST_TABLE_NAME
+                    + " order by SerialNumber desc")
+            .build();
+
+    TableResult queryResult = this.bigQuery.query(queryJobConfiguration);
+    assertThat(queryResult.getTotalRows()).isEqualTo(3);
+    FieldValueList row = queryResult.getValues().iterator().next(); // match the first record
+    assertThat(row.get("SerialNumber").getLongValue() == 9780);
+    assertThat(row.get("EmpName").getStringValue()).isEqualTo("Mark");
   }
 
   @Test
