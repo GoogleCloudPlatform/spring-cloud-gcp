@@ -233,12 +233,6 @@ public class GcpSpannerAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public Gson gson() {
-      return new Gson();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
     public SpannerEntityProcessor spannerConverter(SpannerMappingContext mappingContext) {
       return new ConverterAwareMappingSpannerEntityProcessor(mappingContext);
     }
