@@ -49,7 +49,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.util.Assert;
@@ -83,7 +82,8 @@ public class BigQueryTemplate implements BigQueryOperations {
 
   private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
 
-  @Value("${spring.cloud.gcp.bigquery.jsonWriterBatchSize}")
+  // @Value("${spring.cloud.gcp.bigquery.jsonWriterBatchSize}") TODO(prasmish) debug exception while
+  // autowiring
   private int jsonWriterBatchSize;
 
   /**
