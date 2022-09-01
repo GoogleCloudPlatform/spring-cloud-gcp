@@ -265,9 +265,9 @@ public class BigQueryTemplate implements BigQueryOperations {
     TableName parentTable =
         TableName.of(bigQuery.getOptions().getProjectId(), datasetName, tableName);
 
-    BigQueryJsonDataWriter writer = new BigQueryJsonDataWriter();
     // Initialize a write stream for the specified table.
-    writer.initialize(parentTable, client);
+    BigQueryJsonDataWriter writer = new BigQueryJsonDataWriter(parentTable, client);
+
     try {
       // Write data in batches. Ref: https://cloud.google.com/bigquery/quotas#write-api-limits
       long offset = 0;
