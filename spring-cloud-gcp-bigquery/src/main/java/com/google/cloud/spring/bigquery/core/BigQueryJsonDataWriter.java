@@ -52,6 +52,13 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
   @GuardedBy("lock")
   private RuntimeException error = null;
 
+  /**
+   * @param parentTable against which the writer has to be initialized
+   * @param client BigQueryWriteClient reference which has to be used for writing to the database
+   * @throws DescriptorValidationException
+   * @throws IOException
+   * @throws InterruptedException
+   */
   public BigQueryJsonDataWriter(TableName parentTable, BigQueryWriteClient client)
       throws DescriptorValidationException, IOException, InterruptedException {
     // Initialize a write stream for the specified table.
@@ -73,6 +80,13 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
         JsonStreamWriter.newBuilder(writeStream.getName(), writeStream.getTableSchema()).build();
   }
 
+  /**
+   * @param data JSONArray to be appended
+   * @param offset offset at which data has to be added
+   * @throws DescriptorValidationException
+   * @throws IOException
+   * @throws ExecutionException
+   */
   public void append(JSONArray data, long offset)
       throws DescriptorValidationException, IOException, ExecutionException {
     synchronized (this.lock) {
@@ -88,6 +102,11 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
     inflightRequestCount.register();
   }
 
+  /**
+   * Call this method before committing the stream
+   *
+   * @param client BigQueryWriteClient
+   */
   public void finalizeWriteStream(BigQueryWriteClient client) {
     // Wait for all in-flight requests to complete.
     inflightRequestCount.arriveAndAwaitAdvance();
