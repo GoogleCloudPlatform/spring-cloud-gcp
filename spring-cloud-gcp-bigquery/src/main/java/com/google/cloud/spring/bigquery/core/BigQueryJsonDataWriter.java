@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 /** Helper class for using BigQuery storage write API in exactly once delivery mode */
 public class BigQueryJsonDataWriter {
 
-  private JsonStreamWriter streamWriter;
+  private final JsonStreamWriter streamWriter;
   // Track the number of in-flight requests to wait for all responses before shutting down.
   private final Phaser inflightRequestCount = new Phaser(1);
 
@@ -52,8 +52,8 @@ public class BigQueryJsonDataWriter {
   @GuardedBy("lock")
   private RuntimeException error = null;
 
-  void initialize(TableName parentTable, BigQueryWriteClient client)
-      throws IOException, DescriptorValidationException, InterruptedException {
+  public BigQueryJsonDataWriter(TableName parentTable, BigQueryWriteClient client)
+      throws DescriptorValidationException, IOException, InterruptedException {
     // Initialize a write stream for the specified table.
     // For more information on WriteStream.Type, see:
     // https://googleapis.dev/java/google-cloud-bigquerystorage/latest/com/google/cloud/bigquery/storage/v1/WriteStream.Type.html
