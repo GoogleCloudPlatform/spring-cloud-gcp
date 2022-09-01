@@ -83,8 +83,7 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
     }
     // Append asynchronously for increased throughput.
     ApiFuture<AppendRowsResponse> future = streamWriter.append(data, offset);
-    ApiFutures.addCallback(
-        future, new AppendCompleteCallback(this), MoreExecutors.directExecutor());
+    ApiFutures.addCallback(future, new AppendCompleteCallback(), MoreExecutors.directExecutor());
     // Increase the count of in-flight requests.
     inflightRequestCount.register();
   }
@@ -116,13 +115,8 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
     streamWriter.close();
   }
 
-  static class AppendCompleteCallback implements ApiFutureCallback<AppendRowsResponse> {
+  class AppendCompleteCallback implements ApiFutureCallback<AppendRowsResponse> {
     private final Logger logger = LoggerFactory.getLogger(AppendCompleteCallback.class);
-    private final BigQueryJsonDataWriter parent;
-
-    public AppendCompleteCallback(BigQueryJsonDataWriter parent) {
-      this.parent = parent;
-    }
 
     public void onSuccess(AppendRowsResponse response) {
       logger.info(
@@ -131,11 +125,10 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
     }
 
     public void onFailure(Throwable throwable) {
-      synchronized (this.parent.lock) {
-        if (this.parent.error == null) {
+      synchronized (lock) {
+        if (error == null) {
           StorageException storageException = Exceptions.toStorageException(throwable);
-          this.parent.error =
-              (storageException != null) ? storageException : new RuntimeException(throwable);
+          error = (storageException != null) ? storageException : new RuntimeException(throwable);
         }
       }
       logger.warn(String.format("Error: %s\n", throwable.toString()), throwable);
@@ -144,7 +137,7 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
 
     private void done() {
       // Reduce the count of in-flight requests.
-      this.parent.inflightRequestCount.arriveAndDeregister();
+      inflightRequestCount.arriveAndDeregister();
     }
   }
 }
