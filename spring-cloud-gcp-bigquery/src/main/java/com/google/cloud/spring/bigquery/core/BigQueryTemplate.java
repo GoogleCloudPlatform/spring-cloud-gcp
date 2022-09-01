@@ -301,8 +301,8 @@ public class BigQueryTemplate implements BigQueryOperations {
       throw new BigQueryException("Failed to append records. \n" + e);
     }
 
-    // Final cleanup for the stream.
-    writer.cleanup(client);
+    // Finalize the stream before commiting it
+    writer.finalizeWriteStream(client);
 
     // commit the stream
     BatchCommitWriteStreamsRequest commitRequest =
