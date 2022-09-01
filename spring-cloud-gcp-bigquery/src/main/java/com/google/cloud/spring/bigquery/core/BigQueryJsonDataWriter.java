@@ -55,9 +55,6 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
   /**
    * @param parentTable against which the writer has to be initialized
    * @param client BigQueryWriteClient reference which has to be used for writing to the database
-   * @throws DescriptorValidationException
-   * @throws IOException
-   * @throws InterruptedException
    */
   public BigQueryJsonDataWriter(TableName parentTable, BigQueryWriteClient client)
       throws DescriptorValidationException, IOException, InterruptedException {
@@ -83,9 +80,6 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
   /**
    * @param data JSONArray to be appended
    * @param offset offset at which data has to be added
-   * @throws DescriptorValidationException
-   * @throws IOException
-   * @throws ExecutionException
    */
   public void append(JSONArray data, long offset)
       throws DescriptorValidationException, IOException, ExecutionException {
