@@ -49,6 +49,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.util.Assert;
@@ -75,9 +76,15 @@ public class BigQueryTemplate implements BigQueryOperations {
 
   private Duration jobPollInterval = Duration.ofSeconds(2);
 
-  private static final int JSON_STREAM_WRITER_BATCH_SIZE = 1000; // write records in batches of 1000
+  private static final int DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE =
+      1000; // write records in batches of 1000
+
+  private static final int MIN_JSON_STREAM_WRITER_BATCH_SIZE = 10; // minimum batch size
 
   private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
+
+  @Value("${spring.cloud.gcp.bigquery.jsonWriterBatchSize}")
+  private int jsonWriterBatchSize;
 
   /**
    * Creates the {@link BigQuery} template.
@@ -274,7 +281,7 @@ public class BigQueryTemplate implements BigQueryOperations {
         jsonBatch.put(jsonObj);
         currentBatchSize++;
         if (currentBatchSize
-            == JSON_STREAM_WRITER_BATCH_SIZE) { // append the batch, increment the offset and reset
+            == getBatchSize()) { // append the batch, increment the offset and reset
           // the batch
           writer.append(jsonBatch, offset);
           offset += jsonBatch.length();
@@ -317,6 +324,18 @@ public class BigQueryTemplate implements BigQueryOperations {
     }
 
     return apiResponse;
+  }
+
+  /**
+   * This method ensures that we use the DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE if the user doesn't
+   * set this property or if they set it too low.
+   *
+   * @return jsonWriterBatchSize
+   */
+  private int getBatchSize() {
+    return jsonWriterBatchSize > MIN_JSON_STREAM_WRITER_BATCH_SIZE
+        ? jsonWriterBatchSize
+        : DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE;
   }
 
   // @return the name of the BigQuery dataset that the template is operating in.
