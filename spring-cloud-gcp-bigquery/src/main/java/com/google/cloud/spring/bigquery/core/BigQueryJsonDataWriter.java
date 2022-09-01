@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Helper class for using BigQuery storage write API in exactly once delivery mode */
-public class BigQueryJsonDataWriter {
+public class BigQueryJsonDataWriter implements AutoCloseable {
 
   private final JsonStreamWriter streamWriter;
   // Track the number of in-flight requests to wait for all responses before shutting down.
@@ -89,12 +89,9 @@ public class BigQueryJsonDataWriter {
     inflightRequestCount.register();
   }
 
-  public void cleanup(BigQueryWriteClient client) {
+  public void finalizeWriteStream(BigQueryWriteClient client) {
     // Wait for all in-flight requests to complete.
     inflightRequestCount.arriveAndAwaitAdvance();
-
-    // Close the connection to the server.
-    streamWriter.close();
 
     // Verify that no error occurred in the stream.
     synchronized (this.lock) {
@@ -111,6 +108,12 @@ public class BigQueryJsonDataWriter {
 
   public String getStreamName() {
     return streamWriter.getStreamName();
+  }
+
+  @Override
+  public void close() throws Exception {
+    // Close the connection to the server.
+    streamWriter.close();
   }
 
   static class AppendCompleteCallback implements ApiFutureCallback<AppendRowsResponse> {
