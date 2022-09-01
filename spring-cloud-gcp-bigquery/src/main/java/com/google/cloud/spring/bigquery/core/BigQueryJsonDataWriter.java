@@ -33,10 +33,10 @@ import com.google.protobuf.Descriptors.DescriptorValidationException;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Phaser;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.concurrent.GuardedBy;
 import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Helper class for using BigQuery storage write API in exactly once delivery mode */
 public class BigQueryJsonDataWriter {
@@ -47,7 +47,7 @@ public class BigQueryJsonDataWriter {
 
   private final Object lock = new Object();
 
-  private final Logger logger = Logger.getLogger(this.getClass().getName());
+  private final Logger logger = LoggerFactory.getLogger(BigQueryJsonDataWriter.class);
 
   @GuardedBy("lock")
   private RuntimeException error = null;
@@ -106,7 +106,7 @@ public class BigQueryJsonDataWriter {
     // Finalize the stream.
     FinalizeWriteStreamResponse finalizeResponse =
         client.finalizeWriteStream(streamWriter.getStreamName());
-    logger.log(Level.FINE, "\nRows written: " + finalizeResponse.getRowCount());
+    logger.info("\nRows written: " + finalizeResponse.getRowCount());
   }
 
   public String getStreamName() {
@@ -114,7 +114,7 @@ public class BigQueryJsonDataWriter {
   }
 
   static class AppendCompleteCallback implements ApiFutureCallback<AppendRowsResponse> {
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = LoggerFactory.getLogger(AppendCompleteCallback.class);
     private final BigQueryJsonDataWriter parent;
 
     public AppendCompleteCallback(BigQueryJsonDataWriter parent) {
@@ -122,8 +122,7 @@ public class BigQueryJsonDataWriter {
     }
 
     public void onSuccess(AppendRowsResponse response) {
-      logger.log(
-          Level.FINE,
+      logger.info(
           String.format("\nAppend %d success", response.getAppendResult().getOffset().getValue()));
       done();
     }
@@ -136,7 +135,7 @@ public class BigQueryJsonDataWriter {
               (storageException != null) ? storageException : new RuntimeException(throwable);
         }
       }
-      logger.log(Level.WARNING, String.format("Error: %s\n", throwable.toString()));
+      logger.warn(String.format("Error: %s\n", throwable.toString()), throwable);
       done();
     }
 
