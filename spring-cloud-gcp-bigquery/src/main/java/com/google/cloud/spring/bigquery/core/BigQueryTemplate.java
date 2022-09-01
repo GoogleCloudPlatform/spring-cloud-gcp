@@ -45,10 +45,10 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.util.Assert;
@@ -77,7 +77,7 @@ public class BigQueryTemplate implements BigQueryOperations {
 
   private static final int JSON_STREAM_WRITER_BATCH_SIZE = 1000; // write records in batches of 1000
 
-  private final Logger logger = Logger.getLogger(this.getClass().getName());
+  private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
 
   /**
    * Creates the {@link BigQuery} template.
@@ -231,7 +231,7 @@ public class BigQueryTemplate implements BigQueryOperations {
                 writeApiFutureResponse.set(apiResponse);
               } catch (DescriptorValidationException | IOException e) {
                 writeApiFutureResponse.setException(e);
-                logger.log(Level.WARNING, String.format("Error: %s\n", e.getMessage()));
+                logger.warn(String.format("Error: %s\n", e.getMessage()), e);
               } catch (InterruptedException e) {
                 writeApiFutureResponse.setException(e);
                 // Restore interrupted state in case of an InterruptedException
