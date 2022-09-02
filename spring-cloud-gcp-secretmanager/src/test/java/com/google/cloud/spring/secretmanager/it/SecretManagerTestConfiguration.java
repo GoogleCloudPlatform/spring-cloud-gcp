@@ -92,7 +92,7 @@ public class SecretManagerTestConfiguration {
 
   @Bean
   public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
-    return new SecretManagerTemplate(client, this.projectIdProvider);
+    return new SecretManagerTemplate(client, this.projectIdProvider, false);
   }
 
   @Bean
