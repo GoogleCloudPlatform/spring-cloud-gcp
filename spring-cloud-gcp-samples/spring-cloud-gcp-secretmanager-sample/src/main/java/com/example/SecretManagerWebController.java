@@ -36,6 +36,10 @@ public class SecretManagerWebController {
   // secret can be refreshed when decorated with @RefreshScope on the class.
   private final SecretConfiguration configuration;
 
+  // For the default value takes place, there should be no property called `application-fake`
+  // in property files.
+  @Value("${${sm://application-fake}:DEFAULT}")
+  private String defaultSecret;
   // Application secrets can be accessed using @Value syntax.
   @Value("${sm://application-secret}")
   private String appSecretFromValue;
@@ -49,6 +53,7 @@ public class SecretManagerWebController {
 
   @GetMapping("/")
   public ModelAndView renderIndex(ModelMap map) {
+    map.put("applicationDefaultSecret", defaultSecret);
     map.put("applicationSecretFromValue", appSecretFromValue);
     map.put("applicationSecretFromConfigurationProperties", configuration.getSecret());
     return new ModelAndView("index.html", map);
