@@ -50,10 +50,12 @@ import org.springframework.core.env.ConfigurableEnvironment;
 public class GcpSecretManagerBootstrapConfiguration {
 
   private final GcpProjectIdProvider gcpProjectIdProvider;
+  private final GcpSecretManagerProperties properties;
 
   public GcpSecretManagerBootstrapConfiguration(
       GcpSecretManagerProperties properties, ConfigurableEnvironment configurableEnvironment) {
 
+    this.properties = properties;
     this.gcpProjectIdProvider =
         properties.getProjectId() != null
             ? properties::getProjectId
@@ -84,7 +86,8 @@ public class GcpSecretManagerBootstrapConfiguration {
   @Bean
   @ConditionalOnMissingBean
   public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
-    return new SecretManagerTemplate(client, this.gcpProjectIdProvider);
+    return new SecretManagerTemplate(client, this.gcpProjectIdProvider,
+        this.properties.isAllowDefaultSecret());
   }
 
   @Bean
