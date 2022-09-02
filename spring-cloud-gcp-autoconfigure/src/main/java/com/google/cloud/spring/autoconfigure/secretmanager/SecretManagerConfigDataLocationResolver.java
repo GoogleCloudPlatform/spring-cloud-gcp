@@ -132,7 +132,9 @@ public class SecretManagerConfigDataLocationResolver implements
         .get(SecretManagerServiceClient.class);
     GcpProjectIdProvider projectIdProvider = context.getBootstrapContext()
         .get(GcpProjectIdProvider.class);
-    return new SecretManagerTemplate(client, projectIdProvider);
+    GcpSecretManagerProperties properties = context.getBootstrapContext()
+        .get(GcpSecretManagerProperties.class);
+    return new SecretManagerTemplate(client, projectIdProvider, properties.isAllowDefaultSecret());
   }
 
   /**
