@@ -1507,7 +1507,12 @@ Once the Spanner emulator is running, ensure that the following properties are s
 
 ----
 spring.cloud.gcp.spanner.emulator.enabled=true
-spring.cloud.gcp.spanner.emulator-host=${EMULATOR_HOSTPORT}
+----
+
+Note that the default emulator hostname and port (i.e., localhost:9010) is used. If you prefer a customized value, ensure the following property is set in your `application.properties` of your Spring application:
+
+----
+spring.cloud.gcp.spanner.emulator-host=ip:port
 ----
 
 === Sample
