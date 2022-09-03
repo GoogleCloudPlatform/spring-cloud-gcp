@@ -35,11 +35,7 @@ Add the following property to `application.properties`:
 spring.cloud.gcp.spanner.emulator.enabled=true
 ----
 
-Note that you need to set the `SPANNER_EMULATOR_HOST` environment variable to use the emulator.
-
-----
-$ export SPANNER_EMULATOR_HOST=localhost:9010
-----
+Note that the `SPANNER_EMULATOR_HOST` environment variable is NOT needed in this case as `GcpSpannerEmulatorAutoConfiguration` will define a default hostname and port (i.e, localhost:9010) for the emulator.
 
 === Running the application
 
