@@ -31,11 +31,18 @@ import org.springframework.web.util.HtmlUtils;
 @Controller
 public class SecretManagerWebController {
 
+  private static final String INDEX_PAGE = "index.html";
+  private static final String APPLICATION_SECRET_FROM_VALUE = "applicationSecretFromValue";
+
   private final SecretManagerTemplate secretManagerTemplate;
   // Application secrets can be accessed using configuration properties class,
   // secret can be refreshed when decorated with @RefreshScope on the class.
   private final SecretConfiguration configuration;
 
+  // For the default value takes place, there should be no property called `application-fake`
+  // in property files.
+  @Value("${${sm://application-fake}:DEFAULT}")
+  private String defaultSecret;
   // Application secrets can be accessed using @Value syntax.
   @Value("${sm://application-secret}")
   private String appSecretFromValue;
@@ -49,9 +56,10 @@ public class SecretManagerWebController {
 
   @GetMapping("/")
   public ModelAndView renderIndex(ModelMap map) {
-    map.put("applicationSecretFromValue", appSecretFromValue);
+    map.put("applicationDefaultSecret", defaultSecret);
+    map.put(APPLICATION_SECRET_FROM_VALUE, appSecretFromValue);
     map.put("applicationSecretFromConfigurationProperties", configuration.getSecret());
-    return new ModelAndView("index.html", map);
+    return new ModelAndView(INDEX_PAGE, map);
   }
 
   @GetMapping("/getSecret")
@@ -96,9 +104,9 @@ public class SecretManagerWebController {
       this.secretManagerTemplate.createSecret(secretId, secretPayload.getBytes(), projectId);
     }
 
-    map.put("applicationSecretFromValue", this.appSecretFromValue);
+    map.put(APPLICATION_SECRET_FROM_VALUE, this.appSecretFromValue);
     map.put("message", "Secret created!");
-    return new ModelAndView("index.html", map);
+    return new ModelAndView(INDEX_PAGE, map);
   }
 
   @PostMapping("/deleteSecret")
@@ -111,8 +119,8 @@ public class SecretManagerWebController {
     } else {
       this.secretManagerTemplate.deleteSecret(secretId, projectId);
     }
-    map.put("applicationSecretFromValue", this.appSecretFromValue);
+    map.put(APPLICATION_SECRET_FROM_VALUE, this.appSecretFromValue);
     map.put("message", "Secret deleted!");
-    return new ModelAndView("index.html", map);
+    return new ModelAndView(INDEX_PAGE, map);
   }
 }
