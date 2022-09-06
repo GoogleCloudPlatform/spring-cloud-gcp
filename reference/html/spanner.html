@@ -2372,8 +2372,15 @@ A query to validate can be configured via <code>spring.cloud.gcp.spanner.health.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring.cloud.gcp.spanner.emulator.enabled=true
-spring.cloud.gcp.spanner.emulator-host=${EMULATOR_HOSTPORT}</pre>
+<pre>spring.cloud.gcp.spanner.emulator.enabled=true</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the default emulator hostname and port (i.e., localhost:9010) is used. If you prefer a customized value, ensure the following property is set in your <code>application.properties</code> of your Spring application:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring.cloud.gcp.spanner.emulator-host=ip:port</pre>
 </div>
 </div>
 </div>
