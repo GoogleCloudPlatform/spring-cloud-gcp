@@ -59,7 +59,7 @@ configure settings for bootstrap-phase Spring configuration.
 | `spring.cloud.gcp.secretmanager.credentials.location`                                                           | OAuth2 credentials for authenticating to the Google Cloud Secret Manager API.                                                                                                         | No       | By default, infers credentials from [Application Default Credentials](https://cloud.google.com/docs/authentication/production). |
 | `spring.cloud.gcp.secretmanager.credentials.encoded-key`                                                        | Base64-encoded contents of OAuth2 account private key for authenticating to the Google Cloud Secret Manager API.                                                                      | No       | By default, infers credentials from [Application Default Credentials](https://cloud.google.com/docs/authentication/production). |
 | `spring.cloud.gcp.secretmanager.project-id`                                                                     | The default GCP Project used to access Secret Manager API for the template and property source.                                                                                       | No       | By default, infers the project from [Application Default Credentials](https://cloud.google.com/docs/authentication/production). |
-| `spring.cloud.gcp.secretmanager.allow-default-secret`                                                           | Define the behavior when accessing a non-existed secret string/bytes. If set to `true`, `null` will be returned when accessing a non-existed secret; otherwise throwing an exception. | No | `false`|
+| `spring.cloud.gcp.secretmanager.allow-default-secret`                                                           | Define the behavior when accessing a non-existent secret string/bytes. If set to `true`, `null` will be returned when accessing a non-existent secret; otherwise throwing an exception. | No | `false`|
 
 ### Secret Manager Property Source
 
@@ -162,7 +162,7 @@ However, if your want to use a default value in such a scenario, you can add the
 
         spring.cloud.gcp.secretmanager.allow-default-secret=true
 
-Therefore, a variable annotated with `@Value("${${sm://application-fake}:DEFAULT}")` will be resolved as `DEFAULT` when there is no `application-fake` existed in Secret Manager and `application-fake` is NOT a valid application property.
+Therefore, a variable annotated with `@Value("${${sm://application-fake}:DEFAULT}")` will be resolved as `DEFAULT` when there is no `application-fake` in Secret Manager and `application-fake` is NOT a valid application property.
 
 ### Sample
 

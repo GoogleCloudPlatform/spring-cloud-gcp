@@ -17,7 +17,7 @@
 package com.google.cloud.spring.secretmanager;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -56,7 +56,7 @@ class SecretManagerTemplateTests {
                 .build());
 
     this.secretManagerTemplate =
-        new SecretManagerTemplate(this.client, () -> "my-project", false);
+        new SecretManagerTemplate(this.client, () -> "my-project");
   }
 
   @Test
@@ -184,16 +184,20 @@ class SecretManagerTemplateTests {
   }
 
   @Test
-  void testAccessNonExistedSecretString() {
-    when(this.client.accessSecretVersion(any(SecretVersionName.class))).thenThrow(
-        NotFoundException.class);
-    assertThatCode(() -> this.secretManagerTemplate.getSecretString("sm://no-secret"))
+  void testAccessNonExistentSecretStringWhenDefaultIsNotAllowed() {
+    when(this.client.accessSecretVersion(any(SecretVersionName.class)))
+        .thenThrow(NotFoundException.class);
+    assertThatThrownBy(() -> this.secretManagerTemplate.getSecretString("sm://fake-secret"))
         .isExactlyInstanceOf(NotFoundException.class);
-    assertThatCode(() -> this.secretManagerTemplate.getSecretBytes("sm://fake"))
-        .isExactlyInstanceOf(NotFoundException.class);
-    // allow default secret when accessing non-existed secret.
+  }
+
+  @Test
+  void testAccessNonExistentSecretStringWhenDefaultIsAllowed() {
+    when(this.client.accessSecretVersion(any(SecretVersionName.class)))
+        .thenThrow(NotFoundException.class);
     this.secretManagerTemplate =
-        new SecretManagerTemplate(this.client, () -> "my-project", true);
+        new SecretManagerTemplate(this.client, () -> "my-project")
+            .setAllowDefaultSecretValue(true);
     String result = this.secretManagerTemplate.getSecretString("sm://fake-secret");
     assertThat(result).isNull();
   }

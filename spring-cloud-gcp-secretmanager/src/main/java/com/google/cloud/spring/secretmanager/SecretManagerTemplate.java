@@ -56,11 +56,16 @@ public class SecretManagerTemplate implements SecretManagerOperations {
 
   public SecretManagerTemplate(
       SecretManagerServiceClient secretManagerServiceClient,
-      GcpProjectIdProvider projectIdProvider,
-      boolean allowDefaultSecretValue) {
+      GcpProjectIdProvider projectIdProvider) {
     this.secretManagerServiceClient = secretManagerServiceClient;
     this.projectIdProvider = projectIdProvider;
+    this.allowDefaultSecretValue = false;
+  }
+
+  public SecretManagerTemplate setAllowDefaultSecretValue(boolean allowDefaultSecretValue) {
     this.allowDefaultSecretValue = allowDefaultSecretValue;
+
+    return this;
   }
 
   @Override

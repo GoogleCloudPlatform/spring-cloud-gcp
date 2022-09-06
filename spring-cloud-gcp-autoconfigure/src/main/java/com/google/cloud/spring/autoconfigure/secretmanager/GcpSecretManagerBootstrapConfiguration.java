@@ -86,8 +86,8 @@ public class GcpSecretManagerBootstrapConfiguration {
   @Bean
   @ConditionalOnMissingBean
   public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
-    return new SecretManagerTemplate(client, this.gcpProjectIdProvider,
-        this.properties.isAllowDefaultSecret());
+    return new SecretManagerTemplate(client, this.gcpProjectIdProvider)
+        .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
   }
 
   @Bean
