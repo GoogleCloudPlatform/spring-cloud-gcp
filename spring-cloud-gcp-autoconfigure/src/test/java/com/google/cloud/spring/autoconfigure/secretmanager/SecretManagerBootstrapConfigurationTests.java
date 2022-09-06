@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.auth.Credentials;
 import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
@@ -138,6 +139,16 @@ class SecretManagerBootstrapConfigurationTests {
               AccessSecretVersionResponse.newBuilder()
                   .setPayload(SecretPayload.newBuilder().setData(ByteString.copyFromUtf8("hello")))
                   .build());
+
+      secretVersionName =
+          SecretVersionName.newBuilder()
+              .setProject(PROJECT_NAME)
+              .setSecret("fake-secret")
+              .setSecretVersion("latest")
+              .build();
+
+      when(client.accessSecretVersion(secretVersionName))
+          .thenThrow(NotFoundException.class);
 
       secretVersionName =
           SecretVersionName.newBuilder()
