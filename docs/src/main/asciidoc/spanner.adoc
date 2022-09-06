@@ -485,7 +485,10 @@ Natively supported types:
 
 Spanner supports `JSON` and `ARRAY<JSON>` type for columns. Such property needs to be annotated with `@Column(spannerType = TypeCode.JSON)`. `JSON` columns are mapped to custom POJOs and `ARRAY<JSON>` columns are mapped to List of custom POJOs. Read, write and query with custom SQL query are supported for JSON annotated fields.
 
-NOTE: The default Gson instance used to convert to and from JSON representation can be customized by providing a bean of type `Gson`.
+NOTE: Spring Boot autoconfigures a `Gson` bean by default.
+This Gson instance is used by default to convert to and from JSON representation.
+To customize, use `spring.gson.*` configuration properties or `GsonBuilderCustomizer` bean as instructed in Spring Boot documentation https://docs.spring.io/spring-boot/docs/2.6.x/reference/html/features.html#features.json[here].
+Alternatively, you can also provide a customized bean of type `Gson` in your application.
 
 [source,java]
 ----

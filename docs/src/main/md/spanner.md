@@ -562,8 +562,13 @@ annotated fields.
 
 <div class="note">
 
-The default Gson instance used to convert to and from JSON
-representation can be customized by providing a bean of type `Gson`.
+Spring Boot autoconfigures a `Gson` bean by default. This Gson instance is used
+by default to convert to and from JSON representation. To customize,
+use `spring.gson.*` configuration properties or `GsonBuilderCustomizer` bean as
+instructed in Spring Boot
+documentation [here](https://docs.spring.io/spring-boot/docs/2.6.x/reference/html/features.html#features.json)
+. Alternatively, you can also provide a customized bean of type `Gson` in your
+application.
 
 </div>
 
