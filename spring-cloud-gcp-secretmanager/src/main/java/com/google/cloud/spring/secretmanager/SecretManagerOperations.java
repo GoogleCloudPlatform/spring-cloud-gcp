@@ -143,7 +143,7 @@ public interface SecretManagerOperations {
    * <p>If the secret ID string is passed in, then this will return the payload of the secret for
    * the default project at the latest version.
    *
-   * @param secretIdentifier the GCP secret ID of the secret or an sm:// formatted string specifying
+   * @param secretIdentifier the GCP secret ID of the secret or a sm:// formatted string specifying
    *     the secret.
    * @return The secret payload as String
    */
@@ -159,7 +159,7 @@ public interface SecretManagerOperations {
    * <p>If the secret ID string is passed in, then this will return the payload of the secret for
    * the default project at the latest version.
    *
-   * @param secretIdentifier the GCP secret ID of the secret or an sm:// formatted string specifying
+   * @param secretIdentifier the GCP secret ID of the secret or a sm:// formatted string specifying
    *     the secret.
    * @return The secret payload as byte array
    */
