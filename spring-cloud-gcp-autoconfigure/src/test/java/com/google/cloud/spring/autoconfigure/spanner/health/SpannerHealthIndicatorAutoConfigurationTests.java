@@ -25,6 +25,7 @@ import com.google.auth.Credentials;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.spanner.GcpSpannerAutoConfiguration;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -94,6 +95,11 @@ class SpannerHealthIndicatorAutoConfigurationTests {
     @Bean
     public CredentialsProvider credentialsProvider() {
       return () -> mock(Credentials.class);
+    }
+
+    @Bean
+    public Gson gson() {
+      return new Gson();
     }
   }
 }
