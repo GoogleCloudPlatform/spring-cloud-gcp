@@ -38,6 +38,10 @@ public class PubSubConfiguration {
 
   private static final Long DEFAULT_MAX_ACK_EXTENSION_PERIOD = 0L;
 
+  private static final Long DEFAULT_MIN_DURATION_PER_ACK_EXTENSION = 0L;
+
+  private static final Long DEFAULT_MAX_DURATION_PER_ACK_EXTENSION = 0L;
+
   /** Automatically extracted user-provided properties. Contains only short subscription keys
    *  user-provided properties, therefore do not use except in initialize().
    */
@@ -259,6 +263,52 @@ public class PubSubConfiguration {
   }
 
   /**
+   * Computes the min duration per ack extension. The subscription-specific property takes
+   * precedence if both global and subscription-specific properties are set. If none are set
+   * then the default (0) is returned.
+   *
+   * @param subscriptionName subscription name
+   * @param projectId project id
+   * @return min duration per ack extension
+   */
+  public Long computeMinDurationPerAckExtension(String subscriptionName, String projectId) {
+    Long minDurationPerAckExtension =
+        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+            .getMinDurationPerAckExtension();
+
+    if (minDurationPerAckExtension != null) {
+      return minDurationPerAckExtension;
+    }
+    Long globalMinDurationPerAckExtension = this.globalSubscriber.getMinDurationPerAckExtension();
+    return globalMinDurationPerAckExtension != null
+        ? globalMinDurationPerAckExtension
+        : DEFAULT_MIN_DURATION_PER_ACK_EXTENSION;
+  }
+
+  /**
+   * Computes the max duration per ack extension. The subscription-specific property takes
+   * precedence if both global and subscription-specific properties are set. If none are set
+   * then the default (0) is returned.
+   *
+   * @param subscriptionName subscription name
+   * @param projectId project id
+   * @return max duration per ack extension
+   */
+  public Long computeMaxDurationPerAckExtension(String subscriptionName, String projectId) {
+    Long maxDurationPerAckExtension =
+        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+            .getMaxDurationPerAckExtension();
+
+    if (maxDurationPerAckExtension != null) {
+      return maxDurationPerAckExtension;
+    }
+    Long globalMaxDurationPerAckExtension = this.globalSubscriber.getMaxDurationPerAckExtension();
+    return globalMaxDurationPerAckExtension != null
+        ? globalMaxDurationPerAckExtension
+        : DEFAULT_MAX_DURATION_PER_ACK_EXTENSION;
+  }
+
+  /**
    * Returns the pull endpoint. The subscription-specific property takes precedence if both global
    * and subscription-specific properties are set. If subscription-specific configuration is not set
    * then the global configuration is picked.
@@ -399,6 +449,12 @@ public class PubSubConfiguration {
     /** The optional max ack extension period in seconds for the subscriber factory. */
     private Long maxAckExtensionPeriod;
 
+    /** The optional min duration per ack extension in seconds for the subscriber factory. */
+    private Long minDurationPerAckExtension;
+
+    /** The optional max duration per ack extension in seconds for the subscriber factory. */
+    private Long maxDurationPerAckExtension;
+
     /** The optional parallel pull count setting for the subscriber factory. */
     private Integer parallelPullCount;
 
@@ -449,6 +505,22 @@ public class PubSubConfiguration {
 
     public void setMaxAckExtensionPeriod(Long maxAckExtensionPeriod) {
       this.maxAckExtensionPeriod = maxAckExtensionPeriod;
+    }
+
+    public Long getMinDurationPerAckExtension() {
+      return minDurationPerAckExtension;
+    }
+
+    public void setMinDurationPerAckExtension(Long minDurationPerAckExtension) {
+      this.minDurationPerAckExtension = minDurationPerAckExtension;
+    }
+
+    public Long getMaxDurationPerAckExtension() {
+      return maxDurationPerAckExtension;
+    }
+
+    public void setMaxDurationPerAckExtension(Long maxDurationPerAckExtension) {
+      this.maxDurationPerAckExtension = maxDurationPerAckExtension;
     }
 
     public Integer getParallelPullCount() {
