@@ -451,13 +451,14 @@ public class PubSubConfiguration {
     private Long maxAckExtensionPeriod;
 
     /**
-     * The optional upper bound for a single mod ack extension period in seconds for the subscriber
+     * The optional lower bound for a single mod ack extension period in seconds for the subscriber
      * factory.
      */
     private Long minDurationPerAckExtension;
 
     /**
-     * The optional max duration per ack extension in seconds for the subscriber factory.
+     * The optional upper bound for a single mod ack extension period in seconds for the subscriber
+     * factory.
      */
     private Long maxDurationPerAckExtension;
 

@@ -205,18 +205,18 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   }
 
   /**
-   * Set the minimum duration per ack extension.
+   * Set lower bound for a single mod ack extension period.
    *
-   * @param minDurationPerAckExtension the min duration per ack extension to set
+   * @param minDurationPerAckExtension the lower bound for a single mod ack extension period to set
    */
   public void setMinDurationPerAckExtension(Duration minDurationPerAckExtension) {
     this.minDurationPerAckExtension = minDurationPerAckExtension;
   }
 
   /**
-   * Set the maximum duration per ack extension.
+   * Set the upper bound for a single mod ack extension period.
    *
-   * @param maxDurationPerAckExtension the max duration per ack extension to set
+   * @param maxDurationPerAckExtension the upper bound for a single mod ack extension period
    */
   public void setMaxDurationPerAckExtension(Duration maxDurationPerAckExtension) {
     this.maxDurationPerAckExtension = maxDurationPerAckExtension;
