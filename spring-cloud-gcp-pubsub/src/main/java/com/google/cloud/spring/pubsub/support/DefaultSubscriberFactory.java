@@ -42,8 +42,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.util.Assert;
 import org.threeten.bp.Duration;
 
-/** The default {@link SubscriberFactory} implementation. */
+/**
+ * The default {@link SubscriberFactory} implementation.
+ */
 public class DefaultSubscriberFactory implements SubscriberFactory {
+
+  private static final Duration DEFAULT_MIN_DURATION_PER_ACK_EXTENSION = Duration.ofSeconds(0L);
+
+  private static final Duration DEFAULT_MAX_DURATION_PER_ACK_EXTENSION = Duration.ofSeconds(0L);
 
   private final String projectId;
 
@@ -60,6 +66,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   private FlowControlSettings flowControlSettings;
 
   private Duration maxAckExtensionPeriod;
+
+  private Duration minDurationPerAckExtension;
+
+  private Duration maxDurationPerAckExtension;
 
   private Integer parallelPullCount;
 
@@ -91,9 +101,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   /**
    * Default {@link DefaultSubscriberFactory} constructor.
    *
-   * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
-   * @deprecated Use the new {@link DefaultSubscriberFactory
-   *     (GcpProjectIdProvider,PubSubConfiguration)} instead
+   * @param projectIdProvider provides the default GCP project ID for selecting the
+   *     subscriptions
+   * @deprecated Use the new {@link DefaultSubscriberFactory (GcpProjectIdProvider,PubSubConfiguration)}
+   *     instead
    */
   @Deprecated
   public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
@@ -112,7 +123,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   /**
    * Default {@link DefaultSubscriberFactory} constructor.
    *
-   * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
+   * @param projectIdProvider provides the default GCP project ID for selecting the
+   *     subscriptions
    * @param pubSubConfiguration contains the subscriber properties to configure
    */
   public DefaultSubscriberFactory(
@@ -194,6 +206,24 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
    */
   public void setMaxAckExtensionPeriod(Duration maxAckExtensionPeriod) {
     this.maxAckExtensionPeriod = maxAckExtensionPeriod;
+  }
+
+  /**
+   * Set the minimum duration per ack extension.
+   *
+   * @param minDurationPerAckExtension the min duration per ack extension to set
+   */
+  public void setMinDurationPerAckExtension(Duration minDurationPerAckExtension) {
+    this.minDurationPerAckExtension = minDurationPerAckExtension;
+  }
+
+  /**
+   * Set the maximum duration per ack extension.
+   *
+   * @param maxDurationPerAckExtension the max duration per ack extension to set
+   */
+  public void setMaxDurationPerAckExtension(Duration maxDurationPerAckExtension) {
+    this.maxDurationPerAckExtension = maxDurationPerAckExtension;
   }
 
   /**
@@ -293,6 +323,18 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     Duration ackExtensionPeriod = getMaxAckExtensionPeriod(subscriptionName);
     if (ackExtensionPeriod != null) {
       subscriberBuilder.setMaxAckExtensionPeriod(ackExtensionPeriod);
+    }
+
+    Duration durationPerAckExtension = getMinDurationPerAckExtension(subscriptionName);
+    if (durationPerAckExtension != null
+        && !durationPerAckExtension.equals(DEFAULT_MIN_DURATION_PER_ACK_EXTENSION)) {
+      subscriberBuilder.setMinDurationPerAckExtension(durationPerAckExtension);
+    }
+
+    durationPerAckExtension = getMaxDurationPerAckExtension(subscriptionName);
+    if (durationPerAckExtension != null
+        && !durationPerAckExtension.equals(DEFAULT_MAX_DURATION_PER_ACK_EXTENSION)) {
+      subscriberBuilder.setMaxDurationPerAckExtension(durationPerAckExtension);
     }
 
     // Set the number of pull workers.
@@ -510,6 +552,22 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
         this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId));
   }
 
+  Duration getMinDurationPerAckExtension(String subscriptionName) {
+    if (this.minDurationPerAckExtension != null) {
+      return this.minDurationPerAckExtension;
+    }
+    return Duration.ofSeconds(
+        this.pubSubConfiguration.computeMinDurationPerAckExtension(subscriptionName, projectId));
+  }
+
+  Duration getMaxDurationPerAckExtension(String subscriptionName) {
+    if (this.maxDurationPerAckExtension != null) {
+      return this.maxDurationPerAckExtension;
+    }
+    return Duration.ofSeconds(
+        this.pubSubConfiguration.computeMaxDurationPerAckExtension(subscriptionName, projectId));
+  }
+
   Integer getPullCount(String subscriptionName) {
     if (this.parallelPullCount != null) {
       return this.parallelPullCount;
@@ -531,7 +589,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     return this.pubSubConfiguration.computeRetryableCodes(subscriptionName, projectId);
   }
 
-  public void setExecutorProviderMap(Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap) {
+  public void setExecutorProviderMap(
+      Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap) {
     this.executorProviderMap = executorProviderMap;
   }
 
