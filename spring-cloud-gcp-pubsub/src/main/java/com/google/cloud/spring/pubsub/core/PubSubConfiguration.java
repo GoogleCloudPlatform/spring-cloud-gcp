@@ -28,16 +28,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-/**
- * Properties for Publisher or Subscriber specific configurations.
- */
+/** Properties for Publisher or Subscriber specific configurations. */
 public class PubSubConfiguration {
 
   private static final Logger logger = LoggerFactory.getLogger(PubSubConfiguration.class);
 
-  /**
-   * Default number of executor threads.
-   */
+  /** Default number of executor threads. */
   public static final int DEFAULT_EXECUTOR_THREADS = 4;
 
   private static final Long DEFAULT_MAX_ACK_EXTENSION_PERIOD = 0L;
@@ -52,25 +48,18 @@ public class PubSubConfiguration {
    */
   private Map<String, Subscriber> subscription = new HashMap<>();
 
-  /**
-   * Properties keyed by fully qualified subscription name. Initialized once; effectively a
-   * singleton.
+  /** Properties keyed by fully qualified subscription name.
+   * Initialized once; effectively a singleton.
    */
   private Map<ProjectSubscriptionName, Subscriber> fullyQualifiedSubscriptionProperties;
 
-  /**
-   * Contains global and default subscriber settings.
-   */
+  /** Contains global and default subscriber settings. */
   private final Subscriber globalSubscriber = new Subscriber();
 
-  /**
-   * Contains default publisher settings.
-   */
+  /** Contains default publisher settings. */
   private final Publisher publisher = new Publisher();
 
-  /**
-   * Contains default health settings.
-   */
+  /** Contains default health settings. */
   private final Health health = new Health();
 
   public Subscriber getSubscriber() {
@@ -86,8 +75,8 @@ public class PubSubConfiguration {
   }
 
   /**
-   * This method will be called by Spring Framework when binding user properties. Also potentially
-   * useful for tests.
+   * This method will be called by Spring Framework when binding user properties.
+   * Also potentially useful for tests.
    *
    * @param subscriberProperties map of user-defined properties.
    */
@@ -99,16 +88,15 @@ public class PubSubConfiguration {
   }
 
   /**
-   * Returns an immutable map of subscription properties keyed by the fully-qualified {@link
-   * ProjectSubscriptionName}.
+   * Returns an immutable map of subscription properties keyed by the fully-qualified
+   * {@link ProjectSubscriptionName}.
    *
    * <p>Cannot be called before {@link #initialize(String)}.
    *
    * @return map of subscription properties
    */
   public Map<ProjectSubscriptionName, Subscriber> getFullyQualifiedSubscriberProperties() {
-    Assert.notNull(this.fullyQualifiedSubscriptionProperties,
-        "Please call initialize() prior to retrieving properties.");
+    Assert.notNull(this.fullyQualifiedSubscriptionProperties, "Please call initialize() prior to retrieving properties.");
     return this.fullyQualifiedSubscriptionProperties;
   }
 
@@ -157,8 +145,7 @@ public class PubSubConfiguration {
    */
   @Deprecated
   public Subscriber getSubscriber(String name, String projectId) {
-    return getSubscriptionProperties(
-        PubSubSubscriptionUtils.toProjectSubscriptionName(name, projectId));
+    return getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(name, projectId));
   }
 
   /**
@@ -168,8 +155,7 @@ public class PubSubConfiguration {
    * @return user-provided subscription properties
    */
   public Subscriber getSubscriptionProperties(ProjectSubscriptionName projectSubscriptionName) {
-    Assert.notNull(this.fullyQualifiedSubscriptionProperties,
-        "Please call initialize() prior to retrieving properties.");
+    Assert.notNull(this.fullyQualifiedSubscriptionProperties, "Please call initialize() prior to retrieving properties.");
 
     if (this.fullyQualifiedSubscriptionProperties.containsKey(projectSubscriptionName)) {
       return this.fullyQualifiedSubscriptionProperties.get(projectSubscriptionName);
@@ -191,8 +177,7 @@ public class PubSubConfiguration {
   @Deprecated
   public FlowControl computeSubscriberFlowControlSettings(
       String subscriptionName, String projectId) {
-    return computeSubscriberFlowControlSettings(
-        ProjectSubscriptionName.of(projectId, subscriptionName));
+    return computeSubscriberFlowControlSettings(ProjectSubscriptionName.of(projectId, subscriptionName));
   }
 
   /**
@@ -203,8 +188,7 @@ public class PubSubConfiguration {
    * @param projectSubscriptionName Fully qualified subscription name
    * @return flow control settings defaulting to global where not provided
    */
-  public FlowControl computeSubscriberFlowControlSettings(
-      ProjectSubscriptionName projectSubscriptionName) {
+  public FlowControl computeSubscriberFlowControlSettings(ProjectSubscriptionName projectSubscriptionName) {
     FlowControl flowControl = getSubscriptionProperties(projectSubscriptionName).getFlowControl();
     FlowControl globalFlowControl = this.globalSubscriber.getFlowControl();
     // It is possible for flowControl and globalFlowControl to be the same object.
@@ -268,7 +252,7 @@ public class PubSubConfiguration {
   public Long computeMaxAckExtensionPeriod(String subscriptionName, String projectId) {
     Long maxAckExtensionPeriod =
         getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
-            .getMaxAckExtensionPeriod();
+        .getMaxAckExtensionPeriod();
 
     if (maxAckExtensionPeriod != null) {
       return maxAckExtensionPeriod;
@@ -337,7 +321,7 @@ public class PubSubConfiguration {
   public String computePullEndpoint(String subscriptionName, String projectId) {
     String pullEndpoint =
         getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
-            .getPullEndpoint();
+        .getPullEndpoint();
     return pullEndpoint != null ? pullEndpoint : this.globalSubscriber.getPullEndpoint();
   }
 
@@ -397,34 +381,22 @@ public class PubSubConfiguration {
     return retry;
   }
 
-  /**
-   * Publisher settings.
-   */
+  /** Publisher settings. */
   public static class Publisher {
 
-    /**
-     * Number of threads used by every publisher.
-     */
+    /** Number of threads used by every publisher. */
     private int executorThreads = 4;
 
-    /**
-     * Retry properties.
-     */
+    /** Retry properties. */
     private final Retry retry = new Retry();
 
-    /**
-     * Batching properties.
-     */
+    /** Batching properties. */
     private final Batching batching = new Batching();
 
-    /**
-     * Enable message ordering setting.
-     */
+    /** Enable message ordering setting. */
     private Boolean enableMessageOrdering;
 
-    /**
-     * Set publisher endpoint. Example: "us-east1-pubsub.googleapis.com:443".
-     */
+    /** Set publisher endpoint. Example: "us-east1-pubsub.googleapis.com:443". */
     private String endpoint;
 
     public Batching getBatching() {
@@ -460,35 +432,22 @@ public class PubSubConfiguration {
     }
   }
 
-  /**
-   * Subscriber settings.
-   */
+  /** Subscriber settings. */
   public static class Subscriber {
 
-    /**
-     * Fully qualified subscription name to use as key in property maps
-     */
+    /** Fully qualified subscription name to use as key in property maps */
     private String fullyQualifiedName;
 
-    /**
-     * Number of threads used by every subscriber.
-     */
+    /** Number of threads used by every subscriber. */
     private Integer executorThreads;
 
-    /**
-     * Number of threads used for batch acknowledgement.
-     */
+    /** Number of threads used for batch acknowledgement. */
     private int maxAcknowledgementThreads = 4;
 
-    /**
-     * The optional pull endpoint setting for the subscriber factory.
-     */
+    /** The optional pull endpoint setting for the subscriber factory. */
     private String pullEndpoint;
 
-    /**
-     * The optional lower bound for a single mod ack extension period in seconds for the subscriber
-     * factory.
-     */
+    /** The optional max ack extension period in seconds for the subscriber factory. */
     private Long maxAckExtensionPeriod;
 
     /**
@@ -507,19 +466,13 @@ public class PubSubConfiguration {
      */
     private Integer parallelPullCount;
 
-    /**
-     * Retry settings for subscriber factory.
-     */
+    /** Retry settings for subscriber factory. */
     private final Retry retry = new Retry();
 
-    /**
-     * Flow control settings for subscriber factory.
-     */
+    /** Flow control settings for subscriber factory. */
     private final FlowControl flowControl = new FlowControl();
 
-    /**
-     * RPC status codes that should be retried when pulling messages.
-     */
+    /** RPC status codes that should be retried when pulling messages. */
     private Code[] retryableCodes = null;
 
     public String getFullyQualifiedName() {
@@ -608,9 +561,7 @@ public class PubSubConfiguration {
     }
   }
 
-  /**
-   * Health Check settings.
-   */
+  /** Health Check settings. */
   public static class Health {
 
     /**
@@ -627,14 +578,10 @@ public class PubSubConfiguration {
      */
     private Integer backlogThreshold;
 
-    /**
-     * The optional interval in seconds for subscription backlog lookup.
-     */
+    /** The optional interval in seconds for subscription backlog lookup. */
     private Integer lookUpInterval = 1;
 
-    /**
-     * Number of threads used for Health Check Executors.
-     */
+    /** Number of threads used for Health Check Executors. */
     private int executorThreads = 4;
 
     public Integer getLagThreshold() {
@@ -670,9 +617,7 @@ public class PubSubConfiguration {
     }
   }
 
-  /**
-   * Retry settings.
-   */
+  /** Retry settings. */
   public static class Retry {
 
     /**
@@ -707,9 +652,7 @@ public class PubSubConfiguration {
      */
     private Integer maxAttempts;
 
-    /**
-     * Jitter determines if the delay time should be randomized.
-     */
+    /** Jitter determines if the delay time should be randomized. */
     private Boolean jittered;
 
     /**
@@ -808,24 +751,16 @@ public class PubSubConfiguration {
     }
   }
 
-  /**
-   * flow control settings.
-   */
+  /** flow control settings. */
   public static class FlowControl {
 
-    /**
-     * Maximum number of outstanding elements to keep in memory before enforcing flow control.
-     */
+    /** Maximum number of outstanding elements to keep in memory before enforcing flow control. */
     private Long maxOutstandingElementCount;
 
-    /**
-     * Maximum number of outstanding bytes to keep in memory before enforcing flow control.
-     */
+    /** Maximum number of outstanding bytes to keep in memory before enforcing flow control. */
     private Long maxOutstandingRequestBytes;
 
-    /**
-     * The behavior when the specified limits are exceeded.
-     */
+    /** The behavior when the specified limits are exceeded. */
     private LimitExceededBehavior limitExceededBehavior;
 
     public Long getMaxOutstandingElementCount() {
@@ -853,24 +788,16 @@ public class PubSubConfiguration {
     }
   }
 
-  /**
-   * Batching settings.
-   */
+  /** Batching settings. */
   public static class Batching {
 
-    /**
-     * Flow control settings for batching.
-     */
+    /** Flow control settings for batching. */
     private final FlowControl flowControl = new FlowControl();
 
-    /**
-     * The element count threshold to use for batching.
-     */
+    /** The element count threshold to use for batching. */
     private Long elementCountThreshold;
 
-    /**
-     * The request byte threshold to use for batching.
-     */
+    /** The request byte threshold to use for batching. */
     private Long requestByteThreshold;
 
     /**
@@ -879,9 +806,7 @@ public class PubSubConfiguration {
      */
     private Long delayThresholdSeconds;
 
-    /**
-     * Enables batching if true.
-     */
+    /** Enables batching if true. */
     private Boolean enabled;
 
     public Long getElementCountThreshold() {

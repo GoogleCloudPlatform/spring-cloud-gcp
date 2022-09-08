@@ -42,9 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.util.Assert;
 import org.threeten.bp.Duration;
 
-/**
- * The default {@link SubscriberFactory} implementation.
- */
+/** The default {@link SubscriberFactory} implementation. */
 public class DefaultSubscriberFactory implements SubscriberFactory {
 
   private static final Duration DEFAULT_MIN_DURATION_PER_ACK_EXTENSION = Duration.ofSeconds(0L);
@@ -101,10 +99,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   /**
    * Default {@link DefaultSubscriberFactory} constructor.
    *
-   * @param projectIdProvider provides the default GCP project ID for selecting the
-   *     subscriptions
-   * @deprecated Use the new {@link DefaultSubscriberFactory (GcpProjectIdProvider,PubSubConfiguration)}
-   *     instead
+   * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
+   * @deprecated Use the new {@link DefaultSubscriberFactory
+   *     (GcpProjectIdProvider,PubSubConfiguration)} instead
    */
   @Deprecated
   public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
@@ -123,8 +120,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   /**
    * Default {@link DefaultSubscriberFactory} constructor.
    *
-   * @param projectIdProvider provides the default GCP project ID for selecting the
-   *     subscriptions
+   * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
    * @param pubSubConfiguration contains the subscriber properties to configure
    */
   public DefaultSubscriberFactory(
@@ -589,8 +585,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     return this.pubSubConfiguration.computeRetryableCodes(subscriptionName, projectId);
   }
 
-  public void setExecutorProviderMap(
-      Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap) {
+  public void setExecutorProviderMap(Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap) {
     this.executorProviderMap = executorProviderMap;
   }
 
