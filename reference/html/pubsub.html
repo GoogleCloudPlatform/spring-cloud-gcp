@@ -193,7 +193,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-pubsub&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -204,7 +204,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-pubsub")
 }</code></pre>
 </div>
@@ -698,7 +698,7 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -783,7 +783,7 @@ Also you need to set the following properties <code>spring.cloud.gcp.pubsub.heal
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -881,7 +881,7 @@ The topic name could either be a short topic name within the current project, or
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, String&gt; headers = Collections.singletonMap("key1", "val1");
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Map&lt;String, String&gt; headers = Collections.singletonMap("key1", "val1");
 pubSubTemplate.publish(topicName, "message", headers).get();</code></pre>
 </div>
 </div>
@@ -897,7 +897,7 @@ Additionally, if you are using multiple publishers, you will want to set the <co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, String&gt; headers =
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Map&lt;String, String&gt; headers =
     Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1");
 pubSubTemplate.publish(topicName, "message1", headers).get();
 pubSubTemplate.publish(topicName, "message2", headers).get();</code></pre>
@@ -920,7 +920,7 @@ The subscription name could either be a short subscription name within the curre
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Subscriber subscriber =
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Subscriber subscriber =
     pubSubTemplate.subscribe(
         subscriptionName,
         message -&gt; {
@@ -986,7 +986,7 @@ This is different from subscribing to a subscription, in the sense that subscrib
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">int maxMessages = 10;
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">int maxMessages = 10;
 boolean returnImmediately = false;
 List&lt;AcknowledgeablePubsubMessage&gt; messages =
     pubSubTemplate.pull(subscriptionName, maxMessages, returnImmediately);
@@ -1088,7 +1088,7 @@ See <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics">here</a> f
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public Subscription newSubscription() {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public Subscription newSubscription() {
 	// Must use the fully-qualified topic name.
 	String fullDeadLetterTopic = PubSubTopicUtils
 						.toTopicName(DEAD_LETTER_TOPIC, gcpProjectIdProvider.getProjectId())
@@ -1115,7 +1115,7 @@ See <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics">here</a> f
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// Note: The ObjectMapper is used to convert Java POJOs to and from JSON.
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// Note: The ObjectMapper is used to convert Java POJOs to and from JSON.
 // You will have to configure your own instance if you are unable to depend
 // on the ObjectMapper provided by Spring Boot starters.
 @Bean
@@ -1142,7 +1142,7 @@ Other implementations of the <code>PubSubMessageConverter</code> can also be con
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">static class TestUser {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">static class TestUser {
 
   String username;
 
@@ -1171,7 +1171,7 @@ Other implementations of the <code>PubSubMessageConverter</code> can also be con
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">TestUser user = new TestUser();
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">TestUser user = new TestUser();
 user.setUsername("John");
 user.setPassword("password");
 pubSubTemplate.publish(topicName, user);</code></pre>
@@ -1182,7 +1182,7 @@ pubSubTemplate.publish(topicName, user);</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">int maxMessages = 1;
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">int maxMessages = 1;
 boolean returnImmediately = false;
 List&lt;ConvertedAcknowledgeablePubsubMessage&lt;TestUser&gt;&gt; messages =
     pubSubTemplate.pullAndConvert(
@@ -1210,7 +1210,7 @@ The combination of the Pub/Sub starter and the Project Reactor dependencies will
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 PubSubReactiveFactory reactiveFactory;
 
 // ...
@@ -1235,7 +1235,7 @@ For example, if you only want to fetch 5 messages, you can use <code>limitReques
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Flux&lt;AcknowledgeablePubsubMessage&gt; fiveMessageFlux = flux.limitRequest(5);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Flux&lt;AcknowledgeablePubsubMessage&gt; fiveMessageFlux = flux.limitRequest(5);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1243,7 +1243,7 @@ For example, if you only want to fetch 5 messages, you can use <code>limitReques
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">flux.doOnNext(AcknowledgeablePubsubMessage::ack);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">flux.doOnNext(AcknowledgeablePubsubMessage::ack);</code></pre>
 </div>
 </div>
 </div>
@@ -1275,7 +1275,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public Topic createTopic(String topicName)</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public Topic createTopic(String topicName)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1283,7 +1283,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public void newTopic() {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public void newTopic() {
     pubSubAdmin.createTopic("topicName");
 }</code></pre>
 </div>
@@ -1296,7 +1296,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public void deleteTopic(String topicName)</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public void deleteTopic(String topicName)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1304,7 +1304,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public void deleteTopic() {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public void deleteTopic() {
     pubSubAdmin.deleteTopic("topicName");
 }</code></pre>
 </div>
@@ -1317,7 +1317,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;Topic&gt; listTopics</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public List&lt;Topic&gt; listTopics</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1325,7 +1325,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; topics =
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;String&gt; topics =
     pubSubAdmin.listTopics().stream().map(Topic::getName).collect(Collectors.toList());</code></pre>
 </div>
 </div>
@@ -1337,7 +1337,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName)
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public Subscription createSubscription(String subscriptionName, String topicName)
 
 public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline)
 
@@ -1356,7 +1356,7 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public Subscription newSubscription() {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public Subscription newSubscription() {
     return pubSubAdmin.createSubscription("subscriptionName", "topicName", 15);
 }</code></pre>
 </div>
@@ -1369,7 +1369,7 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public void deleteSubscription(String subscriptionName)</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public void deleteSubscription(String subscriptionName)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1377,7 +1377,7 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public void deleteSubscription() {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public void deleteSubscription() {
     pubSubAdmin.deleteSubscription("subscriptionName");
 }</code></pre>
 </div>
@@ -1390,7 +1390,7 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;Subscription&gt; listSubscriptions()</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public List&lt;Subscription&gt; listSubscriptions()</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1398,7 +1398,7 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; subscriptions =
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;String&gt; subscriptions =
     pubSubAdmin.listSubscriptions().stream()
         .map(Subscription::getName)
         .collect(Collectors.toList());</code></pre>
@@ -1421,6 +1421,9 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

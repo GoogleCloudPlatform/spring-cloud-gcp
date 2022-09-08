@@ -197,7 +197,7 @@ However, on GCP, instead of running and maintaining your own Zipkin instance and
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-trace&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -208,7 +208,7 @@ However, on GCP, instead of running and maintaining your own Zipkin instance and
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-trace")
 }</code></pre>
 </div>
@@ -410,7 +410,7 @@ Read <a href="https://cloud.spring.io/spring-cloud-sleuth/">Sleuth documentation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>spring.sleuth.sampler.probability=1                     # Send 100% of the request traces to Cloud Trace.
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.sleuth.sampler.probability=1                     # Send 100% of the request traces to Cloud Trace.
 spring.sleuth.web.skipPattern=(^cleanup.*|.+favicon.*)  # Ignore some URL paths.
 spring.sleuth.scheduled.enabled=false                   # disable executor 'async' traces</code></pre>
 </div>
@@ -466,7 +466,7 @@ To do this you can use respectively <code>StackdriverTraceAutoConfiguration.REPO
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@SpringBootApplication
 public class Application implements WebMvcConfigurer {
 
 	public static void main(String[] args) {
@@ -511,7 +511,7 @@ It&#8217;s set to <code>false</code> by default, but when set to <code>true</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code># Enable Pub/Sub tracing using this property
+<pre class="highlightjs highlight"><code class="language-none hljs"># Enable Pub/Sub tracing using this property
 spring.cloud.gcp.trace.pubsub.enabled=true
 
 # You should disable Spring Integration instrumentation by Sleuth as it's unnecessary when Pub/Sub tracing is enabled
@@ -528,6 +528,9 @@ spring.sleuth.integration.enabled=false</code></pre>
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

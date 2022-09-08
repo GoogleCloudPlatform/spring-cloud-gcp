@@ -183,7 +183,7 @@ This enables messaging between different processes, applications or micro-servic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-pubsub&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -198,7 +198,7 @@ This enables messaging between different processes, applications or micro-servic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-pubsub")
     implementation("org.springframework.integration:spring-integration-core")
 }</code></pre>
@@ -233,7 +233,7 @@ The subscription name could either be a short subscription name within the curre
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public MessageChannel pubsubInputChannel() {
     return new PublishSubscribeChannel();
 }
@@ -347,7 +347,7 @@ Users can extract the <code>BasicAcknowledgeablePubsubMessage</code> using the <
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 @ServiceActivator(inputChannel = "pubsubInputChannel")
 public MessageHandler messageReceiver() {
     return message -&gt; {
@@ -380,7 +380,7 @@ Otherwise, the adapter will assume that processing completed successfully and wi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public MessageChannel pubsubInputChannel() {
     return new PublishSubscribeChannel();
 }
@@ -409,7 +409,7 @@ public void pubsubErrorHandler(Message&lt;MessagingException&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel =  "pubsubErrors")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@ServiceActivator(inputChannel =  "pubsubErrors")
 public void pubsubErrorHandler(Message&lt;MessagingException&gt; exceptionMessage) {
 
 	BasicAcknowledgeablePubsubMessage originalMessage =
@@ -459,7 +459,7 @@ The subscription name could either be a short subscription name within the curre
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 @InboundChannelAdapter(channel = "pubsubInputChannel", poller = @Poller(fixedDelay = "100"))
 public MessageSource&lt;Object&gt; pubsubAdapter(PubSubTemplate pubSubTemplate) {
 	PubSubMessageSource messageSource = new PubSubMessageSource(pubSubTemplate,  "exampleSubscription");
@@ -481,7 +481,7 @@ The object can be used for manually (n)acking the message.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = "pubsubInputChannel")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@ServiceActivator(inputChannel = "pubsubInputChannel")
 public void messageReceiver(String payload,
         @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) AcknowledgeablePubsubMessage message)
             throws InterruptedException {
@@ -532,7 +532,7 @@ The topic name could either be a short topic name within the current project, or
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 @ServiceActivator(inputChannel = "pubsubOutputChannel")
 public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
     return new PubSubMessageHandler(pubsubTemplate, "topicName");
@@ -555,7 +555,7 @@ The old <code>setPublishCallback()</code> method that only gave access to messag
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">adapter.setPublishCallback(
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">adapter.setPublishCallback(
     new ListenableFutureCallback&lt;String&gt;() {
       @Override
       public void onFailure(Throwable ex) {}
@@ -570,7 +570,7 @@ The old <code>setPublishCallback()</code> method that only gave access to messag
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 private MessageChannel pubsubOutputChannel;
 
 public void handleMessage(Message&lt;?&gt; msg) throws MessagingException {
@@ -586,7 +586,7 @@ public void handleMessage(Message&lt;?&gt; msg) throws MessagingException {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">PubSubMessageHandler adapter = new PubSubMessageHandler(pubSubTemplate, "myDefaultTopic");
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">PubSubMessageHandler adapter = new PubSubMessageHandler(pubSubTemplate, "myDefaultTopic");
 adapter.setTopicExpressionString("headers['sendToTopic']");</code></pre>
 </div>
 </div>
@@ -611,7 +611,7 @@ Remember to set <code>spring.cloud.gcp.pubsub.publisher.enable-message-ordering<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">PubSubMessageHandler adapter = ...
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">PubSubMessageHandler adapter = ...
 ...
 PubSubHeaderMapper headerMapper = new PubSubHeaderMapper();
 headerMapper.setOutboundHeaderPatterns("!foo", "!bar", "!prefix_*", "*");
@@ -657,6 +657,9 @@ However, because it comes last in the list, <a href="https://docs.spring.io/spri
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

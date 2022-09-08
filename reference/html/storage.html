@@ -188,7 +188,7 @@ A Spring Boot starter is provided to auto-configure the various Storage componen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-storage&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -199,7 +199,7 @@ A Spring Boot starter is provided to auto-configure the various Storage componen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-storage")
 }</code></pre>
 </div>
@@ -215,7 +215,7 @@ The <code>Storage</code> bean (<a href="https://googleapis.dev/java/google-cloud
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 private Storage storage;
 
 public void createFile() {
@@ -240,7 +240,7 @@ Spring Cloud GCP adds a new resource type: a Google Cloud Storage (GCS) object.<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Value("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Value("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]")
 private Resource gcsResource;</code></pre>
 </div>
 </div>
@@ -249,7 +249,7 @@ private Resource gcsResource;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">SpringApplication.run(...).getResource("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]");</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">SpringApplication.run(...).getResource("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]");</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -260,7 +260,7 @@ private Resource gcsResource;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Value("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Value("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]")
 private Resource gcsResource;
 ...
 try (OutputStream os = ((WritableResource) gcsResource).getOutputStream()) {
@@ -303,7 +303,7 @@ Returning a valid URL is necessary to support some features in the Spring ecosys
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">((GoogleStorageResource)gcsResource).getBlob().toBuilder().setContentType("text/html").build().update();</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">((GoogleStorageResource)gcsResource).getBlob().toBuilder().setContentType("text/html").build().update();</code></pre>
 </div>
 </div>
 </div>
@@ -369,6 +369,9 @@ Returning a valid URL is necessary to support some features in the Spring ecosys
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

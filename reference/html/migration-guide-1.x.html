@@ -187,7 +187,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 <div class="listingblock">
 <div class="title">Before (pom.xml)</div>
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencyManagement&gt;
   &lt;dependencies&gt;
     &lt;dependency&gt;
       &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
@@ -210,7 +210,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 <div class="listingblock">
 <div class="title">After (pom.xml)</div>
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencyManagement&gt;
   &lt;dependencies&gt;
     &lt;dependency&gt;
       &lt;groupId&gt;com.google.cloud&lt;/groupId&gt; <i class="conum" data-value="2"></i><b>(2)</b>
@@ -296,7 +296,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 <div class="listingblock">
 <div class="title">logback-spring.xml</div>
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;configuration&gt;
   &lt;include resource="com/google/cloud/spring/logging/logback-appender.xml" /&gt;
   ...
 &lt;/configuration&gt;</code></pre>
@@ -312,6 +312,9 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

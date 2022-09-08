@@ -192,7 +192,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -203,7 +203,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter")
 }</code></pre>
 </div>
@@ -243,7 +243,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface GcpProjectIdProvider {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface GcpProjectIdProvider {
 	String getProjectId();
 }</code></pre>
 </div>
@@ -254,7 +254,7 @@ If a <code>spring.cloud.gcp.project-id</code> property is specified, the provide
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">spring.cloud.gcp.project-id=my-gcp-project-id</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">spring.cloud.gcp.project-id=my-gcp-project-id</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -288,7 +288,7 @@ If a <code>spring.cloud.gcp.project-id</code> property is specified, the provide
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface CredentialsProvider {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface CredentialsProvider {
   Credentials getCredentials() throws IOException;
 }</code></pre>
 </div>
@@ -301,7 +301,7 @@ The next example specifies the credentials location property in the file system.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>spring.cloud.gcp.credentials.location=file:/usr/local/key.json</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.gcp.credentials.location=file:/usr/local/key.json</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -396,7 +396,7 @@ To do that, specify a comma-delimited list of <a href="https://developers.google
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>spring.cloud.gcp.credentials.scopes=https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/sqlservice.admin</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.gcp.credentials.scopes=https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/sqlservice.admin</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -404,7 +404,7 @@ To do that, specify a comma-delimited list of <a href="https://developers.google
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>spring.cloud.gcp.credentials.scopes=DEFAULT_SCOPES,https://www.googleapis.com/auth/cloud-vision</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.gcp.credentials.scopes=DEFAULT_SCOPES,https://www.googleapis.com/auth/cloud-vision</code></pre>
 </div>
 </div>
 </div>
@@ -417,7 +417,7 @@ The provider can help determine programmatically in which GCP environment (App E
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface GcpEnvironmentProvider {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface GcpEnvironmentProvider {
 	GcpEnvironment getCurrentEnvironment();
 }</code></pre>
 </div>
@@ -462,7 +462,7 @@ If your application refreshes any beans used by such <code>SmartLifecycle</code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 private PubSubInboundChannelAdapter pubSubAdapter;
 
 @EventListener(RefreshScopeRefreshedEvent.class)
@@ -486,6 +486,9 @@ public void onRefreshScope(RefreshScopeRefreshedEvent event) {
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

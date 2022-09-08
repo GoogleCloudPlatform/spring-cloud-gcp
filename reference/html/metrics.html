@@ -190,7 +190,7 @@ Also, it can be customized.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-metrics&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -201,7 +201,7 @@ Also, it can be customized.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-metrics")
 }</code></pre>
 </div>
@@ -277,7 +277,7 @@ This could lead to the following warning inside your applications logs:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-txt" data-lang="txt">2022-08-15 10:26:00.248  WARN 1 --- [trics-publisher] i.m.s.StackdriverMeterRegistry           : failed to send metrics to Stackdriver</code></pre>
+<pre class="highlightjs highlight"><code data-lang="txt" class="language-txt hljs">2022-08-15 10:26:00.248  WARN 1 --- [trics-publisher] i.m.s.StackdriverMeterRegistry           : failed to send metrics to Stackdriver</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -285,7 +285,7 @@ This could lead to the following warning inside your applications logs:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-txt" data-lang="txt">One or more TimeSeries could not be written:
+<pre class="highlightjs highlight"><code data-lang="txt" class="language-txt hljs">One or more TimeSeries could not be written:
 One or more points were written more frequently than the maximum sampling period configured for the metric.: global{} timeSeries[4]: custom.googleapis.com/process/uptime{};
 One or more points were written more frequently than the maximum sampling period configured for the metric.: global{} timeSeries[6]: custom.googleapis.com/system/load/average/1m{};
 One or more points ...</code></pre>
@@ -296,7 +296,7 @@ One or more points ...</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-txt" data-lang="txt">Caused by: io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2Exception: Header size exceeded max allowed size (10240)</code></pre>
+<pre class="highlightjs highlight"><code data-lang="txt" class="language-txt hljs">Caused by: io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2Exception: Header size exceeded max allowed size (10240)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -308,7 +308,7 @@ To avoid these conflicts and in order to distinguish between applications/instan
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">management:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">management:
   metrics:
     tags:
       app: my-foobar-service
@@ -330,6 +330,9 @@ Read more about custom tags <a href="https://docs.spring.io/spring-boot/docs/cur
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

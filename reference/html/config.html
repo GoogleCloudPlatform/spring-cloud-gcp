@@ -203,7 +203,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-config&lt;/artifactId&gt;
     &lt;version&gt;3.4.0-SNAPSHOT&lt;/version&gt;
@@ -215,7 +215,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     compile group: 'org.springframework.cloud',
     name: 'spring-cloud-gcp-starter-config',
     version: '3.4.0-SNAPSHOT'
@@ -330,7 +330,7 @@ In other words, if <code>spring.application.name</code> is <code>myapp</code> an
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>gcloud init # if this is your first Google Cloud SDK run.
+<pre class="highlightjs highlight"><code class="language-none hljs">gcloud init # if this is your first Google Cloud SDK run.
 gcloud beta runtime-config configs create myapp_prod
 gcloud beta runtime-config configs variables set myapp.queue-size 25 --config-name myapp_prod</code></pre>
 </div>
@@ -340,7 +340,7 @@ gcloud beta runtime-config configs variables set myapp.queue-size 25 --config-na
 <p>Configure your <code>bootstrap.properties</code> file with your application&#8217;s configuration data:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>spring.application.name=myapp
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.application.name=myapp
 spring.profiles.active=prod</code></pre>
 </div>
 </div>
@@ -349,7 +349,7 @@ spring.profiles.active=prod</code></pre>
 <p>Add the <code>@ConfigurationProperties</code> annotation to a Spring-managed bean:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>@Component
+<pre class="highlightjs highlight"><code class="language-none hljs">@Component
 @ConfigurationProperties("myapp")
 public class SampleConfig {
 
@@ -397,7 +397,7 @@ public class SampleConfig {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 }</code></pre>
 </div>
@@ -439,6 +439,9 @@ public class SampleConfig {
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

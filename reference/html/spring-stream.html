@@ -192,7 +192,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-pubsub-stream-binder&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -203,7 +203,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-pubsub-stream-binder")
 }</code></pre>
 </div>
@@ -268,7 +268,7 @@ If synchronous sending is preferred (for example, to allow propagating errors ba
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlight"><code>spring.cloud.stream.bindings.events.destination=myEvents
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.events.destination=myEvents
 spring.cloud.stream.gcp.pubsub.bindings.events.producer.auto-create-resources=true</code></pre>
 </div>
 </div>
@@ -285,7 +285,7 @@ These options are described in detail in the <a href="#inbound-channel-adapter-u
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlight"><code># How to set the ACK mode of the consumer endpoint.
+<pre class="highlightjs highlight"><code class="language-none hljs"># How to set the ACK mode of the consumer endpoint.
 spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.ack-mode=AUTO_ACK</code></pre>
 </div>
 </div>
@@ -313,7 +313,7 @@ Then when the binder shuts down, the library automatically cleans up all Pub/Sub
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlight"><code>spring.cloud.stream.bindings.events.destination=myEvents
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.events.destination=myEvents
 spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=false</code></pre>
 </div>
 </div>
@@ -326,7 +326,7 @@ spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=fa
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlight"><code>spring.cloud.stream.bindings.events.destination=myEvents
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.events.destination=myEvents
 spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=true
 
 # specify consumer group, and avoid anonymous consumer group generation
@@ -385,7 +385,7 @@ For example, for a consumer to allow only two headers, provide a comma separated
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public ConsumerEndpointCustomizer&lt;PubSubInboundChannelAdapter&gt; messageChannelAdapter() {
     return (endpoint, destinationName, group) -&gt; {
         NamedComponent namedComponent = (NamedComponent) endpoint.getOutputChannel();
@@ -405,7 +405,7 @@ This means that the only requirement for turning your application into a sink is
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>@Bean
+<pre class="highlightjs highlight"><code class="language-none hljs">@Bean
 public Consumer&lt;UserMessage&gt; logUserMessage() {
   return userMessage -&gt; {
     // process message
@@ -420,7 +420,7 @@ Alternatively, the function can return a reactive stream, which will be used as 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>@Bean
+<pre class="highlightjs highlight"><code class="language-none hljs">@Bean
 Supplier&lt;Flux&lt;UserMessage&gt;&gt; generateUserMessages() {
   return () -&gt; /* flux creation logic */;
 }</code></pre>
@@ -449,7 +449,7 @@ As of version 3.0, annotation binding is considered legacy.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>@EnableBinding(Sink.class)
+<pre class="highlightjs highlight"><code class="language-none hljs">@EnableBinding(Sink.class)
 public class SinkExample {
 
 	@StreamListener(Sink.INPUT)
@@ -464,7 +464,7 @@ public class SinkExample {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>@EnableBinding(Source.class)
+<pre class="highlightjs highlight"><code class="language-none hljs">@EnableBinding(Source.class)
 public class SourceExample {
 
 	@Autowired
@@ -488,7 +488,7 @@ Messages can then be consumed with an input handler marked by <code>@StreamListe
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface PollableSink {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface PollableSink {
 
 	@Input("input")
 	PollableMessageSource input();
@@ -500,7 +500,7 @@ Messages can then be consumed with an input handler marked by <code>@StreamListe
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableBinding(PollableSink.class)
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@EnableBinding(PollableSink.class)
 public class SinkExample {
 
     @Autowired
@@ -544,6 +544,9 @@ Use the <code>spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize</code
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

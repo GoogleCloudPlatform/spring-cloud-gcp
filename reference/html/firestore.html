@@ -209,7 +209,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-data-firestore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -220,7 +220,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-data-firestore")
 }</code></pre>
 </div>
@@ -230,7 +230,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-data-firestore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -241,7 +241,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-data-firestore")
 }</code></pre>
 </div>
@@ -399,7 +399,7 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import com.google.cloud.firestore.annotation.DocumentId;
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.spring.data.firestore.Document;
 
 @Document(collectionName = "usersCollection")
@@ -476,7 +476,7 @@ They are stored as embedded documents (or arrays, correspondingly) in the Cloud 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Document(collectionName = "usersCollection")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Document(collectionName = "usersCollection")
 public class User {
   /** Used to test @PropertyName annotation on a field. */
   @PropertyName("drink")
@@ -546,7 +546,7 @@ public class User {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface UserRepository extends FirestoreReactiveRepository&lt;User&gt; {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface UserRepository extends FirestoreReactiveRepository&lt;User&gt; {
   Flux&lt;User&gt; findBy(Pageable pageable);
 
   Flux&lt;User&gt; findByAge(Integer age);
@@ -609,7 +609,7 @@ You can refer to nested fields using <a href="https://docs.spring.io/spring-data
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
 
   @Autowired UserRepository userRepository;
 
@@ -671,7 +671,7 @@ Custom queries with <code>@Query</code> annotation are not supported since there
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@SpringBootApplication
 public class FirestoreTemplateExample {
 
 	@Autowired
@@ -713,7 +713,7 @@ public class FirestoreTemplateExample {
 <h3 id="_query_methods_by_convention"><a class="link" href="#_query_methods_by_convention">Query methods by convention</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
   void partTreeRepositoryMethodTest() {
     User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
     u1.favoriteDrink = "tea";
@@ -818,7 +818,7 @@ In order to use it, you would need to autowire <code>ReactiveFirestoreTransactio
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
   @Autowired ReactiveFirestoreTransactionManager txManager;
 }</code></pre>
 </div>
@@ -829,7 +829,7 @@ Note that you can switch between read-only and read-write transactions using <co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
 transactionDefinition.setReadOnly(false);
 TransactionalOperator operator =
     TransactionalOperator.create(this.txManager, transactionDefinition);</code></pre>
@@ -840,7 +840,7 @@ TransactionalOperator operator =
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">User alice = new User("Alice", 29);
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">User alice = new User("Alice", 29);
 User bob = new User("Bob", 60);
 
 this.userRepository
@@ -904,7 +904,7 @@ If a method annotated with <code>@Transactional</code> calls another method also
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class UserService {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class UserService {
   @Autowired private UserRepository userRepository;
 
   @Transactional
@@ -930,7 +930,7 @@ If a method annotated with <code>@Transactional</code> calls another method also
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public UserService userService() {
   return new UserService();
 }</code></pre>
@@ -941,7 +941,7 @@ public UserService userService() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
   @Autowired UserService userService;
 }</code></pre>
 </div>
@@ -981,7 +981,7 @@ The parent doesn&#8217;t have to exist in Firestore, but should have a non-empty
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 FirestoreReactiveOperations firestoreTemplate;</code></pre>
 </div>
 </div>
@@ -990,7 +990,7 @@ FirestoreReactiveOperations firestoreTemplate;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">FirestoreReactiveOperations bobTemplate =
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">FirestoreReactiveOperations bobTemplate =
     this.firestoreTemplate.withParent(new User("Bob", 60));
 
 PhoneNumber phoneNumber = new PhoneNumber("111-222-333");
@@ -1010,7 +1010,7 @@ If you would like to retrieve it, you can add a field of <code>com.google.cloud.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@UpdateTime
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@UpdateTime
 Timestamp updateTime;</code></pre>
 </div>
 </div>
@@ -1022,7 +1022,7 @@ To enable that, you need to set <code>version</code> parameter to <code>true</co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@UpdateTime(version = true)
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@UpdateTime(version = true)
 Timestamp updateTime;</code></pre>
 </div>
 </div>
@@ -1051,7 +1051,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-firestore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1062,7 +1062,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-firestore")
 }</code></pre>
 </div>
@@ -1074,7 +1074,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 Firestore firestore;
 
  void writeDocumentFromObject() throws ExecutionException, InterruptedException {
@@ -1161,6 +1161,9 @@ spring.cloud.gcp.firestore.host-port=${EMULATOR_HOSTPORT}</pre>
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>
