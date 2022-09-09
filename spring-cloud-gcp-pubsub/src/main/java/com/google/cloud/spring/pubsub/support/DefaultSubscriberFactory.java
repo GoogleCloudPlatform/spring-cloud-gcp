@@ -305,6 +305,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
     Duration durationPerAckExtension = getMinDurationPerAckExtension(subscriptionName);
     if (durationPerAckExtension != null
+        // Even they are default, the client library deems `minDurationPerAckExtension`
+        // and `maxDurationPerAckExtension` are NOT using default values thus requires
+        // `minDurationPerAckExtension` is strictly smaller than `maxDurationPerAckExtension`.
+        // The additional logic ensures default value can be set.
         && !durationPerAckExtension.equals(DEFAULT_MIN_DURATION_PER_ACK_EXTENSION)) {
       subscriberBuilder.setMinDurationPerAckExtension(durationPerAckExtension);
     }
