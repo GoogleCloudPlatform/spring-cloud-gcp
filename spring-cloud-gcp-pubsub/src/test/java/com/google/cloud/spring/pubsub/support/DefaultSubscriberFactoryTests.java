@@ -384,13 +384,8 @@ class DefaultSubscriberFactoryTests {
         .hasFieldOrPropertyWithValue("numPullers", 2);
   }
 
-  /**
-   * Server-side ensures if `minDurationPerAckExtension` is smaller than 0, then creating
-   * a subscriber with such a setting will throw an exception. Otherwise, this test will fail,
-   * and we can add the logic in the client-side.
-   */
   @Test
-  void testCreateSubscriber_invalidMinDurationPerAckExtension() {
+  void testCreateSubscriber_invalidMinDurationPerAckExtension_throwsException() {
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
@@ -407,13 +402,8 @@ class DefaultSubscriberFactoryTests {
         .isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
-  /**
-   * Server-side ensures if `maxDurationPerAckExtension` is smaller than 0, then creating
-   * a subscriber with such a setting will throw an exception. Otherwise, this test will fail,
-   * and we can add the logic in the client-side.
-   */
   @Test
-  void testCreateSubscriber_invalidMaxDurationPerAckExtension() {
+  void testCreateSubscriber_invalidMaxDurationPerAckExtension_throwsException() {
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
@@ -430,14 +420,8 @@ class DefaultSubscriberFactoryTests {
         .isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
-  /**
-   * Server-side ensures if both `minDurationPerAckExtension` and `maxDurationPerAckExtension`
-   * are set and `minDurationPerAckExtension` is larger than `maxDurationPerAckExtension`, then
-   * creating a subscriber with such a setting will throw an exception. Otherwise, this test
-   * will fail, and we can add the logic in the client-side.
-   */
   @Test
-  void testCreateSubscriber_invalidDurationPerAckExtensions() {
+  void testCreateSubscriber_invalidDurationPerAckExtensions_throwsException() {
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
