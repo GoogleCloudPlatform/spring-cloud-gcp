@@ -205,24 +205,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   }
 
   /**
-   * Set lower bound for a single mod ack extension period.
-   *
-   * @param minDurationPerAckExtension the lower bound for a single mod ack extension period to set
-   */
-  public void setMinDurationPerAckExtension(Duration minDurationPerAckExtension) {
-    this.minDurationPerAckExtension = minDurationPerAckExtension;
-  }
-
-  /**
-   * Set the upper bound for a single mod ack extension period.
-   *
-   * @param maxDurationPerAckExtension the upper bound for a single mod ack extension period
-   */
-  public void setMaxDurationPerAckExtension(Duration maxDurationPerAckExtension) {
-    this.maxDurationPerAckExtension = maxDurationPerAckExtension;
-  }
-
-  /**
    * Set the number of pull workers.
    *
    * @param parallelPullCount the parallel pull count to set
