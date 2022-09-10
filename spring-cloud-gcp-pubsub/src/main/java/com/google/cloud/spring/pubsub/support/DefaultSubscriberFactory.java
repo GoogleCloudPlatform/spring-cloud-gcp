@@ -39,15 +39,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Nullable;
 import org.springframework.util.Assert;
 import org.threeten.bp.Duration;
 
 /** The default {@link SubscriberFactory} implementation. */
 public class DefaultSubscriberFactory implements SubscriberFactory {
-
-  private static final Duration DEFAULT_MIN_DURATION_PER_ACK_EXTENSION = Duration.ofSeconds(0L);
-
-  private static final Duration DEFAULT_MAX_DURATION_PER_ACK_EXTENSION = Duration.ofSeconds(0L);
 
   private final String projectId;
 
@@ -304,18 +301,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     }
 
     Duration durationPerAckExtension = getMinDurationPerAckExtension(subscriptionName);
-    if (durationPerAckExtension != null
-        // Even they are default, the client library deems `minDurationPerAckExtension`
-        // and `maxDurationPerAckExtension` are NOT using default values thus requires
-        // `minDurationPerAckExtension` is strictly smaller than `maxDurationPerAckExtension`.
-        // The additional logic ensures default value can be set.
-        && !durationPerAckExtension.equals(DEFAULT_MIN_DURATION_PER_ACK_EXTENSION)) {
+    if (durationPerAckExtension != null) {
       subscriberBuilder.setMinDurationPerAckExtension(durationPerAckExtension);
     }
 
     durationPerAckExtension = getMaxDurationPerAckExtension(subscriptionName);
-    if (durationPerAckExtension != null
-        && !durationPerAckExtension.equals(DEFAULT_MAX_DURATION_PER_ACK_EXTENSION)) {
+    if (durationPerAckExtension != null) {
       subscriberBuilder.setMaxDurationPerAckExtension(durationPerAckExtension);
     }
 
@@ -534,20 +525,27 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
         this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId));
   }
 
+  @Nullable
   Duration getMinDurationPerAckExtension(String subscriptionName) {
     if (this.minDurationPerAckExtension != null) {
       return this.minDurationPerAckExtension;
     }
-    return Duration.ofSeconds(
-        this.pubSubConfiguration.computeMinDurationPerAckExtension(subscriptionName, projectId));
+
+    Long extension =
+        this.pubSubConfiguration.computeMinDurationPerAckExtension(subscriptionName, projectId);
+
+    return extension == null ? null : Duration.ofSeconds(extension);
   }
 
+  @Nullable
   Duration getMaxDurationPerAckExtension(String subscriptionName) {
     if (this.maxDurationPerAckExtension != null) {
       return this.maxDurationPerAckExtension;
     }
-    return Duration.ofSeconds(
-        this.pubSubConfiguration.computeMaxDurationPerAckExtension(subscriptionName, projectId));
+    Long extension =
+        this.pubSubConfiguration.computeMaxDurationPerAckExtension(subscriptionName, projectId);
+
+    return extension == null ? null : Duration.ofSeconds(extension);
   }
 
   Integer getPullCount(String subscriptionName) {
