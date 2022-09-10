@@ -572,11 +572,11 @@ class GcpPubSubAutoConfigurationTests {
               assertThat(
                   gcpPubSubProperties.computeMinDurationPerAckExtension(
                       "subscription-name", projectIdProvider.getProjectId()))
-                  .isZero();
+                  .isNull();
               assertThat(
                   gcpPubSubProperties.computeMaxDurationPerAckExtension(
                       "subscription-name", projectIdProvider.getProjectId()))
-                  .isZero();
+                  .isNull();
               assertThat(
                   gcpPubSubProperties.computeParallelPullCount(
                       "subscription-name", projectIdProvider.getProjectId()))

@@ -316,7 +316,7 @@ class PubSubConfigurationTests {
     Long result =
         pubSubConfiguration.computeMinDurationPerAckExtension("subscription-name", "projectId");
 
-    assertThat(result).isZero();
+    assertThat(result).isNull();
   }
 
   @Test
@@ -356,7 +356,7 @@ class PubSubConfigurationTests {
     Long result =
         pubSubConfiguration.computeMaxDurationPerAckExtension("subscription-name", "projectId");
 
-    assertThat(result).isZero();
+    assertThat(result).isNull();
   }
 
   @Test

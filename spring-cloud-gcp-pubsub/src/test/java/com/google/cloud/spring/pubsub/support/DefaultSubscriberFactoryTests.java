@@ -549,7 +549,7 @@ class DefaultSubscriberFactoryTests {
         new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
 
     assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
-        .isEqualTo(Duration.ofSeconds(0L));
+        .isNull();
   }
 
   @Test
@@ -572,7 +572,7 @@ class DefaultSubscriberFactoryTests {
         new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
 
     assertThat(factory.getMaxDurationPerAckExtension("subscription-name"))
-        .isEqualTo(Duration.ofSeconds(0L));
+        .isNull();
   }
 
   @Test
