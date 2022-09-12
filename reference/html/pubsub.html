@@ -329,6 +329,18 @@ However, if a per-subscription configuration is not set then the global or defau
 <td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscriber.min-duration-per-ack-extension</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The lower bound for a single mod ack extension period, in seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscriber.max-duration-per-ack-extension</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The upper bound for a single mod ack extension period, in seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscriber.pull-endpoint</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The endpoint for synchronous pulling messages</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
@@ -430,6 +442,18 @@ This is useful in conjunction with enabling message ordering because sending mes
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].max-ack-extension-period</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum period a message ack deadline will be extended, in seconds.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].min-duration-per-ack-extension</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The lower bound for a single mod ack extension period, in seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].max-duration-per-ack-extension</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The upper bound for a single mod ack extension period, in seconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
 </tr>
