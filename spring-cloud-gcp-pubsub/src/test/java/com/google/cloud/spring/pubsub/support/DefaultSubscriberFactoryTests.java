@@ -362,6 +362,12 @@ class DefaultSubscriberFactoryTests {
     when(mockPubSubConfiguration.computeMaxAckExtensionPeriod(
             "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(2L);
+    when(mockPubSubConfiguration.computeMinDurationPerAckExtension(
+        "defaultSubscription", projectIdProvider.getProjectId()))
+        .thenReturn(3L);
+    when(mockPubSubConfiguration.computeMaxDurationPerAckExtension(
+        "defaultSubscription", projectIdProvider.getProjectId()))
+        .thenReturn(4L);
     when(mockPubSubConfiguration.computeParallelPullCount(
             "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(2);
@@ -373,7 +379,66 @@ class DefaultSubscriberFactoryTests {
         .isEqualTo(FlowController.LimitExceededBehavior.Ignore);
     assertThat(expectedSubscriber)
         .hasFieldOrPropertyWithValue("maxAckExtensionPeriod", Duration.ofSeconds(2L))
+        .hasFieldOrPropertyWithValue("minDurationPerAckExtension", Duration.ofSeconds(3L))
+        .hasFieldOrPropertyWithValue("maxDurationPerAckExtension", Duration.ofSeconds(4L))
         .hasFieldOrPropertyWithValue("numPullers", 2);
+  }
+
+  @Test
+  void testCreateSubscriber_invalidMinDurationPerAckExtension_throwsException() {
+    GcpProjectIdProvider projectIdProvider = () -> "project";
+    DefaultSubscriberFactory factory =
+        new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+    factory.setCredentialsProvider(this.credentialsProvider);
+    when(mockPubSubConfiguration.computeMinDurationPerAckExtension(
+        "defaultSubscription", projectIdProvider.getProjectId()))
+        .thenReturn(-4L);
+
+    assertThatThrownBy(
+        () -> factory.createSubscriber(
+            "defaultSubscription",
+            (message, consumer) -> { }
+        ))
+        .isExactlyInstanceOf(IllegalArgumentException.class);
+  }
+
+  @Test
+  void testCreateSubscriber_invalidMaxDurationPerAckExtension_throwsException() {
+    GcpProjectIdProvider projectIdProvider = () -> "project";
+    DefaultSubscriberFactory factory =
+        new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+    factory.setCredentialsProvider(this.credentialsProvider);
+    when(mockPubSubConfiguration.computeMaxDurationPerAckExtension(
+        "defaultSubscription", projectIdProvider.getProjectId()))
+        .thenReturn(-2L);
+
+    assertThatThrownBy(
+        () -> factory.createSubscriber(
+            "defaultSubscription",
+            (message, consumer) -> { }
+        ))
+        .isExactlyInstanceOf(IllegalArgumentException.class);
+  }
+
+  @Test
+  void testCreateSubscriber_invalidDurationPerAckExtensions_throwsException() {
+    GcpProjectIdProvider projectIdProvider = () -> "project";
+    DefaultSubscriberFactory factory =
+        new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+    factory.setCredentialsProvider(this.credentialsProvider);
+    when(mockPubSubConfiguration.computeMinDurationPerAckExtension(
+        "defaultSubscription", projectIdProvider.getProjectId()))
+        .thenReturn(4L);
+    when(mockPubSubConfiguration.computeMaxDurationPerAckExtension(
+        "defaultSubscription", projectIdProvider.getProjectId()))
+        .thenReturn(3L);
+
+    assertThatThrownBy(
+        () -> factory.createSubscriber(
+            "defaultSubscription",
+            (message, consumer) -> { }
+        ))
+        .isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
@@ -462,6 +527,52 @@ class DefaultSubscriberFactoryTests {
 
     assertThat(factory.getMaxAckExtensionPeriod("subscription-name"))
         .isEqualTo(Duration.ofSeconds(0L));
+  }
+
+  @Test
+  void testGetMinDurationPerAckExtension_userSetValue() {
+    GcpProjectIdProvider projectIdProvider = () -> "project";
+    DefaultSubscriberFactory factory =
+        new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+    when(mockPubSubConfiguration.computeMinDurationPerAckExtension(
+        "subscription-name", projectIdProvider.getProjectId()))
+        .thenReturn(1L);
+
+    assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
+        .isEqualTo(Duration.ofSeconds(1));
+  }
+
+  @Test
+  void testGetMinDurationPerAckExtension_newConfiguration() {
+    GcpProjectIdProvider projectIdProvider = () -> "project";
+    DefaultSubscriberFactory factory =
+        new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
+
+    assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
+        .isNull();
+  }
+
+  @Test
+  void testGetMaxDurationPerAckExtension_userSetValue() {
+    GcpProjectIdProvider projectIdProvider = () -> "project";
+    DefaultSubscriberFactory factory =
+        new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+    when(mockPubSubConfiguration.computeMaxDurationPerAckExtension(
+        "subscription-name", projectIdProvider.getProjectId()))
+        .thenReturn(2L);
+
+    assertThat(factory.getMaxDurationPerAckExtension("subscription-name"))
+        .isEqualTo(Duration.ofSeconds(2));
+  }
+
+  @Test
+  void testGetMaxDurationPerAckExtension_newConfiguration() {
+    GcpProjectIdProvider projectIdProvider = () -> "project";
+    DefaultSubscriberFactory factory =
+        new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
+
+    assertThat(factory.getMaxDurationPerAckExtension("subscription-name"))
+        .isNull();
   }
 
   @Test

@@ -53,6 +53,8 @@ class PubSubConfigurationTests {
     assertThat(subscriber.getParallelPullCount()).isNull();
 
     assertThat(subscriber.getMaxAckExtensionPeriod()).isNull();
+    assertThat(subscriber.getMinDurationPerAckExtension()).isNull();
+    assertThat(subscriber.getMaxDurationPerAckExtension()).isNull();
     assertThat(subscriber.getPullEndpoint()).isNull();
     assertThat(flowControl.getLimitExceededBehavior()).isNull();
     assertThat(flowControl.getMaxOutstandingElementCount()).isNull();
@@ -79,6 +81,8 @@ class PubSubConfigurationTests {
     subscriber.setParallelPullCount(1);
 
     subscriber.setMaxAckExtensionPeriod(1L);
+    subscriber.setMinDurationPerAckExtension(2L);
+    subscriber.setMaxDurationPerAckExtension(3L);
     subscriber.setPullEndpoint("fake-endpoint");
     subscriber.setRetryableCodes(
         new Code[] {Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL});
@@ -90,6 +94,8 @@ class PubSubConfigurationTests {
     assertThat(subscriber.getParallelPullCount()).isEqualTo(1);
 
     assertThat(subscriber.getMaxAckExtensionPeriod()).isEqualTo(1L);
+    assertThat(subscriber.getMinDurationPerAckExtension()).isEqualTo(2L);
+    assertThat(subscriber.getMaxDurationPerAckExtension()).isEqualTo(3L);
     assertThat(subscriber.getPullEndpoint()).isEqualTo("fake-endpoint");
     assertThat(subscriber.getRetryableCodes())
         .containsExactly(Code.UNKNOWN, Code.ABORTED, Code.UNAVAILABLE, Code.INTERNAL);
@@ -271,6 +277,86 @@ class PubSubConfigurationTests {
         pubSubConfiguration.computeMaxAckExtensionPeriod("subscription-name", "projectId");
 
     assertThat(result).isZero();
+  }
+
+  @Test
+  void testComputeMinDurationPerAckExtension_returnCustom() {
+    PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+    PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+    subscriber.setMinDurationPerAckExtension(1L);
+    pubSubConfiguration.setSubscription(
+        Collections.singletonMap(QUALIFIED_SUBSCRIPTION_NAME, subscriber));
+
+    pubSubConfiguration.initialize("projectId");
+
+    Long result =
+        pubSubConfiguration.computeMinDurationPerAckExtension("subscription-name", "projectId");
+
+    assertThat(result).isEqualTo(1);
+  }
+
+  @Test
+  void testComputeMinDurationPerAckExtension_returnGlobal() {
+    PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+    PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
+    globalSubscriber.setMinDurationPerAckExtension(2L);
+    pubSubConfiguration.initialize("projectId");
+
+    Long result =
+        pubSubConfiguration.computeMinDurationPerAckExtension("subscription-name", "projectId");
+
+    assertThat(result).isEqualTo(2);
+  }
+
+  @Test
+  void testComputeMinDurationPerAckExtension_returnDefault() {
+    PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+    pubSubConfiguration.initialize("projectId");
+
+    Long result =
+        pubSubConfiguration.computeMinDurationPerAckExtension("subscription-name", "projectId");
+
+    assertThat(result).isNull();
+  }
+
+  @Test
+  void testComputeMaxDurationPerAckExtension_returnCustom() {
+    PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+    PubSubConfiguration.Subscriber subscriber = new PubSubConfiguration.Subscriber();
+    subscriber.setMaxDurationPerAckExtension(1L);
+    pubSubConfiguration.setSubscription(
+        Collections.singletonMap(QUALIFIED_SUBSCRIPTION_NAME, subscriber));
+
+    pubSubConfiguration.initialize("projectId");
+
+    Long result =
+        pubSubConfiguration.computeMaxDurationPerAckExtension("subscription-name", "projectId");
+
+    assertThat(result).isEqualTo(1);
+  }
+
+  @Test
+  void testComputeMaxDurationPerAckExtension_returnGlobal() {
+    PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+    PubSubConfiguration.Subscriber globalSubscriber = pubSubConfiguration.getSubscriber();
+    globalSubscriber.setMaxDurationPerAckExtension(2L);
+    pubSubConfiguration.initialize("projectId");
+
+    Long result =
+        pubSubConfiguration.computeMaxDurationPerAckExtension("subscription-name", "projectId");
+
+    assertThat(result).isEqualTo(2);
+  }
+
+  @Test
+  void testComputeMaxDurationPerAckExtension_returnDefault() {
+    PubSubConfiguration pubSubConfiguration = new PubSubConfiguration();
+    pubSubConfiguration.initialize("projectId");
+
+    Long result =
+        pubSubConfiguration.computeMaxDurationPerAckExtension("subscription-name", "projectId");
+
+    assertThat(result).isNull();
   }
 
   @Test
