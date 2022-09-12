@@ -69,6 +69,8 @@ class PubSubAutoConfigurationIntegrationTests {
               "spring.cloud.gcp.pubsub.subscription.fully-qualified-test-sub-1-with-project-abc.retry.max-rpc-timeout-seconds=600",
               "spring.cloud.gcp.pubsub.subscription.test-sub-2.executor-threads=1",
               "spring.cloud.gcp.pubsub.subscription.test-sub-2.max-ack-extension-period=0",
+              "spring.cloud.gcp.pubsub.subscription.test-sub-2.min-duration-per-ack-extension=1",
+              "spring.cloud.gcp.pubsub.subscription.test-sub-2.max-duration-per-ack-extension=2",
               "spring.cloud.gcp.pubsub.subscription.test-sub-2.parallel-pull-count=1",
               "spring.cloud.gcp.pubsub.subscription.test-sub-2.flow-control.max-outstanding-element-Count=1",
               "spring.cloud.gcp.pubsub.subscription.test-sub-2.flow-control.max-outstanding-request-Bytes=1",
@@ -214,6 +216,14 @@ class PubSubAutoConfigurationIntegrationTests {
                   gcpPubSubProperties.computeMaxAckExtensionPeriod(
                       subscriptionName, projectId))
               .isZero();
+          assertThat(
+              gcpPubSubProperties.computeMinDurationPerAckExtension(
+                  subscriptionName, projectId))
+              .isEqualTo(1L);
+          assertThat(
+              gcpPubSubProperties.computeMaxDurationPerAckExtension(
+                  subscriptionName, projectId))
+              .isEqualTo(2L);
           assertThat(
                   gcpPubSubProperties.computeParallelPullCount(
                       subscriptionName, projectId))
