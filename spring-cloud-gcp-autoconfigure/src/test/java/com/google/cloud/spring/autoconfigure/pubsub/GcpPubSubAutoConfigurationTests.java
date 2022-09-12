@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.pubsub;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.batching.BatchingSettings;
@@ -553,12 +554,97 @@ class GcpPubSubAutoConfigurationTests {
   }
 
   @Test
+  void pullConfig_defaultConfigurationSet() {
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+            .withUserConfiguration(TestConfig.class);
+
+    contextRunner
+        .run(
+            ctx -> {
+              GcpPubSubProperties gcpPubSubProperties = ctx.getBean(GcpPubSubProperties.class);
+              GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
+              assertThat(
+                  gcpPubSubProperties.computeMaxAckExtensionPeriod(
+                      "subscription-name", projectIdProvider.getProjectId()))
+                  .isZero();
+              assertThat(
+                  gcpPubSubProperties.computeMinDurationPerAckExtension(
+                      "subscription-name", projectIdProvider.getProjectId()))
+                  .isNull();
+              assertThat(
+                  gcpPubSubProperties.computeMaxDurationPerAckExtension(
+                      "subscription-name", projectIdProvider.getProjectId()))
+                  .isNull();
+              assertThat(
+                  gcpPubSubProperties.computeParallelPullCount(
+                      "subscription-name", projectIdProvider.getProjectId()))
+                  .isNull();
+              assertThat(
+                  gcpPubSubProperties.computePullEndpoint(
+                      "subscription-name", projectIdProvider.getProjectId()))
+                  .isNull();
+            });
+  }
+
+  @Test
+  void minOrMaxDurationPerAckExtension_invalidSubscriberConfigurationSet() {
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+            .withUserConfiguration(TestConfig.class);
+
+    contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.pubsub.subscriber.min-duration-per-ack-extension=3",
+            "spring.cloud.gcp.pubsub.subscriber.max-duration-per-ack-extension=2")
+        .run(
+            ctx -> {
+              DefaultSubscriberFactory factory =
+                  (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
+              assertThatThrownBy(() ->
+                  factory.createSubscriber(
+                      "subscription-name",
+                      (message, consumer) -> { }))
+                  .isExactlyInstanceOf(IllegalArgumentException.class);
+            });
+  }
+
+  @Test
+  void minOrMaxDurationPerAckExtension_invalidSubscriptionConfigurationSet() {
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
+            .withUserConfiguration(TestConfig.class);
+
+    contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.pubsub.subscriber.min-duration-per-ack-extension=3",
+            "spring.cloud.gcp.pubsub.subscriber.max-duration-per-ack-extension=4",
+            "spring.cloud.gcp.pubsub.subscription.subscription-name.min-duration-per-ack-extension=7",
+            "spring.cloud.gcp.pubsub.subscription.subscription-name.max-duration-per-ack-extension=6")
+        .run(
+            ctx -> {
+              DefaultSubscriberFactory factory =
+                  (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
+              assertThatThrownBy(() ->
+                  factory.createSubscriber(
+                      "subscription-name",
+                      (message, consumer) -> { }))
+                  .isExactlyInstanceOf(IllegalArgumentException.class);
+            });
+  }
+
+  @Test
   void pullConfig_globalConfigurationSet() {
     ApplicationContextRunner contextRunner =
         new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
             .withPropertyValues(
                 "spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=7",
+                "spring.cloud.gcp.pubsub.subscriber.min-duration-per-ack-extension=3",
+                "spring.cloud.gcp.pubsub.subscriber.max-duration-per-ack-extension=4",
                 "spring.cloud.gcp.pubsub.subscriber.parallel-pull-count=12",
                 "spring.cloud.gcp.pubsub.subscriber.pull-endpoint=my-endpoint")
             .withUserConfiguration(TestConfig.class);
@@ -570,7 +656,15 @@ class GcpPubSubAutoConfigurationTests {
           assertThat(
                   gcpPubSubProperties.computeMaxAckExtensionPeriod(
                       "subscription-name", projectIdProvider.getProjectId()))
-              .isEqualTo(7L);
+                  .isEqualTo(7L);
+          assertThat(
+                  gcpPubSubProperties.computeMinDurationPerAckExtension(
+                      "subscription-name", projectIdProvider.getProjectId()))
+                  .isEqualTo(3L);
+          assertThat(
+                  gcpPubSubProperties.computeMaxDurationPerAckExtension(
+                      "subscription-name", projectIdProvider.getProjectId()))
+                  .isEqualTo(4L);
           assertThat(
                   gcpPubSubProperties.computeParallelPullCount(
                       "subscription-name", projectIdProvider.getProjectId()))
@@ -593,6 +687,8 @@ class GcpPubSubAutoConfigurationTests {
             .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
             .withPropertyValues(
                 "spring.cloud.gcp.pubsub.subscription.subscription-name.max-ack-extension-period=7",
+                "spring.cloud.gcp.pubsub.subscription.subscription-name.min-duration-per-ack-extension=3",
+                "spring.cloud.gcp.pubsub.subscription.subscription-name.max-duration-per-ack-extension=4",
                 "spring.cloud.gcp.pubsub.subscription.subscription-name.parallel-pull-count=12",
                 "spring.cloud.gcp.pubsub.subscription.subscription-name.pull-endpoint=my-endpoint")
             .withUserConfiguration(TestConfig.class);
@@ -604,7 +700,15 @@ class GcpPubSubAutoConfigurationTests {
           assertThat(
                   gcpPubSubProperties.computeMaxAckExtensionPeriod(
                       "subscription-name", projectIdProvider.getProjectId()))
-              .isEqualTo(7L);
+                  .isEqualTo(7L);
+          assertThat(
+                  gcpPubSubProperties.computeMinDurationPerAckExtension(
+                      "subscription-name", projectIdProvider.getProjectId()))
+                  .isEqualTo(3L);
+          assertThat(
+                  gcpPubSubProperties.computeMaxDurationPerAckExtension(
+                      "subscription-name", projectIdProvider.getProjectId()))
+                  .isEqualTo(4L);
           assertThat(
                   gcpPubSubProperties.computeParallelPullCount(
                       "subscription-name", projectIdProvider.getProjectId()))
@@ -626,9 +730,13 @@ class GcpPubSubAutoConfigurationTests {
             .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
             .withPropertyValues(
                 "spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=5",
+                "spring.cloud.gcp.pubsub.subscriber.min-duration-per-ack-extension=3",
+                "spring.cloud.gcp.pubsub.subscriber.max-duration-per-ack-extension=4",
                 "spring.cloud.gcp.pubsub.subscriber.parallel-pull-count=10",
                 "spring.cloud.gcp.pubsub.subscriber.pull-endpoint=other-endpoint",
                 "spring.cloud.gcp.pubsub.subscription.subscription-name.max-ack-extension-period=7",
+                "spring.cloud.gcp.pubsub.subscription.subscription-name.min-duration-per-ack-extension=5",
+                "spring.cloud.gcp.pubsub.subscription.subscription-name.max-duration-per-ack-extension=6",
                 "spring.cloud.gcp.pubsub.subscription.subscription-name.parallel-pull-count=12",
                 "spring.cloud.gcp.pubsub.subscription.subscription-name.pull-endpoint=my-endpoint")
             .withUserConfiguration(TestConfig.class);
@@ -640,7 +748,15 @@ class GcpPubSubAutoConfigurationTests {
           assertThat(
                   gcpPubSubProperties.computeMaxAckExtensionPeriod(
                       "subscription-name", projectIdProvider.getProjectId()))
-              .isEqualTo(7L);
+                  .isEqualTo(7L);
+          assertThat(
+                  gcpPubSubProperties.computeMinDurationPerAckExtension(
+                      "subscription-name", projectIdProvider.getProjectId()))
+                  .isEqualTo(5L);
+          assertThat(
+                  gcpPubSubProperties.computeMaxDurationPerAckExtension(
+                      "subscription-name", projectIdProvider.getProjectId()))
+                  .isEqualTo(6L);
           assertThat(
                   gcpPubSubProperties.computeParallelPullCount(
                       "subscription-name", projectIdProvider.getProjectId()))
@@ -652,7 +768,15 @@ class GcpPubSubAutoConfigurationTests {
           assertThat(
                   gcpPubSubProperties.computeMaxAckExtensionPeriod(
                       "other", projectIdProvider.getProjectId()))
-              .isEqualTo(5L);
+                  .isEqualTo(5L);
+          assertThat(
+                  gcpPubSubProperties.computeMinDurationPerAckExtension(
+                      "other", projectIdProvider.getProjectId()))
+                  .isEqualTo(3L);
+          assertThat(
+                  gcpPubSubProperties.computeMaxDurationPerAckExtension(
+                      "other", projectIdProvider.getProjectId()))
+                  .isEqualTo(4L);
           assertThat(
                   gcpPubSubProperties.computeParallelPullCount(
                       "other", projectIdProvider.getProjectId()))
@@ -675,6 +799,8 @@ class GcpPubSubAutoConfigurationTests {
             .withConfiguration(AutoConfigurations.of(GcpPubSubAutoConfiguration.class))
             .withPropertyValues(
                 "spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=5",
+                "spring.cloud.gcp.pubsub.subscriber.min-duration-per-ack-extension=3",
+                "spring.cloud.gcp.pubsub.subscriber.max-duration-per-ack-extension=4",
                 "spring.cloud.gcp.pubsub.subscriber.parallel-pull-count=10",
                 "spring.cloud.gcp.pubsub.subscriber.pull-endpoint=other-endpoint",
                 "spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=4")
@@ -687,7 +813,15 @@ class GcpPubSubAutoConfigurationTests {
           assertThat(
                   gcpPubSubProperties.computeMaxAckExtensionPeriod(
                       "subscription-name", projectIdProvider.getProjectId()))
-              .isEqualTo(5);
+                  .isEqualTo(5);
+          assertThat(
+                  gcpPubSubProperties.computeMinDurationPerAckExtension(
+                      "subscription-name", projectIdProvider.getProjectId()))
+                  .isEqualTo(3);
+          assertThat(
+                  gcpPubSubProperties.computeMaxDurationPerAckExtension(
+                      "subscription-name", projectIdProvider.getProjectId()))
+                  .isEqualTo(4);
           assertThat(
                   gcpPubSubProperties.computeParallelPullCount(
                       "subscription-name", projectIdProvider.getProjectId()))
