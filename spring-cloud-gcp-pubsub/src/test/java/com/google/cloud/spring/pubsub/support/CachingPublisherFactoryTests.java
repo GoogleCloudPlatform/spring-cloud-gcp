@@ -49,8 +49,13 @@ class CachingPublisherFactoryTests {
 
     assertThat(cachingPublisherFactory.createPublisher("topic2")).isEqualTo(publisher2);
     assertThat(cachingPublisherFactory.createPublisher("topic2")).isEqualTo(publisher2);
+    assertThat(cachingPublisherFactory.getDelegate()).isEqualTo(delegate);
 
     verify(delegate, times(1)).createPublisher("topic1");
     verify(delegate, times(1)).createPublisher("topic2");
+
+    cachingPublisherFactory.shutdown();
+    verify(publisher1, times(1)).shutdown();
+    verify(publisher2, times(1)).shutdown();
   }
 }
