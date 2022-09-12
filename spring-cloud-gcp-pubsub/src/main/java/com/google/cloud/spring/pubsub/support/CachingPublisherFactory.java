@@ -18,6 +18,9 @@ package com.google.cloud.spring.pubsub.support;
 
 import com.google.cloud.pubsub.v1.Publisher;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The caching implementation of the {@link PublisherFactory}.
@@ -29,7 +32,8 @@ public class CachingPublisherFactory implements PublisherFactory {
   private final ConcurrentHashMap<String, Publisher> publishers =
       new ConcurrentHashMap<>();
 
-  private PublisherFactory delegate;
+  private static final Logger LOGGER = LoggerFactory.getLogger(CachingPublisherFactory.class);
+  private final PublisherFactory delegate;
 
   /**
    * Constructs a caching {@link PublisherFactory} using the delegate.
@@ -52,5 +56,14 @@ public class CachingPublisherFactory implements PublisherFactory {
    */
   public PublisherFactory getDelegate() {
     return delegate;
+  }
+
+  /**
+   * Shutdown all cached {@link Publisher} gracefully.
+   */
+  @PreDestroy
+  public void shutdown() {
+    LOGGER.info("Shutting down Publishers...");
+    publishers.forEachValue(1L, Publisher::shutdown);
   }
 }
