@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -38,8 +39,9 @@ public class PubSubConfiguration {
 
   private static final Long DEFAULT_MAX_ACK_EXTENSION_PERIOD = 0L;
 
-  /** Automatically extracted user-provided properties. Contains only short subscription keys
-   *  user-provided properties, therefore do not use except in initialize().
+  /**
+   * Automatically extracted user-provided properties. Contains only short subscription keys
+   * user-provided properties, therefore do not use except in initialize().
    */
   private Map<String, Subscriber> subscription = new HashMap<>();
 
@@ -259,6 +261,50 @@ public class PubSubConfiguration {
   }
 
   /**
+   * Computes the lower bound for a single mod ack extension period. The subscription-specific
+   * property takes precedence if both global and subscription-specific properties are set. If none
+   * are set then the default (0) is returned.
+   *
+   * @param subscriptionName subscription name
+   * @param projectId project id
+   * @return min duration per ack extension
+   */
+  @Nullable
+  public Long computeMinDurationPerAckExtension(String subscriptionName, String projectId) {
+    Long minDurationPerAckExtension =
+        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+            .getMinDurationPerAckExtension();
+
+    if (minDurationPerAckExtension != null) {
+      return minDurationPerAckExtension;
+    }
+
+    return this.globalSubscriber.getMinDurationPerAckExtension();
+  }
+
+  /**
+   * Computes the upper bound for a single mod ack extension period. The subscription-specific
+   * property takes precedence if both global and subscription-specific properties are set. If none
+   * are set then the default (0) is returned.
+   *
+   * @param subscriptionName subscription name
+   * @param projectId project id
+   * @return max duration per ack extension
+   */
+  @Nullable
+  public Long computeMaxDurationPerAckExtension(String subscriptionName, String projectId) {
+    Long maxDurationPerAckExtension =
+        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+            .getMaxDurationPerAckExtension();
+
+    if (maxDurationPerAckExtension != null) {
+      return maxDurationPerAckExtension;
+    }
+
+    return this.globalSubscriber.getMaxDurationPerAckExtension();
+  }
+
+  /**
    * Returns the pull endpoint. The subscription-specific property takes precedence if both global
    * and subscription-specific properties are set. If subscription-specific configuration is not set
    * then the global configuration is picked.
@@ -399,7 +445,21 @@ public class PubSubConfiguration {
     /** The optional max ack extension period in seconds for the subscriber factory. */
     private Long maxAckExtensionPeriod;
 
-    /** The optional parallel pull count setting for the subscriber factory. */
+    /**
+     * The optional lower bound for a single mod ack extension period in seconds for the subscriber
+     * factory.
+     */
+    private Long minDurationPerAckExtension;
+
+    /**
+     * The optional upper bound for a single mod ack extension period in seconds for the subscriber
+     * factory.
+     */
+    private Long maxDurationPerAckExtension;
+
+    /**
+     * The optional parallel pull count setting for the subscriber factory.
+     */
     private Integer parallelPullCount;
 
     /** Retry settings for subscriber factory. */
@@ -449,6 +509,22 @@ public class PubSubConfiguration {
 
     public void setMaxAckExtensionPeriod(Long maxAckExtensionPeriod) {
       this.maxAckExtensionPeriod = maxAckExtensionPeriod;
+    }
+
+    public Long getMinDurationPerAckExtension() {
+      return minDurationPerAckExtension;
+    }
+
+    public void setMinDurationPerAckExtension(Long minDurationPerAckExtension) {
+      this.minDurationPerAckExtension = minDurationPerAckExtension;
+    }
+
+    public Long getMaxDurationPerAckExtension() {
+      return maxDurationPerAckExtension;
+    }
+
+    public void setMaxDurationPerAckExtension(Long maxDurationPerAckExtension) {
+      this.maxDurationPerAckExtension = maxDurationPerAckExtension;
     }
 
     public Integer getParallelPullCount() {
