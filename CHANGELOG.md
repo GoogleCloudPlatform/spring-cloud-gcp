@@ -14,7 +14,12 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
-## 3.4.0.BUILD-SNAPSHOT
+## 3.4.0-SNAPSHOT
+
+### Pub/Sub
+
+  - Allow Publishers shutdown gracefully
+    (<https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1260>)
 
 ## 3.3.0
 
