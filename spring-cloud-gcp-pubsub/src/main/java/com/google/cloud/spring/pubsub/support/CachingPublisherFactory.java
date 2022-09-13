@@ -18,6 +18,7 @@ package com.google.cloud.spring.pubsub.support;
 
 import com.google.cloud.pubsub.v1.Publisher;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.PreDestroy;
 
 /**
  * The caching implementation of the {@link PublisherFactory}.
@@ -29,12 +30,12 @@ public class CachingPublisherFactory implements PublisherFactory {
   private final ConcurrentHashMap<String, Publisher> publishers =
       new ConcurrentHashMap<>();
 
-  private PublisherFactory delegate;
+  private final PublisherFactory delegate;
 
   /**
    * Constructs a caching {@link PublisherFactory} using the delegate.
    *
-   * @param delegate a {@link PublisherFactory} that needs to be cachecd.
+   * @param delegate a {@link PublisherFactory} that needs to be cached.
    */
   public CachingPublisherFactory(PublisherFactory delegate) {
     this.delegate = delegate;
@@ -52,5 +53,13 @@ public class CachingPublisherFactory implements PublisherFactory {
    */
   public PublisherFactory getDelegate() {
     return delegate;
+  }
+
+  /**
+   * Shutdown all cached {@link Publisher} gracefully.
+   */
+  @PreDestroy
+  public void shutdown() {
+    publishers.forEachValue(1L, Publisher::shutdown);
   }
 }
