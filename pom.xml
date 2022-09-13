@@ -39,7 +39,7 @@
 
 		<!-- Dependency versions -->
 		<spring-cloud-dependencies.version>2021.0.4</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>2.6.12</spring-boot-dependencies.version>
+		<spring-boot-dependencies.version>2.7.1</spring-boot-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.1</java-cfenv.version>
 		<spring-native.version>0.10.5</spring-native.version>
