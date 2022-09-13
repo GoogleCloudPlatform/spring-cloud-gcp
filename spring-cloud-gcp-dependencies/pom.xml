@@ -269,6 +269,18 @@
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>dev.miku</groupId>
+				<artifactId>r2dbc-mysql</artifactId>
+				<version>0.8.2.RELEASE</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.r2dbc</groupId>
+				<artifactId>r2dbc-postgresql</artifactId>
+				<version>0.8.12.RELEASE</version>
+			</dependency>
+
 			<!-- spring-cloud-gcp-starter-sql-mysql-r2dbc -->
 			<dependency>
 				<groupId>com.google.cloud.sql</groupId>
