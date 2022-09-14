@@ -127,6 +127,7 @@
         <dependency>
             <groupId>org.mariadb</groupId>
             <artifactId>r2dbc-mariadb</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Supported but not preferred driver -->
@@ -146,7 +147,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>r2dbc-postgresql</artifactId>
-            <scope>test</scope>
+            <optional>true</optional>
         </dependency>
 
         <!-- Supported but not preferred driver -->
