@@ -123,10 +123,17 @@
             <artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>org.mariadb</groupId>
+            <artifactId>r2dbc-mariadb</artifactId>
+        </dependency>
+
+        <!-- Supported but not preferred driver -->
         <dependency>
             <groupId>dev.miku</groupId>
             <artifactId>r2dbc-mysql</artifactId>
-            <optional>true</optional>
+            <scope>test</scope>
         </dependency>
 
 
@@ -137,9 +144,16 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>r2dbc-postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Supported but not preferred driver -->
+        <dependency>
             <groupId>io.r2dbc</groupId>
             <artifactId>r2dbc-postgresql</artifactId>
-            <optional>true</optional>
+            <scope>test</scope>
         </dependency>
 
         <!-- Storage -->

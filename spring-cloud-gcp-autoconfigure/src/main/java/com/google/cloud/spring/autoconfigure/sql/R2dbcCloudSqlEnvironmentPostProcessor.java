@@ -34,6 +34,16 @@ import org.springframework.util.ClassUtils;
 public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostProcessor {
   private static final Log LOGGER = LogFactory.getLog(R2dbcCloudSqlEnvironmentPostProcessor.class);
 
+  private static final String[] MYSQL_PROVIDERS = {
+      "dev.miku.r2dbc.mysql.MySqlConnectionFactoryProvider",
+      "org.mariadb.r2dbc.MariadbConnectionFactoryProvider"
+  };
+
+  private static final String[] POSTGRES_PROVIDERS = {
+      "io.r2dbc.postgresql.PostgresqlConnectionFactoryProvider",
+      "org.postgresql.PostgresqlConnectionFactoryProvider",
+  };
+
   @Override
   public void postProcessEnvironment(
       ConfigurableEnvironment environment, SpringApplication application) {
@@ -97,10 +107,10 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
         && isOnClasspath("com.google.cloud.sql.CredentialFactory")
         && isOnClasspath("io.r2dbc.spi.ConnectionFactory")) {
       if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql")
-          && isOnClasspath("dev.miku.r2dbc.mysql.MySqlConnectionFactoryProvider")) {
+          && areAnyOnClasspath(MYSQL_PROVIDERS)) {
         return DatabaseType.MYSQL;
       } else if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres")
-          && isOnClasspath("io.r2dbc.postgresql.PostgresqlConnectionFactoryProvider")) {
+          && areAnyOnClasspath(POSTGRES_PROVIDERS)) {
         return DatabaseType.POSTGRESQL;
       }
     }
@@ -109,6 +119,15 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 
   private boolean isOnClasspath(String className) {
     return ClassUtils.isPresent(className, null);
+  }
+
+  private boolean areAnyOnClasspath(String[] classNames) {
+    for (String className : classNames) {
+      if (ClassUtils.isPresent(className, null)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private boolean isR2dbcEnabled(ConfigurableEnvironment environment) {
