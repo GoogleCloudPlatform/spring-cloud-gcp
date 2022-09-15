@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.bigquery;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.bigquery.storage.v1.BigQueryWriteClient;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
@@ -86,10 +87,17 @@ public class GcpBigQueryAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public BigQueryTemplate bigQueryTemplate(BigQuery bigQuery) {
+  public BigQueryWriteClient bigQueryWriteClient() throws IOException {
+    return BigQueryWriteClient.create();
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public BigQueryTemplate bigQueryTemplate(
+      BigQuery bigQuery, BigQueryWriteClient bigQueryWriteClient) {
     Map<String, Object> bqInitSettings = new HashMap<>();
     bqInitSettings.put("DATASET_NAME", this.datasetName);
     bqInitSettings.put("JSON_WRITER_BATCH_SIZE", this.jsonWriterBatchSize);
-    return new BigQueryTemplate(bigQuery, bqInitSettings);
+    return new BigQueryTemplate(bigQuery, bigQueryWriteClient, bqInitSettings);
   }
 }
