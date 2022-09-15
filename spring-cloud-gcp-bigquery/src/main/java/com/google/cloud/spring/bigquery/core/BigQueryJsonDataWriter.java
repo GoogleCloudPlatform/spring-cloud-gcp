@@ -49,14 +49,17 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
 
   private final Logger logger = LoggerFactory.getLogger(BigQueryJsonDataWriter.class);
 
+  private final BigQueryWriteClient bigQueryWriteClient;
+
   @GuardedBy("lock")
   private RuntimeException error = null;
 
   /**
    * @param parentTable against which the writer has to be initialized
-   * @param client BigQueryWriteClient reference which has to be used for writing to the database
+   * @param bigQueryWriteClient BigQueryWriteClient reference which has to be used for writing to
+   *     the database
    */
-  public BigQueryJsonDataWriter(TableName parentTable, BigQueryWriteClient client)
+  public BigQueryJsonDataWriter(TableName parentTable, BigQueryWriteClient bigQueryWriteClient)
       throws DescriptorValidationException, IOException, InterruptedException {
     // Initialize a write stream for the specified table.
     // For more information on WriteStream.Type, see:
@@ -68,13 +71,14 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
             .setParent(parentTable.toString())
             .setWriteStream(stream)
             .build();
-    WriteStream writeStream = client.createWriteStream(createWriteStreamRequest);
+    WriteStream writeStream = bigQueryWriteClient.createWriteStream(createWriteStreamRequest);
 
     // Use the JSON stream writer to send records in JSON format.
     // For more information about JsonStreamWriter, see:
     // https://googleapis.dev/java/google-cloud-bigquerystorage/latest/com/google/cloud/bigquery/storage/v1beta2/JsonStreamWriter.html
     streamWriter =
         JsonStreamWriter.newBuilder(writeStream.getName(), writeStream.getTableSchema()).build();
+    this.bigQueryWriteClient = bigQueryWriteClient;
   }
 
   /**
@@ -96,12 +100,8 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
     inflightRequestCount.register();
   }
 
-  /**
-   * Call this method before committing the stream
-   *
-   * @param client BigQueryWriteClient
-   */
-  public void finalizeWriteStream(BigQueryWriteClient client) {
+  /** Call this method before committing the stream */
+  public void finalizeWriteStream() {
     // Wait for all in-flight requests to complete.
     inflightRequestCount.arriveAndAwaitAdvance();
 
@@ -114,7 +114,7 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
 
     // Finalize the stream.
     FinalizeWriteStreamResponse finalizeResponse =
-        client.finalizeWriteStream(streamWriter.getStreamName());
+        bigQueryWriteClient.finalizeWriteStream(streamWriter.getStreamName());
     logger.info("\nRows written: " + finalizeResponse.getRowCount());
   }
 
