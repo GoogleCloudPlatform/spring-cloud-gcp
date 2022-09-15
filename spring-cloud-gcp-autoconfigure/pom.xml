@@ -150,12 +150,6 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Supported but not preferred driver -->
-        <dependency>
-            <groupId>io.r2dbc</groupId>
-            <artifactId>r2dbc-postgresql</artifactId>
-            <scope>test</scope>
-        </dependency>
 
         <!-- Storage -->
         <dependency>

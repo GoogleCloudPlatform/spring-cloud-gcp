@@ -18,6 +18,11 @@ package com.google.cloud.spring.autoconfigure.sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.FilteredClassLoader;
@@ -100,18 +105,50 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
   }
 
   @Test
-  void testSetR2dbcProperty_postgres_defaultUsername() {
+  void testSetR2dbcProperty_postgres() {
+    validatePostgres(new String[] {"io.r2dbc.postgresql"},
+        "postgres",
+        "r2dbc:gcp:postgres://my-project:region:my-instance/my-database");
+  }
+
+  @Test
+  void testSetR2dbcProperty_mysql_oldDriver() {
+    validatePostgres(new String[] {"dev.miku.r2dbc.mysql"},
+        "root",
+        "r2dbc:gcp:mysql://my-project:region:my-instance/my-database");
+  }
+
+  @Test
+  void testSetR2dbcProperty_mysql_newDriver() {
+    validatePostgres(new String[] {"org.mariadb.r2dbc"},
+        "root",
+        "r2dbc:gcp:mysql://my-project:region:my-instance/my-database");
+  }
+
+  /**
+   * Accepts a list of packages to _keep_, and tests that correct properties for the database type
+   * got injected into context.
+   * The input is used to calculate the inverse list of packages to _remove_ that is passed to
+   * {@code FilteredClassLoader}
+   *
+   * @param includePackages a list of driver packages to keep on the classpath
+   */
+  private void validatePostgres(String[] includePackages, String username, String url) {
+    Set<String> driverPackages = new HashSet<>(Arrays.asList(
+        "dev.miku.r2dbc.mysql", "org.mariadb.r2dbc",
+        "io.r2dbc.postgresql", "org.postgresql"));
+    driverPackages.removeAll(Arrays.asList(includePackages));
     this.contextRunner
         .withPropertyValues(
             "spring.cloud.gcp.sql.databaseName=my-database",
             "spring.cloud.gcp.sql.instanceConnectionName=my-project:region:my-instance")
-        .withClassLoader(new FilteredClassLoader("dev.miku.r2dbc.mysql", "org.mariadb.r2dbc"))
+        .withClassLoader(new FilteredClassLoader(driverPackages.toArray(new String[0])))
         .run(
             context -> {
               assertThat(context.getEnvironment().getProperty("spring.r2dbc.url"))
-                  .isEqualTo("r2dbc:gcp:postgres://my-project:region:my-instance/my-database");
+                  .isEqualTo(url);
               assertThat(context.getEnvironment().getProperty("spring.r2dbc.username"))
-                  .isEqualTo("postgres");
+                  .isEqualTo(username);
             });
   }
 

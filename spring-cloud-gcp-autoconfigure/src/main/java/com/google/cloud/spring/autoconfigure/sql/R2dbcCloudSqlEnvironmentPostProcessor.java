@@ -40,8 +40,8 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
   };
 
   private static final String[] POSTGRES_PROVIDERS = {
+      // The driver maven group ID changed, but package names stayed as io.r2dbc.postgresql.
       "io.r2dbc.postgresql.PostgresqlConnectionFactoryProvider",
-      "org.postgresql.PostgresqlConnectionFactoryProvider",
   };
 
   @Override
