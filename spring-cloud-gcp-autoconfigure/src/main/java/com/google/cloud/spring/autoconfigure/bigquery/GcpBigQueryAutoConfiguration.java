@@ -25,6 +25,8 @@ import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -47,6 +49,8 @@ public class GcpBigQueryAutoConfiguration {
 
   private final String datasetName;
 
+  private int jsonWriterBatchSize;
+
   GcpBigQueryAutoConfiguration(
       GcpBigQueryProperties gcpBigQueryProperties,
       GcpProjectIdProvider projectIdProvider,
@@ -64,6 +68,8 @@ public class GcpBigQueryAutoConfiguration {
             : credentialsProvider);
 
     this.datasetName = gcpBigQueryProperties.getDatasetName();
+
+    this.jsonWriterBatchSize = gcpBigQueryProperties.getJsonWriterBatchSize();
   }
 
   @Bean
@@ -81,6 +87,9 @@ public class GcpBigQueryAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean
   public BigQueryTemplate bigQueryTemplate(BigQuery bigQuery) {
-    return new BigQueryTemplate(bigQuery, this.datasetName);
+    Map<String, Object> bqInitSettings = new HashMap<>();
+    bqInitSettings.put("DATASET_NAME", this.datasetName);
+    bqInitSettings.put("JSON_WRITER_BATCH_SIZE", this.jsonWriterBatchSize);
+    return new BigQueryTemplate(bigQuery, bqInitSettings);
   }
 }
