@@ -42,7 +42,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import org.json.JSONArray;
@@ -83,7 +82,7 @@ public class BigQueryTemplate implements BigQueryOperations {
   private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
 
   // @Value("${spring.cloud.gcp.bigquery.jsonWriterBatchSize}") TODO(prasmish) debug exception while
-  // autowiring
+  // autowiring. BQTemplate is not a component. Add a setter
   private int jsonWriterBatchSize;
 
   /**
@@ -230,8 +229,9 @@ public class BigQueryTemplate implements BigQueryOperations {
 
     SettableListenableFuture<WriteApiResponse> writeApiFutureResponse =
         new SettableListenableFuture<>();
-    CompletableFuture<Void> completableFuture =
-        CompletableFuture.runAsync(
+
+    Thread asyncTask =
+        new Thread(
             () -> {
               try {
                 WriteApiResponse apiResponse = getWriteApiResponse(tableName, jsonInputStream);
@@ -245,14 +245,20 @@ public class BigQueryTemplate implements BigQueryOperations {
                 Thread.currentThread().interrupt();
               }
             });
+    asyncTask
+        .start(); // run the thread async so that we can return the writeApiFutureResponse. This
+    // thread can be run in the ExecutorService when it has been wired-in
 
     // register success and failure callback
     writeApiFutureResponse.addCallback(
         (res) -> {
-          completableFuture.cancel(true); // interrupt the completableFuture
+          logger.info("Data successfully written");
         },
         (res) -> {
-          completableFuture.cancel(true); // interrupt the completableFuture
+          asyncTask.interrupt(); // interrupt the thread as the developer might have cancelled the
+          // Future.
+          // This can be replaced with interrupting the ExecutorService when it has been wired-in
+          logger.info("asyncTask interrupted");
         });
 
     return writeApiFutureResponse;
