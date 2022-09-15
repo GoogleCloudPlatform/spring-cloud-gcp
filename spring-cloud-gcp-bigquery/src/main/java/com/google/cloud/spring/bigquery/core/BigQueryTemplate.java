@@ -69,6 +69,8 @@ public class BigQueryTemplate implements BigQueryOperations {
 
   private final TaskScheduler taskScheduler;
 
+  private final BigQueryWriteClient bigQueryWriteClient;
+
   private boolean autoDetectSchema = true;
 
   private WriteDisposition writeDisposition = WriteDisposition.WRITE_APPEND;
@@ -88,20 +90,32 @@ public class BigQueryTemplate implements BigQueryOperations {
    * Creates the {@link BigQuery} template.
    *
    * @param bigQuery the underlying client object used to interface with BigQuery
+   * @param bigQueryWriteClient the underlying BigQueryWriteClient reference use to connect with
+   *     BigQuery Storage Write Client
    * @param datasetName the name of the dataset in which all operations will take place
    */
-  public BigQueryTemplate(BigQuery bigQuery, String datasetName) {
-    this(bigQuery, datasetName, new DefaultManagedTaskScheduler());
+  public BigQueryTemplate(
+      BigQuery bigQuery, BigQueryWriteClient bigQueryWriteClient, String datasetName) {
+    this(bigQuery, bigQueryWriteClient, datasetName, new DefaultManagedTaskScheduler());
   }
 
   /**
    * Creates the {@link BigQuery} template.
    *
    * @param bigQuery the underlying client object used to interface with BigQuery
+   * @param bigQueryWriteClient the underlying BigQueryWriteClient reference use to connect with
+   *     BigQuery Storage Write Client
    * @param bqInitSettings Properties required for initialisation of this class
    */
-  public BigQueryTemplate(BigQuery bigQuery, Map<String, Object> bqInitSettings) {
-    this(bigQuery, (String) bqInitSettings.get("DATASET_NAME"), new DefaultManagedTaskScheduler());
+  public BigQueryTemplate(
+      BigQuery bigQuery,
+      BigQueryWriteClient bigQueryWriteClient,
+      Map<String, Object> bqInitSettings) {
+    this(
+        bigQuery,
+        bigQueryWriteClient,
+        (String) bqInitSettings.get("DATASET_NAME"),
+        new DefaultManagedTaskScheduler());
     jsonWriterBatchSize =
         (Integer)
             bqInitSettings.getOrDefault(
@@ -112,11 +126,17 @@ public class BigQueryTemplate implements BigQueryOperations {
    * Creates the {@link BigQuery} template.
    *
    * @param bigQuery the underlying client object used to interface with BigQuery
+   * @param bigQueryWriteClient the underlying BigQueryWriteClient reference use to connect with
+   *     BigQuery Storage Write Client
    * @param datasetName the name of the dataset in which all operations will take place
    * @param taskScheduler the {@link TaskScheduler} used to poll for the status of long-running
    *     BigQuery operations
    */
-  public BigQueryTemplate(BigQuery bigQuery, String datasetName, TaskScheduler taskScheduler) {
+  public BigQueryTemplate(
+      BigQuery bigQuery,
+      BigQueryWriteClient bigQueryWriteClient,
+      String datasetName,
+      TaskScheduler taskScheduler) {
     Assert.notNull(bigQuery, "BigQuery client object must not be null.");
     Assert.notNull(datasetName, "Dataset name must not be null");
     Assert.notNull(taskScheduler, "TaskScheduler must not be null");
@@ -124,6 +144,7 @@ public class BigQueryTemplate implements BigQueryOperations {
     this.bigQuery = bigQuery;
     this.datasetName = datasetName;
     this.taskScheduler = taskScheduler;
+    this.bigQueryWriteClient = bigQueryWriteClient;
   }
 
   /**
@@ -280,12 +301,11 @@ public class BigQueryTemplate implements BigQueryOperations {
   private WriteApiResponse getWriteApiResponse(String tableName, InputStream jsonInputStream)
       throws DescriptorValidationException, IOException, InterruptedException {
     WriteApiResponse apiResponse = new WriteApiResponse();
-    BigQueryWriteClient client = BigQueryWriteClient.create();
     TableName parentTable =
         TableName.of(bigQuery.getOptions().getProjectId(), datasetName, tableName);
 
     // Initialize a write stream for the specified table.
-    BigQueryJsonDataWriter writer = new BigQueryJsonDataWriter(parentTable, client);
+    BigQueryJsonDataWriter writer = new BigQueryJsonDataWriter(parentTable, bigQueryWriteClient);
 
     try {
       // Write data in batches. Ref: https://cloud.google.com/bigquery/quotas#write-api-limits
@@ -321,7 +341,7 @@ public class BigQueryTemplate implements BigQueryOperations {
     }
 
     // Finalize the stream before commiting it
-    writer.finalizeWriteStream(client);
+    writer.finalizeWriteStream(bigQueryWriteClient);
 
     // commit the stream
     BatchCommitWriteStreamsRequest commitRequest =
@@ -329,7 +349,8 @@ public class BigQueryTemplate implements BigQueryOperations {
             .setParent(parentTable.toString())
             .addWriteStreams(writer.getStreamName())
             .build();
-    BatchCommitWriteStreamsResponse commitResponse = client.batchCommitWriteStreams(commitRequest);
+    BatchCommitWriteStreamsResponse commitResponse =
+        bigQueryWriteClient.batchCommitWriteStreams(commitRequest);
     // If the response does not have a commit time, it means the commit operation failed.
     if (commitResponse.hasCommitTime() == false) {
       for (StorageError err : commitResponse.getStreamErrorsList()) {
