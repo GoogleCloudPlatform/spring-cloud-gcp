@@ -91,7 +91,7 @@
     <reactor.version>2020.0.23</reactor.version>
 
     <mockito.version>4.8.0</mockito.version>
-    <slf4j.version>2.0.0</slf4j.version>
+    <slf4j.version>2.0.1</slf4j.version>
 
     <!-- Test dependencies -->
     <assertj.version>3.23.1</assertj.version>
