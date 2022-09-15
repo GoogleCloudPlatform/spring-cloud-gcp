@@ -42,6 +42,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.time.Duration;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import org.json.JSONArray;
@@ -81,8 +82,6 @@ public class BigQueryTemplate implements BigQueryOperations {
 
   private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
 
-  // @Value("${spring.cloud.gcp.bigquery.jsonWriterBatchSize}") TODO(prasmish) debug exception while
-  // autowiring. BQTemplate is not a component. Add a setter
   private int jsonWriterBatchSize;
 
   /**
@@ -93,6 +92,29 @@ public class BigQueryTemplate implements BigQueryOperations {
    */
   public BigQueryTemplate(BigQuery bigQuery, String datasetName) {
     this(bigQuery, datasetName, new DefaultManagedTaskScheduler());
+  }
+
+  /**
+   * Creates the {@link BigQuery} template.
+   *
+   * @param bigQuery the underlying client object used to interface with BigQuery
+   * @param bqInitSettings Properties required for initialisation of this class
+   */
+  public BigQueryTemplate(BigQuery bigQuery, Properties bqInitSettings) {
+    this(bigQuery, bqInitSettings.getProperty("DATASET_NAME"), new DefaultManagedTaskScheduler());
+    jsonWriterBatchSize = parseOrDefaultInt(bqInitSettings.getProperty("JSON_WRITER_BATCH_SIZE"));
+  }
+
+  /**
+   * @param value value to be converted as int
+   * @return value parsed at int or defaulted to 0
+   */
+  private int parseOrDefaultInt(String value) {
+    try {
+      return Integer.parseInt(value);
+    } catch (NumberFormatException e) {
+      return 0;
+    }
   }
 
   /**
