@@ -341,7 +341,7 @@ public class BigQueryTemplate implements BigQueryOperations {
     }
 
     // Finalize the stream before commiting it
-    writer.finalizeWriteStream(bigQueryWriteClient);
+    writer.finalizeWriteStream();
 
     // commit the stream
     BatchCommitWriteStreamsRequest commitRequest =
