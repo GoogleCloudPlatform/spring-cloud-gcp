@@ -111,12 +111,10 @@ public class WebController {
     if (createDefaultTable != null
         && createDefaultTable.equals("createTable")) { // create the default table
 
-      System.out.println("Create table and write JSON Text " + createDefaultTable);
       writeApiRes =
           this.bigQueryTemplate.writeJsonStream(
               tableName, new ByteArrayInputStream(jsonRows.getBytes()), getDefaultSchema());
     } else { // we are expecting the table to be already existing
-      System.out.println("DO NOT Create table and write JSON Text " + createDefaultTable);
       writeApiRes =
           this.bigQueryTemplate.writeJsonStream(
               tableName, new ByteArrayInputStream(jsonRows.getBytes()));
