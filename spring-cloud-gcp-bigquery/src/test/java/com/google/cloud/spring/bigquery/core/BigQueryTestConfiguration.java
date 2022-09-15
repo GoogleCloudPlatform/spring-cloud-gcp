@@ -19,7 +19,9 @@ package com.google.cloud.spring.bigquery.core;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.JobInfo.WriteDisposition;
+import com.google.cloud.bigquery.storage.v1.BigQueryWriteClient;
 import com.google.cloud.spring.bigquery.integration.outbound.BigQueryFileMessageHandler;
+import java.io.IOException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.config.EnableIntegration;
@@ -39,8 +41,15 @@ public class BigQueryTestConfiguration {
   }
 
   @Bean
-  public BigQueryTemplate bigQueryTemplate(BigQuery bigQuery, TaskScheduler taskScheduler) {
-    BigQueryTemplate bigQueryTemplate = new BigQueryTemplate(bigQuery, DATASET_NAME, taskScheduler);
+  public BigQueryWriteClient bigQueryWriteClient() throws IOException {
+    return BigQueryWriteClient.create();
+  }
+
+  @Bean
+  public BigQueryTemplate bigQueryTemplate(
+      BigQuery bigQuery, BigQueryWriteClient bigQueryWriteClient, TaskScheduler taskScheduler) {
+    BigQueryTemplate bigQueryTemplate =
+        new BigQueryTemplate(bigQuery, bigQueryWriteClient, DATASET_NAME, taskScheduler);
     bigQueryTemplate.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE);
     return bigQueryTemplate;
   }
