@@ -226,17 +226,18 @@ It allows you to connect to the database using an IAM account, rather
 than a predefined database username and password. You will need to do
 the following to enable it:
 
-1.  In your database instance settings, turn on the
+1. In your database instance settings, turn on the
     `cloudsql.iam_authentication` flag.
 
-2.  Add the IAM user or service account to the list of database users.
+2. Add the IAM user or service account to the list of database users.
 
-3.  In the application settings, set
+3. In the application settings, set
     `spring.cloud.gcp.sql.enableIamAuth` to `true`. (Note that this will
     also set the database protocol `sslmode` to `disabled`, as it’s
     required for IAM authentication to work. However, it doesn’t
     compromise the security of the communication because the connection
     is always encrypted.)
+4. Set `spring.datasource.username` to the IAM user or service account created in step 2. Note that IAM user or service account still needs to be [granted permissions](https://www.postgresql.org/docs/current/sql-grant.html) before modifying or querying the database.
 
 ### Cloud SQL Configuration Properties
 
