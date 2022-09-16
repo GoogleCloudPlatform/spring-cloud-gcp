@@ -112,17 +112,17 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
   }
 
   @Test
-  void testSetR2dbcProperty_mysql_oldDriver() {
+  void testSetR2dbcProperty_mysql() {
     validatePostgres(new String[] {"dev.miku.r2dbc.mysql"},
         "root",
         "r2dbc:gcp:mysql://my-project:region:my-instance/my-database");
   }
 
   @Test
-  void testSetR2dbcProperty_mysql_newDriver() {
+  void testSetR2dbcProperty_mariadb() {
     validatePostgres(new String[] {"org.mariadb.r2dbc"},
         "root",
-        "r2dbc:gcp:mysql://my-project:region:my-instance/my-database");
+        "r2dbc:gcp:mariadb://my-project:region:my-instance/my-database");
   }
 
   /**

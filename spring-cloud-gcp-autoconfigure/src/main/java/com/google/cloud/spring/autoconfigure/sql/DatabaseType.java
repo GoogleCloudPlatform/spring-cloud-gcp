@@ -27,6 +27,15 @@ public enum DatabaseType {
       "r2dbc:gcp:mysql://%s/%s",
       "root"),
 
+  MARIADB(
+          "com.mysql.cj.jdbc.Driver",
+          // Unused.
+          "jdbc:mysql://google/%s?"
+                  + "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
+                  + "&cloudSqlInstance=%s",
+          "r2dbc:gcp:mariadb://%s/%s",
+          "root"),
+
   /** Postgresql constants. */
   POSTGRESQL(
       "org.postgresql.Driver",
