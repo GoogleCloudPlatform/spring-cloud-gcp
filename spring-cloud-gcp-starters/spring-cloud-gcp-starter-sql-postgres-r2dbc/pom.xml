@@ -29,7 +29,7 @@
             <artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.postgresql</groupId>
+            <groupId>io.r2dbc</groupId>
             <artifactId>r2dbc-postgresql</artifactId>
         </dependency>
 

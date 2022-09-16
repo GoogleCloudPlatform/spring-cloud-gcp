@@ -123,7 +123,6 @@
             <artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>dev.miku</groupId>
             <artifactId>r2dbc-mysql</artifactId>
@@ -138,11 +137,10 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.postgresql</groupId>
+            <groupId>io.r2dbc</groupId>
             <artifactId>r2dbc-postgresql</artifactId>
             <optional>true</optional>
         </dependency>
-
 
         <!-- Storage -->
         <dependency>

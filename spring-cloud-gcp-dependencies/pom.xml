@@ -33,6 +33,7 @@
 		<cloud-sql-socket-factory.version>1.7.0</cloud-sql-socket-factory.version>
 		<guava.version>31.1-jre</guava.version>
 		<r2dbc-mysql-driver.version>0.8.2.RELEASE</r2dbc-mysql-driver.version>
+		<r2dbc-postgres-driver.version>0.8.12.RELEASE</r2dbc-postgres-driver.version>
 	</properties>
 
 	<dependencyManagement>
@@ -287,6 +288,12 @@
 				<groupId>com.google.cloud.sql</groupId>
 				<artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
 				<version>${cloud-sql-socket-factory.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.r2dbc</groupId>
+				<artifactId>r2dbc-postgresql</artifactId>
+				<version>${r2dbc-postgres-driver.version}</version>
 			</dependency>
 
 			<!--Google Cloud Platform Libraries BOM -->
