@@ -125,16 +125,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.mariadb</groupId>
-            <artifactId>r2dbc-mariadb</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- Supported but not preferred driver -->
-        <dependency>
             <groupId>dev.miku</groupId>
             <artifactId>r2dbc-mysql</artifactId>
-            <scope>test</scope>
+            <optional>true</optional>
         </dependency>
 
 

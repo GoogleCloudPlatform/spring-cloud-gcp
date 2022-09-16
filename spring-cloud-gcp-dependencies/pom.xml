@@ -32,6 +32,7 @@
 		<gcp-libraries-bom.version>26.1.2</gcp-libraries-bom.version>
 		<cloud-sql-socket-factory.version>1.7.0</cloud-sql-socket-factory.version>
 		<guava.version>31.1-jre</guava.version>
+		<r2dbc-mysql-driver.version>0.8.2.RELEASE</r2dbc-mysql-driver.version>
 	</properties>
 
 	<dependencyManagement>
@@ -267,23 +268,18 @@
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>dev.miku</groupId>
-				<artifactId>r2dbc-mysql</artifactId>
-				<version>0.8.2.RELEASE</version>
-			</dependency>
-
-			<dependency>
-				<groupId>io.r2dbc</groupId>
-				<artifactId>r2dbc-postgresql</artifactId>
-				<version>0.8.12.RELEASE</version>
-			</dependency>
-
 			<!-- spring-cloud-gcp-starter-sql-mysql-r2dbc -->
 			<dependency>
 				<groupId>com.google.cloud.sql</groupId>
 				<artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
 				<version>${cloud-sql-socket-factory.version}</version>
+			</dependency>
+
+			<!-- Spring Boot 2.7 no longer manages this dependency -->
+			<dependency>
+				<groupId>dev.miku</groupId>
+				<artifactId>r2dbc-mysql</artifactId>
+				<version>${r2dbc-mysql-driver.version}</version>
 			</dependency>
 
 			<!-- spring-cloud-gcp-starter-sql-postgres-r2dbc -->

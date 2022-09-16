@@ -118,13 +118,6 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
         "r2dbc:gcp:mysql://my-project:region:my-instance/my-database");
   }
 
-  @Test
-  void testSetR2dbcProperty_mariadb() {
-    validatePostgres(new String[] {"org.mariadb.r2dbc"},
-        "root",
-        "r2dbc:gcp:mariadb://my-project:region:my-instance/my-database");
-  }
-
   /**
    * Accepts a list of packages to _keep_, and tests that correct properties for the database type
    * got injected into context.
@@ -135,8 +128,9 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
    */
   private void validatePostgres(String[] includePackages, String username, String url) {
     Set<String> driverPackages = new HashSet<>(Arrays.asList(
-        "dev.miku.r2dbc.mysql", "org.mariadb.r2dbc",
-        "io.r2dbc.postgresql", "org.postgresql"));
+        "dev.miku.r2dbc.mysql",
+        "io.r2dbc.postgresql"
+    ));
     driverPackages.removeAll(Arrays.asList(includePackages));
     this.contextRunner
         .withPropertyValues(

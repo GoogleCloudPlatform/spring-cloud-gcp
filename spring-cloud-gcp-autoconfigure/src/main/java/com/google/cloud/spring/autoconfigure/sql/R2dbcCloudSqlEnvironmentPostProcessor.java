@@ -39,11 +39,6 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
     "dev.miku.r2dbc.mysql.MySqlConnectionFactoryProvider"
   };
 
-  private static final String[] REQUIRED_MARIADB = {
-    "com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql",
-    "org.mariadb.r2dbc.MariadbConnectionFactoryProvider"
-  };
-
   private static final String[] REQUIRED_POSTGRES = {
     "com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres",
     "io.r2dbc.postgresql.PostgresqlConnectionFactoryProvider"
@@ -58,7 +53,6 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 
   static {
     DATABASE_REQUIREMENTS.put(DatabaseType.MYSQL, REQUIRED_MYSQL);
-    DATABASE_REQUIREMENTS.put(DatabaseType.MARIADB, REQUIRED_MARIADB);
     DATABASE_REQUIREMENTS.put(DatabaseType.POSTGRESQL, REQUIRED_POSTGRES);
   }
 
