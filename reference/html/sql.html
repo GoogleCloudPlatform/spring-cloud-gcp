@@ -468,9 +468,11 @@ You will need to do the following to enable it:</p>
 <p>Add the IAM user or service account to the list of database users.</p>
 </li>
 <li>
-<p>In the application settings, set <code>spring.cloud.gcp.sql.enableIamAuth</code> to <code>true</code>.
-(Note that this will also set the database protocol <code>sslmode</code> to <code>disabled</code>, as it&#8217;s required for IAM authentication to work.
-However, it doesn&#8217;t compromise the security of the communication because the connection is always encrypted.)</p>
+<p>In the application settings, set <code>spring.cloud.gcp.sql.enableIamAuth</code> to <code>true</code>. Note that this will also set the database protocol <code>sslmode</code> to <code>disabled</code>, as it&#8217;s required for IAM authentication to work.
+However, it doesn&#8217;t compromise the security of the communication because the connection is always encrypted.</p>
+</li>
+<li>
+<p>Set <code>spring.datasource.username</code> to the IAM user or service account created in step 2. Note that IAM user or service account still needs to be <a href="https://www.postgresql.org/docs/current/sql-grant.html">granted permissions</a> before modifying or querying the database.</p>
 </li>
 </ol>
 </div>
