@@ -128,16 +128,17 @@ public class BigQueryTemplateTest {
     BigQueryTemplate bqTemplate = new BigQueryTemplate(bigquery, bigQueryWriteClientMock, DATASET);
     BigQueryTemplate bqTemplateSpy = Mockito.spy(bqTemplate);
     InputStream jsoninputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
-
-    doReturn(mock(WriteApiResponse.class))
+    WriteApiResponse apiResponse = new WriteApiResponse();
+    apiResponse.setSuccessful(true);
+    doReturn(apiResponse)
         .when(bqTemplateSpy)
         .getWriteApiResponse(any(String.class), any(InputStream.class));
 
     ListenableFuture<WriteApiResponse> futRes =
         bqTemplateSpy.writeJsonStream(TABLE, jsoninputStream);
-    WriteApiResponse apiResponse = futRes.get();
-    assertTrue(apiResponse.isSuccessful());
-    assertEquals(0, apiResponse.getErrors().size());
+    WriteApiResponse apiRes = futRes.get();
+    assertTrue(apiRes.isSuccessful());
+    assertEquals(0, apiRes.getErrors().size());
   }
 
   @Test
