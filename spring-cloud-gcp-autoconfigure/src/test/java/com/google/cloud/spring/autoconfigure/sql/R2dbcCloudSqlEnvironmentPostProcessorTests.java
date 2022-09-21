@@ -19,9 +19,7 @@ package com.google.cloud.spring.autoconfigure.sql;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;

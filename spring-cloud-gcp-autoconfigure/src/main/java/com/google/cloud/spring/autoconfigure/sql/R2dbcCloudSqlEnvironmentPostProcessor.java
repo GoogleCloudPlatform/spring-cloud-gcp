@@ -34,28 +34,6 @@ import org.springframework.util.ClassUtils;
 public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostProcessor {
   private static final Log LOGGER = LogFactory.getLog(R2dbcCloudSqlEnvironmentPostProcessor.class);
 
-  private static final String[] REQUIRED_MYSQL = {
-    "com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql",
-    "dev.miku.r2dbc.mysql.MySqlConnectionFactoryProvider"
-  };
-
-  private static final String[] REQUIRED_POSTGRES = {
-    "com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres",
-    "io.r2dbc.postgresql.PostgresqlConnectionFactoryProvider"
-  };
-
-  // Dependencies required for any R2DBC autoconfiguration
-  private static final String[] REQUIRED_R2DBC = {
-    "com.google.cloud.sql.CredentialFactory", "io.r2dbc.spi.ConnectionFactory"
-  };
-
-  private static final Map<DatabaseType, String[]> DATABASE_REQUIREMENTS = new HashMap<>();
-
-  static {
-    DATABASE_REQUIREMENTS.put(DatabaseType.MYSQL, REQUIRED_MYSQL);
-    DATABASE_REQUIREMENTS.put(DatabaseType.POSTGRESQL, REQUIRED_POSTGRES);
-  }
-
   @Override
   public void postProcessEnvironment(
       ConfigurableEnvironment environment, SpringApplication application) {
@@ -115,27 +93,22 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
    * @return database type
    */
   DatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
-    if (isR2dbcEnabled(environment) && allOnClasspath(REQUIRED_R2DBC)) {
-      for (DatabaseType dbType : DatabaseType.values()) {
-        if (allOnClasspath(DATABASE_REQUIREMENTS.get(dbType))) {
-          return dbType;
-        }
+    if (isR2dbcEnabled(environment)
+        && isOnClasspath("com.google.cloud.sql.CredentialFactory")
+        && isOnClasspath("io.r2dbc.spi.ConnectionFactory")) {
+      if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql")
+          && isOnClasspath("dev.miku.r2dbc.mysql.MySqlConnectionFactoryProvider")) {
+        return DatabaseType.MYSQL;
+      } else if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres")
+          && isOnClasspath("io.r2dbc.postgresql.PostgresqlConnectionFactoryProvider")) {
+        return DatabaseType.POSTGRESQL;
       }
     }
     return null;
   }
 
-  private boolean allOnClasspath(String[] classNames) {
-    if (classNames == null) {
-      return false;
-    }
-
-    for (String className : classNames) {
-      if (!ClassUtils.isPresent(className, null)) {
-        return false;
-      }
-    }
-    return true;
+  private boolean isOnClasspath(String className) {
+    return ClassUtils.isPresent(className, null);
   }
 
   private boolean isR2dbcEnabled(ConfigurableEnvironment environment) {
