@@ -402,6 +402,11 @@ public class BigQueryTemplate implements BigQueryOperations {
     return this.datasetName;
   }
 
+  // @return the name of the BigQuery jsonWriterBatchSize that the template is operating in.
+  public int getJsonWriterBatchSize() {
+    return this.jsonWriterBatchSize;
+  }
+
   private SettableListenableFuture<Job> createJobFuture(Job pendingJob) {
     // Prepare the polling task for the ListenableFuture result returned to end-user
     SettableListenableFuture<Job> result = new SettableListenableFuture<>();
