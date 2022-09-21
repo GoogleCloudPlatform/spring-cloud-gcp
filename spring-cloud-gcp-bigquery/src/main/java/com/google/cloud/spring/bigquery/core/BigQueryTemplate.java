@@ -246,7 +246,9 @@ public class BigQueryTemplate implements BigQueryOperations {
       TableDefinition tableDefinition = StandardTableDefinition.of(schema);
       TableInfo tableInfo = TableInfo.newBuilder(tableId, tableDefinition).build();
       return bigQuery.create(tableInfo);
-    } else return null;
+    } else {
+      return null;
+    }
   }
 
   /**
