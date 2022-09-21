@@ -34,6 +34,7 @@ import com.google.cloud.bigquery.storage.v1.BatchCommitWriteStreamsResponse;
 import com.google.cloud.bigquery.storage.v1.BigQueryWriteClient;
 import com.google.cloud.bigquery.storage.v1.StorageError;
 import com.google.cloud.bigquery.storage.v1.TableName;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -236,15 +237,16 @@ public class BigQueryTemplate implements BigQueryOperations {
     return writeJsonStream(tableName, jsonInputStream);
   }
 
-  private void createTable(
+  @VisibleForTesting
+  public Table createTable(
       String tableName, Schema schema) { // create table if it's not already created
     TableId tableId = TableId.of(datasetName, tableName);
     Table table = bigQuery.getTable(TableId.of(datasetName, tableName));
     if (table == null || !table.exists()) {
       TableDefinition tableDefinition = StandardTableDefinition.of(schema);
       TableInfo tableInfo = TableInfo.newBuilder(tableId, tableDefinition).build();
-      bigQuery.create(tableInfo);
-    }
+      return bigQuery.create(tableInfo);
+    } else return null;
   }
 
   /**
@@ -298,14 +300,22 @@ public class BigQueryTemplate implements BigQueryOperations {
     return writeApiFutureResponse;
   }
 
-  private WriteApiResponse getWriteApiResponse(String tableName, InputStream jsonInputStream)
+  @VisibleForTesting
+  public BigQueryJsonDataWriter getBigQueryJsonDataWriter(TableName parentTable)
+      throws DescriptorValidationException, IOException, InterruptedException {
+    return new BigQueryJsonDataWriter(parentTable, bigQueryWriteClient);
+  }
+
+  public WriteApiResponse getWriteApiResponse(String tableName, InputStream jsonInputStream)
       throws DescriptorValidationException, IOException, InterruptedException {
     WriteApiResponse apiResponse = new WriteApiResponse();
     TableName parentTable =
         TableName.of(bigQuery.getOptions().getProjectId(), datasetName, tableName);
 
     // Initialize a write stream for the specified table.
-    BigQueryJsonDataWriter writer = new BigQueryJsonDataWriter(parentTable, bigQueryWriteClient);
+    BigQueryJsonDataWriter writer = getBigQueryJsonDataWriter(parentTable);
+
+    // new BigQueryJsonDataWriter(parentTable, bigQueryWriteClient);
 
     try {
       // Write data in batches. Ref: https://cloud.google.com/bigquery/quotas#write-api-limits
@@ -343,14 +353,7 @@ public class BigQueryTemplate implements BigQueryOperations {
     // Finalize the stream before commiting it
     writer.finalizeWriteStream();
 
-    // commit the stream
-    BatchCommitWriteStreamsRequest commitRequest =
-        BatchCommitWriteStreamsRequest.newBuilder()
-            .setParent(parentTable.toString())
-            .addWriteStreams(writer.getStreamName())
-            .build();
-    BatchCommitWriteStreamsResponse commitResponse =
-        bigQueryWriteClient.batchCommitWriteStreams(commitRequest);
+    BatchCommitWriteStreamsResponse commitResponse = getCommitResponse(parentTable, writer);
     // If the response does not have a commit time, it means the commit operation failed.
     if (commitResponse.hasCommitTime() == false) {
       for (StorageError err : commitResponse.getStreamErrorsList()) {
@@ -364,6 +367,20 @@ public class BigQueryTemplate implements BigQueryOperations {
     }
 
     return apiResponse;
+  }
+
+  @VisibleForTesting
+  public BatchCommitWriteStreamsResponse getCommitResponse(
+      TableName parentTable, BigQueryJsonDataWriter writer) {
+    // commit the stream
+    BatchCommitWriteStreamsRequest commitRequest =
+        BatchCommitWriteStreamsRequest.newBuilder()
+            .setParent(parentTable.toString())
+            .addWriteStreams(writer.getStreamName())
+            .build();
+    BatchCommitWriteStreamsResponse commitResponse =
+        bigQueryWriteClient.batchCommitWriteStreams(commitRequest);
+    return commitResponse;
   }
 
   /**
