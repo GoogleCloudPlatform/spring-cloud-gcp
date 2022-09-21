@@ -2,6 +2,19 @@
 # note about space consumption: out-of-space testing on cloud shell instance.
 
 # poc with one specified repo - vision
+#cmd line:: ./generate-one.sh -c vision -v 2.4.0
+
+while getopts c:v:i: flag
+do
+    case "${flag}" in
+        c) client_lib_name=${OPTARG};;
+        v) version=${OPTARG};;
+        i) client_lib_artifactid=${OPTARG};;
+    esac
+done
+echo "Client Library Name: $client_lib_name";
+echo "Client Library Version: $version";
+echo "Client Library ArtifactId: $client_lib_artifactid";
 
 # setup git
 
@@ -19,7 +32,8 @@ git clone https://github.com/googleapis/googleapis.git
 
 # get into gapic and checkout branch to use
 cd gapic-generator-java
-git checkout autoconfig-gen-draft2
+#git checkout autoconfig-gen-draft2
+git checkout write-pom
 
 # # todo: push this branch first
 # git checkout write-pom
@@ -36,16 +50,22 @@ sed -i '274,278d' WORKSPACE
 sed -i '274 i local_repository(\n    name = "gapic_generator_java",\n    path = "../gapic-generator-java/",\n)' WORKSPACE
 
 # call bazel target - todo: separate target in future
-bazel build //google/cloud/vision/v1:vision_java_gapic
+bazel build //google/cloud/$client_lib_name/v1:"$client_lib_name"_java_gapic
 
 cd -
 
 ## copy spring code to outside
-cp googleapis/bazel-bin/google/cloud/vision/v1/vision_java_gapic_srcjar-spring.srcjar ./
+cp googleapis/bazel-bin/google/cloud/$client_lib_name/v1/"$client_lib_name"_java_gapic_srcjar-spring.srcjar ./
 
 # unzip spring code
-unzip vision_java_gapic_srcjar-spring.srcjar -d vision/
-rm -rf vision_java_gapic_srcjar-spring.srcjar
+unzip "$client_lib_name"_java_gapic_srcjar-spring.srcjar -d "$client_lib_name"/
+rm -rf "$client_lib_name"_java_gapic_srcjar-spring.srcjar
+
+# override versions & names in pom.xml
+cat "$client_lib_name"/pom.xml
+
+sed -i 's/{{client-library-version}}/'"$version"'/' "$client_lib_name"/pom.xml
+#sed -i 's/{{starter-version}}/2.3.0/' vision/pom.xml
 
 rm -rf googleapis
 rm -rf gapic-generator-java
