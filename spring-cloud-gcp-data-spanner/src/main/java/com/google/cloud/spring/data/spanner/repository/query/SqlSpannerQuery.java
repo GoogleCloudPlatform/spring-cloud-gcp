@@ -240,11 +240,11 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
       return this.spannerTemplate.query(
           struct -> new StructAccessor(struct).getSingleValue(0), statement, spannerQueryOptions);
     }
-    // check if returnedType is a field annotated as json
-    boolean isJsonField = isJsonFieldType(returnedType);
-    if (isJsonField) {
+    // check if returnedType is a field annotated as json or is inner-type of a field annotated as json
+    if (isJsonFieldType(returnedType)) {
       return this.spannerTemplate.query(
-          struct -> new StructAccessor(struct, this.spannerMappingContext.getGson()).getSingleJsonValue(0, returnedType),
+          struct -> new StructAccessor(struct,
+              this.spannerMappingContext.getGson()).getJsonValue(0, returnedType),
           statement,
           spannerQueryOptions);
     }

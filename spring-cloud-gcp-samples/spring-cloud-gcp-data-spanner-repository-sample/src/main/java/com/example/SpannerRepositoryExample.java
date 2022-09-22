@@ -113,7 +113,7 @@ public class SpannerRepositoryExample {
     LOGGER.info("Try http://localhost:8080/trades in the browser to see all trades.");
 
     LOGGER.info(
-        "JSON field should be annotated with \"@Column(spannerType = TypeCode.JSON)\" in data"
+        "JSON or ARRAY<JSON> field should be annotated with \"@Column(spannerType = TypeCode.JSON)\" in data"
             + " class.");
 
     Trader trader1 =
@@ -123,10 +123,15 @@ public class SpannerRepositoryExample {
     Trader trader3 =
         new Trader("demo_trader_json3", "Scott", "Smith", new Address(8L, "fake address 3", false));
     trader3.setHomeAddress(new Address(8L, "fake address 3 in unused detail", false));
+    Trader trader4 =
+        new Trader("demo_trader_json4", "John", "Doe",
+            Arrays.asList(new Address(666L, "fake address 4", false),
+                new Address(777L, "fake address 5", false)));
 
     this.traderRepository.save(trader1);
     this.traderRepository.save(trader2);
     this.traderRepository.save(trader3);
+    this.traderRepository.save(trader4);
 
     LOGGER.info(
         "Find trader by Id and print out JSON field 'workAddress' as string: "
@@ -135,6 +140,10 @@ public class SpannerRepositoryExample {
     LOGGER.info(
         "Find trader by Id and print out JSON field 'unusedDetails' as string: "
             + this.traderRepository.findById("demo_trader_json3").get().getHomeAddress());
+
+    LOGGER.info(
+        "Find trader by Id and print out ARRAY<JSON> field 'addressList' as string: "
+            + this.traderRepository.findById("demo_trader_json4").get().getAddressList().toString());
 
     long count = this.traderRepository.getCountActive("true");
     LOGGER.info("A query method can query on the properties of JSON values");

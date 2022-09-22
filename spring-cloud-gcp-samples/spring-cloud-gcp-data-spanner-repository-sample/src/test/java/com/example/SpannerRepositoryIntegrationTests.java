@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -135,7 +136,8 @@ class SpannerRepositoryIntegrationTests {
             "demo_trader3",
             "demo_trader_json1",
             "demo_trader_json2",
-            "demo_trader_json3");
+            "demo_trader_json3",
+            "demo_trader_json4");
 
     assertThat(this.tradeRepository.findAll()).hasSize(8);
 
@@ -167,14 +169,17 @@ class SpannerRepositoryIntegrationTests {
   }
 
   @Test
-  void testJsonFieldReadWrite() {
+  void testJsonAndArrayJsonFieldReadWrite() {
 
-    Address workAddress = new Address(5L, "address line", true);
-    Trader trader = new Trader("demo_trader1", "John", "Doe", workAddress);
+    Address address = new Address(5L, "address line", true);
+    Trader trader = new Trader("demo_trader1", "John", "Doe",
+        Arrays.asList(address, address, address));
+    trader.setHomeAddress(address);
     this.traderRepository.save(trader);
 
     Trader traderFound = this.traderRepository.findById("demo_trader1").get();
     assertThat(traderFound.getTraderId()).isEqualTo(trader.getTraderId());
-    assertThat(traderFound.getWorkAddress()).isEqualTo(workAddress);
+    assertThat(traderFound.getHomeAddress()).isEqualTo(address);
+    assertThat(traderFound.getAddressList()).contains(address, address, address);
   }
 }

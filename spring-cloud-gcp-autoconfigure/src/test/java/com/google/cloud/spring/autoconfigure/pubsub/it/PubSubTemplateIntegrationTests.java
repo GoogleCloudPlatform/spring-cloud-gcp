@@ -17,17 +17,20 @@
 package com.google.cloud.spring.autoconfigure.pubsub.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
+import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
 import com.google.cloud.spring.pubsub.support.converter.ConvertedAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.converter.JacksonPubSubMessageConverter;
 import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
@@ -51,6 +54,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -64,12 +68,17 @@ class PubSubTemplateIntegrationTests {
 
   private static final Log LOGGER = LogFactory.getLog(PubSubTemplateIntegrationTests.class);
 
-  private ApplicationContextRunner contextRunner =
-      new ApplicationContextRunner()
-          .withPropertyValues("spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=0")
-          .withConfiguration(
-              AutoConfigurations.of(
-                  GcpContextAutoConfiguration.class, GcpPubSubAutoConfiguration.class));
+  private ApplicationContextRunner contextRunner;
+
+  @BeforeEach
+  void init() {
+    contextRunner =
+        new ApplicationContextRunner()
+            .withPropertyValues("spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=0")
+            .withConfiguration(
+                AutoConfigurations.of(
+                    GcpContextAutoConfiguration.class, GcpPubSubAutoConfiguration.class));
+  }
 
   @Test
   void testCreatePublishPullNextAndDelete() {
@@ -247,6 +256,31 @@ class PubSubTemplateIntegrationTests {
               pubSubAdmin.deleteSubscription(subscriptionName);
               pubSubAdmin.deleteTopic(topicName);
             });
+  }
+
+  @Test
+  void testPublisherShutdown() {
+    AtomicReference<Publisher> publisherAtomicReference1 = new AtomicReference<>();
+    AtomicReference<Publisher> publisherAtomicReference2 = new AtomicReference<>();
+    this.contextRunner.run(
+        context -> {
+          CachingPublisherFactory publisherFactory = context.getBean(CachingPublisherFactory.class);
+          publisherAtomicReference1.set(publisherFactory.createPublisher("test-topic-1"));
+          publisherAtomicReference2.set(publisherFactory.createPublisher("test_topic-2"));
+        }
+    );
+
+    PubsubMessage message = PubsubMessage.newBuilder()
+        .setData(ByteString.copyFromUtf8("random test msg"))
+        .build();
+
+    Publisher publisher1 = publisherAtomicReference1.get();
+    assertThatThrownBy(() -> publisher1.publish(message))
+        .isExactlyInstanceOf(IllegalStateException.class);
+
+    Publisher publisher2 = publisherAtomicReference2.get();
+    assertThatThrownBy(() -> publisher2.publish(message))
+        .isExactlyInstanceOf(IllegalStateException.class);
   }
 
   /** Beans for test. */

@@ -21,6 +21,7 @@ import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,12 +30,13 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-// import org.springframework.stereotype.Component;
 
 /** Example usage of the Spanner Template. */
 @SpringBootApplication
 public class SpannerTemplateExample {
   private static final Log LOGGER = LogFactory.getLog(SpannerTemplateExample.class);
+
+  private static final String TEMPLATE_TRADER_1 = "template_trader1";
 
   @Autowired private SpannerOperations spannerOperations;
 
@@ -47,18 +49,18 @@ public class SpannerTemplateExample {
     this.spannerOperations.delete(Trader.class, KeySet.all());
     this.spannerOperations.delete(Trade.class, KeySet.all());
 
-    Trader trader = new Trader("template_trader1", "John", "Doe");
+    Trader trader = new Trader(TEMPLATE_TRADER_1, "John", "Doe");
 
     this.spannerOperations.insert(trader);
 
     Trade t =
         new Trade(
-            "1", "BUY", 100.0, 50.0, "STOCK1", "template_trader1", Arrays.asList(99.0, 101.00));
+            "1", "BUY", 100.0, 50.0, "STOCK1", TEMPLATE_TRADER_1, Arrays.asList(99.0, 101.00));
 
     this.spannerOperations.insert(t);
 
     t.setTradeId("2");
-    t.setTraderId("template_trader1");
+    t.setTraderId(TEMPLATE_TRADER_1);
     t.setAction("SELL");
     this.spannerOperations.insert(t);
 
@@ -76,12 +78,12 @@ public class SpannerTemplateExample {
   void createTablesIfNotExists() {
     if (!this.spannerDatabaseAdminTemplate.tableExists("trades_template")) {
       this.spannerDatabaseAdminTemplate.executeDdlStrings(
-          Arrays.asList(this.spannerSchemaUtils.getCreateTableDdlString(Trade.class)), true);
+          Collections.singletonList(this.spannerSchemaUtils.getCreateTableDdlString(Trade.class)), true);
     }
 
     if (!this.spannerDatabaseAdminTemplate.tableExists("traders_template")) {
       this.spannerDatabaseAdminTemplate.executeDdlStrings(
-          Arrays.asList(this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)), true);
+          Collections.singletonList(this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)), true);
     }
   }
 

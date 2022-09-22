@@ -49,6 +49,8 @@ class FirestoreSampleApplicationIntegrationTests {
   private static final User DELTA_USER =
       new User("Delta", 49, Arrays.asList(new Pet("fish", "Dory"), new Pet("spider", "Man")));
 
+  private static final User NULL_NAME_USER = new User(null, 23, emptyList());
+
   @Autowired FirestoreTemplate firestoreTemplate;
 
   @Autowired TestRestTemplate restTemplate;
@@ -70,9 +72,13 @@ class FirestoreSampleApplicationIntegrationTests {
     testUserClient.saveUser(ALPHA_USER, ALPHA_PHONE_NUMBERS);
     testUserClient.saveUser(BETA_USER, emptyList());
     testUserClient.saveUser(DELTA_USER, emptyList());
+    User savedUser = testUserClient.saveUser(NULL_NAME_USER, emptyList());
+    //ensures that a user saved with null id has an id assigned by firestore
+    assertThat(savedUser.getName()).isNotNull();
 
     List<User> allUsers = testUserClient.listUsers();
-    assertThat(allUsers).map(User::getName).containsExactlyInAnyOrder("Alpha", "Beta", "Delta");
+    assertThat(allUsers).map(User::getName)
+        .containsExactlyInAnyOrder("Alpha", "Beta", "Delta", savedUser.getName());
 
     List<User> users49 = testUserClient.findUsersByAge(49);
     assertThat(users49).containsExactlyInAnyOrder(ALPHA_USER, DELTA_USER);

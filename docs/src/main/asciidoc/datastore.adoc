@@ -1368,3 +1368,7 @@ To enable it, all you need to do is add the https://docs.spring.io/spring-boot/d
 === Sample
 
 A https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-basic-sample[Simple Spring Boot Application] and more advanced https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-sample[Sample Spring Boot Application] are provided to show how to use the Spring Data Cloud Datastore starter and template.
+
+=== Test
+
+`Testcontainers` provides a `gcloud` module which offers `DatastoreEmulatorContainer`. See more at the https://www.testcontainers.org/modules/gcloud/#datastore[docs]

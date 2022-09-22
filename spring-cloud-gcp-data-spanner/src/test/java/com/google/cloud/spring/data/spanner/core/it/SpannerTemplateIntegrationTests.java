@@ -134,6 +134,38 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
   }
 
   @Test
+  void insertAndDeleteWithArrayJsonField() {
+
+    this.spannerOperations.delete(Trade.class, KeySet.all());
+    assertThat(this.spannerOperations.count(Trade.class)).isZero();
+
+    Details details1 = new Details("abc", "def");
+    Details details2 = new Details("123", "234");
+    Trade trade1 = Trade.makeTrade();
+    trade1.setAdditionalDetails(Arrays.asList(details1, details2));
+    Trade trade2 = Trade.makeTrade();
+    trade2.setAdditionalDetails(null);
+
+    this.spannerOperations.insert(trade1);
+    this.spannerOperations.insert(trade2);
+    assertThat(this.spannerOperations.count(Trade.class)).isEqualTo(2L);
+
+    List<Trade> trades =
+        this.spannerOperations.queryAll(Trade.class, new SpannerPageableQueryOptions());
+
+    assertThat(trades).containsExactlyInAnyOrder(trade1, trade2);
+
+    Trade retrievedTrade =
+        this.spannerOperations.read(Trade.class, Key.of(trade1.getId(), trade1.getTraderId()));
+    assertThat(retrievedTrade).isEqualTo(trade1);
+    assertThat(retrievedTrade.getAdditionalDetails()).isInstanceOf(List.class);
+    assertThat(retrievedTrade.getAdditionalDetails()).containsExactly(details1, details2);
+
+    this.spannerOperations.deleteAll(Arrays.asList(trade1, trade2));
+    assertThat(this.spannerOperations.count(Trade.class)).isZero();
+  }
+
+  @Test
   void readWriteTransactionTest() {
     Trade trade = Trade.makeTrade();
     this.spannerOperations.performReadWriteTransaction(

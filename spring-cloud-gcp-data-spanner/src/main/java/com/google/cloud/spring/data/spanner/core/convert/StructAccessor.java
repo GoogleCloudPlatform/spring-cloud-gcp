@@ -27,6 +27,7 @@ import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.gson.Gson;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +100,7 @@ public class StructAccessor {
           .build();
 
   // @formatter:on
+  private static final String EXCEPTION_COL_NOT_ARRAY = "Column is not an ARRAY type: ";
 
   private Struct struct;
 
@@ -130,6 +132,9 @@ public class StructAccessor {
   }
 
   public Object getSingleValue(int colIndex) {
+    if (this.struct.isNull(colIndex)) {
+      return null;
+    }
     Type colType = this.struct.getColumnType(colIndex);
     Class sourceType = getSingleItemTypeCode(colType);
     BiFunction readFunction = singleItemReadMethodMappingIntCol.get(sourceType);
@@ -145,12 +150,41 @@ public class StructAccessor {
 
   List getListValue(String colName) {
     if (this.struct.getColumnType(colName).getCode() != Code.ARRAY) {
-      throw new SpannerDataException("Column is not an ARRAY type: " + colName);
+      throw new SpannerDataException(EXCEPTION_COL_NOT_ARRAY + colName);
     }
     Type.Code innerTypeCode = this.struct.getColumnType(colName).getArrayElementType().getCode();
     Class clazz = SpannerTypeMapper.getSimpleJavaClassFor(innerTypeCode);
     BiFunction<Struct, String, List> readMethod = readIterableMapping.get(clazz);
     return readMethod.apply(this.struct, colName);
+  }
+
+  <T> List<T> getListJsonValue(String colName, Class<T> colType) {
+    if (this.struct.getColumnType(colName).getCode() != Code.ARRAY) {
+      throw new SpannerDataException(EXCEPTION_COL_NOT_ARRAY + colName);
+    }
+    List<String> jsonStringList = this.struct.getJsonList(colName);
+    List<T> result = new ArrayList<>();
+    jsonStringList.forEach(item ->
+        result.add(gson.fromJson(item, colType)));
+    return result;
+  }
+
+  public  <T> Object getJsonValue(int colIndex, Class<T> colType) {
+    if (this.struct.getColumnType(colIndex).getCode() != Code.ARRAY) {
+      return getSingleJsonValue(colIndex, colType);
+    }
+    return getListJsonValue(colIndex, colType);
+  }
+
+  private  <T> List<T> getListJsonValue(int colIndex, Class<T> colType) {
+    if (this.struct.getColumnType(colIndex).getCode() != Code.ARRAY) {
+      throw new SpannerDataException(EXCEPTION_COL_NOT_ARRAY + colIndex);
+    }
+    List<String> jsonStringList = this.struct.getJsonList(colIndex);
+    List<T> result = new ArrayList<>();
+    jsonStringList.forEach(item ->
+        result.add(gson.fromJson(item, colType)));
+    return result;
   }
 
   boolean hasColumn(String columnName) {
@@ -184,7 +218,8 @@ public class StructAccessor {
     return gson.fromJson(jsonString, colType);
   }
 
-  public <T> T getSingleJsonValue(int colIndex, Class<T> colType) {
+  //TODO: change this to private in next major release
+  public  <T> T getSingleJsonValue(int colIndex, Class<T> colType) {
     if (this.struct.getColumnType(colIndex).getCode() != Code.JSON) {
       throw new SpannerDataException("Column of index " + colIndex + " not an JSON type.");
     }

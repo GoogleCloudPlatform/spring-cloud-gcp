@@ -571,6 +571,32 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
+  void testWithArrayJsonField() {
+    Details details1 = new Details("abc", "def");
+    Details details2 = new Details("123", "234");
+    Trade trade1 = Trade.makeTrade();
+    trade1.setAdditionalDetails(Arrays.asList(details1, details2));
+    Trade trade2 = Trade.makeTrade();
+    trade2.setAdditionalDetails(null);
+    Trade trade3 = Trade.makeTrade();
+    trade3.setOptionalDetails(details1);
+
+    this.tradeRepository.save(trade1);
+    this.tradeRepository.save(trade2);
+    this.tradeRepository.save(trade3);
+
+    assertThat(this.tradeRepository.findAll()).contains(trade1, trade2, trade3);
+
+    String traderId = trade1.getTraderId();
+    List<List<Details>> detailsList = this.tradeRepository.getAdditionalDetailsById(traderId);
+    assertThat(detailsList.get(0)).containsExactly(details1, details2);
+
+    String traderId3 = trade3.getTraderId();
+    Optional<Details> optionalDetails = this.tradeRepository.getOptionalDetailsById(traderId3);
+    assertThat(optionalDetails).isEqualTo(Optional.of(details1));
+  }
+
+  @Test
   void testTransaction() {
     this.tradeRepositoryTransactionalService.testTransactionalAnnotation(2);
     assertThat(this.tradeRepository.count()).isEqualTo(1L);
@@ -623,6 +649,17 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 
     List<Trade> tradesWithActionNotNull = this.tradeRepository.findAllByActionIsNotNull("not used");
     assertThat(tradesWithActionNotNull).hasSize(2);
+  }
+
+  @Test
+  void queryMethodsTest_sqlQueryReturnNull() {
+    Trade sellTradeWithNullSymbol = Trade.makeTrade("trader1", 0, 4);
+    sellTradeWithNullSymbol.setAction("SELL");
+    sellTradeWithNullSymbol.setSymbol(null);
+    this.spannerOperations.insert(sellTradeWithNullSymbol);
+
+    Optional<String> symbol = this.tradeRepository.getSymbolById(sellTradeWithNullSymbol.getId());
+    assertThat(symbol).isEmpty();
   }
 
   private List<Trade> insertTrades(String traderId, String action, int numTrades) {

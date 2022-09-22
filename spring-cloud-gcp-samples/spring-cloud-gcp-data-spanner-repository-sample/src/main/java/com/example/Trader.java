@@ -56,6 +56,9 @@ public class Trader {
   @Column(name = "home_address", spannerType = TypeCode.JSON)
   private Address homeAddress;
 
+  @Column(name = "address_list", spannerType = TypeCode.JSON)
+  private List<Address> addressList;
+
   public Trader() {}
 
   public Trader(String traderId, String firstName, String lastName) {
@@ -69,6 +72,14 @@ public class Trader {
     this.firstName = firstName;
     this.lastName = lastName;
     this.workAddress = workAddress;
+  }
+
+  public Trader(String traderId, String firstName, String lastName,
+      List<Address> addressList) {
+    this.traderId = traderId;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.addressList = addressList;
   }
 
   public Trader(
@@ -126,6 +137,10 @@ public class Trader {
 
   public Address getHomeAddress() {
     return homeAddress;
+  }
+
+  public List<Address> getAddressList() {
+    return addressList;
   }
 
   @Override

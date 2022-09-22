@@ -1593,3 +1593,7 @@ and more advanced [Sample Spring Boot
 Application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-sample)
 are provided to show how to use the Spring Data Cloud Datastore starter
 and template.
+
+### Test
+
+`Testcontainers` provides a `gcloud` module which offers `DatastoreEmulatorContainer`. See more at the [docs](https://www.testcontainers.org/modules/gcloud/#datastore)

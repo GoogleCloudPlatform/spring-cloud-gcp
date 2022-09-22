@@ -562,8 +562,13 @@ annotated fields.
 
 <div class="note">
 
-The default Gson instance used to convert to and from JSON
-representation can be customized by providing a bean of type `Gson`.
+Spring Boot autoconfigures a `Gson` bean by default. This Gson instance is used
+by default to convert to and from JSON representation. To customize,
+use `spring.gson.*` configuration properties or `GsonBuilderCustomizer` bean as
+instructed in Spring Boot
+documentation [here](https://docs.spring.io/spring-boot/docs/2.6.x/reference/html/features.html#features.json)
+. Alternatively, you can also provide a customized bean of type `Gson` in your
+application.
 
 </div>
 
@@ -1786,7 +1791,10 @@ properties are set in your `application.properties` of your Spring
 application:
 
     spring.cloud.gcp.spanner.emulator.enabled=true
-    spring.cloud.gcp.spanner.emulator-host=${EMULATOR_HOSTPORT}
+
+Note that the default emulator hostname and port (i.e., localhost:9010) is used. If you prefer a customized value, ensure the following property is set in your `application.properties` of your Spring application:
+
+    spring.cloud.gcp.spanner.emulator-host=ip:port
 
 ### Sample
 
@@ -1797,3 +1805,7 @@ There are two sample applications available:
 
 2.  [Sample application using higher-level Spanner Repository
     capabilities](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-repository-sample)
+
+### Test
+
+`Testcontainers` provides a `gcloud` module which offers `SpannerEmulatorContainer`. See more at the [docs](https://www.testcontainers.org/modules/gcloud/#spanner)

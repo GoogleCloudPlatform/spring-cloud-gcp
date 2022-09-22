@@ -86,11 +86,15 @@ public class UserController {
                       formData.getFirst("name"),
                       Integer.parseInt(formData.getFirst("age")),
                       createPets(formData.getFirst("pets")));
-              FirestoreReactiveOperations userTemplate = this.firestoreTemplate.withParent(user);
               List<PhoneNumber> phones = getPhones(formData.getFirst("phones"));
-              return userTemplate
-                  .saveAll(Flux.fromIterable(phones))
-                  .then(userRepository.save(user));
+
+              return userRepository.save(user)
+                  .flatMap(savedUser -> {
+                    FirestoreReactiveOperations userTemplate = this.firestoreTemplate.withParent(
+                        savedUser);
+                    return userTemplate.saveAll(Flux.fromIterable(phones))
+                        .then(Mono.just(savedUser));
+                  });
             });
   }
 

@@ -32,7 +32,7 @@ public final class PubSubSubscriptionUtils {
   /**
    * Create a {@link ProjectSubscriptionName} based on a subscription name within a project or the
    * fully-qualified subscription name. If the specified subscription is in the {@code
-   * projects/<project_name>/subscriptions/<subscription_name>} format, then the {@code projectId}
+   * projects/[project_name]/subscriptions/[subscription_name]} format, then the {@code projectId}
    * is ignored}
    *
    * @param subscription the subscription name in the project or the fully-qualified project name
@@ -47,7 +47,7 @@ public final class PubSubSubscriptionUtils {
 
     if (ProjectSubscriptionName.isParsableFrom(subscription)) {
       // Fully-qualified subscription name in the
-      // "projects/<project_name>/subscriptions/<subscription_name>" format
+      // "projects/[project_name]/subscriptions/[subscription_name]" format
       projectSubscriptionName = ProjectSubscriptionName.parse(subscription);
     } else {
       Assert.notNull(

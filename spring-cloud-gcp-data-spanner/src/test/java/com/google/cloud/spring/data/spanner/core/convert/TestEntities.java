@@ -243,7 +243,7 @@ class TestEntities {
   }
 
   /** A test class with Json field. */
-  @Table(name = "custom_test_table")
+  @Table(name = "json_test_table")
   static class TestEntityJson {
     @PrimaryKey String id;
 
@@ -253,6 +253,20 @@ class TestEntities {
     TestEntityJson(String id, Params params) {
       this.id = id;
       this.params = params;
+    }
+  }
+
+  /** A test class with Json Array field. */
+  @Table(name = "jsonarray_test_table2")
+  static class TestEntityJsonArray {
+    @PrimaryKey String id;
+
+    @Column(spannerType = TypeCode.JSON)
+    List<Params> paramsList;
+
+    TestEntityJsonArray(String id, List<Params> paramsList) {
+      this.id = id;
+      this.paramsList = paramsList;
     }
   }
 

@@ -32,7 +32,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.shell.Shell;
-import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -42,7 +41,7 @@ import org.springframework.util.MultiValueMap;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = DatastoreBookshelfExample.class,
-    properties = {InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=" + false},
+    properties = "spring.shell.interactive.enabled=false",
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
 class DatastoreBookshelfExampleIntegrationTests {

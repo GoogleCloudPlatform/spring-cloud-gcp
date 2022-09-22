@@ -17,7 +17,6 @@
 package com.google.cloud.spring.secretmanager;
 
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
 import com.google.cloud.secretmanager.v1.AddSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.CreateSecretRequest;
 import com.google.cloud.secretmanager.v1.DeleteSecretRequest;
@@ -30,6 +29,9 @@ import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.protobuf.ByteString;
+import javax.annotation.Nullable;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Offers convenience methods for performing common operations on Secret Manager including creating
@@ -39,18 +41,31 @@ import com.google.protobuf.ByteString;
  */
 public class SecretManagerTemplate implements SecretManagerOperations {
 
-  /** Default value for the latest version of the secret. */
+  /**
+   * Default value for the latest version of the secret.
+   */
   public static final String LATEST_VERSION = "latest";
 
+  private static final Log LOGGER = LogFactory.getLog(SecretManagerTemplate.class);
   private final SecretManagerServiceClient secretManagerServiceClient;
-
   private final GcpProjectIdProvider projectIdProvider;
+  /**
+   * Define the behavior when accessing a non-existed secret string/bytes.
+   */
+  private boolean allowDefaultSecretValue;
 
   public SecretManagerTemplate(
       SecretManagerServiceClient secretManagerServiceClient,
       GcpProjectIdProvider projectIdProvider) {
     this.secretManagerServiceClient = secretManagerServiceClient;
     this.projectIdProvider = projectIdProvider;
+    this.allowDefaultSecretValue = false;
+  }
+
+  public SecretManagerTemplate setAllowDefaultSecretValue(boolean allowDefaultSecretValue) {
+    this.allowDefaultSecretValue = allowDefaultSecretValue;
+
+    return this;
   }
 
   @Override
@@ -71,13 +86,17 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   }
 
   @Override
+  @Nullable
   public String getSecretString(String secretIdentifier) {
-    return getSecretByteString(secretIdentifier).toStringUtf8();
+    ByteString secretByteString = getSecretByteString(secretIdentifier);
+    return secretByteString == null ? null : secretByteString.toStringUtf8();
   }
 
   @Override
+  @Nullable
   public byte[] getSecretBytes(String secretIdentifier) {
-    return getSecretByteString(secretIdentifier).toByteArray();
+    ByteString secretByteString = getSecretByteString(secretIdentifier);
+    return secretByteString == null ? null : secretByteString.toByteArray();
   }
 
   @Override
@@ -164,9 +183,25 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   }
 
   ByteString getSecretByteString(SecretVersionName secretVersionName) {
-    AccessSecretVersionResponse response =
-        secretManagerServiceClient.accessSecretVersion(secretVersionName);
-    return response.getPayload().getData();
+    ByteString secretData;
+    try {
+      secretData = secretManagerServiceClient
+          .accessSecretVersion(secretVersionName)
+          .getPayload()
+          .getData();
+    } catch (NotFoundException ex) {
+      LOGGER.warn(secretVersionName.toString() + " doesn't exist in Secret Manager.");
+      if (!this.allowDefaultSecretValue) {
+        throw ex;
+      }
+      // If no secret is found in Secret Manager and default secret is allowed,
+      // returns null rather than throwing the exception to facilitate default
+      // secret value parsing.
+      // See https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/213
+      return null;
+    }
+
+    return secretData;
   }
 
   /**

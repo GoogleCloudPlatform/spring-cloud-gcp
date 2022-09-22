@@ -23,9 +23,12 @@ import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.threeten.bp.Duration;
 
 class GcpSpannerEmulatorAutoConfigurationTests {
@@ -37,6 +40,7 @@ class GcpSpannerEmulatorAutoConfigurationTests {
                   GcpSpannerEmulatorAutoConfiguration.class,
                   GcpSpannerAutoConfiguration.class,
                   GcpContextAutoConfiguration.class))
+          .withUserConfiguration(TestConfiguration.class)
           .withPropertyValues("spring.cloud.gcp.spanner.project-id=test-project");
 
   @Test
@@ -113,5 +117,17 @@ class GcpSpannerEmulatorAutoConfigurationTests {
               assertThat(spannerOptions.getNumChannels())
                   .isEqualTo(defaultSpannerOptions.getNumChannels());
             });
+  }
+
+  /**
+   * Spring Boot config for tests.
+   */
+  @Configuration
+  static class TestConfiguration {
+
+    @Bean
+    public Gson gson() {
+      return new Gson();
+    }
   }
 }

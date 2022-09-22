@@ -54,10 +54,11 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
   private HealthTrackerRegistry healthTrackerRegistry;
 
   /**
-   * Instantiates a streaming Pub/Sub subscirtion adapter.
+   * Instantiates a streaming Pub/Sub subscription adapter.
    *
    * @param pubSubSubscriberOperations {@link PubSubSubscriberOperations} to use
-   * @param subscriptionName short or fully qualified subscription name
+   * @param subscriptionName short subscription name, e.g., "subscriptionName", or the fully-qualified subscription name
+   *                        in the {@code projects/[project_name]/subscriptions/[subscription_name]} format
    */
   public PubSubInboundChannelAdapter(
       PubSubSubscriberOperations pubSubSubscriberOperations, String subscriptionName) {

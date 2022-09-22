@@ -364,6 +364,47 @@ class ConverterAwareMappingSpannerEntityWriterTests {
   }
 
   @Test
+  void writeJsonArrayTest() {
+    TestEntities.Params parameters = new TestEntities.Params("some value", "some other value");
+    TestEntities.TestEntityJsonArray testEntity = new TestEntities.TestEntityJsonArray("id1", Arrays.asList(parameters, parameters));
+
+    WriteBuilder writeBuilder = mock(WriteBuilder.class);
+    ValueBinder<WriteBuilder> valueBinder = mock(ValueBinder.class);
+
+    when(writeBuilder.set("id")).thenReturn(valueBinder);
+    when(writeBuilder.set("paramsList")).thenReturn(valueBinder);
+
+    this.spannerEntityWriter.write(testEntity, writeBuilder::set);
+
+    List<String> stringList = new ArrayList<>();
+    stringList.add("{\"p1\":\"some value\",\"p2\":\"some other value\"}");
+    stringList.add("{\"p1\":\"some value\",\"p2\":\"some other value\"}");
+
+    verify(valueBinder).to(testEntity.id);
+    verify(valueBinder).toJsonArray(stringList);
+  }
+
+  @Test
+  void writeNullEmptyJsonArrayTest() {
+    TestEntities.TestEntityJsonArray testNull = new TestEntities.TestEntityJsonArray("id1", null);
+    TestEntities.TestEntityJsonArray testEmpty = new TestEntities.TestEntityJsonArray("id2", new ArrayList<>());
+
+    WriteBuilder writeBuilder = mock(WriteBuilder.class);
+    ValueBinder<WriteBuilder> valueBinder = mock(ValueBinder.class);
+
+    when(writeBuilder.set("id")).thenReturn(valueBinder);
+    when(writeBuilder.set("paramsList")).thenReturn(valueBinder);
+
+    this.spannerEntityWriter.write(testNull, writeBuilder::set);
+    this.spannerEntityWriter.write(testEmpty, writeBuilder::set);
+
+    verify(valueBinder).to(testNull.id);
+    verify(valueBinder).toJsonArray(isNull());
+    verify(valueBinder).to(testEmpty.id);
+    verify(valueBinder).toJsonArray(new ArrayList<>());
+  }
+
+  @Test
   void writeUnsupportedTypeIterableTest() {
 
     FaultyTestEntity2 ft = new FaultyTestEntity2();

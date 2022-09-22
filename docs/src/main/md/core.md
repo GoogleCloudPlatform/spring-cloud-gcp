@@ -51,7 +51,7 @@ spring.cloud.gcp.project-id=my-gcp-project-id
 ```
 
 Otherwise, the project ID is discovered based on an [ordered list of
-rules](https://googlecloudplatform.github.io/google-cloud-java/google-cloud-clients/apidocs/com/google/cloud/ServiceOptions.html#getDefaultProjectId--):
+rules](https://cloud.google.com/java/docs/reference/google-cloud-core/latest/com.google.cloud.ServiceOptions#com_google_cloud_ServiceOptions_getDefaultProjectId__):
 
 1.  The project ID specified by the `GOOGLE_CLOUD_PROJECT` environment
     variable

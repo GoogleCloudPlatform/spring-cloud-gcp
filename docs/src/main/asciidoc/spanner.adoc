@@ -483,9 +483,12 @@ Natively supported types:
 
 ==== JSON fields
 
-Spanner supports `JSON` type for columns. `JSON` columns are mapped to custom POJOs annotated with `@Column(spannerType = TypeCode.JSON)`. Read, write and query with custom SQL query are supported for JSON annotated fields.
+Spanner supports `JSON` and `ARRAY<JSON>` type for columns. Such property needs to be annotated with `@Column(spannerType = TypeCode.JSON)`. `JSON` columns are mapped to custom POJOs and `ARRAY<JSON>` columns are mapped to List of custom POJOs. Read, write and query with custom SQL query are supported for JSON annotated fields.
 
-NOTE: The default Gson instance used to convert to and from JSON representation can be customized by providing a bean of type `Gson`.
+NOTE: Spring Boot autoconfigures a `Gson` bean by default.
+This Gson instance is used by default to convert to and from JSON representation.
+To customize, use `spring.gson.*` configuration properties or `GsonBuilderCustomizer` bean as instructed in Spring Boot documentation https://docs.spring.io/spring-boot/docs/2.6.x/reference/html/features.html#features.json[here].
+Alternatively, you can also provide a customized bean of type `Gson` in your application.
 
 [source,java]
 ----
@@ -1507,7 +1510,12 @@ Once the Spanner emulator is running, ensure that the following properties are s
 
 ----
 spring.cloud.gcp.spanner.emulator.enabled=true
-spring.cloud.gcp.spanner.emulator-host=${EMULATOR_HOSTPORT}
+----
+
+Note that the default emulator hostname and port (i.e., localhost:9010) is used. If you prefer a customized value, ensure the following property is set in your `application.properties` of your Spring application:
+
+----
+spring.cloud.gcp.spanner.emulator-host=ip:port
 ----
 
 === Sample
@@ -1517,3 +1525,7 @@ There are two sample applications available:
 1. https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample[ Sample application using Spanner Template directly]
 
 2. https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-repository-sample[ Sample application using higher-level Spanner Repository capabilities]
+
+=== Test
+
+`Testcontainers` provides a `gcloud` module which offers `SpannerEmulatorContainer`. See more at the https://www.testcontainers.org/modules/gcloud/#spanner[docs]

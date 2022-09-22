@@ -51,6 +51,47 @@ frequency, etc. Read [Spring Boot Actuator
 documentation](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-export-stackdriver)
 for more information on Stackdriver Actuator configurations.
 
+#### Metrics Disambiguation
+
+By default, `spring-cloud-gcp-starter-metrics`/the `StackdriverMeterRegistry` does not add any application/pod specific tags to the metrics,
+thus google is unable to distinguish between multiple metric sources.
+This could lead to the following warning inside your applications logs:
+
+````txt
+2022-08-15 10:26:00.248  WARN 1 --- [trics-publisher] i.m.s.StackdriverMeterRegistry           : failed to send metrics to Stackdriver
+````
+
+The actual cause message may vary:
+
+````txt
+One or more TimeSeries could not be written:
+One or more points were written more frequently than the maximum sampling period configured for the metric.: global{} timeSeries[4]: custom.googleapis.com/process/uptime{};
+One or more points were written more frequently than the maximum sampling period configured for the metric.: global{} timeSeries[6]: custom.googleapis.com/system/load/average/1m{};
+One or more points ...
+````
+
+or even:
+
+````txt
+Caused by: io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2Exception: Header size exceeded max allowed size (10240)
+````
+
+(due to the error message being too long)
+
+Google rejects metric updates for entries that it has received before (from another application) for the same interval.
+To avoid these conflicts and in order to distinguish between applications/instances you should add a configuration similar to this:
+
+````yaml
+management:
+  metrics:
+    tags:
+      app: my-foobar-service
+      instance: ${random.uuid}
+````
+
+Instead of the random uuid you could also use the pod id/the hostname or some other instance id.
+Read more about custom tags [here](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#actuator.metrics.customizing.common-tags).
+
 ### Sample
 
 A [sample
