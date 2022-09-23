@@ -1,3 +1,6 @@
+#!/bin/bash
+
+
 # start  by experimenting local run.
 # note about space consumption: out-of-space testing on cloud shell instance.
 
@@ -18,32 +21,30 @@ echo "Client Library ArtifactId: $client_lib_artifactid";
 
 # setup git
 
-## install bazel
+## install bazel - commented out as running on local already with bazel
 #sudo apt-get update
 #sudo apt-get install bazel
 
 WORKING_DIR=`pwd`
 
-# Checkout `gapic-generator-java`
-git clone https://github.com/googleapis/gapic-generator-java.git
+
 # get googleapis repo
 git clone https://github.com/googleapis/googleapis.git
 
-
+# Prepare `gapic-generator-java` with Spring generation ability.
+# If keeping a copy in this repo, this is not needed.
+# Checkout `gapic-generator-java`
+git clone https://github.com/googleapis/gapic-generator-java.git
 # get into gapic and checkout branch to use
 cd gapic-generator-java
 #git checkout autoconfig-gen-draft2
 git checkout write-pom
-
-# # todo: push this branch first
-# git checkout write-pom
 # go back to previous folder
 cd -
 
-ls
+
 cd googleapis
 # todo: change to local repo --> gapic
-
 # very not stable change - todo: change to search and replace.
 sed -i '274,278d' WORKSPACE
 
