@@ -175,7 +175,7 @@ The customized `ConnectionFactory` is then ready to connect to Cloud SQL. The re
 
 === Cloud SQL IAM database authentication
 
-Currently, Cloud SQL only supports https://cloud.google.com/sql/docs/postgres/authentication:[IAM database authentication for PostgreSQL].
+Currently, Cloud SQL only supports https://cloud.google.com/sql/docs/postgres/authentication[IAM database authentication for PostgreSQL].
 It allows you to connect to the database using an IAM account, rather than a predefined database username and password.
 You will need to do the following to enable it:
 
