@@ -40,18 +40,20 @@ import org.springframework.context.annotation.Configuration;
 public class GcpKmsAutoConfiguration {
 
   private final GcpProjectIdProvider gcpProjectIdProvider;
+  private final CredentialsProvider credentialsProvider;
 
-  public GcpKmsAutoConfiguration(GcpKmsProperties properties) {
+  public GcpKmsAutoConfiguration(GcpKmsProperties properties,
+      CredentialsProvider credentialsProvider)
+      throws IOException {
     this.gcpProjectIdProvider =
         properties.getProjectId() != null
             ? properties::getProjectId
             : new DefaultGcpProjectIdProvider();
-  }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public CredentialsProvider googleCredentials(GcpKmsProperties kmsProperties) throws IOException {
-    return new DefaultCredentialsProvider(kmsProperties);
+    this.credentialsProvider =
+        properties.getCredentials().hasKey()
+            ? new DefaultCredentialsProvider(properties)
+            : credentialsProvider;
   }
 
   @Bean
@@ -60,7 +62,7 @@ public class GcpKmsAutoConfiguration {
       throws IOException {
     KeyManagementServiceSettings settings =
         KeyManagementServiceSettings.newBuilder()
-            .setCredentialsProvider(googleCredentials)
+            .setCredentialsProvider(this.credentialsProvider)
             .setHeaderProvider(new UserAgentHeaderProvider(GcpKmsAutoConfiguration.class))
             .build();
 
