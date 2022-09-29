@@ -66,12 +66,6 @@ class KmsAutoConfigurationTests {
   static class TestBootstrapConfiguration {
 
     @Bean
-    public static KeyManagementServiceClient keyManagementClient() {
-      KeyManagementServiceClient client = mock(KeyManagementServiceClient.class);
-      return client;
-    }
-
-    @Bean
     public static CredentialsProvider googleCredentials() {
       return () -> mock(Credentials.class);
     }
