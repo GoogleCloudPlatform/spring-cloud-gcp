@@ -221,7 +221,7 @@ and operational, ready to interact with your SQL database.
 ### Cloud SQL IAM database authentication
 
 Currently, Cloud SQL only supports [IAM database authentication for
-PostgreSQL](https://cloud.google.com/sql/docs/postgres/authentication:).
+PostgreSQL](https://cloud.google.com/sql/docs/postgres/authentication).
 It allows you to connect to the database using an IAM account, rather
 than a predefined database username and password. You will need to do
 the following to enable it:
