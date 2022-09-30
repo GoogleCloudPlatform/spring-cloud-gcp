@@ -74,28 +74,32 @@ class KmsAutoConfigurationTests {
 
   @Test
   void testShouldTakeCoreCredentials() {
-    this.contextRunner.run(ctx -> {
-      KeyManagementServiceClient client = ctx.getBean(KeyManagementServiceClient.class);
-      Credentials credentials = client.getSettings().getCredentialsProvider().getCredentials();
-      assertThat(((UserCredentials) credentials).getClientId()).isEqualTo(
-          CORE_CREDENTIAL_CLIENT_ID);
-    });
+    this.contextRunner
+        .run(ctx -> {
+          KeyManagementServiceClient client = ctx.getBean(KeyManagementServiceClient.class);
+          Credentials credentials = client.getSettings().getCredentialsProvider().getCredentials();
+          assertThat(((UserCredentials) credentials).getClientId()).isEqualTo(
+              CORE_CREDENTIAL_CLIENT_ID);
+        });
   }
 
   @Test
   void testShouldTakeKmsCredentials() {
-    this.contextRunner.withPropertyValues(
-        "spring.cloud.gcp.kms.credentials.location=file:" + KMS_CREDENTIAL_LOCATION).run(ctx -> {
-      KeyManagementServiceClient client = ctx.getBean(KeyManagementServiceClient.class);
-      Credentials credentials = client.getSettings().getCredentialsProvider().getCredentials();
-      assertThat(((ServiceAccountCredentials) credentials).getClientId()).isEqualTo(
-          KMS_CREDENTIAL_CLIENT_ID);
-    });
+    this.contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.kms.credentials.location=file:" + KMS_CREDENTIAL_LOCATION)
+        .run(ctx -> {
+          KeyManagementServiceClient client = ctx.getBean(KeyManagementServiceClient.class);
+          Credentials credentials = client.getSettings().getCredentialsProvider().getCredentials();
+          assertThat(((ServiceAccountCredentials) credentials).getClientId()).isEqualTo(
+              KMS_CREDENTIAL_CLIENT_ID);
+        });
   }
 
   @Test
   void testShouldTakeKmsProjectIdWhenPresent() {
-    this.contextRunner.withPropertyValues("spring.cloud.gcp.kms.project-id=" + KMS_PROJECT_NAME)
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.kms.project-id=" + KMS_PROJECT_NAME)
         .run(ctx -> {
           GcpKmsAutoConfiguration autoConfiguration = ctx.getBean(GcpKmsAutoConfiguration.class);
           assertThat(autoConfiguration.getGcpProjectIdProvider().getProjectId()).isEqualTo(
@@ -105,11 +109,12 @@ class KmsAutoConfigurationTests {
 
   @Test
   void testShouldTakeCoreProjectId() {
-    this.contextRunner.run(ctx -> {
-      GcpKmsAutoConfiguration autoConfiguration = ctx.getBean(GcpKmsAutoConfiguration.class);
-      assertThat(autoConfiguration.getGcpProjectIdProvider().getProjectId()).isEqualTo(
-          CORE_PROJECT_NAME);
-    });
+    this.contextRunner
+        .run(ctx -> {
+          GcpKmsAutoConfiguration autoConfiguration = ctx.getBean(GcpKmsAutoConfiguration.class);
+          assertThat(autoConfiguration.getGcpProjectIdProvider().getProjectId()).isEqualTo(
+              CORE_PROJECT_NAME);
+        });
   }
 
   @Configuration
