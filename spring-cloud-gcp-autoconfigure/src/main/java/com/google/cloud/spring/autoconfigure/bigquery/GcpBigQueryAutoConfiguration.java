@@ -36,6 +36,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 
 /** Provides client objects for interfacing with BigQuery. */
 @Configuration(proxyBeanMethods = false)
@@ -105,6 +106,7 @@ public class GcpBigQueryAutoConfiguration {
     Map<String, Object> bqInitSettings = new HashMap<>();
     bqInitSettings.put("DATASET_NAME", this.datasetName);
     bqInitSettings.put("JSON_WRITER_BATCH_SIZE", this.jsonWriterBatchSize);
-    return new BigQueryTemplate(bigQuery, bigQueryWriteClient, bqInitSettings);
+    return new BigQueryTemplate(
+        bigQuery, bigQueryWriteClient, bqInitSettings, new DefaultManagedTaskScheduler());
   }
 }
