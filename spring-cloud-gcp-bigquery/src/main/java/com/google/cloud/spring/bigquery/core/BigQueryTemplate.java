@@ -88,11 +88,12 @@ public class BigQueryTemplate implements BigQueryOperations {
   private int jsonWriterBatchSize;
 
   /**
-   * @deprecated As of release 3.3.1, use
-   *     BigQueryTemplate(bigQuery,bigQueryWriteClient,bqInitSettings,taskScheduler) instead
-   *     <p>Creates the {@link BigQuery} template.
+   * Creates the {@link BigQuery} template.
+   *
    * @param bigQuery the underlying client object used to interface with BigQuery
    * @param datasetName the name of the dataset in which all operations will take place
+   * @deprecated As of release 3.3.1, use
+   *     BigQueryTemplate(BigQuery,BigQueryWriteClient,Map,TaskScheduler) instead
    */
   @Deprecated
   public BigQueryTemplate(BigQuery bigQuery, String datasetName) {
@@ -100,13 +101,14 @@ public class BigQueryTemplate implements BigQueryOperations {
   }
 
   /**
-   * @deprecated As of release 3.3.1, use
-   *     BigQueryTemplate(bigQuery,bigQueryWriteClient,bqInitSettings,taskScheduler) instead
-   *     <p>Creates the {@link BigQuery} template.
+   * Creates the {@link BigQuery} template.
+   *
    * @param bigQuery the underlying client object used to interface with BigQuery
    * @param datasetName the name of the dataset in which all operations will take place
    * @param taskScheduler the {@link TaskScheduler} used to poll for the status of long-running
    *     BigQuery operations
+   * @deprecated As of release 3.3.1, use
+   *     BigQueryTemplate(BigQuery,BigQueryWriteClient,Map,TaskScheduler) instead
    */
   @Deprecated
   public BigQueryTemplate(BigQuery bigQuery, String datasetName, TaskScheduler taskScheduler) {
