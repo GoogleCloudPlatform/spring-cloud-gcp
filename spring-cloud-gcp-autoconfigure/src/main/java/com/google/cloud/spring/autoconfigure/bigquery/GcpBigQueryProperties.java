@@ -42,8 +42,19 @@ public class GcpBigQueryProperties implements CredentialsSupplier {
    */
   private int jsonWriterBatchSize;
 
+  /** The size of thread pool of ThreadPoolTaskScheduler used by GcpBigQueryAutoConfiguration */
+  private int threadPoolSize;
+
   public int getJsonWriterBatchSize() {
     return jsonWriterBatchSize;
+  }
+
+  public int getThreadPoolSize() {
+    return threadPoolSize;
+  }
+
+  public void setThreadPoolSize(int threadPoolSize) {
+    this.threadPoolSize = threadPoolSize;
   }
 
   public void setJsonWriterBatchSize(int jsonWriterBatchSize) {
