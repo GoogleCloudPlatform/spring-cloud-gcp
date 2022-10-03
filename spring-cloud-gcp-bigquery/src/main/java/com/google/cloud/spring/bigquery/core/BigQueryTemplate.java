@@ -88,60 +88,63 @@ public class BigQueryTemplate implements BigQueryOperations {
   private int jsonWriterBatchSize;
 
   /**
-   * Creates the {@link BigQuery} template.
-   *
+   * @deprecated As of release 3.3.1, use
+   *     BigQueryTemplate(bigQuery,bigQueryWriteClient,bqInitSettings,taskScheduler) instead
+   *     <p>Creates the {@link BigQuery} template.
    * @param bigQuery the underlying client object used to interface with BigQuery
-   * @param bigQueryWriteClient the underlying BigQueryWriteClient reference use to connect with
-   *     BigQuery Storage Write Client
    * @param datasetName the name of the dataset in which all operations will take place
    */
-  public BigQueryTemplate(
-      BigQuery bigQuery, BigQueryWriteClient bigQueryWriteClient, String datasetName) {
-    this(bigQuery, bigQueryWriteClient, datasetName, new DefaultManagedTaskScheduler());
+  @Deprecated
+  public BigQueryTemplate(BigQuery bigQuery, String datasetName) {
+    this(bigQuery, datasetName, new DefaultManagedTaskScheduler());
   }
 
   /**
-   * Creates the {@link BigQuery} template.
+   * @deprecated As of release 3.3.1, use
+   *     BigQueryTemplate(bigQuery,bigQueryWriteClient,bqInitSettings,taskScheduler) instead
+   *     <p>Creates the {@link BigQuery} template.
+   * @param bigQuery the underlying client object used to interface with BigQuery
+   * @param datasetName the name of the dataset in which all operations will take place
+   * @param taskScheduler the {@link TaskScheduler} used to poll for the status of long-running
+   *     BigQuery operations
+   */
+  @Deprecated
+  public BigQueryTemplate(BigQuery bigQuery, String datasetName, TaskScheduler taskScheduler) {
+    Assert.notNull(bigQuery, "BigQuery client object must not be null.");
+    Assert.notNull(datasetName, "Dataset name must not be null");
+    Assert.notNull(taskScheduler, "TaskScheduler must not be null");
+
+    this.bigQuery = bigQuery;
+    this.datasetName = datasetName;
+    this.taskScheduler = taskScheduler;
+    this.bigQueryWriteClient =
+        null; // This constructor is Deprecated. We cannot use BigQueryWriteClient with this
+  }
+
+  /**
+   * A Full constructor which creates the {@link BigQuery} template.
    *
    * @param bigQuery the underlying client object used to interface with BigQuery
    * @param bigQueryWriteClient the underlying BigQueryWriteClient reference use to connect with
    *     BigQuery Storage Write Client
    * @param bqInitSettings Properties required for initialisation of this class
-   */
-  public BigQueryTemplate(
-      BigQuery bigQuery,
-      BigQueryWriteClient bigQueryWriteClient,
-      Map<String, Object> bqInitSettings) {
-    this(
-        bigQuery,
-        bigQueryWriteClient,
-        (String) bqInitSettings.get("DATASET_NAME"),
-        new DefaultManagedTaskScheduler());
-    jsonWriterBatchSize =
-        (Integer)
-            bqInitSettings.getOrDefault(
-                "JSON_WRITER_BATCH_SIZE", DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE);
-  }
-
-  /**
-   * Creates the {@link BigQuery} template.
-   *
-   * @param bigQuery the underlying client object used to interface with BigQuery
-   * @param bigQueryWriteClient the underlying BigQueryWriteClient reference use to connect with
-   *     BigQuery Storage Write Client
-   * @param datasetName the name of the dataset in which all operations will take place
    * @param taskScheduler the {@link TaskScheduler} used to poll for the status of long-running
    *     BigQuery operations
    */
   public BigQueryTemplate(
       BigQuery bigQuery,
       BigQueryWriteClient bigQueryWriteClient,
-      String datasetName,
+      Map<String, Object> bqInitSettings,
       TaskScheduler taskScheduler) {
+    String datasetName = (String) bqInitSettings.get("DATASET_NAME");
     Assert.notNull(bigQuery, "BigQuery client object must not be null.");
     Assert.notNull(datasetName, "Dataset name must not be null");
     Assert.notNull(taskScheduler, "TaskScheduler must not be null");
-
+    Assert.notNull(bigQueryWriteClient, "BigQueryWriteClient must not be null");
+    jsonWriterBatchSize =
+        (Integer)
+            bqInitSettings.getOrDefault(
+                "JSON_WRITER_BATCH_SIZE", DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE);
     this.bigQuery = bigQuery;
     this.datasetName = datasetName;
     this.taskScheduler = taskScheduler;
