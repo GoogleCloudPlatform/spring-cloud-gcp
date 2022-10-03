@@ -276,7 +276,7 @@ public class BigQueryTemplate implements BigQueryOperations {
                 writeApiFutureResponse.set(apiResponse);
               } catch (DescriptorValidationException | IOException e) {
                 writeApiFutureResponse.setException(e);
-                logger.warn(String.format("Error: %s\n", e.getMessage()), e);
+                logger.warn(String.format("Error: %s %n", e.getMessage()), e);
               } catch (InterruptedException e) {
                 writeApiFutureResponse.setException(e);
                 // Restore interrupted state in case of an InterruptedException
@@ -289,10 +289,8 @@ public class BigQueryTemplate implements BigQueryOperations {
 
     // register success and failure callback
     writeApiFutureResponse.addCallback(
-        (res) -> {
-          logger.info("Data successfully written");
-        },
-        (res) -> {
+        res -> logger.info("Data successfully written"),
+        res -> {
           asyncTask.interrupt(); // interrupt the thread as the developer might have cancelled the
           // Future.
           // This can be replaced with interrupting the ExecutorService when it has been wired-in
@@ -316,8 +314,6 @@ public class BigQueryTemplate implements BigQueryOperations {
 
     // Initialize a write stream for the specified table.
     BigQueryJsonDataWriter writer = getBigQueryJsonDataWriter(parentTable);
-
-    // new BigQueryJsonDataWriter(parentTable, bigQueryWriteClient);
 
     try {
       // Write data in batches. Ref: https://cloud.google.com/bigquery/quotas#write-api-limits
@@ -345,7 +341,6 @@ public class BigQueryTemplate implements BigQueryOperations {
           != 0) { // there might be records less than JSON_STREAM_WRITER_BATCH_SIZE, append those as
         // well
         writer.append(jsonBatch, offset);
-        offset += jsonBatch.length();
       }
 
     } catch (ExecutionException e) {
@@ -357,14 +352,14 @@ public class BigQueryTemplate implements BigQueryOperations {
 
     BatchCommitWriteStreamsResponse commitResponse = getCommitResponse(parentTable, writer);
     // If the response does not have a commit time, it means the commit operation failed.
-    if (commitResponse.hasCommitTime() == false) {
+    if (!commitResponse.hasCommitTime()) {
       for (StorageError err : commitResponse.getStreamErrorsList()) {
         apiResponse.addError(err); // this object is returned to the user
       }
     }
 
     // set isSucccessful flag to true of there were no errors
-    if (apiResponse.getErrors().size() == 0) {
+    if (apiResponse.getErrors().isEmpty()) {
       apiResponse.setSuccessful(true);
     }
 
@@ -380,9 +375,7 @@ public class BigQueryTemplate implements BigQueryOperations {
             .setParent(parentTable.toString())
             .addWriteStreams(writer.getStreamName())
             .build();
-    BatchCommitWriteStreamsResponse commitResponse =
-        bigQueryWriteClient.batchCommitWriteStreams(commitRequest);
-    return commitResponse;
+    return bigQueryWriteClient.batchCommitWriteStreams(commitRequest);
   }
 
   /**
