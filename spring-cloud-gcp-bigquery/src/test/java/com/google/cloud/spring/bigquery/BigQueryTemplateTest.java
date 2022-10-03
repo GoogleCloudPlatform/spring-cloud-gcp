@@ -42,12 +42,15 @@ import com.google.protobuf.Descriptors.DescriptorValidationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.util.concurrent.ListenableFuture;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -60,11 +63,13 @@ public class BigQueryTemplateTest {
   private static final String PROJECT = "project";
   private static final String DATASET = "dataset";
   private static final String TABLE = "table";
+  private static final int JSON_WRITER_BATCH_SIZE = 1000;
 
   private BigQueryRpcFactory rpcFactoryMock;
   private BigQueryRpc bigqueryRpcMock;
   private BigQuery bigquery;
   private BigQueryOptions options;
+  private Map<String, Object> bqInitSettings = new HashMap<>();
 
   private Schema getDefaultSchema() {
     return Schema.of(
@@ -86,6 +91,8 @@ public class BigQueryTemplateTest {
     options = createBigQueryOptionsForProject(PROJECT, rpcFactoryMock);
     bigQueryWriteClientMock = mock(BigQueryWriteClient.class);
     bigquery = options.getService();
+    bqInitSettings.put("DATASET_NAME", DATASET);
+    bqInitSettings.put("JSON_WRITER_BATCH_SIZE", JSON_WRITER_BATCH_SIZE);
   }
 
   private BigQueryOptions createBigQueryOptionsForProject(
@@ -100,7 +107,9 @@ public class BigQueryTemplateTest {
   @Test
   public void getWriteApiResponseTest()
       throws DescriptorValidationException, IOException, InterruptedException {
-    BigQueryTemplate bqTemplate = new BigQueryTemplate(bigquery, bigQueryWriteClientMock, DATASET);
+    BigQueryTemplate bqTemplate =
+        new BigQueryTemplate(
+            bigquery, bigQueryWriteClientMock, bqInitSettings, new DefaultManagedTaskScheduler());
     BigQueryTemplate bqTemplateSpy = Mockito.spy(bqTemplate);
     InputStream jsoninputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
 
@@ -125,7 +134,9 @@ public class BigQueryTemplateTest {
   public void writeJsonStreamTest()
       throws DescriptorValidationException, IOException, InterruptedException, ExecutionException {
 
-    BigQueryTemplate bqTemplate = new BigQueryTemplate(bigquery, bigQueryWriteClientMock, DATASET);
+    BigQueryTemplate bqTemplate =
+        new BigQueryTemplate(
+            bigquery, bigQueryWriteClientMock, bqInitSettings, new DefaultManagedTaskScheduler());
     BigQueryTemplate bqTemplateSpy = Mockito.spy(bqTemplate);
     InputStream jsoninputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
     WriteApiResponse apiResponse = new WriteApiResponse();
@@ -145,7 +156,9 @@ public class BigQueryTemplateTest {
   public void writeJsonStreamWithSchemaTest()
       throws DescriptorValidationException, IOException, InterruptedException, ExecutionException {
 
-    BigQueryTemplate bqTemplate = new BigQueryTemplate(bigquery, bigQueryWriteClientMock, DATASET);
+    BigQueryTemplate bqTemplate =
+        new BigQueryTemplate(
+            bigquery, bigQueryWriteClientMock, bqInitSettings, new DefaultManagedTaskScheduler());
     BigQueryTemplate bqTemplateSpy = Mockito.spy(bqTemplate);
     InputStream jsoninputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
     WriteApiResponse apiResponse = new WriteApiResponse();
