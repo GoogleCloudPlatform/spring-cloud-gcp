@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.bigquery;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.storage.v1.BigQueryWriteClient;
@@ -92,8 +91,7 @@ public class GcpBigQueryAutoConfiguration {
   public BigQueryWriteClient bigQueryWriteClient() throws IOException {
     BigQueryWriteSettings bigQueryWriteSettings =
         BigQueryWriteSettings.newBuilder()
-            .setCredentialsProvider(
-                FixedCredentialsProvider.create(this.credentialsProvider.getCredentials()))
+            .setCredentialsProvider(this.credentialsProvider)
             .setQuotaProjectId(this.projectId)
             .setHeaderProvider(new UserAgentHeaderProvider(GcpBigQueryAutoConfiguration.class))
             .build();
