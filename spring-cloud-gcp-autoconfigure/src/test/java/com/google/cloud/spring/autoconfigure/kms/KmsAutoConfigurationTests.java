@@ -36,9 +36,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Unit tests for {@link GcpKmsAutoConfiguration}.
- */
+/** Unit tests for {@link GcpKmsAutoConfiguration}. */
 class KmsAutoConfigurationTests {
 
   private static final String CORE_PROJECT_NAME = "core-project";
@@ -47,10 +45,13 @@ class KmsAutoConfigurationTests {
   private static final String CORE_CREDENTIAL_CLIENT_ID = "12345";
   private static final String KMS_CREDENTIAL_CLIENT_ID = "45678";
 
-  private SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
-      TestConfiguration.class, GcpKmsAutoConfiguration.class).properties(
-      "spring.cloud.gcp.kms.project-id=" + KMS_PROJECT_NAME, "spring.cloud.bootstrap.enabled=true",
-      "spring.cloud.gcp.sql.enabled=false").web(WebApplicationType.NONE);
+  private SpringApplicationBuilder applicationBuilder =
+      new SpringApplicationBuilder(TestConfiguration.class, GcpKmsAutoConfiguration.class)
+          .properties(
+              "spring.cloud.gcp.kms.project-id=" + KMS_PROJECT_NAME,
+              "spring.cloud.bootstrap.enabled=true",
+              "spring.cloud.gcp.sql.enabled=false")
+          .web(WebApplicationType.NONE);
 
   private ApplicationContextRunner contextRunner = new ApplicationContextRunner().withConfiguration(
           AutoConfigurations.of(GcpKmsAutoConfiguration.class))
