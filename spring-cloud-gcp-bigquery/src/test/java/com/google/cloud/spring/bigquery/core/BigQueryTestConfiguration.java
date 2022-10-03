@@ -22,6 +22,8 @@ import com.google.cloud.bigquery.JobInfo.WriteDisposition;
 import com.google.cloud.bigquery.storage.v1.BigQueryWriteClient;
 import com.google.cloud.spring.bigquery.integration.outbound.BigQueryFileMessageHandler;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.config.EnableIntegration;
@@ -34,6 +36,9 @@ public class BigQueryTestConfiguration {
 
   /** The BigQuery Dataset name used for the integration tests. */
   public static final String DATASET_NAME = "test_dataset";
+
+  /** The BigQuery Write API Batch Size to used for the integration tests. */
+  private static final int JSON_WRITER_BATCH_SIZE = 1000;
 
   @Bean
   public BigQuery bigQuery() {
@@ -48,8 +53,11 @@ public class BigQueryTestConfiguration {
   @Bean
   public BigQueryTemplate bigQueryTemplate(
       BigQuery bigQuery, BigQueryWriteClient bigQueryWriteClient, TaskScheduler taskScheduler) {
+    Map<String, Object> bqInitSettings = new HashMap<>();
+    bqInitSettings.put("DATASET_NAME", DATASET_NAME);
+    bqInitSettings.put("JSON_WRITER_BATCH_SIZE", JSON_WRITER_BATCH_SIZE);
     BigQueryTemplate bigQueryTemplate =
-        new BigQueryTemplate(bigQuery, bigQueryWriteClient, DATASET_NAME, taskScheduler);
+        new BigQueryTemplate(bigQuery, bigQueryWriteClient, bqInitSettings, taskScheduler);
     bigQueryTemplate.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE);
     return bigQueryTemplate;
   }
