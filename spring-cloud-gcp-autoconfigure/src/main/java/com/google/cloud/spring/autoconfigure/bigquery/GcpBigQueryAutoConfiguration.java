@@ -29,6 +29,7 @@ import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -36,7 +37,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /** Provides client objects for interfacing with BigQuery. */
 @Configuration(proxyBeanMethods = false)
@@ -53,6 +54,8 @@ public class GcpBigQueryAutoConfiguration {
   private final String datasetName;
 
   private int jsonWriterBatchSize;
+
+  private int threadPoolSize;
 
   GcpBigQueryAutoConfiguration(
       GcpBigQueryProperties gcpBigQueryProperties,
@@ -73,6 +76,21 @@ public class GcpBigQueryAutoConfiguration {
     this.datasetName = gcpBigQueryProperties.getDatasetName();
 
     this.jsonWriterBatchSize = gcpBigQueryProperties.getJsonWriterBatchSize();
+
+    this.threadPoolSize = getThreadPoolSize(gcpBigQueryProperties.getThreadPoolSize());
+  }
+  /**
+   * This method ensures that we use the DEFAULT_THREAD_POOL_SIZE if the user doesn't set this
+   * property or if they set it too high
+   *
+   * @return threadPoolSize
+   */
+  private int getThreadPoolSize(int threadPoolSize) {
+    int DEFAULT_THREAD_POOL_SIZE = 4;
+    int MAX_THREAD_POOL_SIZE = 100;
+    return (threadPoolSize <= 0 || threadPoolSize > MAX_THREAD_POOL_SIZE)
+        ? DEFAULT_THREAD_POOL_SIZE
+        : threadPoolSize;
   }
 
   @Bean
@@ -100,13 +118,26 @@ public class GcpBigQueryAutoConfiguration {
   }
 
   @Bean
+  @ConditionalOnMissingBean(name = "bigQueryThreadPoolTaskScheduler")
+  public ThreadPoolTaskScheduler bigQueryThreadPoolTaskScheduler() {
+    ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+    scheduler.setPoolSize(threadPoolSize);
+    scheduler.setThreadNamePrefix("gcp-bigquery");
+    scheduler.setDaemon(true);
+    return scheduler;
+  }
+
+  @Bean
   @ConditionalOnMissingBean
   public BigQueryTemplate bigQueryTemplate(
-      BigQuery bigQuery, BigQueryWriteClient bigQueryWriteClient) {
+      BigQuery bigQuery,
+      BigQueryWriteClient bigQueryWriteClient,
+      @Qualifier("bigQueryThreadPoolTaskScheduler")
+          ThreadPoolTaskScheduler bigQueryThreadPoolTaskScheduler) {
     Map<String, Object> bqInitSettings = new HashMap<>();
     bqInitSettings.put("DATASET_NAME", this.datasetName);
     bqInitSettings.put("JSON_WRITER_BATCH_SIZE", this.jsonWriterBatchSize);
     return new BigQueryTemplate(
-        bigQuery, bigQueryWriteClient, bqInitSettings, new DefaultManagedTaskScheduler());
+        bigQuery, bigQueryWriteClient, bqInitSettings, bigQueryThreadPoolTaskScheduler);
   }
 }
