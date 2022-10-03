@@ -79,6 +79,7 @@ public class GcpBigQueryAutoConfiguration {
 
     this.threadPoolSize = getThreadPoolSize(gcpBigQueryProperties.getThreadPoolSize());
   }
+
   /**
    * This method ensures that we use the DEFAULT_THREAD_POOL_SIZE if the user doesn't set this
    * property or if they set it too high
@@ -86,10 +87,10 @@ public class GcpBigQueryAutoConfiguration {
    * @return threadPoolSize
    */
   private int getThreadPoolSize(int threadPoolSize) {
-    int DEFAULT_THREAD_POOL_SIZE = 4;
-    int MAX_THREAD_POOL_SIZE = 100;
-    return (threadPoolSize <= 0 || threadPoolSize > MAX_THREAD_POOL_SIZE)
-        ? DEFAULT_THREAD_POOL_SIZE
+    int defaultThreadPoolSize = 4;
+    int maxThreadPoolSize = 100;
+    return (threadPoolSize <= 0 || threadPoolSize > maxThreadPoolSize)
+        ? defaultThreadPoolSize
         : threadPoolSize;
   }
 
