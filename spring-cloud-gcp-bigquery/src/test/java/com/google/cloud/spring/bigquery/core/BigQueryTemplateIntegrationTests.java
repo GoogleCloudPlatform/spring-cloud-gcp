@@ -131,7 +131,7 @@ class BigQueryTemplateIntegrationTests {
 
     WriteApiResponse writeApiResponse =
         writeApiFuture.get(); // wait for the response to be available
-    assertThat(writeApiResponse.isSuccessful()).isEqualTo(true);
+    assertThat(writeApiResponse.isSuccessful()).isTrue();
 
     QueryJobConfiguration queryJobConfiguration =
         QueryJobConfiguration.newBuilder(this.selectQueryDesc).build();
