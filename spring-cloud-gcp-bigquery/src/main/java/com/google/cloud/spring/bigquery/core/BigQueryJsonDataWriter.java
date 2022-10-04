@@ -133,7 +133,7 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
     private final Logger logger = LoggerFactory.getLogger(AppendCompleteCallback.class);
 
     public void onSuccess(AppendRowsResponse response) {
-      logger.info("\nAppend {} success", response.getAppendResult().getOffset().getValue());
+      logger.info("Append {} success", response.getAppendResult().getOffset().getValue());
       done();
     }
 
