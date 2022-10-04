@@ -28,17 +28,21 @@ import com.google.cloud.bigquery.storage.v1.FinalizeWriteStreamResponse;
 import com.google.cloud.bigquery.storage.v1.JsonStreamWriter;
 import com.google.cloud.bigquery.storage.v1.TableName;
 import com.google.cloud.bigquery.storage.v1.WriteStream;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Phaser;
 import javax.annotation.concurrent.GuardedBy;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Helper class for using BigQuery storage write API in exactly once delivery mode */
+/**
+ * Helper class for using BigQuery storage write API in exactly once delivery mode. Avoid using this
+ * class directly in your code, this class has been exposed outside for testing.
+ */
+@VisibleForTesting
 public class BigQueryJsonDataWriter implements AutoCloseable {
 
   private final JsonStreamWriter streamWriter;
@@ -55,11 +59,13 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
   private RuntimeException error = null;
 
   /**
+   * Package-Private constructor for initializing BigQueryJsonDataWriter
+   *
    * @param parentTable against which the writer has to be initialized
    * @param bigQueryWriteClient BigQueryWriteClient reference which has to be used for writing to
    *     the database
    */
-  public BigQueryJsonDataWriter(TableName parentTable, BigQueryWriteClient bigQueryWriteClient)
+  BigQueryJsonDataWriter(TableName parentTable, BigQueryWriteClient bigQueryWriteClient)
       throws DescriptorValidationException, IOException, InterruptedException {
     // Initialize a write stream for the specified table.
     // For more information on WriteStream.Type, see:
@@ -86,7 +92,7 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
    * @param offset offset at which data has to be added
    */
   public void append(JSONArray data, long offset)
-      throws DescriptorValidationException, IOException, ExecutionException {
+      throws DescriptorValidationException, IOException {
     synchronized (this.lock) {
       // If earlier appends have failed, we need to reset before continuing.
       if (this.error != null) {
@@ -115,7 +121,7 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
     // Finalize the stream.
     FinalizeWriteStreamResponse finalizeResponse =
         bigQueryWriteClient.finalizeWriteStream(streamWriter.getStreamName());
-    logger.info("\nRows written: " + finalizeResponse.getRowCount());
+    logger.info("Rows written: {}", finalizeResponse.getRowCount());
   }
 
   public String getStreamName() {
@@ -143,7 +149,7 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
           error = (storageException != null) ? storageException : new RuntimeException(throwable);
         }
       }
-      logger.warn(String.format("Error: %s\n", throwable.toString()), throwable);
+      logger.warn("Error: {}", throwable.toString());
       done();
     }
 
