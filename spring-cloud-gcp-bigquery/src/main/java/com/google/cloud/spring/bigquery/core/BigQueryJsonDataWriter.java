@@ -28,7 +28,6 @@ import com.google.cloud.bigquery.storage.v1.FinalizeWriteStreamResponse;
 import com.google.cloud.bigquery.storage.v1.JsonStreamWriter;
 import com.google.cloud.bigquery.storage.v1.TableName;
 import com.google.cloud.bigquery.storage.v1.WriteStream;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import java.io.IOException;
@@ -38,11 +37,7 @@ import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Helper class for using BigQuery storage write API in exactly once delivery mode. Avoid using this
- * class directly in your code, this class has been exposed outside for testing.
- */
-@VisibleForTesting
+/** Helper class for using BigQuery storage write API in exactly once delivery mode. */
 public class BigQueryJsonDataWriter implements AutoCloseable {
 
   private final JsonStreamWriter streamWriter;
