@@ -44,7 +44,6 @@ import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -138,9 +137,9 @@ public class BigQueryTemplate implements BigQueryOperations {
       BigQueryWriteClient bigQueryWriteClient,
       Map<String, Object> bqInitSettings,
       TaskScheduler taskScheduler) {
-    String datasetName = (String) bqInitSettings.get("DATASET_NAME");
+    String bqDatasetName = (String) bqInitSettings.get("DATASET_NAME");
     Assert.notNull(bigQuery, "BigQuery client object must not be null.");
-    Assert.notNull(datasetName, "Dataset name must not be null");
+    Assert.notNull(bqDatasetName, "Dataset name must not be null");
     Assert.notNull(taskScheduler, "TaskScheduler must not be null");
     Assert.notNull(bigQueryWriteClient, "BigQueryWriteClient must not be null");
     jsonWriterBatchSize =
@@ -148,7 +147,7 @@ public class BigQueryTemplate implements BigQueryOperations {
             bqInitSettings.getOrDefault(
                 "JSON_WRITER_BATCH_SIZE", DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE);
     this.bigQuery = bigQuery;
-    this.datasetName = datasetName;
+    this.datasetName = bqDatasetName;
     this.taskScheduler = taskScheduler;
     this.bigQueryWriteClient = bigQueryWriteClient;
   }
@@ -348,7 +347,7 @@ public class BigQueryTemplate implements BigQueryOperations {
         writer.append(jsonBatch, offset);
       }
 
-    } catch (ExecutionException e) {
+    } catch (Exception e) {
       throw new BigQueryException("Failed to append records. \n" + e);
     }
 
