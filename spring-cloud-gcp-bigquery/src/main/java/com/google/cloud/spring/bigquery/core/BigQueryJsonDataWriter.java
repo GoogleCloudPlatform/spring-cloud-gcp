@@ -138,13 +138,15 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
     }
 
     public void onFailure(Throwable throwable) {
+      String errMsg = null;
       synchronized (lock) {
         if (error == null) {
           StorageException storageException = Exceptions.toStorageException(throwable);
           error = (storageException != null) ? storageException : new RuntimeException(throwable);
+          errMsg = error.getMessage();
         }
       }
-      logger.warn("Error: {}", throwable);
+      logger.warn("Error: {}", errMsg);
       done();
     }
 
