@@ -144,7 +144,7 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
           error = (storageException != null) ? storageException : new RuntimeException(throwable);
         }
       }
-      logger.warn("Error: {}", throwable.toString());
+      logger.warn("Error: {}", throwable);
       done();
     }
 
