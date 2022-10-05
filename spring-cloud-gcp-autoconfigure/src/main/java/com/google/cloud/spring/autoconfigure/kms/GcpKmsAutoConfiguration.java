@@ -20,7 +20,6 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
 import com.google.cloud.kms.v1.KeyManagementServiceSettings;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
-import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.kms.KmsTemplate;
@@ -40,18 +39,26 @@ import org.springframework.context.annotation.Configuration;
 public class GcpKmsAutoConfiguration {
 
   private final GcpProjectIdProvider gcpProjectIdProvider;
+  private final CredentialsProvider credentialsProvider;
 
-  public GcpKmsAutoConfiguration(GcpKmsProperties properties) {
+  public GcpKmsAutoConfiguration(
+      GcpProjectIdProvider coreProjectIdProvider,
+      GcpKmsProperties properties,
+      CredentialsProvider credentialsProvider)
+      throws IOException {
     this.gcpProjectIdProvider =
         properties.getProjectId() != null
             ? properties::getProjectId
-            : new DefaultGcpProjectIdProvider();
+            : coreProjectIdProvider;
+
+    this.credentialsProvider =
+        properties.getCredentials().hasKey()
+            ? new DefaultCredentialsProvider(properties)
+            : credentialsProvider;
   }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public CredentialsProvider googleCredentials(GcpKmsProperties kmsProperties) throws IOException {
-    return new DefaultCredentialsProvider(kmsProperties);
+  GcpProjectIdProvider getGcpProjectIdProvider() {
+    return gcpProjectIdProvider;
   }
 
   @Bean
@@ -60,7 +67,7 @@ public class GcpKmsAutoConfiguration {
       throws IOException {
     KeyManagementServiceSettings settings =
         KeyManagementServiceSettings.newBuilder()
-            .setCredentialsProvider(googleCredentials)
+            .setCredentialsProvider(this.credentialsProvider)
             .setHeaderProvider(new UserAgentHeaderProvider(GcpKmsAutoConfiguration.class))
             .build();
 
