@@ -126,6 +126,7 @@
         <dependency>
             <groupId>dev.miku</groupId>
             <artifactId>r2dbc-mysql</artifactId>
+            <version>0.8.2.RELEASE</version>
             <optional>true</optional>
         </dependency>
 
@@ -139,6 +140,7 @@
         <dependency>
             <groupId>io.r2dbc</groupId>
             <artifactId>r2dbc-postgresql</artifactId>
+            <version>0.8.13.RELEASE</version>
             <optional>true</optional>
         </dependency>
 
