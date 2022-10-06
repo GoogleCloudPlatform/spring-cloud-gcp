@@ -19,12 +19,17 @@ package com.google.cloud.spring.autoconfigure.bigquery;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.bigquery.storage.v1.BigQueryWriteClient;
+import com.google.cloud.bigquery.storage.v1.BigQueryWriteSettings;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -32,6 +37,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /** Provides client objects for interfacing with BigQuery. */
 @Configuration(proxyBeanMethods = false)
@@ -46,6 +52,10 @@ public class GcpBigQueryAutoConfiguration {
   private final CredentialsProvider credentialsProvider;
 
   private final String datasetName;
+
+  private int jsonWriterBatchSize;
+
+  private int threadPoolSize;
 
   GcpBigQueryAutoConfiguration(
       GcpBigQueryProperties gcpBigQueryProperties,
@@ -64,6 +74,24 @@ public class GcpBigQueryAutoConfiguration {
             : credentialsProvider);
 
     this.datasetName = gcpBigQueryProperties.getDatasetName();
+
+    this.jsonWriterBatchSize = gcpBigQueryProperties.getJsonWriterBatchSize();
+
+    this.threadPoolSize = getThreadPoolSize(gcpBigQueryProperties.getThreadPoolSize());
+  }
+
+  /**
+   * This method ensures that we use the DEFAULT_THREAD_POOL_SIZE if the user doesn't set this
+   * property or if they set it too high
+   *
+   * @return threadPoolSize
+   */
+  private int getThreadPoolSize(int threadPoolSize) {
+    int defaultThreadPoolSize = 4;
+    int maxThreadPoolSize = 100;
+    return (threadPoolSize <= 0 || threadPoolSize > maxThreadPoolSize)
+        ? defaultThreadPoolSize
+        : threadPoolSize;
   }
 
   @Bean
@@ -80,7 +108,37 @@ public class GcpBigQueryAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public BigQueryTemplate bigQueryTemplate(BigQuery bigQuery) {
-    return new BigQueryTemplate(bigQuery, this.datasetName);
+  public BigQueryWriteClient bigQueryWriteClient() throws IOException {
+    BigQueryWriteSettings bigQueryWriteSettings =
+        BigQueryWriteSettings.newBuilder()
+            .setCredentialsProvider(this.credentialsProvider)
+            .setQuotaProjectId(this.projectId)
+            .setHeaderProvider(new UserAgentHeaderProvider(GcpBigQueryAutoConfiguration.class))
+            .build();
+    return BigQueryWriteClient.create(bigQueryWriteSettings);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean(name = "bigQueryThreadPoolTaskScheduler")
+  public ThreadPoolTaskScheduler bigQueryThreadPoolTaskScheduler() {
+    ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+    scheduler.setPoolSize(threadPoolSize);
+    scheduler.setThreadNamePrefix("gcp-bigquery");
+    scheduler.setDaemon(true);
+    return scheduler;
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public BigQueryTemplate bigQueryTemplate(
+      BigQuery bigQuery,
+      BigQueryWriteClient bigQueryWriteClient,
+      @Qualifier("bigQueryThreadPoolTaskScheduler")
+          ThreadPoolTaskScheduler bigQueryThreadPoolTaskScheduler) {
+    Map<String, Object> bqInitSettings = new HashMap<>();
+    bqInitSettings.put("DATASET_NAME", this.datasetName);
+    bqInitSettings.put("JSON_WRITER_BATCH_SIZE", this.jsonWriterBatchSize);
+    return new BigQueryTemplate(
+        bigQuery, bigQueryWriteClient, bqInitSettings, bigQueryThreadPoolTaskScheduler);
   }
 }

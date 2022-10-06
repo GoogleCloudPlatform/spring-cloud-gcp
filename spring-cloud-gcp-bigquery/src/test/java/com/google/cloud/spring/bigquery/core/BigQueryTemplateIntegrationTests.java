@@ -51,7 +51,7 @@ import org.springframework.util.concurrent.ListenableFuture;
  *
  * @since 1.2
  */
-//Please create a table "test_dataset" in BigQuery to run the tests successfully
+// Please create a table "test_dataset" in BigQuery to run the tests successfully
 @EnabledIfSystemProperty(named = "it.bigquery", matches = "true")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = BigQueryTestConfiguration.class)
@@ -67,15 +67,23 @@ class BigQueryTemplateIntegrationTests {
   @Value("data.csv")
   Resource dataFile;
 
+  @Value("data.json")
+  Resource jsonDataFile;
+
   private String tableName;
 
   private String selectQuery;
+
+  private String selectQueryDesc;
 
   @BeforeAll
   void generateRandomTableName() {
     String uuid = UUID.randomUUID().toString().replace("-", "");
     this.tableName = "template_test_table_" + uuid;
     this.selectQuery = String.format(SELECT_FORMAT, DATASET_NAME + "." + tableName);
+    this.selectQueryDesc =
+        String.format(
+            SELECT_FORMAT, DATASET_NAME + "." + tableName + " order by SerialNumber desc");
   }
 
   @AfterAll
@@ -106,6 +114,32 @@ class BigQueryTemplateIntegrationTests {
     assertThat(result.getTotalRows()).isEqualTo(1);
     assertThat(result.getValues().iterator().next().get("State").getStringValue())
         .isEqualTo("Alabama");
+  }
+
+  @Test
+  void testJsonFileLoadWithSchema() throws Exception {
+    Schema schema =
+        Schema.of(
+            Field.of("CompanyName", StandardSQLTypeName.STRING),
+            Field.of("Description", StandardSQLTypeName.STRING),
+            Field.of("SerialNumber", StandardSQLTypeName.NUMERIC),
+            Field.of("Leave", StandardSQLTypeName.NUMERIC),
+            Field.of("EmpName", StandardSQLTypeName.STRING));
+
+    ListenableFuture<WriteApiResponse> writeApiFuture =
+        bigQueryTemplate.writeJsonStream(tableName, jsonDataFile.getInputStream(), schema);
+
+    WriteApiResponse writeApiResponse =
+        writeApiFuture.get(); // wait for the response to be available
+    assertThat(writeApiResponse.isSuccessful()).isTrue();
+
+    QueryJobConfiguration queryJobConfiguration =
+        QueryJobConfiguration.newBuilder(this.selectQueryDesc).build();
+    TableResult result = this.bigQuery.query(queryJobConfiguration);
+
+    assertThat(result.getTotalRows()).isEqualTo(1089);
+    assertThat(result.getValues().iterator().next().get("SerialNumber").getLongValue())
+        .isEqualTo(9789386445658L);
   }
 
   @Test

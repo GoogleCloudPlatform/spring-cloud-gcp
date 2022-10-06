@@ -42,7 +42,8 @@ class GcpBigQueryAutoConfigurationTests {
                   GcpBigQueryAutoConfiguration.class, GcpContextAutoConfiguration.class))
           .withUserConfiguration(TestConfiguration.class)
           .withPropertyValues("spring.cloud.gcp.bigquery.project-id=test-project")
-          .withPropertyValues("spring.cloud.gcp.bigquery.datasetName=test-dataset");
+          .withPropertyValues("spring.cloud.gcp.bigquery.datasetName=test-dataset")
+          .withPropertyValues("spring.cloud.gcp.bigquery.jsonWriterBatchSize=2000");
 
   @Test
   void testSettingBigQueryOptions() {
@@ -54,6 +55,8 @@ class GcpBigQueryAutoConfigurationTests {
 
           BigQueryTemplate bigQueryTemplate = context.getBean(BigQueryTemplate.class);
           assertThat(bigQueryTemplate.getDatasetName()).isEqualTo("test-dataset");
+
+          assertThat(bigQueryTemplate.getJsonWriterBatchSize()).isEqualTo(2000);
         });
   }
 
