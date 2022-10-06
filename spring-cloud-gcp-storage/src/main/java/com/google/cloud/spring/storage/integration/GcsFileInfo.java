@@ -17,14 +17,14 @@
 package com.google.cloud.spring.storage.integration;
 
 import com.google.cloud.storage.BlobInfo;
-import java.util.Date;
+import java.time.Instant;
 import org.springframework.integration.file.remote.AbstractFileInfo;
 import org.springframework.util.Assert;
 
 /** An object that holds metadata information for a Cloud Storage file. */
 public class GcsFileInfo extends AbstractFileInfo<BlobInfo> {
 
-  private BlobInfo gcsFile;
+  private final BlobInfo gcsFile;
 
   public GcsFileInfo(BlobInfo gcsFile) {
     Assert.notNull(gcsFile, "The GCS blob can't be null.");
@@ -75,7 +75,7 @@ public class GcsFileInfo extends AbstractFileInfo<BlobInfo> {
         + ", Size="
         + getSize()
         + ", ModifiedTime="
-        + new Date(getModified())
+        + Instant.ofEpochSecond(getModified())
         + ", Filename="
         + getFilename()
         + ", RemoteDirectory="

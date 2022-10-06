@@ -327,20 +327,26 @@ public class GoogleStorageResource implements WritableResource {
   }
 
   /**
-   * @return the blob name of the Google Storage Resource; null if the resource is a bucket
+   * Returns the blob name of the Google Storage Resource; null if the resource is a bucket
+   *
+   * @return the blob name of the Google Storage Resource
    */
   public String getBlobName() {
     return this.location.getBlobName();
   }
 
   /**
-   * @return true if the resource is a bucket; false otherwise
+   * Returns true if the resource is a bucket; false otherwise
+   *
+   * @return whether the resource is a bucket
    */
   public boolean isBucket() {
     return this.location.isBucket();
   }
 
   /**
+   * Returns the bucket name of the Google Storage Resource
+   *
    * @return the bucket name of the Google Storage Resource
    */
   public String getBucketName() {
@@ -348,7 +354,9 @@ public class GoogleStorageResource implements WritableResource {
   }
 
   /**
-   * @return the {@link GoogleStorageLocation} describing the location of the resource in GCS
+   * Returns the {@link GoogleStorageLocation} describing the location of the resource in GCS
+   *
+   * @return the location of the resource in GCS
    * @since 1.2
    */
   public GoogleStorageLocation getGoogleStorageLocation() {
