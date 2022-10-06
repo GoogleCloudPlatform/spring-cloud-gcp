@@ -17,10 +17,12 @@
 package com.google.cloud.spring.logging;
 
 import com.google.cloud.spring.logging.extractors.TraceIdExtractor;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.HandlerInterceptor;
+
 
 /**
  * {@link org.springframework.web.servlet.HandlerInterceptor} that extracts the request trace ID
@@ -44,8 +46,11 @@ public class TraceIdLoggingWebMvcInterceptor implements HandlerInterceptor {
   }
 
   @Override
-  public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handler) {
-    String traceId = this.traceIdExtractor.extractTraceIdFromRequest(req);
+  public boolean preHandle(
+      @Nullable HttpServletRequest request,
+      @Nullable HttpServletResponse response,
+      @Nullable Object handler) {
+    String traceId = this.traceIdExtractor.extractTraceIdFromRequest(request);
     if (traceId != null) {
       TraceIdLoggingEnhancer.setCurrentTraceId(traceId);
     }
@@ -54,10 +59,10 @@ public class TraceIdLoggingWebMvcInterceptor implements HandlerInterceptor {
 
   @Override
   public void afterCompletion(
-      HttpServletRequest httpServletRequest,
-      HttpServletResponse httpServletResponse,
-      Object handler,
-      Exception e) {
+      @Nullable HttpServletRequest httpServletRequest,
+      @Nullable HttpServletResponse httpServletResponse,
+      @Nullable Object handler,
+      @Nullable Exception e) {
     // Note: the thread-local is currently not fully cleared, but just set to null
     // See: https://github.com/GoogleCloudPlatform/google-cloud-java/issues/2746
     TraceIdLoggingEnhancer.setCurrentTraceId(null);
