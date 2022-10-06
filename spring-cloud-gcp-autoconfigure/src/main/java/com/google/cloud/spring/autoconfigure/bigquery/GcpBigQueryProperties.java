@@ -36,6 +36,31 @@ public class GcpBigQueryProperties implements CredentialsSupplier {
   /** Name of the BigQuery dataset to use. */
   private String datasetName;
 
+  /**
+   * Batching size which will be used by BigQueryJsonDataWriter. Note too large or too low values
+   * might impact performance. Defaulted to 1000
+   */
+  private int jsonWriterBatchSize;
+
+  /** The size of thread pool of ThreadPoolTaskScheduler used by GcpBigQueryAutoConfiguration */
+  private int threadPoolSize;
+
+  public int getJsonWriterBatchSize() {
+    return jsonWriterBatchSize;
+  }
+
+  public int getThreadPoolSize() {
+    return threadPoolSize;
+  }
+
+  public void setThreadPoolSize(int threadPoolSize) {
+    this.threadPoolSize = threadPoolSize;
+  }
+
+  public void setJsonWriterBatchSize(int jsonWriterBatchSize) {
+    this.jsonWriterBatchSize = jsonWriterBatchSize;
+  }
+
   public Credentials getCredentials() {
     return this.credentials;
   }

@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## 3.3.1
+
+### BigQuery
+
+- BigQuery Storage Write API integration
+  (<https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1219>)
+
 ## 3.4.0-SNAPSHOT
 
 ### Pub/Sub
