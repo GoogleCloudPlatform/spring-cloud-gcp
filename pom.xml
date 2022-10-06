@@ -39,7 +39,7 @@
 
 		<!-- Dependency versions -->
 		<spring-cloud-dependencies.version>2021.0.4</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>2.6.12</spring-boot-dependencies.version>
+		<spring-boot-dependencies.version>3.0.0-M4</spring-boot-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.1</java-cfenv.version>
 		<spring-native.version>0.10.5</spring-native.version>
@@ -54,8 +54,8 @@
 		<maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 		<nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
 		<maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
@@ -677,6 +677,14 @@
 			</build>
 		</profile>
 	</profiles>
+
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>spring-milestones</name>
+			<url>https://repo.spring.io/milestone/</url>
+		</repository>
+	</repositories>
 
 	<licenses>
 		<license>
