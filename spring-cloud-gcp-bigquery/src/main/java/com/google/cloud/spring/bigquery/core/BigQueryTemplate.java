@@ -22,15 +22,33 @@ import com.google.cloud.bigquery.Job;
 import com.google.cloud.bigquery.JobInfo.WriteDisposition;
 import com.google.cloud.bigquery.JobStatus.State;
 import com.google.cloud.bigquery.Schema;
+import com.google.cloud.bigquery.StandardTableDefinition;
+import com.google.cloud.bigquery.Table;
 import com.google.cloud.bigquery.TableDataWriteChannel;
+import com.google.cloud.bigquery.TableDefinition;
 import com.google.cloud.bigquery.TableId;
+import com.google.cloud.bigquery.TableInfo;
 import com.google.cloud.bigquery.WriteChannelConfiguration;
+import com.google.cloud.bigquery.storage.v1.BatchCommitWriteStreamsRequest;
+import com.google.cloud.bigquery.storage.v1.BatchCommitWriteStreamsResponse;
+import com.google.cloud.bigquery.storage.v1.BigQueryWriteClient;
+import com.google.cloud.bigquery.storage.v1.StorageError;
+import com.google.cloud.bigquery.storage.v1.TableName;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.protobuf.Descriptors.DescriptorValidationException;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.util.Assert;
@@ -51,18 +69,32 @@ public class BigQueryTemplate implements BigQueryOperations {
 
   private final TaskScheduler taskScheduler;
 
+  private final BigQueryWriteClient bigQueryWriteClient;
+
   private boolean autoDetectSchema = true;
 
   private WriteDisposition writeDisposition = WriteDisposition.WRITE_APPEND;
 
   private Duration jobPollInterval = Duration.ofSeconds(2);
 
+  private static final int DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE =
+      1000; // write records in batches of 1000
+
+  private static final int MIN_JSON_STREAM_WRITER_BATCH_SIZE = 10; // minimum batch size
+
+  private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
+
+  private int jsonWriterBatchSize;
+
   /**
    * Creates the {@link BigQuery} template.
    *
    * @param bigQuery the underlying client object used to interface with BigQuery
    * @param datasetName the name of the dataset in which all operations will take place
+   * @deprecated As of release 3.3.1, use
+   *     BigQueryTemplate(BigQuery,BigQueryWriteClient,Map,TaskScheduler) instead
    */
+  @Deprecated
   public BigQueryTemplate(BigQuery bigQuery, String datasetName) {
     this(bigQuery, datasetName, new DefaultManagedTaskScheduler());
   }
@@ -74,7 +106,10 @@ public class BigQueryTemplate implements BigQueryOperations {
    * @param datasetName the name of the dataset in which all operations will take place
    * @param taskScheduler the {@link TaskScheduler} used to poll for the status of long-running
    *     BigQuery operations
+   * @deprecated As of release 3.3.1, use
+   *     BigQueryTemplate(BigQuery,BigQueryWriteClient,Map,TaskScheduler) instead
    */
+  @Deprecated
   public BigQueryTemplate(BigQuery bigQuery, String datasetName, TaskScheduler taskScheduler) {
     Assert.notNull(bigQuery, "BigQuery client object must not be null.");
     Assert.notNull(datasetName, "Dataset name must not be null");
@@ -83,6 +118,38 @@ public class BigQueryTemplate implements BigQueryOperations {
     this.bigQuery = bigQuery;
     this.datasetName = datasetName;
     this.taskScheduler = taskScheduler;
+    this.bigQueryWriteClient =
+        null; // This constructor is Deprecated. We cannot use BigQueryWriteClient with this
+  }
+
+  /**
+   * A Full constructor which creates the {@link BigQuery} template.
+   *
+   * @param bigQuery the underlying client object used to interface with BigQuery
+   * @param bigQueryWriteClient the underlying BigQueryWriteClient reference use to connect with
+   *     BigQuery Storage Write Client
+   * @param bqInitSettings Properties required for initialisation of this class
+   * @param taskScheduler the {@link TaskScheduler} used to poll for the status of long-running
+   *     BigQuery operations
+   */
+  public BigQueryTemplate(
+      BigQuery bigQuery,
+      BigQueryWriteClient bigQueryWriteClient,
+      Map<String, Object> bqInitSettings,
+      TaskScheduler taskScheduler) {
+    String bqDatasetName = (String) bqInitSettings.get("DATASET_NAME");
+    Assert.notNull(bigQuery, "BigQuery client object must not be null.");
+    Assert.notNull(bqDatasetName, "Dataset name must not be null");
+    Assert.notNull(taskScheduler, "TaskScheduler must not be null");
+    Assert.notNull(bigQueryWriteClient, "BigQueryWriteClient must not be null");
+    jsonWriterBatchSize =
+        (Integer)
+            bqInitSettings.getOrDefault(
+                "JSON_WRITER_BATCH_SIZE", DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE);
+    this.bigQuery = bigQuery;
+    this.datasetName = bqDatasetName;
+    this.taskScheduler = taskScheduler;
+    this.bigQueryWriteClient = bigQueryWriteClient;
   }
 
   /**
@@ -159,16 +226,187 @@ public class BigQueryTemplate implements BigQueryOperations {
   }
 
   /**
-   * @return the name of the BigQuery dataset that the template is operating in.
+   * This method uses BigQuery Storage Write API to write new line delimited JSON file to the
+   * specified table. This method creates a table with the specified schema.
+   *
+   * @param tableName name of the table to write to
+   * @param jsonInputStream input stream of the json file to be written
+   * @return {@link ListenableFuture} containing the WriteApiResponse indicating completion of
+   *     operation
    */
+  @Override
+  public ListenableFuture<WriteApiResponse> writeJsonStream(
+      String tableName, InputStream jsonInputStream, Schema schema) {
+    createTable(tableName, schema); // create table if it's not already created
+    return writeJsonStream(tableName, jsonInputStream);
+  }
+
+  @VisibleForTesting
+  public Table createTable(
+      String tableName, Schema schema) { // create table if it's not already created
+    TableId tableId = TableId.of(datasetName, tableName);
+    Table table = bigQuery.getTable(TableId.of(datasetName, tableName));
+    if (table == null || !table.exists()) {
+      TableDefinition tableDefinition = StandardTableDefinition.of(schema);
+      TableInfo tableInfo = TableInfo.newBuilder(tableId, tableDefinition).build();
+      return bigQuery.create(tableInfo);
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * This method uses BigQuery Storage Write API to write new line delimited JSON file to the
+   * specified table. The Table should already be created as BigQuery Storage Write API doesn't
+   * create it automatically.
+   *
+   * @param tableName name of the table to write to
+   * @param jsonInputStream input stream of the json file to be written
+   * @return {@link ListenableFuture} containing the WriteApiResponse indicating completion of
+   *     operation
+   */
+  @Override
+  public ListenableFuture<WriteApiResponse> writeJsonStream(
+      String tableName, InputStream jsonInputStream) {
+
+    SettableListenableFuture<WriteApiResponse> writeApiFutureResponse =
+        new SettableListenableFuture<>();
+
+    Thread asyncTask =
+        new Thread(
+            () -> {
+              try {
+                WriteApiResponse apiResponse = getWriteApiResponse(tableName, jsonInputStream);
+                writeApiFutureResponse.set(apiResponse);
+              } catch (DescriptorValidationException | IOException e) {
+                writeApiFutureResponse.setException(e);
+                logger.warn(String.format("Error: %s %n", e.getMessage()), e);
+              } catch (InterruptedException e) {
+                writeApiFutureResponse.setException(e);
+                // Restore interrupted state in case of an InterruptedException
+                Thread.currentThread().interrupt();
+              }
+            });
+    asyncTask
+        .start(); // run the thread async so that we can return the writeApiFutureResponse. This
+    // thread can be run in the ExecutorService when it has been wired-in
+
+    // register success and failure callback
+    writeApiFutureResponse.addCallback(
+        res -> logger.info("Data successfully written"),
+        res -> {
+          asyncTask.interrupt(); // interrupt the thread as the developer might have cancelled the
+          // Future.
+          // This can be replaced with interrupting the ExecutorService when it has been wired-in
+          logger.info("asyncTask interrupted");
+        });
+
+    return writeApiFutureResponse;
+  }
+
+  @VisibleForTesting
+  public BigQueryJsonDataWriter getBigQueryJsonDataWriter(TableName parentTable)
+      throws DescriptorValidationException, IOException, InterruptedException {
+    return new BigQueryJsonDataWriter(parentTable, bigQueryWriteClient);
+  }
+
+  public WriteApiResponse getWriteApiResponse(String tableName, InputStream jsonInputStream)
+      throws DescriptorValidationException, IOException, InterruptedException {
+    WriteApiResponse apiResponse = new WriteApiResponse();
+    TableName parentTable =
+        TableName.of(bigQuery.getOptions().getProjectId(), datasetName, tableName);
+
+    // Initialize a write stream for the specified table.
+    BigQueryJsonDataWriter writer = getBigQueryJsonDataWriter(parentTable);
+
+    try {
+      // Write data in batches. Ref: https://cloud.google.com/bigquery/quotas#write-api-limits
+      long offset = 0;
+      int currentBatchSize = 0;
+
+      BufferedReader jsonReader = new BufferedReader(new InputStreamReader(jsonInputStream));
+      String jsonLine = null;
+      JSONArray jsonBatch = new JSONArray();
+      while ((jsonLine = jsonReader.readLine()) != null) { // read the input stream line by line
+        JSONObject jsonObj = new JSONObject(jsonLine); // cast the JSON string into JSON Object
+        jsonBatch.put(jsonObj);
+        currentBatchSize++;
+        if (currentBatchSize
+            == getBatchSize()) { // append the batch, increment the offset and reset
+          // the batch
+          writer.append(jsonBatch, offset);
+          offset += jsonBatch.length();
+          jsonBatch = new JSONArray();
+          currentBatchSize = 0;
+        }
+      }
+
+      if (jsonBatch.length()
+          != 0) { // there might be records less than JSON_STREAM_WRITER_BATCH_SIZE, append those as
+        // well
+        writer.append(jsonBatch, offset);
+      }
+
+    } catch (Exception e) {
+      throw new BigQueryException("Failed to append records. \n" + e);
+    }
+
+    // Finalize the stream before commiting it
+    writer.finalizeWriteStream();
+
+    BatchCommitWriteStreamsResponse commitResponse = getCommitResponse(parentTable, writer);
+    // If the response does not have a commit time, it means the commit operation failed.
+    if (!commitResponse.hasCommitTime()) {
+      for (StorageError err : commitResponse.getStreamErrorsList()) {
+        apiResponse.addError(err); // this object is returned to the user
+      }
+    }
+
+    // set isSucccessful flag to true of there were no errors
+    if (apiResponse.getErrors().isEmpty()) {
+      apiResponse.setSuccessful(true);
+    }
+
+    return apiResponse;
+  }
+
+  @VisibleForTesting
+  public BatchCommitWriteStreamsResponse getCommitResponse(
+      TableName parentTable, BigQueryJsonDataWriter writer) {
+    // commit the stream
+    BatchCommitWriteStreamsRequest commitRequest =
+        BatchCommitWriteStreamsRequest.newBuilder()
+            .setParent(parentTable.toString())
+            .addWriteStreams(writer.getStreamName())
+            .build();
+    return bigQueryWriteClient.batchCommitWriteStreams(commitRequest);
+  }
+
+  /**
+   * This method ensures that we use the DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE if the user doesn't
+   * set this property or if they set it too low.
+   *
+   * @return jsonWriterBatchSize
+   */
+  private int getBatchSize() {
+    return jsonWriterBatchSize > MIN_JSON_STREAM_WRITER_BATCH_SIZE
+        ? jsonWriterBatchSize
+        : DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE;
+  }
+
+  // @return the name of the BigQuery dataset that the template is operating in.
   public String getDatasetName() {
     return this.datasetName;
+  }
+
+  // @return the name of the BigQuery jsonWriterBatchSize that the template is operating in.
+  public int getJsonWriterBatchSize() {
+    return this.jsonWriterBatchSize;
   }
 
   private SettableListenableFuture<Job> createJobFuture(Job pendingJob) {
     // Prepare the polling task for the ListenableFuture result returned to end-user
     SettableListenableFuture<Job> result = new SettableListenableFuture<>();
-
     ScheduledFuture<?> scheduledFuture =
         taskScheduler.scheduleAtFixedRate(
             () -> {

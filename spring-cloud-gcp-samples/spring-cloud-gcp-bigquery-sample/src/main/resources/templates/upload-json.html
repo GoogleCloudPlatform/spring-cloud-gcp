@@ -1,0 +1,107 @@
+<html xmlns:th="https://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+
+<style>
+  html * {
+    font-family: Roboto, Verdana, sans-serif;
+  }
+
+  body {
+    max-width: 50em;
+  }
+
+  li {
+    padding: 0.25em;
+  }
+
+  .panel {
+    margin: 1em;
+    padding: 1em;
+    border: 1px solid black;
+    border-radius: 5px;
+  }
+
+  .highlight {
+    background-color: #d6f5d6;
+  }
+
+</style>
+
+<head>
+  <title>Google Cloud BigQuery Storage Write API Demo</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link type="text/css" href="css/style.css" rel="stylesheet"/>
+</head>
+
+<body>
+<h1>Upload JSON file to BigQuery using BigQuery Storage Write API</h1>
+
+<div class="panel">
+  This application will be working within your BigQuery dataset: <b>[[${datasetName}]]</b>
+</div>
+
+<div class="panel">
+  <h2>Control Panel</h2>
+
+  <p>
+    You can upload newline delimited JSON data files from your computer to a BigQuery table of your choosing.
+    Please refer to <a href="https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json" target="_blank">https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json</a>
+    and <a href="http://jsonlines.org/" target="_blank">http://jsonlines.org</a> for more details about this format.
+    </br>Please make sure that a table with schema matching with the payload JSON file already exists, unless using the provided sample file
+    <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-bigquery/src/test/resources/data.json" target="_blank"><i>spring-cloud-gcp-bigquery/src/test/resources/data.json</i></a> .
+  </p>
+
+  <div class="panel highlight">
+    <form method="POST" enctype="multipart/form-data" action="/uploadJsonFile">
+
+      <ol>
+        <li>File to upload: <input type="file" name="file"/></li>
+        <li>BigQuery table name: <input type="text" name="tableName"/></li>
+        <li>Create table automatically with the default schema (Check this while uploading the bundled sample file
+          <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-bigquery/src/test/resources/data.json" target="_blank"><i>spring-cloud-gcp-bigquery/src/test/resources/data.json</i></a>):
+          <input type="checkbox" name="createTable" value="createTable" />
+        </li>
+        <li><input type="submit" value="upload"/></li>
+      </ol>
+
+    </form>
+  </div>
+</div>
+
+<div class="panel">
+  <p>
+    You can also try directly typing newline delimited JSON data into the text field and loading
+    data this way. If the #3 checkbox is checked then the table will be automatically created
+    with this Schema: <i>(CompanyName: String, Description: String, SerialNumber: Integer, EmpName: String)</i>
+  </p>
+
+  <div class="panel highlight">
+    <form method="POST" action="/uploadJsonText">
+      <ol>
+        <li>
+          newline delimited JSON rows to upload:
+          <br>
+          <textarea name="jsonRows" rows="8" cols="90">{&quot;CompanyName&quot;:&quot;TALES&quot;,&quot;Description&quot;:&quot;mark&quot;,&quot;SerialNumber&quot;:97,&quot;Leave&quot;:0,&quot;EmpName&quot;:&quot;Mark&quot;}
+{&quot;CompanyName&quot;:&quot;1Q84&quot;,&quot;Description&quot;:&quot;ark&quot;,&quot;SerialNumber&quot;:978,&quot;Leave&quot;:0,&quot;EmpName&quot;:&quot;HARUKI&quot;}
+{&quot;CompanyName&quot;:&quot;MY&quot;,&quot;Description&quot;:&quot;M&quot;,&quot;SerialNumber&quot;:9780,&quot;Leave&quot;:0,&quot;EmpName&quot;:&quot;Mark&quot;}</textarea>
+        </li>
+        <li>BigQuery table name: <input type="text" name="tableName"/></li>
+        <li>Create table automatically with the default schema : <input type="checkbox" name="createTable" value="createTable" checked/></li>
+        <li><input type="submit" value="upload"/></li>
+      </ol>
+    </form>
+  </div>
+</div>
+
+<div class="panel">
+  <p>
+    After loading your data, you can view your data in the
+    <a href="https://console.cloud.google.com/bigquery">BigQuery dashboard in Google Cloud Console</a>
+    and clicking 'preview' on the table in your dataset.
+  </p>
+</div>
+
+<div class="panel" th:if="${message}">
+  [[${message}]]
+</div>
+</body>
+</html>
