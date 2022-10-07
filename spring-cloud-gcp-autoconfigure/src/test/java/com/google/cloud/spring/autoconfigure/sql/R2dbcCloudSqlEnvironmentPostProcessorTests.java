@@ -104,14 +104,14 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
 
   @Test
   void testSetR2dbcProperty_postgres() {
-    validatePostgres(new String[] {"io.r2dbc.postgresql"},
+    validateDatabaseProperties(new String[] {"io.r2dbc.postgresql"},
         "postgres",
         "r2dbc:gcp:postgres://my-project:region:my-instance/my-database");
   }
 
   @Test
   void testSetR2dbcProperty_mysql() {
-    validatePostgres(new String[] {"dev.miku.r2dbc.mysql"},
+    validateDatabaseProperties(new String[] {"dev.miku.r2dbc.mysql"},
         "root",
         "r2dbc:gcp:mysql://my-project:region:my-instance/my-database");
   }
@@ -124,7 +124,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
    *
    * @param includePackages a list of driver packages to keep on the classpath
    */
-  private void validatePostgres(String[] includePackages, String username, String url) {
+  private void validateDatabaseProperties(String[] includePackages, String username, String url) {
     Set<String> driverPackages = new HashSet<>(Arrays.asList(
         "dev.miku.r2dbc.mysql",
         "io.r2dbc.postgresql"
