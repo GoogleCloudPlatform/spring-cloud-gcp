@@ -34,7 +34,9 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -76,7 +78,7 @@ class BigQueryTemplateIntegrationTests {
 
   private String selectQueryDesc;
 
-  @BeforeAll
+  @BeforeEach
   void generateRandomTableName() {
     String uuid = UUID.randomUUID().toString().replace("-", "");
     this.tableName = "template_test_table_" + uuid;
@@ -86,7 +88,7 @@ class BigQueryTemplateIntegrationTests {
             SELECT_FORMAT, DATASET_NAME + "." + tableName + " order by SerialNumber desc");
   }
 
-  @AfterAll
+  @AfterEach
   void cleanupTestEnvironment() {
     // Delete table after test.
     this.bigQuery.delete(TableId.of(DATASET_NAME, tableName));
