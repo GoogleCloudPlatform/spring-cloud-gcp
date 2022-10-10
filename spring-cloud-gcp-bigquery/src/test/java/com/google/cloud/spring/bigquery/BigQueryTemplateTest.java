@@ -57,7 +57,7 @@ import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.util.concurrent.ListenableFuture;
 
 @ExtendWith(MockitoExtension.class)
-public class BigQueryTemplateTest {
+class BigQueryTemplateTest {
 
   private BigQueryWriteClient bigQueryWriteClientMock;
   private String newLineSeperatedJson =
@@ -114,7 +114,7 @@ public class BigQueryTemplateTest {
   }
 
   @Test
-  public void getWriteApiResponseTest()
+  void getWriteApiResponseTest()
       throws DescriptorValidationException, IOException, InterruptedException {
 
     InputStream jsoninputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
@@ -137,7 +137,7 @@ public class BigQueryTemplateTest {
   }
 
   @Test
-  public void writeJsonStreamTest()
+  void writeJsonStreamTest()
       throws DescriptorValidationException, IOException, InterruptedException, ExecutionException {
 
     InputStream jsoninputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
@@ -155,7 +155,7 @@ public class BigQueryTemplateTest {
   }
 
   @Test
-  public void writeJsonStreamWithSchemaTest()
+  void writeJsonStreamWithSchemaTest()
       throws DescriptorValidationException, IOException, InterruptedException, ExecutionException {
 
     InputStream jsoninputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
@@ -178,7 +178,7 @@ public class BigQueryTemplateTest {
 
 
   @Test
-  public void writeJsonStreamFailsOnGenericWritingException()
+  void writeJsonStreamFailsOnGenericWritingException()
       throws DescriptorValidationException, IOException, InterruptedException, ExecutionException {
 
     InputStream jsoninputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
