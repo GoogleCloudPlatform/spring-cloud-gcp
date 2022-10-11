@@ -43,6 +43,7 @@
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.1</java-cfenv.version>
 		<spring-native.version>0.10.5</spring-native.version>
+		<micrometer-tracing.verison>1.0.0-M8</micrometer-tracing.verison>
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -149,6 +150,15 @@
 				<artifactId>spring-native-configuration</artifactId>
 				<version>${spring-native.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>io.micrometer</groupId>
+				<artifactId>micrometer-tracing-bom</artifactId>
+				<version>${micrometer-tracing.verison}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
 			<dependency>
 				<groupId>org.springframework.experimental</groupId>
 				<artifactId>spring-aot</artifactId>
