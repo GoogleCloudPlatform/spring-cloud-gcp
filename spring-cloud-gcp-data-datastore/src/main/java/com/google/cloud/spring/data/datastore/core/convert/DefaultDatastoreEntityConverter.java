@@ -52,7 +52,7 @@ import org.springframework.util.Assert;
  * @since 1.1
  */
 public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter {
-  private DatastoreMappingContext mappingContext;
+  private final DatastoreMappingContext mappingContext;
 
   private final EntityInstantiators instantiators = new EntityInstantiators();
 

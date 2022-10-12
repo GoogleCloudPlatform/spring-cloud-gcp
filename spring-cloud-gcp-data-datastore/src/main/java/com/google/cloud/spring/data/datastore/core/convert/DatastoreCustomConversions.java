@@ -24,9 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.CustomConversions;
-import org.springframework.data.convert.JodaTimeConverters;
 import org.springframework.data.convert.Jsr310Converters;
-import org.springframework.data.convert.ThreeTenBackPortConverters;
 
 /**
  * Value object to capture custom conversion. {@link DatastoreCustomConversions}
@@ -41,9 +39,7 @@ public class DatastoreCustomConversions extends CustomConversions {
 
   static {
     ArrayList<Converter<?, ?>> converters = new ArrayList<>();
-    converters.addAll(JodaTimeConverters.getConvertersToRegister());
     converters.addAll(Jsr310Converters.getConvertersToRegister());
-    converters.addAll(ThreeTenBackPortConverters.getConvertersToRegister());
     converters.add(
         new Converter<BaseKey, Long>() {
           @Override
