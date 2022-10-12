@@ -40,7 +40,7 @@ import org.springframework.core.annotation.Order;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnMessagingEnabled
 @ConditionalOnBean(Tracing.class)
-@ConditionalOnProperty(value = "spring.cloud.gcp.trace.pubsub.enabled", matchIfMissing = false)
+@ConditionalOnProperty(value = "spring.cloud.gcp.trace.pubsub.enabled")
 @ConditionalOnClass({PublisherFactory.class, MessagingTracing.class})
 @AutoConfigureAfter({BraveAutoConfiguration.class, BraveMessagingAutoConfiguration.class})
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)
