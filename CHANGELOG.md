@@ -17,7 +17,7 @@ on GitHub.
 ## 3.4.0-SNAPSHOT
 
 **This release officially introduces Spring Boot 2.7 compatibility.**
-Note that the previous releases of Spring Cloud GCP 3.x are also compatible with Spring Boot 2.7. The one exception is that if you use Cloud SQL with R2DBC, you'd have to manage the driver versions in your own application dependencies.
+Note that the previous releases of Spring Cloud GCP 3.x are also compatible with Spring Boot 2.7. The one exception is that if you use Cloud SQL with R2DBC, you'd have to manage the driver versions in your own application dependencies (see [refdoc](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/blob/main/docs/src/main/asciidoc/sql.adoc#r2dbc-support) for details).
 
 ### Cloud SQL
   - Add version management for the older MySQL and Postgres R2DBC drivers (https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1185).
