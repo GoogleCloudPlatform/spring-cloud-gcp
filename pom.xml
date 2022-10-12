@@ -44,6 +44,7 @@
 		<java-cfenv.version>2.4.1</java-cfenv.version>
 		<spring-native.version>0.10.5</spring-native.version>
 		<micrometer-tracing.verison>1.0.0-M8</micrometer-tracing.verison>
+		<spring-cloud-sleuth.version>3.1.4</spring-cloud-sleuth.version>
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -100,6 +101,14 @@
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
 				<version>${spring-cloud-dependencies.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-sleuth</artifactId>
+				<version>${spring-cloud-sleuth.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
