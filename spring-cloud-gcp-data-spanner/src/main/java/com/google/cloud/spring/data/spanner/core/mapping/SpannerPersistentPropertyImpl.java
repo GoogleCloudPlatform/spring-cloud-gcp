@@ -21,7 +21,6 @@ import com.google.spanner.v1.TypeCode;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
-import java.util.stream.Collectors;
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.MappingException;
 import org.springframework.data.mapping.PersistentEntity;
@@ -30,7 +29,6 @@ import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
-import org.springframework.data.util.StreamUtils;
 import org.springframework.data.util.TypeInformation;
 import org.springframework.util.StringUtils;
 
@@ -64,14 +62,6 @@ public class SpannerPersistentPropertyImpl
         (fieldNamingStrategy != null)
             ? fieldNamingStrategy
             : PropertyNameFieldNamingStrategy.INSTANCE;
-  }
-
-  /** Only provides types that are also annotated with {@link Table}. */
-  @Override
-  public Iterable<? extends TypeInformation<?>> getPersistentEntityTypes() {
-    return StreamUtils.createStreamFromIterator(super.getPersistentEntityTypes().iterator())
-        .filter(typeInfo -> typeInfo.getType().isAnnotationPresent(Table.class))
-        .collect(Collectors.toList());
   }
 
   @Override

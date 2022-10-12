@@ -179,11 +179,6 @@ public class SpannerCompositeKeyProperty implements SpannerPersistentProperty {
     return ClassTypeInformation.from(getType());
   }
 
-  @Override
-  public Iterable<? extends TypeInformation<?>> getPersistentEntityTypes() {
-    return Collections.emptySet();
-  }
-
   @Nullable
   @Override
   public Method getGetter() {

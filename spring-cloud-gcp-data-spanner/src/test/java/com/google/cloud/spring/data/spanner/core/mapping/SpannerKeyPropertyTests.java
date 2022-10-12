@@ -95,12 +95,6 @@ class SpannerKeyPropertyTests {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
-  void getPersistentEntityTypeTest() {
-    assertThat(this.spannerKeyProperty.getPersistentEntityTypes().iterator().hasNext()).isFalse();
-  }
-
-  @Test
   void getPersistentEntityTypeInformationTest() {
     assertThat(this.spannerKeyProperty.getPersistentEntityTypeInformation().iterator().hasNext())
         .isFalse();

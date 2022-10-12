@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.data.datastore.core.mapping;
 
-import java.util.stream.Collectors;
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.model.AnnotationBasedPersistentProperty;
@@ -24,8 +23,6 @@ import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
-import org.springframework.data.util.StreamUtils;
-import org.springframework.data.util.TypeInformation;
 import org.springframework.util.StringUtils;
 
 /**
@@ -128,13 +125,6 @@ public class DatastorePersistentPropertyImpl
     }
 
     return null;
-  }
-
-  @Override
-  public Iterable<? extends TypeInformation<?>> getPersistentEntityTypes() {
-    return StreamUtils.createStreamFromIterator(super.getPersistentEntityTypes().iterator())
-        .filter(typeInfo -> typeInfo.getType().isAnnotationPresent(Entity.class))
-        .collect(Collectors.toList());
   }
 
   @Override
