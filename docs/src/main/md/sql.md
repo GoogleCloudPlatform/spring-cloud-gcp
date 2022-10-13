@@ -134,7 +134,7 @@ To use MySQL:
         implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql-r2dbc")
     }
 
-To use PostgreSQL:
+To use PostgreSQL with Spring Boot 2.6:
 
 ``` xml
 <dependency>
@@ -146,6 +146,27 @@ To use PostgreSQL:
     dependencies {
         implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgres-r2dbc")
     }
+
+To use PostgreSQL with Spring Boot 2.7 (the latest version of the Postgres R2DBC driver changed its Maven coordinates):
+
+``` xml
+<dependency>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>spring-cloud-gcp-starter-sql-postgres-r2dbc</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>io.r2dbc</groupId>
+            <artifactId>r2dbc-postgresql</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>r2dbc-postgresql</artifactId>
+    <version>0.9.1.RELEASE</version>
+</dependency>
+```
 
 #### Prerequisites
 
