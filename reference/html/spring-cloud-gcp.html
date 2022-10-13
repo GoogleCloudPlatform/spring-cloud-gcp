@@ -1445,7 +1445,7 @@ You can connect to your database with as little as a database and instance names
 </div>
 </div>
 <div class="paragraph">
-<p>To use PostgreSQL:</p>
+<p>To use PostgreSQL with Spring Boot 2.6:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1460,6 +1460,29 @@ You can connect to your database with as little as a database and instance names
 <pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgres-r2dbc")
 }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use PostgreSQL with Spring Boot 2.7 (the latest version of the Postgres R2DBC driver changed its Maven coordinates):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-gcp-starter-sql-postgres-r2dbc&lt;/artifactId&gt;
+    &lt;exclusions&gt;
+        &lt;exclusion&gt;
+            &lt;groupId&gt;io.r2dbc&lt;/groupId&gt;
+            &lt;artifactId&gt;r2dbc-postgresql&lt;/artifactId&gt;
+        &lt;/exclusion&gt;
+    &lt;/exclusions&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
+    &lt;artifactId&gt;r2dbc-postgresql&lt;/artifactId&gt;
+    &lt;version&gt;0.9.1.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="sect3">
