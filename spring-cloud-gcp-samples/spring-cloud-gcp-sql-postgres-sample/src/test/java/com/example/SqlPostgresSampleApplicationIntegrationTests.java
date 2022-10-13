@@ -46,7 +46,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
       "spring.datasource.username=postgres",
       "spring.datasource.password=test",
       "spring.datasource.continue-on-error=true",
-      "spring.datasource.initialization-mode=always"
+      "spring.sql.init.mode=always"
     })
 class SqlPostgresSampleApplicationIntegrationTests {
 
