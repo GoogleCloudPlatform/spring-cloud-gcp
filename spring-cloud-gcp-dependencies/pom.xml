@@ -43,7 +43,7 @@
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-function-dependencies</artifactId>
-				<version>3.2.6</version>
+				<version>3.2.7</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
