@@ -27,6 +27,7 @@ import brave.Tracing;
 import brave.handler.SpanHandler;
 import brave.http.HttpRequestParser;
 import brave.http.HttpTracingCustomizer;
+import brave.messaging.MessagingTracing;
 import com.google.api.core.ApiFunction;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
@@ -37,15 +38,11 @@ import io.grpc.ManagedChannel;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
-import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
-import org.springframework.cloud.sleuth.autoconfig.brave.instrument.messaging.BraveMessagingAutoConfiguration;
-import org.springframework.core.ResolvableType;
 import zipkin2.reporter.Reporter;
 import zipkin2.reporter.Sender;
 
@@ -63,8 +60,6 @@ class TracePubSubAutoConfigurationTest {
                     TracePubSubAutoConfiguration.class,
                     StackdriverTraceAutoConfiguration.class,
                     GcpContextAutoConfiguration.class,
-                    BraveAutoConfiguration.class,
-                    BraveMessagingAutoConfiguration.class,
                     RefreshAutoConfiguration.class))
             .withUserConfiguration(MockConfiguration.class)
             .withBean(
@@ -101,21 +96,26 @@ class TracePubSubAutoConfigurationTest {
 
   @Test
   void testPubSubTracingEnabled() {
+    Tracing tracing = Tracing.newBuilder().build();
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.trace.pubsub.enabled=true")
+        .withBean(Tracing.class, () -> tracing)
+        .withBean(MessagingTracing.class, () -> MessagingTracing.newBuilder(tracing).build())
         .run(
             context -> {
-              assertThat(context.getBeansOfType(TracePubSubBeanPostProcessor.class)).isNotNull();
-              assertThat(context.getBeansOfType(PubSubTracing.class)).isNotNull();
+              assertThat(context.getBean(TracePubSubBeanPostProcessor.class)).isNotNull();
+              assertThat(context.getBean(PubSubTracing.class)).isNotNull();
             });
   }
 
   @Test
   void tracePubSubCustomizerAppliedLast() {
     PublisherCustomizer noopCustomizer = (pb, t) -> {};
+    Tracing tracing = Tracing.newBuilder().build();
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.trace.pubsub.enabled=true")
-        .withBean(Tracing.class, () -> Tracing.newBuilder().build())
+        .withBean(Tracing.class, () -> tracing)
+        .withBean(MessagingTracing.class, () -> MessagingTracing.newBuilder(tracing).build())
         .withBean(PublisherCustomizer.class, () -> noopCustomizer)
         .run(context -> {
           ObjectProvider<PublisherCustomizer> customizersProvider =

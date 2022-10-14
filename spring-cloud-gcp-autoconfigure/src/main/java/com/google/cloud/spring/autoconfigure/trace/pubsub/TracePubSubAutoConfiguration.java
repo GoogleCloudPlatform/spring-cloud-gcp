@@ -30,19 +30,16 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cloud.sleuth.autoconfig.brave.instrument.messaging.BraveMessagingAutoConfiguration;
-import org.springframework.cloud.sleuth.brave.instrument.messaging.ConditionalOnMessagingEnabled;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnMessagingEnabled
 @ConditionalOnBean(Tracing.class)
 @ConditionalOnProperty(value = "spring.cloud.gcp.trace.pubsub.enabled")
 @ConditionalOnClass({PublisherFactory.class, MessagingTracing.class})
-@AutoConfigureAfter({BraveAutoConfiguration.class, BraveMessagingAutoConfiguration.class})
+@AutoConfigureAfter({BraveAutoConfiguration.class})
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)
 class TracePubSubAutoConfiguration {
 
@@ -63,8 +60,7 @@ class TracePubSubAutoConfiguration {
   PublisherCustomizer tracePublisherCustomizer(PubSubTracing pubSubTracing) {
     TraceHelper helper = new TraceHelper(pubSubTracing);
 
-    return (Publisher.Builder publisherBuilder, String topic) -> {
-      publisherBuilder.setTransform(msg -> helper.instrumentMessage(msg, topic));
-    };
+    return (Publisher.Builder publisherBuilder, String topic) ->
+        publisherBuilder.setTransform(msg -> helper.instrumentMessage(msg, topic));
   }
 }
