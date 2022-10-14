@@ -285,6 +285,9 @@ public class BigQueryTemplate implements BigQueryOperations {
                 writeApiFutureResponse.setException(e);
                 // Restore interrupted state in case of an InterruptedException
                 Thread.currentThread().interrupt();
+              } catch (Throwable t) {
+                writeApiFutureResponse.setException(t);
+                Thread.currentThread().interrupt();
               }
             });
     asyncTask
