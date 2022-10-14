@@ -19,6 +19,7 @@ package com.google.cloud.spring.bigquery.core;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.FormatOptions;
 import com.google.cloud.bigquery.Job;
+import com.google.cloud.bigquery.JobInfo.CreateDisposition;
 import com.google.cloud.bigquery.JobInfo.WriteDisposition;
 import com.google.cloud.bigquery.JobStatus.State;
 import com.google.cloud.bigquery.Schema;
@@ -74,6 +75,8 @@ public class BigQueryTemplate implements BigQueryOperations {
   private boolean autoDetectSchema = true;
 
   private WriteDisposition writeDisposition = WriteDisposition.WRITE_APPEND;
+
+  private CreateDisposition createDisposition;
 
   private Duration jobPollInterval = Duration.ofSeconds(2);
 
@@ -177,6 +180,18 @@ public class BigQueryTemplate implements BigQueryOperations {
   }
 
   /**
+   * Sets the {@link CreateDisposition} which specifies whether a new table may be created in
+   * BigQuery if needed.
+   *
+   * @param createDisposition whether to never create a new table in the BigQuery table or only if
+   *     needed.
+   */
+  public void setCreateDisposition(CreateDisposition createDisposition) {
+    Assert.notNull(createDisposition, "BigQuery create disposition must not be null.");
+    this.createDisposition = createDisposition;
+  }
+
+  /**
    * Sets the {@link Duration} amount of time to wait between successive polls on the status of a
    * BigQuery job.
    *
@@ -203,6 +218,7 @@ public class BigQueryTemplate implements BigQueryOperations {
         WriteChannelConfiguration.newBuilder(tableId)
             .setFormatOptions(dataFormatOptions)
             .setWriteDisposition(this.writeDisposition)
+            .setCreateDisposition(this.createDisposition)
             .setAutodetect(this.autoDetectSchema);
 
     if (schema != null) {
