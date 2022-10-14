@@ -258,6 +258,18 @@ window.onload = function() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Inferred from <a href="https://cloud.google.com/docs/authentication/production">Application Default Credentials</a>, typically set by <a href="https://cloud.google.com/sdk/gcloud/reference/auth/application-default"><code>gcloud</code></a>.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.bigquery.jsonWriterBatchSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Batch size which will be used by <code>BigQueryJsonDataWriter</code> while using <a href="https://cloud.google.com/bigquery/docs/write-api">BigQuery Storage Write API</a>. Note too large or too low values might impact performance.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.bigquery.threadPoolSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The size of thread pool of <code>ThreadPoolTaskScheduler</code> which is used by <code>BigQueryTemplate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+</tr>
 </tbody>
 </table>
 <div class="sect3">
@@ -319,6 +331,63 @@ public void loadData(InputStream dataInputStream, String tableName) {
   // After the future is complete, the data is successfully loaded.
   Job job = bigQueryJobFuture.get();
 }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Below is a code snippet of how to load a <a href="https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json">newline-delimited JSON</a> data <code>InputStream</code> to a BigQuery table. This implementation uses the  <a href="https://cloud.google.com/bigquery/docs/write-api">BigQuery Storage Write API</a>.
+<a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-bigquery/src/test/resources/data.json">Here</a> is a sample newline-delimited JSON file which can be used for testing this functionality.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// BigQuery client object provided by our autoconfiguration.
+@Autowired
+BigQueryTemplate bigQueryTemplate;
+
+  /**
+   * This method loads the InputStream of the newline-delimited JSON records to be written in the given table.
+   * @param tableName name of the table where the data is expected to be written
+   * @param jsonInputStream InputStream of the newline-delimited JSON records to be written in the given table
+   */
+  public void loadJsonStream(String tableName, InputStream jsonInputStream)
+      throws ExecutionException, InterruptedException {
+    ListenableFuture&lt;WriteApiResponse&gt; writeApFuture =
+        bigQueryTemplate.writeJsonStream(tableName, jsonInputStream);
+    WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
+    if (!apiRes.isSuccessful()){
+      List&lt;StorageError&gt; errors = apiRes.getErrors();
+      //TODO(developer): process the List of StorageError
+    }
+    //else the write process has been successful
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Below is a code snippet of how to create table and then load a <a href="https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json">newline-delimited JSON</a> data <code>InputStream</code> to a BigQuery table. This implementation uses the  <a href="https://cloud.google.com/bigquery/docs/write-api">BigQuery Storage Write API</a>.
+<a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-bigquery/src/test/resources/data.json">Here</a> is a sample newline-delimited JSON file which can be used for testing this functionality.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// BigQuery client object provided by our autoconfiguration.
+@Autowired
+BigQueryTemplate bigQueryTemplate;
+
+  /**
+   * This method created a table with the given name and schema and then loads the InputStream of the newline-delimited JSON records in it.
+   * @param tableName name of the table where the data is expected to be written
+   * @param jsonInputStream InputStream of the newline-delimited JSON records to be written in the given table
+   * @param tableSchema Schema of the table which is required to be created
+   */
+  public void createTableAndloadJsonStream(String tableName, InputStream jsonInputStream, Schema tableSchema)
+      throws ExecutionException, InterruptedException {
+    ListenableFuture&lt;WriteApiResponse&gt; writeApFuture =
+        bigQueryTemplate.writeJsonStream(tableName, jsonInputStream, tableSchema);//using the overloaded method which created the table when tableSchema is passed
+    WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
+    if (!apiRes.isSuccessful()){
+      List&lt;StorageError&gt; errors = apiRes.getErrors();
+      //TODO(developer): process the List of StorageError
+    }
+    //else the write process has been successful
+  }</code></pre>
 </div>
 </div>
 </div>
