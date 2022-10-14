@@ -33,13 +33,15 @@ Gradle coordinates:
 The following application properties may be configured with Spring Cloud
 GCP BigQuery libraries.
 
-|                                                  |                                                                                                                                                                            |          |                                                                                                                                                                                                                |
-| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Name                                             | Description                                                                                                                                                                | Required | Default value                                                                                                                                                                                                  |
-| `spring.cloud.gcp.bigquery.datasetName`          | The BigQuery dataset that the `BigQueryTemplate` and `BigQueryFileMessageHandler` is scoped to.                                                                            | Yes      |                                                                                                                                                                                                                |
-| `spring.cloud.gcp.bigquery.enabled`              | Enables or disables Spring Cloud GCP BigQuery autoconfiguration.                                                                                                           | No       | `true`                                                                                                                                                                                                         |
-| `spring.cloud.gcp.bigquery.project-id`           | GCP project ID of the project using BigQuery APIs, if different from the one in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core).                                | No       | Project ID is typically inferred from [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/config/set) configuration.                                                                                      |
-| `spring.cloud.gcp.bigquery.credentials.location` | Credentials file location for authenticating with the Google Cloud BigQuery APIs, if different from the ones in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core) | No       | Inferred from [Application Default Credentials](https://cloud.google.com/docs/authentication/production), typically set by [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default). |
+|                                                  |                                                                                                                                                                                                                  |          |                                                                                                                                                                                                                |
+| ------------------------------------------------ |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name                                             | Description                                                                                                                                                                                                      | Required | Default value                                                                                                                                                                                                  |
+| `spring.cloud.gcp.bigquery.datasetName`          | The BigQuery dataset that the `BigQueryTemplate` and `BigQueryFileMessageHandler` is scoped to.                                                                                                                  | Yes      |                                                                                                                                                                                                                |
+| `spring.cloud.gcp.bigquery.enabled`              | Enables or disables Spring Cloud GCP BigQuery autoconfiguration.                                                                                                                                                 | No       | `true`                                                                                                                                                                                                         |
+| `spring.cloud.gcp.bigquery.project-id`           | GCP project ID of the project using BigQuery APIs, if different from the one in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core).                                                                      | No       | Project ID is typically inferred from [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/config/set) configuration.                                                                                      |
+| `spring.cloud.gcp.bigquery.credentials.location` | Credentials file location for authenticating with the Google Cloud BigQuery APIs, if different from the ones in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core)                                       | No       | Inferred from [Application Default Credentials](https://cloud.google.com/docs/authentication/production), typically set by [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default). |
+| `spring.cloud.gcp.bigquery.jsonWriterBatchSize` | Batch size which will be used by `BigQueryJsonDataWriter` while using [BigQuery Storage Write API](https://cloud.google.com/bigquery/docs/write-api). Note too large or too low values might impact performance. | No | 1000 |
+| `spring.cloud.gcp.bigquery.threadPoolSize` | The size of thread pool of `ThreadPoolTaskScheduler` which is used by `BigQueryTemplate`                                                                                                                         | No | 4 |
 
 #### BigQuery Client Object
 
@@ -99,6 +101,58 @@ public void loadData(InputStream dataInputStream, String tableName) {
   // After the future is complete, the data is successfully loaded.
   Job job = bigQueryJobFuture.get();
 }
+```
+
+Below is a code snippet of how to load a [newline-delimited JSON](https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json) data `InputStream` to a BigQuery table. This implementation uses the  [BigQuery Storage Write API](https://cloud.google.com/bigquery/docs/write-api).
+[Here](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-bigquery/src/test/resources/data.json) is a sample newline-delimited JSON file which can be used for testing this functionality.
+
+``` java
+// BigQuery client object provided by our autoconfiguration.
+@Autowired
+BigQueryTemplate bigQueryTemplate;
+
+  /**
+   * This method loads the InputStream of the newline-delimited JSON records to be written in the given table.
+   * @param tableName name of the table where the data is expected to be written
+   * @param jsonInputStream InputStream of the newline-delimited JSON records to be written in the given table
+   */
+  public void loadJsonStream(String tableName, InputStream jsonInputStream)
+      throws ExecutionException, InterruptedException {
+    ListenableFuture<WriteApiResponse> writeApFuture =
+        bigQueryTemplate.writeJsonStream(tableName, jsonInputStream);
+    WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
+    if (!apiRes.isSuccessful()){
+      List<StorageError> errors = apiRes.getErrors();
+      //TODO(developer): process the List of StorageError
+    }
+    //else the write process has been successful
+  }
+```
+Below is a code snippet of how to create table and then load a [newline-delimited JSON](https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json) data `InputStream` to a BigQuery table. This implementation uses the [BigQuery Storage Write API](https://cloud.google.com/bigquery/docs/write-api).
+[Here](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-bigquery/src/test/resources/data.json) is a sample newline-delimited JSON file which can be used for testing this functionality.
+
+``` java
+// BigQuery client object provided by our autoconfiguration.
+@Autowired
+BigQueryTemplate bigQueryTemplate;
+
+  /**
+   * This method created a table with the given name and schema and then loads the InputStream of the newline-delimited JSON records in it.
+   * @param tableName name of the table where the data is expected to be written
+   * @param jsonInputStream InputStream of the newline-delimited JSON records to be written in the given table
+   * @param tableSchema Schema of the table which is required to be created
+   */
+  public void createTableAndloadJsonStream(String tableName, InputStream jsonInputStream, Schema tableSchema)
+      throws ExecutionException, InterruptedException {
+    ListenableFuture<WriteApiResponse> writeApFuture =
+        bigQueryTemplate.writeJsonStream(tableName, jsonInputStream, tableSchema);//using the overloaded method which created the table when tableSchema is passed
+    WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
+    if (!apiRes.isSuccessful()){
+      List<StorageError> errors = apiRes.getErrors();
+      //TODO(developer): process the List of StorageError
+    }
+    //else the write process has been successful
+  }
 ```
 
 ### Spring Integration

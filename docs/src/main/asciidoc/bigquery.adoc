@@ -36,6 +36,8 @@ The following application properties may be configured with Spring Cloud GCP Big
 | `spring.cloud.gcp.bigquery.enabled` | Enables or disables Spring Cloud GCP BigQuery autoconfiguration. | No | `true`
 | `spring.cloud.gcp.bigquery.project-id` | GCP project ID of the project using BigQuery APIs, if different from the one in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>>. | No | Project ID is typically inferred from https://cloud.google.com/sdk/gcloud/reference/config/set[`gcloud`] configuration.
 | `spring.cloud.gcp.bigquery.credentials.location` | Credentials file location for authenticating with the Google Cloud BigQuery APIs, if different from the ones in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>> | No | Inferred from https://cloud.google.com/docs/authentication/production[Application Default Credentials], typically set by https://cloud.google.com/sdk/gcloud/reference/auth/application-default[`gcloud`].
+| `spring.cloud.gcp.bigquery.jsonWriterBatchSize` | Batch size which will be used by `BigQueryJsonDataWriter` while using https://cloud.google.com/bigquery/docs/write-api[BigQuery Storage Write API]. Note too large or too low values might impact performance. | No | 1000
+| `spring.cloud.gcp.bigquery.threadPoolSize` | The size of thread pool of `ThreadPoolTaskScheduler` which is used by `BigQueryTemplate` | No | 4
 |===========================================================================
 
 ==== BigQuery Client Object
@@ -91,6 +93,61 @@ public void loadData(InputStream dataInputStream, String tableName) {
   // After the future is complete, the data is successfully loaded.
   Job job = bigQueryJobFuture.get();
 }
+----
+
+Below is a code snippet of how to load a https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json[newline-delimited JSON] data `InputStream` to a BigQuery table. This implementation uses the  https://cloud.google.com/bigquery/docs/write-api[BigQuery Storage Write API].
+https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-bigquery/src/test/resources/data.json[Here] is a sample newline-delimited JSON file which can be used for testing this functionality.
+
+[source,java]
+----
+// BigQuery client object provided by our autoconfiguration.
+@Autowired
+BigQueryTemplate bigQueryTemplate;
+
+  /**
+   * This method loads the InputStream of the newline-delimited JSON records to be written in the given table.
+   * @param tableName name of the table where the data is expected to be written
+   * @param jsonInputStream InputStream of the newline-delimited JSON records to be written in the given table
+   */
+  public void loadJsonStream(String tableName, InputStream jsonInputStream)
+      throws ExecutionException, InterruptedException {
+    ListenableFuture<WriteApiResponse> writeApFuture =
+        bigQueryTemplate.writeJsonStream(tableName, jsonInputStream);
+    WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
+    if (!apiRes.isSuccessful()){
+      List<StorageError> errors = apiRes.getErrors();
+      //TODO(developer): process the List of StorageError
+    }
+    //else the write process has been successful
+  }
+----
+
+Below is a code snippet of how to create table and then load a https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json[newline-delimited JSON] data `InputStream` to a BigQuery table. This implementation uses the  https://cloud.google.com/bigquery/docs/write-api[BigQuery Storage Write API].
+https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-bigquery/src/test/resources/data.json[Here] is a sample newline-delimited JSON file which can be used for testing this functionality.
+
+[source,java]
+----
+// BigQuery client object provided by our autoconfiguration.
+@Autowired
+BigQueryTemplate bigQueryTemplate;
+
+  /**
+   * This method created a table with the given name and schema and then loads the InputStream of the newline-delimited JSON records in it.
+   * @param tableName name of the table where the data is expected to be written
+   * @param jsonInputStream InputStream of the newline-delimited JSON records to be written in the given table
+   * @param tableSchema Schema of the table which is required to be created
+   */
+  public void createTableAndloadJsonStream(String tableName, InputStream jsonInputStream, Schema tableSchema)
+      throws ExecutionException, InterruptedException {
+    ListenableFuture<WriteApiResponse> writeApFuture =
+        bigQueryTemplate.writeJsonStream(tableName, jsonInputStream, tableSchema);//using the overloaded method which created the table when tableSchema is passed
+    WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
+    if (!apiRes.isSuccessful()){
+      List<StorageError> errors = apiRes.getErrors();
+      //TODO(developer): process the List of StorageError
+    }
+    //else the write process has been successful
+  }
 ----
 
 === Spring Integration
