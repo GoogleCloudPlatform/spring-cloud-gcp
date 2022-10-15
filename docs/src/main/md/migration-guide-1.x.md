@@ -40,7 +40,7 @@ use the newly unbundled libraries, add the
     <dependency>
       <groupId>com.google.cloud</groupId> 
       <artifactId>spring-cloud-gcp-dependencies</artifactId>
-      <version>3.3.0</version>
+      <version>3.4.0</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>

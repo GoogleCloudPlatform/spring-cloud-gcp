@@ -35,7 +35,7 @@ To use the newly unbundled libraries, add the `spring-cloud-gcp-dependencies` bi
     <dependency>
       <groupId>com.google.cloud</groupId> <!--2-->
       <artifactId>spring-cloud-gcp-dependencies</artifactId>
-      <version>3.3.0</version>
+      <version>3.4.0</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
