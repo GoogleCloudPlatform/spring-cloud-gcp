@@ -48,7 +48,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.sleuth.autoconfig.brave.instrument.web.BraveHttpConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -98,11 +97,11 @@ public class StackdriverTraceAutoConfiguration {
    */
   public static final String CUSTOMIZER_BEAN_NAME = "stackdriverTracingCustomizer";
 
-  private GcpProjectIdProvider finalProjectIdProvider;
+  private final GcpProjectIdProvider finalProjectIdProvider;
 
-  private CredentialsProvider finalCredentialsProvider;
+  private final CredentialsProvider finalCredentialsProvider;
 
-  private UserAgentHeaderProvider headerProvider = new UserAgentHeaderProvider(this.getClass());
+  private final UserAgentHeaderProvider headerProvider = new UserAgentHeaderProvider(this.getClass());
 
   private ThreadPoolTaskScheduler defaultTraceSenderThreadPool;
 
@@ -267,7 +266,7 @@ public class StackdriverTraceAutoConfiguration {
       name = "spring.sleuth.http.enabled",
       havingValue = "true",
       matchIfMissing = true)
-  @AutoConfigureBefore(BraveHttpConfiguration.class)
+  @AutoConfigureBefore(BraveAutoConfiguration.class)
   public static class StackdriverTraceHttpAutoconfiguration {
     @Bean
     @ConditionalOnProperty(
