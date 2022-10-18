@@ -10,10 +10,10 @@ Projects. The table below outlines the versions of Spring Cloud, Spring
 Boot and Spring Framework versions that are compatible with certain
 Spring Cloud GCP version.
 
-| Spring Cloud GCP            | Spring Cloud                                                                                                          | Spring Boot  | Spring Framework |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------ | ---------------- |
-| 2.x                         | [2020.0.x](https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes) (3.0/Illford) | 2.4.x, 2.5.x | 5.3.x            |
-| 3.0 (next expected release) | [2021.0.x](https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes) (3.1/Jubilee) | 2.6.x        | 5.3.x            |
+| Spring Cloud GCP | Spring Cloud                                                                                                          | Spring Boot  | Spring Framework |
+|------------------| --------------------------------------------------------------------------------------------------------------------- |--------------| ---------------- |
+| 2.x              | [2020.0.x](https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes) (3.0/Illford) | 2.4.x, 2.5.x | 5.3.x            |
+| 3.x              | [2021.0.x](https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes) (3.1/Jubilee) | 2.6.x, 2.7.x | 5.3.x            |
 
 ### Setting up Dependencies
 
