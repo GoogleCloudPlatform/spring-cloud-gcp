@@ -132,11 +132,10 @@ class PubSubTemplateTests {
     doAnswer(
             invocation -> {
               PubsubMessage message = invocation.getArgument(1);
-              assertThat(message.getData().toStringUtf8())
-                  .isEqualTo(
-                      "{\"@class\":"
-                          + "\"com.google.cloud.spring.pubsub.core.test.allowed.AllowedPayload\""
-                          + ",\"name\":\"allowed\",\"value\":12345}");
+              String head = "{\"@class\":\"com.google.cloud.spring.pubsub.core.test.allowed.AllowedPayload\",";
+              String expected1 = head + "\"name\":\"allowed\",\"value\":12345}";
+              String expected2 = head + "\"value\":12345,\"name\":\"allowed\"}";
+              assertThat(message.getData().toStringUtf8()).isIn(expected1, expected2);
               return null;
             })
         .when(pubSubPublisherTemplate)
