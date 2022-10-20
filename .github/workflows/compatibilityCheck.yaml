@@ -5,13 +5,22 @@ on:
     branches-ignore:
       - 'dependabot/**'
   workflow_dispatch:
+    inputs:
+      mavenRepository:
+        description: 'URL of a Maven repository that holds dependencies to confirm'
+        required: true
+        type: string
+      mavenDependencies:
+        description: 'Key-value pairs of dependencies for Java'
+        required: true
+        type: object
+        
   schedule:
     - cron: '05 8 * * *' # 08:00 UTC every day
 
-
 jobs:
   integrationTests:
-    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp'
+    if: github.repository == 'suztomo/spring-cloud-gcp'
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
