@@ -1,9 +1,6 @@
-name: Integration Tests
+name: Compatibility Check
 
 on:
-  push:
-    branches-ignore:
-      - 'dependabot/**'
   workflow_dispatch:
     inputs:
       mavenRepository:
