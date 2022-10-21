@@ -10,7 +10,7 @@ on:
       mavenDependencies:
         description: 'Key-value pairs of dependencies for Java'
         required: true
-        type: environment
+        type: string
         
   schedule:
     - cron: '05 8 * * *' # 08:00 UTC every day
