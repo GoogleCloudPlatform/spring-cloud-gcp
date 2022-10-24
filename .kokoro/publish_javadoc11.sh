@@ -123,17 +123,17 @@ insertAfter toc.yml \
 # check change to toc.yml -- remove after verified
 head -20 toc.yml
 
-#python3 -m docuploader create-metadata \
-#    --name spring-cloud-gcp \
-#    --version ${PROJECT_VERSION} \
-#    --language java \
-#    --stem "/java/docs/spring-cloud-gcp/reference"
-#
-#
-#python3 -m docuploader upload . \
-#    --credentials ${CREDENTIALS} \
-#    --staging-bucket ${STAGING_BUCKET_V2}\
-#    --destination-prefix docfx
+python3 -m docuploader create-metadata \
+    --name spring-cloud-gcp \
+    --version ${PROJECT_VERSION} \
+    --language java \
+    --stem "/java/docs/spring/reference"
+
+
+python3 -m docuploader upload . \
+    --credentials ${CREDENTIALS} \
+    --staging-bucket ${STAGING_BUCKET_V2}\
+    --destination-prefix docfx
 
 popd
 popd
