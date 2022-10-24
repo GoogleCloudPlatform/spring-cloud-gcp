@@ -5,18 +5,20 @@
 # note about space consumption: out-of-space testing on cloud shell instance.
 
 # poc with one specified repo - vision
-#cmd line:: ./generate-one.sh -c vision -v 2.4.0
+#cmd line:: ./generate-one.sh -c vision -v 3.1.2 -i google-cloud-vision -g com.google.cloud
 
-while getopts c:v:i: flag
+while getopts c:v:i:g: flag
 do
     case "${flag}" in
         c) client_lib_name=${OPTARG};;
         v) version=${OPTARG};;
         i) client_lib_artifactid=${OPTARG};;
+        g) client_lib_groupid=${OPTARG};;
     esac
 done
 echo "Client Library Name: $client_lib_name";
 echo "Client Library Version: $version";
+echo "Client Library GroupId: $client_lib_groupid";
 echo "Client Library ArtifactId: $client_lib_artifactid";
 
 # setup git
@@ -65,8 +67,10 @@ rm -rf "$client_lib_name"_java_gapic_srcjar-spring.srcjar
 # override versions & names in pom.xml
 cat "$client_lib_name"/pom.xml
 
+sed -i 's/{{client-library-group-id}}/'"$client_lib_groupid"'/' "$client_lib_name"/pom.xml
+sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' "$client_lib_name"/pom.xml
 sed -i 's/{{client-library-version}}/'"$version"'/' "$client_lib_name"/pom.xml
-#sed -i 's/{{starter-version}}/2.3.0/' vision/pom.xml
+sed -i 's/{{starter-version}}/0.0.1-SNAPSHOT/' "$client_lib_name"/pom.xml
 
 rm -rf googleapis
 rm -rf gapic-generator-java
