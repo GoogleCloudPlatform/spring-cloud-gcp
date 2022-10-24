@@ -39,8 +39,7 @@ git clone https://github.com/googleapis/googleapis.git
 git clone https://github.com/googleapis/gapic-generator-java.git
 # get into gapic and checkout branch to use
 cd gapic-generator-java
-#git checkout autoconfig-gen-draft2
-git checkout write-pom
+git checkout write-pom # use autoconfig-gen-draft2 when https://github.com/googleapis/gapic-generator-java/pull/1057 merges in
 # go back to previous folder
 cd -
 
