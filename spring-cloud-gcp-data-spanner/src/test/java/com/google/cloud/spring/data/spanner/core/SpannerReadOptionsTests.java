@@ -20,7 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
+import com.google.cloud.spanner.Options;
 import com.google.cloud.spanner.Options.ReadOption;
+import com.google.cloud.spanner.Options.ReadAndQueryOption;
+import com.google.cloud.spanner.Options.ReadQueryUpdateTransactionOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
@@ -44,6 +47,16 @@ class SpannerReadOptionsTests {
     ReadOption r2 = mock(ReadOption.class);
     spannerReadOptions.addReadOption(r1).addReadOption(r2);
     assertThat(Arrays.asList(spannerReadOptions.getOptions())).containsExactlyInAnyOrder(r1, r2);
+  }
+
+  @Test
+  void convertReadToQueryOptionTest() {
+    SpannerReadOptions spannerReadOptions = new SpannerReadOptions();
+    ReadAndQueryOption r1 = mock(ReadAndQueryOption.class);
+    ReadQueryUpdateTransactionOption r2 = mock(ReadQueryUpdateTransactionOption.class);
+    spannerReadOptions.addReadOption(r1).addReadOption(r2);
+    SpannerQueryOptions spannerQueryOptions = spannerReadOptions.toQueryOptions();
+    assertThat(spannerQueryOptions.getOptions()).hasSize(2);
   }
 
   @Test

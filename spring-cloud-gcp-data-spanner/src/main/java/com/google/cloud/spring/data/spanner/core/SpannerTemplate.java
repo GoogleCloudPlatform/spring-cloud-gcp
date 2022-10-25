@@ -221,11 +221,11 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 
   /**
    * In many cases {@link KeySet} with {@link SpannerReadOptions} are compatible with {@link
-   * SpannerReadOptions}. The method throws exception when it is impossible.
+   * SpannerQueryOptions}. The method throws exception when it is impossible.
    *
    * @param options read-parameters
    * @return query-parameters
-   * @throws IllegalArgumentException when {@link SpannerQueryOptions} can't be converted to {@link
+   * @throws IllegalArgumentException when {@link SpannerReadOptions} can't be converted to {@link
    *     SpannerQueryOptions} or {@code keys} have "ranges".
    * @see SpannerReadOptions#toQueryOptions()
    */
