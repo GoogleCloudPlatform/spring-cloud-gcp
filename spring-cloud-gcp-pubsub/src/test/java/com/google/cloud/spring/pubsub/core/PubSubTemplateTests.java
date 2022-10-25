@@ -186,7 +186,7 @@ class PubSubTemplateTests {
 
     assertThatThrownBy(() -> future.get())
         .isInstanceOf(ExecutionException.class)
-        .hasMessageContaining("future failed.");
+        .hasStackTraceContaining("future failed.");
   }
 
   @Test
@@ -198,7 +198,7 @@ class PubSubTemplateTests {
     assertThatThrownBy(() -> future.get())
         .isInstanceOf(ExecutionException.class)
         .hasCauseInstanceOf(PubSubDeliveryException.class)
-        .hasMessageContaining("Publish failed");
+        .hasStackTraceContaining("Publish failed");
   }
 
   @Test
