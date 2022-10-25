@@ -57,9 +57,11 @@ bazel build //google/cloud/$client_lib_name/v1:"$client_lib_name"_java_gapic
 cd -
 
 ## copy spring code to outside
-cp googleapis/bazel-bin/google/cloud/$client_lib_name/v1/"$client_lib_name"_java_gapic_srcjar-spring.srcjar ./
+mkdir -p ../generated
+cp googleapis/bazel-bin/google/cloud/$client_lib_name/v1/"$client_lib_name"_java_gapic_srcjar-spring.srcjar ../generated
 
 # unzip spring code
+cd ../generated
 unzip "$client_lib_name"_java_gapic_srcjar-spring.srcjar -d "$client_lib_name"/
 rm -rf "$client_lib_name"_java_gapic_srcjar-spring.srcjar
 
@@ -71,5 +73,7 @@ sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' "$client_l
 sed -i 's/{{client-library-version}}/'"$version"'/' "$client_lib_name"/pom.xml
 sed -i 's/{{starter-version}}/0.0.1-SNAPSHOT/' "$client_lib_name"/pom.xml
 
+# remove downloaded repos
+cd ../generator
 rm -rf googleapis
 rm -rf gapic-generator-java
