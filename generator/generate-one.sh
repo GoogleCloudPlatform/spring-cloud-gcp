@@ -73,6 +73,9 @@ sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' "$client_l
 sed -i 's/{{client-library-version}}/'"$version"'/' "$client_lib_name"/pom.xml
 sed -i 's/{{starter-version}}/0.0.1-SNAPSHOT/' "$client_lib_name"/pom.xml
 
+# add module to parent, adds after the `<modules>` line, does not check for existence
+sed -i "/^  <modules>/a\ \ \ \ <module>"$client_lib_name"</module>" pom.xml
+
 # remove downloaded repos
 cd ../generator
 rm -rf googleapis
