@@ -31,33 +31,40 @@ import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.cloud.spring.stream.binder.pubsub.PubSubMessageChannelBinder;
+import com.google.cloud.spring.stream.binder.pubsub.config.PubSubBinderConfiguration;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingsPropertiesTests.PubSubBindingsTestConfiguration;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.Topic;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.Input;
-import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.binder.BinderFactory;
+import org.springframework.cloud.stream.config.BinderFactoryAutoConfiguration;
 import org.springframework.cloud.stream.config.BindingServiceConfiguration;
-import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.SubscribableChannel;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests for extended binding properties. */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.NONE,
-    classes = {PubSubBindingsTestConfiguration.class, BindingServiceConfiguration.class},
+    classes = {
+        PubSubBindingsTestConfiguration.class,
+        BinderFactoryAutoConfiguration.class,
+        PubSubBinderConfiguration.class,
+        PubSubExtendedBindingProperties.class,
+        BindingServiceConfiguration.class
+    },
     properties = {
+      "spring.cloud.stream.pollable-source=customIn",
       "spring.cloud.stream.gcp.pubsub.bindings.input.consumer.ack-mode=AUTO_ACK",
       "spring.cloud.stream.gcp.pubsub.bindings.input.consumer.auto-create-resources=true",
       "spring.cloud.stream.gcp.pubsub.default.consumer.auto-create-resources=false"
@@ -83,7 +90,6 @@ class PubSubExtendedBindingsPropertiesTests {
 
   /** Spring Boot config for tests. */
   @Configuration
-  @EnableBinding(PubSubBindingsTestConfiguration.CustomTestSink.class)
   static class PubSubBindingsTestConfiguration {
 
     @Bean
@@ -113,20 +119,19 @@ class PubSubExtendedBindingsPropertiesTests {
           new PubSubSubscriberTemplate(subscriberFactory));
     }
 
-    @StreamListener("input")
-    public void process(String payload) {
-      System.out.println(payload);
+    @Bean
+    Consumer<String> process() {
+      return System.out::println;
     }
 
-    @StreamListener("custom-in")
-    public void processCustom(String payload) {
-      System.out.println(payload);
+    @Bean
+    Consumer<String> processCustom() {
+      return System.out::println;
     }
 
-    /** interface for testing. */
-    interface CustomTestSink extends Sink {
-      @Input("custom-in")
-      SubscribableChannel customIn();
+    @Bean
+    public Supplier<String> customIn() {
+      return () -> "empty";
     }
   }
 }
