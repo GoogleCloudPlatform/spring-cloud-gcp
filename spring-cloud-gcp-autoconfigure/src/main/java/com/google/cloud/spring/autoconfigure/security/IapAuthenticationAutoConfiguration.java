@@ -37,7 +37,6 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.O
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
@@ -66,12 +65,6 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenResolv
  *             audience is provided through {@code spring.cloud.gcp.security.iap.audience} property)
  *       </ul>
  * </ul>
- *
- * <p>If a custom {@link WebSecurityConfigurerAdapter} is present, it must add {@code
- * .oauth2ResourceServer().jwt()} customization to {@link
- * org.springframework.security.config.annotation.web.builders.HttpSecurity} object. If no custom
- * {@link WebSecurityConfigurerAdapter} is found, Spring Boot's default {@code
- * OAuth2ResourceServerWebSecurityConfiguration} will add this customization.
  *
  * @since 1.1
  */
