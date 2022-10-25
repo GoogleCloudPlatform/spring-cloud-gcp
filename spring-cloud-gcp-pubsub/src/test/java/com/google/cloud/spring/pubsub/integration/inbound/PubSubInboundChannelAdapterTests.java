@@ -57,7 +57,7 @@ import org.springframework.messaging.support.GenericMessage;
 @ExtendWith(OutputCaptureExtension.class)
 class PubSubInboundChannelAdapterTests {
 
-  private TestUtils.TestApplicationContext context = TestUtils.createTestApplicationContext();
+  private final TestUtils.TestApplicationContext context = TestUtils.createTestApplicationContext();
 
   PubSubInboundChannelAdapter adapter;
 
