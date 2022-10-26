@@ -45,6 +45,8 @@ cd -
 
 
 cd googleapis
+# fix googleapis committish for test/dev purpose
+git checkout f88ca86
 # todo: change to local repo --> gapic
 # very not stable change - todo: change to search and replace.
 sed -i '274,278d' WORKSPACE
