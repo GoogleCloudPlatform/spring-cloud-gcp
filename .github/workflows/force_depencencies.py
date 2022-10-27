@@ -56,8 +56,12 @@ for forced_dependency in forced_dependencies:
 
 regex = re.compile(r"^.*x-cross-repo-check-dependency-mark.*$", re.MULTILINE)
 # pdb.set_trace()
-pom_file_content = regex.sub(section_to_add, pom_file_content)
+pom_file_updated_content = regex.sub(section_to_add, pom_file_content)
+
+if pom_file_updated_content == pom_file_content:
+  print('The file is the same')
+  sys.exit(1)
 
 with open(pom_file_name, "w") as pom_file:
-  pom_file.write(pom_file_content)
+  pom_file.write(pom_file_updated_content)
 
