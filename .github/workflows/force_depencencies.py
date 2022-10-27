@@ -6,7 +6,7 @@ import re
 import pdb
 
 repository = sys.argv[1]
-version_json_file = sys.argv[1]
+version_json_file = sys.argv[2]
 
 print(f"Repository: {repository}")
 print(f"Version JSON file: {version_json_file}")
