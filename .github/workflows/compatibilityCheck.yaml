@@ -17,6 +17,7 @@ on:
 
 jobs:
   integrationTests:
+    name: Integration Tests for Compatibility Check
     if: github.repository == 'suztomo/spring-cloud-gcp'
     runs-on: ubuntu-20.04
     strategy:
@@ -38,6 +39,19 @@ jobs:
         env:
           REPO: ${{ inputs.mavenRepository }}
           DEPS: ${{ inputs.mavenDependencies }}
+      - name: Force dependencies
+        run: |
+          echo "repo: $REPO"
+          echo $DEPS > /tmp/version_check_request.json
+          python force_depencencies.py $REPO /tmp/version_check_request.json
+          echo "Here are the changes:"
+          git diff
+        env:
+          REPO: ${{ inputs.mavenRepository }}
+          DEPS: ${{ inputs.mavenDependencies }}
+      - name: Verify dependencies
+        run: |
+          mvn dependency:tree
       - name: Stop the job
         run: |
           # Fail
