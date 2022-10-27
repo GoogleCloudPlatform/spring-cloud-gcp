@@ -59,7 +59,8 @@ regex = re.compile(r"^.*x-cross-repo-check-dependency-mark.*$", re.MULTILINE)
 pom_file_updated_content = regex.sub(section_to_add, pom_file_content)
 
 if pom_file_updated_content == pom_file_content:
-  print('The file is the same')
+  print('The file is the same:')
+  print(pom_file_content)
   sys.exit(1)
 
 with open(pom_file_name, "w") as pom_file:
