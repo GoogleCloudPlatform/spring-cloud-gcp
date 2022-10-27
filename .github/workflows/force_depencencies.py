@@ -8,6 +8,9 @@ import pdb
 repository = sys.argv[1]
 version_json_file = sys.argv[1]
 
+print(f"Repository: {repository}")
+print(f"Version JSON file: {version_json_file}")
+
 forced_dependencies = {}
 with open(version_json_file) as f:
   forced_dependencies = json.load(f)
