@@ -79,6 +79,7 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- {x-cross-repo-check-dependency-mark } -->
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-dependencies</artifactId>
