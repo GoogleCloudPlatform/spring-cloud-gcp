@@ -52,6 +52,7 @@ jobs:
           DEPS: ${{ inputs.mavenDependencies }}
       - name: Verify dependencies
         run: |
+          ./mvnw -B -ntp install -DskipTests
           ./mvnw -B -ntp dependency:tree
       - name: Stop the job
         run: |
