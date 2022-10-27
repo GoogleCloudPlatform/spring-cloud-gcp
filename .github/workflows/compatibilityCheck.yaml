@@ -43,7 +43,7 @@ jobs:
         run: |
           echo "repo: $REPO"
           echo $DEPS > /tmp/version_check_request.json
-          python force_depencencies.py $REPO /tmp/version_check_request.json
+          python .github/workflows/force_depencencies.py $REPO /tmp/version_check_request.json
           echo "Here are the changes:"
           git diff
         env:
