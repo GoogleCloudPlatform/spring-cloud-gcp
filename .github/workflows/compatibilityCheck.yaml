@@ -51,7 +51,7 @@ jobs:
           DEPS: ${{ inputs.mavenDependencies }}
       - name: Verify dependencies
         run: |
-          mvn dependency:tree
+          ./mvnw -B -ntp dependency:tree
       - name: Stop the job
         run: |
           # Fail

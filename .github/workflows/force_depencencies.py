@@ -15,6 +15,8 @@ forced_dependencies = {}
 with open(version_json_file) as f:
   forced_dependencies = json.load(f)
 
+print(f"forced dependencies: {forced_dependencies}")
+
 pom_file_name = "pom.xml"
 with open(pom_file_name, "r") as pom_file:
   pom_file_content = pom_file.read()
