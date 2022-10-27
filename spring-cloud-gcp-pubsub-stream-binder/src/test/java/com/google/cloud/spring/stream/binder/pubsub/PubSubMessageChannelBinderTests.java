@@ -187,13 +187,25 @@ class PubSubMessageChannelBinderTests {
   void consumerMaxFetchPropertyPropagatesToMessageSource() {
     when(consumerDestination.getName()).thenReturn("test-subscription");
     baseContext
-        .withPropertyValues("spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize=20")
+        .withPropertyValues(
+            "spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize=20",
+            "spring.cloud.stream.gcp.pubsub.default.consumer.subscription-name=mock",
+            "spring.cloud.stream.gcp.pubsub.default.consumer.auto-create-resources=false"
+        )
         .run(
             ctx -> {
               PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
               PubSubExtendedBindingProperties props =
                   ctx.getBean(
                       "pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
+
+              assertThat(props.getExtendedConsumerProperties("test")
+                  .getSubscriptionName())
+                  .isEqualTo("mock");
+
+              assertThat(props.getExtendedConsumerProperties("test")
+                  .isAutoCreateResources())
+                  .isFalse();
 
               PubSubMessageSource source =
                   binder.createPubSubMessageSource(
