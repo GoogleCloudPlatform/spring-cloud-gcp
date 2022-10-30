@@ -101,15 +101,15 @@ class DatastoreTransactionManagerTests {
 
   @Test
   void testDoCommitFailure() {
-
+    DatastoreException exception = new DatastoreException(0, "", "");
     when(this.transaction.isActive()).thenReturn(true);
-    when(this.transaction.commit()).thenThrow(new DatastoreException(0, "", ""));
+    when(this.transaction.commit()).thenThrow(exception);
     this.tx.setTransaction(this.transaction);
 
     assertThatThrownBy(() -> this.manager.doCommit(this.status))
             .isInstanceOf(TransactionSystemException.class)
-            .hasMessage("Cloud Datastore transaction failed to commit.; "
-                    + "nested exception is com.google.cloud.datastore.DatastoreException: ");
+            .hasMessage("Cloud Datastore transaction failed to commit.")
+            .hasCause(exception);
   }
 
   @Test
@@ -130,15 +130,15 @@ class DatastoreTransactionManagerTests {
 
   @Test
   void testDoRollbackFailure() {
-
+    DatastoreException exception = new DatastoreException(0, "", "");
     when(this.transaction.isActive()).thenReturn(true);
-    doThrow(new DatastoreException(0, "", "")).when(this.transaction).rollback();
+    doThrow(exception).when(this.transaction).rollback();
     this.tx.setTransaction(this.transaction);
 
     assertThatThrownBy(() -> this.manager.doRollback(this.status))
             .isInstanceOf(TransactionSystemException.class)
-            .hasMessage("Cloud Datastore transaction failed to rollback.; "
-                    + "nested exception is com.google.cloud.datastore.DatastoreException: ");
+            .hasMessage("Cloud Datastore transaction failed to rollback.")
+            .hasCause(exception);
   }
 
   @Test
