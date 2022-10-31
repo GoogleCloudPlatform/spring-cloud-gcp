@@ -41,13 +41,19 @@ jobs:
             fi
           done < files.txt
       - name: Add skip IT label
-        if: ${{steps.check_files.outputs.run_job == 'false'}}
         run: |
-          echo "adding skip-integration-tests label"
-          gh pr edit $PR_NUMBER --add-label "skip-integration-tests"
+          echo $ADD_LABEL
+          if [[ $ADD_LABEL -eq "true" ]]; then
+            echo "adding skip-integration-tests label"
+            gh pr edit $PR_NUMBER --add-label "skip-integration-tests"
+          else
+            echo "removing skip-integration-tests label"
+            gh pr edit $PR_NUMBER --remove-label "skip-integration-tests"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.number }}
+          ADD_LABEL: ${{steps.check_files.outputs.run_job == 'false'}}
   integrationTests:
     needs: check
     if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' && needs.check.outputs.run_job == 'true'
