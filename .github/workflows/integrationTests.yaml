@@ -11,7 +11,7 @@ on:
 
 jobs:
   check:
-    name: Check files
+    name: Check IT-disabling files
     outputs:
       run_job: ${{ steps.check_files.outputs.run_job }}
     runs-on: ubuntu-20.04
@@ -31,15 +31,25 @@ jobs:
           while IFS= read -r file
           do
             echo $file
-            if [[ $file != generated/* ]]; then
-              echo "This modified file is not under the 'generated' folder."
+            if [[ $file != generated/* ]] && [[ $file != generator/* ]]; then
+              echo "This modified file is not under the 'generated' nor 'generator' folders."
+              echo "::set-output name=run_job::true"
+            else
+              echo "found a file that belongs in generated/ or generator/"
               echo "::set-output name=run_job::false"
               break
-            else
-              echo "::set-output name=run_job::true"
             fi
           done < files.txt
+      - name: Add skip IT label
+        if: ${{steps.check_files.outputs.run_job == 'false'}}
+        run: |
+          echo "adding skip-integration-tests label"
+          gh pr edit $PR_NUMBER --add-label "skip-integration-tests"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.number }}
   integrationTests:
+    needs: check
     if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' && needs.check.outputs.run_job == 'true'
     runs-on: ubuntu-20.04
     strategy:
