@@ -43,7 +43,7 @@ jobs:
       - name: Add skip IT label
         run: |
           echo $ADD_LABEL
-          if [[ $ADD_LABEL -eq "true" ]]; then
+          if [[ $ADD_LABEL == "true" ]]; then
             echo "adding skip-integration-tests label"
             gh pr edit $PR_NUMBER --add-label "skip-integration-tests"
           else
