@@ -10,8 +10,37 @@ on:
 
 
 jobs:
+  check:
+    name: Check files
+    outputs:
+      run_job: ${{ steps.check_files.outputs.run_job }}
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: check modified files
+        id: check_files
+        run: |
+          echo "=============== list modified files ==============="
+          git diff --name-only HEAD^ HEAD
+          
+          echo "========== check paths of modified files =========="
+          git diff --name-only HEAD^ HEAD > files.txt
+          while IFS= read -r file
+          do
+            echo $file
+            if [[ $file != generated/* ]]; then
+              echo "This modified file is not under the 'generated' folder."
+              echo "::set-output name=run_job::false"
+              break
+            else
+              echo "::set-output name=run_job::true"
+            fi
+          done < files.txt
   integrationTests:
-    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp'
+    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' && needs.check.outputs.run_job == 'true'
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
