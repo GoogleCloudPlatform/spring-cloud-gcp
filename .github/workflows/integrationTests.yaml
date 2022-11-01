@@ -33,11 +33,11 @@ jobs:
             echo $file
             if [[ $file != generated/* ]] && [[ $file != generator/* ]]; then
               echo "This modified file is not under the 'generated' nor 'generator' folders."
-              echo "::set-output name=run_job::true"
+              echo "run_job=true" >> $GITHUB_OUTPUT
+              break
             else
               echo "found a file that belongs in generated/ or generator/"
-              echo "::set-output name=run_job::false"
-              break
+              echo "run_job=false" >> $GITHUB_OUTPUT
             fi
           done < files.txt
       - name: Add skip IT label
