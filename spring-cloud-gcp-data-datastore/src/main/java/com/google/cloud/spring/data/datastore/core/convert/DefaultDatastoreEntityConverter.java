@@ -42,7 +42,6 @@ import org.springframework.data.mapping.model.EntityInstantiator;
 import org.springframework.data.mapping.model.EntityInstantiators;
 import org.springframework.data.mapping.model.ParameterValueProvider;
 import org.springframework.data.mapping.model.PersistentEntityParameterValueProvider;
-import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.data.util.TypeInformation;
 import org.springframework.util.Assert;
 
@@ -123,7 +122,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
     if (entity == null) {
       return null;
     }
-    return readAsMap(entity, ClassTypeInformation.from(HashMap.class));
+    return readAsMap(entity, TypeInformation.of(HashMap.class));
   }
 
   public <T> DatastorePersistentEntity<T> getDiscriminationPersistentEntity(
@@ -213,7 +212,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
             propertyValueProvider.getPropertyValue(
                 entity.getDiscriminationFieldName(),
                 NOT_EMBEDDED,
-                ClassTypeInformation.from(String[].class)))
+                TypeInformation.of(String[].class)))
         [0].equals(entity.getDiscriminatorValue());
   }
 

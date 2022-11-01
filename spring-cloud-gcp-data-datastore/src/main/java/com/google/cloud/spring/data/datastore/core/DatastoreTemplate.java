@@ -84,7 +84,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.AssociationHandler;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
-import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.data.util.TypeInformation;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -470,7 +470,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
     Entity entity = getDatastoreReadWriter().get(key);
     return this.datastoreEntityConverter.readAsMap(
-        String.class, ClassTypeInformation.from(valueType), entity);
+        String.class, TypeInformation.of(valueType), entity);
   }
 
   @Override

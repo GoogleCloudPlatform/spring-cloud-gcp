@@ -36,7 +36,7 @@ import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.data.mapping.SimplePropertyHandler;
-import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.data.util.TypeInformation;
 
 /** Tests for the Spanner persistent entity. */
 class SpannerPersistentEntityImplTests {
@@ -54,7 +54,7 @@ class SpannerPersistentEntityImplTests {
   @Test
   void testTableName() {
     SpannerPersistentEntityImpl<TestEntity> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(TestEntity.class),
+        new SpannerPersistentEntityImpl<>(TypeInformation.of(TestEntity.class),
             this.spannerMappingContext, this.spannerEntityProcessor);
 
     assertThat(entity.tableName()).isEqualTo("custom_test_table");
@@ -63,7 +63,7 @@ class SpannerPersistentEntityImplTests {
   @Test
   void testRawTableName() {
     SpannerPersistentEntityImpl<EntityNoCustomName> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityNoCustomName.class),
+        new SpannerPersistentEntityImpl<>(TypeInformation.of(EntityNoCustomName.class),
             this.spannerMappingContext, this.spannerEntityProcessor);
 
     assertThat(entity.tableName()).isEqualTo("entityNoCustomName");
@@ -72,7 +72,7 @@ class SpannerPersistentEntityImplTests {
   @Test
   void testEmptyCustomTableName() {
     SpannerPersistentEntityImpl<EntityEmptyCustomName> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityEmptyCustomName.class),
+        new SpannerPersistentEntityImpl<>(TypeInformation.of(EntityEmptyCustomName.class),
             this.spannerMappingContext, this.spannerEntityProcessor);
 
     assertThat(entity.tableName()).isEqualTo("entityEmptyCustomName");
@@ -88,17 +88,18 @@ class SpannerPersistentEntityImplTests {
   void testExpressionResolutionWithoutApplicationContext() {
 
     SpannerPersistentEntityImpl<EntityWithExpression> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityWithExpression.class),
+        new SpannerPersistentEntityImpl<>(TypeInformation.of(EntityWithExpression.class),
             this.spannerMappingContext, this.spannerEntityProcessor);
-    assertThatThrownBy(() -> entity.tableName())
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("Error getting table name for EntityWithExpression; nested exception is org.springframework.expression.spel.SpelEvaluationException: EL1007E: Property or field 'tablePostfix' cannot be found on null");
+    assertThatThrownBy(entity::tableName)
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("Error getting table name for EntityWithExpression")
+        .hasStackTraceContaining("EL1007E: Property or field 'tablePostfix' cannot be found on null");
   }
 
   @Test
   void testExpressionResolutionFromApplicationContext() {
     SpannerPersistentEntityImpl<EntityWithExpression> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityWithExpression.class),
+        new SpannerPersistentEntityImpl<>(TypeInformation.of(EntityWithExpression.class),
             this.spannerMappingContext, this.spannerEntityProcessor);
 
     ApplicationContext applicationContext = mock(ApplicationContext.class);
@@ -215,21 +216,21 @@ class SpannerPersistentEntityImplTests {
   void testInvalidTableName() {
 
     SpannerPersistentEntityImpl<EntityBadName> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityBadName.class),
+        new SpannerPersistentEntityImpl<>(TypeInformation.of(EntityBadName.class),
             this.spannerMappingContext, this.spannerEntityProcessor);
 
-    assertThatThrownBy(() -> entity.tableName())
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("Error getting table name for EntityBadName; nested exception is com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException: Only"
-                    + " letters, numbers, and underscores are allowed in table names: ;DROP TABLE"
-                    + " your_table;");
+    assertThatThrownBy(entity::tableName)
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("Error getting table name for EntityBadName")
+        .hasStackTraceContaining(
+            "Only letters, numbers, and underscores are allowed in table names: ;DROP TABLE your_table;");
   }
 
   @Test
   void testSpelInvalidName() {
 
     SpannerPersistentEntityImpl<EntityWithExpression> entity =
-        new SpannerPersistentEntityImpl<>(ClassTypeInformation.from(EntityWithExpression.class),
+        new SpannerPersistentEntityImpl<>(TypeInformation.of(EntityWithExpression.class),
             this.spannerMappingContext, this.spannerEntityProcessor);
 
     ApplicationContext applicationContext = mock(ApplicationContext.class);
@@ -238,12 +239,12 @@ class SpannerPersistentEntityImplTests {
 
     entity.setApplicationContext(applicationContext);
 
-    assertThatThrownBy(() -> entity.tableName())
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("Error getting table name for EntityWithExpression; nested exception is "
-                    + "com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException: "
-                    + "Only letters, numbers, and underscores are allowed in table names: "
-                    + "table_; DROP TABLE your_table;");
+    assertThatThrownBy(entity::tableName)
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("Error getting table name for EntityWithExpression")
+        .hasStackTraceContaining(
+            "Only letters, numbers, and underscores are allowed in table names: "
+                + "table_; DROP TABLE your_table;");
 
 
   }

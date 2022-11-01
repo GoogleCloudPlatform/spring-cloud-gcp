@@ -19,6 +19,7 @@ package com.google.cloud.spring.data.spanner.core.mapping;
 import com.google.cloud.spanner.Type.Code;
 import com.google.spanner.v1.TypeCode;
 import java.util.List;
+import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 import org.springframework.data.mapping.Association;
@@ -42,7 +43,7 @@ public class SpannerPersistentPropertyImpl
     extends AnnotationBasedPersistentProperty<SpannerPersistentProperty>
     implements SpannerPersistentProperty {
 
-  private FieldNamingStrategy fieldNamingStrategy;
+  private final FieldNamingStrategy fieldNamingStrategy;
 
   /**
    * Creates a new {@link SpannerPersistentPropertyImpl}.
@@ -202,5 +203,24 @@ public class SpannerPersistentPropertyImpl
     }
 
     return null;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof SpannerPersistentPropertyImpl that)) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    return fieldNamingStrategy.equals(that.fieldNamingStrategy);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), fieldNamingStrategy);
   }
 }
