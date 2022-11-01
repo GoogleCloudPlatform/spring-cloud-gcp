@@ -42,14 +42,8 @@ echo ${PROJECT_VERSION}
 # Build the javadocs
 ./mvnw clean javadoc:aggregate -Drelease=true -P docFX
 
-# remove BUILD-SNAPSHOT contents from changelog, this will
-# not be needed when switched to release-please
-
-# remove everything between line ending with `-SNAPSHOT`
-# and starting with `##`
-sed -i '/-SNAPSHOT$/,/^## /{/^## /!d}' CHANGELOG.md
-# remove line ending with `BUILD-SNAPSHOT`
-sed -i '/-SNAPSHOT$/d' CHANGELOG.md
+# remove the trailing `-SNAPSHOT` for the current version
+sed -i 's/-SNAPSHOT$//' CHANGELOG.md
 
 # print 20 lines to verify
 head -20 CHANGELOG.md
