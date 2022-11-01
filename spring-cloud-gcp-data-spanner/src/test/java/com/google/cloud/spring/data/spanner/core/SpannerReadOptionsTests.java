@@ -49,13 +49,23 @@ class SpannerReadOptionsTests {
   }
 
   @Test
-  void convertReadToQueryOptionTest() {
+  void convertReadToQueryOptionTest_withSupportedOptions() {
     SpannerReadOptions spannerReadOptions = new SpannerReadOptions();
     ReadAndQueryOption r1 = mock(ReadAndQueryOption.class);
     ReadQueryUpdateTransactionOption r2 = mock(ReadQueryUpdateTransactionOption.class);
     spannerReadOptions.addReadOption(r1).addReadOption(r2);
     SpannerQueryOptions spannerQueryOptions = spannerReadOptions.toQueryOptions();
     assertThat(spannerQueryOptions.getOptions()).hasSize(2);
+  }
+
+  @Test
+  void convertReadToQueryOptionTest_throwIfNotSupported() {
+    SpannerReadOptions spannerReadOptions = new SpannerReadOptions();
+    ReadOption r1 = mock(ReadOption.class);
+    spannerReadOptions.addReadOption(r1);
+    assertThatThrownBy(() -> spannerReadOptions.toQueryOptions())
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Can't convert");
   }
 
   @Test
