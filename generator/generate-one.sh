@@ -48,10 +48,19 @@ cd googleapis
 # fix googleapis committish for test/dev purpose
 git checkout f88ca86
 # todo: change to local repo --> gapic
-# very not stable change - todo: change to search and replace.
-sed -i '274,278d' WORKSPACE
 
-sed -i '274 i local_repository(\n    name = "gapic_generator_java",\n    path = "../gapic-generator-java/",\n)' WORKSPACE
+# Finds http_archive() rule with name = "gapic_generator_java",
+# and replaces with local_repository() rule in googleapis/WORKSPACE
+LOCAL_REPO="local_repository(\n    name = \\\"gapic_generator_java\\\",\n    path = \\\"..\/gapic_generator_java\/\\\",\n)"
+# Using perl for multi-line replace
+# -0777 slurps file instead of per-line
+# -p for input loop over lines in file
+# -i to edit file in-place
+# -e to enter one line of program
+perl -0777 -pi -e "s/http_archive\(\n    name \= \"gapic_generator_java\"(.*?)\)/$LOCAL_REPO/s" WORKSPACE
+# "s/{find_pattern}/{replace_text}/s":
+# substitute first occurrence of text matching {find_pattern} with {replace_text},
+# with dot matching all characters including new lines
 
 # call bazel target - todo: separate target in future
 bazel build //google/cloud/$client_lib_name/v1:"$client_lib_name"_java_gapic
