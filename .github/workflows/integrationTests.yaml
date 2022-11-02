@@ -23,30 +23,21 @@ jobs:
       - name: check modified files
         id: check_files
         run: |
-          echo "=============== list modified files ==============="
-          git diff --name-status HEAD^ HEAD
-          
-          echo "========== check paths of modified files =========="
           git diff --name-only HEAD^ HEAD > files.txt
           while IFS= read -r file
           do
-            echo $file
             if [[ $file != generated/* ]] && [[ $file != generator/* ]]; then
-              echo "This modified file is not under the 'generated' nor 'generator' folders."
               echo "run_job=true" >> $GITHUB_OUTPUT
               break
             else
-              echo "found a file that belongs in generated/ or generator/"
               echo "run_job=false" >> $GITHUB_OUTPUT
             fi
           done < files.txt
       - name: Add skip IT label
         run: |
           if [[ $ADD_LABEL == "true" ]]; then
-            echo "adding skip-integration-tests label"
             gh pr edit $PR_NUMBER --add-label "skip-integration-tests"
           else
-            echo "removing skip-integration-tests label"
             gh pr edit $PR_NUMBER --remove-label "skip-integration-tests"
           fi
         env:
