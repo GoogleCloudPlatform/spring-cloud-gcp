@@ -24,13 +24,12 @@ jobs:
         id: check_files
         run: |
           git diff --name-only HEAD^ HEAD > files.txt
+          echo "run_job=false" >> $GITHUB_OUTPUT
           while IFS= read -r file
           do
             if [[ $file != generated/* ]] && [[ $file != generator/* ]]; then
               echo "run_job=true" >> $GITHUB_OUTPUT
               break
-            else
-              echo "run_job=false" >> $GITHUB_OUTPUT
             fi
           done < files.txt
       - name: Add skip IT label
