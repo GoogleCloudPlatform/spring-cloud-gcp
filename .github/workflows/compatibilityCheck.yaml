@@ -52,8 +52,11 @@ jobs:
           DEPS: ${{ inputs.mavenDependencies }}
       - name: Verify dependencies
         run: |
-          ./mvnw -B -ntp install -DskipTests
-          ./mvnw -B -ntp dependency:tree
+          ./mvnw -B -ntp install -DskipTests -DcompatibilityCheckRepository=$REPO
+          ./mvnw -B -ntp dependency:tree -DcompatibilityCheckRepository=$REPO
+        env:
+          REPO: ${{ inputs.mavenRepository }}
+          DEPS: ${{ inputs.mavenDependencies }}
       - name: Stop the job
         run: |
           # Fail
