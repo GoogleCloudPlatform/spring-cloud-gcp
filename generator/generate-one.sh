@@ -49,18 +49,10 @@ cd googleapis
 git checkout f88ca86
 # todo: change to local repo --> gapic
 
-# Finds http_archive() rule with name = "gapic_generator_java",
-# and replaces with local_repository() rule in googleapis/WORKSPACE
+# In googleapis/WORKSPACE, find http_archive() rule with name = "gapic_generator_java",
+# and replace with local_repository() rule
 LOCAL_REPO="local_repository(\n    name = \\\"gapic_generator_java\\\",\n    path = \\\"..\/gapic-generator-java\/\\\",\n)"
-# Using perl for multi-line replace
-# -0777 slurps file instead of per-line
-# -p for input loop over lines in file
-# -i to edit file in-place
-# -e to enter one line of program
 perl -0777 -pi -e "s/http_archive\(\n    name \= \"gapic_generator_java\"(.*?)\)/$LOCAL_REPO/s" WORKSPACE
-# "s/{find_pattern}/{replace_text}/s":
-# substitute first occurrence of text matching {find_pattern} with {replace_text},
-# with dot matching all characters including new lines
 
 # call bazel target - todo: separate target in future
 bazel build //google/cloud/$client_lib_name/v1:"$client_lib_name"_java_gapic
