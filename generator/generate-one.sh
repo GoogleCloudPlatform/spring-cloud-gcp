@@ -51,7 +51,7 @@ git checkout f88ca86
 
 # Finds http_archive() rule with name = "gapic_generator_java",
 # and replaces with local_repository() rule in googleapis/WORKSPACE
-LOCAL_REPO="local_repository(\n    name = \\\"gapic_generator_java\\\",\n    path = \\\"..\/gapic_generator_java\/\\\",\n)"
+LOCAL_REPO="local_repository(\n    name = \\\"gapic_generator_java\\\",\n    path = \\\"..\/gapic-generator-java\/\\\",\n)"
 # Using perl for multi-line replace
 # -0777 slurps file instead of per-line
 # -p for input loop over lines in file
