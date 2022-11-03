@@ -33,7 +33,7 @@ jobs:
             fi
           done < files.txt
       - name: Add skip IT label
-        if: {{ github.event_name == 'pull_request' }}
+        if: github.event_name == 'pull_request'
         run: |
           if [[ $ADD_LABEL == "true" ]]; then
             gh pr edit $PR_NUMBER --add-label "skip-integration-tests"
