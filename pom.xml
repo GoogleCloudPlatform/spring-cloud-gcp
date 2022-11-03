@@ -340,6 +340,8 @@
 				<module>spring-cloud-gcp-kms</module>
 				<module>spring-cloud-gcp-native-support</module>
 
+				<!-- Generated Modules -->
+				<module>generated</module>
 				<!-- Docs and Samples -->
 				<module>docs</module>
 				<module>spring-cloud-gcp-samples</module>
