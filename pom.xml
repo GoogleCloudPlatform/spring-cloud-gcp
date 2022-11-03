@@ -361,7 +361,6 @@
 				<module>spring-cloud-gcp-security-firebase</module>
 				<module>spring-cloud-gcp-vision</module>
 				<module>spring-cloud-gcp-kms</module>
-				<module>spring-cloud-gcp-native-support</module>
 
 				<!-- Generated Modules -->
 				<module>generated</module>
