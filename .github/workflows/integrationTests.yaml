@@ -16,7 +16,6 @@ on:
 
 jobs:
   integrationTests:
-    needs: check
     if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-20.04
     strategy:
