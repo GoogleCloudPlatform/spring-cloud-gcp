@@ -63,7 +63,7 @@ class SpannerReadOptionsTests {
     SpannerReadOptions spannerReadOptions = new SpannerReadOptions();
     ReadOption r1 = mock(ReadOption.class);
     spannerReadOptions.addReadOption(r1);
-    assertThatThrownBy(() -> spannerReadOptions.toQueryOptions())
+    assertThatThrownBy(spannerReadOptions::toQueryOptions)
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("Can't convert");
   }
