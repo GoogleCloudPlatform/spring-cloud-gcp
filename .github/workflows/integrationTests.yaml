@@ -34,7 +34,12 @@ jobs:
           done < files.txt
       - name: Add skip IT label
         run: |
-          cat $GITHUB_EVENT_PATH
+          echo $GITHUB_SHA
+          #cat $GITHUB_EVENT_PATH
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            /repos/GoogleCloudPlatform/spring-cloud-gcp/commits/$GITHUB_SHA/pulls
+          echo ""
           echo "pr number is $PR_NUMBER"
           if [ -z $PR_NUMBER ]; then
             exit
