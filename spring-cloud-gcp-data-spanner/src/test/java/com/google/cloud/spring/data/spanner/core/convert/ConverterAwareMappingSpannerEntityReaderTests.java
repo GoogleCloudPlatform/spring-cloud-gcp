@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.spanner.core.convert;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -359,18 +360,18 @@ class ConverterAwareMappingSpannerEntityReaderTests {
   }
 
   @Test
-  void zeroArgsListShouldThrowError() {
+  void zeroArgsListShouldNotThrowError() {
 
     Struct struct =
         Struct.newBuilder()
             .set("zeroArgsListOfObjects")
             .to(Value.stringArray(List.of("hello", "world")))
             .build();
-
-    assertThatThrownBy(() ->  this.spannerEntityReader.read(TestEntities.TestEntityWithListWithZeroTypeArgs.class, struct))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("in field 'zeroArgsListOfObjects': Unsupported number of type parameters found: 0 Only"
-                    + " collections of exactly 1 type parameter are supported.");
+    // Starting from Spring 3.0, Collection types without generics can be resolved to type with wildcard
+    // generics (i.e., "?"). For example, "zeroArgsListOfObjects" will be resolved to List<?>, rather
+    // than List.
+    assertThatNoException()
+        .isThrownBy(() -> this.spannerEntityReader.read(TestEntities.TestEntityWithListWithZeroTypeArgs.class, struct));
   }
 
   @Test
