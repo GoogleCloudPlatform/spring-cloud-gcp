@@ -30,7 +30,9 @@ import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
+import org.springframework.data.util.StreamUtils;
 import org.springframework.data.util.TypeInformation;
+import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
 /**
@@ -65,7 +67,17 @@ public class SpannerPersistentPropertyImpl
             : PropertyNameFieldNamingStrategy.INSTANCE;
   }
 
+  /** Only provides types that are also annotated with {@link Table}. */
   @Override
+  @NonNull
+  public Iterable<? extends TypeInformation<?>> getPersistentEntityTypeInformation() {
+    return StreamUtils.createStreamFromIterator(super.getPersistentEntityTypeInformation().iterator())
+        .filter(typeInfo -> typeInfo.getType().isAnnotationPresent(Table.class))
+        .toList();
+  }
+
+  @Override
+  @NonNull
   protected Association<SpannerPersistentProperty> createAssociation() {
     return new Association<>(this, null);
   }
