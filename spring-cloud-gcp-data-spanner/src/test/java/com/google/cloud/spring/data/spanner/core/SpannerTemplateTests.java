@@ -460,7 +460,7 @@ class SpannerTemplateTests {
                     .addReadOption(mock(Options.ReadAndQueryOption.class))
                     .addReadOption(mock(Options.ReadQueryUpdateTransactionOption.class));
     spyTemplate.read(ParentEntity.class, keys, options);
-    verify(spyTemplate, times(1)).read(eq(ParentEntity.class), same(keys), eq(options));
+    verify(spyTemplate).read(eq(ParentEntity.class), same(keys), eq(options));
     verify(this.databaseClient, times(1)).singleUse();
   }
 
