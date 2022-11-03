@@ -34,6 +34,7 @@ jobs:
           done < files.txt
       - name: Add skip IT label
         run: |
+          cat $GITHUB_EVENT_PATH
           echo "pr number is $PR_NUMBER"
           if [ -z $PR_NUMBER ]; then
             exit
