@@ -79,8 +79,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-      <!-- {x-cross-repo-check-dependency-mark} -->
-    
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-dependencies</artifactId>
@@ -685,6 +683,12 @@
 					<name>compatibilityCheckRepository</name>
 				</property>
 			</activation>
+			<dependencyManagement>
+				<dependencies>
+					<!-- {x-cross-repo-check-dependency-mark} -->
+				</dependencies>
+			</dependencyManagement>
+
 			<repositories>
 				<repository>
 					<id>compatibility-check-repository</id>
