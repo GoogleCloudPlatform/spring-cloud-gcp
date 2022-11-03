@@ -2,60 +2,22 @@ name: Integration Tests
 
 on:
   push:
-    branches-ignore:
-      - 'dependabot/**'
+    branches:
+      - 'main'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - 'generator/**'
+      - 'generated/**'
   workflow_dispatch:
   schedule:
     - cron: '05 8 * * *' # 08:00 UTC every day
 
 
 jobs:
-  check:
-    name: Check IT-disabling files
-    outputs:
-      run_job: ${{ steps.check_files.outputs.run_job }}
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
-      - name: check modified files
-        id: check_files
-        run: |
-          git diff --name-only HEAD^ HEAD > files.txt
-          echo "run_job=false" >> $GITHUB_OUTPUT
-          while IFS= read -r file
-          do
-            if [[ $file != generated/* ]] && [[ $file != generator/* ]]; then
-              echo "run_job=true" >> $GITHUB_OUTPUT
-              break
-            fi
-          done < files.txt
-      - name: Add skip IT label
-        run: |
-          echo $GITHUB_SHA
-          #cat $GITHUB_EVENT_PATH
-          gh api \
-            -H "Accept: application/vnd.github+json" \
-            /repos/GoogleCloudPlatform/spring-cloud-gcp/commits/$GITHUB_SHA/pulls
-          echo ""
-          echo "pr number is $PR_NUMBER"
-          if [ -z $PR_NUMBER ]; then
-            exit
-          fi
-          if [[ $ADD_LABEL == "true" ]]; then
-            gh pr edit $PR_NUMBER --add-label "skip-integration-tests"
-          else
-            gh pr edit $PR_NUMBER --remove-label "skip-integration-tests"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.number }}
-          ADD_LABEL: ${{steps.check_files.outputs.run_job == 'false'}}
   integrationTests:
     needs: check
-    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' && (needs.check.outputs.run_job == 'true' || github.event.number == '')
+    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
