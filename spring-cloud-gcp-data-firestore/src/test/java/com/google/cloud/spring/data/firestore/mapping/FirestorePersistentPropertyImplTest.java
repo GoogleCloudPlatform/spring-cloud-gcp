@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
-import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.data.util.TypeInformation;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests for {@link FirestorePersistentPropertyImpl}. */
@@ -46,7 +46,7 @@ class FirestorePersistentPropertyImplTest {
     when(mockProperty.getName()).thenReturn("id");
     when(mockProperty.getField()).thenReturn(Optional.of(TestEntity.class.getField("id")));
     when(mockPersistentEntity.getTypeInformation())
-        .thenReturn(ClassTypeInformation.from(TestEntity.class));
+        .thenReturn(TypeInformation.of(TestEntity.class));
     when(mockPersistentEntity.getType()).thenReturn(TestEntity.class);
 
     FirestorePersistentPropertyImpl firestorePersistentProperty =
