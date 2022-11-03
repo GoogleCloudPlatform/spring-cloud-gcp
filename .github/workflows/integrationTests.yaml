@@ -33,8 +33,9 @@ jobs:
             fi
           done < files.txt
       - name: Add skip IT label
-        if: github.event_name == 'pull_request'
+        #if: github.event.number == null
         run: |
+          echo "pr number is $PR_NUMBER"
           if [[ $ADD_LABEL == "true" ]]; then
             gh pr edit $PR_NUMBER --add-label "skip-integration-tests"
           else
@@ -46,7 +47,8 @@ jobs:
           ADD_LABEL: ${{steps.check_files.outputs.run_job == 'false'}}
   integrationTests:
     needs: check
-    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' && ((github.event_name == 'pull_request' && needs.check.outputs.run_job == 'true') || github.event_name != 'pull_request')
+    # if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' && ((github.event_name == 'pull_request' && needs.check.outputs.run_job == 'true') || github.event_name != 'pull_request')
+    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' && needs.check.outputs.run_job == 'true'
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
