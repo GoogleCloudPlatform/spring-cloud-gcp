@@ -29,7 +29,7 @@ if indent_match:
   indent = indent_match.group(1)
 
 section_to_add = ""
-base_indent_count = 3
+base_indent_count = 5
 for forced_dependency in forced_dependencies:
   elements = forced_dependency.split(':')
   group_id = elements[0]
