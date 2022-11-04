@@ -443,6 +443,8 @@ messages.forEach(
 </tbody>
 </table>
 
+
+
 <div class="warning">
 
 We do not recommend setting `returnImmediately` to `true`, as it may
@@ -453,6 +455,8 @@ topic. Therefore, we recommend setting `returnImmediately` to `false`,
 or using `subscribe` methods from the previous section.
 
 </div>
+
+
 
 ##### Acknowledging messages
 

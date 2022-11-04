@@ -188,6 +188,7 @@ samples of the most commonly used integrations in Spring Cloud GCP.
 </tbody>
 </table>
 
+
 Each sample application demonstrates how to use Spring Cloud GCP
 libraries in context and how to setup the dependencies for the project.
 The applications are fully functional and can be deployed to Google
@@ -196,6 +197,8 @@ for [deploying an application to
 AppEngine](https://codelabs.developers.google.com/codelabs/cloud-app-engine-springboot/index.html)
 and [to Google Kubernetes
 Engine](https://codelabs.developers.google.com/codelabs/cloud-springboot-kubernetes/index.html).
+
+
 
 #### Codelabs
 
