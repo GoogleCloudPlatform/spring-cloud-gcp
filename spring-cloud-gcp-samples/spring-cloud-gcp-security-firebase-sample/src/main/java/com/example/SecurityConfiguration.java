@@ -16,10 +16,11 @@
 
 package com.example;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 
 /**
@@ -27,23 +28,25 @@ import org.springframework.security.web.authentication.Http403ForbiddenEntryPoin
  */
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests()
-        .antMatchers("/")
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests()
+        .requestMatchers("/")
         .permitAll()
-        .antMatchers("/css/**")
+        .requestMatchers("/css/**")
         .permitAll()
-        .antMatchers("/templates/**")
+        .requestMatchers("/templates/**")
         .permitAll()
-        .antMatchers("/answer")
+        .requestMatchers("/answer")
         .authenticated()
         .and()
         .oauth2ResourceServer()
         .jwt()
         .and()
         .authenticationEntryPoint(new Http403ForbiddenEntryPoint());
+
+    return http.build();
   }
 }
