@@ -50,7 +50,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -93,7 +93,8 @@ class PubSubSampleApplicationIntegrationTests {
 
   private static String projectName;
 
-  @LocalServerPort private int port;
+  @LocalServerPort
+  private int port;
 
   @Autowired private TestRestTemplate testRestTemplate;
 
