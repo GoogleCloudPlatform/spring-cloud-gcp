@@ -23,19 +23,19 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import javax.annotation.PreDestroy;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * If <code>spring.cloud.gcp.pubsub.emulator-host</code> is set, spring stream will connect to a
  * running pub/sub emulator.
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass({ManagedChannel.class, PubSubTemplate.class})
 @ConditionalOnProperty(prefix = "spring.cloud.gcp.pubsub", name = "enabled", matchIfMissing = true)
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)

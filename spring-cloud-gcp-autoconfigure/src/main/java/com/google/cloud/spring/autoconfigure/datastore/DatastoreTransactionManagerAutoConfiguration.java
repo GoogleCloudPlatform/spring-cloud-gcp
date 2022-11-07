@@ -18,6 +18,7 @@ package com.google.cloud.spring.autoconfigure.datastore;
 
 import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -33,7 +34,7 @@ import org.springframework.transaction.PlatformTransactionManager;
  *
  * @since 1.1
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass(DatastoreTransactionManager.class)
 @ConditionalOnProperty(value = "spring.cloud.gcp.datastore.enabled", matchIfMissing = true)
 @AutoConfigureBefore(TransactionAutoConfiguration.class)

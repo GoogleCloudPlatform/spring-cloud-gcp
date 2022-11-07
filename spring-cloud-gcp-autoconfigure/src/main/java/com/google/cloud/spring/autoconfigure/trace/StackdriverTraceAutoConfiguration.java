@@ -43,6 +43,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -63,10 +64,10 @@ import zipkin2.reporter.stackdriver.StackdriverSender;
 import zipkin2.reporter.stackdriver.StackdriverSender.Builder;
 
 /** Config for Stackdriver Trace. */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @EnableConfigurationProperties({GcpTraceProperties.class})
 @ConditionalOnProperty(
-    value = {"spring.sleuth.enabled", "spring.cloud.gcp.trace.enabled"},
+    value = {"spring.cloud.gcp.trace.enabled"},
     matchIfMissing = true)
 @ConditionalOnClass(StackdriverSender.class)
 @AutoConfigureBefore(BraveAutoConfiguration.class)
