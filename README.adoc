@@ -3,6 +3,8 @@ image:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/workflows/Integrat
 image:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/workflows/SonarCloud%20Analysis/badge.svg?branch=main["HEAD SonarCloud Analysis", link="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/actions?query=branch%3Amain+workflow%3A%22SonarCloud+Analysis%22"]
 image:https://sonarcloud.io/api/project_badges/measure?project=GoogleCloudPlatform_spring-cloud-gcp&metric=alert_status["Quality Gate Status", link="https://sonarcloud.io/dashboard?id=GoogleCloudPlatform_spring-cloud-gcp"]
 
+dummy change
+
 == Spring Framework on Google Cloud Platform
 
 This project makes it easy for Spring users to run their applications on Google Cloud Platform.
