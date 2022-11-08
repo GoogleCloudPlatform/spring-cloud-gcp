@@ -14,6 +14,8 @@ For a deep dive into the project, refer to the Spring Cloud GCP Reference docume
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.4.0/reference/html/index.html[Spring Cloud GCP 3.4.0]
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/2.0.11/reference/html/index.html[Spring Cloud GCP 2.0.11]
 
+another dummy change
+
 If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[Spring Cloud GCP sample applications] or the https://codelabs.developers.google.com/spring[Spring on GCP codelabs].
 
 Currently, this repository provides support for:
