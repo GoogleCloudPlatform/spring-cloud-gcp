@@ -55,6 +55,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -73,6 +75,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {Application.class})
+@AutoConfigureObservability
 class TraceSampleApplicationIntegrationTests {
 
   @DynamicPropertySource
@@ -194,8 +197,7 @@ class TraceSampleApplicationIntegrationTests {
                       + " with "
                       + trace.getSpansCount()
                       + " spans ("
-                      + trace.getSpansList().stream()
-                      .map(TraceSpan::getName).toList()
+                      + trace.getSpansList().stream().map(TraceSpan::getName).toList()
                       + ").");
 
               assertThat(trace.getTraceId()).isEqualTo(uuidString);
@@ -203,6 +205,21 @@ class TraceSampleApplicationIntegrationTests {
               // get /, visit-meet-endpoint, get, get /meet, get, get /meet, get, get /meet,
               // send-message-spring-integration, publish, send-message-pub-sub-template, publish,
               // next-message, on-message, next-message, on-message
+
+              // One of the next problems is that the spans no longer have the same names as before.
+              // 14:41:07.857 [awaitility-thread] INFO  c.e.TraceSampleApplicationIntegrationTests -
+              // Found trace! 2f732b09b8e94bcc8d9c4db2ccefafcb with 11 spans ([http get,
+              // messagesender.serviceactivator receive, messagesender receive, publish, publish,
+              // next-message, on-message, application.messagereceiver.serviceactivator receive,
+              // next-message, on-message, application.messagereceiver.serviceactivator receive]).
+
+              // The other problem is:  z.r.AsyncReporter$BoundedAsyncReporter - Dropped 1 spans due
+              // to AssertionError(com.google.protobuf.InvalidProtocolBufferException: Protocol
+              // message contained an invalid tag (zero).)
+              // java.lang.AssertionError: com.google.protobuf.InvalidProtocolBufferException:
+              // Protocol message contained an invalid tag (zero).
+              //	at
+              // zipkin2.reporter.stackdriver.StackdriverSender.parseTraceIdPrefixedSpan(StackdriverSender.java:220)
               assertThat(trace.getSpansCount()).isGreaterThanOrEqualTo(16);
               log.debug("Trace spans match.");
 

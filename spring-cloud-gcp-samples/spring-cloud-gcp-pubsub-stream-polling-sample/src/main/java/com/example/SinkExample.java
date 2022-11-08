@@ -21,7 +21,6 @@ import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.binder.PollableMessageSource;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.messaging.Message;
@@ -33,7 +32,6 @@ import org.springframework.scheduling.annotation.Scheduled;
  *
  * @since 1.2
  */
-@EnableBinding(PollableSink.class)
 public class SinkExample {
 
   private static final Log LOGGER = LogFactory.getLog(SinkExample.class);

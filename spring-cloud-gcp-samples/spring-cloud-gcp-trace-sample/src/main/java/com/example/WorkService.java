@@ -18,11 +18,10 @@ package com.example;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -40,12 +39,17 @@ public class WorkService {
 
   private final RestTemplate restTemplate;
 
-  @Autowired private PubSubTemplate pubSubTemplate;
+  private final PubSubTemplate pubSubTemplate;
 
-  @Autowired private MessageChannel pubsubOutputChannel;
+  private final MessageChannel pubsubOutputChannel;
 
-  public WorkService(RestTemplate restTemplate) {
+  public WorkService(
+      RestTemplate restTemplate,
+      PubSubTemplate pubSubTemplate,
+      MessageChannel pubsubOutputChannel) {
     this.restTemplate = restTemplate;
+    this.pubSubTemplate = pubSubTemplate;
+    this.pubsubOutputChannel = pubsubOutputChannel;
   }
 
   @NewSpan

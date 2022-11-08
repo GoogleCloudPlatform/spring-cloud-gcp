@@ -17,9 +17,10 @@
 package com.example;
 
 import java.time.LocalDateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Source;
+import java.util.function.Consumer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,11 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @since 1.2
  */
-@EnableBinding(Source.class)
 @RestController
 public class SourceExample {
 
-  @Autowired private Source source;
+  private static final Log LOGGER = LogFactory.getLog(SourceExample.class);
 
   @PostMapping("/newMessage")
   public UserMessage sendMessage(
@@ -44,5 +44,10 @@ public class SourceExample {
     UserMessage userMessage = new UserMessage(messageBody, username, LocalDateTime.now());
     this.source.output().send(new GenericMessage<>(userMessage));
     return userMessage;
+  }
+
+  @Bean
+  public Consumer<String> consumer() {
+    return str -> LOGGER.info("received " + str);
   }
 }

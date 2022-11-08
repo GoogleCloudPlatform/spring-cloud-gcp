@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,10 @@ import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAd
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -56,18 +55,20 @@ public class Application implements WebMvcConfigurer {
   @Value("${sampleTopic}")
   private String sampleTopic;
 
-  @Autowired PubSubTemplate pubSubTemplate;
+  private final SpanCustomizer spanCustomizer;
 
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
+  }
+
+  public Application(SpanCustomizer spanCustomizer) {
+    this.spanCustomizer = spanCustomizer;
   }
 
   @Bean
   public RestTemplate restTemplate() {
     return new RestTemplate();
   }
-
-  @Autowired private SpanCustomizer spanCustomizer;
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
