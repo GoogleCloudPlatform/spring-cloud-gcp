@@ -25,6 +25,7 @@ import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.TableResult;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.AfterEach;
@@ -56,9 +57,11 @@ class BigQuerySampleApplicationIntegrationTests {
 
   private static final String DATASET_NAME = "test_dataset";
 
-  private static final String TABLE_NAME = "bigquery_sample_test_table";
+  private static final String TABLE_NAME_PREFIX = "bigquery_sample_test_table";
 
-  private static final String JSON_TEST_TABLE_NAME = "bigquery_sample_json_test_table";
+  private static String TABLE_NAME;
+
+  private static String JSON_TEST_TABLE_NAME;
 
   @Autowired BigQuery bigQuery;
 
@@ -70,12 +73,23 @@ class BigQuerySampleApplicationIntegrationTests {
   @Value("classpath:test.json")
   Resource jsonFile;
 
-  @BeforeEach
   @AfterEach
   void cleanupTestEnvironment() {
     // Clear the previous dataset before beginning the test.
     this.bigQuery.delete(TableId.of(DATASET_NAME, TABLE_NAME));
     this.bigQuery.delete(TableId.of(DATASET_NAME, JSON_TEST_TABLE_NAME));
+  }
+
+  @BeforeEach
+  void setTableName() {
+    // adds a 5 char pseudo rand number suffix to make the table name unique before every run
+    TABLE_NAME = TABLE_NAME_PREFIX + getRandSuffix();
+    JSON_TEST_TABLE_NAME = TABLE_NAME_PREFIX + getRandSuffix();
+  }
+
+  // returns a 5 char pseudo rand number suffix
+  private String getRandSuffix() {
+    return UUID.randomUUID().toString().substring(0, 5);
   }
 
   @Test
