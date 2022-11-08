@@ -56,6 +56,7 @@ cp CHANGELOG.md target/docfx-yml/history.md
 sudo pandoc \
   docs/src/main/md/first-page.md          \
   docs/src/main/md/getting-started.md     \
+  docs/src/main/md/starters.md     \
   docs/src/main/md/core.md                \
   docs/src/main/md/storage.md             \
   docs/src/main/md/sql.md                 \
