@@ -17,7 +17,10 @@ on:
 
 jobs:
   updateDocs:
-    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp'
+    if: |
+      ((
+        github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
+      ) || (github.event_name == 'push'))
     runs-on: ubuntu-20.04
     steps:
     - name: Get current date
