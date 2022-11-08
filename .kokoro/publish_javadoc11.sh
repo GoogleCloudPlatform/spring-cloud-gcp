@@ -35,8 +35,8 @@ pushd $dir/../
 # change to release version
 ./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
 
-# Compute the project version.
-PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+# Fake the project version for testing
+PROJECT_VERSION=3.4.1
 echo ${PROJECT_VERSION}
 
 # Build the javadocs
