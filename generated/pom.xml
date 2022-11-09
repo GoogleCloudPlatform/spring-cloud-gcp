@@ -13,5 +13,6 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>language</module>
   </modules>
 </project>
