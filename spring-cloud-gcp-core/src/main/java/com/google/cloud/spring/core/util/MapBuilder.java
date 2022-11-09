@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.core.util;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +44,7 @@ public final class MapBuilder<K, V> {
    * @param value non-null value
    * @return itself for chaining
    */
+  @CanIgnoreReturnValue
   public MapBuilder<K, V> put(K key, V value) {
     Assert.notNull(key, "Map key cannot be null.");
     Assert.notNull(value, "Map value cannot be null.");
