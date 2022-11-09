@@ -36,9 +36,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import zipkin2.Span;
-import zipkin2.codec.BytesEncoder;
-import zipkin2.codec.SpanBytesEncoder;
 
 @AutoConfiguration
 @ConditionalOnBean(Tracing.class)
@@ -79,11 +76,5 @@ class TracePubSubAutoConfiguration {
   @ConditionalOnMissingBean
   public MessagingTracing messagingTracing(Tracing tracing) {
     return MessagingTracing.create(tracing);
-  }
-
-  @Bean
-  @ConditionalOnMissingBean
-  public BytesEncoder<Span> spanBytesEncoder() {
-    return SpanBytesEncoder.PROTO3;
   }
 }

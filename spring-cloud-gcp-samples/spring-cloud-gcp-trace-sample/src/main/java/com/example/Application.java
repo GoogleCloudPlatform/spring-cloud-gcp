@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.tracing.zipkin.ZipkinAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -44,7 +45,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /** Sample spring boot application. */
-@SpringBootApplication
+@SpringBootApplication(exclude = ZipkinAutoConfiguration.class)
 @Component
 public class Application implements WebMvcConfigurer {
   private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
@@ -57,12 +58,15 @@ public class Application implements WebMvcConfigurer {
 
   private final SpanCustomizer spanCustomizer;
 
+  private final PubSubTemplate pubSubTemplate;
+
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
   }
 
-  public Application(SpanCustomizer spanCustomizer) {
+  public Application(SpanCustomizer spanCustomizer, PubSubTemplate pubSubTemplate) {
     this.spanCustomizer = spanCustomizer;
+    this.pubSubTemplate = pubSubTemplate;
   }
 
   @Bean
