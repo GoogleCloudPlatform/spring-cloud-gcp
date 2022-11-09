@@ -39,11 +39,8 @@ fi
 
 # call bazel target - todo: separate target in future
 cd googleapis
-# In googleapis/WORKSPACE, find http_archive() rule with name = "gapic_generator_java",
-# and replace with local_repository() rule
-LOCAL_REPO="local_repository(\n    name = \\\"gapic_generator_java\\\",\n    path = \\\"..\/gapic-generator-java\/\\\",\n)"
-perl -0777 -pi -e "s/http_archive\(\n    name \= \"gapic_generator_java\"(.*?)\)/$LOCAL_REPO/s" WORKSPACE
 bazel build //google/cloud/$client_lib_name/v1:"$client_lib_name"_java_gapic
+
 cd -
 
 ## copy spring code to outside
