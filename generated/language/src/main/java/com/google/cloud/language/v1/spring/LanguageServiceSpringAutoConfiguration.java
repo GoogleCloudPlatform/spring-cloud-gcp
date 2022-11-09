@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2022-2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package com.google.cloud.language.v1.spring;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
-import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.language.v1.LanguageServiceClient;
@@ -36,7 +35,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.threeten.bp.Duration;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS.
 /**
@@ -62,7 +60,7 @@ import org.threeten.bp.Duration;
 @EnableConfigurationProperties(LanguageServiceSpringProperties.class)
 public class LanguageServiceSpringAutoConfiguration {
   private final LanguageServiceSpringProperties clientProperties;
-  private static final Log LOGGER = LogFactory.getLog(LanguageServiceSpringAutoConfig.class);
+  private static final Log LOGGER = LogFactory.getLog(LanguageServiceSpringAutoConfiguration.class);
 
   protected LanguageServiceSpringAutoConfiguration(
       LanguageServiceSpringProperties clientProperties) {
@@ -109,8 +107,8 @@ public class LanguageServiceSpringAutoConfiguration {
     LanguageServiceSettings.Builder clientSettingsBuilder =
         LanguageServiceSettings.newBuilder()
             .setCredentialsProvider(credentialsProvider)
-            .setTransportChannelProvider(defaultTransportChannelProvider)
-            .setHeaderProvider();
+            .setTransportChannelProvider(defaultTransportChannelProvider);
+    // .setHeaderProvider();
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());
       LOGGER.info(

@@ -9,6 +9,12 @@
   <name>Spring Boot Starter - language</name>
   <description>Spring Boot Starter with AutoConfiguration for language</description>
 
+  <parent>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>generated-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>

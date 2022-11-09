@@ -38,6 +38,7 @@
 	<properties>
 
 		<!-- Dependency versions -->
+		<spring-cloud-gcp-dependencies.version>3.5.0-SNAPSHOT</spring-cloud-gcp-dependencies.version>
 		<spring-cloud-dependencies.version>2021.0.5</spring-cloud-dependencies.version>
 		<spring-boot-dependencies.version>2.7.4</spring-boot-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
@@ -82,7 +83,7 @@
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-dependencies</artifactId>
-				<version>${project.version}</version>
+				<version>${spring-cloud-gcp-dependencies.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
