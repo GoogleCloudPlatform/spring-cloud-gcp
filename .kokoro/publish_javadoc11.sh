@@ -16,7 +16,7 @@ $JAVA_HOME/bin/javac -version
 export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64
 $JAVA_HOME/bin/javac -version
 
-pyenv global 3.7.2
+pyenv global 3.9.5
 python3 --version
 
 # Get into the spring-cloud-gcp repo directory
