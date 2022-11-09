@@ -36,7 +36,7 @@ pushd $dir/../
 ./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
 
 # Fake the project version for testing
-PROJECT_VERSION=3.4.1
+PROJECT_VERSION=3.3.0
 echo ${PROJECT_VERSION}
 
 # Build the javadocs
