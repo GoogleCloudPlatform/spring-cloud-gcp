@@ -198,7 +198,7 @@ the Cloud Trace service.
 ### Integration with Logging
 
 Integration with Cloud Logging is available through the [Cloud Logging
-Support](logging.adoc). If the Trace integration is used together with
+Support](#cloud-logging). If the Trace integration is used together with
 the Logging one, the request logs will be associated to the
 corresponding traces. The trace logs can be viewed by going to the
 [Google Cloud Console Trace
