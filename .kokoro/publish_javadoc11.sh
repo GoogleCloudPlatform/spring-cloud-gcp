@@ -19,6 +19,10 @@ $JAVA_HOME/bin/javac -version
 pyenv global 3.7.2
 python3 --version
 
+# Get into the spring-cloud-gcp repo directory
+dir=$(dirname "$0")
+pushd $dir/../
+
 # install pandoc for combining md files
 sudo apt install -q -y pandoc
 
@@ -26,10 +30,6 @@ sudo apt install -q -y pandoc
 python3 -m pip install --require-hashes -r .kokoro/requirements.txt
 
 python3 -m docuploader --version
-
-# Get into the spring-cloud-gcp repo directory
-dir=$(dirname "$0")
-pushd $dir/../
 
 # change to release version
 ./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
