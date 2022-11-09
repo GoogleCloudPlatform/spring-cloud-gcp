@@ -19,9 +19,11 @@ cd googleapis
 git checkout f88ca86
 # todo: change to local repo --> gapic
 # very not stable change - todo: change to search and replace.
-sed -i '274,278d' WORKSPACE
 
-sed -i '274 i local_repository(\n    name = "gapic_generator_java",\n    path = "../gapic-generator-java/",\n)' WORKSPACE
+# In googleapis/WORKSPACE, find http_archive() rule with name = "gapic_generator_java",
+# and replace with local_repository() rule
+LOCAL_REPO="local_repository(\n    name = \\\"gapic_generator_java\\\",\n    path = \\\"..\/gapic-generator-java\/\\\",\n)"
+perl -0777 -pi -e "s/http_archive\(\n    name \= \"gapic_generator_java\"(.*?)\)/$LOCAL_REPO/s" WORKSPACE
 
 cd -
 
