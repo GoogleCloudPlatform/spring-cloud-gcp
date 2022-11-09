@@ -158,7 +158,7 @@ You can then search and filter traces based on these additional tags in the Clou
 
 === Integration with Logging
 
-Integration with Cloud Logging is available through the link:logging.adoc[Cloud Logging Support].
+Integration with Cloud Logging is available through the link:#cloud-logging[Cloud Logging Support].
 If the Trace integration is used together with the Logging one, the request logs will be associated to the corresponding traces.
 The trace logs can be viewed by going to the https://console.cloud.google.com/traces/traces[Google Cloud Console Trace List], selecting a trace and pressing the `Logs -> View` link in the `Details` section.
 

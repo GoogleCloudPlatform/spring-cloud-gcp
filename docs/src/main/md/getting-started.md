@@ -59,8 +59,6 @@ Or, if you’re a Gradle user:
         implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:{project-version}")
     }
 
-See the [sections](#README.adoc) in the README for selecting an
-available version and Maven repository.
 
 In the following sections, it will be assumed you are using the Spring
 Cloud GCP BOM and the dependency snippets will not contain versions.
