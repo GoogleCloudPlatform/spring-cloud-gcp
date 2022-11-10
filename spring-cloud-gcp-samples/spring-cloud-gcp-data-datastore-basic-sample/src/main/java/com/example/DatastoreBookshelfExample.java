@@ -28,7 +28,11 @@ import org.springframework.shell.standard.ShellMethod;
 @ShellComponent
 @SpringBootApplication
 public class DatastoreBookshelfExample {
-  @Autowired BookRepository bookRepository;
+  private final BookRepository bookRepository;
+
+  public DatastoreBookshelfExample(BookRepository bookRepository) {
+    this.bookRepository = bookRepository;
+  }
 
   public static void main(String[] args) {
     SpringApplication.run(DatastoreBookshelfExample.class, args);
