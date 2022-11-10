@@ -17,7 +17,6 @@ on:
 
 jobs:
   updateDocs:
-    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp'
     runs-on: ubuntu-20.04
     steps:
     - name: Get current date
