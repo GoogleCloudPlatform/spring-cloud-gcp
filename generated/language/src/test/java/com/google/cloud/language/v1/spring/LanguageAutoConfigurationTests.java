@@ -18,31 +18,88 @@ package com.google.cloud.language.v1.spring;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.auth.Credentials;
+import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.context.ConfigurableApplicationContext;
 
 class LanguageAutoConfigurationTests {
+  private static final String SERVICE_CREDENTIAL_LOCATION = "src/test/resources/fake-credential-key.json";
+  private static final String SERVICE_CREDENTIAL_CLIENT_ID = "45678";
+  private static final String SERVICE_OVERRIDE_CLIENT_ID = "56789";
+
   private ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
           .withConfiguration(AutoConfigurations.of(LanguageServiceSpringAutoConfiguration.class));
 
-  private SpringApplicationBuilder applicationBuilder =
-      new SpringApplicationBuilder(LanguageServiceSpringAutoConfiguration.class)
-          .properties(
-              "spring.cloud.gcp.language.language-service.enabled=true")
-          .web(WebApplicationType.NONE);
-
   @Test
   void testLanguageServiceClientCreated() {
-    try (ConfigurableApplicationContext c = applicationBuilder.run()) {
-      LanguageServiceClient client = c.getBean(LanguageServiceClient.class);
-      assertThat(client).isNotNull();
-    }
+    this.contextRunner
+        .withPropertyValues(
+            "com.google.cloud.language.v1.spring.auto.language-service.enabled=true")
+        .run(ctx -> {
+          LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+          assertThat(client).isNotNull();
+        });
+  }
+
+  @Test
+  void testShouldTakeServiceCredentials() {
+    this.contextRunner
+        .withPropertyValues(
+            "com.google.cloud.language.v1.spring.auto.language-service.enabled=true",
+            "com.google.cloud.language.v1.spring.auto.language-service.credentials.location=file:" + SERVICE_CREDENTIAL_LOCATION)
+        .run(ctx -> {
+          LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+          Credentials credentials = client.getSettings().getCredentialsProvider().getCredentials();
+          assertThat(((ServiceAccountCredentials) credentials).getClientId()).isEqualTo(
+              SERVICE_CREDENTIAL_CLIENT_ID);
+        });
+  }
+
+  @Test
+  void testShouldUseDefaultGrpcTransport() {
+    this.contextRunner
+        .withPropertyValues(
+            "com.google.cloud.language.v1.spring.auto.language-service.enabled=true")
+        .run(ctx -> {
+          LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+          String transportName = client.getSettings().getTransportChannelProvider().getTransportName();
+          assertThat(transportName).isEqualTo("grpc");
+        });
+  }
+
+  // @Test
+  // void testQuotaProjectIdFromCredentials() {
+  //   // todo (emmwang)
+  //   this.contextRunner
+  //       .withPropertyValues(
+  //           "com.google.cloud.language.v1.spring.auto.language-service.enabled=true")
+  //       .run(ctx -> {
+  //         LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+  //         String quotaProjectId = client.getSettings().getQuotaProjectId();
+  //         assertThat(quotaProjectId).isEqualTo(SERVICE_CREDENTIAL_CLIENT_ID);
+  //       });
+  // }
+
+  @Test
+  void testQuotaProjectIdFromProperties() {
+    this.contextRunner
+        .withPropertyValues(
+            "com.google.cloud.language.v1.spring.auto.language-service.enabled=true",
+            "com.google.cloud.language.v1.spring.auto.language-service.quota-project-id=" + SERVICE_OVERRIDE_CLIENT_ID)
+        .run(ctx -> {
+          LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+          String quotaProjectId = client.getSettings().getQuotaProjectId();
+          assertThat(quotaProjectId).isEqualTo(SERVICE_OVERRIDE_CLIENT_ID);
+        });
+  }
+
+  @Test
+  void testRetrySettingsFromProperties() {
+    // todo (emmwang)
   }
 
 }
