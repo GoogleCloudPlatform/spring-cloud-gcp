@@ -43,10 +43,10 @@ jobs:
         run: |
           echo "repo: $REPO"
           echo $DEPS > /tmp/version_check_request.json
-          python3 .github/workflows/force_depencencies.py $REPO /tmp/version_check_request.json
+          python3 util//force_depencencies.py $REPO /tmp/version_check_request.json
           echo "Here are the changes:"
           git diff
-          echo "-------"
+          echo "-----------"
         env:
           REPO: ${{ inputs.mavenRepository }}
           DEPS: ${{ inputs.mavenDependencies }}
