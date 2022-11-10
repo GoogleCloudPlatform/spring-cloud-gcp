@@ -303,11 +303,8 @@
 				<artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
-			<!-- Spring Boot 2.7 no longer manages this dependency.
-     			 Replace with org.postgres group ID once Spring Boot 2.6 is out of support.
- 			-->
 			<dependency>
-				<groupId>io.r2dbc</groupId>
+				<groupId>org.postgres</groupId>
 				<artifactId>r2dbc-postgresql</artifactId>
 				<version>${r2dbc-postgres-driver.version}</version>
 			</dependency>
