@@ -678,16 +678,16 @@ public class FirestoreTemplateExample {
 	FirestoreOperations firestoreOperations;
 
 	public Mono&lt;User&gt; createUsers() {
-		return this.firestoreOperatons.save(new User("Alice", 29))
-			.then(this.firestoreOperatons.save(new User("Bob", 60)));
+		return this.firestoreOperations.save(new User("Alice", 29))
+			.then(this.firestoreOperations.save(new User("Bob", 60)));
 	}
 
 	public Flux&lt;User&gt; findUsers() {
-		return this.firestoreOperatons.findAll(User.class);
+		return this.firestoreOperations.findAll(User.class);
 	}
 
 	public Mono&lt;Long&gt; removeAllUsers() {
-		return this.firestoreOperatons.deleteAll(User.class);
+		return this.firestoreOperations.deleteAll(User.class);
 	}
 }</code></pre>
 </div>

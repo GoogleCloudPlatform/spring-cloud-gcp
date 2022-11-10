@@ -7622,7 +7622,7 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    //Converter to write custom Album type
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    // Converter to write custom Album type
     static final Converter&lt;Album, String&gt; ALBUM_STRING_CONVERTER =
             new Converter&lt;Album, String&gt;() {
                 @Override
@@ -7631,7 +7631,7 @@ public class Singer {
                 }
             };
 
-    //Converters to read custom Album type
+    // Converters to read custom Album type
     static final Converter&lt;String, Album&gt; STRING_ALBUM_CONVERTER =
             new Converter&lt;String, Album&gt;() {
                 @Override
@@ -8363,10 +8363,10 @@ map.put("field3", 3L);
 
 keyForMap = datastoreTemplate.createKey("kindName", "id");
 
-//write a map
+// write a map
 datastoreTemplate.writeMap(keyForMap, map);
 
-//read a map
+// read a map
 Map&lt;String, Long&gt; loadedMap = datastoreTemplate.findByIdAsMap(keyForMap, Long.class);</code></pre>
 </div>
 </div>
@@ -8426,10 +8426,10 @@ Filtering parameters can be of types supported by your configured custom convert
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&gt; {
   List&lt;Trader&gt; findByAction(String action);
 
-  //throws an exception if no results
+  // throws an exception if no results
   Trader findOneByAction(String action);
 
-  //because of the annotation, returns null if no results
+  // because of the annotation, returns null if no results
   @Nullable
   Trader getByAction(String action);
 
@@ -9604,16 +9604,16 @@ public class FirestoreTemplateExample {
     FirestoreOperations firestoreOperations;
 
     public Mono&lt;User&gt; createUsers() {
-        return this.firestoreOperatons.save(new User("Alice", 29))
-            .then(this.firestoreOperatons.save(new User("Bob", 60)));
+        return this.firestoreOperations.save(new User("Alice", 29))
+            .then(this.firestoreOperations.save(new User("Bob", 60)));
     }
 
     public Flux&lt;User&gt; findUsers() {
-        return this.firestoreOperatons.findAll(User.class);
+        return this.firestoreOperations.findAll(User.class);
     }
 
     public Mono&lt;Long&gt; removeAllUsers() {
-        return this.firestoreOperatons.deleteAll(User.class);
+        return this.firestoreOperations.deleteAll(User.class);
     }
 }</code></pre>
 </div>
@@ -10328,9 +10328,9 @@ BigQueryTemplate bigQueryTemplate;
     WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
     if (!apiRes.isSuccessful()){
       List&lt;StorageError&gt; errors = apiRes.getErrors();
-      //TODO(developer): process the List of StorageError
+      // TODO(developer): process the List of StorageError
     }
-    //else the write process has been successful
+    // else the write process has been successful
   }</code></pre>
 </div>
 </div>
@@ -10357,9 +10357,9 @@ BigQueryTemplate bigQueryTemplate;
     WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
     if (!apiRes.isSuccessful()){
       List&lt;StorageError&gt; errors = apiRes.getErrors();
-      //TODO(developer): process the List of StorageError
+      // TODO(developer): process the List of StorageError
     }
-    //else the write process has been successful
+    // else the write process has been successful
   }</code></pre>
 </div>
 </div>
@@ -11257,7 +11257,7 @@ spring.config.import=sm://</code></pre>
 </div>
 <div class="paragraph">
 <p>finally, add the following property to your project&#8217;s <code>bootstrap.properties</code> to disable
-Secret Manager boostrap phrase.</p>
+Secret Manager bootstrap phrase.</p>
 </div>
 <div class="listingblock">
 <div class="content">
