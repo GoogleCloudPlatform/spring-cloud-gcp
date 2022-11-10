@@ -379,7 +379,7 @@
 					<!-- activate with -P docFX -->
 					<name>docFX</name>
 				</property>
-				<jdk>11</jdk>
+				<jdk>17</jdk>
 			</activation>
 			<properties>
 				<!-- default config values -->
@@ -691,7 +691,7 @@
 						</executions>
 						<configuration>
 							<!-- https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8212233 -->
-							<source>8</source>
+							<source>17</source>
 							<excludePackageNames>
 								com.example,
 								com.example.*,
