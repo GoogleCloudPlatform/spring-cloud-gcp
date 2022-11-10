@@ -23,9 +23,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -40,9 +38,16 @@ import org.springframework.data.domain.Slice;
 @SpringBootApplication
 public class DatastoreRepositoryExample {
 
-  @Autowired private SingerRepository singerRepository;
+  private final SingerRepository singerRepository;
 
-  @Autowired private TransactionalRepositoryService transactionalRepositoryService;
+  private final TransactionalRepositoryService transactionalRepositoryService;
+
+  public DatastoreRepositoryExample(
+      SingerRepository singerRepository,
+      TransactionalRepositoryService transactionalRepositoryService) {
+    this.singerRepository = singerRepository;
+    this.transactionalRepositoryService = transactionalRepositoryService;
+  }
 
   public static void main(String[] args) {
     SpringApplication.run(DatastoreRepositoryExample.class, args);
@@ -54,7 +59,7 @@ public class DatastoreRepositoryExample {
       System.out.println("Remove all records from 'singers' kind");
       this.singerRepository.deleteAll();
 
-      this.singerRepository.save(new Singer("singer1", "John", "Doe", new HashSet<Album>()));
+      this.singerRepository.save(new Singer("singer1", "John", "Doe", new HashSet<>()));
 
       Singer janeDoe =
           new Singer(
@@ -70,7 +75,7 @@ public class DatastoreRepositoryExample {
               "singer3",
               "Richard",
               "Roe",
-              new HashSet<>(Arrays.asList(new Album("c", LocalDate.of(2000, Month.AUGUST, 31)))));
+              new HashSet<>(List.of(new Album("c", LocalDate.of(2000, Month.AUGUST, 31)))));
       richardRoe.setMessage("Hello, dear fans!".getBytes(StandardCharsets.UTF_8));
 
       this.singerRepository.saveAll(Arrays.asList(janeDoe, richardRoe));
@@ -122,7 +127,7 @@ public class DatastoreRepositoryExample {
     System.out.println("Fluent Query by example");
     List<String> singerNames =
         this.singerRepository.findBy(
-            example, q -> q.stream().map(Singer::firstAndLastName).collect(Collectors.toList()));
+            example, q -> q.stream().map(Singer::firstAndLastName).toList());
     singerNames.forEach(System.out::println);
 
     // Pageable parameter
@@ -169,14 +174,14 @@ public class DatastoreRepositoryExample {
     List<String> singers =
         this.singerRepository.findSingersByFirstBand(band3).stream()
             .map(Singer::getFirstName)
-            .collect(Collectors.toList());
+            .toList();
     System.out.println(singers);
 
     System.out.println("Find by reference");
     List<String> singers2 =
         this.singerRepository.findByFirstBand(band3).stream()
             .map(Singer::getFirstName)
-            .collect(Collectors.toList());
+            .toList();
     System.out.println(singers2);
   }
 }
