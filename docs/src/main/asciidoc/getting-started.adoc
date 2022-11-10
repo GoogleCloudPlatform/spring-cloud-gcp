@@ -66,7 +66,9 @@ Each starter contains all the dependencies and transitive dependencies needed to
 For example, if you wish to write a Spring application with Cloud Pub/Sub, you would include the `spring-cloud-gcp-starter-pubsub` dependency in your project.
 You do *not* need to include the underlying `spring-cloud-gcp-pubsub` dependency, because the `starter` dependency includes it.
 
-A summary of these artifacts are provided below. We also provide additional starters with auto-configurations to a boarder list of Google Client libraries. Refer for the full list https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/generated/README.md[here].
+A summary of these artifacts are provided below.
+
+Aside from these modules, we also provide additional starters with auto-configurations to various Google Client Libraries. Refer for the full list https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/generated/README.md[here].
 
 |===
 | Spring Cloud GCP Starter | Description | Maven Artifact Name
