@@ -1,0 +1,67 @@
+name: Generate Spring Auto-Configurations
+
+on:
+  push:
+    branches:
+      - 'main'
+  # what triggers this action is yet TBD - leaving PRs and `main` pushes for now
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+
+jobs:
+  integrationTests:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Java 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Install Bazel
+        continue-on-error: false
+        run: |
+          set -x
+          sudo apt install apt-transport-https curl gnupg
+          curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
+          sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
+          sudo apt update && sudo apt install bazel
+      - name: Create branch
+        id: create_branch
+        continue-on-error: false
+        working-directory: generator
+        run: |
+          # Maybe a better logic for branch name? Maybe based on source PR/commit?
+          set -x
+          SOURCE_BRANCH_NAME=git rev-parse --abbrev-ref HEAD
+          NEW_BRANCH_NAME=generated-autoconfig-$(uuidgen)
+          git checkout -b $BRANCH_NAME
+          echo "NEW_BRANCH_NAME=$NEW_BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "SOURCE_BRANCH_NAME=$SOURCE_BRANCH_NAME" >> $GITHUB_OUTPUT
+      - name: Generate libraries
+        continue-on-error: false
+        working-directory: generator
+        run: |
+          set -x
+          bash generate-all.sh
+      - name: Detect changes
+        id: detect_changes
+        run: |
+          set -x
+          git add ./generated
+          CHANGED_FILES=`git diff --cached --numstat | wc -l | awk '{print $1}'`
+          echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_OUTPUT
+      - name: Generate PR
+        if: steps.detect_changes.outputs.CHANGED_FILES > 0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -x
+          # I'm wondering what kind of logic could we have for the commit and PR name
+          git commit -m "feat(generated): Generate new autoconfig libraries"
+          # Assuming that changes in a pr and the generated autoconfigs should be different? Hence PR-ing to main
+          gh pr create -B main -H $NEW_BRANCH_NAME --title "Changes generated from $SOURCE_BRANCH_NAME" --body 'Created by Github action'
+        env:
+          NEW_BRANCH_NAME: {{ steps.create_branch.outputs.NEW_BRANCH_NAME }}
+          SOURCE_BRANCH_NAME: {{ steps.create_branch.outputs.SOURCE_BRANCH_NAME }}
