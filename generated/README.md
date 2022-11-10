@@ -2,5 +2,5 @@
 
 This is a list of starters we provide with dependencies and auto-configurations to work with corresponding Google Client Libraries.
 
-| Client Library Starter | Description   | Maven Artifact Name |
-|------------------------| ------------- |---------------------|
+| Client Library Starter | Maven Artifact Name |
+|------------------------| --------------------|

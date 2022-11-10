@@ -68,6 +68,9 @@ if [[ found_library_in_pom -eq 0 ]]; then
 else
   echo "adding module $client_lib_name to pom"
   sed -i "/^  <modules>/a\ \ \ \ <module>"$client_lib_name"</module>" pom.xml
+  # also write to generated/README.md
+  # format |name|distribution name|
+  echo -e "|$client_lib_name|$client_lib_groupid:$client_lib_artifactid|" >> README.md
 fi
 
 
