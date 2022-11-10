@@ -2,8 +2,13 @@ name: Integration Tests
 
 on:
   push:
-    branches-ignore:
-      - 'dependabot/**'
+    branches:
+      - 'main'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - 'generator/**'
+      - 'generated/**'
   workflow_dispatch:
   schedule:
     - cron: '05 8 * * *' # 08:00 UTC every day
@@ -11,7 +16,10 @@ on:
 
 jobs:
   integrationTests:
-    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp'
+    if: |
+      github.actor != 'dependabot[bot]' && ((
+        github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
+      ) || (github.event_name == 'push'))
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false

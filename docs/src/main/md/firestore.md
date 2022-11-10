@@ -388,16 +388,16 @@ public class FirestoreTemplateExample {
     FirestoreOperations firestoreOperations;
 
     public Mono<User> createUsers() {
-        return this.firestoreOperatons.save(new User("Alice", 29))
+        return this.firestoreOperations.save(new User("Alice", 29))
             .then(this.firestoreOperatons.save(new User("Bob", 60)));
     }
 
     public Flux<User> findUsers() {
-        return this.firestoreOperatons.findAll(User.class);
+        return this.firestoreOperations.findAll(User.class);
     }
 
     public Mono<Long> removeAllUsers() {
-        return this.firestoreOperatons.deleteAll(User.class);
+        return this.firestoreOperations.deleteAll(User.class);
     }
 }
 ```

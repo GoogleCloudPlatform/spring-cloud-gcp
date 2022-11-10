@@ -12,7 +12,10 @@ on:
 
 jobs:
   sonar:
-    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' # Only run on upstream branch
+    if: |
+      ((
+        github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
+      ) || (github.event_name == 'push'))
     name: Build with Sonar
     runs-on: ubuntu-20.04
     steps:

@@ -141,7 +141,7 @@ template.
         spring.config.import=sm://
 
 - finally, add the following property to your project's `bootstrap.properties` to disable
-  Secret Manager boostrap phrase.
+  Secret Manager bootstrap phrase.
  
         spring.cloud.gcp.secretmanager.legacy=false
 
