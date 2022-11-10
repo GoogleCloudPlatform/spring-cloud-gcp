@@ -388,7 +388,7 @@
 				<projectname>${project.artifactId}</projectname>
 				<excludeclasses></excludeclasses>
 				<excludePackages></excludePackages>
-				<source>8</source>
+				<source>17</source>
 				<sourceFileExclude></sourceFileExclude>
 			</properties>
 			<build>
