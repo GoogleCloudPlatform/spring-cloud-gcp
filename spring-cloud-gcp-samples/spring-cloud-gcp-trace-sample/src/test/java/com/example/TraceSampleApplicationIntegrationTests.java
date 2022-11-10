@@ -212,14 +212,6 @@ class TraceSampleApplicationIntegrationTests {
               // messagesender.serviceactivator receive, messagesender receive, publish, publish,
               // next-message, on-message, application.messagereceiver.serviceactivator receive,
               // next-message, on-message, application.messagereceiver.serviceactivator receive]).
-
-              // The other problem is:  z.r.AsyncReporter$BoundedAsyncReporter - Dropped 1 spans due
-              // to AssertionError(com.google.protobuf.InvalidProtocolBufferException: Protocol
-              // message contained an invalid tag (zero).)
-              // java.lang.AssertionError: com.google.protobuf.InvalidProtocolBufferException:
-              // Protocol message contained an invalid tag (zero).
-              //	at
-              // zipkin2.reporter.stackdriver.StackdriverSender.parseTraceIdPrefixedSpan(StackdriverSender.java:220)
               assertThat(trace.getSpansCount()).isGreaterThanOrEqualTo(16);
               log.debug("Trace spans match.");
 
