@@ -36,7 +36,6 @@ jobs:
         continue-on-error: false
         working-directory: generator
         run: |
-          # Maybe a better logic for branch name? Maybe based on source PR/commit?
           set -x
           SOURCE_BRANCH_NAME=`echo ${GITHUB_REF##*/}`
           NEW_BRANCH_NAME="generated-autoconfig--$SOURCE_BRANCH_NAME"
@@ -63,6 +62,8 @@ jobs:
           MESSAGE=`echo "feat(generated): Generate new autoconfig libraries from $SOURCE_BRANCH_NAME"`
           git stash push -- generated/
           git reset --hard
+          git remote update
+          git fetch
           git checkout main
           git checkout -b $NEW_BRANCH_NAME
           git stash pop
@@ -72,8 +73,7 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git commit -m $MESSAGE
           git push --set-upstream origin $NEW_BRANCH_NAME
-          # Assuming that changes in a pr and the generated autoconfigs should be different? Hence PR-ing to main
-          gh pr create -B main -H $NEW_BRANCH_NAME --title $MESSAGE --body 'Created by Github action'
+          gh pr create --draft -B main -H $NEW_BRANCH_NAME --title $MESSAGE --body 'Created by Github action'
         env:
           NEW_BRANCH_NAME: ${{ steps.create_branch_names.outputs.NEW_BRANCH_NAME }}
           SOURCE_BRANCH_NAME: ${{ steps.create_branch_names.outputs.SOURCE_BRANCH_NAME }}
