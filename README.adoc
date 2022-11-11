@@ -6,6 +6,7 @@ image:https://sonarcloud.io/api/project_badges/measure?project=GoogleCloudPlatfo
 == Spring Framework on Google Cloud Platform
 
 ignore this
+ignore this
 
 This project makes it easy for Spring users to run their applications on Google Cloud Platform.
 You can check our project website https://spring.io/projects/spring-cloud-gcp[here].
