@@ -61,6 +61,6 @@ jobs:
           # Assuming that changes in a pr and the generated autoconfigs should be different? Hence PR-ing to main
           gh pr create -B main -H $NEW_BRANCH_NAME --title "Changes generated from $SOURCE_BRANCH_NAME" --body 'Created by Github action'
         env:
-          NEW_BRANCH_NAME: {{ steps.create_branch.outputs.NEW_BRANCH_NAME }}
-          SOURCE_BRANCH_NAME: {{ steps.create_branch.outputs.SOURCE_BRANCH_NAME }}
+          NEW_BRANCH_NAME: ${{ steps.create_branch.outputs.NEW_BRANCH_NAME }}
+          SOURCE_BRANCH_NAME: ${{ steps.create_branch.outputs.SOURCE_BRANCH_NAME }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
