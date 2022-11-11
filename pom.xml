@@ -730,6 +730,27 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>compatibility-check</id>
+			<activation>
+				<property>
+					<name>compatibilityCheckRepository</name>
+				</property>
+			</activation>
+			<dependencyManagement>
+				<dependencies>
+					<!-- {x-cross-repo-check-dependency-mark} -->
+				</dependencies>
+			</dependencyManagement>
+
+			<repositories>
+				<repository>
+					<id>compatibility-check-repository</id>
+					<name>Repository for Compatibility Checl</name>
+					<url>${compatibilityCheckRepository}</url>
+				</repository>
+			</repositories>
+		</profile>
 	</profiles>
 
 	<licenses>
