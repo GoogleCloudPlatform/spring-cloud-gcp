@@ -65,7 +65,7 @@ jobs:
           git config --global user.email 'diegomarquezp@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git commit -m "feat(generated): Generate new autoconfig libraries"
-          git push
+          git push --set-upstream origin $NEW_BRANCH_NAME
           # Assuming that changes in a pr and the generated autoconfigs should be different? Hence PR-ing to main
           gh pr create -B main -H $NEW_BRANCH_NAME --title "Changes generated from $SOURCE_BRANCH_NAME" --body 'Created by Github action'
         env:
