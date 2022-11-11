@@ -27,6 +27,23 @@ jobs:
           - bigquery
           - cloudsql
           - config
+          - datastore
+          - firestore
+          - kms
+          - logging
+          - metrics
+          - multisample
+          - kotlin
+          - pubsub
+          - pubsub-bus
+          - pubsub-docs
+          - pubsub-emulator
+          - pubsub-integration
+          - secretmanager
+          - spanner
+          - storage
+          - trace
+          - vision
     steps:
       - name: Get current date
         id: date
