@@ -39,9 +39,12 @@ public class LanguageServiceSpringProperties implements CredentialsSupplier {
   private String quotaProjectId;
   private Integer executorThreadCount;
   private boolean useRest = false;
+  // Option 2(a): Override setter to accept arg or type java.time.Duration
   private Duration analyzeSentimentInitialRetryDelay;
   private Double analyzeSentimentRetryDelayMultiplier;
-  private Duration analyzeSentimentMaxRetryDelay;
+  // Option 2(b): Switch type to java.time.Duration but override getter to return threeten.bp.Duration
+  private java.time.Duration analyzeSentimentMaxRetryDelay;
+  // Option 1: Try ConversionServiceBean
   private Duration analyzeSentimentInitialRpcTimeout;
   private Double analyzeSentimentRpcTimeoutMultiplier;
   private Duration analyzeSentimentMaxRpcTimeout;
@@ -115,8 +118,12 @@ public class LanguageServiceSpringProperties implements CredentialsSupplier {
     return this.analyzeSentimentInitialRetryDelay;
   }
 
-  public void setAnalyzeSentimentInitialRetryDelay(Duration analyzeSentimentInitialRetryDelay) {
-    this.analyzeSentimentInitialRetryDelay = analyzeSentimentInitialRetryDelay;
+  // public void setAnalyzeSentimentInitialRetryDelay(Duration analyzeSentimentInitialRetryDelay) {
+  //   this.analyzeSentimentInitialRetryDelay = analyzeSentimentInitialRetryDelay;
+  // }
+
+  public void setAnalyzeSentimentInitialRetryDelay(java.time.Duration analyzeSentimentInitialRetryDelay) {
+    this.analyzeSentimentInitialRetryDelay = Duration.parse(analyzeSentimentInitialRetryDelay.toString());
   }
 
   public Double getAnalyzeSentimentRetryDelayMultiplier() {
@@ -128,10 +135,10 @@ public class LanguageServiceSpringProperties implements CredentialsSupplier {
   }
 
   public Duration getAnalyzeSentimentMaxRetryDelay() {
-    return this.analyzeSentimentMaxRetryDelay;
+    return Duration.parse(this.analyzeSentimentMaxRetryDelay.toString());
   }
 
-  public void setAnalyzeSentimentMaxRetryDelay(Duration analyzeSentimentMaxRetryDelay) {
+  public void setAnalyzeSentimentMaxRetryDelay(java.time.Duration analyzeSentimentMaxRetryDelay) {
     this.analyzeSentimentMaxRetryDelay = analyzeSentimentMaxRetryDelay;
   }
 
