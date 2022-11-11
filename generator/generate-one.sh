@@ -24,6 +24,8 @@ echo "Client Library Version: $version";
 echo "Client Library GroupId: $client_lib_groupid";
 echo "Client Library ArtifactId: $client_lib_artifactid";
 
+starter_artifactid="$client_lib_artifactid-spring-starter"
+
 # setup git
 
 ## install bazel - commented out as running on local already with bazel
@@ -70,7 +72,8 @@ else
   sed -i "/^  <modules>/a\ \ \ \ <module>"$client_lib_name"</module>" pom.xml
   # also write to generated/README.md
   # format |name|distribution name|
-  echo -e "|$client_lib_name|$client_lib_groupid:$client_lib_artifactid|" >> README.md
+  echo -e "|$client_lib_name|com.google.cloud:$starter_artifactid|" >> README.md
+
 fi
 
 
