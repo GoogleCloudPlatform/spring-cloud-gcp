@@ -7,6 +7,10 @@ on:
   # what triggers this action is yet TBD - leaving PRs and `main` pushes for now
   pull_request:
     types: [opened, synchronize, reopened]
+# makes pushes to PR to cancel previous workflows
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 
 jobs:
@@ -57,7 +61,11 @@ jobs:
         run: |
           set -x
           # I'm wondering what kind of logic could we have for the commit and PR name
+          git config --global user.name 'Your Name'
+          git config --global user.email 'your-username@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git commit -m "feat(generated): Generate new autoconfig libraries"
+          git push
           # Assuming that changes in a pr and the generated autoconfigs should be different? Hence PR-ing to main
           gh pr create -B main -H $NEW_BRANCH_NAME --title "Changes generated from $SOURCE_BRANCH_NAME" --body 'Created by Github action'
         env:
