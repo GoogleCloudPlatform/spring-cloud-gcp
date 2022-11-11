@@ -37,17 +37,10 @@ jobs:
         working-directory: generator
         run: |
           set -x
-          SOURCE_BRANCH_NAME=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
+          SOURCE_BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           NEW_BRANCH_NAME="generated-autoconfig--$SOURCE_BRANCH_NAME"
           echo "NEW_BRANCH_NAME=$NEW_BRANCH_NAME" >> $GITHUB_OUTPUT
           echo "SOURCE_BRANCH_NAME=$SOURCE_BRANCH_NAME" >> $GITHUB_OUTPUT
-      - name: Cache generated libraries
-        uses: actions/cache@v3
-        with:
-          path: ./bazel-*
-          key: ${{ runner.OS }}-bazel-cache-${{ hashFiles('generator/**') }}
-          restore-keys: |
-            ${{ runner.OS }}-bazel-cache-
       - name: Generate libraries
         continue-on-error: false
         working-directory: generator
