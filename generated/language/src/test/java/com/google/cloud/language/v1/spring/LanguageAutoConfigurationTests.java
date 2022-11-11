@@ -18,6 +18,7 @@ package com.google.cloud.language.v1.spring;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.api.gax.core.InstantiatingExecutorProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
@@ -28,6 +29,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.threeten.bp.Duration;
 
 class LanguageAutoConfigurationTests {
+
   private static final String SERVICE_CREDENTIAL_LOCATION = "src/test/resources/fake-credential-key.json";
   private static final String SERVICE_CREDENTIAL_CLIENT_ID = "45678";
   private static final String SERVICE_OVERRIDE_CLIENT_ID = "56789";
@@ -52,7 +54,8 @@ class LanguageAutoConfigurationTests {
     this.contextRunner
         .withPropertyValues(
             "com.google.cloud.language.v1.spring.auto.language-service.enabled=true",
-            "com.google.cloud.language.v1.spring.auto.language-service.credentials.location=file:" + SERVICE_CREDENTIAL_LOCATION)
+            "com.google.cloud.language.v1.spring.auto.language-service.credentials.location=file:"
+                + SERVICE_CREDENTIAL_LOCATION)
         .run(ctx -> {
           LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
           Credentials credentials = client.getSettings().getCredentialsProvider().getCredentials();
@@ -68,7 +71,8 @@ class LanguageAutoConfigurationTests {
             "com.google.cloud.language.v1.spring.auto.language-service.enabled=true")
         .run(ctx -> {
           LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
-          String transportName = client.getSettings().getTransportChannelProvider().getTransportName();
+          String transportName = client.getSettings().getTransportChannelProvider()
+              .getTransportName();
           assertThat(transportName).isEqualTo("grpc");
         });
   }
@@ -78,7 +82,8 @@ class LanguageAutoConfigurationTests {
     this.contextRunner
         .withPropertyValues(
             "com.google.cloud.language.v1.spring.auto.language-service.enabled=true",
-            "com.google.cloud.language.v1.spring.auto.language-service.quota-project-id=" + SERVICE_OVERRIDE_CLIENT_ID)
+            "com.google.cloud.language.v1.spring.auto.language-service.quota-project-id="
+                + SERVICE_OVERRIDE_CLIENT_ID)
         .run(ctx -> {
           LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
           String quotaProjectId = client.getSettings().getQuotaProjectId();
@@ -88,18 +93,29 @@ class LanguageAutoConfigurationTests {
 
   @Test
   void testExecutorThreadCountFromProperties() {
-    // todo (emmwang) - is this only applicable to some services?
+    this.contextRunner
+        .withPropertyValues(
+            "com.google.cloud.language.v1.spring.auto.language-service.enabled=true",
+            "com.google.cloud.language.v1.spring.auto.language-service.executor-thread-count=3")
+        .run(ctx -> {
+          LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+          InstantiatingExecutorProvider backgroundExecutorProvider =
+              ((InstantiatingExecutorProvider) client.getSettings()
+                  .getBackgroundExecutorProvider());
+          assertThat(backgroundExecutorProvider.toBuilder().getExecutorThreadCount()).isEqualTo(3);
+        });
   }
 
   @Test
   void testRetrySettingsDefault() {
-    // todo (emmwang) - remove - reference for testRetrySettingsFromProperties for now
+    // todo (emmwang) - remove later - reference for testRetrySettingsFromProperties for now
     this.contextRunner
         .withPropertyValues(
             "com.google.cloud.language.v1.spring.auto.language-service.enabled=true")
         .run(ctx -> {
           LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
-          RetrySettings retrySettings  = client.getSettings().analyzeEntitiesSettings().getRetrySettings();
+          RetrySettings retrySettings = client.getSettings().analyzeEntitiesSettings()
+              .getRetrySettings();
           assertThat(retrySettings.getInitialRetryDelay()).isEqualTo(Duration.ofMillis(100));
           assertThat(retrySettings.getMaxRetryDelay()).isEqualTo(Duration.ofMinutes(1));
           assertThat(retrySettings.getInitialRpcTimeout()).isEqualTo(Duration.ofMinutes(10));
@@ -116,13 +132,17 @@ class LanguageAutoConfigurationTests {
     this.contextRunner
         .withPropertyValues(
             "com.google.cloud.language.v1.spring.auto.language-service.enabled=true",
-            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-retry-delay-multiplier=" + "2",
-            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-initial-retry-delay=" + "PT0.5S",
-            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-max-retry-delay=" + "PT5S")
-            // "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-initial-rpc-timeout=" + "PT10S")
+            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-retry-delay-multiplier="
+                + "2",
+            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-initial-retry-delay="
+                + "PT0.5S",
+            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-max-retry-delay="
+                + "PT5S")
+        // "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-initial-rpc-timeout=" + "PT10S")
         .run(ctx -> {
           LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
-          RetrySettings retrySettings  = client.getSettings().analyzeSentimentSettings().getRetrySettings();
+          RetrySettings retrySettings = client.getSettings().analyzeSentimentSettings()
+              .getRetrySettings();
           assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(2);
           // Option 2(a) - override setter to take argument of type java.time.Duration and convert
           // since explicit String -> java.time.Duration is supported by Spring
