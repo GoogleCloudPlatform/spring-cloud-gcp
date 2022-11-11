@@ -54,8 +54,6 @@ jobs:
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_OUTPUT
       - name: Generate PR
         if: steps.detect_changes.outputs.CHANGED_FILES > 0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -x
           # I'm wondering what kind of logic could we have for the commit and PR name
@@ -65,3 +63,4 @@ jobs:
         env:
           NEW_BRANCH_NAME: {{ steps.create_branch.outputs.NEW_BRANCH_NAME }}
           SOURCE_BRANCH_NAME: {{ steps.create_branch.outputs.SOURCE_BRANCH_NAME }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
