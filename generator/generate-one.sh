@@ -73,6 +73,7 @@ else
   # also write to generated/README.md
   # format |name|distribution name|
   echo -e "|$client_lib_name|com.google.cloud:$starter_artifactid|" >> README.md
+  echo "$({(cat README.md | grep -vw ".*:.*");(cat README.md | grep ".*:.*" | sort | uniq)})" > README.md
 
 fi
 
