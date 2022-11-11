@@ -61,8 +61,8 @@ jobs:
         run: |
           set -x
           # I'm wondering what kind of logic could we have for the commit and PR name
-          git config --global user.name 'Your Name'
-          git config --global user.email 'your-username@users.noreply.github.com'
+          git config --global user.name 'Diego Marquez'
+          git config --global user.email 'diegomarquezp@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git commit -m "feat(generated): Generate new autoconfig libraries"
           git push
