@@ -135,7 +135,11 @@ public class LanguageServiceSpringProperties implements CredentialsSupplier {
   }
 
   public Duration getAnalyzeSentimentMaxRetryDelay() {
-    return Duration.parse(this.analyzeSentimentMaxRetryDelay.toString());
+    if (this.analyzeSentimentMaxRetryDelay != null) {
+      return Duration.parse(this.analyzeSentimentMaxRetryDelay.toString());
+    } else {
+      return null;
+    }
   }
 
   public void setAnalyzeSentimentMaxRetryDelay(java.time.Duration analyzeSentimentMaxRetryDelay) {
