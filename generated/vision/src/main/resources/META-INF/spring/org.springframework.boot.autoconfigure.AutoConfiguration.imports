@@ -1,0 +1,2 @@
+com.google.cloud.vision.v1.spring.ImageAnnotatorSpringAutoConfig
+com.google.cloud.vision.v1.spring.ProductSearchSpringAutoConfig
