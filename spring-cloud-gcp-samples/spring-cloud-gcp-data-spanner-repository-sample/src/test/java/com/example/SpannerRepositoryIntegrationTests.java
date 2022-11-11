@@ -18,7 +18,6 @@ package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import java.sql.Timestamp;
 import java.time.ZoneOffset;
@@ -64,8 +63,6 @@ class SpannerRepositoryIntegrationTests {
 
   @Autowired private SpannerSchemaUtils spannerSchemaUtils;
 
-  @Autowired private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
-
   @Autowired private SpannerRepositoryExample spannerRepositoryExample;
 
   @BeforeEach
@@ -83,10 +80,10 @@ class SpannerRepositoryIntegrationTests {
     TestRestTemplate testRestTemplate = new TestRestTemplate();
     ResponseEntity<PagedModel<Trade>> tradesResponse =
         testRestTemplate.exchange(
-            String.format("http://localhost:%s/trades/", this.port),
+            String.format("http://localhost:%s/trades", this.port),
             HttpMethod.GET,
             null,
-            new ParameterizedTypeReference<PagedModel<Trade>>() {});
+            new ParameterizedTypeReference<>() {});
     assertThat(tradesResponse.getBody().getMetadata().getTotalElements()).isEqualTo(8);
   }
 
@@ -103,10 +100,10 @@ class SpannerRepositoryIntegrationTests {
             String.format("http://localhost:%s/traders/t123", this.port),
             HttpMethod.PUT,
             new HttpEntity<>(
-                "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"createdOn\": \"2000-Jan-02"
-                    + " 03:04:05 UTC\", \"modifiedOn\": [\"2000-Jan-02 03:04:05 UTC\"]}",
+                "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"createdOn\": \"2000-01-02"
+                    + "T03:04:05.000Z\", \"modifiedOn\": [\"2000-01-02T03:04:05.000Z\"]}",
                 headers),
-            new ParameterizedTypeReference<Trader>() {});
+            new ParameterizedTypeReference<>() {});
 
     ZonedDateTime expectedUtcDate = ZonedDateTime.of(2000, 1, 2, 3, 4, 5, 0, ZoneOffset.UTC);
     Timestamp expectedTimestamp = new Timestamp(expectedUtcDate.toEpochSecond() * 1000L);
