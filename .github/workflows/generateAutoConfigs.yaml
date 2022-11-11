@@ -37,10 +37,17 @@ jobs:
         working-directory: generator
         run: |
           set -x
-          SOURCE_BRANCH_NAME=`echo ${GITHUB_REF##*/}`
+          SOURCE_BRANCH_NAME=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
           NEW_BRANCH_NAME="generated-autoconfig--$SOURCE_BRANCH_NAME"
           echo "NEW_BRANCH_NAME=$NEW_BRANCH_NAME" >> $GITHUB_OUTPUT
           echo "SOURCE_BRANCH_NAME=$SOURCE_BRANCH_NAME" >> $GITHUB_OUTPUT
+      - name: Cache generated libraries
+        uses: actions/cache@v3
+        with:
+          path: ./bazel-*
+          key: ${{ runner.OS }}-bazel-cache-${{ hashFiles('generator/**') }}
+          restore-keys: |
+            ${{ runner.OS }}-bazel-cache-
       - name: Generate libraries
         continue-on-error: false
         working-directory: generator
@@ -71,7 +78,7 @@ jobs:
           git config --global user.name 'Diego Marquez'
           git config --global user.email 'diegomarquezp@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-          git commit -m $MESSAGE
+          git commit -m "$MESSAGE"
           git push --set-upstream origin $NEW_BRANCH_NAME
           gh pr create --draft -B main -H $NEW_BRANCH_NAME --title $MESSAGE --body 'Created by Github action'
         env:
