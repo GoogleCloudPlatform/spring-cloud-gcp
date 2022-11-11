@@ -36,7 +36,7 @@ jobs:
           set -x
           SOURCE_BRANCH_NAME=`git rev-parse --abbrev-ref HEAD`
           NEW_BRANCH_NAME=generated-autoconfig-$(uuidgen)
-          git checkout -b $BRANCH_NAME
+          git checkout -b $NEW_BRANCH_NAME
           echo "NEW_BRANCH_NAME=$NEW_BRANCH_NAME" >> $GITHUB_OUTPUT
           echo "SOURCE_BRANCH_NAME=$SOURCE_BRANCH_NAME" >> $GITHUB_OUTPUT
       - name: Generate libraries
