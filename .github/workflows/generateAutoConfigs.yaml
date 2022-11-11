@@ -74,8 +74,7 @@ jobs:
           git commit -m "$MESSAGE"
           EXISTING_PR=$(gh pr list --json baseRefName,headRefName --jq 'map(select(.baseRefName == "main" and .headRefName == "gh-generate-autoconf"))| length')
           git push --force --set-upstream origin $NEW_BRANCH_NAME
-          if [[ $EXISTING_PR -eq 0]]
-          then
+          if [[ $EXISTING_PR -eq 0]];then
             gh pr create --draft -B main -H $NEW_BRANCH_NAME --title "$MESSAGE" --body 'Created by Github action'
           fi
         env:
