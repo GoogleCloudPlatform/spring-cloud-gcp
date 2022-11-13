@@ -18,17 +18,14 @@ package com.google.cloud.language.v1.spring;
 
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 import org.threeten.bp.Duration;
 
+@Component
 @ConfigurationPropertiesBinding
-public class SpringDurationConverter implements Converter<java.time.Duration, Duration> {
-  // @Override
-  // public Duration convert(String source) {
-  //   return Duration.parse(source);
-  // }
+public class StringToBackportDurationConverter implements Converter<String, Duration> {
   @Override
-  public Duration convert(java.time.Duration source) {
-    return Duration.parse(source.toString());
+  public Duration convert(String source) {
+    return (source == null) ? null : Duration.parse(source);
   }
 }
-

@@ -23,9 +23,15 @@ import com.google.api.gax.retrying.RetrySettings;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.language.v1.LanguageServiceClient;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.ConversionServiceFactoryBean;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.converter.Converter;
 import org.threeten.bp.Duration;
 
 class LanguageAutoConfigurationTests {
@@ -138,12 +144,15 @@ class LanguageAutoConfigurationTests {
                 + "PT0.5S",
             "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-max-retry-delay="
                 + "PT5S")
-        // "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-initial-rpc-timeout=" + "PT10S")
+        // "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-initial-rpc-timeout="
+        //     + "PT5M")
         .run(ctx -> {
           LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
           RetrySettings retrySettings = client.getSettings().analyzeSentimentSettings()
               .getRetrySettings();
+          // Spring handles String to Double conversion
           assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(2);
+          // Spring converts String to java.time.Duration, but not org.threeteh.bp.Duration
           // Option 2(a) - override setter to take argument of type java.time.Duration and convert
           // since explicit String -> java.time.Duration is supported by Spring
           assertThat(retrySettings.getInitialRetryDelay()).isEqualTo(Duration.ofMillis(500));
@@ -151,7 +160,7 @@ class LanguageAutoConfigurationTests {
           // have getter return type org.threeten.bp.Duration
           assertThat(retrySettings.getMaxRetryDelay()).isEqualTo(Duration.ofSeconds(5));
           assertThat(retrySettings.getInitialRetryDelay()).isInstanceOf(Duration.class);
-          // Option 1 (WIP) - Add custom converter or ConversionService bean
+          // Option 1 (WIP) - Try defining custom converter through @ConfigurationPropertiesBinding
           // assertThat(retrySettings.getInitialRpcTimeout()).isEqualTo(Duration.ofMinutes(5));
         });
   }
