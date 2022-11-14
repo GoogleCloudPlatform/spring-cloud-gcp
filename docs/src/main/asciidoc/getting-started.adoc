@@ -68,6 +68,8 @@ You do *not* need to include the underlying `spring-cloud-gcp-pubsub` dependency
 
 A summary of these artifacts are provided below.
 
+Aside from these modules, we also provide additional starters with auto-configurations to various Google Client Libraries. Refer for the full list https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/generated/README.md[here].
+
 |===
 | Spring Cloud GCP Starter | Description | Maven Artifact Name
 
