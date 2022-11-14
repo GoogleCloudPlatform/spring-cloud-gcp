@@ -37,7 +37,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @RestController
 public class WebController {
 
-  private static final Log LOGGER = LogFactory.getLog(PubSubApplication.class);
+  private static final Log LOGGER = LogFactory.getLog(WebController.class);
 
   private final PubSubTemplate pubSubTemplate;
 

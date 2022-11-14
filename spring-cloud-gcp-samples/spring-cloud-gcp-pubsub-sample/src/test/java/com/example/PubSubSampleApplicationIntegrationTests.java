@@ -31,7 +31,9 @@ import com.google.pubsub.v1.PullRequest;
 import com.google.pubsub.v1.PullResponse;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
+import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.Topic;
+import com.google.pubsub.v1.TopicName;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -107,23 +109,23 @@ class PubSubSampleApplicationIntegrationTests {
     topicAdminClient = TopicAdminClient.create();
     subscriptionAdminClient = SubscriptionAdminClient.create();
 
-    topicAdminClient.createTopic(ProjectTopicName.of(projectName, SAMPLE_TEST_TOPIC));
-    topicAdminClient.createTopic(ProjectTopicName.of(projectName, SAMPLE_TEST_TOPIC2));
+    topicAdminClient.createTopic(TopicName.of(projectName, SAMPLE_TEST_TOPIC));
+    topicAdminClient.createTopic(TopicName.of(projectName, SAMPLE_TEST_TOPIC2));
 
     subscriptionAdminClient.createSubscription(
-        ProjectSubscriptionName.of(projectName, SAMPLE_TEST_SUBSCRIPTION1),
-        ProjectTopicName.of(projectName, SAMPLE_TEST_TOPIC),
+        SubscriptionName.of(projectName, SAMPLE_TEST_SUBSCRIPTION1),
+        TopicName.of(projectName, SAMPLE_TEST_TOPIC),
         PushConfig.getDefaultInstance(),
         10);
 
     subscriptionAdminClient.createSubscription(
-        ProjectSubscriptionName.of(projectName, SAMPLE_TEST_SUBSCRIPTION2),
-        ProjectTopicName.of(projectName, SAMPLE_TEST_TOPIC2),
+        SubscriptionName.of(projectName, SAMPLE_TEST_SUBSCRIPTION2),
+        TopicName.of(projectName, SAMPLE_TEST_TOPIC2),
         PushConfig.getDefaultInstance(),
         10);
     subscriptionAdminClient.createSubscription(
-        ProjectSubscriptionName.of(projectName, SAMPLE_TEST_SUBSCRIPTION3),
-        ProjectTopicName.of(projectName, SAMPLE_TEST_TOPIC2),
+        SubscriptionName.of(projectName, SAMPLE_TEST_SUBSCRIPTION3),
+        TopicName.of(projectName, SAMPLE_TEST_TOPIC2),
         PushConfig.getDefaultInstance(),
         10);
   }
@@ -259,6 +261,7 @@ class PubSubSampleApplicationIntegrationTests {
         .untilAsserted(
             () -> {
               List<String> projectTopics = getTopicNamesFromProject();
+              assertThat(projectTopics).isNotNull();
               assertThat(projectTopics).doesNotContain(projectTopicName);
             });
   }
@@ -294,6 +297,7 @@ class PubSubSampleApplicationIntegrationTests {
         .untilAsserted(
             () -> {
               List<String> subscriptions = getSubscriptionNamesFromProject();
+              assertThat(subscriptions).isNotNull();
               assertThat(subscriptions).doesNotContain(projectSubscriptionName);
             });
   }
