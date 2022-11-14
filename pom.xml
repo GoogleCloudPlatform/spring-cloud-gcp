@@ -363,7 +363,7 @@
 				<!-- default config values -->
 				<docletName>java-docfx-doclet-1.6.0</docletName>
 				<outputpath>${project.build.directory}/docfx-yml</outputpath>
-				<projectname>${project.artifactId}</projectname>
+				<projectname>google-cloud-spring-modules</projectname>
 				<excludeclasses></excludeclasses>
 				<excludePackages></excludePackages>
 				<source>8</source>
