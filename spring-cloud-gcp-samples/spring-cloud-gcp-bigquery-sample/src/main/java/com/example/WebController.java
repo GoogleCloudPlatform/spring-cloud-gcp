@@ -27,7 +27,6 @@ import com.google.cloud.spring.bigquery.core.WriteApiResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -41,22 +40,30 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class WebController {
 
-  @Autowired BigQueryFileGateway bigQueryFileGateway;
+  private final BigQueryFileGateway bigQueryFileGateway;
 
-  @Autowired BigQueryTemplate bigQueryTemplate;
+  private final BigQueryTemplate bigQueryTemplate;
+
+  private static final String DATASET_NAME = "datasetName";
 
   @Value("${spring.cloud.gcp.bigquery.datasetName}")
   private String datasetName;
 
+  public WebController(BigQueryFileGateway bigQueryFileGateway,
+      BigQueryTemplate bigQueryTemplate) {
+    this.bigQueryFileGateway = bigQueryFileGateway;
+    this.bigQueryTemplate = bigQueryTemplate;
+  }
+
   @GetMapping("/")
   public ModelAndView renderIndex(ModelMap map) {
-    map.put("datasetName", this.datasetName);
+    map.put(DATASET_NAME, this.datasetName);
     return new ModelAndView("index.html", map);
   }
 
   @GetMapping("/write-api-json-upload")
   public ModelAndView renderUploadJson(ModelMap map) {
-    map.put("datasetName", this.datasetName);
+    map.put(DATASET_NAME, this.datasetName);
     return new ModelAndView("upload-json.html", map);
   }
 
@@ -107,7 +114,7 @@ public class WebController {
       @RequestParam("jsonRows") String jsonRows,
       @RequestParam("tableName") String tableName,
       @RequestParam(name = "createTable", required = false) String createDefaultTable) {
-    CompletableFuture<WriteApiResponse> writeApiRes = null;
+    CompletableFuture<WriteApiResponse> writeApiRes;
     if (createDefaultTable != null
         && createDefaultTable.equals("createTable")) { // create the default table
 
@@ -141,7 +148,7 @@ public class WebController {
       message = "Error: " + e.getMessage();
     }
     return new ModelAndView("upload-json.html")
-        .addObject("datasetName", this.datasetName)
+        .addObject(DATASET_NAME, this.datasetName)
         .addObject("message", message);
   }
 
@@ -150,7 +157,7 @@ public class WebController {
    *
    * @param file the CSV file to upload to BigQuery
    * @param tableName name of the table to load data into
-   * @return ModelAndView of the response the send back to users
+   * @return ModelAndView of the response to send back to users
    * @throws IOException if the file is unable to be loaded.
    */
   @PostMapping("/uploadFile")
@@ -185,7 +192,6 @@ public class WebController {
   private ModelAndView getResponse(CompletableFuture<Job> loadJob, String tableName) {
     String message;
     try {
-      Job job = loadJob.get();
       message = "Successfully loaded data file to " + tableName;
     } catch (Exception e) {
       e.printStackTrace();
@@ -193,7 +199,7 @@ public class WebController {
     }
 
     return new ModelAndView("index")
-        .addObject("datasetName", this.datasetName)
+        .addObject(DATASET_NAME, this.datasetName)
         .addObject("message", message);
   }
 }

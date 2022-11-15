@@ -24,6 +24,7 @@ import com.google.cloud.spring.bigquery.integration.outbound.BigQueryFileMessage
 import java.util.concurrent.CompletableFuture;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
@@ -54,6 +55,7 @@ public class BigQuerySampleConfiguration {
     return messageHandler;
   }
 
+  @Primary
   @Bean
   public GatewayProxyFactoryBean gatewayProxyFactoryBean() {
     GatewayProxyFactoryBean factoryBean = new GatewayProxyFactoryBean(BigQueryFileGateway.class);

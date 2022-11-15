@@ -91,9 +91,10 @@ class BigQuerySampleApplicationIntegrationTests {
   @Test
   void testJsonTextUpload() throws InterruptedException {
     String jsonTxt =
-        "{\"CompanyName\":\"TALES\",\"Description\":\"mark\",\"SerialNumber\":97,\"Leave\":0,\"EmpName\":\"Mark\"}\n"
-            + "{\"CompanyName\":\"1Q84\",\"Description\":\"ark\",\"SerialNumber\":978,\"Leave\":0,\"EmpName\":\"HARUKI\"}\n"
-            + "{\"CompanyName\":\"MY\",\"Description\":\"M\",\"SerialNumber\":9780,\"Leave\":0,\"EmpName\":\"Mark\"}";
+        """
+            {"CompanyName":"TALES","Description":"mark","SerialNumber":97,"Leave":0,"EmpName":"Mark"}
+            {"CompanyName":"1Q84","Description":"ark","SerialNumber":978,"Leave":0,"EmpName":"HARUKI"}
+            {"CompanyName":"MY","Description":"M","SerialNumber":9780,"Leave":0,"EmpName":"Mark"}""";
 
     LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
     map.add("jsonRows", jsonTxt);
@@ -113,12 +114,12 @@ class BigQuerySampleApplicationIntegrationTests {
     TableResult queryResult = this.bigQuery.query(queryJobConfiguration);
     assertThat(queryResult.getTotalRows()).isEqualTo(3);
     FieldValueList row = queryResult.getValues().iterator().next(); // match the first record
-    assertThat(row.get("SerialNumber").getLongValue() == 9780);
+    assertThat(row.get("SerialNumber").getLongValue()).isEqualTo(9780L);
     assertThat(row.get("EmpName").getStringValue()).isEqualTo("Mark");
   }
 
   @Test
-  void testJsonFileUpload() throws InterruptedException, IOException {
+  void testJsonFileUpload() throws InterruptedException {
     LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
     map.add("file", jsonFile);
     map.add("tableName", TABLE_NAME);
@@ -140,12 +141,12 @@ class BigQuerySampleApplicationIntegrationTests {
     TableResult queryResult = this.bigQuery.query(queryJobConfiguration);
     assertThat(queryResult.getTotalRows()).isEqualTo(3);
     FieldValueList row = queryResult.getValues().iterator().next(); // match the first record
-    assertThat(row.get("SerialNumber").getLongValue() == 9780);
+    assertThat(row.get("SerialNumber").getLongValue()).isEqualTo(9780L);
     assertThat(row.get("EmpName").getStringValue()).isEqualTo("Mark");
   }
 
   @Test
-  void testFileUpload() throws InterruptedException, IOException {
+  void testFileUpload() throws InterruptedException {
     LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
     map.add("file", csvFile);
     map.add("tableName", TABLE_NAME);
