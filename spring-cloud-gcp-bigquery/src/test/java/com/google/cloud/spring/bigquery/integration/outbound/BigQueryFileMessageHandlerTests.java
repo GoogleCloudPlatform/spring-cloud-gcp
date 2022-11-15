@@ -28,14 +28,13 @@ import com.google.cloud.bigquery.Schema;
 import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.SettableListenableFuture;
 
 class BigQueryFileMessageHandlerTests {
 
@@ -46,8 +45,8 @@ class BigQueryFileMessageHandlerTests {
   @BeforeEach
   void setup() {
     bigQueryTemplate = mock(BigQueryTemplate.class);
-    SettableListenableFuture<Job> result = new SettableListenableFuture<>();
-    result.set(mock(Job.class));
+    CompletableFuture<Job> result = new CompletableFuture<>();
+    result.complete(mock(Job.class));
     when(bigQueryTemplate.writeDataToTable(any(), any(), any(), any())).thenReturn(result);
 
     messageHandler = new BigQueryFileMessageHandler(bigQueryTemplate);
@@ -68,7 +67,7 @@ class BigQueryFileMessageHandlerTests {
 
     verify(bigQueryTemplate)
         .writeDataToTable("testTable", payload, FormatOptions.csv(), Schema.of());
-    assertThat(result).isNotNull().isInstanceOf(ListenableFuture.class);
+    assertThat(result).isNotNull().isInstanceOf(CompletableFuture.class);
   }
 
   @Test
