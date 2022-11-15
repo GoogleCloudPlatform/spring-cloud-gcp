@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -52,8 +53,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.util.Assert;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.SettableListenableFuture;
 
 /**
  * Default implementation of {@link PubSubSubscriberOperations}.
@@ -83,7 +82,7 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
 
   private Executor asyncPullExecutor = Runnable::run;
 
-  private ConcurrentHashMap<String, SubscriberStub> subscriptionNameToStubMap =
+  private final ConcurrentHashMap<String, SubscriberStub> subscriptionNameToStubMap =
       new ConcurrentHashMap<>();
 
   /**
@@ -203,20 +202,20 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
    * @return the ListenableFuture for the asynchronous execution, returning the list of {@link
    *     AcknowledgeablePubsubMessage} containing the ack ID, subscription and acknowledger
    */
-  private ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(PullRequest pullRequest) {
+  private CompletableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(PullRequest pullRequest) {
     Assert.notNull(pullRequest, "The pull request can't be null.");
     ApiFuture<PullResponse> pullFuture =
         getSubscriberStub(pullRequest.getSubscription()).pullCallable().futureCall(pullRequest);
 
-    final SettableListenableFuture<List<AcknowledgeablePubsubMessage>> settableFuture =
-        new SettableListenableFuture<>();
+    final CompletableFuture<List<AcknowledgeablePubsubMessage>> completableFuture =
+        new CompletableFuture<>();
     ApiFutures.addCallback(
         pullFuture,
-        new ApiFutureCallback<PullResponse>() {
+        new ApiFutureCallback<>() {
 
           @Override
           public void onFailure(Throwable throwable) {
-            settableFuture.setException(throwable);
+            completableFuture.completeExceptionally(throwable);
           }
 
           @Override
@@ -225,12 +224,12 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
                 toAcknowledgeablePubsubMessageList(
                     pullResponse.getReceivedMessagesList(), pullRequest.getSubscription());
 
-            settableFuture.set(result);
+            completableFuture.complete(result);
           }
         },
         asyncPullExecutor);
 
-    return settableFuture;
+    return completableFuture;
   }
 
   private List<AcknowledgeablePubsubMessage> toAcknowledgeablePubsubMessageList(
@@ -254,7 +253,7 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
   }
 
   @Override
-  public ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(
+  public CompletableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(
       String subscription, Integer maxMessages, Boolean returnImmediately) {
     return pullAsync(
         this.subscriberFactory.createPullRequest(subscription, maxMessages, returnImmediately));
@@ -270,19 +269,22 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
   }
 
   @Override
-  public <T> ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(
+  public <T> CompletableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(
       String subscription, Integer maxMessages, Boolean returnImmediately, Class<T> payloadType) {
-    final SettableListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> settableFuture =
-        new SettableListenableFuture<>();
+    final CompletableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> completableFuture =
+        new CompletableFuture<>();
 
     this.pullAsync(subscription, maxMessages, returnImmediately)
-        .addCallback(
-            ackableMessages ->
-                settableFuture.set(
-                    this.toConvertedAcknowledgeablePubsubMessages(payloadType, ackableMessages)),
-            settableFuture::setException);
+        .whenComplete(
+            (ackableMessages, exception) -> {
+                if (exception != null) {
+                  completableFuture.completeExceptionally(exception);
+                }
+                completableFuture.complete(
+                    this.toConvertedAcknowledgeablePubsubMessages(payloadType, ackableMessages));
+            });
 
-    return settableFuture;
+    return completableFuture;
   }
 
   private <T>
@@ -312,34 +314,36 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
 
     return ackableMessages.stream()
         .map(AcknowledgeablePubsubMessage::getPubsubMessage)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   @Override
-  public ListenableFuture<List<PubsubMessage>> pullAndAckAsync(
+  public CompletableFuture<List<PubsubMessage>> pullAndAckAsync(
       String subscription, Integer maxMessages, Boolean returnImmediately) {
     PullRequest pullRequest =
         this.subscriberFactory.createPullRequest(subscription, maxMessages, returnImmediately);
 
-    final SettableListenableFuture<List<PubsubMessage>> settableFuture =
-        new SettableListenableFuture<>();
+    final CompletableFuture<List<PubsubMessage>> completableFuture =
+        new CompletableFuture<>();
 
     this.pullAsync(pullRequest)
-        .addCallback(
-            ackableMessages -> {
+        .whenComplete(
+            (ackableMessages, exception) -> {
+              if (exception != null) {
+                completableFuture.completeExceptionally(exception);
+              }
               if (!ackableMessages.isEmpty()) {
                 ack(ackableMessages);
               }
               List<PubsubMessage> messages =
                   ackableMessages.stream()
                       .map(AcknowledgeablePubsubMessage::getPubsubMessage)
-                      .collect(Collectors.toList());
+                      .toList();
 
-              settableFuture.set(messages);
-            },
-            settableFuture::setException);
+              completableFuture.complete(messages);
+            });
 
-    return settableFuture;
+    return completableFuture;
   }
 
   @Override
@@ -350,18 +354,21 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
   }
 
   @Override
-  public ListenableFuture<PubsubMessage> pullNextAsync(String subscription) {
-    final SettableListenableFuture<PubsubMessage> settableFuture = new SettableListenableFuture<>();
+  public CompletableFuture<PubsubMessage> pullNextAsync(String subscription) {
+    final CompletableFuture<PubsubMessage> completableFuture = new CompletableFuture<>();
 
     this.pullAndAckAsync(subscription, 1, true)
-        .addCallback(
-            messages -> {
-              PubsubMessage message = messages.isEmpty() ? null : messages.get(0);
-              settableFuture.set(message);
-            },
-            settableFuture::setException);
+        .whenComplete(
+            (messages, exception) -> {
+              if (exception != null) {
+                completableFuture.completeExceptionally(exception);
+              }
 
-    return settableFuture;
+              PubsubMessage message = messages.isEmpty() ? null : messages.get(0);
+              completableFuture.complete(message);
+            });
+
+    return completableFuture;
   }
 
   public SubscriberFactory getSubscriberFactory() {
@@ -374,10 +381,10 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
    * exception was detected first.
    *
    * @param acknowledgeablePubsubMessages messages, potentially from different subscriptions.
-   * @return {@link ListenableFuture} indicating overall success or failure.
+   * @return {@link CompletableFuture} indicating overall success or failure.
    */
   @Override
-  public ListenableFuture<Void> ack(
+  public CompletableFuture<Void> ack(
       Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages) {
     Assert.notEmpty(
         acknowledgeablePubsubMessages, "The acknowledgeablePubsubMessages can't be empty.");
@@ -391,10 +398,10 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
    * detected first.
    *
    * @param acknowledgeablePubsubMessages messages, potentially from different subscriptions.
-   * @return {@link ListenableFuture} indicating overall success or failure.
+   * @return {@link CompletableFuture} indicating overall success or failure.
    */
   @Override
-  public ListenableFuture<Void> nack(
+  public CompletableFuture<Void> nack(
       Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages) {
     return modifyAckDeadline(acknowledgeablePubsubMessages, 0);
   }
@@ -405,10 +412,10 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
    * whichever exception was detected first.
    *
    * @param acknowledgeablePubsubMessages messages, potentially from different subscriptions.
-   * @return {@link ListenableFuture} indicating overall success or failure.
+   * @return {@link CompletableFuture} indicating overall success or failure.
    */
   @Override
-  public ListenableFuture<Void> modifyAckDeadline(
+  public CompletableFuture<Void> modifyAckDeadline(
       Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages,
       int ackDeadlineSeconds) {
     Assert.notEmpty(
@@ -455,17 +462,17 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
   /**
    * Perform Pub/Sub operations (ack/nack/modifyAckDeadline) in per-subscription batches.
    *
-   * <p>The returned {@link ListenableFuture} will complete when either all batches completes
+   * <p>The returned {@link CompletableFuture} will complete when either all batches completes
    * successfully or when at least one fails.
    *
    * <p>In case of multiple batch failures, which exception will be in the final {@link
-   * ListenableFuture} is non-deterministic.
+   * CompletableFuture} is non-deterministic.
    *
    * @param acknowledgeablePubsubMessages messages, could be from different subscriptions.
    * @param asyncOperation specific Pub/Sub operation to perform.
-   * @return {@link ListenableFuture} indicating overall success or failure.
+   * @return {@link CompletableFuture} indicating overall success or failure.
    */
-  private ListenableFuture<Void> doBatchedAsyncOperation(
+  private CompletableFuture<Void> doBatchedAsyncOperation(
       Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages,
       BiFunction<String, List<String>, ApiFuture<Empty>> asyncOperation) {
 
@@ -485,7 +492,7 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
             == 1,
         "The project id of all messages must match.");
 
-    SettableListenableFuture<Void> settableListenableFuture = new SettableListenableFuture<>();
+    CompletableFuture<Void> settableListenableFuture = new CompletableFuture<>();
     int numExpectedFutures = groupedMessages.size();
     AtomicInteger numCompletedFutures = new AtomicInteger();
 
@@ -495,7 +502,7 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
 
           ApiFutures.addCallback(
               ackApiFuture,
-              new ApiFutureCallback<Empty>() {
+              new ApiFutureCallback<>() {
                 @Override
                 public void onFailure(Throwable throwable) {
                   processResult(throwable);
@@ -508,9 +515,9 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
 
                 private void processResult(Throwable throwable) {
                   if (throwable != null) {
-                    settableListenableFuture.setException(throwable);
+                    settableListenableFuture.completeExceptionally(throwable);
                   } else if (numCompletedFutures.incrementAndGet() == numExpectedFutures) {
-                    settableListenableFuture.set(null);
+                    settableListenableFuture.complete(null);
                   }
                 }
               },
@@ -569,17 +576,17 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
     }
 
     @Override
-    public ListenableFuture<Void> ack() {
+    public CompletableFuture<Void> ack() {
       return PubSubSubscriberTemplate.this.ack(Collections.singleton(this));
     }
 
     @Override
-    public ListenableFuture<Void> nack() {
+    public CompletableFuture<Void> nack() {
       return modifyAckDeadline(0);
     }
 
     @Override
-    public ListenableFuture<Void> modifyAckDeadline(int ackDeadlineSeconds) {
+    public CompletableFuture<Void> modifyAckDeadline(int ackDeadlineSeconds) {
       return PubSubSubscriberTemplate.this.modifyAckDeadline(
           Collections.singleton(this), ackDeadlineSeconds);
     }
@@ -616,28 +623,28 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
     }
 
     @Override
-    public ListenableFuture<Void> ack() {
-      SettableListenableFuture<Void> settableListenableFuture = new SettableListenableFuture<>();
+    public CompletableFuture<Void> ack() {
+      CompletableFuture<Void> settableListenableFuture = new CompletableFuture<>();
 
       try {
         this.ackReplyConsumer.ack();
-        settableListenableFuture.set(null);
+        settableListenableFuture.complete(null);
       } catch (Exception e) {
-        settableListenableFuture.setException(e);
+        settableListenableFuture.completeExceptionally(e);
       }
 
       return settableListenableFuture;
     }
 
     @Override
-    public ListenableFuture<Void> nack() {
-      SettableListenableFuture<Void> settableListenableFuture = new SettableListenableFuture<>();
+    public CompletableFuture<Void> nack() {
+      CompletableFuture<Void> settableListenableFuture = new CompletableFuture<>();
 
       try {
         this.ackReplyConsumer.nack();
-        settableListenableFuture.set(null);
+        settableListenableFuture.complete(null);
       } catch (Exception e) {
-        settableListenableFuture.setException(e);
+        settableListenableFuture.completeExceptionally(e);
       }
 
       return settableListenableFuture;

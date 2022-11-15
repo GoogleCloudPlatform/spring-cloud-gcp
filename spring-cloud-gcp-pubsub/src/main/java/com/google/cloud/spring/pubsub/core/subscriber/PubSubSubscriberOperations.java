@@ -24,8 +24,8 @@ import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledg
 import com.google.pubsub.v1.PubsubMessage;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * An abstraction for Google Cloud Pub/Sub subscription / pulling operations.
@@ -101,7 +101,7 @@ public interface PubSubSubscriberOperations {
    *     acknowledgeable messages
    * @since 1.2.3
    */
-  ListenableFuture<List<PubsubMessage>> pullAndAckAsync(
+  CompletableFuture<List<PubsubMessage>> pullAndAckAsync(
       String subscription, Integer maxMessages, Boolean returnImmediately);
 
   /**
@@ -135,7 +135,7 @@ public interface PubSubSubscriberOperations {
    *     acknowledgeable messages
    * @since 1.2.3
    */
-  ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(
+  CompletableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(
       String subscription, Integer maxMessages, Boolean returnImmediately);
 
   /**
@@ -176,7 +176,7 @@ public interface PubSubSubscriberOperations {
    *     acknowledgeable messages
    * @since 1.2.3
    */
-  <T> ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(
+  <T> CompletableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(
       String subscription, Integer maxMessages, Boolean returnImmediately, Class<T> payloadType);
 
   /**
@@ -199,7 +199,7 @@ public interface PubSubSubscriberOperations {
    *     {@code null} if none exists in the subscription
    * @since 1.2.3
    */
-  ListenableFuture<PubsubMessage> pullNextAsync(String subscription);
+  CompletableFuture<PubsubMessage> pullNextAsync(String subscription);
 
   /**
    * Acknowledge a batch of messages. The messages must have the same project id.
@@ -207,7 +207,7 @@ public interface PubSubSubscriberOperations {
    * @param acknowledgeablePubsubMessages messages to be acknowledged
    * @return {@code ListenableFuture<Void>} the ListenableFuture for the asynchronous execution
    */
-  ListenableFuture<Void> ack(
+  CompletableFuture<Void> ack(
       Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages);
 
   /**
@@ -216,7 +216,7 @@ public interface PubSubSubscriberOperations {
    * @param acknowledgeablePubsubMessages messages to be negatively acknowledged
    * @return {@code ListenableFuture<Void>} the ListenableFuture for the asynchronous execution
    */
-  ListenableFuture<Void> nack(
+  CompletableFuture<Void> nack(
       Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages);
 
   /**
@@ -228,7 +228,7 @@ public interface PubSubSubscriberOperations {
    * @return {@code ListenableFuture<Void>} the ListenableFuture for the asynchronous execution
    * @since 1.1
    */
-  ListenableFuture<Void> modifyAckDeadline(
+  CompletableFuture<Void> modifyAckDeadline(
       Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages,
       int ackDeadlineSeconds);
 }

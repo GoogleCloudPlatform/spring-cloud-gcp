@@ -18,7 +18,7 @@ package com.google.cloud.spring.pubsub.support;
 
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
-import org.springframework.util.concurrent.ListenableFuture;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * A {@link PubsubMessage} wrapper that allows it to be acknowledged.
@@ -46,12 +46,12 @@ public interface BasicAcknowledgeablePubsubMessage {
    *
    * @return {@code ListenableFuture<Void>}}
    */
-  ListenableFuture<Void> ack();
+  CompletableFuture<Void> ack();
 
   /**
    * Negatatively achnowledge (nack) the message asynchronously.
    *
    * @return {@code ListenableFuture<Void>}}
    */
-  ListenableFuture<Void> nack();
+  CompletableFuture<Void> nack();
 }

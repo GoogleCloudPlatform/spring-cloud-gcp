@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -34,9 +33,9 @@ import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import io.grpc.Status.Code;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.Test;
@@ -45,9 +44,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.boot.actuate.health.Status;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /** Tests for the Pub/Sub Health Indicator. */
 @ExtendWith(MockitoExtension.class)
@@ -55,7 +52,8 @@ class PubSubHealthIndicatorTests {
 
   @Mock private PubSubTemplate pubSubTemplate;
 
-  @Mock ListenableFuture<List<AcknowledgeablePubsubMessage>> future;
+  @Mock
+  CompletableFuture<List<AcknowledgeablePubsubMessage>> future;
 
   @Test
   void healthUp_customSubscription() throws Exception {
@@ -70,7 +68,7 @@ class PubSubHealthIndicatorTests {
   @Test
   void acknowledgeEnabled() throws Exception {
     AcknowledgeablePubsubMessage msg = mock(AcknowledgeablePubsubMessage.class);
-    when(future.get(anyLong(), any())).thenReturn(Arrays.asList(msg));
+    when(future.get(anyLong(), any())).thenReturn(List.of(msg));
     when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 
     PubSubHealthIndicator healthIndicator =
@@ -82,7 +80,7 @@ class PubSubHealthIndicatorTests {
   @Test
   void acknowledgeDisabled() throws Exception {
     AcknowledgeablePubsubMessage msg = mock(AcknowledgeablePubsubMessage.class);
-    when(future.get(anyLong(), any())).thenReturn(Arrays.asList(msg));
+    when(future.get(anyLong(), any())).thenReturn(List.of(msg));
     when(pubSubTemplate.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
 
     PubSubHealthIndicator healthIndicator =
