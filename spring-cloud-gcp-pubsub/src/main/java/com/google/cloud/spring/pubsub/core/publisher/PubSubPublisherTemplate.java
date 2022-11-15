@@ -93,7 +93,7 @@ public class PubSubPublisherTemplate implements PubSubPublisherOperations {
     ApiFuture<String> publishFuture =
         this.publisherFactory.createPublisher(topic).publish(pubsubMessage);
 
-    final CompletableFuture<String> settableFuture = new CompletableFuture<>();
+    final CompletableFuture<String> completableFuture = new CompletableFuture<>();
     ApiFutures.addCallback(
         publishFuture,
         new ApiFutureCallback<>() {
@@ -104,7 +104,7 @@ public class PubSubPublisherTemplate implements PubSubPublisherOperations {
             LOGGER.warn(errorMessage, throwable);
             PubSubDeliveryException pubSubDeliveryException =
                 new PubSubDeliveryException(pubsubMessage, errorMessage, throwable);
-            settableFuture.completeExceptionally(pubSubDeliveryException);
+            completableFuture.completeExceptionally(pubSubDeliveryException);
           }
 
           @Override
@@ -112,12 +112,12 @@ public class PubSubPublisherTemplate implements PubSubPublisherOperations {
             if (LOGGER.isDebugEnabled()) {
               LOGGER.debug("Publishing to " + topic + " was successful. Message ID: " + result);
             }
-            settableFuture.complete(result);
+            completableFuture.complete(result);
           }
         },
         directExecutor());
 
-    return settableFuture;
+    return completableFuture;
   }
 
   public PublisherFactory getPublisherFactory() {

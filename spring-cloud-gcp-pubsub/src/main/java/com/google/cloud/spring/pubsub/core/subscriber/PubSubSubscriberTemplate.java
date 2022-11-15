@@ -279,6 +279,7 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
             (ackableMessages, exception) -> {
                 if (exception != null) {
                   completableFuture.completeExceptionally(exception);
+                  return;
                 }
                 completableFuture.complete(
                     this.toConvertedAcknowledgeablePubsubMessages(payloadType, ackableMessages));
@@ -331,6 +332,7 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
             (ackableMessages, exception) -> {
               if (exception != null) {
                 completableFuture.completeExceptionally(exception);
+                return;
               }
               if (!ackableMessages.isEmpty()) {
                 ack(ackableMessages);
@@ -362,6 +364,7 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
             (messages, exception) -> {
               if (exception != null) {
                 completableFuture.completeExceptionally(exception);
+                return;
               }
 
               PubsubMessage message = messages.isEmpty() ? null : messages.get(0);
