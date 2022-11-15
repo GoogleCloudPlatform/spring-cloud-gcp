@@ -150,7 +150,7 @@ class PubSubSampleApplicationIntegrationTests {
   }
 
   @BeforeEach
-  void initializeAppUrl() throws IOException {
+  void initializeAppUrl() {
     this.appUrl = "http://localhost:" + this.port;
   }
 
@@ -236,7 +236,7 @@ class PubSubSampleApplicationIntegrationTests {
         UriComponentsBuilder.fromHttpUrl(this.appUrl + "/createTopic")
             .queryParam("topicName", topicName)
             .toUriString();
-    ResponseEntity<String> response = this.testRestTemplate.postForEntity(url, null, String.class);
+    this.testRestTemplate.postForEntity(url, null, String.class);
 
     String projectTopicName = ProjectTopicName.format(projectName, topicName);
     await()
