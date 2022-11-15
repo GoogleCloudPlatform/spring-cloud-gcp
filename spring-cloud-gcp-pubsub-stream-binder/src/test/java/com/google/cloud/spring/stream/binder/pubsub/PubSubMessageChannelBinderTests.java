@@ -53,11 +53,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener;
+import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.stream.binder.Binding;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binding.BindingService;
+import org.springframework.cloud.stream.config.BinderFactoryAutoConfiguration;
+import org.springframework.cloud.stream.config.BindingServiceConfiguration;
 import org.springframework.cloud.stream.config.ConsumerEndpointCustomizer;
 import org.springframework.cloud.stream.config.ProducerMessageHandlerCustomizer;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
@@ -106,7 +110,10 @@ class PubSubMessageChannelBinderTests {
             .withBean(PubSubAdmin.class, () -> pubSubAdmin)
             .withConfiguration(
                 AutoConfigurations.of(
-                    PubSubBinderConfiguration.class, PubSubExtendedBindingProperties.class));
+                    PubSubBinderConfiguration.class,
+                    PubSubExtendedBindingProperties.class,
+                    BinderFactoryAutoConfiguration.class,
+                    BindingServiceConfiguration.class));
     this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
   }
 
