@@ -26,11 +26,11 @@ import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import com.google.cloud.spring.bigquery.core.WriteApiResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -74,7 +74,7 @@ public class WebController {
       @RequestParam("tableName") String tableName,
       @RequestParam(name = "createTable", required = false) String createDefaultTable)
       throws IOException {
-    ListenableFuture<WriteApiResponse> writeApiRes = null;
+    CompletableFuture<WriteApiResponse> writeApiRes;
     if (createDefaultTable != null
         && createDefaultTable.equals("createTable")) { // create the default table
       writeApiRes =
@@ -107,7 +107,7 @@ public class WebController {
       @RequestParam("jsonRows") String jsonRows,
       @RequestParam("tableName") String tableName,
       @RequestParam(name = "createTable", required = false) String createDefaultTable) {
-    ListenableFuture<WriteApiResponse> writeApiRes = null;
+    CompletableFuture<WriteApiResponse> writeApiRes = null;
     if (createDefaultTable != null
         && createDefaultTable.equals("createTable")) { // create the default table
 
@@ -123,13 +123,13 @@ public class WebController {
   }
 
   private ModelAndView getWriteApiResponse(
-      ListenableFuture<WriteApiResponse> writeApiFuture, String tableName) {
+      CompletableFuture<WriteApiResponse> writeApiFuture, String tableName) {
     String message = null;
     try {
       WriteApiResponse apiResponse = writeApiFuture.get();
       if (apiResponse.isSuccessful()) {
         message = "Successfully loaded data to " + tableName;
-      } else if (apiResponse.getErrors() != null && apiResponse.getErrors().size() > 0) {
+      } else if (apiResponse.getErrors() != null && !apiResponse.getErrors().isEmpty()) {
         message =
             String.format(
                 "Error occurred while loading the file, printing first error %s. Use WriteApiResponse.getErrors() to get the complete list of errors",
@@ -158,7 +158,7 @@ public class WebController {
       @RequestParam("file") MultipartFile file, @RequestParam("tableName") String tableName)
       throws IOException {
 
-    ListenableFuture<Job> loadJob =
+    CompletableFuture<Job> loadJob =
         this.bigQueryTemplate.writeDataToTable(
             tableName, file.getInputStream(), FormatOptions.csv());
 
@@ -176,13 +176,13 @@ public class WebController {
   public ModelAndView handleCsvTextUpload(
       @RequestParam("csvText") String csvData, @RequestParam("tableName") String tableName) {
 
-    ListenableFuture<Job> loadJob =
+    CompletableFuture<Job> loadJob =
         this.bigQueryFileGateway.writeToBigQueryTable(csvData.getBytes(), tableName);
 
     return getResponse(loadJob, tableName);
   }
 
-  private ModelAndView getResponse(ListenableFuture<Job> loadJob, String tableName) {
+  private ModelAndView getResponse(CompletableFuture<Job> loadJob, String tableName) {
     String message;
     try {
       Job job = loadJob.get();
