@@ -8,11 +8,12 @@ WORKING_DIR=`pwd`
 # get googleapis repo
 git clone https://github.com/googleapis/googleapis.git
 
-# fix googleapis committish for test/dev purpose
+# todo: googleapis committish is fixed for test/dev purpose
 cd googleapis && git checkout f88ca86
 # get gapic-showcase repo
 cd .. && git clone https://github.com/googleapis/gapic-showcase.git
-cd gapic-showcase && git checkout v0.25.0
+# todo: gapic-showcase committish is also fixed for test/dev purpose
+cd gapic-showcase && git checkout fe41478
 # clone showcase repo and copy into googleapis
 cd .. && mkdir googleapis/google/showcase
 cp -r gapic-showcase/schema/google/showcase/v1beta1 googleapis/google/showcase/v1beta1
@@ -32,8 +33,8 @@ cd .. && cd googleapis
 LOCAL_REPO="local_repository(\n    name = \\\"gapic_generator_java\\\",\n    path = \\\"..\/gapic-generator-java\/\\\",\n)"
 perl -0777 -pi -e "s/http_archive\(\n    name \= \"gapic_generator_java\"(.*?)\)/$LOCAL_REPO/s" WORKSPACE
 
-# todo(emmwang): modify existing BUILD.bazel? For now, this replaces showcase's BUILD.bazel file entirely
-cp -rf "$WORKING_DIR"/resources/showcase-BUILD.bazel google/showcase/v1beta1/BUILD.bazel
+# todo(emmwang): consider modifying existing BUILD.bazel? For now, this replaces showcase's BUILD.bazel file entirely
+cp -rf "$WORKING_DIR"/resources/showcase/BUILD.bazel google/showcase/v1beta1/BUILD.bazel
 
 # call bazel target - todo: separate target in future
 bazel build //google/showcase/v1beta1:showcase_java_gapic
