@@ -113,55 +113,36 @@ class LanguageAutoConfigurationTests {
   }
 
   @Test
-  void testRetrySettingsDefault() {
-    // todo (emmwang) - remove later - reference for testRetrySettingsFromProperties for now
-    this.contextRunner
-        .withPropertyValues(
-            "com.google.cloud.language.v1.spring.auto.language-service.enabled=true")
-        .run(ctx -> {
-          LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
-          RetrySettings retrySettings = client.getSettings().analyzeEntitiesSettings()
-              .getRetrySettings();
-          assertThat(retrySettings.getInitialRetryDelay()).isEqualTo(Duration.ofMillis(100));
-          assertThat(retrySettings.getMaxRetryDelay()).isEqualTo(Duration.ofMinutes(1));
-          assertThat(retrySettings.getInitialRpcTimeout()).isEqualTo(Duration.ofMinutes(10));
-          assertThat(retrySettings.getMaxRpcTimeout()).isEqualTo(Duration.ofMinutes(10));
-          assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(1.3);
-          assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(1);
-          assertThat(retrySettings.getTotalTimeout()).isEqualTo(Duration.ofMinutes(10));
-        });
-  }
-
-  @Test
   void testRetrySettingsFromProperties() {
-    // todo (emmwang) - address Duration conversion
     this.contextRunner
         .withPropertyValues(
             "com.google.cloud.language.v1.spring.auto.language-service.enabled=true",
             "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-retry-delay-multiplier="
                 + "2",
+            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-rpc-timeout-multiplier="
+                + "2",
             "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-initial-retry-delay="
                 + "PT0.5S",
             "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-max-retry-delay="
-                + "PT5S")
-        // "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-initial-rpc-timeout="
-        //     + "PT5M")
+                + "PT30S",
+            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-initial-rpc-timeout="
+                + "PT5M",
+            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-max-rpc-timeout="
+                + "PT15M",
+            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-total-timeout="
+                + "PT10M"
+        )
         .run(ctx -> {
           LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
           RetrySettings retrySettings = client.getSettings().analyzeSentimentSettings()
               .getRetrySettings();
-          // Spring handles String to Double conversion
           assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(2);
-          // Spring converts String to java.time.Duration, but not org.threeteh.bp.Duration
-          // Option 2(a) - override setter to take argument of type java.time.Duration and convert
-          // since explicit String -> java.time.Duration is supported by Spring
+          assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(2);
           assertThat(retrySettings.getInitialRetryDelay()).isEqualTo(Duration.ofMillis(500));
-          // Option 2(b) - change property type to java.time.Duration but
-          // have getter return type org.threeten.bp.Duration
-          assertThat(retrySettings.getMaxRetryDelay()).isEqualTo(Duration.ofSeconds(5));
-          assertThat(retrySettings.getInitialRetryDelay()).isInstanceOf(Duration.class);
-          // Option 1 (WIP) - Try defining custom converter through @ConfigurationPropertiesBinding
-          // assertThat(retrySettings.getInitialRpcTimeout()).isEqualTo(Duration.ofMinutes(5));
+          assertThat(retrySettings.getMaxRetryDelay()).isEqualTo(Duration.ofSeconds(30));
+          assertThat(retrySettings.getInitialRpcTimeout()).isEqualTo(Duration.ofMinutes(5));
+          assertThat(retrySettings.getMaxRpcTimeout()).isEqualTo(Duration.ofMinutes(15));
+          assertThat(retrySettings.getTotalTimeout()).isEqualTo(Duration.ofMinutes(10));
         });
   }
 }
