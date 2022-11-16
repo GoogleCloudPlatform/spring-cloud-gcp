@@ -6,7 +6,7 @@
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>3.5.0-SNAPSHOT</version>
+	<version>${revision}</version>
 
 	<name>Spring Cloud GCP</name>
 	<description>Spring Cloud GCP</description>
@@ -36,9 +36,10 @@
 	</distributionManagement>
 
 	<properties>
+		<!-- Parent project version -->
+		<revision>3.5.0-SNAPSHOT</revision>
 
 		<!-- Dependency versions -->
-		<spring-cloud-gcp-dependencies.version>3.5.0-SNAPSHOT</spring-cloud-gcp-dependencies.version>
 		<spring-cloud-dependencies.version>2021.0.5</spring-cloud-dependencies.version>
 		<spring-boot-dependencies.version>2.7.4</spring-boot-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
@@ -83,7 +84,7 @@
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-dependencies</artifactId>
-				<version>${spring-cloud-gcp-dependencies.version}</version>
+				<version>${revision}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
