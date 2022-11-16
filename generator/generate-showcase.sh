@@ -33,23 +33,27 @@ cd .. && cd googleapis
 LOCAL_REPO="local_repository(\n    name = \\\"gapic_generator_java\\\",\n    path = \\\"..\/gapic-generator-java\/\\\",\n)"
 perl -0777 -pi -e "s/http_archive\(\n    name \= \"gapic_generator_java\"(.*?)\)/$LOCAL_REPO/s" WORKSPACE
 
+# In googleapis/repository_rules.bzl, add switch for new spring rule
+JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"@gapic_generator_java\/\/rules_java_gapic:java_gapic_spring.bzl\\\",\n    )"
+perl -0777 -pi -e "s/(rules\[\"java_gapic_library\"\] \= _switch\((.*?)\))/\$1\n$JAVA_SPRING_SWITCH/s" repository_rules.bzl
+
 # todo(emmwang): consider modifying existing BUILD.bazel? For now, this replaces showcase's BUILD.bazel file entirely
 cp -rf "$WORKING_DIR"/resources/showcase/BUILD.bazel google/showcase/v1beta1/BUILD.bazel
 
-# call bazel target - todo: separate target in future
-bazel build //google/showcase/v1beta1:showcase_java_gapic
+# call bazel target
+bazel build //google/showcase/v1beta1:showcase_java_gapic_spring
 
 cd -
 
 ## copy spring code to outside
 mkdir -p ../generated
-cp googleapis/bazel-bin/google/showcase/v1beta1/showcase_java_gapic_srcjar-spring.srcjar ../generated
+cp googleapis/bazel-bin/google/showcase/v1beta1/showcase_java_gapic_spring-spring.srcjar ../generated
 
 # unzip spring code
 cd ../generated
 # Move generated code alongside handwritten tests in showcase/src/test
-unzip showcase_java_gapic_srcjar-spring.srcjar -d showcase/
-rm -rf showcase_java_gapic_srcjar-spring.srcjar
+unzip showcase_java_gapic_spring-spring.srcjar -d showcase/
+rm -rf showcase_java_gapic_spring-spring.srcjar
 
 # override versions & names in pom.xml
 cat showcase/pom.xml
