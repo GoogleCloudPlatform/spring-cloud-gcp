@@ -28,7 +28,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
  *
  * @since 1.1
  */
-@SpringBootApplication()
+@SpringBootApplication
 @EnableJpaRepositories(basePackageClasses = [PersonRepository::class])
 @EntityScan(basePackageClasses = [Person::class])
 class Application

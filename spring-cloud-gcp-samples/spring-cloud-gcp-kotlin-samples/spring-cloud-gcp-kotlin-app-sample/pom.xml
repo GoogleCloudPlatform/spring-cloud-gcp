@@ -14,7 +14,7 @@
 	<name>Spring Cloud GCP Code Sample - Kotlin App Sample</name>
 
 	<properties>
-		<kotlin.version>1.6.21</kotlin.version>
+		<kotlin.version>1.7.20</kotlin.version>
 	</properties>
 
 	<!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
@@ -69,7 +69,7 @@
 
 		<dependency>
 			<groupId>com.google.cloud</groupId>
-			<artifactId>spring-cloud-gcp-starter-sql-mysql</artifactId>
+			<artifactId>spring-cloud-gcp-starter-sql-postgresql</artifactId>
 		</dependency>
 
 		<dependency>
@@ -79,7 +79,7 @@
 		</dependency>
 
 		<dependency>
-			<artifactId>kotlin-test</artifactId>
+			<artifactId>kotlin-test-junit</artifactId>
 			<groupId>org.jetbrains.kotlin</groupId>
 			<version>${kotlin.version}</version>
 			<scope>test</scope>
