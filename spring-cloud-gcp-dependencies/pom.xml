@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.cloud</groupId>
 		<artifactId>spring-cloud-dependencies-parent</artifactId>
-		<version>3.1.4</version>
+		<version>4.0.0-M5</version>
 		<relativePath/>
 	</parent>
 
@@ -38,16 +38,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-
-			<!-- Addresses https://tanzu.vmware.com/security/cve-2022-22963 -->
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-function-dependencies</artifactId>
-				<version>3.2.7</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			
 			<!-- Overriding Guava from libraries-bom; Spring Cloud GCP does not require Java 7 support -->
 			<dependency>
 				<groupId>com.google.guava</groupId>
@@ -319,6 +309,19 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<repositories>
+		<repository>
+			<id>spring-milestone</id>
+			<url>https://repo.spring.io/milestone</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-milestone</id>
+			<url>https://repo.spring.io/milestone</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<profiles>
 
