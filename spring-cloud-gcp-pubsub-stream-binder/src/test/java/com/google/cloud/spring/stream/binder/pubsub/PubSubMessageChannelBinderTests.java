@@ -45,7 +45,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -53,15 +52,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener;
-import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.stream.binder.Binding;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binding.BindingService;
-import org.springframework.cloud.stream.config.BinderFactoryAutoConfiguration;
-import org.springframework.cloud.stream.config.BindingServiceConfiguration;
 import org.springframework.cloud.stream.config.ConsumerEndpointCustomizer;
 import org.springframework.cloud.stream.config.ProducerMessageHandlerCustomizer;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
@@ -111,9 +106,7 @@ class PubSubMessageChannelBinderTests {
             .withConfiguration(
                 AutoConfigurations.of(
                     PubSubBinderConfiguration.class,
-                    PubSubExtendedBindingProperties.class,
-                    BinderFactoryAutoConfiguration.class,
-                    BindingServiceConfiguration.class));
+                    PubSubExtendedBindingProperties.class));
     this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
   }
 
@@ -252,11 +245,9 @@ class PubSubMessageChannelBinderTests {
     baseContext
         .withUserConfiguration(PubSubBinderTestConfig.class)
         .withPropertyValues(
-            "spring.cloud.stream.pollable-source=consumer",
+            "spring.cloud.function.definition=producer;consumer",
             "spring.cloud.stream.bindings.producer-out-0.destination=my-topic",
-            "spring.cloud.stream.bindings.producer-out-0.group=testGroup",
-            "spring.cloud.stream.bindings.consumer-in-0.destination=my-topic",
-            "spring.cloud.stream.bindings.consumer-in-0.group=testGroup"
+            "spring.cloud.stream.bindings.consumer-in-0.destination=my-topic"
         )
         .run(
             context -> {
@@ -270,7 +261,7 @@ class PubSubMessageChannelBinderTests {
               assertThat(
                       new DirectFieldAccessor(consumerBindings.get("consumer-in-0").get(0))
                           .getPropertyValue("lifecycle.beanName"))
-                  .isEqualTo("setByCustomizer:input");
+                  .isEqualTo("setByCustomizer:my-topic");
 
               @SuppressWarnings("unchecked")
               Map<String, Binding<MessageChannel>> producerBindings =
@@ -278,9 +269,9 @@ class PubSubMessageChannelBinderTests {
                       channelBindingServiceAccessor.getPropertyValue("producerBindings");
               assertThat(producerBindings).isNotEmpty();
               assertThat(
-                      new DirectFieldAccessor(producerBindings.get("output"))
+                      new DirectFieldAccessor(producerBindings.get("producer-out-0"))
                           .getPropertyValue("val$producerMessageHandler.beanName"))
-                  .isEqualTo("setByCustomizer:output");
+                  .isEqualTo("setByCustomizer:my-topic");
             });
   }
 
