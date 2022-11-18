@@ -1,0 +1,40 @@
+{
+  "properties": [
+    {
+      "name": "com.google.showcase.v1beta1.spring.auto.compliance.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud localhost:7469/Compliance components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.showcase.v1beta1.spring.auto.echo.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud localhost:7469/Echo components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.showcase.v1beta1.spring.auto.identity.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud localhost:7469/Identity components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.showcase.v1beta1.spring.auto.messaging.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud localhost:7469/Messaging components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.showcase.v1beta1.spring.auto.sequence-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud localhost:7469/SequenceService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.showcase.v1beta1.spring.auto.testing.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud localhost:7469/Testing components.",
+      "defaultValue": true
+    }
+  ]
+}

@@ -34,7 +34,7 @@ LOCAL_REPO="local_repository(\n    name = \\\"gapic_generator_java\\\",\n    pat
 perl -0777 -pi -e "s/http_archive\(\n    name \= \"gapic_generator_java\"(.*?)\)/$LOCAL_REPO/s" WORKSPACE
 
 # In googleapis/repository_rules.bzl, add switch for new spring rule
-JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"@gapic_generator_java\/\/rules_java_gapic:java_gapic_spring.bzl\\\",\n    )"
+JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"\@gapic_generator_java\/\/rules_java_gapic:java_gapic_spring.bzl\\\",\n    )"
 perl -0777 -pi -e "s/(rules\[\"java_gapic_library\"\] \= _switch\((.*?)\))/\$1\n$JAVA_SPRING_SWITCH/s" repository_rules.bzl
 
 # todo(emmwang): consider modifying existing BUILD.bazel? For now, this replaces showcase's BUILD.bazel file entirely

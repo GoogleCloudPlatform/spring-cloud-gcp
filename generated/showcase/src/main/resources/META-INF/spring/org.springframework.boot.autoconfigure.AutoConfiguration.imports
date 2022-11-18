@@ -1,0 +1,6 @@
+com.google.showcase.v1beta1.spring.ComplianceSpringAutoConfig
+com.google.showcase.v1beta1.spring.EchoSpringAutoConfig
+com.google.showcase.v1beta1.spring.IdentitySpringAutoConfig
+com.google.showcase.v1beta1.spring.MessagingSpringAutoConfig
+com.google.showcase.v1beta1.spring.SequenceServiceSpringAutoConfig
+com.google.showcase.v1beta1.spring.TestingSpringAutoConfig
