@@ -192,6 +192,7 @@ public class WebController {
   private ModelAndView getResponse(CompletableFuture<Job> loadJob, String tableName) {
     String message;
     try {
+      Job job = loadJob.get();
       message = "Successfully loaded data file to " + tableName;
     } catch (Exception e) {
       e.printStackTrace();
