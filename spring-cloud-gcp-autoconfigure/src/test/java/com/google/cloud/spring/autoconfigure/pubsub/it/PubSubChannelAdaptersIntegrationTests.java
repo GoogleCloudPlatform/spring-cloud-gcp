@@ -17,6 +17,8 @@
 package com.google.cloud.spring.autoconfigure.pubsub.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -45,7 +47,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -309,12 +310,10 @@ class PubSubChannelAdaptersIntegrationTests {
                       .receive(RECEIVE_TIMEOUT_MS);
               assertThat(message).isNotNull();
 
-              ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
-              ArgumentCaptor<Message<?>> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
               Awaitility.await()
                   .atMost(1, TimeUnit.SECONDS)
                   .untilAsserted(() ->
-                      verify(successCallback).onSuccess(stringArgumentCaptor.capture(), messageArgumentCaptor.capture()));
+                      verify(successCallback).onSuccess(anyString(), any()));
             });
   }
 
