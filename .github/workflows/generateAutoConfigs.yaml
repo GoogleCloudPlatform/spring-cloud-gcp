@@ -1,13 +1,6 @@
 name: Generate Spring Auto-Configurations
 
-on:
-  push:
-    branches:
-      - 'main'
-  # what triggers this action is yet TBD - leaving PRs and `main` pushes for now
-  pull_request:
-    types: [opened, synchronize, reopened]
-# makes pushes to PR to cancel previous workflows
+on: workflow_dispatch
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
