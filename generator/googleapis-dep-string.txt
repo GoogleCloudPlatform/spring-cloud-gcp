@@ -7,6 +7,6 @@ maven_install(
     artifacts = PROTOBUF_MAVEN_ARTIFACTS + SPRING_MAVEN_ARTIFACTS,
     generate_compat_repositories = True,
     repositories = [
-        "https://repo.maven.apache.org/maven2/,"
+        "https://repo.maven.apache.org/maven2/",
     ],
 )
