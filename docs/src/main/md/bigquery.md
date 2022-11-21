@@ -123,9 +123,9 @@ BigQueryTemplate bigQueryTemplate;
     WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
     if (!apiRes.isSuccessful()){
       List<StorageError> errors = apiRes.getErrors();
-      //TODO(developer): process the List of StorageError
+      // TODO(developer): process the List of StorageError
     }
-    //else the write process has been successful
+    // else the write process has been successful
   }
 ```
 Below is a code snippet of how to create table and then load a [newline-delimited JSON](https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json) data `InputStream` to a BigQuery table. This implementation uses the [BigQuery Storage Write API](https://cloud.google.com/bigquery/docs/write-api).
@@ -149,9 +149,9 @@ BigQueryTemplate bigQueryTemplate;
     WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
     if (!apiRes.isSuccessful()){
       List<StorageError> errors = apiRes.getErrors();
-      //TODO(developer): process the List of StorageError
+      // TODO(developer): process the List of StorageError
     }
-    //else the write process has been successful
+    // else the write process has been successful
   }
 ```
 
