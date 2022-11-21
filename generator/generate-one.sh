@@ -47,14 +47,14 @@ SPRING_RULE_NAME="    \\\"java_gapic_spring_library\\\","
 perl -0777 -pi -e "s/(load\((.*?)\"java_gapic_library\",)/\$1\n$SPRING_RULE_NAME/s" google/cloud/$client_lib_name/v1/BUILD.bazel
 # Duplicate java_gapic_library rule definition
 perl -0777 -pi -e "s/(java_gapic_library\((.*?)\))/\$1\n\n\$1/s" google/cloud/$client_lib_name/v1/BUILD.bazel
-# Update rule name to java_apic_spring_library
+# Update rule name to java_gapic_spring_library
 perl -0777 -pi -e "s/(java_gapic_library\()/java_gapic_spring_library\(/s" google/cloud/$client_lib_name/v1/BUILD.bazel
 # Update name argument to have _spring appended
 perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)name = \"(.*?)\")/java_gapic_spring_library\(\$2name = \"\$3_spring\"/s" google/cloud/$client_lib_name/v1/BUILD.bazel
 # todo: better way to remove the following unused arguments?
-perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    test_deps = \[(.*?)\],))/java_gapic_spring_library\(\$2/s" google/cloud/language/v1/BUILD.bazel
-perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    deps = \[(.*?)\],))/java_gapic_spring_library\(\$2/s" google/cloud/language/v1/BUILD.bazel
-perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    rest_numeric_enums = (.*?),))/java_gapic_spring_library\(\$2/s" google/cloud/language/v1/BUILD.bazel
+perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    test_deps = \[(.*?)\],))/java_gapic_spring_library\(\$2/s" google/cloud/$client_lib_name/v1/BUILD.bazel
+perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    deps = \[(.*?)\],))/java_gapic_spring_library\(\$2/s" google/cloud/$client_lib_name/v1/BUILD.bazel
+perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    rest_numeric_enums = (.*?),))/java_gapic_spring_library\(\$2/s" google/cloud/$client_lib_name/v1/BUILD.bazel
 
 # call bazel target
 bazel build //google/cloud/$client_lib_name/v1:"$client_lib_name"_java_gapic_spring
