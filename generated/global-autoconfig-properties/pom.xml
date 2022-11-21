@@ -4,16 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Does it make sense to add spring-cloud-gcp as parent? -->
     <parent>
-        <artifactId>spring-cloud-gcp</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>3.4.0</version>
+        <artifactId>generated-parent</artifactId>
     </parent>
 
 
-    <artifactId>shared-spring-autoconfig-properties</artifactId>
-    <name>Spring Cloud GCP - Shared Autoconfig Properties</name>
+    <artifactId>global-spring-autoconfig-properties</artifactId>
+    <name>Spring Cloud GCP - Global Autoconfig Properties</name>
     <description>Common properties for generated spring autoconfigurations</description>
 
     <properties>
