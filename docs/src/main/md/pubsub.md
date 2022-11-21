@@ -416,32 +416,14 @@ messages.forEach(
 
 `PubsubTemplate` provides the following pull methods:
 
-<table>
-<colgroup>
-<col style="width: 20%" />
-<col style="width: 80%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p><strong>pull(String subscription, Integer maxMessages, Boolean returnImmediately)</strong></p></td>
-<td><p>Pulls a number of messages from a subscription, allowing for the retry settings to be configured. Any messages received by <code>pull()</code> are not automatically acknowledged. See <a href="#_acknowledging_messages">Acknowledging messages</a>.</p>
-<p>The <code>maxMessages</code> parameter is the maximum limit of how many messages to pull from a subscription in a single call; this value <strong>must</strong> be greater than 0. You may omit this parameter by passing in <code>null</code>; this means there will be no limit on the number of messages pulled (<code>maxMessages</code> will be <code>Integer.MAX_INTEGER</code>).</p>
-<p>If <code>returnImmediately</code> is <code>true</code>, the system will respond immediately even if it there are no messages available to return in the <code>Pull</code> response. Otherwise, the system may wait (for a bounded amount of time) until at least one message is available, rather than returning no messages.</p></td>
-</tr>
-<tr class="even">
-<td><p><strong>pullAndAck</strong></p></td>
-<td><p>Works the same as the <code>pull</code> method and, additionally, acknowledges all received messages.</p></td>
-</tr>
-<tr class="odd">
-<td><p><strong>pullNext</strong></p></td>
-<td><p>Allows for a single message to be pulled and automatically acknowledged from a subscription.</p></td>
-</tr>
-<tr class="even">
-<td><p><strong>pullAndConvert</strong></p></td>
-<td><p>Works the same as the <code>pull</code> method and, additionally, converts the Pub/Sub binary payload to an object of the desired type, using the converter configured in the template.</p></td>
-</tr>
-</tbody>
-</table>
+| Method                                                                          | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **pull\(String subscription, Integer maxMessages, Boolean returnImmediately\)** | Pulls a number of messages from a subscription, allowing for the retry settings to be configured\. Any messages received by `pull()` are not automatically acknowledged\. See Acknowledging messages section\. <br/>The `maxMessages` parameter is the maximum limit of how many messages to pull from a subscription in a single call; this value must be greater than 0\. You may omit this parameter by passing in `null`; this means there will be no limit on the number of messages pulled \(`maxMessages` will be `Integer.MAX_INTEGER`)\. <br/> If `returnImmediately` is `true`, the system will respond immediately even if it there are no messages available to return in the `Pull` response\. Otherwise, the system may wait \(for a bounded amount of time\) until at least one message is available, rather than returning no messages\. |
+| **pullAndAck**                                                                  | Works the same as the `pull` method and, additionally, acknowledges all received messages\.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| **pullNext**                                                                    | Allows for a single message to be pulled and automatically acknowledged from a subscription\.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| **pullAndConvert**                                                              | Works the same as the `pull` method and, additionally, converts the Pub/Sub binary payload to an object of the desired type, using the converter configured in the template\.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+
+
 
 <div class="warning">
 
@@ -453,6 +435,8 @@ topic. Therefore, we recommend setting `returnImmediately` to `false`,
 or using `subscribe` methods from the previous section.
 
 </div>
+
+
 
 ##### Acknowledging messages
 

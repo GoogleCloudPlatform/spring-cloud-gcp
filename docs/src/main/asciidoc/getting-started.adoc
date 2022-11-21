@@ -56,8 +56,6 @@ dependencies {
 }
 ----
 
-See the <<README.adoc, sections>> in the README for selecting an available version and Maven repository.
-
 In the following sections, it will be assumed you are using the Spring Cloud GCP BOM and the dependency snippets will not contain versions.
 
 ==== Starter Dependencies
@@ -69,6 +67,8 @@ For example, if you wish to write a Spring application with Cloud Pub/Sub, you w
 You do *not* need to include the underlying `spring-cloud-gcp-pubsub` dependency, because the `starter` dependency includes it.
 
 A summary of these artifacts are provided below.
+
+Aside from these modules, we also provide additional starters with auto-configurations to various Google Client Libraries. Refer for the full list https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/generated/README.md[here].
 
 |===
 | Spring Cloud GCP Starter | Description | Maven Artifact Name

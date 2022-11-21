@@ -303,7 +303,7 @@ public class Album {
 We have to define the two converters:
 
 ``` java
- //Converter to write custom Album type
+    // Converter to write custom Album type
     static final Converter<Album, String> ALBUM_STRING_CONVERTER =
             new Converter<Album, String>() {
                 @Override
@@ -312,7 +312,7 @@ We have to define the two converters:
                 }
             };
 
-    //Converters to read custom Album type
+    // Converters to read custom Album type
     static final Converter<String, Album> STRING_ALBUM_CONVERTER =
             new Converter<String, Album>() {
                 @Override
@@ -971,10 +971,10 @@ map.put("field3", 3L);
 
 keyForMap = datastoreTemplate.createKey("kindName", "id");
 
-//write a map
+// write a map
 datastoreTemplate.writeMap(keyForMap, map);
 
-//read a map
+// read a map
 Map<String, Long> loadedMap = datastoreTemplate.findByIdAsMap(keyForMap, Long.class);
 ```
 
@@ -1030,10 +1030,10 @@ supported by your configured custom converters.
 public interface TradeRepository extends DatastoreRepository<Trade, String[]> {
   List<Trader> findByAction(String action);
 
-  //throws an exception if no results
+  // throws an exception if no results
   Trader findOneByAction(String action);
 
-  //because of the annotation, returns null if no results
+  // because of the annotation, returns null if no results
   @Nullable
   Trader getByAction(String action);
 

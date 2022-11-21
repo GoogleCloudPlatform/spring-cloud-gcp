@@ -116,9 +116,9 @@ BigQueryTemplate bigQueryTemplate;
     WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
     if (!apiRes.isSuccessful()){
       List<StorageError> errors = apiRes.getErrors();
-      //TODO(developer): process the List of StorageError
+      // TODO(developer): process the List of StorageError
     }
-    //else the write process has been successful
+    // else the write process has been successful
   }
 ----
 
@@ -144,9 +144,9 @@ BigQueryTemplate bigQueryTemplate;
     WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
     if (!apiRes.isSuccessful()){
       List<StorageError> errors = apiRes.getErrors();
-      //TODO(developer): process the List of StorageError
+      // TODO(developer): process the List of StorageError
     }
-    //else the write process has been successful
+    // else the write process has been successful
   }
 ----
 
