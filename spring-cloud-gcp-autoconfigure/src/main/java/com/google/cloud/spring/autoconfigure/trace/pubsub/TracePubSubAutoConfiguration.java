@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
-import brave.CurrentSpanCustomizer;
-import brave.SpanCustomizer;
 import brave.Tracing;
 import brave.messaging.MessagingTracing;
 import com.google.cloud.pubsub.v1.Publisher;
@@ -64,12 +62,6 @@ class TracePubSubAutoConfiguration {
 
     return (Publisher.Builder publisherBuilder, String topic) ->
         publisherBuilder.setTransform(msg -> helper.instrumentMessage(msg, topic));
-  }
-
-  @Bean
-  @ConditionalOnMissingBean
-  public SpanCustomizer spanCustomizer(Tracing tracing) {
-    return CurrentSpanCustomizer.create(tracing);
   }
 
   @Bean
