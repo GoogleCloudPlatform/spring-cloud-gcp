@@ -76,7 +76,6 @@ cat "$client_lib_name"/pom.xml
 sed -i 's/{{client-library-group-id}}/'"$client_lib_groupid"'/' "$client_lib_name"/pom.xml
 sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' "$client_lib_name"/pom.xml
 sed -i 's/{{client-library-version}}/'"$version"'/' "$client_lib_name"/pom.xml
-sed -i 's/{{starter-version}}/0.0.1-SNAPSHOT/' "$client_lib_name"/pom.xml
 
 # add module to parent, adds after the `<modules>` line, checks for existence
 xmllint --debug --nsclean --xpath  "//*[local-name()='module']/text()" pom.xml | sort | uniq | grep -q $client_lib_name
@@ -92,6 +91,10 @@ else
   {(grep -vw ".*:.*" README.md);(grep ".*:.*" README.md| sort | uniq)} > tmpfile && mv tmpfile README.md
 
 fi
+
+# run google-java-format on generated code
+# mvn fmt:format
+./../mvnw fmt:format
 
 # remove downloaded repos
 cd ../generator
