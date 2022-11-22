@@ -6,7 +6,7 @@
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>3.5.0-SNAPSHOT</version>
+	<version>${revision}</version>
 
 	<name>Spring Cloud GCP</name>
 	<description>Spring Cloud GCP</description>
@@ -36,7 +36,8 @@
 	</distributionManagement>
 
 	<properties>
-
+		<!-- Parent project version -->
+		<revision>3.5.0-SNAPSHOT</revision>
 		<!-- Dependency versions -->
 		<spring-cloud-dependencies.version>2021.0.5</spring-cloud-dependencies.version>
 		<spring-boot-dependencies.version>2.7.4</spring-boot-dependencies.version>
