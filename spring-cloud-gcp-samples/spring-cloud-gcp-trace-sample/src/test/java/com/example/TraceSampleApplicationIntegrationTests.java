@@ -55,12 +55,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -138,7 +138,7 @@ class TraceSampleApplicationIntegrationTests {
 
     // Create a new RestTemplate here because the auto-wired instance has built-in instrumentation
     // which interferes with us setting the 'x-cloud-trace-context' header.
-    this.testRestTemplate = new TestRestTemplate();
+    this.testRestTemplate = new TestRestTemplate(new RestTemplateBuilder());
 
     this.logClient =
         LoggingOptions.newBuilder()
