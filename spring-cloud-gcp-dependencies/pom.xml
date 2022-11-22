@@ -11,7 +11,7 @@
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-dependencies</artifactId>
-	<version>${revision}</version>
+	<version>3.5.0-SNAPSHOT</version>
 
 	<name>Spring Cloud GCP Dependencies</name>
 	<description>Spring Cloud GCP Dependencies</description>
