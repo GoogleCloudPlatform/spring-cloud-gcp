@@ -711,7 +711,7 @@
 								</goals>
 								<configuration>
 									<updatePomFile>true</updatePomFile>
-									<flattenMode>oss</flattenMode>
+									<flattenMode>resolveCiFriendliesOnly</flattenMode>
 									<pomElements>
 										<parent>expand</parent>
 										<distributionManagement>remove</distributionManagement>
