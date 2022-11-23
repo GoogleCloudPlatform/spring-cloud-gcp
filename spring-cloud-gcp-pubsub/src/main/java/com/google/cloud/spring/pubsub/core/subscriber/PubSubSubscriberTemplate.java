@@ -237,12 +237,12 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
     return messages.stream()
         .map(
             message ->
-                new PulledAcknowledgeablePubsubMessage(
+                (AcknowledgeablePubsubMessage) new PulledAcknowledgeablePubsubMessage(
                     PubSubSubscriptionUtils.toProjectSubscriptionName(
                         subscriptionId, this.subscriberFactory.getProjectId()),
                     message.getMessage(),
                     message.getAckId()))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   @Override
@@ -288,17 +288,17 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
     return completableFuture;
   }
 
-  private <T>
-      List<ConvertedAcknowledgeablePubsubMessage<T>> toConvertedAcknowledgeablePubsubMessages(
-          Class<T> payloadType, List<AcknowledgeablePubsubMessage> ackableMessages) {
+  private <T> List<ConvertedAcknowledgeablePubsubMessage<T>> toConvertedAcknowledgeablePubsubMessages(
+      Class<T> payloadType, List<AcknowledgeablePubsubMessage> ackableMessages) {
     return ackableMessages.stream()
         .map(
             m ->
-                new ConvertedPulledAcknowledgeablePubsubMessage<>(
-                    m,
-                    this.pubSubMessageConverter.fromPubSubMessage(
-                        m.getPubsubMessage(), payloadType)))
-        .collect(Collectors.toList());
+                (ConvertedAcknowledgeablePubsubMessage<T>)
+                    new ConvertedPulledAcknowledgeablePubsubMessage<>(
+                        m,
+                        this.pubSubMessageConverter
+                            .fromPubSubMessage(m.getPubsubMessage(), payloadType)))
+        .toList();
   }
 
   @Override

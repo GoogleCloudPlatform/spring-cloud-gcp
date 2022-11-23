@@ -36,13 +36,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.data.mapping.model.EntityInstantiator;
 import org.springframework.data.mapping.model.EntityInstantiators;
 import org.springframework.data.mapping.model.ParameterValueProvider;
 import org.springframework.data.mapping.model.PersistentEntityParameterValueProvider;
 import org.springframework.data.util.TypeInformation;
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
 /**
@@ -218,7 +218,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
 
   @Override
   @SuppressWarnings("unchecked")
-  public void write(Object source, BaseEntity.Builder sink) {
+  public void write(Object source, @NonNull BaseEntity.Builder sink) {
     DatastorePersistentEntity<?> persistentEntity =
         this.mappingContext.getDatastorePersistentEntity(source.getClass());
 
@@ -227,7 +227,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
     if (!discriminationValues.isEmpty() || discriminationFieldName != null) {
       sink.set(
           discriminationFieldName,
-          discriminationValues.stream().map(StringValue::of).collect(Collectors.toList()));
+          discriminationValues.stream().map(StringValue::of).toList());
     }
     PersistentPropertyAccessor accessor = persistentEntity.getPropertyAccessor(source);
     persistentEntity.doWithColumnBackedProperties(
@@ -270,7 +270,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
       return ListValue.of(
           (List)
               ((ListValue) convertedVal)
-                  .get().stream().map(this::setExcludeFromIndexes).collect(Collectors.toList()));
+                  .get().stream().map(this::setExcludeFromIndexes).toList());
     } else {
       return convertedVal.toBuilder().setExcludeFromIndexes(true).build();
     }

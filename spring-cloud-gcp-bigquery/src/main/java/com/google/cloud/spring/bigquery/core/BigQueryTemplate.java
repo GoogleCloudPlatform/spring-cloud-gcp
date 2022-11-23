@@ -96,7 +96,7 @@ public class BigQueryTemplate implements BigQueryOperations {
    * @deprecated As of release 3.3.1, use
    *     BigQueryTemplate(BigQuery,BigQueryWriteClient,Map,TaskScheduler) instead
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public BigQueryTemplate(BigQuery bigQuery, String datasetName) {
     this(bigQuery, datasetName, new DefaultManagedTaskScheduler());
   }
@@ -111,7 +111,7 @@ public class BigQueryTemplate implements BigQueryOperations {
    * @deprecated As of release 3.3.1, use
    *     BigQueryTemplate(BigQuery,BigQueryWriteClient,Map,TaskScheduler) instead
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public BigQueryTemplate(BigQuery bigQuery, String datasetName, TaskScheduler taskScheduler) {
     Assert.notNull(bigQuery, "BigQuery client object must not be null.");
     Assert.notNull(datasetName, "Dataset name must not be null");

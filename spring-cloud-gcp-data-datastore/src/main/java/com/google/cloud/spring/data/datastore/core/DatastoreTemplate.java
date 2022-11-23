@@ -249,7 +249,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
   }
 
   private <T> List<T> findAllById(Set<Key> keys, Class<T> entityClass, ReadContext context) {
-    List<Key> missingKeys = keys.stream().filter(context::notCached).collect(Collectors.toList());
+    List<Key> missingKeys = keys.stream().filter(context::notCached).toList();
 
     if (!missingKeys.isEmpty()) {
       List<Entity> entities = getDatastoreReadWriter().fetch(missingKeys.toArray(new Key[] {}));
@@ -305,8 +305,8 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
       return query;
     }
     Cursor cursor = null;
-    if (pageable instanceof DatastorePageable) {
-      cursor = ((DatastorePageable) pageable).toCursor();
+    if (pageable instanceof DatastorePageable datastorePageable) {
+      cursor = datastorePageable.toCursor();
     }
     StructuredQuery.Builder builder = query.toBuilder();
     if (cursor != null) {
@@ -561,7 +561,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
                 List<KeyValue> keyValues =
                     StreamSupport.stream((iterableVal).spliterator(), false)
                         .map(o -> KeyValue.of(this.getKey(o, false)))
-                        .collect(Collectors.toList());
+                        .toList();
                 value = ListValue.of(keyValues);
 
               } else {
@@ -656,7 +656,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
     return keys.stream()
         .map(key -> convertEntityResolveDescendantsAndReferences(entityClass, key, context))
         .filter(Objects::nonNull)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private <T> T convertEntityResolveDescendantsAndReferences(
