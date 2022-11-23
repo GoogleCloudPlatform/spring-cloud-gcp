@@ -711,10 +711,10 @@
 								</goals>
 								<configuration>
 									<updatePomFile>true</updatePomFile>
-									<flattenMode>resolveCiFriendliesOnly</flattenMode>
+									<flattenMode>oss</flattenMode>
 									<pomElements>
+										<dependencyManagement>resolve</dependencyManagement>
 										<parent>expand</parent>
-										<distributionManagement>remove</distributionManagement>
 										<repositories>remove</repositories>
 									</pomElements>
 								</configuration>
