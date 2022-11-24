@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>global-spring-autoconfig-properties</artifactId>
+    <packaging>pom</packaging>
     <name>Spring Cloud GCP - Global Autoconfig Properties</name>
     <description>Common properties for generated spring autoconfigurations</description>
 
