@@ -10,13 +10,8 @@
         <version>3.5.0-SNAPSHOT</version>
     </parent>
 
-
     <artifactId>global-spring-autoconfig-properties</artifactId>
     <name>Spring Cloud GCP - Global Autoconfig Properties</name>
     <description>Common properties for generated spring autoconfigurations</description>
 
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-    </properties>
 </project>

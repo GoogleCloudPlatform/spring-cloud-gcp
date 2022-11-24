@@ -13,5 +13,6 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>global-autoconfig-properties</module>
   </modules>
 </project>
