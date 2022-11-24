@@ -5,7 +5,7 @@ import com.google.cloud.spring.core.CredentialsSupplier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-@ConfigurationProperties("com.google.cloud.global")
+@ConfigurationProperties("com.google.cloud.spring.global")
 public class GlobalProperties implements CredentialsSupplier {
 
     // Overrides the GCP OAuth2 credentials specified in the Core module.
