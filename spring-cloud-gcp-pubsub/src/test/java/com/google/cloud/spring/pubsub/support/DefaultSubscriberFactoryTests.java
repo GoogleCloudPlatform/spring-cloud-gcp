@@ -718,23 +718,6 @@ class DefaultSubscriberFactoryTests {
   }
 
   @Test
-  void createSubscriberStubSucceeds_noSubscriptionNameAndNewConfiguration() {
-
-    when(this.mockTransportChannel.getEmptyCallContext()).thenReturn(this.mockApiCallContext);
-    when(this.mockApiCallContext.withCredentials(any())).thenReturn(this.mockApiCallContext);
-    when(this.mockApiCallContext.withTransportChannel(any())).thenReturn(this.mockApiCallContext);
-
-    GcpProjectIdProvider projectIdProvider = () -> "project";
-    DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
-    factory.setChannelProvider(FixedTransportChannelProvider.create(this.mockTransportChannel));
-    factory.setCredentialsProvider(() -> NoCredentials.getInstance());
-
-    SubscriberStub stub = factory.createSubscriberStub();
-    assertThat(stub.isShutdown()).isFalse();
-  }
-
-  @Test
   void createSubscriberStubSucceeds() {
 
     when(this.mockTransportChannel.getEmptyCallContext()).thenReturn(this.mockApiCallContext);

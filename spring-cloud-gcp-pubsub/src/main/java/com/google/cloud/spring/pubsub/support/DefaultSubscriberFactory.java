@@ -350,15 +350,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   }
 
   @Override
-  public SubscriberStub createSubscriberStub() {
-    try {
-      return GrpcSubscriberStub.create(buildGlobalSubscriberStubSettings());
-    } catch (IOException ex) {
-      throw new PubSubException("Error creating the SubscriberStub", ex);
-    }
-  }
-
-  @Override
   public SubscriberStub createSubscriberStub(String subscriptionName) {
     try {
       return GrpcSubscriberStub.create(buildSubscriberStubSettings(subscriptionName));
