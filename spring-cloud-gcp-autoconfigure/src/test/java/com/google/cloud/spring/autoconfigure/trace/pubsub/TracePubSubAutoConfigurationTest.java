@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
@@ -60,7 +61,8 @@ class TracePubSubAutoConfigurationTest {
                     TracePubSubAutoConfiguration.class,
                     StackdriverTraceAutoConfiguration.class,
                     GcpContextAutoConfiguration.class,
-                    RefreshAutoConfiguration.class))
+                    RefreshAutoConfiguration.class,
+                    ObservationAutoConfiguration.class))
             .withUserConfiguration(MockConfiguration.class)
             .withBean(
                 StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
