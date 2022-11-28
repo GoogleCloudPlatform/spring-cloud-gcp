@@ -22,6 +22,8 @@ import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
+import io.micrometer.observation.ObservationRegistry;
+import io.micrometer.observation.aop.ObservedAspect;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -68,5 +70,14 @@ class TracePubSubAutoConfiguration {
   @ConditionalOnMissingBean
   public MessagingTracing messagingTracing(Tracing tracing) {
     return MessagingTracing.create(tracing);
+  }
+
+  // To have the @Observed support we need to register this aspect
+  // Refers to https://spring.io/blog/2022/10/12/observability-with-spring-boot-3
+  // for more info.
+  @Bean
+  @ConditionalOnMissingBean
+  ObservedAspect observedAspect(ObservationRegistry observationRegistry) {
+    return new ObservedAspect(observationRegistry);
   }
 }
