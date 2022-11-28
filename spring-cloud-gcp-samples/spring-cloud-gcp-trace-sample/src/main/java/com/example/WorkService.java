@@ -16,9 +16,12 @@
 
 package com.example;
 
+import brave.Span;
+import brave.Tracer;
+import brave.Tracing;
+import brave.propagation.TraceContext;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
-import io.micrometer.tracing.annotation.NewSpan;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,33 +46,47 @@ public class WorkService {
 
   private final MessageChannel pubsubOutputChannel;
 
+  private final Tracing tracing;
+
+  private final Tracer tracer;
+
   public WorkService(
       RestTemplate restTemplate,
       PubSubTemplate pubSubTemplate,
-      MessageChannel pubsubOutputChannel) {
+      MessageChannel pubsubOutputChannel,
+      Tracing tracing,
+      Tracer tracer) {
     this.restTemplate = restTemplate;
     this.pubSubTemplate = pubSubTemplate;
     this.pubsubOutputChannel = pubsubOutputChannel;
+    this.tracing = tracing;
+    this.tracer = tracer;
   }
 
-  @NewSpan
   public void visitMeetEndpoint(String meetUrl) {
+    TraceContext context = tracing.currentTraceContext().get();
+    Span span = tracer.newChild(context).name("visit-meet-endpoint").start();
     LOGGER.info("starting busy work");
     for (int i = 0; i < 3; i++) {
       this.restTemplate.getForObject(meetUrl, String.class);
     }
     LOGGER.info("finished busy work");
+    span.finish();
   }
 
-  @NewSpan
   public void sendMessageSpringIntegration(String text) throws MessagingException {
+    TraceContext context = tracing.currentTraceContext().get();
+    Span span = tracer.newChild(context).name("send-message-spring-integration").start();
     final Message<?> message =
         MessageBuilder.withPayload(text).setHeader(GcpPubSubHeaders.TOPIC, sampleTopic).build();
     pubsubOutputChannel.send(message);
+    span.finish();
   }
 
-  @NewSpan
   public void sendMessagePubSubTemplate(String text) throws MessagingException {
+    TraceContext context = tracing.currentTraceContext().get();
+    Span span = tracer.newChild(context).name("send-message-pub-sub-template").start();
     pubSubTemplate.publish(sampleTopic, text);
+    span.finish();
   }
 }

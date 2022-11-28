@@ -202,16 +202,11 @@ class TraceSampleApplicationIntegrationTests {
 
               assertThat(trace.getTraceId()).isEqualTo(uuidString);
               // The 16 expected spans are:
-              // get /, visit-meet-endpoint, get, get /meet, get, get /meet, get, get /meet,
+              // http get /, visit-meet-endpoint, http get, http get /meet, http get,
+              // http get /meet, http get, http get /meet,
               // send-message-spring-integration, publish, send-message-pub-sub-template, publish,
               // next-message, on-message, next-message, on-message
 
-              // One of the next problems is that the spans no longer have the same names as before.
-              // 14:41:07.857 [awaitility-thread] INFO  c.e.TraceSampleApplicationIntegrationTests -
-              // Found trace! 2f732b09b8e94bcc8d9c4db2ccefafcb with 11 spans ([http get,
-              // messagesender.serviceactivator receive, messagesender receive, publish, publish,
-              // next-message, on-message, application.messagereceiver.serviceactivator receive,
-              // next-message, on-message, application.messagereceiver.serviceactivator receive]).
               assertThat(trace.getSpansCount()).isGreaterThanOrEqualTo(16);
               log.debug("Trace spans match.");
 
@@ -222,10 +217,10 @@ class TraceSampleApplicationIntegrationTests {
 
               assertThat(trace.getSpansList().stream().map(TraceSpan::getName).distinct())
                   .containsExactly(
-                      "get /",
+                      "http get /",
                       "visit-meet-endpoint",
-                      "get",
-                      "get /meet",
+                      "http get",
+                      "http get /meet",
                       "send-message-spring-integration",
                       "publish",
                       "send-message-pub-sub-template",
