@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.trace.sleuth;
+package com.google.cloud.spring.autoconfigure.trace;
 
 import brave.SpanCustomizer;
 import brave.http.HttpRequest;
@@ -25,8 +25,6 @@ import java.net.URI;
 
 /**
  * An {@link HttpRequestParser} that fills information for Stackdriver Trace.
- *
- * <p>Based on {@code org.springframework.cloud.sleuth.instrument.web.SleuthHttpClientParser}.
  */
 public class StackdriverHttpRequestParser implements HttpRequestParser {
 
