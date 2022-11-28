@@ -44,10 +44,9 @@
 		<java-cfenv.version>2.4.1</java-cfenv.version>
 		<spring-native.version>0.10.5</spring-native.version>
 		<micrometer-tracing.verison>1.0.0-RC1</micrometer-tracing.verison>
-		<spring-cloud-sleuth.version>3.1.4</spring-cloud-sleuth.version>
 
 		<!-- Plugin versions -->
-		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 		<maven-failsafe-plugin.version>3.0.0-M7</maven-failsafe-plugin.version>
 		<maven-flatten-plugin.version>1.3.0</maven-flatten-plugin.version>
@@ -502,7 +501,7 @@
 				</pluginManagement>
 			</build>
 		</profile>
-		<!-- Error prone; JDK 8 requires a different configuration than 9+ -->
+
 		<profile>
 			<id>errorprone_java_9_and_up</id>
 			<activation>
@@ -513,7 +512,7 @@
 					<plugins>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-compiler-plugin</artifactId>
+							<artifactId>${maven-compiler-plugin.version}</artifactId>
 							<version>3.10.1</version>
 							<configuration>
 								<source>${maven.compiler.source}</source>
@@ -544,41 +543,6 @@
 									</path>
 								</annotationProcessorPaths>
 							</configuration>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-			</build>
-		</profile>
-
-		<profile>
-			<id>errorprone_java8</id>
-			<activation>
-				<jdk>1.8</jdk>
-			</activation>
-			<properties>
-				<javac.version>9+181-r4173-1</javac.version>
-			</properties>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<artifactId>maven-compiler-plugin</artifactId>
-							<version>3.10.1</version>
-							<configuration>
-								<fork>true</fork>
-								<compilerArgs combine.children="append">
-									<arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
-									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
-									<arg>-parameters</arg>
-								</compilerArgs>
-							</configuration>
-							<dependencies>
-								<dependency>
-									<groupId>com.google.errorprone</groupId>
-									<artifactId>error_prone_core</artifactId>
-									<version>${errorprone.version}</version>
-								</dependency>
-							</dependencies>
 						</plugin>
 					</plugins>
 				</pluginManagement>
