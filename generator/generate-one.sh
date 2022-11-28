@@ -9,13 +9,14 @@
 
 # by default, do not download repos
 download_repos=0
-while getopts c:v:i:g:d: flag
+while getopts c:v:i:g:d:p: flag
 do
     case "${flag}" in
         c) client_lib_name=${OPTARG};;
         v) version=${OPTARG};;
         i) client_lib_artifactid=${OPTARG};;
         g) client_lib_groupid=${OPTARG};;
+        p) parent_version=${OPTARG};;
         d) download_repos=1;;
     esac
 done
@@ -23,6 +24,7 @@ echo "Client Library Name: $client_lib_name";
 echo "Client Library Version: $version";
 echo "Client Library GroupId: $client_lib_groupid";
 echo "Client Library ArtifactId: $client_lib_artifactid";
+echo "Parent Pom Version: $parent_version";
 
 starter_artifactid="$client_lib_artifactid-spring-starter"
 
@@ -76,7 +78,7 @@ cat "$client_lib_name"/pom.xml
 sed -i 's/{{client-library-group-id}}/'"$client_lib_groupid"'/' "$client_lib_name"/pom.xml
 sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' "$client_lib_name"/pom.xml
 sed -i 's/{{client-library-version}}/'"$version"'/' "$client_lib_name"/pom.xml
-sed -i 's/{{starter-version}}/0.0.1-SNAPSHOT/' "$client_lib_name"/pom.xml
+sed -i 's/{{parent-version}}/'"$parent_version"'/' "$client_lib_name"/pom.xml
 
 # add module to parent, adds after the `<modules>` line, checks for existence
 xmllint --debug --nsclean --xpath  "//*[local-name()='module']/text()" pom.xml | sort | uniq | grep -q $client_lib_name
