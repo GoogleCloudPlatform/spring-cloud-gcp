@@ -95,6 +95,9 @@ else
 
 fi
 
+# run google-java-format on generated code
+./../mvnw fmt:format
+
 # remove downloaded repos
 cd ../generator
 if [[ $download_repos -eq 1 ]]; then
