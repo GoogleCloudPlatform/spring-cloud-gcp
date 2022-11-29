@@ -296,21 +296,6 @@ public class PubSubConfiguration {
    * and subscription-specific properties are set. If subscription-specific settings are not set
    * then the global settings are picked.
    *
-   * @param subscriptionName subscription name
-   * @param projectId project id
-   * @return retry settings
-   * @deprecated Use {{@link #computeSubscriberRetrySettings(ProjectSubscriptionName)}}
-   */
-  @Deprecated
-  public Retry computeSubscriberRetrySettings(String subscriptionName, String projectId) {
-    return computeSubscriberRetrySettings(ProjectSubscriptionName.of(projectId, subscriptionName));
-  }
-
-  /**
-   * Computes the retry settings. The subscription-specific property takes precedence if both global
-   * and subscription-specific properties are set. If subscription-specific settings are not set
-   * then the global settings are picked.
-   *
    * @param projectSubscriptionName The fully qualified subscription name
    * @return retry settings
    */

@@ -385,7 +385,8 @@ class PubSubConfigurationTests {
     pubSubConfiguration.initialize("projectId");
 
     PubSubConfiguration.Retry result =
-        pubSubConfiguration.computeSubscriberRetrySettings("subscription-name", "projectId");
+        pubSubConfiguration.computeSubscriberRetrySettings(
+            ProjectSubscriptionName.of("projectId", "subscription-name"));
 
     assertThat(result.getTotalTimeoutSeconds()).isEqualTo(10L);
     assertThat(result.getInitialRetryDelaySeconds()).isEqualTo(15L);
@@ -415,7 +416,8 @@ class PubSubConfigurationTests {
     pubSubConfiguration.initialize("projectId");
 
     PubSubConfiguration.Retry result =
-        pubSubConfiguration.computeSubscriberRetrySettings("subscription-name", "projectId");
+        pubSubConfiguration.computeSubscriberRetrySettings(
+            ProjectSubscriptionName.of("projectId", "subscription-name"));
 
     assertThat(result.getTotalTimeoutSeconds()).isEqualTo(10L);
     assertThat(result.getInitialRetryDelaySeconds()).isEqualTo(15L);

@@ -775,7 +775,7 @@ class GcpPubSubAutoConfigurationTests {
               GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
               PubSubConfiguration.Retry retrySettings =
                   gcpPubSubProperties.computeSubscriberRetrySettings(
-                      "subscription-name", projectIdProvider.getProjectId());
+                      ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name"));
               assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(1L);
               assertThat(retrySettings.getInitialRetryDelaySeconds()).isEqualTo(2L);
               assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(3);
@@ -825,8 +825,7 @@ class GcpPubSubAutoConfigurationTests {
               GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
               PubSubConfiguration.Retry retrySettings =
                   gcpPubSubProperties.computeSubscriberRetrySettings(
-                      "subscription-name", projectIdProvider.getProjectId());
-
+                      ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name"));
               assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(1L);
               assertThat(retrySettings.getInitialRetryDelaySeconds()).isEqualTo(2L);
               assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(3);
@@ -892,7 +891,7 @@ class GcpPubSubAutoConfigurationTests {
               // property set
               PubSubConfiguration.Retry retrySettings =
                   gcpPubSubProperties.computeSubscriberRetrySettings(
-                      "subscription-name", projectIdProvider.getProjectId());
+                      ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name"));
               assertThat(gcpPubSubProperties.getFullyQualifiedSubscriberProperties())
                   .containsKey(ProjectSubscriptionName.parse(
                       "projects/fake project/subscriptions/subscription-name"));
@@ -987,8 +986,7 @@ class GcpPubSubAutoConfigurationTests {
 
               PubSubConfiguration.Retry retrySettings =
                   gcpPubSubProperties.computeSubscriberRetrySettings(
-                      "subscription-name", projectIdProvider.getProjectId());
-
+                      ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name"));
               assertThat(retrySettings.getTotalTimeoutSeconds()).isEqualTo(10L);
               assertThat(retrySettings.getInitialRetryDelaySeconds()).isEqualTo(10L);
               assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(10);
@@ -1037,7 +1035,7 @@ class GcpPubSubAutoConfigurationTests {
               GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
               PubSubConfiguration.Retry retry =
                   gcpPubSubProperties.computeSubscriberRetrySettings(
-                      "subscription-name", projectIdProvider.getProjectId());
+                      ProjectSubscriptionName.of(projectIdProvider.getProjectId(), "subscription-name"));
               assertThat(retry.getTotalTimeoutSeconds()).isEqualTo(10L);
               assertThat(retry.getInitialRetryDelaySeconds()).isEqualTo(2L);
               assertThat(retry.getRetryDelayMultiplier()).isEqualTo(3);
