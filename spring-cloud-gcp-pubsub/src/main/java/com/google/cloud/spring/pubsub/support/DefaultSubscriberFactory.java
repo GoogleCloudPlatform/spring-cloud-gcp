@@ -93,18 +93,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
   private Code[] retryableCodes;
 
-  /**
-   * Default {@link DefaultSubscriberFactory} constructor.
-   *
-   * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
-   * @deprecated Use the new {@link DefaultSubscriberFactory
-   *     (GcpProjectIdProvider,PubSubConfiguration)} instead
-   */
-  @Deprecated
-  public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
-    this(projectIdProvider, getBlankConfiguration(projectIdProvider));
-  }
-
   private static PubSubConfiguration getBlankConfiguration(GcpProjectIdProvider projectIdProvider) {
     if (projectIdProvider == null) {
       return null;

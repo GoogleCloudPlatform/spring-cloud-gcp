@@ -84,7 +84,7 @@ class DefaultSubscriberFactoryTests {
 
   @Test
   void testNewSubscriber() {
-    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust");
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
 
     Subscriber subscriber = factory.createSubscriber("midnight cowboy", (message, consumer) -> {});
@@ -117,7 +117,7 @@ class DefaultSubscriberFactoryTests {
   @Test
   void testNewDefaultSubscriberFactory_nullProjectProvider() {
 
-    assertThatThrownBy(() -> new DefaultSubscriberFactory(null))
+    assertThatThrownBy(() -> new DefaultSubscriberFactory(null, pubSubConfig))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("The project ID provider can't be null.");
   }
@@ -125,7 +125,7 @@ class DefaultSubscriberFactoryTests {
   @Test
   void testNewDefaultSubscriberFactory_nullProject() {
 
-    assertThatThrownBy(() -> new DefaultSubscriberFactory(() -> null))
+    assertThatThrownBy(() -> new DefaultSubscriberFactory(() -> null, pubSubConfig))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("The project ID can't be null or empty.");
 
@@ -133,7 +133,7 @@ class DefaultSubscriberFactoryTests {
 
   @Test
   void testCreatePullRequest_greaterThanZeroMaxMessages() {
-    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project");
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
 
     assertThatThrownBy(() -> factory.createPullRequest("test", -1, true))
@@ -143,7 +143,7 @@ class DefaultSubscriberFactoryTests {
 
   @Test
   void testCreatePullRequest_nonNullMaxMessages() {
-    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project");
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
 
     PullRequest request = factory.createPullRequest("test", null, true);
@@ -728,7 +728,7 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
     factory.setChannelProvider(FixedTransportChannelProvider.create(this.mockTransportChannel));
-    factory.setCredentialsProvider(() -> NoCredentials.getInstance());
+    factory.setCredentialsProvider(NoCredentials::getInstance);
 
     SubscriberStub stub = factory.createSubscriberStub("unusedSubscription");
     assertThat(stub.isShutdown()).isFalse();
@@ -758,7 +758,7 @@ class DefaultSubscriberFactoryTests {
 
     when(healthTrackerRegistry.isTracked(subscriptionName)).thenReturn(true);
 
-    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust");
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
     factory.setHealthTrackerRegistry(healthTrackerRegistry);
 
@@ -777,7 +777,7 @@ class DefaultSubscriberFactoryTests {
 
     when(healthTrackerRegistry.isTracked(subscriptionName)).thenReturn(false);
 
-    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust");
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
     factory.setHealthTrackerRegistry(healthTrackerRegistry);
 
