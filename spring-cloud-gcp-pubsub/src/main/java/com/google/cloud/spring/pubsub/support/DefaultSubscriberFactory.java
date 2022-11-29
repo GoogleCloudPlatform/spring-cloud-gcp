@@ -93,15 +93,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
   private Code[] retryableCodes;
 
-  private static PubSubConfiguration getBlankConfiguration(GcpProjectIdProvider projectIdProvider) {
-    if (projectIdProvider == null) {
-      return null;
-    }
-    PubSubConfiguration config = new PubSubConfiguration();
-    config.initialize(projectIdProvider.getProjectId());
-    return config;
-  }
-
   /**
    * Default {@link DefaultSubscriberFactory} constructor.
    *
