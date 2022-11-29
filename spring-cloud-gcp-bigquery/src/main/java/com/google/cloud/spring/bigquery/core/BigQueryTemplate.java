@@ -52,7 +52,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.util.Assert;
 import org.springframework.util.StreamUtils;
 
@@ -86,43 +85,7 @@ public class BigQueryTemplate implements BigQueryOperations {
 
   private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
 
-  private int jsonWriterBatchSize;
-
-  /**
-   * Creates the {@link BigQuery} template.
-   *
-   * @param bigQuery the underlying client object used to interface with BigQuery
-   * @param datasetName the name of the dataset in which all operations will take place
-   * @deprecated As of release 3.3.1, use
-   *     BigQueryTemplate(BigQuery,BigQueryWriteClient,Map,TaskScheduler) instead
-   */
-  @Deprecated(forRemoval = true)
-  public BigQueryTemplate(BigQuery bigQuery, String datasetName) {
-    this(bigQuery, datasetName, new DefaultManagedTaskScheduler());
-  }
-
-  /**
-   * Creates the {@link BigQuery} template.
-   *
-   * @param bigQuery the underlying client object used to interface with BigQuery
-   * @param datasetName the name of the dataset in which all operations will take place
-   * @param taskScheduler the {@link TaskScheduler} used to poll for the status of long-running
-   *     BigQuery operations
-   * @deprecated As of release 3.3.1, use
-   *     BigQueryTemplate(BigQuery,BigQueryWriteClient,Map,TaskScheduler) instead
-   */
-  @Deprecated(forRemoval = true)
-  public BigQueryTemplate(BigQuery bigQuery, String datasetName, TaskScheduler taskScheduler) {
-    Assert.notNull(bigQuery, "BigQuery client object must not be null.");
-    Assert.notNull(datasetName, "Dataset name must not be null");
-    Assert.notNull(taskScheduler, "TaskScheduler must not be null");
-
-    this.bigQuery = bigQuery;
-    this.datasetName = datasetName;
-    this.taskScheduler = taskScheduler;
-    this.bigQueryWriteClient =
-        null; // This constructor is Deprecated. We cannot use BigQueryWriteClient with this
-  }
+  private final int jsonWriterBatchSize;
 
   /**
    * A Full constructor which creates the {@link BigQuery} template.
@@ -369,7 +332,7 @@ public class BigQueryTemplate implements BigQueryOperations {
       throw new BigQueryException("Failed to append records. \n" + e);
     }
 
-    // Finalize the stream before commiting it
+    // Finalize the stream before committing it
     writer.finalizeWriteStream();
 
     BatchCommitWriteStreamsResponse commitResponse = getCommitResponse(parentTable, writer);
@@ -380,7 +343,7 @@ public class BigQueryTemplate implements BigQueryOperations {
       }
     }
 
-    // set isSucccessful flag to true of there were no errors
+    // set isSuccessful flag to true of there were no errors
     if (apiResponse.getErrors().isEmpty()) {
       apiResponse.setSuccessful(true);
     }
