@@ -153,22 +153,6 @@ public class PubSubConfiguration {
    * both global and subscription-specific properties are set. If subscription-specific settings are
    * not set then global settings are picked.
    *
-   * @param subscriptionName subscription name
-   * @param projectId project id
-   * @return flow control settings
-   * @deprecated use {@link #computeSubscriberFlowControlSettings(ProjectSubscriptionName)}
-   */
-  @Deprecated
-  public FlowControl computeSubscriberFlowControlSettings(
-      String subscriptionName, String projectId) {
-    return computeSubscriberFlowControlSettings(ProjectSubscriptionName.of(projectId, subscriptionName));
-  }
-
-  /**
-   * Computes flow control settings to use. The subscription-specific property takes precedence if
-   * both global and subscription-specific properties are set. If subscription-specific settings are
-   * not set then global settings are picked.
-   *
    * @param projectSubscriptionName Fully qualified subscription name
    * @return flow control settings defaulting to global where not provided
    */
