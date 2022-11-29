@@ -32,7 +32,7 @@
 		<gcp-libraries-bom.version>26.1.5</gcp-libraries-bom.version>
 		<cloud-sql-socket-factory.version>1.7.2</cloud-sql-socket-factory.version>
 		<guava.version>31.1-jre</guava.version>
-		<r2dbc-mysql-driver.version>0.8.2.RELEASE</r2dbc-mysql-driver.version>
+		<r2dbc-mysql.version>0.8.2.RELEASE</r2dbc-mysql.version>
 		<r2dbc-postgres-driver.version>0.8.13.RELEASE</r2dbc-postgres-driver.version>
 	</properties>
 
@@ -284,7 +284,7 @@
 			<dependency>
 				<groupId>dev.miku</groupId>
 				<artifactId>r2dbc-mysql</artifactId>
-				<version>${r2dbc-mysql-driver.version}</version>
+				<version>${r2dbc-mysql.version}</version>
 			</dependency>
 
 			<!-- spring-cloud-gcp-starter-sql-postgres-r2dbc -->
