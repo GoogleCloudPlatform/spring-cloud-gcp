@@ -24,7 +24,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ConfigurationProperties("com.google.cloud.spring.global")
 public class GlobalProperties implements CredentialsSupplier {
 
-  // Overrides the GCP OAuth2 credentials specified in the Core module.
+  // Provides default GCP OAuth2 credentials from the Core module.
   @NestedConfigurationProperty private final Credentials credentials = new Credentials();
 
   @Override
