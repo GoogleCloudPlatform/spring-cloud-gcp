@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.rpc.StatusCode.Code;
+import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
@@ -454,7 +455,8 @@ class PubSubConfigurationTests {
     assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).isEmpty();
     assertThat(
             pubSubConfiguration
-                .getSubscriber("subscription-name", "projectId")
+                .getSubscriptionProperties(PubSubSubscriptionUtils
+                    .toProjectSubscriptionName("subscription-name", "projectId"))
                 .getExecutorThreads())
         .isNull();
     assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).isEmpty();
@@ -471,7 +473,8 @@ class PubSubConfigurationTests {
     assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).hasSize(1);
     assertThat(
             pubSubConfiguration
-                .getSubscriber("subscription-name", "projectId")
+                .getSubscriptionProperties(PubSubSubscriptionUtils
+                    .toProjectSubscriptionName("subscription-name", "projectId"))
                 .getExecutorThreads())
         .isEqualTo(8);
     // asserts that map did not change from a getter. Might not be needed now that map is immutable.
@@ -495,7 +498,8 @@ class PubSubConfigurationTests {
     assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).hasSize(1);
     assertThat(
             pubSubConfiguration
-                .getSubscriber(QUALIFIED_SUBSCRIPTION_NAME, "projectId")
+                .getSubscriptionProperties(PubSubSubscriptionUtils
+                    .toProjectSubscriptionName(QUALIFIED_SUBSCRIPTION_NAME, "projectId"))
                 .getExecutorThreads())
         .isEqualTo(8);
     assertThat(
@@ -517,8 +521,8 @@ class PubSubConfigurationTests {
     assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).hasSize(1);
     assertThat(
             pubSubConfiguration
-                .getSubscriber(
-                    "projects/otherProjectId/subscriptions/subscription-name", "projectId")
+                .getSubscriptionProperties(PubSubSubscriptionUtils
+                    .toProjectSubscriptionName("projects/otherProjectId/subscriptions/subscription-name", "projectId"))
                 .getExecutorThreads())
         .isEqualTo(8);
     assertThat(

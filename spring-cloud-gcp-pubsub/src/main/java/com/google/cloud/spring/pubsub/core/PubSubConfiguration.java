@@ -133,19 +133,6 @@ public class PubSubConfiguration {
   }
 
   /**
-   * Returns properties for the specified subscription name and project ID.
-   *
-   * @param name short subscription name
-   * @param projectId subscription project name
-   * @return user-provided subscription properties
-   * @deprecated use {@link #getSubscriptionProperties(ProjectSubscriptionName)} instead.
-   */
-  @Deprecated
-  public Subscriber getSubscriber(String name, String projectId) {
-    return getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(name, projectId));
-  }
-
-  /**
    * Returns properties for the specified fully-qualified {@link ProjectSubscriptionName}.
    *
    * @param projectSubscriptionName fully-qualified {@link ProjectSubscriptionName}
