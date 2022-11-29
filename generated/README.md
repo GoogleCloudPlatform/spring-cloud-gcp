@@ -4,3 +4,5 @@ This is a list of starters we provide with dependencies and auto-configurations 
 
 | Client Library Starter | Maven Artifact Name |
 |------------------------| --------------------|
+|language|com.google.cloud:google-cloud-language-spring-starter|
+|vision|com.google.cloud:google-cloud-vision-spring-starter|
