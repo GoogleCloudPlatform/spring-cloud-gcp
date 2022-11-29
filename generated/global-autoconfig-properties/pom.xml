@@ -11,8 +11,17 @@
     </parent>
 
     <artifactId>global-spring-autoconfig-properties</artifactId>
-    <packaging>pom</packaging>
     <name>Spring Cloud GCP - Global Autoconfig Properties</name>
     <description>Common properties for generated spring autoconfigurations</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>spring-cloud-gcp-core</artifactId>
+        </dependency>
+    </dependencies>
 </project>
