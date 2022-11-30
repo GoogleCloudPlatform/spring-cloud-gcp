@@ -48,7 +48,7 @@ public class GcsFileInfo extends AbstractFileInfo<BlobInfo> {
 
   @Override
   public long getModified() {
-    return this.gcsFile.getUpdateTimeOffsetDateTime().toEpochSecond();
+    return this.gcsFile.getUpdateTimeOffsetDateTime().toInstant().toEpochMilli();
   }
 
   @Override
