@@ -7,3 +7,28 @@ updates:
   open-pull-requests-limit: 10
   labels:
     - "dependencies"
+  ignore:
+    # Ignore major version updates - these should be made manually
+    - dependency-name: "*"
+      update-types: [ "version-update:semver-major" ]
+    # Ignore formatter dependency versions used in codegen modules, since they are fixed for Java 8 support
+    - dependency-name: "com.coveo:fmt-maven-plugin"
+    - dependency-name: "com.google.googlejavaformat:google-java-format"
+    # Ignore dependencies that will be manually upgraded with Spring Boot 3.0 support: 
+    # Spring Boot dependencies
+    - dependency-name: "org.springframework.boot:spring-boot-dependencies"
+      versions: ["3.x"]
+    - dependency-name: "org.springframework.boot:spring-boot-starter-parent"
+      versions: ["3.x"]
+    # Spring Cloud dependencies
+    - dependency-name: "org.springframework.cloud:spring-cloud-dependencies"
+      versions: ["2022.x"]
+    - dependency-name: "org.springframework.cloud:spring-cloud-config"
+      versions: ["4.x"]
+    - dependency-name: "org.springframework.cloud:spring-cloud-function"
+      versions: ["4.x"]
+    # spring-cloud-dependencies-parent should be eventually removed per #1294
+    - dependency-name: "org.springframework.cloud:spring-cloud-dependencies-parent"
+      versions: ["4.x"]
+    # Spring Native dependencies: 
+    # Will be superseded by Spring Boot 3 official native support
