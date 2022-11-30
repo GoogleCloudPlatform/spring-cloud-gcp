@@ -260,7 +260,7 @@ class TraceSampleApplicationIntegrationTests {
                                   ((JsonPayload) logEntry.getPayload())
                                       .getDataAsMap()
                                       .get("message"))
-                      .collect(Collectors.toList());
+                      .toList();
 
               log.info(
                   "\n========================= [START OF LOG CONTENTS] =========================\n"

@@ -120,7 +120,7 @@ class PubSubChannelAdaptersIntegrationTests {
         .run(
             context -> {
               Map<String, Object> headers = new HashMap<>();
-              // Only String values for now..
+              // Only String values for now.
               headers.put("storm", "lift your skinny fists");
               headers.put("static", "lift your skinny fists");
               headers.put("sleep", "lift your skinny fists");
@@ -259,7 +259,6 @@ class PubSubChannelAdaptersIntegrationTests {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   void sendAndReceiveMessageManualAckThroughAcknowledgementHeader() {
     this.contextRunner
         .withUserConfiguration(PollableConfiguration.class, CommonConfiguration.class)

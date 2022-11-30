@@ -290,7 +290,9 @@ public class PubSubAdmin implements AutoCloseable {
     Assert.hasText(subscriptionName, "No subscription name was specified");
 
     try {
-      return this.subscriptionAdminClient.getSubscription(subscriptionName);
+      return this.subscriptionAdminClient.getSubscription(
+          PubSubSubscriptionUtils
+              .toProjectSubscriptionName(subscriptionName, this.projectId).toString());
     } catch (ApiException aex) {
       if (aex.getStatusCode().getCode() == StatusCode.Code.NOT_FOUND) {
         return null;
@@ -310,7 +312,9 @@ public class PubSubAdmin implements AutoCloseable {
   public void deleteSubscription(String subscriptionName) {
     Assert.hasText(subscriptionName, "No subscription name was specified");
 
-    this.subscriptionAdminClient.deleteSubscription(subscriptionName);
+    this.subscriptionAdminClient.deleteSubscription(
+        PubSubSubscriptionUtils
+            .toProjectSubscriptionName(subscriptionName, this.projectId).toString());
   }
 
   /**

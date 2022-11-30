@@ -29,6 +29,7 @@ import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
+import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.pubsub.v1.ProjectName;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
@@ -236,7 +237,8 @@ class PubSubAdminTests {
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .getSubscription("fooSubscription");
     verify(this.mockSubscriptionAdminClient)
-        .getSubscription("fooSubscription");
+        .getSubscription(
+            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project").toString());
   }
 
   @Test
@@ -260,7 +262,8 @@ class PubSubAdminTests {
                 .getSubscription("fooSubscription"))
         .isNull();
     verify(this.mockSubscriptionAdminClient)
-        .getSubscription("fooSubscription");
+        .getSubscription(
+            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project").toString());
   }
 
   @Test
@@ -275,7 +278,8 @@ class PubSubAdminTests {
     assertThatExceptionOfType(ApiException.class)
         .isThrownBy(() -> psa.getSubscription("fooSubscription"));
     verify(this.mockSubscriptionAdminClient)
-        .getSubscription("fooSubscription");
+        .getSubscription(
+            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project").toString());
   }
 
   @Test
@@ -284,7 +288,8 @@ class PubSubAdminTests {
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .deleteSubscription("fooSubscription");
     verify(this.mockSubscriptionAdminClient)
-        .deleteSubscription("fooSubscription");
+        .deleteSubscription(
+            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project").toString());
   }
 
   @Test
