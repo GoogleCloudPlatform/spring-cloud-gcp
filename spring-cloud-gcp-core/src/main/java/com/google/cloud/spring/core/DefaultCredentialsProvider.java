@@ -79,6 +79,17 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
    */
   public DefaultCredentialsProvider(CredentialsSupplier credentialsSupplier) throws IOException {
     List<String> scopes = resolveScopes(credentialsSupplier.getCredentials().getScopes());
+    setUpWrappedCredentialsProvider(credentialsSupplier, scopes);
+  }
+
+  public DefaultCredentialsProvider(CredentialsSupplier credentialsSupplier, List<String> additionalScopes) throws IOException {
+    List<String> scopes = credentialsSupplier.getCredentials().getScopes();
+    scopes.addAll(additionalScopes);
+    setUpWrappedCredentialsProvider(credentialsSupplier, scopes);
+  }
+
+  private void setUpWrappedCredentialsProvider(CredentialsSupplier credentialsSupplier, List<String> scopes)
+      throws IOException {
     Resource providedLocation = credentialsSupplier.getCredentials().getLocation();
     String encodedKey = credentialsSupplier.getCredentials().getEncodedKey();
 
@@ -122,6 +133,7 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
           ioe);
     }
   }
+
 
   static List<String> resolveScopes(List<String> scopes) {
     if (!ObjectUtils.isEmpty(scopes)) {
