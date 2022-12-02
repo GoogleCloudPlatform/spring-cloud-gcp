@@ -31,7 +31,7 @@ viewer](https://console.cloud.google.com/logs/viewer).
 
 <div class="note">
 
-Due to the way logging is set up, the GCP project ID and credentials
+Due to the way logging is set up, the Google Cloud project ID and credentials
 defined in `application.properties` are ignored. Instead, you should set
 the `GOOGLE_CLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS`
 environment variables to the project ID and credentials private key

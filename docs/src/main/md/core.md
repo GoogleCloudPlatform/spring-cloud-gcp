@@ -1,7 +1,7 @@
 ## Spring Cloud GCP Core
 
 Each Spring Cloud GCP module uses `GcpProjectIdProvider` and
-`CredentialsProvider` to get the GCP project ID and access credentials.
+`CredentialsProvider` to get the Google Cloud project ID and access credentials.
 
 Spring Cloud GCP provides a Spring Boot starter to auto-configure the
 core components.

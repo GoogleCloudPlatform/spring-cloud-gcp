@@ -67,11 +67,11 @@ The following configuration options are available:
 |===
 | Name | Description | Required | Default value
 | `spring.cloud.gcp.datastore.enabled` | Enables the Cloud Datastore client | No | `true`
-| `spring.cloud.gcp.datastore.project-id` | GCP project ID where the Google Cloud Datastore API is hosted, if different from the one in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>> | No |
+| `spring.cloud.gcp.datastore.project-id` | Google Cloud project ID where the Google Cloud Datastore API is hosted, if different from the one in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>> | No |
 | `spring.cloud.gcp.datastore.credentials.location` | OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>> | No |
 | `spring.cloud.gcp.datastore.credentials.encoded-key` | Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>> | No |
 | `spring.cloud.gcp.datastore.credentials.scopes` | https://developers.google.com/identity/protocols/googlescopes[OAuth2 scope] for Spring Cloud GCP Cloud Datastore credentials | No | https://www.googleapis.com/auth/datastore
-| `spring.cloud.gcp.datastore.namespace` | The Cloud Datastore namespace to use | No | the Default namespace of Cloud Datastore in your GCP project
+| `spring.cloud.gcp.datastore.namespace` | The Cloud Datastore namespace to use | No | the Default namespace of Cloud Datastore in your Google Cloud project
 | `spring.cloud.gcp.datastore.host` | The `hostname:port` of the datastore service or emulator to connect to. Can be used to connect to a manually started https://cloud.google.com/datastore/docs/tools/datastore-emulator[Datastore Emulator]. If the autoconfigured emulator is enabled, this property will be ignored and `localhost:<emulator_port>` will be used. | No |
 | `spring.cloud.gcp.datastore.emulator.enabled` | To enable the auto configuration to start a local instance of the Datastore Emulator. | No | `false`
 | `spring.cloud.gcp.datastore.emulator.port` | The local port to use for the Datastore Emulator | No | `8081`
