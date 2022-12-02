@@ -117,20 +117,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!--R2DBC : mySQL connector and driver -->
-        <dependency>
-            <groupId>com.google.cloud.sql</groupId>
-            <artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>dev.miku</groupId>
-            <artifactId>r2dbc-mysql</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-
-        <!--R2DBC : PostgreSQL connector and driver -->
+        <!--R2DBC : PostgresSQL connector and driver -->
         <dependency>
             <groupId>com.google.cloud.sql</groupId>
             <artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
