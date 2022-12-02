@@ -302,7 +302,7 @@
 				<version>${r2dbc-postgres-driver.version}</version>
 			</dependency>
 
-			<!--Google Cloud Platform Libraries BOM -->
+			<!--Google Cloud Libraries BOM -->
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>libraries-bom</artifactId>

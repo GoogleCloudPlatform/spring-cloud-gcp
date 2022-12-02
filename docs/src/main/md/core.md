@@ -149,7 +149,7 @@ in the `spring.cloud.gcp.credentials.scopes` property.
 `spring.cloud.gcp.credentials.scopes` is a comma-delimited list of
 [Google OAuth2
 scopes](https://developers.google.com/identity/protocols/googlescopes)
-for Google Cloud Platform services that the credentials returned by the
+for Google Cloud services that the credentials returned by the
 provided `CredentialsProvider` support.
 
     spring.cloud.gcp.credentials.scopes=https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/sqlservice.admin

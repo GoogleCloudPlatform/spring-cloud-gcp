@@ -17,7 +17,7 @@ Gradle coordinates:
     }
 
 [Cloud Logging](https://cloud.google.com/logging/) is the managed
-logging service provided by Google Cloud Platform.
+logging service provided by Google Cloud.
 
 This module provides support for associating a web request trace ID with
 the corresponding log entries. It does so by retrieving the
@@ -61,7 +61,7 @@ and delegates log correlation to Spring Cloud Sleuth.
 register the `TraceIdLoggingWebMvcInterceptor` in Spring MVC
 applications.
 
-Applications hosted on the Google Cloud Platform include trace IDs under
+Applications hosted on the Google Cloud include trace IDs under
 the `x-cloud-trace-context` header, which will be included in log
 entries. However, if Sleuth is used the trace ID will be picked up from
 the MDC.

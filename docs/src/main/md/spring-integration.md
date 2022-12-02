@@ -2,7 +2,7 @@
 
 Spring Cloud GCP provides Spring Integration adapters that allow your
 applications to use Enterprise Integration Patterns backed up by Google
-Cloud Platform services.
+Cloud services.
 
 ### Channel Adapters for Cloud Pub/Sub
 

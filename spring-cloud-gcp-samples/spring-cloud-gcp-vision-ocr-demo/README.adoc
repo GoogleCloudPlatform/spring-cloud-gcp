@@ -52,7 +52,7 @@ This section describes how to run the demo and use it to extract text from some 
 
 === 1. Setting up your GCP Project
 
-a. Create a Google Cloud Platform project with https://cloud.google.com/billing/docs/how-to/modify-project#enable-billing[billing enabled], if you don't have one already.
+a. Create a Google Cloud project with https://cloud.google.com/billing/docs/how-to/modify-project#enable-billing[billing enabled], if you don't have one already.
 
 b. Enable the Google Cloud Vision API by following https://cloud.google.com/vision/docs/before-you-begin[these instructions].
 +

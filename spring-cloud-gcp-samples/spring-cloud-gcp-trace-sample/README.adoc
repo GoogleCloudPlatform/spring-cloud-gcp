@@ -10,7 +10,7 @@ Similar content is also available in the https://codelabs.developers.google.com/
 
 image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample/README.adoc]
 
-. Create a Google Cloud Platform Project
+. Create a Google Cloud Project
 . https://cloud.google.com/docs/authentication/getting-started#creating_the_service_account[Create a service account] with Trace Append permission.
 Furnish a new JSON key and then set the credentials using the `GOOGLE_APPLICATION_CREDENTIALS` environment variable or link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter/README.adoc[using GCP Starter Core properties].
 +

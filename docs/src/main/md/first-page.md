@@ -5,7 +5,7 @@
 ## Introduction
 
 The Spring Cloud GCP project makes the Spring Framework a first-class
-citizen of Google Cloud Platform (GCP).
+citizen of Google Cloud .
 
 Spring Cloud GCP lets you leverage the power and simplicity of the
 Spring Framework to:

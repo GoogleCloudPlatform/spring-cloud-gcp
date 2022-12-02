@@ -1,6 +1,6 @@
 ## Cloud Trace
 
-Google Cloud Platform provides a managed distributed tracing service
+Google Cloud provides a managed distributed tracing service
 called [Cloud Trace](https://cloud.google.com/trace/), and [Spring Cloud
 Sleuth](https://cloud.spring.io/spring-cloud-sleuth/) can be used with
 it to easily instrument Spring Boot applications for observability.

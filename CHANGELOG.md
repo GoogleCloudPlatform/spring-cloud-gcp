@@ -4,9 +4,9 @@ For 2.x changelog, go to [this
 page](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/blob/2.x/CHANGELOG.adoc).
 
 [Spring Cloud GCP](https://spring.io/projects/spring-cloud-gcp) is a set
-of integrations between Spring Framework and Google Cloud Platform. It
+of integrations between Spring Framework and Google Cloud. It
 makes it much easier for Spring framework users to run their
-applications on Google Cloud Platform.
+applications on Google Cloud.
 
 This document provides a high-level overview of the changes introduced
 in Spring Cloud GCP by release. For a detailed view of what has changed,
