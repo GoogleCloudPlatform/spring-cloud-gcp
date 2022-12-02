@@ -6,7 +6,7 @@ Spring Boot already provides auto-configuration for Cloud Monitoring.
 This module enables auto-detection of the `project-id` and `credentials`.
 Also, it can be customized.
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----

@@ -7,8 +7,8 @@ Google Cloud Pub/Sub topics and subscriptions.
 A Spring Boot starter is provided to auto-configure the various required
 Pub/Sub components.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>

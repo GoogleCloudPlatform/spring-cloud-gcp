@@ -17,8 +17,8 @@ included in the `spring-cloud-gcp-pubsub` module and can be
 autoconfigured by using the `spring-cloud-gcp-starter-pubsub` module in
 combination with a Spring Integration dependency.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -452,8 +452,8 @@ To use the Storage portion of Spring Integration for Spring Cloud GCP,
 you must also provide the `spring-integration-file` dependency, since it
 isn’t pulled transitively.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>

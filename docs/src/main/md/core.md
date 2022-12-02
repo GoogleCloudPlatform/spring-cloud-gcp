@@ -6,8 +6,8 @@ Each Spring Cloud GCP module uses `GcpProjectIdProvider` and
 Spring Cloud GCP provides a Spring Boot starter to auto-configure the
 core components.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>

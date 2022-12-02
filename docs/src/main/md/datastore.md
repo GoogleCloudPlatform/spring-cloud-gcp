@@ -13,8 +13,8 @@ for storing and retrieving POJOs in numerous storage technologies.
 Spring Cloud GCP adds Spring Data support for [Google Cloud
 Firestore](https://cloud.google.com/firestore/) in Datastore mode.
 
-Maven coordinates for this module only, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates for this module only,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>

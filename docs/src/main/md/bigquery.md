@@ -12,8 +12,8 @@ Spring Cloud GCP provides:
   - A Spring Integration message handler for loading data into BigQuery
     tables in your Spring integration pipelines.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>

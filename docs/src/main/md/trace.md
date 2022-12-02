@@ -15,8 +15,8 @@ regression reports.
 This Spring Framework on Google Cloud starter can forward Spring Cloud Sleuth traces to
 Cloud Trace without an intermediary Zipkin server.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>

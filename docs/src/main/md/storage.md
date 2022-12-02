@@ -4,8 +4,8 @@
 storing any types of files in single or multiple regions. A Spring Boot
 starter is provided to auto-configure the various Storage components.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>

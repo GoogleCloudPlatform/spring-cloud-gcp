@@ -7,7 +7,7 @@ Spring Cloud GCP provides:
 * A convenience starter which provides autoconfiguration for the https://googleapis.dev/java/google-cloud-clients/latest/com/google/cloud/bigquery/BigQuery.html[`BigQuery`] client objects with credentials needed to interface with BigQuery.
 * A Spring Integration message handler for loading data into BigQuery tables in your Spring integration pipelines.
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----

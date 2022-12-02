@@ -15,8 +15,8 @@ mode, providing reactive template and repositories support. To begin
 using this library, add the `spring-cloud-gcp-data-firestore` artifact
 to your project.
 
-Maven coordinates for this module only, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates for this module only,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -710,8 +710,8 @@ more about Cloud Firestore.
 To begin using this library, add the
 `spring-cloud-gcp-starter-firestore` artifact to your project.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>

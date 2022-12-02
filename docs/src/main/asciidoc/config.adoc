@@ -1,7 +1,7 @@
 [#cloud-runtime-configuration-api]
 == Cloud Runtime Configuration API
 
-WARNING: The Google Cloud Runtime Configuration service is in *Beta* status, and is only available in snapshot and milestone versions of the project. It's also not available in the Spring Cloud GCP BOM, unlike other modules.
+WARNING: The Google Cloud Runtime Configuration service is in *Beta* status, and is only available in snapshot and milestone versions of the project. It's also not available in the Spring Framework on Google Cloud BOM, unlike other modules.
 
 Spring Cloud GCP makes it possible to use the https://cloud.google.com/deployment-manager/runtime-configurator/reference/rest/[Google Runtime Configuration API] as a https://cloud.spring.io/spring-cloud-config/[Spring Cloud Config] server to remotely store your application configuration data.
 

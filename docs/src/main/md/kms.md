@@ -13,8 +13,8 @@ allows you to conveniently encrypt and decrypt binary or text data.
 To begin using this library, add the `spring-cloud-gcp-starter-kms`
 artifact to your project.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>

@@ -16,8 +16,8 @@ PostgreSQL is as simple as possible.
 
 ### JDBC Support
 
-Maven and Gradle coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven and Gradle coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 To use MySQL:
 
@@ -118,7 +118,7 @@ database with as little as a database and instance names.
 
 ### R2DBC Support
 
-Maven and Gradle coordinates, using [Spring Cloud GCP
+Maven and Gradle coordinates, using [Spring Framework on Google Cloud
 BOM](getting-started.xml#bill-of-materials):
 
 To use MySQL:

@@ -7,7 +7,7 @@ https://projects.spring.io/spring-data/[Spring Data] is an abstraction for stori
 Spring Cloud GCP adds Spring Data Reactive Repositories support for https://cloud.google.com/firestore/[Google Cloud Firestore] in native mode, providing reactive template and repositories support.
 To begin using this library, add the `spring-cloud-gcp-data-firestore` artifact to your project.
 
-Maven coordinates for this module only, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates for this module only, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 
 [source,xml]
@@ -354,7 +354,7 @@ See https://cloud.google.com/firestore/docs/[documentation] to learn more about 
 
 To begin using this library, add the `spring-cloud-gcp-starter-firestore` artifact to your project.
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----

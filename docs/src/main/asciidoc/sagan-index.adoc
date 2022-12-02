@@ -24,7 +24,7 @@ All Spring Cloud GCP artifacts are made available through Maven Central.
 
 === Bill of Materials
 
-If you're using Maven, you should first add the Spring Cloud GCP Bill of Materials (BOM) to your `pom.xml`.
+If you're using Maven, you should first add the Spring Framework on Google Cloud Bill of Materials (BOM) to your `pom.xml`.
 This will help you manage the version numbers of `spring-cloud-gcp` dependencies in your project.
 
 [source,xml,subs="normal"]

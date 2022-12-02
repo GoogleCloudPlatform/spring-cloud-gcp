@@ -31,7 +31,7 @@ examine the code or build directly from source.
 
 #### Bill of Materials
 
-The Spring Cloud GCP Bill of Materials (BOM) contains the versions of
+The Spring Framework on Google Cloud Bill of Materials (BOM) contains the versions of
 all the dependencies it uses.
 
 If you’re a Maven user, adding the following to your pom.xml file will
@@ -59,9 +59,8 @@ Or, if you’re a Gradle user:
         implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:{project-version}")
     }
 
-
-In the following sections, it will be assumed you are using the Spring
-Cloud GCP BOM and the dependency snippets will not contain versions.
+In the following sections, it will be assumed you are using the Spring Framework
+on Google Cloud BOM and the dependency snippets will not contain versions.
 
 #### Starter Dependencies
 

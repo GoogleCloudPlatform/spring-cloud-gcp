@@ -8,7 +8,7 @@ The Cloud SQL support is provided by Spring Cloud GCP in the form of two Spring 
 The role of the starters is to read configuration from properties and assume default settings so that user experience connecting to MySQL and PostgreSQL is as simple as possible.
 
 === JDBC Support
-Maven and Gradle coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven and Gradle coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 To use MySQL:
 
@@ -92,7 +92,7 @@ You can connect to your database with as little as a database and instance names
 
 === R2DBC Support
 
-Maven and Gradle coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven and Gradle coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 To use MySQL:
 

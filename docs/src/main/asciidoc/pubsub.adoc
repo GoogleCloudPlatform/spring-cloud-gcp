@@ -5,7 +5,7 @@ Spring Cloud GCP provides an abstraction layer to publish to and subscribe from 
 
 A Spring Boot starter is provided to auto-configure the various required Pub/Sub components.
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----

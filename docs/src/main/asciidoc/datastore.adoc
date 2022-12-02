@@ -8,7 +8,7 @@ NOTE: This integration is fully compatible with https://cloud.google.com/datasto
 https://projects.spring.io/spring-data/[Spring Data] is an abstraction for storing and retrieving POJOs in numerous storage technologies.
 Spring Cloud GCP adds Spring Data support for https://cloud.google.com/firestore/[Google Cloud Firestore] in Datastore mode.
 
-Maven coordinates for this module only, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates for this module only, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----

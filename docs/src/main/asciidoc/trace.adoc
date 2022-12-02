@@ -8,7 +8,7 @@ However, on Google Cloud, instead of running and maintaining your own Zipkin ins
 
 This Spring Framework on Google Cloud starter can forward Spring Cloud Sleuth traces to Cloud Trace without an intermediary Zipkin server.
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----

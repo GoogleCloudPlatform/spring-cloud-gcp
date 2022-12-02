@@ -12,8 +12,8 @@ publish and subscribe to the bus. If the bus topic (named
 creates it. The binder also creates anonymous subscriptions for each
 project using the `spring-cloud-gcp-starter-bus-pubsub` starter.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>

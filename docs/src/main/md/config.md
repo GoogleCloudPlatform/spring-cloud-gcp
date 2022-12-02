@@ -4,7 +4,7 @@
 
 The Google Cloud Runtime Configuration service is in **Beta** status,
 and is only available in snapshot and milestone versions of the project.
-It’s also not available in the Spring Cloud GCP BOM, unlike other
+It’s also not available in the Spring Framework on Google Cloud BOM, unlike other
 modules.
 
 </div>

@@ -30,8 +30,8 @@ Spring Cloud GCP provides:
 To begin using this library, add the `spring-cloud-gcp-starter-vision`
 artifact to your project.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -67,8 +67,8 @@ to your dependencies. The storage starter is necessary because the Cloud
 Vision API will process your documents and write OCR output files all
 within your Google Cloud Storage buckets.
 
-Maven coordinates using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>

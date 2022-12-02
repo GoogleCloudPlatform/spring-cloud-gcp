@@ -8,7 +8,7 @@ Spring Cloud GCP offers a utility template class `KmsTemplate` which allows you 
 
 To begin using this library, add the `spring-cloud-gcp-starter-kms` artifact to your project.
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----
