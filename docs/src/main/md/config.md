@@ -63,8 +63,8 @@ file, rather than the usual `applications.yml`/`application.properties`.
 
 <div class="note">
 
-Core properties, as described in [Spring Cloud GCP Core
-Module](#spring-cloud-gcp-core), do not apply to Spring Cloud GCP
+Core properties, as described in [Spring Framework on Google Cloud Core
+Module](#spring-framework-on-google-cloud-core), do not apply to Spring Cloud GCP
 Config.
 
 </div>

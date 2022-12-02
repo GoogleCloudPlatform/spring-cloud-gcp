@@ -83,7 +83,7 @@ Aside from these modules, we also provide additional starters with auto-configur
 
 | Spring Cloud GCP Starter | Description                                                                       | Maven Artifact Name                                                                                    |
 | ------------------------ | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| Core                     | Automatically configure authentication and Google project settings                | [com.google.cloud:spring-cloud-gcp-starter](core.xml#spring-cloud-gcp-core)                            |
+| Core                     | Automatically configure authentication and Google project settings                | [com.google.cloud:spring-cloud-gcp-starter](core.xml#spring-framework-on-google-cloud-core)                            |
 | Cloud Spanner            | Provides integrations with Google Cloud Spanner                                   | [com.google.cloud:spring-cloud-gcp-starter-data-spanner](spanner.xml#spring-data-cloud-spanner)        |
 | Cloud Datastore          | Provides integrations with Google Cloud Datastore                                 | [com.google.cloud:spring-cloud-gcp-starter-data-datastore](datastore.xml#spring-data-cloud-datastore)  |
 | Cloud Pub/Sub            | Provides integrations with Google Cloud Pub/Sub                                   | [com.google.cloud:spring-cloud-gcp-starter-pubsub](pubsub.xml#cloud-pubsub)                            |

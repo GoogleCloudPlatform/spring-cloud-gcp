@@ -1,4 +1,4 @@
-## Spring Cloud GCP Core
+## Spring Framework on Google Cloud Core
 
 Each Spring Cloud GCP module uses `GcpProjectIdProvider` and
 `CredentialsProvider` to get the Google Cloud project ID and access credentials.

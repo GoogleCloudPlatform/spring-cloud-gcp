@@ -41,10 +41,10 @@ All configurations are optional:
 | -------------------------------------------------- | ------------------------------------------------------------------------------------------------ | -------- | ------------- |
 | Name                                               | Description                                                                                      | Required | Default value |
 | `spring.cloud.gcp.metrics.enabled`                 | Auto-configure Micrometer to send metrics to Cloud Monitoring.                                   | No       | `true`        |
-| `spring.cloud.gcp.metrics.project-id`              | Overrides the project ID from the [Spring Cloud GCP Module](#spring-cloud-gcp-core)              | No       |               |
-| `spring.cloud.gcp.metrics.credentials.location`    | Overrides the credentials location from the [Spring Cloud GCP Module](#spring-cloud-gcp-core)    | No       |               |
-| `spring.cloud.gcp.metrics.credentials.encoded-key` | Overrides the credentials encoded key from the [Spring Cloud GCP Module](#spring-cloud-gcp-core) | No       |               |
-| `spring.cloud.gcp.metrics.credentials.scopes`      | Overrides the credentials scopes from the [Spring Cloud GCP Module](#spring-cloud-gcp-core)      | No       |               |
+| `spring.cloud.gcp.metrics.project-id`              | Overrides the project ID from the [Spring Cloud GCP Module](#spring-framework-on-google-cloud-core)              | No       |               |
+| `spring.cloud.gcp.metrics.credentials.location`    | Overrides the credentials location from the [Spring Cloud GCP Module](#spring-framework-on-google-cloud-core)    | No       |               |
+| `spring.cloud.gcp.metrics.credentials.encoded-key` | Overrides the credentials encoded key from the [Spring Cloud GCP Module](#spring-framework-on-google-cloud-core) | No       |               |
+| `spring.cloud.gcp.metrics.credentials.scopes`      | Overrides the credentials scopes from the [Spring Cloud GCP Module](#spring-framework-on-google-cloud-core)      | No       |               |
 
 You can use core Spring Boot Actuator properties to control reporting
 frequency, etc. Read [Spring Boot Actuator
