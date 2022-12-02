@@ -24,8 +24,12 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ConfigurationProperties("com.google.cloud.spring.global")
 public class GlobalProperties implements CredentialsSupplier {
 
+  private static final String DEFAULT_CREDENTIAL_SCOPE =
+      "https://www.googleapis.com/auth/cloud-platform";
+
   // Provides default GCP OAuth2 credentials from the Core module.
-  @NestedConfigurationProperty private final Credentials credentials = new Credentials();
+  @NestedConfigurationProperty
+  private final Credentials credentials = new Credentials(DEFAULT_CREDENTIAL_SCOPE);
 
   @Override
   public Credentials getCredentials() {
