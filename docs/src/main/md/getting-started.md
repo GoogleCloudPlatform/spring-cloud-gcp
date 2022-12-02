@@ -81,7 +81,7 @@ A summary of these artifacts are provided below.
 
 Aside from these modules, we also provide additional starters with auto-configurations to various Google Client Libraries. Refer for the full list [here](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/generated/README.md).
 
-| Spring Cloud GCP Starter | Description                                                                       | Maven Artifact Name                                                                                    |
+| Spring Framework on Google Cloud Starter | Description                                                                       | Maven Artifact Name                                                                                    |
 | ------------------------ | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | Core                     | Automatically configure authentication and Google project settings                | [com.google.cloud:spring-cloud-gcp-starter](core.xml#spring-framework-on-google-cloud-core)                            |
 | Cloud Spanner            | Provides integrations with Google Cloud Spanner                                   | [com.google.cloud:spring-cloud-gcp-starter-data-spanner](spanner.xml#spring-data-cloud-spanner)        |

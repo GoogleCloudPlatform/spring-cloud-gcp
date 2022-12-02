@@ -222,7 +222,7 @@ you disable Cloud SQL auto-configuration for R2DBC with
 
 ##### `ConnectionFactory` creation flow
 
-Spring Cloud GCP starter for Google Cloud SQL registers a
+Spring Framework on Google Cloud starter for Google Cloud SQL registers a
 `R2dbcCloudSqlEnvironmentPostProcessor` that provides a correctly
 formatted `spring.r2dbc.url` property to the environment based on the
 properties mentioned above. It also provides a default value for

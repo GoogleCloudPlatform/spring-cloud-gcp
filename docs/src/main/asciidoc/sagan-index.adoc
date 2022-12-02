@@ -50,7 +50,7 @@ Each starter contains all the dependencies and transitive dependencies needed to
 A sample of these artifacts are provided below.
 
 |===
-| Spring Cloud GCP Starter | Description | Maven Artifact Coordinates
+| Spring Framework on Google Cloud Starter | Description | Maven Artifact Coordinates
 
 | Cloud Spanner
 | Provides integrations with Google Cloud Spanner

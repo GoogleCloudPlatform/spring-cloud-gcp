@@ -12,7 +12,7 @@ storage, you can use Cloud Trace to store traces, view trace details,
 generate latency distributions graphs, and generate performance
 regression reports.
 
-This Spring Cloud GCP starter can forward Spring Cloud Sleuth traces to
+This Spring Framework on Google Cloud starter can forward Spring Cloud Sleuth traces to
 Cloud Trace without an intermediary Zipkin server.
 
 Maven coordinates, using [Spring Cloud GCP
