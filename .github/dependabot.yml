@@ -30,5 +30,8 @@ updates:
     # spring-cloud-dependencies-parent should be eventually removed per #1294
     - dependency-name: "org.springframework.cloud:spring-cloud-dependencies-parent"
       versions: ["4.x"]
+    # Spring Shell dependencies
+    - dependency-name: "org.springframework.shell:spring-shell-starter"
+      versions: ["3.x"]
     # Spring Native dependencies: 
     # Will be superseded by Spring Boot 3 official native support
