@@ -255,7 +255,10 @@ public class GoogleStorageResource implements WritableResource {
 
   @Override
   public long lastModified() throws IOException {
-    return throwExceptionForNullBlob(getBlob()).getUpdateTimeOffsetDateTime().toEpochSecond();
+    return throwExceptionForNullBlob(getBlob())
+        .getUpdateTimeOffsetDateTime()
+        .toInstant()
+        .toEpochMilli();
   }
 
   /**
