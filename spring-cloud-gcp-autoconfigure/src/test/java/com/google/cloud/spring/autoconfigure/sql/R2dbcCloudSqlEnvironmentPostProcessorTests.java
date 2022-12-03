@@ -51,7 +51,8 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
 
   @Test
   void testSetR2dbcProperty_postgres() {
-    verifyThatCorrectUrlAndUsernameSet(new String[] {"io.r2dbc.postgresql"},
+    verifyThatCorrectUrlAndUsernameSet(
+        new String[] {"io.r2dbc.postgresql"},
         "postgres",
         "r2dbc:gcp:postgres://my-project:region:my-instance/my-database");
   }
