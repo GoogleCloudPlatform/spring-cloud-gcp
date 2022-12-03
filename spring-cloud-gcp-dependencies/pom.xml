@@ -33,7 +33,7 @@
 		<cloud-sql-socket-factory.version>1.7.2</cloud-sql-socket-factory.version>
 		<guava.version>31.1-jre</guava.version>
 		<r2dbc-mysql.version>0.8.2.RELEASE</r2dbc-mysql.version>
-		<r2dbc-postgres-driver.version>0.8.13.RELEASE</r2dbc-postgres-driver.version>
+		<r2dbc-postgres-driver.version>1.0.0.RELEASE</r2dbc-postgres-driver.version>
 	</properties>
 
 	<dependencyManagement>
@@ -259,18 +259,6 @@
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>dev.miku</groupId>
-				<artifactId>r2dbc-mysql</artifactId>
-				<version>0.8.2.RELEASE</version>
-			</dependency>
-
-			<dependency>
-				<groupId>io.r2dbc</groupId>
-				<artifactId>r2dbc-postgresql</artifactId>
-				<version>0.8.12.RELEASE</version>
-			</dependency>
-
 			<!-- spring-cloud-gcp-starter-sql-postgres-r2dbc -->
 			<dependency>
 				<groupId>com.google.cloud.sql</groupId>
@@ -278,7 +266,7 @@
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.postgres</groupId>
+				<groupId>org.postgresql</groupId>
 				<artifactId>r2dbc-postgresql</artifactId>
 				<version>${r2dbc-postgres-driver.version}</version>
 			</dependency>
