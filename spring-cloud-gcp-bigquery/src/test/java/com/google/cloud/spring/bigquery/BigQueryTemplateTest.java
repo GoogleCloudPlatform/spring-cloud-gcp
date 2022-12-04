@@ -16,7 +16,13 @@
 
 package com.google.cloud.spring.bigquery;
 
+import static com.google.cloud.bigquery.JobInfo.CreateDisposition.CREATE_IF_NEEDED;
+import static com.google.cloud.bigquery.JobInfo.CreateDisposition.CREATE_NEVER;
+import static com.google.cloud.bigquery.JobInfo.WriteDisposition.WRITE_APPEND;
+import static com.google.cloud.bigquery.JobInfo.WriteDisposition.WRITE_EMPTY;
+import static com.google.cloud.bigquery.JobInfo.WriteDisposition.WRITE_TRUNCATE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -92,7 +98,7 @@ class BigQueryTemplateTest {
     rpcFactoryMock = mock(BigQueryRpcFactory.class);
     bigqueryRpcMock = mock(BigQueryRpc.class);
     when(rpcFactoryMock.create(any(BigQueryOptions.class))).thenReturn(bigqueryRpcMock);
-    options = createBigQueryOptionsForProject(PROJECT, rpcFactoryMock);
+    options = createBigQueryOptionsForProject(rpcFactoryMock);
     bigQueryWriteClientMock = mock(BigQueryWriteClient.class);
     bigquery = options.getService();
     bqInitSettings.put("DATASET_NAME", DATASET);
@@ -105,12 +111,75 @@ class BigQueryTemplateTest {
   }
 
   private BigQueryOptions createBigQueryOptionsForProject(
-      String project, BigQueryRpcFactory rpcFactory) {
+      BigQueryRpcFactory rpcFactory) {
     return BigQueryOptions.newBuilder()
-        .setProjectId(project)
+        .setProjectId(BigQueryTemplateTest.PROJECT)
         .setServiceRpcFactory(rpcFactory)
         .setRetrySettings(ServiceOptions.getNoRetrySettings())
         .build();
+  }
+
+  @Test
+  void getDatasetNameTest() {
+    assertThat(bqTemplateSpy.getDatasetName()).isEqualTo(DATASET);
+  }
+
+  @Test
+  void getJsonWriterBatchSizeTest() {
+    assertThat(bqTemplateSpy.getJsonWriterBatchSize()).isEqualTo(JSON_WRITER_BATCH_SIZE);
+  }
+
+  @Test
+  void setAutoDetectSchemaTest() {
+    assertThatCode(() -> bqTemplateSpy.setAutoDetectSchema(true))
+        .doesNotThrowAnyException();
+    assertThatCode(() -> bqTemplateSpy.setAutoDetectSchema(false))
+        .doesNotThrowAnyException();
+  }
+
+  @Test
+  void setWriteDispositionTest() {
+    assertThatCode(() -> bqTemplateSpy.setWriteDisposition(WRITE_TRUNCATE))
+        .doesNotThrowAnyException();
+    assertThatCode(() -> bqTemplateSpy.setWriteDisposition(WRITE_APPEND))
+        .doesNotThrowAnyException();
+    assertThatCode(() -> bqTemplateSpy.setWriteDisposition(WRITE_EMPTY))
+        .doesNotThrowAnyException();
+  }
+
+  @Test
+  void setWriteDispositionThrowsExceptionTest() {
+    assertThatCode(() -> bqTemplateSpy.setWriteDisposition(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasStackTraceContaining("BigQuery write disposition must not be null.");
+  }
+
+  @Test
+  void setCreateDispositionTest() {
+    assertThatCode(() -> bqTemplateSpy.setCreateDisposition(CREATE_IF_NEEDED))
+        .doesNotThrowAnyException();
+    assertThatCode(() -> bqTemplateSpy.setCreateDisposition(CREATE_NEVER))
+        .doesNotThrowAnyException();
+  }
+
+  @Test
+  void setCreateDispositionThrowsExceptionTest() {
+    assertThatCode(() -> bqTemplateSpy.setCreateDisposition(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasStackTraceContaining("BigQuery create disposition must not be null.");
+  }
+
+  @Test
+  void setJobPollIntervalTest() {
+    assertThatCode(() -> bqTemplateSpy.setJobPollInterval(Duration.ofSeconds(1L)))
+        .doesNotThrowAnyException();
+  }
+
+  @Test
+  void setJobPollIntervalThrowsExceptionTest() {
+    assertThatCode(() -> bqTemplateSpy.setJobPollInterval(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasStackTraceContaining("BigQuery job polling interval must not be null");
   }
 
   @Test
@@ -179,7 +248,7 @@ class BigQueryTemplateTest {
 
   @Test
   void writeJsonStreamFailsOnGenericWritingException()
-      throws DescriptorValidationException, IOException, InterruptedException, ExecutionException {
+      throws DescriptorValidationException, IOException, InterruptedException {
 
     InputStream jsonInputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
     doReturn(mock(Table.class))
