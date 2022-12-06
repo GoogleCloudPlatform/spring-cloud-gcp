@@ -61,7 +61,7 @@ for d in ./google-cloud-java/*java-*/; do
 
   # get version from versions.txt
   # this changed in https://github.com/googleapis/google-cloud-java/pull/8755/
-  module_versions=$(sed -n "/^${artifact_id}/p" ./google-cloud-java/versions.txt)
+  module_versions=$(sed -n "/^${artifact_id}:/p" ./google-cloud-java/versions.txt)
 
 #  module=$(echo "$module_versions" | cut -f1 -d:)
   released_version=$(echo "$module_versions" | cut -f2 -d:)
