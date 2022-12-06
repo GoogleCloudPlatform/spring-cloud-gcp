@@ -40,7 +40,10 @@ public class UserController {
 
   private final FirestoreTemplate firestoreTemplate;
 
-  public UserController(UserRepository userRepository, FirestoreTemplate firestoreTemplate) {
+  private final UserService userService;
+
+  public UserController(UserService userService, UserRepository userRepository, FirestoreTemplate firestoreTemplate) {
+    this.userService = userService;
     this.userRepository = userRepository;
     this.firestoreTemplate = firestoreTemplate;
   }
@@ -62,9 +65,7 @@ public class UserController {
 
   @GetMapping("/removeUser")
   private Mono<String> removeUserByName(@RequestParam String name) {
-    return this.userRepository
-        .delete(new User(name, 0, null))
-        .map(unusedVoid -> name + "was successfully removed");
+    return this.userService.removeUserByName(name);
   }
 
   @GetMapping("/removePhonesForUser")

@@ -10,6 +10,7 @@ com.google.cloud.spring.autoconfigure.spanner.health.SpannerHealthIndicatorAutoC
 com.google.cloud.spring.autoconfigure.spanner.SpannerTransactionManagerAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreAutoConfiguration,\
+com.google.cloud.spring.autoconfigure.firestore.FirestoreTransactionManagerAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreEmulatorAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.datastore.health.DatastoreHealthIndicatorAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.storage.GcpStorageAutoConfiguration,\
