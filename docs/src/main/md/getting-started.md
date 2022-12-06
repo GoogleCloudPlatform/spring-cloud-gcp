@@ -79,8 +79,6 @@ dependency includes it.
 
 A summary of these artifacts are provided below. 
 
-Aside from these modules, we also provide additional starters with auto-configurations to various Google Client Libraries. Refer for the full list [here](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/generated/README.md).
-
 | Spring Cloud GCP Starter | Description                                                                       | Maven Artifact Name                                                                                    |
 | ------------------------ | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | Core                     | Automatically configure authentication and Google project settings                | [com.google.cloud:spring-cloud-gcp-starter](core.xml#spring-cloud-gcp-core)                            |
