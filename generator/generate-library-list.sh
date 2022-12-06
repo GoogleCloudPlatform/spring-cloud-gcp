@@ -70,7 +70,7 @@ for d in ./google-cloud-java/*java-*/; do
   # infer googleapis folder from api_shortname:
   # this is not reliable needs manual verification,
   # will replace with metadata from google-cloud-java/artifact
-  googleapis_folder="//google/cloud/$api_shortname/v1"
+  googleapis_folder="google/cloud/$api_shortname/v1"
   echo "$api_shortname, $googleapis_folder, $distribution_name:$released_version" >> $filename
   count=$((count+1))
 done
