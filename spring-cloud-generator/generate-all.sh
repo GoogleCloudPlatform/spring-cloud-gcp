@@ -5,7 +5,7 @@ WORKING_DIR=`pwd`
 cd ../
 # Compute the project version.
 PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
-cd generator
+cd spring-cloud-generator
 
 # runs generate-one.sh for each entry in library_list.txt
 # repos are downloaded once before all generation jobs and then removed

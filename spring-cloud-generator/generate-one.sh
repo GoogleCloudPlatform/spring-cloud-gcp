@@ -98,7 +98,7 @@ fi
 ./../mvnw fmt:format
 
 # remove downloaded repos
-cd ../generator
+cd ../spring-cloud-generator
 if [[ $download_repos -eq 1 ]]; then
   rm -rf googleapis
   rm -rf gapic-generator-java
