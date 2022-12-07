@@ -51,7 +51,7 @@ public void createFile() {
 Resources](https://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html)
 are an abstraction for a number of low-level resources, such as file
 system files, classpath files, servlet context-relative files, etc.
-Spring Cloud GCP adds a new resource type: a Google Cloud Storage (GCS)
+Spring Framework on Google Cloud adds a new resource type: a Google Cloud Storage (GCS)
 object.
 
 The Spring Resource Abstraction for Google Cloud Storage allows GCS
@@ -137,7 +137,7 @@ configuration options:
 | `spring.cloud.gcp.storage.auto-create-files`       | Creates files and buckets on Google Cloud Storage when writes are made to non-existent files                                                                                                         | No       | `true`                                                  |
 | `spring.cloud.gcp.storage.credentials.location`    | OAuth2 credentials for authenticating with the Google Cloud Storage API, if different from the ones in the [Spring Framework on Google Cloud Core Module](#spring-framework-on-google-cloud-core)                                    | No       |                                                         |
 | `spring.cloud.gcp.storage.credentials.encoded-key` | Base64-encoded contents of OAuth2 account private key for authenticating with the Google Cloud Storage API, if different from the ones in the [Spring Framework on Google Cloud Core Module](#spring-framework-on-google-cloud-core) | No       |                                                         |
-| `spring.cloud.gcp.storage.credentials.scopes`      | [OAuth2 scope](https://developers.google.com/identity/protocols/googlescopes) for Spring Cloud GCP Storage credentials                                                                               | No       | <https://www.googleapis.com/auth/devstorage.read_write> |
+| `spring.cloud.gcp.storage.credentials.scopes`      | [OAuth2 scope](https://developers.google.com/identity/protocols/googlescopes) for Spring Framework on Google Cloud Storage credentials                                                                               | No       | <https://www.googleapis.com/auth/devstorage.read_write> |
 
 ### Sample
 

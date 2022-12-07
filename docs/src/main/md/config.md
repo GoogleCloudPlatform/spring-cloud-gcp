@@ -9,13 +9,13 @@ modules.
 
 </div>
 
-Spring Cloud GCP makes it possible to use the [Google Runtime
+Spring Framework on Google Cloud makes it possible to use the [Google Runtime
 Configuration
 API](https://cloud.google.com/deployment-manager/runtime-configurator/reference/rest/)
 as a [Spring Cloud Config](https://cloud.spring.io/spring-cloud-config/)
 server to remotely store your application configuration data.
 
-The Spring Cloud GCP Config support is provided via its own Spring Boot
+The Spring Framework on Google Cloud Config support is provided via its own Spring Boot
 starter. It enables the use of the Google Runtime Configuration API as a
 source for Spring Boot configuration properties.
 
@@ -39,7 +39,7 @@ Gradle coordinates:
 
 ### Configuration
 
-The following parameters are configurable in Spring Cloud GCP Config:
+The following parameters are configurable in Spring Framework on Google Cloud Config:
 
 |                                                   |                                                                                                                       |          |                                                                                                   |
 | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------- |
@@ -51,7 +51,7 @@ The following parameters are configurable in Spring Cloud GCP Config:
 | `spring.cloud.gcp.config.project-id`              | Google Cloud project ID where the Google Runtime Configuration API is hosted                                                   | No       |                                                                                                   |
 | `spring.cloud.gcp.config.credentials.location`    | OAuth2 credentials for authenticating with the Google Runtime Configuration API                                       | No       |                                                                                                   |
 | `spring.cloud.gcp.config.credentials.encoded-key` | Base64-encoded OAuth2 credentials for authenticating with the Google Runtime Configuration API                        | No       |                                                                                                   |
-| `spring.cloud.gcp.config.credentials.scopes`      | [OAuth2 scope](https://developers.google.com/identity/protocols/googlescopes) for Spring Cloud GCP Config credentials | No       | <https://www.googleapis.com/auth/cloudruntimeconfig>                                              |
+| `spring.cloud.gcp.config.credentials.scopes`      | [OAuth2 scope](https://developers.google.com/identity/protocols/googlescopes) for Spring Framework on Google Cloud Config credentials | No       | <https://www.googleapis.com/auth/cloudruntimeconfig>                                              |
 
 <div class="note">
 
@@ -64,7 +64,7 @@ file, rather than the usual `applications.yml`/`application.properties`.
 <div class="note">
 
 Core properties, as described in [Spring Framework on Google Cloud Core
-Module](#spring-framework-on-google-cloud-core), do not apply to Spring Cloud GCP
+Module](#spring-framework-on-google-cloud-core), do not apply to Spring Framework on Google Cloud
 Config.
 
 </div>

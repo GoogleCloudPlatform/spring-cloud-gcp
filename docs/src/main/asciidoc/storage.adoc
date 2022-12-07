@@ -48,7 +48,7 @@ public void createFile() {
 === Cloud Storage Objects As Spring Resources
 
 https://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html[Spring Resources] are an abstraction for a number of low-level resources, such as file system files, classpath files, servlet context-relative files, etc.
-Spring Cloud GCP adds a new resource type: a Google Cloud Storage (GCS) object.
+Spring Framework on Google Cloud adds a new resource type: a Google Cloud Storage (GCS) object.
 
 The Spring Resource Abstraction for Google Cloud Storage allows GCS objects to be accessed by their GCS URL using the `@Value` annotation:
 
@@ -118,7 +118,7 @@ The Spring Boot Starter for Google Cloud Storage provides the following configur
 | `spring.cloud.gcp.storage.credentials.encoded-key` |
 Base64-encoded contents of OAuth2 account private key for authenticating with the Google Cloud Storage API, if different from the ones in the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Core Module>> | No |
 | `spring.cloud.gcp.storage.credentials.scopes` |
-https://developers.google.com/identity/protocols/googlescopes[OAuth2 scope] for Spring Cloud GCP Storage credentials | No | https://www.googleapis.com/auth/devstorage.read_write
+https://developers.google.com/identity/protocols/googlescopes[OAuth2 scope] for Spring Framework on Google Cloud Storage credentials | No | https://www.googleapis.com/auth/devstorage.read_write
 |===
 
 

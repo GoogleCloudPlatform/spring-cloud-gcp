@@ -5,7 +5,7 @@ users to leverage machine learning algorithms for processing images and
 documents including: image classification, face detection, text
 extraction, optical character recognition, and others.
 
-Spring Cloud GCP provides:
+Spring Framework on Google Cloud provides:
 
   - A convenience starter which automatically configures authentication
     settings and client objects needed to begin using the [Google Cloud
@@ -48,7 +48,7 @@ Gradle coordinates:
 
 ### Configuration
 
-The following options may be configured with Spring Cloud GCP Vision
+The following options may be configured with Spring Framework on Google Cloud Vision
 libraries.
 
 |                                                   |                                                                                                  |          |               |
@@ -339,7 +339,7 @@ single document.
 
 ### Sample
 
-Samples are provided to show example usages of Spring Cloud GCP with
+Samples are provided to show example usages of Spring Framework on Google Cloud with
 Google Cloud Vision.
 
   - The [Image Labeling

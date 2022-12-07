@@ -5,7 +5,7 @@ The [Google Cloud Key Management Service
 and manage cryptographic keys and perform cryptographic operations in a
 single centralized cloud service.
 
-Spring Cloud GCP offers a utility template class `KmsTemplate` which
+Spring Framework on Google Cloud offers a utility template class `KmsTemplate` which
 allows you to conveniently encrypt and decrypt binary or text data.
 
 ### Dependency Setup
@@ -31,7 +31,7 @@ Gradle coordinates:
 
 ### Configuration
 
-The following options may be configured with Spring Cloud GCP KMS
+The following options may be configured with Spring Framework on Google Cloud KMS
 libraries.
 
 |                                             |                                                                                                                                                                |          |                                                                                                                                                                                                                |
@@ -49,7 +49,7 @@ the autoconfiguration class
 be activated for your project.
 
 The `com.google.cloud.spring.kms.KmsTemplate` bean provided by the
-autoconfiguration is the entrypoint to using Spring Cloud GCP support
+autoconfiguration is the entrypoint to using Spring Framework on Google Cloud support
 for Google KMS. This class allows you to specify a Cloud KMS key in your
 project via a URI string (format described below) and perform
 encryption/decryption with it.
@@ -59,7 +59,7 @@ responses from Cloud KMS APIs to verify correctness of the response.
 
 #### Cloud KMS Key ID format
 
-Spring Cloud GCP offers the following key syntax to specify Cloud KMS
+Spring Framework on Google Cloud offers the following key syntax to specify Cloud KMS
 keys in your project:
 
 ``` 

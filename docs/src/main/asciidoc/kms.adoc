@@ -2,7 +2,7 @@
 
 The https://cloud.google.com/kms/docs[Google Cloud Key Management Service (KMS)] allows you to create, import, and manage cryptographic keys and perform cryptographic operations in a single centralized cloud service.
 
-Spring Cloud GCP offers a utility template class `KmsTemplate` which allows you to conveniently encrypt and decrypt binary or text data.
+Spring Framework on Google Cloud offers a utility template class `KmsTemplate` which allows you to conveniently encrypt and decrypt binary or text data.
 
 === Dependency Setup
 
@@ -29,7 +29,7 @@ dependencies {
 
 === Configuration
 
-The following options may be configured with Spring Cloud GCP KMS libraries.
+The following options may be configured with Spring Framework on Google Cloud KMS libraries.
 
 |===========================================================================
 | Name | Description | Required | Default value
@@ -43,13 +43,13 @@ The following options may be configured with Spring Cloud GCP KMS libraries.
 
 Once you have added the `spring-cloud-gcp-starter-kms` to your project, the autoconfiguration class `com.google.cloud.spring.autoconfigure.kms.GcpKmsAutoConfiguration` will be activated for your project.
 
-The `com.google.cloud.spring.kms.KmsTemplate` bean provided by the autoconfiguration is the entrypoint to using Spring Cloud GCP support for Google KMS. This class allows you to specify a Cloud KMS key in your project via a URI string (format described below) and perform encryption/decryption with it.
+The `com.google.cloud.spring.kms.KmsTemplate` bean provided by the autoconfiguration is the entrypoint to using Spring Framework on Google Cloud support for Google KMS. This class allows you to specify a Cloud KMS key in your project via a URI string (format described below) and perform encryption/decryption with it.
 
 The template class automatically validates the CRC32 checksums received responses from Cloud KMS APIs to verify correctness of the response.
 
 ==== Cloud KMS Key ID format
 
-Spring Cloud GCP offers the following key syntax to specify Cloud KMS keys in your project:
+Spring Framework on Google Cloud offers the following key syntax to specify Cloud KMS keys in your project:
 
 [source]
 ----

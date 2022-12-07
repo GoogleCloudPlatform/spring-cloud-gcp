@@ -52,7 +52,7 @@ messages.
 
 <div class="warning">
 
-If Spring Cloud GCP Trace is enabled, the logging module disables itself
+If Spring Framework on Google Cloud Trace is enabled, the logging module disables itself
 and delegates log correlation to Spring Cloud Sleuth.
 
 </div>

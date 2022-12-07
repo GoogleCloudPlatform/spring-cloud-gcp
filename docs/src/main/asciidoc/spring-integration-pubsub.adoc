@@ -78,7 +78,7 @@ When working with Cloud Pub/Sub, it is important to understand the concept of `a
 Each subscription has a default `ackDeadline` applied to all messages sent to it.
 Additionally, the Cloud Pub/Sub client library can extend each streamed message's `ackDeadline` until the message processing completes, fails or until the maximum extension period elapses.
 
-NOTE: In the Pub/Sub client library, default maximum extension period is an hour. However, Spring Cloud GCP disables this auto-extension behavior.
+NOTE: In the Pub/Sub client library, default maximum extension period is an hour. However, Spring Framework on Google Cloud disables this auto-extension behavior.
 Use the `spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period` property to re-enable it.
 
 Acknowledging (acking) a message removes it from Pub/Sub's known outstanding messages. Nacking a message resets its acknowledgement deadline to 0, forcing immediate redelivery.

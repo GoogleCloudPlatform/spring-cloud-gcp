@@ -1,6 +1,6 @@
 ## Spring Integration
 
-Spring Cloud GCP provides Spring Integration adapters that allow your
+Spring Framework on Google Cloud provides Spring Integration adapters that allow your
 applications to use Enterprise Integration Patterns backed up by Google
 Cloud services.
 
@@ -103,7 +103,7 @@ until the maximum extension period elapses.
 <div class="note">
 
 In the Pub/Sub client library, default maximum extension period is an
-hour. However, Spring Cloud GCP disables this auto-extension behavior.
+hour. However, Spring Framework on Google Cloud disables this auto-extension behavior.
 Use the `spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period`
 property to re-enable it.
 
@@ -440,7 +440,7 @@ Available examples:
 The channel adapters for Google Cloud Storage allow you to read and
 write files to Google Cloud Storage through `MessageChannels`.
 
-Spring Cloud GCP provides two inbound adapters,
+Spring Framework on Google Cloud provides two inbound adapters,
 `GcsInboundFileSynchronizingMessageSource` and
 `GcsStreamingMessageSource`, and one outbound adapter,
 `GcsMessageHandler`.
@@ -448,7 +448,7 @@ Spring Cloud GCP provides two inbound adapters,
 The Spring Integration Channel Adapters for Google Cloud Storage are
 included in the `spring-cloud-gcp-storage` module.
 
-To use the Storage portion of Spring Integration for Spring Cloud GCP,
+To use the Storage portion of Spring Integration for Spring Framework on Google Cloud,
 you must also provide the `spring-integration-file` dependency, since it
 isn’t pulled transitively.
 

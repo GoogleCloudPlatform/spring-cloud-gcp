@@ -9,7 +9,7 @@ projections, and auditing.
 
 [Spring Data](https://projects.spring.io/spring-data/) is an abstraction
 for storing and retrieving POJOs in numerous storage technologies.
-Spring Cloud GCP adds Spring Data Reactive Repositories support for
+Spring Framework on Google Cloud adds Spring Data Reactive Repositories support for
 [Google Cloud Firestore](https://cloud.google.com/firestore/) in native
 mode, providing reactive template and repositories support. To begin
 using this library, add the `spring-cloud-gcp-data-firestore` artifact
@@ -64,7 +64,7 @@ following configuration options:
 | `spring.cloud.gcp.firestore.host-port`               | The host and port of the Firestore service; can be overridden to specify connecting to an already-running [Firestore emulator](https://firebase.google.com/docs/emulator-suite/install_and_configure) instance. | No       | `firestore.googleapis.com:443` (the host/port of official Firestore service) |
 | `spring.cloud.gcp.firestore.credentials.location`    | OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the [Spring Framework on Google Cloud Core Module](#spring-framework-on-google-cloud-core)                                             | No       |                                                                              |
 | `spring.cloud.gcp.firestore.credentials.encoded-key` | Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the [Spring Framework on Google Cloud Core Module](#spring-framework-on-google-cloud-core)                              | No       |                                                                              |
-| `spring.cloud.gcp.firestore.credentials.scopes`      | [OAuth2 scope](https://developers.google.com/identity/protocols/googlescopes) for Spring Cloud GCP Cloud Firestore credentials                                                                                  | No       | <https://www.googleapis.com/auth/datastore>                                  |
+| `spring.cloud.gcp.firestore.credentials.scopes`      | [OAuth2 scope](https://developers.google.com/identity/protocols/googlescopes) for Spring Framework on Google CloudFirestore credentials                                                                                  | No       | <https://www.googleapis.com/auth/datastore>                                  |
 
 #### Supported types
 
@@ -699,7 +699,7 @@ documents unintentionally.
 
 ### Cloud Firestore Spring Boot Starter
 
-If you prefer using Firestore client only, Spring Cloud GCP provides a
+If you prefer using Firestore client only, Spring Framework on Google Cloud provides a
 convenience starter which automatically configures authentication
 settings and client objects needed to begin using [Google Cloud
 Firestore](https://cloud.google.com/firestore/) in native mode.
@@ -789,7 +789,7 @@ running emulator instance instead of the real Firestore service.
 
 ### Samples
 
-Spring Cloud GCP provides Firestore sample applications to demonstrate
+Spring Framework on Google Cloud provides Firestore sample applications to demonstrate
 API usage:
 
   - [Reactive Firestore Repository sample

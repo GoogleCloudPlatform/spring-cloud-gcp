@@ -98,10 +98,10 @@ All configurations are optional:
 | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------- |
 | Name                                                | Description                                                                                                                      | Required | Default value |
 | `spring.cloud.gcp.trace.enabled`                    | Auto-configure Spring Cloud Sleuth to send traces to Cloud Trace.                                                                | No       | `true`        |
-| `spring.cloud.gcp.trace.project-id`                 | Overrides the project ID from the [Spring Cloud GCP Module](#spring-framework-on-google-cloud-core)                                              | No       |               |
-| `spring.cloud.gcp.trace.credentials.location`       | Overrides the credentials location from the [Spring Cloud GCP Module](#spring-framework-on-google-cloud-core)                                    | No       |               |
-| `spring.cloud.gcp.trace.credentials.encoded-key`    | Overrides the credentials encoded key from the [Spring Cloud GCP Module](#spring-framework-on-google-cloud-core)                                 | No       |               |
-| `spring.cloud.gcp.trace.credentials.scopes`         | Overrides the credentials scopes from the [Spring Cloud GCP Module](#spring-framework-on-google-cloud-core)                                      | No       |               |
+| `spring.cloud.gcp.trace.project-id`                 | Overrides the project ID from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)                                              | No       |               |
+| `spring.cloud.gcp.trace.credentials.location`       | Overrides the credentials location from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)                                    | No       |               |
+| `spring.cloud.gcp.trace.credentials.encoded-key`    | Overrides the credentials encoded key from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)                                 | No       |               |
+| `spring.cloud.gcp.trace.credentials.scopes`         | Overrides the credentials scopes from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)                                      | No       |               |
 | `spring.cloud.gcp.trace.num-executor-threads`       | Number of threads used by the Trace executor                                                                                     | No       | 4             |
 | `spring.cloud.gcp.trace.authority`                  | HTTP/2 authority the channel claims to be connecting to.                                                                         | No       |               |
 | `spring.cloud.gcp.trace.compression`                | Name of the compression to use in Trace calls                                                                                    | No       |               |
@@ -137,7 +137,7 @@ configuration.
 
 </div>
 
-Spring Cloud GCP Trace does override some Sleuth configurations:
+Spring Framework on Google Cloud Trace does override some Sleuth configurations:
 
   - Always uses 128-bit Trace IDs. This is required by Cloud Trace.
 

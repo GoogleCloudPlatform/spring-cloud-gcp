@@ -1,29 +1,29 @@
 ## Getting Started
 
-This section describes how to get up to speed with Spring Cloud GCP
+This section describes how to get up to speed with Spring Framework on Google Cloud
 libraries.
 
 ### Compatibility with Spring Project Versions
 
-Spring Cloud GCP has dependency and transitive dependencies on Spring
+Spring Framework on Google Cloud has dependency and transitive dependencies on Spring
 Projects. The table below outlines the versions of Spring Cloud, Spring
 Boot and Spring Framework versions that are compatible with certain
-Spring Cloud GCP version.
+Spring Framework on Google Cloud version.
 
-| Spring Cloud GCP | Spring Cloud                                                                                                          | Spring Boot  | Spring Framework |
+| Spring Framework on Google Cloud | Spring Cloud                                                                                                          | Spring Boot  | Spring Framework |
 |------------------| --------------------------------------------------------------------------------------------------------------------- |--------------| ---------------- |
 | 2.x              | [2020.0.x](https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes) (3.0/Illford) | 2.4.x, 2.5.x | 5.3.x            |
 | 3.x              | [2021.0.x](https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes) (3.1/Jubilee) | 2.6.x, 2.7.x | 5.3.x            |
 
 ### Setting up Dependencies
 
-All Spring Cloud GCP artifacts are made available through Maven Central.
+All Spring Framework on Google Cloud artifacts are made available through Maven Central.
 The following resources are provided to help you setup the libraries for
 your project:
 
   - Maven Bill of Materials for dependency management
 
-  - Starter Dependencies for depending on Spring Cloud GCP modules
+  - Starter Dependencies for depending on Spring Framework on Google Cloud modules
 
 You may also consult our [Github
 project](https://github.com/GoogleCloudPlatform/spring-cloud-gcp) to
@@ -35,7 +35,7 @@ The Spring Framework on Google Cloud Bill of Materials (BOM) contains the versio
 all the dependencies it uses.
 
 If you’re a Maven user, adding the following to your pom.xml file will
-allow you omit any Spring Cloud GCP dependency version numbers from your
+allow you omit any Spring Framework on Google Cloud dependency version numbers from your
 configuration. Instead, the version of the BOM you’re using determines
 the versions of the used dependencies.
 
@@ -64,11 +64,11 @@ on Google Cloud BOM and the dependency snippets will not contain versions.
 
 #### Starter Dependencies
 
-Spring Cloud GCP offers [starter
+Spring Framework on Google Cloud offers [starter
 dependencies](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters)
 through Maven to easily depend on different modules of the library. Each
 starter contains all the dependencies and transitive dependencies needed
-to begin using their corresponding Spring Cloud GCP module.
+to begin using their corresponding Spring Framework on Google Cloud module.
 
 For example, if you wish to write a Spring application with Cloud
 Pub/Sub, you would include the `spring-cloud-gcp-starter-pubsub`
@@ -103,11 +103,11 @@ the scaffolding code for a new Spring Boot project. It handles the work
 of generating the Maven or Gradle build file so you do not have to
 manually add the dependencies yourself.
 
-Spring Initializr offers three modules from Spring Cloud GCP that you
+Spring Initializr offers three modules from Spring Framework on Google Cloud that you
 can use to generate your project.
 
   - **GCP Support**: The GCP Support module contains auto-configuration
-    support for every Spring Cloud GCP integration. Most of the
+    support for every Spring Framework on Google Cloud integration. Most of the
     autoconfiguration code is only enabled if the required dependency is
     added to your project.
 
@@ -117,19 +117,19 @@ can use to generate your project.
   - **GCP Storage**: Google Cloud Storage integrations work out of the
     box.
 
-### Learning Spring Cloud GCP
+### Learning Spring Framework on Google Cloud
 
 There are a variety of resources to help you learn how to use Spring
-Cloud GCP libraries.
+Framework on Google Cloud libraries.
 
 #### Sample Applications
 
-The easiest way to learn how to use Spring Cloud GCP is to consult the
+The easiest way to learn how to use Spring Framework on Google Cloud is to consult the
 [sample applications on
 Github](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples).
-Spring Cloud GCP provides sample applications which demonstrate how to
+Spring Framework on Google Cloud provides sample applications which demonstrate how to
 use every integration in the library. The table below highlights several
-samples of the most commonly used integrations in Spring Cloud GCP.
+samples of the most commonly used integrations in Spring Framework on Google Cloud.
 
 | GCP Integration | Sample Application                                                                                                                                                                                                                                                                                                                                                                           |
 |----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -146,7 +146,7 @@ samples of the most commonly used integrations in Spring Cloud GCP.
 
 
 
-Each sample application demonstrates how to use Spring Cloud GCP
+Each sample application demonstrates how to use Spring Framework on Google Cloud
 libraries in context and how to setup the dependencies for the project.
 The applications are fully functional and can be deployed to Google
 Cloud as well. If you are interested, you may consult guides
@@ -161,7 +161,7 @@ Engine](https://codelabs.developers.google.com/codelabs/cloud-springboot-kuberne
 
 For a more hands-on approach, there are several guides and codelabs to
 help you get up to speed. These guides provide step-by-step instructions
-for building an application using Spring Cloud GCP.
+for building an application using Spring Framework on Google Cloud.
 
 Some examples include:
 

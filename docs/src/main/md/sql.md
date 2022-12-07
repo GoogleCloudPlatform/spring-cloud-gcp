@@ -1,6 +1,6 @@
 ## Cloud SQL
 
-Spring Cloud GCP adds integrations with [Spring
+Spring Framework on Google Cloud adds integrations with [Spring
 JDBC](https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html)
 and [Spring
 R2DBC](https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#r2dbc.core)
@@ -8,7 +8,7 @@ so you can run your MySQL or PostgreSQL databases in [Google Cloud
 SQL](https://cloud.google.com/sql) using Spring JDBC and other libraries
 that depend on it like Spring Data JPA or Spring Data R2DBC.
 
-The Cloud SQL support is provided by Spring Cloud GCP in the form of two
+The Cloud SQL support is provided by Spring Framework on Google Cloud in the form of two
 Spring Boot starters, one for MySQL and another one for PostgreSQL. The
 role of the starters is to read configuration from properties and assume
 default settings so that user experience connecting to MySQL and
@@ -330,20 +330,20 @@ example, in Maven:
 
 Available sample applications and codelabs:
 
-  - [Spring Cloud GCP
+  - [Spring Framework on Google Cloud
     MySQL](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-sample)
 
-  - [Spring Cloud GCP
+  - [Spring Framework on Google Cloud
     PostgreSQL](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-sample)
 
-  - [Spring Data JPA with Spring Cloud GCP
+  - [Spring Data JPA with Spring Framework on Google Cloud
     SQL](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-jpa-sample)
 
   - Codelab: [Spring Pet Clinic using Cloud
     SQL](https://codelabs.developers.google.com/codelabs/cloud-spring-petclinic-cloudsql/index.html)
 
-  - [R2DBC: Spring Cloud GCP
+  - [R2DBC: Spring Framework on Google Cloud
     MySQL](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-r2dbc-sample)
 
-  - [R2DBC: Spring Cloud GCP
+  - [R2DBC: Spring Framework on Google Cloud
     PostgreSQL](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-r2dbc-sample)

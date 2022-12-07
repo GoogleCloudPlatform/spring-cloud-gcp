@@ -1,6 +1,6 @@
 ## Cloud Pub/Sub
 
-Spring Cloud GCP provides an abstraction layer to publish to and
+Spring Framework on Google Cloud provides an abstraction layer to publish to and
 subscribe from Google Cloud Pub/Sub topics and to create, list or delete
 Google Cloud Pub/Sub topics and subscriptions.
 
@@ -31,7 +31,7 @@ Initializr](https://start.spring.io) through the `GCP Messaging` entry.
 The Spring Boot starter for Google Cloud Pub/Sub provides the following
 configuration options.
 
-#### Spring Cloud GCP Pub/Sub API Configuration
+#### Spring Framework on Google Cloud Pub/Sub API Configuration
 
 This section describes options for enabling the integration, specifying
 the Google Cloud project and credentials, and setting whether the APIs should
@@ -45,7 +45,7 @@ connect to an emulator for local testing.
 | `spring.cloud.gcp.pubsub.credentials.location`    | OAuth2 credentials for authenticating with the Google Cloud Pub/Sub API, if different from the ones in the [Spring Framework on Google Cloud Core Module](#spring-framework-on-google-cloud-core)                                     | No       |                                          |
 | `spring.cloud.gcp.pubsub.emulator-host`           | The host and port of the local running emulator. If provided, this will setup the client to connect against a running [Google Cloud Pub/Sub Emulator](https://cloud.google.com/pubsub/docs/emulator). | No       |                                          |
 | `spring.cloud.gcp.pubsub.credentials.encoded-key` | Base64-encoded contents of OAuth2 account private key for authenticating with the Google Cloud Pub/Sub API, if different from the ones in the [Spring Framework on Google Cloud Core Module](#spring-framework-on-google-cloud-core)  | No       |                                          |
-| `spring.cloud.gcp.pubsub.credentials.scopes`      | [OAuth2 scope](https://developers.google.com/identity/protocols/googlescopes) for Spring Cloud GCP Pub/Sub credentials                                                                                | No       | <https://www.googleapis.com/auth/pubsub> |
+| `spring.cloud.gcp.pubsub.credentials.scopes`      | [OAuth2 scope](https://developers.google.com/identity/protocols/googlescopes) for Spring Framework on Google Cloud Pub/Sub credentials                                                                                | No       | <https://www.googleapis.com/auth/pubsub> |
 
 #### Publisher/Subscriber Configuration
 
@@ -382,7 +382,7 @@ application running. For a command-line application, you may want to
 provide your own `ThreadPoolTaskScheduler` bean named
 `pubsubSubscriberThreadPool`, which by default creates non-daemon
 threads that will keep an application from stopping. This default
-behavior has been overridden in Spring Cloud GCP for consistency with
+behavior has been overridden in Spring Framework on Google Cloud for consistency with
 Cloud Pub/Sub client library, and to avoid holding up command-line
 applications that would like to shut down once their work is done.
 
@@ -623,7 +623,7 @@ flux.doOnNext(AcknowledgeablePubsubMessage::ack);
 
 ### Pub/Sub management
 
-`PubSubAdmin` is the abstraction provided by Spring Cloud GCP to manage
+`PubSubAdmin` is the abstraction provided by Spring Framework on Google Cloud to manage
 Google Cloud Pub/Sub resources. It allows for the creation, deletion and
 listing of topics and subscriptions.
 

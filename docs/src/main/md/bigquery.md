@@ -3,7 +3,7 @@
 [Google Cloud BigQuery](https://cloud.google.com/bigquery) is a fully
 managed, petabyte scale, low cost analytics data warehouse.
 
-Spring Cloud GCP provides:
+Spring Framework on Google Cloud provides:
 
   - A convenience starter which provides autoconfiguration for the
     [`BigQuery`](https://googleapis.dev/java/google-cloud-clients/latest/com/google/cloud/bigquery/BigQuery.html)
@@ -30,14 +30,14 @@ Gradle coordinates:
 
 ### Configuration
 
-The following application properties may be configured with Spring Cloud
-GCP BigQuery libraries.
+The following application properties may be configured with Spring
+Framework on Google Cloud BigQuery libraries.
 
 |                                                  |                                                                                                                                                                                                                  |          |                                                                                                                                                                                                                |
 | ------------------------------------------------ |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Name                                             | Description                                                                                                                                                                                                      | Required | Default value                                                                                                                                                                                                  |
 | `spring.cloud.gcp.bigquery.datasetName`          | The BigQuery dataset that the `BigQueryTemplate` and `BigQueryFileMessageHandler` is scoped to.                                                                                                                  | Yes      |                                                                                                                                                                                                                |
-| `spring.cloud.gcp.bigquery.enabled`              | Enables or disables Spring Cloud GCP BigQuery autoconfiguration.                                                                                                                                                 | No       | `true`                                                                                                                                                                                                         |
+| `spring.cloud.gcp.bigquery.enabled`              | Enables or disables Spring Framework on Google Cloud BigQuery autoconfiguration.                                                                                                                                                 | No       | `true`                                                                                                                                                                                                         |
 | `spring.cloud.gcp.bigquery.project-id`           | Google Cloud project ID of the project using BigQuery APIs, if different from the one in the [Spring Framework on Google Cloud Core Module](#spring-framework-on-google-cloud-core).                                                                      | No       | Project ID is typically inferred from [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/config/set) configuration.                                                                                      |
 | `spring.cloud.gcp.bigquery.credentials.location` | Credentials file location for authenticating with the Google Cloud BigQuery APIs, if different from the ones in the [Spring Framework on Google Cloud Core Module](#spring-framework-on-google-cloud-core)                                       | No       | Inferred from [Application Default Credentials](https://cloud.google.com/docs/authentication/production), typically set by [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default). |
 | `spring.cloud.gcp.bigquery.jsonWriterBatchSize` | Batch size which will be used by `BigQueryJsonDataWriter` while using [BigQuery Storage Write API](https://cloud.google.com/bigquery/docs/write-api). Note too large or too low values might impact performance. | No | 1000 |
@@ -157,7 +157,7 @@ BigQueryTemplate bigQueryTemplate;
 
 ### Spring Integration
 
-Spring Cloud GCP BigQuery also provides a Spring Integration message
+Spring Framework on Google Cloud BigQuery also provides a Spring Integration message
 handler `BigQueryFileMessageHandler`. This is useful for incorporating
 BigQuery data loading operations in a Spring Integration pipeline.
 

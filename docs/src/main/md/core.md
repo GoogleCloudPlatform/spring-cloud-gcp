@@ -1,9 +1,9 @@
 ## Spring Framework on Google Cloud Core
 
-Each Spring Cloud GCP module uses `GcpProjectIdProvider` and
+Each Spring Framework on Google Cloud module uses `GcpProjectIdProvider` and
 `CredentialsProvider` to get the Google Cloud project ID and access credentials.
 
-Spring Cloud GCP provides a Spring Boot starter to auto-configure the
+Spring Framework on Google Cloud provides a Spring Boot starter to auto-configure the
 core components.
 
 Maven coordinates,
@@ -125,7 +125,7 @@ is used.
 #### Scopes
 
 By default, the credentials provided by the Spring Framework on Google Cloud Starter
-contain scopes for every service supported by Spring Cloud GCP.
+contain scopes for every service supported by Spring Framework on Google Cloud.
 
 |                      |                                                                                                 |
 | -------------------- | ----------------------------------------------------------------------------------------------- |
