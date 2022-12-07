@@ -89,7 +89,7 @@
 |spring.cloud.gcp.secretmanager.credentials.encoded-key |  | 
 |spring.cloud.gcp.secretmanager.credentials.location |  | 
 |spring.cloud.gcp.secretmanager.credentials.scopes |  | 
-|spring.cloud.gcp.secretmanager.enabled | true | Auto-configure GCP Secret Manager support components.
+|spring.cloud.gcp.secretmanager.enabled | true | Auto-configure Google Cloud Secret Manager support components.
 |spring.cloud.gcp.secretmanager.project-id |  | Overrides the Google Cloud project ID specified in the Core module.
 |spring.cloud.gcp.security.firebase.project-id |  | Overrides the Google Cloud project ID specified in the Core module.
 |spring.cloud.gcp.security.firebase.public-keys-endpoint | https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com | Link to Google's public endpoint containing Firebase public keys.
@@ -117,7 +117,7 @@
 |spring.cloud.gcp.spanner.prefetch-chunks | -1 | 
 |spring.cloud.gcp.spanner.project-id |  | 
 |spring.cloud.gcp.spanner.write-sessions-fraction | -1 | 
-|spring.cloud.gcp.sql.credentials |  | Overrides the GCP OAuth2 credentials specified in the Core module.
+|spring.cloud.gcp.sql.credentials |  | Overrides the Google Cloud OAuth2 credentials specified in the Core module.
 |spring.cloud.gcp.sql.database-name |  | Name of the database in the Cloud SQL instance.
 |spring.cloud.gcp.sql.enabled | true | Auto-configure Google Cloud SQL support components.
 |spring.cloud.gcp.sql.instance-connection-name |  | Cloud SQL instance connection name. [GCP_PROJECT_ID]:[INSTANCE_REGION]:[INSTANCE_NAME].
@@ -136,7 +136,7 @@
 |spring.cloud.gcp.trace.enabled | true | Auto-configure Google Cloud Stackdriver tracing components.
 |spring.cloud.gcp.trace.max-inbound-size |  | Maximum size for an inbound message.
 |spring.cloud.gcp.trace.max-outbound-size |  | Maximum size for an outbound message.
-|spring.cloud.gcp.trace.message-timeout | 1 | Timeout in seconds before pending spans will be sent in batches to GCP Stackdriver Trace.
+|spring.cloud.gcp.trace.message-timeout | 1 | Timeout in seconds before pending spans will be sent in batches to Google Cloud Stackdriver Trace.
 |spring.cloud.gcp.trace.num-executor-threads | 4 | Number of threads to be used by the Trace executor.
 |spring.cloud.gcp.trace.project-id |  | Overrides the Google Cloud project ID specified in the Core module.
 |spring.cloud.gcp.trace.wait-for-ready |  | Waits for the channel to be ready in case of a transient failure. Defaults to failing fast in that case.

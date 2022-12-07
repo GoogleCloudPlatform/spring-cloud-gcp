@@ -30,7 +30,7 @@ The following options may be configured with Spring Cloud core.
 
 |===========================================================================
 | Name | Description | Required | Default value
-| `spring.cloud.gcp.core.enabled` | Enables or disables GCP core auto configuration | No | `true`
+| `spring.cloud.gcp.core.enabled` | Enables or disables Google Cloud core auto configuration | No | `true`
 |===========================================================================
 
 === Project ID
