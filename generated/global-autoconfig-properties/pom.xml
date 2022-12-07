@@ -13,7 +13,8 @@
     <artifactId>global-spring-autoconfig-properties</artifactId>
     <name>Spring Cloud GCP - Global Autoconfig Properties</name>
     <description>Common properties for generated spring autoconfigurations</description>
-
+    <packaging>jar</packaging>
+     
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -98,6 +98,14 @@ else
 
 fi
 
+cd $client_lib_name
+xmlstarlet ed --inplace -N x=http://maven.apache.org/POM/4.0.0 \
+-s /x:project/x:dependencies -t elem -n dependency -v "" \
+-s "/x:project/x:dependencies/dependency[last()]" -t elem -n groupId -v com.google.cloud \
+-s "/x:project/x:dependencies/dependency[last()]" -t elem -n artifactId -v global-spring-autoconfig-properties \
+pom.xml 
+cd -
+
 # run google-java-format on generated code
 ./../mvnw fmt:format
 

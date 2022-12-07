@@ -12,6 +12,16 @@
   <artifactId>generated-parent</artifactId>
   <packaging>pom</packaging>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>global-spring-autoconfig-properties</artifactId>
+        <version>3.5.0-SNAPSHOT</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <modules>
     <module>global-autoconfig-properties</module>
   </modules>
