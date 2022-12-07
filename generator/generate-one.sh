@@ -69,25 +69,24 @@ cp googleapis/bazel-bin/google/cloud/$client_lib_name/v1/"$client_lib_name"_java
 
 # unzip spring code
 cd ../generated
-unzip -o "$client_lib_name"_java_gapic_spring-spring.srcjar -d "$client_lib_name"/
+unzip -o "$client_lib_name"_java_gapic_spring-spring.srcjar -d "$starter_artifactid"/
 rm -rf "$client_lib_name"_java_gapic_spring-spring.srcjar
 
 # override versions & names in pom.xml
-cat "$client_lib_name"/pom.xml
 
-sed -i 's/{{client-library-group-id}}/'"$client_lib_groupid"'/' "$client_lib_name"/pom.xml
-sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' "$client_lib_name"/pom.xml
-sed -i 's/{{client-library-version}}/'"$version"'/' "$client_lib_name"/pom.xml
-sed -i 's/{{parent-version}}/'"$parent_version"'/' "$client_lib_name"/pom.xml
+sed -i 's/{{client-library-group-id}}/'"$client_lib_groupid"'/' "$starter_artifactid"/pom.xml
+sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' "$starter_artifactid"/pom.xml
+sed -i 's/{{client-library-version}}/'"$version"'/' "$starter_artifactid"/pom.xml
+sed -i 's/{{parent-version}}/'"$parent_version"'/' "$starter_artifactid"/pom.xml
 
 # add module to parent, adds after the `<modules>` line, checks for existence
-xmllint --debug --nsclean --xpath  "//*[local-name()='module']/text()" pom.xml | sort | uniq | grep -q $client_lib_name
+xmllint --debug --nsclean --xpath  "//*[local-name()='module']/text()" pom.xml | sort | uniq | grep -q $starter_artifactid
 found_library_in_pom=$?
 if [[ found_library_in_pom -eq 0 ]]; then
-  echo "module $client_lib_name already found in pom modules"
+  echo "module $starter_artifactid already found in pom modules"
 else
-  echo "adding module $client_lib_name to pom"
-  sed -i "/^  <modules>/a\ \ \ \ <module>"$client_lib_name"</module>" pom.xml
+  echo "adding module $starter_artifactid to pom"
+  sed -i "/^  <modules>/a\ \ \ \ <module>"$starter_artifactid"</module>" pom.xml
   # also write to generated/README.md
   # format |name|distribution name|
   echo -e "|$client_lib_name|com.google.cloud:$starter_artifactid|" >> README.md
