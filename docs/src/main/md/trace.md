@@ -7,7 +7,7 @@ it to easily instrument Spring Boot applications for observability.
 
 Typically, Spring Cloud Sleuth captures trace information and forwards
 traces to services like Zipkin for storage and analysis. However, on
-GCP, instead of running and maintaining your own Zipkin instance and
+Google Cloud, instead of running and maintaining your own Zipkin instance and
 storage, you can use Cloud Trace to store traces, view trace details,
 generate latency distributions graphs, and generate performance
 regression reports.
