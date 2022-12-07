@@ -69,7 +69,7 @@
 
 		<dependency>
 			<groupId>com.google.cloud</groupId>
-			<artifactId>spring-cloud-gcp-starter-sql-postgresql</artifactId>
+			<artifactId>spring-cloud-gcp-starter-sql-mysql</artifactId>
 		</dependency>
 
 		<dependency>

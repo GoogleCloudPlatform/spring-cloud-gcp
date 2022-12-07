@@ -10,7 +10,6 @@
 		<version>3.5.0-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-kotlin-samples</artifactId>
 	<version>3.5.0-SNAPSHOT</version>
 

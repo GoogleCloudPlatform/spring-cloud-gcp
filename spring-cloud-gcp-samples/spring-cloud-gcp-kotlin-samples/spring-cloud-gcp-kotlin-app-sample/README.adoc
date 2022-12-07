@@ -18,9 +18,9 @@ image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.goo
 +
 Alternatively, if you have the https://cloud.google.com/sdk/[Google Cloud SDK] installed and initialized, and are logged in with https://developers.google.com/identity/protocols/application-default-credentials[application default credentials], Spring will auto-discover those parameters for you.
 
-2. Create a Google Cloud Postgres instance and a database within the instance.
+2. Create a Google Cloud MySQL instance and a database within the instance.
 
-- You may create a Google Cloud Postgres instance on the https://console.cloud.google.com/sql/instances[Google Cloud Console Cloud SQL page].
+- You may create a Google Cloud MySQL instance on the https://console.cloud.google.com/sql/instances[Google Cloud Console Cloud SQL page].
 - In the same page, you may create a database within your Cloud SQL instance.
 Name your database `registrants`.
 
