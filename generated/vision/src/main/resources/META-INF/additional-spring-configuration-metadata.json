@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.vision.v1.spring.auto.image-annotator.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud vision/ImageAnnotator components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.vision.v1.spring.auto.product-search.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud vision/ProductSearch components.",
+      "defaultValue": true
+    }
+  ]
+}

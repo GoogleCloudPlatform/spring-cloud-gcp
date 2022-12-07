@@ -1,0 +1,7 @@
+com.google.cloud.monitoring.v3.spring.AlertPolicyServiceSpringAutoConfiguration
+com.google.cloud.monitoring.v3.spring.GroupServiceSpringAutoConfiguration
+com.google.cloud.monitoring.v3.spring.MetricServiceSpringAutoConfiguration
+com.google.cloud.monitoring.v3.spring.NotificationChannelServiceSpringAutoConfiguration
+com.google.cloud.monitoring.v3.spring.QueryServiceSpringAutoConfiguration
+com.google.cloud.monitoring.v3.spring.ServiceMonitoringServiceSpringAutoConfiguration
+com.google.cloud.monitoring.v3.spring.UptimeCheckServiceSpringAutoConfiguration

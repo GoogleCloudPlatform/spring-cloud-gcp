@@ -23,6 +23,66 @@
   </dependencyManagement>
 
   <modules>
+    <module>workflows</module>
+    <module>websecurityscanner</module>
+    <module>webrisk</module>
+    <module>vpcaccess</module>
+    <module>vmmigration</module>
+    <module>vision</module>
+    <module>transcoder</module>
+    <module>videointelligence</module>
+    <module>cloudtrace</module>
+    <module>texttospeech</module>
+    <module>storagetransfer</module>
+    <module>serviceusage</module>
+    <module>servicemanagement</module>
+    <module>servicedirectory</module>
+    <module>servicecontrol</module>
+    <module>privateca</module>
+    <module>securitycenter</module>
+    <module>secretmanager</module>
+    <module>retail</module>
+    <module>resourcesettings</module>
+    <module>redis</module>
+    <module>recommender</module>
+    <module>recaptchaenterprise</module>
+    <module>cloudprofiler</module>
+    <module>policytroubleshooter</module>
+    <module>osconfig</module>
+    <module>orgpolicy</module>
+    <module>notebooks</module>
+    <module>networkmanagement</module>
+    <module>networkconnectivity</module>
+    <module>monitoring</module>
+    <module>memcache</module>
+    <module>managedidentities</module>
+    <module>language</module>
+    <module>ids</module>
+    <module>gsuiteaddons</module>
+    <module>eventarc</module>
+    <module>essentialcontacts</module>
+    <module>domains</module>
+    <module>documentai</module>
+    <module>dlp</module>
+    <module>clouddebugger</module>
+    <module>datastream</module>
+    <module>metastore</module>
+    <module>dataproc</module>
+    <module>dataplex</module>
+    <module>datafusion</module>
+    <module>datacatalog</module>
+    <module>containeranalysis</module>
+    <module>container</module>
+    <module>contactcenterinsights</module>
+    <module>cloudbuild</module>
+    <module>binaryauthorization</module>
+    <module>automl</module>
+    <module>assuredworkloads</module>
+    <module>artifactregistry</module>
+    <module>appengine</module>
+    <module>apigateway</module>
+    <module>accesscontextmanager</module>
+    <module>accessapproval</module>
     <module>global-autoconfig-properties</module>
   </modules>
 
