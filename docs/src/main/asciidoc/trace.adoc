@@ -86,7 +86,7 @@ All configurations are optional:
 | `spring.cloud.gcp.trace.max-inbound-size` | Maximum size for inbound messages | No |
 | `spring.cloud.gcp.trace.max-outbound-size` | Maximum size for outbound messages | No |
 | `spring.cloud.gcp.trace.wait-for-ready` | https://github.com/grpc/grpc/blob/main/doc/wait-for-ready.md[Waits for the channel to be ready] in case of a transient failure | No | `false`
-| `spring.cloud.gcp.trace.messageTimeout` | Timeout in seconds before pending spans will be sent in batches to GCP Cloud Trace. (previously `spring.zipkin.messageTimeout`) | No | 1
+| `spring.cloud.gcp.trace.messageTimeout` | Timeout in seconds before pending spans will be sent in batches to Google Cloud Trace. (previously `spring.zipkin.messageTimeout`) | No | 1
 | `spring.cloud.gcp.trace.server-response-timeout-ms` | Server response timeout in millis. | No | `5000`
 | `spring.cloud.gcp.trace.pubsub.enabled` | (Experimental) Auto-configure Pub/Sub instrumentation for Trace. | No | `false`
 |===
