@@ -114,7 +114,7 @@ necessary to support some features in the Spring ecosystem, such as
 
 The Spring Boot Starter for Google Cloud Storage auto-configures the
 `Storage` bean required by the `spring-cloud-gcp-storage` module, based
-on the `CredentialsProvider` provided by the Spring Boot GCP starter.
+on the `CredentialsProvider` provided by the Spring Framework on Google Cloud Starter.
 
 #### Setting the Content Type
 

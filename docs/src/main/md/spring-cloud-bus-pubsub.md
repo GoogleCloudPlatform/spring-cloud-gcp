@@ -35,7 +35,7 @@ dependencies {
 Spring Cloud Bus can be used to push configuration changes from a Spring
 Cloud Config server to the clients listening on the same bus.
 
-To use GCP Pub/Sub as the bus implementation, both the configuration
+To use Spring Framework on Google Cloud Pub/Sub as the bus implementation, both the configuration
 server and the configuration client need the
 `spring-cloud-gcp-starter-bus-pubsub` dependency.
 

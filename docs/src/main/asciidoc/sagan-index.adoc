@@ -109,7 +109,7 @@ The best way to learn how to use Spring Framework on Google Cloud is to consult 
 The table below highlights several samples of the most commonly used integrations in Spring Framework on Google Cloud.
 
 |===
-| GCP Integration | Sample Application
+| Google Cloud Integration | Sample Application
 
 | Cloud Pub/Sub
 | https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-sample[spring-cloud-gcp-pubsub-sample]

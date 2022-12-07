@@ -205,7 +205,7 @@ messages from a Pub/Sub subscription.
 If no subscription has been specified via
 `spring.cloud.gcp.pubsub.health.subscription`, it will pull messages
 from a random subscription that is expected not to exist. It will signal
-"up" if it is able to connect to GCP Pub/Sub APIs, i.e. the pull results
+"up" if it is able to connect to Spring Framework on Google Cloud Pub/Sub APIs, i.e. the pull results
 in a response of `NOT_FOUND` or `PERMISSION_DENIED`.
 
 If a custom subscription has been specified, this health indicator will
@@ -497,7 +497,7 @@ the original message and re-`publish` it on the dead letter topic.
 
 For serialization and deserialization of POJOs using Jackson JSON,
 configure a `PubSubMessageConverter` bean, and the Spring Boot starter
-for GCP Pub/Sub will automatically wire it into the `PubSubTemplate`.
+for Spring Framework on Google Cloud Pub/Sub will automatically wire it into the `PubSubTemplate`.
 
 ``` java
 // Note: The ObjectMapper is used to convert Java POJOs to and from JSON.
@@ -594,7 +594,7 @@ Flux<AcknowledgeablePubsubMessage> flux
                 = reactiveFactory.poll("exampleSubscription", 1000);
 ```
 
-The `Flux` then represents an infinite stream of GCP Pub/Sub messages
+The `Flux` then represents an infinite stream of Spring Framework on Google Cloud Pub/Sub messages
 coming in through the specified subscription. For unlimited demand, the
 Pub/Sub subscription will be polled regularly, at intervals determined
 by `pollingPeriodMs` parameter passed in when creating the `Flux`. For
@@ -637,9 +637,9 @@ project using the
 
 </div>
 
-The Spring Boot starter for GCP Pub/Sub auto-configures a `PubSubAdmin`
+The Spring Boot starter for Spring Framework on Google Cloud Pub/Sub auto-configures a `PubSubAdmin`
 object using the `GcpProjectIdProvider` and the `CredentialsProvider`
-auto-configured by the Spring Boot GCP Core starter.
+auto-configured by the Spring Framework on Google Cloud Core Starter.
 
 #### Creating a topic
 
