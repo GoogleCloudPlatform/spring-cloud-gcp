@@ -38,12 +38,12 @@
 	<properties>
 
 		<!-- Dependency versions -->
-		<spring-cloud-dependencies.version>2022.0.0-RC2</spring-cloud-dependencies.version>
+		<spring-cloud-dependencies.version>2022.0.0-RC3</spring-cloud-dependencies.version>
 		<spring-boot-dependencies.version>3.0.0</spring-boot-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.1</java-cfenv.version>
 		<spring-native.version>0.10.5</spring-native.version>
-		<micrometer-tracing.verison>1.0.0-RC1</micrometer-tracing.verison>
+		<micrometer-tracing.verison>1.0.0</micrometer-tracing.verison>
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>

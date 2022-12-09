@@ -10,7 +10,6 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.google.cloud</groupId>
     <artifactId>spring-cloud-gcp-data-datastore-basic-sample</artifactId>
     <name>Spring Cloud GCP Code Sample - Datastore Bookshelf</name>
 
@@ -39,7 +38,7 @@
         <dependency>
             <groupId>org.springframework.shell</groupId>
             <artifactId>spring-shell-starter</artifactId>
-            <version>3.0.0-M1</version>
+            <version>3.0.0-M3</version>
         </dependency>
 
         <!-- Test-related dependencies. -->
