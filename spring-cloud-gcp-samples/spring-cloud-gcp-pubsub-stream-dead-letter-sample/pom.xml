@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>spring-cloud-gcp-pubsub-stream-dead-letter-sample</artifactId>
-    <name>Spring Cloud GCP Code Sample - Pub/Sub Binder for Spring Cloud Stream with Dead Letter Topic</name>
+    <name>Spring Framework on Google Cloud Code Sample - Pub/Sub Binder for Spring Cloud Stream with Dead Letter Topic</name>
 
     <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
     <dependencyManagement>

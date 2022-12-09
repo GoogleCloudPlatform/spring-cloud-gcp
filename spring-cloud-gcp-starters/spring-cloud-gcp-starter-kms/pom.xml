@@ -9,7 +9,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>Spring Cloud GCP Starter - KMS</name>
+	<name>Spring Framework on Google Cloud Starter - KMS</name>
 	<artifactId>spring-cloud-gcp-starter-kms</artifactId>
 	<description>Starter for GCP Key Management Service</description>
 	<url>https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-kms</url>

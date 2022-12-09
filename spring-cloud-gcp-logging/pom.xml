@@ -13,7 +13,7 @@
 	</properties>
 
 	<artifactId>spring-cloud-gcp-logging</artifactId>
-	<name>Spring Cloud GCP Module - Stackdriver Logging</name>
+	<name>Spring Framework on Google Cloud Module - Stackdriver Logging</name>
 	<description>Spring Cloud GCP Stackdriver Logging</description>
 
 	<dependencies>

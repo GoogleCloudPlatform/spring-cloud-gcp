@@ -10,7 +10,7 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <name>Spring Cloud GCP Code Sample - Spring Data Firestore</name>
+  <name>Spring Framework on Google Cloud Code Sample - Spring Data Firestore</name>
   <artifactId>spring-cloud-gcp-data-firestore-sample</artifactId>
 
   <properties>
