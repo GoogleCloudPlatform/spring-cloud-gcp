@@ -45,17 +45,11 @@ fi
 
 cd googleapis
 
-## If $googleapis_folder does not exist, try "google/$client_lib_name/v1"
-# exit if neither exists
+## If $googleapis_folder does not exist, exit
 if [ ! -d "$googleapis_folder" ]
 then
   echo "Directory $googleapis_folder DOES NOT exists."
-  if [ ! -d "google/$client_lib_name/v1" ]
-  then
-    echo "Directory google/$client_lib_name/v1 DOES NOT exists."
-    exit
-  fi
-  googleapis_folder="google/$client_lib_name/v1"
+  exit
 fi
 # Modify BUILD.bazel file for library
 # Additional rule to load
