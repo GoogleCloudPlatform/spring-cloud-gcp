@@ -16,6 +16,8 @@ sudo apt-get -y install jq
 
 # download the monorepo, need to loop through metadata there
 git clone https://github.com/googleapis/google-cloud-java.git
+# get googleapis repo to compute googleapis_folder
+git clone https://github.com/googleapis/googleapis.git
 
 # switch to the specified release commitish
 cd ./google-cloud-java
@@ -63,17 +65,31 @@ for d in ./google-cloud-java/*java-*/; do
   # this changed in https://github.com/googleapis/google-cloud-java/pull/8755/
   module_versions=$(sed -n "/^${artifact_id}:/p" ./google-cloud-java/versions.txt)
 
-#  module=$(echo "$module_versions" | cut -f1 -d:)
   released_version=$(echo "$module_versions" | cut -f2 -d:)
-#  current_version=$(echo "$module_versions" | cut -f3 -d:)
+
+  # heuristic approach to compute googleapis path: uses first directory in
+  # googleapis matching "**/api_shortname/v[0-9]" (may bring any version)
+  googleapis_path=$(find googleapis/google -type d -name 'v1' | grep $api_shortname/v | head -n1 | cut -d'/' -f2-)
+  if [[ -z "$googleapis_path" ]] ; then
+    echo "$api_shortname" not found in googleapis
+    if [[ $api_shortname == "cloud"* ]] && [ -d "googleapis/google/cloud/${api_shortname#"cloud"}/v1" ];
+    then
+      api_shortname=${api_shortname#"cloud"}
+      googleapis_path="google/cloud/$api_shortname/v1"
+      echo "Found directory $googleapis_path for trimmed $api_shortname"
+    else
+      continue
+    fi
+  fi
 
   # infer googleapis folder from api_shortname:
   # this is not reliable needs manual verification,
   # will replace with metadata from google-cloud-java/artifact
-  googleapis_folder="google/cloud/$api_shortname/v1"
+  googleapis_folder="$googleapis_path"
   echo "$api_shortname, $googleapis_folder, $distribution_name:$released_version" >> $filename
   count=$((count+1))
 done
 echo "Total in-scope client libraries: $count"
 
 rm -rf google-cloud-java/
+rm -rf googleapis/
