@@ -66,8 +66,9 @@ class DatastoreBookshelfExampleIntegrationTests {
     this.bookRepository.save(book);
     Awaitility.await().atMost(15, TimeUnit.SECONDS).until(() -> this.bookRepository.count() == 1);
     String responseBody = sendRequest("/allbooksserialized", null, HttpMethod.GET);
-    assertThat(responseBody).contains("content\":[{\"id\":12345678}],\"pageable\":");
-    assertThat(responseBody).containsPattern("\"urlSafeCursor\":\".+\"");
+    assertThat(responseBody)
+        .contains("content\":[{\"id\":12345678}],\"pageable\":")
+        .containsPattern("\"urlSafeCursor\":\".+\"");;
   }
 
   @Test
@@ -76,8 +77,7 @@ class DatastoreBookshelfExampleIntegrationTests {
     String book2 = (String) this.shell.evaluate(() -> "save-book book2 author2 2000");
 
     String allBooks = (String) this.shell.evaluate(() -> "find-all-books");
-    assertThat(allBooks).containsSequence(book1);
-    assertThat(allBooks).containsSequence(book2);
+    assertThat(allBooks).containsSequence(book1).containsSequence(book2);
 
     assertThat(this.shell.evaluate(() -> "find-by-author author1")).isEqualTo("[" + book1 + "]");
 
