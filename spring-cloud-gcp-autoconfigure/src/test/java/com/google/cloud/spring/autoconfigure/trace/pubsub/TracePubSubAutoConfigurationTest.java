@@ -25,8 +25,6 @@ import static org.mockito.Mockito.verify;
 
 import brave.Tracing;
 import brave.handler.SpanHandler;
-import brave.http.HttpRequestParser;
-import brave.http.HttpTracingCustomizer;
 import brave.messaging.MessagingTracing;
 import com.google.api.core.ApiFunction;
 import com.google.cloud.pubsub.v1.Publisher;
@@ -79,8 +77,6 @@ class TracePubSubAutoConfigurationTest {
   void test() {
     this.contextRunner.run(
         context -> {
-          assertThat(context.getBean(HttpRequestParser.class)).isNotNull();
-          assertThat(context.getBean(HttpTracingCustomizer.class)).isNotNull();
           assertThat(
                   context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class))
               .isNotNull();

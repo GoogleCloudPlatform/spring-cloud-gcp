@@ -19,8 +19,6 @@ package com.google.cloud.spring.autoconfigure.trace;
 import brave.TracingCustomizer;
 import brave.baggage.BaggagePropagation;
 import brave.handler.SpanHandler;
-import brave.http.HttpRequestParser;
-import brave.http.HttpTracingCustomizer;
 import brave.propagation.B3Propagation;
 import brave.propagation.Propagation;
 import brave.propagation.stackdriver.StackdriverTracePropagation;
@@ -49,7 +47,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import zipkin2.CheckResult;
 import zipkin2.Span;
@@ -257,36 +254,6 @@ public class StackdriverTraceAutoConfiguration {
   public void closeScheduler() {
     if (this.defaultTraceSenderThreadPool != null) {
       this.defaultTraceSenderThreadPool.shutdown();
-    }
-  }
-
-  /** Configuration for Sleuth. */
-  @Configuration(proxyBeanMethods = false)
-  @ConditionalOnProperty(
-      name = "spring.sleuth.http.enabled",
-      havingValue = "true",
-      matchIfMissing = true)
-  @AutoConfigureBefore(BraveAutoConfiguration.class)
-  public static class StackdriverTraceHttpAutoconfiguration {
-    @Bean
-    @ConditionalOnProperty(
-        name = "spring.sleuth.http.legacy.enabled",
-        havingValue = "false",
-        matchIfMissing = true)
-    @ConditionalOnMissingBean
-    HttpRequestParser stackdriverHttpRequestParser() {
-      return new StackdriverHttpRequestParser();
-    }
-
-    @Bean
-    @ConditionalOnProperty(
-        name = "spring.sleuth.http.legacy.enabled",
-        havingValue = "false",
-        matchIfMissing = true)
-    @ConditionalOnMissingBean
-    HttpTracingCustomizer stackdriverHttpTracingCustomizer(
-        HttpRequestParser stackdriverHttpRequestParser) {
-      return builder -> builder.clientRequestParser(stackdriverHttpRequestParser);
     }
   }
 }

@@ -24,14 +24,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import brave.Tracer;
-import brave.Tracing;
 import brave.TracingCustomizer;
 import brave.handler.SpanHandler;
-import brave.http.HttpRequestParser;
-import brave.http.HttpTracingCustomizer;
 import brave.propagation.TraceContextOrSamplingFlags;
-import brave.sampler.Sampler;
-import brave.sampler.SamplerFunction;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfigurationTests.MultipleSpanHandlersConfig.GcpTraceService;
@@ -99,8 +94,6 @@ class StackdriverTraceAutoConfigurationTests {
             () -> SpanHandler.NOOP)
         .run(
             context -> {
-              assertThat(context.getBean(HttpRequestParser.class)).isNotNull();
-              assertThat(context.getBean(HttpTracingCustomizer.class)).isNotNull();
               assertThat(
                       context.getBean(
                           StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class))
@@ -176,8 +169,6 @@ class StackdriverTraceAutoConfigurationTests {
         .withUserConfiguration(MultipleSpanHandlersConfig.class)
         .run(
             context -> {
-              assertThat(context.getBean(HttpRequestParser.class)).isNotNull();
-              assertThat(context.getBean(HttpTracingCustomizer.class)).isNotNull();
               assertThat(context.getBean(ManagedChannel.class)).isNotNull();
               assertThat(context.getBeansOfType(Sender.class)).hasSize(2);
               assertThat(context.getBeansOfType(Sender.class))
