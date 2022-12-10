@@ -50,7 +50,7 @@ image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.goo
 
 This section describes how to run the demo and use it to extract text from some documents.
 
-=== 1. Setting up your GCP Project
+=== 1. Setting up your Google Cloud Project
 
 a. Create a Google Cloud Platform project with https://cloud.google.com/billing/docs/how-to/modify-project#enable-billing[billing enabled], if you don't have one already.
 
