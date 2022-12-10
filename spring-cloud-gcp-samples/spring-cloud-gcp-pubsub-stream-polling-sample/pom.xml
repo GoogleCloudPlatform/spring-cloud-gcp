@@ -13,7 +13,7 @@
     <artifactId>spring-cloud-gcp-pubsub-stream-polling-sample</artifactId>
     <name>Spring Framework on Google Cloud Code Sample - Pub/Sub Binder for Spring Cloud Stream Polling</name>
 
-    <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+    <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
     <dependencyManagement>
         <dependencies>
             <dependency>

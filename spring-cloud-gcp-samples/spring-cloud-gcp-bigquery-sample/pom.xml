@@ -13,7 +13,7 @@
     <name>Spring Framework on Google Cloud Code Sample - BigQuery</name>
     <artifactId>spring-cloud-gcp-bigquery-sample</artifactId>
 
-    <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+    <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
     <dependencyManagement>
         <dependencies>
             <dependency>

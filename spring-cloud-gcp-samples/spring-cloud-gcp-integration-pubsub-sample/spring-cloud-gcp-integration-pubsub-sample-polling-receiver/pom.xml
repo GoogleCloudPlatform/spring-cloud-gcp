@@ -14,7 +14,7 @@
 	<artifactId>spring-cloud-gcp-integration-pubsub-sample-polling-receiver</artifactId>
 	<name>Spring Framework on Google Cloud Code Sample - Spring Integration Pub/Sub Polling Receiver</name>
 
-	<!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+	<!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

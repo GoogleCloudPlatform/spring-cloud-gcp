@@ -48,7 +48,7 @@
 				<scope>import</scope>
 			</dependency>
 			
-			<!-- Overriding Guava from libraries-bom; Spring Cloud GCP does not require Java 7 support -->
+			<!-- Overriding Guava from libraries-bom; Spring Framework on Google Cloud does not require Java 7 support -->
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava-bom</artifactId>

@@ -19,7 +19,7 @@
     <module>spring-cloud-gcp-pubsub-stream-functional-sample-test</module>
   </modules>
 
-  <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+  <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
   <dependencyManagement>
     <dependencies>
       <dependency>

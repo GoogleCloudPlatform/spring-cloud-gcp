@@ -17,7 +17,7 @@
     <integration-test.tags.exclude>native</integration-test.tags.exclude>
   </properties>
 
-  <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+  <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
   <dependencyManagement>
     <dependencies>
       <dependency>

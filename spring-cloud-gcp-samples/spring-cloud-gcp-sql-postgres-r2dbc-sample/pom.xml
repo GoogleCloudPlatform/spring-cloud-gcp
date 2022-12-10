@@ -13,7 +13,7 @@
     <artifactId>spring-cloud-gcp-sql-postgres-r2dbc-sample</artifactId>
     <name>Spring Framework on Google Cloud Code Sample - R2DBC PostgreSQL</name>
 
-    <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+    <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
     <dependencyManagement>
         <dependencies>
             <dependency>
