@@ -12,7 +12,7 @@
 
 	<artifactId>spring-cloud-gcp-vision</artifactId>
 	<name>Spring Framework on Google Cloud Module - Vision</name>
-	<description>Spring Cloud GCP Vision Module</description>
+	<description>Spring Framework on Google Cloud Vision Module</description>
 
 	<dependencies>
 		<dependency>

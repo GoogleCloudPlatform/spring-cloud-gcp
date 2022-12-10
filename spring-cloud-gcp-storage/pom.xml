@@ -10,7 +10,7 @@
 	</parent>
 	<artifactId>spring-cloud-gcp-storage</artifactId>
 	<name>Spring Framework on Google Cloud Module - Storage</name>
-	<description>Spring Cloud GCP Storage Module</description>
+	<description>Spring Framework on Google Cloud Storage Module</description>
 	<properties>
 		<main.basedir>${basedir}/../..</main.basedir>
 		<it.storage>false</it.storage>

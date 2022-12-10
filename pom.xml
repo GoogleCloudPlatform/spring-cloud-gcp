@@ -9,7 +9,7 @@
 	<version>3.5.0-SNAPSHOT</version>
 
 	<name>Spring Framework on Google Cloud</name>
-	<description>Spring Cloud GCP</description>
+	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
 	<packaging>pom</packaging>
 

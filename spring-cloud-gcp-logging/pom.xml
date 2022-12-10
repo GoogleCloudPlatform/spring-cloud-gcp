@@ -14,7 +14,7 @@
 
 	<artifactId>spring-cloud-gcp-logging</artifactId>
 	<name>Spring Framework on Google Cloud Module - Stackdriver Logging</name>
-	<description>Spring Cloud GCP Stackdriver Logging</description>
+	<description>Spring Framework on Google Cloud Stackdriver Logging</description>
 
 	<dependencies>
 		<dependency>

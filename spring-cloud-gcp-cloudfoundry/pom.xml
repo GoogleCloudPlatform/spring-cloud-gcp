@@ -12,7 +12,7 @@
 
     <artifactId>spring-cloud-gcp-cloudfoundry</artifactId>
     <name>Spring Framework on Google Cloud Module - Cloud Foundry</name>
-    <description>Spring Cloud GCP Cloud Foundry Module</description>
+    <description>Spring Framework on Google Cloud Cloud Foundry Module</description>
 
     <properties>
         <jmockit.version>1.49</jmockit.version>
