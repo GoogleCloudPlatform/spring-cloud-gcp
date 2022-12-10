@@ -1,6 +1,6 @@
 = Google Cloud Pub/Sub Code Sample for Spring Integration and JSON
 
-This code sample demonstrates using the GCP Cloud Pub/Sub APIs with Spring Integration and JSON payloads.
+This code sample demonstrates using the Google Cloud Pub/Sub APIs with Spring Integration and JSON payloads.
 It demonstrates how one can create a Java object, serialize it to JSON, send it to a Cloud Pub/Sub topic, and then deserialize it on the receiver's end.
 
 == Setup & Configuration

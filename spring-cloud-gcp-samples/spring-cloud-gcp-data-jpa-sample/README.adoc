@@ -5,7 +5,7 @@ https://projects.spring.io/spring-data-jpa/[Spring Data JPA] with either the lin
 
 We will create an instance, a database within the instance, populate the database and then query it.
 
-You can also explore the GCP MySQL Starter in the https://codelabs.developers.google.com/codelabs/cloud-spring-petclinic-cloudsql/index.html[Spring Pet Clinic using Cloud SQL] codelab.
+You can also explore the Spring Framework on Google Cloud MySQL Starter in the https://codelabs.developers.google.com/codelabs/cloud-spring-petclinic-cloudsql/index.html[Spring Pet Clinic using Cloud SQL] codelab.
 
 == Setup
 

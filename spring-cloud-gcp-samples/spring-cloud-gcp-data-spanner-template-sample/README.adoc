@@ -5,7 +5,7 @@ Data Cloud Spanner module link:../../spring-cloud-gcp-starters/spring-cloud-gcp-
 
 == Running the example
 
-=== Running on GCP
+=== Running on Google Cloud
 
 image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample/README.adoc]
 

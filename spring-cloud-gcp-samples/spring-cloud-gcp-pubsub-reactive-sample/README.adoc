@@ -1,6 +1,6 @@
 = Google Cloud Reactive Pub/Sub Code Sample
 
-This code sample demonstrates consuming data from a GCP Cloud Pub/Sub subscription as a reactive stream.
+This code sample demonstrates consuming data from a Google Cloud Pub/Sub subscription as a reactive stream.
 
 Acquiring and processing the reactive stream is done in link:src/main/java/com/example/ReactiveController.java/[ReactiveController.java].
 Each message in the stream is acknowledged with `doOnNext()` operator.
@@ -39,7 +39,7 @@ Create a new subscription called `exampleSubscription` with all default paramete
   mvn spring-boot:run
 
 6. In a browser, open http://localhost:8080, or use the `Web Preview` button in Cloud Shell to preview the app on
-port 8080, and send some (`N`) messages to the GCP Pub/Sub topic.
+port 8080, and send some (`N`) messages to the Google Cloud Pub/Sub topic.
 The messages sent will all start with the message text provided, and end with a number from `0` to `N-1`.
 Observe that nothing is received by the sample application, since there are no subscribers yet.
 
