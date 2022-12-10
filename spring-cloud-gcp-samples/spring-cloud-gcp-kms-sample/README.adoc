@@ -1,6 +1,6 @@
-= Spring Cloud GCP KMS Sample Application
+= Spring Framework on Google Cloud KMS Sample Application
 
-This code sample demonstrates how to use the Spring Cloud GCP Key Management Service (KMS) integration.
+This code sample demonstrates how to use the Spring Framework on Google Cloud Key Management Service (KMS) integration.
 
 == Running the Sample
 

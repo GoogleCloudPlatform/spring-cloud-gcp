@@ -1,7 +1,7 @@
-= Spring Cloud GCP Cloud Datastore Starter Example
+= Spring Framework on Google Cloud Cloud Datastore Starter Example
 
 This code sample demonstrates how to read and write POJOs from Google Cloud Datastore using the Spring
-Data Cloud Datastore module link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-datastore[Spring Cloud GCP Cloud Datastore Starter].
+Data Cloud Datastore module link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-datastore[Spring Framework on Google Cloud Cloud Datastore Starter].
 
 == Running the example
 

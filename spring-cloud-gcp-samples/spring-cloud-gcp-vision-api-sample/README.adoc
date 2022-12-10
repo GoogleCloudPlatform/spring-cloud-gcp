@@ -1,6 +1,6 @@
 = Spring GCP Cloud Vision Sample Application
 
-This code sample shows how the Spring Cloud GCP integrations can simplify the use of Google Cloud Vision APIs.
+This code sample shows how the Spring Framework on Google Cloud integrations can simplify the use of Google Cloud Vision APIs.
 
 It uses the https://cloud.google.com/vision/[Google Cloud Vision API] to extract information about a picture.
 We take advantage of the link:/spring-cloud-gcp-starters/spring-cloud-gcp-starter[GCP Support starter] to retrieve the GCP credentials that we will use to authenticate with the API.
@@ -29,5 +29,5 @@ on port 8080, paste a URL to an image and press the `Submit` button.
 
 7. You will see a readable version of the Google Cloud Vision API response, which contains the words that Google Cloud Vision attributed to your image, as well as a percentage of certainty.
 
-In this case, by using the Spring Cloud GCP Core Boot starter, you can inject a `CredentialsProvider` object which you can pass to our API to provide the correct Google credentials.
+In this case, by using the Spring Framework on Google Cloud Core Boot starter, you can inject a `CredentialsProvider` object which you can pass to our API to provide the correct Google credentials.
 You don't need to set any environment variables for authentication to work.

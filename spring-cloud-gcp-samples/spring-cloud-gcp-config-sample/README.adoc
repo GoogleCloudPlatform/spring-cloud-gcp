@@ -1,6 +1,6 @@
-= Spring Cloud GCP Config Client Starter Code Sample
+= Spring Framework on Google Cloud Config Client Starter Code Sample
 
-This sample application demonstrates using the link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-config[Spring Cloud GCP Config Client Starter] in your code.
+This sample application demonstrates using the link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-config[Spring Framework on Google Cloud Config Client Starter] in your code.
 
 The same content is also available in the https://codelabs.developers.google.com/codelabs/cloud-spring-runtime-config/index.html[Dynamic configuration for Spring Boot applications] codelab.
 

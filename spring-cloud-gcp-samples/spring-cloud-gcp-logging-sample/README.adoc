@@ -1,7 +1,7 @@
-= Spring Cloud GCP Logging Starter Example
+= Spring Framework on Google Cloud Logging Starter Example
 
 This sample application demonstrates using the
-link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-logging[Spring Cloud GCP Logging
+link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-logging[Spring Framework on Google Cloud Logging
 Starter] to store and group logs by trace ID, with the Google Stackdriver Logging API.
 
 == Setup & Configuration

@@ -1,4 +1,4 @@
-= Spring Cloud GCP Spring Data Firestore Example
+= Spring Framework on Google Cloud Spring Data Firestore Example
 
 This code sample demonstrates how to use Spring Data with Google Cloud Firestore.
 The demo showcases usage of Firestore with Spring Data Reactive Repositories and Spring WebFlux.

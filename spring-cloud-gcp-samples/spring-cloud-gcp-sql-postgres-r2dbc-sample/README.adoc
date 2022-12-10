@@ -1,6 +1,6 @@
-= Spring Cloud GCP PostgreSQL R2DBC Sample
+= Spring Framework on Google Cloud PostgreSQL R2DBC Sample
 
-This code sample demonstrates how to connect to a PostgreSQL Google Cloud SQL instance using the link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-postgres-r2dbc[Spring Cloud GCP PostgreSQL R2DBC Starter].
+This code sample demonstrates how to connect to a PostgreSQL Google Cloud SQL instance using the link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-postgres-r2dbc[Spring Framework on Google Cloud PostgreSQL R2DBC Starter].
 
 You will create an instance, a database within the instance, populate the database and then query it.
 

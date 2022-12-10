@@ -2,7 +2,7 @@
 
 BigQuery is Google's fully managed, petabyte scale, low cost analytics data warehouse.
 
-This code sample shows how the Spring Cloud GCP integrations can simplify the use of https://cloud.google.com/bigquery/[Google Cloud BigQuery].
+This code sample shows how the Spring Framework on Google Cloud integrations can simplify the use of https://cloud.google.com/bigquery/[Google Cloud BigQuery].
 
 == Overview
 
