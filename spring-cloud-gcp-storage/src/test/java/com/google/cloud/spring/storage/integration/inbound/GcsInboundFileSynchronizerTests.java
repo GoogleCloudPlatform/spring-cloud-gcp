@@ -89,8 +89,8 @@ class GcsInboundFileSynchronizerTests {
 
     GcsInboundFileSynchronizingMessageSource adapter =
         new GcsInboundFileSynchronizingMessageSource(synchronizer);
-    adapter.setAutoCreateLocalDirectory(true);
     adapter.setLocalDirectory(localDirectory);
+    adapter.setAutoCreateLocalDirectory(true);
     adapter.setBeanFactory(mock(BeanFactory.class));
 
     adapter.setLocalFilter(new AcceptOnceFileListFilter<>());

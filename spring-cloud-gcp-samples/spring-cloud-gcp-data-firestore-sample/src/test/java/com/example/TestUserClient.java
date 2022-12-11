@@ -16,18 +16,13 @@
 
 package com.example;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -43,27 +38,25 @@ public class TestUserClient {
 
   public List<User> listUsers() {
     User[] users = restTemplate.getForObject("/users", User[].class);
-    assertThat(users).isNotNull();
+    Assertions.assertThat(users).isNotNull();
     return Arrays.asList(users);
   }
 
   public List<User> findUsersByAge(int age) {
     User[] users = restTemplate.getForObject("/users/age?age=" + age, User[].class);
-    assertThat(users).isNotNull();
+    Assertions.assertThat(users).isNotNull();
     return Arrays.asList(users);
   }
 
   public List<PhoneNumber> listPhoneNumbers(String name) {
     PhoneNumber[] phoneNumbers =
         restTemplate.getForObject("/users/phones?name=" + name, PhoneNumber[].class);
-    assertThat(phoneNumbers).isNotNull();
+    Assertions.assertThat(phoneNumbers).isNotNull();
     return Arrays.asList(phoneNumbers);
   }
 
   public void removeUserByName(String name) {
-    ResponseEntity<String> response =
-        restTemplate.getForEntity("/users/removeUser?name=" + name, String.class);
-    assertThat(response.getStatusCode()).isSameAs(HttpStatus.OK);
+    restTemplate.getForEntity("/users/removeUser?name=" + name, String.class);
   }
 
   public void removePhonesForUser(String name) {

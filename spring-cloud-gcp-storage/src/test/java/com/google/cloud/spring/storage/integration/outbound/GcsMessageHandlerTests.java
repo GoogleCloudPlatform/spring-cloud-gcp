@@ -73,23 +73,26 @@ class GcsMessageHandlerTests {
             BlobInfo.newBuilder(BlobId.of("testGcsBucket", "benfica.writing")).build();
     WriteChannel writeChannel = mock(WriteChannel.class);
     willAnswer(invocationOnMock -> writeChannel).given(GCS).writer(expectedCreateBlobInfo);
-    willAnswer(invocationOnMock -> 10).given(writeChannel).write(isA(ByteBuffer.class));
+    willAnswer(invocationOnMock -> 10).given(writeChannel).write(isA(ByteBuffer.class)); 
+    
 
+    
+    
     CopyWriter copyWriter = mock(CopyWriter.class);
+
     ArgumentCaptor<Storage.CopyRequest> copyRequestCaptor =
             ArgumentCaptor.forClass(Storage.CopyRequest.class);
+    
+    this.channel.send(new GenericMessage<Object>(testFile));
     willAnswer(invocationOnMock -> copyWriter).given(GCS).copy(isA(Storage.CopyRequest.class));
-
     willAnswer(invocationOnMock -> true)
             .given(GCS)
             .delete(BlobId.of("testGcsBucket", "benfica.writing"));
 
-    this.channel.send(new GenericMessage<Object>(testFile));
-
-    verify(GCS, times(1)).writer(expectedCreateBlobInfo);
     verify(GCS, times(1)).copy(copyRequestCaptor.capture());
+    verify(GCS, times(1)).writer(expectedCreateBlobInfo);
     verify(GCS, times(1)).delete(BlobId.of("testGcsBucket", "benfica.writing"));
-
+     
     Storage.CopyRequest expectedCopyRequest = copyRequestCaptor.getValue();
     assertThat(expectedCopyRequest.getSource())
             .isEqualTo(BlobId.of("testGcsBucket", "benfica.writing"));

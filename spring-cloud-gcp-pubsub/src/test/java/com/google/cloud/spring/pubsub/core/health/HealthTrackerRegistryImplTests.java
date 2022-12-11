@@ -150,15 +150,18 @@ class HealthTrackerRegistryImplTests {
         ProjectSubscriptionName.of(projectId, subscriptionId);
 
     HealthTracker healthTracker = healthTrackerRegistry.registerTracker(subscriptionName);
+    assertThat(healthTrackers.containsKey(subscriptionName)).isTrue();
+    assertThat(healthTrackers.get(subscriptionName)).isEqualTo(healthTracker);
+
     Subscriber subscriber = mock(Subscriber.class);
     when(subscriber.getSubscriptionNameString()).thenReturn(subscriptionName.toString());
-
+ 
     healthTrackerRegistry.addListener(subscriber);
 
     verify(subscriber, times(1)).addListener(captor.capture(), any());
 
-    assertThat(healthTrackers.containsKey(subscriptionName)).isTrue();
-    assertThat(healthTrackers.get(subscriptionName)).isEqualTo(healthTracker);
+   
+    
 
     ApiService.Listener listener = captor.getValue();
     listener.terminated(State.FAILED);

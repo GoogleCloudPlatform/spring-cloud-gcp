@@ -279,10 +279,10 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
     slice =
         this.testEntityRepository.findEntitiesWithCustomQuerySlice(
             "red", slice.getPageable().next());
-
+    results.addAll(slice.getContent());
     assertThat(slice.hasNext()).isTrue();
     assertThat(slice).hasSize(1);
-    results.addAll(slice.getContent());
+    
 
     slice =
         this.testEntityRepository.findEntitiesWithCustomQuerySlice(
@@ -334,8 +334,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
     assertThat(page).hasSize(2);
     assertThat(page.getTotalPages()).isEqualTo(2);
     assertThat(page.getTotalElements()).isEqualTo(3);
-    List<TestEntity> results = new ArrayList<>(page.getContent());
-
+    
     page =
         this.testEntityRepository.findEntitiesWithCustomQueryPage("red", page.getPageable().next());
 
@@ -343,6 +342,8 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
     assertThat(page).hasSize(1);
     assertThat(page.getTotalPages()).isEqualTo(2);
     assertThat(page.getTotalElements()).isEqualTo(3);
+    List<TestEntity> results = new ArrayList<>(page.getContent());
+
     results.addAll(page.getContent());
 
     assertThat(results)

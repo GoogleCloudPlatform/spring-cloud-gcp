@@ -29,13 +29,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 /** Sample application for Spring Data Firestore. */
 @SpringBootApplication
-@EnableTransactionManagement
 public class FirestoreSampleApplication {
 
   @Bean

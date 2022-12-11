@@ -31,14 +31,14 @@ class PubSubHeaderMapperTests {
 
   @Test
   void testFilterGoogleClientHeaders() {
-    PubSubHeaderMapper mapper = new PubSubHeaderMapper();
+    //PubSubHeaderMapper mapper = new PubSubHeaderMapper();
     Map<String, Object> originalHeaders = new HashMap<>();
     originalHeaders.put("my header", "pantagruel's nativity");
     MessageHeaders internalHeaders = new MessageHeaders(originalHeaders);
 
     originalHeaders.put("googclient_deliveryattempt", "header attached when DLQ is enabled");
     originalHeaders.put("googclient_anyHeader", "any other possible headers");
-
+    PubSubHeaderMapper mapper = new PubSubHeaderMapper();
     Map<String, String> filteredHeaders = new HashMap<>();
     mapper.fromHeaders(internalHeaders, filteredHeaders);
     assertThat(filteredHeaders).hasSize(1).containsEntry("my header", "pantagruel's nativity");
@@ -46,13 +46,13 @@ class PubSubHeaderMapperTests {
 
   @Test
   void testFilterHeaders() {
-    PubSubHeaderMapper mapper = new PubSubHeaderMapper();
+    //PubSubHeaderMapper mapper = new PubSubHeaderMapper();
     Map<String, Object> originalHeaders = new HashMap<>();
     originalHeaders.put("my header", "pantagruel's nativity");
     originalHeaders.put(NativeMessageHeaderAccessor.NATIVE_HEADERS, "deerhunter");
     originalHeaders.put(MessageHistory.HEADER_NAME, "I've traveled to the moon");
     MessageHeaders internalHeaders = new MessageHeaders(originalHeaders);
-
+    PubSubHeaderMapper mapper = new PubSubHeaderMapper();
     Map<String, String> filteredHeaders = new HashMap<>();
     mapper.fromHeaders(internalHeaders, filteredHeaders);
     assertThat(filteredHeaders).hasSize(1).containsEntry("my header", "pantagruel's nativity");

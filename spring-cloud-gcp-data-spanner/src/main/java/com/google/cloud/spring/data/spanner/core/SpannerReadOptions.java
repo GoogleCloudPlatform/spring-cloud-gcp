@@ -97,8 +97,6 @@ public class SpannerReadOptions extends AbstractSpannerRequestOptions<ReadOption
     for (ReadOption ro : this.getOptions()) {
       if (ro instanceof Options.ReadAndQueryOption) {
         query.addQueryOption((Options.ReadAndQueryOption) ro);
-      } else if (ro instanceof Options.ReadQueryUpdateTransactionOption) {
-        query.addQueryOption((Options.ReadQueryUpdateTransactionOption) ro);
       } else {
         throw new IllegalArgumentException(
             String.format("Can't convert %s to SpannerQueryOptions ", this));

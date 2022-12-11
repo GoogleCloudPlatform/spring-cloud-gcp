@@ -17,7 +17,7 @@ return flux
 	  message.getPubsubMessage().getData().toByteArray(), Charset.defaultCharset()));
 ----
 
-The other two classes (link:src/main/java/com/example/ReactiveReceiverApplication.java/[ReactiveReceiverApplication.java] and link:src/main/java/com/example/MessageSenderController.java/[MessageSenderController.java]) bootstrap the application and simplify publishing test data to a topic.
+The other two classes (link:src/main/java/com/example/ReactiveReceiverApplication.java/[ReactiveReceiverApplication.java] and link:src/main/java/com/example/MessageSenderController.java/[MessageSenderController.java]) boostrap the application and simplify publishing test data to a topic.
 
 == Setup & Configuration
 

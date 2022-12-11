@@ -1,3 +1,84 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
  * Copyright 2021-2021 the original author or authors.
  *
@@ -533,13 +614,14 @@ class PubSubConfigurationTests {
   void testDefaultPublisherProperties() {
     PubSubConfiguration.Batching batching = publisher.getBatching();
     PubSubConfiguration.Retry retrySettings = publisher.getRetry();
-
+    assertThat(retrySettings.getTotalTimeoutSeconds()).isNull();
+    
     pubSubConfiguration.initialize("projectId");
-
+    assertThat(batching.getElementCountThreshold()).isNull();
     assertThat(publisher.getExecutorThreads()).isEqualTo(4);
     assertThat(publisher.getEnableMessageOrdering()).isNull();
     assertThat(publisher.getEndpoint()).isNull();
-    assertThat(batching.getElementCountThreshold()).isNull();
+    //assertThat(batching.getElementCountThreshold()).isNull();
     assertThat(batching.getRequestByteThreshold()).isNull();
     assertThat(batching.getDelayThresholdSeconds()).isNull();
     assertThat(batching.getEnabled()).isNull();

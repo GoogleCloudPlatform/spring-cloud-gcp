@@ -36,7 +36,6 @@ import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Mutation;
-import com.google.cloud.spanner.Options;
 import com.google.cloud.spanner.Options.ReadOption;
 import com.google.cloud.spanner.ReadContext;
 import com.google.cloud.spanner.ReadOnlyTransaction;
@@ -448,19 +447,6 @@ class SpannerTemplateTests {
     SpannerReadOptions options = new SpannerReadOptions();
     spyTemplate.read(ParentEntity.class, keys, options);
     verify(spyTemplate, times(1)).read(eq(ParentEntity.class), same(keys), eq(options));
-    verify(this.databaseClient, times(1)).singleUse();
-  }
-
-  @Test
-  void findKeySetTestEagerConvertedOptions() {
-    SpannerTemplate spyTemplate = spy(this.spannerTemplate);
-    KeySet keys = KeySet.newBuilder().addKey(Key.of("key1")).addKey(Key.of("key2")).build();
-    SpannerReadOptions options =
-            new SpannerReadOptions()
-                    .addReadOption(mock(Options.ReadAndQueryOption.class))
-                    .addReadOption(mock(Options.ReadQueryUpdateTransactionOption.class));
-    spyTemplate.read(ParentEntity.class, keys, options);
-    verify(spyTemplate).read(eq(ParentEntity.class), same(keys), eq(options));
     verify(this.databaseClient, times(1)).singleUse();
   }
 
