@@ -26,7 +26,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 /**
@@ -40,8 +39,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 @AutoConfigureBefore(TransactionAutoConfiguration.class)
 public class DatastoreTransactionManagerAutoConfiguration {
 
+  private DatastoreTransactionManagerAutoConfiguration() {
+
+  }
+
   /** Configuration class. */
-  @Configuration(proxyBeanMethods = false)
+  @AutoConfiguration
   static class DatastoreTransactionManagerConfiguration {
 
     private final DatastoreProvider datastore;
