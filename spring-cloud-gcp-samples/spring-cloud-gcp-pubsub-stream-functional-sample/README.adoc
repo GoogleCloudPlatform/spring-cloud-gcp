@@ -1,6 +1,6 @@
 = Spring Cloud GCP Stream Binder for Pub/Sub Functional Code Sample
 
-This code sample demonstrates how to use the Spring Cloud Stream binder for Google Cloud Pub/Sub. For the legacy annotation-based style, see link:../spring-cloud-gcp-pubsub-stream-sample[this sample].
+This code sample demonstrates how to use the Spring Cloud Stream binder for Google Cloud Pub/Sub.
 
 The sample consists of two applications, a source (`spring-cloud-gcp-pubsub-stream-functional-sample-source`) and a sink (`spring-cloud-gcp-pubsub-stream-functional-sample-sink`). The source collects a user name and a message through a web form, adds the data along with the time of message creation to a `UserMessage` object, and sends it through Google Cloud Pub/Sub. The sink application simply logs the message.
 
