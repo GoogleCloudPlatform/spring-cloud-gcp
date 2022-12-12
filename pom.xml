@@ -36,6 +36,7 @@
 	</distributionManagement>
 
 	<properties>
+		<project.parent.version>${project.version}</project.parent.version>
 
 		<!-- Dependency versions -->
 		<spring-cloud-dependencies.version>2021.0.5</spring-cloud-dependencies.version>
