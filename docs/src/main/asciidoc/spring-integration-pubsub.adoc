@@ -1,7 +1,8 @@
 === Channel Adapters for Cloud Pub/Sub
+:project-root: ../../../..
 
 The channel adapters for Google Cloud Pub/Sub connect your Spring https://docs.spring.io/spring-integration/reference/html/channel.html[`MessageChannels`] to Google Cloud Pub/Sub topics and subscriptions.
-This enables messaging between different processes, applications or micro-services backed up by Google Cloud Pub/Sub.
+This enables messaging between different processes, applications or microservices backed up by Google Cloud Pub/Sub.
 
 The Spring Integration Channel Adapters for Google Cloud Pub/Sub are included in the `spring-cloud-gcp-pubsub` module and can be autoconfigured by using the `spring-cloud-gcp-starter-pubsub` module in combination with a Spring Integration dependency.
 
@@ -9,14 +10,16 @@ Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud 
 
 [source,xml]
 ----
-<dependency>
+<dependencies>
+  <dependency>
     <groupId>com.google.cloud</groupId>
     <artifactId>spring-cloud-gcp-starter-pubsub</artifactId>
-</dependency>
-<dependency>
+  </dependency>
+  <dependency>
     <groupId>org.springframework.integration</groupId>
     <artifactId>spring-integration-core</artifactId>
-</dependency>
+  </dependency>
+</dependencies>
 ----
 
 Gradle coordinates:
@@ -169,7 +172,7 @@ public void pubsubErrorHandler(Message<MessagingException> message) {
 }
 ----
 
-If you would prefer to manually ack or nack the message, you can do it by retrieving the header of the exception payload:
+If you preferred to manually ack or nack the message, you can do it by retrieving the header of the exception payload:
 
 [source,java]
 ----
@@ -271,7 +274,6 @@ If none is provided, the adapter waits indefinitely for a response.
 It is possible to set user-defined callbacks for the `publish()` call in `PubSubMessageHandler` through the `setSuccessCallback()` and `setFailureCallback()` methods (either one or both may be set).
 These give access to the Pub/Sub publish message ID in case of success, or the root cause exception in case of error.
 Both callbacks include the original message as the second argument.
-The old `setPublishCallback()` method that only gave access to message ID or root cause exception is deprecated and will be removed in a future release.
 
 [source,java,indent=0]
 ----

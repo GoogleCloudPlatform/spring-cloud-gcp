@@ -194,7 +194,7 @@ The method allows you to specify the location of the document and the output loc
 It returns a `CompletableFuture` containing `DocumentOcrResultSet` which contains the OCR content of the document.
 
 NOTE: Running OCR on a document is an operation that can take between several minutes to several hours depending on how large the document is.
-It is recommended to register callbacks to the returned ListenableFuture or ignore it and process the JSON output files at a later point in time using `readOcrOutputFile` or `readOcrOutputFileSet`.
+It is recommended to register callbacks to the returned CompletableFuture or ignore it and process the JSON output files at a later point in time using `readOcrOutputFile` or `readOcrOutputFileSet`.
 
 ==== Running OCR Example
 

@@ -9,7 +9,7 @@ Cloud Platform services.
 The channel adapters for Google Cloud Pub/Sub connect your Spring
 [`MessageChannels`](https://docs.spring.io/spring-integration/reference/html/channel.html)
 to Google Cloud Pub/Sub topics and subscriptions. This enables messaging
-between different processes, applications or micro-services backed up by
+between different processes, applications or microservices backed up by
 Google Cloud Pub/Sub.
 
 The Spring Integration Channel Adapters for Google Cloud Pub/Sub are
@@ -206,7 +206,7 @@ public void pubsubErrorHandler(Message<MessagingException> message) {
 }
 ```
 
-If you would prefer to manually ack or nack the message, you can do it
+If you preferred to manually ack or nack the message, you can do it
 by retrieving the header of the exception payload:
 
 ``` java
@@ -334,19 +334,11 @@ It is possible to set user-defined callbacks for the `publish()` call in
 `setFailureCallback()` methods (either one or both may be set). These
 give access to the Pub/Sub publish message ID in case of success, or the
 root cause exception in case of error. Both callbacks include the
-original message as the second argument. The old `setPublishCallback()`
-method that only gave access to message ID or root cause exception is
-deprecated and will be removed in a future release.
+original message as the second argument.
 
 ``` java
-adapter.setPublishCallback(
-    new ListenableFutureCallback<String>() {
-      @Override
-      public void onFailure(Throwable ex) {}
-
-      @Override
-      public void onSuccess(String result) {}
-    });
+adapter.setSuccessCallback((ackId, message) -> {});
+adapter.setFailureCallback((cause, message) -> {});
 ```
 
 To override the default topic you can use the `GcpPubSubHeaders.TOPIC`

@@ -251,20 +251,20 @@ the document.
 The `DocumentOcrTemplate` provides the following method for running OCR
 on a document saved in Google Cloud Storage:
 
-`ListenableFuture<DocumentOcrResultSet>
+`CompletableFuture<DocumentOcrResultSet>
 runOcrForDocument(GoogleStorageLocation document, GoogleStorageLocation
 outputFilePathPrefix)`
 
 The method allows you to specify the location of the document and the
 output location for where all the JSON output files will be saved in
-Google Cloud Storage. It returns a `ListenableFuture` containing
+Google Cloud Storage. It returns a `CompletableFuture` containing
 `DocumentOcrResultSet` which contains the OCR content of the document.
 
 <div class="note">
 
 Running OCR on a document is an operation that can take between several
 minutes to several hours depending on how large the document is. It is
-recommended to register callbacks to the returned ListenableFuture or
+recommended to register callbacks to the returned CompletableFuture or
 ignore it and process the JSON output files at a later point in time
 using `readOcrOutputFile` or `readOcrOutputFileSet`.
 
@@ -285,7 +285,7 @@ document.
         GoogleStorageLocation outputLocationPrefix = GoogleStorageLocation.forFolder(
                 "your-bucket", "output_folder/test.pdf/");
     
-        ListenableFuture<DocumentOcrResultSet> result =
+        CompletableFuture<DocumentOcrResultSet> result =
             this.documentOcrTemplate.runOcrForDocument(
                 document, outputLocationPrefix);
     
