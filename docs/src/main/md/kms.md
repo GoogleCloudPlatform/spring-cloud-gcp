@@ -38,7 +38,7 @@ libraries.
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Name                                        | Description                                                                                                                                                    | Required | Default value                                                                                                                                                                                                  |
 | `spring.cloud.gcp.kms.enabled`              | Enables or disables Google Cloud KMS autoconfiguration                                                                                                         | No       | `true`                                                                                                                                                                                                         |
-| `spring.cloud.gcp.kms.project-id`           | GCP project ID of the project using Cloud KMS APIs, if different from the one in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core).                   | No       | Project ID is typically inferred from [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/config/set) configuration.                                                                                      |
+| `spring.cloud.gcp.kms.project-id`           | Google Cloud project ID of the project using Cloud KMS APIs, if different from the one in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core).                   | No       | Project ID is typically inferred from [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/config/set) configuration.                                                                                      |
 | `spring.cloud.gcp.kms.credentials.location` | Credentials file location for authenticating with the Cloud KMS APIs, if different from the ones in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core) | No       | Inferred from [Application Default Credentials](https://cloud.google.com/docs/authentication/production), typically set by [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default). |
 
 ### Basic Usage
@@ -65,14 +65,14 @@ keys in your project:
 ``` 
  1. Shortest form - specify the key by key ring ID, and key ID.
  The project is inferred from the spring.cloud.gcp.kms.project-id if set, otherwise
- the default GCP project (such as using application-default-credentials) is used.
+ the default Google Cloud project (such as using application-default-credentials) is used.
  The location is assumed to be `global`.
 
  {key-ring-id}/{key-id}
 
  2. Short form - specify the key by location ID, key ring ID, and key ID.
  The project is inferred from the spring.cloud.gcp.kms.project-id if set, otherwise
- the default GCP project (such as using application-default-credentials) is used.
+ the default Google Cloud project (such as using application-default-credentials) is used.
 
  {location-id}/{key-ring-id}/{key-id}
 

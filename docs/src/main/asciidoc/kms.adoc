@@ -34,7 +34,7 @@ The following options may be configured with Spring Cloud GCP KMS libraries.
 |===========================================================================
 | Name | Description | Required | Default value
 | `spring.cloud.gcp.kms.enabled` | Enables or disables Google Cloud KMS autoconfiguration | No | `true`
-| `spring.cloud.gcp.kms.project-id` | GCP project ID of the project using Cloud KMS APIs, if different from the one in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>>. | No | Project ID is typically inferred from https://cloud.google.com/sdk/gcloud/reference/config/set[`gcloud`] configuration.
+| `spring.cloud.gcp.kms.project-id` | Google Cloud project ID of the project using Cloud KMS APIs, if different from the one in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>>. | No | Project ID is typically inferred from https://cloud.google.com/sdk/gcloud/reference/config/set[`gcloud`] configuration.
 | `spring.cloud.gcp.kms.credentials.location` | Credentials file location for authenticating with the Cloud KMS APIs, if different from the ones in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>> | No | Inferred from https://cloud.google.com/docs/authentication/production[Application Default Credentials], typically set by https://cloud.google.com/sdk/gcloud/reference/auth/application-default[`gcloud`].
 |===========================================================================
 
@@ -55,14 +55,14 @@ Spring Cloud GCP offers the following key syntax to specify Cloud KMS keys in yo
 ----
  1. Shortest form - specify the key by key ring ID, and key ID.
  The project is inferred from the spring.cloud.gcp.kms.project-id if set, otherwise
- the default GCP project (such as using application-default-credentials) is used.
+ the default Google Cloud project (such as using application-default-credentials) is used.
  The location is assumed to be `global`.
 
  {key-ring-id}/{key-id}
 
  2. Short form - specify the key by location ID, key ring ID, and key ID.
  The project is inferred from the spring.cloud.gcp.kms.project-id if set, otherwise
- the default GCP project (such as using application-default-credentials) is used.
+ the default Google Cloud project (such as using application-default-credentials) is used.
 
  {location-id}/{key-ring-id}/{key-id}
 

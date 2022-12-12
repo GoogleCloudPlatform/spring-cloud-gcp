@@ -48,7 +48,7 @@ To use PostgreSQL:
 #### Prerequisites
 
 In order to use the Spring Boot Starters for Google Cloud SQL, the
-Google Cloud SQL API must be enabled in your GCP project.
+Google Cloud SQL API must be enabled in your Google Cloud project.
 
 To do that, go to the [API library
 page](https://console.cloud.google.com/apis/library) of the Google Cloud
@@ -171,7 +171,7 @@ To use PostgreSQL with Spring Boot 2.7 (the latest version of the Postgres R2DBC
 #### Prerequisites
 
 In order to use the Spring Boot Starters for Google Cloud SQL, the
-Google Cloud SQL API must be enabled in your GCP project.
+Google Cloud SQL API must be enabled in your Google Cloud project.
 
 To do that, go to the [API library
 page](https://console.cloud.google.com/apis/library) of the Google Cloud

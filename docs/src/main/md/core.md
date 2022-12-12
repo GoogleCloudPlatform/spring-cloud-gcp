@@ -1,7 +1,7 @@
 ## Spring Cloud GCP Core
 
 Each Spring Cloud GCP module uses `GcpProjectIdProvider` and
-`CredentialsProvider` to get the GCP project ID and access credentials.
+`CredentialsProvider` to get the Google Cloud project ID and access credentials.
 
 Spring Cloud GCP provides a Spring Boot starter to auto-configure the
 core components.
@@ -149,7 +149,7 @@ in the `spring.cloud.gcp.credentials.scopes` property.
 `spring.cloud.gcp.credentials.scopes` is a comma-delimited list of
 [Google OAuth2
 scopes](https://developers.google.com/identity/protocols/googlescopes)
-for Google Cloud Platform services that the credentials returned by the
+for Google Cloud services that the credentials returned by the
 provided `CredentialsProvider` support.
 
     spring.cloud.gcp.credentials.scopes=https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/sqlservice.admin

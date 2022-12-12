@@ -1,6 +1,6 @@
 ## Cloud Monitoring
 
-Google Cloud Platform provides a service called [Cloud
+Google Cloud provides a service called [Cloud
 Monitoring](https://cloud.google.com/monitoring/), and
 [Micrometer](https://micrometer.io/docs/registry/stackdriver) can be
 used with it to easily instrument Spring Boot applications for

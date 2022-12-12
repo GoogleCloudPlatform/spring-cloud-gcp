@@ -148,7 +148,7 @@ Spring Cloud GCP provides sample applications which demonstrate how to use every
 The table below highlights several samples of the most commonly used integrations in Spring Cloud GCP.
 
 |===
-| GCP Integration | Sample Application
+| Google Cloud Integration | Sample Application
 
 | Cloud Pub/Sub
 | https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-sample[spring-cloud-gcp-pubsub-sample]
@@ -184,7 +184,7 @@ https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-g
 |===
 
 Each sample application demonstrates how to use Spring Cloud GCP libraries in context and how to setup the dependencies for the project.
-The applications are fully functional and can be deployed to Google Cloud Platform as well.
+The applications are fully functional and can be deployed to Google Cloud as well.
 If you are interested, you may consult guides for https://codelabs.developers.google.com/codelabs/cloud-app-engine-springboot/index.html[deploying an application to AppEngine] and https://codelabs.developers.google.com/codelabs/cloud-springboot-kubernetes/index.html[to Google Kubernetes Engine].
 
 ==== Codelabs

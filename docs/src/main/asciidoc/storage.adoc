@@ -112,7 +112,7 @@ The Spring Boot Starter for Google Cloud Storage provides the following configur
 
 |===
 | Name | Description | Required | Default value
-| `spring.cloud.gcp.storage.enabled` | Enables the GCP storage APIs. | No | `true`
+| `spring.cloud.gcp.storage.enabled` | Enables the Google Cloud storage APIs. | No | `true`
 | `spring.cloud.gcp.storage.auto-create-files` | Creates files and buckets on Google Cloud Storage when writes are made to non-existent files | No | `true`
 | `spring.cloud.gcp.storage.credentials.location` | OAuth2 credentials for authenticating with the Google Cloud Storage API, if different from the ones in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>> | No |
 | `spring.cloud.gcp.storage.credentials.encoded-key` |
