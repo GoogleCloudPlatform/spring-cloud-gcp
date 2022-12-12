@@ -17,12 +17,14 @@
 package com.google.cloud.spring.stream.binder.pubsub.properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.cloud.stream.binder.Binder;
@@ -46,11 +48,17 @@ import org.springframework.messaging.MessageChannel;
  */
 class PubSubExtendedBindingsPropertiesTests {
 
+  private Binder<MessageChannel, ?, ?> binder;
+
+  @BeforeEach
+  void init() {
+    DefaultBinderFactory binderFactory = createMockExtendedBinderFactory();
+    binder = binderFactory.getBinder(null,
+        MessageChannel.class);
+  }
+
   @Test
   void testExtendedDefaultProducerProperties() {
-    DefaultBinderFactory binderFactory = createMockExtendedBinderFactory();
-    Binder<MessageChannel, ?, ?> binder = binderFactory.getBinder(null,
-        MessageChannel.class);
     PubSubProducerProperties producerProperties = (PubSubProducerProperties) ((ExtendedPropertiesBinder<?, ?, ?>) binder)
         .getExtendedProducerProperties("default-output");
     assertThat(producerProperties.isAutoCreateResources()).isTrue();
@@ -60,9 +68,6 @@ class PubSubExtendedBindingsPropertiesTests {
 
   @Test
   void testExtendedDefaultConsumerProperties() {
-    DefaultBinderFactory binderFactory = createMockExtendedBinderFactory();
-    Binder<MessageChannel, ?, ?> binder = binderFactory.getBinder(null,
-        MessageChannel.class);
     PubSubConsumerProperties consumerProperties = (PubSubConsumerProperties) ((ExtendedPropertiesBinder<?, ?, ?>) binder)
         .getExtendedConsumerProperties("default-input");
     assertThat(consumerProperties.isAutoCreateResources()).isTrue();
@@ -93,7 +98,7 @@ class PubSubExtendedBindingsPropertiesTests {
     @SuppressWarnings("rawtypes")
     @Bean
     public Binder<?, ?, ?> extendedPropertiesBinder() {
-      Binder mock = Mockito.mock(Binder.class,
+      Binder mock = mock(Binder.class,
           Mockito.withSettings().defaultAnswer(Mockito.RETURNS_MOCKS)
               .extraInterfaces(ExtendedPropertiesBinder.class));
       ConfigurableEnvironment environment = new StandardEnvironment();
