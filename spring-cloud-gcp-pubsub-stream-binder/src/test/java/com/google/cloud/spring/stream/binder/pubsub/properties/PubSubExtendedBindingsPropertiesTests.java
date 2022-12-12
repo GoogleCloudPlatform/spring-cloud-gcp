@@ -24,7 +24,7 @@ import com.google.cloud.spring.pubsub.integration.AckMode;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.cloud.stream.binder.Binder;
@@ -48,10 +48,10 @@ import org.springframework.messaging.MessageChannel;
  */
 class PubSubExtendedBindingsPropertiesTests {
 
-  private Binder<MessageChannel, ?, ?> binder;
+  private static Binder<MessageChannel, ?, ?> binder;
 
-  @BeforeEach
-  void init() {
+  @BeforeAll
+  static void init() {
     DefaultBinderFactory binderFactory = createMockExtendedBinderFactory();
     binder = binderFactory.getBinder(null,
         MessageChannel.class);
@@ -78,7 +78,7 @@ class PubSubExtendedBindingsPropertiesTests {
     assertThat(consumerProperties.getDeadLetterPolicy()).isNull();
   }
 
-  private DefaultBinderFactory createMockExtendedBinderFactory() {
+  private static DefaultBinderFactory createMockExtendedBinderFactory() {
     BinderTypeRegistry binderTypeRegistry = createMockExtendedBinderTypeRegistry();
     return new DefaultBinderFactory(
         Collections.singletonMap("mock",
@@ -86,7 +86,7 @@ class PubSubExtendedBindingsPropertiesTests {
         binderTypeRegistry, null);
   }
 
-  private DefaultBinderTypeRegistry createMockExtendedBinderTypeRegistry() {
+  private static DefaultBinderTypeRegistry createMockExtendedBinderTypeRegistry() {
     return new DefaultBinderTypeRegistry(
         Collections.singletonMap("mock", new BinderType("mock",
             new Class[]{ MockExtendedBinderConfiguration.class })));
