@@ -9,7 +9,7 @@ git clone https://github.com/googleapis/googleapis.git
 git clone https://github.com/googleapis/gapic-generator-java.git
 # get into gapic and checkout branch to use
 cd gapic-generator-java
-git checkout autoconfig-gen-draft2
+git checkout replace-shared-w-autoconfig
 # go back to previous folder
 cd -
 

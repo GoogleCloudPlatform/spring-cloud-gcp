@@ -94,8 +94,8 @@ else
 
 fi
 
-# run google-java-format on generated code
-./../mvnw fmt:format
+## run google-java-format on generated code
+#./../mvnw fmt:format
 
 # remove downloaded repos
 cd ../spring-cloud-generator
