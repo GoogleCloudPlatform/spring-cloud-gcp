@@ -386,7 +386,7 @@ public class BigQueryTemplate implements BigQueryOperations {
   }
 
   private CompletableFuture<Job> createJobFuture(Job pendingJob) {
-    // Prepare the polling task for the ListenableFuture result returned to end-user
+    // Prepare the polling task for the CompletableFuture result returned to end-user
     CompletableFuture<Job> result = new CompletableFuture<>();
     ScheduledFuture<?> scheduledFuture =
         taskScheduler.scheduleAtFixedRate(

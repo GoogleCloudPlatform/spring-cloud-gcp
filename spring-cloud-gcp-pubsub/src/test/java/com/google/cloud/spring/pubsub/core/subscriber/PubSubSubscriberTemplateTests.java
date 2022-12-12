@@ -206,20 +206,20 @@ class PubSubSubscriberTemplateTests {
     verify(this.subscriber).startAsync();
     verify(this.consumer).accept(this.message.capture());
 
-    TestListenableFutureCallback testListenableFutureCallback = new TestListenableFutureCallback();
+    TestCompletableFutureCallback completableFutureCallback = new TestCompletableFutureCallback();
 
     CompletableFuture<Void> completableFuture = this.message.getValue().ack();
 
     assertThat(completableFuture).isNotNull();
 
-    completableFuture.whenComplete(testListenableFutureCallback);
+    completableFuture.whenComplete(completableFutureCallback);
     completableFuture.get(10L, TimeUnit.SECONDS);
 
     assertThat(completableFuture.isDone()).isTrue();
 
     verify(this.ackReplyConsumer).ack();
 
-    assertThat(testListenableFutureCallback.getThrowable()).isNull();
+    assertThat(completableFutureCallback.getThrowable()).isNull();
   }
 
   @Test
@@ -230,20 +230,20 @@ class PubSubSubscriberTemplateTests {
     verify(this.subscriber).startAsync();
     verify(this.consumer).accept(this.message.capture());
 
-    TestListenableFutureCallback testListenableFutureCallback = new TestListenableFutureCallback();
+    TestCompletableFutureCallback completableFutureCallback = new TestCompletableFutureCallback();
 
     CompletableFuture<Void> completableFuture = this.message.getValue().nack();
 
     assertThat(completableFuture).isNotNull();
 
-    completableFuture.whenComplete(testListenableFutureCallback);
+    completableFuture.whenComplete(completableFutureCallback);
     completableFuture.get(10L, TimeUnit.SECONDS);
 
     assertThat(completableFuture.isDone()).isTrue();
 
     verify(this.ackReplyConsumer).nack();
 
-    assertThat(testListenableFutureCallback.getThrowable()).isNull();
+    assertThat(completableFutureCallback.getThrowable()).isNull();
   }
 
   @Test
@@ -262,20 +262,20 @@ class PubSubSubscriberTemplateTests {
     assertThat(this.convertedMessage.getValue().getProjectSubscriptionName().getSubscription())
         .isEqualTo("sub1");
 
-    TestListenableFutureCallback testListenableFutureCallback = new TestListenableFutureCallback();
+    TestCompletableFutureCallback completableFutureCallback = new TestCompletableFutureCallback();
 
     CompletableFuture<Void> completableFuture = this.convertedMessage.getValue().ack();
 
     assertThat(completableFuture).isNotNull();
 
-    completableFuture.whenComplete(testListenableFutureCallback);
+    completableFuture.whenComplete(completableFutureCallback);
     completableFuture.get(10L, TimeUnit.SECONDS);
 
     assertThat(completableFuture.isDone()).isTrue();
 
     verify(this.ackReplyConsumer).ack();
 
-    assertThat(testListenableFutureCallback.getThrowable()).isNull();
+    assertThat(completableFutureCallback.getThrowable()).isNull();
   }
 
   @Test
@@ -294,20 +294,20 @@ class PubSubSubscriberTemplateTests {
     assertThat(this.convertedMessage.getValue().getProjectSubscriptionName().getSubscription())
         .isEqualTo("sub1");
 
-    TestListenableFutureCallback testListenableFutureCallback = new TestListenableFutureCallback();
+    TestCompletableFutureCallback completableFutureCallback = new TestCompletableFutureCallback();
 
     CompletableFuture<Void> completableFuture = this.convertedMessage.getValue().nack();
 
     assertThat(completableFuture).isNotNull();
 
-    completableFuture.whenComplete(testListenableFutureCallback);
+    completableFuture.whenComplete(completableFutureCallback);
     completableFuture.get(10L, TimeUnit.SECONDS);
 
     assertThat(completableFuture.isDone()).isTrue();
 
     verify(this.ackReplyConsumer).nack();
 
-    assertThat(testListenableFutureCallback.getThrowable()).isNull();
+    assertThat(completableFutureCallback.getThrowable()).isNull();
   }
 
   @Test
@@ -338,18 +338,18 @@ class PubSubSubscriberTemplateTests {
     AcknowledgeablePubsubMessage acknowledgeablePubsubMessage = result.get(0);
     assertThat(acknowledgeablePubsubMessage.getAckId()).isNotNull();
 
-    TestListenableFutureCallback testListenableFutureCallback = new TestListenableFutureCallback();
+    TestCompletableFutureCallback completableFutureCallback = new TestCompletableFutureCallback();
 
     CompletableFuture<Void> completableFuture = this.pubSubSubscriberTemplate.ack(result);
 
     assertThat(completableFuture).isNotNull();
 
-    completableFuture.whenComplete(testListenableFutureCallback);
+    completableFuture.whenComplete(completableFutureCallback);
     completableFuture.get(10L, TimeUnit.SECONDS);
 
     assertThat(completableFuture.isDone()).isTrue();
 
-    assertThat(testListenableFutureCallback.getThrowable()).isNull();
+    assertThat(completableFutureCallback.getThrowable()).isNull();
   }
 
   @Test
@@ -365,18 +365,18 @@ class PubSubSubscriberTemplateTests {
     AcknowledgeablePubsubMessage acknowledgeablePubsubMessage = result.get(0);
     assertThat(acknowledgeablePubsubMessage.getAckId()).isNotNull();
 
-    TestListenableFutureCallback testListenableFutureCallback = new TestListenableFutureCallback();
+    TestCompletableFutureCallback completableFutureCallback = new TestCompletableFutureCallback();
 
     CompletableFuture<Void> completableFuture = this.pubSubSubscriberTemplate.nack(result);
 
     assertThat(completableFuture).isNotNull();
 
-    completableFuture.whenComplete(testListenableFutureCallback);
+    completableFuture.whenComplete(completableFutureCallback);
     completableFuture.get(10L, TimeUnit.SECONDS);
 
     assertThat(completableFuture.isDone()).isTrue();
 
-    assertThat(testListenableFutureCallback.getThrowable()).isNull();
+    assertThat(completableFutureCallback.getThrowable()).isNull();
   }
 
   @Test
@@ -394,16 +394,16 @@ class PubSubSubscriberTemplateTests {
 
     assertThat(combinedMessages).hasSize(2);
 
-    TestListenableFutureCallback testListenableFutureCallback = new TestListenableFutureCallback();
+    TestCompletableFutureCallback completableFutureCallback = new TestCompletableFutureCallback();
 
     CompletableFuture<Void> completableFuture = this.pubSubSubscriberTemplate.ack(combinedMessages);
     assertThat(completableFuture).isNotNull();
 
-    completableFuture.whenComplete(testListenableFutureCallback);
+    completableFuture.whenComplete(completableFutureCallback);
     completableFuture.get(10L, TimeUnit.SECONDS);
 
     assertThat(completableFuture.isDone()).isTrue();
-    assertThat(testListenableFutureCallback.getThrowable()).isNull();
+    assertThat(completableFutureCallback.getThrowable()).isNull();
     verify(this.ackCallable, times(2)).futureCall(any(AcknowledgeRequest.class));
     verify(this.ackApiFuture, times(2)).addListener(any(), same(mockExecutor));
   }
@@ -427,19 +427,19 @@ class PubSubSubscriberTemplateTests {
     AcknowledgeablePubsubMessage acknowledgeablePubsubMessage = result.get(0);
     assertThat(acknowledgeablePubsubMessage.getAckId()).isNotNull();
 
-    TestListenableFutureCallback ackTestListenableFutureCallback =
-        new TestListenableFutureCallback();
+    TestCompletableFutureCallback completableFutureCallback =
+        new TestCompletableFutureCallback();
 
     CompletableFuture<Void> completableFuture = this.pubSubSubscriberTemplate.ack(result);
 
     assertThat(completableFuture).isNotNull();
 
-    completableFuture.whenComplete(ackTestListenableFutureCallback);
+    completableFuture.whenComplete(completableFutureCallback);
     completableFuture.get(10L, TimeUnit.SECONDS);
 
     assertThat(completableFuture.isDone()).isTrue();
 
-    assertThat(ackTestListenableFutureCallback.getThrowable()).isNull();
+    assertThat(completableFutureCallback.getThrowable()).isNull();
   }
 
   @Test
@@ -586,7 +586,7 @@ class PubSubSubscriberTemplateTests {
     verify(this.pubSubSubscriberTemplate, never()).ack(any());
   }
 
-  private static class TestListenableFutureCallback implements BiConsumer<Void, Throwable> {
+  private static class TestCompletableFutureCallback implements BiConsumer<Void, Throwable> {
 
     private Throwable throwable;
 

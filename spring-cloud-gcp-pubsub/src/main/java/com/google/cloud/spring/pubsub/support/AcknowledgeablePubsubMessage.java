@@ -39,7 +39,7 @@ public interface AcknowledgeablePubsubMessage extends BasicAcknowledgeablePubsub
    *
    * @param ackDeadlineSeconds the new ack deadline in seconds. A deadline of 0 effectively nacks
    *     the message.
-   * @return {@code ListenableFuture<Void>}
+   * @return {@code CompletableFuture<Void>}
    * @since 1.1
    */
   CompletableFuture<Void> modifyAckDeadline(int ackDeadlineSeconds);

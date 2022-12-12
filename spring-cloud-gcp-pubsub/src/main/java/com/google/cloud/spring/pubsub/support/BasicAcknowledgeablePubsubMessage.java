@@ -44,14 +44,14 @@ public interface BasicAcknowledgeablePubsubMessage {
   /**
    * Acknowledge (ack) the message asynchronously.
    *
-   * @return {@code ListenableFuture<Void>}}
+   * @return {@code CompletableFuture<Void>}}
    */
   CompletableFuture<Void> ack();
 
   /**
    * Negatatively achnowledge (nack) the message asynchronously.
    *
-   * @return {@code ListenableFuture<Void>}}
+   * @return {@code CompletableFuture<Void>}}
    */
   CompletableFuture<Void> nack();
 }

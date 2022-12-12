@@ -199,7 +199,7 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
    * Pulls messages asynchronously, on demand, using the pull request in argument.
    *
    * @param pullRequest pull request containing the subscription name
-   * @return the ListenableFuture for the asynchronous execution, returning the list of {@link
+   * @return the CompletableFuture for the asynchronous execution, returning the list of {@link
    *     AcknowledgeablePubsubMessage} containing the ack ID, subscription and acknowledger
    */
   private CompletableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(PullRequest pullRequest) {
@@ -495,7 +495,7 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
             == 1,
         "The project id of all messages must match.");
 
-    CompletableFuture<Void> settableListenableFuture = new CompletableFuture<>();
+    CompletableFuture<Void> completableFuture = new CompletableFuture<>();
     int numExpectedFutures = groupedMessages.size();
     AtomicInteger numCompletedFutures = new AtomicInteger();
 
@@ -518,16 +518,16 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
 
                 private void processResult(Throwable throwable) {
                   if (throwable != null) {
-                    settableListenableFuture.completeExceptionally(throwable);
+                    completableFuture.completeExceptionally(throwable);
                   } else if (numCompletedFutures.incrementAndGet() == numExpectedFutures) {
-                    settableListenableFuture.complete(null);
+                    completableFuture.complete(null);
                   }
                 }
               },
               this.ackExecutor);
         });
 
-    return settableListenableFuture;
+    return completableFuture;
   }
 
   private SubscriberStub getSubscriberStub(String subscription) {
@@ -627,30 +627,30 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
 
     @Override
     public CompletableFuture<Void> ack() {
-      CompletableFuture<Void> settableListenableFuture = new CompletableFuture<>();
+      CompletableFuture<Void> completableFuture = new CompletableFuture<>();
 
       try {
         this.ackReplyConsumer.ack();
-        settableListenableFuture.complete(null);
+        completableFuture.complete(null);
       } catch (Exception e) {
-        settableListenableFuture.completeExceptionally(e);
+        completableFuture.completeExceptionally(e);
       }
 
-      return settableListenableFuture;
+      return completableFuture;
     }
 
     @Override
     public CompletableFuture<Void> nack() {
-      CompletableFuture<Void> settableListenableFuture = new CompletableFuture<>();
+      CompletableFuture<Void> completableFuture = new CompletableFuture<>();
 
       try {
         this.ackReplyConsumer.nack();
-        settableListenableFuture.complete(null);
+        completableFuture.complete(null);
       } catch (Exception e) {
-        settableListenableFuture.completeExceptionally(e);
+        completableFuture.completeExceptionally(e);
       }
 
-      return settableListenableFuture;
+      return completableFuture;
     }
 
     @Override

@@ -53,7 +53,7 @@ public interface BigQueryOperations {
    *    Field.of("County", StandardSQLTypeName.STRING)
    * );
    *
-   * ListenableFuture<Job> bigQueryJobFuture =
+   * CompletableFuture<Job> bigQueryJobFuture =
    *     bigQueryTemplate.writeDataToTable(
    *          TABLE_NAME, dataFile.getInputStream(), FormatOptions.csv(), schema);
    * }</pre>

@@ -61,7 +61,7 @@ public class BigQuerySampleConfiguration {
     GatewayProxyFactoryBean factoryBean = new GatewayProxyFactoryBean(BigQueryFileGateway.class);
     factoryBean.setDefaultRequestChannel(bigQueryWriteDataChannel());
     factoryBean.setDefaultReplyChannel(bigQueryJobReplyChannel());
-    // Ensures that BigQueryFileGateway does not return double-wrapped ListenableFutures
+    // Ensures that BigQueryFileGateway does not return double-wrapped CompletableFutures
     factoryBean.setAsyncExecutor(null);
     return factoryBean;
   }
