@@ -1,5 +1,4 @@
 === Channel Adapters for Cloud Pub/Sub
-:project-root: ../../../..
 
 The channel adapters for Google Cloud Pub/Sub connect your Spring https://docs.spring.io/spring-integration/reference/html/channel.html[`MessageChannels`] to Google Cloud Pub/Sub topics and subscriptions.
 This enables messaging between different processes, applications or microservices backed up by Google Cloud Pub/Sub.
