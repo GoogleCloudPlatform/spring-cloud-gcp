@@ -450,8 +450,7 @@ public class SpannerPersistentEntityImpl<T>
       SpannerPersistentProperty[] primaryKeyProperties = owner.getPrimaryKeyProperties();
 
       Iterator<Object> partsIterator;
-      if (value instanceof Key) {
-        Key keyValue = (Key) value;
+      if (value instanceof Key keyValue) {
         if (keyValue.size() != primaryKeyProperties.length) {
           throw new SpannerDataException(
               "The number of key parts is not equal to the number of primary key properties");

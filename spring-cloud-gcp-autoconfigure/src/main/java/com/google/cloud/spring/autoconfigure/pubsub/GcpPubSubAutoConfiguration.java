@@ -60,7 +60,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,7 +118,7 @@ public class GcpPubSubAutoConfiguration {
 
   private ExecutorProvider globalExecutorProvider;
 
-  private ObjectProvider<SelectiveSchedulerThreadNameProvider> selectiveSchedulerThreadNameProvider;
+  private final ObjectProvider<SelectiveSchedulerThreadNameProvider> selectiveSchedulerThreadNameProvider;
 
   public GcpPubSubAutoConfiguration(
       GcpPubSubProperties gcpPubSubProperties,
@@ -368,8 +367,7 @@ public class GcpPubSubAutoConfiguration {
     factory.setEnableMessageOrdering(gcpPubSubProperties.getPublisher().getEnableMessageOrdering());
     factory.setEndpoint(gcpPubSubProperties.getPublisher().getEndpoint());
 
-    List<PublisherCustomizer> customizers = customizersProvider.orderedStream()
-        .collect(Collectors.toList());
+    List<PublisherCustomizer> customizers = customizersProvider.orderedStream().toList();
     Collections.reverse(customizers); // highest priority customizer needs to be last
     factory.setCustomizers(customizers);
 
