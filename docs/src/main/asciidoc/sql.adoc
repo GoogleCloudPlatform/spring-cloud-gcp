@@ -2,7 +2,7 @@
 == Cloud SQL
 
 Spring Cloud GCP adds integrations with
-https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html[Spring JDBC] and https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#r2dbc.core[Spring R2DBC]  so you can run your MySQL or PostgreSQL databases in https://cloud.google.com/sql[Google Cloud SQL] using Spring JDBC and other libraries that depend on it like Spring Data JPA or Spring Data R2DBC.
+https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html[Spring JDBC] and https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#r2dbc.core[Spring R2DBC]  so you can run your MySQL or PostgreSQL databases in https://cloud.google.com/sql[Google Cloud SQL] using Spring JDBC and other libraries that depend on it like Spring Data JPA or Spring Data R2DBC (only R2DBC PostgreSQL is supported).
 
 The Cloud SQL support is provided by Spring Cloud GCP in the form of two Spring Boot starters, one for MySQL and another one for PostgreSQL.
 The role of the starters is to read configuration from properties and assume default settings so that user experience connecting to MySQL and PostgreSQL is as simple as possible.
@@ -53,7 +53,7 @@ To do that, go to the https://console.cloud.google.com/apis/library[API library 
 
 ==== Spring Boot Starter for Google Cloud SQL
 
-The Spring Boot Starters for Google Cloud SQL provide an auto-configured https://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html[`DataSource`] object.
+The Spring Boot Starters for Google Cloud SQL provide an autoconfigured https://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html[`DataSource`] object.
 Coupled with Spring JDBC, it provides a
 https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html#jdbc-JdbcTemplate[`JdbcTemplate`] object bean that allows for operations such as querying and modifying a database.
 
@@ -65,7 +65,7 @@ public List<Map<String, Object>> listUsers() {
 ----
 
 You can rely on
-https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database[Spring Boot data source auto-configuration] to configure a `DataSource` bean.
+https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database[Spring Boot data source autoconfiguration] to configure a `DataSource` bean.
 In other words, properties like the SQL username, `spring.datasource.username`, and password, `spring.datasource.password` can be used.
 There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Configuration Properties" section below).
 
@@ -76,7 +76,7 @@ There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Co
 | `spring.datasource.driver-class-name` | JDBC driver to use. | No | MySQL: `com.mysql.cj.jdbc.Driver`; PostgreSQL: `org.postgresql.Driver`
 |===
 
-NOTE: If you provide your own `spring.datasource.url`, it will be ignored, unless you disable Cloud SQL auto configuration with `spring.cloud.gcp.sql.enabled=false` or `spring.cloud.gcp.sql.jdbc.enabled=false`.
+NOTE: If you provide your own `spring.datasource.url`, it will be ignored, unless you disable Cloud SQL autoconfiguration with `spring.cloud.gcp.sql.enabled=false` or `spring.cloud.gcp.sql.jdbc.enabled=false`.
 
 ===== `DataSource` creation flow
 
@@ -94,59 +94,12 @@ You can connect to your database with as little as a database and instance names
 
 Maven and Gradle coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
 
-To use MySQL:
-
-[source,xml]
-----
-<dependency>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>spring-cloud-gcp-starter-sql-mysql-r2dbc</artifactId>
-</dependency>
-
-----
-
-[source,subs="normal"]
-----
-dependencies {
-    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql-r2dbc")
-}
-----
-
-To use PostgreSQL with Spring Boot 2.6:
-
-[source,xml]
-----
-<dependency>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>spring-cloud-gcp-starter-sql-postgres-r2dbc</artifactId>
-</dependency>
-----
-
-[source,subs="normal"]
-----
-dependencies {
-    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgres-r2dbc")
-}
-----
-
-To use PostgreSQL with Spring Boot 2.7 (the latest version of the Postgres R2DBC driver changed its Maven coordinates):
+To use PostgreSQL:
 
 ``` xml
 <dependency>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>spring-cloud-gcp-starter-sql-postgres-r2dbc</artifactId>
-    <exclusions>
-        <exclusion>
-            <groupId>io.r2dbc</groupId>
-            <artifactId>r2dbc-postgresql</artifactId>
-        </exclusion>
-    </exclusions>
-</dependency>
-
-<dependency>
-    <groupId>org.postgresql</groupId>
-    <artifactId>r2dbc-postgresql</artifactId>
-    <version>0.9.1.RELEASE</version>
+  <groupId>com.google.cloud</groupId>
+  <artifactId>spring-cloud-gcp-starter-sql-postgres-r2dbc</artifactId>
 </dependency>
 ```
 
@@ -178,11 +131,11 @@ There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Co
 
 |===
 | Property name | Description | Required | Default value
-| `spring.r2dbc.username` | Database username | No | MySQL: `root`; PostgreSQL: `postgres`
+| `spring.r2dbc.username` | Database username | No | `postgres`
 | `spring.r2dbc.password` | Database password | No | `null`
 |===
 
-NOTE: If you provide your own `spring.r2dbc.url`, it will be ignored, unless you disable Cloud SQL auto-configuration for R2DBC with `spring.cloud.gcp.sql.enabled=false` or `spring.cloud.gcp.sql.r2dbc.enabled=false` .
+NOTE: If you provide your own `spring.r2dbc.url`, it will be ignored, unless you disable Cloud SQL autoconfiguration for R2DBC with `spring.cloud.gcp.sql.enabled=false` or `spring.cloud.gcp.sql.r2dbc.enabled=false` .
 
 ===== `ConnectionFactory` creation flow
 
@@ -276,5 +229,4 @@ Available sample applications and codelabs:
 - https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-sample[Spring Cloud GCP PostgreSQL]
 - https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-jpa-sample[Spring Data JPA with Spring Cloud GCP SQL]
 - Codelab: https://codelabs.developers.google.com/codelabs/cloud-spring-petclinic-cloudsql/index.html[Spring Pet Clinic using Cloud SQL]
-- https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-r2dbc-sample[R2DBC: Spring Cloud GCP MySQL]
 - https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-r2dbc-sample[R2DBC: Spring Cloud GCP PostgreSQL]
