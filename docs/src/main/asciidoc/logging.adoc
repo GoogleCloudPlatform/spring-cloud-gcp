@@ -20,14 +20,14 @@ dependencies {
 }
 ----
 
-https://cloud.google.com/logging/[Cloud Logging] is the managed logging service provided by Google Cloud Platform.
+https://cloud.google.com/logging/[Cloud Logging] is the managed logging service provided by Google Cloud.
 
 This module provides support for associating a web request trace ID with the corresponding log entries.
 It does so by retrieving the `X-B3-TraceId` value from the https://logback.qos.ch/manual/mdc.html[Mapped Diagnostic Context (MDC)], which is set by Spring Cloud Sleuth.
 If Spring Cloud Sleuth isn't used, the configured `TraceIdExtractor` extracts the desired header value and sets it as the log entry's trace ID.
 This allows grouping of log messages by request, for example, in the https://console.cloud.google.com/logs/viewer[Google Cloud Console Logs viewer].
 
-NOTE: Due to the way logging is set up, the GCP project ID and credentials defined in `application.properties` are ignored.
+NOTE: Due to the way logging is set up, the Google Cloud project ID and credentials defined in `application.properties` are ignored.
 Instead, you should set the `GOOGLE_CLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS` environment variables to the project ID and credentials private key location, respectively.
 You can do this easily if you're using the https://cloud.google.com/sdk[Google Cloud SDK], using the `gcloud config set project [YOUR_PROJECT_ID]` and `gcloud auth application-default login` commands, respectively.
 
@@ -39,7 +39,7 @@ WARNING: If Spring Cloud GCP Trace is enabled, the logging module disables itsel
 
 `LoggingWebMvcConfigurer` configuration class is also provided to help register the `TraceIdLoggingWebMvcInterceptor` in Spring MVC applications.
 
-Applications hosted on the Google Cloud Platform include trace IDs under the `x-cloud-trace-context` header, which will be included in log entries.
+Applications hosted on the Google Cloud include trace IDs under the `x-cloud-trace-context` header, which will be included in log entries.
 However, if Sleuth is used the trace ID will be picked up from the MDC.
 
 === Logback Support

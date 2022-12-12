@@ -34,14 +34,14 @@ configuration options.
 #### Spring Cloud GCP Pub/Sub API Configuration
 
 This section describes options for enabling the integration, specifying
-the GCP project and credentials, and setting whether the APIs should
+the Google Cloud project and credentials, and setting whether the APIs should
 connect to an emulator for local testing.
 
 |                                                   |                                                                                                                                                                                                       |          |                                          |
 | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------- |
 | Name                                              | Description                                                                                                                                                                                           | Required | Default value                            |
 | `spring.cloud.gcp.pubsub.enabled`                 | Enables or disables Pub/Sub auto-configuration                                                                                                                                                        | No       | `true`                                   |
-| `spring.cloud.gcp.pubsub.project-id`              | GCP project ID where the Google Cloud Pub/Sub API is hosted, if different from the one in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core)                                                  | No       |                                          |
+| `spring.cloud.gcp.pubsub.project-id`              | Google Cloud project ID where the Google Cloud Pub/Sub API is hosted, if different from the one in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core)                                                  | No       |                                          |
 | `spring.cloud.gcp.pubsub.credentials.location`    | OAuth2 credentials for authenticating with the Google Cloud Pub/Sub API, if different from the ones in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core)                                     | No       |                                          |
 | `spring.cloud.gcp.pubsub.emulator-host`           | The host and port of the local running emulator. If provided, this will setup the client to connect against a running [Google Cloud Pub/Sub Emulator](https://cloud.google.com/pubsub/docs/emulator). | No       |                                          |
 | `spring.cloud.gcp.pubsub.credentials.encoded-key` | Base64-encoded contents of OAuth2 account private key for authenticating with the Google Cloud Pub/Sub API, if different from the ones in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core)  | No       |                                          |

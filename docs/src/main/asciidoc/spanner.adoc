@@ -69,7 +69,7 @@ The following configuration options are available:
 | `spring.cloud.gcp.spanner.instance-id` | Cloud Spanner instance to use | Yes |
 | `spring.cloud.gcp.spanner.database` |
 Cloud Spanner database to use | Yes |
-| `spring.cloud.gcp.spanner.project-id` | GCP project ID where the Google Cloud Spanner API is hosted, if different from the one in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>>
+| `spring.cloud.gcp.spanner.project-id` | Google Cloud project ID where the Google Cloud Spanner API is hosted, if different from the one in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>>
 | No |
 | `spring.cloud.gcp.spanner.credentials.location` | OAuth2 credentials for authenticating with the
 Google Cloud Spanner API, if different from the ones in the

@@ -1,7 +1,7 @@
 [#spring-cloud-gcp-core]
 == Spring Cloud GCP Core
 
-Each Spring Cloud GCP module uses `GcpProjectIdProvider` and `CredentialsProvider` to get the GCP project ID and access credentials.
+Each Spring Cloud GCP module uses `GcpProjectIdProvider` and `CredentialsProvider` to get the Google Cloud project ID and access credentials.
 
 Spring Cloud GCP provides a Spring Boot starter to auto-configure the core components.
 
@@ -30,12 +30,12 @@ The following options may be configured with Spring Cloud core.
 
 |===========================================================================
 | Name | Description | Required | Default value
-| `spring.cloud.gcp.core.enabled` | Enables or disables GCP core auto configuration | No | `true`
+| `spring.cloud.gcp.core.enabled` | Enables or disables Google Cloud core auto configuration | No | `true`
 |===========================================================================
 
 === Project ID
 
-`GcpProjectIdProvider` is a functional interface that returns a GCP project ID string.
+`GcpProjectIdProvider` is a functional interface that returns a Google Cloud project ID string.
 
 [source,java]
 ----
@@ -116,7 +116,7 @@ By default, the credentials provided by the Spring Cloud GCP Starter contain sco
 The Spring Cloud GCP starter allows you to configure a custom scope list for the provided credentials.
 To do that, specify a comma-delimited list of https://developers.google.com/identity/protocols/googlescopes[Google OAuth2 scopes] in the `spring.cloud.gcp.credentials.scopes` property.
 
-`spring.cloud.gcp.credentials.scopes` is a comma-delimited list of https://developers.google.com/identity/protocols/googlescopes[Google OAuth2 scopes] for Google Cloud Platform services that the credentials returned by the provided `CredentialsProvider` support.
+`spring.cloud.gcp.credentials.scopes` is a comma-delimited list of https://developers.google.com/identity/protocols/googlescopes[Google OAuth2 scopes] for Google Cloud services that the credentials returned by the provided `CredentialsProvider` support.
 
 [source]
 ----
@@ -133,7 +133,7 @@ spring.cloud.gcp.credentials.scopes=DEFAULT_SCOPES,https://www.googleapis.com/au
 === Environment
 
 `GcpEnvironmentProvider` is a functional interface, auto-configured by the Spring Cloud GCP starter, that returns a `GcpEnvironment` enum.
-The provider can help determine programmatically in which GCP environment (App Engine Flexible, App Engine Standard, Kubernetes Engine or Compute Engine) the application is deployed.
+The provider can help determine programmatically in which Google Cloud  environment (App Engine Flexible, App Engine Standard, Kubernetes Engine or Compute Engine) the application is deployed.
 
 [source,java]
 ----

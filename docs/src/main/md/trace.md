@@ -1,13 +1,13 @@
 ## Cloud Trace
 
-Google Cloud Platform provides a managed distributed tracing service
+Google Cloud provides a managed distributed tracing service
 called [Cloud Trace](https://cloud.google.com/trace/), and [Spring Cloud
 Sleuth](https://cloud.spring.io/spring-cloud-sleuth/) can be used with
 it to easily instrument Spring Boot applications for observability.
 
 Typically, Spring Cloud Sleuth captures trace information and forwards
 traces to services like Zipkin for storage and analysis. However, on
-GCP, instead of running and maintaining your own Zipkin instance and
+Google Cloud, instead of running and maintaining your own Zipkin instance and
 storage, you can use Cloud Trace to store traces, view trace details,
 generate latency distributions graphs, and generate performance
 regression reports.
