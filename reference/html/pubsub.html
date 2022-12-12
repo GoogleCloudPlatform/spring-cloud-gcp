@@ -220,7 +220,7 @@ window.onload = function() {
 <div class="sect3">
 <h4 id="_spring_cloud_gcp_pubsub_api_configuration"><a class="link" href="#_spring_cloud_gcp_pubsub_api_configuration">Spring Cloud GCP Pub/Sub API Configuration</a></h4>
 <div class="paragraph">
-<p>This section describes options for enabling the integration, specifying the GCP project and credentials, and setting whether the APIs should connect to an emulator for local testing.</p>
+<p>This section describes options for enabling the integration, specifying the Google Cloud project and credentials, and setting whether the APIs should connect to an emulator for local testing.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -244,7 +244,7 @@ window.onload = function() {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">GCP project ID where the Google Cloud Pub/Sub API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Pub/Sub API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -799,7 +799,7 @@ So, take care not to configure a subscription that has a business impact, or ins
 <div class="paragraph">
 <p>If you are using Spring Boot Actuator, you can take advantage of the Cloud Pub/Sub subscription health indicator called <code>pubsub-subscriber</code>.
 The subscription health indicator will verify whether Pub/Sub subscriptions are actively processing messages from the subscription&#8217;s backlog.
-To enable it, you need to add the <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready">Spring Boot Actuator</a> to your project and the <a href="https://cloud.google.com/monitoring/docs/reference/libraries">GCP Monitoring</a>.
+To enable it, you need to add the <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready">Spring Boot Actuator</a> to your project and the <a href="https://cloud.google.com/monitoring/docs/reference/libraries">Google Cloud Monitoring</a>.
 Also you need to set the following properties <code>spring.cloud.gcp.pubsub.health.lagThreshold</code>, <code>spring.cloud.gcp.pubsub.health.backlogThreshold</code>.</p>
 </div>
 <div class="paragraph">

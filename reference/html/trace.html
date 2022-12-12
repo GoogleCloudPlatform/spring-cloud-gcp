@@ -183,11 +183,11 @@ window.onload = function() {
 <h2 id="cloud-trace"><a class="link" href="#cloud-trace">Cloud Trace</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Google Cloud Platform provides a managed distributed tracing service called <a href="https://cloud.google.com/trace/">Cloud Trace</a>, and <a href="https://cloud.spring.io/spring-cloud-sleuth/">Spring Cloud Sleuth</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
+<p>Google Cloud provides a managed distributed tracing service called <a href="https://cloud.google.com/trace/">Cloud Trace</a>, and <a href="https://cloud.spring.io/spring-cloud-sleuth/">Spring Cloud Sleuth</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
 </div>
 <div class="paragraph">
 <p>Typically, Spring Cloud Sleuth captures trace information and forwards traces to services like Zipkin for storage and analysis.
-However, on GCP, instead of running and maintaining your own Zipkin instance and storage, you can use Cloud Trace to store traces, view trace details, generate latency distributions graphs, and generate performance regression reports.</p>
+However, on Google Cloud, instead of running and maintaining your own Zipkin instance and storage, you can use Cloud Trace to store traces, view trace details, generate latency distributions graphs, and generate performance regression reports.</p>
 </div>
 <div class="paragraph">
 <p>This Spring Cloud GCP starter can forward Spring Cloud Sleuth traces to Cloud Trace without an intermediary Zipkin server.</p>
@@ -383,7 +383,7 @@ This field forces the decision of whether or not to trace the request; if omitte
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.messageTimeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout in seconds before pending spans will be sent in batches to GCP Cloud Trace. (previously <code>spring.zipkin.messageTimeout</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout in seconds before pending spans will be sent in batches to Google Cloud Trace. (previously <code>spring.zipkin.messageTimeout</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 </tr>

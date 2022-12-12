@@ -200,7 +200,7 @@ window.onload = function() {
 </div>
 </div>
 <div class="paragraph">
-<p><a href="https://cloud.google.com/logging/">Cloud Logging</a> is the managed logging service provided by Google Cloud Platform.</p>
+<p><a href="https://cloud.google.com/logging/">Cloud Logging</a> is the managed logging service provided by Google Cloud.</p>
 </div>
 <div class="paragraph">
 <p>This module provides support for associating a web request trace ID with the corresponding log entries.
@@ -215,7 +215,7 @@ This allows grouping of log messages by request, for example, in the <a href="ht
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Due to the way logging is set up, the GCP project ID and credentials defined in <code>application.properties</code> are ignored.
+Due to the way logging is set up, the Google Cloud project ID and credentials defined in <code>application.properties</code> are ignored.
 Instead, you should set the <code>GOOGLE_CLOUD_PROJECT</code> and <code>GOOGLE_APPLICATION_CREDENTIALS</code> environment variables to the project ID and credentials private key location, respectively.
 You can do this easily if you&#8217;re using the <a href="https://cloud.google.com/sdk">Google Cloud SDK</a>, using the <code>gcloud config set project [YOUR_PROJECT_ID]</code> and <code>gcloud auth application-default login</code> commands, respectively.
 </td>
@@ -243,7 +243,7 @@ If Spring Cloud GCP Trace is enabled, the logging module disables itself and del
 <p><code>LoggingWebMvcConfigurer</code> configuration class is also provided to help register the <code>TraceIdLoggingWebMvcInterceptor</code> in Spring MVC applications.</p>
 </div>
 <div class="paragraph">
-<p>Applications hosted on the Google Cloud Platform include trace IDs under the <code>x-cloud-trace-context</code> header, which will be included in log entries.
+<p>Applications hosted on the Google Cloud include trace IDs under the <code>x-cloud-trace-context</code> header, which will be included in log entries.
 However, if Sleuth is used the trace ID will be picked up from the MDC.</p>
 </div>
 </div>
