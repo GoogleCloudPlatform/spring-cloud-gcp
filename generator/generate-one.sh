@@ -5,7 +5,7 @@
 # note about space consumption: out-of-space testing on cloud shell instance.
 
 # poc with one specified repo - vision
-#cmd line:: ./generate-one.sh -c vision -v 3.1.2 -i google-cloud-vision -g com.google.cloud -d 1
+#cmd line:: ./generate-one.sh -c vision -v 3.1.2 -i google-cloud-vision -g com.google.cloud -p 3.5.0-SNAPSHOT -d 1
 
 # by default, do not download repos
 download_repos=0
@@ -54,8 +54,8 @@ perl -0777 -pi -e "s/(java_gapic_library\()/java_gapic_spring_library\(/s" googl
 # Update name argument to have _spring appended
 perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)name = \"(.*?)\")/java_gapic_spring_library\(\$2name = \"\$3_spring\"/s" google/cloud/$client_lib_name/v1/BUILD.bazel
 # todo: better way to remove the following unused arguments?
-perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    test_deps = \[(.*?)\],))/java_gapic_spring_library\(\$2/s" google/cloud/$client_lib_name/v1/BUILD.bazel
-perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    deps = \[(.*?)\],))/java_gapic_spring_library\(\$2/s" google/cloud/$client_lib_name/v1/BUILD.bazel
+perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    test_deps = \[(.*?)\](.*?),))/java_gapic_spring_library\(\$2/s" google/cloud/$client_lib_name/v1/BUILD.bazel
+perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    deps = \[(.*?)\](.*?),))/java_gapic_spring_library\(\$2/s" google/cloud/$client_lib_name/v1/BUILD.bazel
 perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    rest_numeric_enums = (.*?),))/java_gapic_spring_library\(\$2/s" google/cloud/$client_lib_name/v1/BUILD.bazel
 
 # call bazel target
