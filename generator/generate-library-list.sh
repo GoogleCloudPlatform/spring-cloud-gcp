@@ -68,7 +68,7 @@ for d in ./google-cloud-java/*java-*/; do
   released_version=$(echo "$module_versions" | cut -f2 -d:)
 
   # heuristic approach to compute googleapis path: uses first directory in
-  # googleapis matching "**/api_shortname/v[0-9]" (may bring any version)
+  # googleapis matching "**/api_shortname/v1"
   googleapis_path=$(find googleapis/google -type d -name 'v1' | grep $api_shortname/v | head -n1 | cut -d'/' -f2-)
   if [[ -z "$googleapis_path" ]] ; then
     echo "$api_shortname" not found in googleapis
