@@ -10,6 +10,7 @@
     <relativePath>../../spring-cloud-gcp-starters/pom.xml</relativePath>
   </parent>
   <artifactId>google-cloud-vision-spring-starter</artifactId>
+  <version>${project.parent.version}.preview</version>
   <name>Spring Boot Starter - vision</name>
   <description>Spring Boot Starter with AutoConfiguration for vision</description>
 
@@ -18,7 +19,6 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-vision</artifactId>
-      <version>3.1.3</version>
     </dependency>
 
     <dependency>

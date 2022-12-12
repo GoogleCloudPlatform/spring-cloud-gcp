@@ -39,6 +39,7 @@
 
 		<!-- Dependency versions -->
 		<spring-cloud-dependencies.version>2021.0.5</spring-cloud-dependencies.version>
+		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<spring-boot-dependencies.version>2.7.6</spring-boot-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.1</java-cfenv.version>
@@ -82,7 +83,7 @@
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-dependencies</artifactId>
-				<version>${project.version}</version>
+				<version>${spring-cloud-gcp-dependencies.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -346,6 +347,58 @@
 				<module>docs</module>
 				<module>spring-cloud-gcp-samples</module>
 			</modules>
+
+<!--adding for test only, remove when done-->
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<version>${maven-javadoc-plugin.version}</version>
+						</plugin>
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>flatten-maven-plugin</artifactId>
+							<version>${maven-flatten-plugin.version}</version>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>flatten-maven-plugin</artifactId>
+						<inherited>true</inherited>
+						<executions>
+							<execution>
+								<!-- Tidy up all POMs before they are published -->
+								<id>flatten</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>flatten</goal>
+								</goals>
+								<configuration>
+									<updatePomFile>true</updatePomFile>
+									<flattenMode>oss</flattenMode>
+									<pomElements>
+										<parent>expand</parent>
+										<distributionManagement>remove</distributionManagement>
+										<repositories>remove</repositories>
+									</pomElements>
+								</configuration>
+							</execution>
+							<execution>
+								<id>flatten.clean</id>
+								<phase>clean</phase>
+								<goals>
+									<goal>clean</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<!--END: adding for test only, remove when done-->
 		</profile>
 
 
