@@ -64,11 +64,11 @@ bazel build //google/cloud/$client_lib_name/v1:"$client_lib_name"_java_gapic_spr
 cd -
 
 ## copy spring code to outside
-mkdir -p ../generated
-cp googleapis/bazel-bin/google/cloud/$client_lib_name/v1/"$client_lib_name"_java_gapic_spring-spring.srcjar ../generated
+mkdir -p ../spring-cloud-previews
+cp googleapis/bazel-bin/google/cloud/$client_lib_name/v1/"$client_lib_name"_java_gapic_spring-spring.srcjar ../spring-cloud-previews
 
 # unzip spring code
-cd ../generated
+cd ../spring-cloud-previews
 unzip -o "$client_lib_name"_java_gapic_spring-spring.srcjar -d "$starter_artifactid"/
 rm -rf "$client_lib_name"_java_gapic_spring-spring.srcjar
 
@@ -87,7 +87,7 @@ if [[ found_library_in_pom -eq 0 ]]; then
 else
   echo "adding module $starter_artifactid to pom"
   sed -i "/^  <modules>/a\ \ \ \ <module>"$starter_artifactid"</module>" pom.xml
-  # also write to generated/README.md
+  # also write to spring-cloud-previews/README.md
   # format |name|distribution name|
   echo -e "|$client_lib_name|com.google.cloud:$starter_artifactid|" >> README.md
   {(grep -vw ".*:.*" README.md);(grep ".*:.*" README.md| sort | uniq)} > tmpfile && mv tmpfile README.md
