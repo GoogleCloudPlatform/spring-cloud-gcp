@@ -12,8 +12,8 @@ publish and subscribe to the bus. If the bus topic (named
 creates it. The binder also creates anonymous subscriptions for each
 project using the `spring-cloud-gcp-starter-bus-pubsub` starter.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -35,7 +35,7 @@ dependencies {
 Spring Cloud Bus can be used to push configuration changes from a Spring
 Cloud Config server to the clients listening on the same bus.
 
-To use GCP Pub/Sub as the bus implementation, both the configuration
+To use Spring Framework on Google Cloud Pub/Sub as the bus implementation, both the configuration
 server and the configuration client need the
 `spring-cloud-gcp-starter-bus-pubsub` dependency.
 

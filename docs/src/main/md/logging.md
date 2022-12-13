@@ -1,7 +1,7 @@
 ## Cloud Logging
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -52,7 +52,7 @@ messages.
 
 <div class="warning">
 
-If Spring Cloud GCP Trace is enabled, the logging module disables itself
+If Spring Framework on Google Cloud Trace is enabled, the logging module disables itself
 and delegates log correlation to Spring Cloud Sleuth.
 
 </div>

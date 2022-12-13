@@ -2,7 +2,7 @@
 
 Various properties can be specified inside your `application.properties`
 file, inside your `application.yml` file, or as command line switches.
-This appendix provides a list of common Spring Cloud GCP properties and
+This appendix provides a list of common Spring Framework on Google Cloud properties and
 references to the underlying classes that consume them.
 
 <div class="note">

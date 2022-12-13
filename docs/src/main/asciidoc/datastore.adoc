@@ -6,9 +6,9 @@
 NOTE: This integration is fully compatible with https://cloud.google.com/datastore/docs/[Firestore in Datastore Mode], but not with Firestore in Native Mode.
 
 https://projects.spring.io/spring-data/[Spring Data] is an abstraction for storing and retrieving POJOs in numerous storage technologies.
-Spring Cloud GCP adds Spring Data support for https://cloud.google.com/firestore/[Google Cloud Firestore] in Datastore mode.
+Spring Framework on Google Cloud adds Spring Data support for https://cloud.google.com/firestore/[Google Cloud Firestore] in Datastore mode.
 
-Maven coordinates for this module only, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates for this module only, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----
@@ -67,10 +67,10 @@ The following configuration options are available:
 |===
 | Name | Description | Required | Default value
 | `spring.cloud.gcp.datastore.enabled` | Enables the Cloud Datastore client | No | `true`
-| `spring.cloud.gcp.datastore.project-id` | Google Cloud project ID where the Google Cloud Datastore API is hosted, if different from the one in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>> | No |
-| `spring.cloud.gcp.datastore.credentials.location` | OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>> | No |
-| `spring.cloud.gcp.datastore.credentials.encoded-key` | Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>> | No |
-| `spring.cloud.gcp.datastore.credentials.scopes` | https://developers.google.com/identity/protocols/googlescopes[OAuth2 scope] for Spring Cloud GCP Cloud Datastore credentials | No | https://www.googleapis.com/auth/datastore
+| `spring.cloud.gcp.datastore.project-id` | Google Cloud project ID where the Google Cloud Datastore API is hosted, if different from the one in the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Core Module>> | No |
+| `spring.cloud.gcp.datastore.credentials.location` | OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Core Module>> | No |
+| `spring.cloud.gcp.datastore.credentials.encoded-key` | Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Core Module>> | No |
+| `spring.cloud.gcp.datastore.credentials.scopes` | https://developers.google.com/identity/protocols/googlescopes[OAuth2 scope] for Spring Framework on Google CloudDatastore credentials | No | https://www.googleapis.com/auth/datastore
 | `spring.cloud.gcp.datastore.namespace` | The Cloud Datastore namespace to use | No | the Default namespace of Cloud Datastore in your Google Cloud project
 | `spring.cloud.gcp.datastore.host` | The `hostname:port` of the datastore service or emulator to connect to. Can be used to connect to a manually started https://cloud.google.com/datastore/docs/tools/datastore-emulator[Datastore Emulator]. If the autoconfigured emulator is enabled, this property will be ignored and `localhost:<emulator_port>` will be used. | No |
 | `spring.cloud.gcp.datastore.emulator.enabled` | To enable the auto configuration to start a local instance of the Datastore Emulator. | No | `false`
