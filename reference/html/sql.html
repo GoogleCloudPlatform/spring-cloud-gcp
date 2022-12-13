@@ -182,17 +182,17 @@ window.onload = function() {
 <h2 id="cloud-sql"><a class="link" href="#cloud-sql">Cloud SQL</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Cloud GCP adds integrations with
+<p>Spring Framework on Google Cloud adds integrations with
 <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html">Spring JDBC</a> and <a href="https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#r2dbc.core">Spring R2DBC</a>  so you can run your MySQL or PostgreSQL databases in <a href="https://cloud.google.com/sql">Google Cloud SQL</a> using Spring JDBC and other libraries that depend on it like Spring Data JPA or Spring Data R2DBC.</p>
 </div>
 <div class="paragraph">
-<p>The Cloud SQL support is provided by Spring Cloud GCP in the form of two Spring Boot starters, one for MySQL and another one for PostgreSQL.
+<p>The Cloud SQL support is provided by Spring Framework on Google Cloud in the form of two Spring Boot starters, one for MySQL and another one for PostgreSQL.
 The role of the starters is to read configuration from properties and assume default settings so that user experience connecting to MySQL and PostgreSQL is as simple as possible.</p>
 </div>
 <div class="sect2">
 <h3 id="_jdbc_support"><a class="link" href="#_jdbc_support">JDBC Support</a></h3>
 <div class="paragraph">
-<p>Maven and Gradle coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven and Gradle coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="paragraph">
 <p>To use MySQL:</p>
@@ -326,7 +326,7 @@ You can connect to your database with as little as a database and instance names
 <div class="sect2">
 <h3 id="_r2dbc_support"><a class="link" href="#_r2dbc_support">R2DBC Support</a></h3>
 <div class="paragraph">
-<p>Maven and Gradle coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven and Gradle coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="paragraph">
 <p>To use MySQL:</p>
@@ -462,7 +462,7 @@ If you provide your own <code>spring.r2dbc.url</code>, it will be ignored, unles
 <div class="sect4">
 <h5 id="_connectionfactory_creation_flow"><a class="link" href="#_connectionfactory_creation_flow"><code>ConnectionFactory</code> creation flow</a></h5>
 <div class="paragraph">
-<p>Spring Cloud GCP starter for Google Cloud SQL registers a <code>R2dbcCloudSqlEnvironmentPostProcessor</code> that provides a correctly formatted <code>spring.r2dbc.url</code> property to the environment based on the properties mentioned above.
+<p>Spring Framework on Google Cloud starter for Google Cloud SQL registers a <code>R2dbcCloudSqlEnvironmentPostProcessor</code> that provides a correctly formatted <code>spring.r2dbc.url</code> property to the environment based on the properties mentioned above.
 It also provides a default value for <code>spring.r2dbc.username</code>, which can be overridden.
 The starter also configures credentials for the R2DBC connection based on the properties below.</p>
 </div>
@@ -557,14 +557,14 @@ However, it doesn&#8217;t compromise the security of the communication because t
 <td class="tableblock halign-left valign-top"><p class="tableblock">File system path to the Google OAuth2 credentials private key file.
 Used to authenticate and authorize new connections to a Google Cloud SQL instance.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default credentials provided by the Spring GCP Boot starter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default credentials provided by the Spring Framework on Google Cloud Core Starter</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.credentials.encoded-key</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded contents of OAuth2 account private key in JSON format.
 Used to authenticate and authorize new connections to a Google Cloud SQL instance.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default credentials provided by the Spring GCP Boot starter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default credentials provided by the Spring Framework on Google Cloud Core Starter</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.enableIamAuth</code></p></td>
@@ -634,22 +634,22 @@ For example, in Maven:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-sample">Spring Cloud GCP MySQL</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-sample">Spring Framework on Google Cloud MySQL</a></p>
 </li>
 <li>
-<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-sample">Spring Cloud GCP PostgreSQL</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-sample">Spring Framework on Google Cloud PostgreSQL</a></p>
 </li>
 <li>
-<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-jpa-sample">Spring Data JPA with Spring Cloud GCP SQL</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-jpa-sample">Spring Data JPA with Spring Framework on Google Cloud SQL</a></p>
 </li>
 <li>
 <p>Codelab: <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-petclinic-cloudsql/index.html">Spring Pet Clinic using Cloud SQL</a></p>
 </li>
 <li>
-<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-r2dbc-sample">R2DBC: Spring Cloud GCP MySQL</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-r2dbc-sample">R2DBC: Spring Framework on Google Cloud MySQL</a></p>
 </li>
 <li>
-<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-r2dbc-sample">R2DBC: Spring Cloud GCP PostgreSQL</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-r2dbc-sample">R2DBC: Spring Framework on Google Cloud PostgreSQL</a></p>
 </li>
 </ul>
 </div>

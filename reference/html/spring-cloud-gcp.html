@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <meta name="author" content="João André Martins, Jisha Abubaker, Ray Tsang, Mike Eltsufin, Artem Bilan, Andreas Berger, Balint Pato, Chengyuan Zhao, Dmitry Solomakha, Elena Felder, Daniel Zou, Eddú Meléndez, Travis Tomsu">
-<title>Spring Cloud GCP</title>
+<title>Spring Framework on Google Cloud</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -162,7 +162,7 @@ window.onload = function() {
 </head>
 <body id="spring-cloud-gcp-reference" class="book toc2 toc-left">
 <div id="header">
-<h1>Spring Cloud GCP</h1>
+<h1>Spring Framework on Google Cloud</h1>
 <div class="details">
 <span id="author" class="author">João André Martins</span><br>
 <span id="author2" class="author">Jisha Abubaker</span><br>
@@ -186,10 +186,10 @@ window.onload = function() {
 <ul class="sectlevel2">
 <li><a href="#compatibility-with-spring-project-versions">2.1. Compatibility with Spring Project Versions</a></li>
 <li><a href="#setting-up-dependencies">2.2. Setting up Dependencies</a></li>
-<li><a href="#learning-spring-cloud-gcp">2.3. Learning Spring Cloud GCP</a></li>
+<li><a href="#learning-spring-framework-on-google-cloud">2.3. Learning Spring Framework on Google Cloud</a></li>
 </ul>
 </li>
-<li><a href="#spring-cloud-gcp-core">3. Spring Cloud GCP Core</a>
+<li><a href="#spring-cloud-gcp-core">3. Spring Framework on Google Cloud Core</a>
 <ul class="sectlevel2">
 <li><a href="#configuration">3.1. Configuration</a></li>
 <li><a href="#project-id">3.2. Project ID</a></li>
@@ -387,7 +387,7 @@ window.onload = function() {
 </ul>
 </li>
 <li><a href="#configuration-properties">25. Configuration properties</a></li>
-<li><a href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x">26. Migration Guide from Spring Cloud GCP 1.x to 2.x</a>
+<li><a href="#migration-guide-from-spring-framework-on-google-cloud-1-x-to-2-x">26. Migration Guide from Spring Framework on Google Cloud 1.x to 2.x</a>
 <ul class="sectlevel2">
 <li><a href="#maven-group-id-change">26.1. Maven Group ID Change</a></li>
 <li><a href="#java-package-name-change">26.2. Java Package Name Change</a></li>
@@ -409,10 +409,10 @@ window.onload = function() {
 <h2 id="introduction"><a class="anchor" href="#introduction"></a><a class="link" href="#introduction">1. Introduction</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Spring Cloud GCP project makes the Spring Framework a first-class citizen of Google Cloud .</p>
+<p>The Spring Framework on Google Cloud project makes the Spring Framework a first-class citizen of Google Cloud .</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP lets you leverage the power and simplicity of the Spring Framework to:</p>
+<p>Spring Framework on Google Cloud lets you leverage the power and simplicity of the Spring Framework to:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -454,12 +454,12 @@ window.onload = function() {
 <h2 id="getting-started"><a class="anchor" href="#getting-started"></a><a class="link" href="#getting-started">2. Getting Started</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This section describes how to get up to speed with Spring Cloud GCP libraries.</p>
+<p>This section describes how to get up to speed with Spring Framework on Google Cloud libraries.</p>
 </div>
 <div class="sect2">
 <h3 id="compatibility-with-spring-project-versions"><a class="anchor" href="#compatibility-with-spring-project-versions"></a><a class="link" href="#compatibility-with-spring-project-versions">2.1. Compatibility with Spring Project Versions</a></h3>
 <div class="paragraph">
-<p>Spring Cloud GCP has dependency and transitive dependencies on Spring Projects. The table below outlines the versions of Spring Cloud, Spring Boot and Spring Framework versions that are compatible with certain Spring Cloud GCP version.</p>
+<p>Spring Framework on Google Cloud has dependency and transitive dependencies on Spring Projects. The table below outlines the versions of Spring Cloud, Spring Boot and Spring Framework versions that are compatible with certain Spring Framework on Google Cloud version.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -470,7 +470,7 @@ window.onload = function() {
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Spring Cloud GCP</th>
+<th class="tableblock halign-left valign-top">Spring Framework on Google Cloud</th>
 <th class="tableblock halign-left valign-top">Spring Cloud</th>
 <th class="tableblock halign-left valign-top">Spring Boot</th>
 <th class="tableblock halign-left valign-top">Spring Framework</th>
@@ -495,7 +495,7 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="setting-up-dependencies"><a class="anchor" href="#setting-up-dependencies"></a><a class="link" href="#setting-up-dependencies">2.2. Setting up Dependencies</a></h3>
 <div class="paragraph">
-<p>All Spring Cloud GCP artifacts are made available through Maven Central.
+<p>All Spring Framework on Google Cloud artifacts are made available through Maven Central.
 The following resources are provided to help you setup the libraries for your project:</p>
 </div>
 <div class="ulist">
@@ -504,7 +504,7 @@ The following resources are provided to help you setup the libraries for your pr
 <p>Maven Bill of Materials for dependency management</p>
 </li>
 <li>
-<p>Starter Dependencies for depending on Spring Cloud GCP modules</p>
+<p>Starter Dependencies for depending on Spring Framework on Google Cloud modules</p>
 </li>
 </ul>
 </div>
@@ -514,10 +514,10 @@ The following resources are provided to help you setup the libraries for your pr
 <div class="sect3">
 <h4 id="bill-of-materials"><a class="anchor" href="#bill-of-materials"></a><a class="link" href="#bill-of-materials">2.2.1. Bill of Materials</a></h4>
 <div class="paragraph">
-<p>The Spring Cloud GCP Bill of Materials (BOM) contains the versions of all the dependencies it uses.</p>
+<p>The Spring Framework on Google Cloud Bill of Materials (BOM) contains the versions of all the dependencies it uses.</p>
 </div>
 <div class="paragraph">
-<p>If you’re a Maven user, adding the following to your pom.xml file will allow you omit any Spring Cloud GCP dependency version numbers from your configuration.
+<p>If you’re a Maven user, adding the following to your pom.xml file will allow you omit any Spring Framework on Google Cloud dependency version numbers from your configuration.
 Instead, the version of the BOM you’re using determines the versions of the used dependencies.</p>
 </div>
 <div class="listingblock">
@@ -546,14 +546,14 @@ Instead, the version of the BOM you’re using determines the versions of the us
 </div>
 </div>
 <div class="paragraph">
-<p>In the following sections, it will be assumed you are using the Spring Cloud GCP BOM and the dependency snippets will not contain versions.</p>
+<p>In the following sections, it will be assumed you are using the Spring Framework on Google Cloud BOM and the dependency snippets will not contain versions.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="starter-dependencies"><a class="anchor" href="#starter-dependencies"></a><a class="link" href="#starter-dependencies">2.2.2. Starter Dependencies</a></h4>
 <div class="paragraph">
-<p>Spring Cloud GCP offers <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters">starter dependencies</a> through Maven to easily depend on different modules of the library.
-Each starter contains all the dependencies and transitive dependencies needed to begin using their corresponding Spring Cloud GCP module.</p>
+<p>Spring Framework on Google Cloud offers <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters">starter dependencies</a> through Maven to easily depend on different modules of the library.
+Each starter contains all the dependencies and transitive dependencies needed to begin using their corresponding Spring Framework on Google Cloud module.</p>
 </div>
 <div class="paragraph">
 <p>For example, if you wish to write a Spring application with Cloud Pub/Sub, you would include the <code>spring-cloud-gcp-starter-pubsub</code> dependency in your project.
@@ -570,7 +570,7 @@ You do <strong>not</strong> need to include the underlying <code>spring-cloud-gc
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Spring Cloud GCP Starter</th>
+<th class="tableblock halign-left valign-top">Spring Framework on Google Cloud Starter</th>
 <th class="tableblock halign-left valign-top">Description</th>
 <th class="tableblock halign-left valign-top">Maven Artifact Name</th>
 </tr>
@@ -651,12 +651,12 @@ You do <strong>not</strong> need to include the underlying <code>spring-cloud-gc
 It handles the work of generating the Maven or Gradle build file so you do not have to manually add the dependencies yourself.</p>
 </div>
 <div class="paragraph">
-<p>Spring Initializr offers three modules from Spring Cloud GCP that you can use to generate your project.</p>
+<p>Spring Initializr offers three modules from Spring Framework on Google Cloud that you can use to generate your project.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>GCP Support</strong>: The GCP Support module contains auto-configuration support for every Spring Cloud GCP integration.
+<p><strong>GCP Support</strong>: The GCP Support module contains auto-configuration support for every Spring Framework on Google Cloud integration.
 Most of the autoconfiguration code is only enabled if the required dependency is added to your project.</p>
 </li>
 <li>
@@ -670,16 +670,16 @@ Most of the autoconfiguration code is only enabled if the required dependency is
 </div>
 </div>
 <div class="sect2">
-<h3 id="learning-spring-cloud-gcp"><a class="anchor" href="#learning-spring-cloud-gcp"></a><a class="link" href="#learning-spring-cloud-gcp">2.3. Learning Spring Cloud GCP</a></h3>
+<h3 id="learning-spring-framework-on-google-cloud"><a class="anchor" href="#learning-spring-framework-on-google-cloud"></a><a class="link" href="#learning-spring-framework-on-google-cloud">2.3. Learning Spring Framework on Google Cloud</a></h3>
 <div class="paragraph">
-<p>There are a variety of resources to help you learn how to use Spring Cloud GCP libraries.</p>
+<p>There are a variety of resources to help you learn how to use Spring Framework on Google Cloud libraries.</p>
 </div>
 <div class="sect3">
 <h4 id="sample-applications"><a class="anchor" href="#sample-applications"></a><a class="link" href="#sample-applications">2.3.1. Sample Applications</a></h4>
 <div class="paragraph">
-<p>The easiest way to learn how to use Spring Cloud GCP is to consult the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples">sample applications on Github</a>.
-Spring Cloud GCP provides sample applications which demonstrate how to use every integration in the library.
-The table below highlights several samples of the most commonly used integrations in Spring Cloud GCP.</p>
+<p>The easiest way to learn how to use Spring Framework on Google Cloud is to consult the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples">sample applications on Github</a>.
+Spring Framework on Google Cloud provides sample applications which demonstrate how to use every integration in the library.
+The table below highlights several samples of the most commonly used integrations in Spring Framework on Google Cloud.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -737,7 +737,7 @@ The table below highlights several samples of the most commonly used integration
 </tbody>
 </table>
 <div class="paragraph">
-<p>Each sample application demonstrates how to use Spring Cloud GCP libraries in context and how to setup the dependencies for the project.
+<p>Each sample application demonstrates how to use Spring Framework on Google Cloud libraries in context and how to setup the dependencies for the project.
 The applications are fully functional and can be deployed to Google Cloud as well.
 If you are interested, you may consult guides for <a href="https://codelabs.developers.google.com/codelabs/cloud-app-engine-springboot/index.html">deploying an application to AppEngine</a> and <a href="https://codelabs.developers.google.com/codelabs/cloud-springboot-kubernetes/index.html">to Google Kubernetes Engine</a>.</p>
 </div>
@@ -746,7 +746,7 @@ If you are interested, you may consult guides for <a href="https://codelabs.deve
 <h4 id="codelabs"><a class="anchor" href="#codelabs"></a><a class="link" href="#codelabs">2.3.2. Codelabs</a></h4>
 <div class="paragraph">
 <p>For a more hands-on approach, there are several guides and codelabs to help you get up to speed.
-These guides provide step-by-step instructions for building an application using Spring Cloud GCP.</p>
+These guides provide step-by-step instructions for building an application using Spring Framework on Google Cloud.</p>
 </div>
 <div class="paragraph">
 <p>Some examples include:</p>
@@ -775,16 +775,16 @@ These guides provide step-by-step instructions for building an application using
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-cloud-gcp-core"><a class="anchor" href="#spring-cloud-gcp-core"></a><a class="link" href="#spring-cloud-gcp-core">3. Spring Cloud GCP Core</a></h2>
+<h2 id="spring-cloud-gcp-core"><a class="anchor" href="#spring-cloud-gcp-core"></a><a class="link" href="#spring-cloud-gcp-core">3. Spring Framework on Google Cloud Core</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Each Spring Cloud GCP module uses <code>GcpProjectIdProvider</code> and <code>CredentialsProvider</code> to get the Google Cloud project ID and access credentials.</p>
+<p>Each Spring Framework on Google Cloud module uses <code>GcpProjectIdProvider</code> and <code>CredentialsProvider</code> to get the Google Cloud project ID and access credentials.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP provides a Spring Boot starter to auto-configure the core components.</p>
+<p>Spring Framework on Google Cloud provides a Spring Boot starter to auto-configure the core components.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -845,7 +845,7 @@ These guides provide step-by-step instructions for building an application using
 </div>
 </div>
 <div class="paragraph">
-<p>The Spring Cloud GCP starter auto-configures a <code>GcpProjectIdProvider</code>.
+<p>The Spring Framework on Google Cloud starter auto-configures a <code>GcpProjectIdProvider</code>.
 If a <code>spring.cloud.gcp.project-id</code> property is specified, the provided <code>GcpProjectIdProvider</code> returns that property value.</p>
 </div>
 <div class="listingblock">
@@ -890,7 +890,7 @@ If a <code>spring.cloud.gcp.project-id</code> property is specified, the provide
 </div>
 </div>
 <div class="paragraph">
-<p>The Spring Cloud GCP starter auto-configures a <code>CredentialsProvider</code>.
+<p>The Spring Framework on Google Cloud starter auto-configures a <code>CredentialsProvider</code>.
 It uses the <code>spring.cloud.gcp.credentials.location</code> property to locate the OAuth2 private key of a Google service account.
 Keep in mind this property is a Spring Resource, so the credentials file can be obtained from a number of <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html#resources-implementations">different locations</a> such as the file system, classpath, URL, etc.
 The next example specifies the credentials location property in the file system.</p>
@@ -927,13 +927,13 @@ The value should be the base64-encoded account private key in JSON format.</p>
 </ol>
 </div>
 <div class="paragraph">
-<p>If your app is running on Google App Engine or Google Compute Engine, in most cases, you should omit the <code>spring.cloud.gcp.credentials.location</code> property and, instead, let the Spring Cloud GCP Starter get the correct credentials for those environments.
+<p>If your app is running on Google App Engine or Google Compute Engine, in most cases, you should omit the <code>spring.cloud.gcp.credentials.location</code> property and, instead, let the Spring Framework on Google Cloud Starter get the correct credentials for those environments.
 On App Engine Standard, the <a href="https://cloud.google.com/appengine/docs/standard/java/appidentity/">App Identity service account credentials</a> are used, on App Engine Flexible, the <a href="https://cloud.google.com/appengine/docs/flexible/java/service-account">Flexible service account credential</a> are used and on Google Compute Engine, the <a href="https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#using_the_compute_engine_default_service_account">Compute Engine Default Service Account</a> is used.</p>
 </div>
 <div class="sect3">
 <h4 id="scopes"><a class="anchor" href="#scopes"></a><a class="link" href="#scopes">3.3.1. Scopes</a></h4>
 <div class="paragraph">
-<p>By default, the credentials provided by the Spring Cloud GCP Starter contain scopes for every service supported by Spring Cloud GCP.</p>
+<p>By default, the credentials provided by the Spring Framework on Google Cloud Starter contain scopes for every service supported by Spring Framework on Google Cloud.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -984,7 +984,7 @@ On App Engine Standard, the <a href="https://cloud.google.com/appengine/docs/sta
 </tbody>
 </table>
 <div class="paragraph">
-<p>The Spring Cloud GCP starter allows you to configure a custom scope list for the provided credentials.
+<p>The Spring Framework on Google Cloud starter allows you to configure a custom scope list for the provided credentials.
 To do that, specify a comma-delimited list of <a href="https://developers.google.com/identity/protocols/googlescopes">Google OAuth2 scopes</a> in the <code>spring.cloud.gcp.credentials.scopes</code> property.</p>
 </div>
 <div class="paragraph">
@@ -1008,8 +1008,8 @@ To do that, specify a comma-delimited list of <a href="https://developers.google
 <div class="sect2">
 <h3 id="environment"><a class="anchor" href="#environment"></a><a class="link" href="#environment">3.4. Environment</a></h3>
 <div class="paragraph">
-<p><code>GcpEnvironmentProvider</code> is a functional interface, auto-configured by the Spring Cloud GCP starter, that returns a <code>GcpEnvironment</code> enum.
-The provider can help determine programmatically in which Google Cloud  environment (App Engine Flexible, App Engine Standard, Kubernetes Engine or Compute Engine) the application is deployed.</p>
+<p><code>GcpEnvironmentProvider</code> is a functional interface, auto-configured by the Spring Framework on Google Cloud starter, that returns a <code>GcpEnvironment</code> enum.
+The provider can help determine programmatically in which Google Cloud environment (App Engine Flexible, App Engine Standard, Kubernetes Engine or Compute Engine) the application is deployed.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1022,7 +1022,7 @@ The provider can help determine programmatically in which Google Cloud  environm
 <div class="sect2">
 <h3 id="customizing-bean-scope"><a class="anchor" href="#customizing-bean-scope"></a><a class="link" href="#customizing-bean-scope">3.5. Customizing bean scope</a></h3>
 <div class="paragraph">
-<p>Spring Cloud GCP starters autoconfigure all necessary beans in the default singleton scope.
+<p>Spring Framework on Google Cloud starters autoconfigure all necessary beans in the default singleton scope.
 If you need a particular bean or set of beans to be recreated dynamically (for example, to rotate credentials), there are two options:</p>
 </div>
 <div class="olist arabic">
@@ -1089,7 +1089,7 @@ public void onRefreshScope(RefreshScopeRefreshedEvent event) {
 A Spring Boot starter is provided to auto-configure the various Storage components.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1138,7 +1138,7 @@ public void createFile() {
 <h3 id="cloud-storage-objects-as-spring-resources"><a class="anchor" href="#cloud-storage-objects-as-spring-resources"></a><a class="link" href="#cloud-storage-objects-as-spring-resources">4.2. Cloud Storage Objects As Spring Resources</a></h3>
 <div class="paragraph">
 <p><a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html">Spring Resources</a> are an abstraction for a number of low-level resources, such as file system files, classpath files, servlet context-relative files, etc.
-Spring Cloud GCP adds a new resource type: a Google Cloud Storage (GCS) object.</p>
+Spring Framework on Google Cloud adds a new resource type: a Google Cloud Storage (GCS) object.</p>
 </div>
 <div class="paragraph">
 <p>The Spring Resource Abstraction for Google Cloud Storage allows GCS objects to be accessed by their GCS URL using the <code>@Value</code> annotation:</p>
@@ -1199,7 +1199,7 @@ Returning a valid URL is necessary to support some features in the Spring ecosys
 </table>
 </div>
 <div class="paragraph">
-<p>The Spring Boot Starter for Google Cloud Storage auto-configures the <code>Storage</code> bean required by the <code>spring-cloud-gcp-storage</code> module, based on the <code>CredentialsProvider</code> provided by the Spring Boot GCP starter.</p>
+<p>The Spring Boot Starter for Google Cloud Storage auto-configures the <code>Storage</code> bean required by the <code>spring-cloud-gcp-storage</code> module, based on the <code>CredentialsProvider</code> provided by the Spring Framework on Google Cloud Starter.</p>
 </div>
 <div class="sect3">
 <h4 id="setting-the-content-type"><a class="anchor" href="#setting-the-content-type"></a><a class="link" href="#setting-the-content-type">4.2.1. Setting the Content Type</a></h4>
@@ -1246,19 +1246,19 @@ Returning a valid URL is necessary to support some features in the Spring ecosys
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.storage.credentials.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the Google Cloud Storage API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the Google Cloud Storage API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.storage.credentials.encoded-key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded contents of OAuth2 account private key for authenticating with the Google Cloud Storage API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded contents of OAuth2 account private key for authenticating with the Google Cloud Storage API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.storage.credentials.scopes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Cloud GCP Storage credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Framework on Google Cloud Storage credentials</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.googleapis.com/auth/devstorage.read_write" class="bare">www.googleapis.com/auth/devstorage.read_write</a></p></td>
 </tr>
@@ -1277,17 +1277,17 @@ Returning a valid URL is necessary to support some features in the Spring ecosys
 <h2 id="cloud-sql"><a class="anchor" href="#cloud-sql"></a><a class="link" href="#cloud-sql">5. Cloud SQL</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Cloud GCP adds integrations with
+<p>Spring Framework on Google Cloud adds integrations with
 <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html">Spring JDBC</a> and <a href="https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#r2dbc.core">Spring R2DBC</a>  so you can run your MySQL or PostgreSQL databases in <a href="https://cloud.google.com/sql">Google Cloud SQL</a> using Spring JDBC and other libraries that depend on it like Spring Data JPA or Spring Data R2DBC.</p>
 </div>
 <div class="paragraph">
-<p>The Cloud SQL support is provided by Spring Cloud GCP in the form of two Spring Boot starters, one for MySQL and another one for PostgreSQL.
+<p>The Cloud SQL support is provided by Spring Framework on Google Cloud in the form of two Spring Boot starters, one for MySQL and another one for PostgreSQL.
 The role of the starters is to read configuration from properties and assume default settings so that user experience connecting to MySQL and PostgreSQL is as simple as possible.</p>
 </div>
 <div class="sect2">
 <h3 id="jdbc-support"><a class="anchor" href="#jdbc-support"></a><a class="link" href="#jdbc-support">5.1. JDBC Support</a></h3>
 <div class="paragraph">
-<p>Maven and Gradle coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven and Gradle coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="paragraph">
 <p>To use MySQL:</p>
@@ -1421,7 +1421,7 @@ You can connect to your database with as little as a database and instance names
 <div class="sect2">
 <h3 id="r2dbc-support"><a class="anchor" href="#r2dbc-support"></a><a class="link" href="#r2dbc-support">5.2. R2DBC Support</a></h3>
 <div class="paragraph">
-<p>Maven and Gradle coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven and Gradle coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="paragraph">
 <p>To use MySQL:</p>
@@ -1557,7 +1557,7 @@ If you provide your own <code>spring.r2dbc.url</code>, it will be ignored, unles
 <div class="sect4">
 <h5 id="connectionfactory-creation-flow"><a class="anchor" href="#connectionfactory-creation-flow"></a><a class="link" href="#connectionfactory-creation-flow"><code>ConnectionFactory</code> creation flow</a></h5>
 <div class="paragraph">
-<p>Spring Cloud GCP starter for Google Cloud SQL registers a <code>R2dbcCloudSqlEnvironmentPostProcessor</code> that provides a correctly formatted <code>spring.r2dbc.url</code> property to the environment based on the properties mentioned above.
+<p>Spring Framework on Google Cloud starter for Google Cloud SQL registers a <code>R2dbcCloudSqlEnvironmentPostProcessor</code> that provides a correctly formatted <code>spring.r2dbc.url</code> property to the environment based on the properties mentioned above.
 It also provides a default value for <code>spring.r2dbc.username</code>, which can be overridden.
 The starter also configures credentials for the R2DBC connection based on the properties below.</p>
 </div>
@@ -1652,14 +1652,14 @@ However, it doesn&#8217;t compromise the security of the communication because t
 <td class="tableblock halign-left valign-top"><p class="tableblock">File system path to the Google OAuth2 credentials private key file.
 Used to authenticate and authorize new connections to a Google Cloud SQL instance.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default credentials provided by the Spring GCP Boot starter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default credentials provided by the Spring Framework on Google Cloud Core Starter</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.credentials.encoded-key</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded contents of OAuth2 account private key in JSON format.
 Used to authenticate and authorize new connections to a Google Cloud SQL instance.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default credentials provided by the Spring GCP Boot starter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default credentials provided by the Spring Framework on Google Cloud Core Starter</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.enableIamAuth</code></p></td>
@@ -1729,22 +1729,22 @@ For example, in Maven:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-sample">Spring Cloud GCP MySQL</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-sample">Spring Framework on Google Cloud MySQL</a></p>
 </li>
 <li>
-<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-sample">Spring Cloud GCP PostgreSQL</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-sample">Spring Framework on Google Cloud PostgreSQL</a></p>
 </li>
 <li>
-<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-jpa-sample">Spring Data JPA with Spring Cloud GCP SQL</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-jpa-sample">Spring Data JPA with Spring Framework on Google Cloud SQL</a></p>
 </li>
 <li>
 <p>Codelab: <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-petclinic-cloudsql/index.html">Spring Pet Clinic using Cloud SQL</a></p>
 </li>
 <li>
-<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-r2dbc-sample">R2DBC: Spring Cloud GCP MySQL</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-r2dbc-sample">R2DBC: Spring Framework on Google Cloud MySQL</a></p>
 </li>
 <li>
-<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-r2dbc-sample">R2DBC: Spring Cloud GCP PostgreSQL</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-r2dbc-sample">R2DBC: Spring Framework on Google Cloud PostgreSQL</a></p>
 </li>
 </ul>
 </div>
@@ -1755,13 +1755,13 @@ For example, in Maven:</p>
 <h2 id="cloud-pubsub"><a class="anchor" href="#cloud-pubsub"></a><a class="link" href="#cloud-pubsub">6. Cloud Pub/Sub</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Cloud GCP provides an abstraction layer to publish to and subscribe from Google Cloud Pub/Sub topics and to create, list or delete Google Cloud Pub/Sub topics and subscriptions.</p>
+<p>Spring Framework on Google Cloud provides an abstraction layer to publish to and subscribe from Google Cloud Pub/Sub topics and to create, list or delete Google Cloud Pub/Sub topics and subscriptions.</p>
 </div>
 <div class="paragraph">
 <p>A Spring Boot starter is provided to auto-configure the various required Pub/Sub components.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1790,7 +1790,7 @@ For example, in Maven:</p>
 <p>The Spring Boot starter for Google Cloud Pub/Sub provides the following configuration options.</p>
 </div>
 <div class="sect3">
-<h4 id="spring-cloud-gcp-pubsub-api-configuration"><a class="anchor" href="#spring-cloud-gcp-pubsub-api-configuration"></a><a class="link" href="#spring-cloud-gcp-pubsub-api-configuration">6.1.1. Spring Cloud GCP Pub/Sub API Configuration</a></h4>
+<h4 id="spring-framework-on-google-cloud-pubsub-api-configuration"><a class="anchor" href="#spring-framework-on-google-cloud-pubsub-api-configuration"></a><a class="link" href="#spring-framework-on-google-cloud-pubsub-api-configuration">6.1.1. Spring Framework on Google Cloud Pub/Sub API Configuration</a></h4>
 <div class="paragraph">
 <p>This section describes options for enabling the integration, specifying the Google Cloud project and credentials, and setting whether the APIs should connect to an emulator for local testing.</p>
 </div>
@@ -1816,7 +1816,7 @@ For example, in Maven:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Pub/Sub API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Pub/Sub API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -1824,7 +1824,7 @@ For example, in Maven:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.credentials.location</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the
 Google Cloud Pub/Sub API, if different from the ones in the
-<a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -1839,13 +1839,13 @@ If provided, this will setup the client to connect against a running <a href="ht
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.credentials.encoded-key</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded contents of OAuth2 account private key for authenticating with the
 Google Cloud Pub/Sub API, if different from the ones in the
-<a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.credentials.scopes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Cloud GCP
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Framework on Google Cloud
 Pub/Sub credentials</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.googleapis.com/auth/pubsub" class="bare">www.googleapis.com/auth/pubsub</a></p></td>
@@ -2318,7 +2318,7 @@ To disable the Cloud Pub/Sub indicator, set <code>management.health.pubsub.enabl
 </div>
 <div class="paragraph">
 <p>If no subscription has been specified via <code>spring.cloud.gcp.pubsub.health.subscription</code>, it will pull messages from a random subscription that is expected not to exist.
-It will signal "up" if it is able to connect to GCP Pub/Sub APIs, i.e. the pull results in a response of <code>NOT_FOUND</code> or <code>PERMISSION_DENIED</code>.</p>
+It will signal "up" if it is able to connect to Spring Framework on Google Cloud Pub/Sub APIs, i.e. the pull results in a response of <code>NOT_FOUND</code> or <code>PERMISSION_DENIED</code>.</p>
 </div>
 <div class="paragraph">
 <p>If a custom subscription has been specified, this health indicator will signal "up" if messages are successfully pulled and (optionally) acknowledged, or when a successful pull is performed but no messages are returned from Pub/Sub.
@@ -2562,7 +2562,7 @@ The subscription name could either be a short subscription name within the curre
 <td class="content">
 As of version 1.2, subscribing by itself is not enough to keep an application running.
 For a command-line application, you may want to provide your own <code>ThreadPoolTaskScheduler</code> bean named <code>pubsubSubscriberThreadPool</code>, which by default creates non-daemon threads that will keep an application from stopping.
-This default behavior has been overridden in Spring Cloud GCP for consistency with Cloud Pub/Sub client library, and to avoid holding up command-line applications that would like to shut down once their work is done.
+This default behavior has been overridden in Spring Framework on Google Cloud for consistency with Cloud Pub/Sub client library, and to avoid holding up command-line applications that would like to shut down once their work is done.
 </td>
 </tr>
 </table>
@@ -2707,7 +2707,7 @@ See <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics">here</a> f
 <div class="sect3">
 <h4 id="json-support"><a class="anchor" href="#json-support"></a><a class="link" href="#json-support">6.3.4. JSON support</a></h4>
 <div class="paragraph">
-<p>For serialization and deserialization of POJOs using Jackson JSON, configure a <code>PubSubMessageConverter</code> bean, and the Spring Boot starter for GCP Pub/Sub will automatically wire it into the <code>PubSubTemplate</code>.</p>
+<p>For serialization and deserialization of POJOs using Jackson JSON, configure a <code>PubSubMessageConverter</code> bean, and the Spring Boot starter for Spring Framework on Google Cloud Pub/Sub will automatically wire it into the <code>PubSubTemplate</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2816,7 +2816,7 @@ Flux&lt;AcknowledgeablePubsubMessage&gt; flux
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>Flux</code> then represents an infinite stream of GCP Pub/Sub messages coming in through the specified subscription.
+<p>The <code>Flux</code> then represents an infinite stream of Spring Framework on Google Cloud Pub/Sub messages coming in through the specified subscription.
 For unlimited demand, the Pub/Sub subscription will be polled regularly, at intervals determined by <code>pollingPeriodMs</code> parameter passed in when creating the <code>Flux</code>.
 For bounded demand, the <code>pollingPeriodMs</code> parameter is unused.
 Instead, as many messages as possible (up to the requested number) are delivered immediately, with the remaining messages delivered as they become available.</p>
@@ -2846,7 +2846,7 @@ For example, if you only want to fetch 5 messages, you can use <code>limitReques
 <div class="sect2">
 <h3 id="pubsub-management"><a class="anchor" href="#pubsub-management"></a><a class="link" href="#pubsub-management">6.5. Pub/Sub management</a></h3>
 <div class="paragraph">
-<p><code>PubSubAdmin</code> is the abstraction provided by Spring Cloud GCP to manage Google Cloud Pub/Sub resources.
+<p><code>PubSubAdmin</code> is the abstraction provided by Spring Framework on Google Cloud to manage Google Cloud Pub/Sub resources.
 It allows for the creation, deletion and listing of topics and subscriptions.</p>
 </div>
 <div class="admonitionblock note">
@@ -2862,7 +2862,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </table>
 </div>
 <div class="paragraph">
-<p>The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</code> object using the <code>GcpProjectIdProvider</code> and the <code>CredentialsProvider</code> auto-configured by the Spring Boot GCP Core starter.</p>
+<p>The Spring Boot starter for Spring Framework on Google Cloud Pub/Sub auto-configures a <code>PubSubAdmin</code> object using the <code>GcpProjectIdProvider</code> and the <code>CredentialsProvider</code> auto-configured by the Spring Framework on Google Cloud Core Starter.</p>
 </div>
 <div class="sect3">
 <h4 id="creating-a-topic"><a class="anchor" href="#creating-a-topic"></a><a class="link" href="#creating-a-topic">6.5.1. Creating a topic</a></h4>
@@ -3020,7 +3020,7 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 <h2 id="spring-integration"><a class="anchor" href="#spring-integration"></a><a class="link" href="#spring-integration">7. Spring Integration</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Cloud GCP provides Spring Integration adapters that allow your applications to use Enterprise Integration Patterns backed up by Google Cloud services.</p>
+<p>Spring Framework on Google Cloud provides Spring Integration adapters that allow your applications to use Enterprise Integration Patterns backed up by Google Cloud services.</p>
 </div>
 <div class="sect2">
 <h3 id="channel-adapters-for-cloud-pubsub"><a class="anchor" href="#channel-adapters-for-cloud-pubsub"></a><a class="link" href="#channel-adapters-for-cloud-pubsub">7.1. Channel Adapters for Cloud Pub/Sub</a></h3>
@@ -3032,7 +3032,7 @@ This enables messaging between different processes, applications or micro-servic
 <p>The Spring Integration Channel Adapters for Google Cloud Pub/Sub are included in the <code>spring-cloud-gcp-pubsub</code> module and can be autoconfigured by using the <code>spring-cloud-gcp-starter-pubsub</code> module in combination with a Spring Integration dependency.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3060,7 +3060,7 @@ This enables messaging between different processes, applications or micro-servic
 <div class="sect3">
 <h4 id="inbound-channel-adapter-using-pubsub-streaming-pull"><a class="anchor" href="#inbound-channel-adapter-using-pubsub-streaming-pull"></a><a class="link" href="#inbound-channel-adapter-using-pubsub-streaming-pull">7.1.1. Inbound channel adapter (using Pub/Sub Streaming Pull)</a></h4>
 <div class="paragraph">
-<p><code>PubSubInboundChannelAdapter</code> is the inbound channel adapter for GCP Pub/Sub that listens to a GCP Pub/Sub subscription for new messages.
+<p><code>PubSubInboundChannelAdapter</code> is the inbound channel adapter for Spring Framework on Google Cloud Pub/Sub that listens to a Spring Framework on Google Cloud Pub/Sub subscription for new messages.
 It converts new messages to an internal Spring <a href="https://docs.spring.io/spring-integration/reference/html/messaging-construction-chapter.html#message"><code>Message</code></a> and then sends it to the bound output channel.</p>
 </div>
 <div class="paragraph">
@@ -3112,7 +3112,7 @@ Depending on your use case, you might want to use a <code>MessageChannel</code> 
 <div class="paragraph">
 <p>Then, we declare a <code>PubSubInboundChannelAdapter</code> bean.
 It requires the channel we just created and a <code>SubscriberFactory</code>, which creates <code>Subscriber</code> objects from the Google Cloud Java Client for Pub/Sub.
-The Spring Boot starter for GCP Pub/Sub provides a configured <code>PubSubSubscriberOperations</code> object.</p>
+The Spring Boot starter for Spring Framework on Google Cloud Pub/Sub provides a configured <code>PubSubSubscriberOperations</code> object.</p>
 </div>
 <div class="sect4">
 <h5 id="acknowledging-messages-and-handling-failures"><a class="anchor" href="#acknowledging-messages-and-handling-failures"></a><a class="link" href="#acknowledging-messages-and-handling-failures">Acknowledging messages and handling failures</a></h5>
@@ -3128,7 +3128,7 @@ Additionally, the Cloud Pub/Sub client library can extend each streamed message&
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-In the Pub/Sub client library, default maximum extension period is an hour. However, Spring Cloud GCP disables this auto-extension behavior.
+In the Pub/Sub client library, default maximum extension period is an hour. However, Spring Framework on Google Cloud disables this auto-extension behavior.
 Use the <code>spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period</code> property to re-enable it.
 </td>
 </tr>
@@ -3282,7 +3282,7 @@ public void pubsubErrorHandler(Message&lt;MessagingException&gt; exceptionMessag
 <p>While <code>PubSubInboundChannelAdapter</code>, through the underlying Asynchronous Pull Pub/Sub mechanism, provides the best performance for high-volume applications that receive a steady flow of messages, it can create load balancing anomalies due to message caching.
 This behavior is most obvious when publishing a large batch of small messages that take a long time to process individually.
 It manifests as one subscriber taking up most messages, even if multiple subscribers are available to take on the work.
-For a more detailed explanation of this scenario, see <a href="https://cloud.google.com/pubsub/docs/pull#streamingpull_dealing_with_large_backlogs_of_small_messages">GCP Pub/Sub documentation</a>.</p>
+For a more detailed explanation of this scenario, see <a href="https://cloud.google.com/pubsub/docs/pull#streamingpull_dealing_with_large_backlogs_of_small_messages">Spring Framework on Google Cloud Pub/Sub documentation</a>.</p>
 </div>
 <div class="paragraph">
 <p>In such a scenario, a <code>PubSubMessageSource</code> can help spread the load between different subscribers more evenly.</p>
@@ -3360,8 +3360,8 @@ Streaming pull does not expose this information due to limitations of the underl
 <div class="sect3">
 <h4 id="outbound-channel-adapter"><a class="anchor" href="#outbound-channel-adapter"></a><a class="link" href="#outbound-channel-adapter">7.1.3. Outbound channel adapter</a></h4>
 <div class="paragraph">
-<p><code>PubSubMessageHandler</code> is the outbound channel adapter for GCP Pub/Sub that listens for new messages on a Spring <code>MessageChannel</code>.
-It uses <code>PubSubTemplate</code> to post them to a GCP Pub/Sub topic.</p>
+<p><code>PubSubMessageHandler</code> is the outbound channel adapter for Spring Framework on Google Cloud Pub/Sub that listens for new messages on a Spring <code>MessageChannel</code>.
+It uses <code>PubSubTemplate</code> to post them to a Spring Framework on Google Cloud Pub/Sub topic.</p>
 </div>
 <div class="paragraph">
 <p>To construct a Pub/Sub representation of the message, the outbound channel adapter needs to convert the Spring <code>Message</code> payload to a byte array representation expected by Pub/Sub.
@@ -3393,7 +3393,7 @@ public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
 </div>
 </div>
 <div class="paragraph">
-<p>The provided <code>PubSubTemplate</code> contains all the necessary configuration to publish messages to a GCP Pub/Sub topic.</p>
+<p>The provided <code>PubSubTemplate</code> contains all the necessary configuration to publish messages to a Spring Framework on Google Cloud Pub/Sub topic.</p>
 </div>
 <div class="paragraph">
 <p><code>PubSubMessageHandler</code> publishes messages asynchronously by default.
@@ -3515,16 +3515,16 @@ However, because it comes last in the list, <a href="https://docs.spring.io/spri
 <p>The channel adapters for Google Cloud Storage allow you to read and write files to Google Cloud Storage through <code>MessageChannels</code>.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP provides two inbound adapters, <code>GcsInboundFileSynchronizingMessageSource</code> and <code>GcsStreamingMessageSource</code>, and one outbound adapter, <code>GcsMessageHandler</code>.</p>
+<p>Spring Framework on Google Cloud provides two inbound adapters, <code>GcsInboundFileSynchronizingMessageSource</code> and <code>GcsStreamingMessageSource</code>, and one outbound adapter, <code>GcsMessageHandler</code>.</p>
 </div>
 <div class="paragraph">
 <p>The Spring Integration Channel Adapters for Google Cloud Storage are included in the <code>spring-cloud-gcp-storage</code> module.</p>
 </div>
 <div class="paragraph">
-<p>To use the Storage portion of Spring Integration for Spring Cloud GCP, you must also provide the <code>spring-integration-file</code> dependency, since it isn&#8217;t pulled transitively.</p>
+<p>To use the Storage portion of Spring Integration for Spring Framework on Google Cloud, you must also provide the <code>spring-integration-file</code> dependency, since it isn&#8217;t pulled transitively.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3634,13 +3634,13 @@ public MessageHandler outboundChannelAdapter(Storage gcs) {
 <h2 id="spring-cloud-stream"><a class="anchor" href="#spring-cloud-stream"></a><a class="link" href="#spring-cloud-stream">8. Spring Cloud Stream</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Cloud GCP provides a <a href="https://cloud.spring.io/spring-cloud-stream/">Spring Cloud Stream</a> binder to Google Cloud Pub/Sub.</p>
+<p>Spring Framework on Google Cloud provides a <a href="https://cloud.spring.io/spring-cloud-stream/">Spring Cloud Stream</a> binder to Google Cloud Pub/Sub.</p>
 </div>
 <div class="paragraph">
 <p>The provided binder relies on the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-pubsub/src/main/java/com/google/cloud/spring/pubsub/integration">Spring Integration Channel Adapters for Google Cloud Pub/Sub</a>.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3688,7 +3688,7 @@ For that, you can use the <code>spring.cloud.stream.gcp.pubsub.bindings.&lt;chan
 <p>Starting with version 1.1, these and other binder properties can be configured globally for all the bindings, e.g. <code>spring.cloud.stream.gcp.pubsub.default.consumer.auto-create-resources</code>.</p>
 </div>
 <div class="paragraph">
-<p>If you are using Pub/Sub auto-configuration from the Spring Cloud GCP Pub/Sub Starter, you should refer to the <a href="#pubsub-configuration">configuration</a> section for other Pub/Sub parameters.</p>
+<p>If you are using Pub/Sub auto-configuration from the Spring Framework on Google Cloud Pub/Sub Starter, you should refer to the <a href="#pubsub-configuration">configuration</a> section for other Pub/Sub parameters.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -4007,7 +4007,7 @@ If the bus topic (named <code>springCloudBus</code> by default) does not exist, 
 The binder also creates anonymous subscriptions for each project using the <code>spring-cloud-gcp-starter-bus-pubsub</code> starter.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4033,7 +4033,7 @@ The binder also creates anonymous subscriptions for each project using the <code
 <p>Spring Cloud Bus can be used to push configuration changes from a Spring Cloud Config server to the clients listening on the same bus.</p>
 </div>
 <div class="paragraph">
-<p>To use GCP Pub/Sub as the bus implementation, both the configuration server and the configuration client need the <code>spring-cloud-gcp-starter-bus-pubsub</code> dependency.</p>
+<p>To use Spring Framework on Google Cloud Pub/Sub as the bus implementation, both the configuration server and the configuration client need the <code>spring-cloud-gcp-starter-bus-pubsub</code> dependency.</p>
 </div>
 <div class="paragraph">
 <p>All other configuration is standard to <a href="https://spring.io/projects/spring-cloud-config">Spring Cloud Config</a>.</p>
@@ -4084,10 +4084,10 @@ The sample contains two examples of configuration management with Spring Cloud B
 However, on Google Cloud, instead of running and maintaining your own Zipkin instance and storage, you can use Cloud Trace to store traces, view trace details, generate latency distributions graphs, and generate performance regression reports.</p>
 </div>
 <div class="paragraph">
-<p>This Spring Cloud GCP starter can forward Spring Cloud Sleuth traces to Cloud Trace without an intermediary Zipkin server.</p>
+<p>This Spring Framework on Google Cloud starter can forward Spring Cloud Sleuth traces to Cloud Trace without an intermediary Zipkin server.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4211,25 +4211,25 @@ This field forces the decision of whether or not to trace the request; if omitte
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the project ID from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the project ID from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.credentials.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials location from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials location from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.credentials.encoded-key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials encoded key from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials encoded key from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.credentials.scopes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials scopes from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials scopes from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -4322,7 +4322,7 @@ By default, Spring Cloud Sleuth auto-configuration instruments executor beans, w
 </table>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP Trace does override some Sleuth configurations:</p>
+<p>Spring Framework on Google Cloud Trace does override some Sleuth configurations:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -4425,7 +4425,7 @@ spring.sleuth.integration.enabled=false</code></pre>
 <h2 id="cloud-logging"><a class="anchor" href="#cloud-logging"></a><a class="link" href="#cloud-logging">11. Cloud Logging</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4480,7 +4480,7 @@ You can do this easily if you&#8217;re using the <a href="https://cloud.google.c
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If Spring Cloud GCP Trace is enabled, the logging module disables itself and delegates log correlation to Spring Cloud Sleuth.
+If Spring Framework on Google Cloud Trace is enabled, the logging module disables itself and delegates log correlation to Spring Cloud Sleuth.
 </td>
 </tr>
 </table>
@@ -4801,7 +4801,7 @@ This module enables auto-detection of the <code>project-id</code> and <code>cred
 Also, it can be customized.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4855,25 +4855,25 @@ Navigate to the <a href="https://console.cloud.google.com/apis/api/monitoring.go
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.metrics.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the project ID from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the project ID from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.metrics.credentials.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials location from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials location from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.metrics.credentials.encoded-key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials encoded key from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials encoded key from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.metrics.credentials.scopes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials scopes from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials scopes from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -4949,10 +4949,10 @@ Read more about custom tags <a href="https://docs.spring.io/spring-boot/docs/cur
 <div class="sectionbody">
 <div class="paragraph">
 <p><a href="https://projects.spring.io/spring-data/">Spring Data</a> is an abstraction for storing and retrieving POJOs in numerous storage technologies.
-Spring Cloud GCP adds Spring Data support for <a href="https://cloud.google.com/spanner/">Google Cloud Spanner</a>.</p>
+Spring Framework on Google Cloud adds Spring Data support for <a href="https://cloud.google.com/spanner/">Google Cloud Spanner</a>.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates for this module only, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates for this module only, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5056,7 +5056,7 @@ The following configuration options are available:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.spanner.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Spanner API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Spanner API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -5064,7 +5064,7 @@ The following configuration options are available:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.spanner.credentials.location</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the
 Google Cloud Spanner API, if different from the ones in the
-<a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -5072,14 +5072,14 @@ Google Cloud Spanner API, if different from the ones in the
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.spanner.credentials.encoded-key</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded OAuth2 credentials for authenticating with the
 Google Cloud Spanner API, if different from the ones in the
-<a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.spanner.credentials.scopes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Cloud GCP
-Cloud Spanner credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Framework on Google
+CloudSpanner credentials</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.googleapis.com/auth/spanner.data" class="bare">www.googleapis.com/auth/spanner.data</a></p></td>
 </tr>
@@ -7184,10 +7184,10 @@ This integration is fully compatible with <a href="https://cloud.google.com/data
 </div>
 <div class="paragraph">
 <p><a href="https://projects.spring.io/spring-data/">Spring Data</a> is an abstraction for storing and retrieving POJOs in numerous storage technologies.
-Spring Cloud GCP adds Spring Data support for <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in Datastore mode.</p>
+Spring Framework on Google Cloud adds Spring Data support for <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in Datastore mode.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates for this module only, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates for this module only, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7276,25 +7276,25 @@ The following configuration options are available:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Datastore API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Datastore API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.credentials.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.credentials.encoded-key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.credentials.scopes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Cloud GCP Cloud Datastore credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Framework on Google CloudDatastore credentials</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.googleapis.com/auth/datastore" class="bare">www.googleapis.com/auth/datastore</a></p></td>
 </tr>
@@ -9127,11 +9127,11 @@ Currently some features are not supported: query by example, projections, and au
 </div>
 <div class="paragraph">
 <p><a href="https://projects.spring.io/spring-data/">Spring Data</a> is an abstraction for storing and retrieving POJOs in numerous storage technologies.
-Spring Cloud GCP adds Spring Data Reactive Repositories support for <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in native mode, providing reactive template and repositories support.
+Spring Framework on Google Cloud adds Spring Data Reactive Repositories support for <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in native mode, providing reactive template and repositories support.
 To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code> artifact to your project.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates for this module only, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates for this module only, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -9201,7 +9201,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.firestore.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Firestore API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Firestore API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -9219,19 +9219,19 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.firestore.credentials.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.firestore.credentials.encoded-key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.firestore.credentials.scopes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Cloud GCP Cloud Firestore credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Framework on Google CloudFirestore credentials</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.googleapis.com/auth/datastore" class="bare">www.googleapis.com/auth/datastore</a></p></td>
 </tr>
@@ -9964,7 +9964,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 <div class="sect2">
 <h3 id="cloud-firestore-spring-boot-starter"><a class="anchor" href="#cloud-firestore-spring-boot-starter"></a><a class="link" href="#cloud-firestore-spring-boot-starter">15.9. Cloud Firestore Spring Boot Starter</a></h3>
 <div class="paragraph">
-<p>If you prefer using Firestore client only, Spring Cloud GCP provides a convenience starter which automatically configures authentication settings and client objects needed to begin using <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in native mode.</p>
+<p>If you prefer using Firestore client only, Spring Framework on Google Cloud provides a convenience starter which automatically configures authentication settings and client objects needed to begin using <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in native mode.</p>
 </div>
 <div class="paragraph">
 <p>See <a href="https://cloud.google.com/firestore/docs/">documentation</a> to learn more about Cloud Firestore.</p>
@@ -9973,7 +9973,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 <p>To begin using this library, add the <code>spring-cloud-gcp-starter-firestore</code> artifact to your project.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -10065,7 +10065,7 @@ spring.cloud.gcp.firestore.host-port=${EMULATOR_HOSTPORT}</pre>
 <div class="sect2">
 <h3 id="samples-3"><a class="anchor" href="#samples-3"></a><a class="link" href="#samples-3">15.11. Samples</a></h3>
 <div class="paragraph">
-<p>Spring Cloud GCP provides Firestore sample applications to demonstrate API usage:</p>
+<p>Spring Framework on Google Cloud provides Firestore sample applications to demonstrate API usage:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -10155,7 +10155,7 @@ public String hello(@PathVariable String name) {
 <p><a href="https://cloud.google.com/bigquery">Google Cloud BigQuery</a> is a fully managed, petabyte scale, low cost analytics data warehouse.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP provides:</p>
+<p>Spring Framework on Google Cloud provides:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -10168,7 +10168,7 @@ public String hello(@PathVariable String name) {
 </ul>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -10191,7 +10191,7 @@ public String hello(@PathVariable String name) {
 <div class="sect2">
 <h3 id="configuration-8"><a class="anchor" href="#configuration-8"></a><a class="link" href="#configuration-8">17.1. Configuration</a></h3>
 <div class="paragraph">
-<p>The following application properties may be configured with Spring Cloud GCP BigQuery libraries.</p>
+<p>The following application properties may be configured with Spring Framework on Google Cloud BigQuery libraries.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -10215,19 +10215,19 @@ public String hello(@PathVariable String name) {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.bigquery.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables Spring Cloud GCP BigQuery autoconfiguration.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables Spring Framework on Google Cloud BigQuery autoconfiguration.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.bigquery.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID of the project using BigQuery APIs, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID of the project using BigQuery APIs, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Project ID is typically inferred from <a href="https://cloud.google.com/sdk/gcloud/reference/config/set"><code>gcloud</code></a> configuration.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.bigquery.credentials.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Credentials file location for authenticating with the Google Cloud BigQuery APIs, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Credentials file location for authenticating with the Google Cloud BigQuery APIs, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Inferred from <a href="https://cloud.google.com/docs/authentication/production">Application Default Credentials</a>, typically set by <a href="https://cloud.google.com/sdk/gcloud/reference/auth/application-default"><code>gcloud</code></a>.</p></td>
 </tr>
@@ -10368,7 +10368,7 @@ BigQueryTemplate bigQueryTemplate;
 <div class="sect2">
 <h3 id="spring-integration-2"><a class="anchor" href="#spring-integration-2"></a><a class="link" href="#spring-integration-2">17.2. Spring Integration</a></h3>
 <div class="paragraph">
-<p>Spring Cloud GCP BigQuery also provides a Spring Integration message handler <code>BigQueryFileMessageHandler</code>.
+<p>Spring Framework on Google Cloud BigQuery also provides a Spring Integration message handler <code>BigQueryFileMessageHandler</code>.
 This is useful for incorporating BigQuery data loading operations in a Spring Integration pipeline.</p>
 </div>
 <div class="paragraph">
@@ -10535,7 +10535,7 @@ If you create a custom <a href="https://docs.spring.io/spring-security/site/docs
 </table>
 </div>
 <div class="paragraph">
-<p>Starter Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Starter Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -10636,7 +10636,7 @@ Modifying registry, algorithm, and header properties might be useful for testing
 <p>The <a href="https://cloud.google.com/vision/">Google Cloud Vision API</a> allows users to leverage machine learning algorithms for processing images and documents including: image classification, face detection, text extraction, optical character recognition, and others.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP provides:</p>
+<p>Spring Framework on Google Cloud provides:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -10667,7 +10667,7 @@ Modifying registry, algorithm, and header properties might be useful for testing
 <p>To begin using this library, add the <code>spring-cloud-gcp-starter-vision</code> artifact to your project.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -10691,7 +10691,7 @@ Modifying registry, algorithm, and header properties might be useful for testing
 <div class="sect2">
 <h3 id="configuration-10"><a class="anchor" href="#configuration-10"></a><a class="link" href="#configuration-10">19.2. Configuration</a></h3>
 <div class="paragraph">
-<p>The following options may be configured with Spring Cloud GCP Vision libraries.</p>
+<p>The following options may be configured with Spring Framework on Google Cloud Vision libraries.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -10734,7 +10734,7 @@ Modifying registry, algorithm, and header properties might be useful for testing
 The storage starter is necessary because the Cloud Vision API will process your documents and write OCR output files all within your Google Cloud Storage buckets.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -11023,7 +11023,7 @@ public void parseSingleOutputFile() {
 <div class="sect2">
 <h3 id="sample-12"><a class="anchor" href="#sample-12"></a><a class="link" href="#sample-12">19.6. Sample</a></h3>
 <div class="paragraph">
-<p>Samples are provided to show example usages of Spring Cloud GCP with Google Cloud Vision.</p>
+<p>Samples are provided to show example usages of Spring Framework on Google Cloud with Google Cloud Vision.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -11047,7 +11047,7 @@ The application generates labels describing the content inside the images you sp
 A detailed summary of its features can be found in the <a href="https://cloud.google.com/blog/products/identity-security/introducing-google-clouds-secret-manager">Secret Manager documentation</a>.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP provides:</p>
+<p>Spring Framework on Google Cloud provides:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -11065,7 +11065,7 @@ A detailed summary of its features can be found in the <a href="https://cloud.go
 <p>To begin using this library, add the <code>spring-cloud-gcp-starter-secretmanager</code> artifact to your project.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -11088,7 +11088,7 @@ A detailed summary of its features can be found in the <a href="https://cloud.go
 <div class="sect3">
 <h4 id="configuration-11"><a class="anchor" href="#configuration-11"></a><a class="link" href="#configuration-11">20.1.1. Configuration</a></h4>
 <div class="paragraph">
-<p>By default, Spring Cloud GCP Secret Manager will authenticate using Application Default Credentials.
+<p>By default, Spring Framework on Google Cloud Secret Manager will authenticate using Application Default Credentials.
 This can be overridden using the authentication properties.</p>
 </div>
 <div class="admonitionblock note">
@@ -11155,7 +11155,7 @@ If set to <code>true</code>, <code>null</code> will be returned when accessing a
 <div class="sect2">
 <h3 id="secret-manager-property-source"><a class="anchor" href="#secret-manager-property-source"></a><a class="link" href="#secret-manager-property-source">20.2. Secret Manager Property Source</a></h3>
 <div class="paragraph">
-<p>The Spring Cloud GCP integration for Google Cloud Secret Manager enables you to use Secret Manager as a bootstrap property source.</p>
+<p>The Spring Framework on Google Cloud integration for Google Cloud Secret Manager enables you to use Secret Manager as a bootstrap property source.</p>
 </div>
 <div class="paragraph">
 <p>This allows you to specify and load secrets from Google Cloud Secret Manager as properties into the application context during the <a href="https://cloud.spring.io/spring-cloud-commons/reference/html/#the-bootstrap-application-context">Bootstrap Phase</a>, which refers to the initial phase when a Spring application is being loaded.</p>
@@ -11314,7 +11314,7 @@ Secret Manager bootstrap phrase.</p>
 <p>The <a href="https://cloud.google.com/kms/docs">Google Cloud Key Management Service (KMS)</a> allows you to create, import, and manage cryptographic keys and perform cryptographic operations in a single centralized cloud service.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP offers a utility template class <code>KmsTemplate</code> which allows you to conveniently encrypt and decrypt binary or text data.</p>
+<p>Spring Framework on Google Cloud offers a utility template class <code>KmsTemplate</code> which allows you to conveniently encrypt and decrypt binary or text data.</p>
 </div>
 <div class="sect2">
 <h3 id="dependency-setup-3"><a class="anchor" href="#dependency-setup-3"></a><a class="link" href="#dependency-setup-3">21.1. Dependency Setup</a></h3>
@@ -11322,7 +11322,7 @@ Secret Manager bootstrap phrase.</p>
 <p>To begin using this library, add the <code>spring-cloud-gcp-starter-kms</code> artifact to your project.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -11346,7 +11346,7 @@ Secret Manager bootstrap phrase.</p>
 <div class="sect2">
 <h3 id="configuration-12"><a class="anchor" href="#configuration-12"></a><a class="link" href="#configuration-12">21.2. Configuration</a></h3>
 <div class="paragraph">
-<p>The following options may be configured with Spring Cloud GCP KMS libraries.</p>
+<p>The following options may be configured with Spring Framework on Google Cloud KMS libraries.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -11370,13 +11370,13 @@ Secret Manager bootstrap phrase.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.kms.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID of the project using Cloud KMS APIs, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID of the project using Cloud KMS APIs, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Project ID is typically inferred from <a href="https://cloud.google.com/sdk/gcloud/reference/config/set"><code>gcloud</code></a> configuration.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.kms.credentials.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Credentials file location for authenticating with the Cloud KMS APIs, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Credentials file location for authenticating with the Cloud KMS APIs, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Inferred from <a href="https://cloud.google.com/docs/authentication/production">Application Default Credentials</a>, typically set by <a href="https://cloud.google.com/sdk/gcloud/reference/auth/application-default"><code>gcloud</code></a>.</p></td>
 </tr>
@@ -11389,7 +11389,7 @@ Secret Manager bootstrap phrase.</p>
 <p>Once you have added the <code>spring-cloud-gcp-starter-kms</code> to your project, the autoconfiguration class <code>com.google.cloud.spring.autoconfigure.kms.GcpKmsAutoConfiguration</code> will be activated for your project.</p>
 </div>
 <div class="paragraph">
-<p>The <code>com.google.cloud.spring.kms.KmsTemplate</code> bean provided by the autoconfiguration is the entrypoint to using Spring Cloud GCP support for Google KMS. This class allows you to specify a Cloud KMS key in your project via a URI string (format described below) and perform encryption/decryption with it.</p>
+<p>The <code>com.google.cloud.spring.kms.KmsTemplate</code> bean provided by the autoconfiguration is the entrypoint to using Spring Framework on Google Cloud support for Google KMS. This class allows you to specify a Cloud KMS key in your project via a URI string (format described below) and perform encryption/decryption with it.</p>
 </div>
 <div class="paragraph">
 <p>The template class automatically validates the CRC32 checksums received responses from Cloud KMS APIs to verify correctness of the response.</p>
@@ -11397,7 +11397,7 @@ Secret Manager bootstrap phrase.</p>
 <div class="sect3">
 <h4 id="cloud-kms-key-id-format"><a class="anchor" href="#cloud-kms-key-id-format"></a><a class="link" href="#cloud-kms-key-id-format">21.3.1. Cloud KMS Key ID format</a></h4>
 <div class="paragraph">
-<p>Spring Cloud GCP offers the following key syntax to specify Cloud KMS keys in your project:</p>
+<p>Spring Framework on Google Cloud offers the following key syntax to specify Cloud KMS keys in your project:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -11444,16 +11444,16 @@ Secret Manager bootstrap phrase.</p>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-The Google Cloud Runtime Configuration service is in <strong>Beta</strong> status, and is only available in snapshot and milestone versions of the project. It&#8217;s also not available in the Spring Cloud GCP BOM, unlike other modules.
+The Google Cloud Runtime Configuration service is in <strong>Beta</strong> status, and is only available in snapshot and milestone versions of the project. It&#8217;s also not available in the Spring Framework on Google Cloud BOM, unlike other modules.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP makes it possible to use the <a href="https://cloud.google.com/deployment-manager/runtime-configurator/reference/rest/">Google Runtime Configuration API</a> as a <a href="https://cloud.spring.io/spring-cloud-config/">Spring Cloud Config</a> server to remotely store your application configuration data.</p>
+<p>Spring Framework on Google Cloud makes it possible to use the <a href="https://cloud.google.com/deployment-manager/runtime-configurator/reference/rest/">Google Runtime Configuration API</a> as a <a href="https://cloud.spring.io/spring-cloud-config/">Spring Cloud Config</a> server to remotely store your application configuration data.</p>
 </div>
 <div class="paragraph">
-<p>The Spring Cloud GCP Config support is provided via its own Spring Boot starter.
+<p>The Spring Framework on Google Cloud Config support is provided via its own Spring Boot starter.
 It enables the use of the Google Runtime Configuration API as a source for Spring Boot configuration properties.</p>
 </div>
 <div class="paragraph">
@@ -11483,7 +11483,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 <div class="sect2">
 <h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">22.1. Configuration</a></h3>
 <div class="paragraph">
-<p>The following parameters are configurable in Spring Cloud GCP Config:</p>
+<p>The following parameters are configurable in Spring Framework on Google Cloud Config:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -11545,7 +11545,7 @@ If more than a single profile, last one is chosen</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.config.credentials.scopes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Cloud GCP Config credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Framework on Google Cloud Config credentials</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.googleapis.com/auth/cloudruntimeconfig" class="bare">www.googleapis.com/auth/cloudruntimeconfig</a></p></td>
 </tr>
@@ -11570,7 +11570,7 @@ These properties should be specified in a <a href="https://cloud.spring.io/sprin
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Core properties, as described in <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a>, do not apply to Spring Cloud GCP Config.
+Core properties, as described in <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a>, do not apply to Spring Framework on Google Cloud Config.
 </td>
 </tr>
 </table>
@@ -11700,7 +11700,7 @@ public class SampleConfig {
 <h2 id="cloud-foundry"><a class="anchor" href="#cloud-foundry"></a><a class="link" href="#cloud-foundry">23. Cloud Foundry</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Cloud GCP provides support for Cloud Foundry&#8217;s <a href="https://docs.pivotal.io/partners/gcp-sb/index.html">GCP Service Broker</a>.
+<p>Spring Framework on Google Cloud provides support for Cloud Foundry&#8217;s <a href="https://docs.pivotal.io/partners/gcp-sb/index.html">GCP Service Broker</a>.
 Our Pub/Sub, Cloud Spanner, Storage, Cloud Trace and Cloud SQL MySQL and PostgreSQL starters are Cloud Foundry aware and retrieve properties like project ID, credentials, etc., that are used in auto configuration from the Cloud Foundry environment.</p>
 </div>
 <div class="paragraph">
@@ -11752,7 +11752,7 @@ Otherwise, Cloud Foundry will produce a <code>DataSource</code> with an invalid 
 For example, you may want to use a user-provided service that points to a shared Google Service (like Cloud Spanner) used across your organization.</p>
 </div>
 <div class="paragraph">
-<p>In order for Spring Cloud GCP to detect your user-provided service as a Google Cloud Service, you must add an <a href="https://docs.cloudfoundry.org/devguide/services/managing-services.html#instance-tags-create">instance tag</a> indicating the Google Cloud Service it uses.
+<p>In order for Spring Framework on Google Cloud to detect your user-provided service as a Google Cloud Service, you must add an <a href="https://docs.cloudfoundry.org/devguide/services/managing-services.html#instance-tags-create">instance tag</a> indicating the Google Cloud Service it uses.
 The tag should simply be the Cloud Foundry name for the Google Service.</p>
 </div>
 <div class="paragraph">
@@ -11764,7 +11764,7 @@ The tag should simply be the Cloud Foundry name for the Google Service.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>This allows Spring Cloud GCP to retrieve the correct service properties from Cloud Foundry and use them in the auto configuration for your application.</p>
+<p>This allows Spring Framework on Google Cloud to retrieve the correct service properties from Cloud Foundry and use them in the auto configuration for your application.</p>
 </div>
 <div class="paragraph">
 <p>A mapping of Google service names to Cloud Foundry names are provided below:</p>
@@ -11825,7 +11825,7 @@ The tag should simply be the Cloud Foundry name for the Google Service.</p>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The latest version of the Spring Framework provides first-class support for Kotlin.
-For Kotlin users of Spring, the Spring Cloud GCP libraries work out-of-the-box and are fully interoperable with Kotlin applications.</p>
+For Kotlin users of Spring, the Spring Framework on Google Cloud libraries work out-of-the-box and are fully interoperable with Kotlin applications.</p>
 </div>
 <div class="paragraph">
 <p>For more information on building a Spring application in Kotlin, please consult the <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/languages.html#kotlin">Spring Kotlin documentation</a>.</p>
@@ -11860,13 +11860,13 @@ Based on your build system, you will need to include the correct Kotlin build pl
 </ul>
 </div>
 <div class="paragraph">
-<p>Once your Kotlin project is properly configured, the Spring Cloud GCP libraries will work within your application without any additional setup.</p>
+<p>Once your Kotlin project is properly configured, the Spring Framework on Google Cloud libraries will work within your application without any additional setup.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="sample-16"><a class="anchor" href="#sample-16"></a><a class="link" href="#sample-16">24.2. Sample</a></h3>
 <div class="paragraph">
-<p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-kotlin-samples/spring-cloud-gcp-kotlin-app-sample">Kotlin sample application</a> is provided to demonstrate a working Maven setup and various Spring Cloud GCP integrations from within Kotlin.</p>
+<p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-kotlin-samples/spring-cloud-gcp-kotlin-app-sample">Kotlin sample application</a> is provided to demonstrate a working Maven setup and various Spring Framework on Google Cloud integrations from within Kotlin.</p>
 </div>
 </div>
 </div>
@@ -11880,12 +11880,12 @@ Based on your build system, you will need to include the correct Kotlin build pl
 </div>
 </div>
 <div class="sect1">
-<h2 id="migration-guide-from-spring-cloud-gcp-1-x-to-2-x"><a class="anchor" href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x"></a><a class="link" href="#migration-guide-from-spring-cloud-gcp-1-x-to-2-x">26. Migration Guide from Spring Cloud GCP 1.x to 2.x</a></h2>
+<h2 id="migration-guide-from-spring-framework-on-google-cloud-1-x-to-2-x"><a class="anchor" href="#migration-guide-from-spring-framework-on-google-cloud-1-x-to-2-x"></a><a class="link" href="#migration-guide-from-spring-framework-on-google-cloud-1-x-to-2-x">26. Migration Guide from Spring Framework on Google Cloud 1.x to 2.x</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="maven-group-id-change"><a class="anchor" href="#maven-group-id-change"></a><a class="link" href="#maven-group-id-change">26.1. Maven Group ID Change</a></h3>
 <div class="paragraph">
-<p>Spring Cloud  <a href="https://spring.io/blog/2019/07/24/simplifying-the-spring-cloud-release-train">unbundled</a> Spring Cloud GCP and other cloud providers from their release train.
+<p>Spring Cloud  <a href="https://spring.io/blog/2019/07/24/simplifying-the-spring-cloud-release-train">unbundled</a> Spring Framework on Google Cloud and other cloud providers from their release train.
 To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencies</code> bill of materials (BOM) and change the <code>spring-cloud-gcp</code> group IDs in your <code>pom.xml</code> files:</p>
 </div>
 <div class="listingblock">
@@ -11959,7 +11959,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 <div class="sect2">
 <h3 id="java-package-name-change"><a class="anchor" href="#java-package-name-change"></a><a class="link" href="#java-package-name-change">26.2. Java Package Name Change</a></h3>
 <div class="paragraph">
-<p>All code in Spring Cloud GCP has been moved from <code>org.springframework.cloud.gcp</code> over to the <code>com.google.cloud.spring</code> package.</p>
+<p>All code in Spring Framework on Google Cloud has been moved from <code>org.springframework.cloud.gcp</code> over to the <code>com.google.cloud.spring</code> package.</p>
 </div>
 </div>
 <div class="sect2">

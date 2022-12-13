@@ -182,7 +182,7 @@ window.onload = function() {
 <p><a href="https://cloud.google.com/bigquery">Google Cloud BigQuery</a> is a fully managed, petabyte scale, low cost analytics data warehouse.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP provides:</p>
+<p>Spring Framework on Google Cloud provides:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -195,7 +195,7 @@ window.onload = function() {
 </ul>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -218,7 +218,7 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
 <div class="paragraph">
-<p>The following application properties may be configured with Spring Cloud GCP BigQuery libraries.</p>
+<p>The following application properties may be configured with Spring Framework on Google Cloud BigQuery libraries.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -242,19 +242,19 @@ window.onload = function() {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.bigquery.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables Spring Cloud GCP BigQuery autoconfiguration.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables Spring Framework on Google Cloud BigQuery autoconfiguration.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.bigquery.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID of the project using BigQuery APIs, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID of the project using BigQuery APIs, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Project ID is typically inferred from <a href="https://cloud.google.com/sdk/gcloud/reference/config/set"><code>gcloud</code></a> configuration.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.bigquery.credentials.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Credentials file location for authenticating with the Google Cloud BigQuery APIs, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Credentials file location for authenticating with the Google Cloud BigQuery APIs, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Inferred from <a href="https://cloud.google.com/docs/authentication/production">Application Default Credentials</a>, typically set by <a href="https://cloud.google.com/sdk/gcloud/reference/auth/application-default"><code>gcloud</code></a>.</p></td>
 </tr>
@@ -395,7 +395,7 @@ BigQueryTemplate bigQueryTemplate;
 <div class="sect2">
 <h3 id="_spring_integration"><a class="link" href="#_spring_integration">Spring Integration</a></h3>
 <div class="paragraph">
-<p>Spring Cloud GCP BigQuery also provides a Spring Integration message handler <code>BigQueryFileMessageHandler</code>.
+<p>Spring Framework on Google Cloud BigQuery also provides a Spring Integration message handler <code>BigQueryFileMessageHandler</code>.
 This is useful for incorporating BigQuery data loading operations in a Spring Integration pipeline.</p>
 </div>
 <div class="paragraph">

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Migration Guide from Spring Cloud GCP 1.x to 2.x</title>
+<title>Migration Guide from Spring Framework on Google Cloud 1.x to 2.x</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -164,7 +164,7 @@ window.onload = function() {
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_migration_guide_from_spring_cloud_gcp_1_x_to_2_x">Migration Guide from Spring Cloud GCP 1.x to 2.x</a>
+<li><a href="#_migration_guide_from_spring_framework_on_google_cloud_1_x_to_2_x">Migration Guide from Spring Framework on Google Cloud 1.x to 2.x</a>
 <ul class="sectlevel2">
 <li><a href="#_maven_group_id_change">Maven Group ID Change</a></li>
 <li><a href="#_java_package_name_change">Java Package Name Change</a></li>
@@ -176,12 +176,12 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_migration_guide_from_spring_cloud_gcp_1_x_to_2_x"><a class="link" href="#_migration_guide_from_spring_cloud_gcp_1_x_to_2_x">Migration Guide from Spring Cloud GCP 1.x to 2.x</a></h2>
+<h2 id="_migration_guide_from_spring_framework_on_google_cloud_1_x_to_2_x"><a class="link" href="#_migration_guide_from_spring_framework_on_google_cloud_1_x_to_2_x">Migration Guide from Spring Framework on Google Cloud 1.x to 2.x</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_maven_group_id_change"><a class="link" href="#_maven_group_id_change">Maven Group ID Change</a></h3>
 <div class="paragraph">
-<p>Spring Cloud  <a href="https://spring.io/blog/2019/07/24/simplifying-the-spring-cloud-release-train">unbundled</a> Spring Cloud GCP and other cloud providers from their release train.
+<p>Spring Cloud  <a href="https://spring.io/blog/2019/07/24/simplifying-the-spring-cloud-release-train">unbundled</a> Spring Framework on Google Cloud and other cloud providers from their release train.
 To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencies</code> bill of materials (BOM) and change the <code>spring-cloud-gcp</code> group IDs in your <code>pom.xml</code> files:</p>
 </div>
 <div class="listingblock">
@@ -255,7 +255,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 <div class="sect2">
 <h3 id="_java_package_name_change"><a class="link" href="#_java_package_name_change">Java Package Name Change</a></h3>
 <div class="paragraph">
-<p>All code in Spring Cloud GCP has been moved from <code>org.springframework.cloud.gcp</code> over to the <code>com.google.cloud.spring</code> package.</p>
+<p>All code in Spring Framework on Google Cloud has been moved from <code>org.springframework.cloud.gcp</code> over to the <code>com.google.cloud.spring</code> package.</p>
 </div>
 </div>
 <div class="sect2">

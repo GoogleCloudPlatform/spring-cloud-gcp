@@ -168,7 +168,7 @@ window.onload = function() {
 <ul class="sectlevel2">
 <li><a href="#_compatibility_with_spring_project_versions">Compatibility with Spring Project Versions</a></li>
 <li><a href="#_setting_up_dependencies">Setting up Dependencies</a></li>
-<li><a href="#_learning_spring_cloud_gcp">Learning Spring Cloud GCP</a></li>
+<li><a href="#_learning_spring_framework_on_google_cloud">Learning Spring Framework on Google Cloud</a></li>
 </ul>
 </li>
 </ul>
@@ -179,12 +179,12 @@ window.onload = function() {
 <h2 id="_getting_started"><a class="link" href="#_getting_started">Getting Started</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This section describes how to get up to speed with Spring Cloud GCP libraries.</p>
+<p>This section describes how to get up to speed with Spring Framework on Google Cloud libraries.</p>
 </div>
 <div class="sect2">
 <h3 id="_compatibility_with_spring_project_versions"><a class="link" href="#_compatibility_with_spring_project_versions">Compatibility with Spring Project Versions</a></h3>
 <div class="paragraph">
-<p>Spring Cloud GCP has dependency and transitive dependencies on Spring Projects. The table below outlines the versions of Spring Cloud, Spring Boot and Spring Framework versions that are compatible with certain Spring Cloud GCP version.</p>
+<p>Spring Framework on Google Cloud has dependency and transitive dependencies on Spring Projects. The table below outlines the versions of Spring Cloud, Spring Boot and Spring Framework versions that are compatible with certain Spring Framework on Google Cloud version.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -195,7 +195,7 @@ window.onload = function() {
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Spring Cloud GCP</th>
+<th class="tableblock halign-left valign-top">Spring Framework on Google Cloud</th>
 <th class="tableblock halign-left valign-top">Spring Cloud</th>
 <th class="tableblock halign-left valign-top">Spring Boot</th>
 <th class="tableblock halign-left valign-top">Spring Framework</th>
@@ -220,7 +220,7 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="_setting_up_dependencies"><a class="link" href="#_setting_up_dependencies">Setting up Dependencies</a></h3>
 <div class="paragraph">
-<p>All Spring Cloud GCP artifacts are made available through Maven Central.
+<p>All Spring Framework on Google Cloud artifacts are made available through Maven Central.
 The following resources are provided to help you setup the libraries for your project:</p>
 </div>
 <div class="ulist">
@@ -229,7 +229,7 @@ The following resources are provided to help you setup the libraries for your pr
 <p>Maven Bill of Materials for dependency management</p>
 </li>
 <li>
-<p>Starter Dependencies for depending on Spring Cloud GCP modules</p>
+<p>Starter Dependencies for depending on Spring Framework on Google Cloud modules</p>
 </li>
 </ul>
 </div>
@@ -239,10 +239,10 @@ The following resources are provided to help you setup the libraries for your pr
 <div class="sect3">
 <h4 id="bill-of-materials"><a class="link" href="#bill-of-materials">Bill of Materials</a></h4>
 <div class="paragraph">
-<p>The Spring Cloud GCP Bill of Materials (BOM) contains the versions of all the dependencies it uses.</p>
+<p>The Spring Framework on Google Cloud Bill of Materials (BOM) contains the versions of all the dependencies it uses.</p>
 </div>
 <div class="paragraph">
-<p>If you’re a Maven user, adding the following to your pom.xml file will allow you omit any Spring Cloud GCP dependency version numbers from your configuration.
+<p>If you’re a Maven user, adding the following to your pom.xml file will allow you omit any Spring Framework on Google Cloud dependency version numbers from your configuration.
 Instead, the version of the BOM you’re using determines the versions of the used dependencies.</p>
 </div>
 <div class="listingblock">
@@ -271,14 +271,14 @@ Instead, the version of the BOM you’re using determines the versions of the us
 </div>
 </div>
 <div class="paragraph">
-<p>In the following sections, it will be assumed you are using the Spring Cloud GCP BOM and the dependency snippets will not contain versions.</p>
+<p>In the following sections, it will be assumed you are using the Spring Framework on Google Cloud BOM and the dependency snippets will not contain versions.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_starter_dependencies"><a class="link" href="#_starter_dependencies">Starter Dependencies</a></h4>
 <div class="paragraph">
-<p>Spring Cloud GCP offers <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters">starter dependencies</a> through Maven to easily depend on different modules of the library.
-Each starter contains all the dependencies and transitive dependencies needed to begin using their corresponding Spring Cloud GCP module.</p>
+<p>Spring Framework on Google Cloud offers <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters">starter dependencies</a> through Maven to easily depend on different modules of the library.
+Each starter contains all the dependencies and transitive dependencies needed to begin using their corresponding Spring Framework on Google Cloud module.</p>
 </div>
 <div class="paragraph">
 <p>For example, if you wish to write a Spring application with Cloud Pub/Sub, you would include the <code>spring-cloud-gcp-starter-pubsub</code> dependency in your project.
@@ -295,7 +295,7 @@ You do <strong>not</strong> need to include the underlying <code>spring-cloud-gc
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Spring Cloud GCP Starter</th>
+<th class="tableblock halign-left valign-top">Spring Framework on Google Cloud Starter</th>
 <th class="tableblock halign-left valign-top">Description</th>
 <th class="tableblock halign-left valign-top">Maven Artifact Name</th>
 </tr>
@@ -376,12 +376,12 @@ You do <strong>not</strong> need to include the underlying <code>spring-cloud-gc
 It handles the work of generating the Maven or Gradle build file so you do not have to manually add the dependencies yourself.</p>
 </div>
 <div class="paragraph">
-<p>Spring Initializr offers three modules from Spring Cloud GCP that you can use to generate your project.</p>
+<p>Spring Initializr offers three modules from Spring Framework on Google Cloud that you can use to generate your project.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>GCP Support</strong>: The GCP Support module contains auto-configuration support for every Spring Cloud GCP integration.
+<p><strong>GCP Support</strong>: The GCP Support module contains auto-configuration support for every Spring Framework on Google Cloud integration.
 Most of the autoconfiguration code is only enabled if the required dependency is added to your project.</p>
 </li>
 <li>
@@ -395,16 +395,16 @@ Most of the autoconfiguration code is only enabled if the required dependency is
 </div>
 </div>
 <div class="sect2">
-<h3 id="_learning_spring_cloud_gcp"><a class="link" href="#_learning_spring_cloud_gcp">Learning Spring Cloud GCP</a></h3>
+<h3 id="_learning_spring_framework_on_google_cloud"><a class="link" href="#_learning_spring_framework_on_google_cloud">Learning Spring Framework on Google Cloud</a></h3>
 <div class="paragraph">
-<p>There are a variety of resources to help you learn how to use Spring Cloud GCP libraries.</p>
+<p>There are a variety of resources to help you learn how to use Spring Framework on Google Cloud libraries.</p>
 </div>
 <div class="sect3">
 <h4 id="_sample_applications"><a class="link" href="#_sample_applications">Sample Applications</a></h4>
 <div class="paragraph">
-<p>The easiest way to learn how to use Spring Cloud GCP is to consult the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples">sample applications on Github</a>.
-Spring Cloud GCP provides sample applications which demonstrate how to use every integration in the library.
-The table below highlights several samples of the most commonly used integrations in Spring Cloud GCP.</p>
+<p>The easiest way to learn how to use Spring Framework on Google Cloud is to consult the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples">sample applications on Github</a>.
+Spring Framework on Google Cloud provides sample applications which demonstrate how to use every integration in the library.
+The table below highlights several samples of the most commonly used integrations in Spring Framework on Google Cloud.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -462,7 +462,7 @@ The table below highlights several samples of the most commonly used integration
 </tbody>
 </table>
 <div class="paragraph">
-<p>Each sample application demonstrates how to use Spring Cloud GCP libraries in context and how to setup the dependencies for the project.
+<p>Each sample application demonstrates how to use Spring Framework on Google Cloud libraries in context and how to setup the dependencies for the project.
 The applications are fully functional and can be deployed to Google Cloud as well.
 If you are interested, you may consult guides for <a href="https://codelabs.developers.google.com/codelabs/cloud-app-engine-springboot/index.html">deploying an application to AppEngine</a> and <a href="https://codelabs.developers.google.com/codelabs/cloud-springboot-kubernetes/index.html">to Google Kubernetes Engine</a>.</p>
 </div>
@@ -471,7 +471,7 @@ If you are interested, you may consult guides for <a href="https://codelabs.deve
 <h4 id="_codelabs"><a class="link" href="#_codelabs">Codelabs</a></h4>
 <div class="paragraph">
 <p>For a more hands-on approach, there are several guides and codelabs to help you get up to speed.
-These guides provide step-by-step instructions for building an application using Spring Cloud GCP.</p>
+These guides provide step-by-step instructions for building an application using Spring Framework on Google Cloud.</p>
 </div>
 <div class="paragraph">
 <p>Some examples include:</p>

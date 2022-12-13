@@ -201,11 +201,11 @@ Currently some features are not supported: query by example, projections, and au
 </div>
 <div class="paragraph">
 <p><a href="https://projects.spring.io/spring-data/">Spring Data</a> is an abstraction for storing and retrieving POJOs in numerous storage technologies.
-Spring Cloud GCP adds Spring Data Reactive Repositories support for <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in native mode, providing reactive template and repositories support.
+Spring Framework on Google Cloud adds Spring Data Reactive Repositories support for <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in native mode, providing reactive template and repositories support.
 To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code> artifact to your project.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates for this module only, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates for this module only, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -275,7 +275,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.firestore.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Firestore API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Firestore API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -293,19 +293,19 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.firestore.credentials.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.firestore.credentials.encoded-key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.firestore.credentials.scopes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Cloud GCP Cloud Firestore credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Framework on Google CloudFirestore credentials</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.googleapis.com/auth/datastore" class="bare">https://www.googleapis.com/auth/datastore</a></p></td>
 </tr>
@@ -1038,7 +1038,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 <div class="sect2">
 <h3 id="_cloud_firestore_spring_boot_starter"><a class="link" href="#_cloud_firestore_spring_boot_starter">Cloud Firestore Spring Boot Starter</a></h3>
 <div class="paragraph">
-<p>If you prefer using Firestore client only, Spring Cloud GCP provides a convenience starter which automatically configures authentication settings and client objects needed to begin using <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in native mode.</p>
+<p>If you prefer using Firestore client only, Spring Framework on Google Cloud provides a convenience starter which automatically configures authentication settings and client objects needed to begin using <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in native mode.</p>
 </div>
 <div class="paragraph">
 <p>See <a href="https://cloud.google.com/firestore/docs/">documentation</a> to learn more about Cloud Firestore.</p>
@@ -1047,7 +1047,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 <p>To begin using this library, add the <code>spring-cloud-gcp-starter-firestore</code> artifact to your project.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1139,7 +1139,7 @@ spring.cloud.gcp.firestore.host-port=${EMULATOR_HOSTPORT}</pre>
 <div class="sect2">
 <h3 id="_samples"><a class="link" href="#_samples">Samples</a></h3>
 <div class="paragraph">
-<p>Spring Cloud GCP provides Firestore sample applications to demonstrate API usage:</p>
+<p>Spring Framework on Google Cloud provides Firestore sample applications to demonstrate API usage:</p>
 </div>
 <div class="ulist">
 <ul>
