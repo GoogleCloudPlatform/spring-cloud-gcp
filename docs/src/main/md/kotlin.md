@@ -1,7 +1,7 @@
 ## Kotlin Support
 
 The latest version of the Spring Framework provides first-class support
-for Kotlin. For Kotlin users of Spring, the Spring Cloud GCP libraries
+for Kotlin. For Kotlin users of Spring, the Spring Framework on Google Cloud libraries
 work out-of-the-box and are fully interoperable with Kotlin
 applications.
 
@@ -33,7 +33,7 @@ build configuration with compiler plugins:
     Plugin](https://kotlinlang.org/docs/reference/compiler-plugins.html#jpa-support):
     Enables using JPA in Kotlin applications.
 
-Once your Kotlin project is properly configured, the Spring Cloud GCP
+Once your Kotlin project is properly configured, the Spring Framework on Google Cloud
 libraries will work within your application without any additional
 setup.
 
@@ -42,4 +42,4 @@ setup.
 A [Kotlin sample
 application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-kotlin-samples/spring-cloud-gcp-kotlin-app-sample)
 is provided to demonstrate a working Maven setup and various Spring
-Cloud GCP integrations from within Kotlin.
+Framework on Google Cloud integrations from within Kotlin.

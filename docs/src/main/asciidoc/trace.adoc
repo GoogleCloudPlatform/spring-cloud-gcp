@@ -6,9 +6,9 @@ Google Cloud provides a managed distributed tracing service called https://cloud
 Typically, Spring Cloud Sleuth captures trace information and forwards traces to services like Zipkin for storage and analysis.
 However, on Google Cloud, instead of running and maintaining your own Zipkin instance and storage, you can use Cloud Trace to store traces, view trace details, generate latency distributions graphs, and generate performance regression reports.
 
-This Spring Cloud GCP starter can forward Spring Cloud Sleuth traces to Cloud Trace without an intermediary Zipkin server.
+This Spring Framework on Google Cloud starter can forward Spring Cloud Sleuth traces to Cloud Trace without an intermediary Zipkin server.
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----
@@ -75,10 +75,10 @@ All configurations are optional:
 |===
 | Name | Description | Required | Default value
 | `spring.cloud.gcp.trace.enabled` | Auto-configure Spring Cloud Sleuth to send traces to Cloud Trace. | No | `true`
-| `spring.cloud.gcp.trace.project-id` | Overrides the project ID from the <<spring-cloud-gcp-core,Spring Cloud GCP Module>> | No |
-| `spring.cloud.gcp.trace.credentials.location` | Overrides the credentials location from the <<spring-cloud-gcp-core,Spring Cloud GCP Module>> | No |
-| `spring.cloud.gcp.trace.credentials.encoded-key` | Overrides the credentials encoded key from the <<spring-cloud-gcp-core,Spring Cloud GCP Module>> | No |
-| `spring.cloud.gcp.trace.credentials.scopes` | Overrides the credentials scopes from the <<spring-cloud-gcp-core,Spring Cloud GCP Module>> | No |
+| `spring.cloud.gcp.trace.project-id` | Overrides the project ID from the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Module>> | No |
+| `spring.cloud.gcp.trace.credentials.location` | Overrides the credentials location from the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Module>> | No |
+| `spring.cloud.gcp.trace.credentials.encoded-key` | Overrides the credentials encoded key from the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Module>> | No |
+| `spring.cloud.gcp.trace.credentials.scopes` | Overrides the credentials scopes from the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Module>> | No |
 | `spring.cloud.gcp.trace.num-executor-threads` | Number of threads used by the Trace executor | No | 4
 | `spring.cloud.gcp.trace.authority` | HTTP/2 authority the channel claims to be connecting to. | No |
 | `spring.cloud.gcp.trace.compression` | Name of the compression to use in Trace calls | No |
@@ -105,7 +105,7 @@ spring.sleuth.scheduled.enabled=false                   # disable executor 'asyn
 
 WARNING: By default, Spring Cloud Sleuth auto-configuration instruments executor beans, which may cause recurring traces with the name `async` to appear in Cloud Trace if your application or one of its dependencies introduces scheduler beans into Spring application context. To avoid this noise, please disable automatic instrumentation of executors via `spring.sleuth.scheduled.enabled=false` in your application configuration.
 
-Spring Cloud GCP Trace does override some Sleuth configurations:
+Spring Framework on Google Cloud Trace does override some Sleuth configurations:
 
 - Always uses 128-bit Trace IDs.
 This is required by Cloud Trace.
