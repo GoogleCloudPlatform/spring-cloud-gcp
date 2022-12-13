@@ -10,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>spring-cloud-gcp-starter-trace</artifactId>
-	<name>Spring Cloud GCP Starter - Cloud Trace</name>
+	<name>Spring Framework on Google Cloud Starter - Cloud Trace</name>
 	<url>https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-trace</url>
 
 	<dependencies>
