@@ -19,13 +19,11 @@ package com.google.cloud.language.v1.spring;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
-import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.HeaderProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.LanguageServiceSettings;
-import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import java.io.IOException;
 import java.util.Collections;
@@ -39,7 +37,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.threeten.bp.Duration;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS.
 /**
@@ -69,7 +66,8 @@ public class LanguageServiceSpringAutoConfiguration {
   private static final Log LOGGER = LogFactory.getLog(LanguageServiceSpringAutoConfiguration.class);
 
   protected LanguageServiceSpringAutoConfiguration(
-      LanguageServiceSpringProperties clientProperties, CredentialsProvider credentialsProvider) throws IOException{
+      LanguageServiceSpringProperties clientProperties, CredentialsProvider credentialsProvider)
+      throws IOException {
     this.clientProperties = clientProperties;
     if (this.clientProperties.getCredentials().hasKey()) {
       if (LOGGER.isTraceEnabled()) {

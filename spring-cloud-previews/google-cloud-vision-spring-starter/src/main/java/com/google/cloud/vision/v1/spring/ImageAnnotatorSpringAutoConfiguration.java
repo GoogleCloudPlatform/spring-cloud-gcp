@@ -19,11 +19,9 @@ package com.google.cloud.vision.v1.spring;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
-import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.HeaderProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
-import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageAnnotatorSettings;
@@ -39,7 +37,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.threeten.bp.Duration;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS.
 /**
@@ -69,7 +66,8 @@ public class ImageAnnotatorSpringAutoConfiguration {
   private static final Log LOGGER = LogFactory.getLog(ImageAnnotatorSpringAutoConfiguration.class);
 
   protected ImageAnnotatorSpringAutoConfiguration(
-      ImageAnnotatorSpringProperties clientProperties, CredentialsProvider credentialsProvider) throws IOException{
+      ImageAnnotatorSpringProperties clientProperties, CredentialsProvider credentialsProvider)
+      throws IOException {
     this.clientProperties = clientProperties;
     if (this.clientProperties.getCredentials().hasKey()) {
       if (LOGGER.isTraceEnabled()) {
