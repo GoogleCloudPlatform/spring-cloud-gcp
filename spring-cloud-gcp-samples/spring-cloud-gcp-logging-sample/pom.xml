@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.google.cloud</groupId>
     <artifactId>spring-cloud-gcp-logging-sample</artifactId>
-    <name>Spring Cloud GCP Code Sample - Logging</name>
+    <name>Spring Framework on Google Cloud Code Sample - Logging</name>
 
     <parent>
         <!-- Your own application should inherit from spring-boot-starter-parent -->
@@ -14,7 +14,7 @@
         <version>3.5.0-SNAPSHOT</version>
     </parent>
 
-    <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+    <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
     <dependencyManagement>
         <dependencies>
             <dependency>
