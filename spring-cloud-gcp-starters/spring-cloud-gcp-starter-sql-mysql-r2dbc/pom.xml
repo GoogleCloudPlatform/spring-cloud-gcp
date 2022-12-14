@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>spring-cloud-gcp-starter-sql-mysql-r2dbc</artifactId>
-    <name>Spring Cloud GCP Starter - R2DBC MySQL</name>
+    <name>Spring Framework on Google Cloud Starter - R2DBC MySQL</name>
     <url>https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-mysql-r2dbc</url>
 
     <dependencies>

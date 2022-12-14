@@ -6,10 +6,10 @@ certificates, and other sensitive data. A detailed summary of its
 features can be found in the [Secret Manager
 documentation](https://cloud.google.com/blog/products/identity-security/introducing-google-clouds-secret-manager).
 
-Spring Cloud GCP provides:
+Spring Framework on Google Cloud provides:
 
   - A property source which allows you to specify and load the secrets
-    of your GCP project into your application context as a [Bootstrap
+    of your Google Cloud project into your application context as a [Bootstrap
     Property
     Source](https://cloud.spring.io/spring-cloud-commons/multi/multi__spring_cloud_context_application_context_services.html#_the_bootstrap_application_context).
 
@@ -21,8 +21,8 @@ Spring Cloud GCP provides:
 To begin using this library, add the
 `spring-cloud-gcp-starter-secretmanager` artifact to your project.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -39,7 +39,7 @@ Gradle coordinates:
 
 #### Configuration
 
-By default, Spring Cloud GCP Secret Manager will authenticate using
+By default, Spring Framework on Google Cloud Secret Manager will authenticate using
 Application Default Credentials. This can be overridden using the
 authentication properties.
 
@@ -58,12 +58,12 @@ configure settings for bootstrap-phase Spring configuration.
 | `spring.cloud.gcp.secretmanager.enabled`                                                                        | Enables the Secret Manager bootstrap property and template configuration.                                                                                                             | No       | `true`                                                                                                                          |
 | `spring.cloud.gcp.secretmanager.credentials.location`                                                           | OAuth2 credentials for authenticating to the Google Cloud Secret Manager API.                                                                                                         | No       | By default, infers credentials from [Application Default Credentials](https://cloud.google.com/docs/authentication/production). |
 | `spring.cloud.gcp.secretmanager.credentials.encoded-key`                                                        | Base64-encoded contents of OAuth2 account private key for authenticating to the Google Cloud Secret Manager API.                                                                      | No       | By default, infers credentials from [Application Default Credentials](https://cloud.google.com/docs/authentication/production). |
-| `spring.cloud.gcp.secretmanager.project-id`                                                                     | The default GCP Project used to access Secret Manager API for the template and property source.                                                                                       | No       | By default, infers the project from [Application Default Credentials](https://cloud.google.com/docs/authentication/production). |
+| `spring.cloud.gcp.secretmanager.project-id`                                                                     | The default Google Cloud project used to access Secret Manager API for the template and property source.                                                                                       | No       | By default, infers the project from [Application Default Credentials](https://cloud.google.com/docs/authentication/production). |
 | `spring.cloud.gcp.secretmanager.allow-default-secret`                                                           | Define the behavior when accessing a non-existent secret string/bytes. If set to `true`, `null` will be returned when accessing a non-existent secret; otherwise throwing an exception. | No | `false`|
 
 ### Secret Manager Property Source
 
-The Spring Cloud GCP integration for Google Cloud Secret Manager enables
+The Spring Framework on Google Cloud integration for Google Cloud Secret Manager enables
 you to use Secret Manager as a bootstrap property source.
 
 This allows you to specify and load secrets from Google Cloud Secret

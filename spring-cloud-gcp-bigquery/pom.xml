@@ -11,8 +11,8 @@
   </parent>
 
   <artifactId>spring-cloud-gcp-bigquery</artifactId>
-  <name>Spring Cloud GCP Module - BigQuery</name>
-  <description>Spring Cloud GCP BigQuery Module</description>
+  <name>Spring Framework on Google Cloud Module - BigQuery</name>
+  <description>Spring Framework on Google Cloud BigQuery Module</description>
 
   <dependencies>
     <dependency>

@@ -11,13 +11,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>spring-cloud-gcp-kotlin-app-sample</artifactId>
-	<name>Spring Cloud GCP Code Sample - Kotlin App Sample</name>
+	<name>Spring Framework on Google Cloud Code Sample - Kotlin App Sample</name>
 
 	<properties>
 		<kotlin.version>1.6.21</kotlin.version>
 	</properties>
 
-	<!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+	<!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

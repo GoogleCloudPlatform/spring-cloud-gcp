@@ -12,9 +12,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.google.cloud</groupId>
     <artifactId>spring-cloud-gcp-data-datastore-sample</artifactId>
-    <name>Spring Cloud GCP Code Sample - Datastore</name>
+    <name>Spring Framework on Google Cloud Code Sample - Datastore</name>
 
-    <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+    <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
     <dependencyManagement>
         <dependencies>
             <dependency>

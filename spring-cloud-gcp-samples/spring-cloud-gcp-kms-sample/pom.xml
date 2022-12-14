@@ -11,7 +11,7 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<name>Spring Cloud GCP Code Sample - KMS</name>
+	<name>Spring Framework on Google Cloud Code Sample - KMS</name>
 	<artifactId>spring-cloud-gcp-kms-sample</artifactId>
 	<description>Spring Cloud KMS Sample</description>
 

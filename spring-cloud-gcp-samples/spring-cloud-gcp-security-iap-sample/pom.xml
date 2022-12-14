@@ -5,7 +5,7 @@
 
     <groupId>com.google.cloud</groupId>
     <artifactId>spring-cloud-gcp-security-iap-sample</artifactId>
-    <name>Spring Cloud GCP Code Sample - IAP</name>
+    <name>Spring Framework on Google Cloud Code Sample - IAP</name>
     <description>Spring Cloud IAP Security Sample</description>
 
     <parent>
@@ -21,7 +21,7 @@
         <java.version>1.8</java.version>
     </properties>
 
-    <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+    <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
     <dependencyManagement>
         <dependencies>
             <dependency>

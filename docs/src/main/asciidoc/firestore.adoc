@@ -4,10 +4,10 @@
 NOTE: Currently some features are not supported: query by example, projections, and auditing.
 
 https://projects.spring.io/spring-data/[Spring Data] is an abstraction for storing and retrieving POJOs in numerous storage technologies.
-Spring Cloud GCP adds Spring Data Reactive Repositories support for https://cloud.google.com/firestore/[Google Cloud Firestore] in native mode, providing reactive template and repositories support.
+Spring Framework on Google Cloud adds Spring Data Reactive Repositories support for https://cloud.google.com/firestore/[Google Cloud Firestore] in native mode, providing reactive template and repositories support.
 To begin using this library, add the `spring-cloud-gcp-data-firestore` artifact to your project.
 
-Maven coordinates for this module only, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates for this module only, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 
 [source,xml]
@@ -53,12 +53,12 @@ The Spring Boot starter for Google Cloud Firestore provides the following config
 |=========================================================
 | Name | Description | Required | Default value
 | `spring.cloud.gcp.firestore.enabled` | Enables or disables Firestore auto-configuration | No | `true`
-| `spring.cloud.gcp.firestore.project-id` | GCP project ID where the Google Cloud Firestore API is hosted, if different from the one in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>> | No |
+| `spring.cloud.gcp.firestore.project-id` | Google Cloud project ID where the Google Cloud Firestore API is hosted, if different from the one in the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Core Module>> | No |
 | `spring.cloud.gcp.firestore.emulator.enabled` | Enables the usage of an emulator. If this is set to true, then you should set the `spring.cloud.gcp.firestore.host-port` to the host:port of your locally running emulator instance | No | `false`
 | `spring.cloud.gcp.firestore.host-port` | The host and port of the Firestore service; can be overridden to specify connecting to an already-running https://firebase.google.com/docs/emulator-suite/install_and_configure[Firestore emulator] instance. | No | `firestore.googleapis.com:443` (the host/port of official Firestore service)
-| `spring.cloud.gcp.firestore.credentials.location` | OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>> | No |
-| `spring.cloud.gcp.firestore.credentials.encoded-key` | Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the <<spring-cloud-gcp-core,Spring Cloud GCP Core Module>> | No |
-| `spring.cloud.gcp.firestore.credentials.scopes` | https://developers.google.com/identity/protocols/googlescopes[OAuth2 scope] for Spring Cloud GCP Cloud Firestore credentials | No | https://www.googleapis.com/auth/datastore
+| `spring.cloud.gcp.firestore.credentials.location` | OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Core Module>> | No |
+| `spring.cloud.gcp.firestore.credentials.encoded-key` | Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Firestore API, if different from the ones in the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Core Module>> | No |
+| `spring.cloud.gcp.firestore.credentials.scopes` | https://developers.google.com/identity/protocols/googlescopes[OAuth2 scope] for Spring Framework on Google CloudFirestore credentials | No | https://www.googleapis.com/auth/datastore
 |=========================================================
 
 
@@ -348,13 +348,13 @@ If the field is empty, a precondition would check that the document with the sam
 
 === Cloud Firestore Spring Boot Starter
 
-If you prefer using Firestore client only, Spring Cloud GCP provides a convenience starter which automatically configures authentication settings and client objects needed to begin using https://cloud.google.com/firestore/[Google Cloud Firestore] in native mode.
+If you prefer using Firestore client only, Spring Framework on Google Cloud provides a convenience starter which automatically configures authentication settings and client objects needed to begin using https://cloud.google.com/firestore/[Google Cloud Firestore] in native mode.
 
 See https://cloud.google.com/firestore/docs/[documentation] to learn more about Cloud Firestore.
 
 To begin using this library, add the `spring-cloud-gcp-starter-firestore` artifact to your project.
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----
@@ -406,7 +406,7 @@ From this point onward, your application will connect to your locally running em
 
 === Samples
 
-Spring Cloud GCP provides Firestore sample applications to demonstrate API usage:
+Spring Framework on Google Cloud provides Firestore sample applications to demonstrate API usage:
 
 - https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-firestore-sample[Reactive Firestore Repository sample application]:
 - https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-firestore-sample[Firestore Client Library sample application]

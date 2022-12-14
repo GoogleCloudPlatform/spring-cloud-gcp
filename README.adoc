@@ -3,23 +3,23 @@ image:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/workflows/Integrat
 image:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/workflows/SonarCloud%20Analysis/badge.svg?branch=main["HEAD SonarCloud Analysis", link="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/actions?query=branch%3Amain+workflow%3A%22SonarCloud+Analysis%22"]
 image:https://sonarcloud.io/api/project_badges/measure?project=GoogleCloudPlatform_spring-cloud-gcp&metric=alert_status["Quality Gate Status", link="https://sonarcloud.io/dashboard?id=GoogleCloudPlatform_spring-cloud-gcp"]
 
-== Spring Framework on Google Cloud Platform
+== Spring Framework on Google Cloud
 
-This project makes it easy for Spring users to run their applications on Google Cloud Platform.
+This project makes it easy for Spring users to run their applications on Google Cloud.
 You can check our project website https://spring.io/projects/spring-cloud-gcp[here].
 
-For a deep dive into the project, refer to the Spring Cloud GCP Reference documentation below or the https://googleapis.dev/java/spring-cloud-gcp/latest/index.html[latest Javadocs].
+For a deep dive into the project, refer to the Spring Framework on Google Cloud Reference documentation below or the https://googleapis.dev/java/spring-cloud-gcp/latest/index.html[latest Javadocs].
 
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/index.html[Spring Cloud GCP Latest]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.4.0/reference/html/index.html[Spring Cloud GCP 3.4.0]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/2.0.11/reference/html/index.html[Spring Cloud GCP 2.0.11]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/index.html[Spring Framework on Google Cloud Latest]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.4.0/reference/html/index.html[SSpring Framework on Google Cloud 3.4.0]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/2.0.11/reference/html/index.html[Spring Framework on Google Cloud 2.0.11]
 
-If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[Spring Cloud GCP sample applications] or the https://codelabs.developers.google.com/spring[Spring on GCP codelabs].
+If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[Spring Framework on Google Cloud sample applications] or the https://codelabs.developers.google.com/spring[Spring on Google Cloud codelabs].
 
 Currently, this repository provides support for:
 
-* link:spring-cloud-gcp-pubsub[Spring Cloud GCP Pub/Sub, including Spring Integration Channel Adapters]
-* link:spring-cloud-gcp-pubsub-stream-binder[Spring Cloud GCP Pub/Sub Stream Binder]
+* link:spring-cloud-gcp-pubsub[Spring Framework on Google Cloud Pub/Sub, including Spring Integration Channel Adapters]
+* link:spring-cloud-gcp-pubsub-stream-binder[Spring Framework on Google Cloud Pub/Sub Stream Binder]
 * link:spring-cloud-gcp-storage[Spring Resource Abstraction for Google Cloud Storage, including Spring Integration Channel Adapters]
 * link:spring-cloud-gcp-data-spanner[Spring Data Cloud Spanner]
 * link:spring-cloud-gcp-data-datastore[Spring Data Cloud Datastore]
@@ -49,9 +49,9 @@ Before you start working on one, please take a look at our link:CONTRIBUTING.md[
 
 == Compatibility with Spring Project Versions
 
-This project has dependency and transitive dependencies on Spring Projects. The table below outlines the versions of Spring Cloud, Spring Boot and Spring Framework versions that are compatible with certain Spring Cloud GCP version.
+This project has dependency and transitive dependencies on Spring Projects. The table below outlines the versions of Spring Cloud, Spring Boot and Spring Framework versions that are compatible with certain Spring Framework on Google Cloud version.
 |===
-| Spring Cloud GCP | Spring Cloud | Spring Boot | Spring Framework | Supported
+| Spring Framework on Google Cloud | Spring Cloud | Spring Boot | Spring Framework | Supported
 
 |2.0.x |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes[2020.0.x] (3.0/Illford) |2.4.x, 2.5.x|5.3.x| No
 |3.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes[2021.0.x] (3.1/Jubilee) |2.6.x, 2.7.x | 5.3.x| Yes
@@ -59,13 +59,13 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 
 == Spring Initializr
 
-Spring Initializr contains Spring Cloud GCP auto-configuration support through the `GCP Support` entry.
+Spring Initializr contains Spring Framework on Google Cloud auto-configuration support through the `GCP Support` entry.
 
-`GCP Messaging` contains the Spring Cloud GCP messaging support with Google Cloud Pub/Sub working out of the box.
+`GCP Messaging` contains the Spring Framework on Google Cloud messaging support with Google Cloud Pub/Sub working out of the box.
 
 Similarly to `GCP Messaging`, `GCP Storage` contains the Google Cloud Storage support with no other dependencies needed.
 
-== Spring Cloud GCP Bill of Materials (BOM)
+== Spring Framework on Google Cloud Bill of Materials (BOM)
 
 If you're a Maven user, add our BOM to your pom.xml `<dependencyManagement>` section.
 This will allow you to not specify versions for any of the Maven dependencies and instead delegate versioning to the BOM.
@@ -87,7 +87,7 @@ This will allow you to not specify versions for any of the Maven dependencies an
 
 == Snapshots Repository
 
-We offer `SNAPSHOT` versions of the project that always reflect the latest code changes to the underlying GitHub repository for Spring Cloud GCP via the Sonatype Snapshots Repository:
+We offer `SNAPSHOT` versions of the project that always reflect the latest code changes to the underlying GitHub repository for Spring Framework on Google Cloud via the Sonatype Snapshots Repository:
 
 [source,xml]
 ----
@@ -104,7 +104,7 @@ We offer `SNAPSHOT` versions of the project that always reflect the latest code 
 
 == Spring Boot Starters
 
-Spring Boot greatly simplifies the Spring Cloud GCP experience.
+Spring Boot greatly simplifies the Spring Framework on Google Cloud experience.
 Our starters handle the object instantiation and configuration logic so you don't have to.
 
 Every starter depends on the GCP starter to provide critical bits of configuration, like the GCP project ID or OAuth2 credentials location.
@@ -120,4 +120,4 @@ spring.cloud.gcp.credentials.scopes=[SCOPE_1],[SCOPE_2],[SCOPE_3]
 These properties are optional and, if not specified, Spring Boot will attempt to automatically find them for you.
 For details on how Spring Boot finds these properties, refer to the link:https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/index.html[documentation].
 
-NOTE: If your app is running on Google App Engine or Google Compute Engine, in most cases, you should omit the `spring.cloud.gcp.credentials.location` property and, instead, let the Spring Cloud GCP Core Starter find the correct credentials for those environments.
+NOTE: If your app is running on Google App Engine or Google Compute Engine, in most cases, you should omit the `spring.cloud.gcp.credentials.location` property and, instead, let the Spring Framework on Google Cloud Core Starter find the correct credentials for those environments.

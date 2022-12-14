@@ -10,8 +10,8 @@
 	</parent>
 
 	<artifactId>spring-cloud-gcp-security-iap</artifactId>
-	<name>Spring Cloud GCP Module - IAP Authentication</name>
-	<description>Spring Cloud GCP IAP Authentication Module</description>
+	<name>Spring Framework on Google Cloud Module - IAP Authentication</name>
+	<description>Spring Framework on Google Cloud IAP Authentication Module</description>
 
 	<dependencies>
 		<dependency>
