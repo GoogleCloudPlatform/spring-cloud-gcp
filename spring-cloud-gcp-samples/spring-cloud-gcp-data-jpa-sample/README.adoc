@@ -1,11 +1,11 @@
-= Spring Data JPA with Spring Cloud GCP SQL Sample
+= Spring Data JPA with Spring Framework on Google Cloud SQL Sample
 
 This sample application demonstrates how to use
-https://projects.spring.io/spring-data-jpa/[Spring Data JPA] with either the link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-mysql[Spring Cloud GCP MySQL Starter] or link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-postgresql[Spring Cloud GCP PostgreSQL Starter].
+https://projects.spring.io/spring-data-jpa/[Spring Data JPA] with either the link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-mysql[Spring Framework on Google Cloud MySQL Starter] or link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-postgresql[Spring Framework on Google Cloud PostgreSQL Starter].
 
 We will create an instance, a database within the instance, populate the database and then query it.
 
-You can also explore the GCP MySQL Starter in the https://codelabs.developers.google.com/codelabs/cloud-spring-petclinic-cloudsql/index.html[Spring Pet Clinic using Cloud SQL] codelab.
+You can also explore the Spring Framework on Google Cloud MySQL Starter in the https://codelabs.developers.google.com/codelabs/cloud-spring-petclinic-cloudsql/index.html[Spring Pet Clinic using Cloud SQL] codelab.
 
 == Setup
 
@@ -40,7 +40,7 @@ Then, uncomment the `spring.cloud.gcp.sql.credentials.location` property in the 
 
 Please enable the Cloud SQL Admin API by running `gcloud services enable sqladmin.googleapis.com`
 
-This application uses the Spring Cloud GCP SQL starter to configure a `JdbcTemplate` object, which the Spring Data JPA starter uses as an input.
+This application uses the Spring Framework on Google Cloud SQL starter to configure a `JdbcTemplate` object, which the Spring Data JPA starter uses as an input.
 
 This application is runnable by executing the following command from the same directory where the `pom.xml` file is located:
 
