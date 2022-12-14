@@ -28,7 +28,7 @@ The easiest way to start using the driver is to add the driver dependency throug
 <dependency>
   <groupId>com.google.cloud</groupId>
   <artifactId>cloud-spanner-r2dbc</artifactId>
-  <version>0.6.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
@@ -36,7 +36,7 @@ The easiest way to start using the driver is to add the driver dependency throug
 
 ```
 dependencies {
-  compile group: 'com.google.cloud', name: 'cloud-spanner-r2dbc', version: '0.6.0'
+  compile group: 'com.google.cloud', name: 'cloud-spanner-r2dbc', version: '1.2.0'
 }
 ```
 
