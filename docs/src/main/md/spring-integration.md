@@ -1,8 +1,8 @@
 ## Spring Integration
 
-Spring Cloud GCP provides Spring Integration adapters that allow your
+Spring Framework on Google Cloud provides Spring Integration adapters that allow your
 applications to use Enterprise Integration Patterns backed up by Google
-Cloud Platform services.
+Cloud services.
 
 ### Channel Adapters for Cloud Pub/Sub
 
@@ -17,8 +17,8 @@ included in the `spring-cloud-gcp-pubsub` module and can be
 autoconfigured by using the `spring-cloud-gcp-starter-pubsub` module in
 combination with a Spring Integration dependency.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -41,7 +41,7 @@ Gradle coordinates:
 #### Inbound channel adapter (using Pub/Sub Streaming Pull)
 
 `PubSubInboundChannelAdapter` is the inbound channel adapter for GCP
-Pub/Sub that listens to a GCP Pub/Sub subscription for new messages. It
+Pub/Sub that listens to a Spring Framework on Google Cloud Pub/Sub subscription for new messages. It
 converts new messages to an internal Spring
 [`Message`](https://docs.spring.io/spring-integration/reference/html/messaging-construction-chapter.html#message)
 and then sends it to the bound output channel.
@@ -87,7 +87,7 @@ might want to use a `MessageChannel` other than
 Then, we declare a `PubSubInboundChannelAdapter` bean. It requires the
 channel we just created and a `SubscriberFactory`, which creates
 `Subscriber` objects from the Google Cloud Java Client for Pub/Sub. The
-Spring Boot starter for GCP Pub/Sub provides a configured
+Spring Boot starter for Spring Framework on Google Cloud Pub/Sub provides a configured
 `PubSubSubscriberOperations` object.
 
 ##### Acknowledging messages and handling failures
@@ -103,7 +103,7 @@ until the maximum extension period elapses.
 <div class="note">
 
 In the Pub/Sub client library, default maximum extension period is an
-hour. However, Spring Cloud GCP disables this auto-extension behavior.
+hour. However, Spring Framework on Google Cloud disables this auto-extension behavior.
 Use the `spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period`
 property to re-enable it.
 
@@ -230,7 +230,7 @@ balancing anomalies due to message caching. This behavior is most
 obvious when publishing a large batch of small messages that take a long
 time to process individually. It manifests as one subscriber taking up
 most messages, even if multiple subscribers are available to take on the
-work. For a more detailed explanation of this scenario, see [GCP Pub/Sub
+work. For a more detailed explanation of this scenario, see [Spring Framework on Google Cloud Pub/Sub
 documentation](https://cloud.google.com/pubsub/docs/pull#streamingpull_dealing_with_large_backlogs_of_small_messages).
 
 In such a scenario, a `PubSubMessageSource` can help spread the load
@@ -297,9 +297,9 @@ processing.
 
 #### Outbound channel adapter
 
-`PubSubMessageHandler` is the outbound channel adapter for GCP Pub/Sub
+`PubSubMessageHandler` is the outbound channel adapter for Spring Framework on Google Cloud Pub/Sub
 that listens for new messages on a Spring `MessageChannel`. It uses
-`PubSubTemplate` to post them to a GCP Pub/Sub topic.
+`PubSubTemplate` to post them to a Spring Framework on Google Cloud Pub/Sub topic.
 
 To construct a Pub/Sub representation of the message, the outbound
 channel adapter needs to convert the Spring `Message` payload to a byte
@@ -323,7 +323,7 @@ public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
 ```
 
 The provided `PubSubTemplate` contains all the necessary configuration
-to publish messages to a GCP Pub/Sub topic.
+to publish messages to a Spring Framework on Google Cloud Pub/Sub topic.
 
 `PubSubMessageHandler` publishes messages asynchronously by default. A
 publish timeout can be configured for synchronous publishing. If none is
@@ -432,7 +432,7 @@ Available examples:
 The channel adapters for Google Cloud Storage allow you to read and
 write files to Google Cloud Storage through `MessageChannels`.
 
-Spring Cloud GCP provides two inbound adapters,
+Spring Framework on Google Cloud provides two inbound adapters,
 `GcsInboundFileSynchronizingMessageSource` and
 `GcsStreamingMessageSource`, and one outbound adapter,
 `GcsMessageHandler`.
@@ -440,12 +440,12 @@ Spring Cloud GCP provides two inbound adapters,
 The Spring Integration Channel Adapters for Google Cloud Storage are
 included in the `spring-cloud-gcp-storage` module.
 
-To use the Storage portion of Spring Integration for Spring Cloud GCP,
+To use the Storage portion of Spring Integration for Spring Framework on Google Cloud,
 you must also provide the `spring-integration-file` dependency, since it
 isn’t pulled transitively.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>

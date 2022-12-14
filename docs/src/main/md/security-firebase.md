@@ -39,8 +39,8 @@ customization by default.
 
 </div>
 
-Starter Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Starter Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -68,7 +68,7 @@ the defaults should not be changed in production.
 
 | Name                                                      | Description                                                       | Required | Default                                                                                    |
 | --------------------------------------------------------- | ----------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
-| `spring.cloud.gcp.security.firebase.project-id`           | Overrides the GCP project ID specified in the Core module.        | false    |                                                                                            |
+| `spring.cloud.gcp.security.firebase.project-id`           | Overrides the Google Cloud project ID specified in the Core module.        | false    |                                                                                            |
 | `spring.cloud.gcp.security.firebase.public-keys-endpoint` | Link to Google’s public endpoint containing Firebase public keys. | true     | `https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com` |
 
 ### Sample

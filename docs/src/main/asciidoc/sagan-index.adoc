@@ -1,12 +1,12 @@
-The Spring Cloud GCP project makes the Spring Framework a first-class citizen of Google Cloud Platform (GCP).
+The Spring Framework on Google Cloud project makes the Spring Framework a first-class citizen of Google Cloud .
 
 == Features
 
-Spring Cloud GCP offers a wide collection of libraries that make it easier to use Google Cloud Platform from Spring Framework applications.
+Spring Framework on Google Cloud offers a wide collection of libraries that make it easier to use Google Cloud from Spring Framework applications.
 
 Project features include:
 
-* Spring Cloud GCP Pub/Sub Support (Spring Integration and Spring Cloud Stream Binder)
+* Spring Framework on Google Cloud Pub/Sub Support (Spring Integration and Spring Cloud Stream Binder)
 * Spring Data Cloud Spanner
 * Spring Data Cloud Datastore
 * Spring Data Reactive Repositories for Cloud Firestore
@@ -20,11 +20,11 @@ Project features include:
 
 == Getting Started
 
-All Spring Cloud GCP artifacts are made available through Maven Central.
+All Spring Framework on Google Cloud artifacts are made available through Maven Central.
 
 === Bill of Materials
 
-If you're using Maven, you should first add the Spring Cloud GCP Bill of Materials (BOM) to your `pom.xml`.
+If you're using Maven, you should first add the Spring Framework on Google Cloud Bill of Materials (BOM) to your `pom.xml`.
 This will help you manage the version numbers of `spring-cloud-gcp` dependencies in your project.
 
 [source,xml,subs="normal"]
@@ -44,13 +44,13 @@ This will help you manage the version numbers of `spring-cloud-gcp` dependencies
 
 === Starter Dependencies
 
-Spring Cloud GCP offers https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters[starter dependencies] through Maven to easily depend on different modules of the library.
-Each starter contains all the dependencies and transitive dependencies needed to begin using their corresponding Spring Cloud GCP module.
+Spring Framework on Google Cloud offers https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters[starter dependencies] through Maven to easily depend on different modules of the library.
+Each starter contains all the dependencies and transitive dependencies needed to begin using their corresponding Spring Framework on Google Cloud module.
 
 A sample of these artifacts are provided below.
 
 |===
-| Spring Cloud GCP Starter | Description | Maven Artifact Coordinates
+| Spring Framework on Google Cloud Starter | Description | Maven Artifact Coordinates
 
 | Cloud Spanner
 | Provides integrations with Google Cloud Spanner
@@ -104,12 +104,12 @@ A sample of these artifacts are provided below.
 
 == Code Samples
 
-The best way to learn how to use Spring Cloud GCP is to consult the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[sample applications on Github].
+The best way to learn how to use Spring Framework on Google Cloud is to consult the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[sample applications on Github].
 
-The table below highlights several samples of the most commonly used integrations in Spring Cloud GCP.
+The table below highlights several samples of the most commonly used integrations in Spring Framework on Google Cloud.
 
 |===
-| GCP Integration | Sample Application
+| Google Cloud Integration | Sample Application
 
 | Cloud Pub/Sub
 | https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-sample[spring-cloud-gcp-pubsub-sample]
@@ -152,19 +152,19 @@ The table below highlights several samples of the most commonly used integration
 https://start.spring.io/[Spring Initializr] is a tool which generates the scaffolding code for a new Spring Boot project.
 It handles the work of generating the Maven or Gradle build file so you do not have to manually add the dependencies yourself.
 
-Spring Initializr offers three modules from Spring Cloud GCP that you can use to generate your project.
+Spring Initializr offers three modules from Spring Framework on Google Cloud that you can use to generate your project.
 
-- *GCP Support*: The GCP Support module contains auto-configuration support for every Spring Cloud GCP integration.
+- *GCP Support*: The GCP Support module contains auto-configuration support for every Spring Framework on Google Cloud integration.
 Most of the autoconfiguration code is only enabled if the required dependency is added to your project.
 - *GCP Messaging*: Google Cloud Pub/Sub integrations work out of the box.
 - *GCP Storage*: Google Cloud Storage integrations work out of the box.
 
 == Contact Us
 
-Spring Cloud GCP is an actively maintained project and we encourage users to raise issues and ask questions about the project.
+Spring Framework on Google Cloud is an actively maintained project and we encourage users to raise issues and ask questions about the project.
 
 We actively monitor the following communication channels:
 
-- https://github.com/GoogleCloudPlatform/spring-cloud-gcp[Spring Cloud GCP Github Repository]: Post an issue in our Github repository to ask questions, make a bug report, file feature requests, etc.
+- https://github.com/GoogleCloudPlatform/spring-cloud-gcp[Spring Framework on Google Cloud Github Repository]: Post an issue in our Github repository to ask questions, make a bug report, file feature requests, etc.
 
-- https://gitter.im/spring-cloud-gcp/Lobby[Spring Cloud GCP Gitter Lobby]: Ask questions and talk to the developers in our Gitter chatroom.
+- https://gitter.im/spring-cloud-gcp/Lobby[Spring Framework on Google Cloud Gitter Lobby]: Ask questions and talk to the developers in our Gitter chatroom.

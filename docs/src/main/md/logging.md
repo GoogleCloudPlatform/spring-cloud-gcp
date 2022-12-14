@@ -1,7 +1,7 @@
 ## Cloud Logging
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -17,7 +17,7 @@ Gradle coordinates:
     }
 
 [Cloud Logging](https://cloud.google.com/logging/) is the managed
-logging service provided by Google Cloud Platform.
+logging service provided by Google Cloud.
 
 This module provides support for associating a web request trace ID with
 the corresponding log entries. It does so by retrieving the
@@ -31,7 +31,7 @@ viewer](https://console.cloud.google.com/logs/viewer).
 
 <div class="note">
 
-Due to the way logging is set up, the GCP project ID and credentials
+Due to the way logging is set up, the Google Cloud project ID and credentials
 defined in `application.properties` are ignored. Instead, you should set
 the `GOOGLE_CLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS`
 environment variables to the project ID and credentials private key
@@ -52,7 +52,7 @@ messages.
 
 <div class="warning">
 
-If Spring Cloud GCP Trace is enabled, the logging module disables itself
+If Spring Framework on Google Cloud Trace is enabled, the logging module disables itself
 and delegates log correlation to Spring Cloud Sleuth.
 
 </div>
@@ -61,7 +61,7 @@ and delegates log correlation to Spring Cloud Sleuth.
 register the `TraceIdLoggingWebMvcInterceptor` in Spring MVC
 applications.
 
-Applications hosted on the Google Cloud Platform include trace IDs under
+Applications hosted on the Google Cloud include trace IDs under
 the `x-cloud-trace-context` header, which will be included in log
 entries. However, if Sleuth is used the trace ID will be picked up from
 the MDC.

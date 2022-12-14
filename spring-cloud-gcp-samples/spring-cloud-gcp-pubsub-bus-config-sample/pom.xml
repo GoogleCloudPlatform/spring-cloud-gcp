@@ -11,13 +11,13 @@
 
     <artifactId>spring-cloud-gcp-pubsub-bus-config-sample</artifactId>
     <packaging>pom</packaging>
-    <name>Spring Cloud GCP Code Sample - Pub/Sub Bus Configuration Management</name>
+    <name>Spring Framework on Google Cloud Code Sample - Pub/Sub Bus Configuration Management</name>
 
     <properties>
         <spring-cloud-config.version>4.0.0-RC2</spring-cloud-config.version>
     </properties>
 
-    <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+    <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
     <dependencyManagement>
         <dependencies>
             <dependency>

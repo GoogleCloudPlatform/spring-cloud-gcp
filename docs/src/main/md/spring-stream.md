@@ -1,6 +1,6 @@
 ## Spring Cloud Stream
 
-Spring Cloud GCP provides a [Spring Cloud
+Spring Framework on Google Cloud provides a [Spring Cloud
 Stream](https://cloud.spring.io/spring-cloud-stream/) binder to Google
 Cloud Pub/Sub.
 
@@ -8,8 +8,8 @@ The provided binder relies on the [Spring Integration Channel Adapters
 for Google Cloud
 Pub/Sub](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-pubsub/src/main/java/com/google/cloud/spring/pubsub/integration).
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -54,7 +54,8 @@ Starting with version 1.1, these and other binder properties can be
 configured globally for all the bindings, e.g.
 `spring.cloud.stream.gcp.pubsub.default.consumer.auto-create-resources`.
 
-If you are using Pub/Sub autoconfiguration from the Spring Cloud GCP
+If you are using Pub/Sub autoconfiguration from the Spring Framework on Google Cloud
+
 Pub/Sub Starter, you should refer to the
 [configuration](#pubsub-configuration) section for other Pub/Sub
 parameters.

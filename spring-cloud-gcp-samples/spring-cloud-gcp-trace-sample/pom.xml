@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>spring-cloud-gcp-trace-sample</artifactId>
-    <name>Spring Cloud GCP Code Sample - Trace</name>
+    <name>Spring Framework on Google Cloud Code Sample - Trace</name>
 
     <parent>
         <!-- Your own application should inherit from spring-boot-starter-parent -->
@@ -13,7 +13,7 @@
         <version>3.5.0-SNAPSHOT</version>
     </parent>
 
-    <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+    <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
     <dependencyManagement>
         <dependencies>
             <dependency>

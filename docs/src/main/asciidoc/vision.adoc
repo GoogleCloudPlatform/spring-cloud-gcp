@@ -3,7 +3,7 @@
 
 The https://cloud.google.com/vision/[Google Cloud Vision API] allows users to leverage machine learning algorithms for processing images and documents including: image classification, face detection, text extraction, optical character recognition, and others.
 
-Spring Cloud GCP provides:
+Spring Framework on Google Cloud provides:
 
 * A convenience starter which automatically configures authentication settings and client objects needed to begin using the https://cloud.google.com/vision/[Google Cloud Vision API].
 * `CloudVisionTemplate` which simplifies interactions with the Cloud Vision API.
@@ -15,7 +15,7 @@ Spring Cloud GCP provides:
 
 To begin using this library, add the `spring-cloud-gcp-starter-vision` artifact to your project.
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----
@@ -36,7 +36,7 @@ dependencies {
 
 === Configuration
 
-The following options may be configured with Spring Cloud GCP Vision libraries.
+The following options may be configured with Spring Framework on Google Cloud Vision libraries.
 
 |===========================================================================
 | Name | Description | Required | Default value
@@ -50,7 +50,7 @@ The following options may be configured with Spring Cloud GCP Vision libraries.
 If you are interested in applying optical character recognition (OCR) on documents for your project, you'll need to add both `spring-cloud-gcp-starter-vision` and `spring-cloud-gcp-starter-storage` to your dependencies.
 The storage starter is necessary because the Cloud Vision API will process your documents and write OCR output files all within your Google Cloud Storage buckets.
 
-Maven coordinates using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----
@@ -263,7 +263,7 @@ public void parseSingleOutputFile() {
 
 === Sample
 
-Samples are provided to show example usages of Spring Cloud GCP with Google Cloud Vision.
+Samples are provided to show example usages of Spring Framework on Google Cloud with Google Cloud Vision.
 
 * The https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-vision-api-sample[Image Labeling Sample] shows you how to use image labelling in your Spring application.
 The application generates labels describing the content inside the images you specify in the application.

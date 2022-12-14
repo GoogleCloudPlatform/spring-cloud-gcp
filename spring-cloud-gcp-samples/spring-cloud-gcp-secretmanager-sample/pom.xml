@@ -12,7 +12,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>spring-cloud-gcp-secretmanager-sample</artifactId>
-  <name>Spring Cloud GCP Code Sample - Secret Manager</name>
+  <name>Spring Framework on Google Cloud Code Sample - Secret Manager</name>
 
   <dependencies>
     <dependency>
@@ -53,7 +53,7 @@
     </dependency>
   </dependencies>
 
-  <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+  <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
   <dependencyManagement>
     <dependencies>
       <dependency>

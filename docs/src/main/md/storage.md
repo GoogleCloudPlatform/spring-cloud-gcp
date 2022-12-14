@@ -4,8 +4,8 @@
 storing any types of files in single or multiple regions. A Spring Boot
 starter is provided to auto-configure the various Storage components.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -51,7 +51,7 @@ public void createFile() {
 Resources](https://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html)
 are an abstraction for a number of low-level resources, such as file
 system files, classpath files, servlet context-relative files, etc.
-Spring Cloud GCP adds a new resource type: a Google Cloud Storage (GCS)
+Spring Framework on Google Cloud adds a new resource type: a Google Cloud Storage (GCS)
 object.
 
 The Spring Resource Abstraction for Google Cloud Storage allows GCS
@@ -114,7 +114,7 @@ necessary to support some features in the Spring ecosystem, such as
 
 The Spring Boot Starter for Google Cloud Storage auto-configures the
 `Storage` bean required by the `spring-cloud-gcp-storage` module, based
-on the `CredentialsProvider` provided by the Spring Boot GCP starter.
+on the `CredentialsProvider` provided by the Spring Framework on Google Cloud Starter.
 
 #### Setting the Content Type
 
@@ -135,9 +135,9 @@ configuration options:
 | Name                                               | Description                                                                                                                                                                                          | Required | Default value                                           |
 | `spring.cloud.gcp.storage.enabled`                 | Enables the GCP storage APIs.                                                                                                                                                                        | No       | `true`                                                  |
 | `spring.cloud.gcp.storage.auto-create-files`       | Creates files and buckets on Google Cloud Storage when writes are made to non-existent files                                                                                                         | No       | `true`                                                  |
-| `spring.cloud.gcp.storage.credentials.location`    | OAuth2 credentials for authenticating with the Google Cloud Storage API, if different from the ones in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core)                                    | No       |                                                         |
-| `spring.cloud.gcp.storage.credentials.encoded-key` | Base64-encoded contents of OAuth2 account private key for authenticating with the Google Cloud Storage API, if different from the ones in the [Spring Cloud GCP Core Module](#spring-cloud-gcp-core) | No       |                                                         |
-| `spring.cloud.gcp.storage.credentials.scopes`      | [OAuth2 scope](https://developers.google.com/identity/protocols/googlescopes) for Spring Cloud GCP Storage credentials                                                                               | No       | <https://www.googleapis.com/auth/devstorage.read_write> |
+| `spring.cloud.gcp.storage.credentials.location`    | OAuth2 credentials for authenticating with the Google Cloud Storage API, if different from the ones in the [Spring Framework on Google Cloud Core Module](#spring-framework-on-google-cloud-core)                                    | No       |                                                         |
+| `spring.cloud.gcp.storage.credentials.encoded-key` | Base64-encoded contents of OAuth2 account private key for authenticating with the Google Cloud Storage API, if different from the ones in the [Spring Framework on Google Cloud Core Module](#spring-framework-on-google-cloud-core) | No       |                                                         |
+| `spring.cloud.gcp.storage.credentials.scopes`      | [OAuth2 scope](https://developers.google.com/identity/protocols/googlescopes) for Spring Framework on Google Cloud Storage credentials                                                                               | No       | <https://www.googleapis.com/auth/devstorage.read_write> |
 
 ### Sample
 

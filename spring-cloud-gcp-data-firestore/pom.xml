@@ -11,8 +11,8 @@
     </parent>
 
     <artifactId>spring-cloud-gcp-data-firestore</artifactId>
-    <name>Spring Cloud GCP Module - Firestore</name>
-    <description>Spring Cloud GCP Firestore Module</description>
+    <name>Spring Framework on Google Cloud Module - Firestore</name>
+    <description>Spring Framework on Google Cloud Firestore Module</description>
 
     <dependencies>
         <dependency>
