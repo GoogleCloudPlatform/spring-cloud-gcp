@@ -503,9 +503,9 @@
 		</profile>
 
 		<profile>
-			<id>errorprone_java_9_and_up</id>
+			<id>errorprone_java_17_and_up</id>
 			<activation>
-				<jdk>[9,]</jdk>
+				<jdk>[17,]</jdk>
 			</activation>
 			<build>
 				<pluginManagement>
