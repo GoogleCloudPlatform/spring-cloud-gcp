@@ -221,7 +221,8 @@ public class TwoStepsConversions implements ReadWriteConversions {
         && typeTargets.getSecondStepTarget() == null) {
       // only first step was applied on write
       result = this.conversionService.convert(val, targetType);
-    } else if (typeTargets.getFirstStepTarget() != null) {
+    } else if (typeTargets.getFirstStepTarget() != null
+        && typeTargets.getSecondStepTarget() != null) {
       // both steps were applied
       Object secondStepVal =
           this.internalConversionService.convert(val, typeTargets.getFirstStepTarget());
