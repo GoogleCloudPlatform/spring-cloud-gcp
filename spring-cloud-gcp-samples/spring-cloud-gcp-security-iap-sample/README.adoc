@@ -1,6 +1,6 @@
-= Spring Cloud GCP IAP Authentication Example
+= Spring Framework on Google Cloud IAP Authentication Example
 
-This sample application demonstrates using link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-security-iap[Spring Cloud GCP IAP Authentication Starter] to extract user identity from a pre-authenticated header injected by https://cloud.google.com/iap/[Cloud Identity-Aware Proxy (IAP)].
+This sample application demonstrates using link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-security-iap[Spring Framework on Google Cloud IAP Authentication Starter] to extract user identity from a pre-authenticated header injected by https://cloud.google.com/iap/[Cloud Identity-Aware Proxy (IAP)].
 
 If you run the sample locally or on Cloud Shell, the following pages will be available:
 

@@ -1,4 +1,4 @@
-= Spring Cloud GCP Stream for Pub/Sub Dead Letter Topic Code Sample
+= Spring Framework on Google Cloud Stream for Pub/Sub Dead Letter Topic Code Sample
 
 This code sample demonstrates how to use the Spring Cloud Stream binder for Google Cloud Pub/Sub with Dead Letter Topics.
 

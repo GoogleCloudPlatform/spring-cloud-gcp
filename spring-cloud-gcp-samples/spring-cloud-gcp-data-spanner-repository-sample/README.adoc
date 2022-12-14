@@ -1,13 +1,13 @@
-= Spring Cloud GCP Cloud Spanner Starter Example using Spring Data repositories
+= Spring Framework on Google Cloud Spanner Starter Example using Spring Data repositories
 
 Refer this Spring Data Documentation for concepts overview: https://docs.spring.io/spring-data/data-commons/docs/2.5.x/reference/html/#repositories.core-concepts[click here]
 
-This code sample demonstrates how to read and write POJOs from Google Cloud Spanner using the Spring Data Cloud Spanner module link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-spanner[Spring Cloud GCP Cloud Spanner Starter].
+This code sample demonstrates how to read and write POJOs from Google Cloud Spanner using the Spring Data Cloud Spanner module link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-spanner[Spring Framework on Google Cloud Cloud Spanner Starter].
 
 
 == Running the example
 
-=== Running on GCP
+=== Running on Google Cloud
 
 image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-repository-sample/README.adoc]
 

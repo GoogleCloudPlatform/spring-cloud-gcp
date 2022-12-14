@@ -1,6 +1,6 @@
-= Spring Cloud GCP Secret Manager Sample Application
+= Spring Framework on Google Cloud Secret Manager Sample Application
 
-This code sample demonstrates how to use the Spring Cloud GCP Secret Manager integration.
+This code sample demonstrates how to use the Spring Framework on Google Cloud Secret Manager integration.
 The sample demonstrates how one can access Secret Manager secrets through a `@ConfigurationProperties` class and also through `@Value` annotations on fields.
 
 == Running the Sample

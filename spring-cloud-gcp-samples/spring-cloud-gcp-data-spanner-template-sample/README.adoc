@@ -1,11 +1,11 @@
-= Spring Cloud GCP Cloud Spanner Starter Example using "Template"
+= Spring Framework on Google Cloud Cloud Spanner Starter Example using "Template"
 
 This code sample demonstrates how to read and write POJOs from Google Cloud Spanner using the Spring
-Data Cloud Spanner module link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-spanner[Spring Cloud GCP Cloud Spanner Starter].
+Data Cloud Spanner module link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-spanner[Spring Framework on Google Cloud Cloud Spanner Starter].
 
 == Running the example
 
-=== Running on GCP
+=== Running on Google Cloud
 
 image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample/README.adoc]
 

@@ -1,4 +1,4 @@
-= Spring Cloud GCP Stream for Pub/Sub Polling Code Sample
+= Spring Framework on Google Cloud Stream for Pub/Sub Polling Code Sample
 
 This code sample demonstrates how to use the Spring Cloud Stream binder for Google Cloud Pub/Sub.
 The sample app prompts a user for a message and their user name.
