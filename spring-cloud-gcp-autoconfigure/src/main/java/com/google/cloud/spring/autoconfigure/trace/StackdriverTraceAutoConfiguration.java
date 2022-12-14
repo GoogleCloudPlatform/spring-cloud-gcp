@@ -133,7 +133,7 @@ public class StackdriverTraceAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  ReporterMetrics sleuthReporterMetrics() {
+  ReporterMetrics reporterMetrics() {
     return ReporterMetrics.NOOP_METRICS;
   }
 

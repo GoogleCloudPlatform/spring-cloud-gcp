@@ -70,7 +70,7 @@ class TracePubSubAutoConfigurationTest {
             // Prevent health-check from triggering a real call to Trace.
             .withBean(REPORTER_BEAN_NAME, Reporter.class, () -> mock(Reporter.class))
             .withPropertyValues(
-                "spring.cloud.gcp.project-id=proj", "spring.sleuth.sampler.probability=1.0");
+                "spring.cloud.gcp.project-id=proj");
   }
 
   @Test

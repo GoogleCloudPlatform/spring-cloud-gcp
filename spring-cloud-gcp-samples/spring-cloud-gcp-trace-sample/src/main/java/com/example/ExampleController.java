@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Sample REST Controller to demonstrate Spring Cloud Sleuth and Stackdriver Trace. */
 @RestController
 public class ExampleController {
 

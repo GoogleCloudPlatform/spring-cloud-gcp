@@ -43,7 +43,7 @@ Populates database with values and reads them.
 Uses the https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/io/Resource.html[Spring Resource] abstraction to read and write files to https://cloud.google.com/storage/[Google Cloud Storage].
 
 - link:spring-cloud-gcp-trace-sample[Spring Cloud GCP Trace Sample]:
-Uses https://cloud.spring.io/spring-cloud-sleuth/[Spring Cloud Sleuth] to automatically generate trace IDs for requests to your application and store data about those requests in https://cloud.google.com/trace/[Google Stackdriver Trace].
+Uses https://micrometer.io/[Micrometer] to automatically generate trace IDs for requests to your application and store data about those requests in https://cloud.google.com/trace/[Google Stackdriver Trace].
 
 - link:spring-cloud-gcp-vision-api-sample[Spring Cloud GCP Vision API Sample]:
 Provides an example of how to use Spring Cloud GCP to improve the general usability of Google Cloud

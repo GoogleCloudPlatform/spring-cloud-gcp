@@ -82,7 +82,7 @@ class StackdriverTraceAutoConfigurationTests {
                 RefreshAutoConfiguration.class))
         .withUserConfiguration(MockConfiguration.class)
         .withPropertyValues(
-            "spring.cloud.gcp.project-id=proj", "spring.sleuth.sampler.probability=1.0");
+            "spring.cloud.gcp.project-id=proj");
   }
 
   @Test

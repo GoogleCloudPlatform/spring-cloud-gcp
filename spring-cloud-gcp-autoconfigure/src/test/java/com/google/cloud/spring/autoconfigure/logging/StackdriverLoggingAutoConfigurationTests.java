@@ -91,7 +91,7 @@ class StackdriverLoggingAutoConfigurationTests {
   }
 
   @Test
-  void testWithSleuth() {
+  void testWithStackdriverTraceAutoConfiguration() {
     this.contextRunner
         .withConfiguration(AutoConfigurations.of(StackdriverTraceAutoConfiguration.class))
         .withPropertyValues("spring.cloud.gcp.project-id=pop-1")
