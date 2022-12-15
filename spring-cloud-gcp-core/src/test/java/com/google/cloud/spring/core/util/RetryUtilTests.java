@@ -16,12 +16,12 @@
 
 package com.google.cloud.spring.core.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.spring.core.Retry;
 import java.time.Duration;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /** Tests for {@link RetryUtil}. */
 public class RetryUtilTests {
