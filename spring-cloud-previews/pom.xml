@@ -13,8 +13,6 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>google-cloud-language-spring-starter</module>
-    <module>google-cloud-vision-spring-starter</module>
   </modules>
 
   <build>
