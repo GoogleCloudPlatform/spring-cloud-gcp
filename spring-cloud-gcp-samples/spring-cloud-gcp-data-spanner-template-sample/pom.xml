@@ -6,11 +6,9 @@
         <!-- Your own application should inherit from spring-boot-starter-parent -->
         <artifactId>spring-cloud-gcp-samples</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>3.5.0-SNAPSHOT</version>
+        <version>4.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.google.cloud</groupId>
     <artifactId>spring-cloud-gcp-data-spanner-template-sample</artifactId>
     <name>Spring Framework on Google Cloud Code Sample - Spanner Template</name>
 

@@ -13,7 +13,7 @@
 	<name>Spring Framework on Google Cloud Documentation</name>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-docs</artifactId>
-	<version>3.5.0-SNAPSHOT</version>
+	<version>4.0.0</version>
 	<packaging>pom</packaging>
 
 	<properties>

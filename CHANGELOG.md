@@ -14,7 +14,7 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
-## 3.5.0-SNAPSHOT
+## 4.0.0
 
 ## 3.4.0
 
