@@ -79,20 +79,28 @@ sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' "$starter_
 sed -i 's/{{client-library-version}}/'"$version"'/' "$starter_artifactid"/pom.xml
 sed -i 's/{{parent-version}}/'"$parent_version"'/' "$starter_artifactid"/pom.xml
 
-# add module to parent, adds after the `<modules>` line, checks for existence
-xmllint --debug --nsclean --xpath  "//*[local-name()='module']/text()" pom.xml | sort | uniq | grep -q $starter_artifactid
-found_library_in_pom=$?
-if [[ found_library_in_pom -eq 0 ]]; then
-  echo "module $starter_artifactid already found in pom modules"
-else
-  echo "adding module $starter_artifactid to pom"
-  sed -i "/^  <modules>/a\ \ \ \ <module>"$starter_artifactid"</module>" pom.xml
-  # also write to spring-cloud-previews/README.md
-  # format |name|distribution name|
-  echo -e "|$client_lib_name|com.google.cloud:$starter_artifactid|" >> README.md
-  {(grep -vw ".*:.*" README.md);(grep ".*:.*" README.md| sort | uniq)} > tmpfile && mv tmpfile README.md
 
-fi
+# add module after line with pattern, check for existence. Also add readme line if $3 is set to 1.
+# args: 1 -  path-to-pom-file; 2 - string-pattern; 3 - 1 if need to generate readme line
+add_module_to_pom () {
+  xmllint --debug --nsclean --xpath  "//*[local-name()='module']/text()" $1 | sort | uniq | grep -q $starter_artifactid
+  found_library_in_pom=$?
+  if [[ found_library_in_pom -eq 0 ]]; then
+    echo "module $starter_artifactid already found in $1 modules"
+  else
+    echo "adding module $starter_artifactid to pom"
+    sed -i "/$2/a\ \ \ \ <module>"$starter_artifactid"</module>" $1
+    if [[ ${3:-1} -eq 1 ]]; then
+      # also write to spring-cloud-previews/README.md
+      # format |name|distribution name|
+      echo -e "|$client_lib_name|com.google.cloud:$starter_artifactid|" >> README.md
+      {(grep -vw ".*:.*" README.md);(grep ".*:.*" README.md| sort | uniq)} > tmpfile && mv tmpfile README.md
+    fi
+  fi
+}
+
+add_module_to_pom pom.xml "^  <modules>" 1
+add_module_to_pom ../spring-cloud-gcp-starters/pom.xml "^[[:space:]]*<!--  preview modules  -->"
 
 # remove downloaded repos
 cd ../spring-cloud-generator
