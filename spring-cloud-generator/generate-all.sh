@@ -20,6 +20,12 @@ while IFS=, read -r library_name googleapis_location coordinates_version; do
   bash $WORKING_DIR/generate-one.sh -c $library_name -v $version -i $artifact_id -g $group_id -p $PROJECT_VERSION
 done <<< $libraries
 
+
+echo "run google-java-format on generated code"
+cd ../spring-cloud-previews
+./../mvnw com.coveo:fmt-maven-plugin:format -Dfmt.skip=false
+
+cd ../spring-cloud-generator
 rm -rf googleapis
 rm -rf gapic-generator-java
 
