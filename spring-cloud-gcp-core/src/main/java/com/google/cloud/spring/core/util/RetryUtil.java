@@ -16,10 +16,12 @@
 
 package com.google.cloud.spring.core.util;
 
+import com.google.api.core.InternalApi;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.spring.core.Retry;
 
 /** Utility methods for retry settings. */
+@InternalApi
 public class RetryUtil {
 
   private RetryUtil() {}

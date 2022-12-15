@@ -16,9 +16,11 @@
 
 package com.google.cloud.spring.core;
 
+import com.google.api.core.InternalApi;
 import org.threeten.bp.Duration;
 
 /** Retry settings configuration. */
+@InternalApi
 public class Retry {
   /**
    * TotalTimeout has ultimate control over how long the logic should keep trying the remote call
