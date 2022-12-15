@@ -27,13 +27,13 @@ The first step to contributing is to fork the repository and clone it onto your 
       this: `./mvnw clean test -f spring-cloud-gcp-pubsub`
 
 3. (Optional) Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/). The Google Cloud SDK a set of tools
-   that you can use to manage resources and applications hosted on Google Cloud Platform.
+   that you can use to manage resources and applications hosted on Google Cloud.
 
     - For our purposes, it contains the `gcloud` command line tool which allows you to specify a GCP account and project
       with which you can run our integration tests and sample applications on your machine.
 
         1. Run `gcloud auth application-default login` to log into
-           your [Google Cloud Platform account](https://console.cloud.google.com).
+           your [Google Cloud account](https://console.cloud.google.com).
 
         2. Run `gcloud config set project [YOUR_PROJECT_ID]` to set the GCP project ID you wish to use.
 

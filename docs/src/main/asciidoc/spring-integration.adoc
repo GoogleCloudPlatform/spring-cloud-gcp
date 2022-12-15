@@ -1,6 +1,6 @@
 == Spring Integration
 
-Spring Cloud GCP provides Spring Integration adapters that allow your applications to use Enterprise Integration Patterns backed up by Google Cloud Platform services.
+Spring Framework on Google Cloud provides Spring Integration adapters that allow your applications to use Enterprise Integration Patterns backed up by Google Cloud services.
 
 include::spring-integration-pubsub.adoc[]
 

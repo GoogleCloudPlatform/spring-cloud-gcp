@@ -73,10 +73,10 @@ class DocumentOcrTemplateIntegrationTests {
 
     assertThat(pageContent)
         .containsExactly(
-            "Hello World. Is mayonnaise an instrument?\n",
-            "Page 2 stuff\n",
-            "Page 3 stuff\n",
-            "Page 4 stuff\n");
+            "Hello World. Is mayonnaise an instrument?",
+            "Page 2 stuff",
+            "Page 3 stuff",
+            "Page 4 stuff");
   }
 
   @Test

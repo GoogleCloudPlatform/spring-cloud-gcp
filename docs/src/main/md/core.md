@@ -1,13 +1,13 @@
-## Spring Cloud GCP Core
+## Spring Framework on Google Cloud Core
 
-Each Spring Cloud GCP module uses `GcpProjectIdProvider` and
-`CredentialsProvider` to get the GCP project ID and access credentials.
+Each Spring Framework on Google Cloud module uses `GcpProjectIdProvider` and
+`CredentialsProvider` to get the Google Cloud project ID and access credentials.
 
-Spring Cloud GCP provides a Spring Boot starter to auto-configure the
+Spring Framework on Google Cloud provides a Spring Boot starter to auto-configure the
 core components.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -42,7 +42,7 @@ public interface GcpProjectIdProvider {
 }
 ```
 
-The Spring Cloud GCP starter auto-configures a `GcpProjectIdProvider`.
+The Spring Framework on Google Cloud starter auto-configures a `GcpProjectIdProvider`.
 If a `spring.cloud.gcp.project-id` property is specified, the provided
 `GcpProjectIdProvider` returns that property value.
 
@@ -78,7 +78,7 @@ public interface CredentialsProvider {
 }
 ```
 
-The Spring Cloud GCP starter auto-configures a `CredentialsProvider`. It
+The Spring Framework on Google Cloud starter auto-configures a `CredentialsProvider`. It
 uses the `spring.cloud.gcp.credentials.location` property to locate the
 OAuth2 private key of a Google service account. Keep in mind this
 property is a Spring Resource, so the credentials file can be obtained
@@ -111,7 +111,7 @@ places](https://github.com/GoogleCloudPlatform/google-cloud-java#authentication)
 
 If your app is running on Google App Engine or Google Compute Engine, in
 most cases, you should omit the `spring.cloud.gcp.credentials.location`
-property and, instead, let the Spring Cloud GCP Starter get the correct
+property and, instead, let the Spring Framework on Google Cloud Starter get the correct
 credentials for those environments. On App Engine Standard, the [App
 Identity service account
 credentials](https://cloud.google.com/appengine/docs/standard/java/appidentity/)
@@ -124,8 +124,8 @@ is used.
 
 #### Scopes
 
-By default, the credentials provided by the Spring Cloud GCP Starter
-contain scopes for every service supported by Spring Cloud GCP.
+By default, the credentials provided by the Spring Framework on Google Cloud Starter
+contain scopes for every service supported by Spring Framework on Google Cloud.
 
 |                      |                                                                                                 |
 | -------------------- | ----------------------------------------------------------------------------------------------- |
@@ -140,7 +140,7 @@ contain scopes for every service supported by Spring Cloud GCP.
 | Cloud Platform       | <https://www.googleapis.com/auth/cloud-platform>                                                |
 | Vision               | <https://www.googleapis.com/auth/cloud-vision>                                                  |
 
-The Spring Cloud GCP starter allows you to configure a custom scope list
+The Spring Framework on Google Cloud starter allows you to configure a custom scope list
 for the provided credentials. To do that, specify a comma-delimited list
 of [Google OAuth2
 scopes](https://developers.google.com/identity/protocols/googlescopes)
@@ -149,7 +149,7 @@ in the `spring.cloud.gcp.credentials.scopes` property.
 `spring.cloud.gcp.credentials.scopes` is a comma-delimited list of
 [Google OAuth2
 scopes](https://developers.google.com/identity/protocols/googlescopes)
-for Google Cloud Platform services that the credentials returned by the
+for Google Cloud services that the credentials returned by the
 provided `CredentialsProvider` support.
 
     spring.cloud.gcp.credentials.scopes=https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/sqlservice.admin
@@ -163,7 +163,7 @@ to add.
 ### Environment
 
 `GcpEnvironmentProvider` is a functional interface, auto-configured by
-the Spring Cloud GCP starter, that returns a `GcpEnvironment` enum. The
+the Spring Framework on Google Cloud starter, that returns a `GcpEnvironment` enum. The
 provider can help determine programmatically in which GCP environment
 (App Engine Flexible, App Engine Standard, Kubernetes Engine or Compute
 Engine) the application is deployed.
@@ -176,7 +176,7 @@ public interface GcpEnvironmentProvider {
 
 ### Customizing bean scope
 
-Spring Cloud GCP starters autoconfigure all necessary beans in the
+Spring Framework on Google Cloud starters autoconfigure all necessary beans in the
 default singleton scope. If you need a particular bean or set of beans
 to be recreated dynamically (for example, to rotate credentials), there
 are two options:
