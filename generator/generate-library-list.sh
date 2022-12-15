@@ -61,6 +61,10 @@ for d in ./google-cloud-java/*java-*/; do
     echo "$d: release_level: $release_level"
     continue
   fi
+  if [[ $artifact_id == "google-cloud-vision" ||  $artifact_id == "google-cloud-kms" ]] ; then
+    echo "$artifact_id is already present in manual modules."
+    continue
+  fi
 
   # get monorepo-name as pattern ./google-cloud-java/<monorepo_name>/
   monorepo_name=$(echo $d | sed 's#^./google-cloud-java/##' | sed 's#/$##')
@@ -69,17 +73,11 @@ for d in ./google-cloud-java/*java-*/; do
   googleapis_path=$(grep 'java/gapic-google' $d/.OwlBot.yaml | sed 's#^.*"/##' | sed 's#/[^/]*/.\*-java.*$##')
   repo_folder=$(grep 'java/gapic-google' $d/.OwlBot.yaml -A1| tail -n1 |  sed "s#^.*$monorepo_name/[^/]*/##"| sed 's#"$##')
 
-#  echo "monorepo_name: $monorepo_name;
-#  googleapis_path: $googleapis_path;
-#  repo_folder: $repo_folder"
-
-  # figure out path to look out changes for: v1/v2 for each client library
-  version_folder=$(find "$d$repo_folder/main/java/com/google/" -type d -name 'v1' | sed "s#^$d##")
-  if [[ -z "$version_folder" ]]
-  then
-    version_folder=$(find "$d$repo_folder/main/java/com/google/" -type d -name 'v2' | sed "s#^$d##")
-  fi
-  echo "version_folder ::: $version_folder!!!!!!!!!"
+  # figure out path to look out changes for: v[1-9]
+  # taking the latest version that's not alpha/beta
+  version_folder=$(find "$d$repo_folder/main/java/com/google/" -type d -name 'v[0-9]' |sort -d -r | head -n 1 | sed "s#^$d##")
+  version_number=$(echo $version_folder | sed 's#.*/##')
+  googleapis_folder="$googleapis_path/$version_number"
 
   # get commitish from git log
   # criteria: changes happen before tag,  touches path, and with changes in googleapis/googleapis
@@ -93,10 +91,10 @@ for d in ./google-cloud-java/*java-*/; do
   module_versions=$(sed -n "/^${artifact_id}:/p" ./google-cloud-java/versions.txt)
   released_version=$(echo "$module_versions" | cut -f2 -d:)
 
-  echo "$api_shortname, $googleapis_path, $distribution_name:$released_version, $googleapis_committish" >> $filename
+  echo "$api_shortname, $googleapis_folder, $distribution_name:$released_version, $googleapis_committish" >> $filename
   count=$((count+1))
 done
 echo "Total in-scope client libraries: $count"
 
 # clean up
-#rm -rf google-cloud-java/
+rm -rf google-cloud-java/
