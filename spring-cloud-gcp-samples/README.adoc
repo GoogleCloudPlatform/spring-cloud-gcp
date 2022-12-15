@@ -1,50 +1,50 @@
-= Spring Cloud GCP Code Samples
+= Spring Framework on Google Cloud Code Samples
 
-Each code sample in this folder exemplifies how to use one Spring Cloud GCP integration.
+Each code sample in this folder exemplifies how to use one Spring Framework on Google Cloud integration.
 
 image::http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples%2FREADME.adoc]
 
-- link:spring-cloud-gcp-config-sample[Spring Cloud GCP Config Sample]:
+- link:spring-cloud-gcp-config-sample[Spring Framework on Google Cloud Config Sample]:
 Uses Spring Cloud Config to set the value of the app's parameters.
 Values are stored by the https://cloud.google.com/deployment-manager/runtime-configurator/reference/rest/[Google Runtime Configuration API].
 
-- link:spring-cloud-gcp-data-jpa-sample[Spring Cloud GCP Data JPA Sample]:
+- link:spring-cloud-gcp-data-jpa-sample[Spring Framework on Google Cloud Data JPA Sample]:
 Uses https://projects.spring.io/spring-data-jpa/[Spring Data JPA] to create a table in a https://cloud.google.com/sql/docs/[Google Cloud SQL] instance, populate it and read back the inserted values.
 
-- link:spring-cloud-gcp-data-spanner-repository-sample[Spring Cloud GCP Data Cloud Spanner Repository Sample]:
+- link:spring-cloud-gcp-data-spanner-repository-sample[Spring Framework on Google Cloud Data Cloud Spanner Repository Sample]:
 Uses Spring Data Cloud Spanner Repository to create a table in https://cloud.google.com/spanner/[Google Cloud Spanner], add some records to it and read them back.
 
-- link:spring-cloud-gcp-data-spanner-template-sample[Spring Cloud GCP Data Cloud Spanner Template Sample]:
+- link:spring-cloud-gcp-data-spanner-template-sample[Spring Framework on Google Cloud Data Cloud Spanner Template Sample]:
 Uses Spring Data Cloud Spanner Template to create a table in https://cloud.google.com/spanner/[Google Cloud Spanner], add some records to it and read them back.
 
-- link:spring-cloud-gcp-integration-pubsub-sample[Spring Cloud GCP Integration Pub/Sub Sample]:
+- link:spring-cloud-gcp-integration-pubsub-sample[Spring Framework on Google Cloud Integration Pub/Sub Sample]:
 Uses Spring Integration channel adapters to exchange messages through https://cloud.google.com/pubsub/docs/[Google Cloud Pub/Sub].
 
-- link:spring-cloud-gcp-integration-storage-sample[Spring Cloud GCP Integration Storage Sample]: Uses Spring Integration channel adapters to synchronize and write files to a Google Cloud Storage bucket.
+- link:spring-cloud-gcp-integration-storage-sample[Spring Framework on Google Cloud Integration Storage Sample]: Uses Spring Integration channel adapters to synchronize and write files to a Google Cloud Storage bucket.
 
-- link:spring-cloud-gcp-logging-sample[Spring Cloud GCP Logging Sample]:
+- link:spring-cloud-gcp-logging-sample[Spring Framework on Google Cloud Logging Sample]:
 Uses the https://cloud.google.com/logging/docs/[Stackdriver Logging API] to store and group logs by trace ID.
 
-- link:spring-cloud-gcp-pubsub-sample[Spring Cloud GCP Pub/Sub Sample]:
-Uses the Spring Cloud GCP Pub/Sub abstraction to exchange messages.
+- link:spring-cloud-gcp-pubsub-sample[Spring Framework on Google Cloud Pub/Sub Sample]:
+Uses the Spring Framework on Google Cloud Pub/Sub abstraction to exchange messages.
 
-- link:spring-cloud-gcp-pubsub-stream-sample[Spring Cloud GCP Pub/Sub Binder for Spring Cloud Stream]:
+- link:spring-cloud-gcp-pubsub-stream-sample[Spring Framework on Google Cloud Pub/Sub Binder for Spring Cloud Stream]:
 Uses the Spring Cloud Stream Binder for Google Cloud Pub/Sub to exchange messages.
 
-- link:spring-cloud-gcp-sql-mysql-sample[Spring Cloud GCP MySQL Sample]:
+- link:spring-cloud-gcp-sql-mysql-sample[Spring Framework on Google Cloud MySQL Sample]:
 Connects to a https://cloud.google.com/sql/docs/[Google Cloud SQL] instance using best practices.
 Populates database with values and reads them.
 
-- link:spring-cloud-gcp-sql-postgres-sample[Spring Cloud GCP PostgreSQL Sample]:
+- link:spring-cloud-gcp-sql-postgres-sample[Spring Framework on Google Cloud PostgreSQL Sample]:
 Connects to a https://cloud.google.com/sql/docs/[Google Cloud PostgreSQL] instance using best practices.
 Populates database with values and reads them.
 
-- link:spring-cloud-gcp-storage-resource-sample[Spring Cloud GCP Storage Sample]:
+- link:spring-cloud-gcp-storage-resource-sample[Spring Framework on Google Cloud Storage Sample]:
 Uses the https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/io/Resource.html[Spring Resource] abstraction to read and write files to https://cloud.google.com/storage/[Google Cloud Storage].
 
-- link:spring-cloud-gcp-trace-sample[Spring Cloud GCP Trace Sample]:
+- link:spring-cloud-gcp-trace-sample[Spring Framework on Google Cloud Trace Sample]:
 Uses https://micrometer.io/[Micrometer] to automatically generate trace IDs for requests to your application and store data about those requests in https://cloud.google.com/trace/[Google Stackdriver Trace].
 
-- link:spring-cloud-gcp-vision-api-sample[Spring Cloud GCP Vision API Sample]:
-Provides an example of how to use Spring Cloud GCP to improve the general usability of Google Cloud
+- link:spring-cloud-gcp-vision-api-sample[Spring Framework on Google Cloud Vision API Sample]:
+Provides an example of how to use Spring Framework on Google Cloud to improve the general usability of Google Cloud
 Client Libraries.

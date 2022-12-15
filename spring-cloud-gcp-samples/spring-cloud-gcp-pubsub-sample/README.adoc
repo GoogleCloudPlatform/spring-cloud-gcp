@@ -1,6 +1,6 @@
-= Spring Cloud GCP Pub/Sub Code Sample
+= Spring Framework on Google Cloud Pub/Sub Code Sample
 
-This is an example application that demonstrates how to use the Spring Cloud GCP Pub/Sub abstraction to do things like:
+This is an example application that demonstrates how to use the Spring Framework on Google Cloud Pub/Sub abstraction to do things like:
 
 * Create a topic
 * Create a subscription for a topic

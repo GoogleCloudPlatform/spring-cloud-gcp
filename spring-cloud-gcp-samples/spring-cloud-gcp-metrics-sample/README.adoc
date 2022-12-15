@@ -1,7 +1,7 @@
-= Spring Cloud GCP Metrics Starter Example
+= Spring Framework on Google Cloud Metrics Starter Example
 
 This sample application demonstrates using the
-link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-metrics[Spring Cloud GCP Metrics
+link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-metrics[Spring Framework on Google Cloud Metrics
 Starter] to store metrics, with the Google Stackdriver Monitoring API.
 
 == Setup & Configuration

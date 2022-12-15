@@ -1,8 +1,8 @@
-= Spring Cloud GCP Trace Starter Example
+= Spring Framework on Google Cloud Trace Starter Example
 
-This sample application demonstrates using the link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-trace[Spring Cloud GCP Trace Starter] in your code.
+This sample application demonstrates using the link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-trace[Spring Framework on Google Cloud Trace Starter] in your code.
 
-You can read about the Spring Boot Starter for Stackdriver Trace in more detail at the link:../../docs/src/main/asciidoc/trace.adoc[Spring Cloud GCP Reference Document Stackdriver Trace section].
+You can read about the Spring Boot Starter for Stackdriver Trace in more detail at the link:../../docs/src/main/asciidoc/trace.adoc[Spring Framework on Google Cloud Reference Document Stackdriver Trace section].
 
 Similar content is also available in the https://codelabs.developers.google.com/codelabs/cloud-spring-cloud-gcp-trace/index.html[Distributed tracing with Micrometer] codelab.
 
@@ -12,9 +12,9 @@ image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.goo
 
 . Create a Google Cloud Project
 . https://cloud.google.com/docs/authentication/getting-started#creating_the_service_account[Create a service account] with Trace Append permission.
-Furnish a new JSON key and then set the credentials using the `GOOGLE_APPLICATION_CREDENTIALS` environment variable or link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter/README.adoc[using GCP Starter Core properties].
+Furnish a new JSON key and then set the credentials using the `GOOGLE_APPLICATION_CREDENTIALS` environment variable or link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter/README.adoc[using Spring Framework on Google Cloud Starter Core properties].
 +
-Alternatively, if you have the https://cloud.google.com/sdk/[Google Cloud SDK] installed and initialized and are logged in with https://developers.google.com/identity/protocols/application-default-credentials[application default credentials], you can skip this step since Spring Cloud GCP will auto-discover those settings for you.
+Alternatively, if you have the https://cloud.google.com/sdk/[Google Cloud SDK] installed and initialized and are logged in with https://developers.google.com/identity/protocols/application-default-credentials[application default credentials], you can skip this step since Spring Framework on Google Cloud will auto-discover those settings for you.
 . Enable the https://console.cloud.google.com/apis/api/cloudtrace.googleapis.com/overview[Stackdriver Trace API]
 . Go to the Google Cloud Console Pub/Sub topics page and create a topic called `traceTopic`.
 +
@@ -34,7 +34,7 @@ This will trigger the `ExampleController.work()` method, which in turn will call
 
 To see the traces, navigate to Stackdriver Trace console's https://console.cloud.google.com/traces/traces[Trace List] view.
 You should see the trace information in detail.
-Additionally, if you logged in with the Google Cloud SDK or have the `GOOGLE_CLOUD_PROJECT` environment variable set to your GCP project ID, you can also click the `View` link in front of the `Details` -> `Log` to view the log entries related to that trace ID.
+Additionally, if you logged in with the Google Cloud SDK or have the `GOOGLE_CLOUD_PROJECT` environment variable set to your Google Cloud project ID, you can also click the `View` link in front of the `Details` -> `Log` to view the log entries related to that trace ID.
 
 Note that the trace transmission delay default value is 10 seconds, so it can take a little while for the traces to show up in the Trace List page.
 You can shorten this delay using the `spring.cloud.gcp.trace.scheduled-delay-seconds` property.
