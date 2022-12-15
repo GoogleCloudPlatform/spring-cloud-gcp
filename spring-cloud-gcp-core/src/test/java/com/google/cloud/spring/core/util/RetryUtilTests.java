@@ -24,7 +24,7 @@ import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
 /** Tests for {@link RetryUtil}. */
-public class RetryUtilTests {
+class RetryUtilTests {
 
   private static final Duration TEST_DURATION = Duration.ofSeconds(5);
   private static final org.threeten.bp.Duration TEST_DURATION_BP =
