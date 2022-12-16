@@ -33,7 +33,6 @@ echo "# api_shortname, googleapis-folder, distribution_name:version, googleapis_
 # loop through folders
 count=0
 for d in ./google-cloud-java/*java-*/; do
-  echo "processing monorepo folder: $d"
   # parse variables from .repo-metadata.json
   language=$(cat $d/.repo-metadata.json | jq -r .language)
   api_shortname=$(cat $d/.repo-metadata.json | jq -r .api_shortname)
@@ -82,8 +81,7 @@ for d in ./google-cloud-java/*java-*/; do
   # get commitish from git log
   # criteria: changes happen before tag,  touches path, and with changes in googleapis/googleapis
   cd $d || { echo "Failed to get into directory $d"; exit 1; }
-  googleapis_committish=$(git log v1.1.0 -- "$version_folder" | grep -m 1 'Source-Link:.*googleapis/googleapis.*' | sed 's#^.*/commit/##')
-  echo "find committish in log: $googleapis_committish"
+  googleapis_committish=$(git log $commitish -- "$version_folder" | grep -m 1 'Source-Link:.*googleapis/googleapis.*' | sed 's#^.*/commit/##')
   cd - || { echo "Failed to get back to previous directory"; exit 1; }
 
   # get version from versions.txt (remove this logic once confirmed)
