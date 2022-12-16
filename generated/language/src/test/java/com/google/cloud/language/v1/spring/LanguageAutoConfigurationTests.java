@@ -28,6 +28,7 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.threeten.bp.Duration;
 
+@ExtendWith(MockitoExtension.class)
 class LanguageAutoConfigurationTests {
 
   private static final String SERVICE_CREDENTIAL_LOCATION =
@@ -35,27 +36,28 @@ class LanguageAutoConfigurationTests {
   private static final String SERVICE_CREDENTIAL_CLIENT_ID = "45678";
   private static final String SERVICE_OVERRIDE_CLIENT_ID = "56789";
 
+  @Mock private TransportChannel mockTransportChannel;
+  @Mock private ApiCallContext mockApiCallContext;
+  @Mock private TransportChannelProvider mockTransportChannelProvider;
+  @Mock private CredentialsProvider mockCredentialsProvider;
+
   private ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
           .withConfiguration(AutoConfigurations.of(LanguageServiceSpringAutoConfiguration.class));
 
   @Test
   void testLanguageServiceClientCreated() {
-    this.contextRunner
-        .withPropertyValues(
-            "com.google.cloud.language.v1.spring.auto.language-service.enabled=true")
-        .run(
-            ctx -> {
-              LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
-              assertThat(client).isNotNull();
-            });
+    this.contextRunner.run(
+        ctx -> {
+          LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+          assertThat(client).isNotNull();
+        });
   }
 
   @Test
   void testShouldTakeServiceCredentials() {
     this.contextRunner
         .withPropertyValues(
-            "com.google.cloud.language.v1.spring.auto.language-service.enabled=true",
             "com.google.cloud.language.v1.spring.auto.language-service.credentials.location=file:"
                 + SERVICE_CREDENTIAL_LOCATION)
         .run(
@@ -70,23 +72,19 @@ class LanguageAutoConfigurationTests {
 
   @Test
   void testShouldUseDefaultGrpcTransport() {
-    this.contextRunner
-        .withPropertyValues(
-            "com.google.cloud.language.v1.spring.auto.language-service.enabled=true")
-        .run(
-            ctx -> {
-              LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
-              String transportName =
-                  client.getSettings().getTransportChannelProvider().getTransportName();
-              assertThat(transportName).isEqualTo("grpc");
-            });
+    this.contextRunner.run(
+        ctx -> {
+          LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+          String transportName =
+              client.getSettings().getTransportChannelProvider().getTransportName();
+          assertThat(transportName).isEqualTo("grpc");
+        });
   }
 
   @Test
   void testQuotaProjectIdFromProperties() {
     this.contextRunner
         .withPropertyValues(
-            "com.google.cloud.language.v1.spring.auto.language-service.enabled=true",
             "com.google.cloud.language.v1.spring.auto.language-service.quota-project-id="
                 + SERVICE_OVERRIDE_CLIENT_ID)
         .run(
@@ -101,7 +99,6 @@ class LanguageAutoConfigurationTests {
   void testExecutorThreadCountFromProperties() {
     this.contextRunner
         .withPropertyValues(
-            "com.google.cloud.language.v1.spring.auto.language-service.enabled=true",
             "com.google.cloud.language.v1.spring.auto.language-service.executor-thread-count=3")
         .run(
             ctx -> {
@@ -115,36 +112,95 @@ class LanguageAutoConfigurationTests {
   }
 
   @Test
-  void testRetrySettingsFromProperties() {
-    this.contextRunner
-        .withPropertyValues(
-            "com.google.cloud.language.v1.spring.auto.language-service.enabled=true",
-            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-retry-delay-multiplier="
-                + "2",
-            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-rpc-timeout-multiplier="
-                + "2",
-            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-initial-retry-delay="
-                + "PT0.5S",
-            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-max-retry-delay="
-                + "PT30S",
-            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-initial-rpc-timeout="
-                + "PT5M",
-            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-max-rpc-timeout="
-                + "PT15M",
-            "com.google.cloud.language.v1.spring.auto.language-service.analyze-sentiment-total-timeout="
-                + "PT10M")
+  void customTransportChannelProviderUsedWhenProvided() throws IOException {
+    when(mockTransportChannelProvider.getTransportName()).thenReturn("grpc");
+    when(mockTransportChannelProvider.getTransportChannel()).thenReturn(mockTransportChannel);
+    when(mockTransportChannel.getEmptyCallContext()).thenReturn(mockApiCallContext);
+    when(mockApiCallContext.withCredentials(any())).thenReturn(mockApiCallContext);
+    when(mockApiCallContext.withTransportChannel(any())).thenReturn(mockApiCallContext);
+
+    contextRunner
+        .withBean(
+            "defaultLanguageTransportChannelProvider",
+            TransportChannelProvider.class,
+            () -> mockTransportChannelProvider)
         .run(
             ctx -> {
               LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
-              RetrySettings retrySettings =
+              assertThat(client.getSettings().getTransportChannelProvider())
+                  .isSameAs(mockTransportChannelProvider);
+            });
+  }
+
+  @Test
+  void customServiceSettingsUsedWhenProvided() throws IOException {
+    String mockQuotaProjectId = "mockQuotaProjectId";
+    LanguageServiceSettings customLanguageServiceSettings =
+        LanguageServiceSettings.newBuilder()
+            .setCredentialsProvider(mockCredentialsProvider)
+            .setQuotaProjectId(mockQuotaProjectId)
+            .build();
+    contextRunner
+        .withBean(
+            "languageServiceSettings",
+            LanguageServiceSettings.class,
+            () -> customLanguageServiceSettings)
+        .run(
+            ctx -> {
+              LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+              assertThat(client.getSettings().getCredentialsProvider())
+                  .isSameAs(mockCredentialsProvider);
+              assertThat(client.getSettings().getQuotaProjectId()).isSameAs(mockQuotaProjectId);
+            });
+  }
+
+  @Test
+  void testServiceRetrySettingsFromProperties() {
+    this.contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.language.language-service.enabled=true",
+            "spring.cloud.gcp.language.language-service.retry-settings.retry-delay-multiplier=2",
+            "spring.cloud.gcp.language.language-service.retry-settings.max-retry-delay=PT0.9S")
+        .run(
+            ctx -> {
+              LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+
+              RetrySettings analyzeSentimentRetrySettings =
                   client.getSettings().analyzeSentimentSettings().getRetrySettings();
-              assertThat(retrySettings.getRetryDelayMultiplier()).isEqualTo(2);
-              assertThat(retrySettings.getRpcTimeoutMultiplier()).isEqualTo(2);
-              assertThat(retrySettings.getInitialRetryDelay()).isEqualTo(Duration.ofMillis(500));
-              assertThat(retrySettings.getMaxRetryDelay()).isEqualTo(Duration.ofSeconds(30));
-              assertThat(retrySettings.getInitialRpcTimeout()).isEqualTo(Duration.ofMinutes(5));
-              assertThat(retrySettings.getMaxRpcTimeout()).isEqualTo(Duration.ofMinutes(15));
-              assertThat(retrySettings.getTotalTimeout()).isEqualTo(Duration.ofMinutes(10));
+              assertThat(analyzeSentimentRetrySettings.getRetryDelayMultiplier()).isEqualTo(2);
+              assertThat(analyzeSentimentRetrySettings.getMaxRetryDelay())
+                  .isEqualTo(Duration.ofMillis(900));
+              // if properties only override certain retry settings, others should still take on
+              // client library defaults
+              assertThat(analyzeSentimentRetrySettings.getInitialRetryDelay())
+                  .isEqualTo(Duration.ofMillis(100)); // default
+            });
+  }
+
+  @Test
+  void testMethodRetrySettingsFromProperties() {
+    this.contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.language.language-service.enabled=true",
+            "spring.cloud.gcp.language.language-service.retry-settings.retry-delay-multiplier=2",
+            "spring.cloud.gcp.language.language-service.retry-settings.max-retry-delay=PT0.9S",
+            "spring.cloud.gcp.language.language-service.annotate-text-retry-settings.retry-delay-multiplier=3")
+        .run(
+            ctx -> {
+              LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+
+              RetrySettings annotateTextRetrySettings =
+                  client.getSettings().annotateTextSettings().getRetrySettings();
+              // Method-level override should take precedence over service-level
+              assertThat(annotateTextRetrySettings.getRetryDelayMultiplier()).isEqualTo(3);
+              // For settings without method-level overrides but when service-level is provided,
+              // fall back to that
+              assertThat(annotateTextRetrySettings.getMaxRetryDelay())
+                  .isEqualTo(Duration.ofMillis(900));
+              // Settings with neither method not service-level overrides should still take on
+              // client library defaults
+              assertThat(annotateTextRetrySettings.getInitialRetryDelay())
+                  .isEqualTo(Duration.ofMillis(100)); // default
             });
   }
 }
