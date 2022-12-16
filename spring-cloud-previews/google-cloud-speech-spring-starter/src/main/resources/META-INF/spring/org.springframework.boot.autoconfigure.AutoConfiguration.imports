@@ -1,0 +1,2 @@
+com.google.cloud.speech.v1.spring.SpeechSpringAutoConfiguration
+com.google.cloud.speech.v1.spring.AdaptationSpringAutoConfiguration

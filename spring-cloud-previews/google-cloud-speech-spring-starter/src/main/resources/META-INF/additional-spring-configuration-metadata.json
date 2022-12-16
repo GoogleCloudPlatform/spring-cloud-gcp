@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.speech.v1.spring.auto.speech.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud speech/Speech components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.speech.v1.spring.auto.adaptation.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud speech/Adaptation components.",
+      "defaultValue": true
+    }
+  ]
+}
