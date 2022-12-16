@@ -9,7 +9,7 @@
 
 # by default, do not download repos
 download_repos=0
-while getopts c:v:i:g:d:p: flag
+while getopts c:v:i:g:d:p:f: flag
 do
     case "${flag}" in
         c) client_lib_name=${OPTARG};;
@@ -17,6 +17,7 @@ do
         i) client_lib_artifactid=${OPTARG};;
         g) client_lib_groupid=${OPTARG};;
         p) parent_version=${OPTARG};;
+        f) googleapis_folder=${OPTARG};;
         d) download_repos=1;;
     esac
 done
@@ -25,6 +26,7 @@ echo "Client Library Version: $version";
 echo "Client Library GroupId: $client_lib_groupid";
 echo "Client Library ArtifactId: $client_lib_artifactid";
 echo "Parent Pom Version: $parent_version";
+echo "Googleapis Folder: $googleapis_folder";
 
 starter_artifactid="$client_lib_artifactid-spring-starter"
 
@@ -43,29 +45,36 @@ fi
 
 cd googleapis
 
+## If $googleapis_folder does not exist, exit
+if [ ! -d "$googleapis_folder" ]
+then
+  echo "Directory $googleapis_folder DOES NOT exists."
+  exit
+fi
 # Modify BUILD.bazel file for library
 # Additional rule to load
 SPRING_RULE_NAME="    \\\"java_gapic_spring_library\\\","
-perl -0777 -pi -e "s/(load\((.*?)\"java_gapic_library\",)/\$1\n$SPRING_RULE_NAME/s" google/cloud/$client_lib_name/v1/BUILD.bazel
+perl -0777 -pi -e "s/(load\((.*?)\"java_gapic_library\",)/\$1\n$SPRING_RULE_NAME/s" $googleapis_folder/BUILD.bazel
 # Duplicate java_gapic_library rule definition
-perl -0777 -pi -e "s/(java_gapic_library\((.*?)\))/\$1\n\n\$1/s" google/cloud/$client_lib_name/v1/BUILD.bazel
+perl -0777 -pi -e "s/(java_gapic_library\((.*?)\))/\$1\n\n\$1/s" $googleapis_folder/BUILD.bazel
 # Update rule name to java_gapic_spring_library
-perl -0777 -pi -e "s/(java_gapic_library\()/java_gapic_spring_library\(/s" google/cloud/$client_lib_name/v1/BUILD.bazel
+perl -0777 -pi -e "s/(java_gapic_library\()/java_gapic_spring_library\(/s" $googleapis_folder/BUILD.bazel
 # Update name argument to have _spring appended
-perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)name = \"(.*?)\")/java_gapic_spring_library\(\$2name = \"\$3_spring\"/s" google/cloud/$client_lib_name/v1/BUILD.bazel
+perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)name = \"(.*?)\")/java_gapic_spring_library\(\$2name = \"\$3_spring\"/s" $googleapis_folder/BUILD.bazel
 # todo: better way to remove the following unused arguments?
-perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    test_deps = \[(.*?)\],))/java_gapic_spring_library\(\$2/s" google/cloud/$client_lib_name/v1/BUILD.bazel
-perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    deps = \[(.*?)\],))/java_gapic_spring_library\(\$2/s" google/cloud/$client_lib_name/v1/BUILD.bazel
-perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    rest_numeric_enums = (.*?),))/java_gapic_spring_library\(\$2/s" google/cloud/$client_lib_name/v1/BUILD.bazel
+perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    test_deps = \[(.*?)\],))/java_gapic_spring_library\(\$2/s" $googleapis_folder/BUILD.bazel
+perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    deps = \[(.*?)\],))/java_gapic_spring_library\(\$2/s" $googleapis_folder/BUILD.bazel
+perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    rest_numeric_enums = (.*?),))/java_gapic_spring_library\(\$2/s" $googleapis_folder/BUILD.bazel
 
+echo "CALL BAZEL TARGET"
 # call bazel target
-bazel build //google/cloud/$client_lib_name/v1:"$client_lib_name"_java_gapic_spring
+bazel build //$googleapis_folder:"$client_lib_name"_java_gapic_spring
 
 cd -
 
 ## copy spring code to outside
 mkdir -p ../generated
-cp googleapis/bazel-bin/google/cloud/$client_lib_name/v1/"$client_lib_name"_java_gapic_spring-spring.srcjar ../generated
+cp googleapis/bazel-bin/$googleapis_folder/"$client_lib_name"_java_gapic_spring-spring.srcjar ../generated
 
 # unzip spring code
 cd ../generated
@@ -73,7 +82,6 @@ unzip -o "$client_lib_name"_java_gapic_spring-spring.srcjar -d "$client_lib_name
 rm -rf "$client_lib_name"_java_gapic_spring-spring.srcjar
 
 # override versions & names in pom.xml
-cat "$client_lib_name"/pom.xml
 
 sed -i 's/{{client-library-group-id}}/'"$client_lib_groupid"'/' "$client_lib_name"/pom.xml
 sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' "$client_lib_name"/pom.xml
@@ -92,10 +100,9 @@ else
   # format |name|distribution name|
   echo -e "|$client_lib_name|com.google.cloud:$starter_artifactid|" >> README.md
   {(grep -vw ".*:.*" README.md);(grep ".*:.*" README.md| sort | uniq)} > tmpfile && mv tmpfile README.md
-
 fi
 
-# run google-java-format on generated code
+echo "run google-java-format on generated code"
 ./../mvnw fmt:format
 
 # remove downloaded repos
