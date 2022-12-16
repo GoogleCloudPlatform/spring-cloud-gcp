@@ -82,14 +82,9 @@ for d in ./google-cloud-java/*java-*/; do
   # criteria: changes happen before tag,  touches path, and with changes in googleapis/googleapis
   cd $d || { echo "Failed to get into directory $d"; exit 1; }
   googleapis_committish=$(git log $commitish -- "$version_folder" | grep -m 1 'Source-Link:.*googleapis/googleapis.*' | sed 's#^.*/commit/##')
-  cd - || { echo "Failed to get back to previous directory"; exit 1; }
+  cd ~- || { echo "Failed to get back to previous directory"; exit 1; }
 
-  # get version from versions.txt (remove this logic once confirmed)
-  # this changed in https://github.com/googleapis/google-cloud-java/pull/8755/
-  module_versions=$(sed -n "/^${artifact_id}:/p" ./google-cloud-java/versions.txt)
-  released_version=$(echo "$module_versions" | cut -f2 -d:)
-
-  echo "$api_shortname, $googleapis_folder, $distribution_name:$released_version, $googleapis_committish" >> $filename
+  echo "$api_shortname, $googleapis_folder, $distribution_name, $googleapis_committish" >> $filename
   count=$((count+1))
 done
 echo "Total in-scope client libraries: $count"
