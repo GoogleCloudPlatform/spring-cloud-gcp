@@ -6,7 +6,7 @@
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>3.5.0-SNAPSHOT</version>
+	<version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
@@ -363,7 +363,7 @@
 				<!-- default config values -->
 				<docletName>java-docfx-doclet-1.6.0</docletName>
 				<outputpath>${project.build.directory}/docfx-yml</outputpath>
-				<projectname>${project.artifactId}</projectname>
+				<projectname>spring-framework-on-google-cloud</projectname>
 				<excludeclasses></excludeclasses>
 				<excludePackages></excludePackages>
 				<source>8</source>

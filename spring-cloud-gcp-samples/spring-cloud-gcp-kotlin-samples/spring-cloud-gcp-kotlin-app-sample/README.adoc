@@ -1,9 +1,9 @@
-= Spring Cloud GCP Kotlin Sample App
+= Spring Framework on Google Cloud Kotlin Sample App
 
-This is a simple Kotlin Spring Boot application which demonstrates how to integrate with Spring Cloud GCP libraries from Kotlin.
+This is a simple Kotlin Spring Boot application which demonstrates how to integrate with Spring Framework on Google Cloud libraries from Kotlin.
 It sets up a registration service in which a someone publishes registrant names to a Cloud Pub/Sub topic; these names are then persisted to a Cloud SQL database.
 
-This application demonstrates the following Spring Cloud GCP integrations:
+This application demonstrates the following Spring Framework on Google Cloud integrations:
 
 - Cloud Pub/Sub (with Spring Integration)
 - Cloud SQL (with Spring Data JPA)

@@ -1,4 +1,4 @@
-= Spring Cloud GCP Stream Binder for Pub/Sub Functional Code Sample
+= Spring Framework on Google Cloud Stream Binder for Pub/Sub Functional Code Sample
 
 This code sample demonstrates how to use the Spring Cloud Stream binder for Google Cloud Pub/Sub. For the legacy annotation-based style, see link:../spring-cloud-gcp-pubsub-stream-sample[this sample].
 
