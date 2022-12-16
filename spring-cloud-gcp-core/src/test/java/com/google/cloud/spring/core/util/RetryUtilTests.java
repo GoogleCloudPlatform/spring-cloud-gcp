@@ -32,6 +32,7 @@ class RetryUtilTests {
   private static final double TEST_MULTIPLIER_FIVE = 5.0;
   private static final double TEST_MULTIPLIER_THREE = 3.0;
   private static final double TEST_MULTIPLIER_ONE = 1.0;
+  private static final int TEST_MAX_ATTEMPTS = 2;
 
   @Test
   void testAllSettingsUpdatedAsExpected() {
@@ -44,6 +45,7 @@ class RetryUtilTests {
     newRetry.setMaxRpcTimeout(TEST_DURATION);
     newRetry.setRpcTimeoutMultiplier(TEST_MULTIPLIER_FIVE);
     newRetry.setTotalTimeout(TEST_DURATION);
+    newRetry.setMaxAttempts(TEST_MAX_ATTEMPTS);
 
     RetrySettings updated = RetryUtil.updateRetrySettings(oldRetrySettings, newRetry);
 
@@ -56,6 +58,7 @@ class RetryUtilTests {
     assertThat(updated.getMaxRpcTimeout()).isEqualTo(TEST_DURATION_BP);
     assertThat(updated.getRpcTimeoutMultiplier()).isEqualTo(TEST_MULTIPLIER_FIVE);
     assertThat(updated.getTotalTimeout()).isEqualTo(TEST_DURATION_BP);
+    assertThat(updated.getMaxAttempts()).isEqualTo(TEST_MAX_ATTEMPTS);
   }
 
   @Test
@@ -86,5 +89,6 @@ class RetryUtilTests {
     assertThat(updated.getRpcTimeoutMultiplier())
         .isEqualTo(oldRetrySettings.getRpcTimeoutMultiplier());
     assertThat(updated.getTotalTimeout()).isEqualTo(oldRetrySettings.getTotalTimeout());
+    assertThat(updated.getMaxAttempts()).isEqualTo(oldRetrySettings.getMaxAttempts());
   }
 }
