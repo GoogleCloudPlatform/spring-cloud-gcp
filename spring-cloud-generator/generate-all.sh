@@ -12,7 +12,7 @@ cd spring-cloud-generator
 
 bash download-repos.sh
 libraries=$(cat $WORKING_DIR/library_list.txt | tail -n+2)
-while IFS=, read -r library_name googleapis_location coordinates_version; do
+while IFS=, read -r library_name googleapis_location coordinates_version committish; do
   echo "processing library $library_name"
   group_id=$(echo $coordinates_version | cut -f1 -d:)
   artifact_id=$(echo $coordinates_version | cut -f2 -d:)
