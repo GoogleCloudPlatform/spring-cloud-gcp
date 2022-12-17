@@ -102,6 +102,6 @@ class ClientLibraryDdlIntegrationTest {
   }
 
   private Publisher<Long> getFirstNumber(Result result) {
-    return result.map((row, meta) -> (Long) row.get(1));
+    return result.map((row, meta) -> (Long) row.get(0));
   }
 }

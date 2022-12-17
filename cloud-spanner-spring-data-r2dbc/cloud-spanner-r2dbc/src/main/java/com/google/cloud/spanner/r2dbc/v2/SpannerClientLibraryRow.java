@@ -31,7 +31,7 @@ class SpannerClientLibraryRow implements Row {
 
   @Override
   public <T> T get(int index, Class<T> type) {
-    return ClientLibraryDecoder.decode(this.rowFields, index - 1, type);
+    return ClientLibraryDecoder.decode(this.rowFields, index, type);
   }
 
   @Override

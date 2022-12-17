@@ -117,7 +117,7 @@ class ClientLibraryBasedIntegrationTest {
 
     StepVerifier.create(
         Mono.from(conn.createStatement("SELECT count(*) as count FROM BOOKS").execute())
-            .flatMapMany(rs -> rs.map((row, rmeta) -> row.get(1, Long.class))))
+            .flatMapMany(rs -> rs.map((row, rmeta) -> row.get(0, Long.class))))
         .expectNext(Long.valueOf(0))
         .verifyComplete();
     StepVerifier.create(
@@ -199,7 +199,7 @@ class ClientLibraryBasedIntegrationTest {
 
     StepVerifier.create(
         Mono.from(conn.createStatement("SELECT count(*) FROM BOOKS").execute())
-            .flatMapMany(rs -> rs.map((row, rmeta) -> row.get(1, Long.class))))
+            .flatMapMany(rs -> rs.map((row, rmeta) -> row.get(0, Long.class))))
         .expectNext(Long.valueOf(1))
         .verifyComplete();
     StepVerifier.create(
@@ -480,7 +480,7 @@ class ClientLibraryBasedIntegrationTest {
                     .bind("words", 0).add()
                     .execute()
             )
-            .flatMapSequential(rs -> rs.map((row, rmeta) -> row.get(1, Integer.class))))
+            .flatMapSequential(rs -> rs.map((row, rmeta) -> row.get(0, Integer.class))))
     ).expectNext(0, 0, 1, 2, 3).as("Row count matches bound variables").verifyComplete();
 
   }
@@ -526,7 +526,7 @@ class ClientLibraryBasedIntegrationTest {
                       .bind("words", 4).add()
                       .bind("words", 0) // Final .add() missing intentionally
                     .execute()
-                ).flatMapSequential(rs -> rs.map((row, rmeta) -> row.get(1, Long.class))),
+                ).flatMapSequential(rs -> rs.map((row, rmeta) -> row.get(0, Long.class))),
                 conn.commitTransaction())
             )
 
@@ -619,12 +619,12 @@ class ClientLibraryBasedIntegrationTest {
           Flux.from(
               conn.createStatement(makeInsertQuery(uuid1, 100, 15.0)).execute()
           ).flatMap(r -> r.getRowsUpdated()),
-          Flux.from(readStatement.execute()).flatMap(result -> result.map((row, rm) -> row.get(1))),
+          Flux.from(readStatement.execute()).flatMap(result -> result.map((row, rm) -> row.get(0))),
           ((SpannerConnection) conn).beginReadonlyTransaction(
               TimestampBound.ofExactStaleness(1, TimeUnit.SECONDS)),
-          Flux.from(readStatement.execute()).flatMap(result -> result.map((row, rm) -> row.get(1))),
+          Flux.from(readStatement.execute()).flatMap(result -> result.map((row, rm) -> row.get(0))),
           conn.commitTransaction(),
-          Flux.from(readStatement.execute()).flatMap(result -> result.map((row, rm) -> row.get(1)))
+          Flux.from(readStatement.execute()).flatMap(result -> result.map((row, rm) -> row.get(0)))
     )).expectNext(1)
         .as("row inserted")
         .expectNext(1L)
@@ -687,7 +687,7 @@ class ClientLibraryBasedIntegrationTest {
 
     StepVerifier.create(
         Mono.from(conn.createStatement("SELECT title FROM BOOKS").execute())
-            .flatMapMany(rs -> rs.map((row, rmeta) -> row.get(1, String.class))),
+            .flatMapMany(rs -> rs.map((row, rmeta) -> row.get(0, String.class))),
         /* initial demand of 2 */ 2)
         .expectNextCount(2)
         .expectNoEvent(Duration.ofMillis(200))
@@ -708,7 +708,7 @@ class ClientLibraryBasedIntegrationTest {
 
     StepVerifier.create(
         Mono.from(conn.createStatement("SELECT title FROM BOOKS").execute())
-            .flatMapMany(rs -> rs.map((row, rmeta) -> row.get(1, String.class))),
+            .flatMapMany(rs -> rs.map((row, rmeta) -> row.get(0, String.class))),
         /* initiali demand of2 */ 2)
         .expectNextCount(2)
         .expectNoEvent(Duration.ofMillis(200))
@@ -784,7 +784,7 @@ class ClientLibraryBasedIntegrationTest {
   }
 
   private Publisher<Long> getFirstNumber(Result result) {
-    return result.map((row, meta) -> (Long) row.get(1));
+    return result.map((row, meta) -> (Long) row.get(0));
   }
 
   private String makeInsertQuery(String uuid, int category, double wordCount) {

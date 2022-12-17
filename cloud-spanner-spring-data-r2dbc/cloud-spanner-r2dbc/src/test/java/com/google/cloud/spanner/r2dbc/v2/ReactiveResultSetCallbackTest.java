@@ -71,7 +71,7 @@ class ReactiveResultSetCallbackTest {
           CallbackResponse response = cb.cursorReady(this.mockResultSet);
           assertThat(response).isSameAs(CallbackResponse.CONTINUE);
         })
-    ).assertNext(r -> assertThat(r.get(1)).isEqualTo("some result")
+    ).assertNext(r -> assertThat(r.get(0)).isEqualTo("some result")
     ).thenCancel() // without CallbackResponse.DONE signal, sink will not complete by itself.
         .verify();
   }
@@ -137,11 +137,11 @@ class ReactiveResultSetCallbackTest {
                 cb.cursorReady(this.mockResultSet);
               }
             })) // unbounded demand
-        .expectNextMatches(r -> r.get(1, String.class).equals("result1"))
-        .expectNextMatches(r -> r.get(1, String.class).equals("result2"))
-        .expectNextMatches(r -> r.get(1, String.class).equals("result3"))
-        .expectNextMatches(r -> r.get(1, String.class).equals("result4"))
-        .expectNextMatches(r -> r.get(1, String.class).equals("result5"))
+        .expectNextMatches(r -> r.get(0, String.class).equals("result1"))
+        .expectNextMatches(r -> r.get(0, String.class).equals("result2"))
+        .expectNextMatches(r -> r.get(0, String.class).equals("result3"))
+        .expectNextMatches(r -> r.get(0, String.class).equals("result4"))
+        .expectNextMatches(r -> r.get(0, String.class).equals("result5"))
         .verifyComplete();
 
     verify(this.mockResultSet, times(5)).getCurrentRowAsStruct();

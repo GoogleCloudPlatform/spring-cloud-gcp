@@ -61,7 +61,7 @@ class SpannerClientLibraryStatementTest {
 
     StepVerifier.create(
         Flux.from(statement.execute()).flatMap(
-            result -> result.map((r, rm) -> r.get(1, String.class))))
+            result -> result.map((r, rm) -> r.get(0, String.class))))
         .expectNext("resultA")
         .verifyComplete();
   }
@@ -87,7 +87,7 @@ class SpannerClientLibraryStatementTest {
 
     StepVerifier.create(
         Flux.from(statement.execute()).flatMapSequential(
-            result -> result.map((r, rm) -> r.get(1, String.class))))
+            result -> result.map((r, rm) -> r.get(0, String.class))))
         .expectNext("resultA", "resultB")
         .verifyComplete();
 

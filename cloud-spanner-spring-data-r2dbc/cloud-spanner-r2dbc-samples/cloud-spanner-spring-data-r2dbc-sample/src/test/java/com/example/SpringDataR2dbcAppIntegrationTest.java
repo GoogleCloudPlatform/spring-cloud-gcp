@@ -17,6 +17,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class SpringDataR2dbcAppIntegrationTest {
@@ -32,11 +33,30 @@ class SpringDataR2dbcAppIntegrationTest {
   private WebTestClient webTestClient;
 
   @Autowired
+  private BookRepository bookRepository;
+
+  @Autowired
   private ObjectMapper objectMapper;
 
   @AfterEach
   void deleteRecords() {
     this.webTestClient.get().uri("delete-all").exchange().expectStatus().is2xxSuccessful();
+  }
+
+  @Test
+  void tryBasicRepoMethods() {
+    Book newBook = new Book("Call of the wild", null, null);
+    bookRepository.save(newBook).block();
+    Book newBook2 = new Book("War and Peace", null, null);
+    bookRepository.save(newBook2).block();
+
+    StepVerifier.create(bookRepository.findById(newBook.getId()))
+        .expectNextCount(1L)
+        .verifyComplete();
+
+    StepVerifier.create(bookRepository.findAll()).expectNextCount(2L).verifyComplete();
+
+    StepVerifier.create(bookRepository.count()).expectNext(2L).verifyComplete();
   }
 
   @Test

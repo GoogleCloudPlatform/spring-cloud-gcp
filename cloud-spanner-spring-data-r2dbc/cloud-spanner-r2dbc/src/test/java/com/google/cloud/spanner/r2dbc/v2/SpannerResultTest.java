@@ -65,7 +65,7 @@ class SpannerResultTest {
 
     Publisher<String> result = new SpannerClientLibraryResult(this.resultSet, 0)
         .map((row, metadata) ->
-            row.get(1, Boolean.class)
+            row.get(0, Boolean.class)
                 + "-"
                 + metadata.getColumnMetadata(0).getName());
 

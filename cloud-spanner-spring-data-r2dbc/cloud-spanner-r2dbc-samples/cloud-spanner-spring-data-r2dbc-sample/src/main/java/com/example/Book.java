@@ -16,9 +16,9 @@
 
 package com.example;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import java.util.Map;
@@ -28,7 +28,7 @@ import java.util.UUID;
  * Book entity.
  */
 @Table
-public class Book {
+public class Book implements Persistable {
 
   @Id
   @Column("ID")
@@ -55,6 +55,11 @@ public class Book {
 
   public String getId() {
     return id;
+  }
+
+  @Override
+  public boolean isNew() {
+    return true;
   }
 
   public String getTitle() {

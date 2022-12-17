@@ -83,7 +83,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <skip.surefire.tests>${skipTests}</skip.surefire.tests>
 
     <google-cloud-bom.version>26.1.5</google-cloud-bom.version>
 
@@ -287,7 +286,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire-failsafe.version}</version>
         <configuration>
-          <skip>${skip.surefire.tests}</skip>
           <excludes>
             <exclude>**/*IntegrationTest*</exclude>
           </excludes>
