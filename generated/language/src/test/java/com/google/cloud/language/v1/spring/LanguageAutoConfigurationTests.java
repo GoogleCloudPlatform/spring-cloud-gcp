@@ -157,11 +157,10 @@ class LanguageAutoConfigurationTests {
 
   @Test
   void testCustomServiceSettingsUsedWhenProvided() throws IOException {
-    String mockQuotaProjectId = "mockQuotaProjectId";
     LanguageServiceSettings customLanguageServiceSettings =
         LanguageServiceSettings.newBuilder()
             .setCredentialsProvider(mockCredentialsProvider)
-            .setQuotaProjectId(mockQuotaProjectId)
+            .setQuotaProjectId(SERVICE_OVERRIDE_CLIENT_ID)
             .build();
     contextRunner
         .withBean(
@@ -171,9 +170,7 @@ class LanguageAutoConfigurationTests {
         .run(
             ctx -> {
               LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
-              assertThat(client.getSettings().getCredentialsProvider())
-                  .isSameAs(mockCredentialsProvider);
-              assertThat(client.getSettings().getQuotaProjectId()).isSameAs(mockQuotaProjectId);
+              assertThat(client.getSettings()).isSameAs(customLanguageServiceSettings);
             });
   }
 
