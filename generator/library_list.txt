@@ -69,4 +69,4 @@ vmmigration, google/cloud/vmmigration/v1, com.google.cloud:google-cloud-vmmigrat
 vpcaccess, google/cloud/vpcaccess/v1, com.google.cloud:google-cloud-vpcaccess:2.7.0
 webrisk, google/cloud/webrisk/v1, com.google.cloud:google-cloud-webrisk:2.5.0
 websecurityscanner, google/cloud/websecurityscanner/v1, com.google.cloud:google-cloud-websecurityscanner:2.6.0
-workflows, google/cloud/workflows/v1, com.google.cloud:google-cloud-workflows:2.6.0
+workflows, google/cloud/workflows/v1, com.google.cloud:google-cloud-workflows:2.6.
