@@ -38,14 +38,6 @@
 			<artifactId>spring-cloud-gcp-starter-sql-mysql</artifactId>
 		</dependency>
 
-		<!-- Cloud SQL (PostgreSQL) Starter -->
-		<!--
-		<dependency>
-			<groupId>com.google.cloud</groupId>
-			<artifactId>spring-cloud-gcp-starter-sql-postgresql</artifactId>
-		</dependency>
-		-->
-
 		<!-- Test-related dependencies. -->
 		<dependency>
 			<groupId>org.awaitility</groupId>
