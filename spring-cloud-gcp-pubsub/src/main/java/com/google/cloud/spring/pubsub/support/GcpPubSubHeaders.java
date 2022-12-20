@@ -19,7 +19,7 @@ package com.google.cloud.spring.pubsub.support;
 import java.util.Optional;
 import org.springframework.messaging.Message;
 
-/** Google Cloud Platform internal headers for Spring Messaging messages. */
+/** Google Cloud internal headers for Spring Messaging messages. */
 public abstract class GcpPubSubHeaders {
 
   private GcpPubSubHeaders() {}

@@ -7,12 +7,12 @@
     <parent>
         <artifactId>spring-cloud-gcp</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>3.5.0-SNAPSHOT</version>
+        <version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
 
     <artifactId>spring-cloud-gcp-cloudfoundry</artifactId>
-    <name>Spring Cloud GCP Module - Cloud Foundry</name>
-    <description>Spring Cloud GCP Cloud Foundry Module</description>
+    <name>Spring Framework on Google Cloud Module - Cloud Foundry</name>
+    <description>Spring Framework on Google Cloud Cloud Foundry Module</description>
 
     <properties>
         <jmockit.version>1.49</jmockit.version>

@@ -5,12 +5,12 @@
     <parent>
         <artifactId>spring-cloud-gcp-starters</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>3.5.0-SNAPSHOT</version>
+        <version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>spring-cloud-gcp-starter-sql-postgresql</artifactId>
-    <name>Spring Cloud GCP Starter - PostgreSQL</name>
+    <name>Spring Framework on Google Cloud Starter - PostgreSQL</name>
     <url>https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-postgresql</url>
 
     <dependencies>

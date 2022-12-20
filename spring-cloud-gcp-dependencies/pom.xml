@@ -11,10 +11,10 @@
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-dependencies</artifactId>
-	<version>3.5.0-SNAPSHOT</version>
+	<version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 
-	<name>Spring Cloud GCP Dependencies</name>
-	<description>Spring Cloud GCP Dependencies</description>
+	<name>Spring Framework on Google Cloud Dependencies</name>
+	<description>Spring Framework on Google Cloud Dependencies</description>
 	<packaging>pom</packaging>
 
 	<distributionManagement>
@@ -29,8 +29,8 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>26.1.5</gcp-libraries-bom.version>
-		<cloud-sql-socket-factory.version>1.7.2</cloud-sql-socket-factory.version>
+		<gcp-libraries-bom.version>26.2.0</gcp-libraries-bom.version>
+		<cloud-sql-socket-factory.version>1.8.0</cloud-sql-socket-factory.version>
 		<guava.version>31.1-jre</guava.version>
 		<r2dbc-mysql-driver.version>0.8.2.RELEASE</r2dbc-mysql-driver.version>
 		<r2dbc-postgres-driver.version>0.8.13.RELEASE</r2dbc-postgres-driver.version>
@@ -48,7 +48,7 @@
 				<scope>import</scope>
 			</dependency>
 			
-			<!-- Overriding Guava from libraries-bom; Spring Cloud GCP does not require Java 7 support -->
+			<!-- Overriding Guava from libraries-bom; Spring Framework on Google Cloud does not require Java 7 support -->
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava-bom</artifactId>
@@ -302,7 +302,7 @@
 				<version>${r2dbc-postgres-driver.version}</version>
 			</dependency>
 
-			<!--Google Cloud Platform Libraries BOM -->
+			<!--Google Cloud Libraries BOM -->
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>libraries-bom</artifactId>

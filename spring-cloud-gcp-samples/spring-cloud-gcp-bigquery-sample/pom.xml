@@ -6,14 +6,14 @@
     <parent>
         <artifactId>spring-cloud-gcp-samples</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>3.5.0-SNAPSHOT</version>
+        <version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <name>Spring Cloud GCP Code Sample - BigQuery</name>
+    <name>Spring Framework on Google Cloud Code Sample - BigQuery</name>
     <artifactId>spring-cloud-gcp-bigquery-sample</artifactId>
 
-    <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+    <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
     <dependencyManagement>
         <dependencies>
             <dependency>

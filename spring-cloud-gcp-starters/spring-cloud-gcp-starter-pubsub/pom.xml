@@ -4,10 +4,10 @@
 	<parent>
 		<groupId>com.google.cloud</groupId>
 		<artifactId>spring-cloud-gcp-starters</artifactId>
-		<version>3.5.0-SNAPSHOT</version>
+		<version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 	<artifactId>spring-cloud-gcp-starter-pubsub</artifactId>
-	<name>Spring Cloud GCP Starter - Pub/Sub</name>
+	<name>Spring Framework on Google Cloud Starter - Pub/Sub</name>
 	<description>Starter for Google Cloud Pub/Sub messaging</description>
 	<url>https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-pubsub</url>
 	<organization>

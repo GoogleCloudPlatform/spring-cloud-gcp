@@ -20,7 +20,7 @@ The Firebase JWT tokens are validated with rules presented link:https://firebase
 NOTE: If you create a custom {spring-security-javadoc}config/annotation/web/configuration/WebSecurityConfigurerAdapter.html[`WebSecurityConfigurerAdapter`], enable extracting user identity by adding `.oauth2ResourceServer().jwt()` configuration to the {spring-security-javadoc}config/annotation/web/builders/HttpSecurity.html[`HttpSecurity`] object.
 If no custom {spring-security-javadoc}config/annotation/web/configuration/WebSecurityConfigurerAdapter.html[`WebSecurityConfigurerAdapter`] is present, nothing needs to be done because Spring Boot will add this customization by default.
 
-Starter Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Starter Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----
@@ -48,7 +48,7 @@ CAUTION: Modifying public-keys-endpoint property might be useful for testing, bu
 |Name |Description |Required |Default
 
 |`spring.cloud.gcp.security.firebase.project-id`
-|Overrides the GCP project ID specified in the Core module.
+|Overrides the Google Cloud project ID specified in the Core module.
 |false
 |
 

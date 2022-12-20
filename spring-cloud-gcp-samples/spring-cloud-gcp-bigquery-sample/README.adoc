@@ -1,8 +1,8 @@
-= Spring GCP BigQuery Sample Application
+= Spring Framework on Google Cloud BigQuery Sample Application
 
 BigQuery is Google's fully managed, petabyte scale, low cost analytics data warehouse.
 
-This code sample shows how the Spring Cloud GCP integrations can simplify the use of https://cloud.google.com/bigquery/[Google Cloud BigQuery].
+This code sample shows how the Spring Framework on Google Cloud integrations can simplify the use of https://cloud.google.com/bigquery/[Google Cloud BigQuery].
 
 == Overview
 
@@ -16,7 +16,7 @@ image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.goo
 
 2. Move to the BigQuery sample directory by running `$ cd spring-cloud-gcp-samples/spring-cloud-gcp-bigquery-sample`
 
-3. Create a Google Cloud Platform project with https://cloud.google.com/billing/docs/how-to/modify-project#enable-billing[billing enabled], if you don't have one already.
+3. Create a Google Cloud project with https://cloud.google.com/billing/docs/how-to/modify-project#enable-billing[billing enabled], if you don't have one already.
 
 4. Enable the BigQuery API from https://console.cloud.google.com/apis/library/bigquery-json.googleapis.com[the APIs & Services menu] of the Google Cloud Console.
 

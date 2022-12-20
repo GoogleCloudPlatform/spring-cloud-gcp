@@ -18,7 +18,7 @@ The following claims are validated automatically:
 The _audience_ (`"aud"` claim) validation string is automatically determined when the application is running on App Engine Standard or App Engine Flexible.
 This functionality relies on Cloud Resource Manager API to retrieve project details, so the following setup is needed:
 
-* Enable Cloud Resource Manager API in https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com[GCP Console].
+* Enable Cloud Resource Manager API in https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com[Google Cloud Console].
 * Make sure your application has `resourcemanager.projects.get` permission.
 
 App Engine automatic _audience_ determination can be overridden by using `spring.cloud.gcp.security.iap.audience` property. It supports multiple allowable audiences by providing a comma-delimited list.
@@ -34,7 +34,7 @@ No qualifying bean of type 'com.google.cloud.spring.security.iap.AudienceProvide
 NOTE: If you create a custom {spring-security-javadoc}config/annotation/web/configuration/WebSecurityConfigurerAdapter.html[`WebSecurityConfigurerAdapter`], enable extracting user identity by adding `.oauth2ResourceServer().jwt()` configuration to the {spring-security-javadoc}config/annotation/web/builders/HttpSecurity.html[`HttpSecurity`] object.
  If no custom {spring-security-javadoc}config/annotation/web/configuration/WebSecurityConfigurerAdapter.html[`WebSecurityConfigurerAdapter`] is present, nothing needs to be done because Spring Boot will add this customization by default.
 
-Starter Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Starter Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----

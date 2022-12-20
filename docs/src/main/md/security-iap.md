@@ -23,7 +23,7 @@ determined when the application is running on App Engine Standard or App
 Engine Flexible. This functionality relies on Cloud Resource Manager API
 to retrieve project details, so the following setup is needed:
 
-  - Enable Cloud Resource Manager API in [GCP
+  - Enable Cloud Resource Manager API in [Google Cloud
     Console](https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com).
 
   - Make sure your application has `resourcemanager.projects.get`
@@ -58,8 +58,8 @@ customization by default.
 
 </div>
 
-Starter Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Starter Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>

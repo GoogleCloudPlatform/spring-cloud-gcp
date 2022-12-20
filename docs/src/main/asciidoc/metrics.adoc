@@ -1,12 +1,12 @@
 == Cloud Monitoring
 
-Google Cloud Platform provides a service called https://cloud.google.com/monitoring/[Cloud Monitoring], and https://micrometer.io/docs/registry/stackdriver[Micrometer] can be used with it to easily instrument Spring Boot applications for observability.
+Google Cloud provides a service called https://cloud.google.com/monitoring/[Cloud Monitoring], and https://micrometer.io/docs/registry/stackdriver[Micrometer] can be used with it to easily instrument Spring Boot applications for observability.
 
 Spring Boot already provides auto-configuration for Cloud Monitoring.
 This module enables auto-detection of the `project-id` and `credentials`.
 Also, it can be customized.
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----
@@ -37,10 +37,10 @@ All configurations are optional:
 |===
 | Name | Description | Required | Default value
 | `spring.cloud.gcp.metrics.enabled` | Auto-configure Micrometer to send metrics to Cloud Monitoring. | No | `true`
-| `spring.cloud.gcp.metrics.project-id` | Overrides the project ID from the <<spring-cloud-gcp-core,Spring Cloud GCP Module>> | No |
-| `spring.cloud.gcp.metrics.credentials.location` | Overrides the credentials location from the <<spring-cloud-gcp-core,Spring Cloud GCP Module>> | No |
-| `spring.cloud.gcp.metrics.credentials.encoded-key` | Overrides the credentials encoded key from the <<spring-cloud-gcp-core,Spring Cloud GCP Module>> | No |
-| `spring.cloud.gcp.metrics.credentials.scopes` | Overrides the credentials scopes from the <<spring-cloud-gcp-core,Spring Cloud GCP Module>> | No |
+| `spring.cloud.gcp.metrics.project-id` | Overrides the project ID from the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Module>> | No |
+| `spring.cloud.gcp.metrics.credentials.location` | Overrides the credentials location from the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Module>> | No |
+| `spring.cloud.gcp.metrics.credentials.encoded-key` | Overrides the credentials encoded key from the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Module>> | No |
+| `spring.cloud.gcp.metrics.credentials.scopes` | Overrides the credentials scopes from the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Module>> | No |
 |===
 
 You can use core Spring Boot Actuator properties to control reporting frequency, etc.
