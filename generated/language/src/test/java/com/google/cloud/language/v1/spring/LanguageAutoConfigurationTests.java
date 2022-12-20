@@ -45,7 +45,10 @@ class LanguageAutoConfigurationTests {
 
   private static final String SERVICE_CREDENTIAL_LOCATION =
       "src/test/resources/fake-credential-key.json";
+  private static final String TOP_LEVEL_CREDENTIAL_LOCATION =
+      "src/test/resources/fake-credential-key-2.json";
   private static final String SERVICE_CREDENTIAL_CLIENT_ID = "45678";
+  private static final String TOP_LEVEL_CREDENTIAL_CLIENT_ID = "12345";
   private static final String SERVICE_OVERRIDE_CLIENT_ID = "56789";
 
   @Mock private TransportChannel mockTransportChannel;
@@ -69,9 +72,10 @@ class LanguageAutoConfigurationTests {
   }
 
   @Test
-  void testServiceCredentialsFromProperties() {
+  void testCredentials_fromServicePropertiesIfSpecified() {
     this.contextRunner
         .withPropertyValues(
+            "spring.cloud.gcp.credentials.location=file:" + TOP_LEVEL_CREDENTIAL_LOCATION,
             "com.google.cloud.language.v1.spring.auto.language-service.credentials.location=file:"
                 + SERVICE_CREDENTIAL_LOCATION)
         .run(
@@ -85,12 +89,18 @@ class LanguageAutoConfigurationTests {
   }
 
   @Test
-  void testShouldUseCredentialsBeanWhenPropertiesNotProvided() {
-    this.contextRunner.run(
-        ctx -> {
-          LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
-          assertThat(client.getSettings().getCredentialsProvider()).isNotNull();
-        });
+  void testCredentials_fromTopLevelIfNoServiceProperties() {
+    this.contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.credentials.location=file:" + TOP_LEVEL_CREDENTIAL_LOCATION)
+        .run(
+            ctx -> {
+              LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+              Credentials credentials =
+                  client.getSettings().getCredentialsProvider().getCredentials();
+              assertThat(((ServiceAccountCredentials) credentials).getClientId())
+                  .isEqualTo(TOP_LEVEL_CREDENTIAL_CLIENT_ID);
+            });
   }
 
   @Test
