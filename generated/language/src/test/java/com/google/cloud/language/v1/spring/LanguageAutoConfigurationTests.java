@@ -199,9 +199,9 @@ class LanguageAutoConfigurationTests {
     Duration defaultDurationExpected = Duration.ofMillis(100);
     this.contextRunner
         .withPropertyValues(
-            "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.retry-delay-multiplier="
+            "com.google.cloud.language.v1.spring.auto.language-service.retry.retry-delay-multiplier="
                 + customMultiplier.toString(),
-            "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.max-retry-delay="
+            "com.google.cloud.language.v1.spring.auto.language-service.retry.max-retry-delay="
                 + customDurationString)
         .run(
             ctx -> {
@@ -229,11 +229,11 @@ class LanguageAutoConfigurationTests {
     Duration defaultDurationExpected = Duration.ofMillis(100);
     this.contextRunner
         .withPropertyValues(
-            "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.retry-delay-multiplier="
+            "com.google.cloud.language.v1.spring.auto.language-service.retry.retry-delay-multiplier="
                 + customServiceMultiplier.toString(),
-            "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.max-retry-delay="
+            "com.google.cloud.language.v1.spring.auto.language-service.retry.max-retry-delay="
                 + customDurationString,
-            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.retry-delay-multiplier="
+            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry.retry-delay-multiplier="
                 + customMethodMultiplier.toString())
         .run(
             ctx -> {
@@ -269,38 +269,38 @@ class LanguageAutoConfigurationTests {
     this.contextRunner
         .withPropertyValues(
             // service-level, all configurable settings
-            "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.retry-delay-multiplier="
+            "com.google.cloud.language.v1.spring.auto.language-service.retry.retry-delay-multiplier="
                 + customServiceMultiplier.toString(),
-            "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.rpc-timeout-multiplier="
+            "com.google.cloud.language.v1.spring.auto.language-service.retry.rpc-timeout-multiplier="
                 + customServiceMultiplier.toString(),
-            "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.initial-retry-delay="
+            "com.google.cloud.language.v1.spring.auto.language-service.retry.initial-retry-delay="
                 + customServiceDurationString,
-            "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.max-retry-delay="
+            "com.google.cloud.language.v1.spring.auto.language-service.retry.max-retry-delay="
                 + customServiceDurationString,
-            "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.initial-rpc-timeout="
+            "com.google.cloud.language.v1.spring.auto.language-service.retry.initial-rpc-timeout="
                 + customServiceDurationString,
-            "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.max-rpc-timeout="
+            "com.google.cloud.language.v1.spring.auto.language-service.retry.max-rpc-timeout="
                 + customServiceDurationString,
-            "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.total-timeout="
+            "com.google.cloud.language.v1.spring.auto.language-service.retry.total-timeout="
                 + customServiceDurationString,
-            "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.max-attempts="
+            "com.google.cloud.language.v1.spring.auto.language-service.retry.max-attempts="
                 + customServiceMaxAttempts.toString(),
             // method-level, all configurable settings
-            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.retry-delay-multiplier="
+            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry.retry-delay-multiplier="
                 + customMethodMultiplier.toString(),
-            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.rpc-timeout-multiplier="
+            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry.rpc-timeout-multiplier="
                 + customMethodMultiplier.toString(),
-            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.initial-retry-delay="
+            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry.initial-retry-delay="
                 + customMethodDurationString,
-            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.max-retry-delay="
+            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry.max-retry-delay="
                 + customMethodDurationString,
-            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.initial-rpc-timeout="
+            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry.initial-rpc-timeout="
                 + customMethodDurationString,
-            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.max-rpc-timeout="
+            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry.max-rpc-timeout="
                 + customMethodDurationString,
-            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.total-timeout="
+            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry.total-timeout="
                 + customMethodDurationString,
-            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.max-attempts="
+            "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry.max-attempts="
                 + customMethodMaxAttempts.toString())
         .run(
             ctx -> {
