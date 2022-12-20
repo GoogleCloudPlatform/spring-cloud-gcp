@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>spring-cloud-gcp</artifactId>
+    <groupId>com.google.cloud</groupId>
+    <version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>generated-parent</artifactId>
+  <packaging>pom</packaging>
+
+  <modules>
+  </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <!--
+          Versions chosen to be the latest still compatible with Java 8.
+          Scoping formatter to generated modules for now as the main repo was re-formatted
+          through both automated (#868) and manual changes (#869), and running this formatter
+          from the parent POM updates a large number of files.
+          -->
+          <groupId>com.coveo</groupId>
+          <artifactId>fmt-maven-plugin</artifactId>
+          <version>2.9.1</version>
+          <configuration>
+            <style>google</style>
+            <verbose>true</verbose>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>com.google.googlejavaformat</groupId>
+              <artifactId>google-java-format</artifactId>
+              <version>1.7</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>
