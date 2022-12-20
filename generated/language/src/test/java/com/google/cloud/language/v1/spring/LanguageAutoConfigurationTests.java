@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.TransportChannel;
@@ -104,13 +105,17 @@ class LanguageAutoConfigurationTests {
   }
 
   @Test
-  void testShouldUseDefaultGrpcTransport() {
+  void testShouldUseDefaultTransportChannelProvider() {
     this.contextRunner.run(
         ctx -> {
           LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
-          String transportName =
-              client.getSettings().getTransportChannelProvider().getTransportName();
-          assertThat(transportName).isEqualTo("grpc");
+          TransportChannelProvider transportChannelProvider =
+              client.getSettings().getTransportChannelProvider();
+          TransportChannelProvider defaultTransportChannelprovider =
+              LanguageServiceSettings.defaultTransportChannelProvider();
+          assertThat(transportChannelProvider)
+              .usingRecursiveComparison()
+              .isEqualTo(defaultTransportChannelprovider);
         });
   }
 
