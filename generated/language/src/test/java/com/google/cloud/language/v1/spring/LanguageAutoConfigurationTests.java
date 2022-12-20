@@ -135,9 +135,11 @@ class LanguageAutoConfigurationTests {
 
   @Test
   void testExecutorThreadCountFromProperties() {
+    Integer customExecutorThreadCount = 3;
     this.contextRunner
         .withPropertyValues(
-            "com.google.cloud.language.v1.spring.auto.language-service.executor-thread-count=3")
+            "com.google.cloud.language.v1.spring.auto.language-service.executor-thread-count="
+                + customExecutorThreadCount.toString())
         .run(
             ctx -> {
               LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
@@ -145,7 +147,7 @@ class LanguageAutoConfigurationTests {
                   ((InstantiatingExecutorProvider)
                       client.getSettings().getBackgroundExecutorProvider());
               assertThat(backgroundExecutorProvider.toBuilder().getExecutorThreadCount())
-                  .isEqualTo(3);
+                  .isEqualTo(customExecutorThreadCount);
             });
   }
 
@@ -191,38 +193,48 @@ class LanguageAutoConfigurationTests {
 
   @Test
   void testRetrySettingsFromProperties_serviceLevel() {
+    Double customMultiplier = 2.0;
+    String customDurationString = "PT0.9S";
+    Duration customDuration = Duration.ofMillis(900);
+    Duration defaultDurationExpected = Duration.ofMillis(100);
     this.contextRunner
         .withPropertyValues(
             "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.retry-delay-multiplier="
-                + "2",
+                + customMultiplier.toString(),
             "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.max-retry-delay="
-                + "PT0.9S")
+                + customDurationString)
         .run(
             ctx -> {
               LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
 
               RetrySettings analyzeSentimentRetrySettings =
                   client.getSettings().analyzeSentimentSettings().getRetrySettings();
-              assertThat(analyzeSentimentRetrySettings.getRetryDelayMultiplier()).isEqualTo(2);
+              assertThat(analyzeSentimentRetrySettings.getRetryDelayMultiplier())
+                  .isEqualTo(customMultiplier);
               assertThat(analyzeSentimentRetrySettings.getMaxRetryDelay())
-                  .isEqualTo(Duration.ofMillis(900));
+                  .isEqualTo(customDuration);
               // if properties only override certain retry settings, others should still take on
               // client library defaults
               assertThat(analyzeSentimentRetrySettings.getInitialRetryDelay())
-                  .isEqualTo(Duration.ofMillis(100)); // default
+                  .isEqualTo(defaultDurationExpected);
             });
   }
 
   @Test
   void testRetrySettingsFromProperties_serviceAndMethodLevel() {
+    Double customServiceMultiplier = 2.0;
+    Double customMethodMultiplier = 3.0;
+    String customDurationString = "PT0.9S";
+    Duration customDuration = Duration.ofMillis(900);
+    Duration defaultDurationExpected = Duration.ofMillis(100);
     this.contextRunner
         .withPropertyValues(
             "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.retry-delay-multiplier="
-                + "2",
+                + customServiceMultiplier.toString(),
             "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.max-retry-delay="
-                + "PT0.9S",
+                + customDurationString,
             "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.retry-delay-multiplier="
-                + "3")
+                + customMethodMultiplier.toString())
         .run(
             ctx -> {
               LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
@@ -230,56 +242,66 @@ class LanguageAutoConfigurationTests {
               RetrySettings annotateTextRetrySettings =
                   client.getSettings().annotateTextSettings().getRetrySettings();
               // Method-level override should take precedence over service-level
-              assertThat(annotateTextRetrySettings.getRetryDelayMultiplier()).isEqualTo(3);
+              assertThat(annotateTextRetrySettings.getRetryDelayMultiplier())
+                  .isEqualTo(customMethodMultiplier);
               // For settings without method-level overrides but when service-level is provided,
               // fall back to that
-              assertThat(annotateTextRetrySettings.getMaxRetryDelay())
-                  .isEqualTo(Duration.ofMillis(900));
+              assertThat(annotateTextRetrySettings.getMaxRetryDelay()).isEqualTo(customDuration);
               // Settings with neither method not service-level overrides should still take on
               // client library defaults
               assertThat(annotateTextRetrySettings.getInitialRetryDelay())
-                  .isEqualTo(Duration.ofMillis(100)); // default
+                  .isEqualTo(defaultDurationExpected); // default
             });
   }
 
   @Test
   void testRetrySettingsFromProperties_serviceAndMethodLevel_allRetrySettings() {
+    Double customServiceMultiplier = 2.0;
+    String customServiceDurationString = "PT0.5S";
+    Duration customServiceDuration = Duration.ofMillis(500);
+    Integer customServiceMaxAttempts = 2;
+
+    Double customMethodMultiplier = 3.0;
+    String customMethodDurationString = "PT0.6S";
+    Duration customMethodDuration = Duration.ofMillis(600);
+    Integer customMethodMaxAttempts = 3;
+
     this.contextRunner
         .withPropertyValues(
             // service-level, all configurable settings
             "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.retry-delay-multiplier="
-                + "2",
+                + customServiceMultiplier.toString(),
             "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.rpc-timeout-multiplier="
-                + "2",
+                + customServiceMultiplier.toString(),
             "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.initial-retry-delay="
-                + "PT0.5S",
+                + customServiceDurationString,
             "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.max-retry-delay="
-                + "PT5S",
+                + customServiceDurationString,
             "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.initial-rpc-timeout="
-                + "PT0.5S",
+                + customServiceDurationString,
             "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.max-rpc-timeout="
-                + "PT5S",
+                + customServiceDurationString,
             "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.total-timeout="
-                + "PT5M",
+                + customServiceDurationString,
             "com.google.cloud.language.v1.spring.auto.language-service.retry-settings.max-attempts="
-                + "2",
+                + customServiceMaxAttempts.toString(),
             // method-level, all configurable settings
             "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.retry-delay-multiplier="
-                + "3",
+                + customMethodMultiplier.toString(),
             "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.rpc-timeout-multiplier="
-                + "3",
+                + customMethodMultiplier.toString(),
             "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.initial-retry-delay="
-                + "PT0.6S",
+                + customMethodDurationString,
             "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.max-retry-delay="
-                + "PT6S",
+                + customMethodDurationString,
             "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.initial-rpc-timeout="
-                + "PT0.6S",
+                + customMethodDurationString,
             "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.max-rpc-timeout="
-                + "PT6S",
+                + customMethodDurationString,
             "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.total-timeout="
-                + "PT6M",
+                + customMethodDurationString,
             "com.google.cloud.language.v1.spring.auto.language-service.annotate-text-retry-settings.max-attempts="
-                + "3")
+                + customMethodMaxAttempts.toString())
         .run(
             ctx -> {
               LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
@@ -289,34 +311,40 @@ class LanguageAutoConfigurationTests {
                   client.getSettings().analyzeSentimentSettings().getRetrySettings();
 
               // Method-level overrides should be used for annotateText
-              assertThat(annotateTextRetrySettings.getRetryDelayMultiplier()).isEqualTo(3);
-              assertThat(annotateTextRetrySettings.getRpcTimeoutMultiplier()).isEqualTo(3);
+              assertThat(annotateTextRetrySettings.getRetryDelayMultiplier())
+                  .isEqualTo(customMethodMultiplier);
+              assertThat(annotateTextRetrySettings.getRpcTimeoutMultiplier())
+                  .isEqualTo(customMethodMultiplier);
               assertThat(annotateTextRetrySettings.getInitialRetryDelay())
-                  .isEqualTo(Duration.ofMillis(600));
+                  .isEqualTo(customMethodDuration);
               assertThat(annotateTextRetrySettings.getInitialRpcTimeout())
-                  .isEqualTo(Duration.ofMillis(600));
+                  .isEqualTo(customMethodDuration);
               assertThat(annotateTextRetrySettings.getMaxRetryDelay())
-                  .isEqualTo(Duration.ofSeconds(6));
+                  .isEqualTo(customMethodDuration);
               assertThat(annotateTextRetrySettings.getMaxRpcTimeout())
-                  .isEqualTo(Duration.ofSeconds(6));
+                  .isEqualTo(customMethodDuration);
               assertThat(annotateTextRetrySettings.getTotalTimeout())
-                  .isEqualTo(Duration.ofMinutes(6));
-              assertThat(annotateTextRetrySettings.getMaxAttempts()).isEqualTo(3);
+                  .isEqualTo(customMethodDuration);
+              assertThat(annotateTextRetrySettings.getMaxAttempts())
+                  .isEqualTo(customMethodMaxAttempts);
 
               // Service-level overrides should be used for analyzeSentiment
-              assertThat(analyzeSentimentRetrySettings.getRetryDelayMultiplier()).isEqualTo(2);
-              assertThat(analyzeSentimentRetrySettings.getRpcTimeoutMultiplier()).isEqualTo(2);
+              assertThat(analyzeSentimentRetrySettings.getRetryDelayMultiplier())
+                  .isEqualTo(customServiceMultiplier);
+              assertThat(analyzeSentimentRetrySettings.getRpcTimeoutMultiplier())
+                  .isEqualTo(customServiceMultiplier);
               assertThat(analyzeSentimentRetrySettings.getInitialRetryDelay())
-                  .isEqualTo(Duration.ofMillis(500));
+                  .isEqualTo(customServiceDuration);
               assertThat(analyzeSentimentRetrySettings.getInitialRpcTimeout())
-                  .isEqualTo(Duration.ofMillis(500));
+                  .isEqualTo(customServiceDuration);
               assertThat(analyzeSentimentRetrySettings.getMaxRetryDelay())
-                  .isEqualTo(Duration.ofSeconds(5));
+                  .isEqualTo(customServiceDuration);
               assertThat(analyzeSentimentRetrySettings.getMaxRpcTimeout())
-                  .isEqualTo(Duration.ofSeconds(5));
+                  .isEqualTo(customServiceDuration);
               assertThat(analyzeSentimentRetrySettings.getTotalTimeout())
-                  .isEqualTo(Duration.ofMinutes(5));
-              assertThat(analyzeSentimentRetrySettings.getMaxAttempts()).isEqualTo(2);
+                  .isEqualTo(customServiceDuration);
+              assertThat(analyzeSentimentRetrySettings.getMaxAttempts())
+                  .isEqualTo(customServiceMaxAttempts);
             });
   }
 }
