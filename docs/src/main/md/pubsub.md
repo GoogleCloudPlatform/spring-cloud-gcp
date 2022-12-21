@@ -376,16 +376,17 @@ Subscriber subscriber =
 | **subscribeAndConvert(String subscription, Consumer\<ConvertedBasicAcknowledgeablePubsubMessage\<T\>\> messageConsumer, Class\<T\> payloadType)** | same as `pull`, but converts message payload to `payloadType` using the converter configured in the template |
 
 <div class="note">
+As of version 1.2, subscribing by itself is not enough to keep an application running.
+For a command-line application, a way to keep the application running is to have a user thread(non-daemon thread) started up. A dummy scheduled task creates a threadpool with non-daemon threads:
 
-As of version 1.2, subscribing by itself is not enough to keep an
-application running. For a command-line application, you may want to
-provide your own `ThreadPoolTaskScheduler` bean named
-`pubsubSubscriberThreadPool`, which by default creates non-daemon
-threads that will keep an application from stopping. This default
-behavior has been overridden in Spring Framework on Google Cloud for consistency with
-Cloud Pub/Sub client library, and to avoid holding up command-line
-applications that would like to shut down once their work is done.
+```java
+@Scheduled (fixedRate = 1, timeUnit = TimeUnit.MINUTES)
+public void dummyScheduledTask() {
+    // do nothing
+}
+```
 
+Another option is to pull in `spring-boot-starter-web` or `spring-boot-starter-webflux` as a dependency which will start an embedded servlet container or reactive server keeping the application running in the background
 </div>
 
 #### Pulling messages from a subscription

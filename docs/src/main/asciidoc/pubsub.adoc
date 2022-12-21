@@ -326,7 +326,7 @@ h|subscribeAndConvert(String subscription,
 [NOTE]
 ====
 As of version 1.2, subscribing by itself is not enough to keep an application running.
-For a command-line application, a way to keep the application running is to have a user thread(non-daemon thread). A dummy scheduled task creates a threadpool with non-daemon threads:
+For a command-line application, a way to keep the application running is to have a user thread(non-daemon thread) started up. A dummy scheduled task creates a threadpool with non-daemon threads:
 [source,java,indent=0]
 ----
 @Scheduled (fixedRate = 1, timeUnit = TimeUnit.MINUTES)
