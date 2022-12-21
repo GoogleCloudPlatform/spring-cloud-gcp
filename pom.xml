@@ -378,6 +378,9 @@
 				<!-- Docs and Samples -->
 				<module>docs</module>
 				<module>spring-cloud-gcp-samples</module>
+
+				<!-- generated modules -->
+				<module>spring-cloud-previews</module>
 			</modules>
 		</profile>
 

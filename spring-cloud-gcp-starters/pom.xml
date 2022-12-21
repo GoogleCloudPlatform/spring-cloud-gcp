@@ -44,8 +44,5 @@
 		<module>spring-cloud-gcp-starter-secretmanager</module>
 		<module>spring-cloud-gcp-starter-kms</module>
 
-
-		<module>../spring-cloud-previews/google-cloud-language-spring-starter</module>
-		<module>../spring-cloud-previews/google-cloud-vision-spring-starter</module>
 	</modules>
 </project>
