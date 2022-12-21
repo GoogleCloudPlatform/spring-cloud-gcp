@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 WORKING_DIR=`pwd`
 
 cd ../
@@ -12,14 +12,13 @@ cd spring-cloud-generator
 
 bash download-repos.sh
 libraries=$(cat $WORKING_DIR/library_list.txt | tail -n+2)
-while IFS=, read -r library_name googleapis_location coordinates_version; do
+while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish; do
   echo "processing library $library_name"
   group_id=$(echo $coordinates_version | cut -f1 -d:)
   artifact_id=$(echo $coordinates_version | cut -f2 -d:)
-  version=$(echo $coordinates_version | cut -f3 -d:)
-  bash $WORKING_DIR/generate-one.sh -c $library_name -v $version -i $artifact_id -g $group_id -p $PROJECT_VERSION -f $googleapis_location
+  bash $WORKING_DIR/generate-one.sh -c $library_name -v $PROJECT_VERSION -i $artifact_id -g $group_id -p $PROJECT_VERSION -f $googleapis_location -x $googleapis_commitish
 done <<< $libraries
-
+set +x
 
 echo "run google-java-format on generated code"
 cd ../spring-cloud-previews

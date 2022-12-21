@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # start  by experimenting local run.
 # note about space consumption: out-of-space testing on cloud shell instance.
 
@@ -9,7 +8,7 @@
 
 # by default, do not download repos
 download_repos=0
-while getopts c:v:i:g:d:p:f: flag
+while getopts c:v:i:g:d:p:f:x: flag
 do
     case "${flag}" in
         c) client_lib_name=${OPTARG};;
@@ -18,6 +17,7 @@ do
         g) client_lib_groupid=${OPTARG};;
         p) parent_version=${OPTARG};;
         f) googleapis_folder=${OPTARG};;
+        x) googleapis_commitish=${OPTARG};;
         d) download_repos=1;;
     esac
 done
@@ -27,6 +27,7 @@ echo "Client Library GroupId: $client_lib_groupid";
 echo "Client Library ArtifactId: $client_lib_artifactid";
 echo "Parent Pom Version: $parent_version";
 echo "Googleapis Folder: $googleapis_folder";
+echo "Googleapis Commitish: $googleapis_folder";
 
 starter_artifactid="$client_lib_artifactid-spring-starter"
 
@@ -44,13 +45,36 @@ if [[ $download_repos -eq 1 ]]; then
 fi
 
 cd googleapis
+git reset --hard $googleapis_comittish
+# some old googleapis commitish will have the managed_directories parameter in
+# workspace() - see
+# https://docs.google.com/document/d/1u9V5RUc7i6Urh8gGfnSurxpWA7JMRtwCi1Pr5BHeE44/editj
+sed -i '/managed_directories/d' ./WORKSPACE
+sed -i '/@bazel_tools\/platforms:/d' ./WORKSPACE
+perl -0777 -pi -e "s/(managed_directories.*?)/\(\$2/s" $googleapis_folder/BUILD.bazel
+#sed -i '/\"java_gapic_library\"/{n;n;n;n;i\    rules[\"java_gapic_spring_library\"] = _switch(java and grpc and gapic,\"@gapic_generator_java//rules_java_gapic:java_gapic_spring.bzl\",)
+#}' repository_rules.bzl
+#
+# In googleapis/WORKSPACE, find http_archive() rule with name = "gapic_generator_java",
+# and replace with local_repository() rule
+LOCAL_REPO="local_repository(\n    name = \\\"gapic_generator_java\\\",\n    path = \\\"..\/gapic-generator-java\/\\\",\n)"
+perl -0777 -pi -e "s/http_archive\(\n    name \= \"gapic_generator_java\"(.*?)\)/$LOCAL_REPO/s" WORKSPACE
 
-## If $googleapis_folder does not exist, exit
+# In googleapis/WORKSPACE, find maven_install() rule with artifacts = PROTOBUF_MAVEN_ARTIFACTS,
+# replace with googleapis-dep-string.txt which adds spring dependencies
+perl -0777 -pi -e "s{maven_install\(\n(.*?)artifacts = PROTOBUF_MAVEN_ARTIFACTS(.*?)\)}{$(cat ../googleapis-dep-string.txt)}s" WORKSPACE
+
+# In googleapis/repository_rules.bzl, add switch for new spring rule
+JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"\@gapic_generator_java\/\/rules_java_gapic:java_gapic_spring.bzl\\\",\n    )"
+perl -0777 -pi -e "s/(rules\[\"java_gapic_library\"\] \= _switch\((.*?)\))/\$1\n$JAVA_SPRING_SWITCH/s" repository_rules.bzl
+
+## If $googleapis_folder does not exist, exit 
 if [ ! -d "$googleapis_folder" ]
 then
   echo "Directory $googleapis_folder DOES NOT exists."
   exit
 fi
+
 # Modify BUILD.bazel file for library
 # Additional rule to load
 SPRING_RULE_NAME="    \\\"java_gapic_spring_library\\\","
@@ -117,3 +141,4 @@ if [[ $download_repos -eq 1 ]]; then
   rm -rf googleapis
   rm -rf gapic-generator-java
 fi
+
