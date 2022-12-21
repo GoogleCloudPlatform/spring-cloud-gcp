@@ -109,7 +109,6 @@ add_module_to_pom () {
 }
 
 add_module_to_pom pom.xml "^  <modules>" 1
-add_module_to_pom ../spring-cloud-gcp-starters/pom.xml "^[[:space:]]*<!--  preview modules  -->"
 
 # remove downloaded repos
 cd ../spring-cloud-generator

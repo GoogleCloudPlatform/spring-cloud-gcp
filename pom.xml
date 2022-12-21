@@ -375,6 +375,7 @@
 				<module>spring-cloud-gcp-kms</module>
 				<module>spring-cloud-gcp-native-support</module>
 
+				<module>spring-cloud-previews</module>
 				<!-- Docs and Samples -->
 				<module>docs</module>
 				<module>spring-cloud-gcp-samples</module>
