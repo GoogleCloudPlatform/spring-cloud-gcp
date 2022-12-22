@@ -1,0 +1,8 @@
+com.google.appengine.v1.spring.ApplicationsSpringAutoConfiguration
+com.google.appengine.v1.spring.ServicesSpringAutoConfiguration
+com.google.appengine.v1.spring.VersionsSpringAutoConfiguration
+com.google.appengine.v1.spring.InstancesSpringAutoConfiguration
+com.google.appengine.v1.spring.FirewallSpringAutoConfiguration
+com.google.appengine.v1.spring.AuthorizedDomainsSpringAutoConfiguration
+com.google.appengine.v1.spring.AuthorizedCertificatesSpringAutoConfiguration
+com.google.appengine.v1.spring.DomainMappingsSpringAutoConfiguration

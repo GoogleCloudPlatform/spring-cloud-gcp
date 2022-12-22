@@ -1,0 +1,2 @@
+com.google.cloud.orchestration.airflow.service.v1.spring.EnvironmentsSpringAutoConfiguration
+com.google.cloud.orchestration.airflow.service.v1.spring.ImageVersionsSpringAutoConfiguration

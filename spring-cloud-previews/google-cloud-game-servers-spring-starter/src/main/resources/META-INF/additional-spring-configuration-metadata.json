@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.gaming.v1.spring.auto.game-server-clusters-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud gameservices/GameServerClustersService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.gaming.v1.spring.auto.game-server-configs-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud gameservices/GameServerConfigsService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.gaming.v1.spring.auto.game-server-deployments-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud gameservices/GameServerDeploymentsService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.gaming.v1.spring.auto.realms-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud gameservices/RealmsService components.",
+      "defaultValue": true
+    }
+  ]
+}

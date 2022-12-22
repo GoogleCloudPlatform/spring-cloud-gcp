@@ -1,0 +1,46 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.monitoring.v3.spring.auto.alert-policy-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/AlertPolicyService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.monitoring.v3.spring.auto.group-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/GroupService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.monitoring.v3.spring.auto.metric-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/MetricService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.monitoring.v3.spring.auto.notification-channel-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/NotificationChannelService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.monitoring.v3.spring.auto.query-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/QueryService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.monitoring.v3.spring.auto.service-monitoring-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/ServiceMonitoringService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.monitoring.v3.spring.auto.uptime-check-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/UptimeCheckService components.",
+      "defaultValue": true
+    }
+  ]
+}

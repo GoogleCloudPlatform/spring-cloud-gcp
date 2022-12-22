@@ -1,0 +1,94 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.dataset-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/DatasetService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.endpoint-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/EndpointService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.featurestore-online-serving-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/FeaturestoreOnlineServingService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.featurestore-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/FeaturestoreService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.index-endpoint-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/IndexEndpointService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.index-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/IndexService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.job-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/JobService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.metadata-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/MetadataService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.migration-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/MigrationService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.model-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/ModelService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.pipeline-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/PipelineService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.prediction-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/PredictionService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.specialist-pool-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/SpecialistPoolService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.tensorboard-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/TensorboardService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.spring.auto.vizier-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/VizierService components.",
+      "defaultValue": true
+    }
+  ]
+}
