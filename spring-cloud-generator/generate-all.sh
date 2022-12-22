@@ -20,6 +20,12 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
 done <<< $libraries
 set +x
 
+echo "install dependencies locally (for dev envs)"
+cd ../
+mvn install -pl '!spring-cloud-gcp-starters' -DskipTests
+cd ./spring-cloud-previews
+
+
 echo "run google-java-format on generated code"
 cd ../spring-cloud-previews
 ./../mvnw com.coveo:fmt-maven-plugin:format -Dfmt.skip=false
