@@ -6,6 +6,8 @@
 # poc with one specified repo - vision
 #cmd line:: ./generate-one.sh -c vision -v 3.1.2 -i google-cloud-vision -g com.google.cloud -p 3.5.0-SNAPSHOT -d 1
 
+set -x
+
 # by default, do not download repos
 download_repos=0
 while getopts c:v:i:g:d:p:f:x: flag
@@ -27,7 +29,7 @@ echo "Client Library GroupId: $client_lib_groupid";
 echo "Client Library ArtifactId: $client_lib_artifactid";
 echo "Parent Pom Version: $parent_version";
 echo "Googleapis Folder: $googleapis_folder";
-echo "Googleapis Commitish: $googleapis_folder";
+echo "Googleapis Commitish: $googleapis_comittish";
 
 starter_artifactid="$client_lib_artifactid-spring-starter"
 
@@ -91,7 +93,7 @@ cd -
 
 ## copy spring code to outside
 mkdir -p ../spring-cloud-previews
-cp googleapis/bazel-bin/google/cloud/$client_lib_name/v1/"$client_lib_name"_java_gapic_spring-spring.srcjar ../spring-cloud-previews
+cp googleapis/bazel-bin/$googleapis_folder/"$client_lib_name"_java_gapic_spring-spring.srcjar ../spring-cloud-previews
 
 # unzip spring code
 cd ../spring-cloud-previews
@@ -126,7 +128,7 @@ add_module_to_pom () {
 }
 
 add_module_to_pom pom.xml "^  <modules>" 1
-add_module_to_pom ../spring-cloud-gcp-starters/pom.xml "^[[:space:]]*<!--  preview modules  -->"
+add_module_to_pom ../spring-cloud-preview/pom.xml "^[[:space:]]*<!--  preview modules  -->"
 
 # remove downloaded repos
 cd ../spring-cloud-generator
@@ -135,3 +137,4 @@ if [[ $download_repos -eq 1 ]]; then
   rm -rf gapic-generator-java
 fi
 
+set +x
