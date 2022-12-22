@@ -46,12 +46,14 @@ fi
 
 cd googleapis
 git reset --hard $googleapis_comittish
+# tell bazelisk to use this version
+echo '4.2.2' > .bazelversion
 # some old googleapis commitish will have the managed_directories parameter in
 # workspace() - see
 # https://docs.google.com/document/d/1u9V5RUc7i6Urh8gGfnSurxpWA7JMRtwCi1Pr5BHeE44/editj
-sed -i '/managed_directories/d' ./WORKSPACE
-sed -i '/@bazel_tools\/platforms:/d' ./WORKSPACE
-perl -0777 -pi -e "s/(managed_directories.*?)/\(\$2/s" $googleapis_folder/BUILD.bazel
+#sed -i '/managed_directories/d' ./WORKSPACE
+#sed -i '/@bazel_tools\/platforms:/d' ./WORKSPACE
+#perl -0777 -pi -e "s/(managed_directories.*?)/\(\$2/s" $googleapis_folder/BUILD.bazel
 #sed -i '/\"java_gapic_library\"/{n;n;n;n;i\    rules[\"java_gapic_spring_library\"] = _switch(java and grpc and gapic,\"@gapic_generator_java//rules_java_gapic:java_gapic_spring.bzl\",)
 #}' repository_rules.bzl
 #
@@ -92,7 +94,7 @@ perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    rest_numeric_enums 
 
 echo "CALL BAZEL TARGET"
 # call bazel target
-bazel build //$googleapis_folder:"$client_lib_name"_java_gapic_spring
+bazelisk build //$googleapis_folder:"$client_lib_name"_java_gapic_spring
 
 cd -
 

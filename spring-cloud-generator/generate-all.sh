@@ -24,7 +24,7 @@ echo "run google-java-format on generated code"
 cd ../spring-cloud-previews
 ./../mvnw com.coveo:fmt-maven-plugin:format -Dfmt.skip=false
 
-cd ../spring-cloud-generator
-rm -rf googleapis
-rm -rf gapic-generator-java
+#cd ../spring-cloud-generator
+#rm -rf googleapis
+#rm -rf gapic-generator-java
 
