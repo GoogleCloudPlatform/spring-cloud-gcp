@@ -74,7 +74,7 @@ cd -
 
 ## copy spring code to outside
 mkdir -p ../spring-cloud-previews
-cp googleapis/bazel-bin/google/cloud/$client_lib_name/v1/"$client_lib_name"_java_gapic_spring-spring.srcjar ../spring-cloud-previews
+cp googleapis/bazel-bin/$googleapis_folder/"$client_lib_name"_java_gapic_spring-spring.srcjar ../spring-cloud-previews
 
 # unzip spring code
 cd ../spring-cloud-previews
