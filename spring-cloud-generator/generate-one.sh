@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 
 # start  by experimenting local run.
 # note about space consumption: out-of-space testing on cloud shell instance.
