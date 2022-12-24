@@ -28,7 +28,6 @@ import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfigu
 import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * Auto-configuration for {@link SpannerTransactionManager}.
@@ -57,7 +56,7 @@ public class SpannerTransactionManagerAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(PlatformTransactionManager.class)
+    @ConditionalOnMissingBean
     public SpannerTransactionManager spannerTransactionManager() {
       SpannerTransactionManager transactionManager =
           new SpannerTransactionManager(this.databaseClientProvider);
