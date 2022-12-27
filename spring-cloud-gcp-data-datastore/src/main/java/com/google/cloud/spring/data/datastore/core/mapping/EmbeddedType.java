@@ -26,7 +26,7 @@ import org.springframework.data.util.TypeInformation;
 public enum EmbeddedType {
 
   /**
-   * These are properties that stored as singualr or arrays of Cloud Datastore native field types.
+   * These are properties that stored as singular or arrays of Cloud Datastore native field types.
    * This excludes the embedded entity field type.
    */
   NOT_EMBEDDED,
