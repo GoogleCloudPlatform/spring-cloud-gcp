@@ -57,7 +57,7 @@ import org.springframework.context.annotation.Bean;
 @AutoConfiguration
 @ConditionalOnClass(LanguageServiceClient.class)
 @ConditionalOnProperty(
-    value = "com.google.cloud.language.v1.spring.auto.language-service.enabled",
+    value = "com.google.cloud.language.v1.language-service.enabled",
     matchIfMissing = true)
 @EnableConfigurationProperties(LanguageServiceSpringProperties.class)
 public class LanguageServiceSpringAutoConfiguration {
