@@ -377,11 +377,11 @@ Subscriber subscriber =
 
 <div class="note">
 As of version 1.2, subscribing by itself is not enough to keep an application running.
-For a command-line application, a way to keep the application running is to have a user thread(non-daemon thread) started up. A dummy scheduled task creates a threadpool with non-daemon threads:
+For a command-line application, a way to keep the application running is to have a user thread(non-daemon thread) started up. A fake scheduled task creates a threadpool with non-daemon threads:
 
 ```java
 @Scheduled (fixedRate = 1, timeUnit = TimeUnit.MINUTES)
-public void dummyScheduledTask() {
+public void fakeScheduledTask() {
     // do nothing
 }
 ```
