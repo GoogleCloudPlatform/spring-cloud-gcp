@@ -5,7 +5,7 @@ WORKING_DIR=`pwd`
 cd ../
 # Compute the project version.
 PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
-cd generator
+cd spring-cloud-generator
 
 # runs generate-one.sh for each entry in library_list.txt
 # repos are downloaded once before all generation jobs and then removed
@@ -20,6 +20,12 @@ while IFS=, read -r library_name googleapis_location coordinates_version; do
   bash $WORKING_DIR/generate-one.sh -c $library_name -v $version -i $artifact_id -g $group_id -p $PROJECT_VERSION -f $googleapis_location
 done <<< $libraries
 
+
+echo "run google-java-format on generated code"
+cd ../spring-cloud-previews
+./../mvnw com.coveo:fmt-maven-plugin:format -Dfmt.skip=false
+
+cd ../spring-cloud-generator
 rm -rf googleapis
 rm -rf gapic-generator-java
 
