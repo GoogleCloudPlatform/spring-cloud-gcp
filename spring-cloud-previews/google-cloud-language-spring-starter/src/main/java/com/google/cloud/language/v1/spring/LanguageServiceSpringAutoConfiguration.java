@@ -85,7 +85,7 @@ public class LanguageServiceSpringAutoConfiguration {
    * useRest option is provided to use HTTP transport instead
    */
   @Bean
-  @ConditionalOnMissingBean
+  @ConditionalOnMissingBean(name="defaultLanguageServiceTransportChannelProvider")
   public TransportChannelProvider defaultLanguageServiceTransportChannelProvider() {
     return LanguageServiceSettings.defaultTransportChannelProvider();
   }

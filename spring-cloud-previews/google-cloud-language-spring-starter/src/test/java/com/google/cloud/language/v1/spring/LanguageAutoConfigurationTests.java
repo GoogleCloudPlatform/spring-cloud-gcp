@@ -106,21 +106,27 @@ class LanguageAutoConfigurationTests {
 
   @Test
   void testShouldUseDefaultTransportChannelProvider() {
-    // this.contextRunner.run(
-    //     ctx -> {
-    //       LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
-    //       TransportChannelProvider transportChannelProvider =
-    //           client.getSettings().getTransportChannelProvider();
-    //       TransportChannelProvider defaultTransportChannelprovider =
-    //           LanguageServiceSettings.defaultTransportChannelProvider();
-    //       assertThat(transportChannelProvider)
-    //           .usingRecursiveComparison()
-    //           .isEqualTo(defaultTransportChannelprovider);
-    //     });
+    this.contextRunner.run(
+        ctx -> {
+          LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+          TransportChannelProvider transportChannelProviderBean =
+              (TransportChannelProvider) ctx.getBean("defaultLanguageServiceTransportChannelProvider");
+          TransportChannelProvider transportChannelProvider =
+              client.getSettings().getTransportChannelProvider();
+          TransportChannelProvider defaultTransportChannelprovider =
+              LanguageServiceSettings.defaultTransportChannelProvider();
+          assertThat(transportChannelProvider)
+              .usingRecursiveComparison()
+              .isEqualTo(defaultTransportChannelprovider);
+          assertThat(transportChannelProvider)
+              .usingRecursiveComparison()
+              .isEqualTo(transportChannelProviderBean);
+        });
 
     this.contextRunner
         .withPropertyValues(
-            "com.google.cloud.language.v1.language-service.useRest=true").run(
+            "com.google.cloud.language.v1.language-service.useRest=true")
+        .run(
         ctx -> {
           LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
           TransportChannelProvider transportChannelProvider =
