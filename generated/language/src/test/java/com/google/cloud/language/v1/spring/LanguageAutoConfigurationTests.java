@@ -120,6 +120,23 @@ class LanguageAutoConfigurationTests {
   }
 
   @Test
+  void testCustomTransportChannelProviderSetToRest() {
+    this.contextRunner
+        .withPropertyValues("com.google.cloud.language.v1.language-service.use-rest=true")
+        .run(
+            ctx -> {
+              LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+              TransportChannelProvider transportChannelProvider =
+                  client.getSettings().getTransportChannelProvider();
+              TransportChannelProvider defaultHttpJsonTransportChannelprovider =
+                  LanguageServiceSettings.defaultHttpJsonTransportProviderBuilder().build();
+              assertThat(transportChannelProvider)
+                  .usingRecursiveComparison()
+                  .isEqualTo(defaultHttpJsonTransportChannelprovider);
+            });
+  }
+
+  @Test
   void testQuotaProjectIdFromProperties() {
     this.contextRunner
         .withPropertyValues(
