@@ -1,15 +1,15 @@
-= Spring GCP Cloud Vision Sample Application
+= Spring Framework on Google Cloud Vision Sample Application
 
-This code sample shows how the Spring Cloud GCP integrations can simplify the use of Google Cloud Vision APIs.
+This code sample shows how the Spring Framework on Google Cloud integrations can simplify the use of Google Cloud Vision APIs.
 
 It uses the https://cloud.google.com/vision/[Google Cloud Vision API] to extract information about a picture.
-We take advantage of the link:/spring-cloud-gcp-starters/spring-cloud-gcp-starter[GCP Support starter] to retrieve the GCP credentials that we will use to authenticate with the API.
+We take advantage of the link:/spring-cloud-gcp-starters/spring-cloud-gcp-starter[Spring Framework on Google Cloud starter] to retrieve the Google Cloud credentials that we will use to authenticate with the API.
 
 == Running the sample
 
 image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples/spring-cloud-gcp-vision-api-sample/README.adoc]
 
-1. Create a Google Cloud Platform project with https://cloud.google.com/billing/docs/how-to/modify-project#enable-billing[billing enabled], if you don't have one already.
+1. Create a Google Cloud project with https://cloud.google.com/billing/docs/how-to/modify-project#enable-billing[billing enabled], if you don't have one already.
 
 2. Enable the Google Cloud Vision API from the "APIs & Services" menu of the Google Cloud Console.
 
@@ -29,5 +29,5 @@ on port 8080, paste a URL to an image and press the `Submit` button.
 
 7. You will see a readable version of the Google Cloud Vision API response, which contains the words that Google Cloud Vision attributed to your image, as well as a percentage of certainty.
 
-In this case, by using the Spring Cloud GCP Core Boot starter, you can inject a `CredentialsProvider` object which you can pass to our API to provide the correct Google credentials.
+In this case, by using the Spring Framework on Google Cloud Core Boot starter, you can inject a `CredentialsProvider` object which you can pass to our API to provide the correct Google credentials.
 You don't need to set any environment variables for authentication to work.

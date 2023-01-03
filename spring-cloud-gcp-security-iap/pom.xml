@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>com.google.cloud</groupId>
 		<artifactId>spring-cloud-gcp</artifactId>
-		<version>3.5.0-SNAPSHOT</version>
+		<version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 
 	<artifactId>spring-cloud-gcp-security-iap</artifactId>
-	<name>Spring Cloud GCP Module - IAP Authentication</name>
-	<description>Spring Cloud GCP IAP Authentication Module</description>
+	<name>Spring Framework on Google Cloud Module - IAP Authentication</name>
+	<description>Spring Framework on Google Cloud IAP Authentication Module</description>
 
 	<dependencies>
 		<dependency>

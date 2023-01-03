@@ -1,4 +1,4 @@
-= Spring GCP Cloud Vision OCR Demo Application
+= Spring Framework on Google Cloud Vision OCR Demo Application
 
 This demonstrates how to run Google Cloud Vision https://cloud.google.com/vision/docs/ocr[Optical Character Recognition (OCR)] analysis on PDF and TIFF documents.
 OCR is a process which allows you to detect and extract the text from digital documents.
@@ -50,9 +50,9 @@ image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.goo
 
 This section describes how to run the demo and use it to extract text from some documents.
 
-=== 1. Setting up your GCP Project
+=== 1. Setting up your Google Cloud Project
 
-a. Create a Google Cloud Platform project with https://cloud.google.com/billing/docs/how-to/modify-project#enable-billing[billing enabled], if you don't have one already.
+a. Create a Google Cloud project with https://cloud.google.com/billing/docs/how-to/modify-project#enable-billing[billing enabled], if you don't have one already.
 
 b. Enable the Google Cloud Vision API by following https://cloud.google.com/vision/docs/before-you-begin[these instructions].
 +

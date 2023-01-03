@@ -6,12 +6,12 @@
     <!-- Your own application should inherit from spring-boot-starter-parent -->
     <artifactId>spring-cloud-gcp-pubsub-bus-config-sample</artifactId>
     <groupId>com.google.cloud</groupId>
-    <version>3.5.0-SNAPSHOT</version>
+    <version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>spring-cloud-gcp-pubsub-bus-config-sample-test</artifactId>
-  <name>Spring Cloud GCP Code Sample - Spring Cloud Config with Pub/Sub Bus Integration Test</name>
+  <name>Spring Framework on Google Cloud Code Sample - Spring Cloud Config with Pub/Sub Bus Integration Test</name>
 
   <dependencies>
     <dependency>

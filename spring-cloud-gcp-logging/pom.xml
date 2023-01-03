@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.google.cloud</groupId>
 		<artifactId>spring-cloud-gcp</artifactId>
-		<version>3.5.0-SNAPSHOT</version>
+		<version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 
 	<properties>
@@ -13,8 +13,8 @@
 	</properties>
 
 	<artifactId>spring-cloud-gcp-logging</artifactId>
-	<name>Spring Cloud GCP Module - Stackdriver Logging</name>
-	<description>Spring Cloud GCP Stackdriver Logging</description>
+	<name>Spring Framework on Google Cloud Module - Stackdriver Logging</name>
+	<description>Spring Framework on Google Cloud Stackdriver Logging</description>
 
 	<dependencies>
 		<dependency>

@@ -6,10 +6,10 @@
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>3.5.0-SNAPSHOT</version>
+	<version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 
-	<name>Spring Cloud GCP</name>
-	<description>Spring Cloud GCP</description>
+	<name>Spring Framework on Google Cloud</name>
+	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
 	<packaging>pom</packaging>
 
@@ -36,10 +36,12 @@
 	</distributionManagement>
 
 	<properties>
+		<project.parent.version>${project.version}</project.parent.version>
 
 		<!-- Dependency versions -->
 		<spring-cloud-dependencies.version>2021.0.5</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>2.7.4</spring-boot-dependencies.version>
+		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
+		<spring-boot-dependencies.version>2.7.6</spring-boot-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.1</java-cfenv.version>
 		<spring-native.version>0.10.5</spring-native.version>
@@ -70,7 +72,9 @@
 		<checkstyle.skip>false</checkstyle.skip>
 		<javadoc.failOnError>false</javadoc.failOnError>
 		<javadoc.failOnWarnings>false</javadoc.failOnWarnings>
-
+		<!-- default to skip fmt-maven-plugin to avoid any conflict with custom style rules-->
+		<!-- set skip to false for running on generated code-->
+		<fmt.skip>true</fmt.skip>
 		<!-- Other defaults -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
@@ -82,7 +86,7 @@
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-dependencies</artifactId>
-				<version>${project.version}</version>
+				<version>${spring-cloud-gcp-dependencies.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -283,6 +287,37 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<!--
+				Versions chosen to be the latest still compatible with Java 8.
+				Scoping formatter to generated modules for now as the main repo was re-formatted
+				through both automated (#868) and manual changes (#869), and running this formatter
+				from the parent POM updates a large number of files.
+				-->
+				<groupId>com.coveo</groupId>
+				<artifactId>fmt-maven-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+							<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<style>google</style>
+					<verbose>true</verbose>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>com.google.googlejavaformat</groupId>
+						<artifactId>google-java-format</artifactId>
+						<version>1.7</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
@@ -340,8 +375,7 @@
 				<module>spring-cloud-gcp-kms</module>
 				<module>spring-cloud-gcp-native-support</module>
 
-				<!-- Generated Modules -->
-				<module>generated</module>
+				<module>spring-cloud-previews</module>
 				<!-- Docs and Samples -->
 				<module>docs</module>
 				<module>spring-cloud-gcp-samples</module>
@@ -363,7 +397,7 @@
 				<!-- default config values -->
 				<docletName>java-docfx-doclet-1.6.0</docletName>
 				<outputpath>${project.build.directory}/docfx-yml</outputpath>
-				<projectname>${project.artifactId}</projectname>
+				<projectname>spring-framework-on-google-cloud</projectname>
 				<excludeclasses></excludeclasses>
 				<excludePackages></excludePackages>
 				<source>8</source>

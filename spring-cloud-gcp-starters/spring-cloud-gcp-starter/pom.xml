@@ -4,10 +4,10 @@
 	<parent>
 		<groupId>com.google.cloud</groupId>
 		<artifactId>spring-cloud-gcp-starters</artifactId>
-		<version>3.5.0-SNAPSHOT</version>
+		<version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 	<artifactId>spring-cloud-gcp-starter</artifactId>
-	<name>Spring Cloud GCP Starter - Support</name>
+	<name>Spring Framework on Google Cloud Starter - Support</name>
 	<description>Starter for Google Cloud</description>
 	<organization>
 		<name>Google</name>

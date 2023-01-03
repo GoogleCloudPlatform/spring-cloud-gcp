@@ -12,5 +12,5 @@
 :docinfo: shared,private
 
 :sc-ext: java
-:project-full-name: Spring Cloud GCP
+:project-full-name: Spring Framework on Google Cloud
 :all: {asterisk}{asterisk}
