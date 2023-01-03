@@ -105,6 +105,25 @@ class LanguageAutoConfigurationTests {
   }
 
   @Test
+  void testShouldGetTransportChannelProviderFromBeanWithQualifierName() throws IOException {
+    this.contextRunner
+        .withBean(
+            "anotherTransportChannelProvider",
+            TransportChannelProvider.class,
+            () -> mockTransportChannelProvider)
+        .run(
+        ctx -> {
+          LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+          TransportChannelProvider transportChannelProviderBean =
+              (TransportChannelProvider) ctx.getBean("defaultLanguageServiceTransportChannelProvider");
+          TransportChannelProvider transportChannelProvider =
+              client.getSettings().getTransportChannelProvider();
+          assertThat(transportChannelProvider).isSameAs(transportChannelProviderBean);
+          assertThat(transportChannelProvider).isNotSameAs(mockTransportChannelProvider);
+        });
+  }
+
+  @Test
   void testShouldUseDefaultTransportChannelProvider() {
     this.contextRunner.run(
         ctx -> {
