@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ class DatastoreBookshelfExampleIntegrationTests {
   void saveBooks() {
     sendRequest(
         "/saveBook",
-        "{\"title\":\"The Moon Is a Harsh Mistress\", \"author\":\"Robert A. Heinlein\", \"year\":1966}",
+        "{\"id\":12345678, \"title\":\"The Moon Is a Harsh Mistress\", \"author\":\"Robert A. Heinlein\", \"year\":1966}",
         HttpMethod.POST);
     sendRequest(
         "/saveBook",
@@ -72,6 +72,14 @@ class DatastoreBookshelfExampleIntegrationTests {
   @AfterEach
   void cleanUp() {
     this.datastoreTemplate.deleteAll(Book.class);
+  }
+
+  @Test
+  void testSerializedPage() {
+    String responseBody = sendRequest("/allbooksserialized", null, HttpMethod.GET);
+    assertThat(responseBody)
+        .contains("content\":[{\"id\":12345678}],\"pageable\":")
+        .containsPattern("\"urlSafeCursor\":\".+\"");
   }
 
   @Test
