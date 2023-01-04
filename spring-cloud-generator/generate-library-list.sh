@@ -64,6 +64,12 @@ for d in ./google-cloud-java/*java-*/; do
     echo "$artifact_id is already present in manual modules."
     continue
   fi
+  #checks if library is in the exclusion list
+  if [[ $(cat excluded_libs | grep $artifact_id | wc -l) -ne 0 ]] ; then
+    echo "$artifact_id is in the exclusion list"
+    continue
+  fi
+
 
   # get monorepo-name as pattern ./google-cloud-java/<monorepo_name>/
   monorepo_name=$(echo $d | sed 's#^./google-cloud-java/##' | sed 's#/$##')
