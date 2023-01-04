@@ -7,8 +7,6 @@ set -e
 # poc with one specified repo - vision
 #cmd line:: ./generate-one.sh -c vision -v 3.1.2 -i google-cloud-vision -g com.google.cloud -p 3.5.0-SNAPSHOT -d 1
 
-#set -x
-
 # by default, do not download repos
 download_repos=0
 while getopts c:v:i:g:d:p:f: flag
