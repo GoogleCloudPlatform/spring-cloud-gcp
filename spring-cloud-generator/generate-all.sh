@@ -25,17 +25,6 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
   bash $WORKING_DIR/generate-one.sh -c $library_name -v $PROJECT_VERSION -i $artifact_id -g $group_id -p $PROJECT_VERSION -f $googleapis_location -x $googleapis_commitish
 done <<< $libraries
 
-###  Uncomment these lines if testing locally  ###
-if [[ $dev_env -eq 1 ]]; then
-  echo "install dependencies locally (for dev envs)"
-  cd ../
-  # for when previews is a module
-  #mvn install -pl '!spring-cloud-previews' -DskipTests
-  mvn install -DskipTests
-  cd ./spring-cloud-previews
-fi
-
-
 echo "run google-java-format on generated code"
 cd ../spring-cloud-previews
 ./../mvnw com.coveo:fmt-maven-plugin:format -Dfmt.skip=false
