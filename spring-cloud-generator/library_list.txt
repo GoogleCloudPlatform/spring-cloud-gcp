@@ -22,13 +22,10 @@ container, google/container/v1, com.google.cloud:google-cloud-container, 39bcdf4
 containeranalysis, google/devtools/containeranalysis/v1, com.google.cloud:google-cloud-containeranalysis, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
 datacatalog, google/cloud/datacatalog/v1, com.google.cloud:google-cloud-datacatalog, 807125e7953e32535710924fe4bf0362ac93754d
 datafusion, google/cloud/datafusion/v1, com.google.cloud:google-cloud-data-fusion, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
-dataplex, google/cloud/dataplex/v1, com.google.cloud:google-cloud-dataplex, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
-dataproc, google/cloud/dataproc/v1, com.google.cloud:google-cloud-dataproc, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
 metastore, google/cloud/metastore/v1, com.google.cloud:google-cloud-dataproc-metastore, fcf8211658ed10d5c0744bd63e3e22fd55318244
 datastream, google/cloud/datastream/v1, com.google.cloud:google-cloud-datastream, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
 clouddebugger, google/devtools/clouddebugger/v2, com.google.cloud:google-cloud-debugger-client, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
 clouddeploy, google/cloud/deploy/v1, com.google.cloud:google-cloud-deploy, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
-dialogflow, google/cloud/dialogflow/v2, com.google.cloud:google-cloud-dialogflow, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
 dlp, google/privacy/dlp/v2, com.google.cloud:google-cloud-dlp, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
 datamigration, google/cloud/clouddms/v1, com.google.cloud:google-cloud-dms, 1b222777baa702e7135610355706570ed2b56318
 documentai, google/cloud/documentai/v1, com.google.cloud:google-cloud-document-ai, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
@@ -73,7 +70,6 @@ servicedirectory, google/cloud/servicedirectory/v1, com.google.cloud:google-clou
 servicemanagement, google/api/servicemanagement/v1, com.google.cloud:google-cloud-service-management, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
 serviceusage, google/api/serviceusage/v1, com.google.cloud:google-cloud-service-usage, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
 cloudshell, google/cloud/shell/v1, com.google.cloud:google-cloud-shell, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
-speech, google/cloud/speech/v2, com.google.cloud:google-cloud-speech, 4c253358b1d4add3bf74707d5f58d44e044c5da8
 storagetransfer, google/storagetransfer/v1, com.google.cloud:google-cloud-storage-transfer, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
 jobs, google/cloud/talent/v4, com.google.cloud:google-cloud-talent, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
 cloudtasks, google/cloud/tasks/v2, com.google.cloud:google-cloud-tasks, 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
