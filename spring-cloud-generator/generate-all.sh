@@ -1,6 +1,13 @@
 #!/bin/bash
 WORKING_DIR=`pwd`
 
+while getopts d: flag
+do
+    case "${flag}" in
+        d) dev_env=1;;
+    esac
+done
+
 cd ../
 # Compute the project version.
 PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
@@ -19,13 +26,14 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
 done <<< $libraries
 
 ###  Uncomment these lines if testing locally  ###
-#
-# echo "install dependencies locally (for dev envs)"
-# cd ../
-# # for when previews is a module
-# #mvn install -pl '!spring-cloud-previews' -DskipTests
-# mvn install -DskipTests
-# cd ./spring-cloud-previews
+if [[ $dev_env -eq 1 ]]; then
+  echo "install dependencies locally (for dev envs)"
+  cd ../
+  # for when previews is a module
+  #mvn install -pl '!spring-cloud-previews' -DskipTests
+  mvn install -DskipTests
+  cd ./spring-cloud-previews
+fi
 
 
 echo "run google-java-format on generated code"
