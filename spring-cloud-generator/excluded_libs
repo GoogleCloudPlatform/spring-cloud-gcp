@@ -1,0 +1,5 @@
+# this is a list of libraries to be ignored by generate-library-list.sh
+google-cloud-speech
+google-cloud-dialogflow
+google-cloud-dataproc
+google-cloud-dataplex
