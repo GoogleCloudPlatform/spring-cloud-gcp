@@ -22,7 +22,7 @@
 		<main.basedir>${basedir}/..</main.basedir>
 
 		<!-- Dependency versions -->
-		<spring-native.version>0.12.1</spring-native.version>
+		<spring-native.version>0.12.2</spring-native.version>
 		<google-cloud-graalvm-support.version>0.7.0</google-cloud-graalvm-support.version>
 		<testcontainers.version>1.17.6</testcontainers.version>
 
