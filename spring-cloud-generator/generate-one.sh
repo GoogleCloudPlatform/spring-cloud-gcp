@@ -29,7 +29,7 @@ echo "Client Library GroupId: $client_lib_groupid";
 echo "Client Library ArtifactId: $client_lib_artifactid";
 echo "Parent Pom Version: $parent_version";
 echo "Googleapis Folder: $googleapis_folder";
-echo "Googleapis Commitish: $googleapis_comittish";
+echo "Googleapis Commitish: $googleapis_commitish";
 
 starter_artifactid="$client_lib_artifactid-spring-starter"
 
@@ -47,7 +47,7 @@ if [[ $download_repos -eq 1 ]]; then
 fi
 
 cd googleapis
-git reset --hard $googleapis_comittish
+git reset --hard $googleapis_commitish
 # tell bazelisk to use bazel version 4.2.2
 echo '4.2.2' > .bazelversion
 # In googleapis/WORKSPACE, find http_archive() rule with name = "gapic_generator_java",
