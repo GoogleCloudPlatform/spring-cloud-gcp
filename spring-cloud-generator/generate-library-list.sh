@@ -64,8 +64,8 @@ for d in ./google-cloud-java/*java-*/; do
     echo "$artifact_id is already present in manual modules."
     continue
   fi
-  #checks if library is in the exclusion list
-  if [[ $(cat excluded_libs | tail -n+2 | grep $artifact_id | wc -l) -ne 0 ]] ; then
+  # checks if library is in the exclusion list
+  if [[ $(cat excluded_libs.txt | tail -n+2 | grep $artifact_id | wc -l) -ne 0 ]] ; then
     echo "$artifact_id is in the exclusion list"
     continue
   fi
