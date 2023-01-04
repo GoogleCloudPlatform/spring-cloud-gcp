@@ -49,7 +49,7 @@ jobs:
             --batch-mode \
             --show-version \
             --threads 1.5C \
-            --activate-profiles codecov \
+            --activate-profiles codecov,-default \
             clean \
             install
       - name: Retry Install on Failure
@@ -60,7 +60,7 @@ jobs:
             --batch-mode \
             --show-version \
             --threads 1.5C \
-            --activate-profiles codecov \
+            --activate-profiles codecov,-default \
             clean \
             install
       - name: Build and analyze
@@ -71,7 +71,7 @@ jobs:
         run: |
           ./mvnw \
             --batch-mode \
-            --activate-profiles codecov \
+            --activate-profiles codecov,-default \
             --define sonar.projectKey=GoogleCloudPlatform_spring-cloud-gcp \
             --define sonar.host.url=https://sonarcloud.io \
             --define sonar.organization=googlecloudplatform \
@@ -84,7 +84,7 @@ jobs:
         run: |
           ./mvnw \
             --batch-mode \
-            --activate-profiles codecov \
+            --activate-profiles codecov,-default \
             --define sonar.projectKey=GoogleCloudPlatform_spring-cloud-gcp \
             --define sonar.host.url=https://sonarcloud.io \
             --define sonar.organization=googlecloudplatform \
