@@ -6,6 +6,8 @@ on:
       - 2.x
   pull_request:
     types: [opened, synchronize, reopened]
+    paths-ignore:
+    - 'spring-cloud-previews/**'
   workflow_dispatch:
   schedule:
     - cron: '00 6 * * *' # 06:00 UTC every day
