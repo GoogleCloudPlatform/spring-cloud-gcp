@@ -239,12 +239,12 @@ The `pubsub-subscriber` indicator will then roll up to the overall application s
 [source,xml]
 ----
 <dependency>
-	<groupId>org.springframework.boot</groupId>
-	<artifactId>spring-boot-starter-actuator</artifactId>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-actuator</artifactId>
 </dependency>
 <dependency>
-	<groupId>com.google.cloud</groupId>
-	<artifactId>google-cloud-monitoring</artifactId>
+  <groupId>com.google.cloud</groupId>
+  <artifactId>google-cloud-monitoring</artifactId>
 </dependency>
 ----
 
