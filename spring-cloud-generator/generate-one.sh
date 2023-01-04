@@ -44,6 +44,8 @@ if [[ $download_repos -eq 1 ]]; then
 fi
 
 cd googleapis
+# tell bazelisk to use bazel version 4.2.2
+echo '4.2.2' > .bazelversion
 
 ## If $googleapis_folder does not exist, exit
 if [ ! -d "$googleapis_folder" ]
