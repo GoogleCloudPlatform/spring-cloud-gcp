@@ -13,7 +13,6 @@ while getopts c:v:i:g:d:p:f: flag
 do
     case "${flag}" in
         c) client_lib_name=${OPTARG};;
-        v) version=${OPTARG};;
         i) client_lib_artifactid=${OPTARG};;
         g) client_lib_groupid=${OPTARG};;
         p) parent_version=${OPTARG};;
@@ -22,7 +21,6 @@ do
     esac
 done
 echo "Client Library Name: $client_lib_name";
-echo "Client Library Version: $version";
 echo "Client Library GroupId: $client_lib_groupid";
 echo "Client Library ArtifactId: $client_lib_artifactid";
 echo "Parent Pom Version: $parent_version";
@@ -85,7 +83,6 @@ rm -rf "$client_lib_name"_java_gapic_spring-spring.srcjar
 
 sed -i 's/{{client-library-group-id}}/'"$client_lib_groupid"'/' "$starter_artifactid"/pom.xml
 sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' "$starter_artifactid"/pom.xml
-sed -i 's/{{client-library-version}}/'"$version"'/' "$starter_artifactid"/pom.xml
 sed -i 's/{{parent-version}}/'"$parent_version"'/' "$starter_artifactid"/pom.xml
 
 
