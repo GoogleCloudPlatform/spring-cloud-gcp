@@ -16,6 +16,94 @@ on GitHub.
 
 ## 4.0.0
 
+### Generals
+This release officially introduces Spring Boot 3.x compatibility. Note that breaking changes occur in this release.
+
+All changes within one large [Pull Request](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1287) as we think split PRs may bring compatibility issues. For the rational of each change, please refer to the description of the PR.
+
+### Important version upgrades
+* Java 17
+* Spring Framework libraries upgrade
+    - [Spring Boot 3.0](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide)
+    - [Spring Framework 6.0](https://github.com/spring-projects/spring-framework/wiki/Upgrading-to-Spring-Framework-6.x)
+    - [Spring Cloud 2022.0](https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2022.0-Release-Notes)
+* Upgrade plugin versions
+* [Enable auto-configuration](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide#auto-configuration-files)
+* Fix [#1294](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1294)
+
+### Bigquery
+* Remove deprecated methods
+* Replace `ListenableFuture` and `SettableListenableFuture` with `CompletableFuture`
+* Code polish
+* Improve code coverage
+
+### Cloud SQL
+* Remove support for `r2dbc-mysql`
+* Fix [#1200](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1200)
+
+### Datastore
+* Remove deprecated methods and constructors
+* Replace `ClassTypeInformation` with `TypeInformation`
+* Extend inheritance of `DatastoreRepository`
+* Change datastore-basic-sample to a web application to remove `spring-shell` dependency
+* Fix broken tests
+* Code polish
+
+### Firestore
+* Replace `ClassTypeInformation` with `TypeInformation`
+* Code polish
+
+### Kotlin sample
+* Code polish
+
+### Logging
+* Replace `javax.servlet` with `jakarta.servlet`
+* Remove deprecated methods
+* Code polish
+
+### Native support
+* Delete the module
+
+### Pubsub
+* Replace `ListenableFuture` and `SettableListenableFuture` with `CompletableFuture`
+* Remove deprecated methods and constructors
+* Code polish
+
+### Pubsub-stream-binder
+* Change to functional programming model
+* Change `spring-cloud-stream-binder-test` to `spring-cloud-stream-test-support`
+* Fix broken tests
+
+### Secret Manager
+* Delete `GcpSecretManagerBootstrapConfiguration`
+
+### Security
+* Replace `javax.servlet` with `jakarta.servlet`
+
+### Spanner
+* Replace `PreferredConstructor` with `InstanceCreatorMetadata`
+* Replace `ClassTypeInformation` with `TypeInformation`
+* Remove deprecated methods and constructors
+* Extend inheritance of `SpannerRepository`
+* Fix broken tests
+* Code polish
+
+### Storage
+* Remove deprecated methods
+* Code polish
+* Improve code coverage
+
+### Trace
+* Remove `spring-cloud-sleuth` dependency
+* Instrument trace using Observation API
+* Remove deprecated methods
+* Fix broken tests
+
+### Vision
+* Replace `ListenableFuture` and `SettableListenableFuture` with `CompletableFuture`
+* Fix broken tests
+* Code polish
+
 ## 3.4.0
 
 ### General
