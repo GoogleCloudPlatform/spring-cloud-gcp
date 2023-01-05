@@ -22,7 +22,7 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
   echo "processing library $library_name"
   group_id=$(echo $coordinates_version | cut -f1 -d:)
   artifact_id=$(echo $coordinates_version | cut -f2 -d:)
-  bash $WORKING_DIR/generate-one.sh -c $library_name -v $PROJECT_VERSION -i $artifact_id -g $group_id -p $PROJECT_VERSION -f $googleapis_location -x $googleapis_commitish
+  bash $WORKING_DIR/generate-one.sh -c $library_name -i $artifact_id -g $group_id -p $PROJECT_VERSION -f $googleapis_location -x $googleapis_commitish
 done <<< $libraries
 
 echo "run google-java-format on generated code"
