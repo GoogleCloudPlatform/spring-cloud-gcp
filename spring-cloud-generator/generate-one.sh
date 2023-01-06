@@ -16,6 +16,7 @@ do
         i) client_lib_artifactid=${OPTARG};;
         g) client_lib_groupid=${OPTARG};;
         p) parent_version=${OPTARG};;
+        x) googleapis_commitish=${OPTARG};;
         f) googleapis_folder=${OPTARG};;
         d) download_repos=1;;
     esac
@@ -25,6 +26,7 @@ echo "Client Library GroupId: $client_lib_groupid";
 echo "Client Library ArtifactId: $client_lib_artifactid";
 echo "Parent Pom Version: $parent_version";
 echo "Googleapis Folder: $googleapis_folder";
+echo "Googleapis Commitish: $googleapis_commitish";
 
 starter_artifactid="$client_lib_artifactid-spring-starter"
 
@@ -40,6 +42,8 @@ WORKING_DIR=`pwd`
 if [[ $download_repos -eq 1 ]]; then
   bash download-repos.sh
 fi
+
+bash setup-googleapis-rules.sh -x $googleapis_commitish
 
 cd googleapis
 
