@@ -27,16 +27,22 @@ jobs:
       - name: Create branch
         id: create_branch_names
         continue-on-error: false
-        working-directory: generator
+        working-directory: spring-cloud-generator
         run: |
           set -x
           SOURCE_BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           NEW_BRANCH_NAME="generated-autoconfig--$SOURCE_BRANCH_NAME"
           echo "NEW_BRANCH_NAME=$NEW_BRANCH_NAME" >> $GITHUB_OUTPUT
           echo "SOURCE_BRANCH_NAME=$SOURCE_BRANCH_NAME" >> $GITHUB_OUTPUT
+      - name: Generate library list
+        continue-on-error: false
+        working-directory: spring-cloud-generator
+        run: |
+          set -x
+          bash generate-library-list.sh
       - name: Generate libraries
         continue-on-error: false
-        working-directory: generator
+        working-directory: spring-cloud-generator
         run: |
           set -x
           bash generate-all.sh
@@ -44,16 +50,16 @@ jobs:
         id: detect_changes
         run: |
           set -x
-          git add ./generated
+          git add ./spring-cloud-previews
           CHANGED_FILES=`git diff --cached --numstat | wc -l | awk '{print $1}'`
-          git reset -- ./generated
+          git reset -- ./spring-cloud-previews
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_OUTPUT
       - name: Generate PR
         if: steps.detect_changes.outputs.CHANGED_FILES > 0
         run: |
           set -x
           MESSAGE=`echo "feat(generated): Generate new autoconfig libraries from $SOURCE_BRANCH_NAME"`
-          git stash push -- generated/
+          git stash push -- spring-cloud-previews/
           git reset --hard
           git remote update
           git fetch
