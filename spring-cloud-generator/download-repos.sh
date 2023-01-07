@@ -7,7 +7,7 @@ git clone https://github.com/googleapis/googleapis.git
 git clone https://github.com/googleapis/gapic-generator-java.git
 # get into gapic and checkout branch to use
 cd gapic-generator-java
-git checkout autoconfig-gen-draft2
-git pull origin autoconfig-gen-draft2
+git checkout spring-retry-patch
+git pull origin spring-retry-patch
 # go back to previous folder
 cd -
