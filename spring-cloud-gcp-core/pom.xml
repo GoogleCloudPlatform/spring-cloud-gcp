@@ -6,12 +6,12 @@
 	<parent>
 		<artifactId>spring-cloud-gcp</artifactId>
 		<groupId>com.google.cloud</groupId>
-		<version>3.5.0-SNAPSHOT</version>
+		<version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 
 	<artifactId>spring-cloud-gcp-core</artifactId>
-	<name>Spring Cloud GCP Module - Core</name>
-	<description>Spring Cloud GCP Core Module</description>
+	<name>Spring Framework on Google Cloud Module - Core</name>
+	<description>Spring Framework on Google Cloud Core Module</description>
 
 	<dependencies>
 		<dependency>

@@ -5,7 +5,7 @@ users to leverage machine learning algorithms for processing images and
 documents including: image classification, face detection, text
 extraction, optical character recognition, and others.
 
-Spring Cloud GCP provides:
+Spring Framework on Google Cloud provides:
 
   - A convenience starter which automatically configures authentication
     settings and client objects needed to begin using the [Google Cloud
@@ -30,8 +30,8 @@ Spring Cloud GCP provides:
 To begin using this library, add the `spring-cloud-gcp-starter-vision`
 artifact to your project.
 
-Maven coordinates, using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates,
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -48,7 +48,7 @@ Gradle coordinates:
 
 ### Configuration
 
-The following options may be configured with Spring Cloud GCP Vision
+The following options may be configured with Spring Framework on Google Cloud Vision
 libraries.
 
 |                                                   |                                                                                                  |          |               |
@@ -67,8 +67,8 @@ to your dependencies. The storage starter is necessary because the Cloud
 Vision API will process your documents and write OCR output files all
 within your Google Cloud Storage buckets.
 
-Maven coordinates using [Spring Cloud GCP
-BOM](getting-started.xml#bill-of-materials):
+Maven coordinates
+using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ``` xml
 <dependency>
@@ -339,7 +339,7 @@ single document.
 
 ### Sample
 
-Samples are provided to show example usages of Spring Cloud GCP with
+Samples are provided to show example usages of Spring Framework on Google Cloud with
 Google Cloud Vision.
 
   - The [Image Labeling

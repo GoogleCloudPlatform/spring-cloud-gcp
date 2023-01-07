@@ -6,16 +6,14 @@ on:
       - 2.x
   pull_request:
     types: [opened, synchronize, reopened]
+    paths-ignore:
+    - 'spring-cloud-previews/**'
   workflow_dispatch:
   schedule:
     - cron: '00 6 * * *' # 06:00 UTC every day
 
 jobs:
   sonar:
-    if: |
-      ((
-        github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
-      ) || (github.event_name == 'push'))
     name: Build with Sonar
     runs-on: ubuntu-20.04
     steps:

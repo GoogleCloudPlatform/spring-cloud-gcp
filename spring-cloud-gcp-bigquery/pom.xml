@@ -7,12 +7,12 @@
   <parent>
     <artifactId>spring-cloud-gcp</artifactId>
     <groupId>com.google.cloud</groupId>
-    <version>3.5.0-SNAPSHOT</version>
+    <version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
   </parent>
 
   <artifactId>spring-cloud-gcp-bigquery</artifactId>
-  <name>Spring Cloud GCP Module - BigQuery</name>
-  <description>Spring Cloud GCP BigQuery Module</description>
+  <name>Spring Framework on Google Cloud Module - BigQuery</name>
+  <description>Spring Framework on Google Cloud BigQuery Module</description>
 
   <dependencies>
     <dependency>

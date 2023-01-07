@@ -1,6 +1,6 @@
 ## Cloud Foundry
 
-Spring Cloud GCP provides support for Cloud Foundry’s [GCP Service
+Spring Framework on Google Cloud provides support for Cloud Foundry’s [GCP Service
 Broker](https://docs.pivotal.io/partners/gcp-sb/index.html). Our
 Pub/Sub, Cloud Spanner, Storage, Cloud Trace and Cloud SQL MySQL and
 PostgreSQL starters are Cloud Foundry aware and retrieve properties like
@@ -52,7 +52,7 @@ marketplace with their apps running on Cloud Foundry. For example, you
 may want to use a user-provided service that points to a shared Google
 Service (like Cloud Spanner) used across your organization.
 
-In order for Spring Cloud GCP to detect your user-provided service as a
+In order for Spring Framework on Google Cloud to detect your user-provided service as a
 Google Cloud Service, you must add an [instance
 tag](https://docs.cloudfoundry.org/devguide/services/managing-services.html#instance-tags-create)
 indicating the Google Cloud Service it uses. The tag should simply be
@@ -65,7 +65,7 @@ you might run:
 $ cf create-user-provided-service user-spanner-service -t "google-spanner" ...
 ```
 
-This allows Spring Cloud GCP to retrieve the correct service properties
+This allows Spring Framework on Google Cloud to retrieve the correct service properties
 from Cloud Foundry and use them in the auto configuration for your
 application.
 

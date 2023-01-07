@@ -1,0 +1,12 @@
+SPRING_MAVEN_ARTIFACTS = [
+    "org.springframework.boot:spring-boot-starter:2.7.4",
+    "com.google.cloud:spring-cloud-gcp-autoconfigure:3.4.1",
+]
+
+maven_install(
+    artifacts = PROTOBUF_MAVEN_ARTIFACTS + SPRING_MAVEN_ARTIFACTS,
+    generate_compat_repositories = True,
+    repositories = [
+        "https://repo.maven.apache.org/maven2/",
+    ],
+)

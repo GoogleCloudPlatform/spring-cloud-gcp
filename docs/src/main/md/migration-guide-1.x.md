@@ -1,10 +1,10 @@
-## Migration Guide from Spring Cloud GCP 1.x to 2.x
+## Migration Guide from Spring Framework on Google Cloud 1.x to 2.x
 
 ### Maven Group ID Change
 
 Spring Cloud
 [unbundled](https://spring.io/blog/2019/07/24/simplifying-the-spring-cloud-release-train)
-Spring Cloud GCP and other cloud providers from their release train. To
+Spring Framework on Google Cloud and other cloud providers from their release train. To
 use the newly unbundled libraries, add the
 `spring-cloud-gcp-dependencies` bill of materials (BOM) and change the
 `spring-cloud-gcp` group IDs in your `pom.xml` files:
@@ -68,7 +68,7 @@ use the newly unbundled libraries, add the
 
 ### Java Package Name Change
 
-All code in Spring Cloud GCP has been moved from
+All code in Spring Framework on Google Cloud has been moved from
 `org.springframework.cloud.gcp` over to the `com.google.cloud.spring`
 package.
 

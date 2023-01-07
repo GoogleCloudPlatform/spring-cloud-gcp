@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>com.google.cloud</groupId>
 		<artifactId>spring-cloud-gcp</artifactId>
-		<version>3.5.0-SNAPSHOT</version>
+		<version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 
 	<artifactId>spring-cloud-gcp-pubsub</artifactId>
-	<name>Spring Cloud GCP Module - Pub/Sub</name>
-	<description>Spring Cloud GCP Pub/Sub Module</description>
+	<name>Spring Framework on Google Cloud Module - Pub/Sub</name>
+	<description>Spring Framework on Google Cloud Pub/Sub Module</description>
 
 	<dependencies>
 		<dependency>
