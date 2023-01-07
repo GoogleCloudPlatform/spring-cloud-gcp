@@ -46,6 +46,7 @@ fi
 bash setup-googleapis-rules.sh -x $googleapis_commitish
 
 cd googleapis
+
 ## If $googleapis_folder does not exist, exit
 if [ ! -d "$googleapis_folder" ]
 then
