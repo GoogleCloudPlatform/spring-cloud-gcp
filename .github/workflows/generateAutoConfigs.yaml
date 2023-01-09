@@ -31,7 +31,7 @@ jobs:
         working-directory: spring-cloud-generator
         run: |
           set -x
-          NEW_BRANCH_NAME="generated-autoconfig--$(date '+%Y%m%d%H%M%S')
+          NEW_BRANCH_NAME="generated-autoconfig--$(date '+%Y%m%d%H%M%S')"
           echo "NEW_BRANCH_NAME=$NEW_BRANCH_NAME" >> $GITHUB_OUTPUT
       - name: Generate library list
         continue-on-error: false
