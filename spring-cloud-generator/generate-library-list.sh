@@ -2,6 +2,12 @@
 
 #cmd line:: ./generate-library-list.sh -c v1.1.0
 
+while getopts c: flag
+do
+    case "${flag}" in
+        c) commitish=${OPTARG};;
+    esac
+done
 echo "monorepo commitish to checkout: $commitish";
 
 
