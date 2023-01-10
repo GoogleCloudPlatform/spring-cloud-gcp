@@ -13,6 +13,9 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>google-cloud-language-spring-starter</module>
+    <module>google-identity-accesscontextmanager-spring-starter</module>
+    <module>google-cloud-accessapproval-spring-starter</module>
   </modules>
 
   <build>
