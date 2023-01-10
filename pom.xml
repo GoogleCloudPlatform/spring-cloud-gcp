@@ -711,8 +711,8 @@
 								com.google.cloud.firestore
 							</excludePackageNames>
 							<links>
-								<link>https://javadoc.io/doc/com.google.cloud/google-cloud-vision/latest/</link>
-								<link>https://javadoc.io/doc/com.google.cloud/google-cloud-spanner/latest/</link>
+								<link>https://cloud.google.com/java/docs/reference/google-cloud-vision/latest/</link>
+								<link>https://cloud.google.com/java/docs/reference/google-cloud-spanner/latest/</link>
 							</links>
 						</configuration>
 					</plugin>
