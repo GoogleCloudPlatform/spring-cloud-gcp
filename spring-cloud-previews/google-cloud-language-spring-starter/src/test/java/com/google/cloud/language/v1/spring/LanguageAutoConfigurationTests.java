@@ -18,6 +18,7 @@ package com.google.cloud.language.v1.spring;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
@@ -37,8 +38,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Bean;
 import org.threeten.bp.Duration;
 
 @ExtendWith(MockitoExtension.class)
@@ -61,7 +64,8 @@ class LanguageAutoConfigurationTests {
       new ApplicationContextRunner()
           .withConfiguration(
               AutoConfigurations.of(
-                  GcpContextAutoConfiguration.class, LanguageServiceSpringAutoConfiguration.class));
+                  GcpContextAutoConfiguration.class, LanguageServiceSpringAutoConfiguration.class))
+          .withUserConfiguration(TestConfiguration.class);
 
   @Test
   void testLanguageServiceClientCreated() {
@@ -363,5 +367,14 @@ class LanguageAutoConfigurationTests {
               assertThat(analyzeSentimentRetrySettings.getMaxAttempts())
                   .isEqualTo(customServiceMaxAttempts);
             });
+  }
+
+  /** Spring Boot config for tests. */
+  @AutoConfigurationPackage
+  static class TestConfiguration {
+    @Bean
+    public CredentialsProvider credentialsProvider() {
+      return () -> mock(Credentials.class);
+    }
   }
 }
