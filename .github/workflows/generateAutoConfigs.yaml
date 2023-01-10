@@ -38,7 +38,8 @@ jobs:
         working-directory: spring-cloud-generator
         run: |
           set -x
-          bash generate-library-list.sh
+          # will need a custom parameter to specify the tag
+          bash generate-library-list.sh -c v1.1.0
       - name: Generate libraries
         continue-on-error: false
         working-directory: spring-cloud-generator
