@@ -703,7 +703,8 @@
 						</executions>
 						<configuration>
 							<!-- https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8212233 -->
-							<source>1.8</source>
+							<source>8</source>
+							<detectJavaApiLink>false</detectJavaApiLink>
 							<excludePackageNames>
 								com.example,
 								com.example.*,
