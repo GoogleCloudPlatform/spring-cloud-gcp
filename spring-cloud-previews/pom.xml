@@ -5,7 +5,7 @@
   <parent>
     <artifactId>spring-cloud-gcp</artifactId>
     <groupId>com.google.cloud</groupId>
-    <version>3.4.1-SNAPSHOT</version>
+    <version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -21,6 +21,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
+        <version>${maven-deploy-plugin.version}</version>
         <configuration>
           <skip>true</skip>
         </configuration>
