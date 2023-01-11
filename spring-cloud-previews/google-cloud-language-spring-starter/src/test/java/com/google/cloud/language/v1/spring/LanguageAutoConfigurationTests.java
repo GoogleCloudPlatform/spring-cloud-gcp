@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
-import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.TransportChannel;
@@ -51,6 +50,7 @@ class LanguageAutoConfigurationTests {
   private static final String SERVICE_CREDENTIAL_CLIENT_ID = "45678";
   private static final String TOP_LEVEL_CREDENTIAL_CLIENT_ID = "12345";
   private static final String SERVICE_OVERRIDE_CLIENT_ID = "56789";
+  private static final String TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME = "defaultLanguageServiceTransportChannelProvider";
 
   @Mock private TransportChannel mockTransportChannel;
   @Mock private ApiCallContext mockApiCallContext;
@@ -100,6 +100,30 @@ class LanguageAutoConfigurationTests {
               .isEqualTo(TOP_LEVEL_CREDENTIAL_CLIENT_ID);
         });
   }
+
+  @Test
+  void testShouldGetTransportChannelProviderFromBeanWithQualifierName() throws IOException {
+    this.contextRunner
+        .withBean(
+            "anotherTransportChannelProvider",
+            TransportChannelProvider.class,
+            () -> mockTransportChannelProvider)
+        .run(
+            ctx -> {
+              assertThat(ctx.getBeanNamesForType(
+                  TransportChannelProvider.class)).containsExactlyInAnyOrder(
+                  "anotherTransportChannelProvider",
+                  TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME);
+              LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+              TransportChannelProvider transportChannelProviderBean =
+                  (TransportChannelProvider) ctx.getBean(TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME);
+              TransportChannelProvider transportChannelProvider =
+                  client.getSettings().getTransportChannelProvider();
+              assertThat(transportChannelProvider).isSameAs(transportChannelProviderBean);
+              assertThat(transportChannelProvider).isNotSameAs(mockTransportChannelProvider);
+            });
+  }
+
 
   @Test
   void testShouldUseDefaultTransportChannelProvider() {
@@ -175,7 +199,7 @@ class LanguageAutoConfigurationTests {
 
     contextRunner
         .withBean(
-            "defaultLanguageServiceTransportChannelProvider",
+            TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME,
             TransportChannelProvider.class,
             () -> mockTransportChannelProvider)
         .run(
