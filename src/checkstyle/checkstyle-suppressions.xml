@@ -34,4 +34,9 @@
     <suppress checks="AbbreviationAsWordInName" files="/spring-cloud-gcp-samples/"/>
     <suppress checks="OneTopLevelClass" files="/spring-cloud-gcp-samples/"/>
 
+    <!--  Temporary supress for preview modules  -->
+    <suppress checks="AbbreviationAsWordInName" files="/spring-cloud-previews/"/>
+    <suppress checks="MethodName" files="/spring-cloud-previews/"/>
+    <suppress checks="ParameterName" files="/spring-cloud-previews/"/>
+
 </suppressions>
