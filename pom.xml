@@ -79,7 +79,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
 
-		<sonar.coverage.exclusions>**/spring/*SpringAutoConfiguration.*, **/spring/*SpringProperties.*</sonar.coverage.exclusions>
+		<sonar.exclusions>**/spring/*SpringAutoConfiguration.*, **/spring/*SpringProperties.*</sonar.exclusions>
 
 	</properties>
 
