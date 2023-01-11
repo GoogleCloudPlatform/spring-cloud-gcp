@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.tpu.v2.tpu.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud tpu/Tpu components.",
+      "defaultValue": true
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.iam.admin.v1.i-a-m.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud iam/IAM components.",
+      "defaultValue": true
+    }
+  ]
+}

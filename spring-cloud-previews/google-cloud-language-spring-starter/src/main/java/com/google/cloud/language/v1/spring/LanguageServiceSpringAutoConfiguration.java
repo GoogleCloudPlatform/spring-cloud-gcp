@@ -86,12 +86,17 @@ public class LanguageServiceSpringAutoConfiguration {
   }
 
   /**
-   * Returns the default channel provider. The default is gRPC and will default to it unless the
-   * useRest option is provided to use HTTP transport instead
+   * Provides a default transport channel provider bean. The default is gRPC and will default to it
+   * unless the useRest option is provided to use HTTP transport instead
+   *
+   * @return a default transport channel provider.
    */
   @Bean
   @ConditionalOnMissingBean(name = "defaultLanguageServiceTransportChannelProvider")
   public TransportChannelProvider defaultLanguageServiceTransportChannelProvider() {
+    if (this.clientProperties.getUseRest()) {
+      return LanguageServiceSettings.defaultHttpJsonTransportProviderBuilder().build();
+    }
     return LanguageServiceSettings.defaultTransportChannelProvider();
   }
 
@@ -106,6 +111,10 @@ public class LanguageServiceSpringAutoConfiguration {
    * in LanguageServiceSpringProperties. Method-level properties will take precedence over
    * service-level properties if available, and client library defaults will be used if neither are
    * specified.
+   *
+   * @param defaultTransportChannelProvider TransportChannelProvider to use in the settings.
+   * @return a {@link LanguageServiceSettings} bean configured with {@link TransportChannelProvider}
+   *     bean.
    */
   @Bean
   @ConditionalOnMissingBean
@@ -113,11 +122,19 @@ public class LanguageServiceSpringAutoConfiguration {
       @Qualifier("defaultLanguageServiceTransportChannelProvider")
           TransportChannelProvider defaultTransportChannelProvider)
       throws IOException {
-    LanguageServiceSettings.Builder clientSettingsBuilder =
-        LanguageServiceSettings.newBuilder()
-            .setCredentialsProvider(this.credentialsProvider)
-            .setTransportChannelProvider(defaultTransportChannelProvider)
-            .setHeaderProvider(this.userAgentHeaderProvider());
+    LanguageServiceSettings.Builder clientSettingsBuilder;
+    if (this.clientProperties.getUseRest()) {
+      clientSettingsBuilder = LanguageServiceSettings.newHttpJsonBuilder();
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Using REST (HTTP/JSON) transport.");
+      }
+    } else {
+      clientSettingsBuilder = LanguageServiceSettings.newBuilder();
+    }
+    clientSettingsBuilder
+        .setCredentialsProvider(this.credentialsProvider)
+        .setTransportChannelProvider(defaultTransportChannelProvider)
+        .setHeaderProvider(this.userAgentHeaderProvider());
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());
       if (LOGGER.isTraceEnabled()) {
@@ -137,13 +154,6 @@ public class LanguageServiceSpringAutoConfiguration {
         LOGGER.trace(
             "Background executor thread count is "
                 + this.clientProperties.getExecutorThreadCount());
-      }
-    }
-    if (this.clientProperties.getUseRest()) {
-      clientSettingsBuilder.setTransportChannelProvider(
-          LanguageServiceSettings.defaultHttpJsonTransportProviderBuilder().build());
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Using HTTP transport channel");
       }
     }
     Retry serviceRetry = clientProperties.getRetry();
@@ -263,7 +273,12 @@ public class LanguageServiceSpringAutoConfiguration {
     return clientSettingsBuilder.build();
   }
 
-  /** Provides a LanguageServiceClient bean configured with LanguageServiceSettings. */
+  /**
+   * Provides a LanguageServiceClient bean configured with LanguageServiceSettings.
+   *
+   * @param languageServiceSettings settings to configure an instance of client bean.
+   * @return a {@link LanguageServiceClient} bean configured with {@link LanguageServiceSettings}
+   */
   @Bean
   @ConditionalOnMissingBean
   public LanguageServiceClient languageServiceClient(

@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.scheduler.v1.cloud-scheduler.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud cloudscheduler/CloudScheduler components.",
+      "defaultValue": true
+    }
+  ]
+}

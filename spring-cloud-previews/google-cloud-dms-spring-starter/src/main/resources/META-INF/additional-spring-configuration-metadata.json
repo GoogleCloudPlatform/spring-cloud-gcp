@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.clouddms.v1.data-migration-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud datamigration/DataMigrationService components.",
+      "defaultValue": true
+    }
+  ]
+}

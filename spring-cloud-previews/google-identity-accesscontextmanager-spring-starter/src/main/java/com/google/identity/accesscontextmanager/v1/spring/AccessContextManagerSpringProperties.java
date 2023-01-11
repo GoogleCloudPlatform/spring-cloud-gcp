@@ -53,21 +53,6 @@ public class AccessContextManagerSpringProperties implements CredentialsSupplier
    */
   @NestedConfigurationProperty private Retry getAccessPolicyRetry;
   /**
-   * Allow override of retry settings at method-level for createAccessPolicy. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry createAccessPolicyRetry;
-  /**
-   * Allow override of retry settings at method-level for updateAccessPolicy. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry updateAccessPolicyRetry;
-  /**
-   * Allow override of retry settings at method-level for deleteAccessPolicy. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry deleteAccessPolicyRetry;
-  /**
    * Allow override of retry settings at method-level for listAccessLevels. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -77,26 +62,6 @@ public class AccessContextManagerSpringProperties implements CredentialsSupplier
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getAccessLevelRetry;
-  /**
-   * Allow override of retry settings at method-level for createAccessLevel. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry createAccessLevelRetry;
-  /**
-   * Allow override of retry settings at method-level for updateAccessLevel. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry updateAccessLevelRetry;
-  /**
-   * Allow override of retry settings at method-level for deleteAccessLevel. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry deleteAccessLevelRetry;
-  /**
-   * Allow override of retry settings at method-level for replaceAccessLevels. If defined, this
-   * takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry replaceAccessLevelsRetry;
   /**
    * Allow override of retry settings at method-level for listServicePerimeters. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
@@ -108,31 +73,6 @@ public class AccessContextManagerSpringProperties implements CredentialsSupplier
    */
   @NestedConfigurationProperty private Retry getServicePerimeterRetry;
   /**
-   * Allow override of retry settings at method-level for createServicePerimeter. If defined, this
-   * takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry createServicePerimeterRetry;
-  /**
-   * Allow override of retry settings at method-level for updateServicePerimeter. If defined, this
-   * takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry updateServicePerimeterRetry;
-  /**
-   * Allow override of retry settings at method-level for deleteServicePerimeter. If defined, this
-   * takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry deleteServicePerimeterRetry;
-  /**
-   * Allow override of retry settings at method-level for replaceServicePerimeters. If defined, this
-   * takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry replaceServicePerimetersRetry;
-  /**
-   * Allow override of retry settings at method-level for commitServicePerimeters. If defined, this
-   * takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry commitServicePerimetersRetry;
-  /**
    * Allow override of retry settings at method-level for listGcpUserAccessBindings. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
@@ -142,21 +82,6 @@ public class AccessContextManagerSpringProperties implements CredentialsSupplier
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getGcpUserAccessBindingRetry;
-  /**
-   * Allow override of retry settings at method-level for createGcpUserAccessBinding. If defined,
-   * this takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry createGcpUserAccessBindingRetry;
-  /**
-   * Allow override of retry settings at method-level for updateGcpUserAccessBinding. If defined,
-   * this takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry updateGcpUserAccessBindingRetry;
-  /**
-   * Allow override of retry settings at method-level for deleteGcpUserAccessBinding. If defined,
-   * this takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry deleteGcpUserAccessBindingRetry;
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -226,30 +151,6 @@ public class AccessContextManagerSpringProperties implements CredentialsSupplier
     this.getAccessPolicyRetry = getAccessPolicyRetry;
   }
 
-  public Retry getCreateAccessPolicyRetry() {
-    return this.createAccessPolicyRetry;
-  }
-
-  public void setCreateAccessPolicyRetry(Retry createAccessPolicyRetry) {
-    this.createAccessPolicyRetry = createAccessPolicyRetry;
-  }
-
-  public Retry getUpdateAccessPolicyRetry() {
-    return this.updateAccessPolicyRetry;
-  }
-
-  public void setUpdateAccessPolicyRetry(Retry updateAccessPolicyRetry) {
-    this.updateAccessPolicyRetry = updateAccessPolicyRetry;
-  }
-
-  public Retry getDeleteAccessPolicyRetry() {
-    return this.deleteAccessPolicyRetry;
-  }
-
-  public void setDeleteAccessPolicyRetry(Retry deleteAccessPolicyRetry) {
-    this.deleteAccessPolicyRetry = deleteAccessPolicyRetry;
-  }
-
   public Retry getListAccessLevelsRetry() {
     return this.listAccessLevelsRetry;
   }
@@ -264,38 +165,6 @@ public class AccessContextManagerSpringProperties implements CredentialsSupplier
 
   public void setGetAccessLevelRetry(Retry getAccessLevelRetry) {
     this.getAccessLevelRetry = getAccessLevelRetry;
-  }
-
-  public Retry getCreateAccessLevelRetry() {
-    return this.createAccessLevelRetry;
-  }
-
-  public void setCreateAccessLevelRetry(Retry createAccessLevelRetry) {
-    this.createAccessLevelRetry = createAccessLevelRetry;
-  }
-
-  public Retry getUpdateAccessLevelRetry() {
-    return this.updateAccessLevelRetry;
-  }
-
-  public void setUpdateAccessLevelRetry(Retry updateAccessLevelRetry) {
-    this.updateAccessLevelRetry = updateAccessLevelRetry;
-  }
-
-  public Retry getDeleteAccessLevelRetry() {
-    return this.deleteAccessLevelRetry;
-  }
-
-  public void setDeleteAccessLevelRetry(Retry deleteAccessLevelRetry) {
-    this.deleteAccessLevelRetry = deleteAccessLevelRetry;
-  }
-
-  public Retry getReplaceAccessLevelsRetry() {
-    return this.replaceAccessLevelsRetry;
-  }
-
-  public void setReplaceAccessLevelsRetry(Retry replaceAccessLevelsRetry) {
-    this.replaceAccessLevelsRetry = replaceAccessLevelsRetry;
   }
 
   public Retry getListServicePerimetersRetry() {
@@ -314,46 +183,6 @@ public class AccessContextManagerSpringProperties implements CredentialsSupplier
     this.getServicePerimeterRetry = getServicePerimeterRetry;
   }
 
-  public Retry getCreateServicePerimeterRetry() {
-    return this.createServicePerimeterRetry;
-  }
-
-  public void setCreateServicePerimeterRetry(Retry createServicePerimeterRetry) {
-    this.createServicePerimeterRetry = createServicePerimeterRetry;
-  }
-
-  public Retry getUpdateServicePerimeterRetry() {
-    return this.updateServicePerimeterRetry;
-  }
-
-  public void setUpdateServicePerimeterRetry(Retry updateServicePerimeterRetry) {
-    this.updateServicePerimeterRetry = updateServicePerimeterRetry;
-  }
-
-  public Retry getDeleteServicePerimeterRetry() {
-    return this.deleteServicePerimeterRetry;
-  }
-
-  public void setDeleteServicePerimeterRetry(Retry deleteServicePerimeterRetry) {
-    this.deleteServicePerimeterRetry = deleteServicePerimeterRetry;
-  }
-
-  public Retry getReplaceServicePerimetersRetry() {
-    return this.replaceServicePerimetersRetry;
-  }
-
-  public void setReplaceServicePerimetersRetry(Retry replaceServicePerimetersRetry) {
-    this.replaceServicePerimetersRetry = replaceServicePerimetersRetry;
-  }
-
-  public Retry getCommitServicePerimetersRetry() {
-    return this.commitServicePerimetersRetry;
-  }
-
-  public void setCommitServicePerimetersRetry(Retry commitServicePerimetersRetry) {
-    this.commitServicePerimetersRetry = commitServicePerimetersRetry;
-  }
-
   public Retry getListGcpUserAccessBindingsRetry() {
     return this.listGcpUserAccessBindingsRetry;
   }
@@ -368,30 +197,6 @@ public class AccessContextManagerSpringProperties implements CredentialsSupplier
 
   public void setGetGcpUserAccessBindingRetry(Retry getGcpUserAccessBindingRetry) {
     this.getGcpUserAccessBindingRetry = getGcpUserAccessBindingRetry;
-  }
-
-  public Retry getCreateGcpUserAccessBindingRetry() {
-    return this.createGcpUserAccessBindingRetry;
-  }
-
-  public void setCreateGcpUserAccessBindingRetry(Retry createGcpUserAccessBindingRetry) {
-    this.createGcpUserAccessBindingRetry = createGcpUserAccessBindingRetry;
-  }
-
-  public Retry getUpdateGcpUserAccessBindingRetry() {
-    return this.updateGcpUserAccessBindingRetry;
-  }
-
-  public void setUpdateGcpUserAccessBindingRetry(Retry updateGcpUserAccessBindingRetry) {
-    this.updateGcpUserAccessBindingRetry = updateGcpUserAccessBindingRetry;
-  }
-
-  public Retry getDeleteGcpUserAccessBindingRetry() {
-    return this.deleteGcpUserAccessBindingRetry;
-  }
-
-  public void setDeleteGcpUserAccessBindingRetry(Retry deleteGcpUserAccessBindingRetry) {
-    this.deleteGcpUserAccessBindingRetry = deleteGcpUserAccessBindingRetry;
   }
 
   public Retry getSetIamPolicyRetry() {

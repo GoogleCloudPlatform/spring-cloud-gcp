@@ -88,12 +88,17 @@ public class AccessContextManagerSpringAutoConfiguration {
   }
 
   /**
-   * Returns the default channel provider. The default is gRPC and will default to it unless the
-   * useRest option is provided to use HTTP transport instead
+   * Provides a default transport channel provider bean. The default is gRPC and will default to it
+   * unless the useRest option is provided to use HTTP transport instead
+   *
+   * @return a default transport channel provider.
    */
   @Bean
   @ConditionalOnMissingBean(name = "defaultAccessContextManagerTransportChannelProvider")
   public TransportChannelProvider defaultAccessContextManagerTransportChannelProvider() {
+    if (this.clientProperties.getUseRest()) {
+      return AccessContextManagerSettings.defaultHttpJsonTransportProviderBuilder().build();
+    }
     return AccessContextManagerSettings.defaultTransportChannelProvider();
   }
 
@@ -108,6 +113,10 @@ public class AccessContextManagerSpringAutoConfiguration {
    * in AccessContextManagerSpringProperties. Method-level properties will take precedence over
    * service-level properties if available, and client library defaults will be used if neither are
    * specified.
+   *
+   * @param defaultTransportChannelProvider TransportChannelProvider to use in the settings.
+   * @return a {@link AccessContextManagerSettings} bean configured with {@link
+   *     TransportChannelProvider} bean.
    */
   @Bean
   @ConditionalOnMissingBean
@@ -115,11 +124,19 @@ public class AccessContextManagerSpringAutoConfiguration {
       @Qualifier("defaultAccessContextManagerTransportChannelProvider")
           TransportChannelProvider defaultTransportChannelProvider)
       throws IOException {
-    AccessContextManagerSettings.Builder clientSettingsBuilder =
-        AccessContextManagerSettings.newBuilder()
-            .setCredentialsProvider(this.credentialsProvider)
-            .setTransportChannelProvider(defaultTransportChannelProvider)
-            .setHeaderProvider(this.userAgentHeaderProvider());
+    AccessContextManagerSettings.Builder clientSettingsBuilder;
+    if (this.clientProperties.getUseRest()) {
+      clientSettingsBuilder = AccessContextManagerSettings.newHttpJsonBuilder();
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Using REST (HTTP/JSON) transport.");
+      }
+    } else {
+      clientSettingsBuilder = AccessContextManagerSettings.newBuilder();
+    }
+    clientSettingsBuilder
+        .setCredentialsProvider(this.credentialsProvider)
+        .setTransportChannelProvider(defaultTransportChannelProvider)
+        .setHeaderProvider(this.userAgentHeaderProvider());
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());
       if (LOGGER.isTraceEnabled()) {
@@ -141,13 +158,6 @@ public class AccessContextManagerSpringAutoConfiguration {
                 + this.clientProperties.getExecutorThreadCount());
       }
     }
-    if (this.clientProperties.getUseRest()) {
-      clientSettingsBuilder.setTransportChannelProvider(
-          AccessContextManagerSettings.defaultHttpJsonTransportProviderBuilder().build());
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Using HTTP transport channel");
-      }
-    }
     Retry serviceRetry = clientProperties.getRetry();
     if (serviceRetry != null) {
       RetrySettings listAccessPoliciesRetrySettings =
@@ -164,27 +174,6 @@ public class AccessContextManagerSpringAutoConfiguration {
           .getAccessPolicySettings()
           .setRetrySettings(getAccessPolicyRetrySettings);
 
-      RetrySettings createAccessPolicyRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.createAccessPolicySettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .createAccessPolicySettings()
-          .setRetrySettings(createAccessPolicyRetrySettings);
-
-      RetrySettings updateAccessPolicyRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateAccessPolicySettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .updateAccessPolicySettings()
-          .setRetrySettings(updateAccessPolicyRetrySettings);
-
-      RetrySettings deleteAccessPolicyRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.deleteAccessPolicySettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .deleteAccessPolicySettings()
-          .setRetrySettings(deleteAccessPolicyRetrySettings);
-
       RetrySettings listAccessLevelsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listAccessLevelsSettings().getRetrySettings(), serviceRetry);
@@ -196,34 +185,6 @@ public class AccessContextManagerSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getAccessLevelSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getAccessLevelSettings().setRetrySettings(getAccessLevelRetrySettings);
-
-      RetrySettings createAccessLevelRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.createAccessLevelSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .createAccessLevelSettings()
-          .setRetrySettings(createAccessLevelRetrySettings);
-
-      RetrySettings updateAccessLevelRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateAccessLevelSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .updateAccessLevelSettings()
-          .setRetrySettings(updateAccessLevelRetrySettings);
-
-      RetrySettings deleteAccessLevelRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.deleteAccessLevelSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .deleteAccessLevelSettings()
-          .setRetrySettings(deleteAccessLevelRetrySettings);
-
-      RetrySettings replaceAccessLevelsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.replaceAccessLevelsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .replaceAccessLevelsSettings()
-          .setRetrySettings(replaceAccessLevelsRetrySettings);
 
       RetrySettings listServicePerimetersRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -240,46 +201,6 @@ public class AccessContextManagerSpringAutoConfiguration {
           .getServicePerimeterSettings()
           .setRetrySettings(getServicePerimeterRetrySettings);
 
-      RetrySettings createServicePerimeterRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.createServicePerimeterSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .createServicePerimeterSettings()
-          .setRetrySettings(createServicePerimeterRetrySettings);
-
-      RetrySettings updateServicePerimeterRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateServicePerimeterSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .updateServicePerimeterSettings()
-          .setRetrySettings(updateServicePerimeterRetrySettings);
-
-      RetrySettings deleteServicePerimeterRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.deleteServicePerimeterSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .deleteServicePerimeterSettings()
-          .setRetrySettings(deleteServicePerimeterRetrySettings);
-
-      RetrySettings replaceServicePerimetersRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.replaceServicePerimetersSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .replaceServicePerimetersSettings()
-          .setRetrySettings(replaceServicePerimetersRetrySettings);
-
-      RetrySettings commitServicePerimetersRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.commitServicePerimetersSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .commitServicePerimetersSettings()
-          .setRetrySettings(commitServicePerimetersRetrySettings);
-
       RetrySettings listGcpUserAccessBindingsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listGcpUserAccessBindingsSettings().getRetrySettings(),
@@ -295,30 +216,6 @@ public class AccessContextManagerSpringAutoConfiguration {
       clientSettingsBuilder
           .getGcpUserAccessBindingSettings()
           .setRetrySettings(getGcpUserAccessBindingRetrySettings);
-
-      RetrySettings createGcpUserAccessBindingRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.createGcpUserAccessBindingSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .createGcpUserAccessBindingSettings()
-          .setRetrySettings(createGcpUserAccessBindingRetrySettings);
-
-      RetrySettings updateGcpUserAccessBindingRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateGcpUserAccessBindingSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .updateGcpUserAccessBindingSettings()
-          .setRetrySettings(updateGcpUserAccessBindingRetrySettings);
-
-      RetrySettings deleteGcpUserAccessBindingRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.deleteGcpUserAccessBindingSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .deleteGcpUserAccessBindingSettings()
-          .setRetrySettings(deleteGcpUserAccessBindingRetrySettings);
 
       RetrySettings setIamPolicyRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -368,48 +265,6 @@ public class AccessContextManagerSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for getAccessPolicy from properties.");
       }
     }
-    Retry createAccessPolicyRetry = clientProperties.getCreateAccessPolicyRetry();
-    if (createAccessPolicyRetry != null) {
-      RetrySettings createAccessPolicyRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.createAccessPolicySettings().getRetrySettings(),
-              createAccessPolicyRetry);
-      clientSettingsBuilder
-          .createAccessPolicySettings()
-          .setRetrySettings(createAccessPolicyRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for createAccessPolicy from properties.");
-      }
-    }
-    Retry updateAccessPolicyRetry = clientProperties.getUpdateAccessPolicyRetry();
-    if (updateAccessPolicyRetry != null) {
-      RetrySettings updateAccessPolicyRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateAccessPolicySettings().getRetrySettings(),
-              updateAccessPolicyRetry);
-      clientSettingsBuilder
-          .updateAccessPolicySettings()
-          .setRetrySettings(updateAccessPolicyRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for updateAccessPolicy from properties.");
-      }
-    }
-    Retry deleteAccessPolicyRetry = clientProperties.getDeleteAccessPolicyRetry();
-    if (deleteAccessPolicyRetry != null) {
-      RetrySettings deleteAccessPolicyRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.deleteAccessPolicySettings().getRetrySettings(),
-              deleteAccessPolicyRetry);
-      clientSettingsBuilder
-          .deleteAccessPolicySettings()
-          .setRetrySettings(deleteAccessPolicyRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for deleteAccessPolicy from properties.");
-      }
-    }
     Retry listAccessLevelsRetry = clientProperties.getListAccessLevelsRetry();
     if (listAccessLevelsRetry != null) {
       RetrySettings listAccessLevelsRetrySettings =
@@ -433,62 +288,6 @@ public class AccessContextManagerSpringAutoConfiguration {
       clientSettingsBuilder.getAccessLevelSettings().setRetrySettings(getAccessLevelRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getAccessLevel from properties.");
-      }
-    }
-    Retry createAccessLevelRetry = clientProperties.getCreateAccessLevelRetry();
-    if (createAccessLevelRetry != null) {
-      RetrySettings createAccessLevelRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.createAccessLevelSettings().getRetrySettings(),
-              createAccessLevelRetry);
-      clientSettingsBuilder
-          .createAccessLevelSettings()
-          .setRetrySettings(createAccessLevelRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for createAccessLevel from properties.");
-      }
-    }
-    Retry updateAccessLevelRetry = clientProperties.getUpdateAccessLevelRetry();
-    if (updateAccessLevelRetry != null) {
-      RetrySettings updateAccessLevelRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateAccessLevelSettings().getRetrySettings(),
-              updateAccessLevelRetry);
-      clientSettingsBuilder
-          .updateAccessLevelSettings()
-          .setRetrySettings(updateAccessLevelRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for updateAccessLevel from properties.");
-      }
-    }
-    Retry deleteAccessLevelRetry = clientProperties.getDeleteAccessLevelRetry();
-    if (deleteAccessLevelRetry != null) {
-      RetrySettings deleteAccessLevelRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.deleteAccessLevelSettings().getRetrySettings(),
-              deleteAccessLevelRetry);
-      clientSettingsBuilder
-          .deleteAccessLevelSettings()
-          .setRetrySettings(deleteAccessLevelRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for deleteAccessLevel from properties.");
-      }
-    }
-    Retry replaceAccessLevelsRetry = clientProperties.getReplaceAccessLevelsRetry();
-    if (replaceAccessLevelsRetry != null) {
-      RetrySettings replaceAccessLevelsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.replaceAccessLevelsSettings().getRetrySettings(),
-              replaceAccessLevelsRetry);
-      clientSettingsBuilder
-          .replaceAccessLevelsSettings()
-          .setRetrySettings(replaceAccessLevelsRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for replaceAccessLevels from properties.");
       }
     }
     Retry listServicePerimetersRetry = clientProperties.getListServicePerimetersRetry();
@@ -519,76 +318,6 @@ public class AccessContextManagerSpringAutoConfiguration {
             "Configured method-level retry settings for getServicePerimeter from properties.");
       }
     }
-    Retry createServicePerimeterRetry = clientProperties.getCreateServicePerimeterRetry();
-    if (createServicePerimeterRetry != null) {
-      RetrySettings createServicePerimeterRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.createServicePerimeterSettings().getRetrySettings(),
-              createServicePerimeterRetry);
-      clientSettingsBuilder
-          .createServicePerimeterSettings()
-          .setRetrySettings(createServicePerimeterRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for createServicePerimeter from properties.");
-      }
-    }
-    Retry updateServicePerimeterRetry = clientProperties.getUpdateServicePerimeterRetry();
-    if (updateServicePerimeterRetry != null) {
-      RetrySettings updateServicePerimeterRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateServicePerimeterSettings().getRetrySettings(),
-              updateServicePerimeterRetry);
-      clientSettingsBuilder
-          .updateServicePerimeterSettings()
-          .setRetrySettings(updateServicePerimeterRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for updateServicePerimeter from properties.");
-      }
-    }
-    Retry deleteServicePerimeterRetry = clientProperties.getDeleteServicePerimeterRetry();
-    if (deleteServicePerimeterRetry != null) {
-      RetrySettings deleteServicePerimeterRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.deleteServicePerimeterSettings().getRetrySettings(),
-              deleteServicePerimeterRetry);
-      clientSettingsBuilder
-          .deleteServicePerimeterSettings()
-          .setRetrySettings(deleteServicePerimeterRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for deleteServicePerimeter from properties.");
-      }
-    }
-    Retry replaceServicePerimetersRetry = clientProperties.getReplaceServicePerimetersRetry();
-    if (replaceServicePerimetersRetry != null) {
-      RetrySettings replaceServicePerimetersRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.replaceServicePerimetersSettings().getRetrySettings(),
-              replaceServicePerimetersRetry);
-      clientSettingsBuilder
-          .replaceServicePerimetersSettings()
-          .setRetrySettings(replaceServicePerimetersRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for replaceServicePerimeters from properties.");
-      }
-    }
-    Retry commitServicePerimetersRetry = clientProperties.getCommitServicePerimetersRetry();
-    if (commitServicePerimetersRetry != null) {
-      RetrySettings commitServicePerimetersRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.commitServicePerimetersSettings().getRetrySettings(),
-              commitServicePerimetersRetry);
-      clientSettingsBuilder
-          .commitServicePerimetersSettings()
-          .setRetrySettings(commitServicePerimetersRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for commitServicePerimeters from properties.");
-      }
-    }
     Retry listGcpUserAccessBindingsRetry = clientProperties.getListGcpUserAccessBindingsRetry();
     if (listGcpUserAccessBindingsRetry != null) {
       RetrySettings listGcpUserAccessBindingsRetrySettings =
@@ -615,48 +344,6 @@ public class AccessContextManagerSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getGcpUserAccessBinding from properties.");
-      }
-    }
-    Retry createGcpUserAccessBindingRetry = clientProperties.getCreateGcpUserAccessBindingRetry();
-    if (createGcpUserAccessBindingRetry != null) {
-      RetrySettings createGcpUserAccessBindingRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.createGcpUserAccessBindingSettings().getRetrySettings(),
-              createGcpUserAccessBindingRetry);
-      clientSettingsBuilder
-          .createGcpUserAccessBindingSettings()
-          .setRetrySettings(createGcpUserAccessBindingRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for createGcpUserAccessBinding from properties.");
-      }
-    }
-    Retry updateGcpUserAccessBindingRetry = clientProperties.getUpdateGcpUserAccessBindingRetry();
-    if (updateGcpUserAccessBindingRetry != null) {
-      RetrySettings updateGcpUserAccessBindingRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateGcpUserAccessBindingSettings().getRetrySettings(),
-              updateGcpUserAccessBindingRetry);
-      clientSettingsBuilder
-          .updateGcpUserAccessBindingSettings()
-          .setRetrySettings(updateGcpUserAccessBindingRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for updateGcpUserAccessBinding from properties.");
-      }
-    }
-    Retry deleteGcpUserAccessBindingRetry = clientProperties.getDeleteGcpUserAccessBindingRetry();
-    if (deleteGcpUserAccessBindingRetry != null) {
-      RetrySettings deleteGcpUserAccessBindingRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.deleteGcpUserAccessBindingSettings().getRetrySettings(),
-              deleteGcpUserAccessBindingRetry);
-      clientSettingsBuilder
-          .deleteGcpUserAccessBindingSettings()
-          .setRetrySettings(deleteGcpUserAccessBindingRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for deleteGcpUserAccessBinding from properties.");
       }
     }
     Retry setIamPolicyRetry = clientProperties.getSetIamPolicyRetry();
@@ -696,7 +383,13 @@ public class AccessContextManagerSpringAutoConfiguration {
     return clientSettingsBuilder.build();
   }
 
-  /** Provides a AccessContextManagerClient bean configured with AccessContextManagerSettings. */
+  /**
+   * Provides a AccessContextManagerClient bean configured with AccessContextManagerSettings.
+   *
+   * @param accessContextManagerSettings settings to configure an instance of client bean.
+   * @return a {@link AccessContextManagerClient} bean configured with {@link
+   *     AccessContextManagerSettings}
+   */
   @Bean
   @ConditionalOnMissingBean
   public AccessContextManagerClient accessContextManagerClient(

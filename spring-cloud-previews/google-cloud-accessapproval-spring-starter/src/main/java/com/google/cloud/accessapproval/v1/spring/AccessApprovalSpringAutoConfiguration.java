@@ -86,12 +86,17 @@ public class AccessApprovalSpringAutoConfiguration {
   }
 
   /**
-   * Returns the default channel provider. The default is gRPC and will default to it unless the
-   * useRest option is provided to use HTTP transport instead
+   * Provides a default transport channel provider bean. The default is gRPC and will default to it
+   * unless the useRest option is provided to use HTTP transport instead
+   *
+   * @return a default transport channel provider.
    */
   @Bean
   @ConditionalOnMissingBean(name = "defaultAccessApprovalTransportChannelProvider")
   public TransportChannelProvider defaultAccessApprovalTransportChannelProvider() {
+    if (this.clientProperties.getUseRest()) {
+      return AccessApprovalAdminSettings.defaultHttpJsonTransportProviderBuilder().build();
+    }
     return AccessApprovalAdminSettings.defaultTransportChannelProvider();
   }
 
@@ -106,6 +111,10 @@ public class AccessApprovalSpringAutoConfiguration {
    * in AccessApprovalSpringProperties. Method-level properties will take precedence over
    * service-level properties if available, and client library defaults will be used if neither are
    * specified.
+   *
+   * @param defaultTransportChannelProvider TransportChannelProvider to use in the settings.
+   * @return a {@link AccessApprovalSettings} bean configured with {@link TransportChannelProvider}
+   *     bean.
    */
   @Bean
   @ConditionalOnMissingBean
@@ -113,11 +122,19 @@ public class AccessApprovalSpringAutoConfiguration {
       @Qualifier("defaultAccessApprovalTransportChannelProvider")
           TransportChannelProvider defaultTransportChannelProvider)
       throws IOException {
-    AccessApprovalAdminSettings.Builder clientSettingsBuilder =
-        AccessApprovalAdminSettings.newBuilder()
-            .setCredentialsProvider(this.credentialsProvider)
-            .setTransportChannelProvider(defaultTransportChannelProvider)
-            .setHeaderProvider(this.userAgentHeaderProvider());
+    AccessApprovalAdminSettings.Builder clientSettingsBuilder;
+    if (this.clientProperties.getUseRest()) {
+      clientSettingsBuilder = AccessApprovalAdminSettings.newHttpJsonBuilder();
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Using REST (HTTP/JSON) transport.");
+      }
+    } else {
+      clientSettingsBuilder = AccessApprovalAdminSettings.newBuilder();
+    }
+    clientSettingsBuilder
+        .setCredentialsProvider(this.credentialsProvider)
+        .setTransportChannelProvider(defaultTransportChannelProvider)
+        .setHeaderProvider(this.userAgentHeaderProvider());
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());
       if (LOGGER.isTraceEnabled()) {
@@ -137,13 +154,6 @@ public class AccessApprovalSpringAutoConfiguration {
         LOGGER.trace(
             "Background executor thread count is "
                 + this.clientProperties.getExecutorThreadCount());
-      }
-    }
-    if (this.clientProperties.getUseRest()) {
-      clientSettingsBuilder.setTransportChannelProvider(
-          AccessApprovalAdminSettings.defaultHttpJsonTransportProviderBuilder().build());
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Using HTTP transport channel");
       }
     }
     Retry serviceRetry = clientProperties.getRetry();
@@ -355,7 +365,12 @@ public class AccessApprovalSpringAutoConfiguration {
     return clientSettingsBuilder.build();
   }
 
-  /** Provides a AccessApprovalClient bean configured with AccessApprovalSettings. */
+  /**
+   * Provides a AccessApprovalClient bean configured with AccessApprovalSettings.
+   *
+   * @param accessApprovalSettings settings to configure an instance of client bean.
+   * @return a {@link AccessApprovalClient} bean configured with {@link AccessApprovalSettings}
+   */
   @Bean
   @ConditionalOnMissingBean
   public AccessApprovalAdminClient accessApprovalClient(
