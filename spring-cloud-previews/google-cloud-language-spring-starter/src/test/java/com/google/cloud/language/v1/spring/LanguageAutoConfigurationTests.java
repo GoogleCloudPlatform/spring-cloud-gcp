@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
-import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.TransportChannel;
@@ -114,6 +113,10 @@ class LanguageAutoConfigurationTests {
             () -> mockTransportChannelProvider)
         .run(
             ctx -> {
+              assertThat(ctx.getBeanNamesForType(
+                  TransportChannelProvider.class)).containsExactlyInAnyOrder(
+                  "anotherTransportChannelProvider",
+                  TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME);
               LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
               TransportChannelProvider transportChannelProviderBean =
                   (TransportChannelProvider) ctx.getBean(TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME);
@@ -123,6 +126,7 @@ class LanguageAutoConfigurationTests {
               assertThat(transportChannelProvider).isNotSameAs(mockTransportChannelProvider);
             });
   }
+
 
   @Test
   void testShouldUseDefaultTransportChannelProvider() {
