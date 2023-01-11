@@ -1,6 +1,6 @@
 SPRING_MAVEN_ARTIFACTS = [
     "org.springframework.boot:spring-boot-starter:2.7.4",
-    "com.google.cloud:spring-cloud-gcp-core:3.4.0",
+    "com.google.cloud:spring-cloud-gcp-autoconfigure:3.4.1",
 ]
 
 maven_install(
