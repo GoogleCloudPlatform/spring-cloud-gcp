@@ -61,7 +61,9 @@ class LanguageAutoConfigurationTests {
       new ApplicationContextRunner()
           .withConfiguration(
               AutoConfigurations.of(
-                  GcpContextAutoConfiguration.class, LanguageServiceSpringAutoConfiguration.class));
+                  GcpContextAutoConfiguration.class, LanguageServiceSpringAutoConfiguration.class))
+          .withPropertyValues(
+              "spring.cloud.gcp.credentials.location=file:" + TOP_LEVEL_CREDENTIAL_LOCATION);
 
   @Test
   void testLanguageServiceClientCreated() {
@@ -76,7 +78,6 @@ class LanguageAutoConfigurationTests {
   void testCredentials_fromServicePropertiesIfSpecified() {
     this.contextRunner
         .withPropertyValues(
-            "spring.cloud.gcp.credentials.location=file:" + TOP_LEVEL_CREDENTIAL_LOCATION,
             "com.google.cloud.language.v1.language-service.credentials.location=file:"
                 + SERVICE_CREDENTIAL_LOCATION)
         .run(
@@ -91,17 +92,13 @@ class LanguageAutoConfigurationTests {
 
   @Test
   void testCredentials_fromTopLevelIfNoServiceProperties() {
-    this.contextRunner
-        .withPropertyValues(
-            "spring.cloud.gcp.credentials.location=file:" + TOP_LEVEL_CREDENTIAL_LOCATION)
-        .run(
-            ctx -> {
-              LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
-              Credentials credentials =
-                  client.getSettings().getCredentialsProvider().getCredentials();
-              assertThat(((ServiceAccountCredentials) credentials).getClientId())
-                  .isEqualTo(TOP_LEVEL_CREDENTIAL_CLIENT_ID);
-            });
+    this.contextRunner.run(
+        ctx -> {
+          LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+          Credentials credentials = client.getSettings().getCredentialsProvider().getCredentials();
+          assertThat(((ServiceAccountCredentials) credentials).getClientId())
+              .isEqualTo(TOP_LEVEL_CREDENTIAL_CLIENT_ID);
+        });
   }
 
   @Test
