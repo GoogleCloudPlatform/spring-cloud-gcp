@@ -13,20 +13,20 @@ while getopts c:v:i:g:d:p:f: flag
 do
     case "${flag}" in
         c) client_lib_name=${OPTARG};;
-        v) version=${OPTARG};;
         i) client_lib_artifactid=${OPTARG};;
         g) client_lib_groupid=${OPTARG};;
         p) parent_version=${OPTARG};;
+        x) googleapis_commitish=${OPTARG};;
         f) googleapis_folder=${OPTARG};;
         d) download_repos=1;;
     esac
 done
 echo "Client Library Name: $client_lib_name";
-echo "Client Library Version: $version";
 echo "Client Library GroupId: $client_lib_groupid";
 echo "Client Library ArtifactId: $client_lib_artifactid";
 echo "Parent Pom Version: $parent_version";
 echo "Googleapis Folder: $googleapis_folder";
+echo "Googleapis Commitish: $googleapis_commitish";
 
 starter_artifactid="$client_lib_artifactid-spring-starter"
 
@@ -42,6 +42,8 @@ WORKING_DIR=`pwd`
 if [[ $download_repos -eq 1 ]]; then
   bash download-repos.sh
 fi
+
+bash setup-googleapis-rules.sh -x $googleapis_commitish
 
 cd googleapis
 
@@ -66,26 +68,29 @@ perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    test_deps = \[(.*?)
 perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    deps = \[(.*?)\](.*?),))/java_gapic_spring_library\(\$2/s" $googleapis_folder/BUILD.bazel
 perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    rest_numeric_enums = (.*?),))/java_gapic_spring_library\(\$2/s" $googleapis_folder/BUILD.bazel
 
+# sometimes the rule name doesnt have the same prefix as $client_lib_name
+# we use this perl command capture the correct prefix
+rule_prefix=$(cat $googleapis_folder/BUILD.bazel | grep _java_gapic_spring | perl -lane 'print m/"(.*)_java_gapic_spring/')
+
 echo "CALL BAZEL TARGET"
 # call bazel target
-bazelisk build //$googleapis_folder:"$client_lib_name"_java_gapic_spring
+bazelisk build //$googleapis_folder:"$rule_prefix"_java_gapic_spring || exit
 
 cd -
 
 ## copy spring code to outside
 mkdir -p ../spring-cloud-previews
-cp googleapis/bazel-bin/$googleapis_folder/"$client_lib_name"_java_gapic_spring-spring.srcjar ../spring-cloud-previews
+cp googleapis/bazel-bin/$googleapis_folder/"$rule_prefix"_java_gapic_spring-spring.srcjar ../spring-cloud-previews
 
 # unzip spring code
 cd ../spring-cloud-previews
-unzip -o "$client_lib_name"_java_gapic_spring-spring.srcjar -d "$starter_artifactid"/
-rm -rf "$client_lib_name"_java_gapic_spring-spring.srcjar
+unzip -o "$rule_prefix"_java_gapic_spring-spring.srcjar -d "$starter_artifactid"/
+rm -rf "$rule_prefix"_java_gapic_spring-spring.srcjar
 
 # override versions & names in pom.xml
 
 sed -i 's/{{client-library-group-id}}/'"$client_lib_groupid"'/' "$starter_artifactid"/pom.xml
 sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' "$starter_artifactid"/pom.xml
-sed -i 's/{{client-library-version}}/'"$version"'/' "$starter_artifactid"/pom.xml
 sed -i 's/{{parent-version}}/'"$parent_version"'/' "$starter_artifactid"/pom.xml
 
 
