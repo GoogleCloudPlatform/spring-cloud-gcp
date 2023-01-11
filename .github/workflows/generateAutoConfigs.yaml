@@ -84,7 +84,7 @@ jobs:
         if: steps.detect_changes.outputs.CHANGED_FILES > 0
         run: |
           set -x
-          MESSAGE=`echo "feat(generated): Generate new autoconfig libraries"
+          MESSAGE=`echo "feat(generated): Generate new autoconfig libraries"`
           git stash push -- spring-cloud-previews/
           git reset --hard
           git remote update
