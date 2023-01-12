@@ -1,0 +1,146 @@
+name: Generate Spring Auto-Configurations
+
+on:
+  workflow_dispatch:
+    inputs:
+      google_cloud_java_commitish:
+        description: 'Commitish or tag of google-cloud-java (e.g. v1.1.0)'
+        required: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+
+jobs:
+  generateLibraries:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Java 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Get Workflow Actor's Data
+        id: determine_workflow_author_email
+        continue-on-error: false
+        run: |
+          set -x
+          ACTOR=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/users/$GITHUB_ACTOR)
+          GITHUB_ACTOR_EMAIL="$(echo $ACTOR | jq '.email')"
+          GITHUB_ACTOR_NAME="$(echo $ACTOR | jq '.name')"
+          if [[ $GITHUB_ACTOR_EMAIL == "null" ]]; then
+            echo "Triggering user '$GITHUB_ACTOR' has no public email"
+            exit 1
+          fi
+          echo "GITHUB_ACTOR_EMAIL=$GITHUB_ACTOR_EMAIL" >> $GITHUB_OUTPUT
+          echo "GITHUB_ACTOR_NAME=$GITHUB_ACTOR_NAME" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Bazel
+        continue-on-error: false
+        run: |
+          set -x
+          sudo apt install apt-transport-https curl gnupg
+          curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
+          sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
+          sudo apt update && sudo apt install bazel
+      - uses: bazelbuild/setup-bazelisk@v2
+      - name: Create branch
+        id: create_branch_names
+        continue-on-error: false
+        working-directory: spring-cloud-generator
+        run: |
+          set -x
+          NEW_BRANCH_NAME="generated-autoconfig--$(date '+%Y%m%d%H%M%S')"
+          echo "NEW_BRANCH_NAME=$NEW_BRANCH_NAME" >> $GITHUB_OUTPUT
+      - name: Generate library list
+        continue-on-error: false
+        working-directory: spring-cloud-generator
+        run: |
+          set -x
+          bash generate-library-list.sh -c "$GOOGLE_CLOUD_JAVA_COMMITISH"
+          # trims library list to 4 libraries for testing - will be removed later
+          echo "$(head -n5 library_list.txt)" > library_list.txt
+        env:
+          GOOGLE_CLOUD_JAVA_COMMITISH: ${{ inputs.google_cloud_java_commitish }}
+      - name: Generate libraries
+        continue-on-error: false
+        working-directory: spring-cloud-generator
+        run: |
+          set -x
+          bash generate-all.sh
+      - name: Check for generation errors
+        continue-on-error: false
+        working-directory: spring-cloud-generator
+        run: |
+          set -x
+          if [[ $(ls *failed-library-generations | wc -l) -eq 0 ]]; then
+            echo 'no errors at generation'
+            exit 0
+          fi
+          for failed_lib_name in $(find failed-library-generations -printf '%f\n' | tail -n+2); do
+            echo "***** FAILED TO GENERATE LIBRARY: $failed_lib_name"
+            cat failed-library-generations/$failed_lib_name
+          done
+          exit 1
+      - name: Check for compilation errors
+        continue-on-error: false
+        # If the following option (working-directory) is used, mvn install will fail if the rest of the libraries in
+        # the commit haven't been published (e.g. x.x.x-SNAPSHOT). Will use the project's root as a temporary workaround
+        # working-directory: spring-cloud-previews
+        run: |
+          mvn install -D checkstyle.skip -DskipTests
+      #Compares the current contents of spring-cloud-previews with the new generated libraries
+      - name: Detect changes
+        id: detect_changes
+        run: |
+          set -x
+
+          # Counts number of changed files
+          git add ./spring-cloud-previews
+          CHANGED_FILES=`git diff --cached --numstat | wc -l | awk '{print $1}'`
+          git reset -- ./spring-cloud-previews # unstage changes
+
+          echo "$CHANGED_FILES have changed after generation"
+          if [[ $CHANGED_FILES -eq 0 ]]; then
+            echo "PR will not be generated"
+          fi
+          echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_OUTPUT
+      - name: Generate PR
+        if: steps.detect_changes.outputs.CHANGED_FILES > 0
+        run: |
+          set -x
+          # stashes the source branch with generated libs and pops it in a new branch from main
+          MESSAGE=`echo "feat(generated): Generate new autoconfig libraries"`
+          git stash push -- spring-cloud-previews/
+          git reset --hard
+          git remote update
+          git fetch
+          git checkout main
+          git checkout -b $NEW_BRANCH_NAME
+          git checkout stash -- .
+          git add .
+
+          # configure author
+          git config --global user.name "$GITHUB_ACTOR_NAME"
+          git config --global user.email "GITHUB_ACTOR_EMAIL"
+
+          # commit
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git commit -m "$MESSAGE"
+          git push --set-upstream origin $NEW_BRANCH_NAME
+
+          # creates PR
+          gh pr create --draft -B main -H $NEW_BRANCH_NAME --title "$MESSAGE" --body 'Created by Github action'
+
+          # labels PR with cla:yes (temporary)
+          PR_NUMBER=$(gh pr list --head=$NEW_BRANCH_NAME --jq '.[0].number' --json number)
+          curl -X POST -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -d '["cla:yes"]' https://api.github.com/repos/GoogleCloudPlatform/spring-cloud-gcp/issues/$PR_NUMBER/labels
+        env:
+          NEW_BRANCH_NAME: ${{ steps.create_branch_names.outputs.NEW_BRANCH_NAME }}
+          GITHUB_ACTOR_EMAIL: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_EMAIL }}
+          GITHUB_ACTOR_NAME: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_NAME }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
