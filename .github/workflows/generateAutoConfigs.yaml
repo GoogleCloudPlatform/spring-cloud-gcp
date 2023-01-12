@@ -92,8 +92,8 @@ jobs:
         # working-directory: spring-cloud-previews
         run: |
           mvn install -D checkstyle.skip -DskipTests
+      #Compares the current contents of spring-cloud-previews with the new generated libraries
       - name: Detect changes
-        description: Compares the current contents of spring-cloud-previews with the new generated libraries
         id: detect_changes
         run: |
           set -x
