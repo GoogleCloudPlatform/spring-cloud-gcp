@@ -20,7 +20,7 @@ jobs:
         continue-on-error: false
         run: |
           set -x
-          ACTOR=curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/users/$GITHUB_ACTOR
+          ACTOR=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/users/$GITHUB_ACTOR)
           GITHUB_ACTOR_EMAIL=$(echo $ACTOR | jq '.email')
           GITHUB_ACTOR_NAME=$(echo $ACTOR | jq '.name')
           if [[ $GITHUB_ACTOR_EMAIL == "null" ]]; then
