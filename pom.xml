@@ -78,7 +78,8 @@
 		<!-- Other defaults -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
-
+		<!-- exclude preview module code from sonar cloud analysis -->
+		<sonar.exclusions>spring-cloud-previews/**/*</sonar.exclusions>
 	</properties>
 
 	<dependencyManagement>
