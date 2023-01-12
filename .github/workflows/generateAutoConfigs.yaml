@@ -15,6 +15,18 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+      - name: Determine Workflow Author
+        continue-on-error: false
+        run: |
+          set -x
+          GITHUB_ACTOR_EMAIL=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/users/$GITHUB_ACTOR | jq '.email')
+          if [[ $GITHUB_ACTOR_EMAIL == "null" ]]; then
+            echo "Triggering user '$GITHUB_ACTOR' has no public email"
+            exit 1
+          fi
+          echo "GITHUB_ACTOR_EMAIL=$GITHUB_ACTOR_EMAIL" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Bazel
         continue-on-error: false
         run: |
@@ -93,7 +105,6 @@ jobs:
           git fetch
           git checkout main
           git checkout -b $NEW_BRANCH_NAME
-          #git stash pop
           git checkout stash -- .
           git add .
           git config --global user.name 'Diego Marquez'
