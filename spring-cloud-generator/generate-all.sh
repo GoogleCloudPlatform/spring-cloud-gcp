@@ -1,13 +1,6 @@
 #!/bin/bash
 WORKING_DIR=`pwd`
 
-while getopts d: flag
-do
-    case "${flag}" in
-        d) dev_env=1;;
-    esac
-done
-
 cd ../
 # Compute the project version.
 PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
