@@ -41,7 +41,7 @@ jobs:
           # will need a custom parameter to specify the tag
           bash generate-library-list.sh -c v1.1.0
           # for testing - will be removed later
-          cat library_list.txt | head -n5 | sponge library_list.txt
+          echo "$(head -n5 library_list.txt)" > library_list.txt
       - name: Generate libraries
         continue-on-error: false
         working-directory: spring-cloud-generator
