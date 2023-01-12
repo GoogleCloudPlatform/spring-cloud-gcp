@@ -93,7 +93,8 @@ jobs:
           git fetch
           git checkout main
           git checkout -b $NEW_BRANCH_NAME
-          git stash pop
+          #git stash pop
+          git checkout stash -- .
           git add .
           git config --global user.name 'Diego Marquez'
           git config --global user.email 'diegomarquezp@users.noreply.github.com'
