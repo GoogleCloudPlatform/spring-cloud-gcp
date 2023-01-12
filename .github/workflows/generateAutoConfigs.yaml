@@ -1,6 +1,11 @@
 name: Generate Spring Auto-Configurations
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      google_cloud_java_commitish:
+        description: 'Commitish or tag of google-cloud-java (e.g. v1.1.0)'
+        required: true
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -15,7 +20,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Determine Workflow Author's Email
+      - name: Get Workflow Actor's Data
         id: determine_workflow_author_email
         continue-on-error: false
         run: |
@@ -55,9 +60,11 @@ jobs:
         run: |
           set -x
           # will need a custom parameter to specify the tag
-          bash generate-library-list.sh -c v1.1.0
+          bash generate-library-list.sh -c "$GOOGLE_CLOUD_JAVA_COMMITISH"
           # for testing - will be removed later
           echo "$(head -n5 library_list.txt)" > library_list.txt
+        env:
+          GOOGLE_CLOUD_JAVA_COMMITISH: ${{ inputs.google_cloud_java_commitish }}
       - name: Generate libraries
         continue-on-error: false
         working-directory: spring-cloud-generator
@@ -69,7 +76,6 @@ jobs:
         working-directory: spring-cloud-generator
         run: |
           set -x
-          has_errors=0
           if [[ $(ls *failed-library-generations | wc -l) -eq 0 ]]; then
             echo 'no errors at generation'
             exit 0
@@ -81,12 +87,13 @@ jobs:
           exit 1
       - name: Check for compilation errors
         continue-on-error: false
-        # If the following option is used, mvn install will fail if the rest of the libraries in 
-        # the commit haven't been published. Will use the project's root to prevent this
+        # If the following option (working-directory) is used, mvn install will fail if the rest of the libraries in
+        # the commit haven't been published (e.g. x.x.x-SNAPSHOT). Will use the project's root as a temporary workaround
         # working-directory: spring-cloud-previews
         run: |
           mvn install -D checkstyle.skip -DskipTests
       - name: Detect changes
+        description: Compares the current contents of spring-cloud-previews with the new generated libraries
         id: detect_changes
         run: |
           set -x
