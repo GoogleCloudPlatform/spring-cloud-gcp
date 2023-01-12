@@ -13,6 +13,11 @@
   <packaging>pom</packaging>
 
   <modules>
+    <!-- preview modules -->
+    <module>google-cloud-api-gateway-spring-starter</module>
+    <module>google-cloud-aiplatform-spring-starter</module>
+    <module>google-identity-accesscontextmanager-spring-starter</module>
+    <module>google-cloud-accessapproval-spring-starter</module>
   </modules>
 
   <build>
