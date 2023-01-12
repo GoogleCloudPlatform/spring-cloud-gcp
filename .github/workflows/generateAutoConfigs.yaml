@@ -15,16 +15,20 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Determine Workflow Author
+      - name: Determine Workflow Author's Email
+        id: determine_workflow_author_email
         continue-on-error: false
         run: |
           set -x
-          GITHUB_ACTOR_EMAIL=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/users/$GITHUB_ACTOR | jq '.email')
+          ACTOR=curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/users/$GITHUB_ACTOR
+          GITHUB_ACTOR_EMAIL=$(echo $ACTOR | jq '.email')
+          GITHUB_ACTOR_NAME=$(echo $ACTOR | jq '.name')
           if [[ $GITHUB_ACTOR_EMAIL == "null" ]]; then
             echo "Triggering user '$GITHUB_ACTOR' has no public email"
             exit 1
           fi
           echo "GITHUB_ACTOR_EMAIL=$GITHUB_ACTOR_EMAIL" >> $GITHUB_OUTPUT
+          echo "GITHUB_ACTOR_NAME=$GITHUB_ACTOR_NAME" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Bazel
@@ -107,8 +111,8 @@ jobs:
           git checkout -b $NEW_BRANCH_NAME
           git checkout stash -- .
           git add .
-          git config --global user.name 'Diego Marquez'
-          git config --global user.email 'diegomarquezp@users.noreply.github.com'
+          git config --global user.name $GITHUB_ACTOR_NAME
+          git config --global user.email GITHUB_ACTOR_EMAIL
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git commit -m "$MESSAGE"
           EXISTING_PR=$(gh pr list --json baseRefName,headRefName --jq 'map(select(.baseRefName == "main" and .headRefName == "'"$NEW_BRANCH_NAME"'"))| length')
@@ -118,4 +122,6 @@ jobs:
           fi
         env:
           NEW_BRANCH_NAME: ${{ steps.create_branch_names.outputs.NEW_BRANCH_NAME }}
+          GITHUB_ACTOR_EMAIL: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_EMAIL }}
+          GITHUB_ACTOR_NAME: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_NAME }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
