@@ -113,6 +113,7 @@ public class LanguageServiceSpringAutoConfiguration {
       @Qualifier("defaultLanguageServiceTransportChannelProvider")
           TransportChannelProvider defaultTransportChannelProvider)
       throws IOException {
+    LOGGER.info("fake log item added for testing.");
     LanguageServiceSettings.Builder clientSettingsBuilder =
         LanguageServiceSettings.newBuilder()
             .setCredentialsProvider(this.credentialsProvider)

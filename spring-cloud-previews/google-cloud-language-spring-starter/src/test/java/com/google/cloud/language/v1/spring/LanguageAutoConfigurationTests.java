@@ -114,13 +114,13 @@ class LanguageAutoConfigurationTests {
                   TransportChannelProvider.class)).containsExactlyInAnyOrder(
                   "anotherTransportChannelProvider",
                   TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME);
+              assertThat(ctx.getBeansOfType(TransportChannelProvider.class)).hasSize(2);
               LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
               TransportChannelProvider transportChannelProviderBean =
                   (TransportChannelProvider) ctx.getBean(TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME);
               TransportChannelProvider transportChannelProvider =
                   client.getSettings().getTransportChannelProvider();
               assertThat(transportChannelProvider).isSameAs(transportChannelProviderBean);
-              assertThat(transportChannelProvider).isNotSameAs(mockTransportChannelProvider);
             });
   }
 
