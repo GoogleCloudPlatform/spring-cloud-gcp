@@ -59,9 +59,8 @@ jobs:
         working-directory: spring-cloud-generator
         run: |
           set -x
-          # will need a custom parameter to specify the tag
           bash generate-library-list.sh -c "$GOOGLE_CLOUD_JAVA_COMMITISH"
-          # for testing - will be removed later
+          # trims library list to 4 libraries for testing - will be removed later
           echo "$(head -n5 library_list.txt)" > library_list.txt
         env:
           GOOGLE_CLOUD_JAVA_COMMITISH: ${{ inputs.google_cloud_java_commitish }}
@@ -97,9 +96,12 @@ jobs:
         id: detect_changes
         run: |
           set -x
+
+          # Counts number of changed files
           git add ./spring-cloud-previews
           CHANGED_FILES=`git diff --cached --numstat | wc -l | awk '{print $1}'`
-          git reset -- ./spring-cloud-previews
+          git reset -- ./spring-cloud-previews # unstage changes
+
           echo "$CHANGED_FILES have changed after generation"
           if [[ $CHANGED_FILES -eq 0 ]]; then
             echo "PR will not be generated"
@@ -109,6 +111,7 @@ jobs:
         if: steps.detect_changes.outputs.CHANGED_FILES > 0
         run: |
           set -x
+          # stashes the source branch with generated libs and pops it in a new branch from main
           MESSAGE=`echo "feat(generated): Generate new autoconfig libraries"`
           git stash push -- spring-cloud-previews/
           git reset --hard
@@ -118,12 +121,20 @@ jobs:
           git checkout -b $NEW_BRANCH_NAME
           git checkout stash -- .
           git add .
+
+          # configure author
           git config --global user.name "$GITHUB_ACTOR_NAME"
           git config --global user.email "GITHUB_ACTOR_EMAIL"
+
+          # commit
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git commit -m "$MESSAGE"
-          git push --force --set-upstream origin $NEW_BRANCH_NAME
+          git push --set-upstream origin $NEW_BRANCH_NAME
+
+          # creates PR
           gh pr create --draft -B main -H $NEW_BRANCH_NAME --title "$MESSAGE" --body 'Created by Github action'
+
+          # labels PR with cla:yes (temporary)
           PR_NUMBER=$(gh pr list --head=$NEW_BRANCH_NAME --jq '.[0].number' --json number)
           curl -X POST -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github+json" \
