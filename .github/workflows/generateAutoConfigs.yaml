@@ -20,20 +20,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Get Workflow Actor's Data
-        id: determine_workflow_author_email
-        continue-on-error: false
-        run: |
-          set -x
-          ACTOR=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/users/$GITHUB_ACTOR)
-          GITHUB_ACTOR_EMAIL="$(echo $ACTOR | jq '.email')"
-          GITHUB_ACTOR_NAME="$(echo $ACTOR | jq '.name')"
-          if [[ $GITHUB_ACTOR_EMAIL == "null" ]]; then
-            echo "Triggering user '$GITHUB_ACTOR' has no public email"
-            exit 1
-          fi
-          echo "GITHUB_ACTOR_EMAIL=$GITHUB_ACTOR_EMAIL" >> $GITHUB_OUTPUT
-          echo "GITHUB_ACTOR_NAME=$GITHUB_ACTOR_NAME" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Bazel
@@ -123,8 +109,8 @@ jobs:
           git add .
 
           # configure author
-          git config --global user.name "$GITHUB_ACTOR_NAME"
-          git config --global user.email "GITHUB_ACTOR_EMAIL"
+          git config --global user.name "Cloud Java Bot"
+          git config --global user.email "cloud-java-bot@google.com"
 
           # commit
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
@@ -143,4 +129,4 @@ jobs:
           NEW_BRANCH_NAME: ${{ steps.create_branch_names.outputs.NEW_BRANCH_NAME }}
           GITHUB_ACTOR_EMAIL: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_EMAIL }}
           GITHUB_ACTOR_NAME: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_NAME }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
