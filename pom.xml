@@ -59,10 +59,10 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
-		<maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>3.2.1</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.17.0</errorprone.version>
+		<errorprone.version>2.18.0</errorprone.version>
 
 
 		<!-- All checks except for javadoc enforced by default -->
@@ -78,7 +78,8 @@
 		<!-- Other defaults -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
-
+		<!-- exclude preview module code from sonar cloud analysis -->
+		<sonar.exclusions>spring-cloud-previews/**/*</sonar.exclusions>
 	</properties>
 
 	<dependencyManagement>
