@@ -6,10 +6,6 @@ on:
       google_cloud_java_commitish:
         description: 'Commitish or tag of google-cloud-java (e.g. v1.1.0)'
         required: true
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 
 jobs:
   generateLibraries:
@@ -46,8 +42,6 @@ jobs:
         run: |
           set -x
           bash generate-library-list.sh -c "$GOOGLE_CLOUD_JAVA_COMMITISH"
-          # trims library list to 4 libraries for testing - will be removed later
-          echo "$(head -n5 library_list.txt)" > library_list.txt
         env:
           GOOGLE_CLOUD_JAVA_COMMITISH: ${{ inputs.google_cloud_java_commitish }}
       - name: Generate libraries
