@@ -1,0 +1,2 @@
+com.google.cloud.billing.v1.spring.CloudBillingSpringAutoConfiguration
+com.google.cloud.billing.v1.spring.CloudCatalogSpringAutoConfiguration

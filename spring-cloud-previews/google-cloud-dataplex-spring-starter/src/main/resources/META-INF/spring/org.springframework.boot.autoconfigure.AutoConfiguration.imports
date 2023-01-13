@@ -1,0 +1,3 @@
+com.google.cloud.dataplex.v1.spring.ContentServiceSpringAutoConfiguration
+com.google.cloud.dataplex.v1.spring.MetadataServiceSpringAutoConfiguration
+com.google.cloud.dataplex.v1.spring.DataplexServiceSpringAutoConfiguration

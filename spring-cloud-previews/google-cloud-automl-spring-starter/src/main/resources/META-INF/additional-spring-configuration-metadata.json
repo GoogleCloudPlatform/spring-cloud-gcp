@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.automl.v1.prediction-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud automl/PredictionService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.automl.v1.auto-ml.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud automl/AutoMl components.",
+      "defaultValue": true
+    }
+  ]
+}
