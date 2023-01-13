@@ -9,7 +9,7 @@ set -e
 
 # by default, do not download repos
 download_repos=0
-while getopts c:v:i:g:d:p:f: flag
+while getopts c:v:i:g:d:p:f:x: flag
 do
     case "${flag}" in
         c) client_lib_name=${OPTARG};;
@@ -97,9 +97,10 @@ sed -i 's/{{parent-version}}/'"$parent_version"'/' "$starter_artifactid"/pom.xml
 # add module after line with pattern, check for existence. Also add readme line if $3 is set to 1.
 # args: 1 -  path-to-pom-file; 2 - string-pattern; 3 - 1 if need to generate readme line
 add_module_to_pom () {
-  xmllint --debug --nsclean --xpath  "//*[local-name()='module']/text()" $1 | sort | uniq | grep -q $starter_artifactid
+  xmllint --debug --nsclean --xpath  "//*[local-name()='module']/text()" $1 \
+    | sort | uniq | grep -q $starter_artifactid || module_list_is_empty=1
   found_library_in_pom=$?
-  if [[ found_library_in_pom -eq 0 ]]; then
+  if [[ found_library_in_pom -eq 0 ]] && [[ $module_list_is_empty -ne 1 ]]; then
     echo "module $starter_artifactid already found in $1 modules"
   else
     echo "adding module $starter_artifactid to pom"
@@ -113,7 +114,7 @@ add_module_to_pom () {
   fi
 }
 
-add_module_to_pom pom.xml "^  <modules>" 1
+add_module_to_pom pom.xml "^[[:space:]]*<modules>" 1
 
 # remove downloaded repos
 cd ../spring-cloud-generator
