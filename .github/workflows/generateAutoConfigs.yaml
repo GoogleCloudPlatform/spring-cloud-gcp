@@ -50,6 +50,8 @@ jobs:
         run: |
           set -x
           bash generate-all.sh
+          # trims library list to 4 libraries for testing - will be removed later
+          echo "$(head -n4 library_list.txt)" > library_list.txt
       - name: Check for generation errors
         continue-on-error: false
         working-directory: spring-cloud-generator
@@ -91,15 +93,18 @@ jobs:
         if: steps.detect_changes.outputs.CHANGED_FILES > 0
         run: |
           set -x
-          # stashes the source branch with generated libs and pops it in a new branch from main
+          # stashes the source branch with generated libs 
           MESSAGE=`echo "feat(generated): Generate new autoconfig libraries"`
           git stash push -- spring-cloud-previews/
           git reset --hard
           git remote update
           git fetch
+
+          # pops the changes in a new branch from main
           git checkout main
           git checkout -b $NEW_BRANCH_NAME
-          git checkout stash -- .
+          #git checkout stash -- .
+          git stash pop
           git add .
 
           # configure author
