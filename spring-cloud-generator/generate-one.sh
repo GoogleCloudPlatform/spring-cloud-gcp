@@ -114,7 +114,7 @@ add_module_to_pom () {
   fi
 }
 
-add_module_to_pom ../spring-cloud-previews/pom.xml "^[[:space:]]*<!-- preview modules -->" 1
+add_module_to_pom pom.xml "^[[:space:]]*<modules>" 1
 
 # remove downloaded repos
 cd ../spring-cloud-generator
