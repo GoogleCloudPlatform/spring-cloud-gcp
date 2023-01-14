@@ -13,6 +13,9 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>google-cloud-aiplatform-spring-starter</module>
+    <module>google-identity-accesscontextmanager-spring-starter</module>
+    <module>google-cloud-accessapproval-spring-starter</module>
     <!-- preview modules -->
   </modules>
 
