@@ -1,0 +1,91 @@
+Client Library Name: workflows
+Client Library GroupId: com.google.cloud
+Client Library ArtifactId: google-cloud-workflows
+Parent Pom Version: 3.4.1-SNAPSHOT
+Googleapis Folder: google/cloud/workflows/v1
+Googleapis Commitish: 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
+HEAD is now at 758f0d121 chore: Enable requesting numeric enums in "transport=rest" responses for services supporting this (Java, Go, Python, PHP, TypeScript, C#, and Ruby), even if they do not yet turn on REST transport
+/home/runner/work/spring-cloud-gcp/spring-cloud-gcp/spring-cloud-generator
+CALL BAZEL TARGET
+Loading: 
+Loading: 0 packages loaded
+Loading: 0 packages loaded
+INFO: SHA256 (https://github.com/googleapis/gapic-generator-python/archive/v1.6.2.zip) = c0d08a8b8cddd6588943666a8e9ecbb97d0daa8bf55fa205e3a50c523cbcbed2
+DEBUG: Rule 'gapic_generator_python' indicated that a canonical reproducible form can be obtained by modifying arguments sha256 = "c0d08a8b8cddd6588943666a8e9ecbb97d0daa8bf55fa205e3a50c523cbcbed2"
+DEBUG: Repository gapic_generator_python instantiated at:
+  /home/runner/work/spring-cloud-gcp/spring-cloud-gcp/spring-cloud-generator/googleapis/WORKSPACE:301:13: in <toplevel>
+Repository rule http_archive defined at:
+  /home/runner/.cache/bazel/_bazel_runner/9a92530066464135e6c398a3b75be31c/external/bazel_tools/tools/build_defs/repo/http.bzl:336:31: in <toplevel>
+Loading: 0 packages loaded
+INFO: SHA256 (https://github.com/googleapis/gapic-generator-php/archive/v1.6.1.zip) = 07c7c61ea619df42253c8b81ddc4cc92d25db085b4e2eb41b8eba3d7fe7b5b22
+Loading: 0 packages loaded
+DEBUG: Rule 'gapic_generator_php' indicated that a canonical reproducible form can be obtained by modifying arguments sha256 = "07c7c61ea619df42253c8b81ddc4cc92d25db085b4e2eb41b8eba3d7fe7b5b22"
+DEBUG: Repository gapic_generator_php instantiated at:
+  /home/runner/work/spring-cloud-gcp/spring-cloud-gcp/spring-cloud-generator/googleapis/WORKSPACE:356:13: in <toplevel>
+Repository rule http_archive defined at:
+  /home/runner/.cache/bazel/_bazel_runner/9a92530066464135e6c398a3b75be31c/external/bazel_tools/tools/build_defs/repo/http.bzl:336:31: in <toplevel>
+Loading: 0 packages loaded
+    currently loading: google/cloud/workflows/v1
+Loading: 0 packages loaded
+    currently loading: google/cloud/workflows/v1
+DEBUG: /home/runner/.cache/bazel/_bazel_runner/9a92530066464135e6c398a3b75be31c/external/gapic_generator_java/rules_java_gapic/java_gapic.bzl:276:10: postprocessing done.
+Analyzing: target //google/cloud/workflows/v1:workflows_java_gapic_spring (1 packages loaded, 0 targets configured)
+DEBUG: /home/runner/.cache/bazel/_bazel_runner/9a92530066464135e6c398a3b75be31c/external/io_grpc_grpc_java/java_grpc_library.bzl:76:14: in srcs attribute of @io_grpc_grpc_java//grpclb:load_balancer_java_grpc: Proto source with label @io_grpc_grpc_proto//:grpclb_load_balancer_proto should be in same package as consuming rule
+INFO: Analyzed target //google/cloud/workflows/v1:workflows_java_gapic_spring (160 packages loaded, 2536 targets configured).
+INFO: Found 1 target...
+[0 / 6] [Prepa] BazelWorkspaceStatusAction stable-status.txt
+[420 / 423] //google/cloud/workflows/v1:workflows_java_gapic_spring_raw: `bazel-out/host/bin/external/com_google_protobuf/protoc --experimental_allow_proto3_optional --plugin=protoc-gen-java_gapic_spring=bazel-out/host/bin/external/gapic_generator_java/protoc-gen-java_gapic_spring --java_gapic_spring_out=metadata:bazel-out/k8-fastbuild/bin/google/cloud/workflows/v1/workflows_java_gapic_spring_raw.srcjar.zip --java_gapic_spring_opt=transport=grpc+rest,grpc-service-config=google/cloud/workflows/v1/workflows_grpc_service_config.json,gapic-config=google/cloud/workflows/v1/workflows_gapic.yaml,api-service-config=google/cloud/workflows/v1/workflows_v1.yaml -Igoogle/cloud/workflows/v1/workflows.proto=google/cloud/workflows/v1/workflows.proto -Igoogle/api/annotations.proto=google/api/annotations.proto -Igoogle/api/http.proto=google/api/http.proto -Igoogle/protobuf/descriptor.proto=bazel-out/k8-fastbuild/bin/external/com_google_protobuf/_virtual_imports/descriptor_proto/google/protobuf/descriptor.proto -Igoogle/api/client.proto=google/api/client.proto -Igoogle/api/launch_stage.proto=google/api/launch_stage.proto -Igoogle/protobuf/duration.proto=bazel-out/k8-fastbuild/bin/external/com_google_protobuf/_virtual_imports/duration_proto/google/protobuf/duration.proto -Igoogle/api/field_behavior.proto=google/api/field_behavior.proto -Igoogle/api/resource.proto=google/api/resource.proto -Igoogle/longrunning/operations.proto=google/longrunning/operations.proto -Igoogle/rpc/status.proto=google/rpc/status.proto -Igoogle/protobuf/any.proto=bazel-out/k8-fastbuild/bin/external/com_google_protobuf/_virtual_imports/any_proto/google/protobuf/any.proto -Igoogle/protobuf/empty.proto=bazel-out/k8-fastbuild/bin/external/com_google_protobuf/_virtual_imports/empty_proto/google/protobuf/empty.proto -Igoogle/protobuf/field_mask.proto=bazel-out/k8-fastbuild/bin/external/com_google_protobuf/_virtual_imports/field_mask_proto/google/protobuf/field_mask.proto -Igoogle/protobuf/timestamp.proto=bazel-out/k8-fastbuild/bin/external/com_google_protobuf/_virtual_imports/timestamp_proto/google/protobuf/timestamp.proto -Igoogle/cloud/common_resources.proto=google/cloud/common_resources.proto google/cloud/workflows/v1/workflows.proto google/cloud/common_resources.proto`; 1s linux-sandbox
+INFO: From //google/cloud/workflows/v1:workflows_java_gapic_spring_raw: `bazel-out/host/bin/external/com_google_protobuf/protoc --experimental_allow_proto3_optional --plugin=protoc-gen-java_gapic_spring=bazel-out/host/bin/external/gapic_generator_java/protoc-gen-java_gapic_spring --java_gapic_spring_out=metadata:bazel-out/k8-fastbuild/bin/google/cloud/workflows/v1/workflows_java_gapic_spring_raw.srcjar.zip --java_gapic_spring_opt=transport=grpc+rest,grpc-service-config=google/cloud/workflows/v1/workflows_grpc_service_config.json,gapic-config=google/cloud/workflows/v1/workflows_gapic.yaml,api-service-config=google/cloud/workflows/v1/workflows_v1.yaml -Igoogle/cloud/workflows/v1/workflows.proto=google/cloud/workflows/v1/workflows.proto -Igoogle/api/annotations.proto=google/api/annotations.proto -Igoogle/api/http.proto=google/api/http.proto -Igoogle/protobuf/descriptor.proto=bazel-out/k8-fastbuild/bin/external/com_google_protobuf/_virtual_imports/descriptor_proto/google/protobuf/descriptor.proto -Igoogle/api/client.proto=google/api/client.proto -Igoogle/api/launch_stage.proto=google/api/launch_stage.proto -Igoogle/protobuf/duration.proto=bazel-out/k8-fastbuild/bin/external/com_google_protobuf/_virtual_imports/duration_proto/google/protobuf/duration.proto -Igoogle/api/field_behavior.proto=google/api/field_behavior.proto -Igoogle/api/resource.proto=google/api/resource.proto -Igoogle/longrunning/operations.proto=google/longrunning/operations.proto -Igoogle/rpc/status.proto=google/rpc/status.proto -Igoogle/protobuf/any.proto=bazel-out/k8-fastbuild/bin/external/com_google_protobuf/_virtual_imports/any_proto/google/protobuf/any.proto -Igoogle/protobuf/empty.proto=bazel-out/k8-fastbuild/bin/external/com_google_protobuf/_virtual_imports/empty_proto/google/protobuf/empty.proto -Igoogle/protobuf/field_mask.proto=bazel-out/k8-fastbuild/bin/external/com_google_protobuf/_virtual_imports/field_mask_proto/google/protobuf/field_mask.proto -Igoogle/protobuf/timestamp.proto=bazel-out/k8-fastbuild/bin/external/com_google_protobuf/_virtual_imports/timestamp_proto/google/protobuf/timestamp.proto -Igoogle/cloud/common_resources.proto=google/cloud/common_resources.proto google/cloud/workflows/v1/workflows.proto google/cloud/common_resources.proto`:
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by com.google.googlejavaformat.java.JavacTokens$CommentSavingTokenizer (file:/home/runner/.cache/bazel/_bazel_runner/9a92530066464135e6c398a3b75be31c/external/google_java_format_all_deps/google-java-format-1.15.0-all-deps.jar) to field com.sun.tools.javac.parser.JavaTokenizer.reader
+WARNING: Please consider reporting this to the maintainers of com.google.googlejavaformat.java.JavacTokens$CommentSavingTokenizer
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+INFO: From Action google/cloud/workflows/v1/workflows_java_gapic_spring-spring.srcjar:
+/bin/bash: line 6: generated: No such file or directory
+  adding: pom.xml (deflated 61%)
+  adding: src/ (stored 0%)
+  adding: src/main/ (stored 0%)
+  adding: src/main/resources/ (stored 0%)
+  adding: src/main/resources/META-INF/ (stored 0%)
+  adding: src/main/resources/META-INF/spring/ (stored 0%)
+  adding: src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports (deflated 12%)
+  adding: src/main/resources/META-INF/additional-spring-configuration-metadata.json (deflated 34%)
+  adding: src/main/java/ (stored 0%)
+  adding: src/main/java/com/ (stored 0%)
+  adding: src/main/java/com/google/ (stored 0%)
+  adding: src/main/java/com/google/cloud/ (stored 0%)
+  adding: src/main/java/com/google/cloud/workflows/ (stored 0%)
+  adding: src/main/java/com/google/cloud/workflows/v1/ (stored 0%)
+  adding: src/main/java/com/google/cloud/workflows/v1/spring/ (stored 0%)
+  adding: src/main/java/com/google/cloud/workflows/v1/spring/WorkflowsSpringProperties.java (deflated 66%)
+  adding: src/main/java/com/google/cloud/workflows/v1/spring/WorkflowsSpringAutoConfiguration.java (deflated 75%)
+  adding: src/main/java/com/google/cloud/workflows/v1/spring/package-info.java (deflated 42%)
+Target //google/cloud/workflows/v1:workflows_java_gapic_spring up-to-date:
+  bazel-bin/google/cloud/workflows/v1/workflows_java_gapic_spring-spring.srcjar
+INFO: Elapsed time: 10.749s, Critical Path: 1.63s
+INFO: 4 processes: 1 internal, 3 linux-sandbox.
+INFO: Build completed successfully, 4 total actions
+INFO: Build completed successfully, 4 total actions
+/home/runner/work/spring-cloud-gcp/spring-cloud-gcp/spring-cloud-generator
+Archive:  workflows_java_gapic_spring-spring.srcjar
+  inflating: google-cloud-workflows-spring-starter/pom.xml  
+   creating: google-cloud-workflows-spring-starter/src/
+   creating: google-cloud-workflows-spring-starter/src/main/
+   creating: google-cloud-workflows-spring-starter/src/main/resources/
+   creating: google-cloud-workflows-spring-starter/src/main/resources/META-INF/
+   creating: google-cloud-workflows-spring-starter/src/main/resources/META-INF/spring/
+  inflating: google-cloud-workflows-spring-starter/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports  
+  inflating: google-cloud-workflows-spring-starter/src/main/resources/META-INF/additional-spring-configuration-metadata.json  
+   creating: google-cloud-workflows-spring-starter/src/main/java/
+   creating: google-cloud-workflows-spring-starter/src/main/java/com/
+   creating: google-cloud-workflows-spring-starter/src/main/java/com/google/
+   creating: google-cloud-workflows-spring-starter/src/main/java/com/google/cloud/
+   creating: google-cloud-workflows-spring-starter/src/main/java/com/google/cloud/workflows/
+   creating: google-cloud-workflows-spring-starter/src/main/java/com/google/cloud/workflows/v1/
+   creating: google-cloud-workflows-spring-starter/src/main/java/com/google/cloud/workflows/v1/spring/
+  inflating: google-cloud-workflows-spring-starter/src/main/java/com/google/cloud/workflows/v1/spring/WorkflowsSpringProperties.java  
+  inflating: google-cloud-workflows-spring-starter/src/main/java/com/google/cloud/workflows/v1/spring/WorkflowsSpringAutoConfiguration.java  
+  inflating: google-cloud-workflows-spring-starter/src/main/java/com/google/cloud/workflows/v1/spring/package-info.java  
+/home/runner/work/spring-cloud-gcp/spring-cloud-gcp/spring-cloud-generator/generate-one.sh: line 100: xmllint: command not found
+adding module google-cloud-workflows-spring-starter to pom

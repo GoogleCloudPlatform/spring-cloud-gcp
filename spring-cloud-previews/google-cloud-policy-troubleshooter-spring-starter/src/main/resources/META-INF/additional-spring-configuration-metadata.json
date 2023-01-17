@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.policytroubleshooter.v1.iam-checker.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud policytroubleshooter/IamChecker components.",
+      "defaultValue": true
+    }
+  ]
+}

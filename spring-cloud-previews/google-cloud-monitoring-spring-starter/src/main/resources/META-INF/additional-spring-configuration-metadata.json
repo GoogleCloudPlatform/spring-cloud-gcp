@@ -1,0 +1,46 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.monitoring.v3.alert-policy-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/AlertPolicyService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.monitoring.v3.group-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/GroupService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.monitoring.v3.metric-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/MetricService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.monitoring.v3.notification-channel-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/NotificationChannelService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.monitoring.v3.query-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/QueryService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.monitoring.v3.service-monitoring-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/ServiceMonitoringService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.monitoring.v3.uptime-check-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud monitoring/UptimeCheckService components.",
+      "defaultValue": true
+    }
+  ]
+}
