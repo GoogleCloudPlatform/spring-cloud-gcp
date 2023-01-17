@@ -72,9 +72,7 @@ jobs:
           exit 1
       - name: Check for compilation errors
         continue-on-error: false
-        # If the following option (working-directory) is used, mvn install will fail if the rest of the libraries in
-        # the commit haven't been published (e.g. x.x.x-SNAPSHOT). Will use the project's root as a temporary workaround
-        # working-directory: spring-cloud-previews
+        working-directory: spring-cloud-previews
         run: |
           mvn install -D checkstyle.skip -DskipTests
       #Compares the current contents of spring-cloud-previews with the new generated libraries
@@ -122,12 +120,6 @@ jobs:
 
           # creates PR
           gh pr create --draft -B main -H $NEW_BRANCH_NAME --title "$MESSAGE" --body 'Created by Github action'
-
-          # labels PR with cla:yes (temporary)
-          PR_NUMBER=$(gh pr list --head=$NEW_BRANCH_NAME --jq '.[0].number' --json number)
-          curl -X POST -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            -d '["cla:yes"]' https://api.github.com/repos/GoogleCloudPlatform/spring-cloud-gcp/issues/$PR_NUMBER/labels
         env:
           NEW_BRANCH_NAME: ${{ steps.create_branch_names.outputs.NEW_BRANCH_NAME }}
           GITHUB_ACTOR_EMAIL: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_EMAIL }}
