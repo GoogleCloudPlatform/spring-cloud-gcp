@@ -42,8 +42,6 @@ jobs:
         run: |
           set -x
           bash generate-library-list.sh -c "$GOOGLE_CLOUD_JAVA_COMMITISH"
-          # trims library list to 4 libraries for testing - will be removed later
-          echo "$(head -n4 library_list.txt)" > library_list.txt
         env:
           GOOGLE_CLOUD_JAVA_COMMITISH: ${{ inputs.google_cloud_java_commitish }}
       - name: Compile non-autogen libraries
