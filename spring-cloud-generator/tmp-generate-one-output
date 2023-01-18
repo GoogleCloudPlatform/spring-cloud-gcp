@@ -1,7 +1,7 @@
 Client Library Name: workflows
 Client Library GroupId: com.google.cloud
 Client Library ArtifactId: google-cloud-workflows
-Parent Pom Version: 3.4.1-SNAPSHOT
+Parent Pom Version: 4.0.0-SNAPSHOT
 Googleapis Folder: google/cloud/workflows/v1
 Googleapis Commitish: 758f0d1217d9c7fe398aa5efb1057ce4b6409e55
 HEAD is now at 758f0d121 chore: Enable requesting numeric enums in "transport=rest" responses for services supporting this (Java, Go, Python, PHP, TypeScript, C#, and Ruby), even if they do not yet turn on REST transport
