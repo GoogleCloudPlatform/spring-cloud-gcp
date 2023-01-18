@@ -13,6 +13,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <!-- preview modules -->
   </modules>
 
   <build>
@@ -20,6 +21,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
+        <version>${maven-deploy-plugin.version}</version>
         <configuration>
           <skip>true</skip>
         </configuration>

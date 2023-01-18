@@ -3,11 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
 	child.project.url.inherit.append.path="false">
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
 	<version>4.0.0-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
-
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -58,11 +56,10 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
-		<maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>3.2.1</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.16</errorprone.version>
-
+		<errorprone.version>2.18.0</errorprone.version>
 
 		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
@@ -77,7 +74,8 @@
 		<!-- Other defaults -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
-
+		<!-- exclude preview module code from sonar cloud analysis -->
+		<sonar.exclusions>spring-cloud-previews/**/*</sonar.exclusions>
 	</properties>
 
 	<dependencyManagement>
@@ -677,9 +675,8 @@
 								com.google.cloud.firestore
 							</excludePackageNames>
 							<links>
-								<link>https://googleapis.dev/java/google-cloud-vision/latest/</link>
-								<link>https://googleapis.dev/java/google-cloud-spanner/latest/</link>
-								<link>https://googleapis.dev/java/google-cloud-clients/latest/</link>
+								<link>https://javadoc.io/doc/com.google.cloud/google-cloud-vision/latest/</link>
+								<link>https://javadoc.io/doc/com.google.cloud/google-cloud-spanner/latest/</link>
 							</links>
 						</configuration>
 					</plugin>

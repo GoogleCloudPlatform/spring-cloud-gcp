@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
-import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.TransportChannel;
@@ -51,6 +50,7 @@ class LanguageAutoConfigurationTests {
   private static final String SERVICE_CREDENTIAL_CLIENT_ID = "45678";
   private static final String TOP_LEVEL_CREDENTIAL_CLIENT_ID = "12345";
   private static final String SERVICE_OVERRIDE_CLIENT_ID = "56789";
+  private static final String TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME = "defaultLanguageServiceTransportChannelProvider";
 
   @Mock private TransportChannel mockTransportChannel;
   @Mock private ApiCallContext mockApiCallContext;
@@ -61,7 +61,9 @@ class LanguageAutoConfigurationTests {
       new ApplicationContextRunner()
           .withConfiguration(
               AutoConfigurations.of(
-                  GcpContextAutoConfiguration.class, LanguageServiceSpringAutoConfiguration.class));
+                  GcpContextAutoConfiguration.class, LanguageServiceSpringAutoConfiguration.class))
+          .withPropertyValues(
+              "spring.cloud.gcp.credentials.location=file:" + TOP_LEVEL_CREDENTIAL_LOCATION);
 
   @Test
   void testLanguageServiceClientCreated() {
@@ -76,7 +78,6 @@ class LanguageAutoConfigurationTests {
   void testCredentials_fromServicePropertiesIfSpecified() {
     this.contextRunner
         .withPropertyValues(
-            "spring.cloud.gcp.credentials.location=file:" + TOP_LEVEL_CREDENTIAL_LOCATION,
             "com.google.cloud.language.v1.language-service.credentials.location=file:"
                 + SERVICE_CREDENTIAL_LOCATION)
         .run(
@@ -91,18 +92,38 @@ class LanguageAutoConfigurationTests {
 
   @Test
   void testCredentials_fromTopLevelIfNoServiceProperties() {
+    this.contextRunner.run(
+        ctx -> {
+          LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+          Credentials credentials = client.getSettings().getCredentialsProvider().getCredentials();
+          assertThat(((ServiceAccountCredentials) credentials).getClientId())
+              .isEqualTo(TOP_LEVEL_CREDENTIAL_CLIENT_ID);
+        });
+  }
+
+  @Test
+  void testShouldGetTransportChannelProviderFromBeanWithQualifierName() throws IOException {
     this.contextRunner
-        .withPropertyValues(
-            "spring.cloud.gcp.credentials.location=file:" + TOP_LEVEL_CREDENTIAL_LOCATION)
+        .withBean(
+            "anotherTransportChannelProvider",
+            TransportChannelProvider.class,
+            () -> mockTransportChannelProvider)
         .run(
             ctx -> {
+              assertThat(ctx.getBeanNamesForType(
+                  TransportChannelProvider.class)).containsExactlyInAnyOrder(
+                  "anotherTransportChannelProvider",
+                  TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME);
               LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
-              Credentials credentials =
-                  client.getSettings().getCredentialsProvider().getCredentials();
-              assertThat(((ServiceAccountCredentials) credentials).getClientId())
-                  .isEqualTo(TOP_LEVEL_CREDENTIAL_CLIENT_ID);
+              TransportChannelProvider transportChannelProviderBean =
+                  (TransportChannelProvider) ctx.getBean(TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME);
+              TransportChannelProvider transportChannelProvider =
+                  client.getSettings().getTransportChannelProvider();
+              assertThat(transportChannelProvider).isSameAs(transportChannelProviderBean);
+              assertThat(transportChannelProvider).isNotSameAs(mockTransportChannelProvider);
             });
   }
+
 
   @Test
   void testShouldUseDefaultTransportChannelProvider() {
@@ -178,7 +199,7 @@ class LanguageAutoConfigurationTests {
 
     contextRunner
         .withBean(
-            "defaultLanguageServiceTransportChannelProvider",
+            TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME,
             TransportChannelProvider.class,
             () -> mockTransportChannelProvider)
         .run(
