@@ -30,10 +30,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.actuate.metrics.AutoConfigureMetrics;
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -43,14 +43,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = MetricsApplication.class)
-@AutoConfigureMetrics // needed to enable metrics export in Spring Boot tests
+@AutoConfigureObservability // needed to enable metrics export in Spring Boot tests
 class MetricsSampleApplicationIntegrationTests {
 
   @Autowired private GcpProjectIdProvider projectIdProvider;
 
   @Autowired private TestRestTemplate testRestTemplate;
 
-  @LocalServerPort private int port;
+  @LocalServerPort
+  private int port;
 
   private MetricServiceClient metricClient;
 

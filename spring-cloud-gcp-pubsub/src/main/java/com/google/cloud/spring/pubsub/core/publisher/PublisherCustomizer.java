@@ -23,5 +23,5 @@ import com.google.cloud.pubsub.v1.Publisher;
  * Can be implemented as a lambda accepting a {@link Publisher.Builder} and a `String` topic.
  */
 public interface PublisherCustomizer {
-  public void apply(Publisher.Builder publisherBuilder, String topic);
+  void apply(Publisher.Builder publisherBuilder, String topic);
 }

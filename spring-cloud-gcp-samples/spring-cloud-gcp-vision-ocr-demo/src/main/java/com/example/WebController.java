@@ -16,7 +16,6 @@
 
 package com.example;
 
-import com.google.api.client.util.ByteStreams;
 import com.google.cloud.WriteChannel;
 import com.google.cloud.spring.storage.GoogleStorageLocation;
 import com.google.cloud.spring.vision.DocumentOcrResultSet;
@@ -26,16 +25,17 @@ import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.BucketGetOption;
 import com.google.cloud.vision.v1.TextAnnotation;
+import com.google.common.io.ByteStreams;
 import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.IOException;
 import java.nio.channels.Channels;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -116,7 +116,7 @@ public class WebController {
         GoogleStorageLocation.forFolder(
             outputBlobId.getBucket(), "ocr_results/" + documentLocation.getBlobName());
 
-    ListenableFuture<DocumentOcrResultSet> result =
+    CompletableFuture<DocumentOcrResultSet> result =
         documentOcrTemplate.runOcrForDocument(documentLocation, outputLocation);
 
     ocrStatusReporter.registerFuture(documentLocation.uriString(), result);
@@ -145,13 +145,11 @@ public class WebController {
     int extensionIdx = documentResource.getFilename().lastIndexOf(".");
     String fileType = documentResource.getFilename().substring(extensionIdx);
 
-    switch (fileType) {
-      case ".tif":
-        return "image/tiff";
-      case ".pdf":
-        return "application/pdf";
-      default:
-        throw new IllegalArgumentException("Does not support processing file type: " + fileType);
-    }
+    return switch (fileType) {
+      case ".tif" -> "image/tiff";
+      case ".pdf" -> "application/pdf";
+      default -> throw new IllegalArgumentException(
+          "Does not support processing file type: " + fileType);
+    };
   }
 }

@@ -31,6 +31,7 @@ import com.google.cloud.spring.pubsub.core.PubSubOperations;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,8 +46,6 @@ import org.springframework.expression.common.LiteralExpression;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.util.concurrent.ListenableFutureCallback;
-import org.springframework.util.concurrent.SettableListenableFuture;
 
 /** Tests for the Pub/Sub message handler. */
 @ExtendWith(MockitoExtension.class)
@@ -62,11 +61,11 @@ class PubSubMessageHandlerTests {
   @BeforeEach
   void setUp() {
     this.message =
-        new GenericMessage<byte[]>(
+        new GenericMessage<>(
             "testPayload".getBytes(),
             new MapBuilder<String, Object>().put("key1", "value1").put("key2", "value2").build());
-    SettableListenableFuture<String> future = new SettableListenableFuture<>();
-    future.set("benfica");
+    CompletableFuture<String> future = new CompletableFuture<>();
+    future.complete("benfica");
     when(this.pubSubTemplate.publish(eq("testTopic"), eq("testPayload".getBytes()), anyMap()))
         .thenReturn(future);
     this.adapter = new PubSubMessageHandler(this.pubSubTemplate, "testTopic");
@@ -81,7 +80,7 @@ class PubSubMessageHandlerTests {
   @Test
   void testPublishDynamicTopic() {
     Message<?> dynamicMessage =
-        new GenericMessage<byte[]>(
+        new GenericMessage<>(
             "testPayload".getBytes(),
             new MapBuilder<String, Object>()
                 .put("key1", "value1")
@@ -97,7 +96,7 @@ class PubSubMessageHandlerTests {
     this.adapter.setTopicExpressionString("headers['sendToTopic']");
     this.adapter.onInit();
     Message<?> expressionMessage =
-        new GenericMessage<byte[]>(
+        new GenericMessage<>(
             "testPayload".getBytes(),
             new MapBuilder<String, Object>()
                 .put("key1", "value1")
@@ -117,27 +116,6 @@ class PubSubMessageHandlerTests {
 
     this.adapter.handleMessage(this.message);
     verify(timeout).getValue(isNull(), eq(this.message), eq(Long.class));
-  }
-
-  @Test
-  void testPublishCallback() {
-    ListenableFutureCallback<String> callbackSpy =
-        spy(
-            new ListenableFutureCallback<String>() {
-              @Override
-              public void onFailure(Throwable ex) {}
-
-              @Override
-              public void onSuccess(String result) {}
-            });
-
-    this.adapter.setPublishCallback(callbackSpy);
-
-    this.adapter.handleMessage(this.message);
-
-    assertThat(this.adapter.getPublishCallback()).isSameAs(callbackSpy);
-
-    verify(callbackSpy).onSuccess("benfica");
   }
 
   @Test
@@ -221,7 +199,7 @@ class PubSubMessageHandlerTests {
   @Test
   void testPublishWithOrderingKey() {
     this.message =
-        new GenericMessage<byte[]>(
+        new GenericMessage<>(
             "testPayload".getBytes(),
             new MapBuilder<String, Object>().put(GcpPubSubHeaders.ORDERING_KEY, "key1").build());
 
@@ -234,15 +212,15 @@ class PubSubMessageHandlerTests {
   }
 
   @Test
-  void publishWithSuccessCallback() throws Exception {
+  void publishWithSuccessCallback() {
 
-    SettableListenableFuture<String> future = new SettableListenableFuture<>();
-    future.set("published12345");
+    CompletableFuture<String> future = new CompletableFuture<>();
+    future.complete("published12345");
     when(this.pubSubTemplate.publish(eq("testTopic"), eq("testPayload"), anyMap()))
         .thenReturn(future);
 
     Message<String> testMessage =
-        new GenericMessage<String>("testPayload", Collections.singletonMap("message_id", "123"));
+        new GenericMessage<>("testPayload", Collections.singletonMap("message_id", "123"));
 
     AtomicReference<String> messageIdRef = new AtomicReference<>();
     AtomicReference<String> ackIdRef = new AtomicReference<>();
@@ -261,15 +239,15 @@ class PubSubMessageHandlerTests {
   }
 
   @Test
-  void publishWithFailureCallback() throws Exception {
+  void publishWithFailureCallback() {
 
-    SettableListenableFuture<String> future = new SettableListenableFuture<>();
-    future.setException(new RuntimeException("boom!"));
+    CompletableFuture<String> future = new CompletableFuture<>();
+    future.completeExceptionally(new RuntimeException("boom!"));
     when(this.pubSubTemplate.publish(eq("testTopic"), eq("testPayload"), anyMap()))
         .thenReturn(future);
 
     Message<String> testMessage =
-        new GenericMessage("testPayload", Collections.singletonMap("message_id", "123"));
+        new GenericMessage<>("testPayload", Collections.singletonMap("message_id", "123"));
 
     AtomicReference<Throwable> failureCauseRef = new AtomicReference<>();
     AtomicReference<String> messageIdRef = new AtomicReference<>();

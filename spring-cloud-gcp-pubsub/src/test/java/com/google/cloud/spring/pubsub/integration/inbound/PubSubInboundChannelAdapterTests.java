@@ -57,17 +57,17 @@ import org.springframework.messaging.support.GenericMessage;
 @ExtendWith(OutputCaptureExtension.class)
 class PubSubInboundChannelAdapterTests {
 
-  private TestUtils.TestApplicationContext context = TestUtils.createTestApplicationContext();
+  private final TestUtils.TestApplicationContext context = TestUtils.createTestApplicationContext();
 
-  PubSubInboundChannelAdapter adapter;
+  private PubSubInboundChannelAdapter adapter;
 
-  static final String EXCEPTION_MESSAGE = "Simulated downstream message processing failure";
+  private static final String EXCEPTION_MESSAGE = "Simulated downstream message processing failure";
 
-  @Mock PubSubSubscriberOperations mockPubSubSubscriberOperations;
+  @Mock private PubSubSubscriberOperations mockPubSubSubscriberOperations;
 
-  @Mock MessageChannel mockMessageChannel;
+  @Mock private MessageChannel mockMessageChannel;
 
-  @Mock ConvertedBasicAcknowledgeablePubsubMessage mockAcknowledgeableMessage;
+  @Mock private ConvertedBasicAcknowledgeablePubsubMessage mockAcknowledgeableMessage;
 
   @BeforeEach
   @SuppressWarnings("unchecked")
@@ -80,7 +80,7 @@ class PubSubInboundChannelAdapterTests {
 
   }
 
-  void setupSubscribeAndConvert() {
+  private void setupSubscribeAndConvert() {
     when(this.mockMessageChannel.send(any())).thenReturn(true);
 
     when(mockAcknowledgeableMessage.getPubsubMessage())
@@ -160,7 +160,6 @@ class PubSubInboundChannelAdapterTests {
               this.adapter.stop();
               throw new RuntimeException(EXCEPTION_MESSAGE);
             });
-
     this.adapter.start();
 
     verify(mockAcknowledgeableMessage).nack();
@@ -168,7 +167,6 @@ class PubSubInboundChannelAdapterTests {
 
     // original message handling exception
     assertThat(capturedOutput).contains("failed; message nacked automatically").contains(EXCEPTION_MESSAGE);
-
   }
 
   @Test
@@ -283,7 +281,7 @@ class PubSubInboundChannelAdapterTests {
     MessageHeaders headers = argument.getValue().getHeaders();
     assertThat(headers).containsKey(GcpPubSubHeaders.ORIGINAL_MESSAGE);
     assertThat(headers.get(GcpPubSubHeaders.ORIGINAL_MESSAGE)).isNotNull();
-    assertThat(headers.get(GcpPubSubHeaders.ORIGINAL_MESSAGE))
-        .isEqualTo(mockAcknowledgeableMessage);
+    assertThat(headers)
+        .containsEntry(GcpPubSubHeaders.ORIGINAL_MESSAGE, mockAcknowledgeableMessage);
   }
 }

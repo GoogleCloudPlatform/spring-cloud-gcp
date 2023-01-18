@@ -17,6 +17,7 @@
 package com.google.cloud.spring.bigquery.integration.outbound;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -26,16 +27,24 @@ import com.google.cloud.bigquery.FormatOptions;
 import com.google.cloud.bigquery.Job;
 import com.google.cloud.bigquery.Schema;
 import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
+import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.time.Duration;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.Resource;
+import org.springframework.expression.Expression;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHandlingException;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.SettableListenableFuture;
 
 class BigQueryFileMessageHandlerTests {
 
@@ -43,23 +52,48 @@ class BigQueryFileMessageHandlerTests {
 
   private BigQueryFileMessageHandler messageHandler;
 
+  private final CompletableFuture<Job> completableFuture = new CompletableFuture<>();
+
   @BeforeEach
   void setup() {
     bigQueryTemplate = mock(BigQueryTemplate.class);
-    SettableListenableFuture<Job> result = new SettableListenableFuture<>();
-    result.set(mock(Job.class));
-    when(bigQueryTemplate.writeDataToTable(any(), any(), any(), any())).thenReturn(result);
-
+    completableFuture.complete(mock(Job.class));
+    when(bigQueryTemplate.writeDataToTable(any(), any(), any(), any())).thenReturn(
+        completableFuture);
     messageHandler = new BigQueryFileMessageHandler(bigQueryTemplate);
-  }
-
-  @Test
-  void testHandleMessage_async() {
     messageHandler.setTableName("testTable");
     messageHandler.setFormatOptions(FormatOptions.csv());
     messageHandler.setSync(false);
     messageHandler.setTableSchema(Schema.of());
+  }
 
+  @Test
+  void testHandleResourceMessage() throws IOException {
+    Resource payload = mock(Resource.class);
+    Message<?> message =
+        MessageBuilder.createMessage(payload, new MessageHeaders(Collections.emptyMap()));
+
+    Object result = messageHandler.handleRequestMessage(message);
+
+    verify(bigQueryTemplate)
+        .writeDataToTable("testTable", payload.getInputStream(), FormatOptions.csv(), Schema.of());
+    assertThat(result).isNotNull().isInstanceOf(CompletableFuture.class);
+  }
+
+  @Test
+  void testHandleResourceMessageThrowsException() throws IOException {
+    Resource payload = mock(Resource.class);
+    when(payload.getInputStream()).thenThrow(IOException.class);
+    Message<?> message =
+        MessageBuilder.createMessage(payload, new MessageHeaders(Collections.emptyMap()));
+
+    assertThatCode(() -> messageHandler.handleRequestMessage(message))
+        .isInstanceOf(MessageHandlingException.class)
+        .hasStackTraceContaining("Failed to write data to BigQuery tables in message handler");
+  }
+
+  @Test
+  void testHandleInputStreamMessage_async() {
     InputStream payload = mock(InputStream.class);
     Message<?> message =
         MessageBuilder.createMessage(payload, new MessageHeaders(Collections.emptyMap()));
@@ -68,13 +102,11 @@ class BigQueryFileMessageHandlerTests {
 
     verify(bigQueryTemplate)
         .writeDataToTable("testTable", payload, FormatOptions.csv(), Schema.of());
-    assertThat(result).isNotNull().isInstanceOf(ListenableFuture.class);
+    assertThat(result).isNotNull().isInstanceOf(CompletableFuture.class);
   }
 
   @Test
   void testHandleMessage_sync() {
-    messageHandler.setTableName("testTable");
-    messageHandler.setFormatOptions(FormatOptions.csv());
     messageHandler.setSync(true);
     messageHandler.setTableSchemaExpression(new ValueExpression<>(Schema.of()));
 
@@ -87,5 +119,102 @@ class BigQueryFileMessageHandlerTests {
     verify(bigQueryTemplate)
         .writeDataToTable("testTable", payload, FormatOptions.csv(), Schema.of());
     assertThat(result).isNotNull().isInstanceOf(Job.class);
+  }
+
+  @Test
+  void testHandleMessage_ThrowsExecutionExceptionTest()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    CompletableFuture<Job> mockCompletableFuture = mock(CompletableFuture.class);
+    when(bigQueryTemplate.writeDataToTable(any(), any(), any(), any())).thenReturn(
+        mockCompletableFuture);
+    when(mockCompletableFuture.get(1L, TimeUnit.SECONDS))
+        .thenThrow(ExecutionException.class);
+    messageHandler.setSync(true);
+    messageHandler.setTableSchemaExpression(new ValueExpression<>(Schema.of()));
+    messageHandler.setTimeout(Duration.ofSeconds(1));
+    InputStream payload = mock(InputStream.class);
+    Message<?> message =
+        MessageBuilder.createMessage(payload, new MessageHeaders(Collections.emptyMap()));
+
+    assertThatCode(() -> messageHandler.handleRequestMessage(message))
+        .isInstanceOf(MessageHandlingException.class)
+        .hasStackTraceContaining("Failed to wait for BigQuery Job to complete in message handler");
+  }
+
+  @Test
+  void testHandleMessage_ThrowsInterruptedExceptionTest()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    CompletableFuture<Job> mockCompletableFuture = mock(CompletableFuture.class);
+    when(bigQueryTemplate.writeDataToTable(any(), any(), any(), any())).thenReturn(
+        mockCompletableFuture);
+    when(mockCompletableFuture.get(1L, TimeUnit.SECONDS))
+        .thenThrow(InterruptedException.class);
+    messageHandler.setSync(true);
+    messageHandler.setTableSchemaExpression(new ValueExpression<>(Schema.of()));
+    messageHandler.setTimeout(Duration.ofSeconds(1));
+    InputStream payload = mock(InputStream.class);
+    Message<?> message =
+        MessageBuilder.createMessage(payload, new MessageHeaders(Collections.emptyMap()));
+
+    assertThatCode(() -> messageHandler.handleRequestMessage(message))
+        .isInstanceOf(MessageHandlingException.class)
+        .hasStackTraceContaining("Failed to wait for BigQuery Job (interrupted) in message handler");
+  }
+
+  @Test
+  void testHandleMessageWithIllegalArgumentTest() {
+    messageHandler.setSync(true);
+    messageHandler.setTableSchemaExpression(new ValueExpression<>(Schema.of()));
+
+    BigInteger payload = mock(BigInteger.class);
+    Message<?> message =
+        MessageBuilder.createMessage(payload, new MessageHeaders(Collections.emptyMap()));
+
+    assertThatCode(() -> messageHandler.handleRequestMessage(message))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage(String.format(
+            "Unsupported message payload type: %s. The supported payload types "
+                + "are: java.io.File, byte[], org.springframework.core.io.Resource, "
+                + "and java.io.InputStream.",
+            payload.getClass().getName()));
+  }
+
+  @Test
+  void setTableNameExpressionThrowsExceptionTest() {
+    assertThatCode(() -> messageHandler.setTableNameExpression(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Table name expression must not be null.");
+  }
+
+  @Test
+  void setTableNameExpressionTest() {
+    assertThatCode(() -> messageHandler.setTableNameExpression(mock(Expression.class)))
+        .doesNotThrowAnyException();
+  }
+
+  @Test
+  void setFormatOptionsExpressionThrowsExceptionTest() {
+    assertThatCode(() -> messageHandler.setFormatOptionsExpression(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Format options expression cannot be null.");
+  }
+
+  @Test
+  void setFormatOptionsExpressionTest() {
+    assertThatCode(() -> messageHandler.setFormatOptionsExpression(mock(Expression.class)))
+        .doesNotThrowAnyException();
+  }
+
+  @Test
+  void setTimeOutThrowsExceptionTest() {
+    assertThatCode(() -> messageHandler.setTimeout(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Timeout duration must not be null.");
+  }
+
+  @Test
+  void setTimeOutTest() {
+    assertThatCode(() -> messageHandler.setTimeout(Duration.ZERO))
+        .doesNotThrowAnyException();
   }
 }

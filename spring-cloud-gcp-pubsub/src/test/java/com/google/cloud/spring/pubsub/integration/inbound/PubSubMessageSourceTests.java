@@ -254,7 +254,7 @@ class PubSubMessageSourceTests {
                   });
             })
         .isInstanceOf(MessageHandlingException.class)
-        .hasMessageContaining("Nope.");
+        .hasStackTraceContaining("Nope.");
 
     verify(this.msg1).nack();
   }
@@ -276,7 +276,7 @@ class PubSubMessageSourceTests {
                   });
             })
         .isInstanceOf(MessageHandlingException.class)
-        .hasMessageContaining("Nope.");
+        .hasStackTraceContaining("Nope.");
 
     verify(this.msg1, times(0)).nack();
   }

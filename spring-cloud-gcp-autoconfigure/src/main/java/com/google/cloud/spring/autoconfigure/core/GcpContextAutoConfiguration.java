@@ -25,17 +25,17 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Base starter for Google Cloud Projects. Provides defaults for {@link
  * com.google.auth.oauth2.GoogleCredentials}. Binds properties from {@link GcpProperties}.
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnProperty(
     name = "spring.cloud.gcp.core.enabled",
     havingValue = "true",

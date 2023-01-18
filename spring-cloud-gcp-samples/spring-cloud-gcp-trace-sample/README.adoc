@@ -4,7 +4,7 @@ This sample application demonstrates using the link:../../spring-cloud-gcp-start
 
 You can read about the Spring Boot Starter for Stackdriver Trace in more detail at the link:../../docs/src/main/asciidoc/trace.adoc[Spring Framework on Google Cloud Reference Document Stackdriver Trace section].
 
-Similar content is also available in the https://codelabs.developers.google.com/codelabs/cloud-spring-cloud-gcp-trace/index.html[Distributed tracing with Spring Cloud Sleuth] codelab.
+Similar content is also available in the https://codelabs.developers.google.com/codelabs/cloud-spring-cloud-gcp-trace/index.html[Distributed tracing with Micrometer] codelab.
 
 == Setup & Configuration
 

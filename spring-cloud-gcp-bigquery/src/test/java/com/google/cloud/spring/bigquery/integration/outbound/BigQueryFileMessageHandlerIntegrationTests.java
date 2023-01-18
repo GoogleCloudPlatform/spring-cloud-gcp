@@ -35,6 +35,7 @@ import com.google.cloud.spring.bigquery.integration.BigQuerySpringMessageHeaders
 import java.io.File;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterEach;
@@ -51,7 +52,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.util.concurrent.ListenableFuture;
 
 @EnabledIfSystemProperty(named = "it.bigquery", matches = "true")
 @ExtendWith(SpringExtension.class)
@@ -91,8 +91,8 @@ class BigQueryFileMessageHandlerIntegrationTests {
         MessageBuilder.createMessage(
             new File("src/test/resources/data.csv"), new MessageHeaders(messageHeaders));
 
-    ListenableFuture<Job> jobFuture =
-        (ListenableFuture<Job>) this.messageHandler.handleRequestMessage(message);
+    CompletableFuture<Job> jobFuture =
+        (CompletableFuture<Job>) this.messageHandler.handleRequestMessage(message);
 
     // Assert that a BigQuery polling task is scheduled successfully.
     await()
@@ -126,8 +126,8 @@ class BigQueryFileMessageHandlerIntegrationTests {
         MessageBuilder.createMessage(
             new File("src/test/resources/data.csv"), new MessageHeaders(messageHeaders));
 
-    ListenableFuture<Job> jobFuture =
-        (ListenableFuture<Job>) this.messageHandler.handleRequestMessage(message);
+    CompletableFuture<Job> jobFuture =
+        (CompletableFuture<Job>) this.messageHandler.handleRequestMessage(message);
 
     // Assert that a BigQuery polling task is scheduled successfully.
     await()
@@ -181,8 +181,8 @@ class BigQueryFileMessageHandlerIntegrationTests {
         MessageBuilder.createMessage(
             new File("src/test/resources/data.csv"), new MessageHeaders(messageHeaders));
 
-    ListenableFuture<?> jobFuture =
-        (ListenableFuture<?>) this.messageHandler.handleRequestMessage(message);
+    CompletableFuture<?> jobFuture =
+        (CompletableFuture<?>) this.messageHandler.handleRequestMessage(message);
     assertThat(jobFuture).isNotNull();
     jobFuture.cancel(true);
 

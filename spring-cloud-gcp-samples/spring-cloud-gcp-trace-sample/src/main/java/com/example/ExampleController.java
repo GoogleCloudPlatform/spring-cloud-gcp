@@ -18,16 +18,14 @@ package com.example;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.pubsub.v1.PubsubMessage;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Sample REST Controller to demonstrate Spring Cloud Sleuth and Stackdriver Trace. */
 @RestController
 public class ExampleController {
 
@@ -38,10 +36,11 @@ public class ExampleController {
 
   private final WorkService workService;
 
-  @Autowired PubSubTemplate pubSubTemplate;
+  private final PubSubTemplate pubSubTemplate;
 
-  public ExampleController(WorkService workService) {
+  public ExampleController(WorkService workService, PubSubTemplate pubSubTemplate) {
     this.workService = workService;
+    this.pubSubTemplate = pubSubTemplate;
   }
 
   @GetMapping("/")
@@ -64,7 +63,7 @@ public class ExampleController {
   }
 
   @RequestMapping("/pull")
-  public String pull() throws InterruptedException {
+  public String pull() {
     String result = "nothing";
 
     PubsubMessage message = pubSubTemplate.pullNext(sampleSubscription);

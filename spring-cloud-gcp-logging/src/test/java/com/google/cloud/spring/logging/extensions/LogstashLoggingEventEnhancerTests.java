@@ -23,6 +23,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.Payload;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.logstash.logback.marker.Markers;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,8 +42,8 @@ class LogstashLoggingEventEnhancerTests {
     enhancer = new LogstashLoggingEventEnhancer();
 
     loggingEvent = Mockito.mock(ILoggingEvent.class);
-    when(loggingEvent.getMarker())
-        .thenReturn(Markers.append("k1", "v1").and(Markers.append("k2", "v2")));
+    when(loggingEvent.getMarkerList())
+        .thenReturn(List.of(Markers.append("k1", "v1").and(Markers.append("k2", "v2"))));
   }
 
   @Test

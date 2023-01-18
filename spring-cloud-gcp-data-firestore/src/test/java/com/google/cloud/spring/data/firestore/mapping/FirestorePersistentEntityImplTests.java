@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.spring.data.firestore.Document;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.data.util.TypeInformation;
 
 /** Tests for {@link FirestorePersistentEntityImpl}. */
 class FirestorePersistentEntityImplTests {
@@ -28,14 +28,14 @@ class FirestorePersistentEntityImplTests {
   @Test
   void testSetCollectionName() {
     FirestorePersistentEntity<Student> firestorePersistentEntity =
-        new FirestorePersistentEntityImpl<>(ClassTypeInformation.from(Student.class));
+        new FirestorePersistentEntityImpl<>(TypeInformation.of(Student.class));
     assertThat(firestorePersistentEntity.collectionName()).isEqualTo("student");
   }
 
   @Test
   void testInferCollectionName() {
     FirestorePersistentEntity<Employee> firestorePersistentEntity =
-        new FirestorePersistentEntityImpl<>(ClassTypeInformation.from(Employee.class));
+        new FirestorePersistentEntityImpl<>(TypeInformation.of(Employee.class));
     assertThat(firestorePersistentEntity.collectionName()).isEqualTo("employee_table");
   }
 

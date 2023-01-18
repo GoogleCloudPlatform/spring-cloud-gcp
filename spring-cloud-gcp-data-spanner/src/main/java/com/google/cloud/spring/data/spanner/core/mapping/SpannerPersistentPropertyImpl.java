@@ -19,9 +19,9 @@ package com.google.cloud.spring.data.spanner.core.mapping;
 import com.google.cloud.spanner.Type.Code;
 import com.google.spanner.v1.TypeCode;
 import java.util.List;
+import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
-import java.util.stream.Collectors;
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.MappingException;
 import org.springframework.data.mapping.PersistentEntity;
@@ -32,6 +32,7 @@ import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 import org.springframework.data.util.StreamUtils;
 import org.springframework.data.util.TypeInformation;
+import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
 /**
@@ -44,7 +45,7 @@ public class SpannerPersistentPropertyImpl
     extends AnnotationBasedPersistentProperty<SpannerPersistentProperty>
     implements SpannerPersistentProperty {
 
-  private FieldNamingStrategy fieldNamingStrategy;
+  private final FieldNamingStrategy fieldNamingStrategy;
 
   /**
    * Creates a new {@link SpannerPersistentPropertyImpl}.
@@ -68,13 +69,15 @@ public class SpannerPersistentPropertyImpl
 
   /** Only provides types that are also annotated with {@link Table}. */
   @Override
-  public Iterable<? extends TypeInformation<?>> getPersistentEntityTypes() {
-    return StreamUtils.createStreamFromIterator(super.getPersistentEntityTypes().iterator())
+  @NonNull
+  public Iterable<? extends TypeInformation<?>> getPersistentEntityTypeInformation() {
+    return StreamUtils.createStreamFromIterator(super.getPersistentEntityTypeInformation().iterator())
         .filter(typeInfo -> typeInfo.getType().isAnnotationPresent(Table.class))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   @Override
+  @NonNull
   protected Association<SpannerPersistentProperty> createAssociation() {
     return new Association<>(this, null);
   }
@@ -212,5 +215,24 @@ public class SpannerPersistentPropertyImpl
     }
 
     return null;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof SpannerPersistentPropertyImpl that)) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    return fieldNamingStrategy.equals(that.fieldNamingStrategy);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), fieldNamingStrategy);
   }
 }

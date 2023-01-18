@@ -17,21 +17,16 @@
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.api.gax.grpc.GrpcStatusCode;
-import com.google.api.gax.rpc.ApiException;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
@@ -39,17 +34,14 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.actuate.health.CompositeHealthContributor;
+import org.springframework.boot.actuate.health.NamedContributor;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /** Tests for Pub/Sub Health Indicator autoconfiguration. */
 class PubSubHealthIndicatorAutoConfigurationTests {
@@ -57,7 +49,7 @@ class PubSubHealthIndicatorAutoConfigurationTests {
   private static final Pattern UUID_PATTERN =
       Pattern.compile("spring-cloud-gcp-healthcheck-[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}");
 
-  private ApplicationContextRunner baseContextRunner =
+  private final ApplicationContextRunner baseContextRunner =
       new ApplicationContextRunner()
           .withConfiguration(
               AutoConfigurations.of(
@@ -111,7 +103,7 @@ class PubSubHealthIndicatorAutoConfigurationTests {
   void compositeHealthIndicatorPresentMultiplePubSubTemplate() throws Exception {
     PubSubTemplate mockPubSubTemplate1 = mock(PubSubTemplate.class);
     PubSubTemplate mockPubSubTemplate2 = mock(PubSubTemplate.class);
-    ListenableFuture<List<AcknowledgeablePubsubMessage>> future = mock(ListenableFuture.class);
+    CompletableFuture<List<AcknowledgeablePubsubMessage>> future = mock(CompletableFuture.class);
 
     when(future.get(anyLong(), any())).thenReturn(Collections.emptyList());
     when(mockPubSubTemplate1.pullAsync(anyString(), anyInt(), anyBoolean())).thenReturn(future);
@@ -134,7 +126,7 @@ class PubSubHealthIndicatorAutoConfigurationTests {
                   ctx.getBean("pubSubHealthContributor", CompositeHealthContributor.class);
               assertThat(healthContributor).isNotNull();
               assertThat(healthContributor.stream()).hasSize(2);
-              assertThat(healthContributor.stream().map(c -> c.getName()))
+              assertThat(healthContributor.stream().map(NamedContributor::getName))
                   .containsExactlyInAnyOrder("pubSubTemplate1", "pubSubTemplate2");
             });
   }

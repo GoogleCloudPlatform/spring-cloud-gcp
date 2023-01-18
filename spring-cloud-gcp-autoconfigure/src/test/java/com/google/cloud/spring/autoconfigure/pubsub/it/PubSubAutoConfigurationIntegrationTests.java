@@ -50,10 +50,10 @@ class PubSubAutoConfigurationIntegrationTests {
 
   private static GcpProjectIdProvider projectIdProvider;
 
-  private String fullSubscriptionNameSub1 = "projects/" + projectIdProvider.getProjectId() + "/subscriptions/test-sub-1";
-  private String fullSubscriptionNameSub2 = "projects/" + projectIdProvider.getProjectId() + "/subscriptions/test-sub-2";
+  private final String fullSubscriptionNameSub1 = "projects/" + projectIdProvider.getProjectId() + "/subscriptions/test-sub-1";
+  private final String fullSubscriptionNameSub2 = "projects/" + projectIdProvider.getProjectId() + "/subscriptions/test-sub-2";
 
-  private ApplicationContextRunner contextRunner =
+  private final ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
           .withPropertyValues(
               "spring.cloud.gcp.pubsub.subscriber.retryableCodes=INTERNAL",
@@ -125,7 +125,7 @@ class PubSubAutoConfigurationIntegrationTests {
                   .build();
           PubSubConfiguration.Retry retry =
               gcpPubSubProperties.computeSubscriberRetrySettings(
-                  subscriptionName, projectId);
+                  ProjectSubscriptionName.of(projectId, subscriptionName));
           assertThat(retry.getTotalTimeoutSeconds()).isEqualTo(600L);
           assertThat(retry.getInitialRetryDelaySeconds()).isEqualTo(100L);
           assertThat(retry.getRetryDelayMultiplier()).isEqualTo(1.3);

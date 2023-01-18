@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -53,13 +52,12 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
 /** Documentation tests for Pub/Sub. */
 @EnabledIfSystemProperty(named = "it.pubsub-docs", matches = "true")
 class PubSubTemplateDocumentationIntegrationTests {
 
-  private ApplicationContextRunner contextRunner =
+  private final ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
           .withPropertyValues(
               "spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period=0",
@@ -179,12 +177,12 @@ class PubSubTemplateDocumentationIntegrationTests {
             List<String> subscriptions =
                 pubSubAdmin.listSubscriptions().stream()
                     .map(Subscription::getName)
-                    .collect(Collectors.toList());
+                    .toList();
             // end::list_subscriptions[]
 
             // tag::list_topics[]
             List<String> topics =
-                pubSubAdmin.listTopics().stream().map(Topic::getName).collect(Collectors.toList());
+                pubSubAdmin.listTopics().stream().map(Topic::getName).toList();
             // end::list_topics[]
 
             pubSubAdmin.deleteSubscription(subscriptionName);
@@ -372,14 +370,8 @@ class PubSubTemplateDocumentationIntegrationTests {
       // end::message_router[]
 
       // tag::adapter_callback[]
-      adapter.setPublishCallback(
-          new ListenableFutureCallback<String>() {
-            @Override
-            public void onFailure(Throwable ex) {}
-
-            @Override
-            public void onSuccess(String result) {}
-          });
+      adapter.setSuccessCallback((ackId, message) -> {});
+      adapter.setFailureCallback((cause, message) -> {});
       // end::adapter_callback[]
 
       return adapter;
@@ -421,7 +413,7 @@ class PubSubTemplateDocumentationIntegrationTests {
         throws ExecutionException, InterruptedException;
   }
 
-  class Logger {
+  static class Logger {
     List<String> messages = new ArrayList<>();
 
     void info(String message) {

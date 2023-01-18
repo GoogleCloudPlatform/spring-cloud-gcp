@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.data.spanner.repository.config;
 
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.repository.support.SpannerAuditingEventListener;
 import java.lang.annotation.Annotation;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.data.auditing.config.AuditingBeanDefinitionRegistrarSupport;
 import org.springframework.data.auditing.config.AuditingConfiguration;
+import org.springframework.data.mapping.context.PersistentEntities;
 
 /**
  * Registers the annotations and classes for providing auditing support in Spring Data Cloud
@@ -34,8 +36,6 @@ import org.springframework.data.auditing.config.AuditingConfiguration;
 public class SpannerAuditingRegistrar extends AuditingBeanDefinitionRegistrarSupport {
 
   private static final String AUDITING_HANDLER_BEAN_NAME = "spannerAuditingHandler";
-
-  private static final String MAPPING_CONTEXT_BEAN_NAME = "spannerMappingContext";
 
   @Override
   protected Class<? extends Annotation> getAnnotation() {
@@ -57,10 +57,9 @@ public class SpannerAuditingRegistrar extends AuditingBeanDefinitionRegistrarSup
   @Override
   protected BeanDefinitionBuilder getAuditHandlerBeanDefinitionBuilder(
       AuditingConfiguration configuration) {
-    BeanDefinitionBuilder builder =
-        configureDefaultAuditHandlerAttributes(
-            configuration, BeanDefinitionBuilder.rootBeanDefinition(AuditingHandler.class));
-    return builder.addConstructorArgReference(MAPPING_CONTEXT_BEAN_NAME);
+    return configureDefaultAuditHandlerAttributes(
+            configuration, BeanDefinitionBuilder.rootBeanDefinition(AuditingHandler.class))
+            .addConstructorArgValue(PersistentEntities.of(new SpannerMappingContext()));
   }
 
   @Override

@@ -21,35 +21,68 @@ Then, uncomment the `spring.cloud.gcp.datastore.credentials.location` property i
 +
 `$ mvn spring-boot:run`
 
-. Use shell to create, find and remove books.
-Available commands:
+. Use the following commands to create 4 books
 +
 ----
-save-book <title> <author> <year>
-find-all-books
-find-by-author <author>
-find-by-year-greater-than <year>
-find-by-author-year <author> <year>
-remove-all-books
+curl --location --request POST 'localhost:8080/saveBook' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "title": "The Moon Is a Harsh Mistress",
+    "author": "Robert A. Heinlein",
+    "year": 1966
+}'
+
+curl --location --request POST 'localhost:8080/saveBook' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "title": "Stranger in a Strange Land",
+    "author": "Robert A. Heinlein",
+    "year": 1961
+}'
+
+curl --location --request POST 'localhost:8080/saveBook' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "title": "The Crack in Space",
+    "author": "Philip K. Dick",
+    "year": 1966
+}'
+
+curl --location --request POST 'localhost:8080/saveBook' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "title": "Ubik",
+    "author": "Philip K. Dick",
+    "year": 1969
+}'
 ----
-+
-Example:
+
+. Use the following command to query all books
 +
 ----
-shell:>save-book "The Moon Is a Harsh Mistress" "Robert A. Heinlein" 1966
-shell:>save-book "Stranger in a Strange Land" "Robert A. Heinlein" 1961
-shell:>save-book "The Crack in Space" "Philip K. Dick" 1966
-shell:>save-book "Ubik" "Philip K. Dick" 1969
-
-shell:>find-by-year-greater-than 1967
-[Book{id=5734055144325120, title='Ubik', author='Philip K. Dick', year=1969}]
-
-shell:>find-by-author-year "Robert A. Heinlein" 1966
-[Book{id=5652161459388416, title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966}]
+curl --location --request GET 'localhost:8080/findAllBooks'
 ----
 
-. To clean up the database run the following command in the application shell:
+. Use the following command to find books by author
 +
-`shell:>remove-all-books`
+----
+curl --location --request GET 'localhost:8080/findByAuthor?author=Robert A. Heinlein'
+----
 
-. Use `Ctrl+C` `Ctrl+C` to exit
+. Use the following command to query books newer than a given publication year
++
+----
+curl --location --request GET 'localhost:8080/findByYearGreaterThan?year=1960'
+----
+
+. Use the following command to query books with a given author and publication year
++
+----
+curl --location --request GET 'localhost:8080/findByAuthorYear?author=Robert A. Heinlein&year=1966'
+----
+
+. Use the following command to delete all books
++
+----
+curl --location --request DELETE 'localhost:8080/removeAllBooks'
+----
