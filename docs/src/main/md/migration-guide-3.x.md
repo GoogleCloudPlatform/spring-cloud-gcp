@@ -24,16 +24,6 @@ Please ensure that you aren’t calling deprecated methods before upgrading.
 #### Spring Boot 3.0
 Spring Cloud GCP 4.0 builds on Spring Boot 3.0. Review the [Spring Boot 3.0 migration guide](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide) before continuing.
 
-##### Review Dependencies
-Run `mvn dependency:tree` (`gradlew dependencies` for Gradle projects) to see the dependency tree of your project. 
-Ensure Spring-related dependencies have matching versions:
-
-- Spring Boot 3.0
-- Spring Cloud 2022.0
-  - For detailed dependency versions, see "2022.0 (Kilburn)" column in [Spring Cloud: Supported Versions](https://github.com/spring-cloud/spring-cloud-release/wiki/Supported-Versions#supported-releases) table.
-- Spring Data 2022.0
-  - For detailed dependency versions, see [Spring Data 2022.0 Release Note](https://github.com/spring-projects/spring-data-commons/wiki/Spring-Data-2022.0-%28Turing%29-Release-Notes).
-
 #### Update Bill of Materials (BOM)
 If you’re a Maven user, add our BOM to your pom.xml `<dependencyManagement>` section.
 This will allow you to not specify versions for any of the Maven dependencies and instead delegate versioning to the BOM.
@@ -51,6 +41,16 @@ This will allow you to not specify versions for any of the Maven dependencies an
     </dependencies>
 </dependencyManagement>
 ```
+
+##### Review Dependencies
+Run `mvn dependency:tree` (`gradlew dependencies` for Gradle projects) to see the dependency tree of your project. 
+Ensure Spring-related dependencies have matching versions:
+
+- Spring Boot 3.0
+- Spring Cloud 2022.0
+  - For detailed dependency versions, see "2022.0 (Kilburn)" column in [Spring Cloud: Supported Versions](https://github.com/spring-cloud/spring-cloud-release/wiki/Supported-Versions#supported-releases) table.
+- Spring Data 2022.0
+  - For detailed dependency versions, see [Spring Data 2022.0 Release Note](https://github.com/spring-projects/spring-data-commons/wiki/Spring-Data-2022.0-%28Turing%29-Release-Notes).
 
 #### Cloud BigQuery
 Replaced `ListenableFuture` and `SettableListenableFuture` with `CompletableFuture` as the former two Classes are deprecated in Spring Framework 6.0.
