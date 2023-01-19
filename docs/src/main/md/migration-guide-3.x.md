@@ -7,7 +7,7 @@ This doc assumes you are running with Spring Cloud GCP 3.x.
 
 If you are currently running with an earlier major version of Spring Cloud GCP, i.e., 1.x or 2.x, we recommend that you upgrade to [Spring Cloud GCP 3.x](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/releases/tag/v3.0.0) before migrating to Spring Cloud GCP 4.0.
 
-- [Migration guide from Spring Cloud GCP 1.x to 2.x](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/blob/main/docs/src/main/asciidoc/migration-guide-1.x.adoc)
+- [Migration guide from Spring Cloud GCP 1.x to 2.x](./migration-guide-1.x.md)
 - [Spring Cloud GCP 3.0 Release Note](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/releases/tag/v3.0.0)
 
 Note that since Spring Cloud GCP 3.0 has few breaking changes, we only provide a release note.
@@ -70,8 +70,6 @@ Do not write secret values in the file.
 
 Please also remove `spring.cloud.gcp.secretmanager.enabled` and `spring.cloud.gcp.secretmanager.legacy` in `bootstrap.yml` or `bootstrap.properties` files.
 
-Please find more information in our [sample](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/58b9fb9e034c7208df5398facbc96c5e8cdae916/spring-cloud-gcp-samples/spring-cloud-gcp-secretmanager-sample) application.
-
 #### Cloud Trace
 Annotation `org.springframework.cloud.sleuth.annotation.NewSpan` is deprecated in favor of `io.micrometer.observation.annotation.Observed` since Spring Boot 3.0 builds on Micrometer 1.0 rather than Spring Cloud Sleuth (which is excluded from the Spring Cloud release train).
 
@@ -81,8 +79,6 @@ If you want to customize the additional span name, specify the `contextualName` 
 
 Please also remove `spring.sleuth.enabled` from your `application.properties` or `application.yml` file.
 Note that `spring.cloud.gcp.trace.enabled=true` is still required if you want to enable Trace.
-
-This [sample](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/28b8004fa09922d6dcbde19285c1faf7323c6644/spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample) is modified to show how to instrument trace and submit it to Cloud Trace.
 
 #### Cloud Vision
 Replaced `ListenableFuture` and `SettableListenableFuture` with `CompletableFuture` as the former two Classes are deprecated in Spring Framework 6.0.
