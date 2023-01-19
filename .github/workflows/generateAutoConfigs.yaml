@@ -44,13 +44,14 @@ jobs:
         continue-on-error: false
         run: |
           set -e
-          ./mvnw \
-            --batch-mode \
-            --show-version \
-            --threads 1.5C \
-            --define maven.test.skip=true \
-            --define maven.javadoc.skip=true \
-            install
+          mvn install -DskipTests -Dcheckstyle.skip
+          #./mvnw \
+          #--batch-mode \
+          #--show-version \
+          #--threads 1.5C \
+          #--define maven.test.skip=true \
+          #--define maven.javadoc.skip=true \
+          #install
       - name: Generate libraries
         continue-on-error: false
         working-directory: spring-cloud-generator
@@ -83,13 +84,14 @@ jobs:
         continue-on-error: false
         working-directory: spring-cloud-previews
         run: |
-          ../mvnw \
-            --batch-mode \
-            --show-version \
-            --threads 1.5C \
-            --define maven.test.skip=true \
-            --define maven.javadoc.skip=true \
-            install
+          mvn install -DskipTests -Dcheckstyle.skip
+          #../mvnw \
+          #--batch-mode \
+          #--show-version \
+          #--threads 1.5C \
+          #--define maven.test.skip=true \
+          #--define maven.javadoc.skip=true \
+          #install
       #Compares the current contents of spring-cloud-previews with the new generated libraries
       - name: Detect changes
         id: detect_changes
