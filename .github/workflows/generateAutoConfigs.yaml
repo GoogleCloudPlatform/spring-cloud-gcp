@@ -1,12 +1,5 @@
 name: Generate Spring Auto-Configurations
-
-on:
-  workflow_dispatch:
-    inputs:
-      google_cloud_java_commitish:
-        description: 'Commitish or tag of google-cloud-java (e.g. v1.1.0)'
-        required: true
-
+on: workflow_dispatch
 jobs:
   generateLibraries:
     runs-on: ubuntu-20.04
@@ -41,9 +34,9 @@ jobs:
         working-directory: spring-cloud-generator
         run: |
           set -x
-          bash generate-library-list.sh -c "$GOOGLE_CLOUD_JAVA_COMMITISH"
-        env:
-          GOOGLE_CLOUD_JAVA_COMMITISH: ${{ inputs.google_cloud_java_commitish }}
+          bash generate-library-list.sh
+          # trims library list to 4 libraries for testing - will be removed later
+          echo "$(head -n4 library_list.txt)" > library_list.txt
       - name: Compile non-autogen libraries
         continue-on-error: false
         run: |
