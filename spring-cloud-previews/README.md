@@ -4,3 +4,6 @@ This is a list of starters we provide with dependencies and auto-configurations 
 
 | Client Library Starter | Maven Artifact Name |
 |------------------------| --------------------|
+|accessapproval|com.google.cloud:google-cloud-accessapproval-spring-starter|
+|accesscontextmanager|com.google.cloud:google-identity-accesscontextmanager-spring-starter|
+|aiplatform|com.google.cloud:google-cloud-aiplatform-spring-starter|
