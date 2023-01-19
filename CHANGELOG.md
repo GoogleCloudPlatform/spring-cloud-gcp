@@ -22,7 +22,7 @@ This release officially introduces Spring Boot 3.x compatibility. Note that brea
 All changes within one large [Pull Request](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1287) as we think split PRs may bring compatibility issues. For the rational of each change, please refer to the description of the PR.
 
 ### Important version upgrades
-* Java 17
+* Minimum Java version: Java 17
 * Spring Framework libraries upgrade
     - [Spring Boot 3.0](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide)
     - [Spring Framework 6.0](https://github.com/spring-projects/spring-framework/wiki/Upgrading-to-Spring-Framework-6.x)
