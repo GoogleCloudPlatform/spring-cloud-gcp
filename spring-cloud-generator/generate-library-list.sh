@@ -1,4 +1,6 @@
 #!/bin/bash
+mkdir -p run-sanity-check
+touch run-sanity-check/generate-library-list-started
 
 #cmd line:: ./generate-library-list.sh -c v1.1.0
 
@@ -91,3 +93,4 @@ echo "Total in-scope client libraries: $count"
 
 # clean up
 rm -rf google-cloud-java/
+touch run-sanity-check/generate-library-list-finished
