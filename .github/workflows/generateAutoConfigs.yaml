@@ -36,7 +36,7 @@ jobs:
           set -x
           set -e
           sudo apt-get update
-          sudo apt-get install xmllint
+          sudo apt-get install install libxml2-utils
           bash generate-library-list.sh
           # trims library list to 4 libraries for testing - will be removed later
           echo "$(head -n4 library_list.txt)" > library_list.txt
