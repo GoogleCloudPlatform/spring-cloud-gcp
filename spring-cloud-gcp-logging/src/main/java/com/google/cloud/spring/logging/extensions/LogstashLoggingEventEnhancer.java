@@ -21,6 +21,7 @@ import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.logback.LoggingEventEnhancer;
 import com.google.cloud.spring.logging.JsonLoggingEventEnhancer;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import net.logstash.logback.marker.ObjectAppendingMarker;
@@ -41,14 +42,19 @@ public class LogstashLoggingEventEnhancer
   @Override
   public void enhanceLogEntry(LogEntry.Builder builder, ILoggingEvent event) {
     addLogstashMarkerIfNecessary(
-        event.getMarker(),
+        getFirstMarker(event.getMarkerList()),
         marker -> builder.addLabel(marker.getFieldName(), marker.getFieldValue().toString()));
   }
 
   @Override
   public void enhanceJsonLogEntry(Map<String, Object> jsonMap, ILoggingEvent event) {
     addLogstashMarkerIfNecessary(
-        event.getMarker(), marker -> jsonMap.put(marker.getFieldName(), marker.getFieldValue()));
+        getFirstMarker(event.getMarkerList()),
+        marker -> jsonMap.put(marker.getFieldName(), marker.getFieldValue()));
+  }
+
+  private Marker getFirstMarker(List<Marker> markers) {
+    return markers == null || markers.isEmpty() ? null : markers.get(0);
   }
 
   private void addLogstashMarkerIfNecessary(
@@ -57,8 +63,7 @@ public class LogstashLoggingEventEnhancer
       return;
     }
 
-    if (marker instanceof ObjectAppendingMarker) {
-      ObjectAppendingMarker objectAppendingMarker = (ObjectAppendingMarker) marker;
+    if (marker instanceof ObjectAppendingMarker objectAppendingMarker) {
       markerAdderFunction.accept(objectAppendingMarker);
     }
 

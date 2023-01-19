@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.cloud.storage.BlobInfo;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ class GcsAcceptModifiedAfterFileListFilterTest {
     filter.addDiscardCallback(blobInfo -> callbackTriggered.set(true));
 
     BlobInfo blobInfo = mock(BlobInfo.class);
-    when(blobInfo.getUpdateTime()).thenReturn(1L);
+    when(blobInfo.getUpdateTimeOffsetDateTime()).thenReturn(OffsetDateTime.now().minusDays(1L));
 
     filter.accept(blobInfo);
 
@@ -47,23 +48,23 @@ class GcsAcceptModifiedAfterFileListFilterTest {
   @Test
   void filterFiles() {
 
-    Instant now = Instant.now();
+    OffsetDateTime now = OffsetDateTime.now();
 
     BlobInfo oldBlob = mock(BlobInfo.class);
-    when(oldBlob.getUpdateTime()).thenReturn(now.toEpochMilli() - 1);
+    when(oldBlob.getUpdateTimeOffsetDateTime()).thenReturn(now.minusMinutes(1L));
 
     BlobInfo currentBlob = mock(BlobInfo.class);
-    when(currentBlob.getUpdateTime()).thenReturn(now.toEpochMilli());
+    when(currentBlob.getUpdateTimeOffsetDateTime()).thenReturn(now);
 
     BlobInfo newBlob = mock(BlobInfo.class);
-    when(newBlob.getUpdateTime()).thenReturn(now.toEpochMilli() + 1);
+    when(newBlob.getUpdateTimeOffsetDateTime()).thenReturn(now.plusMinutes(1L));
 
     ArrayList<BlobInfo> expected = new ArrayList<>();
     expected.add(currentBlob);
     expected.add(newBlob);
 
     assertThat(
-            new GcsAcceptModifiedAfterFileListFilter(now)
+            new GcsAcceptModifiedAfterFileListFilter(now.toInstant())
                 .filterFiles(new BlobInfo[] {oldBlob, currentBlob, newBlob}))
         .isEqualTo(expected);
   }

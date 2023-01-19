@@ -21,13 +21,13 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * If spring.cloud.gcp.datastore.emulator.enabled is set to true the emulator will be started as a
@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @since 1.2
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnProperty("spring.cloud.gcp.datastore.emulator.enabled")
 @AutoConfigureBefore(GcpDatastoreAutoConfiguration.class)
 @EnableConfigurationProperties(GcpDatastoreProperties.class)

@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +34,11 @@ public class SourceExample {
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-  @Autowired private Sinks.Many<UserMessage> postOffice;
+  private final Sinks.Many<UserMessage> postOffice;
+
+  public SourceExample(Sinks.Many<UserMessage> postOffice) {
+    this.postOffice = postOffice;
+  }
 
   @PostMapping("/newMessage")
   public UserMessage sendMessage(

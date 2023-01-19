@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.datastore.repository;
 
 import java.util.function.Function;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 
@@ -28,7 +29,7 @@ import org.springframework.data.repository.query.QueryByExampleExecutor;
  * @since 1.1
  */
 public interface DatastoreRepository<T, I>
-    extends PagingAndSortingRepository<T, I>, QueryByExampleExecutor<T> {
+    extends PagingAndSortingRepository<T, I>, QueryByExampleExecutor<T>, CrudRepository<T, I> {
 
   /**
    * Performs multiple read and write operations in a single transaction.

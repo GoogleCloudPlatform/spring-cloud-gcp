@@ -22,10 +22,11 @@ import static org.mockito.Mockito.when;
 
 import com.google.cloud.storage.BlobInfo;
 import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class GcsDiscardRecentModifiedFileListFilterTest {
@@ -38,8 +39,8 @@ class GcsDiscardRecentModifiedFileListFilterTest {
     filter.addDiscardCallback(blobInfo -> callbackTriggered.set(true));
 
     BlobInfo blobInfo = mock(BlobInfo.class);
-    when(blobInfo.getUpdateTime())
-        .thenReturn(ZonedDateTime.now(ZoneId.systemDefault()).toInstant().toEpochMilli());
+    when(blobInfo.getUpdateTimeOffsetDateTime())
+        .thenReturn(OffsetDateTime.now(ZoneId.systemDefault()));
 
     assertThat(filter.filterFiles(new BlobInfo[] {blobInfo})).isEmpty();
     assertThat(filter.accept(blobInfo)).isFalse();
@@ -51,12 +52,12 @@ class GcsDiscardRecentModifiedFileListFilterTest {
   void testFileOlderThanMinimumAgeIsReturned() {
     GcsDiscardRecentModifiedFileListFilter filter =
         new GcsDiscardRecentModifiedFileListFilter(Duration.ofSeconds(60));
-    filter.addDiscardCallback(blobInfo -> Assert.fail("Not expected"));
+    filter.addDiscardCallback(blobInfo -> Assertions.fail("Not expected"));
 
     BlobInfo blobInfo = mock(BlobInfo.class);
-    when(blobInfo.getUpdateTime())
+    when(blobInfo.getUpdateTimeOffsetDateTime())
         .thenReturn(
-            ZonedDateTime.now(ZoneId.systemDefault()).minusMinutes(3).toInstant().toEpochMilli());
+            OffsetDateTime.now(ZoneId.systemDefault()).minusMinutes(3));
 
     assertThat(filter.filterFiles(new BlobInfo[] {blobInfo})).hasSize(1);
     assertThat(filter.accept(blobInfo)).isTrue();

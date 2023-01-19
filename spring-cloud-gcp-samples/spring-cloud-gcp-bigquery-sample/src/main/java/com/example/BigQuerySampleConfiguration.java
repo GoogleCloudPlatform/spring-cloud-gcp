@@ -21,15 +21,16 @@ import com.google.cloud.bigquery.Job;
 import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import com.google.cloud.spring.bigquery.integration.BigQuerySpringMessageHeaders;
 import com.google.cloud.spring.bigquery.integration.outbound.BigQueryFileMessageHandler;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.gateway.GatewayProxyFactoryBean;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /** Sample configuration for using BigQuery with Spring Integration. */
 @Configuration
@@ -54,12 +55,13 @@ public class BigQuerySampleConfiguration {
     return messageHandler;
   }
 
+  @Primary
   @Bean
   public GatewayProxyFactoryBean gatewayProxyFactoryBean() {
     GatewayProxyFactoryBean factoryBean = new GatewayProxyFactoryBean(BigQueryFileGateway.class);
     factoryBean.setDefaultRequestChannel(bigQueryWriteDataChannel());
     factoryBean.setDefaultReplyChannel(bigQueryJobReplyChannel());
-    // Ensures that BigQueryFileGateway does not return double-wrapped ListenableFutures
+    // Ensures that BigQueryFileGateway does not return double-wrapped CompletableFutures
     factoryBean.setAsyncExecutor(null);
     return factoryBean;
   }
@@ -67,7 +69,7 @@ public class BigQuerySampleConfiguration {
   /** Spring Integration gateway which allows sending data to load to BigQuery through a channel. */
   @MessagingGateway
   public interface BigQueryFileGateway {
-    ListenableFuture<Job> writeToBigQueryTable(
+    CompletableFuture<Job> writeToBigQueryTable(
         byte[] csvData, @Header(BigQuerySpringMessageHeaders.TABLE_NAME) String tableName);
   }
 }

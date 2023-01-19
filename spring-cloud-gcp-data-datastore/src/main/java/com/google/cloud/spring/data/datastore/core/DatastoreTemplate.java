@@ -84,7 +84,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.AssociationHandler;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
-import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.data.util.TypeInformation;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -249,7 +249,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
   }
 
   private <T> List<T> findAllById(Set<Key> keys, Class<T> entityClass, ReadContext context) {
-    List<Key> missingKeys = keys.stream().filter(context::notCached).collect(Collectors.toList());
+    List<Key> missingKeys = keys.stream().filter(context::notCached).toList();
 
     if (!missingKeys.isEmpty()) {
       List<Entity> entities = getDatastoreReadWriter().fetch(missingKeys.toArray(new Key[] {}));
@@ -305,8 +305,8 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
       return query;
     }
     Cursor cursor = null;
-    if (pageable instanceof DatastorePageable) {
-      cursor = ((DatastorePageable) pageable).toCursor();
+    if (pageable instanceof DatastorePageable datastorePageable) {
+      cursor = datastorePageable.toCursor();
     }
     StructuredQuery.Builder builder = query.toBuilder();
     if (cursor != null) {
@@ -470,7 +470,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
     Entity entity = getDatastoreReadWriter().get(key);
     return this.datastoreEntityConverter.readAsMap(
-        String.class, ClassTypeInformation.from(valueType), entity);
+        String.class, TypeInformation.of(valueType), entity);
   }
 
   @Override
@@ -561,7 +561,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
                 List<KeyValue> keyValues =
                     StreamSupport.stream((iterableVal).spliterator(), false)
                         .map(o -> KeyValue.of(this.getKey(o, false)))
-                        .collect(Collectors.toList());
+                        .toList();
                 value = ListValue.of(keyValues);
 
               } else {
@@ -656,7 +656,7 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
     return keys.stream()
         .map(key -> convertEntityResolveDescendantsAndReferences(entityClass, key, context))
         .filter(Objects::nonNull)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private <T> T convertEntityResolveDescendantsAndReferences(

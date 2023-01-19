@@ -28,7 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
-import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.data.util.TypeInformation;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -60,7 +59,7 @@ class SpannerMappingContextTests {
     ApplicationContext applicationContext = mock(ApplicationContext.class);
     context.setApplicationContext(applicationContext);
 
-    context.createPersistentEntity(ClassTypeInformation.from(Object.class));
+    context.createPersistentEntity(TypeInformation.of(Object.class));
 
     verify(mockEntity, times(1)).setApplicationContext(applicationContext);
   }
@@ -70,7 +69,7 @@ class SpannerMappingContextTests {
     SpannerPersistentEntityImpl mockEntity = mock(SpannerPersistentEntityImpl.class);
     SpannerMappingContext context = createSpannerMappingContextWith(mockEntity);
 
-    context.createPersistentEntity(ClassTypeInformation.from(Object.class));
+    context.createPersistentEntity(TypeInformation.of(Object.class));
 
     verifyNoMoreInteractions(mockEntity);
   }

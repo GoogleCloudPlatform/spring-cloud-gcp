@@ -39,7 +39,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -65,15 +64,11 @@ import org.springframework.util.MultiValueMap;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class DatastoreSampleApplicationIntegrationTests {
 
-  private static PrintStream systemOut;
-
   private static ByteArrayOutputStream baos;
 
   final ObjectMapper mapper = new ObjectMapper();
 
   @Autowired private TestRestTemplate restTemplate;
-
-  @Autowired private CommandLineRunner commandLineRunner;
 
   @Autowired private SingerRepository singerRepository;
 
@@ -81,7 +76,7 @@ class DatastoreSampleApplicationIntegrationTests {
 
   @BeforeAll
   static void checkToRun() {
-    systemOut = System.out;
+    PrintStream systemOut = System.out;
     baos = new ByteArrayOutputStream();
     TeeOutputStream out = new TeeOutputStream(systemOut, baos);
     System.setOut(new PrintStream(out));
@@ -179,25 +174,24 @@ class DatastoreSampleApplicationIntegrationTests {
 
     assertThat(baos.toString())
         .contains(
-            "Query by example\n"
-                + "Singer{singerId='singer1', firstName='John', lastName='Doe', "
-                + "albums=[], firstBand=null, bands=, personalInstruments=}\n"
-                + "Singer{singerId='singer2', firstName='Jane', lastName='Doe', "
-                + "albums=[Album{albumName='a', date=2012-01-20}");
+            """
+                Query by example
+                Singer{singerId='singer1', firstName='John', lastName='Doe', albums=[], firstBand=null, bands=, personalInstruments=}
+                Singer{singerId='singer2', firstName='Jane', lastName='Doe', albums=[Album{albumName='a', date=2012-01-20}""");
 
     assertThat(baos.toString())
         .contains(
-            "Fluent Query by example\n"
-                + "Singer{singerId='singer1', firstName='John', lastName='Doe}\n"
-                + "Singer{singerId='singer2', firstName='Jane', lastName='Doe}");
+            """
+                Fluent Query by example
+                Singer{singerId='singer1', firstName='John', lastName='Doe}
+                Singer{singerId='singer2', firstName='Jane', lastName='Doe}""");
 
     assertThat(baos.toString())
         .contains(
-            "Using Pageable parameter\n"
-                + "Singer{singerId='singer1', firstName='John', lastName='Doe', "
-                + "albums=[], firstBand=null, bands=, personalInstruments=}\n"
-                + "Singer{singerId='singer2', firstName='Jane', lastName='Doe', "
-                + "albums=[Album{albumName='a', date=2012-01-20}");
+            """
+                Using Pageable parameter
+                Singer{singerId='singer1', firstName='John', lastName='Doe', albums=[], firstBand=null, bands=, personalInstruments=}
+                Singer{singerId='singer2', firstName='Jane', lastName='Doe', albums=[Album{albumName='a', date=2012-01-20}""");
 
     assertThat(baos.toString()).contains("Find by reference with query\n" + "[Richard]");
 

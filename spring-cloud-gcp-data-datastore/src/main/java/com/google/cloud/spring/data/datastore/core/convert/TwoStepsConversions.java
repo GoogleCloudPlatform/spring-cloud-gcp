@@ -34,12 +34,12 @@ import com.google.cloud.spring.data.datastore.core.util.ValueUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.converter.Converter;
@@ -47,7 +47,6 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.data.convert.CustomConversions;
 import org.springframework.data.mapping.PersistentEntity;
-import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.data.util.TypeInformation;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -62,7 +61,7 @@ import org.springframework.util.ClassUtils;
  */
 public class TwoStepsConversions implements ReadWriteConversions {
   private static final Converter<Blob, byte[]> BLOB_TO_BYTE_ARRAY_CONVERTER =
-      new Converter<Blob, byte[]>() {
+      new Converter<>() {
         @Override
         public byte[] convert(Blob source) {
           return source.toByteArray();
@@ -70,7 +69,7 @@ public class TwoStepsConversions implements ReadWriteConversions {
       };
 
   private static final Converter<byte[], Blob> BYTE_ARRAY_TO_BLOB_CONVERTER =
-      new Converter<byte[], Blob>() {
+      new Converter<>() {
         @Override
         public Blob convert(byte[] source) {
           return Blob.copyFrom(source);
@@ -106,14 +105,14 @@ public class TwoStepsConversions implements ReadWriteConversions {
     this.internalConversionService.addConverter(BLOB_TO_BYTE_ARRAY_CONVERTER);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public <T> T convertOnRead(Object val, Class targetCollectionType, Class targetComponentType) {
-    return (T)
-        convertOnRead(
-            val,
-            EmbeddedType.NOT_EMBEDDED,
-            targetCollectionType,
-            ClassTypeInformation.from(targetComponentType));
+    return convertOnRead(
+        val,
+        EmbeddedType.NOT_EMBEDDED,
+        targetCollectionType,
+        TypeInformation.of(targetComponentType));
   }
 
   @Override
@@ -130,34 +129,25 @@ public class TwoStepsConversions implements ReadWriteConversions {
     return convertOnRead(val, embeddedType, collectionType, componentTypeInformation);
   }
 
+  @SuppressWarnings("unchecked")
   private <T> T convertOnRead(
       Object val,
       EmbeddedType embeddedType,
       Class targetCollectionType,
-      TypeInformation targetComponentType) {
+      TypeInformation<?> targetComponentType) {
     if (val == null) {
       return null;
     }
-    BiFunction<Object, TypeInformation<?>, ?> readConverter;
-    switch (embeddedType) {
-      case EMBEDDED_MAP:
-        readConverter =
-            (x, typeInformation) ->
-                convertOnReadSingleEmbeddedMap(
-                    x,
-                    typeInformation.getComponentType().getType(),
-                    typeInformation.getMapValueType(),
-                    targetComponentType);
-        break;
-      case EMBEDDED_ENTITY:
-        readConverter = this::convertOnReadSingleEmbedded;
-        break;
-      case NOT_EMBEDDED:
-        readConverter = this::convertOnReadSingle;
-        break;
-      default:
-        throw new DatastoreDataException("Unexpected property embedded type: " + embeddedType);
-    }
+    BiFunction<Object, TypeInformation<?>, ?> readConverter = switch (embeddedType) {
+      case EMBEDDED_MAP -> (x, typeInformation) ->
+          convertOnReadSingleEmbeddedMap(
+              x,
+              Objects.requireNonNull(typeInformation.getComponentType()).getType(),
+              typeInformation.getMapValueType(),
+              targetComponentType);
+      case EMBEDDED_ENTITY -> this::convertOnReadSingleEmbedded;
+      case NOT_EMBEDDED -> this::convertOnReadSingle;
+    };
 
     if (ValueUtil.isCollectionLike(val.getClass())
         && targetCollectionType != null
@@ -166,15 +156,15 @@ public class TwoStepsConversions implements ReadWriteConversions {
       try {
         Assert.isInstanceOf(
             Iterable.class, val, "Value passed to convertOnRead expected to be Iterable");
-        List elements =
+        List<?> elements =
             StreamSupport.stream(((Iterable<?>) val).spliterator(), false)
                 .map(
                     v -> {
-                      Object o = (v instanceof Value) ? ((Value) v).get() : v;
+                      Object o = (v instanceof Value) ? ((Value<?>) v).get() : v;
                       return readConverter.apply(o, targetComponentType);
                     })
-                .collect(Collectors.toList());
-        return (T) convertCollection(elements, targetCollectionType);
+                .toList();
+        return convertCollection(elements, targetCollectionType);
       } catch (ConversionException | DatastoreDataException ex) {
         throw new DatastoreDataException("Unable process elements of a collection", ex);
       }
@@ -187,10 +177,10 @@ public class TwoStepsConversions implements ReadWriteConversions {
       Object value,
       Class<T> keyType,
       TypeInformation<R> targetComponentType,
-      TypeInformation componentType) {
+      TypeInformation<?> componentType) {
     Assert.notNull(value, "Cannot convert a null value.");
-    if (value instanceof BaseEntity) {
-      return this.datastoreEntityConverter.readAsMap((BaseEntity) value, componentType);
+    if (value instanceof BaseEntity<?> baseEntity) {
+      return this.datastoreEntityConverter.readAsMap(baseEntity, componentType);
     }
     throw new DatastoreDataException(
         "Embedded entity was expected, but " + value.getClass() + " found");
@@ -200,9 +190,9 @@ public class TwoStepsConversions implements ReadWriteConversions {
   private <T> T convertOnReadSingleEmbedded(
       Object value, TypeInformation<?> targetTypeInformation) {
     Assert.notNull(value, "Cannot convert a null value.");
-    if (value instanceof BaseEntity) {
+    if (value instanceof BaseEntity<?> baseEntity) {
       return (T)
-          this.datastoreEntityConverter.read(targetTypeInformation.getType(), (BaseEntity) value);
+          this.datastoreEntityConverter.read(targetTypeInformation.getType(), baseEntity);
     }
     throw new DatastoreDataException(
         "Embedded entity was expected, but " + value.getClass() + " found");
@@ -213,8 +203,8 @@ public class TwoStepsConversions implements ReadWriteConversions {
     if (val == null) {
       return null;
     }
-    Class targetType = boxIfNeeded(targetTypeInformation.getType());
-    Class sourceType = val.getClass();
+    Class<?> targetType = boxIfNeeded(targetTypeInformation.getType());
+    Class<?> sourceType = val.getClass();
     Object result = null;
     TypeTargets typeTargets = computeTypeTargets(targetType);
 
@@ -271,27 +261,19 @@ public class TwoStepsConversions implements ReadWriteConversions {
 
     Function<Object, Value> writeConverter = this::convertOnWriteSingle;
     if (proppertyVal != null) {
-      switch (embeddedType) {
-        case EMBEDDED_MAP:
-          writeConverter =
-              x -> convertOnWriteSingleEmbeddedMap(x, fieldName, typeInformation.getMapValueType());
-          break;
-        case EMBEDDED_ENTITY:
-          writeConverter = x -> convertOnWriteSingleEmbedded(x, fieldName);
-          break;
-        case NOT_EMBEDDED:
-          writeConverter = this::convertOnWriteSingle;
-          break;
-        default:
-          throw new DatastoreDataException("Unexpected property embedded type: " + embeddedType);
-      }
+      writeConverter = switch (embeddedType) {
+        case EMBEDDED_MAP -> x -> convertOnWriteSingleEmbeddedMap(x, fieldName,
+            typeInformation.getMapValueType());
+        case EMBEDDED_ENTITY -> x -> convertOnWriteSingleEmbedded(x, fieldName);
+        case NOT_EMBEDDED -> this::convertOnWriteSingle;
+      };
     }
 
     val = ValueUtil.toListIfArray(val);
 
-    if (val instanceof Iterable) {
+    if (val instanceof Iterable<?> iterable) {
       List<Value<?>> values = new ArrayList<>();
-      for (Object propEltValue : (Iterable) val) {
+      for (Object propEltValue : iterable) {
         values.add(writeConverter.apply(propEltValue));
       }
       return ListValue.of(values);
@@ -315,8 +297,8 @@ public class TwoStepsConversions implements ReadWriteConversions {
               .map(PersistentEntity::getIdProperty)
               .map(
                   id ->
-                      this.datastoreMappingContext
-                          .getPersistentEntity(val.getClass())
+                      Objects.requireNonNull(this.datastoreMappingContext
+                              .getPersistentEntity(val.getClass()))
                           .getPropertyAccessor(val)
                           .getProperty(id));
 
@@ -340,7 +322,7 @@ public class TwoStepsConversions implements ReadWriteConversions {
             String field =
                 convertOnReadSingle(
                     convertOnWriteSingle(e.getKey()).get(),
-                    ClassTypeInformation.from(String.class));
+                    TypeInformation.of(String.class));
             builder.set(
                 field,
                 convertOnWrite(
@@ -430,15 +412,8 @@ public class TwoStepsConversions implements ReadWriteConversions {
     this.datastoreEntityConverter = datastoreEntityConverter;
   }
 
-  private static class TypeTargets {
-    private Class<?> firstStepTarget;
-
-    private Class<?> secondStepTarget;
-
-    TypeTargets(Class<?> firstStepTarget, Class<?> secondStepTarget) {
-      this.firstStepTarget = firstStepTarget;
-      this.secondStepTarget = secondStepTarget;
-    }
+  private record TypeTargets(Class<?> firstStepTarget,
+                             Class<?> secondStepTarget) {
 
     Class<?> getFirstStepTarget() {
       return this.firstStepTarget;

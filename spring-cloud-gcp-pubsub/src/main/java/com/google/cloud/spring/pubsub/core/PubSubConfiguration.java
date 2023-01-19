@@ -133,19 +133,6 @@ public class PubSubConfiguration {
   }
 
   /**
-   * Returns properties for the specified subscription name and project ID.
-   *
-   * @param name short subscription name
-   * @param projectId subscription project name
-   * @return user-provided subscription properties
-   * @deprecated use {@link #getSubscriptionProperties(ProjectSubscriptionName)} instead.
-   */
-  @Deprecated
-  public Subscriber getSubscriber(String name, String projectId) {
-    return getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(name, projectId));
-  }
-
-  /**
    * Returns properties for the specified fully-qualified {@link ProjectSubscriptionName}.
    *
    * @param projectSubscriptionName fully-qualified {@link ProjectSubscriptionName}
@@ -159,22 +146,6 @@ public class PubSubConfiguration {
     }
 
     return globalSubscriber;
-  }
-
-  /**
-   * Computes flow control settings to use. The subscription-specific property takes precedence if
-   * both global and subscription-specific properties are set. If subscription-specific settings are
-   * not set then global settings are picked.
-   *
-   * @param subscriptionName subscription name
-   * @param projectId project id
-   * @return flow control settings
-   * @deprecated use {@link #computeSubscriberFlowControlSettings(ProjectSubscriptionName)}
-   */
-  @Deprecated
-  public FlowControl computeSubscriberFlowControlSettings(
-      String subscriptionName, String projectId) {
-    return computeSubscriberFlowControlSettings(ProjectSubscriptionName.of(projectId, subscriptionName));
   }
 
   /**
@@ -318,21 +289,6 @@ public class PubSubConfiguration {
         getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
         .getPullEndpoint();
     return pullEndpoint != null ? pullEndpoint : this.globalSubscriber.getPullEndpoint();
-  }
-
-  /**
-   * Computes the retry settings. The subscription-specific property takes precedence if both global
-   * and subscription-specific properties are set. If subscription-specific settings are not set
-   * then the global settings are picked.
-   *
-   * @param subscriptionName subscription name
-   * @param projectId project id
-   * @return retry settings
-   * @deprecated Use {{@link #computeSubscriberRetrySettings(ProjectSubscriptionName)}}
-   */
-  @Deprecated
-  public Retry computeSubscriberRetrySettings(String subscriptionName, String projectId) {
-    return computeSubscriberRetrySettings(ProjectSubscriptionName.of(projectId, subscriptionName));
   }
 
   /**

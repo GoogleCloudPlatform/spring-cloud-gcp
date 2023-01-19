@@ -19,7 +19,6 @@ package com.google.cloud.spring.data.spanner.core.mapping;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Type;
 import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
-import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityWriter;
 import java.util.ArrayList;
@@ -79,7 +78,7 @@ public class SpannerPersistentEntityImpl<T>
 
   private final SpannerEntityProcessor spannerEntityProcessor;
 
-  private StandardEvaluationContext context;
+  private final StandardEvaluationContext context;
 
   private SpannerCompositeKeyProperty idProperty;
 
@@ -90,22 +89,6 @@ public class SpannerPersistentEntityImpl<T>
   private final String where;
 
   private final Set<Class<?>> jsonProperties = new HashSet<>();
-
-  /**
-   * Creates a {@link SpannerPersistentEntityImpl}.
-   *
-   * @param information type information about the underlying entity type.
-   * @deprecated remove on next major release. use
-   *     {@link #SpannerPersistentEntityImpl(TypeInformation,
-   *     SpannerMappingContext, SpannerEntityProcessor)} instead.
-   */
-  @Deprecated
-  public SpannerPersistentEntityImpl(TypeInformation<T> information) {
-    this(
-        information,
-        new SpannerMappingContext(),
-        new ConverterAwareMappingSpannerEntityProcessor(new SpannerMappingContext()));
-  }
 
   /**
    * Creates a {@link SpannerPersistentEntityImpl}.
@@ -467,8 +450,7 @@ public class SpannerPersistentEntityImpl<T>
       SpannerPersistentProperty[] primaryKeyProperties = owner.getPrimaryKeyProperties();
 
       Iterator<Object> partsIterator;
-      if (value instanceof Key) {
-        Key keyValue = (Key) value;
+      if (value instanceof Key keyValue) {
         if (keyValue.size() != primaryKeyProperties.length) {
           throw new SpannerDataException(
               "The number of key parts is not equal to the number of primary key properties");
