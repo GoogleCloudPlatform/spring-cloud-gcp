@@ -18,11 +18,10 @@ package com.example;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
+import io.micrometer.observation.annotation.Observed;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -40,15 +39,20 @@ public class WorkService {
 
   private final RestTemplate restTemplate;
 
-  @Autowired private PubSubTemplate pubSubTemplate;
+  private final PubSubTemplate pubSubTemplate;
 
-  @Autowired private MessageChannel pubsubOutputChannel;
+  private final MessageChannel pubsubOutputChannel;
 
-  public WorkService(RestTemplate restTemplate) {
+  public WorkService(
+      RestTemplate restTemplate,
+      PubSubTemplate pubSubTemplate,
+      MessageChannel pubsubOutputChannel) {
     this.restTemplate = restTemplate;
+    this.pubSubTemplate = pubSubTemplate;
+    this.pubsubOutputChannel = pubsubOutputChannel;
   }
 
-  @NewSpan
+  @Observed(contextualName = "visit-meet-endpoint")
   public void visitMeetEndpoint(String meetUrl) {
     LOGGER.info("starting busy work");
     for (int i = 0; i < 3; i++) {
@@ -57,14 +61,14 @@ public class WorkService {
     LOGGER.info("finished busy work");
   }
 
-  @NewSpan
+  @Observed(contextualName = "send-message-spring-integration")
   public void sendMessageSpringIntegration(String text) throws MessagingException {
     final Message<?> message =
         MessageBuilder.withPayload(text).setHeader(GcpPubSubHeaders.TOPIC, sampleTopic).build();
     pubsubOutputChannel.send(message);
   }
 
-  @NewSpan
+  @Observed(contextualName = "send-message-pub-sub-template")
   public void sendMessagePubSubTemplate(String text) throws MessagingException {
     pubSubTemplate.publish(sampleTopic, text);
   }

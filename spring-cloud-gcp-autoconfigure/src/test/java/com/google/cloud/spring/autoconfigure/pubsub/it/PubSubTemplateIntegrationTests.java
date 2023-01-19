@@ -50,7 +50,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.awaitility.Awaitility;
@@ -181,10 +180,10 @@ class PubSubTemplateIntegrationTests {
             messagesSet.addAll(
                 newMessages.stream()
                     .map(message -> message.getPubsubMessage().getData().toStringUtf8())
-                    .collect(Collectors.toList()));
+                    .toList());
           }
 
-          assertThat(messagesSet.size()).as("check that we received all the messages").isEqualTo(3);
+          assertThat(messagesSet).as("check that we received all the messages").hasSize(3);
 
           ackableMessages.forEach(
               message -> {

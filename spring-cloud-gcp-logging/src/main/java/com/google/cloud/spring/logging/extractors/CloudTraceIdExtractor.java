@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.logging.extractors;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /** Extracts trace IDs from HTTP requests using the x-cloud-trace-context header. */
 public class CloudTraceIdExtractor implements TraceIdExtractor {

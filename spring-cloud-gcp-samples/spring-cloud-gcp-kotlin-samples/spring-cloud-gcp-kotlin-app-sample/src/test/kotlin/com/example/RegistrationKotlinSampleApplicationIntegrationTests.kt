@@ -68,8 +68,8 @@ class RegistrationKotlinSampleApplicationIntegrationTests {
 					.perform(get(REGISTRANTS_URL))
 					.andReturn()
 
-			val resultParams = mvcResult.modelAndView.modelMap
-			val personsList = resultParams.get("personsList") as List<Person>
+			val resultParams = mvcResult.modelAndView?.modelMap
+			val personsList = resultParams?.get("personsList") as List<Person>
 			assertThat(personsList).hasSize(1)
 
 			val person = personsList[0]

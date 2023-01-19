@@ -30,9 +30,9 @@ import com.google.pubsub.v1.PubsubMessage;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import org.springframework.util.Assert;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * Default implementation of {@link PubSubOperations}.
@@ -105,18 +105,18 @@ public class PubSubTemplate implements PubSubOperations {
    * PubsubMessage} and then publish it.
    */
   @Override
-  public <T> ListenableFuture<String> publish(
+  public <T> CompletableFuture<String> publish(
       String topic, T payload, Map<String, String> headers) {
     return this.pubSubPublisherTemplate.publish(topic, payload, headers);
   }
 
   @Override
-  public <T> ListenableFuture<String> publish(String topic, T payload) {
+  public <T> CompletableFuture<String> publish(String topic, T payload) {
     return this.pubSubPublisherTemplate.publish(topic, payload, null);
   }
 
   @Override
-  public ListenableFuture<String> publish(final String topic, PubsubMessage pubsubMessage) {
+  public CompletableFuture<String> publish(final String topic, PubsubMessage pubsubMessage) {
     return this.pubSubPublisherTemplate.publish(topic, pubsubMessage);
   }
 
@@ -142,7 +142,7 @@ public class PubSubTemplate implements PubSubOperations {
   }
 
   @Override
-  public ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(
+  public CompletableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(
       String subscription, Integer maxMessages, Boolean returnImmediately) {
     return this.pubSubSubscriberTemplate.pullAsync(subscription, maxMessages, returnImmediately);
   }
@@ -155,7 +155,7 @@ public class PubSubTemplate implements PubSubOperations {
   }
 
   @Override
-  public <T> ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(
+  public <T> CompletableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(
       String subscription, Integer maxMessages, Boolean returnImmediately, Class<T> payloadType) {
     return this.pubSubSubscriberTemplate.pullAndConvertAsync(
         subscription, maxMessages, returnImmediately, payloadType);
@@ -168,7 +168,7 @@ public class PubSubTemplate implements PubSubOperations {
   }
 
   @Override
-  public ListenableFuture<List<PubsubMessage>> pullAndAckAsync(
+  public CompletableFuture<List<PubsubMessage>> pullAndAckAsync(
       String subscription, Integer maxMessages, Boolean returnImmediately) {
     return this.pubSubSubscriberTemplate.pullAndAckAsync(
         subscription, maxMessages, returnImmediately);
@@ -180,24 +180,24 @@ public class PubSubTemplate implements PubSubOperations {
   }
 
   @Override
-  public ListenableFuture<PubsubMessage> pullNextAsync(String subscription) {
+  public CompletableFuture<PubsubMessage> pullNextAsync(String subscription) {
     return this.pubSubSubscriberTemplate.pullNextAsync(subscription);
   }
 
   @Override
-  public ListenableFuture<Void> ack(
+  public CompletableFuture<Void> ack(
       Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages) {
     return this.pubSubSubscriberTemplate.ack(acknowledgeablePubsubMessages);
   }
 
   @Override
-  public ListenableFuture<Void> nack(
+  public CompletableFuture<Void> nack(
       Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages) {
     return this.pubSubSubscriberTemplate.nack(acknowledgeablePubsubMessages);
   }
 
   @Override
-  public ListenableFuture<Void> modifyAckDeadline(
+  public CompletableFuture<Void> modifyAckDeadline(
       Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages,
       int ackDeadlineSeconds) {
     return this.pubSubSubscriberTemplate.modifyAckDeadline(

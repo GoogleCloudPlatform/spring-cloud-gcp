@@ -26,7 +26,6 @@ import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.messaging.MessageHandler;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
 /** Configuration for sending custom JSON payloads to a Pub/Sub topic. */
 @Configuration
@@ -45,19 +44,8 @@ public class SenderConfiguration {
   @ServiceActivator(inputChannel = "pubSubOutputChannel")
   public MessageHandler messageSender(PubSubTemplate pubSubTemplate) {
     PubSubMessageHandler adapter = new PubSubMessageHandler(pubSubTemplate, TOPIC_NAME);
-    adapter.setPublishCallback(
-        new ListenableFutureCallback<String>() {
-          @Override
-          public void onFailure(Throwable ex) {
-            LOGGER.info("There was an error sending the message.");
-          }
-
-          @Override
-          public void onSuccess(String result) {
-            LOGGER.info("Message was sent successfully.");
-          }
-        });
-
+    adapter.setSuccessCallback((ackId, message) -> LOGGER.info("Message was sent successfully."));
+    adapter.setFailureCallback((cause, message) -> LOGGER.info("There was an error sending the message."));
     return adapter;
   }
 

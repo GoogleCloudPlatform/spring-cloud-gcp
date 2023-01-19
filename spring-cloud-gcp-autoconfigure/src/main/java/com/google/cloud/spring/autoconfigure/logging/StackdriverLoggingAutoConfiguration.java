@@ -22,6 +22,7 @@ import com.google.cloud.spring.logging.LoggingWebMvcConfigurer;
 import com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor;
 import com.google.cloud.spring.logging.extractors.CloudTraceIdExtractor;
 import com.google.cloud.spring.logging.extractors.TraceIdExtractor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -29,7 +30,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -38,7 +38,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
  * configuration is turned on only if Trace support is not used and Web MVC is used. Otherwise, the
  * MDC context will be used by the Logback appenders.
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass({HandlerInterceptor.class, LoggingAppender.class, TraceIdExtractor.class})
 @ConditionalOnMissingBean(name = "stackdriverTracingCustomizer")
 @AutoConfigureAfter(StackdriverTraceAutoConfiguration.class)

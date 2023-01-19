@@ -22,8 +22,8 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
 import java.util.Set;
+import org.springframework.data.mapping.InstanceCreatorMetadata;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
-import org.springframework.data.mapping.PreferredConstructor;
 import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.data.mapping.model.EntityInstantiator;
 import org.springframework.data.mapping.model.EntityInstantiators;
@@ -39,9 +39,9 @@ class ConverterAwareMappingSpannerEntityReader implements SpannerEntityReader {
 
   private final SpannerMappingContext spannerMappingContext;
 
-  private EntityInstantiators instantiators;
+  private final EntityInstantiators instantiators;
 
-  private SpannerReadConverter converter;
+  private final SpannerReadConverter converter;
 
   ConverterAwareMappingSpannerEntityReader(
       SpannerMappingContext spannerMappingContext, SpannerReadConverter spannerReadConverter) {
@@ -75,8 +75,8 @@ class ConverterAwareMappingSpannerEntityReader implements SpannerEntityReader {
     StructPropertyValueProvider propertyValueProvider =
         new StructPropertyValueProvider(structAccessor, this.converter, this, allowMissingColumns);
 
-    PreferredConstructor<?, SpannerPersistentProperty> persistenceConstructor =
-        persistentEntity.getPersistenceConstructor();
+    InstanceCreatorMetadata<SpannerPersistentProperty> instanceCreatorMetadata =
+        persistentEntity.getInstanceCreatorMetadata();
 
     // @formatter:off
     ParameterValueProvider<SpannerPersistentProperty> parameterValueProvider =
@@ -105,7 +105,7 @@ class ConverterAwareMappingSpannerEntityReader implements SpannerEntityReader {
                     includeColumns,
                     readAllColumns,
                     allowMissingColumns,
-                    persistenceConstructor)) {
+                    instanceCreatorMetadata)) {
 
                   Object value = propertyValueProvider.getPropertyValue(spannerPersistentProperty);
                   accessor.setProperty(spannerPersistentProperty, value);
@@ -122,7 +122,7 @@ class ConverterAwareMappingSpannerEntityReader implements SpannerEntityReader {
       Set<String> includeColumns,
       boolean readAllColumns,
       boolean allowMissingColumns,
-      PreferredConstructor<?, SpannerPersistentProperty> persistenceConstructor) {
+      InstanceCreatorMetadata<SpannerPersistentProperty> persistenceConstructor) {
     String columnName = spannerPersistentProperty.getColumnName();
     boolean notRequiredByPartialRead = !readAllColumns && !includeColumns.contains(columnName);
 
@@ -130,7 +130,7 @@ class ConverterAwareMappingSpannerEntityReader implements SpannerEntityReader {
         || notRequiredByPartialRead
         || isMissingColumn(struct, allowMissingColumns, columnName)
         || struct.isNull(columnName)
-        || persistenceConstructor.isConstructorParameter(spannerPersistentProperty);
+        || persistenceConstructor.isCreatorParameter(spannerPersistentProperty);
   }
 
   private boolean isMissingColumn(

@@ -21,9 +21,9 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("users")
 public class User {
 
-  private String email;
-  private String firstName;
-  private String lastName;
+  private final String email;
+  private final String firstName;
+  private final String lastName;
 
   public User(String email, String firstName, String lastName) {
     this.email = email;

@@ -92,7 +92,7 @@ BigQuery table.
 BigQueryTemplate bigQueryTemplate;
 
 public void loadData(InputStream dataInputStream, String tableName) {
-  ListenableFuture<Job> bigQueryJobFuture =
+  CompletableFuture<Job> bigQueryJobFuture =
       bigQueryTemplate.writeDataToTable(
           tableName,
           dataFile.getInputStream(),
@@ -118,7 +118,7 @@ BigQueryTemplate bigQueryTemplate;
    */
   public void loadJsonStream(String tableName, InputStream jsonInputStream)
       throws ExecutionException, InterruptedException {
-    ListenableFuture<WriteApiResponse> writeApFuture =
+    CompletableFuture<WriteApiResponse> writeApFuture =
         bigQueryTemplate.writeJsonStream(tableName, jsonInputStream);
     WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
     if (!apiRes.isSuccessful()){
@@ -144,7 +144,7 @@ BigQueryTemplate bigQueryTemplate;
    */
   public void createTableAndloadJsonStream(String tableName, InputStream jsonInputStream, Schema tableSchema)
       throws ExecutionException, InterruptedException {
-    ListenableFuture<WriteApiResponse> writeApFuture =
+    CompletableFuture<WriteApiResponse> writeApFuture =
         bigQueryTemplate.writeJsonStream(tableName, jsonInputStream, tableSchema);//using the overloaded method which created the table when tableSchema is passed
     WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
     if (!apiRes.isSuccessful()){
@@ -218,7 +218,7 @@ provides metadata and information about the load file operation.
 
 By default, the `BigQueryFileMessageHandler` is run in asynchronous
 mode, with `setSync(false)`, and it will reply with a
-`ListenableFuture<Job>` on the reply channel. The future is tied to the
+`CompletableFuture<Job>` on the reply channel. The future is tied to the
 status of the data loading job and will complete when the job completes.
 
 If the handler is run in synchronous mode with `setSync(true)`, then the
@@ -228,7 +228,7 @@ it is complete.
 <div class="note">
 
 If you decide to use Spring Integration Gateways and you wish to receive
-`ListenableFuture<Job>` as a reply object in the Gateway, you will have
+`CompletableFuture<Job>` as a reply object in the Gateway, you will have
 to call `.setAsyncExecutor(null)` on your `GatewayProxyFactoryBean`.
 This is needed to indicate that you wish to reply on the built-in async
 support rather than rely on async handling of the gateway.

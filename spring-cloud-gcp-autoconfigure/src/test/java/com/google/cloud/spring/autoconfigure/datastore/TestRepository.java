@@ -19,4 +19,4 @@ package com.google.cloud.spring.autoconfigure.datastore;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 
 /** A repository for testing instantiation. */
-public interface TestRepository extends DatastoreRepository {}
+public interface TestRepository<T, I> extends DatastoreRepository<T, I> {}

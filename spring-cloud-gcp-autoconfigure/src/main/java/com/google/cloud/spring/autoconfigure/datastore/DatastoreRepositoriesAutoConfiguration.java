@@ -19,11 +19,11 @@ package com.google.cloud.spring.autoconfigure.datastore;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.config.DatastoreRepositoryConfigurationExtension;
 import com.google.cloud.spring.data.datastore.repository.support.DatastoreRepositoryFactoryBean;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Import;
  *
  * @since 1.1
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass(DatastoreRepository.class)
 @ConditionalOnMissingBean({
   DatastoreRepositoryFactoryBean.class,
