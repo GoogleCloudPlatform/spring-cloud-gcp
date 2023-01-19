@@ -79,6 +79,7 @@ sudo pandoc \
   docs/src/main/md/kotlin.md              \
   docs/src/main/md/configuration.md       \
   docs/src/main/md/migration-guide-1.x.md \
+  docs/src/main/md/migration-guide-3.x.md \
   -t markdown_github -o docs/src/main/md/documentation.md
 
 # copy and replace {project-version} documentation

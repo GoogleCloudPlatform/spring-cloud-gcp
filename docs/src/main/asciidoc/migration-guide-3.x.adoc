@@ -1,11 +1,11 @@
-== Migration Guide from Spring Cloud GCP v3.x to v4.x
+== Migration Guide from Spring Cloud GCP 3.x to 4.x
 === Before you start
 ==== Upgrade to the 3.x version
 This doc assumes you are running with Spring Cloud GCP 3.x.
 
 If you are currently running with an earlier major version of Spring Cloud GCP, i.e., 1.x or 2.x, we recommend that you upgrade to link:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/releases/tag/v3.0.0[Spring Cloud GCP 3.x] before migrating to Spring Cloud GCP 4.0.
 
-* link:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/blob/9e880aa2c23ed8a96727921686513e08da60f018/docs/src/main/asciidoc/migration-guide-1.x.adoc[Migration guide from Spring Cloud GCP 1.x to 2.x]
+* link:migration-guide-1.x.adoc[Migration guide from Spring Cloud GCP 1.x to 2.x]
 * link:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/releases/tag/v3.0.0[Spring Cloud GCP 3.0 Release Note]
 
 Note that since Spring Cloud GCP 3.0 has few breaking changes, we only provide a release note.
@@ -23,7 +23,8 @@ Please ensure that you aren’t calling deprecated methods before upgrading.
 Spring Cloud GCP 4.0 builds on Spring Boot 3.0. Review the link:https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide[Spring Boot 3.0 migration guide] before continuing.
 
 ===== Review Dependencies
-Run `mvn dependency:tree` (`gradlew dependencies` for Gradle projects) to see the dependency tree of your project. Ensure Spring-related dependencies have matching versions:
+Run `mvn dependency:tree` (`gradlew dependencies` for Gradle projects) to see the dependency tree of your project.
+Ensure Spring-related dependencies have matching versions:
 
 * Spring Boot 3.0
 * Spring Cloud 2022.0
@@ -68,8 +69,6 @@ Do not write secret values in the file.
 
 Please also remove `spring.cloud.gcp.secretmanager.enabled` and `spring.cloud.gcp.secretmanager.legacy` in `bootstrap.yml` or `bootstrap.properties` files.
 
-Please find more information in our link:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/58b9fb9e034c7208df5398facbc96c5e8cdae916/spring-cloud-gcp-samples/spring-cloud-gcp-secretmanager-sample[sample] application.
-
 ==== Cloud Trace
 Annotation `org.springframework.cloud.sleuth.annotation.NewSpan` is deprecated in favor of `io.micrometer.observation.annotation.Observed` since Spring Boot 3.0 builds on Micrometer 1.0 rather than Spring Cloud Sleuth (which is excluded from the Spring Cloud release train).
 
@@ -79,8 +78,6 @@ If you want to customize the additional span name, specify the `contextualName` 
 
 Please also remove `spring.sleuth.enabled` from your `application.properties` or `application.yml` file.
 Note that `spring.cloud.gcp.trace.enabled=true` is still required if you want to enable Trace.
-
-This link:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/28b8004fa09922d6dcbde19285c1faf7323c6644/spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample[sample] is modified to show how to instrument trace and submit it to Cloud Trace.
 
 ==== Cloud Vision
 Replaced `ListenableFuture` and `SettableListenableFuture` with `CompletableFuture` as the former two Classes are deprecated in Spring Framework 6.0.
@@ -102,51 +99,26 @@ See the "Trace" section
 === Deprecated Items Removed
 
 ==== Cloud BigQuery
-* `BigQueryTemplate(BigQuery bigQuery, String datasetName)`
+`BigQueryTemplate(BigQuery bigQuery, String datasetName)`:: Use `BigQueryTemplate(BigQuery, BigQueryWriteClient, Map, TaskScheduler)` instead
 
-Use `BigQueryTemplate(BigQuery, BigQueryWriteClient, Map, TaskScheduler)` instead
-
-* `BigQueryTemplate(BigQuery, String, TaskScheduler)`
-
-Use `BigQueryTemplate(BigQuery, BigQueryWriteClient, Map, TaskScheduler)` instead
+`BigQueryTemplate(BigQuery, String, TaskScheduler)`:: Use `BigQueryTemplate(BigQuery, BigQueryWriteClient, Map, TaskScheduler)` instead
 
 ==== Cloud Datastore
-* `DatastorePersistentPropertyImpl.getPersistentEntityTypes()`
-
-Use `DatastorePersistentPropertyImpl.getPersistentEntityTypeInformation()` instead
+`DatastorePersistentPropertyImpl.getPersistentEntityTypes()`:: Use `DatastorePersistentPropertyImpl.getPersistentEntityTypeInformation()` instead
 
 ==== Cloud Pub/Sub
-* `DefaultSubscriberFactory(GcpProjectIdProvider)`
+`DefaultSubscriberFactory(GcpProjectIdProvider)`:: Use `DefaultSubscriberFactory(GcpProjectIdProvider, PubSubConfiguration)` instead
 
-Use `DefaultSubscriberFactory(GcpProjectIdProvider, PubSubConfiguration)` instead
+`PubSubConfiguration.computeSubscriberRetrySettings(String, String)`:: Use `PubSubConfiguration.computeSubscriberRetrySettings(ProjectSubscriptionName)` instead
 
-* `PubSubConfiguration.computeSubscriberRetrySettings(String, String)`
+`PubSubConfiguration.computeSubscriberFlowControlSettings(String, String)`:: Use `PubSubConfiguration.computeSubscriberFlowControlSettings(ProjectSubscriptionName)` instead
 
-Use `PubSubConfiguration.computeSubscriberRetrySettings(ProjectSubscriptionName)` instead
-
-* `PubSubConfiguration.computeSubscriberFlowControlSettings(String, String)`
-
-Use `PubSubConfiguration.computeSubscriberFlowControlSettings(ProjectSubscriptionName)` instead
-
-* `PubSubConfiguration.getSubscriber(String, String)`
-
-Use `PubSubConfiguration.getSubscriptionProperties(ProjectSubscriptionName)` instead
-
-==== Secret Manager
-`GcpSecretManagerBootstrapConfiguration`
-
-For how to fetch secrets from Secret Manager, refer to the Secret Manager section.
+`PubSubConfiguration.getSubscriber(String, String)`:: Use `PubSubConfiguration.getSubscriptionProperties(ProjectSubscriptionName)` instead
 
 ==== Cloud Spanner
-* `SpannerPersistentEntityImpl(TypeInformation<T>)`
+`SpannerPersistentEntityImpl(TypeInformation<T>)`:: Use `SpannerPersistentEntityImpl(TypeInformation, SpannerMappingContext, SpannerEntityProcessor)` instead
 
-Use `SpannerPersistentEntityImpl(TypeInformation, SpannerMappingContext, SpannerEntityProcessor)` instead
-
-* `SpannerCompositeKeyProperty.getPersistentEntityTypes()`
-
-Use `SpannerCompositeKeyProperty.getPersistentEntityTypeInformation()` instead
+`SpannerCompositeKeyProperty.getPersistentEntityTypes()`:: Use `SpannerCompositeKeyProperty.getPersistentEntityTypeInformation()` instead
 
 ==== Cloud Trace
-* `TracingSubscriberFactory.createSubscriberStub()`
-
-Use `TracingSubscriberFactory.createSubscriberStub(String)` instead
+`TracingSubscriberFactory.createSubscriberStub()`:: Use `TracingSubscriberFactory.createSubscriberStub(String)` instead

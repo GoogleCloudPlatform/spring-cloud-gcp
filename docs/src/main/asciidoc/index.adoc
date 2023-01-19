@@ -74,3 +74,5 @@ include::kotlin.adoc[]
 To see the list of all Google Cloud related configuration properties please check link:appendix.html[the Appendix page].
 
 include::migration-guide-1.x.adoc[]
+
+include::migration-guide-3.x.adoc[]
