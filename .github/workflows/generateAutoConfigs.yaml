@@ -34,6 +34,8 @@ jobs:
         working-directory: spring-cloud-generator
         run: |
           set -x
+          set -e
+          sudo apt install xmllint
           bash generate-library-list.sh
           # trims library list to 4 libraries for testing - will be removed later
           echo "$(head -n4 library_list.txt)" > library_list.txt
@@ -73,7 +75,7 @@ jobs:
         continue-on-error: false
         working-directory: spring-cloud-previews
         run: |
-          ./mvnw \
+          ../mvnw \
             --batch-mode \
             --show-version \
             --threads 1.5C \
