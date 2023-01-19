@@ -32,7 +32,7 @@ public ModelAndView submitDocument(@RequestParam("documentUrl") String documentU
   GoogleStorageLocation outputLocation = GoogleStorageLocation.forFolder(
       outputBlobId.getBucket(), "ocr_results/" + documentLocation.getBlobName());
 
-  ListenableFuture<DocumentOcrResultSet> result =
+  CompletableFuture<DocumentOcrResultSet> result =
       documentOcrTemplate.runOcrForDocument(documentLocation, outputLocation);
 
   ocrStatusReporter.registerFuture(documentLocation.uriString(), result);

@@ -41,14 +41,21 @@ You can configure the Spring Cloud Stream Binder for Google Cloud
 Pub/Sub to automatically generate the underlying resources, like the
 Google Cloud Pub/Sub topics and subscriptions for producers and
 consumers. For that, you can use the
-`spring.cloud.stream.gcp.pubsub.bindings.<channelName>.<consumer|producer>.auto-create-resources`
+`spring.cloud.stream.gcp.pubsub.bindings.<consumer/produer name>.<consumer|producer>.auto-create-resources`
 property, which is turned ON by default.
+
+<div class="note">
+
+For more info about consumer/producer naming convention, please refer to [Functional binding names](https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_functional_binding_names).
+
+</div>
 
 Starting with version 1.1, these and other binder properties can be
 configured globally for all the bindings, e.g.
 `spring.cloud.stream.gcp.pubsub.default.consumer.auto-create-resources`.
 
-If you are using Pub/Sub auto-configuration from the Spring Framework on Google Cloud
+If you are using Pub/Sub autoconfiguration from the Spring Framework on Google Cloud
+
 Pub/Sub Starter, you should refer to the
 [configuration](#pubsub-configuration) section for other Pub/Sub
 parameters.
@@ -79,8 +86,8 @@ would be created.
 
 **application.properties.**
 
-    spring.cloud.stream.bindings.events.destination=myEvents
-    spring.cloud.stream.gcp.pubsub.bindings.events.producer.auto-create-resources=true
+    spring.cloud.stream.bindings.{PRODUCER_NAME}.destination=myEvents
+    spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.auto-create-resources=true
 
 #### Consumer Destination Configuration
 
@@ -119,8 +126,8 @@ For example, with this configuration:
 
 **application.properties.**
 
-    spring.cloud.stream.bindings.events.destination=myEvents
-    spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=false
+    spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
+    spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-resources=false
 
 Only an anonymous subscription named
 `anonymous.myEvents.a6d83782-c5a3-4861-ac38-e6e2af15a7be` is created and
@@ -130,11 +137,11 @@ In another example, with the following configuration:
 
 **application.properties.**
 
-    spring.cloud.stream.bindings.events.destination=myEvents
-    spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=true
+    spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
+    spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-resources=true
     
     # specify consumer group, and avoid anonymous consumer group generation
-    spring.cloud.stream.bindings.events.group=consumerGroup1
+    spring.cloud.stream.bindings.{CONSUMER_NAME}.group=consumerGroup1
 
 These resources will be created:
 
@@ -150,9 +157,9 @@ a comma separated list like this:
 
 **application.properties.**
 
-    spring.cloud.stream.gcp.pubsub.bindings.<consumerFunction>-in-0.consumer.allowedHeaders=allowed1, allowed2
+    spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.allowedHeaders=allowed1, allowed2
 
-Where \<consumerFunction\> should be replaced by the method which is
+Where `CONSUMER_NAME` should be replaced by the method which is
 consuming/reading messages from Cloud Pub/Sub and allowed1, allowed2 is
 the comma separated list of headers that the user wants to keep.
 
@@ -160,9 +167,9 @@ A similar style is applicable for producers as well. For example:
 
 **application.properties.**
 
-    spring.cloud.stream.gcp.pubsub.bindings.<producerFunction>-out-0.producer.allowedHeaders=allowed3,allowed4
+    spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.allowedHeaders=allowed3,allowed4
 
-Where \<producerFunction\> should be replaced by the method which is
+Where `PRODUCER_NAME` should be replaced by the method which is
 producing/sending messages to Cloud Pub/Sub and allowed3, allowed4 is
 the comma separated list of headers that user wants to map. All other
 headers will be removed before the message is sent to Cloud Pub/Sub.
@@ -215,94 +222,9 @@ stream, which will be used as is.
 A processor application works similarly to a source application, except
 it is triggered by presence of a `Function` bean.
 
-### Binding with Annotations
-
-<div class="note">
-
-As of version 3.0, annotation binding is considered legacy.
-
-</div>
-
-To set up a sink application in this style, you would associate a class
-with a binding interface, such as the built-in `Sink` interface.
-
-    @EnableBinding(Sink.class)
-    public class SinkExample {
-    
-        @StreamListener(Sink.INPUT)
-        public void handleMessage(UserMessage userMessage) {
-            // process message
-        }
-    }
-
-To set up a source application, you would similarly associate a class
-with a built-in `Source` interface, and inject an instance of it
-provided by Spring Cloud Stream.
-
-    @EnableBinding(Source.class)
-    public class SourceExample {
-    
-        @Autowired
-        private Source source;
-    
-        public void sendMessage() {
-            this.source.output().send(new GenericMessage<>(/* your object here */));
-        }
-    }
-
-### Streaming vs. Polled Input
-
-Many Spring Cloud Stream applications will use the built-in `Sink`
-binding, which triggers the *streaming* input binder creation. Messages
-can then be consumed with an input handler marked by
-`@StreamListener(Sink.INPUT)` annotation, at whatever rate Pub/Sub sends
-them.
-
-For more control over the rate of message arrival, a polled input binder
-can be set up by defining a custom binding interface with an
-`@Input`-annotated method returning `PollableMessageSource`.
-
-``` java
-public interface PollableSink {
-
-    @Input("input")
-    PollableMessageSource input();
-}
-```
-
-The `PollableMessageSource` can then be injected and queried, as needed.
-
-``` java
-@EnableBinding(PollableSink.class)
-public class SinkExample {
-
-    @Autowired
-    PollableMessageSource destIn;
-
-    @Bean
-    public ApplicationRunner singlePollRunner() {
-        return args -> {
-            // This will poll only once.
-            // Add a loop or a scheduler to get more messages.
-            destIn.poll(message -> System.out.println("Message retrieved: " + message));
-        };
-    }
-}
-```
-
-By default, the polling will only get 1 message at a time. Use the
-`spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize` property
-to fetch additional messages per network roundtrip.
-
 ### Sample
 
 Sample applications are available:
 
-  - For [streaming input,
-    annotation-based](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-sample).
-
   - For [streaming input, functional
     style](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-functional-sample).
-
-  - For [polled
-    input](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-polling-sample).

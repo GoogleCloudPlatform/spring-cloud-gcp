@@ -43,13 +43,13 @@ import java.util.function.Supplier;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 
 /**
@@ -57,7 +57,7 @@ import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
  *
  * @since 1.1
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @AutoConfigureAfter(GcpContextAutoConfiguration.class)
 @ConditionalOnProperty(value = "spring.cloud.gcp.datastore.enabled", matchIfMissing = true)
 @ConditionalOnClass({DatastoreOperations.class, Datastore.class})

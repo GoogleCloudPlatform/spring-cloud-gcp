@@ -38,7 +38,7 @@ class GcsPersistentAcceptOnceFileListFilterTest {
   @Test
   void modified_updateTimeIsNull_shouldReturnMinusOne() {
     BlobInfo blobInfo = mock(BlobInfo.class);
-    when(blobInfo.getUpdateTime()).thenReturn(null);
+    when(blobInfo.getUpdateTimeOffsetDateTime()).thenReturn(null);
 
     assertThat(
             new GcsPersistentAcceptOnceFileListFilter(mock(ConcurrentMetadataStore.class), "")

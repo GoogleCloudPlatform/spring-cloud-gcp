@@ -19,15 +19,15 @@ package com.google.cloud.spring.data.spanner.repository.query;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.RepositoryMetadata;
-import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.data.util.TypeInformation;
 
 class SpannerQueryMethodTests {
 
@@ -38,9 +38,8 @@ class SpannerQueryMethodTests {
   void setUp() throws Exception {
     this.mockMetadata = mock(RepositoryMetadata.class);
     this.mockProjectionFactory = mock(ProjectionFactory.class);
-    when(mockMetadata.getReturnType(any()))
-        .thenReturn(
-            ClassTypeInformation.fromReturnTypeOf(Example.class.getMethod("someAnnotatedMethod")));
+    doReturn(TypeInformation.fromReturnTypeOf(Example.class.getMethod("someAnnotatedMethod")))
+        .when(mockMetadata).getReturnType(any());
     doAnswer(a -> String.class).when(mockMetadata).getReturnedDomainClass(any());
   }
 

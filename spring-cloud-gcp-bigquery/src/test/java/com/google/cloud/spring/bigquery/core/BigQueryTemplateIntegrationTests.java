@@ -32,10 +32,9 @@ import com.google.cloud.bigquery.TableResult;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -46,7 +45,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * Integration tests for BigQuery.
@@ -102,7 +100,7 @@ class BigQueryTemplateIntegrationTests {
             Field.of("State", StandardSQLTypeName.STRING),
             Field.of("County", StandardSQLTypeName.STRING));
 
-    ListenableFuture<Job> bigQueryJobFuture =
+    CompletableFuture<Job> bigQueryJobFuture =
         bigQueryTemplate.writeDataToTable(
             tableName, dataFile.getInputStream(), FormatOptions.csv(), schema);
 
@@ -128,7 +126,7 @@ class BigQueryTemplateIntegrationTests {
             Field.of("Leave", StandardSQLTypeName.NUMERIC),
             Field.of("EmpName", StandardSQLTypeName.STRING));
 
-    ListenableFuture<WriteApiResponse> writeApiFuture =
+    CompletableFuture<WriteApiResponse> writeApiFuture =
         bigQueryTemplate.writeJsonStream(tableName, jsonDataFile.getInputStream(), schema);
 
     WriteApiResponse writeApiResponse =
@@ -146,7 +144,7 @@ class BigQueryTemplateIntegrationTests {
 
   @Test
   void testLoadFile() throws IOException, ExecutionException, InterruptedException {
-    ListenableFuture<Job> bigQueryJobFuture =
+    CompletableFuture<Job> bigQueryJobFuture =
         bigQueryTemplate.writeDataToTable(
             this.tableName, dataFile.getInputStream(), FormatOptions.csv());
 
@@ -167,7 +165,7 @@ class BigQueryTemplateIntegrationTests {
     byte[] byteArray = "CountyId,State,County\n1001,Alabama,Autauga County\n".getBytes();
     ByteArrayInputStream byteStream = new ByteArrayInputStream(byteArray);
 
-    ListenableFuture<Job> bigQueryJobFuture =
+    CompletableFuture<Job> bigQueryJobFuture =
         bigQueryTemplate.writeDataToTable(this.tableName, byteStream, FormatOptions.csv());
 
     Job job = bigQueryJobFuture.get();

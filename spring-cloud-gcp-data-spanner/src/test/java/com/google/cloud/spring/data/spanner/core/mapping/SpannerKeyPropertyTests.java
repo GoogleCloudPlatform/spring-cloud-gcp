@@ -24,7 +24,7 @@ import com.google.cloud.spanner.Key;
 import java.lang.annotation.Annotation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.data.util.TypeInformation;
 
 /** Tests for the Spanner custom key property. */
 class SpannerKeyPropertyTests {
@@ -91,13 +91,7 @@ class SpannerKeyPropertyTests {
   @Test
   void getTypeInformationTest() {
     assertThat(this.spannerKeyProperty.getTypeInformation())
-        .isEqualTo(ClassTypeInformation.from(Key.class));
-  }
-
-  @Test
-  @SuppressWarnings("deprecation")
-  void getPersistentEntityTypeTest() {
-    assertThat(this.spannerKeyProperty.getPersistentEntityTypes().iterator().hasNext()).isFalse();
+        .isEqualTo(TypeInformation.of(Key.class));
   }
 
   @Test

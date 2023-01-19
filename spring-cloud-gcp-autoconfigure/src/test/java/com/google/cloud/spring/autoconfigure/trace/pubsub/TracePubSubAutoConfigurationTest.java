@@ -23,9 +23,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+import brave.Tracing;
 import brave.handler.SpanHandler;
-import brave.http.HttpRequestParser;
-import brave.http.HttpTracingCustomizer;
+import brave.messaging.MessagingTracing;
 import com.google.api.core.ApiFunction;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
@@ -33,47 +33,50 @@ import com.google.cloud.spring.autoconfigure.trace.MockConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
 import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
 import io.grpc.ManagedChannel;
+import io.micrometer.observation.aop.ObservedAspect;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
-import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
-import org.springframework.cloud.sleuth.autoconfig.brave.instrument.messaging.BraveMessagingAutoConfiguration;
 import zipkin2.reporter.Reporter;
 import zipkin2.reporter.Sender;
 
 /** Tests for Trace Pub/Sub auto-config. */
 class TracePubSubAutoConfigurationTest {
 
-  private ApplicationContextRunner contextRunner =
-      new ApplicationContextRunner()
-          .withConfiguration(
-              AutoConfigurations.of(
-                  TracePubSubAutoConfiguration.class,
-                  StackdriverTraceAutoConfiguration.class,
-                  GcpContextAutoConfiguration.class,
-                  BraveAutoConfiguration.class,
-                  BraveMessagingAutoConfiguration.class,
-                  RefreshAutoConfiguration.class))
-          .withUserConfiguration(MockConfiguration.class)
-          .withBean(
-              StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
-              SpanHandler.class,
-              () -> SpanHandler.NOOP)
-          // Prevent healthcheck from triggering a real call to Trace.
-          .withBean(REPORTER_BEAN_NAME, Reporter.class, () -> mock(Reporter.class))
-          .withPropertyValues(
-              "spring.cloud.gcp.project-id=proj", "spring.sleuth.sampler.probability=1.0");
+  private ApplicationContextRunner contextRunner;
+
+  @BeforeEach
+  void init() {
+    contextRunner =
+        new ApplicationContextRunner()
+            .withConfiguration(
+                AutoConfigurations.of(
+                    TracePubSubAutoConfiguration.class,
+                    StackdriverTraceAutoConfiguration.class,
+                    GcpContextAutoConfiguration.class,
+                    RefreshAutoConfiguration.class,
+                    ObservationAutoConfiguration.class))
+            .withUserConfiguration(MockConfiguration.class)
+            .withBean(
+                StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
+                SpanHandler.class,
+                () -> SpanHandler.NOOP)
+            // Prevent health-check from triggering a real call to Trace.
+            .withBean(REPORTER_BEAN_NAME, Reporter.class, () -> mock(Reporter.class))
+            .withPropertyValues(
+                "spring.cloud.gcp.project-id=proj");
+  }
 
   @Test
   void test() {
     this.contextRunner.run(
         context -> {
-          assertThat(context.getBean(HttpRequestParser.class)).isNotNull();
-          assertThat(context.getBean(HttpTracingCustomizer.class)).isNotNull();
           assertThat(
                   context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class))
               .isNotNull();
@@ -87,25 +90,34 @@ class TracePubSubAutoConfigurationTest {
         context -> {
           assertThat(context.getBeansOfType(TracePubSubBeanPostProcessor.class)).isEmpty();
           assertThat(context.getBeansOfType(PubSubTracing.class)).isEmpty();
+          assertThat(context.getBeansOfType(MessagingTracing.class)).isEmpty();
+          assertThat(context.getBeansOfType(ObservedAspect.class)).isEmpty();
         });
   }
 
   @Test
   void testPubSubTracingEnabled() {
+    Tracing tracing = Tracing.newBuilder().build();
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.trace.pubsub.enabled=true")
+        .withBean(Tracing.class, () -> tracing)
         .run(
             context -> {
               assertThat(context.getBean(TracePubSubBeanPostProcessor.class)).isNotNull();
               assertThat(context.getBean(PubSubTracing.class)).isNotNull();
+              assertThat(context.getBean(MessagingTracing.class)).isNotNull();
+              assertThat(context.getBean(ObservedAspect.class)).isNotNull();
             });
   }
 
   @Test
   void tracePubSubCustomizerAppliedLast() {
     PublisherCustomizer noopCustomizer = (pb, t) -> {};
+    Tracing tracing = Tracing.newBuilder().build();
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.trace.pubsub.enabled=true")
+        .withBean(Tracing.class, () -> tracing)
+        .withBean(MessagingTracing.class, () -> MessagingTracing.newBuilder(tracing).build())
         .withBean(PublisherCustomizer.class, () -> noopCustomizer)
         .run(context -> {
           ObjectProvider<PublisherCustomizer> customizersProvider =
@@ -114,7 +126,7 @@ class TracePubSubAutoConfigurationTest {
               customizersProvider.orderedStream().collect(Collectors.toList());
           assertThat(customizers).hasSize(2);
 
-          // Object provider lists highest priority first, so default priority `noopCustomizer`
+          // Object provider lists the highest priority first, so default priority `noopCustomizer`
           // will be second
           assertThat(customizers.get(1)).isSameAs(noopCustomizer);
 

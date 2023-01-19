@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
-         child.project.url.inherit.append.path="false">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+	child.project.url.inherit.append.path="false">
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>3.4.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
-
+	<version>4.0.0-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -37,33 +35,31 @@
 
 	<properties>
 		<project.parent.version>${project.version}</project.parent.version>
-
 		<!-- Dependency versions -->
-		<spring-cloud-dependencies.version>2021.0.5</spring-cloud-dependencies.version>
+		<spring-cloud-dependencies.version>2022.0.0</spring-cloud-dependencies.version>
+		<spring-boot-dependencies.version>3.0.0</spring-boot-dependencies.version>
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
-		<spring-boot-dependencies.version>2.7.7</spring-boot-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.1</java-cfenv.version>
-		<spring-native.version>0.10.5</spring-native.version>
+		<micrometer-tracing.verison>1.0.0</micrometer-tracing.verison>
 
 		<!-- Plugin versions -->
-		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-		<maven-failsafe-plugin.version>2.22.1</maven-failsafe-plugin.version>
+		<maven-failsafe-plugin.version>3.0.0-M7</maven-failsafe-plugin.version>
 		<maven-flatten-plugin.version>1.3.0</maven-flatten-plugin.version>
 		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
 		<maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
 		<maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 		<nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
 		<maven-checkstyle-plugin.version>3.2.1</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
 		<errorprone.version>2.18.0</errorprone.version>
-
 
 		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
@@ -149,16 +145,15 @@
 				<artifactId>java-cfenv-test-support</artifactId>
 				<version>${java-cfenv.version}</version>
 			</dependency>
+
 			<dependency>
-				<groupId>org.springframework.experimental</groupId>
-				<artifactId>spring-native-configuration</artifactId>
-				<version>${spring-native.version}</version>
+				<groupId>io.micrometer</groupId>
+				<artifactId>micrometer-tracing-bom</artifactId>
+				<version>${micrometer-tracing.verison}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
-			<dependency>
-				<groupId>org.springframework.experimental</groupId>
-				<artifactId>spring-aot</artifactId>
-				<version>${spring-native.version}</version>
-			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -374,7 +369,6 @@
 				<module>spring-cloud-gcp-security-firebase</module>
 				<module>spring-cloud-gcp-vision</module>
 				<module>spring-cloud-gcp-kms</module>
-				<module>spring-cloud-gcp-native-support</module>
 
 				<module>spring-cloud-previews</module>
 				<!-- Docs and Samples -->
@@ -392,7 +386,7 @@
 					<!-- activate with -P docFX -->
 					<name>docFX</name>
 				</property>
-				<jdk>11</jdk>
+				<jdk>17</jdk>
 			</activation>
 			<properties>
 				<!-- default config values -->
@@ -401,7 +395,7 @@
 				<projectname>spring-framework-on-google-cloud</projectname>
 				<excludeclasses></excludeclasses>
 				<excludePackages></excludePackages>
-				<source>8</source>
+				<source>17</source>
 				<sourceFileExclude></sourceFileExclude>
 			</properties>
 			<build>
@@ -515,18 +509,18 @@
 				</pluginManagement>
 			</build>
 		</profile>
-		<!-- Error prone; JDK 8 requires a different configuration than 9+ -->
+
 		<profile>
-			<id>errorprone_java_9_and_up</id>
+			<id>errorprone_java_17_and_up</id>
 			<activation>
-				<jdk>[9,]</jdk>
+				<jdk>[17,]</jdk>
 			</activation>
 			<build>
 				<pluginManagement>
 					<plugins>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-compiler-plugin</artifactId>
+							<artifactId>${maven-compiler-plugin.version}</artifactId>
 							<version>3.10.1</version>
 							<configuration>
 								<source>${maven.compiler.source}</source>
@@ -535,7 +529,11 @@
 								<fork>true</fork>
 								<compilerArgs>
 									<arg>-XDcompilePolicy=simple</arg>
-									<arg>-Xplugin:ErrorProne -Xep:UnicodeInCode:OFF</arg>
+									<arg>
+										-Xplugin:ErrorProne \
+										-Xep:UnicodeInCode:OFF \
+										-Xep:CanIgnoreReturnValue:OFF
+									</arg>
 									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
 									<arg>-parameters</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
@@ -557,41 +555,6 @@
 									</path>
 								</annotationProcessorPaths>
 							</configuration>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-			</build>
-		</profile>
-
-		<profile>
-			<id>errorprone_java8</id>
-			<activation>
-				<jdk>1.8</jdk>
-			</activation>
-			<properties>
-				<javac.version>9+181-r4173-1</javac.version>
-			</properties>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<artifactId>maven-compiler-plugin</artifactId>
-							<version>3.10.1</version>
-							<configuration>
-								<fork>true</fork>
-								<compilerArgs combine.children="append">
-									<arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
-									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
-									<arg>-parameters</arg>
-								</compilerArgs>
-							</configuration>
-							<dependencies>
-								<dependency>
-									<groupId>com.google.errorprone</groupId>
-									<artifactId>error_prone_core</artifactId>
-									<version>${errorprone.version}</version>
-								</dependency>
-							</dependencies>
 						</plugin>
 					</plugins>
 				</pluginManagement>
@@ -704,7 +667,7 @@
 						</executions>
 						<configuration>
 							<!-- https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8212233 -->
-							<source>8</source>
+							<source>17</source>
 							<excludePackageNames>
 								com.example,
 								com.example.*,
@@ -792,7 +755,7 @@
 			<name>Apache License, Version 2.0</name>
 			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
 			<comments>
-				Copyright 2015-2020 the original author or authors.
+				Copyright 2015-2022 the original author or authors.
 
 				Licensed under the Apache License, Version 2.0 (the "License");
 				you may not use this file except in compliance with the License.

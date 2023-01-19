@@ -19,8 +19,8 @@ package com.example;
 import com.google.cloud.spring.vision.DocumentOcrResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import org.springframework.util.concurrent.ListenableFuture;
 
 public class OcrStatusReporter {
 
@@ -31,7 +31,7 @@ public class OcrStatusReporter {
   }
 
   public void registerFuture(
-      String documentPath, ListenableFuture<DocumentOcrResultSet> resultFuture) {
+      String documentPath, CompletableFuture<DocumentOcrResultSet> resultFuture) {
 
     pendingOcrOperations.put(documentPath, new OcrOperationStatus(documentPath, resultFuture));
   }
@@ -42,10 +42,10 @@ public class OcrStatusReporter {
 
   public static final class OcrOperationStatus {
     final String gcsLocation;
-    final ListenableFuture<DocumentOcrResultSet> ocrResultFuture;
+    final CompletableFuture<DocumentOcrResultSet> ocrResultFuture;
 
     public OcrOperationStatus(
-        String gcsLocation, ListenableFuture<DocumentOcrResultSet> ocrResultFuture) {
+        String gcsLocation, CompletableFuture<DocumentOcrResultSet> ocrResultFuture) {
       this.gcsLocation = gcsLocation;
       this.ocrResultFuture = ocrResultFuture;
     }

@@ -18,7 +18,7 @@ package com.google.cloud.spring.pubsub.core.publisher;
 
 import com.google.pubsub.v1.PubsubMessage;
 import java.util.Map;
-import org.springframework.util.concurrent.ListenableFuture;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * An abstraction for Google Cloud Pub/Sub publisher operations.
@@ -37,7 +37,7 @@ public interface PubSubPublisherOperations {
    * @param <T> the type of the payload to publish
    * @return the listenable future of the call
    */
-  <T> ListenableFuture<String> publish(String topic, T payload, Map<String, String> headers);
+  <T> CompletableFuture<String> publish(String topic, T payload, Map<String, String> headers);
 
   /**
    * Send a message to Pub/Sub.
@@ -48,7 +48,7 @@ public interface PubSubPublisherOperations {
    * @param <T> the type of the payload to publish
    * @return the listenable future of the call
    */
-  <T> ListenableFuture<String> publish(String topic, T payload);
+  <T> CompletableFuture<String> publish(String topic, T payload);
 
   /**
    * Send a message to Pub/Sub.
@@ -58,5 +58,5 @@ public interface PubSubPublisherOperations {
    * @param pubsubMessage a Google Cloud Pub/Sub API message
    * @return the listenable future of the call
    */
-  ListenableFuture<String> publish(String topic, PubsubMessage pubsubMessage);
+  CompletableFuture<String> publish(String topic, PubsubMessage pubsubMessage);
 }

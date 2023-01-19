@@ -39,6 +39,7 @@
   convertascii  kotlin
   convertascii  configuration
   convertascii  migration-guide-1.x
+  convertascii  migration-guide-3.x
 
   convertascii  appendix
   convertascii  first-page

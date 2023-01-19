@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.pubsub.support;
 
-import org.springframework.util.concurrent.ListenableFuture;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * An extension of {@link BasicAcknowledgeablePubsubMessage} that exposes ack ID and subscription
@@ -39,8 +39,8 @@ public interface AcknowledgeablePubsubMessage extends BasicAcknowledgeablePubsub
    *
    * @param ackDeadlineSeconds the new ack deadline in seconds. A deadline of 0 effectively nacks
    *     the message.
-   * @return {@code ListenableFuture<Void>}
+   * @return {@code CompletableFuture<Void>}
    * @since 1.1
    */
-  ListenableFuture<Void> modifyAckDeadline(int ackDeadlineSeconds);
+  CompletableFuture<Void> modifyAckDeadline(int ackDeadlineSeconds);
 }

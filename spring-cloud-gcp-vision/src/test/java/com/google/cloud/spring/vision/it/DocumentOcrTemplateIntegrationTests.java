@@ -25,6 +25,7 @@ import com.google.cloud.vision.v1.TextAnnotation;
 import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -34,7 +35,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.util.concurrent.ListenableFuture;
 
 @EnabledIfSystemProperty(named = "it.vision", matches = "true")
 @ExtendWith(SpringExtension.class)
@@ -53,7 +53,7 @@ class DocumentOcrTemplateIntegrationTests {
     GoogleStorageLocation outputLocationPrefix =
         GoogleStorageLocation.forFile("vision-integration-test-bucket", "it_output/test-");
 
-    ListenableFuture<DocumentOcrResultSet> result =
+    CompletableFuture<DocumentOcrResultSet> result =
         this.documentOcrTemplate.runOcrForDocument(document, outputLocationPrefix);
 
     DocumentOcrResultSet ocrPages = result.get(5, TimeUnit.MINUTES);

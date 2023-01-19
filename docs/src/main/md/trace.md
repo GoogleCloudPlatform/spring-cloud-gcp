@@ -1,18 +1,17 @@
 ## Cloud Trace
 
 Google Cloud provides a managed distributed tracing service
-called [Cloud Trace](https://cloud.google.com/trace/), and [Spring Cloud
-Sleuth](https://cloud.spring.io/spring-cloud-sleuth/) can be used with
+called [Cloud Trace](https://cloud.google.com/trace/), and [Micrometer](https://micrometer.io/) can be used with
 it to easily instrument Spring Boot applications for observability.
 
-Typically, Spring Cloud Sleuth captures trace information and forwards
-traces to services like Zipkin for storage and analysis. However, on
+Typically, Micrometer captures trace information and forwards
+traces to service like Zipkin for storage and analysis. However, on
 Google Cloud, instead of running and maintaining your own Zipkin instance and
 storage, you can use Cloud Trace to store traces, view trace details,
 generate latency distributions graphs, and generate performance
 regression reports.
 
-This Spring Framework on Google Cloud starter can forward Spring Cloud Sleuth traces to
+This Spring Framework on Google Cloud starter can forward Micrometer traces to
 Cloud Trace without an intermediary Zipkin server.
 
 Maven coordinates,
@@ -47,7 +46,7 @@ those traces to Cloud Trace without modifying existing applications.
 
 ### Tracing
 
-Spring Cloud Sleuth uses the [Brave
+Micrometer uses the [Brave
 tracer](https://github.com/openzipkin/brave) to generate traces. This
 integration enables Brave to use the
 [`StackdriverTracePropagation`](https://github.com/openzipkin/zipkin-gcp/tree/main/propagation-stackdriver)
@@ -72,12 +71,12 @@ in three different ways:
 `TRACE_ID` is a 32-character hexadecimal value that encodes a 128-bit
 number.
 
-`SPAN_ID` is an unsigned long. Since Cloud Trace doesn’t support span
+`SPAN_ID` is an unsigned long. Since Cloud Trace doesn't support span
 joins, a new span ID is always generated, regardless of the one
 specified in `x-cloud-trace-context`.
 
 `TRACE_TRUE` can either be `0` if the entity should be untraced, or `1`
-if it should be traced. This field forces the decision of whether or not
+if it should be traced. This field forces the decision of whether
 to trace the request; if omitted then the decision is deferred to the
 sampler.
 
@@ -87,17 +86,17 @@ headers](https://github.com/openzipkin/b3-propagation).
 
 ### Spring Boot Starter for Cloud Trace
 
-Spring Boot Starter for Cloud Trace uses Spring Cloud Sleuth and
-auto-configures a
+Spring Boot Starter for Cloud Trace uses Micrometer and
+autoconfigures a
 [StackdriverSender](https://github.com/openzipkin/zipkin-gcp/blob/main/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java)
-that sends the Sleuth’s trace information to Cloud Trace.
+that sends the Micrometer’s trace information to Cloud Trace.
 
 All configurations are optional:
 
 |                                                     |                                                                                                                                  |          |               |
 | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------- |
 | Name                                                | Description                                                                                                                      | Required | Default value |
-| `spring.cloud.gcp.trace.enabled`                    | Auto-configure Spring Cloud Sleuth to send traces to Cloud Trace.                                                                | No       | `true`        |
+| `spring.cloud.gcp.trace.enabled`                    | Auto-configure Micrometer to send traces to Cloud Trace.                                                                | No       | `true`        |
 | `spring.cloud.gcp.trace.project-id`                 | Overrides the project ID from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)                                              | No       |               |
 | `spring.cloud.gcp.trace.credentials.location`       | Overrides the credentials location from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)                                    | No       |               |
 | `spring.cloud.gcp.trace.credentials.encoded-key`    | Overrides the credentials encoded key from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)                                 | No       |               |
@@ -113,31 +112,16 @@ All configurations are optional:
 | `spring.cloud.gcp.trace.server-response-timeout-ms` | Server response timeout in millis.                                                                                               | No       | `5000`        |
 | `spring.cloud.gcp.trace.pubsub.enabled`             | (Experimental) Auto-configure Pub/Sub instrumentation for Trace.                                                                 | No       | `false`       |
 
-You can use core Spring Cloud Sleuth properties to control Sleuth’s
-sampling rate, etc. Read [Sleuth
-documentation](https://cloud.spring.io/spring-cloud-sleuth/) for more
-information on Sleuth configurations.
+You can use core Micrometer properties to control Micrometer’s
+sampling rate, etc. Read [Spring Boot Tracing documentation](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#actuator.micrometer-tracing) for more
+information on Micrometer configurations.
 
 For example, when you are testing to see the traces are going through,
 you can set the sampling rate to 100%.
 
-    spring.sleuth.sampler.probability=1                     # Send 100% of the request traces to Cloud Trace.
-    spring.sleuth.web.skipPattern=(^cleanup.*|.+favicon.*)  # Ignore some URL paths.
-    spring.sleuth.scheduled.enabled=false                   # disable executor 'async' traces
+    management.tracing.sampling.probability=1.0              # Send 100% of the request traces to Cloud Trace.
 
-<div class="warning">
-
-By default, Spring Cloud Sleuth auto-configuration instruments executor
-beans, which may cause recurring traces with the name `async` to appear
-in Cloud Trace if your application or one of its dependencies introduces
-scheduler beans into Spring application context. To avoid this noise,
-please disable automatic instrumentation of executors via
-`spring.sleuth.scheduled.enabled=false` in your application
-configuration.
-
-</div>
-
-Spring Framework on Google Cloud Trace does override some Sleuth configurations:
+Spring Framework on Google Cloud Trace does override some Micrometer configurations:
 
   - Always uses 128-bit Trace IDs. This is required by Cloud Trace.
 
@@ -145,13 +129,9 @@ Spring Framework on Google Cloud Trace does override some Sleuth configurations:
     the client and server Spans. Cloud Trace requires that every Span ID
     within a Trace to be unique, so Span joins are not supported.
 
-  - Uses `StackdriverHttpRequestParser` by default to populate
-    Stackdriver related fields.
+### Overriding the autoconfiguration
 
-### Overriding the auto-configuration
-
-Spring Cloud Sleuth supports sending traces to multiple tracing systems
-as of version 2.1.0. In order to get this to work, every tracing system
+You can send traces to multiple tracing systems. In order to get this to work, every tracing system
 needs to have a `Reporter<Span>` and `Sender`. If you want to override
 the provided beans you need to give them a specific name. To do this you
 can use respectively
@@ -217,9 +197,6 @@ Spring Integration channel adapters, and the Spring Cloud Stream Binder.
 
     # Enable Pub/Sub tracing using this property
     spring.cloud.gcp.trace.pubsub.enabled=true
-    
-    # You should disable Spring Integration instrumentation by Sleuth as it's unnecessary when Pub/Sub tracing is enabled
-    spring.sleuth.integration.enabled=false
 
 ### Sample
 

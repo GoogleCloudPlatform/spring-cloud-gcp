@@ -29,6 +29,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -43,7 +44,6 @@ import org.springframework.integration.handler.AbstractReplyProducingMessageHand
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandlingException;
 import org.springframework.util.Assert;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * A {@link org.springframework.messaging.MessageHandler} which handles sending and loading files to
@@ -166,7 +166,7 @@ public class BigQueryFileMessageHandler extends AbstractReplyProducingMessageHan
    *
    * <p>If set to true, the handler runs synchronously and returns {@link Job} for message
    * responses. If set to false, the handler will return {@link
-   * org.springframework.util.concurrent.ListenableFuture} of the Job as the response for each
+   * CompletableFuture} of the Job as the response for each
    * message.
    *
    * @param sync whether {@link BigQueryFileMessageHandler} should wait synchronously for jobs to
@@ -189,7 +189,7 @@ public class BigQueryFileMessageHandler extends AbstractReplyProducingMessageHan
     Assert.notNull(formatOptions, "Data file formatOptions must not be null.");
 
     try (InputStream inputStream = convertToInputStream(message.getPayload())) {
-      ListenableFuture<Job> jobFuture =
+      CompletableFuture<Job> jobFuture =
           this.bigQueryTemplate.writeDataToTable(tableName, inputStream, formatOptions, schema);
 
       if (this.sync) {
@@ -216,14 +216,14 @@ public class BigQueryFileMessageHandler extends AbstractReplyProducingMessageHan
   private static InputStream convertToInputStream(Object payload) throws IOException {
     InputStream result;
 
-    if (payload instanceof File) {
-      result = new BufferedInputStream(new FileInputStream((File) payload));
-    } else if (payload instanceof byte[]) {
-      result = new ByteArrayInputStream((byte[]) payload);
-    } else if (payload instanceof InputStream) {
-      result = (InputStream) payload;
-    } else if (payload instanceof Resource) {
-      result = ((Resource) payload).getInputStream();
+    if (payload instanceof File file) {
+      result = new BufferedInputStream(new FileInputStream(file));
+    } else if (payload instanceof byte[] bytes) {
+      result = new ByteArrayInputStream(bytes);
+    } else if (payload instanceof InputStream inputStream) {
+      result = inputStream;
+    } else if (payload instanceof Resource resource) {
+      result = resource.getInputStream();
     } else {
       throw new IllegalArgumentException(
           String.format(

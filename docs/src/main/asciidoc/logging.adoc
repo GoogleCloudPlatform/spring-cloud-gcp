@@ -23,8 +23,8 @@ dependencies {
 https://cloud.google.com/logging/[Cloud Logging] is the managed logging service provided by Google Cloud.
 
 This module provides support for associating a web request trace ID with the corresponding log entries.
-It does so by retrieving the `X-B3-TraceId` value from the https://logback.qos.ch/manual/mdc.html[Mapped Diagnostic Context (MDC)], which is set by Spring Cloud Sleuth.
-If Spring Cloud Sleuth isn't used, the configured `TraceIdExtractor` extracts the desired header value and sets it as the log entry's trace ID.
+It does so by retrieving the `X-B3-TraceId` value from the https://logback.qos.ch/manual/mdc.html[Mapped Diagnostic Context (MDC)], which is set by Micrometer.
+If Micrometer isn't used, the configured `TraceIdExtractor` extracts the desired header value and sets it as the log entry's trace ID.
 This allows grouping of log messages by request, for example, in the https://console.cloud.google.com/logs/viewer[Google Cloud Console Logs viewer].
 
 NOTE: Due to the way logging is set up, the Google Cloud project ID and credentials defined in `application.properties` are ignored.
@@ -35,12 +35,12 @@ You can do this easily if you're using the https://cloud.google.com/sdk[Google C
 
 For use in Web MVC-based applications, `TraceIdLoggingWebMvcInterceptor` is provided that extracts the request trace ID from an HTTP request using a `TraceIdExtractor` and stores it in a thread-local, which can then be used in a logging appender to add the trace ID metadata to log messages.
 
-WARNING: If Spring Framework on Google Cloud Trace is enabled, the logging module disables itself and delegates log correlation to Spring Cloud Sleuth.
+WARNING: If Spring Framework on Google Cloud Trace is enabled, the logging module disables itself and delegates log correlation to Micrometer.
 
 `LoggingWebMvcConfigurer` configuration class is also provided to help register the `TraceIdLoggingWebMvcInterceptor` in Spring MVC applications.
 
 Applications hosted on the Google Cloud include trace IDs under the `x-cloud-trace-context` header, which will be included in log entries.
-However, if Sleuth is used the trace ID will be picked up from the MDC.
+However, if Micrometer is used the trace ID will be picked up from the MDC.
 
 === Logback Support
 
@@ -141,7 +141,7 @@ If `projectId` is not set and cannot be determined, then it'll log `traceId` wit
 | `includeLevel` | `true` | Should the severity be included
 | `includeThreadName` | `true` | Should the thread name be included
 | `includeMDC` | `true` | Should all MDC properties be included.
-The MDC properties `X-B3-TraceId`, `X-B3-SpanId` and `X-Span-Export` provided by Spring Sleuth will get excluded as they get handled separately
+The MDC properties `X-B3-TraceId`, `X-B3-SpanId` and `X-Span-Export` provided by Micrometer will get excluded as they get handled separately
 | `includeLoggerName` | `true` | Should the name of the logger be included
 | `includeFormattedMessage` | `true` | Should the formatted log message be included.
 | `includeExceptionInMessage` | `true` | Should the stacktrace be appended to the formatted log message.

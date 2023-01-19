@@ -24,15 +24,15 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.kms.KmsTemplate;
 import java.io.IOException;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /** Autoconfiguration for GCP KMS which enables data encryption and decryption. */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @EnableConfigurationProperties(GcpKmsProperties.class)
 @ConditionalOnClass({KeyManagementServiceClient.class, KmsTemplate.class})
 @ConditionalOnProperty(value = "spring.cloud.gcp.kms.enabled", matchIfMissing = true)

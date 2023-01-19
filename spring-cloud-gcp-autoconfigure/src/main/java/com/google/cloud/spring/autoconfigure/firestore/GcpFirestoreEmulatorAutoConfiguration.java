@@ -33,13 +33,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Flux;
 
 /**
@@ -47,7 +47,7 @@ import reactor.core.publisher.Flux;
  *
  * @since 1.2.3
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnProperty("spring.cloud.gcp.firestore.emulator.enabled")
 @AutoConfigureBefore(GcpFirestoreAutoConfiguration.class)
 @EnableConfigurationProperties(GcpFirestoreProperties.class)

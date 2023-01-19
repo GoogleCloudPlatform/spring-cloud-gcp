@@ -28,6 +28,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -36,8 +37,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
@@ -67,15 +66,9 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenResolv
  *       </ul>
  * </ul>
  *
- * <p>If a custom {@link WebSecurityConfigurerAdapter} is present, it must add {@code
- * .oauth2ResourceServer().jwt()} customization to {@link
- * org.springframework.security.config.annotation.web.builders.HttpSecurity} object. If no custom
- * {@link WebSecurityConfigurerAdapter} is found, Spring Boot's default {@code
- * OAuth2ResourceServerWebSecurityConfiguration} will add this customization.
- *
  * @since 1.1
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnProperty(value = "spring.cloud.gcp.security.iap.enabled", matchIfMissing = true)
 @ConditionalOnClass({AudienceValidator.class})
 @AutoConfigureBefore(OAuth2ResourceServerAutoConfiguration.class)

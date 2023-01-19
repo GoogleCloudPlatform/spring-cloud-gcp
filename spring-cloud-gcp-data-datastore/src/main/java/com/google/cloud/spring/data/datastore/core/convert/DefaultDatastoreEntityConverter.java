@@ -36,14 +36,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.data.mapping.model.EntityInstantiator;
 import org.springframework.data.mapping.model.EntityInstantiators;
 import org.springframework.data.mapping.model.ParameterValueProvider;
 import org.springframework.data.mapping.model.PersistentEntityParameterValueProvider;
-import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.data.util.TypeInformation;
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
 /**
@@ -52,7 +51,7 @@ import org.springframework.util.Assert;
  * @since 1.1
  */
 public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter {
-  private DatastoreMappingContext mappingContext;
+  private final DatastoreMappingContext mappingContext;
 
   private final EntityInstantiators instantiators = new EntityInstantiators();
 
@@ -123,7 +122,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
     if (entity == null) {
       return null;
     }
-    return readAsMap(entity, ClassTypeInformation.from(HashMap.class));
+    return readAsMap(entity, TypeInformation.of(HashMap.class));
   }
 
   public <T> DatastorePersistentEntity<T> getDiscriminationPersistentEntity(
@@ -172,7 +171,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
       persistentEntity.doWithColumnBackedProperties(
           datastorePersistentProperty -> {
             // if a property is a constructor argument, it was already computed on instantiation
-            if (!persistentEntity.isConstructorArgument(datastorePersistentProperty)) {
+            if (!persistentEntity.isCreatorArgument(datastorePersistentProperty)) {
               Object value = propertyValueProvider.getPropertyValue(datastorePersistentProperty);
               if (value != null) {
                 accessor.setProperty(datastorePersistentProperty, value);
@@ -213,13 +212,13 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
             propertyValueProvider.getPropertyValue(
                 entity.getDiscriminationFieldName(),
                 NOT_EMBEDDED,
-                ClassTypeInformation.from(String[].class)))
+                TypeInformation.of(String[].class)))
         [0].equals(entity.getDiscriminatorValue());
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public void write(Object source, BaseEntity.Builder sink) {
+  public void write(Object source, @NonNull BaseEntity.Builder sink) {
     DatastorePersistentEntity<?> persistentEntity =
         this.mappingContext.getDatastorePersistentEntity(source.getClass());
 
@@ -228,7 +227,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
     if (!discriminationValues.isEmpty() || discriminationFieldName != null) {
       sink.set(
           discriminationFieldName,
-          discriminationValues.stream().map(StringValue::of).collect(Collectors.toList()));
+          discriminationValues.stream().map(StringValue::of).toList());
     }
     PersistentPropertyAccessor accessor = persistentEntity.getPropertyAccessor(source);
     persistentEntity.doWithColumnBackedProperties(
@@ -271,7 +270,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
       return ListValue.of(
           (List)
               ((ListValue) convertedVal)
-                  .get().stream().map(this::setExcludeFromIndexes).collect(Collectors.toList()));
+                  .get().stream().map(this::setExcludeFromIndexes).toList());
     } else {
       return convertedVal.toBuilder().setExcludeFromIndexes(true).build();
     }

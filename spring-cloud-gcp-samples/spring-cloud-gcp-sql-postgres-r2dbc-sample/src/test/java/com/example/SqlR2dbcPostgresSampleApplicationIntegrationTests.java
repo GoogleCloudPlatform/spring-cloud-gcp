@@ -38,7 +38,7 @@ import org.springframework.http.ResponseEntity;
       "spring.r2dbc.password=test"
     })
 @EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
-public class SqlR2dbcPostgresSampleApplicationIntegrationTests {
+class SqlR2dbcPostgresSampleApplicationIntegrationTests {
 
   @Autowired private TestRestTemplate testRestTemplate;
 
@@ -46,7 +46,7 @@ public class SqlR2dbcPostgresSampleApplicationIntegrationTests {
   void testSqlRowsAccess() {
     ResponseEntity<String> result =
         this.testRestTemplate.exchange(
-            "/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<String>() {});
+            "/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
 
     assertThat(result.getBody())
         .isEqualTo(

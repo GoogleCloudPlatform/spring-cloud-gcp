@@ -28,9 +28,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.repository.config.EnableSpannerAuditing;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -51,9 +49,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class SpannerTemplateAuditingTests {
 
   private static final List<Mutation> UPSERT_MUTATION =
-      Arrays.asList(Mutation.newInsertOrUpdateBuilder("custom_test_table").build());
+      List.of(Mutation.newInsertOrUpdateBuilder("custom_test_table").build());
 
-  private static final LocalDateTime LONG_AGO = LocalDate.parse("2000-01-01").atStartOfDay();
+  private static final Instant LONG_AGO = Instant.parse("2000-01-01T00:00:00.00Z");
 
   @Autowired SpannerTemplate spannerTemplate;
 
@@ -133,6 +131,6 @@ class SpannerTemplateAuditingTests {
 
     @LastModifiedBy String lastUser;
 
-    @LastModifiedDate LocalDateTime lastTouched;
+    @LastModifiedDate Instant lastTouched;
   }
 }

@@ -18,7 +18,6 @@ package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import java.sql.Timestamp;
 import java.time.ZoneOffset;
@@ -37,7 +36,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
@@ -55,15 +54,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SpannerRepositoryIntegrationTests {
-  @LocalServerPort private int port;
+  @LocalServerPort
+  private int port;
 
   @Autowired private TraderRepository traderRepository;
 
   @Autowired private TradeRepository tradeRepository;
 
   @Autowired private SpannerSchemaUtils spannerSchemaUtils;
-
-  @Autowired private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
 
   @Autowired private SpannerRepositoryExample spannerRepositoryExample;
 
@@ -82,10 +80,10 @@ class SpannerRepositoryIntegrationTests {
     TestRestTemplate testRestTemplate = new TestRestTemplate();
     ResponseEntity<PagedModel<Trade>> tradesResponse =
         testRestTemplate.exchange(
-            String.format("http://localhost:%s/trades/", this.port),
+            String.format("http://localhost:%s/trades", this.port),
             HttpMethod.GET,
             null,
-            new ParameterizedTypeReference<PagedModel<Trade>>() {});
+            new ParameterizedTypeReference<>() {});
     assertThat(tradesResponse.getBody().getMetadata().getTotalElements()).isEqualTo(8);
   }
 
@@ -102,10 +100,10 @@ class SpannerRepositoryIntegrationTests {
             String.format("http://localhost:%s/traders/t123", this.port),
             HttpMethod.PUT,
             new HttpEntity<>(
-                "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"createdOn\": \"2000-Jan-02"
-                    + " 03:04:05 UTC\", \"modifiedOn\": [\"2000-Jan-02 03:04:05 UTC\"]}",
+                "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"createdOn\": \"2000-01-02"
+                    + "T03:04:05.000Z\", \"modifiedOn\": [\"2000-01-02T03:04:05.000Z\"]}",
                 headers),
-            new ParameterizedTypeReference<Trader>() {});
+            new ParameterizedTypeReference<>() {});
 
     ZonedDateTime expectedUtcDate = ZonedDateTime.of(2000, 1, 2, 3, 4, 5, 0, ZoneOffset.UTC);
     Timestamp expectedTimestamp = new Timestamp(expectedUtcDate.toEpochSecond() * 1000L);
