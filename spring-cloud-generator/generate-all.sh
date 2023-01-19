@@ -1,6 +1,9 @@
 #!/bin/bash
 WORKING_DIR=`pwd`
 
+mkdir -p run-sanity-check
+touch run-sanity-check/generate-all-started
+
 cd ../
 # Compute the project version.
 PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
@@ -44,3 +47,4 @@ cd ../spring-cloud-previews
 cd ../spring-cloud-generator
 rm -rf googleapis
 rm -rf gapic-generator-java
+touch run-sanity-check/generate-all-finished
