@@ -15,7 +15,7 @@ jobs:
         continue-on-error: false
         run: |
           set -x
-          sudo apt install apt-transport-https curl gnupg
+          sudo apt-get install apt-transport-https curl gnupg
           curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
           sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
           echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
@@ -35,7 +35,8 @@ jobs:
         run: |
           set -x
           set -e
-          sudo apt install xmllint
+          sudo apt-get update
+          sudo apt-get install xmllint
           bash generate-library-list.sh
           # trims library list to 4 libraries for testing - will be removed later
           echo "$(head -n4 library_list.txt)" > library_list.txt
