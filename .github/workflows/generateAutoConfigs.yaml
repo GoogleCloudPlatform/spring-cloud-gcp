@@ -64,6 +64,7 @@ jobs:
         run: |
           set -e
           bash sanity-checks.sh
+          rm -rdf run-sanity-check
       - name: Check for generation errors
         continue-on-error: false
         working-directory: spring-cloud-generator
