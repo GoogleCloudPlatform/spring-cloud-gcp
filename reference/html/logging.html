@@ -204,8 +204,8 @@ window.onload = function() {
 </div>
 <div class="paragraph">
 <p>This module provides support for associating a web request trace ID with the corresponding log entries.
-It does so by retrieving the <code>X-B3-TraceId</code> value from the <a href="https://logback.qos.ch/manual/mdc.html">Mapped Diagnostic Context (MDC)</a>, which is set by Spring Cloud Sleuth.
-If Spring Cloud Sleuth isn&#8217;t used, the configured <code>TraceIdExtractor</code> extracts the desired header value and sets it as the log entry&#8217;s trace ID.
+It does so by retrieving the <code>X-B3-TraceId</code> value from the <a href="https://logback.qos.ch/manual/mdc.html">Mapped Diagnostic Context (MDC)</a>, which is set by Micrometer.
+If Micrometer isn&#8217;t used, the configured <code>TraceIdExtractor</code> extracts the desired header value and sets it as the log entry&#8217;s trace ID.
 This allows grouping of log messages by request, for example, in the <a href="https://console.cloud.google.com/logs/viewer">Google Cloud Console Logs viewer</a>.</p>
 </div>
 <div class="admonitionblock note">
@@ -234,7 +234,7 @@ You can do this easily if you&#8217;re using the <a href="https://cloud.google.c
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If Spring Framework on Google Cloud Trace is enabled, the logging module disables itself and delegates log correlation to Spring Cloud Sleuth.
+If Spring Framework on Google Cloud Trace is enabled, the logging module disables itself and delegates log correlation to Micrometer.
 </td>
 </tr>
 </table>
@@ -244,7 +244,7 @@ If Spring Framework on Google Cloud Trace is enabled, the logging module disable
 </div>
 <div class="paragraph">
 <p>Applications hosted on the Google Cloud include trace IDs under the <code>x-cloud-trace-context</code> header, which will be included in log entries.
-However, if Sleuth is used the trace ID will be picked up from the MDC.</p>
+However, if Micrometer is used the trace ID will be picked up from the MDC.</p>
 </div>
 </div>
 <div class="sect2">
@@ -443,7 +443,7 @@ The following properties are available:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeMDC</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Should all MDC properties be included.
-The MDC properties <code>X-B3-TraceId</code>, <code>X-B3-SpanId</code> and <code>X-Span-Export</code> provided by Spring Sleuth will get excluded as they get handled separately</p></td>
+The MDC properties <code>X-B3-TraceId</code>, <code>X-B3-SpanId</code> and <code>X-Span-Export</code> provided by Micrometer will get excluded as they get handled separately</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeLoggerName</code></p></td>

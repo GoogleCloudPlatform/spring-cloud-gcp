@@ -322,7 +322,7 @@ The autoconfigured <code>BigQueryTemplate</code> instance will use the dataset p
 BigQueryTemplate bigQueryTemplate;
 
 public void loadData(InputStream dataInputStream, String tableName) {
-  ListenableFuture&lt;Job&gt; bigQueryJobFuture =
+  CompletableFuture&lt;Job&gt; bigQueryJobFuture =
       bigQueryTemplate.writeDataToTable(
           tableName,
           dataFile.getInputStream(),
@@ -350,7 +350,7 @@ BigQueryTemplate bigQueryTemplate;
    */
   public void loadJsonStream(String tableName, InputStream jsonInputStream)
       throws ExecutionException, InterruptedException {
-    ListenableFuture&lt;WriteApiResponse&gt; writeApFuture =
+    CompletableFuture&lt;WriteApiResponse&gt; writeApFuture =
         bigQueryTemplate.writeJsonStream(tableName, jsonInputStream);
     WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
     if (!apiRes.isSuccessful()){
@@ -379,7 +379,7 @@ BigQueryTemplate bigQueryTemplate;
    */
   public void createTableAndloadJsonStream(String tableName, InputStream jsonInputStream, Schema tableSchema)
       throws ExecutionException, InterruptedException {
-    ListenableFuture&lt;WriteApiResponse&gt; writeApFuture =
+    CompletableFuture&lt;WriteApiResponse&gt; writeApFuture =
         bigQueryTemplate.writeJsonStream(tableName, jsonInputStream, tableSchema);//using the overloaded method which created the table when tableSchema is passed
     WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
     if (!apiRes.isSuccessful()){
@@ -464,7 +464,7 @@ The headers are specified by the class <code>BigQuerySpringMessageHeaders</code>
 The <a href="https://googleapis.dev/java/google-cloud-clients/latest/index.html?com/google/cloud/bigquery/package-summary.html">Job object</a> provides metadata and information about the load file operation.</p>
 </div>
 <div class="paragraph">
-<p>By default, the <code>BigQueryFileMessageHandler</code> is run in asynchronous mode, with <code>setSync(false)</code>, and it will reply with a <code>ListenableFuture&lt;Job&gt;</code> on the reply channel.
+<p>By default, the <code>BigQueryFileMessageHandler</code> is run in asynchronous mode, with <code>setSync(false)</code>, and it will reply with a <code>CompletableFuture&lt;Job&gt;</code> on the reply channel.
 The future is tied to the status of the data loading job and will complete when the job completes.</p>
 </div>
 <div class="paragraph">
@@ -477,7 +477,7 @@ The future is tied to the status of the data loading job and will complete when 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you decide to use Spring Integration Gateways and you wish to receive <code>ListenableFuture&lt;Job&gt;</code> as a reply object in the Gateway, you will have to call <code>.setAsyncExecutor(null)</code> on your <code>GatewayProxyFactoryBean</code>.
+If you decide to use Spring Integration Gateways and you wish to receive <code>CompletableFuture&lt;Job&gt;</code> as a reply object in the Gateway, you will have to call <code>.setAsyncExecutor(null)</code> on your <code>GatewayProxyFactoryBean</code>.
 This is needed to indicate that you wish to reply on the built-in async support rather than rely on async handling of the gateway.
 </td>
 </tr>

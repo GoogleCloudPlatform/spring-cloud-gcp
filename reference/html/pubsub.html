@@ -186,7 +186,7 @@ window.onload = function() {
 <p>Spring Framework on Google Cloud provides an abstraction layer to publish to and subscribe from Google Cloud Pub/Sub topics and to create, list or delete Google Cloud Pub/Sub topics and subscriptions.</p>
 </div>
 <div class="paragraph">
-<p>A Spring Boot starter is provided to auto-configure the various required Pub/Sub components.</p>
+<p>A Spring Boot starter is provided to autoconfigure the various required Pub/Sub components.</p>
 </div>
 <div class="paragraph">
 <p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
@@ -259,7 +259,7 @@ Google Cloud Pub/Sub API, if different from the ones in the
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.emulator-host</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The host and port of the local running emulator.
-If provided, this will setup the client to connect against a running <a href="https://cloud.google.com/pubsub/docs/emulator">Google Cloud Pub/Sub Emulator</a>.</p></td>
+If provided, this will set up the client to connect against a running <a href="https://cloud.google.com/pubsub/docs/emulator">Google Cloud Pub/Sub Emulator</a>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -294,9 +294,9 @@ Subscriber settings can be either global or subscription-specific.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-A custom configuration (injected through a setter in <code>DefaultSubscriberFactory</code> or a custom bean) will take precedence over auto-configuration.
+A custom configuration (injected through a setter in <code>DefaultSubscriberFactory</code> or a custom bean) will take precedence over autoconfiguration.
 Hence, if one wishes to use per-subscription configuration for a Pub/Sub setting, there must not be a custom bean for that setting.
-When using auto-configuration, if both global and per-subscription configurations are provided, then the per-subscription configuration will be used.
+When using autoconfiguration, if both global and per-subscription configurations are provided, then the per-subscription configuration will be used.
 However, if a per-subscription configuration is not set then the global or default configuration will be used.
 </td>
 </tr>
@@ -799,8 +799,8 @@ So, take care not to configure a subscription that has a business impact, or ins
 <div class="paragraph">
 <p>If you are using Spring Boot Actuator, you can take advantage of the Cloud Pub/Sub subscription health indicator called <code>pubsub-subscriber</code>.
 The subscription health indicator will verify whether Pub/Sub subscriptions are actively processing messages from the subscription&#8217;s backlog.
-To enable it, you need to add the <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready">Spring Boot Actuator</a> to your project and the <a href="https://cloud.google.com/monitoring/docs/reference/libraries">Google Cloud Monitoring</a>.
-Also you need to set the following properties <code>spring.cloud.gcp.pubsub.health.lagThreshold</code>, <code>spring.cloud.gcp.pubsub.health.backlogThreshold</code>.</p>
+To enable it, you need to add the <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready">Spring Boot Actuator</a> to your project and the <a href="https://cloud.google.com/monitoring/docs/reference/libraries">GCP Monitoring</a>.
+Also, you need to set the following properties <code>spring.cloud.gcp.pubsub.health.lagThreshold</code>, <code>spring.cloud.gcp.pubsub.health.backlogThreshold</code>.</p>
 </div>
 <div class="paragraph">
 <p>The <code>pubsub-subscriber</code> indicator will then roll up to the overall application status visible at <a href="http://localhost:8080/actuator/health" class="bare">http://localhost:8080/actuator/health</a> (use the <code>management.endpoint.health.show-details</code> property to view per-indicator details).</p>
@@ -808,12 +808,12 @@ Also you need to set the following properties <code>spring.cloud.gcp.pubsub.heal
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
-    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
-    &lt;artifactId&gt;google-cloud-monitoring&lt;/artifactId&gt;
+  &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+  &lt;artifactId&gt;google-cloud-monitoring&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -833,7 +833,7 @@ If there hasn&#8217;t been any processing of recent messages but the backlog inc
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The health indicator will not behave entirely as expected if Dead Letter Queueing is enabled on the subscription being checked, num_undelivered_messages will drop down by itself after DLQ threshold is reached.
+The health indicator will not behave entirely as expected if Dead Letter Queueing is enabled on the subscription being checked, num_undelivered_messages will drop by itself after DLQ threshold is reached.
 </td>
 </tr>
 </table>
@@ -1109,7 +1109,7 @@ Using these methods for acknowledging messages in batches is more efficient than
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-All <code>ack()</code>, <code>nack()</code>, and <code>modifyAckDeadline()</code> methods on messages, as well as <code>PubSubSubscriberTemplate</code>, are implemented asynchronously, returning a <code>ListenableFuture&lt;Void&gt;</code> to enable asynchronous processing.
+All <code>ack()</code>, <code>nack()</code>, and <code>modifyAckDeadline()</code> methods on messages, as well as <code>PubSubSubscriberTemplate</code>, are implemented asynchronously, returning a <code>CompletableFuture&lt;Void&gt;</code> to enable asynchronous processing.
 </td>
 </tr>
 </table>
@@ -1140,7 +1140,7 @@ See <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics">here</a> f
 </div>
 </div>
 <div class="paragraph">
-<p>Dead letter topics are no different than any other topic, though some <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics#granting_forwarding_permissions">additional permissions</a> are necessary to ensure the Cloud Pub/Sub service can successfully <code>ack</code> the original message and re-<code>publish</code> it on the dead letter topic.</p>
+<p>Dead letter topics are no different from any other topic, though some <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics#granting_forwarding_permissions">additional permissions</a> are necessary to ensure the Cloud Pub/Sub service can successfully <code>ack</code> the original message and re-<code>publish</code> on the dead letter topic.</p>
 </div>
 </div>
 </div>
@@ -1214,7 +1214,7 @@ pubSubTemplate.publish(topicName, user);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And that&#8217;s how you convert messages to objects on pull:</p>
+<p>And that&#8217;s how you convert messages to object on pull:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1302,7 +1302,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </table>
 </div>
 <div class="paragraph">
-<p>The Spring Boot starter for Spring Framework on Google Cloud Pub/Sub auto-configures a <code>PubSubAdmin</code> object using the <code>GcpProjectIdProvider</code> and the <code>CredentialsProvider</code> auto-configured by the Spring Framework on Google Cloud Core Starter.</p>
+<p>The Spring Boot starter for GCP Pub/Sub autoconfigures a <code>PubSubAdmin</code> object using the <code>GcpProjectIdProvider</code> and the <code>CredentialsProvider</code> autoconfigured by the Spring Boot GCP Core starter.</p>
 </div>
 <div class="sect3">
 <h4 id="_creating_a_topic"><a class="link" href="#_creating_a_topic">Creating a topic</a></h4>
@@ -1362,7 +1362,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;String&gt; topics =
-    pubSubAdmin.listTopics().stream().map(Topic::getName).collect(Collectors.toList());</code></pre>
+    pubSubAdmin.listTopics().stream().map(Topic::getName).toList();</code></pre>
 </div>
 </div>
 </div>
@@ -1376,6 +1376,9 @@ Generally when referring to topics and subscriptions, you can either use the sho
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public Subscription createSubscription(String subscriptionName, String topicName)
 
 public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline)
+
+public Subscription createSubscription(
+      String subscriptionName, String topicName, String pushEndpoint)
 
 public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline, String pushEndpoint)
 
@@ -1437,7 +1440,7 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;String&gt; subscriptions =
     pubSubAdmin.listSubscriptions().stream()
         .map(Subscription::getName)
-        .collect(Collectors.toList());</code></pre>
+        .toList();</code></pre>
 </div>
 </div>
 </div>

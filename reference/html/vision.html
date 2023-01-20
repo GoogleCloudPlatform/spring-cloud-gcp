@@ -468,11 +468,11 @@ public void processPdf() {
 <p>The <code>DocumentOcrTemplate</code> provides the following method for running OCR on a document saved in Google Cloud Storage:</p>
 </div>
 <div class="paragraph">
-<p><code>ListenableFuture&lt;DocumentOcrResultSet&gt; runOcrForDocument(GoogleStorageLocation document, GoogleStorageLocation outputFilePathPrefix)</code></p>
+<p><code>CompletableFuture&lt;DocumentOcrResultSet&gt; runOcrForDocument(GoogleStorageLocation document, GoogleStorageLocation outputFilePathPrefix)</code></p>
 </div>
 <div class="paragraph">
 <p>The method allows you to specify the location of the document and the output location for where all the JSON output files will be saved in Google Cloud Storage.
-It returns a <code>ListenableFuture</code> containing <code>DocumentOcrResultSet</code> which contains the OCR content of the document.</p>
+It returns a <code>CompletableFuture</code> containing <code>DocumentOcrResultSet</code> which contains the OCR content of the document.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -482,7 +482,7 @@ It returns a <code>ListenableFuture</code> containing <code>DocumentOcrResultSet
 </td>
 <td class="content">
 Running OCR on a document is an operation that can take between several minutes to several hours depending on how large the document is.
-It is recommended to register callbacks to the returned ListenableFuture or ignore it and process the JSON output files at a later point in time using <code>readOcrOutputFile</code> or <code>readOcrOutputFileSet</code>.
+It is recommended to register callbacks to the returned CompletableFuture or ignore it and process the JSON output files at a later point in time using <code>readOcrOutputFile</code> or <code>readOcrOutputFileSet</code>.
 </td>
 </tr>
 </table>
@@ -504,7 +504,7 @@ public void runOcrOnDocument() {
     GoogleStorageLocation outputLocationPrefix = GoogleStorageLocation.forFolder(
             "your-bucket", "output_folder/test.pdf/");
 
-    ListenableFuture&lt;DocumentOcrResultSet&gt; result =
+    CompletableFuture&lt;DocumentOcrResultSet&gt; result =
         this.documentOcrTemplate.runOcrForDocument(
             document, outputLocationPrefix);
 
@@ -529,7 +529,7 @@ public void runOcrOnDocument() {
 <li>
 <p><code>readOcrOutputFileSet(GoogleStorageLocation jsonOutputFilePathPrefix)</code>:
 Reads a collection of OCR output files under a file path prefix and returns the parsed contents.
-All of the files under the path should correspond to the same document.</p>
+All the files under the path should correspond to the same document.</p>
 </li>
 <li>
 <p><code>readOcrOutputFile(GoogleStorageLocation jsonFile)</code>:

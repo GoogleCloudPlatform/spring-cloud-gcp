@@ -239,9 +239,7 @@ window.onload = function() {
 <li><a href="#overview">8.1. Overview</a></li>
 <li><a href="#configuration-3">8.2. Configuration</a></li>
 <li><a href="#binding-with-functions">8.3. Binding with Functions</a></li>
-<li><a href="#binding-with-annotations">8.4. Binding with Annotations</a></li>
-<li><a href="#streaming-vs-polled-input">8.5. Streaming vs. Polled Input</a></li>
-<li><a href="#sample-4">8.6. Sample</a></li>
+<li><a href="#sample-4">8.4. Sample</a></li>
 </ul>
 </li>
 <li><a href="#spring-cloud-bus">9. Spring Cloud Bus</a>
@@ -253,7 +251,7 @@ window.onload = function() {
 <ul class="sectlevel2">
 <li><a href="#tracing">10.1. Tracing</a></li>
 <li><a href="#spring-boot-starter-for-cloud-trace">10.2. Spring Boot Starter for Cloud Trace</a></li>
-<li><a href="#overriding-the-auto-configuration">10.3. Overriding the auto-configuration</a></li>
+<li><a href="#overriding-the-autoconfiguration">10.3. Overriding the autoconfiguration</a></li>
 <li><a href="#customizing-spans">10.4. Customizing spans</a></li>
 <li><a href="#integration-with-logging">10.5. Integration with Logging</a></li>
 <li><a href="#pubsub-trace-instrumentation-experimental">10.6. Pub/Sub Trace Instrumentation (Experimental)</a></li>
@@ -394,6 +392,14 @@ window.onload = function() {
 <li><a href="#deprecated-items-removed">26.3. Deprecated Items Removed</a></li>
 </ul>
 </li>
+<li><a href="#migration-guide-from-spring-cloud-gcp-3-x-to-4-x">27. Migration Guide from Spring Cloud GCP 3.x to 4.x</a>
+<ul class="sectlevel2">
+<li><a href="#before-you-start">27.1. Before you start</a></li>
+<li><a href="#upgrade-to-spring-cloud-gcp-4-0">27.2. Upgrade to Spring Cloud GCP 4.0</a></li>
+<li><a href="#configuration-changelog">27.3. Configuration Changelog</a></li>
+<li><a href="#deprecated-items-removed-2">27.4. Deprecated Items Removed</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -401,7 +407,7 @@ window.onload = function() {
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>3.4.3-SNAPSHOT</strong></p>
+<p><strong>4.0.0-SNAPSHOT</strong></p>
 </div>
 </div>
 </div>
@@ -432,7 +438,7 @@ window.onload = function() {
 <p>Exchange messages with Spring Integration using Google Cloud Pub/Sub on the background</p>
 </li>
 <li>
-<p>Trace the execution of your app with Spring Cloud Sleuth and Google Cloud Trace</p>
+<p>Trace the execution of your app with Micrometer and Google Cloud Trace</p>
 </li>
 <li>
 <p>Configure your app with Spring Cloud Config, backed up by the Google Runtime Configuration API</p>
@@ -527,7 +533,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
        &lt;dependency&gt;
            &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
            &lt;artifactId&gt;spring-cloud-gcp-dependencies&lt;/artifactId&gt;
-           &lt;version&gt;3.4.3-SNAPSHOT&lt;/version&gt;
+           &lt;version&gt;4.0.0-SNAPSHOT&lt;/version&gt;
            &lt;type&gt;pom&lt;/type&gt;
            &lt;scope&gt;import&lt;/scope&gt;
        &lt;/dependency&gt;
@@ -541,7 +547,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
-    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:3.4.3-SNAPSHOT")
+    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:4.0.0-SNAPSHOT")
 }</code></pre>
 </div>
 </div>
@@ -1278,7 +1284,7 @@ Returning a valid URL is necessary to support some features in the Spring ecosys
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring Framework on Google Cloud adds integrations with
-<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html">Spring JDBC</a> and <a href="https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#r2dbc.core">Spring R2DBC</a>  so you can run your MySQL or PostgreSQL databases in <a href="https://cloud.google.com/sql">Google Cloud SQL</a> using Spring JDBC and other libraries that depend on it like Spring Data JPA or Spring Data R2DBC.</p>
+<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html">Spring JDBC</a> and <a href="https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#r2dbc.core">Spring R2DBC</a>, so you can run your MySQL or PostgreSQL databases in <a href="https://cloud.google.com/sql">Google Cloud SQL</a> using Spring JDBC and other libraries that depend on it like Spring Data JPA or Spring Data R2DBC.</p>
 </div>
 <div class="paragraph">
 <p>The Cloud SQL support is provided by Spring Framework on Google Cloud in the form of two Spring Boot starters, one for MySQL and another one for PostgreSQL.
@@ -1337,7 +1343,7 @@ implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql")
 <div class="sect3">
 <h4 id="spring-boot-starter-for-google-cloud-sql"><a class="anchor" href="#spring-boot-starter-for-google-cloud-sql"></a><a class="link" href="#spring-boot-starter-for-google-cloud-sql">5.1.2. Spring Boot Starter for Google Cloud SQL</a></h4>
 <div class="paragraph">
-<p>The Spring Boot Starters for Google Cloud SQL provide an auto-configured <a href="https://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html"><code>DataSource</code></a> object.
+<p>The Spring Boot Starters for Google Cloud SQL provide an autoconfigured <a href="https://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html"><code>DataSource</code></a> object.
 Coupled with Spring JDBC, it provides a
 <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html#jdbc-JdbcTemplate"><code>JdbcTemplate</code></a> object bean that allows for operations such as querying and modifying a database.</p>
 </div>
@@ -1350,7 +1356,7 @@ Coupled with Spring JDBC, it provides a
 </div>
 <div class="paragraph">
 <p>You can rely on
-<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database">Spring Boot data source auto-configuration</a> to configure a <code>DataSource</code> bean.
+<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database">Spring Boot data source autoconfiguration</a> to configure a <code>DataSource</code> bean.
 In other words, properties like the SQL username, <code>spring.datasource.username</code>, and password, <code>spring.datasource.password</code> can be used.
 There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Configuration Properties" section below).</p>
 </div>
@@ -1395,7 +1401,7 @@ There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Co
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you provide your own <code>spring.datasource.url</code>, it will be ignored, unless you disable Cloud SQL auto configuration with <code>spring.cloud.gcp.sql.enabled=false</code> or <code>spring.cloud.gcp.sql.jdbc.enabled=false</code>.
+If you provide your own <code>spring.datasource.url</code>, it will be ignored, unless you disable Cloud SQL autoconfiguration with <code>spring.cloud.gcp.sql.enabled=false</code> or <code>spring.cloud.gcp.sql.jdbc.enabled=false</code>.
 </td>
 </tr>
 </table>
@@ -1424,61 +1430,13 @@ You can connect to your database with as little as a database and instance names
 <p>Maven and Gradle coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="paragraph">
-<p>To use MySQL:</p>
+<p>To use PostgreSQL:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
-    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-cloud-gcp-starter-sql-mysql-r2dbc&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
-    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql-r2dbc")
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To use PostgreSQL with Spring Boot 2.6:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
-    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-cloud-gcp-starter-sql-postgres-r2dbc&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
-    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgres-r2dbc")
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To use PostgreSQL with Spring Boot 2.7 (the latest version of the Postgres R2DBC driver changed its Maven coordinates):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
-    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-cloud-gcp-starter-sql-postgres-r2dbc&lt;/artifactId&gt;
-    &lt;exclusions&gt;
-        &lt;exclusion&gt;
-            &lt;groupId&gt;io.r2dbc&lt;/groupId&gt;
-            &lt;artifactId&gt;r2dbc-postgresql&lt;/artifactId&gt;
-        &lt;/exclusion&gt;
-    &lt;/exclusions&gt;
-&lt;/dependency&gt;
-
-&lt;dependency&gt;
-    &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
-    &lt;artifactId&gt;r2dbc-postgresql&lt;/artifactId&gt;
-    &lt;version&gt;0.9.1.RELEASE&lt;/version&gt;
+  &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-cloud-gcp-starter-sql-postgres-r2dbc&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1532,7 +1490,7 @@ There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Co
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.r2dbc.username</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Database username</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MySQL: <code>root</code>; PostgreSQL: <code>postgres</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>postgres</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.r2dbc.password</code></p></td>
@@ -1549,7 +1507,7 @@ There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Co
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you provide your own <code>spring.r2dbc.url</code>, it will be ignored, unless you disable Cloud SQL auto-configuration for R2DBC with <code>spring.cloud.gcp.sql.enabled=false</code> or <code>spring.cloud.gcp.sql.r2dbc.enabled=false</code> .
+If you provide your own <code>spring.r2dbc.url</code>, it will be ignored, unless you disable Cloud SQL autoconfiguration for R2DBC with <code>spring.cloud.gcp.sql.enabled=false</code> or <code>spring.cloud.gcp.sql.r2dbc.enabled=false</code> .
 </td>
 </tr>
 </table>
@@ -1741,9 +1699,6 @@ For example, in Maven:</p>
 <p>Codelab: <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-petclinic-cloudsql/index.html">Spring Pet Clinic using Cloud SQL</a></p>
 </li>
 <li>
-<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-r2dbc-sample">R2DBC: Spring Framework on Google Cloud MySQL</a></p>
-</li>
-<li>
 <p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-r2dbc-sample">R2DBC: Spring Framework on Google Cloud PostgreSQL</a></p>
 </li>
 </ul>
@@ -1758,7 +1713,7 @@ For example, in Maven:</p>
 <p>Spring Framework on Google Cloud provides an abstraction layer to publish to and subscribe from Google Cloud Pub/Sub topics and to create, list or delete Google Cloud Pub/Sub topics and subscriptions.</p>
 </div>
 <div class="paragraph">
-<p>A Spring Boot starter is provided to auto-configure the various required Pub/Sub components.</p>
+<p>A Spring Boot starter is provided to autoconfigure the various required Pub/Sub components.</p>
 </div>
 <div class="paragraph">
 <p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
@@ -1831,7 +1786,7 @@ Google Cloud Pub/Sub API, if different from the ones in the
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.emulator-host</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The host and port of the local running emulator.
-If provided, this will setup the client to connect against a running <a href="https://cloud.google.com/pubsub/docs/emulator">Google Cloud Pub/Sub Emulator</a>.</p></td>
+If provided, this will set up the client to connect against a running <a href="https://cloud.google.com/pubsub/docs/emulator">Google Cloud Pub/Sub Emulator</a>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -1866,9 +1821,9 @@ Subscriber settings can be either global or subscription-specific.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-A custom configuration (injected through a setter in <code>DefaultSubscriberFactory</code> or a custom bean) will take precedence over auto-configuration.
+A custom configuration (injected through a setter in <code>DefaultSubscriberFactory</code> or a custom bean) will take precedence over autoconfiguration.
 Hence, if one wishes to use per-subscription configuration for a Pub/Sub setting, there must not be a custom bean for that setting.
-When using auto-configuration, if both global and per-subscription configurations are provided, then the per-subscription configuration will be used.
+When using autoconfiguration, if both global and per-subscription configurations are provided, then the per-subscription configuration will be used.
 However, if a per-subscription configuration is not set then the global or default configuration will be used.
 </td>
 </tr>
@@ -2371,8 +2326,8 @@ So, take care not to configure a subscription that has a business impact, or ins
 <div class="paragraph">
 <p>If you are using Spring Boot Actuator, you can take advantage of the Cloud Pub/Sub subscription health indicator called <code>pubsub-subscriber</code>.
 The subscription health indicator will verify whether Pub/Sub subscriptions are actively processing messages from the subscription&#8217;s backlog.
-To enable it, you need to add the <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready">Spring Boot Actuator</a> to your project and the <a href="https://cloud.google.com/monitoring/docs/reference/libraries">Google Cloud Monitoring</a>.
-Also you need to set the following properties <code>spring.cloud.gcp.pubsub.health.lagThreshold</code>, <code>spring.cloud.gcp.pubsub.health.backlogThreshold</code>.</p>
+To enable it, you need to add the <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready">Spring Boot Actuator</a> to your project and the <a href="https://cloud.google.com/monitoring/docs/reference/libraries">GCP Monitoring</a>.
+Also, you need to set the following properties <code>spring.cloud.gcp.pubsub.health.lagThreshold</code>, <code>spring.cloud.gcp.pubsub.health.backlogThreshold</code>.</p>
 </div>
 <div class="paragraph">
 <p>The <code>pubsub-subscriber</code> indicator will then roll up to the overall application status visible at <a href="http://localhost:8080/actuator/health" class="bare">localhost:8080/actuator/health</a> (use the <code>management.endpoint.health.show-details</code> property to view per-indicator details).</p>
@@ -2380,12 +2335,12 @@ Also you need to set the following properties <code>spring.cloud.gcp.pubsub.heal
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
-    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
-    &lt;artifactId&gt;google-cloud-monitoring&lt;/artifactId&gt;
+  &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+  &lt;artifactId&gt;google-cloud-monitoring&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -2405,7 +2360,7 @@ If there hasn&#8217;t been any processing of recent messages but the backlog inc
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The health indicator will not behave entirely as expected if Dead Letter Queueing is enabled on the subscription being checked, num_undelivered_messages will drop down by itself after DLQ threshold is reached.
+The health indicator will not behave entirely as expected if Dead Letter Queueing is enabled on the subscription being checked, num_undelivered_messages will drop by itself after DLQ threshold is reached.
 </td>
 </tr>
 </table>
@@ -2681,7 +2636,7 @@ Using these methods for acknowledging messages in batches is more efficient than
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-All <code>ack()</code>, <code>nack()</code>, and <code>modifyAckDeadline()</code> methods on messages, as well as <code>PubSubSubscriberTemplate</code>, are implemented asynchronously, returning a <code>ListenableFuture&lt;Void&gt;</code> to enable asynchronous processing.
+All <code>ack()</code>, <code>nack()</code>, and <code>modifyAckDeadline()</code> methods on messages, as well as <code>PubSubSubscriberTemplate</code>, are implemented asynchronously, returning a <code>CompletableFuture&lt;Void&gt;</code> to enable asynchronous processing.
 </td>
 </tr>
 </table>
@@ -2712,7 +2667,7 @@ See <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics">here</a> f
 </div>
 </div>
 <div class="paragraph">
-<p>Dead letter topics are no different than any other topic, though some <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics#granting_forwarding_permissions">additional permissions</a> are necessary to ensure the Cloud Pub/Sub service can successfully <code>ack</code> the original message and re-<code>publish</code> it on the dead letter topic.</p>
+<p>Dead letter topics are no different from any other topic, though some <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics#granting_forwarding_permissions">additional permissions</a> are necessary to ensure the Cloud Pub/Sub service can successfully <code>ack</code> the original message and re-<code>publish</code> on the dead letter topic.</p>
 </div>
 </div>
 </div>
@@ -2786,7 +2741,7 @@ pubSubTemplate.publish(topicName, user);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And that&#8217;s how you convert messages to objects on pull:</p>
+<p>And that&#8217;s how you convert messages to object on pull:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2874,7 +2829,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </table>
 </div>
 <div class="paragraph">
-<p>The Spring Boot starter for Spring Framework on Google Cloud Pub/Sub auto-configures a <code>PubSubAdmin</code> object using the <code>GcpProjectIdProvider</code> and the <code>CredentialsProvider</code> auto-configured by the Spring Framework on Google Cloud Core Starter.</p>
+<p>The Spring Boot starter for GCP Pub/Sub autoconfigures a <code>PubSubAdmin</code> object using the <code>GcpProjectIdProvider</code> and the <code>CredentialsProvider</code> autoconfigured by the Spring Boot GCP Core starter.</p>
 </div>
 <div class="sect3">
 <h4 id="creating-a-topic"><a class="anchor" href="#creating-a-topic"></a><a class="link" href="#creating-a-topic">6.5.1. Creating a topic</a></h4>
@@ -2934,7 +2889,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;String&gt; topics =
-    pubSubAdmin.listTopics().stream().map(Topic::getName).collect(Collectors.toList());</code></pre>
+    pubSubAdmin.listTopics().stream().map(Topic::getName).toList();</code></pre>
 </div>
 </div>
 </div>
@@ -2948,6 +2903,9 @@ Generally when referring to topics and subscriptions, you can either use the sho
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public Subscription createSubscription(String subscriptionName, String topicName)
 
 public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline)
+
+public Subscription createSubscription(
+      String subscriptionName, String topicName, String pushEndpoint)
 
 public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline, String pushEndpoint)
 
@@ -3009,7 +2967,7 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;String&gt; subscriptions =
     pubSubAdmin.listSubscriptions().stream()
         .map(Subscription::getName)
-        .collect(Collectors.toList());</code></pre>
+        .toList();</code></pre>
 </div>
 </div>
 </div>
@@ -3038,7 +2996,7 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 <h3 id="channel-adapters-for-cloud-pubsub"><a class="anchor" href="#channel-adapters-for-cloud-pubsub"></a><a class="link" href="#channel-adapters-for-cloud-pubsub">7.1. Channel Adapters for Cloud Pub/Sub</a></h3>
 <div class="paragraph">
 <p>The channel adapters for Google Cloud Pub/Sub connect your Spring <a href="https://docs.spring.io/spring-integration/reference/html/channel.html"><code>MessageChannels</code></a> to Google Cloud Pub/Sub topics and subscriptions.
-This enables messaging between different processes, applications or micro-services backed up by Google Cloud Pub/Sub.</p>
+This enables messaging between different processes, applications or microservices backed up by Google Cloud Pub/Sub.</p>
 </div>
 <div class="paragraph">
 <p>The Spring Integration Channel Adapters for Google Cloud Pub/Sub are included in the <code>spring-cloud-gcp-pubsub</code> module and can be autoconfigured by using the <code>spring-cloud-gcp-starter-pubsub</code> module in combination with a Spring Integration dependency.</p>
@@ -3048,14 +3006,16 @@ This enables messaging between different processes, applications or micro-servic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
+  &lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-pubsub&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
     &lt;groupId&gt;org.springframework.integration&lt;/groupId&gt;
     &lt;artifactId&gt;spring-integration-core&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3270,7 +3230,7 @@ public void pubsubErrorHandler(Message&lt;MessagingException&gt; message) {
 </div>
 </div>
 <div class="paragraph">
-<p>If you would prefer to manually ack or nack the message, you can do it by retrieving the header of the exception payload:</p>
+<p>If you preferred to manually ack or nack the message, you can do it by retrieving the header of the exception payload:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3415,19 +3375,12 @@ If none is provided, the adapter waits indefinitely for a response.</p>
 <div class="paragraph">
 <p>It is possible to set user-defined callbacks for the <code>publish()</code> call in <code>PubSubMessageHandler</code> through the <code>setSuccessCallback()</code> and <code>setFailureCallback()</code> methods (either one or both may be set).
 These give access to the Pub/Sub publish message ID in case of success, or the root cause exception in case of error.
-Both callbacks include the original message as the second argument.
-The old <code>setPublishCallback()</code> method that only gave access to message ID or root cause exception is deprecated and will be removed in a future release.</p>
+Both callbacks include the original message as the second argument.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">adapter.setPublishCallback(
-    new ListenableFutureCallback&lt;String&gt;() {
-      @Override
-      public void onFailure(Throwable ex) {}
-
-      @Override
-      public void onSuccess(String result) {}
-    });</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">adapter.setSuccessCallback((ackId, message) -&gt; {});
+adapter.setFailureCallback((cause, message) -&gt; {});</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3694,13 +3647,25 @@ Partitioning is currently not supported by this binder.
 <h3 id="configuration-3"><a class="anchor" href="#configuration-3"></a><a class="link" href="#configuration-3">8.2. Configuration</a></h3>
 <div class="paragraph">
 <p>You can configure the Spring Cloud Stream Binder for Google Cloud Pub/Sub to automatically generate the underlying resources, like the Google Cloud Pub/Sub topics and subscriptions for producers and consumers.
-For that, you can use the <code>spring.cloud.stream.gcp.pubsub.bindings.&lt;channelName&gt;.&lt;consumer|producer&gt;.auto-create-resources</code> property, which is turned ON by default.</p>
+For that, you can use the <code>spring.cloud.stream.gcp.pubsub.bindings.&lt;consumer/produer name&gt;.&lt;consumer|producer&gt;.auto-create-resources</code> property, which is turned ON by default.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For more info about consumer/producer naming convention, please refer to <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_functional_binding_names">Functional binding names</a>.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Starting with version 1.1, these and other binder properties can be configured globally for all the bindings, e.g. <code>spring.cloud.stream.gcp.pubsub.default.consumer.auto-create-resources</code>.</p>
 </div>
 <div class="paragraph">
-<p>If you are using Pub/Sub auto-configuration from the Spring Framework on Google Cloud Pub/Sub Starter, you should refer to the <a href="#pubsub-configuration">configuration</a> section for other Pub/Sub parameters.</p>
+<p>If you are using Pub/Sub autoconfiguration from the Spring Framework on Google Cloud Pub/Sub Starter, you should refer to the <a href="#pubsub-configuration">configuration</a> section for other Pub/Sub parameters.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3732,8 +3697,8 @@ If synchronous sending is preferred (for example, to allow propagating errors ba
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.events.destination=myEvents
-spring.cloud.stream.gcp.pubsub.bindings.events.producer.auto-create-resources=true</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.{PRODUCER_NAME}.destination=myEvents
+spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.auto-create-resources=true</code></pre>
 </div>
 </div>
 </div>
@@ -3777,8 +3742,8 @@ Then when the binder shuts down, the library automatically cleans up all Pub/Sub
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.events.destination=myEvents
-spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=false</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
+spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-resources=false</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3790,11 +3755,11 @@ spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=fa
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.events.destination=myEvents
-spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=true
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
+spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-resources=true
 
 # specify consumer group, and avoid anonymous consumer group generation
-spring.cloud.stream.bindings.events.group=consumerGroup1</code></pre>
+spring.cloud.stream.bindings.{CONSUMER_NAME}.group=consumerGroup1</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3820,11 +3785,11 @@ For example, for a consumer to allow only two headers, provide a comma separated
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre>spring.cloud.stream.gcp.pubsub.bindings.&lt;consumerFunction&gt;-in-0.consumer.allowedHeaders=allowed1, allowed2</pre>
+<pre>spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.allowedHeaders=allowed1, allowed2</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Where &lt;consumerFunction&gt; should be replaced by the method which is consuming/reading messages from Cloud Pub/Sub and allowed1, allowed2 is the comma separated list of headers that the user wants to keep.</p>
+<p>Where <code>CONSUMER_NAME</code> should be replaced by the method which is consuming/reading messages from Cloud Pub/Sub and allowed1, allowed2 is the comma separated list of headers that the user wants to keep.</p>
 </div>
 <div class="paragraph">
 <p>A similar style is applicable for producers as well. For example:</p>
@@ -3832,11 +3797,11 @@ For example, for a consumer to allow only two headers, provide a comma separated
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre>spring.cloud.stream.gcp.pubsub.bindings.&lt;producerFunction&gt;-out-0.producer.allowedHeaders=allowed3,allowed4</pre>
+<pre>spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.allowedHeaders=allowed3,allowed4</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Where &lt;producerFunction&gt; should be replaced by the method which is producing/sending messages to Cloud Pub/Sub and allowed3, allowed4 is the comma separated list of headers that user wants to map. All other headers will be removed before the message is sent to Cloud Pub/Sub.</p>
+<p>Where <code>PRODUCER_NAME</code> should be replaced by the method which is producing/sending messages to Cloud Pub/Sub and allowed3, allowed4 is the comma separated list of headers that user wants to map. All other headers will be removed before the message is sent to Cloud Pub/Sub.</p>
 </div>
 </div>
 <div class="sect3">
@@ -3895,112 +3860,14 @@ Supplier&lt;Flux&lt;UserMessage&gt;&gt; generateUserMessages() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="binding-with-annotations"><a class="anchor" href="#binding-with-annotations"></a><a class="link" href="#binding-with-annotations">8.4. Binding with Annotations</a></h3>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-As of version 3.0, annotation binding is considered legacy.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>To set up a sink application in this style, you would associate a class with a binding interface, such as the built-in <code>Sink</code> interface.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">@EnableBinding(Sink.class)
-public class SinkExample {
-
-    @StreamListener(Sink.INPUT)
-    public void handleMessage(UserMessage userMessage) {
-        // process message
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To set up a source application, you would similarly associate a class with a built-in <code>Source</code> interface, and inject an instance of it provided by Spring Cloud Stream.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">@EnableBinding(Source.class)
-public class SourceExample {
-
-    @Autowired
-    private Source source;
-
-    public void sendMessage() {
-        this.source.output().send(new GenericMessage&lt;&gt;(/* your object here */));
-    }
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="streaming-vs-polled-input"><a class="anchor" href="#streaming-vs-polled-input"></a><a class="link" href="#streaming-vs-polled-input">8.5. Streaming vs. Polled Input</a></h3>
-<div class="paragraph">
-<p>Many Spring Cloud Stream applications will use the built-in <code>Sink</code> binding, which triggers the <em>streaming</em> input binder creation.
-Messages can then be consumed with an input handler marked by <code>@StreamListener(Sink.INPUT)</code> annotation, at whatever rate Pub/Sub sends them.</p>
-</div>
-<div class="paragraph">
-<p>For more control over the rate of message arrival, a polled input binder can be set up by defining a custom binding interface with an <code>@Input</code>-annotated method returning <code>PollableMessageSource</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface PollableSink {
-
-    @Input("input")
-    PollableMessageSource input();
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>PollableMessageSource</code> can then be injected and queried, as needed.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@EnableBinding(PollableSink.class)
-public class SinkExample {
-
-    @Autowired
-    PollableMessageSource destIn;
-
-    @Bean
-    public ApplicationRunner singlePollRunner() {
-        return args -&gt; {
-            // This will poll only once.
-            // Add a loop or a scheduler to get more messages.
-            destIn.poll(message -&gt; System.out.println("Message retrieved: " + message));
-        };
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>By default, the polling will only get 1 message at a time.
-Use the <code>spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize</code> property to fetch additional messages per network roundtrip.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="sample-4"><a class="anchor" href="#sample-4"></a><a class="link" href="#sample-4">8.6. Sample</a></h3>
+<h3 id="sample-4"><a class="anchor" href="#sample-4"></a><a class="link" href="#sample-4">8.4. Sample</a></h3>
 <div class="paragraph">
 <p>Sample applications are available:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>For <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-sample">streaming input, annotation-based</a>.</p>
-</li>
-<li>
 <p>For <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-functional-sample">streaming input, functional style</a>.</p>
-</li>
-<li>
-<p>For <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-polling-sample">polled input</a>.</p>
 </li>
 </ul>
 </div>
@@ -4089,14 +3956,14 @@ The sample contains two examples of configuration management with Spring Cloud B
 <h2 id="cloud-trace"><a class="anchor" href="#cloud-trace"></a><a class="link" href="#cloud-trace">10. Cloud Trace</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Google Cloud provides a managed distributed tracing service called <a href="https://cloud.google.com/trace/">Cloud Trace</a>, and <a href="https://cloud.spring.io/spring-cloud-sleuth/">Spring Cloud Sleuth</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
+<p>Google Cloud provides a managed distributed tracing service called <a href="https://cloud.google.com/trace/">Cloud Trace</a>, and <a href="https://micrometer.io/">Micrometer</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
 </div>
 <div class="paragraph">
-<p>Typically, Spring Cloud Sleuth captures trace information and forwards traces to services like Zipkin for storage and analysis.
+<p>Typically, Micrometer captures trace information and forwards traces to service like Zipkin for storage and analysis.
 However, on Google Cloud, instead of running and maintaining your own Zipkin instance and storage, you can use Cloud Trace to store traces, view trace details, generate latency distributions graphs, and generate performance regression reports.</p>
 </div>
 <div class="paragraph">
-<p>This Spring Framework on Google Cloud starter can forward Spring Cloud Sleuth traces to Cloud Trace without an intermediary Zipkin server.</p>
+<p>This Spring Framework on Google Cloud starter can forward Micrometer traces to Cloud Trace without an intermediary Zipkin server.</p>
 </div>
 <div class="paragraph">
 <p>Maven coordinates, using <a href="#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
@@ -4140,7 +4007,7 @@ Navigate to the <a href="https://console.cloud.google.com/apis/api/cloudtrace.go
 <div class="sect2">
 <h3 id="tracing"><a class="anchor" href="#tracing"></a><a class="link" href="#tracing">10.1. Tracing</a></h3>
 <div class="paragraph">
-<p>Spring Cloud Sleuth uses the <a href="https://github.com/openzipkin/brave">Brave tracer</a> to generate traces.
+<p>Micrometer uses the <a href="https://github.com/openzipkin/brave">Brave tracer</a> to generate traces.
 This integration enables Brave to use the <a href="https://github.com/openzipkin/zipkin-gcp/tree/main/propagation-stackdriver"><code>StackdriverTracePropagation</code></a> propagation.</p>
 </div>
 <div class="paragraph">
@@ -4152,7 +4019,7 @@ A canonical example of the propagation usage is a web server that receives an HT
 If those are not found, <code>StackdriverTracePropagation</code> will fall back on <code>x-cloud-trace-context</code> key (e.g., an HTTP request header).</p>
 </div>
 <div class="paragraph">
-<p>If you need different propagation behavior (e.g. relying primarily on <code>x-cloud-trace-context</code> in a mixed Spring / non-Spring application environment), Spring Cloud Sleuth allows such customization through the <a href="https://docs.spring.io/spring-cloud-sleuth/docs/current/reference/html/howto.html#how-to-change-context-propagation"><code>CUSTOM</code> propagation type</a>.</p>
+<p>If you need different propagation behavior (e.g. relying primarily on <code>x-cloud-trace-context</code> in a mixed Spring / non-Spring application environment), Micrometer allows such customization through the <a href="https://micrometer.io/docs/contextPropagation"><code>CUSTOM</code> propagation type</a>.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -4186,7 +4053,7 @@ Since Cloud Trace doesn&#8217;t support span joins, a new span ID is always gene
 </div>
 <div class="paragraph">
 <p><code>TRACE_TRUE</code> can either be <code>0</code> if the entity should be untraced, or <code>1</code> if it should be traced.
-This field forces the decision of whether or not to trace the request; if omitted then the decision is deferred to the sampler.</p>
+This field forces the decision of whether to trace the request; if omitted then the decision is deferred to the sampler.</p>
 </div>
 </td>
 </tr>
@@ -4196,7 +4063,7 @@ This field forces the decision of whether or not to trace the request; if omitte
 <div class="sect2">
 <h3 id="spring-boot-starter-for-cloud-trace"><a class="anchor" href="#spring-boot-starter-for-cloud-trace"></a><a class="link" href="#spring-boot-starter-for-cloud-trace">10.2. Spring Boot Starter for Cloud Trace</a></h3>
 <div class="paragraph">
-<p>Spring Boot Starter for Cloud Trace uses Spring Cloud Sleuth and auto-configures a <a href="https://github.com/openzipkin/zipkin-gcp/blob/main/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java">StackdriverSender</a> that sends the Sleuth’s trace information to Cloud Trace.</p>
+<p>Spring Boot Starter for Cloud Trace uses Micrometer and autoconfigures a <a href="https://github.com/openzipkin/zipkin-gcp/blob/main/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java">StackdriverSender</a> that sends the Micrometer’s trace information to Cloud Trace.</p>
 </div>
 <div class="paragraph">
 <p>All configurations are optional:</p>
@@ -4217,7 +4084,7 @@ This field forces the decision of whether or not to trace the request; if omitte
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Auto-configure Spring Cloud Sleuth to send traces to Cloud Trace.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Autoconfigure Micrometer to send traces to Cloud Trace.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
@@ -4308,33 +4175,19 @@ This field forces the decision of whether or not to trace the request; if omitte
 </tbody>
 </table>
 <div class="paragraph">
-<p>You can use core Spring Cloud Sleuth properties to control Sleuth’s sampling rate, etc.
-Read <a href="https://cloud.spring.io/spring-cloud-sleuth/">Sleuth documentation</a> for more information on Sleuth configurations.</p>
+<p>You can use core Micrometer properties to control Micrometer’s sampling rate, etc.
+Read <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#actuator.micrometer-tracing">Spring Boot Tracing documentation</a> for more information on Micrometer configurations.</p>
 </div>
 <div class="paragraph">
 <p>For example, when you are testing to see the traces are going through, you can set the sampling rate to 100%.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.sleuth.sampler.probability=1                     # Send 100% of the request traces to Cloud Trace.
-spring.sleuth.web.skipPattern=(^cleanup.*|.+favicon.*)  # Ignore some URL paths.
-spring.sleuth.scheduled.enabled=false                   # disable executor 'async' traces</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">management.tracing.sampling.probability=1.0              # Send 100% of the request traces to Cloud Trace.</code></pre>
 </div>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-By default, Spring Cloud Sleuth auto-configuration instruments executor beans, which may cause recurring traces with the name <code>async</code> to appear in Cloud Trace if your application or one of its dependencies introduces scheduler beans into Spring application context. To avoid this noise, please disable automatic instrumentation of executors via <code>spring.sleuth.scheduled.enabled=false</code> in your application configuration.
-</td>
-</tr>
-</table>
 </div>
 <div class="paragraph">
-<p>Spring Framework on Google Cloud Trace does override some Sleuth configurations:</p>
+<p>Spring Framework on Google Cloud Trace does override some Micrometer configurations:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -4347,17 +4200,13 @@ This is required by Cloud Trace.</p>
 Span joins will share the span ID between the client and server Spans.
 Cloud Trace requires that every Span ID within a Trace to be unique, so Span joins are not supported.</p>
 </li>
-<li>
-<p>Uses <code>StackdriverHttpRequestParser</code> by default to populate Stackdriver related fields.</p>
-</li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="overriding-the-auto-configuration"><a class="anchor" href="#overriding-the-auto-configuration"></a><a class="link" href="#overriding-the-auto-configuration">10.3. Overriding the auto-configuration</a></h3>
+<h3 id="overriding-the-autoconfiguration"><a class="anchor" href="#overriding-the-autoconfiguration"></a><a class="link" href="#overriding-the-autoconfiguration">10.3. Overriding the autoconfiguration</a></h3>
 <div class="paragraph">
-<p>Spring Cloud Sleuth supports sending traces to multiple tracing systems as of version 2.1.0.
-In order to get this to work, every tracing system needs to have a <code>Reporter&lt;Span&gt;</code> and <code>Sender</code>.
+<p>You can send traces to multiple tracing systems. In order to get this to work, every tracing system needs to have a <code>Reporter&lt;Span&gt;</code> and <code>Sender</code>.
 If you want to override the provided beans you need to give them a specific name.
 To do this you can use respectively <code>StackdriverTraceAutoConfiguration.REPORTER_BEAN_NAME</code> and <code>StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME</code>.</p>
 </div>
@@ -4418,10 +4267,7 @@ It&#8217;s set to <code>false</code> by default, but when set to <code>true</cod
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs"># Enable Pub/Sub tracing using this property
-spring.cloud.gcp.trace.pubsub.enabled=true
-
-# You should disable Spring Integration instrumentation by Sleuth as it's unnecessary when Pub/Sub tracing is enabled
-spring.sleuth.integration.enabled=false</code></pre>
+spring.cloud.gcp.trace.pubsub.enabled=true</code></pre>
 </div>
 </div>
 </div>
@@ -4462,8 +4308,8 @@ spring.sleuth.integration.enabled=false</code></pre>
 </div>
 <div class="paragraph">
 <p>This module provides support for associating a web request trace ID with the corresponding log entries.
-It does so by retrieving the <code>X-B3-TraceId</code> value from the <a href="https://logback.qos.ch/manual/mdc.html">Mapped Diagnostic Context (MDC)</a>, which is set by Spring Cloud Sleuth.
-If Spring Cloud Sleuth isn&#8217;t used, the configured <code>TraceIdExtractor</code> extracts the desired header value and sets it as the log entry&#8217;s trace ID.
+It does so by retrieving the <code>X-B3-TraceId</code> value from the <a href="https://logback.qos.ch/manual/mdc.html">Mapped Diagnostic Context (MDC)</a>, which is set by Micrometer.
+If Micrometer isn&#8217;t used, the configured <code>TraceIdExtractor</code> extracts the desired header value and sets it as the log entry&#8217;s trace ID.
 This allows grouping of log messages by request, for example, in the <a href="https://console.cloud.google.com/logs/viewer">Google Cloud Console Logs viewer</a>.</p>
 </div>
 <div class="admonitionblock note">
@@ -4492,7 +4338,7 @@ You can do this easily if you&#8217;re using the <a href="https://cloud.google.c
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If Spring Framework on Google Cloud Trace is enabled, the logging module disables itself and delegates log correlation to Spring Cloud Sleuth.
+If Spring Framework on Google Cloud Trace is enabled, the logging module disables itself and delegates log correlation to Micrometer.
 </td>
 </tr>
 </table>
@@ -4502,7 +4348,7 @@ If Spring Framework on Google Cloud Trace is enabled, the logging module disable
 </div>
 <div class="paragraph">
 <p>Applications hosted on the Google Cloud include trace IDs under the <code>x-cloud-trace-context</code> header, which will be included in log entries.
-However, if Sleuth is used the trace ID will be picked up from the MDC.</p>
+However, if Micrometer is used the trace ID will be picked up from the MDC.</p>
 </div>
 </div>
 <div class="sect2">
@@ -4701,7 +4547,7 @@ The following properties are available:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeMDC</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Should all MDC properties be included.
-The MDC properties <code>X-B3-TraceId</code>, <code>X-B3-SpanId</code> and <code>X-Span-Export</code> provided by Spring Sleuth will get excluded as they get handled separately</p></td>
+The MDC properties <code>X-B3-TraceId</code>, <code>X-B3-SpanId</code> and <code>X-Span-Export</code> provided by Micrometer will get excluded as they get handled separately</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeLoggerName</code></p></td>
@@ -10307,7 +10153,7 @@ The autoconfigured <code>BigQueryTemplate</code> instance will use the dataset p
 BigQueryTemplate bigQueryTemplate;
 
 public void loadData(InputStream dataInputStream, String tableName) {
-  ListenableFuture&lt;Job&gt; bigQueryJobFuture =
+  CompletableFuture&lt;Job&gt; bigQueryJobFuture =
       bigQueryTemplate.writeDataToTable(
           tableName,
           dataFile.getInputStream(),
@@ -10335,7 +10181,7 @@ BigQueryTemplate bigQueryTemplate;
    */
   public void loadJsonStream(String tableName, InputStream jsonInputStream)
       throws ExecutionException, InterruptedException {
-    ListenableFuture&lt;WriteApiResponse&gt; writeApFuture =
+    CompletableFuture&lt;WriteApiResponse&gt; writeApFuture =
         bigQueryTemplate.writeJsonStream(tableName, jsonInputStream);
     WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
     if (!apiRes.isSuccessful()){
@@ -10364,7 +10210,7 @@ BigQueryTemplate bigQueryTemplate;
    */
   public void createTableAndloadJsonStream(String tableName, InputStream jsonInputStream, Schema tableSchema)
       throws ExecutionException, InterruptedException {
-    ListenableFuture&lt;WriteApiResponse&gt; writeApFuture =
+    CompletableFuture&lt;WriteApiResponse&gt; writeApFuture =
         bigQueryTemplate.writeJsonStream(tableName, jsonInputStream, tableSchema);//using the overloaded method which created the table when tableSchema is passed
     WriteApiResponse apiRes = writeApFuture.get();//get the WriteApiResponse
     if (!apiRes.isSuccessful()){
@@ -10449,7 +10295,7 @@ The headers are specified by the class <code>BigQuerySpringMessageHeaders</code>
 The <a href="https://googleapis.dev/java/google-cloud-clients/latest/index.html?com/google/cloud/bigquery/package-summary.html">Job object</a> provides metadata and information about the load file operation.</p>
 </div>
 <div class="paragraph">
-<p>By default, the <code>BigQueryFileMessageHandler</code> is run in asynchronous mode, with <code>setSync(false)</code>, and it will reply with a <code>ListenableFuture&lt;Job&gt;</code> on the reply channel.
+<p>By default, the <code>BigQueryFileMessageHandler</code> is run in asynchronous mode, with <code>setSync(false)</code>, and it will reply with a <code>CompletableFuture&lt;Job&gt;</code> on the reply channel.
 The future is tied to the status of the data loading job and will complete when the job completes.</p>
 </div>
 <div class="paragraph">
@@ -10462,7 +10308,7 @@ The future is tied to the status of the data loading job and will complete when 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you decide to use Spring Integration Gateways and you wish to receive <code>ListenableFuture&lt;Job&gt;</code> as a reply object in the Gateway, you will have to call <code>.setAsyncExecutor(null)</code> on your <code>GatewayProxyFactoryBean</code>.
+If you decide to use Spring Integration Gateways and you wish to receive <code>CompletableFuture&lt;Job&gt;</code> as a reply object in the Gateway, you will have to call <code>.setAsyncExecutor(null)</code> on your <code>GatewayProxyFactoryBean</code>.
 This is needed to indicate that you wish to reply on the built-in async support rather than rely on async handling of the gateway.
 </td>
 </tr>
@@ -10931,11 +10777,11 @@ public void processPdf() {
 <p>The <code>DocumentOcrTemplate</code> provides the following method for running OCR on a document saved in Google Cloud Storage:</p>
 </div>
 <div class="paragraph">
-<p><code>ListenableFuture&lt;DocumentOcrResultSet&gt; runOcrForDocument(GoogleStorageLocation document, GoogleStorageLocation outputFilePathPrefix)</code></p>
+<p><code>CompletableFuture&lt;DocumentOcrResultSet&gt; runOcrForDocument(GoogleStorageLocation document, GoogleStorageLocation outputFilePathPrefix)</code></p>
 </div>
 <div class="paragraph">
 <p>The method allows you to specify the location of the document and the output location for where all the JSON output files will be saved in Google Cloud Storage.
-It returns a <code>ListenableFuture</code> containing <code>DocumentOcrResultSet</code> which contains the OCR content of the document.</p>
+It returns a <code>CompletableFuture</code> containing <code>DocumentOcrResultSet</code> which contains the OCR content of the document.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -10945,7 +10791,7 @@ It returns a <code>ListenableFuture</code> containing <code>DocumentOcrResultSet
 </td>
 <td class="content">
 Running OCR on a document is an operation that can take between several minutes to several hours depending on how large the document is.
-It is recommended to register callbacks to the returned ListenableFuture or ignore it and process the JSON output files at a later point in time using <code>readOcrOutputFile</code> or <code>readOcrOutputFileSet</code>.
+It is recommended to register callbacks to the returned CompletableFuture or ignore it and process the JSON output files at a later point in time using <code>readOcrOutputFile</code> or <code>readOcrOutputFileSet</code>.
 </td>
 </tr>
 </table>
@@ -10967,7 +10813,7 @@ public void runOcrOnDocument() {
     GoogleStorageLocation outputLocationPrefix = GoogleStorageLocation.forFolder(
             "your-bucket", "output_folder/test.pdf/");
 
-    ListenableFuture&lt;DocumentOcrResultSet&gt; result =
+    CompletableFuture&lt;DocumentOcrResultSet&gt; result =
         this.documentOcrTemplate.runOcrForDocument(
             document, outputLocationPrefix);
 
@@ -10992,7 +10838,7 @@ public void runOcrOnDocument() {
 <li>
 <p><code>readOcrOutputFileSet(GoogleStorageLocation jsonOutputFilePathPrefix)</code>:
 Reads a collection of OCR output files under a file path prefix and returns the parsed contents.
-All of the files under the path should correspond to the same document.</p>
+All the files under the path should correspond to the same document.</p>
 </li>
 <li>
 <p><code>readOcrOutputFile(GoogleStorageLocation jsonFile)</code>:
@@ -11103,18 +10949,6 @@ A detailed summary of its features can be found in the <a href="https://cloud.go
 <p>By default, Spring Framework on Google Cloud Secret Manager will authenticate using Application Default Credentials.
 This can be overridden using the authentication properties.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-All the below settings must be specified in a <a href="https://cloud.spring.io/spring-cloud-commons/multi/multi__spring_cloud_context_application_context_services.html#_the_bootstrap_application_context"><code>bootstrap.properties</code></a> (or <code>bootstrap.yaml</code>) file which is the properties file used to configure settings for bootstrap-phase Spring configuration.
-</td>
-</tr>
-</table>
-</div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -11128,12 +10962,6 @@ All the below settings must be specified in a <a href="https://cloud.spring.io/s
 <td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.secretmanager.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enables the Secret Manager bootstrap property and template configuration.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.secretmanager.credentials.location</code></p></td>
@@ -11203,12 +11031,16 @@ sm://&lt;secret-id&gt;</code></pre>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>In your <code>application.properties</code> or <code>bootstrap.properties</code> files:</p>
+<p>In your <code>application.properties</code> file:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs"># Example of the project-secret long-form syntax.
+spring.config.import=sm://
 spring.datasource.password=${sm://projects/my-gcp-project/secrets/my-secret}</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The former is used to enable <a href="https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4">Spring Boot&#8217;s Config Data API</a>.</p>
 </div>
 </li>
 <li>
@@ -11259,21 +11091,11 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>add the following properties to your project&#8217;s <code>application.properties</code>. The latter is used to enable <a href="https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4">Spring Boot&#8217;s Config Data API</a>.</p>
+<p>add the following properties to your project&#8217;s <code>application.properties</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">management.endpoints.web.exposure.include=refresh
-spring.config.import=sm://</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>finally, add the following property to your project&#8217;s <code>bootstrap.properties</code> to disable
-Secret Manager bootstrap phrase.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.gcp.secretmanager.legacy=false</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">management.endpoints.web.exposure.include=refresh</code></pre>
 </div>
 </div>
 </li>
@@ -11476,7 +11298,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 <pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-config&lt;/artifactId&gt;
-    &lt;version&gt;3.4.3-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;4.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -11488,7 +11310,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 <pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     compile group: 'org.springframework.cloud',
     name: 'spring-cloud-gcp-starter-config',
-    version: '3.4.3-SNAPSHOT'
+    version: '4.0.0-SNAPSHOT'
 }</code></pre>
 </div>
 </div>
@@ -12023,6 +11845,280 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 </div>
 </dd>
 </dl>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="migration-guide-from-spring-cloud-gcp-3-x-to-4-x"><a class="anchor" href="#migration-guide-from-spring-cloud-gcp-3-x-to-4-x"></a><a class="link" href="#migration-guide-from-spring-cloud-gcp-3-x-to-4-x">27. Migration Guide from Spring Cloud GCP 3.x to 4.x</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="before-you-start"><a class="anchor" href="#before-you-start"></a><a class="link" href="#before-you-start">27.1. Before you start</a></h3>
+<div class="sect3">
+<h4 id="upgrade-to-the-3-x-version"><a class="anchor" href="#upgrade-to-the-3-x-version"></a><a class="link" href="#upgrade-to-the-3-x-version">27.1.1. Upgrade to the 3.x version</a></h4>
+<div class="paragraph">
+<p>This doc assumes you are running with Spring Cloud GCP 3.x.</p>
+</div>
+<div class="paragraph">
+<p>If you are currently running with an earlier major version of Spring Cloud GCP, i.e., 1.x or 2.x, we recommend that you upgrade to <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/releases/tag/v3.0.0">Spring Cloud GCP 3.x</a> before migrating to Spring Cloud GCP 4.0.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="migration-guide-1.x.adoc">Migration guide from Spring Cloud GCP 1.x to 2.x</a></p>
+</li>
+<li>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/releases/tag/v3.0.0">Spring Cloud GCP 3.0 Release Note</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Note that since Spring Cloud GCP 3.0 has few breaking changes, we only provide a release note.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="review-system-requirements"><a class="anchor" href="#review-system-requirements"></a><a class="link" href="#review-system-requirements">27.1.2. Review System requirements</a></h4>
+<div class="paragraph">
+<p>Spring Cloud GCP 4.0 is built on Spring Boot 3.0 and Spring Framework 6.0, which requires Java 17 at minimum.
+If you are currently on Java 8 or Java 11, you need to upgrade your JDK before you can develop an application based on Spring Cloud GCP 4.0.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="review-deprecations-from-3-x"><a class="anchor" href="#review-deprecations-from-3-x"></a><a class="link" href="#review-deprecations-from-3-x">27.1.3. Review Deprecations from 3.x</a></h4>
+<div class="paragraph">
+<p>Classes, methods and properties that were deprecated in Spring Cloud GCP 3.x have been removed in this release.
+Please ensure that you aren’t calling deprecated methods before upgrading.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="upgrade-to-spring-cloud-gcp-4-0"><a class="anchor" href="#upgrade-to-spring-cloud-gcp-4-0"></a><a class="link" href="#upgrade-to-spring-cloud-gcp-4-0">27.2. Upgrade to Spring Cloud GCP 4.0</a></h3>
+<div class="sect3">
+<h4 id="spring-boot-3-0"><a class="anchor" href="#spring-boot-3-0"></a><a class="link" href="#spring-boot-3-0">27.2.1. Spring Boot 3.0</a></h4>
+<div class="paragraph">
+<p>Spring Cloud GCP 4.0 builds on Spring Boot 3.0. Review the <a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide">Spring Boot 3.0 migration guide</a> before continuing.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="update-bill-of-materials-bom"><a class="anchor" href="#update-bill-of-materials-bom"></a><a class="link" href="#update-bill-of-materials-bom">27.2.2. Update Bill of Materials (BOM)</a></h4>
+<div class="paragraph">
+<p>If you’re a Maven user, add our BOM to your pom.xml <code>&lt;dependencyManagement&gt;</code> section.
+This will allow you to not specify versions for any of the Maven dependencies and instead delegate versioning to the BOM.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-gcp-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;4.0.0&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="review-dependencies"><a class="anchor" href="#review-dependencies"></a><a class="link" href="#review-dependencies">Review Dependencies</a></h5>
+<div class="paragraph">
+<p>Run <code>mvn dependency:tree</code> (<code>gradlew dependencies</code> for Gradle projects) to see the dependency tree of your project.
+Ensure Spring-related dependencies have matching versions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Spring Boot 3.0</p>
+</li>
+<li>
+<p>Spring Cloud 2022.0</p>
+<div class="ulist">
+<ul>
+<li>
+<p>For detailed dependency versions, see "2022.0 (Kilburn)" column in <a href="https://github.com/spring-cloud/spring-cloud-release/wiki/Supported-Versions#supported-releases">Spring Cloud: Supported Versions</a> table.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Data 2022.0</p>
+<div class="ulist">
+<ul>
+<li>
+<p>For detailed dependency versions, see <a href="https://github.com/spring-projects/spring-data-commons/wiki/Spring-Data-2022.0-%28Turing%29-Release-Notes">Spring Data 2022.0 Release Note</a>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cloud-bigquery"><a class="anchor" href="#cloud-bigquery"></a><a class="link" href="#cloud-bigquery">27.2.3. Cloud BigQuery</a></h4>
+<div class="paragraph">
+<p>Replaced <code>ListenableFuture</code> and <code>SettableListenableFuture</code> with <code>CompletableFuture</code> as the former two Classes are deprecated in Spring Framework 6.0.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cloud-sql-2"><a class="anchor" href="#cloud-sql-2"></a><a class="link" href="#cloud-sql-2">27.2.4. Cloud SQL</a></h4>
+<div class="paragraph">
+<p>MySQL R2DBC is not supported by Spring Cloud GCP 4.0 due to <a href="https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/issues/990">compatibility issues</a> with the Mariadb driver.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cloud-pubsub-2"><a class="anchor" href="#cloud-pubsub-2"></a><a class="link" href="#cloud-pubsub-2">27.2.5. Cloud Pub/Sub</a></h4>
+<div class="paragraph">
+<p>Replaced <code>ListenableFuture</code> and <code>SettableListenableFuture</code> with <code>CompletableFuture</code> as the former two Classes are deprecated in Spring Framework 6.0.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="spring-cloud-stream-binder-to-google-cloud-pubsub"><a class="anchor" href="#spring-cloud-stream-binder-to-google-cloud-pubsub"></a><a class="link" href="#spring-cloud-stream-binder-to-google-cloud-pubsub">27.2.6. Spring Cloud Stream binder to Google Cloud Pub/Sub</a></h4>
+<div class="paragraph">
+<p>Change to functional model as annotation-based model is removed from Spring Cloud Stream 4.0.0.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="secret-manager-2"><a class="anchor" href="#secret-manager-2"></a><a class="link" href="#secret-manager-2">27.2.7. Secret Manager</a></h4>
+<div class="paragraph">
+<p>To enable the application to fetch a secret from SecretManager, add <code>spring.config.import=sm://</code> in the <code>application.properties</code> or <code>application.yml</code> files and inject the secret into the application by adding <code>application.secret=${sm://your-secret-name}</code>.
+Do not write secret values in the file.</p>
+</div>
+<div class="paragraph">
+<p>Please also remove <code>spring.cloud.gcp.secretmanager.enabled</code> and <code>spring.cloud.gcp.secretmanager.legacy</code> in <code>bootstrap.yml</code> or <code>bootstrap.properties</code> files.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cloud-trace-2"><a class="anchor" href="#cloud-trace-2"></a><a class="link" href="#cloud-trace-2">27.2.8. Cloud Trace</a></h4>
+<div class="paragraph">
+<p>Annotation <code>org.springframework.cloud.sleuth.annotation.NewSpan</code> is deprecated in favor of <code>io.micrometer.observation.annotation.Observed</code> since Spring Boot 3.0 builds on Micrometer 1.0 rather than Spring Cloud Sleuth (which is excluded from the Spring Cloud release train).</p>
+</div>
+<div class="paragraph">
+<p>If you use <code>NewSpan</code> to generate an additional span, replace the annotation with <code>Observed</code>.
+The default name of the additional span is <code>&lt;class-name&gt;#&lt;method-name&gt;</code>.
+If you want to customize the additional span name, specify the <code>contextualName</code> parameter.</p>
+</div>
+<div class="paragraph">
+<p>Please also remove <code>spring.sleuth.enabled</code> from your <code>application.properties</code> or <code>application.yml</code> file.
+Note that <code>spring.cloud.gcp.trace.enabled=true</code> is still required if you want to enable Trace.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cloud-vision-2"><a class="anchor" href="#cloud-vision-2"></a><a class="link" href="#cloud-vision-2">27.2.9. Cloud Vision</a></h4>
+<div class="paragraph">
+<p>Replaced <code>ListenableFuture</code> and <code>SettableListenableFuture</code> with <code>CompletableFuture</code> as the former two Classes are deprecated in Spring Framework 6.0.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuration-changelog"><a class="anchor" href="#configuration-changelog"></a><a class="link" href="#configuration-changelog">27.3. Configuration Changelog</a></h3>
+<div class="sect3">
+<h4 id="removed"><a class="anchor" href="#removed"></a><a class="link" href="#removed">27.3.1. Removed</a></h4>
+<div class="paragraph">
+<p>The following properties are removed from the codebase thus no longer needed in your application.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>spring.cloud.gcp.secretmanager.enabled</code></p>
+</li>
+<li>
+<p><code>spring.cloud.gcp.secretmanager.legacy</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>See the "SecretManager" section.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>spring.sleuth.enabled</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>See the "Trace" section</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="deprecated-items-removed-2"><a class="anchor" href="#deprecated-items-removed-2"></a><a class="link" href="#deprecated-items-removed-2">27.4. Deprecated Items Removed</a></h3>
+<div class="sect3">
+<h4 id="cloud-bigquery-2"><a class="anchor" href="#cloud-bigquery-2"></a><a class="link" href="#cloud-bigquery-2">27.4.1. Cloud BigQuery</a></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>BigQueryTemplate(BigQuery bigQuery, String datasetName)</code></dt>
+<dd>
+<p>Use <code>BigQueryTemplate(BigQuery, BigQueryWriteClient, Map, TaskScheduler)</code> instead</p>
+</dd>
+<dt class="hdlist1"><code>BigQueryTemplate(BigQuery, String, TaskScheduler)</code></dt>
+<dd>
+<p>Use <code>BigQueryTemplate(BigQuery, BigQueryWriteClient, Map, TaskScheduler)</code> instead</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cloud-datastore"><a class="anchor" href="#cloud-datastore"></a><a class="link" href="#cloud-datastore">27.4.2. Cloud Datastore</a></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>DatastorePersistentPropertyImpl.getPersistentEntityTypes()</code></dt>
+<dd>
+<p>Use <code>DatastorePersistentPropertyImpl.getPersistentEntityTypeInformation()</code> instead</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cloud-pubsub-3"><a class="anchor" href="#cloud-pubsub-3"></a><a class="link" href="#cloud-pubsub-3">27.4.3. Cloud Pub/Sub</a></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>DefaultSubscriberFactory(GcpProjectIdProvider)</code></dt>
+<dd>
+<p>Use <code>DefaultSubscriberFactory(GcpProjectIdProvider, PubSubConfiguration)</code> instead</p>
+</dd>
+<dt class="hdlist1"><code>PubSubConfiguration.computeSubscriberRetrySettings(String, String)</code></dt>
+<dd>
+<p>Use <code>PubSubConfiguration.computeSubscriberRetrySettings(ProjectSubscriptionName)</code> instead</p>
+</dd>
+<dt class="hdlist1"><code>PubSubConfiguration.computeSubscriberFlowControlSettings(String, String)</code></dt>
+<dd>
+<p>Use <code>PubSubConfiguration.computeSubscriberFlowControlSettings(ProjectSubscriptionName)</code> instead</p>
+</dd>
+<dt class="hdlist1"><code>PubSubConfiguration.getSubscriber(String, String)</code></dt>
+<dd>
+<p>Use <code>PubSubConfiguration.getSubscriptionProperties(ProjectSubscriptionName)</code> instead</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cloud-spanner"><a class="anchor" href="#cloud-spanner"></a><a class="link" href="#cloud-spanner">27.4.4. Cloud Spanner</a></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>SpannerPersistentEntityImpl(TypeInformation&lt;T&gt;)</code></dt>
+<dd>
+<p>Use <code>SpannerPersistentEntityImpl(TypeInformation, SpannerMappingContext, SpannerEntityProcessor)</code> instead</p>
+</dd>
+<dt class="hdlist1"><code>SpannerCompositeKeyProperty.getPersistentEntityTypes()</code></dt>
+<dd>
+<p>Use <code>SpannerCompositeKeyProperty.getPersistentEntityTypeInformation()</code> instead</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cloud-trace-3"><a class="anchor" href="#cloud-trace-3"></a><a class="link" href="#cloud-trace-3">27.4.5. Cloud Trace</a></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>TracingSubscriberFactory.createSubscriberStub()</code></dt>
+<dd>
+<p>Use <code>TracingSubscriberFactory.createSubscriberStub(String)</code> instead</p>
+</dd>
+</dl>
+</div>
 </div>
 </div>
 </div>

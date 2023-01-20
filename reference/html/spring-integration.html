@@ -184,7 +184,7 @@ window.onload = function() {
 <h3 id="_channel_adapters_for_cloud_pubsub"><a class="link" href="#_channel_adapters_for_cloud_pubsub">Channel Adapters for Cloud Pub/Sub</a></h3>
 <div class="paragraph">
 <p>The channel adapters for Google Cloud Pub/Sub connect your Spring <a href="https://docs.spring.io/spring-integration/reference/html/channel.html"><code>MessageChannels</code></a> to Google Cloud Pub/Sub topics and subscriptions.
-This enables messaging between different processes, applications or micro-services backed up by Google Cloud Pub/Sub.</p>
+This enables messaging between different processes, applications or microservices backed up by Google Cloud Pub/Sub.</p>
 </div>
 <div class="paragraph">
 <p>The Spring Integration Channel Adapters for Google Cloud Pub/Sub are included in the <code>spring-cloud-gcp-pubsub</code> module and can be autoconfigured by using the <code>spring-cloud-gcp-starter-pubsub</code> module in combination with a Spring Integration dependency.</p>
@@ -194,14 +194,16 @@ This enables messaging between different processes, applications or micro-servic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
+  &lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-pubsub&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
     &lt;groupId&gt;org.springframework.integration&lt;/groupId&gt;
     &lt;artifactId&gt;spring-integration-core&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -416,7 +418,7 @@ public void pubsubErrorHandler(Message&lt;MessagingException&gt; message) {
 </div>
 </div>
 <div class="paragraph">
-<p>If you would prefer to manually ack or nack the message, you can do it by retrieving the header of the exception payload:</p>
+<p>If you preferred to manually ack or nack the message, you can do it by retrieving the header of the exception payload:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -561,19 +563,12 @@ If none is provided, the adapter waits indefinitely for a response.</p>
 <div class="paragraph">
 <p>It is possible to set user-defined callbacks for the <code>publish()</code> call in <code>PubSubMessageHandler</code> through the <code>setSuccessCallback()</code> and <code>setFailureCallback()</code> methods (either one or both may be set).
 These give access to the Pub/Sub publish message ID in case of success, or the root cause exception in case of error.
-Both callbacks include the original message as the second argument.
-The old <code>setPublishCallback()</code> method that only gave access to message ID or root cause exception is deprecated and will be removed in a future release.</p>
+Both callbacks include the original message as the second argument.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">adapter.setPublishCallback(
-    new ListenableFutureCallback&lt;String&gt;() {
-      @Override
-      public void onFailure(Throwable ex) {}
-
-      @Override
-      public void onSuccess(String result) {}
-    });</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">adapter.setSuccessCallback((ackId, message) -&gt; {});
+adapter.setFailureCallback((cause, message) -&gt; {});</code></pre>
 </div>
 </div>
 <div class="paragraph">
