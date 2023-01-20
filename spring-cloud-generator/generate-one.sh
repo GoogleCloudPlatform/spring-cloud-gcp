@@ -115,7 +115,7 @@ add_module_to_pom () {
       sed -i "/$starter_artifactid/d" README.md
       # also write to spring-cloud-previews/README.md
       # format |name|distribution name|
-      echo -e "|$client_lib_name|com.google.cloud:$starter_artifactid|[README.md](https://github.com/googleapis/google-cloud-java/blob/$monorepo_commitish/$monorepo_folder/README.md)|" >> README.md
+      echo -e "|[$monorepo_folder](https://github.com/googleapis/google-cloud-java/blob/$monorepo_commitish/$monorepo_folder/README.md)|com.google.cloud:$starter_artifactid|" >> README.md
       {(grep -vw ".*:.*" README.md);(grep ".*:.*" README.md| sort | uniq)} > tmpfile && mv tmpfile README.md
     fi
   fi
