@@ -10,7 +10,7 @@ add the following dependency to your `pom.xml`:
   <dependency>
     <groupId>com.google.cloud</groupId>
     <artifactId>google-cloud-language-spring-starter</artifactId>
-    <version>{project-version}-preview</version>
+    <version>{starters-version}-preview</version>
   </dependency>
 ```
 
