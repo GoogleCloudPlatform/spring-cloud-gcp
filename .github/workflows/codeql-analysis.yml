@@ -39,6 +39,11 @@ jobs:
       id: date
       run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
 
+    - name: Setup Java JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+
     - name: Checkout repository
       uses: actions/checkout@v2
 
