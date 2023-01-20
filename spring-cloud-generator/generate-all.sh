@@ -2,7 +2,6 @@
 WORKING_DIR=`pwd`
 
 mkdir -p run-sanity-check
-touch run-sanity-check/generate-all-started
 
 cd ../
 # Compute the project version.
@@ -21,6 +20,7 @@ save_error_info () {
 # repos are downloaded once before all generation jobs and then removed
 
 bash download-repos.sh
+touch run-sanity-check/generate-all-started
 libraries=$(cat $WORKING_DIR/library_list.txt | tail -n+2)
 while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish; do
   echo "processing library $library_name"
