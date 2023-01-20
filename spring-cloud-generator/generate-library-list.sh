@@ -24,7 +24,7 @@ cd -
 
 # start file, always override is present
 filename=./library_list.txt
-echo "# api_shortname, googleapis-folder, distribution_name:version, googleapis_committish" > $filename
+echo "# api_shortname, googleapis-folder, distribution_name:version, googleapis_committish, monorepo_folder" > $filename
 
 # loop through folders
 count=0
@@ -36,6 +36,7 @@ for d in ./google-cloud-java/*java-*/; do
   library_type=$(cat $d/.repo-metadata.json | jq -r .library_type)
   transport=$(cat $d/.repo-metadata.json | jq -r .transport)
   release_level=$(cat $d/.repo-metadata.json | jq -r .release_level)
+  monorepo_folder=$(basename $d)
 
   group_id=$(echo $distribution_name | cut -f1 -d:)
   artifact_id=$(echo $distribution_name | cut -f2 -d:)
@@ -81,7 +82,7 @@ for d in ./google-cloud-java/*java-*/; do
   googleapis_committish=$(git log $commitish -- "$version_folder" | grep -m 1 'Source-Link:.*googleapis/googleapis.*' | sed 's#^.*/commit/##')
   cd ~- || { echo "Failed to get back to previous directory"; exit 1; }
 
-  echo "$api_shortname, $googleapis_folder, $distribution_name, $googleapis_committish" >> $filename
+  echo "$api_shortname, $googleapis_folder, $distribution_name, $googleapis_committish, $monorepo_folder" >> $filename
   count=$((count+1))
 done
 echo "Total in-scope client libraries: $count"
