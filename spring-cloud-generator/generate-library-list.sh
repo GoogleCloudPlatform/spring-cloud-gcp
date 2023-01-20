@@ -1,13 +1,9 @@
 #!/bin/bash
+mkdir -p run-sanity-check
+touch run-sanity-check/generate-library-list-started
 
-#cmd line:: ./generate-library-list.sh -c v1.1.0
-
-while getopts c: flag
-do
-    case "${flag}" in
-        c) commitish=${OPTARG};;
-    esac
-done
+#cmd line:: ./generate-library-list.sh
+commitish="v$(bash compute-monorepo-tag.sh)"
 echo "monorepo commitish to checkout: $commitish";
 
 
@@ -60,7 +56,8 @@ for d in ./google-cloud-java/*java-*/; do
     echo "$d: release_level: $release_level"
     continue
   fi
-  if [[ $artifact_id == "google-cloud-vision" ||  $artifact_id == "google-cloud-kms" ]] ; then
+  # checks if library is in the manual modules exclusion list
+  if [[ $(cat exclusion_lists/manual_modules | tail -n+2 | grep $artifact_id | wc -l) -ne 0 ]] ; then
     echo "$artifact_id is already present in manual modules."
     continue
   fi
@@ -91,3 +88,4 @@ echo "Total in-scope client libraries: $count"
 
 # clean up
 rm -rf google-cloud-java/
+touch run-sanity-check/generate-library-list-finished
