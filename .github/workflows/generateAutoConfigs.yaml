@@ -44,7 +44,6 @@ jobs:
         continue-on-error: false
         run: |
           set -e
-          #mvn install -DskipTests -Dcheckstyle.skip
           ./mvnw wrapper:wrapper
           ./mvnw \
             --batch-mode \
@@ -85,8 +84,7 @@ jobs:
         continue-on-error: false
         working-directory: spring-cloud-previews
         run: |
-          #mvn install -DskipTests -Dcheckstyle.skip
-          ./mvnw \
+          ../mvnw \
             --batch-mode \
             --show-version \
             --threads 1.5C \
