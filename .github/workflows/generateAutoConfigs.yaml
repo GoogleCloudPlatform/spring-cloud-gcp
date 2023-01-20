@@ -44,7 +44,6 @@ jobs:
         continue-on-error: false
         run: |
           set -e
-          ./mvnw wrapper:wrapper
           ./mvnw \
             --batch-mode \
             --show-version \
