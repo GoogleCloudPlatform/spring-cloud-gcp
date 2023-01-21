@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Cloud Logging</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#cloud-logging">Cloud Logging</a>
+<ul class="sectlevel2">
+<li><a href="#_web_mvc_interceptor">Web MVC Interceptor</a></li>
+<li><a href="#_logback_support">Logback Support</a></li>
+<li><a href="#_sample">Sample</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cloud-logging"><a class="link" href="#cloud-logging">Cloud Logging</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-gcp-starter-logging&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Gradle coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>dependencies {
+    implementation("com.google.cloud:spring-cloud-gcp-starter-logging")
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://cloud.google.com/logging/">Cloud Logging</a> is the managed logging service provided by Google Cloud Platform.</p>
+</div>
+<div class="paragraph">
+<p>This module provides support for associating a web request trace ID with the corresponding log entries.
+It does so by retrieving the <code>X-B3-TraceId</code> value from the <a href="https://logback.qos.ch/manual/mdc.html">Mapped Diagnostic Context (MDC)</a>, which is set by Spring Cloud Sleuth.
+If Spring Cloud Sleuth isn&#8217;t used, the configured <code>TraceIdExtractor</code> extracts the desired header value and sets it as the log entry&#8217;s trace ID.
+This allows grouping of log messages by request, for example, in the <a href="https://console.cloud.google.com/logs/viewer">Google Cloud Console Logs viewer</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Due to the way logging is set up, the GCP project ID and credentials defined in <code>application.properties</code> are ignored.
+Instead, you should set the <code>GOOGLE_CLOUD_PROJECT</code> and <code>GOOGLE_APPLICATION_CREDENTIALS</code> environment variables to the project ID and credentials private key location, respectively.
+You can do this easily if you&#8217;re using the <a href="https://cloud.google.com/sdk">Google Cloud SDK</a>, using the <code>gcloud config set project [YOUR_PROJECT_ID]</code> and <code>gcloud auth application-default login</code> commands, respectively.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_web_mvc_interceptor"><a class="link" href="#_web_mvc_interceptor">Web MVC Interceptor</a></h3>
+<div class="paragraph">
+<p>For use in Web MVC-based applications, <code>TraceIdLoggingWebMvcInterceptor</code> is provided that extracts the request trace ID from an HTTP request using a <code>TraceIdExtractor</code> and stores it in a thread-local, which can then be used in a logging appender to add the trace ID metadata to log messages.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+If Spring Cloud GCP Trace is enabled, the logging module disables itself and delegates log correlation to Spring Cloud Sleuth.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>LoggingWebMvcConfigurer</code> configuration class is also provided to help register the <code>TraceIdLoggingWebMvcInterceptor</code> in Spring MVC applications.</p>
+</div>
+<div class="paragraph">
+<p>Applications hosted on the Google Cloud Platform include trace IDs under the <code>x-cloud-trace-context</code> header, which will be included in log entries.
+However, if Sleuth is used the trace ID will be picked up from the MDC.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_logback_support"><a class="link" href="#_logback_support">Logback Support</a></h3>
+<div class="paragraph">
+<p>Currently, only Logback is supported and there are 2 possibilities to log to Cloud Logging via this library with Logback: via direct API calls and through JSON-formatted console logs.</p>
+</div>
+<div class="sect3">
+<h4 id="_log_via_api"><a class="link" href="#_log_via_api">Log via API</a></h4>
+<div class="paragraph">
+<p>A Cloud Logging appender is available using <code>com/google/cloud/spring/logging/logback-appender.xml</code>.
+This appender builds a Cloud Logging log entry from a JUL or Logback log entry, adds a trace ID to it and sends it to Cloud Logging.</p>
+</div>
+<div class="paragraph">
+<p><code>STACKDRIVER_LOG_NAME</code> and <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environment variables can be used to customize the <code>STACKDRIVER</code> appender.</p>
+</div>
+<div class="paragraph">
+<p>Your configuration may then look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
+  &lt;include resource="com/google/cloud/spring/logging/logback-appender.xml" /&gt;
+
+  &lt;root level="INFO"&gt;
+    &lt;appender-ref ref="STACKDRIVER" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want to have more control over the log output, you can further configure the appender.
+The following properties are available:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.log</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Cloud Logging Log name.
+This can also be set via the <code>STACKDRIVER_LOG_NAME</code> environmental variable.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>flushLevel</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If a log entry with this level is encountered, trigger a flush of locally buffered log to Cloud Logging.
+This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmental variable.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_asynchronous_logging"><a class="link" href="#_asynchronous_logging">Asynchronous Logging</a></h4>
+<div class="paragraph">
+<p>If you would like to send logs asynchronously to Cloud Logging, you can use the <code>AsyncAppender</code>.</p>
+</div>
+<div class="paragraph">
+<p>Your configuration may then look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
+  &lt;include resource="com/google/cloud/spring/logging/logback-appender.xml" /&gt;
+
+  &lt;appender name="ASYNC_STACKDRIVER" class="ch.qos.logback.classic.AsyncAppender"&gt;
+    &lt;appender-ref ref="STACKDRIVER" /&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="INFO"&gt;
+    &lt;appender-ref ref="ASYNC_STACKDRIVER" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_log_via_console"><a class="link" href="#_log_via_console">Log via Console</a></h4>
+<div class="paragraph">
+<p>For Logback, a <code>com/google/cloud/spring/logging/logback-json-appender.xml</code> file is made available for import to make it easier to configure the JSON Logback appender.</p>
+</div>
+<div class="paragraph">
+<p>Your configuration may then look something like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
+  &lt;include resource="com/google/cloud/spring/logging/logback-json-appender.xml" /&gt;
+
+  &lt;root level="INFO"&gt;
+    &lt;appender-ref ref="CONSOLE_JSON" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If your application is running on Google Kubernetes Engine, Google Compute Engine or Google App Engine Flexible, your console logging is automatically saved to Google Cloud Logging.
+Therefore, you can just include <code>com/google/cloud/spring/logging/logback-json-appender.xml</code> in your logging configuration, which logs JSON entries to the console.
+The trace id will be set correctly.</p>
+</div>
+<div class="paragraph">
+<p>If you want to have more control over the log output, you can further configure the appender.
+The following properties are available:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>If not set, default value is determined in the following order:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>SPRING_CLOUD_GCP_LOGGING_PROJECT_ID</code> Environmental Variable.</p>
+</li>
+<li>
+<p>Value of <code>DefaultGcpProjectIdProvider.getProjectId()</code></p>
+</li>
+</ol>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>This is used to generate fully qualified Cloud Trace ID format: <code>projects/[PROJECT-ID]/traces/[TRACE-ID]</code>.</p>
+</div>
+<div class="paragraph">
+<p>This format is required to correlate trace between Cloud Trace and Cloud Logging.</p>
+</div>
+<div class="paragraph">
+<p>If <code>projectId</code> is not set and cannot be determined, then it&#8217;ll log <code>traceId</code> without the fully qualified format.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceIdMDCField</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>traceId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The MDC field name for retrieving a trace id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spanIdMDCField</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spanId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the MDC field name for retrieving a span id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeTraceId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the trace id be included</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeSpanId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the span id be included</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeLevel</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the severity be included</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeThreadName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the thread name be included</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeMDC</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should all MDC properties be included.
+The MDC properties <code>X-B3-TraceId</code>, <code>X-B3-SpanId</code> and <code>X-Span-Export</code> provided by Spring Sleuth will get excluded as they get handled separately</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeLoggerName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the name of the logger be included</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeFormattedMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the formatted log message be included.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeExceptionInMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the stacktrace be appended to the formatted log message.
+This setting is only evaluated if <code>includeFormattedMessage</code> is <code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeContextName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the logging context be included</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the log message with blank placeholders be included</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeException</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the stacktrace be included as a own field</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serviceContext</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define the Stackdriver service context data (service and version). This allows filtering of error reports for service and version in the <a href="https://console.cloud.google.com/errors">Google Cloud Error Reporting View</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>customJson</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines custom json data. Data will be added to the json output.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>loggingEventEnhancer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of a class implementing <code>JsonLoggingEventEnhancer</code> which modifies the JSON logging output. This tag is repeatable.</p>
+<p class="tableblock">Examples are provided in the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-logging/src/main/java/com/google/cloud/spring/logging/extensions">extensions package</a>.</p>
+<p class="tableblock">- <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-logging/src/main/java/com/google/cloud/spring/logging/extensions/LogstashLoggingEventEnhancer.java">Logstash Enhancer</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>This is an example of such an Logback configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration &gt;
+  &lt;property name="projectId" value="${projectId:-${GOOGLE_CLOUD_PROJECT}}"/&gt;
+
+  &lt;appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder"&gt;
+      &lt;layout class="com.google.cloud.spring.logging.StackdriverJsonLayout"&gt;
+        &lt;projectId&gt;${projectId}&lt;/projectId&gt;
+
+        &lt;!--&lt;traceIdMDCField&gt;traceId&lt;/traceIdMDCField&gt;--&gt;
+        &lt;!--&lt;spanIdMDCField&gt;spanId&lt;/spanIdMDCField&gt;--&gt;
+        &lt;!--&lt;includeTraceId&gt;true&lt;/includeTraceId&gt;--&gt;
+        &lt;!--&lt;includeSpanId&gt;true&lt;/includeSpanId&gt;--&gt;
+        &lt;!--&lt;includeLevel&gt;true&lt;/includeLevel&gt;--&gt;
+        &lt;!--&lt;includeThreadName&gt;true&lt;/includeThreadName&gt;--&gt;
+        &lt;!--&lt;includeMDC&gt;true&lt;/includeMDC&gt;--&gt;
+        &lt;!--&lt;includeLoggerName&gt;true&lt;/includeLoggerName&gt;--&gt;
+        &lt;!--&lt;includeFormattedMessage&gt;true&lt;/includeFormattedMessage&gt;--&gt;
+        &lt;!--&lt;includeExceptionInMessage&gt;true&lt;/includeExceptionInMessage&gt;--&gt;
+        &lt;!--&lt;includeContextName&gt;true&lt;/includeContextName&gt;--&gt;
+        &lt;!--&lt;includeMessage&gt;false&lt;/includeMessage&gt;--&gt;
+        &lt;!--&lt;includeException&gt;false&lt;/includeException&gt;--&gt;
+        &lt;!--&lt;serviceContext&gt;
+              &lt;service&gt;service-name&lt;/service&gt;
+              &lt;version&gt;service-version&lt;/version&gt;
+            &lt;/serviceContext&gt;--&gt;
+        &lt;!--&lt;customJson&gt;{"custom-key": "custom-value"}&lt;/customJson&gt;--&gt;
+        &lt;!--&lt;loggingEventEnhancer&gt;your.package.YourLoggingEventEnhancer&lt;/loggingEventEnhancer&gt; --&gt;
+      &lt;/layout&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+&lt;/configuration&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
+<div class="paragraph">
+<p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-logging-sample">Sample Spring Boot Application</a> is provided to show how to use the Cloud logging starter.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>

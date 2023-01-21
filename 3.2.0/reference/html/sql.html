@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Cloud SQL</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#cloud-sql">Cloud SQL</a>
+<ul class="sectlevel2">
+<li><a href="#_jdbc_support">JDBC Support</a></li>
+<li><a href="#_prerequisites">Prerequisites</a></li>
+<li><a href="#_spring_boot_starter_for_google_cloud_sql">Spring Boot Starter for Google Cloud SQL</a></li>
+</ul>
+</li>
+<li><a href="#_r2dbc_support">R2DBC Support</a>
+<ul class="sectlevel2">
+<li><a href="#_prerequisites_2">Prerequisites</a></li>
+<li><a href="#_spring_boot_starter_for_google_cloud_sql_2">Spring Boot Starter for Google Cloud SQL</a></li>
+</ul>
+</li>
+<li><a href="#_cloud_sql_iam_database_authentication">Cloud SQL IAM database authentication</a></li>
+<li><a href="#_cloud_sql_configuration_properties">Cloud SQL Configuration Properties</a></li>
+<li><a href="#_troubleshooting_tips">Troubleshooting tips</a>
+<ul class="sectlevel4">
+<li><a href="#connection-issues">Connection issues</a></li>
+<li><a href="#_errors_like_c_g_cloud_sql_core_sslsocketfactory_re_throwing_cached_exception_due_to_attempt_to_refresh_instance_information_too_soon_after_error">Errors like <code>c.g.cloud.sql.core.SslSocketFactory : Re-throwing cached exception due to attempt to refresh instance information too soon after error</code></a></li>
+<li><a href="#_postgresql_java_net_socketexception_already_connected_issue">PostgreSQL: <code>java.net.SocketException: already connected</code> issue</a></li>
+</ul>
+</li>
+<li><a href="#_samples">Samples</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cloud-sql"><a class="link" href="#cloud-sql">Cloud SQL</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Cloud GCP adds integrations with
+<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html">Spring JDBC</a> and <a href="https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#r2dbc.core">Spring R2DBC</a>  so you can run your MySQL or PostgreSQL databases in <a href="https://cloud.google.com/sql">Google Cloud SQL</a> using Spring JDBC and other libraries that depend on it like Spring Data JPA or Spring Data R2DBC.</p>
+</div>
+<div class="paragraph">
+<p>The Cloud SQL support is provided by Spring Cloud GCP in the form of two Spring Boot starters, one for MySQL and another one for PostgreSQL.
+The role of the starters is to read configuration from properties and assume default settings so that user experience connecting to MySQL and PostgreSQL is as simple as possible.</p>
+</div>
+<div class="sect2">
+<h3 id="_jdbc_support"><a class="link" href="#_jdbc_support">JDBC Support</a></h3>
+<div class="paragraph">
+<p>Maven and Gradle coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+</div>
+<div class="paragraph">
+<p>To use MySQL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-gcp-starter-sql-mysql&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>dependencies {
+implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql")
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use PostgreSQL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+&lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+&lt;artifactId&gt;spring-cloud-gcp-starter-sql-postgresql&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>dependencies {
+    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgresql")
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites"><a class="link" href="#_prerequisites">Prerequisites</a></h3>
+<div class="paragraph">
+<p>In order to use the Spring Boot Starters for Google Cloud SQL, the Google Cloud SQL API must be enabled in your GCP project.</p>
+</div>
+<div class="paragraph">
+<p>To do that, go to the <a href="https://console.cloud.google.com/apis/library">API library page</a> of the Google Cloud Console, search for "Cloud SQL API" and enable the option that is called "Cloud SQL" .</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_spring_boot_starter_for_google_cloud_sql"><a class="link" href="#_spring_boot_starter_for_google_cloud_sql">Spring Boot Starter for Google Cloud SQL</a></h3>
+<div class="paragraph">
+<p>The Spring Boot Starters for Google Cloud SQL provide an auto-configured <a href="https://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html"><code>DataSource</code></a> object.
+Coupled with Spring JDBC, it provides a
+<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html#jdbc-JdbcTemplate"><code>JdbcTemplate</code></a> object bean that allows for operations such as querying and modifying a database.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;Map&lt;String, Object&gt;&gt; listUsers() {
+    return jdbcTemplate.queryForList("SELECT * FROM user;");
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can rely on
+<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database">Spring Boot data source auto-configuration</a> to configure a <code>DataSource</code> bean.
+In other words, properties like the SQL username, <code>spring.datasource.username</code>, and password, <code>spring.datasource.password</code> can be used.
+There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Configuration Properties" section below).</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Property name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MySQL: <code>root</code>; PostgreSQL: <code>postgres</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.driver-class-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JDBC driver to use.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MySQL: <code>com.mysql.cj.jdbc.Driver</code>; PostgreSQL: <code>org.postgresql.Driver</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you provide your own <code>spring.datasource.url</code>, it will be ignored, unless you disable Cloud SQL auto configuration with <code>spring.cloud.gcp.sql.enabled=false</code> or <code>spring.cloud.gcp.sql.jdbc.enabled=false</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_datasource_creation_flow"><a class="link" href="#_datasource_creation_flow"><code>DataSource</code> creation flow</a></h4>
+<div class="paragraph">
+<p>Spring Boot starter for Google Cloud SQL registers a <code>CloudSqlEnvironmentPostProcessor</code> that provides a correctly formatted <code>spring.datasource.url</code> property to the environment based on the properties mentioned above.
+It also provides defaults for <code>spring.datasource.username</code> and <code>spring.datasource.driver-class-name</code>, which can be overridden.
+The starter also configures credentials for the JDBC connection based on the properties below.</p>
+</div>
+<div class="paragraph">
+<p>The user properties and the properties provided by the <code>CloudSqlEnvironmentPostProcessor</code> are then used by <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html">Spring Boot</a> to create the <code>DataSource</code>.
+You can select the type of connection pool (e.g., Tomcat, HikariCP, etc.) by <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database">adding their dependency to the classpath</a>.</p>
+</div>
+<div class="paragraph">
+<p>Using the created <code>DataSource</code> in conjunction with Spring JDBC provides you with a fully configured and operational <code>JdbcTemplate</code> object that you can use to interact with your SQL database.
+You can connect to your database with as little as a database and instance names.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_r2dbc_support"><a class="link" href="#_r2dbc_support">R2DBC Support</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Maven and Gradle coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+</div>
+<div class="paragraph">
+<p>To use MySQL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-gcp-starter-sql-mysql-r2dbc&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>dependencies {
+    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql-r2dbc")
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use PostgreSQL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-gcp-starter-sql-postgres-r2dbc&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>dependencies {
+    implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgres-r2dbc")
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites_2"><a class="link" href="#_prerequisites_2">Prerequisites</a></h3>
+<div class="paragraph">
+<p>In order to use the Spring Boot Starters for Google Cloud SQL, the Google Cloud SQL API must be enabled in your GCP project.</p>
+</div>
+<div class="paragraph">
+<p>To do that, go to the <a href="https://console.cloud.google.com/apis/library">API library page</a> of the Google Cloud Console, search for "Cloud SQL API" and enable the option that is called "Cloud SQL".</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_spring_boot_starter_for_google_cloud_sql_2"><a class="link" href="#_spring_boot_starter_for_google_cloud_sql_2">Spring Boot Starter for Google Cloud SQL</a></h3>
+<div class="paragraph">
+<p>The Cloud SQL R2DBC starter provides a customized <code>io.r2dbc.spi.ConnectionFactory</code> bean for connecting to Cloud SQL with the help of the <a href="https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory">Cloud SQL Socket Factory</a>.
+Similar to the JDBC support, you can connect to your database with as little as a database and instance names.</p>
+</div>
+<div class="paragraph">
+<p>A higher level convenience object
+<a href="https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#r2dbc.core"><code>R2dbcEntityTemplate</code></a> is also provided for operations such as querying and modifying a database.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired R2dbcEntityTemplate template;
+
+public Flux&lt;String&gt; listUsers() {
+  return template.select(User.class).all().map(user -&gt; user.toString());
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Standard R2DBC properties like the SQL username, <code>spring.r2dbc.username</code>, and password, <code>spring.r2dbc.password</code> can be used.
+There is also some configuration specific to Google Cloud SQL (see "Cloud SQL Configuration Properties" section below).</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Property name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.r2dbc.username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MySQL: <code>root</code>; PostgreSQL: <code>postgres</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.r2dbc.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you provide your own <code>spring.r2dbc.url</code>, it will be ignored, unless you disable Cloud SQL auto-configuration for R2DBC with <code>spring.cloud.gcp.sql.enabled=false</code> or <code>spring.cloud.gcp.sql.r2dbc.enabled=false</code> .
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_connectionfactory_creation_flow"><a class="link" href="#_connectionfactory_creation_flow"><code>ConnectionFactory</code> creation flow</a></h4>
+<div class="paragraph">
+<p>Spring Cloud GCP starter for Google Cloud SQL registers a <code>R2dbcCloudSqlEnvironmentPostProcessor</code> that provides a correctly formatted <code>spring.r2dbc.url</code> property to the environment based on the properties mentioned above.
+It also provides a default value for <code>spring.r2dbc.username</code>, which can be overridden.
+The starter also configures credentials for the R2DBC connection based on the properties below.</p>
+</div>
+<div class="paragraph">
+<p>The user properties and the properties provided by the <code>R2dbcCloudSqlEnvironmentPostProcessor</code> are then used by Spring Boot to create the <code>ConnectionFactory</code>.</p>
+</div>
+<div class="paragraph">
+<p>The customized <code>ConnectionFactory</code> is then ready to connect to Cloud SQL. The rest of Spring Data R2DBC objects built on it ( <code>R2dbcEntityTemplate</code>,  <code>DatabaseClient</code>) are automatically configured and operational, ready to interact with your SQL database.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cloud_sql_iam_database_authentication"><a class="link" href="#_cloud_sql_iam_database_authentication">Cloud SQL IAM database authentication</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Currently, Cloud SQL only supports <a href="https://cloud.google.com/sql/docs/postgres/authentication:">IAM database authentication for PostgreSQL</a>.
+It allows you to connect to the database using an IAM account, rather than a predefined database username and password.
+You will need to do the following to enable it:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In your database instance settings, turn on the <code>cloudsql.iam_authentication</code> flag.</p>
+</li>
+<li>
+<p>Add the IAM user or service account to the list of database users.</p>
+</li>
+<li>
+<p>In the application settings, set <code>spring.cloud.gcp.sql.enableIamAuth</code> to <code>true</code>.
+(Note that this will also set the database protocol <code>sslmode</code> to <code>disabled</code>, as it&#8217;s required for IAM authentication to work.
+However, it doesn&#8217;t compromise the security of the communication because the connection is always encrypted.)</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cloud_sql_configuration_properties"><a class="link" href="#_cloud_sql_configuration_properties">Cloud SQL Configuration Properties</a></h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Property name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables Cloud SQL auto configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.jdbc.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables Cloud SQL auto-configuration for JDBC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.r2dbc.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables Cloud SQL auto-configuration for R2DBC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.database-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the database to connect to.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.instance-connection-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A string containing a Google Cloud SQL instance&#8217;s project ID, region and name, each separated by a colon.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">For example, <code>my-project-id:my-region:my-instance-name</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.ip-types</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows you to specify a comma delimited list of preferred IP types for connecting to a Cloud SQL instance. Left unconfigured Cloud SQL Socket Factory will default it to <code>PUBLIC,PRIVATE</code>. See <a href="https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#specifying-ip-types">Cloud SQL Socket Factory - Specifying IP Types</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PUBLIC,PRIVATE</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.credentials.location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">File system path to the Google OAuth2 credentials private key file.
+Used to authenticate and authorize new connections to a Google Cloud SQL instance.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default credentials provided by the Spring GCP Boot starter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.credentials.encoded-key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded contents of OAuth2 account private key in JSON format.
+Used to authenticate and authorize new connections to a Google Cloud SQL instance.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default credentials provided by the Spring GCP Boot starter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.sql.enableIamAuth</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies whether to enable IAM database authentication (PostgreSQL only).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>False</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_troubleshooting_tips"><a class="link" href="#_troubleshooting_tips">Troubleshooting tips</a></h2>
+<div class="sectionbody">
+<div class="sect4">
+<h5 id="connection-issues"><a class="link" href="#connection-issues">Connection issues</a></h5>
+<div class="paragraph">
+<p>If you&#8217;re not able to connect to a database and see an endless loop of <code>Connecting to Cloud SQL instance [&#8230;&#8203;] on IP [&#8230;&#8203;]</code>, it&#8217;s likely that exceptions are being thrown and logged at a level lower than your logger&#8217;s level.
+This may be the case with HikariCP, if your logger is set to INFO or higher level.</p>
+</div>
+<div class="paragraph">
+<p>To see what&#8217;s going on in the background, you should add a <code>logback.xml</code> file to your application resources folder, that looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;configuration&gt;
+  &lt;include resource="org/springframework/boot/logging/logback/base.xml"/&gt;
+  &lt;logger name="com.zaxxer.hikari.pool" level="DEBUG"/&gt;
+&lt;/configuration&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_errors_like_c_g_cloud_sql_core_sslsocketfactory_re_throwing_cached_exception_due_to_attempt_to_refresh_instance_information_too_soon_after_error"><a class="link" href="#_errors_like_c_g_cloud_sql_core_sslsocketfactory_re_throwing_cached_exception_due_to_attempt_to_refresh_instance_information_too_soon_after_error">Errors like <code>c.g.cloud.sql.core.SslSocketFactory : Re-throwing cached exception due to attempt to refresh instance information too soon after error</code></a></h5>
+<div class="paragraph">
+<p>If you see a lot of errors like this in a loop and can&#8217;t connect to your database, this is usually a symptom that something isn&#8217;t right with the permissions of your credentials or the Google Cloud SQL API is not enabled.
+Verify that the Google Cloud SQL API is enabled in the Cloud Console and that your service account has the <a href="https://cloud.google.com/sql/docs/mysql/project-access-control#roles">necessary IAM roles</a>.</p>
+</div>
+<div class="paragraph">
+<p>To find out what&#8217;s causing the issue, you can enable DEBUG logging level as mentioned <a href="#connection-issues">above</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_postgresql_java_net_socketexception_already_connected_issue"><a class="link" href="#_postgresql_java_net_socketexception_already_connected_issue">PostgreSQL: <code>java.net.SocketException: already connected</code> issue</a></h5>
+<div class="paragraph">
+<p>We found this exception to be common if your Maven project&#8217;s parent is <code>spring-boot</code> version <code>1.5.x</code>, or in any other circumstance that would cause the version of the <code>org.postgresql:postgresql</code> dependency to be an older one (e.g., <code>9.4.1212.jre7</code>).</p>
+</div>
+<div class="paragraph">
+<p>To fix this, re-declare the dependency in its correct version.
+For example, in Maven:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
+  &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
+  &lt;version&gt;42.1.1&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_samples"><a class="link" href="#_samples">Samples</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Available sample applications and codelabs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-sample">Spring Cloud GCP MySQL</a></p>
+</li>
+<li>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-sample">Spring Cloud GCP PostgreSQL</a></p>
+</li>
+<li>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-jpa-sample">Spring Data JPA with Spring Cloud GCP SQL</a></p>
+</li>
+<li>
+<p>Codelab: <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-petclinic-cloudsql/index.html">Spring Pet Clinic using Cloud SQL</a></p>
+</li>
+<li>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-r2dbc-sample">R2DBC: Spring Cloud GCP MySQL</a></p>
+</li>
+<li>
+<p><a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-r2dbc-sample">R2DBC: Spring Cloud GCP PostgreSQL</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>

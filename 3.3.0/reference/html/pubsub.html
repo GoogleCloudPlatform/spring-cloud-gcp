@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Cloud Pub/Sub</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#cloud-pubsub">Cloud Pub/Sub</a>
+<ul class="sectlevel2">
+<li><a href="#pubsub-configuration">Configuration</a></li>
+<li><a href="#_spring_boot_actuator_support">Spring Boot Actuator Support</a></li>
+<li><a href="#_pubsub_operations_template">Pub/Sub Operations &amp; Template</a></li>
+<li><a href="#_reactive_stream_subscriber">Reactive Stream Subscriber</a></li>
+<li><a href="#_pubsub_management">Pub/Sub management</a></li>
+<li><a href="#_sample">Sample</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cloud-pubsub"><a class="link" href="#cloud-pubsub">Cloud Pub/Sub</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Cloud GCP provides an abstraction layer to publish to and subscribe from Google Cloud Pub/Sub topics and to create, list or delete Google Cloud Pub/Sub topics and subscriptions.</p>
+</div>
+<div class="paragraph">
+<p>A Spring Boot starter is provided to auto-configure the various required Pub/Sub components.</p>
+</div>
+<div class="paragraph">
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-gcp-starter-pubsub&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Gradle coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>dependencies {
+    implementation("com.google.cloud:spring-cloud-gcp-starter-pubsub")
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This starter is also available from <a href="https://start.spring.io">Spring Initializr</a> through the <code>GCP Messaging</code> entry.</p>
+</div>
+<div class="sect2">
+<h3 id="pubsub-configuration"><a class="link" href="#pubsub-configuration">Configuration</a></h3>
+<div class="paragraph">
+<p>The Spring Boot starter for Google Cloud Pub/Sub provides the following configuration options.</p>
+</div>
+<div class="sect3">
+<h4 id="_spring_cloud_gcp_pubsub_api_configuration"><a class="link" href="#_spring_cloud_gcp_pubsub_api_configuration">Spring Cloud GCP Pub/Sub API Configuration</a></h4>
+<div class="paragraph">
+<p>This section describes options for enabling the integration, specifying the GCP project and credentials, and setting whether the APIs should connect to an emulator for local testing.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables Pub/Sub auto-configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.project-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GCP project ID where the Google Cloud Pub/Sub API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.credentials.location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the
+Google Cloud Pub/Sub API, if different from the ones in the
+<a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.emulator-host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The host and port of the local running emulator.
+If provided, this will setup the client to connect against a running <a href="https://cloud.google.com/pubsub/docs/emulator">Google Cloud Pub/Sub Emulator</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.credentials.encoded-key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded contents of OAuth2 account private key for authenticating with the
+Google Cloud Pub/Sub API, if different from the ones in the
+<a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.credentials.scopes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Cloud GCP
+Pub/Sub credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.googleapis.com/auth/pubsub" class="bare">https://www.googleapis.com/auth/pubsub</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_publishersubscriber_configuration"><a class="link" href="#_publishersubscriber_configuration">Publisher/Subscriber Configuration</a></h4>
+<div class="paragraph">
+<p>This section describes configuration options to customize the behavior of the application&#8217;s Pub/Sub publishers and subscribers.
+Subscriber settings can be either global or subscription-specific.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A custom configuration (injected through a setter in <code>DefaultSubscriberFactory</code> or a custom bean) will take precedence over auto-configuration.
+Hence, if one wishes to use per-subscription configuration for a Pub/Sub setting, there must not be a custom bean for that setting.
+When using auto-configuration, if both global and per-subscription configurations are provided, then the per-subscription configuration will be used.
+However, if a per-subscription configuration is not set then the global or default configuration will be used.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscriber.parallel-pull-count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of pull workers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum period a message ack deadline will be extended, in seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscriber.pull-endpoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The endpoint for synchronous pulling messages</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pubsub.googleapis.com:443</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher].executor-threads</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of threads used by <code>Subscriber</code> instances created by <code>SubscriberFactory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher.batching].flow-control.max-outstanding-element-count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of outstanding elements to keep in memory before enforcing flow control.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unlimited</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher.batching].flow-control.max-outstanding-request-bytes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of outstanding bytes to keep in memory before enforcing flow control.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unlimited</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher.batching].flow-control.limit-exceeded-behavior</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The behavior when the specified limits are exceeded.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.publisher.batching.element-count-threshold</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The element count threshold to use for batching.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1 (batching off)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.publisher.batching.request-byte-threshold</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The request byte threshold to use for batching.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1 byte (batching off)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.publisher.batching.delay-threshold-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The delay threshold to use for batching.
+After this amount of time has elapsed (counting from the first element added), the elements will be wrapped up in a batch and sent.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1 ms (batching off)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.publisher.batching.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables batching.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.publisher.enable-message-ordering</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables message ordering.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.publisher.endpoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The publisher endpoint.
+Example: <code>"us-east1-pubsub.googleapis.com:443"</code>.
+This is useful in conjunction with enabling message ordering because sending messages to the same region ensures they are received in order even when multiple publishers are used.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pubsub.googleapis.com:443</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect4">
+<h5 id="_subscription_specific_configurations"><a class="link" href="#_subscription_specific_configurations">Subscription-specific Configurations</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].fully-qualified-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The fully-qualified subscription name in the <code>projects/[PROJECT]/subscriptions/[SUBSCRIPTION]</code> format. When this property is present, the <code>[subscription-name]</code> key does not have to match any actual resources; it&#8217;s used only for logical grouping.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].parallel-pull-count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of pull workers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].max-ack-extension-period</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum period a message ack deadline will be extended, in seconds.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].pull-endpoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The endpoint for synchronous pulling messages.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pubsub.googleapis.com:443</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].executor-threads</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of threads used by <code>Subscriber</code> instances created by <code>SubscriberFactory</code>. Note that configuring per-subscription <code>executor-threads</code> will result in the creation of thread pools for both global/default <strong>and</strong> per-subscription configurations.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].flow-control.max-outstanding-element-count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of outstanding elements to keep in memory before enforcing flow control.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unlimited</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].flow-control.max-outstanding-request-bytes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of outstanding bytes to keep in memory before enforcing flow control.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unlimited</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].flow-control.limit-exceeded-behavior</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The behavior when the specified limits are exceeded.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Block</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_grpc_connection_settings"><a class="link" href="#_grpc_connection_settings">GRPC Connection Settings</a></h4>
+<div class="paragraph">
+<p>The Pub/Sub API uses the <a href="https://cloud.google.com/pubsub/docs/reference/service_apis_overview#grpc_api">GRPC</a> protocol to send API requests to the Pub/Sub service.
+This section describes configuration options for customizing the GRPC behavior.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The properties that refer to <code>retry</code> control the RPC retries for transient failures during the gRPC call to Cloud Pub/Sub server.
+They do <strong>not</strong> control message redelivery; only message acknowledgement deadline can be used to extend or shorten the amount of time until Pub/Sub attempts redelivery.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.keepAliveIntervalMinutes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Determines frequency of keepalive gRPC ping</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5 minutes</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscriber.retryableCodes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RPC status codes that should be retried when pulling messages.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNKNOWN,ABORTED,UNAVAILABLE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher].retry.total-timeout-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TotalTimeout has ultimate control over how long the logic should keep trying the remote call until it gives up completely.
+The higher the total timeout, the more retries can be attempted.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher].retry.initial-retry-delay-second</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">InitialRetryDelay controls the delay before the first retry.
+Subsequent retries will use this value adjusted according to the RetryDelayMultiplier.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher].retry.retry-delay-multiplier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RetryDelayMultiplier controls the change in retry delay.
+The retry delay of the previous call is multiplied by the RetryDelayMultiplier to calculate the retry delay for the next call.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher].retry.max-retry-delay-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaxRetryDelay puts a limit on the value of the retry delay, so that the RetryDelayMultiplier
+can&#8217;t increase the retry delay higher than this amount.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher].retry.max-attempts</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaxAttempts defines the maximum number of attempts to perform.
+If this value is greater than 0, and the number of attempts reaches this limit, the logic will give up retrying even if the total retry time is still lower than TotalTimeout.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher].retry.jittered</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Jitter determines if the delay time should be randomized.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher].retry.initial-rpc-timeout-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">InitialRpcTimeout controls the timeout for the initial RPC.
+Subsequent calls will use this value adjusted according to the RpcTimeoutMultiplier.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher].retry.rpc-timeout-multiplier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RpcTimeoutMultiplier controls the change in RPC timeout.
+The timeout of the previous call is multiplied by the RpcTimeoutMultiplier to calculate the timeout for the next call.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.[subscriber,publisher].retry.max-rpc-timeout-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaxRpcTimeout puts a limit on the value of the RPC timeout, so that the RpcTimeoutMultiplier
+can&#8217;t increase the RPC timeout higher than this amount.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Subscription-specific Configuration</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retryableCodes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RPC status codes that should be retried when pulling messages.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNKNOWN,ABORTED,UNAVAILABLE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.total-timeout-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TotalTimeout has ultimate control over how long the logic should keep trying the remote call until it gives up completely. The higher the total timeout, the more retries can be attempted.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.initial-retry-delay-second</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">InitialRetryDelay controls the delay before the first retry.
+Subsequent retries will use this value adjusted according to the RetryDelayMultiplier.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.retry-delay-multiplier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RetryDelayMultiplier controls the change in retry delay.
+The retry delay of the previous call is multiplied by the RetryDelayMultiplier to calculate the retry delay for the next call.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.max-retry-delay-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaxRetryDelay puts a limit on the value of the retry delay, so that the RetryDelayMultiplier
+can&#8217;t increase the retry delay higher than this amount.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.max-attempts</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaxAttempts defines the maximum number of attempts to perform.
+If this value is greater than 0, and the number of attempts reaches this limit, the logic will give up retrying even if the total retry time is still lower than TotalTimeout.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.jittered</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Jitter determines if the delay time should be randomized.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.initial-rpc-timeout-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">InitialRpcTimeout controls the timeout for the initial RPC.
+Subsequent calls will use this value adjusted according to the RpcTimeoutMultiplier.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.rpc-timeout-multiplier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RpcTimeoutMultiplier controls the change in RPC timeout.
+The timeout of the previous call is multiplied by the RpcTimeoutMultiplier to calculate the timeout for the next call.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.subscription.[subscription-name].retry.max-rpc-timeout-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaxRpcTimeout puts a limit on the value of the RPC timeout, so that the RpcTimeoutMultiplier
+can&#8217;t increase the RPC timeout higher than this amount.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_programmatic_configuration"><a class="link" href="#_programmatic_configuration">Programmatic Configuration</a></h4>
+<div class="paragraph">
+<p>To apply publishing customizations not covered by the properties above, you may provide custom beans of type <code>PublisherCustomizer</code> to post-process the <code>Publisher.Builder</code> object right before it is built into a <code>Publisher</code>.
+The <code>PublisherCustomizer</code> beans may be annotated with Spring Framework&#8217;s <code>@Order</code> annotation to ensure they are applied in a particular sequence.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_spring_boot_actuator_support"><a class="link" href="#_spring_boot_actuator_support">Spring Boot Actuator Support</a></h3>
+<div class="sect3">
+<h4 id="_cloud_pubsub_health_indicator"><a class="link" href="#_cloud_pubsub_health_indicator">Cloud Pub/Sub Health Indicator</a></h4>
+<div class="paragraph">
+<p>If you are using Spring Boot Actuator, you can take advantage of the Cloud Pub/Sub health indicator called <code>pubsub</code>.
+The health indicator will verify whether Cloud Pub/Sub is up and accessible by your application.
+To enable it, all you need to do is add the <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready">Spring Boot Actuator</a> to your project.</p>
+</div>
+<div class="paragraph">
+<p>The <code>pubsub</code> indicator will then roll up to the overall application status visible at <a href="http://localhost:8080/actuator/health" class="bare">http://localhost:8080/actuator/health</a> (use the <code>management.endpoint.health.show-details</code> property to view per-indicator details).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If your application already has actuator and Cloud Pub/Sub starters, this health indicator is enabled by default.
+To disable the Cloud Pub/Sub indicator, set <code>management.health.pubsub.enabled</code> to <code>false</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The health indicator validates the connection to Pub/Sub by pulling messages from a Pub/Sub subscription.</p>
+</div>
+<div class="paragraph">
+<p>If no subscription has been specified via <code>spring.cloud.gcp.pubsub.health.subscription</code>, it will pull messages from a random subscription that is expected not to exist.
+It will signal "up" if it is able to connect to GCP Pub/Sub APIs, i.e. the pull results in a response of <code>NOT_FOUND</code> or <code>PERMISSION_DENIED</code>.</p>
+</div>
+<div class="paragraph">
+<p>If a custom subscription has been specified, this health indicator will signal "up" if messages are successfully pulled and (optionally) acknowledged, or when a successful pull is performed but no messages are returned from Pub/Sub.
+Note that messages pulled from the subscription will not be acknowledged, unless you set the <code>spring.cloud.gcp.pubsub.health.acknowledge-messages</code> option to <code>true</code>.
+So, take care not to configure a subscription that has a business impact, or instead leave the custom subscription out completely.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>management.health.pubsub.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the Pub/Sub health indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> with Spring Boot Actuator, <code>false</code> otherwise</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.subscription</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription to health check against by pulling a message</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Random non-existent</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.timeout-millis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Milliseconds to wait for response from Pub/Sub before timing out</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2000</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.acknowledge-messages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to acknowledge messages pulled from the optionally specified subscription</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_cloud_pubsub_subscription_health_indicator"><a class="link" href="#_cloud_pubsub_subscription_health_indicator">Cloud Pub/Sub Subscription Health Indicator</a></h4>
+<div class="paragraph">
+<p>If you are using Spring Boot Actuator, you can take advantage of the Cloud Pub/Sub subscription health indicator called <code>pubsub-subscriber</code>.
+The subscription health indicator will verify whether Pub/Sub subscriptions are actively processing messages from the subscription&#8217;s backlog.
+To enable it, you need to add the <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready">Spring Boot Actuator</a> to your project and the <a href="https://cloud.google.com/monitoring/docs/reference/libraries">GCP Monitoring</a>.
+Also you need to set the following properties <code>spring.cloud.gcp.pubsub.health.lagThreshold</code>, <code>spring.cloud.gcp.pubsub.health.backlogThreshold</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>pubsub-subscriber</code> indicator will then roll up to the overall application status visible at <a href="http://localhost:8080/actuator/health" class="bare">http://localhost:8080/actuator/health</a> (use the <code>management.endpoint.health.show-details</code> property to view per-indicator details).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;google-cloud-monitoring&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The health indicator validates a subscriber&#8217;s health by checking the subscription&#8217;s message backlog and the last processed message.
+A subscription&#8217;s backlog is retrieved using Google Cloud&#8217;s Monitoring Metrics. The metric used is the <code>num_undelivered_messages</code> for a subscription.</p>
+</div>
+<div class="paragraph">
+<p>If a message has been recently processed in a reasonable time threshold, then the subscriber is healthy.
+If the backlog of messages for a subscription is big but the subscriber consumes messages then subscriber is still healthy.
+If there hasn&#8217;t been any processing of recent messages but the backlog increases, then the subscriber is unhealthy.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The health indicator will not behave entirely as expected if Dead Letter Queueing is enabled on the subscription being checked, num_undelivered_messages will drop down by itself after DLQ threshold is reached.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>management.health.pubsub-subscriber.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the Pub/Sub Subscription health indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> with Spring Boot Actuator, <code>false</code> otherwise</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.lagThreshold</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Threshold in seconds over message processing lag</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provided</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.backlogThreshold</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The threshold number of messages for a subscription backlog</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provided</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.lookUpInterval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional interval in seconds for subscription backlog lookup</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.pubsub.health.executorThreads</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of threads used for Health Check Executors</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pubsub_operations_template"><a class="link" href="#_pubsub_operations_template">Pub/Sub Operations &amp; Template</a></h3>
+<div class="paragraph">
+<p><code>PubSubOperations</code> is an abstraction that allows Spring users to use Google Cloud Pub/Sub without depending on any Google Cloud Pub/Sub API semantics.
+It provides the common set of operations needed to interact with Google Cloud Pub/Sub.
+<code>PubSubTemplate</code> is the default implementation of <code>PubSubOperations</code> and it uses the <a href="https://github.com/GoogleCloudPlatform/google-cloud-java/tree/main/google-cloud-pubsub">Google Cloud Java Client for Pub/Sub</a> to interact with Google Cloud Pub/Sub.</p>
+</div>
+<div class="sect3">
+<h4 id="_publishing_to_a_topic"><a class="link" href="#_publishing_to_a_topic">Publishing to a topic</a></h4>
+<div class="paragraph">
+<p><code>PubSubTemplate</code> provides asynchronous methods to publish messages to a Google Cloud Pub/Sub topic.
+The <code>publish()</code> method takes in a topic name to post the message to, a payload of a generic type and, optionally, a map with the message headers.
+The topic name could either be a canonical topic name within the current project, or the fully-qualified name referring to a topic in a different project using the <code>projects/&lt;project_name&gt;/topics/&lt;topic_name&gt;</code> format.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example of how to publish a message to a Google Cloud Pub/Sub topic:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, String&gt; headers = Collections.singletonMap("key1", "val1");
+pubSubTemplate.publish(topicName, "message", headers).get();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default, the <code>SimplePubSubMessageConverter</code> is used to convert payloads of type <code>byte[]</code>, <code>ByteString</code>, <code>ByteBuffer</code>, and <code>String</code> to Pub/Sub messages.</p>
+</div>
+<div class="sect4">
+<h5 id="_ordering_messages"><a class="link" href="#_ordering_messages">Ordering messages</a></h5>
+<div class="paragraph">
+<p>If you are relying on message converters and would like to provide an ordering key, use the <code>GcpPubSubHeaders.ORDERING_KEY</code> header.
+You will also need to make sure to enable message ordering on the publisher via the <code>spring.cloud.gcp.pubsub.publisher.enable-message-ordering</code> property.
+Additionally, if you are using multiple publishers, you will want to set the <code>spring.cloud.gcp.pubsub.publisher.endpoint</code> to a regional endpoint such as <code>"us-east1-pubsub.googleapis.com:443"</code> so that messages are sent to the same region and received in order.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, String&gt; headers =
+    Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1");
+pubSubTemplate.publish(topicName, "message1", headers).get();
+pubSubTemplate.publish(topicName, "message2", headers).get();</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_subscribing_to_a_subscription"><a class="link" href="#_subscribing_to_a_subscription">Subscribing to a subscription</a></h4>
+<div class="paragraph">
+<p>Google Cloud Pub/Sub allows many subscriptions to be associated to the same topic.
+<code>PubSubTemplate</code> allows you to listen to subscriptions via the <code>subscribe()</code> method.
+When listening to a subscription, messages will be pulled from Google Cloud Pub/Sub asynchronously and passed to a user provided message handler.
+The subscription name could either be a canonical subscription name within the current project, or the fully-qualified name referring to a subscription in a different project using the <code>projects/&lt;project_name&gt;/subscriptions/&lt;subscription_name&gt;</code> format.</p>
+</div>
+<div class="sect4">
+<h5 id="_example"><a class="link" href="#_example">Example</a></h5>
+<div class="paragraph">
+<p>Subscribe to a subscription with a message handler:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Subscriber subscriber =
+    pubSubTemplate.subscribe(
+        subscriptionName,
+        message -&gt; {
+          logger.info(
+              "Message received from "
+                  + subscriptionName
+                  + " subscription: "
+                  + message.getPubsubMessage().getData().toStringUtf8());
+          message.ack();
+        });</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_subscribe_methods"><a class="link" href="#_subscribe_methods">Subscribe methods</a></h5>
+<div class="paragraph">
+<p><code>PubSubTemplate</code> provides the following subscribe methods:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">subscribe(String subscription, Consumer&lt;BasicAcknowledgeablePubsubMessage&gt; messageConsumer)</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">asynchronously pulls messages and passes them to <code>messageConsumer</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">subscribeAndConvert(String subscription,
+ 			Consumer&lt;ConvertedBasicAcknowledgeablePubsubMessage&lt;T&gt;&gt; messageConsumer,
+ 			Class&lt;T&gt; payloadType)</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">same as <code>pull</code>, but converts message payload to <code>payloadType</code> using the converter configured in the template</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+As of version 1.2, subscribing by itself is not enough to keep an application running.
+For a command-line application, you may want to provide your own <code>ThreadPoolTaskScheduler</code> bean named <code>pubsubSubscriberThreadPool</code>, which by default creates non-daemon threads that will keep an application from stopping.
+This default behavior has been overridden in Spring Cloud GCP for consistency with Cloud Pub/Sub client library, and to avoid holding up command-line applications that would like to shut down once their work is done.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_pulling_messages_from_a_subscription"><a class="link" href="#_pulling_messages_from_a_subscription">Pulling messages from a subscription</a></h4>
+<div class="paragraph">
+<p>Google Cloud Pub/Sub supports synchronous pulling of messages from a subscription.
+This is different from subscribing to a subscription, in the sense that subscribing is an asynchronous task.</p>
+</div>
+<div class="sect4">
+<h5 id="_example_2"><a class="link" href="#_example_2">Example</a></h5>
+<div class="paragraph">
+<p>Pull up to 10 messages:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">int maxMessages = 10;
+boolean returnImmediately = false;
+List&lt;AcknowledgeablePubsubMessage&gt; messages =
+    pubSubTemplate.pull(subscriptionName, maxMessages, returnImmediately);
+
+// acknowledge the messages
+pubSubTemplate.ack(messages);
+
+messages.forEach(
+    message -&gt;
+        logger.info(message.getPubsubMessage().getData().toStringUtf8()));</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_pull_methods"><a class="link" href="#_pull_methods">Pull methods</a></h5>
+<div class="paragraph">
+<p><code>PubsubTemplate</code> provides the following pull methods:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">pull(String subscription, Integer maxMessages,
+       			Boolean returnImmediately)</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pulls a number of messages from a subscription, allowing for the retry settings to be configured.
+       			Any messages received by <code>pull()</code> are not automatically acknowledged. See <a href="#_acknowledging_messages">Acknowledging messages</a>.</p>
+<p class="tableblock">				The <code>maxMessages</code> parameter is the maximum limit of how many messages to pull from a subscription in a single call; this value <strong>must</strong> be greater than 0.
+				You may omit this parameter by passing in <code>null</code>; this means there will be no limit on the number of messages pulled (<code>maxMessages</code> will be <code>Integer.MAX_INTEGER</code>).</p>
+<p class="tableblock">       			If <code>returnImmediately</code> is <code>true</code>, the system will respond immediately even if it there are no messages available to return in the <code>Pull</code> response. Otherwise, the system may wait (for a bounded amount of time) until at least one message is available, rather than returning no messages.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">pullAndAck</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Works the same as the <code>pull</code> method and, additionally, acknowledges all received messages.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">pullNext</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows for a single message to be pulled and automatically acknowledged from a subscription.</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">pullAndConvert</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Works the same as the <code>pull</code> method and, additionally, converts the Pub/Sub binary payload to an object of the desired type, using the converter configured in the template.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+We do not recommend setting <code>returnImmediately</code> to <code>true</code>, as it may result in delayed message delivery.
+"Immediately" really means 1 second, and if Pub/Sub cannot retrieve any messages from the backend in that time, it will return 0 messages, despite having messages queue up on the topic.
+Therefore, we recommend setting <code>returnImmediately</code> to <code>false</code>, or using <code>subscribe</code> methods from the previous section.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_acknowledging_messages"><a class="link" href="#_acknowledging_messages">Acknowledging messages</a></h5>
+<div class="paragraph">
+<p>There are two ways to acknowledge messages.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To acknowledge multiple messages at once, you can use the <code>PubSubTemplate.ack()</code> method.
+You can also use the <code>PubSubTemplate.nack()</code> for negatively acknowledging messages.
+Using these methods for acknowledging messages in batches is more efficient than acknowledging messages individually, but they <strong>require</strong> the collection of messages to be from the same project.</p>
+</li>
+<li>
+<p>To acknowledge messages individually you can use the <code>ack()</code> or <code>nack()</code> method on each of them (to acknowledge or negatively acknowledge, correspondingly).</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+All <code>ack()</code>, <code>nack()</code>, and <code>modifyAckDeadline()</code> methods on messages, as well as <code>PubSubSubscriberTemplate</code>, are implemented asynchronously, returning a <code>ListenableFuture&lt;Void&gt;</code> to enable asynchronous processing.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_dead_letter_topics"><a class="link" href="#_dead_letter_topics">Dead Letter Topics</a></h5>
+<div class="paragraph">
+<p>Your application may occasionally receive a message it cannot process.
+If you <a href="#creating-a-subscription">create your <code>Subscription</code></a> passing the <code>Subscription.Builder</code> argument, you can specify a <code>DeadLetterPolicy</code> that will forward all <code>nack()</code>-ed and non-<code>ack()</code>-ed messages after a configurable amount of redelivery attempts.
+See <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics">here</a> for more information.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription newSubscription() {
+	// Must use the fully-qualified topic name.
+	String fullDeadLetterTopic = PubSubTopicUtils
+						.toTopicName(DEAD_LETTER_TOPIC, gcpProjectIdProvider.getProjectId())
+						.toString();
+	return pubSubAdmin.createSubscription(Subscription.newBuilder()
+			.setName(SUBSCRIPTION_NAME)
+			.setTopic(TOPIC_NAME)
+			.setDeadLetterPolicy(DeadLetterPolicy.newBuilder()
+					.setDeadLetterTopic(fullDeadLetterTopic)
+					.setMaxDeliveryAttempts(6)
+					.build()));
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dead letter topics are no different than any other topic, though some <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics#granting_forwarding_permissions">additional permissions</a> are necessary to ensure the Cloud Pub/Sub service can successfully <code>ack</code> the original message and re-<code>publish</code> it on the dead letter topic.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_json_support"><a class="link" href="#_json_support">JSON support</a></h4>
+<div class="paragraph">
+<p>For serialization and deserialization of POJOs using Jackson JSON, configure a <code>PubSubMessageConverter</code> bean, and the Spring Boot starter for GCP Pub/Sub will automatically wire it into the <code>PubSubTemplate</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// Note: The ObjectMapper is used to convert Java POJOs to and from JSON.
+// You will have to configure your own instance if you are unable to depend
+// on the ObjectMapper provided by Spring Boot starters.
+@Bean
+public PubSubMessageConverter pubSubMessageConverter() {
+  return new JacksonPubSubMessageConverter(new ObjectMapper());
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Alternatively, you can set it directly by calling the <code>setMessageConverter()</code> method on the <code>PubSubTemplate</code>.
+Other implementations of the <code>PubSubMessageConverter</code> can also be configured in the same manner.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Assuming you have the following class defined:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">static class TestUser {
+
+  String username;
+
+  String password;
+
+  public String getUsername() {
+    return this.username;
+  }
+
+  void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getPassword() {
+    return this.password;
+  }
+
+  void setPassword(String password) {
+    this.password = password;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can serialize objects to JSON on publish automatically:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">TestUser user = new TestUser();
+user.setUsername("John");
+user.setPassword("password");
+pubSubTemplate.publish(topicName, user);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And that&#8217;s how you convert messages to objects on pull:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">int maxMessages = 1;
+boolean returnImmediately = false;
+List&lt;ConvertedAcknowledgeablePubsubMessage&lt;TestUser&gt;&gt; messages =
+    pubSubTemplate.pullAndConvert(
+        subscriptionName, maxMessages, returnImmediately, TestUser.class);
+
+ConvertedAcknowledgeablePubsubMessage&lt;TestUser&gt; message = messages.get(0);
+
+// acknowledge the message
+message.ack();
+
+TestUser receivedTestUser = message.getPayload();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Please refer to our <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-json-sample">Pub/Sub JSON Payload Sample App</a> as a reference for using this functionality.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_reactive_stream_subscriber"><a class="link" href="#_reactive_stream_subscriber">Reactive Stream Subscriber</a></h3>
+<div class="paragraph">
+<p>It is also possible to acquire a reactive stream backed by a subscription.
+To do so, a Project Reactor dependency (<code>io.projectreactor:reactor-core</code>) must be added to the project.
+The combination of the Pub/Sub starter and the Project Reactor dependencies will then make a <code>PubSubReactiveFactory</code> bean available, which can then be used to get a <code>Publisher</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+PubSubReactiveFactory reactiveFactory;
+
+// ...
+
+Flux&lt;AcknowledgeablePubsubMessage&gt; flux
+				= reactiveFactory.poll("exampleSubscription", 1000);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Flux</code> then represents an infinite stream of GCP Pub/Sub messages coming in through the specified subscription.
+For unlimited demand, the Pub/Sub subscription will be polled regularly, at intervals determined by <code>pollingPeriodMs</code> parameter passed in when creating the <code>Flux</code>.
+For bounded demand, the <code>pollingPeriodMs</code> parameter is unused.
+Instead, as many messages as possible (up to the requested number) are delivered immediately, with the remaining messages delivered as they become available.</p>
+</div>
+<div class="paragraph">
+<p>Any exceptions thrown by the underlying message retrieval logic will be passed as an error to the stream.
+The error handling operators (<code>Flux#retry()</code>, <code>Flux#onErrorResume()</code> etc.) can be used to recover.</p>
+</div>
+<div class="paragraph">
+<p>The full range of Project Reactor operations can be applied to the stream.
+For example, if you only want to fetch 5 messages, you can use <code>limitRequest</code> operation to turn the infinite stream into a finite one:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Flux&lt;AcknowledgeablePubsubMessage&gt; fiveMessageFlux = flux.limitRequest(5);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Messages flowing through the <code>Flux</code> should be manually acknowledged.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">flux.doOnNext(AcknowledgeablePubsubMessage::ack);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pubsub_management"><a class="link" href="#_pubsub_management">Pub/Sub management</a></h3>
+<div class="paragraph">
+<p><code>PubSubAdmin</code> is the abstraction provided by Spring Cloud GCP to manage Google Cloud Pub/Sub resources.
+It allows for the creation, deletion and listing of topics and subscriptions.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Generally when referring to topics and subscriptions, you can either use the short canonical name within the current project, or the fully-qualified name referring to a topic or subscription in a different project using the <code>projects/&lt;project_name&gt;/(topics|subscriptions)/&lt;name&gt;</code> format.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The Spring Boot starter for GCP Pub/Sub auto-configures a <code>PubSubAdmin</code> object using the <code>GcpProjectIdProvider</code> and the <code>CredentialsProvider</code> auto-configured by the Spring Boot GCP Core starter.</p>
+</div>
+<div class="sect3">
+<h4 id="_creating_a_topic"><a class="link" href="#_creating_a_topic">Creating a topic</a></h4>
+<div class="paragraph">
+<p><code>PubSubAdmin</code> implements a method to create topics:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public Topic createTopic(String topicName)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is an example of how to create a Google Cloud Pub/Sub topic:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public void newTopic() {
+    pubSubAdmin.createTopic("topicName");
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_deleting_a_topic"><a class="link" href="#_deleting_a_topic">Deleting a topic</a></h4>
+<div class="paragraph">
+<p><code>PubSubAdmin</code> implements a method to delete topics:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public void deleteTopic(String topicName)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is an example of how to delete a Google Cloud Pub/Sub topic:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public void deleteTopic() {
+    pubSubAdmin.deleteTopic("topicName");
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_listing_topics"><a class="link" href="#_listing_topics">Listing topics</a></h4>
+<div class="paragraph">
+<p><code>PubSubAdmin</code> implements a method to list topics:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;Topic&gt; listTopics</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is an example of how to list every Google Cloud Pub/Sub topic name in a project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; topics =
+    pubSubAdmin.listTopics().stream().map(Topic::getName).collect(Collectors.toList());</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_creating_a_subscription"><a class="link" href="#_creating_a_subscription">Creating a subscription</a></h4>
+<div class="paragraph">
+<p><code>PubSubAdmin</code> implements several methods to create subscriptions to existing topics:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName)
+
+public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline)
+
+public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline, String pushEndpoint)
+
+public Subscription createSubscription(Subscriber.Builder builder)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The default value for <code>ackDeadline</code> is 10 seconds.
+If <code>pushEndpoint</code> isn’t specified, the subscription uses message pulling, instead.
+You can also pass a <code>Subscription.Builder</code> for full control over any options or features available in the client library.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example of how to create a Google Cloud Pub/Sub subscription:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription newSubscription() {
+    return pubSubAdmin.createSubscription("subscriptionName", "topicName", 15);
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_deleting_a_subscription"><a class="link" href="#_deleting_a_subscription">Deleting a subscription</a></h4>
+<div class="paragraph">
+<p><code>PubSubAdmin</code> implements a method to delete subscriptions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public void deleteSubscription(String subscriptionName)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is an example of how to delete a Google Cloud Pub/Sub subscription:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public void deleteSubscription() {
+    pubSubAdmin.deleteSubscription("subscriptionName");
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_listing_subscriptions"><a class="link" href="#_listing_subscriptions">Listing subscriptions</a></h4>
+<div class="paragraph">
+<p><code>PubSubAdmin</code> implements a method to list subscriptions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;Subscription&gt; listSubscriptions()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is an example of how to list every subscription name in a project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; subscriptions =
+    pubSubAdmin.listSubscriptions().stream()
+        .map(Subscription::getName)
+        .collect(Collectors.toList());</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
+<div class="paragraph">
+<p>Sample applications for <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-sample">using the template</a> and <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-reactive-sample">using a subscription-backed reactive stream</a> are available.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
