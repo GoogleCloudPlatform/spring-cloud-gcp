@@ -185,11 +185,11 @@ If the bus topic (named <code>springCloudBus</code> by default) does not exist, 
 The binder also creates anonymous subscriptions for each project using the <code>spring-cloud-gcp-starter-bus-pubsub</code> starter.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-bus-pubsub&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -200,7 +200,7 @@ The binder also creates anonymous subscriptions for each project using the <code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+<pre class="highlightjs highlight"><code data-lang="groovy" class="language-groovy hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-bus-pubsub")
 }</code></pre>
 </div>
@@ -211,7 +211,7 @@ The binder also creates anonymous subscriptions for each project using the <code
 <p>Spring Cloud Bus can be used to push configuration changes from a Spring Cloud Config server to the clients listening on the same bus.</p>
 </div>
 <div class="paragraph">
-<p>To use GCP Pub/Sub as the bus implementation, both the configuration server and the configuration client need the <code>spring-cloud-gcp-starter-bus-pubsub</code> dependency.</p>
+<p>To use Spring Framework on Google Cloud Pub/Sub as the bus implementation, both the configuration server and the configuration client need the <code>spring-cloud-gcp-starter-bus-pubsub</code> dependency.</p>
 </div>
 <div class="paragraph">
 <p>All other configuration is standard to <a href="https://spring.io/projects/spring-cloud-config">Spring Cloud Config</a>.</p>
@@ -252,6 +252,9 @@ The sample contains two examples of configuration management with Spring Cloud B
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

@@ -174,7 +174,7 @@ window.onload = function() {
 <div class="sectionbody">
 <div class="paragraph">
 <p>Various properties can be specified inside your <code>application.properties</code> file, inside your <code>application.yml</code> file, or as command line switches.
-This appendix provides a list of common Spring Cloud GCP properties and references to the underlying classes that consume them.</p>
+This appendix provides a list of common Spring Framework on Google Cloud properties and references to the underlying classes that consume them.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -231,7 +231,7 @@ Also, you can define your own properties.
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.bigquery.project-id</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the GCP project ID specified in the Core module to use for BigQuery.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the Google Cloud project ID specified in the Core module to use for BigQuery.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.config.credentials.encoded-key</p></td>
@@ -266,7 +266,7 @@ Also, you can define your own properties.
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.config.project-id</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the GCP project ID specified in the Core module.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the Google Cloud project ID specified in the Core module.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.config.timeout-millis</p></td>
@@ -406,12 +406,12 @@ Also, you can define your own properties.
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.metrics.project-id</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the GCP project ID specified in the Core module.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the Google Cloud project ID specified in the Core module.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.project-id</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">GCP project ID where services are running.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where services are running.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.pubsub.binder.enabled</p></td>
@@ -451,7 +451,7 @@ Also, you can define your own properties.
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.pubsub.project-id</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the GCP project ID specified in the Core module.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the Google Cloud project ID specified in the Core module.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.pubsub.publisher.batching.delay-threshold-seconds</p></td>
@@ -646,17 +646,17 @@ Also, you can define your own properties.
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.secretmanager.enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Auto-configure GCP Secret Manager support components.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auto-configure Google Cloud Secret Manager support components.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.secretmanager.project-id</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the GCP Project ID specified in the Core module.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the Google Cloud project ID specified in the Core module.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.security.firebase.project-id</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the GCP project ID specified in the Core module.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the Google Cloud project ID specified in the Core module.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.security.firebase.public-keys-endpoint</p></td>
@@ -786,7 +786,7 @@ Also, you can define your own properties.
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.sql.credentials</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the GCP OAuth2 credentials specified in the Core module.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the Google Cloud OAuth2 credentials specified in the Core module.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.sql.database-name</p></td>
@@ -881,7 +881,7 @@ Also, you can define your own properties.
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.trace.message-timeout</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout in seconds before pending spans will be sent in batches to GCP Stackdriver Trace.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout in seconds before pending spans will be sent in batches to Google Cloud Stackdriver Trace.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.trace.num-executor-threads</p></td>
@@ -891,7 +891,7 @@ Also, you can define your own properties.
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.trace.project-id</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the GCP project ID specified in the Core module.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the Google Cloud project ID specified in the Core module.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.gcp.trace.wait-for-ready</p></td>
@@ -933,6 +933,9 @@ Also, you can define your own properties.
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

@@ -168,7 +168,7 @@ window.onload = function() {
 <ul class="sectlevel2">
 <li><a href="#_tracing">Tracing</a></li>
 <li><a href="#_spring_boot_starter_for_cloud_trace">Spring Boot Starter for Cloud Trace</a></li>
-<li><a href="#_overriding_the_auto_configuration">Overriding the auto-configuration</a></li>
+<li><a href="#_overriding_the_autoconfiguration">Overriding the autoconfiguration</a></li>
 <li><a href="#_customizing_spans">Customizing spans</a></li>
 <li><a href="#_integration_with_logging">Integration with Logging</a></li>
 <li><a href="#_pubsub_trace_instrumentation_experimental">Pub/Sub Trace Instrumentation (Experimental)</a></li>
@@ -183,21 +183,21 @@ window.onload = function() {
 <h2 id="cloud-trace"><a class="link" href="#cloud-trace">Cloud Trace</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Google Cloud Platform provides a managed distributed tracing service called <a href="https://cloud.google.com/trace/">Cloud Trace</a>, and <a href="https://cloud.spring.io/spring-cloud-sleuth/">Spring Cloud Sleuth</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
+<p>Google Cloud provides a managed distributed tracing service called <a href="https://cloud.google.com/trace/">Cloud Trace</a>, and <a href="https://micrometer.io/">Micrometer</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
 </div>
 <div class="paragraph">
-<p>Typically, Spring Cloud Sleuth captures trace information and forwards traces to services like Zipkin for storage and analysis.
-However, on GCP, instead of running and maintaining your own Zipkin instance and storage, you can use Cloud Trace to store traces, view trace details, generate latency distributions graphs, and generate performance regression reports.</p>
+<p>Typically, Micrometer captures trace information and forwards traces to service like Zipkin for storage and analysis.
+However, on Google Cloud, instead of running and maintaining your own Zipkin instance and storage, you can use Cloud Trace to store traces, view trace details, generate latency distributions graphs, and generate performance regression reports.</p>
 </div>
 <div class="paragraph">
-<p>This Spring Cloud GCP starter can forward Spring Cloud Sleuth traces to Cloud Trace without an intermediary Zipkin server.</p>
+<p>This Spring Framework on Google Cloud starter can forward Micrometer traces to Cloud Trace without an intermediary Zipkin server.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-trace&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -208,7 +208,7 @@ However, on GCP, instead of running and maintaining your own Zipkin instance and
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-trace")
 }</code></pre>
 </div>
@@ -234,14 +234,29 @@ Navigate to the <a href="https://console.cloud.google.com/apis/api/cloudtrace.go
 <div class="sect2">
 <h3 id="_tracing"><a class="link" href="#_tracing">Tracing</a></h3>
 <div class="paragraph">
-<p>Spring Cloud Sleuth uses the <a href="https://github.com/openzipkin/brave">Brave tracer</a> to generate traces.
+<p>Micrometer uses the <a href="https://github.com/openzipkin/brave">Brave tracer</a> to generate traces.
 This integration enables Brave to use the <a href="https://github.com/openzipkin/zipkin-gcp/tree/main/propagation-stackdriver"><code>StackdriverTracePropagation</code></a> propagation.</p>
 </div>
 <div class="paragraph">
 <p>A propagation is responsible for extracting trace context from an entity (e.g., an HTTP servlet request) and injecting trace context into an entity.
-A canonical example of the propagation usage is a web server that receives an HTTP request, which triggers other HTTP requests from the server before returning an HTTP response to the original caller.
-In the case of <code>StackdriverTracePropagation</code>, first it looks for trace context in the <code>x-cloud-trace-context</code> key (e.g., an HTTP request header).
-The value of the <code>x-cloud-trace-context</code> key can be formatted in three different ways:</p>
+A canonical example of the propagation usage is a web server that receives an HTTP request, which triggers other HTTP requests from the server before returning an HTTP response to the original caller.</p>
+</div>
+<div class="paragraph">
+<p>In the case of <code>StackdriverTracePropagation</code>, first it looks for trace context in the <a href="https://github.com/openzipkin/b3-propagation">X-B3 headers</a> (<code>X-B3-TraceId</code>, <code>X-B3-SpanId</code>).
+If those are not found, <code>StackdriverTracePropagation</code> will fall back on <code>x-cloud-trace-context</code> key (e.g., an HTTP request header).</p>
+</div>
+<div class="paragraph">
+<p>If you need different propagation behavior (e.g. relying primarily on <code>x-cloud-trace-context</code> in a mixed Spring / non-Spring application environment), Micrometer allows such customization through the <a href="https://micrometer.io/docs/contextPropagation"><code>CUSTOM</code> propagation type</a>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The value of the <code>x-cloud-trace-context</code> key can be formatted in three different ways:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -265,16 +280,17 @@ Since Cloud Trace doesn&#8217;t support span joins, a new span ID is always gene
 </div>
 <div class="paragraph">
 <p><code>TRACE_TRUE</code> can either be <code>0</code> if the entity should be untraced, or <code>1</code> if it should be traced.
-This field forces the decision of whether or not to trace the request; if omitted then the decision is deferred to the sampler.</p>
+This field forces the decision of whether to trace the request; if omitted then the decision is deferred to the sampler.</p>
 </div>
-<div class="paragraph">
-<p>If a <code>x-cloud-trace-context</code> key isn&#8217;t found, <code>StackdriverTracePropagation</code> falls back to tracing with the <a href="https://github.com/openzipkin/b3-propagation">X-B3 headers</a>.</p>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_spring_boot_starter_for_cloud_trace"><a class="link" href="#_spring_boot_starter_for_cloud_trace">Spring Boot Starter for Cloud Trace</a></h3>
 <div class="paragraph">
-<p>Spring Boot Starter for Cloud Trace uses Spring Cloud Sleuth and auto-configures a <a href="https://github.com/openzipkin/zipkin-gcp/blob/main/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java">StackdriverSender</a> that sends the Sleuth’s trace information to Cloud Trace.</p>
+<p>Spring Boot Starter for Cloud Trace uses Micrometer and autoconfigures a <a href="https://github.com/openzipkin/zipkin-gcp/blob/main/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java">StackdriverSender</a> that sends the Micrometer’s trace information to Cloud Trace.</p>
 </div>
 <div class="paragraph">
 <p>All configurations are optional:</p>
@@ -295,31 +311,31 @@ This field forces the decision of whether or not to trace the request; if omitte
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Auto-configure Spring Cloud Sleuth to send traces to Cloud Trace.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Autoconfigure Micrometer to send traces to Cloud Trace.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the project ID from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the project ID from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.credentials.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials location from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials location from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.credentials.encoded-key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials encoded key from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials encoded key from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.credentials.scopes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials scopes from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials scopes from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -367,7 +383,7 @@ This field forces the decision of whether or not to trace the request; if omitte
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.trace.messageTimeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout in seconds before pending spans will be sent in batches to GCP Cloud Trace. (previously <code>spring.zipkin.messageTimeout</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout in seconds before pending spans will be sent in batches to Google Cloud Trace. (previously <code>spring.zipkin.messageTimeout</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 </tr>
@@ -386,33 +402,19 @@ This field forces the decision of whether or not to trace the request; if omitte
 </tbody>
 </table>
 <div class="paragraph">
-<p>You can use core Spring Cloud Sleuth properties to control Sleuth’s sampling rate, etc.
-Read <a href="https://cloud.spring.io/spring-cloud-sleuth/">Sleuth documentation</a> for more information on Sleuth configurations.</p>
+<p>You can use core Micrometer properties to control Micrometer’s sampling rate, etc.
+Read <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#actuator.micrometer-tracing">Spring Boot Tracing documentation</a> for more information on Micrometer configurations.</p>
 </div>
 <div class="paragraph">
 <p>For example, when you are testing to see the traces are going through, you can set the sampling rate to 100%.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>spring.sleuth.sampler.probability=1                     # Send 100% of the request traces to Cloud Trace.
-spring.sleuth.web.skipPattern=(^cleanup.*|.+favicon.*)  # Ignore some URL paths.
-spring.sleuth.scheduled.enabled=false                   # disable executor 'async' traces</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">management.tracing.sampling.probability=1.0              # Send 100% of the request traces to Cloud Trace.</code></pre>
 </div>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-By default, Spring Cloud Sleuth auto-configuration instruments executor beans, which may cause recurring traces with the name <code>async</code> to appear in Cloud Trace if your application or one of its dependencies introduces scheduler beans into Spring application context. To avoid this noise, please disable automatic instrumentation of executors via <code>spring.sleuth.scheduled.enabled=false</code> in your application configuration.
-</td>
-</tr>
-</table>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP Trace does override some Sleuth configurations:</p>
+<p>Spring Framework on Google Cloud Trace does override some Micrometer configurations:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -425,17 +427,13 @@ This is required by Cloud Trace.</p>
 Span joins will share the span ID between the client and server Spans.
 Cloud Trace requires that every Span ID within a Trace to be unique, so Span joins are not supported.</p>
 </li>
-<li>
-<p>Uses <code>StackdriverHttpRequestParser</code> by default to populate Stackdriver related fields.</p>
-</li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_overriding_the_auto_configuration"><a class="link" href="#_overriding_the_auto_configuration">Overriding the auto-configuration</a></h3>
+<h3 id="_overriding_the_autoconfiguration"><a class="link" href="#_overriding_the_autoconfiguration">Overriding the autoconfiguration</a></h3>
 <div class="paragraph">
-<p>Spring Cloud Sleuth supports sending traces to multiple tracing systems as of version 2.1.0.
-In order to get this to work, every tracing system needs to have a <code>Reporter&lt;Span&gt;</code> and <code>Sender</code>.
+<p>You can send traces to multiple tracing systems. In order to get this to work, every tracing system needs to have a <code>Reporter&lt;Span&gt;</code> and <code>Sender</code>.
 If you want to override the provided beans you need to give them a specific name.
 To do this you can use respectively <code>StackdriverTraceAutoConfiguration.REPORTER_BEAN_NAME</code> and <code>StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME</code>.</p>
 </div>
@@ -450,7 +448,7 @@ To do this you can use respectively <code>StackdriverTraceAutoConfiguration.REPO
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@SpringBootApplication
 public class Application implements WebMvcConfigurer {
 
 	public static void main(String[] args) {
@@ -482,7 +480,7 @@ public class Application implements WebMvcConfigurer {
 <div class="sect2">
 <h3 id="_integration_with_logging"><a class="link" href="#_integration_with_logging">Integration with Logging</a></h3>
 <div class="paragraph">
-<p>Integration with Cloud Logging is available through the <a href="logging.adoc">Cloud Logging Support</a>.
+<p>Integration with Cloud Logging is available through the <a href="#cloud-logging">Cloud Logging Support</a>.
 If the Trace integration is used together with the Logging one, the request logs will be associated to the corresponding traces.
 The trace logs can be viewed by going to the <a href="https://console.cloud.google.com/traces/traces">Google Cloud Console Trace List</a>, selecting a trace and pressing the <code>Logs &#8594; View</code> link in the <code>Details</code> section.</p>
 </div>
@@ -495,11 +493,8 @@ It&#8217;s set to <code>false</code> by default, but when set to <code>true</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code># Enable Pub/Sub tracing using this property
-spring.cloud.gcp.trace.pubsub.enabled=true
-
-# You should disable Spring Integration instrumentation by Sleuth as it's unnecessary when Pub/Sub tracing is enabled
-spring.sleuth.integration.enabled=false</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs"># Enable Pub/Sub tracing using this property
+spring.cloud.gcp.trace.pubsub.enabled=true</code></pre>
 </div>
 </div>
 </div>
@@ -512,6 +507,9 @@ spring.sleuth.integration.enabled=false</code></pre>
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

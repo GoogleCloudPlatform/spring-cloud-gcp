@@ -183,7 +183,7 @@ window.onload = function() {
 <p>The <a href="https://cloud.google.com/kms/docs">Google Cloud Key Management Service (KMS)</a> allows you to create, import, and manage cryptographic keys and perform cryptographic operations in a single centralized cloud service.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP offers a utility template class <code>KmsTemplate</code> which allows you to conveniently encrypt and decrypt binary or text data.</p>
+<p>Spring Framework on Google Cloud offers a utility template class <code>KmsTemplate</code> which allows you to conveniently encrypt and decrypt binary or text data.</p>
 </div>
 <div class="sect2">
 <h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
@@ -191,11 +191,11 @@ window.onload = function() {
 <p>To begin using this library, add the <code>spring-cloud-gcp-starter-kms</code> artifact to your project.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-kms&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -206,7 +206,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-kms")
 }</code></pre>
 </div>
@@ -215,7 +215,7 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
 <div class="paragraph">
-<p>The following options may be configured with Spring Cloud GCP KMS libraries.</p>
+<p>The following options may be configured with Spring Framework on Google Cloud KMS libraries.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -239,13 +239,13 @@ window.onload = function() {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.kms.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">GCP project ID of the project using Cloud KMS APIs, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID of the project using Cloud KMS APIs, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Project ID is typically inferred from <a href="https://cloud.google.com/sdk/gcloud/reference/config/set"><code>gcloud</code></a> configuration.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.kms.credentials.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Credentials file location for authenticating with the Cloud KMS APIs, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Credentials file location for authenticating with the Cloud KMS APIs, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Inferred from <a href="https://cloud.google.com/docs/authentication/production">Application Default Credentials</a>, typically set by <a href="https://cloud.google.com/sdk/gcloud/reference/auth/application-default"><code>gcloud</code></a>.</p></td>
 </tr>
@@ -258,7 +258,7 @@ window.onload = function() {
 <p>Once you have added the <code>spring-cloud-gcp-starter-kms</code> to your project, the autoconfiguration class <code>com.google.cloud.spring.autoconfigure.kms.GcpKmsAutoConfiguration</code> will be activated for your project.</p>
 </div>
 <div class="paragraph">
-<p>The <code>com.google.cloud.spring.kms.KmsTemplate</code> bean provided by the autoconfiguration is the entrypoint to using Spring Cloud GCP support for Google KMS. This class allows you to specify a Cloud KMS key in your project via a URI string (format described below) and perform encryption/decryption with it.</p>
+<p>The <code>com.google.cloud.spring.kms.KmsTemplate</code> bean provided by the autoconfiguration is the entrypoint to using Spring Framework on Google Cloud support for Google KMS. This class allows you to specify a Cloud KMS key in your project via a URI string (format described below) and perform encryption/decryption with it.</p>
 </div>
 <div class="paragraph">
 <p>The template class automatically validates the CRC32 checksums received responses from Cloud KMS APIs to verify correctness of the response.</p>
@@ -266,20 +266,20 @@ window.onload = function() {
 <div class="sect3">
 <h4 id="_cloud_kms_key_id_format"><a class="link" href="#_cloud_kms_key_id_format">Cloud KMS Key ID format</a></h4>
 <div class="paragraph">
-<p>Spring Cloud GCP offers the following key syntax to specify Cloud KMS keys in your project:</p>
+<p>Spring Framework on Google Cloud offers the following key syntax to specify Cloud KMS keys in your project:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code> 1. Shortest form - specify the key by key ring ID, and key ID.
+<pre class="highlightjs highlight"><code class="language-none hljs"> 1. Shortest form - specify the key by key ring ID, and key ID.
  The project is inferred from the spring.cloud.gcp.kms.project-id if set, otherwise
- the default GCP project (such as using application-default-credentials) is used.
+ the default Google Cloud project (such as using application-default-credentials) is used.
  The location is assumed to be `global`.
 
  {key-ring-id}/{key-id}
 
  2. Short form - specify the key by location ID, key ring ID, and key ID.
  The project is inferred from the spring.cloud.gcp.kms.project-id if set, otherwise
- the default GCP project (such as using application-default-credentials) is used.
+ the default Google Cloud project (such as using application-default-credentials) is used.
 
  {location-id}/{key-ring-id}/{key-id}
 
@@ -304,6 +304,9 @@ window.onload = function() {
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

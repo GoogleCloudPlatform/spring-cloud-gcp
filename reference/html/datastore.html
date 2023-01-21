@@ -176,6 +176,7 @@ window.onload = function() {
 <li><a href="#_partitioning_data_by_namespace">Partitioning Data by Namespace</a></li>
 <li><a href="#_spring_boot_actuator_support">Spring Boot Actuator Support</a></li>
 <li><a href="#_sample">Sample</a></li>
+<li><a href="#_test">Test</a></li>
 </ul>
 </li>
 </ul>
@@ -199,14 +200,14 @@ This integration is fully compatible with <a href="https://cloud.google.com/data
 </div>
 <div class="paragraph">
 <p><a href="https://projects.spring.io/spring-data/">Spring Data</a> is an abstraction for storing and retrieving POJOs in numerous storage technologies.
-Spring Cloud GCP adds Spring Data support for <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in Datastore mode.</p>
+Spring Framework on Google Cloud adds Spring Data support for <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in Datastore mode.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates for this module only, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates for this module only, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-data-datastore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -217,7 +218,7 @@ Spring Cloud GCP adds Spring Data support for <a href="https://cloud.google.com/
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-data-datastore")
 }</code></pre>
 </div>
@@ -231,7 +232,7 @@ To use the starter, see the coordinates below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-data-datastore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -242,7 +243,7 @@ To use the starter, see the coordinates below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-data-datastore")
 }</code></pre>
 </div>
@@ -291,25 +292,25 @@ The following configuration options are available:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">GCP project ID where the Google Cloud Datastore API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Datastore API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.credentials.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.credentials.encoded-key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.credentials.scopes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Cloud GCP Cloud Datastore credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Framework on Google CloudDatastore credentials</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.googleapis.com/auth/datastore" class="bare">https://www.googleapis.com/auth/datastore</a></p></td>
 </tr>
@@ -317,7 +318,7 @@ The following configuration options are available:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.namespace</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Cloud Datastore namespace to use</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the Default namespace of Cloud Datastore in your GCP project</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the Default namespace of Cloud Datastore in your Google Cloud project</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.host</code></p></td>
@@ -409,7 +410,7 @@ The emulator will be properly stopped after the Spring application context shutd
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Entity(name = "traders")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity(name = "traders")
 public class Trader {
 
 	@Id
@@ -439,7 +440,7 @@ Arguments that are not directly set to properties are not supported.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Entity(name = "traders")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity(name = "traders")
 public class Trader {
 
 	@Id
@@ -477,7 +478,7 @@ public class Trader {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Entity(name = "trades")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity(name = "trades")
 public class Trade {
 	@Id
 	@Field(name = "trade_id")
@@ -608,7 +609,7 @@ The <code>@Field</code> annotation optionally provides a different field name th
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Entity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity
 public class Singer {
 
 	@Id
@@ -625,7 +626,7 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Album {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Album {
 	String albumName;
 
 	LocalDate date;
@@ -637,7 +638,7 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">	//Converter to write custom Album type
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">	// Converter to write custom Album type
 	static final Converter&lt;Album, String&gt; ALBUM_STRING_CONVERTER =
 			new Converter&lt;Album, String&gt;() {
 				@Override
@@ -646,7 +647,7 @@ public class Singer {
 				}
 			};
 
-	//Converters to read custom Album type
+	// Converters to read custom Album type
 	static final Converter&lt;String, Album&gt; STRING_ALBUM_CONVERTER =
 			new Converter&lt;String, Album&gt;() {
 				@Override
@@ -662,7 +663,7 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 public class ConverterConfiguration {
 	@Bean
 	public DatastoreCustomConversions datastoreCustomConversions() {
@@ -702,7 +703,7 @@ Instead of a field of type <code>Album</code>, we would like to have a field of 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Entity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity
 public class Singer {
 
 	@Id
@@ -719,7 +720,7 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">static final Converter&lt;List&lt;?&gt;, Set&lt;?&gt;&gt; LIST_SET_CONVERTER =
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">static final Converter&lt;List&lt;?&gt;, Set&lt;?&gt;&gt; LIST_SET_CONVERTER =
 			new Converter&lt;List&lt;?&gt;, Set&lt;?&gt;&gt;() {
 				@Override
 				public Set&lt;?&gt; convert(List&lt;?&gt; source) {
@@ -733,7 +734,7 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 public class ConverterConfiguration {
 	@Bean
 	public DatastoreCustomConversions datastoreCustomConversions() {
@@ -755,7 +756,7 @@ When reading and querying entities using <code>DatastoreRepository</code> or <co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Entity(name = "pets")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity(name = "pets")
 @DiscriminatorField(field = "pet_type")
 abstract class Pet {
 	@Id
@@ -835,7 +836,7 @@ Any value set in the discrimination field will be overwritten upon write to Clou
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
+<pre class="highlightjs highlight"><code data-lang="json" class="language-json hljs">{
   "name" : "Alexander",
   "age" : 47,
   "child" : {"name" : "Philip"  }
@@ -847,7 +848,7 @@ Any value set in the discrimination field will be overwritten upon write to Clou
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import org.springframework.data.annotation.Id;
 
 @Entity("parents")
@@ -892,7 +893,7 @@ We can store trees in Cloud Datastore using this feature:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import com.google.cloud.spring.data.datastore.core.mapping.Embedded;
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Embedded;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import org.springframework.data.annotation.Id;
 
@@ -936,7 +937,7 @@ To do that, we need to create a field of type <code>List&lt;EmbeddableTreeNode&g
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import com.google.cloud.spring.data.datastore.core.mapping.Embedded;
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Embedded;
 import org.springframework.data.annotation.Id;
 
 public class EmbeddableTreeNode {
@@ -985,7 +986,7 @@ Instead, the relationship is captured in the descendants' keys, which refer to t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import org.springframework.data.annotation.Id;
 
@@ -1084,7 +1085,7 @@ Because entity keys are immutable in Cloud Datastore, to change the key of a chi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import org.springframework.data.annotation.Reference;
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import org.springframework.data.annotation.Reference;
 import org.springframework.data.annotation.Id;
 
 @Entity
@@ -1146,7 +1147,7 @@ The order of collection-like reference properties is not preserved when reading 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@SpringBootApplication
 public class DatastoreTemplateExample {
 
 	@Autowired
@@ -1185,7 +1186,7 @@ public class DatastoreTemplateExample {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">  &lt;T&gt; Iterable&lt;T&gt; query(Query&lt;? extends BaseEntity&gt; query, Class&lt;T&gt; entityClass);
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">  &lt;T&gt; Iterable&lt;T&gt; query(Query&lt;? extends BaseEntity&gt; query, Class&lt;T&gt; entityClass);
 
   &lt;A, T&gt; Iterable&lt;T&gt; query(Query&lt;A&gt; query, Function&lt;A, T&gt; entityFunc);
 
@@ -1216,7 +1217,7 @@ public class DatastoreTemplateExample {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Trader trader = this.datastoreTemplate.findById("trader1", Trader.class);
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Trader trader = this.datastoreTemplate.findById("trader1", Trader.class);
 
 List&lt;Trader&gt; traders = this.datastoreTemplate.findAllById(Arrays.asList("trader1", "trader2"), Trader.class);
 
@@ -1238,7 +1239,7 @@ To disable indexing on a particular field, <code>@Unindexed</code> annotation ca
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
 
 public class ExampleItem {
 	long indexedField;
@@ -1281,7 +1282,7 @@ The entity with the original ID value will not be affected.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Trader t = new Trader();
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Trader t = new Trader();
 this.datastoreTemplate.save(t);</code></pre>
 </div>
 </div>
@@ -1302,7 +1303,7 @@ this.datastoreTemplate.save(t);</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 DatastoreOperations myDatastoreOperations;
 
 public String doWorkInsideTransaction() {
@@ -1371,17 +1372,17 @@ Converters for custom value types can be added (see <a href="#_custom_types">Cus
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, Long&gt; map = new HashMap&lt;&gt;();
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Map&lt;String, Long&gt; map = new HashMap&lt;&gt;();
 map.put("field1", 1L);
 map.put("field2", 2L);
 map.put("field3", 3L);
 
 keyForMap = datastoreTemplate.createKey("kindName", "id");
 
-//write a map
+// write a map
 datastoreTemplate.writeMap(keyForMap, map);
 
-//read a map
+// read a map
 Map&lt;String, Long&gt; loadedMap = datastoreTemplate.findByIdAsMap(keyForMap, Long.class);</code></pre>
 </div>
 </div>
@@ -1397,7 +1398,7 @@ Map&lt;String, Long&gt; loadedMap = datastoreTemplate.findByIdAsMap(keyForMap, L
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
 }</code></pre>
 </div>
 </div>
@@ -1410,7 +1411,7 @@ The second type parameter, <code>String</code> in this case, refers to the type 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
 
 	@Autowired
 	TraderRepository traderRepository;
@@ -1438,13 +1439,13 @@ Filtering parameters can be of types supported by your configured custom convert
 <h4 id="_query_methods_by_convention"><a class="link" href="#_query_methods_by_convention">Query methods by convention</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&gt; {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&gt; {
   List&lt;Trader&gt; findByAction(String action);
 
-  //throws an exception if no results
+  // throws an exception if no results
   Trader findOneByAction(String action);
 
-  //because of the annotation, returns null if no results
+  // because of the annotation, returns null if no results
   @Nullable
   Trader getByAction(String action);
 
@@ -1607,7 +1608,7 @@ It enables dynamic query generation based on a user-provided object. See <a href
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">userRepository.findAll(
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">userRepository.findAll(
     Example.of(new User(null, null, "Smith"))</code></pre>
 </div>
 </div>
@@ -1616,7 +1617,7 @@ It enables dynamic query generation based on a user-provided object. See <a href
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">userRepository.findAll(
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">userRepository.findAll(
     Example.of(new User(null, null, "Smith"), ExampleMatcher.matching().withIncludeNullValues())</code></pre>
 </div>
 </div>
@@ -1659,7 +1660,7 @@ userRepository.findBy(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
 
   @Query("SELECT * FROM traders WHERE name = @trader_name")
   List&lt;Trader&gt; tradersByName(@Param("trader_name") String traderName);
@@ -1698,7 +1699,7 @@ userRepository.findBy(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java"> Slice&lt;Trader&gt; slice1 = tradersByNamePage("Dave", PageRequest.of(0, 5));
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs"> Slice&lt;Trader&gt; slice1 = tradersByNamePage("Dave", PageRequest.of(0, 5));
  Slice&lt;Trader&gt; slice2 = tradersByNamePage("Dave", slice1.getPageable().next());</code></pre>
 </div>
 </div>
@@ -1766,7 +1767,7 @@ Selecting this special <code>__key__</code> column is especially useful and effi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Query(value = "SELECT __key__ from test_entities_ci")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query(value = "SELECT __key__ from test_entities_ci")
 List&lt;Key&gt; getKeys();
 
 @Query(value = "SELECT __key__ from test_entities_ci limit 1")
@@ -1781,7 +1782,7 @@ Key getKey();</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Query("select * from  test_entities_ci where size = @size and __key__ = @id")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query("select * from  test_entities_ci where size = @size and __key__ = @id")
 LinkedList&lt;TestEntity&gt; findEntities(@Param("size") long size, @Param("id") Key id);</code></pre>
 </div>
 </div>
@@ -1790,7 +1791,7 @@ LinkedList&lt;TestEntity&gt; findEntities(@Param("size") long size, @Param("id")
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">this.testEntityRepository.findEntities(1L, datastoreTemplate.createKey(TestEntity.class, 1L))</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">this.testEntityRepository.findEntities(1L, datastoreTemplate.createKey(TestEntity.class, 1L))</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1798,7 +1799,7 @@ LinkedList&lt;TestEntity&gt; findEntities(@Param("size") long size, @Param("id")
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Query("SELECT * FROM |com.example.Trade| WHERE trades.action = @act
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query("SELECT * FROM |com.example.Trade| WHERE trades.action = @act
   AND price &gt; :#{#priceRadius * -1} AND price &lt; :#{#priceRadius * 2}")
 List&lt;Trade&gt; fetchByActionNamedQuery(@Param("act") String action, @Param("priceRadius") Double r);</code></pre>
 </div>
@@ -1814,7 +1815,7 @@ For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Query("SELECT * FROM |com.example.Trade| WHERE trades.action = @act")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query("SELECT * FROM |com.example.Trade| WHERE trades.action = @act")
 List&lt;Trade&gt; fetchByActionNamedQuery(@Param("act") String action);</code></pre>
 </div>
 </div>
@@ -1843,12 +1844,12 @@ annotated with <code>DiscriminatorField</code>.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">Trader.fetchByName=SELECT * FROM traders WHERE name = @tag0</code></pre>
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">Trader.fetchByName=SELECT * FROM traders WHERE name = @tag0</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
 
 	// This method uses the query from the properties file instead of one generated based on name.
 	List&lt;Trader&gt; fetchByName(@Param("tag0") String traderName);
@@ -1868,7 +1869,7 @@ annotated with <code>DiscriminatorField</code>.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 DatastoreRepository myRepo;
 
 public String doWorkInsideTransaction() {
@@ -1892,7 +1893,7 @@ You can define projection interfaces based on domain types and add query methods
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeProjection {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeProjection {
 
 	String getAction();
 
@@ -1928,7 +1929,7 @@ As a result, accessing underlying properties take the form <code>target.&lt;prop
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
   &lt;artifactId&gt;spring-boot-starter-data-rest&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1939,7 +1940,7 @@ As a result, accessing underlying properties take the form <code>target.&lt;prop
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@RepositoryRestResource(collectionResourceRel = "trades", path = "trades")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@RepositoryRestResource(collectionResourceRel = "trades", path = "trades")
 public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&gt; {
 }</code></pre>
 </div>
@@ -2014,7 +2015,7 @@ public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Entity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity
 public class SimpleEntity {
     @Id
     String id;
@@ -2035,7 +2036,7 @@ public class SimpleEntity {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 @EnableDatastoreAuditing
 public class Config {
 
@@ -2052,7 +2053,7 @@ One alternative is to use Spring Security&#8217;s <code>User</code> type:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class SpringSecurityAuditorAware implements AuditorAware&lt;User&gt; {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class SpringSecurityAuditorAware implements AuditorAware&lt;User&gt; {
 
   public Optional&lt;User&gt; getCurrentAuditor() {
 
@@ -2077,7 +2078,7 @@ This is the recommended method for multi-tenancy in Cloud Datastore.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    @Bean
     public DatastoreNamespaceProvider namespaceProvider() {
         // return custom Supplier of a namespace string.
     }</code></pre>
@@ -2103,7 +2104,7 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -2117,9 +2118,18 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-basic-sample">Simple Spring Boot Application</a> and more advanced <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-sample">Sample Spring Boot Application</a> are provided to show how to use the Spring Data Cloud Datastore starter and template.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_test"><a class="link" href="#_test">Test</a></h3>
+<div class="paragraph">
+<p><code>Testcontainers</code> provides a <code>gcloud</code> module which offers <code>DatastoreEmulatorContainer</code>. See more at the <a href="https://www.testcontainers.org/modules/gcloud/#datastore">docs</a></p>
 </div>
 </div>
 </div>
+</div>
+</div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

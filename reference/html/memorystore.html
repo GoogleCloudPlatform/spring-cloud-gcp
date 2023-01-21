@@ -205,7 +205,7 @@ Everything else is exactly the same as setting up redis-backed Spring caching.</
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-cache&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -220,7 +220,7 @@ Everything else is exactly the same as setting up redis-backed Spring caching.</
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Cacheable("cache1")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Cacheable("cache1")
 public String hello(@PathVariable String name) {
     ....
 }</code></pre>
@@ -236,6 +236,9 @@ public String hello(@PathVariable String name) {
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

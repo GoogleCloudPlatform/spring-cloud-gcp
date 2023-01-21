@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Spring Cloud GCP Core</title>
+<title>Spring Framework on Google Cloud Core</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -164,7 +164,7 @@ window.onload = function() {
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#spring-cloud-gcp-core">Spring Cloud GCP Core</a>
+<li><a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core</a>
 <ul class="sectlevel2">
 <li><a href="#_configuration">Configuration</a></li>
 <li><a href="#_project_id">Project ID</a></li>
@@ -179,20 +179,20 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="spring-cloud-gcp-core"><a class="link" href="#spring-cloud-gcp-core">Spring Cloud GCP Core</a></h2>
+<h2 id="spring-cloud-gcp-core"><a class="link" href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Each Spring Cloud GCP module uses <code>GcpProjectIdProvider</code> and <code>CredentialsProvider</code> to get the GCP project ID and access credentials.</p>
+<p>Each Spring Framework on Google Cloud module uses <code>GcpProjectIdProvider</code> and <code>CredentialsProvider</code> to get the Google Cloud project ID and access credentials.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP provides a Spring Boot starter to auto-configure the core components.</p>
+<p>Spring Framework on Google Cloud provides a Spring Boot starter to auto-configure the core components.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -203,7 +203,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter")
 }</code></pre>
 </div>
@@ -229,7 +229,7 @@ window.onload = function() {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.core.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables GCP core auto configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables Google Cloud core auto configuration</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
@@ -239,27 +239,27 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="_project_id"><a class="link" href="#_project_id">Project ID</a></h3>
 <div class="paragraph">
-<p><code>GcpProjectIdProvider</code> is a functional interface that returns a GCP project ID string.</p>
+<p><code>GcpProjectIdProvider</code> is a functional interface that returns a Google Cloud project ID string.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface GcpProjectIdProvider {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface GcpProjectIdProvider {
 	String getProjectId();
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The Spring Cloud GCP starter auto-configures a <code>GcpProjectIdProvider</code>.
+<p>The Spring Framework on Google Cloud starter auto-configures a <code>GcpProjectIdProvider</code>.
 If a <code>spring.cloud.gcp.project-id</code> property is specified, the provided <code>GcpProjectIdProvider</code> returns that property value.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">spring.cloud.gcp.project-id=my-gcp-project-id</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">spring.cloud.gcp.project-id=my-gcp-project-id</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Otherwise, the project ID is discovered based on an
-<a href="https://googlecloudplatform.github.io/google-cloud-java/google-cloud-clients/apidocs/com/google/cloud/ServiceOptions.html#getDefaultProjectId--">ordered list of rules</a>:</p>
+<a href="https://cloud.google.com/java/docs/reference/google-cloud-core/latest/com.google.cloud.ServiceOptions#com_google_cloud_ServiceOptions_getDefaultProjectId__">ordered list of rules</a>:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -288,20 +288,20 @@ If a <code>spring.cloud.gcp.project-id</code> property is specified, the provide
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface CredentialsProvider {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface CredentialsProvider {
   Credentials getCredentials() throws IOException;
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The Spring Cloud GCP starter auto-configures a <code>CredentialsProvider</code>.
+<p>The Spring Framework on Google Cloud starter auto-configures a <code>CredentialsProvider</code>.
 It uses the <code>spring.cloud.gcp.credentials.location</code> property to locate the OAuth2 private key of a Google service account.
 Keep in mind this property is a Spring Resource, so the credentials file can be obtained from a number of <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html#resources-implementations">different locations</a> such as the file system, classpath, URL, etc.
 The next example specifies the credentials location property in the file system.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>spring.cloud.gcp.credentials.location=file:/usr/local/key.json</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.gcp.credentials.location=file:/usr/local/key.json</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -331,13 +331,13 @@ The value should be the base64-encoded account private key in JSON format.</p>
 </ol>
 </div>
 <div class="paragraph">
-<p>If your app is running on Google App Engine or Google Compute Engine, in most cases, you should omit the <code>spring.cloud.gcp.credentials.location</code> property and, instead, let the Spring Cloud GCP Starter get the correct credentials for those environments.
+<p>If your app is running on Google App Engine or Google Compute Engine, in most cases, you should omit the <code>spring.cloud.gcp.credentials.location</code> property and, instead, let the Spring Framework on Google Cloud Starter get the correct credentials for those environments.
 On App Engine Standard, the <a href="https://cloud.google.com/appengine/docs/standard/java/appidentity/">App Identity service account credentials</a> are used, on App Engine Flexible, the <a href="https://cloud.google.com/appengine/docs/flexible/java/service-account">Flexible service account credential</a> are used and on Google Compute Engine, the <a href="https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#using_the_compute_engine_default_service_account">Compute Engine Default Service Account</a> is used.</p>
 </div>
 <div class="sect3">
 <h4 id="_scopes"><a class="link" href="#_scopes">Scopes</a></h4>
 <div class="paragraph">
-<p>By default, the credentials provided by the Spring Cloud GCP Starter contain scopes for every service supported by Spring Cloud GCP.</p>
+<p>By default, the credentials provided by the Spring Framework on Google Cloud Starter contain scopes for every service supported by Spring Framework on Google Cloud.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -388,15 +388,15 @@ On App Engine Standard, the <a href="https://cloud.google.com/appengine/docs/sta
 </tbody>
 </table>
 <div class="paragraph">
-<p>The Spring Cloud GCP starter allows you to configure a custom scope list for the provided credentials.
+<p>The Spring Framework on Google Cloud starter allows you to configure a custom scope list for the provided credentials.
 To do that, specify a comma-delimited list of <a href="https://developers.google.com/identity/protocols/googlescopes">Google OAuth2 scopes</a> in the <code>spring.cloud.gcp.credentials.scopes</code> property.</p>
 </div>
 <div class="paragraph">
-<p><code>spring.cloud.gcp.credentials.scopes</code> is a comma-delimited list of <a href="https://developers.google.com/identity/protocols/googlescopes">Google OAuth2 scopes</a> for Google Cloud Platform services that the credentials returned by the provided <code>CredentialsProvider</code> support.</p>
+<p><code>spring.cloud.gcp.credentials.scopes</code> is a comma-delimited list of <a href="https://developers.google.com/identity/protocols/googlescopes">Google OAuth2 scopes</a> for Google Cloud services that the credentials returned by the provided <code>CredentialsProvider</code> support.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>spring.cloud.gcp.credentials.scopes=https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/sqlservice.admin</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.gcp.credentials.scopes=https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/sqlservice.admin</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -404,7 +404,7 @@ To do that, specify a comma-delimited list of <a href="https://developers.google
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>spring.cloud.gcp.credentials.scopes=DEFAULT_SCOPES,https://www.googleapis.com/auth/cloud-vision</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.gcp.credentials.scopes=DEFAULT_SCOPES,https://www.googleapis.com/auth/cloud-vision</code></pre>
 </div>
 </div>
 </div>
@@ -412,12 +412,12 @@ To do that, specify a comma-delimited list of <a href="https://developers.google
 <div class="sect2">
 <h3 id="_environment"><a class="link" href="#_environment">Environment</a></h3>
 <div class="paragraph">
-<p><code>GcpEnvironmentProvider</code> is a functional interface, auto-configured by the Spring Cloud GCP starter, that returns a <code>GcpEnvironment</code> enum.
-The provider can help determine programmatically in which GCP environment (App Engine Flexible, App Engine Standard, Kubernetes Engine or Compute Engine) the application is deployed.</p>
+<p><code>GcpEnvironmentProvider</code> is a functional interface, auto-configured by the Spring Framework on Google Cloud starter, that returns a <code>GcpEnvironment</code> enum.
+The provider can help determine programmatically in which Google Cloud environment (App Engine Flexible, App Engine Standard, Kubernetes Engine or Compute Engine) the application is deployed.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface GcpEnvironmentProvider {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface GcpEnvironmentProvider {
 	GcpEnvironment getCurrentEnvironment();
 }</code></pre>
 </div>
@@ -426,7 +426,7 @@ The provider can help determine programmatically in which GCP environment (App E
 <div class="sect2">
 <h3 id="_customizing_bean_scope"><a class="link" href="#_customizing_bean_scope">Customizing bean scope</a></h3>
 <div class="paragraph">
-<p>Spring Cloud GCP starters autoconfigure all necessary beans in the default singleton scope.
+<p>Spring Framework on Google Cloud starters autoconfigure all necessary beans in the default singleton scope.
 If you need a particular bean or set of beans to be recreated dynamically (for example, to rotate credentials), there are two options:</p>
 </div>
 <div class="olist arabic">
@@ -462,7 +462,7 @@ If your application refreshes any beans used by such <code>SmartLifecycle</code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 private PubSubInboundChannelAdapter pubSubAdapter;
 
 @EventListener(RefreshScopeRefreshedEvent.class)
@@ -486,6 +486,9 @@ public void onRefreshScope(RefreshScopeRefreshedEvent event) {
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

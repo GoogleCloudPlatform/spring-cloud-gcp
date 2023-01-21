@@ -209,7 +209,7 @@ This functionality relies on Cloud Resource Manager API to retrieve project deta
 <div class="ulist">
 <ul>
 <li>
-<p>Enable Cloud Resource Manager API in <a href="https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com">GCP Console</a>.</p>
+<p>Enable Cloud Resource Manager API in <a href="https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com">Google Cloud Console</a>.</p>
 </li>
 <li>
 <p>Make sure your application has <code>resourcemanager.projects.get</code> permission.</p>
@@ -226,7 +226,7 @@ If <code>spring.cloud.gcp.security.iap.audience</code> is not provided, the appl
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>No qualifying bean of type 'com.google.cloud.spring.security.iap.AudienceProvider' available.</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">No qualifying bean of type 'com.google.cloud.spring.security.iap.AudienceProvider' available.</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -243,11 +243,11 @@ If you create a custom <a href="https://docs.spring.io/spring-security/site/docs
 </table>
 </div>
 <div class="paragraph">
-<p>Starter Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Starter Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-security-iap&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -258,7 +258,7 @@ If you create a custom <a href="https://docs.spring.io/spring-security/site/docs
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-security-iap")
 }</code></pre>
 </div>
@@ -338,6 +338,9 @@ Modifying registry, algorithm, and header properties might be useful for testing
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

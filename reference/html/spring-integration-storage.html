@@ -175,20 +175,20 @@ window.onload = function() {
 <p>The channel adapters for Google Cloud Storage allow you to read and write files to Google Cloud Storage through <code>MessageChannels</code>.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP provides two inbound adapters, <code>GcsInboundFileSynchronizingMessageSource</code> and <code>GcsStreamingMessageSource</code>, and one outbound adapter, <code>GcsMessageHandler</code>.</p>
+<p>Spring Framework on Google Cloud provides two inbound adapters, <code>GcsInboundFileSynchronizingMessageSource</code> and <code>GcsStreamingMessageSource</code>, and one outbound adapter, <code>GcsMessageHandler</code>.</p>
 </div>
 <div class="paragraph">
 <p>The Spring Integration Channel Adapters for Google Cloud Storage are included in the <code>spring-cloud-gcp-storage</code> module.</p>
 </div>
 <div class="paragraph">
-<p>To use the Storage portion of Spring Integration for Spring Cloud GCP, you must also provide the <code>spring-integration-file</code> dependency, since it isn&#8217;t pulled transitively.</p>
+<p>To use the Storage portion of Spring Integration for Spring Framework on Google Cloud, you must also provide the <code>spring-integration-file</code> dependency, since it isn&#8217;t pulled transitively.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-storage&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -203,7 +203,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-storage")
     implementation("org.springframework.integration:spring-integration-file")
 }</code></pre>
@@ -220,7 +220,7 @@ The files are temporarily stored in a folder in the local file system.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 @InboundChannelAdapter(channel = "new-file-channel", poller = @Poller(fixedDelay = "5000"))
 public MessageSource&lt;File&gt; synchronizerAdapter(Storage gcs) {
   GcsInboundFileSynchronizer synchronizer = new GcsInboundFileSynchronizer(gcs);
@@ -245,7 +245,7 @@ public MessageSource&lt;File&gt; synchronizerAdapter(Storage gcs) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 @InboundChannelAdapter(channel = "streaming-channel", poller = @Poller(fixedDelay = "5000"))
 public MessageSource&lt;InputStream&gt; streamingAdapter(Storage gcs) {
   GcsStreamingMessageSource adapter =
@@ -270,7 +270,7 @@ When it receives a <code>Message</code> containing a payload of type <code>File<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 @ServiceActivator(inputChannel = "writeFiles")
 public MessageHandler outboundChannelAdapter(Storage gcs) {
   GcsMessageHandler outboundChannelAdapter = new GcsMessageHandler(new GcsSessionFactory(gcs));
@@ -289,6 +289,9 @@ public MessageHandler outboundChannelAdapter(Storage gcs) {
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

@@ -179,11 +179,11 @@ window.onload = function() {
 <h2 id="cloud-logging"><a class="link" href="#cloud-logging">Cloud Logging</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-logging&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -194,18 +194,18 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-logging")
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><a href="https://cloud.google.com/logging/">Cloud Logging</a> is the managed logging service provided by Google Cloud Platform.</p>
+<p><a href="https://cloud.google.com/logging/">Cloud Logging</a> is the managed logging service provided by Google Cloud.</p>
 </div>
 <div class="paragraph">
 <p>This module provides support for associating a web request trace ID with the corresponding log entries.
-It does so by retrieving the <code>X-B3-TraceId</code> value from the <a href="https://logback.qos.ch/manual/mdc.html">Mapped Diagnostic Context (MDC)</a>, which is set by Spring Cloud Sleuth.
-If Spring Cloud Sleuth isn&#8217;t used, the configured <code>TraceIdExtractor</code> extracts the desired header value and sets it as the log entry&#8217;s trace ID.
+It does so by retrieving the <code>X-B3-TraceId</code> value from the <a href="https://logback.qos.ch/manual/mdc.html">Mapped Diagnostic Context (MDC)</a>, which is set by Micrometer.
+If Micrometer isn&#8217;t used, the configured <code>TraceIdExtractor</code> extracts the desired header value and sets it as the log entry&#8217;s trace ID.
 This allows grouping of log messages by request, for example, in the <a href="https://console.cloud.google.com/logs/viewer">Google Cloud Console Logs viewer</a>.</p>
 </div>
 <div class="admonitionblock note">
@@ -215,7 +215,7 @@ This allows grouping of log messages by request, for example, in the <a href="ht
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Due to the way logging is set up, the GCP project ID and credentials defined in <code>application.properties</code> are ignored.
+Due to the way logging is set up, the Google Cloud project ID and credentials defined in <code>application.properties</code> are ignored.
 Instead, you should set the <code>GOOGLE_CLOUD_PROJECT</code> and <code>GOOGLE_APPLICATION_CREDENTIALS</code> environment variables to the project ID and credentials private key location, respectively.
 You can do this easily if you&#8217;re using the <a href="https://cloud.google.com/sdk">Google Cloud SDK</a>, using the <code>gcloud config set project [YOUR_PROJECT_ID]</code> and <code>gcloud auth application-default login</code> commands, respectively.
 </td>
@@ -234,7 +234,7 @@ You can do this easily if you&#8217;re using the <a href="https://cloud.google.c
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If Spring Cloud GCP Trace is enabled, the logging module disables itself and delegates log correlation to Spring Cloud Sleuth.
+If Spring Framework on Google Cloud Trace is enabled, the logging module disables itself and delegates log correlation to Micrometer.
 </td>
 </tr>
 </table>
@@ -243,8 +243,8 @@ If Spring Cloud GCP Trace is enabled, the logging module disables itself and del
 <p><code>LoggingWebMvcConfigurer</code> configuration class is also provided to help register the <code>TraceIdLoggingWebMvcInterceptor</code> in Spring MVC applications.</p>
 </div>
 <div class="paragraph">
-<p>Applications hosted on the Google Cloud Platform include trace IDs under the <code>x-cloud-trace-context</code> header, which will be included in log entries.
-However, if Sleuth is used the trace ID will be picked up from the MDC.</p>
+<p>Applications hosted on the Google Cloud include trace IDs under the <code>x-cloud-trace-context</code> header, which will be included in log entries.
+However, if Micrometer is used the trace ID will be picked up from the MDC.</p>
 </div>
 </div>
 <div class="sect2">
@@ -266,7 +266,7 @@ This appender builds a Cloud Logging log entry from a JUL or Logback log entry, 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;configuration&gt;
   &lt;include resource="com/google/cloud/spring/logging/logback-appender.xml" /&gt;
 
   &lt;root level="INFO"&gt;
@@ -277,7 +277,7 @@ This appender builds a Cloud Logging log entry from a JUL or Logback log entry, 
 </div>
 <div class="paragraph">
 <p>If you want to have more control over the log output, you can further configure the appender.
-The following properties are available:</p>
+The following properties are available (see <a href="https://github.com/googleapis/java-logging-logback">java-logging-logback project</a> for the full list):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -305,6 +305,16 @@ This can also be set via the <code>STACKDRIVER_LOG_NAME</code> environmental var
 <td class="tableblock halign-left valign-top"><p class="tableblock">If a log entry with this level is encountered, trigger a flush of locally buffered log to Cloud Logging.
 This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmental variable.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enhancer</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fully qualified class name for customizing a logging entry; must implement <code>com.google.cloud.logging.LoggingEnhancer</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>loggingEventEnhancer</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fully qualified class name for customizing a logging entry given an <a href="https://logback.qos.ch/apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html"><code>ILoggingEvent</code></a>; must implement <code>com.google.cloud.logging.logback.LoggingEventEnhancer</code>.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -318,7 +328,7 @@ This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;configuration&gt;
   &lt;include resource="com/google/cloud/spring/logging/logback-appender.xml" /&gt;
 
   &lt;appender name="ASYNC_STACKDRIVER" class="ch.qos.logback.classic.AsyncAppender"&gt;
@@ -342,7 +352,7 @@ This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;configuration&gt;
   &lt;include resource="com/google/cloud/spring/logging/logback-json-appender.xml" /&gt;
 
   &lt;root level="INFO"&gt;
@@ -433,7 +443,7 @@ The following properties are available:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeMDC</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Should all MDC properties be included.
-The MDC properties <code>X-B3-TraceId</code>, <code>X-B3-SpanId</code> and <code>X-Span-Export</code> provided by Spring Sleuth will get excluded as they get handled separately</p></td>
+The MDC properties <code>X-B3-TraceId</code>, <code>X-B3-SpanId</code> and <code>X-Span-Export</code> provided by Micrometer will get excluded as they get handled separately</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeLoggerName</code></p></td>
@@ -490,7 +500,7 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration &gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;configuration &gt;
   &lt;property name="projectId" value="${projectId:-${GOOGLE_CLOUD_PROJECT}}"/&gt;
 
   &lt;appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender"&gt;
@@ -534,6 +544,9 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

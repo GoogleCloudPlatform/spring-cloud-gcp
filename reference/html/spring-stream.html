@@ -169,8 +169,6 @@ window.onload = function() {
 <li><a href="#_overview">Overview</a></li>
 <li><a href="#_configuration">Configuration</a></li>
 <li><a href="#_binding_with_functions">Binding with Functions</a></li>
-<li><a href="#_binding_with_annotations">Binding with Annotations</a></li>
-<li><a href="#_streaming_vs_polled_input">Streaming vs. Polled Input</a></li>
 <li><a href="#_sample">Sample</a></li>
 </ul>
 </li>
@@ -182,17 +180,17 @@ window.onload = function() {
 <h2 id="spring-cloud-stream"><a class="link" href="#spring-cloud-stream">Spring Cloud Stream</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Cloud GCP provides a <a href="https://cloud.spring.io/spring-cloud-stream/">Spring Cloud Stream</a> binder to Google Cloud Pub/Sub.</p>
+<p>Spring Framework on Google Cloud provides a <a href="https://cloud.spring.io/spring-cloud-stream/">Spring Cloud Stream</a> binder to Google Cloud Pub/Sub.</p>
 </div>
 <div class="paragraph">
 <p>The provided binder relies on the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-pubsub/src/main/java/com/google/cloud/spring/pubsub/integration">Spring Integration Channel Adapters for Google Cloud Pub/Sub</a>.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-pubsub-stream-binder&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -203,7 +201,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-pubsub-stream-binder")
 }</code></pre>
 </div>
@@ -230,13 +228,25 @@ Partitioning is currently not supported by this binder.
 <h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
 <div class="paragraph">
 <p>You can configure the Spring Cloud Stream Binder for Google Cloud Pub/Sub to automatically generate the underlying resources, like the Google Cloud Pub/Sub topics and subscriptions for producers and consumers.
-For that, you can use the <code>spring.cloud.stream.gcp.pubsub.bindings.&lt;channelName&gt;.&lt;consumer|producer&gt;.auto-create-resources</code> property, which is turned ON by default.</p>
+For that, you can use the <code>spring.cloud.stream.gcp.pubsub.bindings.&lt;consumer/produer name&gt;.&lt;consumer|producer&gt;.auto-create-resources</code> property, which is turned ON by default.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For more info about consumer/producer naming convention, please refer to <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_functional_binding_names">Functional binding names</a>.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Starting with version 1.1, these and other binder properties can be configured globally for all the bindings, e.g. <code>spring.cloud.stream.gcp.pubsub.default.consumer.auto-create-resources</code>.</p>
 </div>
 <div class="paragraph">
-<p>If you are using Pub/Sub auto-configuration from the Spring Cloud GCP Pub/Sub Starter, you should refer to the <a href="#pubsub-configuration">configuration</a> section for other Pub/Sub parameters.</p>
+<p>If you are using Pub/Sub autoconfiguration from the Spring Framework on Google Cloud Pub/Sub Starter, you should refer to the <a href="#pubsub-configuration">configuration</a> section for other Pub/Sub parameters.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -268,8 +278,8 @@ If synchronous sending is preferred (for example, to allow propagating errors ba
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlight"><code>spring.cloud.stream.bindings.events.destination=myEvents
-spring.cloud.stream.gcp.pubsub.bindings.events.producer.auto-create-resources=true</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.{PRODUCER_NAME}.destination=myEvents
+spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.auto-create-resources=true</code></pre>
 </div>
 </div>
 </div>
@@ -285,7 +295,7 @@ These options are described in detail in the <a href="#inbound-channel-adapter-u
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlight"><code># How to set the ACK mode of the consumer endpoint.
+<pre class="highlightjs highlight"><code class="language-none hljs"># How to set the ACK mode of the consumer endpoint.
 spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.ack-mode=AUTO_ACK</code></pre>
 </div>
 </div>
@@ -313,8 +323,8 @@ Then when the binder shuts down, the library automatically cleans up all Pub/Sub
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlight"><code>spring.cloud.stream.bindings.events.destination=myEvents
-spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=false</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
+spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-resources=false</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -326,11 +336,11 @@ spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=fa
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlight"><code>spring.cloud.stream.bindings.events.destination=myEvents
-spring.cloud.stream.gcp.pubsub.bindings.events.consumer.auto-create-resources=true
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
+spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-resources=true
 
 # specify consumer group, and avoid anonymous consumer group generation
-spring.cloud.stream.bindings.events.group=consumerGroup1</code></pre>
+spring.cloud.stream.bindings.{CONSUMER_NAME}.group=consumerGroup1</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -348,6 +358,34 @@ spring.cloud.stream.bindings.events.group=consumerGroup1</code></pre>
 </div>
 </div>
 <div class="sect3">
+<h4 id="_header_mapping"><a class="link" href="#_header_mapping">Header Mapping</a></h4>
+<div class="paragraph">
+<p>You can filter incoming and outgoing message headers with <code>allowHeaders</code> property.
+For example, for a consumer to allow only two headers, provide a comma separated list like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.properties</div>
+<div class="content">
+<pre>spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.allowedHeaders=allowed1, allowed2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where <code>CONSUMER_NAME</code> should be replaced by the method which is consuming/reading messages from Cloud Pub/Sub and allowed1, allowed2 is the comma separated list of headers that the user wants to keep.</p>
+</div>
+<div class="paragraph">
+<p>A similar style is applicable for producers as well. For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.properties</div>
+<div class="content">
+<pre>spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.allowedHeaders=allowed3,allowed4</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where <code>PRODUCER_NAME</code> should be replaced by the method which is producing/sending messages to Cloud Pub/Sub and allowed3, allowed4 is the comma separated list of headers that user wants to map. All other headers will be removed before the message is sent to Cloud Pub/Sub.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_endpoint_customization"><a class="link" href="#_endpoint_customization">Endpoint Customization</a></h4>
 <div class="paragraph">
 <p>You may customize channel routing by defining a <code>ConsumerEndpointCustomizer</code> in your autoconfiguration. This is useful if you want to customize the default configurations provided by the Pub/Sub Spring Cloud Stream Binder.</p>
@@ -357,7 +395,7 @@ spring.cloud.stream.bindings.events.group=consumerGroup1</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public ConsumerEndpointCustomizer&lt;PubSubInboundChannelAdapter&gt; messageChannelAdapter() {
     return (endpoint, destinationName, group) -&gt; {
         NamedComponent namedComponent = (NamedComponent) endpoint.getOutputChannel();
@@ -377,7 +415,7 @@ This means that the only requirement for turning your application into a sink is
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>@Bean
+<pre class="highlightjs highlight"><code class="language-none hljs">@Bean
 public Consumer&lt;UserMessage&gt; logUserMessage() {
   return userMessage -&gt; {
     // process message
@@ -392,7 +430,7 @@ Alternatively, the function can return a reactive stream, which will be used as 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>@Bean
+<pre class="highlightjs highlight"><code class="language-none hljs">@Bean
 Supplier&lt;Flux&lt;UserMessage&gt;&gt; generateUserMessages() {
   return () -&gt; /* flux creation logic */;
 }</code></pre>
@@ -403,98 +441,6 @@ Supplier&lt;Flux&lt;UserMessage&gt;&gt; generateUserMessages() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_binding_with_annotations"><a class="link" href="#_binding_with_annotations">Binding with Annotations</a></h3>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-As of version 3.0, annotation binding is considered legacy.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>To set up a sink application in this style, you would associate a class with a binding interface, such as the built-in <code>Sink</code> interface.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>@EnableBinding(Sink.class)
-public class SinkExample {
-
-	@StreamListener(Sink.INPUT)
-	public void handleMessage(UserMessage userMessage) {
-		// process message
-	}
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To set up a source application, you would similarly associate a class with a built-in <code>Source</code> interface, and inject an instance of it provided by Spring Cloud Stream.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>@EnableBinding(Source.class)
-public class SourceExample {
-
-	@Autowired
-	private Source source;
-
-	public void sendMessage() {
-		this.source.output().send(new GenericMessage&lt;&gt;(/* your object here */));
-	}
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_streaming_vs_polled_input"><a class="link" href="#_streaming_vs_polled_input">Streaming vs. Polled Input</a></h3>
-<div class="paragraph">
-<p>Many Spring Cloud Stream applications will use the built-in <code>Sink</code> binding, which triggers the <em>streaming</em> input binder creation.
-Messages can then be consumed with an input handler marked by <code>@StreamListener(Sink.INPUT)</code> annotation, at whatever rate Pub/Sub sends them.</p>
-</div>
-<div class="paragraph">
-<p>For more control over the rate of message arrival, a polled input binder can be set up by defining a custom binding interface with an <code>@Input</code>-annotated method returning <code>PollableMessageSource</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface PollableSink {
-
-	@Input("input")
-	PollableMessageSource input();
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>PollableMessageSource</code> can then be injected and queried, as needed.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableBinding(PollableSink.class)
-public class SinkExample {
-
-    @Autowired
-    PollableMessageSource destIn;
-
-    @Bean
-    public ApplicationRunner singlePollRunner() {
-        return args -&gt; {
-            // This will poll only once.
-            // Add a loop or a scheduler to get more messages.
-            destIn.poll(message -&gt; System.out.println("Message retrieved: " + message));
-        };
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>By default, the polling will only get 1 message at a time.
-Use the <code>spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize</code> property to fetch additional messages per network roundtrip.</p>
-</div>
-</div>
-<div class="sect2">
 <h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
 <div class="paragraph">
 <p>Sample applications are available:</p>
@@ -502,13 +448,7 @@ Use the <code>spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize</code
 <div class="ulist">
 <ul>
 <li>
-<p>For <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-sample">streaming input, annotation-based</a>.</p>
-</li>
-<li>
 <p>For <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-functional-sample">streaming input, functional style</a>.</p>
-</li>
-<li>
-<p>For <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-polling-sample">polled input</a>.</p>
 </li>
 </ul>
 </div>
@@ -516,6 +456,9 @@ Use the <code>spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize</code
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

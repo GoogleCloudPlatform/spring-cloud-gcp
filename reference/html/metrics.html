@@ -178,7 +178,7 @@ window.onload = function() {
 <h2 id="_cloud_monitoring"><a class="link" href="#_cloud_monitoring">Cloud Monitoring</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Google Cloud Platform provides a service called <a href="https://cloud.google.com/monitoring/">Cloud Monitoring</a>, and <a href="https://micrometer.io/docs/registry/stackdriver">Micrometer</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
+<p>Google Cloud provides a service called <a href="https://cloud.google.com/monitoring/">Cloud Monitoring</a>, and <a href="https://micrometer.io/docs/registry/stackdriver">Micrometer</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
 </div>
 <div class="paragraph">
 <p>Spring Boot already provides auto-configuration for Cloud Monitoring.
@@ -186,11 +186,11 @@ This module enables auto-detection of the <code>project-id</code> and <code>cred
 Also, it can be customized.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-metrics&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -201,7 +201,7 @@ Also, it can be customized.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-metrics")
 }</code></pre>
 </div>
@@ -240,25 +240,25 @@ Navigate to the <a href="https://console.cloud.google.com/apis/api/monitoring.go
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.metrics.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the project ID from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the project ID from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.metrics.credentials.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials location from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials location from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.metrics.credentials.encoded-key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials encoded key from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials encoded key from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.metrics.credentials.scopes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials scopes from the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the credentials scopes from the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -267,6 +267,58 @@ Navigate to the <a href="https://console.cloud.google.com/apis/api/monitoring.go
 <div class="paragraph">
 <p>You can use core Spring Boot Actuator properties to control reporting frequency, etc.
 Read <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-export-stackdriver">Spring Boot Actuator documentation</a> for more information on Stackdriver Actuator configurations.</p>
+</div>
+<div class="sect3">
+<h4 id="_metrics_disambiguation"><a class="link" href="#_metrics_disambiguation">Metrics Disambiguation</a></h4>
+<div class="paragraph">
+<p>By default, <code>spring-cloud-gcp-starter-metrics</code>/the <code>StackdriverMeterRegistry</code> does not add any application/pod specific tags to the metrics,
+thus google is unable to distinguish between multiple metric sources.
+This could lead to the following warning inside your applications logs:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="txt" class="language-txt hljs">2022-08-15 10:26:00.248  WARN 1 --- [trics-publisher] i.m.s.StackdriverMeterRegistry           : failed to send metrics to Stackdriver</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The actual cause message may vary:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="txt" class="language-txt hljs">One or more TimeSeries could not be written:
+One or more points were written more frequently than the maximum sampling period configured for the metric.: global{} timeSeries[4]: custom.googleapis.com/process/uptime{};
+One or more points were written more frequently than the maximum sampling period configured for the metric.: global{} timeSeries[6]: custom.googleapis.com/system/load/average/1m{};
+One or more points ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or even:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="txt" class="language-txt hljs">Caused by: io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2Exception: Header size exceeded max allowed size (10240)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(due to the error message being too long)</p>
+</div>
+<div class="paragraph">
+<p>Google rejects metric updates for entries that it has received before (from another application) for the same interval.
+To avoid these conflicts and in order to distinguish between applications/instances you should add a configuration similar to this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">management:
+  metrics:
+    tags:
+      app: my-foobar-service
+      instance: ${random.uuid}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Instead of the random uuid you could also use the pod id/the hostname or some other instance id.
+Read more about custom tags <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#actuator.metrics.customizing.common-tags">here</a>.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -278,6 +330,9 @@ Read <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsing
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

@@ -185,7 +185,7 @@ window.onload = function() {
 <p>The <a href="https://cloud.google.com/vision/">Google Cloud Vision API</a> allows users to leverage machine learning algorithms for processing images and documents including: image classification, face detection, text extraction, optical character recognition, and others.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud GCP provides:</p>
+<p>Spring Framework on Google Cloud provides:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -216,11 +216,11 @@ window.onload = function() {
 <p>To begin using this library, add the <code>spring-cloud-gcp-starter-vision</code> artifact to your project.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-vision&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -231,7 +231,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-vision")
 }</code></pre>
 </div>
@@ -240,7 +240,7 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
 <div class="paragraph">
-<p>The following options may be configured with Spring Cloud GCP Vision libraries.</p>
+<p>The following options may be configured with Spring Framework on Google Cloud Vision libraries.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -283,11 +283,11 @@ window.onload = function() {
 The storage starter is necessary because the Cloud Vision API will process your documents and write OCR output files all within your Google Cloud Storage buckets.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-vision&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -302,7 +302,7 @@ The storage starter is necessary because the Cloud Vision API will process your 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-vision")
   implementation("com.google.cloud:spring-cloud-gcp-starter-storage")
 }</code></pre>
@@ -359,7 +359,7 @@ Below is a code sample of how this is done using the Cloud Vision Spring Templat
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 private ResourceLoader resourceLoader;
 
 @Autowired
@@ -429,7 +429,7 @@ Below is a code sample of how this is done using the Cloud Vision Spring Templat
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 private ResourceLoader resourceLoader;
 
 @Autowired
@@ -468,11 +468,11 @@ public void processPdf() {
 <p>The <code>DocumentOcrTemplate</code> provides the following method for running OCR on a document saved in Google Cloud Storage:</p>
 </div>
 <div class="paragraph">
-<p><code>ListenableFuture&lt;DocumentOcrResultSet&gt; runOcrForDocument(GoogleStorageLocation document, GoogleStorageLocation outputFilePathPrefix)</code></p>
+<p><code>CompletableFuture&lt;DocumentOcrResultSet&gt; runOcrForDocument(GoogleStorageLocation document, GoogleStorageLocation outputFilePathPrefix)</code></p>
 </div>
 <div class="paragraph">
 <p>The method allows you to specify the location of the document and the output location for where all the JSON output files will be saved in Google Cloud Storage.
-It returns a <code>ListenableFuture</code> containing <code>DocumentOcrResultSet</code> which contains the OCR content of the document.</p>
+It returns a <code>CompletableFuture</code> containing <code>DocumentOcrResultSet</code> which contains the OCR content of the document.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -482,7 +482,7 @@ It returns a <code>ListenableFuture</code> containing <code>DocumentOcrResultSet
 </td>
 <td class="content">
 Running OCR on a document is an operation that can take between several minutes to several hours depending on how large the document is.
-It is recommended to register callbacks to the returned ListenableFuture or ignore it and process the JSON output files at a later point in time using <code>readOcrOutputFile</code> or <code>readOcrOutputFileSet</code>.
+It is recommended to register callbacks to the returned CompletableFuture or ignore it and process the JSON output files at a later point in time using <code>readOcrOutputFile</code> or <code>readOcrOutputFileSet</code>.
 </td>
 </tr>
 </table>
@@ -504,7 +504,7 @@ public void runOcrOnDocument() {
     GoogleStorageLocation outputLocationPrefix = GoogleStorageLocation.forFolder(
             "your-bucket", "output_folder/test.pdf/");
 
-    ListenableFuture&lt;DocumentOcrResultSet&gt; result =
+    CompletableFuture&lt;DocumentOcrResultSet&gt; result =
         this.documentOcrTemplate.runOcrForDocument(
             document, outputLocationPrefix);
 
@@ -529,7 +529,7 @@ public void runOcrOnDocument() {
 <li>
 <p><code>readOcrOutputFileSet(GoogleStorageLocation jsonOutputFilePathPrefix)</code>:
 Reads a collection of OCR output files under a file path prefix and returns the parsed contents.
-All of the files under the path should correspond to the same document.</p>
+All the files under the path should correspond to the same document.</p>
 </li>
 <li>
 <p><code>readOcrOutputFile(GoogleStorageLocation jsonFile)</code>:
@@ -572,7 +572,7 @@ public void parseSingleOutputFile() {
 <div class="sect2">
 <h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
 <div class="paragraph">
-<p>Samples are provided to show example usages of Spring Cloud GCP with Google Cloud Vision.</p>
+<p>Samples are provided to show example usages of Spring Framework on Google Cloud with Google Cloud Vision.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -589,6 +589,9 @@ The application generates labels describing the content inside the images you sp
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

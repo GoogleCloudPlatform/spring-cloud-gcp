@@ -178,6 +178,7 @@ window.onload = function() {
 <li><a href="#_spring_boot_actuator_support">Spring Boot Actuator Support</a></li>
 <li><a href="#_cloud_spanner_emulator">Cloud Spanner Emulator</a></li>
 <li><a href="#_sample">Sample</a></li>
+<li><a href="#_test">Test</a></li>
 </ul>
 </li>
 </ul>
@@ -189,14 +190,14 @@ window.onload = function() {
 <div class="sectionbody">
 <div class="paragraph">
 <p><a href="https://projects.spring.io/spring-data/">Spring Data</a> is an abstraction for storing and retrieving POJOs in numerous storage technologies.
-Spring Cloud GCP adds Spring Data support for <a href="https://cloud.google.com/spanner/">Google Cloud Spanner</a>.</p>
+Spring Framework on Google Cloud adds Spring Data support for <a href="https://cloud.google.com/spanner/">Google Cloud Spanner</a>.</p>
 </div>
 <div class="paragraph">
-<p>Maven coordinates for this module only, using <a href="getting-started.html#bill-of-materials">Spring Cloud GCP BOM</a>:</p>
+<p>Maven coordinates for this module only, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-data-spanner&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -207,7 +208,7 @@ Spring Cloud GCP adds Spring Data support for <a href="https://cloud.google.com/
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-data-spanner")
 }</code></pre>
 </div>
@@ -221,7 +222,7 @@ To use the starter, see the coordinates see below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-data-spanner&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -232,7 +233,7 @@ To use the starter, see the coordinates see below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>dependencies {
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-data-spanner")
 }</code></pre>
 </div>
@@ -296,7 +297,7 @@ The following configuration options are available:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.spanner.project-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">GCP project ID where the Google Cloud Spanner API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Spanner API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -304,7 +305,7 @@ The following configuration options are available:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.spanner.credentials.location</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the
 Google Cloud Spanner API, if different from the ones in the
-<a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -312,14 +313,14 @@ Google Cloud Spanner API, if different from the ones in the
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.spanner.credentials.encoded-key</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded OAuth2 credentials for authenticating with the
 Google Cloud Spanner API, if different from the ones in the
-<a href="#spring-cloud-gcp-core">Spring Cloud GCP Core Module</a></p></td>
+<a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.spanner.credentials.scopes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Cloud GCP
-Cloud Spanner credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Framework on Google
+CloudSpanner credentials</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.googleapis.com/auth/spanner.data" class="bare">https://www.googleapis.com/auth/spanner.data</a></p></td>
 </tr>
@@ -443,7 +444,7 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "traders")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "traders")
 public class Trader {
 
 	@PrimaryKey
@@ -473,7 +474,7 @@ Arguments that are not directly set to properties are not supported.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "traders")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "traders")
 public class Trader {
 	@PrimaryKey
 	@Column(name = "trader_id")
@@ -511,7 +512,7 @@ To do that, you can use <a href="https://docs.spring.io/spring/docs/current/spri
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "trades_#{tableNameSuffix}")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "trades_#{tableNameSuffix}")
 public class Trade {
 	// ...
 }</code></pre>
@@ -536,7 +537,7 @@ You have to annotate all of your POJO&#8217;s fields that the primary key consis
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "trades")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "trades")
 public class Trade {
 	@PrimaryKey(keyOrder = 2)
 	@Column(name = "trade_id")
@@ -563,7 +564,7 @@ In our example the DDL to create the table and its primary key is as follows:</p
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-sql" data-lang="sql">CREATE TABLE trades (
+<pre class="highlightjs highlight"><code data-lang="sql" class="language-sql hljs">CREATE TABLE trades (
     trader_id STRING(MAX),
     trade_id STRING(MAX),
     action STRING(15),
@@ -624,7 +625,7 @@ Embedding allows reuse of columns between multiple entities, and can be useful f
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class X {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class X {
   @PrimaryKey
   String grandParentId;
 
@@ -661,7 +662,7 @@ class B {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-sql" data-lang="sql">CREATE TABLE items (
+<pre class="highlightjs highlight"><code data-lang="sql" class="language-sql hljs">CREATE TABLE items (
     grandParentId STRING(MAX),
     parentId STRING(MAX),
     id STRING(MAX),
@@ -702,7 +703,7 @@ Cloud Spanner also provides automatic cascading delete or enforces the deletion 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "Singers")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "Singers")
 class Singer {
   @PrimaryKey
   long SingerId;
@@ -736,7 +737,7 @@ The schema needed to create them can also be generated using the <code>SpannerSc
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 SpannerSchemaUtils schemaUtils;
 
 @Autowired
@@ -755,7 +756,7 @@ this.databaseAdmin.executeDdlStrings(createStrings, true);</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-sql" data-lang="sql">CREATE TABLE Singers (
+<pre class="highlightjs highlight"><code data-lang="sql" class="language-sql hljs">CREATE TABLE Singers (
   SingerId   INT64 NOT NULL,
   FirstName  STRING(1024),
   LastName   STRING(1024),
@@ -790,7 +791,7 @@ On read, all of the interleaved child rows are also all read.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Interleaved(lazy = true)
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Interleaved(lazy = true)
 List&lt;Album&gt; albums;</code></pre>
 </div>
 </div>
@@ -816,7 +817,7 @@ That can be easily achieved with the <code>@Where</code> annotation, which is de
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "participants")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "participants")
 public class Participant {
   //...
   boolean active;
@@ -900,7 +901,7 @@ public class Agreement {
 <div class="sect3">
 <h4 id="_json_fields"><a class="link" href="#_json_fields">JSON fields</a></h4>
 <div class="paragraph">
-<p>Spanner supports <code>JSON</code> type for columns. <code>JSON</code> columns are mapped to custom POJOs annotated with <code>@Column(spannerType = TypeCode.JSON)</code>. Read, write and query with custom SQL query are supported for JSON annotated fields.</p>
+<p>Spanner supports <code>JSON</code> and <code>ARRAY&lt;JSON&gt;</code> type for columns. Such property needs to be annotated with <code>@Column(spannerType = TypeCode.JSON)</code>. <code>JSON</code> columns are mapped to custom POJOs and <code>ARRAY&lt;JSON&gt;</code> columns are mapped to List of custom POJOs. Read, write and query with custom SQL query are supported for JSON annotated fields.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -909,14 +910,17 @@ public class Agreement {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The default Gson instance used to convert to and from JSON representation can be customized by providing a bean of type <code>Gson</code>.
+Spring Boot autoconfigures a <code>Gson</code> bean by default.
+This Gson instance is used by default to convert to and from JSON representation.
+To customize, use <code>spring.gson.*</code> configuration properties or <code>GsonBuilderCustomizer</code> bean as instructed in Spring Boot documentation <a href="https://docs.spring.io/spring-boot/docs/2.6.x/reference/html/features.html#features.json">here</a>.
+Alternatively, you can also provide a customized bean of type <code>Gson</code> in your application.
 </td>
 </tr>
 </table>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "traders")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "traders")
 public class Trader {
 
 	@PrimaryKey
@@ -946,7 +950,7 @@ public class Details {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Double&gt; curve;</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Double&gt; curve;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -967,7 +971,7 @@ Cloud Spanner requires STRUCT values appear in ARRAYs at the root level: <code>S
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class TwoInts {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class TwoInts {
 
   int val1;
 
@@ -1039,7 +1043,7 @@ Cloud Spanner requires STRUCT values appear in ARRAYs at the root level: <code>S
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "trades")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "trades")
 public class Trade {
   //...
   Person person;
@@ -1052,7 +1056,7 @@ public class Trade {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Person {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Person {
 
   public String firstName;
   public String lastName;
@@ -1065,7 +1069,7 @@ public class Trade {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">  public class PersonWriteConverter implements Converter&lt;Person, String&gt; {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">  public class PersonWriteConverter implements Converter&lt;Person, String&gt; {
 
     @Override
     public String convert(Person person) {
@@ -1090,7 +1094,7 @@ public class Trade {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 public class ConverterConfiguration {
 
 	@Bean
@@ -1139,7 +1143,7 @@ It provides:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@SpringBootApplication
 public class SpannerTemplateExample {
 
 	@Autowired
@@ -1226,7 +1230,7 @@ By using <code>SpannerTemplate</code>, you can run SQL queries that map to POJOs
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT * FROM trades"));</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT * FROM trades"));</code></pre>
 </div>
 </div>
 </div>
@@ -1240,7 +1244,7 @@ By using <code>SpannerTemplate</code>, you can run SQL queries that map to POJOs
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Trade&gt; trades = this.spannerTemplate.readAll(Trade.class);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Trade&gt; trades = this.spannerTemplate.readAll(Trade.class);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1263,7 +1267,7 @@ With <code>SpannerTemplate</code> you can specify the <code>Timestamp</code> by 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// a read with options:
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// a read with options:
 SpannerReadOptions spannerReadOptions = new SpannerReadOptions().setTimestamp(myTimestamp);
 List&lt;Trade&gt; trades = this.spannerTemplate.readAll(Trade.class, spannerReadOptions);</code></pre>
 </div>
@@ -1273,7 +1277,7 @@ List&lt;Trade&gt; trades = this.spannerTemplate.readAll(Trade.class, spannerRead
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// a query with options:
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// a query with options:
 SpannerQueryOptions spannerQueryOptions = new SpannerQueryOptions().setTimestamp(myTimestamp);
 List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT * FROM trades"), spannerQueryOptions);</code></pre>
 </div>
@@ -1293,7 +1297,7 @@ Bounded staleness lets Cloud Spanner choose any point in time later than or equa
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">SpannerReadOptions spannerReadOptions = new SpannerReadOptions().setIndex("TradesByTrader");
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">SpannerReadOptions spannerReadOptions = new SpannerReadOptions().setIndex("TradesByTrader");
 List&lt;Trade&gt; trades = this.spannerTemplate.readAll(Trade.class, spannerReadOptions);</code></pre>
 </div>
 </div>
@@ -1306,7 +1310,7 @@ The following will get only the first two rows of the query:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">SpannerQueryOptions spannerQueryOptions = new SpannerQueryOptions().setLimit(2).setOffset(3);
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">SpannerQueryOptions spannerQueryOptions = new SpannerQueryOptions().setLimit(2).setOffset(3);
 List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT * FROM trades"), spannerQueryOptions);</code></pre>
 </div>
 </div>
@@ -1322,7 +1326,7 @@ However, queries on the Template API support sorting through standard SQL and al
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Trade&gt; trades = this.spannerTemplate.queryAll(Trade.class, Sort.by("action"));</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Trade&gt; trades = this.spannerTemplate.queryAll(Trade.class, Sort.by("action"));</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1332,7 +1336,7 @@ Sorting on columns of Cloud Spanner types STRING and BYTES can be done while ign
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Sort.by(Order.desc("action").ignoreCase())</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Sort.by(Order.desc("action").ignoreCase())</code></pre>
 </div>
 </div>
 </div>
@@ -1345,7 +1349,7 @@ This setting also applies to nested structs and their corresponding nested POJO 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT action, symbol FROM trades"),
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT action, symbol FROM trades"),
     new SpannerQueryOptions().setAllowMissingResultSetColumns(true));</code></pre>
 </div>
 </div>
@@ -1423,7 +1427,7 @@ The row with the original primary key values will not be affected.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Trade t = new Trade();
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Trade t = new Trade();
 this.spannerTemplate.insert(t);</code></pre>
 </div>
 </div>
@@ -1435,7 +1439,7 @@ this.spannerTemplate.insert(t);</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// t was retrieved from a previous operation
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// t was retrieved from a previous operation
 this.spannerTemplate.update(t);</code></pre>
 </div>
 </div>
@@ -1447,7 +1451,7 @@ this.spannerTemplate.update(t);</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// t was retrieved from a previous operation or it's new
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// t was retrieved from a previous operation or it's new
 this.spannerTemplate.upsert(t);</code></pre>
 </div>
 </div>
@@ -1461,7 +1465,7 @@ However, if the Optional is occupied by an empty set, then no columns will be wr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// t was retrieved from a previous operation or it's new
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// t was retrieved from a previous operation or it's new
 this.spannerTemplate.update(t, "symbol", "action");</code></pre>
 </div>
 </div>
@@ -1490,7 +1494,7 @@ Partitioned DML queries have performance benefits but also have restrictions and
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 SpannerOperations mySpannerOperations;
 
 public String doWorkInsideTransaction() {
@@ -1531,7 +1535,7 @@ You can use this object just as you would a regular <code>SpannerOperations</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 SpannerOperations mySpannerOperations;
 
 public String doWorkInsideTransaction() {
@@ -1602,7 +1606,7 @@ DML statements can also be run in transactions by using <code>performReadWriteTr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface TraderRepository extends SpannerRepository&lt;Trader, String&gt; {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TraderRepository extends SpannerRepository&lt;Trader, String&gt; {
 }</code></pre>
 </div>
 </div>
@@ -1622,14 +1626,14 @@ If the domain POJO type only has a single primary key column, then the primary k
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
 
 }</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
 
 	@Autowired
 	SpannerTemplate spannerTemplate;
@@ -1682,7 +1686,7 @@ These transactions work very similarly to those of <code>SpannerOperations</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 SpannerRepository myRepo;
 
 public String doWorkInsideTransaction() {
@@ -1717,7 +1721,7 @@ Comparisons using Struct parameters are limited to <a href="https://cloud.google
 <h4 id="_query_methods_by_convention"><a class="link" href="#_query_methods_by_convention">Query methods by convention</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
     List&lt;Trade&gt; findByAction(String action);
 
 	int countByAction(String action);
@@ -1739,7 +1743,7 @@ Comparisons using Struct parameters are limited to <a href="https://cloud.google
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-sql" data-lang="sql">SELECT DISTINCT * FROM trades
+<pre class="highlightjs highlight"><code data-lang="sql" class="language-sql hljs">SELECT DISTINCT * FROM trades
 WHERE ACTION = ? AND LOWER(SYMBOL) = LOWER(?) AND TRADER_ID = ?
 ORDER BY SYMBOL DESC
 LIMIT 3</code></pre>
@@ -1807,7 +1811,7 @@ The Spring Data "AllIgnoreCase" phrase appended at the end of the method name is
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Trade&gt; findBySymbolLike(String symbolFragment);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Trade&gt; findBySymbolLike(String symbolFragment);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1818,7 +1822,7 @@ The Spring Data "AllIgnoreCase" phrase appended at the end of the method name is
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Trade&gt; findBySymbolContains(String symbolFragment);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Trade&gt; findBySymbolContains(String symbolFragment);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1874,7 +1878,7 @@ However, to ensure the correct sort order of the final result set, sort options 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">	@Query("SELECT * FROM trades")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">	@Query("SELECT * FROM trades")
 	List&lt;Trade&gt; fetchTrades(Pageable pageable);
 
 	@Query("SELECT * FROM trades ORDER BY price DESC LIMIT 1")
@@ -1886,7 +1890,7 @@ However, to ensure the correct sort order of the final result set, sort options 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">	List&lt;Trade&gt; customSortedTrades = tradeRepository.fetchTrades(PageRequest
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">	List&lt;Trade&gt; customSortedTrades = tradeRepository.fetchTrades(PageRequest
   				.of(2, 2, org.springframework.data.domain.Sort.by(Order.asc("id"))));</code></pre>
 </div>
 </div>
@@ -1898,7 +1902,7 @@ However, to ensure the correct sort order of the final result set, sort options 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">  	@Query("SELECT COUNT(1) FROM trades WHERE action = @action")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">  	@Query("SELECT COUNT(1) FROM trades WHERE action = @action")
   	int countByActionQuery(String action);
 
   	@Query("SELECT EXISTS(SELECT COUNT(1) FROM trades WHERE action = @action)")
@@ -1917,7 +1921,7 @@ The <code>dmlStatement</code> boolean setting must be set on <code>@Query</code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">  	@Query(value = "DELETE FROM trades WHERE action = @action", dmlStatement = true)
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">  	@Query(value = "DELETE FROM trades WHERE action = @action", dmlStatement = true)
   	long deleteByActionQuery(String action);</code></pre>
 </div>
 </div>
@@ -1929,12 +1933,12 @@ You can specify the query for a method in the properties file by providing the S
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">Trade.fetchByActionNamedQuery=SELECT * FROM trades WHERE trades.action = @tag0</code></pre>
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">Trade.fetchByActionNamedQuery=SELECT * FROM trades WHERE trades.action = @tag0</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
 	// This method uses the query from the properties file instead of one generated based on name.
 	List&lt;Trade&gt; fetchByActionNamedQuery(@Param("tag0") String action);
 }</code></pre>
@@ -1948,7 +1952,7 @@ You can specify the query for a method in the properties file by providing the S
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
     @Query("SELECT * FROM trades WHERE trades.action = @tag0")
     List&lt;Trade&gt; fetchByActionNamedQuery(@Param("tag0") String action);
 }</code></pre>
@@ -1964,7 +1968,7 @@ A full example would look like:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Query("SELECT * FROM :com.example.Trade: WHERE trades.action = @tag0")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query("SELECT * FROM :com.example.Trade: WHERE trades.action = @tag0")
 List&lt;Trade&gt; fetchByActionNamedQuery(String action);</code></pre>
 </div>
 </div>
@@ -1976,7 +1980,7 @@ List&lt;Trade&gt; fetchByActionNamedQuery(String action);</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Query("SELECT * FROM :com.example.Trade: WHERE trades.action = @tag0
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query("SELECT * FROM :com.example.Trade: WHERE trades.action = @tag0
   AND price &gt; #{#priceRadius * -1} AND price &lt; #{#priceRadius * 2}")
 List&lt;Trade&gt; fetchByActionNamedQuery(String action, Double priceRadius);</code></pre>
 </div>
@@ -1995,7 +1999,7 @@ You can define projection interfaces based on domain types and add query methods
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeProjection {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeProjection {
 
 	String getAction();
 
@@ -2053,7 +2057,7 @@ You can enable nullability checks. For more details please see <a href="https://
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
   &lt;artifactId&gt;spring-boot-starter-data-rest&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -2064,7 +2068,7 @@ You can enable nullability checks. For more details please see <a href="https://
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@RepositoryRestResource(collectionResourceRel = "trades", path = "trades")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@RepositoryRestResource(collectionResourceRel = "trades", path = "trades")
 public interface TradeRepository extends SpannerRepository&lt;Trade, Key&gt; {
 }</code></pre>
 </div>
@@ -2089,7 +2093,7 @@ For classes that have composite keys (multiple <code>@PrimaryKey</code> fields),
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Component
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Component
 class MySpecialIdConverter extends SpannerKeyIdConverter {
 
     @Override
@@ -2111,7 +2115,7 @@ class MySpecialIdConverter extends SpannerKeyIdConverter {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 private SpannerSchemaUtils spannerSchemaUtils;
 
 @Autowired
@@ -2200,7 +2204,7 @@ public void createTable(SpannerPersistentEntity entity) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Table
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table
 public class SimpleEntity {
     @PrimaryKey
     String id;
@@ -2221,7 +2225,7 @@ public class SimpleEntity {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 @EnableSpannerAuditing
 public class Config {
 
@@ -2238,7 +2242,7 @@ One alternative is to use Spring Security&#8217;s <code>User</code> type:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class SpringSecurityAuditorAware implements AuditorAware&lt;User&gt; {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class SpringSecurityAuditorAware implements AuditorAware&lt;User&gt; {
 
   public Optional&lt;User&gt; getCurrentAuditor() {
 
@@ -2263,7 +2267,7 @@ The default bean uses the instance ID, database name, and project ID options you
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    @Bean
     public DatabaseIdProvider databaseIdProvider() {
         // return custom connection options provider
     }</code></pre>
@@ -2294,7 +2298,7 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -2368,8 +2372,15 @@ A query to validate can be configured via <code>spring.cloud.gcp.spanner.health.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring.cloud.gcp.spanner.emulator.enabled=true
-spring.cloud.gcp.spanner.emulator-host=${EMULATOR_HOSTPORT}</pre>
+<pre>spring.cloud.gcp.spanner.emulator.enabled=true</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the default emulator hostname and port (i.e., localhost:9010) is used. If you prefer a customized value, ensure the following property is set in your <code>application.properties</code> of your Spring application:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring.cloud.gcp.spanner.emulator-host=ip:port</pre>
 </div>
 </div>
 </div>
@@ -2389,9 +2400,18 @@ spring.cloud.gcp.spanner.emulator-host=${EMULATOR_HOSTPORT}</pre>
 </ol>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_test"><a class="link" href="#_test">Test</a></h3>
+<div class="paragraph">
+<p><code>Testcontainers</code> provides a <code>gcloud</code> module which offers <code>SpannerEmulatorContainer</code>. See more at the <a href="https://www.testcontainers.org/modules/gcloud/#spanner">docs</a></p>
 </div>
 </div>
 </div>
+</div>
+</div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

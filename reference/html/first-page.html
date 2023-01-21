@@ -5,7 +5,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Kotlin Support</title>
+<meta name="author" content="João André Martins, Jisha Abubaker, Ray Tsang, Mike Eltsufin, Artem Bilan, Andreas Berger, Balint Pato, Chengyuan Zhao, Dmitry Solomakha, Elena Felder, Daniel Zou, Eddú Meléndez, Travis Tomsu">
+<title>Spring Framework on Google Cloud</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -159,69 +160,81 @@ window.onload = function() {
 </script>
 
 </head>
-<body class="book toc2 toc-left">
+<body id="spring-cloud-gcp-reference" class="book toc2 toc-left">
 <div id="header">
+<h1>Spring Framework on Google Cloud</h1>
+<div class="details">
+<span id="author" class="author">João André Martins</span><br>
+<span id="author2" class="author">Jisha Abubaker</span><br>
+<span id="author3" class="author">Ray Tsang</span><br>
+<span id="author4" class="author">Mike Eltsufin</span><br>
+<span id="author5" class="author">Artem Bilan</span><br>
+<span id="author6" class="author">Andreas Berger</span><br>
+<span id="author7" class="author">Balint Pato</span><br>
+<span id="author8" class="author">Chengyuan Zhao</span><br>
+<span id="author9" class="author">Dmitry Solomakha</span><br>
+<span id="author10" class="author">Elena Felder</span><br>
+<span id="author11" class="author">Daniel Zou</span><br>
+<span id="author12" class="author">Eddú Meléndez</span><br>
+<span id="author13" class="author">Travis Tomsu</span><br>
+</div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_kotlin_support">Kotlin Support</a>
-<ul class="sectlevel2">
-<li><a href="#_prerequisites">Prerequisites</a></li>
-<li><a href="#_sample">Sample</a></li>
-</ul>
-</li>
+<li><a href="#introduction">1. Introduction</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="_kotlin_support"><a class="link" href="#_kotlin_support">Kotlin Support</a></h2>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>The latest version of the Spring Framework provides first-class support for Kotlin.
-For Kotlin users of Spring, the Spring Framework on Google Cloud libraries work out-of-the-box and are fully interoperable with Kotlin applications.</p>
+<p><strong>4.0.0-SNAPSHOT</strong></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="introduction"><a class="anchor" href="#introduction"></a><a class="link" href="#introduction">1. Introduction</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Spring Framework on Google Cloud project makes the Spring Framework a first-class citizen of Google Cloud .</p>
 </div>
 <div class="paragraph">
-<p>For more information on building a Spring application in Kotlin, please consult the <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/languages.html#kotlin">Spring Kotlin documentation</a>.</p>
-</div>
-<div class="sect2">
-<h3 id="_prerequisites"><a class="link" href="#_prerequisites">Prerequisites</a></h3>
-<div class="paragraph">
-<p>Ensure that your Kotlin application is properly set up.
-Based on your build system, you will need to include the correct Kotlin build plugin in your project:</p>
+<p>Spring Framework on Google Cloud lets you leverage the power and simplicity of the Spring Framework to:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://kotlinlang.org/docs/reference/using-maven.html">Kotlin Maven Plugin</a></p>
+<p>Publish and subscribe to Google Cloud Pub/Sub topics</p>
 </li>
 <li>
-<p><a href="https://kotlinlang.org/docs/reference/using-gradle.html">Kotlin Gradle Plugin</a></p>
+<p>Configure Spring JDBC with a few properties to use Google Cloud SQL</p>
+</li>
+<li>
+<p>Map objects, relationships, and collections with Spring Data Cloud Spanner, Spring Data Cloud Datastore and Spring Data Reactive Repositories for Cloud Firestore</p>
+</li>
+<li>
+<p>Write and read from Spring Resources backed up by Google Cloud Storage</p>
+</li>
+<li>
+<p>Exchange messages with Spring Integration using Google Cloud Pub/Sub on the background</p>
+</li>
+<li>
+<p>Trace the execution of your app with Micrometer and Google Cloud Trace</p>
+</li>
+<li>
+<p>Configure your app with Spring Cloud Config, backed up by the Google Runtime Configuration API</p>
+</li>
+<li>
+<p>Consume and produce Google Cloud Storage data via Spring Integration GCS Channel Adapters</p>
+</li>
+<li>
+<p>Use Spring Security via Google Cloud IAP</p>
+</li>
+<li>
+<p>Analyze your images for text, objects, and other content with Google Cloud Vision</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>Depending on your application&#8217;s needs, you may need to augment your build configuration with compiler plugins:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support">Kotlin Spring Plugin</a>: Makes your Spring configuration classes/members non-final for convenience.</p>
-</li>
-<li>
-<p><a href="https://kotlinlang.org/docs/reference/compiler-plugins.html#jpa-support">Kotlin JPA Plugin</a>: Enables using JPA in Kotlin applications.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Once your Kotlin project is properly configured, the Spring Framework on Google Cloud libraries will work within your application without any additional setup.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
-<div class="paragraph">
-<p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-kotlin-samples/spring-cloud-gcp-kotlin-app-sample">Kotlin sample application</a> is provided to demonstrate a working Maven setup and various Spring Framework on Google Cloud integrations from within Kotlin.</p>
-</div>
 </div>
 </div>
 </div>

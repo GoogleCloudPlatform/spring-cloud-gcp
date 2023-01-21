@@ -177,7 +177,7 @@ window.onload = function() {
 <h2 id="_cloud_foundry"><a class="link" href="#_cloud_foundry">Cloud Foundry</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Cloud GCP provides support for Cloud Foundry&#8217;s <a href="https://docs.pivotal.io/partners/gcp-sb/index.html">GCP Service Broker</a>.
+<p>Spring Framework on Google Cloud provides support for Cloud Foundry&#8217;s <a href="https://docs.pivotal.io/partners/gcp-sb/index.html">GCP Service Broker</a>.
 Our Pub/Sub, Cloud Spanner, Storage, Cloud Trace and Cloud SQL MySQL and PostgreSQL starters are Cloud Foundry aware and retrieve properties like project ID, credentials, etc., that are used in auto configuration from the Cloud Foundry environment.</p>
 </div>
 <div class="paragraph">
@@ -185,7 +185,7 @@ Our Pub/Sub, Cloud Spanner, Storage, Cloud Trace and Cloud SQL MySQL and Postgre
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-cloudfoundry&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -229,7 +229,7 @@ Otherwise, Cloud Foundry will produce a <code>DataSource</code> with an invalid 
 For example, you may want to use a user-provided service that points to a shared Google Service (like Cloud Spanner) used across your organization.</p>
 </div>
 <div class="paragraph">
-<p>In order for Spring Cloud GCP to detect your user-provided service as a Google Cloud Service, you must add an <a href="https://docs.cloudfoundry.org/devguide/services/managing-services.html#instance-tags-create">instance tag</a> indicating the Google Cloud Service it uses.
+<p>In order for Spring Framework on Google Cloud to detect your user-provided service as a Google Cloud Service, you must add an <a href="https://docs.cloudfoundry.org/devguide/services/managing-services.html#instance-tags-create">instance tag</a> indicating the Google Cloud Service it uses.
 The tag should simply be the Cloud Foundry name for the Google Service.</p>
 </div>
 <div class="paragraph">
@@ -237,11 +237,11 @@ The tag should simply be the Cloud Foundry name for the Google Service.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-shell" data-lang="shell">$ cf create-user-provided-service user-spanner-service -t "google-spanner" ...</code></pre>
+<pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">$ cf create-user-provided-service user-spanner-service -t "google-spanner" ...</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This allows Spring Cloud GCP to retrieve the correct service properties from Cloud Foundry and use them in the auto configuration for your application.</p>
+<p>This allows Spring Framework on Google Cloud to retrieve the correct service properties from Cloud Foundry and use them in the auto configuration for your application.</p>
 </div>
 <div class="paragraph">
 <p>A mapping of Google service names to Cloud Foundry names are provided below:</p>
@@ -298,6 +298,9 @@ The tag should simply be the Cloud Foundry name for the Google Service.</p>
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>
