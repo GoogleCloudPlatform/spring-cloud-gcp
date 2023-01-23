@@ -55,7 +55,8 @@ for d in ./google-cloud-java/*java-*/; do
     echo "$d: release_level: $release_level"
     continue
   fi
-  if [[ $artifact_id == "google-cloud-vision" ||  $artifact_id == "google-cloud-kms" ]] ; then
+  # checks if library is in the manual modules exclusion list
+  if [[ $(cat exclusion_lists/manual_modules | tail -n+2 | grep $artifact_id | wc -l) -ne 0 ]] ; then
     echo "$artifact_id is already present in manual modules."
     continue
   fi
