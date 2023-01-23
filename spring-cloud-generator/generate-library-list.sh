@@ -1,13 +1,7 @@
 #!/bin/bash
 
-#cmd line:: ./generate-library-list.sh -c v1.1.0
-
-while getopts c: flag
-do
-    case "${flag}" in
-        c) commitish=${OPTARG};;
-    esac
-done
+#cmd line:: ./generate-library-list.sh
+commitish="v$(bash compute-monorepo-tag.sh)"
 echo "monorepo commitish to checkout: $commitish";
 
 
