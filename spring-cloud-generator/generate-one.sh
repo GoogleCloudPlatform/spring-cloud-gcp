@@ -9,7 +9,7 @@ set -e
 
 # by default, do not download repos
 download_repos=0
-while getopts c:v:i:g:d:p:f:x:z:F: flag
+while getopts c:v:i:g:d:p:f:x:z:m: flag
 do
     case "${flag}" in
         c) client_lib_name=${OPTARG};;
@@ -19,7 +19,7 @@ do
         x) googleapis_commitish=${OPTARG};;
         z) monorepo_commitish=${OPTARG};;
         f) googleapis_folder=${OPTARG};;
-        F) monorepo_folder=${OPTARG};;
+        m) monorepo_folder=${OPTARG};;
         d) download_repos=1;;
     esac
 done
