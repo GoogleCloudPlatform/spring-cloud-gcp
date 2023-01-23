@@ -36,8 +36,11 @@ public class BookController {
 
   @PostMapping("/saveBook")
   public String saveBook(@RequestBody Book book) {
-    Book savedBook = this.bookRepository.save(book);
-    return savedBook.toString();
+    if (book == null) {
+      return "The book is invalid";
+    }
+    this.bookRepository.save(book);
+    return "success";
   }
 
   @GetMapping("/findAllBooks")
