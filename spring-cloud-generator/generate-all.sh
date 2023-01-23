@@ -51,4 +51,3 @@ cd ../spring-cloud-previews
 cd ../spring-cloud-generator
 rm -rf googleapis
 rm -rf gapic-generator-java
-touch run-sanity-check/generate-all-finished
