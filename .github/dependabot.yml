@@ -24,7 +24,7 @@ updates:
   open-pull-requests-limit: 10
   target-branch: "3.x"
   labels:
-    - "dependencies"
+    - "3.x dependencies"
   ignore:
     # Ignore major version updates - these should be made manually
     - dependency-name: "*"
