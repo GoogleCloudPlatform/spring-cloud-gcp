@@ -37,7 +37,7 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
     -g $group_id \
     -p $PROJECT_VERSION \
     -f $googleapis_location \
-    -F $monorepo_folder \
+    -m $monorepo_folder \
     -x $googleapis_commitish \
     -z $monorepo_commitish 2>&1 | tee tmp-generate-one-output || save_error_info $library_name
   set +o pipefail
