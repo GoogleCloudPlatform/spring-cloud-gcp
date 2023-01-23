@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#cmd line:: ./generate-library-list.sh
+#cmd line:: ./generate-library-list.sh -c v1.1.0
 commitish="v$(bash compute-monorepo-tag.sh)"
 echo "monorepo commitish to checkout: $commitish";
 
