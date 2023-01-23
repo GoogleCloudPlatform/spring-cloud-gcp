@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-cloud-gcp-starters</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>3.4.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>4.0.0-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -23,13 +23,13 @@
             <artifactId>spring-boot-starter-data-r2dbc</artifactId>
         </dependency>
 
-        <!-- Cloud SQL PostgreSQL R2DBC Connection Factory and Driver-->
+        <!-- Cloud SQL PostgresSQL R2DBC Connection Factory and Driver-->
         <dependency>
             <groupId>com.google.cloud.sql</groupId>
             <artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.r2dbc</groupId>
+            <groupId>org.postgresql</groupId>
             <artifactId>r2dbc-postgresql</artifactId>
         </dependency>
 

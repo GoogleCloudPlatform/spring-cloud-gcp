@@ -29,7 +29,7 @@ jobs:
 
     - uses: actions/setup-java@v1
       with:
-        java-version: 11
+        java-version: 17
 
     - uses: actions/cache@v2
       id: mvn-cache

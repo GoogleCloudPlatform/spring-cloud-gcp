@@ -127,8 +127,7 @@ class EntityPropertyValueProviderTests {
 
     assertThatThrownBy(() -> provider.getPropertyValue(testDpe))
             .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Unable to read property boolField; nested exception is "
-                    + "com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException: "
-                    + "Unable to convert class java.lang.Long to class java.lang.Boolean");
+            .hasMessageContaining("Unable to read property boolField")
+            .hasStackTraceContaining("Unable to convert class java.lang.Long to class java.lang.Boolean");
   }
 }

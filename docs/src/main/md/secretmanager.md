@@ -43,19 +43,9 @@ By default, Spring Framework on Google Cloud Secret Manager will authenticate us
 Application Default Credentials. This can be overridden using the
 authentication properties.
 
-<div class="note">
-
-All of the below settings must be specified in a
-[`bootstrap.properties`](https://cloud.spring.io/spring-cloud-commons/multi/multi__spring_cloud_context_application_context_services.html#_the_bootstrap_application_context)
-(or `bootstrap.yaml`) file which is the properties file used to
-configure settings for bootstrap-phase Spring configuration.
-
-</div>
-
 |                                                                                                                 |                                                                                                                                                                                       |          |                                                                                                                                 |
 |-----------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| -------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | Name                                                                                                            | Description                                                                                                                                                                           | Required | Default value                                                                                                                   |
-| `spring.cloud.gcp.secretmanager.enabled`                                                                        | Enables the Secret Manager bootstrap property and template configuration.                                                                                                             | No       | `true`                                                                                                                          |
 | `spring.cloud.gcp.secretmanager.credentials.location`                                                           | OAuth2 credentials for authenticating to the Google Cloud Secret Manager API.                                                                                                         | No       | By default, infers credentials from [Application Default Credentials](https://cloud.google.com/docs/authentication/production). |
 | `spring.cloud.gcp.secretmanager.credentials.encoded-key`                                                        | Base64-encoded contents of OAuth2 account private key for authenticating to the Google Cloud Secret Manager API.                                                                      | No       | By default, infers credentials from [Application Default Credentials](https://cloud.google.com/docs/authentication/production). |
 | `spring.cloud.gcp.secretmanager.project-id`                                                                     | The default Google Cloud project used to access Secret Manager API for the template and property source.                                                                                       | No       | By default, infers the project from [Application Default Credentials](https://cloud.google.com/docs/authentication/production). |
@@ -96,12 +86,14 @@ secrets:
 
 You can use this syntax in the following places:
 
-1.  In your `application.properties` or `bootstrap.properties` files:
+1. In your `application.properties` file:
     
         # Example of the project-secret long-form syntax.
+        spring.config.import=sm://
         spring.datasource.password=${sm://projects/my-gcp-project/secrets/my-secret}
+   The former is used to enable [Spring Boot's Config Data API](https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4).
 
-2.  Access the value using the `@Value` annotation.
+3. Access the value using the `@Value` annotation.
     
         // Example of using shortest form syntax.
         @Value("${sm://my-secret}")
@@ -135,10 +127,9 @@ template.
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-- add the following property to your project's `application.properties`. The latter is used to enable [Spring Boot's Config Data API](https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4).
+- add the following property to your project's `application.properties`.
 
         management.endpoints.web.exposure.include=refresh
-        spring.config.import=sm://
 
 - finally, add the following property to your project's `bootstrap.properties` to disable
   Secret Manager bootstrap phrase.

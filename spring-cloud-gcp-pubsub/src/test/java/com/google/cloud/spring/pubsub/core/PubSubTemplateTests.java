@@ -45,13 +45,13 @@ import com.google.pubsub.v1.PubsubMessage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /** Tests for the Pub/Sub template. */
 @ExtendWith(MockitoExtension.class)
@@ -72,10 +72,8 @@ class PubSubTemplateTests {
   private SettableApiFuture<String> settableApiFuture;
 
   private PubSubTemplate createTemplate() {
-    PubSubTemplate pubSubTemplate =
-        new PubSubTemplate(this.mockPublisherFactory, this.mockSubscriberFactory);
 
-    return pubSubTemplate;
+    return new PubSubTemplate(this.mockPublisherFactory, this.mockSubscriberFactory);
   }
 
   private PubSubPublisherTemplate createPublisherTemplate() {
@@ -99,7 +97,7 @@ class PubSubTemplateTests {
     when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
     when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
     this.settableApiFuture.set("result");
-    ListenableFuture<String> future = this.pubSubTemplate.publish("testTopic", this.pubsubMessage);
+    CompletableFuture<String> future = this.pubSubTemplate.publish("testTopic", this.pubsubMessage);
 
     assertThat(future.get()).isEqualTo("result");
   }
@@ -181,24 +179,24 @@ class PubSubTemplateTests {
 
     when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
     when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
-    ListenableFuture<String> future = this.pubSubTemplate.publish("testTopic", this.pubsubMessage);
+    CompletableFuture<String> future = this.pubSubTemplate.publish("testTopic", this.pubsubMessage);
     this.settableApiFuture.setException(new Exception("future failed."));
 
-    assertThatThrownBy(() -> future.get())
+    assertThatThrownBy(future::get)
         .isInstanceOf(ExecutionException.class)
-        .hasMessageContaining("future failed.");
+        .hasStackTraceContaining("future failed.");
   }
 
   @Test
   void testPublish_onFailureWithPayload() {
     when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
     when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
-    ListenableFuture<String> future = this.pubSubTemplate.publish("testTopic", this.pubsubMessage);
+    CompletableFuture<String> future = this.pubSubTemplate.publish("testTopic", this.pubsubMessage);
     this.settableApiFuture.setException(new Exception("Publish failed"));
-    assertThatThrownBy(() -> future.get())
+    assertThatThrownBy(future::get)
         .isInstanceOf(ExecutionException.class)
         .hasCauseInstanceOf(PubSubDeliveryException.class)
-        .hasMessageContaining("Publish failed");
+        .hasStackTraceContaining("Publish failed");
   }
 
   @Test

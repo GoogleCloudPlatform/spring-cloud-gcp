@@ -97,27 +97,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
    * Default {@link DefaultSubscriberFactory} constructor.
    *
    * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
-   * @deprecated Use the new {@link DefaultSubscriberFactory
-   *     (GcpProjectIdProvider,PubSubConfiguration)} instead
-   */
-  @Deprecated
-  public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
-    this(projectIdProvider, getBlankConfiguration(projectIdProvider));
-  }
-
-  private static PubSubConfiguration getBlankConfiguration(GcpProjectIdProvider projectIdProvider) {
-    if (projectIdProvider == null) {
-      return null;
-    }
-    PubSubConfiguration config = new PubSubConfiguration();
-    config.initialize(projectIdProvider.getProjectId());
-    return config;
-  }
-
-  /**
-   * Default {@link DefaultSubscriberFactory} constructor.
-   *
-   * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
    * @param pubSubConfiguration contains the subscriber properties to configure
    */
   public DefaultSubscriberFactory(
@@ -347,15 +326,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     }
 
     return pullRequestBuilder.build();
-  }
-
-  @Override
-  public SubscriberStub createSubscriberStub() {
-    try {
-      return GrpcSubscriberStub.create(buildGlobalSubscriberStubSettings());
-    } catch (IOException ex) {
-      throw new PubSubException("Error creating the SubscriberStub", ex);
-    }
   }
 
   @Override

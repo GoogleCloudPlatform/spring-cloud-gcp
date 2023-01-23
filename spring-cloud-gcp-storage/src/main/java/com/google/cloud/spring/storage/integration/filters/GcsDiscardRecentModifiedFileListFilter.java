@@ -28,8 +28,8 @@ import org.springframework.lang.Nullable;
  * The {@link GcsDiscardRecentModifiedFileListFilter} is a filter which excludes all files that were
  * updated less than some specified amount of time ago.
  *
- * <p>More specifically, it excludes all files whose {@link BlobInfo#getUpdateTime()} is within
- * {@link #age} of the current time.
+ * <p>More specifically, it excludes all files whose {@link BlobInfo#getUpdateTimeOffsetDateTime()}
+ * is within {@link #age} of the current time.
  *
  * <p>When {@link #discardCallback} is provided, it called for all the rejected files.
  */
@@ -76,7 +76,8 @@ public class GcsDiscardRecentModifiedFileListFilter
   }
 
   private boolean fileIsAged(BlobInfo file) {
-    return file.getUpdateTime() + this.age.toMillis() <= System.currentTimeMillis();
+    return file.getUpdateTimeOffsetDateTime().toInstant().toEpochMilli() + this.age.toMillis()
+        <= System.currentTimeMillis();
   }
 
   @Override

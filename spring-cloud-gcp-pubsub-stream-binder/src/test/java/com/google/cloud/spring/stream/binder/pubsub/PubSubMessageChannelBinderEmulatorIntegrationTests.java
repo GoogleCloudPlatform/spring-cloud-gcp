@@ -47,7 +47,7 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
         ExtendedConsumerProperties<PubSubConsumerProperties>,
         ExtendedProducerProperties<PubSubProducerProperties>> {
 
-  private String hostPort;
+  private final String hostPort;
 
   private TestInfo testInfo;
 

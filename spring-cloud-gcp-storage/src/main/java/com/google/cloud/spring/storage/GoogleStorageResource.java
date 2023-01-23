@@ -255,7 +255,10 @@ public class GoogleStorageResource implements WritableResource {
 
   @Override
   public long lastModified() throws IOException {
-    return throwExceptionForNullBlob(getBlob()).getUpdateTime();
+    return throwExceptionForNullBlob(getBlob())
+        .getUpdateTimeOffsetDateTime()
+        .toInstant()
+        .toEpochMilli();
   }
 
   /**
@@ -270,7 +273,7 @@ public class GoogleStorageResource implements WritableResource {
    */
   @Override
   @NonNull
-  public GoogleStorageResource createRelative(String relativePath) {
+  public GoogleStorageResource createRelative(@NonNull String relativePath) {
     return new GoogleStorageResource(
         this.storage, getURI().resolve(relativePath).toString(), this.autoCreateFiles);
   }

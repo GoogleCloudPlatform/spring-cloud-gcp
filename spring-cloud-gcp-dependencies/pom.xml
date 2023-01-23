@@ -2,17 +2,9 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-dependencies-parent</artifactId>
-		<version>3.1.4</version>
-		<relativePath/>
-	</parent>
-
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-dependencies</artifactId>
-	<version>3.4.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
-
+	<version>4.0.0-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud Dependencies</name>
 	<description>Spring Framework on Google Cloud Dependencies</description>
 	<packaging>pom</packaging>
@@ -32,22 +24,11 @@
 		<gcp-libraries-bom.version>26.4.0</gcp-libraries-bom.version>
 		<cloud-sql-socket-factory.version>1.8.2</cloud-sql-socket-factory.version>
 		<guava.version>31.1-jre</guava.version>
-		<r2dbc-mysql-driver.version>0.8.2.RELEASE</r2dbc-mysql-driver.version>
-		<r2dbc-postgres-driver.version>0.8.13.RELEASE</r2dbc-postgres-driver.version>
+		<r2dbc-postgres-driver.version>1.0.0.RELEASE</r2dbc-postgres-driver.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-
-			<!-- Addresses https://tanzu.vmware.com/security/cve-2022-22963 -->
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-function-dependencies</artifactId>
-				<version>3.2.7</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			
 			<!-- Overriding Guava from libraries-bom; Spring Framework on Google Cloud does not require Java 7 support -->
 			<dependency>
 				<groupId>com.google.guava</groupId>
@@ -269,35 +250,14 @@
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
 
-			<!-- spring-cloud-gcp-starter-sql-mysql-r2dbc -->
-			<dependency>
-				<groupId>com.google.cloud.sql</groupId>
-				<artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
-				<version>${cloud-sql-socket-factory.version}</version>
-			</dependency>
-
-			<!-- Spring Boot 2.7 no longer manages this dependency.
-			     Replace with MariaDB driver once it's supported.
-			     https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/issues/990
-			 -->
-			<dependency>
-				<groupId>dev.miku</groupId>
-				<artifactId>r2dbc-mysql</artifactId>
-				<version>${r2dbc-mysql-driver.version}</version>
-			</dependency>
-
 			<!-- spring-cloud-gcp-starter-sql-postgres-r2dbc -->
 			<dependency>
 				<groupId>com.google.cloud.sql</groupId>
 				<artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
-
-			<!-- Spring Boot 2.7 no longer manages this dependency.
-     			 Replace with org.postgres group ID once Spring Boot 2.6 is out of support.
- 			-->
 			<dependency>
-				<groupId>io.r2dbc</groupId>
+				<groupId>org.postgresql</groupId>
 				<artifactId>r2dbc-postgresql</artifactId>
 				<version>${r2dbc-postgres-driver.version}</version>
 			</dependency>
@@ -398,5 +358,36 @@
 			</build>
 		</profile>
 	</profiles>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
+			<comments>
+				Copyright 2015-2022 the original author or authors.
+
+				Licensed under the Apache License, Version 2.0 (the "License");
+				you may not use this file except in compliance with the License.
+				You may obtain a copy of the License at
+
+				https://www.apache.org/licenses/LICENSE-2.0
+
+				Unless required by applicable law or agreed to in writing, software
+				distributed under the License is distributed on an "AS IS" BASIS,
+				WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+				implied.
+
+				See the License for the specific language governing permissions and
+				limitations under the License.
+			</comments>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<organization>Google</organization>
+			<organizationUrl>http://cloud.google.com</organizationUrl>
+		</developer>
+	</developers>
 
 </project>

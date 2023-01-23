@@ -17,7 +17,7 @@
 package com.google.cloud.spring.pubsub.reactive;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -36,6 +36,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +44,6 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.scheduling.annotation.AsyncResult;
 import reactor.test.StepVerifier;
 import reactor.test.scheduler.VirtualTimeScheduler;
 
@@ -73,7 +73,7 @@ class PubSubReactiveFactoryTests {
   }
 
   @Test
-  void testSequentialRequests() throws InterruptedException {
+  void testSequentialRequests() {
     setUpMessages("msg1", "msg2", "msg3", "msg4");
 
     StepVerifier.withVirtualTime(() -> factory.poll("sub1", 10).map(this::messageToString), 1)
@@ -92,8 +92,7 @@ class PubSubReactiveFactoryTests {
   }
 
   @Test
-  void testSequentialRequestWithInsufficientDemandGetsSplitIntoTwoRequests()
-      throws InterruptedException {
+  void testSequentialRequestWithInsufficientDemandGetsSplitIntoTwoRequests() {
     setUpMessages("msg1", "stop", "msg2", "msg3", "msg4");
 
     StepVerifier.withVirtualTime(() -> factory.poll("sub1", 10).map(this::messageToString), 4)
@@ -110,7 +109,7 @@ class PubSubReactiveFactoryTests {
   }
 
   @Test
-  void testDeadlineExceededCausesRetry() throws InterruptedException {
+  void testDeadlineExceededCausesRetry() {
     setUpMessages("timeout", "msg1", "msg2");
 
     StepVerifier.withVirtualTime(() -> factory.poll("sub1", 10).map(this::messageToString), 2)
@@ -126,8 +125,7 @@ class PubSubReactiveFactoryTests {
   }
 
   @Test
-  void testExceptionThrownByPubSubClientResultingInErrorStream()
-      throws InterruptedException {
+  void testExceptionThrownByPubSubClientResultingInErrorStream() {
     setUpMessages("msg1", "msg2", "throw");
 
     StepVerifier.withVirtualTime(() -> factory.poll("sub1", 10).map(this::messageToString), 2)
@@ -143,7 +141,7 @@ class PubSubReactiveFactoryTests {
   }
 
   @Test
-  void testUnlimitedDemand() throws InterruptedException {
+  void testUnlimitedDemand() {
     setUpMessages("msg1", "msg2", "stop", "msg3", "msg4", "stop", "msg5", "stop");
 
     StepVerifier.withVirtualTime(() -> factory.poll("sub1", 10).map(this::messageToString))
@@ -233,19 +231,19 @@ class PubSubReactiveFactoryTests {
                 String nextPayload = msgList.remove(0);
                 switch (nextPayload) {
                   case "stop":
-                    return AsyncResult.forValue(result);
+                    return CompletableFuture.completedFuture(result);
                   case "timeout":
                     if (!result.isEmpty()) {
                       fail("Bad setup -- 'throw' should be the first event in batch");
                     }
-                    return AsyncResult.forExecutionException(
+                    return CompletableFuture.failedFuture(
                         new DeadlineExceededException(
                             "this is a noop",
                             null,
                             GrpcStatusCode.of(Status.Code.DEADLINE_EXCEEDED),
                             true));
                   case "throw":
-                    return AsyncResult.forExecutionException(
+                    return CompletableFuture.failedFuture(
                         new RuntimeException("expected exception during pull of messages"));
                   default:
                     // continue processing
@@ -259,7 +257,7 @@ class PubSubReactiveFactoryTests {
                 when(msg.getPubsubMessage()).thenReturn(pubsubMessage);
                 result.add(msg);
               }
-              return AsyncResult.forValue(result);
+              return CompletableFuture.completedFuture(result);
             });
   }
 }

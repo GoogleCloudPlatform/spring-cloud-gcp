@@ -56,7 +56,7 @@ class PubSubConfiguration {
 
 	/**
 	 * This bean enables serialization/deserialization of Java objects to JSON allowing you
-	 * utilize JSON message payloads in Cloud Pub/Sub.
+	 * to utilize JSON message payloads in Cloud Pub/Sub.
 	 * @param objectMapper the object mapper to use
 	 * @return a Jackson message converter
 	 */

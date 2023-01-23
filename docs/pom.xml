@@ -13,7 +13,7 @@
 	<name>Spring Framework on Google Cloud Documentation</name>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-docs</artifactId>
-	<version>3.4.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.0.0-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 
 	<properties>
@@ -23,7 +23,7 @@
 		<upload-docs-zip.phase>none</upload-docs-zip.phase>
 
 		<!--maven-resources-plugin:3.2.0:copy-resources fails: https://issues.apache.org/jira/browse/MSHARED-966-->
-		<maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
+		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
 	</properties>
 
 	<repositories>

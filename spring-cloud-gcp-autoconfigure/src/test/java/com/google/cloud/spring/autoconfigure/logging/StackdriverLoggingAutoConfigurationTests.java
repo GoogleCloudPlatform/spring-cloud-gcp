@@ -24,24 +24,28 @@ import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
 import com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ReactiveWebApplicationContextRunner;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
-import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import zipkin2.reporter.Reporter;
 
 /** Tests for auto-config. */
 class StackdriverLoggingAutoConfigurationTests {
 
-  private WebApplicationContextRunner contextRunner =
-      new WebApplicationContextRunner()
-          .withUserConfiguration(TestConfiguration.class)
-          .withConfiguration(
-              AutoConfigurations.of(
-                  StackdriverLoggingAutoConfiguration.class, GcpContextAutoConfiguration.class));
+  private WebApplicationContextRunner contextRunner;
+
+  @BeforeEach
+  void init() {
+    contextRunner = new WebApplicationContextRunner()
+        .withUserConfiguration(TestConfiguration.class)
+        .withConfiguration(
+            AutoConfigurations.of(
+                StackdriverLoggingAutoConfiguration.class, GcpContextAutoConfiguration.class));
+  }
 
   @Test
   void testDisabledConfiguration() {
@@ -87,11 +91,9 @@ class StackdriverLoggingAutoConfigurationTests {
   }
 
   @Test
-  void testWithSleuth() {
+  void testWithStackdriverTraceAutoConfiguration() {
     this.contextRunner
-        .withConfiguration(
-            AutoConfigurations.of(
-                StackdriverTraceAutoConfiguration.class, BraveAutoConfiguration.class))
+        .withConfiguration(AutoConfigurations.of(StackdriverTraceAutoConfiguration.class))
         .withPropertyValues("spring.cloud.gcp.project-id=pop-1")
         .run(
             context ->

@@ -38,12 +38,10 @@ import com.google.cloud.vision.v1.OutputConfig;
 import com.google.cloud.vision.v1.TextAnnotation;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.springframework.util.Assert;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.SettableListenableFuture;
 
 /**
  * Template providing convenient operations for interfacing with Google Cloud Vision's Document OCR
@@ -90,15 +88,15 @@ public class DocumentOcrTemplate {
    *
    * <p>Note: OCR processing operations may take several minutes to complete, so it may not be
    * advisable to block on the completion of the operation. One may use the returned {@link
-   * ListenableFuture} to register callbacks or track the status of the operation.
+   * CompletableFuture} to register callbacks or track the status of the operation.
    *
    * @param document The {@link GoogleStorageLocation} of the document to run OCR processing
    * @param outputFilePathPrefix The {@link GoogleStorageLocation} of a file, folder, or a bucket
    *     describing the path for which all output files shall be saved under
-   * @return A {@link ListenableFuture} allowing you to register callbacks or wait for the
+   * @return A {@link CompletableFuture} allowing you to register callbacks or wait for the
    *     completion of the operation.
    */
-  public ListenableFuture<DocumentOcrResultSet> runOcrForDocument(
+  public CompletableFuture<DocumentOcrResultSet> runOcrForDocument(
       GoogleStorageLocation document, GoogleStorageLocation outputFilePathPrefix) {
 
     Assert.isTrue(
@@ -155,7 +153,7 @@ public class DocumentOcrTemplate {
     List<Blob> blobPages =
         StreamSupport.stream(blobsInFolder.getValues().spliterator(), false)
             .filter(blob -> blob.getContentType().equals("application/octet-stream"))
-            .collect(Collectors.toList());
+            .toList();
 
     return new DocumentOcrResultSet(blobPages);
   }
@@ -182,17 +180,17 @@ public class DocumentOcrTemplate {
     return new DocumentOcrResultSet(Collections.singletonList(jsonOutputBlob));
   }
 
-  private ListenableFuture<DocumentOcrResultSet> extractOcrResultFuture(
+  private CompletableFuture<DocumentOcrResultSet> extractOcrResultFuture(
       OperationFuture<AsyncBatchAnnotateFilesResponse, OperationMetadata> grpcFuture) {
 
-    SettableListenableFuture<DocumentOcrResultSet> result = new SettableListenableFuture<>();
+    CompletableFuture<DocumentOcrResultSet> result = new CompletableFuture<>();
 
     ApiFutures.addCallback(
         grpcFuture,
-        new ApiFutureCallback<AsyncBatchAnnotateFilesResponse>() {
+        new ApiFutureCallback<>() {
           @Override
           public void onFailure(Throwable throwable) {
-            result.setException(throwable);
+            result.completeExceptionally(throwable);
           }
 
           @Override
@@ -208,7 +206,7 @@ public class DocumentOcrTemplate {
 
             GoogleStorageLocation outputFolderLocation =
                 new GoogleStorageLocation(outputLocationUri);
-            result.set(readOcrOutputFileSet(outputFolderLocation));
+            result.complete(readOcrOutputFileSet(outputFolderLocation));
           }
         },
         this.executor);

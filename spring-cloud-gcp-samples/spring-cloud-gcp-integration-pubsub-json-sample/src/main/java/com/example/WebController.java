@@ -17,7 +17,6 @@
 package com.example;
 
 import com.example.SenderConfiguration.PubSubPersonGateway;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,7 +34,7 @@ public class WebController {
 
   @Autowired
   @Qualifier("ProcessedPersonsList")
-  private ArrayList<Person> processedPersonsList;
+  private List<Person> processedPersonsList;
 
   public WebController(PubSubPersonGateway pubSubPersonGateway) {
     this.pubSubPersonGateway = pubSubPersonGateway;
