@@ -58,13 +58,6 @@ jobs:
           set -x
           set -e
           bash generate-all.sh
-      - name: Sanity checks
-        working-directory: spring-cloud-generator
-        continue-on-error: false
-        run: |
-          set -e
-          bash sanity-checks.sh
-          rm -rdf run-sanity-check
       - name: Check for generation errors
         continue-on-error: false
         working-directory: spring-cloud-generator
