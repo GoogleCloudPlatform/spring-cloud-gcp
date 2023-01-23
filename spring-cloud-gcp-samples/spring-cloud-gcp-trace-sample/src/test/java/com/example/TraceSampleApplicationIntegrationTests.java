@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,10 +54,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -73,6 +74,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {Application.class})
+@AutoConfigureObservability
 class TraceSampleApplicationIntegrationTests {
 
   @DynamicPropertySource
@@ -83,7 +85,8 @@ class TraceSampleApplicationIntegrationTests {
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-  @LocalServerPort private int port;
+  @LocalServerPort
+  private int port;
 
   private static GcpProjectIdProvider projectIdProvider;
 
@@ -91,9 +94,9 @@ class TraceSampleApplicationIntegrationTests {
 
   private String url;
 
-  private static String SAMPLE_TOPIC = "traceTopic-" + UUID.randomUUID();
+  private static final String SAMPLE_TOPIC = "traceTopic-" + UUID.randomUUID();
 
-  private static String SAMPLE_SUBSCRIPTION = "traceSubscription-" + UUID.randomUUID();
+  private static final String SAMPLE_SUBSCRIPTION = "traceSubscription-" + UUID.randomUUID();
 
   private TestRestTemplate testRestTemplate;
 
@@ -134,11 +137,11 @@ class TraceSampleApplicationIntegrationTests {
 
     // Create a new RestTemplate here because the auto-wired instance has built-in instrumentation
     // which interferes with us setting the 'x-cloud-trace-context' header.
-    this.testRestTemplate = new TestRestTemplate();
+    this.testRestTemplate = new TestRestTemplate(new RestTemplateBuilder());
 
     this.logClient =
         LoggingOptions.newBuilder()
-            .setProjectId(this.projectIdProvider.getProjectId())
+            .setProjectId(projectIdProvider.getProjectId())
             .setCredentials(this.credentialsProvider.getCredentials())
             .build()
             .getService();
@@ -166,7 +169,7 @@ class TraceSampleApplicationIntegrationTests {
 
     GetTraceRequest getTraceRequest =
         GetTraceRequest.newBuilder()
-            .setProjectId(this.projectIdProvider.getProjectId())
+            .setProjectId(projectIdProvider.getProjectId())
             .setTraceId(uuidString)
             .build();
 
@@ -174,9 +177,9 @@ class TraceSampleApplicationIntegrationTests {
         String.format(
             "trace=projects/%s/traces/%s AND logName=projects/%s/logs/spring.log AND"
                 + " timestamp>=\"%s\"",
-            this.projectIdProvider.getProjectId(),
+            projectIdProvider.getProjectId(),
             uuidString,
-            this.projectIdProvider.getProjectId(),
+            projectIdProvider.getProjectId(),
             startDateTime.toStringRfc3339());
 
     await()
@@ -193,30 +196,30 @@ class TraceSampleApplicationIntegrationTests {
                       + " with "
                       + trace.getSpansCount()
                       + " spans ("
-                      + trace.getSpansList().stream()
-                          .map(TraceSpan::getName)
-                          .collect(Collectors.toList())
+                      + trace.getSpansList().stream().map(TraceSpan::getName).toList()
                       + ").");
 
               assertThat(trace.getTraceId()).isEqualTo(uuidString);
               // The 16 expected spans are:
-              // get /, visit-meet-endpoint, get, get /meet, get, get /meet, get, get /meet,
+              // http get /, visit-meet-endpoint, http get, http get /meet, http get,
+              // http get /meet, http get, http get /meet,
               // send-message-spring-integration, publish, send-message-pub-sub-template, publish,
               // next-message, on-message, next-message, on-message
+
               assertThat(trace.getSpansCount()).isGreaterThanOrEqualTo(16);
               log.debug("Trace spans match.");
 
               // verify custom tags
-              assertThat(trace.getSpans(0).getLabelsMap().get("environment")).isEqualTo("QA");
+              assertThat(trace.getSpans(0).getLabelsMap()).containsEntry("environment", "QA");
               assertThat(trace.getSpans(0).getLabelsMap().get("session-id")).isNotNull();
               log.debug("Trace labels match.");
 
               assertThat(trace.getSpansList().stream().map(TraceSpan::getName).distinct())
                   .containsExactly(
-                      "get /",
+                      "http get /",
                       "visit-meet-endpoint",
-                      "get",
-                      "get /meet",
+                      "http get",
+                      "http get /meet",
                       "send-message-spring-integration",
                       "publish",
                       "send-message-pub-sub-template",
@@ -236,7 +239,7 @@ class TraceSampleApplicationIntegrationTests {
 
                         String wantTraceRegex =
                             "projects/"
-                                + this.projectIdProvider.getProjectId()
+                                + projectIdProvider.getProjectId()
                                 + "/traces/([a-z0-9]){32}";
                         log.debug("Want trace " + wantTraceRegex + " and got " + le.getTrace());
                         assertThat(le.getTrace()).matches(wantTraceRegex);
@@ -256,7 +259,7 @@ class TraceSampleApplicationIntegrationTests {
                                   ((JsonPayload) logEntry.getPayload())
                                       .getDataAsMap()
                                       .get("message"))
-                      .collect(Collectors.toList());
+                      .toList();
 
               log.info(
                   "\n========================= [START OF LOG CONTENTS] =========================\n"

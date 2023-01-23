@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.data.datastore.repository.config;
 
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.repository.support.DatastoreAuditingEventListener;
 import java.lang.annotation.Annotation;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.data.auditing.config.AuditingBeanDefinitionRegistrarSupport;
 import org.springframework.data.auditing.config.AuditingConfiguration;
+import org.springframework.data.mapping.context.PersistentEntities;
 
 /**
  * Registers the annotations and classes for providing auditing support in Spring Data Cloud
@@ -34,8 +36,6 @@ import org.springframework.data.auditing.config.AuditingConfiguration;
 public class DatastoreAuditingRegistrar extends AuditingBeanDefinitionRegistrarSupport {
 
   private static final String AUDITING_HANDLER_BEAN_NAME = "datastoreAuditingHandler";
-
-  private static final String MAPPING_CONTEXT_BEAN_NAME = "datastoreMappingContext";
 
   @Override
   protected Class<? extends Annotation> getAnnotation() {
@@ -57,10 +57,9 @@ public class DatastoreAuditingRegistrar extends AuditingBeanDefinitionRegistrarS
   @Override
   protected BeanDefinitionBuilder getAuditHandlerBeanDefinitionBuilder(
       AuditingConfiguration configuration) {
-    BeanDefinitionBuilder builder =
-        configureDefaultAuditHandlerAttributes(
-            configuration, BeanDefinitionBuilder.rootBeanDefinition(AuditingHandler.class));
-    return builder.addConstructorArgReference(MAPPING_CONTEXT_BEAN_NAME);
+    return configureDefaultAuditHandlerAttributes(
+            configuration, BeanDefinitionBuilder.rootBeanDefinition(AuditingHandler.class))
+            .addConstructorArgValue(PersistentEntities.of(new DatastoreMappingContext()));
   }
 
   @Override

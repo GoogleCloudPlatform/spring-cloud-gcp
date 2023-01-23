@@ -69,7 +69,7 @@ public class FirestoreTemplateTests {
     this.firestoreTemplate =
         new FirestoreTemplate(
             this.firestoreStub,
-            this.parent,
+            parent,
             new FirestoreDefaultClassMapper(mappingContext),
             mappingContext);
   }
@@ -91,7 +91,7 @@ public class FirestoreTemplateTests {
             .build();
     RunQueryRequest request =
         RunQueryRequest.newBuilder()
-            .setParent(this.parent)
+            .setParent(parent)
             .setStructuredQuery(structuredQuery)
             .build();
 
@@ -311,7 +311,7 @@ public class FirestoreTemplateTests {
         .verifyComplete();
 
     GetDocumentRequest request =
-        GetDocumentRequest.newBuilder().setName(this.parent + "/testEntities/" + "e1").build();
+        GetDocumentRequest.newBuilder().setName(parent + "/testEntities/" + "e1").build();
 
     verify(this.firestoreStub, times(1)).getDocument(eq(request), any());
   }
@@ -332,12 +332,12 @@ public class FirestoreTemplateTests {
         .expectErrorMatches(
             e ->
                 e instanceof FirestoreDataException
-                    && e.getMessage().contains("Firestore error")
+                    && e.getCause().getMessage().contains("Firestore error")
                     && e.getMessage().contains("Error while reading entries by id"))
         .verify();
 
     GetDocumentRequest request =
-        GetDocumentRequest.newBuilder().setName(this.parent + "/testEntities/" + "e1").build();
+        GetDocumentRequest.newBuilder().setName(parent + "/testEntities/" + "e1").build();
 
     verify(this.firestoreStub, times(1)).getDocument(eq(request), any());
   }
@@ -360,7 +360,7 @@ public class FirestoreTemplateTests {
         .verifyComplete();
 
     GetDocumentRequest request =
-        GetDocumentRequest.newBuilder().setName(this.parent + "/testEntities/" + "e1").build();
+        GetDocumentRequest.newBuilder().setName(parent + "/testEntities/" + "e1").build();
 
     verify(this.firestoreStub, times(1)).getDocument(eq(request), any());
   }
@@ -368,13 +368,13 @@ public class FirestoreTemplateTests {
   @Test
   void findAllByIdTest() {
     GetDocumentRequest request1 =
-        GetDocumentRequest.newBuilder().setName(this.parent + "/testEntities/e1").build();
+        GetDocumentRequest.newBuilder().setName(parent + "/testEntities/e1").build();
 
     GetDocumentRequest request2 =
-        GetDocumentRequest.newBuilder().setName(this.parent + "/testEntities/e2").build();
+        GetDocumentRequest.newBuilder().setName(parent + "/testEntities/e2").build();
 
     GetDocumentRequest request3 =
-        GetDocumentRequest.newBuilder().setName(this.parent + "/testEntities/e3").build();
+        GetDocumentRequest.newBuilder().setName(parent + "/testEntities/e3").build();
 
     doAnswer(
             invocation -> {
@@ -443,7 +443,7 @@ public class FirestoreTemplateTests {
             .build();
     RunQueryRequest request =
         RunQueryRequest.newBuilder()
-            .setParent(this.parent)
+            .setParent(parent)
             .setStructuredQuery(structuredQuery)
             .build();
 
@@ -479,7 +479,7 @@ public class FirestoreTemplateTests {
 
     RunQueryRequest request =
         RunQueryRequest.newBuilder()
-            .setParent(this.parent)
+            .setParent(parent)
             .setStructuredQuery(expectedBuilder)
             .build();
 
@@ -507,7 +507,7 @@ public class FirestoreTemplateTests {
   void existsByIdTest() {
     GetDocumentRequest request =
         GetDocumentRequest.newBuilder()
-            .setName(this.parent + "/testEntities/" + "e1")
+            .setName(parent + "/testEntities/" + "e1")
             .setMask(DocumentMask.newBuilder().addFieldPaths("__name__").build())
             .build();
 
@@ -535,7 +535,7 @@ public class FirestoreTemplateTests {
   void existsByIdNotFoundTest() {
     GetDocumentRequest request =
         GetDocumentRequest.newBuilder()
-            .setName(this.parent + "/testEntities/" + "e1")
+            .setName(parent + "/testEntities/" + "e1")
             .setMask(DocumentMask.newBuilder().addFieldPaths("__name__").build())
             .build();
 
@@ -579,7 +579,7 @@ public class FirestoreTemplateTests {
 
     GetDocumentRequest request =
         GetDocumentRequest.newBuilder()
-            .setName(this.parent + "/testEntities/parent/testEntities/child")
+            .setName(parent + "/testEntities/parent/testEntities/child")
             .build();
 
     verify(this.firestoreStub, times(1)).getDocument(eq(request), any());
@@ -605,7 +605,7 @@ public class FirestoreTemplateTests {
 
     GetDocumentRequest request =
         GetDocumentRequest.newBuilder()
-            .setName(this.parent + "/testEntities/parent/testEntities/child")
+            .setName(parent + "/testEntities/parent/testEntities/child")
             .build();
 
     verify(this.firestoreStub, times(1)).getDocument(eq(request), any());
@@ -704,7 +704,7 @@ public class FirestoreTemplateTests {
   }
 
   @Document(collectionName = "testEntities")
-  class TestEntityUpdateTimeVersion {
+  static class TestEntityUpdateTimeVersion {
     @DocumentId public String id;
 
     @UpdateTime(version = true)
@@ -724,11 +724,9 @@ public class FirestoreTemplateTests {
       if (this == o) {
         return true;
       }
-      if (!(o instanceof TestEntityUpdateTimeVersion)) {
+      if (!(o instanceof TestEntityUpdateTimeVersion that)) {
         return false;
       }
-
-      TestEntityUpdateTimeVersion that = (TestEntityUpdateTimeVersion) o;
 
       if (!Objects.equals(id, that.id)) {
         return false;
@@ -745,7 +743,7 @@ public class FirestoreTemplateTests {
   }
 
   @Document(collectionName = "testEntities")
-  class TestEntityUpdateTime {
+  static class TestEntityUpdateTime {
     @DocumentId public String id;
 
     @UpdateTime public Timestamp updateTime;
@@ -764,11 +762,9 @@ public class FirestoreTemplateTests {
       if (this == o) {
         return true;
       }
-      if (!(o instanceof TestEntityUpdateTime)) {
+      if (!(o instanceof TestEntityUpdateTime that)) {
         return false;
       }
-
-      TestEntityUpdateTime that = (TestEntityUpdateTime) o;
 
       if (!Objects.equals(id, that.id)) {
         return false;

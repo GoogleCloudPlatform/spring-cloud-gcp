@@ -1,13 +1,7 @@
 #!/bin/bash
 
-#cmd line:: ./generate-library-list.sh -c v1.1.0
-
-while getopts c: flag
-do
-    case "${flag}" in
-        c) commitish=${OPTARG};;
-    esac
-done
+#cmd line:: ./generate-library-list.sh
+commitish="v$(bash compute-monorepo-tag.sh)"
 echo "monorepo commitish to checkout: $commitish";
 
 
@@ -28,7 +22,7 @@ cd -
 
 # start file, always override is present
 filename=./library_list.txt
-echo "# api_shortname, googleapis-folder, distribution_name:version, googleapis_committish" > $filename
+echo "# api_shortname, googleapis-folder, distribution_name:version, googleapis_committish, monorepo_folder" > $filename
 
 # loop through folders
 count=0
@@ -40,6 +34,7 @@ for d in ./google-cloud-java/*java-*/; do
   library_type=$(cat $d/.repo-metadata.json | jq -r .library_type)
   transport=$(cat $d/.repo-metadata.json | jq -r .transport)
   release_level=$(cat $d/.repo-metadata.json | jq -r .release_level)
+  monorepo_folder=$(basename $d)
 
   group_id=$(echo $distribution_name | cut -f1 -d:)
   artifact_id=$(echo $distribution_name | cut -f2 -d:)
@@ -60,7 +55,8 @@ for d in ./google-cloud-java/*java-*/; do
     echo "$d: release_level: $release_level"
     continue
   fi
-  if [[ $artifact_id == "google-cloud-vision" ||  $artifact_id == "google-cloud-kms" ]] ; then
+  # checks if library is in the manual modules exclusion list
+  if [[ $(cat exclusion_lists/manual_modules | tail -n+2 | grep $artifact_id | wc -l) -ne 0 ]] ; then
     echo "$artifact_id is already present in manual modules."
     continue
   fi
@@ -84,7 +80,7 @@ for d in ./google-cloud-java/*java-*/; do
   googleapis_committish=$(git log $commitish -- "$version_folder" | grep -m 1 'Source-Link:.*googleapis/googleapis.*' | sed 's#^.*/commit/##')
   cd ~- || { echo "Failed to get back to previous directory"; exit 1; }
 
-  echo "$api_shortname, $googleapis_folder, $distribution_name, $googleapis_committish" >> $filename
+  echo "$api_shortname, $googleapis_folder, $distribution_name, $googleapis_committish, $monorepo_folder" >> $filename
   count=$((count+1))
 done
 echo "Total in-scope client libraries: $count"

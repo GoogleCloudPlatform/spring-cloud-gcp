@@ -28,6 +28,7 @@ import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.spring.pubsub.reactive.PubSubReactiveFactory;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +42,6 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.AsyncResult;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
@@ -130,7 +130,7 @@ class GcpPubSubReactiveAutoConfigurationTest {
             arg -> {
               assertThat(Thread.currentThread().getName()).startsWith(threadPrefix);
 
-              return AsyncResult.forValue(Arrays.asList(mockMessage, mockMessage, mockMessage));
+              return CompletableFuture.completedFuture(Arrays.asList(mockMessage, mockMessage, mockMessage));
             });
   }
 

@@ -21,9 +21,11 @@ import com.google.cloud.spring.pubsub.integration.PubSubHeaderMapper;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.BiConsumer;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
@@ -35,8 +37,6 @@ import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandlingException;
 import org.springframework.util.Assert;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
 /**
  * Outbound channel adapter to publish messages to Google Cloud Pub/Sub.
@@ -58,7 +58,7 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
 
   private Expression publishTimeoutExpression = new ValueExpression<>(DEFAULT_PUBLISH_TIMEOUT);
 
-  private ListenableFutureCallback<String> publishCallback;
+  private BiConsumer<String, Throwable> publishCallback;
 
   private SuccessCallback successCallback;
 
@@ -130,19 +130,8 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
     setPublishTimeoutExpression(new ValueExpression<>(timeoutMillis));
   }
 
-  protected ListenableFutureCallback<String> getPublishCallback() {
+  protected BiConsumer<String, Throwable> getPublishCallback() {
     return this.publishCallback;
-  }
-
-  /**
-   * Set the callback to be activated when the publish call resolves.
-   *
-   * @param publishCallback callback for the publish future
-   * @deprecated Use {@link #setSuccessCallback} and {@link #setFailureCallback} instead.
-   */
-  @Deprecated
-  public void setPublishCallback(ListenableFutureCallback<String> publishCallback) {
-    this.publishCallback = publishCallback;
   }
 
   /**
@@ -217,15 +206,15 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
     Map<String, String> headers = new HashMap<>();
     this.headerMapper.fromHeaders(message.getHeaders(), headers);
 
-    ListenableFuture<String> pubsubFuture =
+    CompletableFuture<String> pubsubFuture =
         this.pubSubPublisherOperations.publish(topic, payload, headers);
 
     if (this.publishCallback != null) {
-      pubsubFuture.addCallback(this.publishCallback);
+      pubsubFuture.whenComplete(this.publishCallback);
     }
 
     if (this.successCallback != null || this.failureCallback != null) {
-      pubsubFuture.addCallback(new PubSubPublishCallback(message));
+      pubsubFuture.whenComplete(new PubSubPublishCallback(message));
     }
 
     if (this.sync) {
@@ -256,7 +245,7 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
   }
 
   private void blockOnPublishFuture(
-      ListenableFuture<String> pubsubFuture, Message<?> message, Long timeout) {
+      CompletableFuture<String> pubsubFuture, Message<?> message, Long timeout) {
     try {
       if (timeout == null || timeout < 0) {
         pubsubFuture.get();
@@ -298,24 +287,21 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
    * Publish callback that invokes the parent {@code PubSubMessageHandler}'s success or failure
    * callback, if available.
    */
-  private class PubSubPublishCallback implements ListenableFutureCallback<String> {
-    private Message<?> message;
+  private class PubSubPublishCallback implements BiConsumer<String, Throwable> {
+    private final Message<?> message;
 
     PubSubPublishCallback(Message<?> message) {
       this.message = message;
     }
 
     @Override
-    public void onFailure(Throwable throwable) {
-      if (PubSubMessageHandler.this.failureCallback != null) {
-        PubSubMessageHandler.this.failureCallback.onFailure(throwable, message);
-      }
-    }
-
-    @Override
-    public void onSuccess(String messageId) {
+    public void accept(String messageId, Throwable throwable) {
       if (PubSubMessageHandler.this.successCallback != null) {
         PubSubMessageHandler.this.successCallback.onSuccess(messageId, message);
+      }
+
+      if (PubSubMessageHandler.this.failureCallback != null) {
+        PubSubMessageHandler.this.failureCallback.onFailure(throwable, message);
       }
     }
   }

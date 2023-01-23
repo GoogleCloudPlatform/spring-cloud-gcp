@@ -18,7 +18,8 @@ package com.google.cloud.spring.autoconfigure.pubsub.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
@@ -31,6 +32,7 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
+import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler.SuccessCallback;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import java.io.IOException;
@@ -45,7 +47,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -61,7 +62,6 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.SubscribableChannel;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
 /** Tests for Pub/Sub channel adapters. */
 @EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
@@ -82,7 +82,7 @@ class PubSubChannelAdaptersIntegrationTests {
     pubSubAdmin =
         new PubSubAdmin(
             new DefaultGcpProjectIdProvider(),
-            new DefaultCredentialsProvider(() -> new Credentials()));
+            new DefaultCredentialsProvider(Credentials::new));
   }
 
   @BeforeEach
@@ -120,7 +120,7 @@ class PubSubChannelAdaptersIntegrationTests {
         .run(
             context -> {
               Map<String, Object> headers = new HashMap<>();
-              // Only String values for now..
+              // Only String values for now.
               headers.put("storm", "lift your skinny fists");
               headers.put("static", "lift your skinny fists");
               headers.put("sleep", "lift your skinny fists");
@@ -141,9 +141,9 @@ class PubSubChannelAdaptersIntegrationTests {
               assertThat(payload).isEqualTo("I am a message (sendAndReceiveMessageAsString).");
 
               assertThat(message.getHeaders()).hasSize(6);
-              assertThat(message.getHeaders().get("storm")).isEqualTo("lift your skinny fists");
-              assertThat(message.getHeaders().get("static")).isEqualTo("lift your skinny fists");
-              assertThat(message.getHeaders().get("sleep")).isEqualTo("lift your skinny fists");
+              assertThat(message.getHeaders()).containsEntry("storm", "lift your skinny fists");
+              assertThat(message.getHeaders()).containsEntry("static", "lift your skinny fists");
+              assertThat(message.getHeaders()).containsEntry("sleep", "lift your skinny fists");
               assertThat(message.getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE)).isNotNull();
             });
   }
@@ -259,7 +259,6 @@ class PubSubChannelAdaptersIntegrationTests {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   void sendAndReceiveMessageManualAckThroughAcknowledgementHeader() {
     this.contextRunner
         .withUserConfiguration(PollableConfiguration.class, CommonConfiguration.class)
@@ -295,16 +294,8 @@ class PubSubChannelAdaptersIntegrationTests {
         .withUserConfiguration(PollableConfiguration.class, CommonConfiguration.class)
         .run(
             context -> {
-              ListenableFutureCallback<String> callbackSpy =
-                  Mockito.spy(
-                      new ListenableFutureCallback<String>() {
-                        @Override
-                        public void onFailure(Throwable ex) {}
-
-                        @Override
-                        public void onSuccess(String result) {}
-                      });
-              context.getBean(PubSubMessageHandler.class).setPublishCallback(callbackSpy);
+              SuccessCallback successCallback = mock(SuccessCallback.class);
+              context.getBean(PubSubMessageHandler.class).setSuccessCallback(successCallback);
               context
                   .getBean("inputChannel", MessageChannel.class)
                   .send(
@@ -317,9 +308,11 @@ class PubSubChannelAdaptersIntegrationTests {
                       .getBean("outputChannel", PollableChannel.class)
                       .receive(RECEIVE_TIMEOUT_MS);
               assertThat(message).isNotNull();
+
               Awaitility.await()
                   .atMost(1, TimeUnit.SECONDS)
-                  .untilAsserted(() -> verify(callbackSpy, times(1)).onSuccess(any()));
+                  .untilAsserted(() ->
+                      verify(successCallback).onSuccess(anyString(), any()));
             });
   }
 

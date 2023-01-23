@@ -22,6 +22,7 @@ import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAd
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -69,7 +70,7 @@ public class ReceiverConfiguration {
 
   @Bean
   @Qualifier("ProcessedPersonsList")
-  public ArrayList<Person> processedPersonsList() {
+  public List<Person> processedPersonsList() {
     return this.processedPersonsList;
   }
 }

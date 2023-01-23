@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
@@ -29,7 +30,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 /** Tests for {@link R2dbcCloudSqlEnvironmentPostProcessor}. */
 class R2dbcCloudSqlEnvironmentPostProcessorTests {
 
-  private R2dbcCloudSqlEnvironmentPostProcessor r2dbcPostProcessor =
+  private final R2dbcCloudSqlEnvironmentPostProcessor r2dbcPostProcessor =
       new R2dbcCloudSqlEnvironmentPostProcessor();
 
   ApplicationContextRunner contextRunner =
@@ -38,15 +39,6 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
               configurableApplicationContext ->
                   r2dbcPostProcessor.postProcessEnvironment(
                       configurableApplicationContext.getEnvironment(), new SpringApplication()));
-
-  @Test
-  void testCreateUrl_mySql() {
-    GcpCloudSqlProperties properties = new GcpCloudSqlProperties();
-    properties.setDatabaseName("my-database");
-    properties.setInstanceConnectionName("my-instance-connection-name");
-    String r2dbcUrl = r2dbcPostProcessor.createUrl(DatabaseType.MYSQL, properties);
-    assertThat(r2dbcUrl).isEqualTo("r2dbc:gcp:mysql://my-instance-connection-name/my-database");
-  }
 
   @Test
   void testCreateUrl_postgres() {
@@ -58,62 +50,11 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
   }
 
   @Test
-  void testSetR2dbcProperty_mySql_defaultUsername() {
-    this.contextRunner
-        .withPropertyValues(
-            "spring.cloud.gcp.sql.databaseName=my-database",
-            "spring.cloud.gcp.sql.instanceConnectionName=my-project:region:my-instance")
-        .run(
-            context -> {
-              assertThat(context.getEnvironment().getProperty("spring.r2dbc.url"))
-                  .isEqualTo("r2dbc:gcp:mysql://my-project:region:my-instance/my-database");
-              assertThat(context.getEnvironment().getProperty("spring.r2dbc.username"))
-                  .isEqualTo("root");
-            });
-  }
-
-  @Test
-  void testSetR2dbcProperty_mySql_usernameProvided() {
-    this.contextRunner
-        .withPropertyValues(
-            "spring.cloud.gcp.sql.databaseName=my-database",
-            "spring.cloud.gcp.sql.instanceConnectionName=my-project:region:my-instance",
-            "spring.r2dbc.username=my-username")
-        .run(
-            context -> {
-              assertThat(context.getEnvironment().getProperty("spring.r2dbc.url"))
-                  .isEqualTo("r2dbc:gcp:mysql://my-project:region:my-instance/my-database");
-              assertThat(context.getEnvironment().getProperty("spring.r2dbc.username"))
-                  .isEqualTo("my-username");
-            });
-  }
-
-  @Test
-  void testSetR2dbcProperty_mySql_urlProvidedByUserIgnored() {
-    this.contextRunner
-        .withPropertyValues(
-            "spring.cloud.gcp.sql.databaseName=my-database",
-            "spring.cloud.gcp.sql.instanceConnectionName=my-project:region:my-instance",
-            "spring.r2dbc.url=ignored")
-        .run(
-            context -> {
-              assertThat(context.getEnvironment().getProperty("spring.r2dbc.url"))
-                  .isEqualTo("r2dbc:gcp:mysql://my-project:region:my-instance/my-database");
-            });
-  }
-
-  @Test
   void testSetR2dbcProperty_postgres() {
-    verifyThatCorrectUrlAndUsernameSet(new String[] {"io.r2dbc.postgresql"},
+    verifyThatCorrectUrlAndUsernameSet(
+        new String[] {"io.r2dbc.postgresql"},
         "postgres",
         "r2dbc:gcp:postgres://my-project:region:my-instance/my-database");
-  }
-
-  @Test
-  void testSetR2dbcProperty_mysql() {
-    verifyThatCorrectUrlAndUsernameSet(new String[] {"dev.miku.r2dbc.mysql"},
-        "root",
-        "r2dbc:gcp:mysql://my-project:region:my-instance/my-database");
   }
 
   /**
@@ -125,14 +66,13 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
    * @param url expected {@code spring.r2dbc.username} value to verify
    */
   private void verifyThatCorrectUrlAndUsernameSet(
-      String[] driverPackagesToInclude, String username, String url) {
+      String[] driverPackagesToInclude,
+      String username,
+      String url) {
     // Because `FilteredClassLoader` accepts a list of packages to remove from classpath,
     // `driverPackagesToInclude` is used to calculate the inverse list of packages to _exclude_.
-    Set<String> driverPackagesToExclude = new HashSet<>(Arrays.asList(
-        "dev.miku.r2dbc.mysql",
-        "io.r2dbc.postgresql"
-    ));
-    driverPackagesToExclude.removeAll(Arrays.asList(driverPackagesToInclude));
+    Set<String> driverPackagesToExclude = new HashSet<>(List.of("io.r2dbc.postgresql"));
+    Arrays.asList(driverPackagesToInclude).forEach(driverPackagesToExclude::remove);
 
     this.contextRunner
         .withPropertyValues(

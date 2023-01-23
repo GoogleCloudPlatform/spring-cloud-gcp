@@ -26,12 +26,12 @@ import com.google.cloud.spring.storage.GoogleStorageProtocolResolverSettings;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import java.io.IOException;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -41,7 +41,7 @@ import org.springframework.context.annotation.Import;
  *
  * @see GoogleStorageProtocolResolver
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass({GoogleStorageProtocolResolverSettings.class, Storage.class})
 @ConditionalOnProperty(value = "spring.cloud.gcp.storage.enabled", matchIfMissing = true)
 @EnableConfigurationProperties({GcpProperties.class, GcpStorageProperties.class})

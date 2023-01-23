@@ -132,7 +132,7 @@ public final class PubSubReactiveFactory {
 
   private Flux<AcknowledgeablePubsubMessage> pullAll(String subscriptionName) {
     CompletableFuture<List<AcknowledgeablePubsubMessage>> pullResponseFuture =
-        this.subscriberOperations.pullAsync(subscriptionName, maxMessages, true).completable();
+        this.subscriberOperations.pullAsync(subscriptionName, maxMessages, true);
 
     return Mono.fromFuture(pullResponseFuture).flatMapMany(Flux::fromIterable);
   }
@@ -142,8 +142,13 @@ public final class PubSubReactiveFactory {
     int intDemand = numRequested > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) numRequested;
     this.subscriberOperations
         .pullAsync(subscriptionName, intDemand, false)
-        .addCallback(
-            messages -> {
+        .whenComplete(
+            (messages, exception) -> {
+              if (exception != null) {
+                exceptionHandler(subscriptionName, numRequested, sink, exception);
+                return;
+              }
+
               if (!sink.isCancelled()) {
                 messages.forEach(sink::next);
               }
@@ -153,19 +158,24 @@ public final class PubSubReactiveFactory {
                   backpressurePull(subscriptionName, numToPull, sink);
                 }
               }
-            },
-            exception -> {
-              if (exception instanceof DeadlineExceededException) {
-                if (LOGGER.isTraceEnabled()) {
-                  LOGGER.trace(
-                      "Blocking pull timed out due to empty subscription "
-                          + subscriptionName
-                          + "; retrying.");
-                }
-                backpressurePull(subscriptionName, numRequested, sink);
-              } else {
-                sink.error(exception);
-              }
             });
+  }
+
+  private void exceptionHandler(
+      String subscriptionName,
+      long numRequested,
+      FluxSink<AcknowledgeablePubsubMessage> sink,
+      Throwable exception) {
+    if (exception instanceof DeadlineExceededException) {
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Blocking pull timed out due to empty subscription "
+                + subscriptionName
+                + "; retrying.");
+      }
+      backpressurePull(subscriptionName, numRequested, sink);
+    } else {
+      sink.error(exception);
+    }
   }
 }

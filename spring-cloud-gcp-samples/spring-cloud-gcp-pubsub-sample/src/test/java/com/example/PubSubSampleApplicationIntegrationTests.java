@@ -31,7 +31,9 @@ import com.google.pubsub.v1.PullRequest;
 import com.google.pubsub.v1.PullResponse;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
+import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.Topic;
+import com.google.pubsub.v1.TopicName;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -50,7 +52,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -93,7 +95,8 @@ class PubSubSampleApplicationIntegrationTests {
 
   private static String projectName;
 
-  @LocalServerPort private int port;
+  @LocalServerPort
+  private int port;
 
   @Autowired private TestRestTemplate testRestTemplate;
 
@@ -106,23 +109,23 @@ class PubSubSampleApplicationIntegrationTests {
     topicAdminClient = TopicAdminClient.create();
     subscriptionAdminClient = SubscriptionAdminClient.create();
 
-    topicAdminClient.createTopic(ProjectTopicName.of(projectName, SAMPLE_TEST_TOPIC));
-    topicAdminClient.createTopic(ProjectTopicName.of(projectName, SAMPLE_TEST_TOPIC2));
+    topicAdminClient.createTopic(TopicName.of(projectName, SAMPLE_TEST_TOPIC));
+    topicAdminClient.createTopic(TopicName.of(projectName, SAMPLE_TEST_TOPIC2));
 
     subscriptionAdminClient.createSubscription(
-        ProjectSubscriptionName.of(projectName, SAMPLE_TEST_SUBSCRIPTION1),
-        ProjectTopicName.of(projectName, SAMPLE_TEST_TOPIC),
+        SubscriptionName.of(projectName, SAMPLE_TEST_SUBSCRIPTION1),
+        TopicName.of(projectName, SAMPLE_TEST_TOPIC),
         PushConfig.getDefaultInstance(),
         10);
 
     subscriptionAdminClient.createSubscription(
-        ProjectSubscriptionName.of(projectName, SAMPLE_TEST_SUBSCRIPTION2),
-        ProjectTopicName.of(projectName, SAMPLE_TEST_TOPIC2),
+        SubscriptionName.of(projectName, SAMPLE_TEST_SUBSCRIPTION2),
+        TopicName.of(projectName, SAMPLE_TEST_TOPIC2),
         PushConfig.getDefaultInstance(),
         10);
     subscriptionAdminClient.createSubscription(
-        ProjectSubscriptionName.of(projectName, SAMPLE_TEST_SUBSCRIPTION3),
-        ProjectTopicName.of(projectName, SAMPLE_TEST_TOPIC2),
+        SubscriptionName.of(projectName, SAMPLE_TEST_SUBSCRIPTION3),
+        TopicName.of(projectName, SAMPLE_TEST_TOPIC2),
         PushConfig.getDefaultInstance(),
         10);
   }
@@ -147,7 +150,7 @@ class PubSubSampleApplicationIntegrationTests {
   }
 
   @BeforeEach
-  void initializeAppUrl() throws IOException {
+  void initializeAppUrl() {
     this.appUrl = "http://localhost:" + this.port;
   }
 
@@ -233,7 +236,7 @@ class PubSubSampleApplicationIntegrationTests {
         UriComponentsBuilder.fromHttpUrl(this.appUrl + "/createTopic")
             .queryParam("topicName", topicName)
             .toUriString();
-    ResponseEntity<String> response = this.testRestTemplate.postForEntity(url, null, String.class);
+    this.testRestTemplate.postForEntity(url, null, String.class);
 
     String projectTopicName = ProjectTopicName.format(projectName, topicName);
     await()
@@ -258,6 +261,7 @@ class PubSubSampleApplicationIntegrationTests {
         .untilAsserted(
             () -> {
               List<String> projectTopics = getTopicNamesFromProject();
+              assertThat(projectTopics).isNotNull();
               assertThat(projectTopics).doesNotContain(projectTopicName);
             });
   }
@@ -293,6 +297,7 @@ class PubSubSampleApplicationIntegrationTests {
         .untilAsserted(
             () -> {
               List<String> subscriptions = getSubscriptionNamesFromProject();
+              assertThat(subscriptions).isNotNull();
               assertThat(subscriptions).doesNotContain(projectSubscriptionName);
             });
   }
