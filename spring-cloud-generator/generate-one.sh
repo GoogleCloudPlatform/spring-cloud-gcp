@@ -9,7 +9,7 @@ set -e
 
 # by default, do not download repos
 download_repos=0
-while getopts c:v:i:g:d:p:f:x:z:F: flag
+while getopts c:v:i:g:d:p:f:x:z:m: flag
 do
     case "${flag}" in
         c) client_lib_name=${OPTARG};;
@@ -19,7 +19,7 @@ do
         x) googleapis_commitish=${OPTARG};;
         z) monorepo_commitish=${OPTARG};;
         f) googleapis_folder=${OPTARG};;
-        F) monorepo_folder=${OPTARG};;
+        m) monorepo_folder=${OPTARG};;
         d) download_repos=1;;
     esac
 done
@@ -115,7 +115,7 @@ add_module_to_pom () {
       sed -i "/$starter_artifactid/d" README.md
       # also write to spring-cloud-previews/README.md
       # format |name|distribution name|
-      echo -e "|$client_lib_name|com.google.cloud:$starter_artifactid|[README.md](https://github.com/googleapis/google-cloud-java/blob/$monorepo_commitish/$monorepo_folder/README.md)|" >> README.md
+      echo -e "|[$monorepo_folder](https://github.com/googleapis/google-cloud-java/blob/$monorepo_commitish/$monorepo_folder/README.md)|com.google.cloud:$starter_artifactid|" >> README.md
       {(grep -vw ".*:.*" README.md);(grep ".*:.*" README.md| sort | uniq)} > tmpfile && mv tmpfile README.md
     fi
   fi
