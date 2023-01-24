@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.orchestration.airflow.service.v1.environments.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud composer/Environments components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.orchestration.airflow.service.v1.image-versions.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud composer/ImageVersions components.",
+      "defaultValue": true
+    }
+  ]
+}

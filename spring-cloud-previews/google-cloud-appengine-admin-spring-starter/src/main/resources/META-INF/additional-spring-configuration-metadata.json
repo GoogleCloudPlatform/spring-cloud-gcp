@@ -1,0 +1,52 @@
+{
+  "properties": [
+    {
+      "name": "com.google.appengine.v1.applications.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud appengine/Applications components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.appengine.v1.services.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud appengine/Services components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.appengine.v1.versions.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud appengine/Versions components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.appengine.v1.instances.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud appengine/Instances components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.appengine.v1.firewall.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud appengine/Firewall components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.appengine.v1.authorized-domains.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud appengine/AuthorizedDomains components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.appengine.v1.authorized-certificates.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud appengine/AuthorizedCertificates components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.appengine.v1.domain-mappings.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud appengine/DomainMappings components.",
+      "defaultValue": true
+    }
+  ]
+}
