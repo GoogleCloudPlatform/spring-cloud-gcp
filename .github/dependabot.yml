@@ -5,6 +5,9 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+  commit-message:
+    # Prefix all commit messages with "deps: "
+    prefix: "deps"
   open-pull-requests-limit: 10
   labels:
     - "dependencies"
@@ -21,6 +24,9 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+  commit-message:
+    # Prefix all commit messages with "deps: "
+    prefix: "deps"
   open-pull-requests-limit: 10
   target-branch: "3.x"
   labels:
