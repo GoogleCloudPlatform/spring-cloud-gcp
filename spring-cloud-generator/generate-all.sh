@@ -42,6 +42,7 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
     -z $monorepo_commitish 2>&1 | tee tmp-generate-one-output || save_error_info $library_name
   set +o pipefail
 done <<< $libraries
+rm tmp-generate-one-output
 
 echo "run google-java-format on generated code"
 cd ../spring-cloud-previews
