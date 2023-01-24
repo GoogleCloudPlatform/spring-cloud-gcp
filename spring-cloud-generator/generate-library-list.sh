@@ -77,7 +77,7 @@ for d in ./google-cloud-java/*java-*/; do
   # get commitish from git log
   # criteria: changes happen before tag,  touches path, and with changes in googleapis/googleapis
   cd $d || { echo "Failed to get into directory $d"; exit 1; }
-  googleapis_committish=$(git log v$commitish -- "$version_folder" | grep -m 1 'Source-Link:.*googleapis/googleapis.*' | sed 's#^.*/commit/##')
+  googleapis_committish=$(git log $commitish -- "$version_folder" | grep -m 1 'Source-Link:.*googleapis/googleapis.*' | sed 's#^.*/commit/##')
   cd ~- || { echo "Failed to get back to previous directory"; exit 1; }
 
   echo "$api_shortname, $googleapis_folder, $distribution_name, $googleapis_committish, $monorepo_folder" >> $filename
