@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.domains.v1.domains.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud domains/Domains components.",
+      "defaultValue": true
+    }
+  ]
+}
