@@ -1,0 +1,4 @@
+com.google.cloud.gaming.v1.spring.GameServerClustersServiceSpringAutoConfiguration
+com.google.cloud.gaming.v1.spring.GameServerConfigsServiceSpringAutoConfiguration
+com.google.cloud.gaming.v1.spring.GameServerDeploymentsServiceSpringAutoConfiguration
+com.google.cloud.gaming.v1.spring.RealmsServiceSpringAutoConfiguration
