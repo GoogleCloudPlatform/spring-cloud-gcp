@@ -184,9 +184,9 @@ class SpannerTransactionManagerTests {
     tx.transactionManager = transactionManager;
 
     assertThatThrownBy(() -> manager.doCommit(status))
-            .isInstanceOf(UnexpectedRollbackException.class)
-            .hasMessage("Transaction Got Rolled Back; "
-            + "nested exception is com.google.cloud.spanner.AbortedException");
+        .isInstanceOf(UnexpectedRollbackException.class)
+        .hasMessage("Transaction Got Rolled Back")
+        .hasCauseExactlyInstanceOf(AbortedException.class);
   }
 
   @Test
@@ -202,9 +202,9 @@ class SpannerTransactionManagerTests {
     tx.transactionManager = transactionManager;
 
     assertThatThrownBy(() -> manager.doCommit(status))
-            .isInstanceOf(DuplicateKeyException.class)
-            .hasMessage("ALREADY_EXISTS; nested exception is "
-                    + "com.google.cloud.spanner.SpannerException: ALREADY_EXISTS: this is from a test");
+        .isInstanceOf(DuplicateKeyException.class)
+        .hasMessage("ALREADY_EXISTS")
+        .hasStackTraceContaining("ALREADY_EXISTS: this is from a test");
   }
 
   @Test

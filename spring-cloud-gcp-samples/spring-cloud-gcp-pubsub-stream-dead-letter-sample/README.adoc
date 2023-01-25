@@ -2,7 +2,7 @@
 
 This code sample demonstrates how to use the Spring Cloud Stream binder for Google Cloud Pub/Sub with Dead Letter Topics.
 
-The sample app prompts a user for a message and user name.
+The sample app prompts a user for a message and username.
 That data is added to a `UserMessage` object, together with the time of message creation, and is sent through Google Cloud Pub/Sub to a sink that `nack()`s the message.
 Pub/Sub will attempt to redeliver the message up to maximum number of retries before routing it to the configured dead letter topic.\
 This sample app also listens to this dead letter topic, and logs any messages received.
@@ -30,7 +30,7 @@ The topics will be created in your account if they do not already exist.
 (spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-dead-letter-sample) to get the app running.
 
 7. Browse to `localhost:8080` or use the `Web Preview` button in Cloud Shell to preview the app on port 8080,
-and type in a message, a user name, and press the `Post it!` button.
+and type in a message, a username, and press the `Post it!` button.
 
 8. Verify in your app's logs that a similar message was posted:
 +

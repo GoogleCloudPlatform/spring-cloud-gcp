@@ -4,7 +4,7 @@ Spring Framework on Google Cloud provides an abstraction layer to publish to and
 subscribe from Google Cloud Pub/Sub topics and to create, list or delete
 Google Cloud Pub/Sub topics and subscriptions.
 
-A Spring Boot starter is provided to auto-configure the various required
+A Spring Boot starter is provided to autoconfigure the various required
 Pub/Sub components.
 
 Maven coordinates,
@@ -57,9 +57,9 @@ settings can be either global or subscription-specific.
 
 A custom configuration (injected through a setter in
 `DefaultSubscriberFactory` or a custom bean) will take precedence over
-auto-configuration. Hence, if one wishes to use per-subscription
+autoconfiguration. Hence, if one wishes to use per-subscription
 configuration for a Pub/Sub setting, there must not be a custom bean for
-that setting. When using auto-configuration, if both global and
+that setting. When using autoconfiguration, if both global and
 per-subscription configurations are provided, then the per-subscription
 configuration will be used. However, if a per-subscription configuration
 is not set then the global or default configuration will be used.
@@ -235,7 +235,7 @@ backlog. To enable it, you need to add the [Spring Boot
 Actuator](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready)
 to your project and the [GCP
 Monitoring](https://cloud.google.com/monitoring/docs/reference/libraries).
-Also you need to set the following properties
+Also, you need to set the following properties
 `spring.cloud.gcp.pubsub.health.lagThreshold`,
 `spring.cloud.gcp.pubsub.health.backlogThreshold`.
 
@@ -271,7 +271,7 @@ but the backlog increases, then the subscriber is unhealthy.
 
 The health indicator will not behave entirely as expected if Dead Letter
 Queueing is enabled on the subscription being checked,
-num\_undelivered\_messages will drop down by itself after DLQ threshold
+num\_undelivered\_messages will drop by itself after DLQ threshold
 is reached.
 
 </div>
@@ -376,16 +376,17 @@ Subscriber subscriber =
 | **subscribeAndConvert(String subscription, Consumer\<ConvertedBasicAcknowledgeablePubsubMessage\<T\>\> messageConsumer, Class\<T\> payloadType)** | same as `pull`, but converts message payload to `payloadType` using the converter configured in the template |
 
 <div class="note">
+As of version 1.2, subscribing by itself is not enough to keep an application running.
+For a command-line application, a way to keep the application running is to have a user thread(non-daemon thread) started up. A fake scheduled task creates a threadpool with non-daemon threads:
 
-As of version 1.2, subscribing by itself is not enough to keep an
-application running. For a command-line application, you may want to
-provide your own `ThreadPoolTaskScheduler` bean named
-`pubsubSubscriberThreadPool`, which by default creates non-daemon
-threads that will keep an application from stopping. This default
-behavior has been overridden in Spring Framework on Google Cloud for consistency with
-Cloud Pub/Sub client library, and to avoid holding up command-line
-applications that would like to shut down once their work is done.
+```java
+@Scheduled (fixedRate = 1, timeUnit = TimeUnit.MINUTES)
+public void fakeScheduledTask() {
+    // do nothing
+}
+```
 
+Another option is to pull in `spring-boot-starter-web` or `spring-boot-starter-webflux` as a dependency which will start an embedded servlet container or reactive server keeping the application running in the background
 </div>
 
 #### Pulling messages from a subscription
@@ -457,7 +458,7 @@ There are two ways to acknowledge messages.
 
 All `ack()`, `nack()`, and `modifyAckDeadline()` methods on messages, as
 well as `PubSubSubscriberTemplate`, are implemented asynchronously,
-returning a `ListenableFuture<Void>` to enable asynchronous processing.
+returning a `CompletableFuture<Void>` to enable asynchronous processing.
 
 </div>
 
@@ -487,11 +488,11 @@ public Subscription newSubscription() {
 }
 ```
 
-Dead letter topics are no different than any other topic, though some
+Dead letter topics are no different from any other topic, though some
 [additional
 permissions](https://cloud.google.com/pubsub/docs/dead-letter-topics#granting_forwarding_permissions)
 are necessary to ensure the Cloud Pub/Sub service can successfully `ack`
-the original message and re-`publish` it on the dead letter topic.
+the original message and re-`publish` on the dead letter topic.
 
 #### JSON support
 
@@ -554,7 +555,7 @@ user.setPassword("password");
 pubSubTemplate.publish(topicName, user);
 ```
 
-And that’s how you convert messages to objects on pull:
+And that’s how you convert messages to object on pull:
 
 ``` java
 int maxMessages = 1;
@@ -639,7 +640,7 @@ project using the
 
 The Spring Boot starter for Spring Framework on Google Cloud Pub/Sub auto-configures a `PubSubAdmin`
 object using the `GcpProjectIdProvider` and the `CredentialsProvider`
-auto-configured by the Spring Framework on Google Cloud Core Starter.
+autoconfigured by the Spring Framework on Google Cloud Core Starter.
 
 #### Creating a topic
 
@@ -686,7 +687,7 @@ in a project:
 
 ``` java
 List<String> topics =
-    pubSubAdmin.listTopics().stream().map(Topic::getName).collect(Collectors.toList());
+                pubSubAdmin.listTopics().stream().map(Topic::getName).toList();
 ```
 
 #### Creating a subscription
@@ -698,6 +699,8 @@ existing topics:
 public Subscription createSubscription(String subscriptionName, String topicName)
 
 public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline)
+
+public Subscription createSubscription(String subscriptionName, String topicName, String pushEndpoint)
 
 public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline, String pushEndpoint)
 
@@ -745,9 +748,9 @@ Here is an example of how to list every subscription name in a project:
 
 ``` java
 List<String> subscriptions =
-    pubSubAdmin.listSubscriptions().stream()
-        .map(Subscription::getName)
-        .collect(Collectors.toList());
+                pubSubAdmin.listSubscriptions().stream()
+                    .map(Subscription::getName)
+                    .toList();
 ```
 
 ### Sample

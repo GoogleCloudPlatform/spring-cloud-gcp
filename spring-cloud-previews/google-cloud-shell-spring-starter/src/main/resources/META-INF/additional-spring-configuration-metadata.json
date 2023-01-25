@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.shell.v1.cloud-shell-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud cloudshell/CloudShellService components.",
+      "defaultValue": true
+    }
+  ]
+}

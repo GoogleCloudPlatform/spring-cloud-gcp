@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.integration.mapping.HeaderMapper;
+import org.springframework.messaging.MessageDeliveryException;
 import org.springframework.util.Assert;
 
 /**
@@ -156,18 +157,27 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
     } catch (RuntimeException re) {
       if (this.ackMode == AckMode.AUTO) {
         message.nack();
-        LOGGER.warn(
-            "Sending Spring message ["
-                + message.getPubsubMessage().getMessageId()
-                + "] failed; message nacked automatically.",
-            re);
+        logWarning(message, re, "message nacked automatically.");
       } else {
-        LOGGER.warn(
-            "Sending Spring message ["
-                + message.getPubsubMessage().getMessageId()
-                + "] failed; message neither acked nor nacked.",
-            re);
+        logWarning(message, re, "message neither acked nor nacked.");
       }
+    }
+  }
+
+  private void logWarning(
+      ConvertedBasicAcknowledgeablePubsubMessage<?> message,
+      RuntimeException re,
+      String actionMessage) {
+    LOGGER.warn(String.format("Sending Spring message [%s] failed; %s",
+        message.getPubsubMessage().getMessageId(), actionMessage));
+    // Starting from Spring 3.0, nested exception message is NOT included in stacktrace.
+    // However, customers may still rely on messages in nested exception to troubleshoot,
+    // so we explicitly log failure messages.
+    // See https://github.com/spring-projects/spring-framework/issues/25162 for more info.
+    if (re instanceof MessageDeliveryException messageDeliveryException) {
+      LOGGER.warn(messageDeliveryException.getFailedMessage());
+    } else {
+      LOGGER.warn(re.getMessage());
     }
   }
 

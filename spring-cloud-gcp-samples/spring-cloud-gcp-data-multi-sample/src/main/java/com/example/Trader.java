@@ -21,7 +21,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 
 /** A sample entity. */
-@Table(name = "traders")
+@Table(name = "traders_repository")
 public class Trader {
   @PrimaryKey
   @Column(name = "trader_id")

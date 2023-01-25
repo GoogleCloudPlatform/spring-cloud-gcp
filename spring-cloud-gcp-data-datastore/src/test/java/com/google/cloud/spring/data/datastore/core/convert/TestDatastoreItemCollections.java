@@ -41,7 +41,7 @@ public class TestDatastoreItemCollections {
 
   public TestDatastoreItemCollections(
       List<Integer> intList,
-      ComparableBeanContextSupport beanContext,
+      ComparableBeanContextSupport<Object> beanContext,
       String[] stringArray,
       boolean[] boolArray,
       byte[][] bytes,
@@ -133,7 +133,7 @@ public class TestDatastoreItemCollections {
    * BeanContextSupport does not provide an equals() implementation. This subclass overrides {@code
    * equals/hashCode} and keeps a simple list of values to enable test verification.
    */
-  static class ComparableBeanContextSupport extends BeanContextSupport {
+  static class ComparableBeanContextSupport<T> extends BeanContextSupport {
     private Set<Object> values = new HashSet<>();
 
     @Override

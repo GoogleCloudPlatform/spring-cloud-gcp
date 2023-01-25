@@ -34,7 +34,7 @@ import org.springframework.web.servlet.view.RedirectView
 @RestController
 class Controller(val pubSubTemplate: PubSubTemplate, val personRepository: PersonRepository) {
 
-	val REGISTRATION_TOPIC = "registrations"
+	private val registrationTopic = "registrations"
 
 	@PostMapping("/registerPerson")
 	fun registerPerson(
@@ -42,7 +42,7 @@ class Controller(val pubSubTemplate: PubSubTemplate, val personRepository: Perso
 			@RequestParam("lastName") lastName: String,
 			@RequestParam("email") email: String): RedirectView {
 
-		pubSubTemplate.publish(REGISTRATION_TOPIC, Person(firstName, lastName, email))
+		pubSubTemplate.publish(registrationTopic, Person(firstName, lastName, email))
 		return RedirectView("/")
 	}
 

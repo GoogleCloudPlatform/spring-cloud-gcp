@@ -6,15 +6,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.6</version>
+		<version>3.0.0</version>
 		<relativePath/>
 	</parent>
 
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
-
+	<version>4.0.0-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -22,12 +21,11 @@
 		<main.basedir>${basedir}/..</main.basedir>
 
 		<!-- Dependency versions -->
-		<spring-native.version>0.12.1</spring-native.version>
 		<google-cloud-graalvm-support.version>0.7.0</google-cloud-graalvm-support.version>
 		<testcontainers.version>1.17.6</testcontainers.version>
 
 		<!-- Checkstyle versions. Keep in sync with ../pom.xml -->
-		<maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>3.2.1</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 
 		<!-- App engine plugin version, used to deploy sample apps -->
@@ -66,13 +64,10 @@
 		<module>spring-cloud-gcp-pubsub-bus-config-sample</module>
 		<module>spring-cloud-gcp-pubsub-stream-dead-letter-sample</module>
 		<module>spring-cloud-gcp-pubsub-stream-functional-sample</module>
-		<module>spring-cloud-gcp-pubsub-stream-polling-sample</module>
-		<module>spring-cloud-gcp-pubsub-stream-sample</module>
 		<module>spring-cloud-gcp-pubsub-reactive-sample</module>
 		<module>spring-cloud-gcp-integration-pubsub-json-sample</module>
 		<module>spring-cloud-gcp-security-iap-sample</module>
 		<module>spring-cloud-gcp-sql-postgres-sample</module>
-		<module>spring-cloud-gcp-sql-mysql-r2dbc-sample</module>
 		<module>spring-cloud-gcp-sql-postgres-r2dbc-sample</module>
 		<module>spring-cloud-gcp-vision-ocr-demo</module>
 		<module>spring-cloud-gcp-firestore-sample</module>

@@ -25,7 +25,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import com.google.cloud.Timestamp;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.data.util.TypeInformation;
 
 /** Tests for the `DatastoreMappingContext`. */
@@ -37,7 +36,7 @@ class DatastoreMappingContextTests {
     ApplicationContext applicationContext = mock(ApplicationContext.class);
     context.setApplicationContext(applicationContext);
 
-    context.createPersistentEntity(ClassTypeInformation.from(Object.class));
+    context.createPersistentEntity(TypeInformation.of(Object.class));
 
     verify(mockEntity, times(1)).setApplicationContext(applicationContext);
   }
@@ -47,7 +46,7 @@ class DatastoreMappingContextTests {
     DatastorePersistentEntityImpl mockEntity = mock(DatastorePersistentEntityImpl.class);
     DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
 
-    context.createPersistentEntity(ClassTypeInformation.from(Object.class));
+    context.createPersistentEntity(TypeInformation.of(Object.class));
 
     verifyNoMoreInteractions(mockEntity);
   }

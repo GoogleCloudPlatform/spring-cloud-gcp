@@ -40,12 +40,12 @@ public class Trader {
   private String lastName;
 
   @Column(name = "CREATED_ON")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MMM-dd HH:mm:ss z")
-  private java.sql.Timestamp createdOn;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+  private Timestamp createdOn;
 
   @Column(name = "MODIFIED_ON")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MMM-dd HH:mm:ss z")
-  private List<java.sql.Timestamp> modifiedOn;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+  private List<Timestamp> modifiedOn;
 
   @Interleaved(lazy = true)
   private List<Trade> trades;

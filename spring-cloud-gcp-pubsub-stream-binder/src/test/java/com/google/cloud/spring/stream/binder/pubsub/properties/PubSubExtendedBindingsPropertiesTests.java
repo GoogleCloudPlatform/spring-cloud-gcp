@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,116 +17,108 @@
 package com.google.cloud.spring.stream.binder.pubsub.properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.cloud.pubsub.v1.Subscriber;
-import com.google.cloud.pubsub.v1.stub.SubscriberStub;
-import com.google.cloud.spring.pubsub.PubSubAdmin;
-import com.google.cloud.spring.pubsub.core.PubSubTemplate;
-import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
-import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.spring.pubsub.integration.AckMode;
-import com.google.cloud.spring.pubsub.support.PublisherFactory;
-import com.google.cloud.spring.pubsub.support.SubscriberFactory;
-import com.google.cloud.spring.stream.binder.pubsub.PubSubMessageChannelBinder;
-import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingsPropertiesTests.PubSubBindingsTestConfiguration;
-import com.google.pubsub.v1.Subscription;
-import com.google.pubsub.v1.Topic;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.Input;
-import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.binder.BinderFactory;
-import org.springframework.cloud.stream.config.BindingServiceConfiguration;
-import org.springframework.cloud.stream.messaging.Sink;
+import org.springframework.cloud.stream.binder.Binder;
+import org.springframework.cloud.stream.binder.BinderConfiguration;
+import org.springframework.cloud.stream.binder.BinderType;
+import org.springframework.cloud.stream.binder.BinderTypeRegistry;
+import org.springframework.cloud.stream.binder.DefaultBinderFactory;
+import org.springframework.cloud.stream.binder.DefaultBinderTypeRegistry;
+import org.springframework.cloud.stream.binder.ExtendedPropertiesBinder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.SubscribableChannel;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/** Tests for extended binding properties. */
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.NONE,
-    classes = {PubSubBindingsTestConfiguration.class, BindingServiceConfiguration.class},
-    properties = {
-      "spring.cloud.stream.gcp.pubsub.bindings.input.consumer.ack-mode=AUTO_ACK",
-      "spring.cloud.stream.gcp.pubsub.bindings.input.consumer.auto-create-resources=true",
-      "spring.cloud.stream.gcp.pubsub.default.consumer.auto-create-resources=false"
-    })
+/**
+ * Tests for extended binding properties.
+ */
 class PubSubExtendedBindingsPropertiesTests {
 
-  @Autowired private ConfigurableApplicationContext context;
+  private static Binder<MessageChannel, ?, ?> binder;
 
-  @Test
-  void testExtendedPropertiesOverrideDefaults() {
-    BinderFactory binderFactory = this.context.getBeanFactory().getBean(BinderFactory.class);
-    PubSubMessageChannelBinder binder =
-        (PubSubMessageChannelBinder) binderFactory.getBinder("pubsub", MessageChannel.class);
-
-    assertThat(binder.getExtendedConsumerProperties("custom-in").isAutoCreateResources()).isFalse();
-    assertThat(binder.getExtendedConsumerProperties("input").isAutoCreateResources()).isTrue();
-
-    assertThat(binder.getExtendedConsumerProperties("custom-in").getAckMode())
-        .isEqualTo(AckMode.AUTO);
-    assertThat(binder.getExtendedConsumerProperties("input").getAckMode())
-        .isEqualTo(AckMode.AUTO_ACK);
+  @BeforeAll
+  static void init() {
+    DefaultBinderFactory binderFactory = createMockExtendedBinderFactory();
+    binder = binderFactory.getBinder(null,
+        MessageChannel.class);
   }
 
-  /** Spring Boot config for tests. */
+  @Test
+  void testExtendedDefaultProducerProperties() {
+    PubSubProducerProperties producerProperties = (PubSubProducerProperties) ((ExtendedPropertiesBinder<?, ?, ?>) binder)
+        .getExtendedProducerProperties("default-output");
+    assertThat(producerProperties.isAutoCreateResources()).isTrue();
+    assertThat(producerProperties.getAllowedHeaders()).isNull();
+    assertThat(producerProperties.isSync()).isFalse();
+  }
+
+  @Test
+  void testExtendedDefaultConsumerProperties() {
+    PubSubConsumerProperties consumerProperties = (PubSubConsumerProperties) ((ExtendedPropertiesBinder<?, ?, ?>) binder)
+        .getExtendedConsumerProperties("default-input");
+    assertThat(consumerProperties.isAutoCreateResources()).isTrue();
+    assertThat(consumerProperties.getAllowedHeaders()).isNull();
+    assertThat(consumerProperties.getAckMode()).isEqualTo(AckMode.AUTO);
+    assertThat(consumerProperties.getMaxFetchSize()).isEqualTo(1);
+    assertThat(consumerProperties.getSubscriptionName()).isNull();
+    assertThat(consumerProperties.getDeadLetterPolicy()).isNull();
+  }
+
+  private static DefaultBinderFactory createMockExtendedBinderFactory() {
+    BinderTypeRegistry binderTypeRegistry = createMockExtendedBinderTypeRegistry();
+    return new DefaultBinderFactory(
+        Collections.singletonMap("mock",
+            new BinderConfiguration("mock", new HashMap<>(), true, true)),
+        binderTypeRegistry, null);
+  }
+
+  private static DefaultBinderTypeRegistry createMockExtendedBinderTypeRegistry() {
+    return new DefaultBinderTypeRegistry(
+        Collections.singletonMap("mock", new BinderType("mock",
+            new Class[]{ MockExtendedBinderConfiguration.class })));
+  }
+
   @Configuration
-  @EnableBinding(PubSubBindingsTestConfiguration.CustomTestSink.class)
-  static class PubSubBindingsTestConfiguration {
+  public static class MockExtendedBinderConfiguration {
 
+    @SuppressWarnings("rawtypes")
     @Bean
-    public PubSubAdmin pubSubAdmin() {
-      PubSubAdmin pubSubAdminMock = Mockito.mock(PubSubAdmin.class);
-      when(pubSubAdminMock.createSubscription(anyString(), anyString()))
-          .thenReturn(Subscription.getDefaultInstance());
-      when(pubSubAdminMock.getSubscription(anyString()))
-          .thenReturn(Subscription.getDefaultInstance());
-      when(pubSubAdminMock.getTopic(anyString())).thenReturn(Topic.getDefaultInstance());
-      return pubSubAdminMock;
-    }
+    public Binder<?, ?, ?> extendedPropertiesBinder() {
+      Binder mock = mock(Binder.class,
+          Mockito.withSettings().defaultAnswer(Mockito.RETURNS_MOCKS)
+              .extraInterfaces(ExtendedPropertiesBinder.class));
+      ConfigurableEnvironment environment = new StandardEnvironment();
+      Map<String, Object> propertiesToAdd = new HashMap<>();
+      environment.getPropertySources()
+          .addLast(new MapPropertySource("extPropertiesConfig", propertiesToAdd));
+      ConfigurableApplicationContext applicationContext = new GenericApplicationContext();
+      applicationContext.setEnvironment(environment);
 
-    @Bean
-    public PubSubTemplate pubSubTemplate() {
-      PublisherFactory publisherFactory = Mockito.mock(PublisherFactory.class);
-
-      SubscriberFactory subscriberFactory = Mockito.mock(SubscriberFactory.class);
-      when(subscriberFactory.getProjectId()).thenReturn("test-project");
-      when(subscriberFactory.createSubscriberStub(any()))
-          .thenReturn(Mockito.mock(SubscriberStub.class));
-      when(subscriberFactory.createSubscriber(anyString(), any()))
-          .thenReturn(Mockito.mock(Subscriber.class));
-
-      return new PubSubTemplate(
-          new PubSubPublisherTemplate(publisherFactory),
-          new PubSubSubscriberTemplate(subscriberFactory));
-    }
-
-    @StreamListener("input")
-    public void process(String payload) {
-      System.out.println(payload);
-    }
-
-    @StreamListener("custom-in")
-    public void processCustom(String payload) {
-      System.out.println(payload);
-    }
-
-    /** interface for testing. */
-    interface CustomTestSink extends Sink {
-      @Input("custom-in")
-      SubscribableChannel customIn();
+      PubSubExtendedBindingProperties pubSubExtendedBindingProperties = new PubSubExtendedBindingProperties();
+      pubSubExtendedBindingProperties.setApplicationContext(applicationContext);
+      final PubSubConsumerProperties defaultConsumerProperties = pubSubExtendedBindingProperties
+          .getExtendedConsumerProperties("default-input");
+      final PubSubProducerProperties defaultProducerProperties = pubSubExtendedBindingProperties
+          .getExtendedProducerProperties("default-output");
+      when(((ExtendedPropertiesBinder) mock).getExtendedConsumerProperties("default-input"))
+          .thenReturn(defaultConsumerProperties);
+      when(((ExtendedPropertiesBinder) mock).getExtendedProducerProperties("default-output"))
+          .thenReturn(defaultProducerProperties);
+      return mock;
     }
   }
 }

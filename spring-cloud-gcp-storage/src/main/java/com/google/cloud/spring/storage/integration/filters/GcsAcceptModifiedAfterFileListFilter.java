@@ -29,8 +29,9 @@ import org.springframework.integration.file.filters.DiscardAwareFileListFilter;
  * The {@link GcsAcceptModifiedAfterFileListFilter} is a filter which accepts all files that were
  * modified after a specified point in time.
  *
- * <p>More specifically, it accepts (includes) all files whose {@link BlobInfo#getUpdateTime()} is
- * after (greater than or equal to) the {@link #acceptAfterCutoffTimestamp}.
+ * <p>More specifically, it accepts (includes) all files whose
+ * {@link BlobInfo#getUpdateTimeOffsetDateTime()} is after (greater than or equal to) the
+ * {@link #acceptAfterCutoffTimestamp}.
  *
  * <p>{@link #acceptAfterCutoffTimestamp} defaults to Instant.now() (UTC) in millis, but an
  * alternative {@link Instant} can be provided via the constructor.
@@ -78,7 +79,8 @@ public class GcsAcceptModifiedAfterFileListFilter implements DiscardAwareFileLis
   }
 
   private boolean fileUpdateTimeOnOrAfterPointInTime(BlobInfo file) {
-    return file.getUpdateTime() >= acceptAfterCutoffTimestamp;
+    return file.getUpdateTimeOffsetDateTime().toInstant().toEpochMilli()
+        >= acceptAfterCutoffTimestamp;
   }
 
   @Override

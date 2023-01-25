@@ -1,0 +1,2 @@
+com.google.cloud.automl.v1.spring.PredictionServiceSpringAutoConfiguration
+com.google.cloud.automl.v1.spring.AutoMlSpringAutoConfiguration

@@ -30,7 +30,8 @@ public class GcsPersistentAcceptOnceFileListFilter
 
   @Override
   protected long modified(BlobInfo blobInfo) {
-    return (blobInfo != null && blobInfo.getUpdateTime() != null) ? blobInfo.getUpdateTime() : -1;
+    return (blobInfo != null && blobInfo.getUpdateTimeOffsetDateTime() != null)
+        ? blobInfo.getUpdateTimeOffsetDateTime().toInstant().toEpochMilli() : -1;
   }
 
   @Override

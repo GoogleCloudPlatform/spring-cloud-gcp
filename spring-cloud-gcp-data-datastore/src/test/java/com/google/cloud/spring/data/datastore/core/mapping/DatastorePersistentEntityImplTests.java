@@ -28,6 +28,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.data.mapping.SimplePropertyHandler;
 import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.data.util.TypeInformation;
 import org.springframework.expression.spel.SpelEvaluationException;
 
 /** Tests for the Datastore Persistent Entity. */
@@ -38,7 +39,7 @@ class DatastorePersistentEntityImplTests {
   @Test
   void testTableName() {
     DatastorePersistentEntityImpl<TestEntity> entity =
-        new DatastorePersistentEntityImpl<>(ClassTypeInformation.from(TestEntity.class), null);
+        new DatastorePersistentEntityImpl<>(TypeInformation.of(TestEntity.class), null);
     assertThat(entity.kindName()).isEqualTo("custom_test_kind");
   }
 
@@ -46,7 +47,7 @@ class DatastorePersistentEntityImplTests {
   void testRawTableName() {
     DatastorePersistentEntityImpl<EntityNoCustomName> entity =
         new DatastorePersistentEntityImpl<>(
-            ClassTypeInformation.from(EntityNoCustomName.class), null);
+            TypeInformation.of(EntityNoCustomName.class), null);
 
     assertThat(entity.kindName()).isEqualTo("entityNoCustomName");
   }
@@ -55,7 +56,7 @@ class DatastorePersistentEntityImplTests {
   void testEmptyCustomTableName() {
     DatastorePersistentEntityImpl<EntityEmptyCustomName> entity =
         new DatastorePersistentEntityImpl<>(
-            ClassTypeInformation.from(EntityEmptyCustomName.class), null);
+            TypeInformation.of(EntityEmptyCustomName.class), null);
 
     assertThat(entity.kindName()).isEqualTo("entityEmptyCustomName");
   }
@@ -64,9 +65,9 @@ class DatastorePersistentEntityImplTests {
   void testExpressionResolutionWithoutApplicationContext() {
     DatastorePersistentEntityImpl<EntityWithExpression> entity =
         new DatastorePersistentEntityImpl<>(
-            ClassTypeInformation.from(EntityWithExpression.class), null);
+            TypeInformation.of(EntityWithExpression.class), null);
 
-    assertThatThrownBy(() -> entity.kindName())
+    assertThatThrownBy(entity::kindName)
             .isInstanceOf(SpelEvaluationException.class)
             .hasMessageContaining("Property or field 'kindPostfix' cannot be found on null");
   }
@@ -75,7 +76,7 @@ class DatastorePersistentEntityImplTests {
   void testExpressionResolutionFromApplicationContext() {
     DatastorePersistentEntityImpl<EntityWithExpression> entity =
         new DatastorePersistentEntityImpl<>(
-            ClassTypeInformation.from(EntityWithExpression.class), null);
+            TypeInformation.of(EntityWithExpression.class), null);
 
     ApplicationContext applicationContext = mock(ApplicationContext.class);
     when(applicationContext.getBean("kindPostfix")).thenReturn("something");
@@ -103,7 +104,7 @@ class DatastorePersistentEntityImplTests {
 
     DatastorePersistentEntity testEntity = new DatastoreMappingContext().getPersistentEntity(EntityWithNoId.class);
 
-    assertThatThrownBy(() ->  testEntity.getIdPropertyOrFail())
+    assertThatThrownBy(testEntity::getIdPropertyOrFail)
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("An ID property was required but does not exist for the type: "
                     + "class com.google.cloud.spring.data.datastore.core.mapping."

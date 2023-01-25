@@ -45,17 +45,15 @@ import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.time.Duration;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.util.Assert;
 import org.springframework.util.StreamUtils;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.SettableListenableFuture;
 
 /**
  * Helper class which simplifies common operations done in BigQuery.
@@ -87,43 +85,7 @@ public class BigQueryTemplate implements BigQueryOperations {
 
   private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
 
-  private int jsonWriterBatchSize;
-
-  /**
-   * Creates the {@link BigQuery} template.
-   *
-   * @param bigQuery the underlying client object used to interface with BigQuery
-   * @param datasetName the name of the dataset in which all operations will take place
-   * @deprecated As of release 3.3.1, use
-   *     BigQueryTemplate(BigQuery,BigQueryWriteClient,Map,TaskScheduler) instead
-   */
-  @Deprecated
-  public BigQueryTemplate(BigQuery bigQuery, String datasetName) {
-    this(bigQuery, datasetName, new DefaultManagedTaskScheduler());
-  }
-
-  /**
-   * Creates the {@link BigQuery} template.
-   *
-   * @param bigQuery the underlying client object used to interface with BigQuery
-   * @param datasetName the name of the dataset in which all operations will take place
-   * @param taskScheduler the {@link TaskScheduler} used to poll for the status of long-running
-   *     BigQuery operations
-   * @deprecated As of release 3.3.1, use
-   *     BigQueryTemplate(BigQuery,BigQueryWriteClient,Map,TaskScheduler) instead
-   */
-  @Deprecated
-  public BigQueryTemplate(BigQuery bigQuery, String datasetName, TaskScheduler taskScheduler) {
-    Assert.notNull(bigQuery, "BigQuery client object must not be null.");
-    Assert.notNull(datasetName, "Dataset name must not be null");
-    Assert.notNull(taskScheduler, "TaskScheduler must not be null");
-
-    this.bigQuery = bigQuery;
-    this.datasetName = datasetName;
-    this.taskScheduler = taskScheduler;
-    this.bigQueryWriteClient =
-        null; // This constructor is Deprecated. We cannot use BigQueryWriteClient with this
-  }
+  private final int jsonWriterBatchSize;
 
   /**
    * A Full constructor which creates the {@link BigQuery} template.
@@ -203,13 +165,13 @@ public class BigQueryTemplate implements BigQueryOperations {
   }
 
   @Override
-  public ListenableFuture<Job> writeDataToTable(
+  public CompletableFuture<Job> writeDataToTable(
       String tableName, InputStream inputStream, FormatOptions dataFormatOptions) {
     return this.writeDataToTable(tableName, inputStream, dataFormatOptions, null);
   }
 
   @Override
-  public ListenableFuture<Job> writeDataToTable(
+  public CompletableFuture<Job> writeDataToTable(
       String tableName, InputStream inputStream, FormatOptions dataFormatOptions, Schema schema) {
 
     TableId tableId = TableId.of(datasetName, tableName);
@@ -247,11 +209,11 @@ public class BigQueryTemplate implements BigQueryOperations {
    *
    * @param tableName name of the table to write to
    * @param jsonInputStream input stream of the json file to be written
-   * @return {@link ListenableFuture} containing the WriteApiResponse indicating completion of
+   * @return {@link CompletableFuture} containing the WriteApiResponse indicating completion of
    *     operation
    */
   @Override
-  public ListenableFuture<WriteApiResponse> writeJsonStream(
+  public CompletableFuture<WriteApiResponse> writeJsonStream(
       String tableName, InputStream jsonInputStream, Schema schema) {
     createTable(tableName, schema); // create table if it's not already created
     return writeJsonStream(tableName, jsonInputStream);
@@ -278,31 +240,28 @@ public class BigQueryTemplate implements BigQueryOperations {
    *
    * @param tableName name of the table to write to
    * @param jsonInputStream input stream of the json file to be written
-   * @return {@link ListenableFuture} containing the WriteApiResponse indicating completion of
+   * @return {@link CompletableFuture} containing the WriteApiResponse indicating completion of
    *     operation
    */
   @Override
-  public ListenableFuture<WriteApiResponse> writeJsonStream(
+  public CompletableFuture<WriteApiResponse> writeJsonStream(
       String tableName, InputStream jsonInputStream) {
 
-    SettableListenableFuture<WriteApiResponse> writeApiFutureResponse =
-        new SettableListenableFuture<>();
+    CompletableFuture<WriteApiResponse> writeApiFutureResponse =
+        new CompletableFuture<>();
 
     Thread asyncTask =
         new Thread(
             () -> {
               try {
                 WriteApiResponse apiResponse = getWriteApiResponse(tableName, jsonInputStream);
-                writeApiFutureResponse.set(apiResponse);
+                writeApiFutureResponse.complete(apiResponse);
               } catch (DescriptorValidationException | IOException e) {
-                writeApiFutureResponse.setException(e);
+                writeApiFutureResponse.completeExceptionally(e);
                 logger.warn(String.format("Error: %s %n", e.getMessage()), e);
-              } catch (InterruptedException e) {
-                writeApiFutureResponse.setException(e);
+              } catch (Exception e) {
+                writeApiFutureResponse.completeExceptionally(e);
                 // Restore interrupted state in case of an InterruptedException
-                Thread.currentThread().interrupt();
-              } catch (Throwable t) {
-                writeApiFutureResponse.setException(t);
                 Thread.currentThread().interrupt();
               }
             });
@@ -311,13 +270,16 @@ public class BigQueryTemplate implements BigQueryOperations {
     // thread can be run in the ExecutorService when it has been wired-in
 
     // register success and failure callback
-    writeApiFutureResponse.addCallback(
-        res -> logger.info("Data successfully written"),
-        res -> {
-          asyncTask.interrupt(); // interrupt the thread as the developer might have cancelled the
-          // Future.
-          // This can be replaced with interrupting the ExecutorService when it has been wired-in
-          logger.info("asyncTask interrupted");
+    writeApiFutureResponse.whenComplete(
+        (writeApiResponse, exception) -> {
+          if (exception != null) {
+            asyncTask.interrupt(); // interrupt the thread as the developer might have cancelled the
+            // Future.
+            // This can be replaced with interrupting the ExecutorService when it has been wired-in
+            logger.info("asyncTask interrupted");
+            return;
+          }
+          logger.info("Data successfully written");
         });
 
     return writeApiFutureResponse;
@@ -370,7 +332,7 @@ public class BigQueryTemplate implements BigQueryOperations {
       throw new BigQueryException("Failed to append records. \n" + e);
     }
 
-    // Finalize the stream before commiting it
+    // Finalize the stream before committing it
     writer.finalizeWriteStream();
 
     BatchCommitWriteStreamsResponse commitResponse = getCommitResponse(parentTable, writer);
@@ -381,7 +343,7 @@ public class BigQueryTemplate implements BigQueryOperations {
       }
     }
 
-    // set isSucccessful flag to true of there were no errors
+    // set isSuccessful flag to true of there were no errors
     if (apiResponse.getErrors().isEmpty()) {
       apiResponse.setSuccessful(true);
     }
@@ -423,9 +385,9 @@ public class BigQueryTemplate implements BigQueryOperations {
     return this.jsonWriterBatchSize;
   }
 
-  private SettableListenableFuture<Job> createJobFuture(Job pendingJob) {
-    // Prepare the polling task for the ListenableFuture result returned to end-user
-    SettableListenableFuture<Job> result = new SettableListenableFuture<>();
+  private CompletableFuture<Job> createJobFuture(Job pendingJob) {
+    // Prepare the polling task for the CompletableFuture result returned to end-user
+    CompletableFuture<Job> result = new CompletableFuture<>();
     ScheduledFuture<?> scheduledFuture =
         taskScheduler.scheduleAtFixedRate(
             () -> {
@@ -433,22 +395,25 @@ public class BigQueryTemplate implements BigQueryOperations {
                 Job job = pendingJob.reload();
                 if (State.DONE.equals(job.getStatus().getState())) {
                   if (job.getStatus().getError() != null) {
-                    result.setException(
+                    result.completeExceptionally(
                         new BigQueryException(job.getStatus().getError().getMessage()));
                   } else {
-                    result.set(job);
+                    result.complete(job);
                   }
                 }
               } catch (Exception e) {
-                result.setException(new BigQueryException(e.getMessage()));
+                result.completeExceptionally(new BigQueryException(e.getMessage()));
               }
             },
             this.jobPollInterval);
 
-    result.addCallback(
-        response -> scheduledFuture.cancel(true),
-        response -> {
-          pendingJob.cancel();
+    result.whenComplete(
+        (response, exception) -> {
+          if (exception != null) {
+            pendingJob.cancel();
+            scheduledFuture.cancel(true);
+            return;
+          }
           scheduledFuture.cancel(true);
         });
 

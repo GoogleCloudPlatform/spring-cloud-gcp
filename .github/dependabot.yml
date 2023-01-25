@@ -1,12 +1,36 @@
 version: 2
 updates:
+# rules for the main branch
 - package-ecosystem: maven
   directory: "/"
   schedule:
     interval: daily
+  commit-message:
+    # Prefix all commit messages with "deps: "
+    prefix: "deps"
   open-pull-requests-limit: 10
   labels:
     - "dependencies"
+  ignore:
+    # Ignore major version updates - these should be made manually
+    - dependency-name: "*"
+      update-types: [ "version-update:semver-major" ]
+    # Ignore formatter dependency versions used in codegen modules, since they are fixed for Java 8 support
+    - dependency-name: "com.coveo:fmt-maven-plugin"
+    - dependency-name: "com.google.googlejavaformat:google-java-format"
+
+# rules for the `3.x` branch
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  commit-message:
+    # Prefix all commit messages with "deps: "
+    prefix: "deps"
+  open-pull-requests-limit: 10
+  target-branch: "3.x"
+  labels:
+    - "3.x dependencies"
   ignore:
     # Ignore major version updates - these should be made manually
     - dependency-name: "*"

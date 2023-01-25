@@ -24,8 +24,8 @@ import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledg
 import com.google.pubsub.v1.PubsubMessage;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * An abstraction for Google Cloud Pub/Sub subscription / pulling operations.
@@ -97,11 +97,11 @@ public interface PubSubSubscriberOperations {
    * @param returnImmediately returns immediately even if subscription doesn't contain enough
    *     messages to satisfy {@code maxMessages}. Setting this parameter to {@code true} is not
    *     recommended as it may result in long delays in message delivery.
-   * @return the ListenableFuture for the asynchronous execution, returning the list of received
+   * @return the CompletableFuture for the asynchronous execution, returning the list of received
    *     acknowledgeable messages
    * @since 1.2.3
    */
-  ListenableFuture<List<PubsubMessage>> pullAndAckAsync(
+  CompletableFuture<List<PubsubMessage>> pullAndAckAsync(
       String subscription, Integer maxMessages, Boolean returnImmediately);
 
   /**
@@ -131,11 +131,11 @@ public interface PubSubSubscriberOperations {
    * @param returnImmediately returns immediately even if subscription doesn't contain enough
    *     messages to satisfy {@code maxMessages}. Setting this parameter to {@code true} is not
    *     recommended as it may result in long delays in message delivery.
-   * @return the ListenableFuture for the asynchronous execution, returning the list of received
+   * @return the CompletableFuture for the asynchronous execution, returning the list of received
    *     acknowledgeable messages
    * @since 1.2.3
    */
-  ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(
+  CompletableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(
       String subscription, Integer maxMessages, Boolean returnImmediately);
 
   /**
@@ -172,11 +172,11 @@ public interface PubSubSubscriberOperations {
    *     recommended as it may result in long delays in message delivery.
    * @param payloadType the type to which the payload of the Pub/Sub messages should be converted
    * @param <T> the type of the payload
-   * @return the ListenableFuture for the asynchronous execution, returning the list of received
+   * @return the CompletableFuture for the asynchronous execution, returning the list of received
    *     acknowledgeable messages
    * @since 1.2.3
    */
-  <T> ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(
+  <T> CompletableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(
       String subscription, Integer maxMessages, Boolean returnImmediately, Class<T> payloadType);
 
   /**
@@ -195,28 +195,28 @@ public interface PubSubSubscriberOperations {
    * @param subscription short subscription name, e.g., "subscriptionName", or the
    *     fully-qualified subscription name in the {@code
    *     projects/[project_name]/subscriptions/[subscription_name]} format
-   * @return the ListenableFuture for the asynchronous execution, returning a received message, or
+   * @return the CompletableFuture for the asynchronous execution, returning a received message, or
    *     {@code null} if none exists in the subscription
    * @since 1.2.3
    */
-  ListenableFuture<PubsubMessage> pullNextAsync(String subscription);
+  CompletableFuture<PubsubMessage> pullNextAsync(String subscription);
 
   /**
    * Acknowledge a batch of messages. The messages must have the same project id.
    *
    * @param acknowledgeablePubsubMessages messages to be acknowledged
-   * @return {@code ListenableFuture<Void>} the ListenableFuture for the asynchronous execution
+   * @return {@code CompletableFuture<Void>} the CompletableFuture for the asynchronous execution
    */
-  ListenableFuture<Void> ack(
+  CompletableFuture<Void> ack(
       Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages);
 
   /**
    * Negatively acknowledge a batch of messages. The messages must have the same project id.
    *
    * @param acknowledgeablePubsubMessages messages to be negatively acknowledged
-   * @return {@code ListenableFuture<Void>} the ListenableFuture for the asynchronous execution
+   * @return {@code CompletableFuture<Void>} the CompletableFuture for the asynchronous execution
    */
-  ListenableFuture<Void> nack(
+  CompletableFuture<Void> nack(
       Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages);
 
   /**
@@ -225,10 +225,10 @@ public interface PubSubSubscriberOperations {
    * @param acknowledgeablePubsubMessages messages to be modified
    * @param ackDeadlineSeconds the new ack deadline in seconds. A deadline of 0 effectively nacks
    *     the messages.
-   * @return {@code ListenableFuture<Void>} the ListenableFuture for the asynchronous execution
+   * @return {@code CompletableFuture<Void>} the CompletableFuture for the asynchronous execution
    * @since 1.1
    */
-  ListenableFuture<Void> modifyAckDeadline(
+  CompletableFuture<Void> modifyAckDeadline(
       Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages,
       int ackDeadlineSeconds);
 }

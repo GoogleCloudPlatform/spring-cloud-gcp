@@ -24,11 +24,11 @@ import org.springframework.data.annotation.Id;
 public class Book {
   @Id Long id;
 
-  String title;
+  private final String title;
 
-  String author;
+  private final String author;
 
-  int year;
+  private final int year;
 
   public Book(String title, String author, int year) {
     this.title = title;

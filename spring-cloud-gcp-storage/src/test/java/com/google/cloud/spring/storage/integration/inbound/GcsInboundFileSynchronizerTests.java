@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.willAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.PageImpl;
 import com.google.cloud.storage.Blob;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.logging.Log;
@@ -121,6 +123,8 @@ class GcsInboundFileSynchronizerTests {
       Blob blob1 = mock(Blob.class);
       Blob blob2 = mock(Blob.class);
 
+      when(blob1.getUpdateTimeOffsetDateTime()).thenReturn(OffsetDateTime.now());
+      when(blob2.getUpdateTimeOffsetDateTime()).thenReturn(OffsetDateTime.now());
       willAnswer(invocation -> "legend of heroes").given(blob1).getName();
       willAnswer(invocation -> "trails in the sky").given(blob2).getName();
 

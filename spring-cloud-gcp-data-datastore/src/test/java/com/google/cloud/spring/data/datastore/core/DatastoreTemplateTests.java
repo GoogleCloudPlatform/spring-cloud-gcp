@@ -95,7 +95,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.data.util.TypeInformation;
 
 /** Tests for the Datastore Template. */
 class DatastoreTemplateTests {
@@ -1407,7 +1407,7 @@ class DatastoreTemplateTests {
 
     this.datastoreTemplate.findByIdAsMap(keyForMap, Long.class);
     verify(this.datastoreEntityConverter, times(1))
-        .readAsMap(String.class, ClassTypeInformation.from(Long.class), datastoreEntity);
+        .readAsMap(String.class, TypeInformation.of(Long.class), datastoreEntity);
   }
 
   @Test
