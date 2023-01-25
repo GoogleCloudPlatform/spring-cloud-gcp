@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.memcache.v1.cloud-memcache.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud memcache/CloudMemcache components.",
+      "defaultValue": true
+    }
+  ]
+}

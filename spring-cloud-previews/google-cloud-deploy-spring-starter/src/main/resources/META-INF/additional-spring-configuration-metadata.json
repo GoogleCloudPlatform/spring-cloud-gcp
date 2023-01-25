@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.deploy.v1.cloud-deploy.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud clouddeploy/CloudDeploy components.",
+      "defaultValue": true
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.recaptchaenterprise.v1.recaptcha-enterprise-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud recaptchaenterprise/RecaptchaEnterpriseService components.",
+      "defaultValue": true
+    }
+  ]
+}

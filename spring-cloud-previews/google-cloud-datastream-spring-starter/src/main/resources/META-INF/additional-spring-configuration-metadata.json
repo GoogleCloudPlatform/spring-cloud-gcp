@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.datastream.v1.datastream.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud datastream/Datastream components.",
+      "defaultValue": true
+    }
+  ]
+}

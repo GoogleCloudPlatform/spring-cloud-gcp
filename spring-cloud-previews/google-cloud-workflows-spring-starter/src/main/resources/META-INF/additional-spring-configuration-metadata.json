@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.workflows.v1.workflows.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud workflows/Workflows components.",
+      "defaultValue": true
+    }
+  ]
+}
