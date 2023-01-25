@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.functions.v2.function-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud cloudfunctions/FunctionService components.",
+      "defaultValue": true
+    }
+  ]
+}

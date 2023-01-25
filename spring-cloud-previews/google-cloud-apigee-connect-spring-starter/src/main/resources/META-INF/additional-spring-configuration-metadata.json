@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.apigeeconnect.v1.connection-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud apigeeconnect/ConnectionService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.apigeeconnect.v1.tether.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud apigeeconnect/Tether components.",
+      "defaultValue": true
+    }
+  ]
+}
