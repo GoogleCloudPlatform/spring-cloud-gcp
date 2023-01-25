@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 #cmd line:: ./generate-library-list.sh
 commitish="v$(bash compute-monorepo-tag.sh)"
