@@ -21,6 +21,12 @@ jobs:
           echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
           sudo apt update && sudo apt install bazel
       - uses: bazelbuild/setup-bazelisk@v2
+      - name: Clean previews folder
+        continue-on-error: false
+        working-directory: spring-cloud-generator
+        run: |
+          set -x
+          bash reset-previews-folder.sh
       - name: Create branch
         id: create_branch_names
         continue-on-error: false
