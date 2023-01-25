@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.channel.v1.cloud-channel-reports-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud cloudchannel/CloudChannelReportsService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.channel.v1.cloud-channel-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud cloudchannel/CloudChannelService components.",
+      "defaultValue": true
+    }
+  ]
+}

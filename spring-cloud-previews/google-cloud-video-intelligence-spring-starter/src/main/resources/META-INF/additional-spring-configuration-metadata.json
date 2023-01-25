@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.videointelligence.v1.video-intelligence-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud videointelligence/VideoIntelligenceService components.",
+      "defaultValue": true
+    }
+  ]
+}

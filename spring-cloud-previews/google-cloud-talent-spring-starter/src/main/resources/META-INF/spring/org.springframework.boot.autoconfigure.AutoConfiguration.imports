@@ -1,0 +1,5 @@
+com.google.cloud.talent.v4.spring.CompanyServiceSpringAutoConfiguration
+com.google.cloud.talent.v4.spring.CompletionSpringAutoConfiguration
+com.google.cloud.talent.v4.spring.EventServiceSpringAutoConfiguration
+com.google.cloud.talent.v4.spring.JobServiceSpringAutoConfiguration
+com.google.cloud.talent.v4.spring.TenantServiceSpringAutoConfiguration

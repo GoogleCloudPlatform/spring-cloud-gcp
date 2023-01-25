@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.workflows.executions.v1.executions.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud workflowexecutions/Executions components.",
+      "defaultValue": true
+    }
+  ]
+}
