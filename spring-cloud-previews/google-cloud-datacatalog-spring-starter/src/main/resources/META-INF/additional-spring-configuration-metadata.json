@@ -1,0 +1,22 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.datacatalog.v1.data-catalog.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud datacatalog/DataCatalog components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.datacatalog.v1.policy-tag-manager.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud datacatalog/PolicyTagManager components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.datacatalog.v1.policy-tag-manager-serialization.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud datacatalog/PolicyTagManagerSerialization components.",
+      "defaultValue": true
+    }
+  ]
+}

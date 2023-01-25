@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.speech.v2.speech.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud speech/Speech components.",
+      "defaultValue": true
+    }
+  ]
+}

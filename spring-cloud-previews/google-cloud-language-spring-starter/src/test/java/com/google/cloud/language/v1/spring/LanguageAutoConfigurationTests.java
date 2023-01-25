@@ -50,7 +50,8 @@ class LanguageAutoConfigurationTests {
   private static final String SERVICE_CREDENTIAL_CLIENT_ID = "45678";
   private static final String TOP_LEVEL_CREDENTIAL_CLIENT_ID = "12345";
   private static final String SERVICE_OVERRIDE_CLIENT_ID = "56789";
-  private static final String TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME = "defaultLanguageServiceTransportChannelProvider";
+  private static final String TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME =
+      "defaultLanguageServiceTransportChannelProvider";
 
   @Mock private TransportChannel mockTransportChannel;
   @Mock private ApiCallContext mockApiCallContext;
@@ -110,10 +111,9 @@ class LanguageAutoConfigurationTests {
             () -> mockTransportChannelProvider)
         .run(
             ctx -> {
-              assertThat(ctx.getBeanNamesForType(
-                  TransportChannelProvider.class)).containsExactlyInAnyOrder(
-                  "anotherTransportChannelProvider",
-                  TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME);
+              assertThat(ctx.getBeanNamesForType(TransportChannelProvider.class))
+                  .containsExactlyInAnyOrder(
+                      "anotherTransportChannelProvider", TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME);
               LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
               TransportChannelProvider transportChannelProviderBean =
                   (TransportChannelProvider) ctx.getBean(TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME);
@@ -123,7 +123,6 @@ class LanguageAutoConfigurationTests {
               assertThat(transportChannelProvider).isNotSameAs(mockTransportChannelProvider);
             });
   }
-
 
   @Test
   void testShouldUseDefaultTransportChannelProvider() {
