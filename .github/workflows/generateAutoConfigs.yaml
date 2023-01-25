@@ -45,7 +45,7 @@ jobs:
           sudo apt-get install libxml2-utils
           bash generate-library-list.sh
           # trims library list to 4 libraries for testing - will be removed later
-          # echo "$(head -n4 library_list.txt)" > library_list.txt
+          echo "$(head -n4 library_list.txt)" > library_list.txt
       - name: Compile non-autogen libraries
         continue-on-error: false
         run: |
