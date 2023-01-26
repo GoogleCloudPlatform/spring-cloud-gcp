@@ -44,7 +44,7 @@ import org.springframework.context.annotation.Bean;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS.
 /**
- * Auto-configuration for {@link IAMCredentialsClient}.
+ * Auto-configuration for {@link IamCredentialsClient}.
  *
  * <p>Provides auto-configuration for Spring Boot
  *
@@ -101,11 +101,10 @@ public class IAMCredentialsSpringAutoConfiguration {
   }
 
   /**
-   * Provides a IAMCredentialsSettings bean configured to use the default credentials provider
-   * (obtained with iAMCredentialsCredentials()) and its default transport channel provider
-   * (defaultIAMCredentialsTransportChannelProvider()). It also configures the quota project ID if
-   * provided. It will configure an executor provider in case there is more than one thread
-   * configured in the client
+   * Provides a IamCredentialsSettings bean configured to use a DefaultCredentialsProvider and the
+   * client library's default transport channel provider
+   * (defaultIAMCredentialsTransportChannelProvider()). It also configures the quota project ID and
+   * executor thread count, if provided through properties.
    *
    * <p>Retry settings are also configured from service-level and method-level properties specified
    * in IAMCredentialsSpringProperties. Method-level properties will take precedence over
@@ -113,7 +112,7 @@ public class IAMCredentialsSpringAutoConfiguration {
    * specified.
    *
    * @param defaultTransportChannelProvider TransportChannelProvider to use in the settings.
-   * @return a {@link IAMCredentialsSettings} bean configured with {@link TransportChannelProvider}
+   * @return a {@link IamCredentialsSettings} bean configured with {@link TransportChannelProvider}
    *     bean.
    */
   @Bean
@@ -237,10 +236,10 @@ public class IAMCredentialsSpringAutoConfiguration {
   }
 
   /**
-   * Provides a IAMCredentialsClient bean configured with IAMCredentialsSettings.
+   * Provides a IamCredentialsClient bean configured with IamCredentialsSettings.
    *
    * @param iAMCredentialsSettings settings to configure an instance of client bean.
-   * @return a {@link IAMCredentialsClient} bean configured with {@link IAMCredentialsSettings}
+   * @return a {@link IamCredentialsClient} bean configured with {@link IamCredentialsSettings}
    */
   @Bean
   @ConditionalOnMissingBean

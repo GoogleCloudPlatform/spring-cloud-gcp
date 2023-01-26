@@ -101,11 +101,10 @@ public class LookupServiceSpringAutoConfiguration {
   }
 
   /**
-   * Provides a LookupServiceSettings bean configured to use the default credentials provider
-   * (obtained with lookupServiceCredentials()) and its default transport channel provider
-   * (defaultLookupServiceTransportChannelProvider()). It also configures the quota project ID if
-   * provided. It will configure an executor provider in case there is more than one thread
-   * configured in the client
+   * Provides a LookupServiceSettings bean configured to use a DefaultCredentialsProvider and the
+   * client library's default transport channel provider
+   * (defaultLookupServiceTransportChannelProvider()). It also configures the quota project ID and
+   * executor thread count, if provided through properties.
    *
    * <p>Retry settings are also configured from service-level and method-level properties specified
    * in LookupServiceSpringProperties. Method-level properties will take precedence over
