@@ -101,11 +101,10 @@ public class CloudMemcacheSpringAutoConfiguration {
   }
 
   /**
-   * Provides a CloudMemcacheSettings bean configured to use the default credentials provider
-   * (obtained with cloudMemcacheCredentials()) and its default transport channel provider
-   * (defaultCloudMemcacheTransportChannelProvider()). It also configures the quota project ID if
-   * provided. It will configure an executor provider in case there is more than one thread
-   * configured in the client
+   * Provides a CloudMemcacheSettings bean configured to use a DefaultCredentialsProvider and the
+   * client library's default transport channel provider
+   * (defaultCloudMemcacheTransportChannelProvider()). It also configures the quota project ID and
+   * executor thread count, if provided through properties.
    *
    * <p>Retry settings are also configured from service-level and method-level properties specified
    * in CloudMemcacheSpringProperties. Method-level properties will take precedence over

@@ -103,11 +103,10 @@ public class OsConfigZonalServiceSpringAutoConfiguration {
   }
 
   /**
-   * Provides a OsConfigZonalServiceSettings bean configured to use the default credentials provider
-   * (obtained with osConfigZonalServiceCredentials()) and its default transport channel provider
+   * Provides a OsConfigZonalServiceSettings bean configured to use a DefaultCredentialsProvider and
+   * the client library's default transport channel provider
    * (defaultOsConfigZonalServiceTransportChannelProvider()). It also configures the quota project
-   * ID if provided. It will configure an executor provider in case there is more than one thread
-   * configured in the client
+   * ID and executor thread count, if provided through properties.
    *
    * <p>Retry settings are also configured from service-level and method-level properties specified
    * in OsConfigZonalServiceSpringProperties. Method-level properties will take precedence over

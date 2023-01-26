@@ -102,11 +102,10 @@ public class ServiceControllerSpringAutoConfiguration {
   }
 
   /**
-   * Provides a ServiceControllerSettings bean configured to use the default credentials provider
-   * (obtained with serviceControllerCredentials()) and its default transport channel provider
+   * Provides a ServiceControllerSettings bean configured to use a DefaultCredentialsProvider and
+   * the client library's default transport channel provider
    * (defaultServiceControllerTransportChannelProvider()). It also configures the quota project ID
-   * if provided. It will configure an executor provider in case there is more than one thread
-   * configured in the client
+   * and executor thread count, if provided through properties.
    *
    * <p>Retry settings are also configured from service-level and method-level properties specified
    * in ServiceControllerSpringProperties. Method-level properties will take precedence over

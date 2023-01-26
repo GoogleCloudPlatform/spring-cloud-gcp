@@ -44,7 +44,7 @@ import org.springframework.context.annotation.Bean;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS.
 /**
- * Auto-configuration for {@link AccessApprovalClient}.
+ * Auto-configuration for {@link AccessApprovalAdminClient}.
  *
  * <p>Provides auto-configuration for Spring Boot
  *
@@ -101,11 +101,10 @@ public class AccessApprovalSpringAutoConfiguration {
   }
 
   /**
-   * Provides a AccessApprovalSettings bean configured to use the default credentials provider
-   * (obtained with accessApprovalCredentials()) and its default transport channel provider
-   * (defaultAccessApprovalTransportChannelProvider()). It also configures the quota project ID if
-   * provided. It will configure an executor provider in case there is more than one thread
-   * configured in the client
+   * Provides a AccessApprovalAdminSettings bean configured to use a DefaultCredentialsProvider and
+   * the client library's default transport channel provider
+   * (defaultAccessApprovalTransportChannelProvider()). It also configures the quota project ID and
+   * executor thread count, if provided through properties.
    *
    * <p>Retry settings are also configured from service-level and method-level properties specified
    * in AccessApprovalSpringProperties. Method-level properties will take precedence over
@@ -113,8 +112,8 @@ public class AccessApprovalSpringAutoConfiguration {
    * specified.
    *
    * @param defaultTransportChannelProvider TransportChannelProvider to use in the settings.
-   * @return a {@link AccessApprovalSettings} bean configured with {@link TransportChannelProvider}
-   *     bean.
+   * @return a {@link AccessApprovalAdminSettings} bean configured with {@link
+   *     TransportChannelProvider} bean.
    */
   @Bean
   @ConditionalOnMissingBean
@@ -366,10 +365,11 @@ public class AccessApprovalSpringAutoConfiguration {
   }
 
   /**
-   * Provides a AccessApprovalClient bean configured with AccessApprovalSettings.
+   * Provides a AccessApprovalAdminClient bean configured with AccessApprovalAdminSettings.
    *
    * @param accessApprovalSettings settings to configure an instance of client bean.
-   * @return a {@link AccessApprovalClient} bean configured with {@link AccessApprovalSettings}
+   * @return a {@link AccessApprovalAdminClient} bean configured with {@link
+   *     AccessApprovalAdminSettings}
    */
   @Bean
   @ConditionalOnMissingBean
