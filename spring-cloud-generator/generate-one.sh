@@ -112,7 +112,7 @@ add_module_to_pom () {
     if [[ ${3:-1} -eq 1 ]]; then
       # we need to remove any previously existing entries so the entry points to the
       # right $monorepo_commitish's readme
-      sed -i "/$starter_artifactid/d" README.md
+      sed -i "/com.google.cloud:$starter_artifactid/d" README.md
       # also write to spring-cloud-previews/README.md
       # format |name|distribution name|
       echo -e "|[$monorepo_folder](https://github.com/googleapis/google-cloud-java/blob/$monorepo_commitish/$monorepo_folder/README.md)|com.google.cloud:$starter_artifactid|" >> README.md
