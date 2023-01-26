@@ -2,9 +2,9 @@
 
 Please see below for a list of additional preview starters provided, with dependencies and auto-configurations to work with corresponding Google Client Libraries.
 
-These starters are not included in the Spring Framework on Google Cloud Bill of Materials (BOM),
-and should be explicitly added as dependencies. For example, to use the starter for Cloud Natural Language,
-add the following dependency to your `pom.xml`:
+These starters are not included in the Spring Framework on Google Cloud Bill of Materials (BOM), 
+and should be explicitly added as dependencies. For example, to use the starter for Cloud Natural Language, 
+add the following dependency to your `pom.xml`.
 
 ```xml
   <dependency>
