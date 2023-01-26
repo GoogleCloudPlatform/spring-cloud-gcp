@@ -6,3 +6,4 @@ branches:
   - releaseType: java-yoshi
     handleGHRelease: true
     branch: 3.x
+    extraFiles: ["README.adoc"]
