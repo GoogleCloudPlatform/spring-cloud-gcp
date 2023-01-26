@@ -1,6 +1,7 @@
 primaryBranch: main
 releaseType: java-yoshi
 handleGHRelease: true
+extraFiles: ["README.adoc"]
 branches:
   - releaseType: java-yoshi
     handleGHRelease: true
