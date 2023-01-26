@@ -268,6 +268,29 @@ public class AssetServiceSpringAutoConfiguration {
           .batchGetEffectiveIamPoliciesSettings()
           .setRetrySettings(batchGetEffectiveIamPoliciesRetrySettings);
 
+      RetrySettings analyzeOrgPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.analyzeOrgPoliciesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .analyzeOrgPoliciesSettings()
+          .setRetrySettings(analyzeOrgPoliciesRetrySettings);
+
+      RetrySettings analyzeOrgPolicyGovernedContainersRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.analyzeOrgPolicyGovernedContainersSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .analyzeOrgPolicyGovernedContainersSettings()
+          .setRetrySettings(analyzeOrgPolicyGovernedContainersRetrySettings);
+
+      RetrySettings analyzeOrgPolicyGovernedAssetsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.analyzeOrgPolicyGovernedAssetsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .analyzeOrgPolicyGovernedAssetsSettings()
+          .setRetrySettings(analyzeOrgPolicyGovernedAssetsRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -487,6 +510,50 @@ public class AssetServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for batchGetEffectiveIamPolicies from properties.");
+      }
+    }
+    Retry analyzeOrgPoliciesRetry = clientProperties.getAnalyzeOrgPoliciesRetry();
+    if (analyzeOrgPoliciesRetry != null) {
+      RetrySettings analyzeOrgPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.analyzeOrgPoliciesSettings().getRetrySettings(),
+              analyzeOrgPoliciesRetry);
+      clientSettingsBuilder
+          .analyzeOrgPoliciesSettings()
+          .setRetrySettings(analyzeOrgPoliciesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for analyzeOrgPolicies from properties.");
+      }
+    }
+    Retry analyzeOrgPolicyGovernedContainersRetry =
+        clientProperties.getAnalyzeOrgPolicyGovernedContainersRetry();
+    if (analyzeOrgPolicyGovernedContainersRetry != null) {
+      RetrySettings analyzeOrgPolicyGovernedContainersRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.analyzeOrgPolicyGovernedContainersSettings().getRetrySettings(),
+              analyzeOrgPolicyGovernedContainersRetry);
+      clientSettingsBuilder
+          .analyzeOrgPolicyGovernedContainersSettings()
+          .setRetrySettings(analyzeOrgPolicyGovernedContainersRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for analyzeOrgPolicyGovernedContainers from properties.");
+      }
+    }
+    Retry analyzeOrgPolicyGovernedAssetsRetry =
+        clientProperties.getAnalyzeOrgPolicyGovernedAssetsRetry();
+    if (analyzeOrgPolicyGovernedAssetsRetry != null) {
+      RetrySettings analyzeOrgPolicyGovernedAssetsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.analyzeOrgPolicyGovernedAssetsSettings().getRetrySettings(),
+              analyzeOrgPolicyGovernedAssetsRetry);
+      clientSettingsBuilder
+          .analyzeOrgPolicyGovernedAssetsSettings()
+          .setRetrySettings(analyzeOrgPolicyGovernedAssetsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for analyzeOrgPolicyGovernedAssets from properties.");
       }
     }
     return clientSettingsBuilder.build();

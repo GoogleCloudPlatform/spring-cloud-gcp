@@ -132,6 +132,21 @@ public class AssetServiceSpringProperties implements CredentialsSupplier {
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry batchGetEffectiveIamPoliciesRetry;
+  /**
+   * Allow override of retry settings at method-level for analyzeOrgPolicies. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry analyzeOrgPoliciesRetry;
+  /**
+   * Allow override of retry settings at method-level for analyzeOrgPolicyGovernedContainers. If
+   * defined, this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry analyzeOrgPolicyGovernedContainersRetry;
+  /**
+   * Allow override of retry settings at method-level for analyzeOrgPolicyGovernedAssets. If
+   * defined, this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry analyzeOrgPolicyGovernedAssetsRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -312,5 +327,30 @@ public class AssetServiceSpringProperties implements CredentialsSupplier {
 
   public void setBatchGetEffectiveIamPoliciesRetry(Retry batchGetEffectiveIamPoliciesRetry) {
     this.batchGetEffectiveIamPoliciesRetry = batchGetEffectiveIamPoliciesRetry;
+  }
+
+  public Retry getAnalyzeOrgPoliciesRetry() {
+    return this.analyzeOrgPoliciesRetry;
+  }
+
+  public void setAnalyzeOrgPoliciesRetry(Retry analyzeOrgPoliciesRetry) {
+    this.analyzeOrgPoliciesRetry = analyzeOrgPoliciesRetry;
+  }
+
+  public Retry getAnalyzeOrgPolicyGovernedContainersRetry() {
+    return this.analyzeOrgPolicyGovernedContainersRetry;
+  }
+
+  public void setAnalyzeOrgPolicyGovernedContainersRetry(
+      Retry analyzeOrgPolicyGovernedContainersRetry) {
+    this.analyzeOrgPolicyGovernedContainersRetry = analyzeOrgPolicyGovernedContainersRetry;
+  }
+
+  public Retry getAnalyzeOrgPolicyGovernedAssetsRetry() {
+    return this.analyzeOrgPolicyGovernedAssetsRetry;
+  }
+
+  public void setAnalyzeOrgPolicyGovernedAssetsRetry(Retry analyzeOrgPolicyGovernedAssetsRetry) {
+    this.analyzeOrgPolicyGovernedAssetsRetry = analyzeOrgPolicyGovernedAssetsRetry;
   }
 }
