@@ -1,8 +1,6 @@
 #!/bin/bash
 WORKING_DIR=`pwd`
 
-mkdir -p run-sanity-check
-touch run-sanity-check/generate-all-started
 monorepo_commitish="v$(bash compute-monorepo-tag.sh)"
 
 cd ../
