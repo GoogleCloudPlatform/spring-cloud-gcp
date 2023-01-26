@@ -70,6 +70,11 @@ public class ConversationsSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry listMessagesRetry;
   /**
+   * Allow override of retry settings at method-level for suggestConversationSummary. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry suggestConversationSummaryRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -155,6 +160,14 @@ public class ConversationsSpringProperties implements CredentialsSupplier {
 
   public void setListMessagesRetry(Retry listMessagesRetry) {
     this.listMessagesRetry = listMessagesRetry;
+  }
+
+  public Retry getSuggestConversationSummaryRetry() {
+    return this.suggestConversationSummaryRetry;
+  }
+
+  public void setSuggestConversationSummaryRetry(Retry suggestConversationSummaryRetry) {
+    this.suggestConversationSummaryRetry = suggestConversationSummaryRetry;
   }
 
   public Retry getListLocationsRetry() {

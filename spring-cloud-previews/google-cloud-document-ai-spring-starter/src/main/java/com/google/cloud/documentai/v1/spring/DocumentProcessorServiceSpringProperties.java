@@ -58,6 +58,11 @@ public class DocumentProcessorServiceSpringProperties implements CredentialsSupp
    */
   @NestedConfigurationProperty private Retry listProcessorTypesRetry;
   /**
+   * Allow override of retry settings at method-level for getProcessorType. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getProcessorTypeRetry;
+  /**
    * Allow override of retry settings at method-level for listProcessors. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -152,6 +157,14 @@ public class DocumentProcessorServiceSpringProperties implements CredentialsSupp
 
   public void setListProcessorTypesRetry(Retry listProcessorTypesRetry) {
     this.listProcessorTypesRetry = listProcessorTypesRetry;
+  }
+
+  public Retry getGetProcessorTypeRetry() {
+    return this.getProcessorTypeRetry;
+  }
+
+  public void setGetProcessorTypeRetry(Retry getProcessorTypeRetry) {
+    this.getProcessorTypeRetry = getProcessorTypeRetry;
   }
 
   public Retry getListProcessorsRetry() {

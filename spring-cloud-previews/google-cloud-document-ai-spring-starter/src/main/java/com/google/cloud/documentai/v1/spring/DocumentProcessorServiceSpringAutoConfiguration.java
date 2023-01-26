@@ -180,6 +180,13 @@ public class DocumentProcessorServiceSpringAutoConfiguration {
           .listProcessorTypesSettings()
           .setRetrySettings(listProcessorTypesRetrySettings);
 
+      RetrySettings getProcessorTypeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getProcessorTypeSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getProcessorTypeSettings()
+          .setRetrySettings(getProcessorTypeRetrySettings);
+
       RetrySettings listProcessorsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listProcessorsSettings().getRetrySettings(), serviceRetry);
@@ -265,6 +272,20 @@ public class DocumentProcessorServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listProcessorTypes from properties.");
+      }
+    }
+    Retry getProcessorTypeRetry = clientProperties.getGetProcessorTypeRetry();
+    if (getProcessorTypeRetry != null) {
+      RetrySettings getProcessorTypeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getProcessorTypeSettings().getRetrySettings(),
+              getProcessorTypeRetry);
+      clientSettingsBuilder
+          .getProcessorTypeSettings()
+          .setRetrySettings(getProcessorTypeRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getProcessorType from properties.");
       }
     }
     Retry listProcessorsRetry = clientProperties.getListProcessorsRetry();
