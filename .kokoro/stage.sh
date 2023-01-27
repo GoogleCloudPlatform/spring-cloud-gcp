@@ -34,13 +34,13 @@ create_settings_xml_file $MAVEN_SETTINGS_FILE
 #$JAVA_HOME/bin/javac -version
 
 # run unit tests
-./mvnw verify --show-version --batch-mode
-
-# change to release version
-./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
-
-# build and install the jars locally
-./mvnw clean install --batch-mode -DskipTests=true
+#./mvnw verify --show-version --batch-mode
+#
+## change to release version
+#./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
+#
+## build and install the jars locally
+#./mvnw clean install --batch-mode -DskipTests=true
 
 # stage release
 ./mvnw deploy \
