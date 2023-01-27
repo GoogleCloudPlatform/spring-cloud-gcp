@@ -28,25 +28,27 @@ MAVEN_SETTINGS_FILE=$(realpath .)/settings.xml
 setup_environment_secrets
 create_settings_xml_file $MAVEN_SETTINGS_FILE
 
+mvn -v
+
 # run unit tests
-./mvnw verify --show-version --batch-mode
+#./mvnw verify --show-version --batch-mode
+#
+## change to release version
+#./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
+#
+## build and install the jars locally
+#./mvnw clean install --batch-mode -DskipTests=true
 
-# change to release version
-./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
-
-# build and install the jars locally
-./mvnw clean install --batch-mode -DskipTests=true
-
-# stage release
-./mvnw deploy \
-  --batch-mode \
-  --settings ${MAVEN_SETTINGS_FILE} \
-  -DskipTests=true \
-  -Dgpg.executable=gpg \
-  -Dgpg.passphrase=${GPG_PASSPHRASE} \
-  -Dgpg.homedir=${GPG_HOMEDIR} \
-  -Drelease=true \
-  --activate-profiles skip-unreleased-modules
+## stage release
+#./mvnw deploy \
+#  --batch-mode \
+#  --settings ${MAVEN_SETTINGS_FILE} \
+#  -DskipTests=true \
+#  -Dgpg.executable=gpg \
+#  -Dgpg.passphrase=${GPG_PASSPHRASE} \
+#  -Dgpg.homedir=${GPG_HOMEDIR} \
+#  -Drelease=true \
+#  --activate-profiles skip-unreleased-modules
 
 # promote release
 #if [[ -n "${AUTORELEASE_PR}" ]]
