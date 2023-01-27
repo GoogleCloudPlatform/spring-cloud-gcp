@@ -14,6 +14,17 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.4.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.2...v3.4.3) (2023-01-27)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.8.2 to 1.9.0 ([42cda22](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/42cda22ddf20f8875e1c0f01a6e93bf609a5e0a8))
+* bump libraries-bom from 26.4.0 to 26.5.0 ([#1530](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1530)) ([fafd2c6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fafd2c60beef72a3d15ff7840ef4533a52a06900))
+* bump spring-boot-dependencies from 2.7.7 to 2.7.8 ([63ea9eb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/63ea9ebb309e0e1d298305b95f2ae537102955f2))
+* bump spring-boot-starter-parent from 2.7.7 to 2.7.8 ([5b799ed](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5b799ed12083d4b187c7d1af504d4d4be1c92269))
+* bump spring-shell-starter from 2.1.5 to 2.1.6 ([30786be](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/30786beda811c1a1a7e84c3e73d01af73d16125c))
+
 ## [3.4.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.1...v3.4.2) (2023-01-18)
 
 
