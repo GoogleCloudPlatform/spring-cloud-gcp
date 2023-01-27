@@ -28,17 +28,8 @@ MAVEN_SETTINGS_FILE=$(realpath .)/settings.xml
 setup_environment_secrets
 create_settings_xml_file $MAVEN_SETTINGS_FILE
 
-# run unit tests
-./mvnw verify --show-version --batch-mode
-
-# change to release version
-./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
-
-# build and install the jars locally
-./mvnw clean install --batch-mode -DskipTests=true
-
 # stage release
-./mvnw deploy \
+  mvn deploy \
   --batch-mode \
   --settings ${MAVEN_SETTINGS_FILE} \
   -DskipTests=true \
@@ -51,7 +42,7 @@ create_settings_xml_file $MAVEN_SETTINGS_FILE
 # promote release
 if [[ -n "${AUTORELEASE_PR}" ]]
 then
-  ./mvnw nexus-staging:release \
+    mvn nexus-staging:release \
     --batch-mode \
     --settings ${MAVEN_SETTINGS_FILE} \
     -Drelease=true \
