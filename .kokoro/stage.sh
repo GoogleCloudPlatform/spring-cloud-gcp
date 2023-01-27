@@ -29,6 +29,9 @@ setup_environment_secrets
 create_settings_xml_file $MAVEN_SETTINGS_FILE
 
 mvn -v
+# list java releases installed
+ls /usr/lib/jvm
+$JAVA_HOME/bin/javac -version
 
 # run unit tests
 #./mvnw verify --show-version --batch-mode
