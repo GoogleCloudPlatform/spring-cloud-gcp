@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 set -e
 
 # start  by experimenting local run.
@@ -47,44 +47,16 @@ if [[ $download_repos -eq 1 ]]; then
   bash download-repos.sh
 fi
 
-bash setup-googleapis-rules.sh -x $googleapis_commitish
-
-cd googleapis
-
-## If $googleapis_folder does not exist, exit
-if [ ! -d "$googleapis_folder" ]
-then
-  echo "Directory $googleapis_folder DOES NOT exists."
-  exit
-fi
-# Modify BUILD.bazel file for library
-# Additional rule to load
-SPRING_RULE_NAME="    \\\"java_gapic_spring_library\\\","
-perl -0777 -pi -e "s/(load\((.*?)\"java_gapic_library\",)/\$1\n$SPRING_RULE_NAME/s" $googleapis_folder/BUILD.bazel
-# Duplicate java_gapic_library rule definition
-perl -0777 -pi -e "s/(java_gapic_library\((.*?)\))/\$1\n\n\$1/s" $googleapis_folder/BUILD.bazel
-# Update rule name to java_gapic_spring_library
-perl -0777 -pi -e "s/(java_gapic_library\()/java_gapic_spring_library\(/s" $googleapis_folder/BUILD.bazel
-# Update name argument to have _spring appended
-perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)name = \"(.*?)\")/java_gapic_spring_library\(\$2name = \"\$3_spring\"/s" $googleapis_folder/BUILD.bazel
-# todo: better way to remove the following unused arguments?
-perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    test_deps = \[(.*?)\](.*?),))/java_gapic_spring_library\(\$2/s" $googleapis_folder/BUILD.bazel
-perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    deps = \[(.*?)\](.*?),))/java_gapic_spring_library\(\$2/s" $googleapis_folder/BUILD.bazel
-perl -0777 -pi -e "s/(java_gapic_spring_library\((.*?)(\n    rest_numeric_enums = (.*?),))/java_gapic_spring_library\(\$2/s" $googleapis_folder/BUILD.bazel
 
 # sometimes the rule name doesnt have the same prefix as $client_lib_name
 # we use this perl command capture the correct prefix
-rule_prefix=$(cat $googleapis_folder/BUILD.bazel | grep _java_gapic_spring | perl -lane 'print m/"(.*)_java_gapic_spring/')
+rule_prefix=$(cat googleapis/$googleapis_folder/BUILD.bazel | grep _java_gapic_spring | perl -lane 'print m/"(.*)_java_gapic_spring/')
 
-echo "CALL BAZEL TARGET"
-# call bazel target
-bazelisk build //$googleapis_folder:"$rule_prefix"_java_gapic_spring || exit
-
-cd -
 
 ## copy spring code to outside
 mkdir -p ../spring-cloud-previews
 cp googleapis/bazel-bin/$googleapis_folder/"$rule_prefix"_java_gapic_spring-spring.srcjar ../spring-cloud-previews
+
 
 # unzip spring code
 cd ../spring-cloud-previews

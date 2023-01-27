@@ -1,18 +1,6 @@
 #!/bin/bash
-while getopts x: flag
-do
-    case "${flag}" in
-        x) googleapis_commitish=${OPTARG};;
-    esac
-done
-
-if [[ -z $googleapis_commitish ]]; then
-  echo 'usage setup-googleapis-rules.sh -x GOOGLEAPIS_COMMITISH'
-  exit 1
-fi
 
 cd googleapis
-git reset --hard $googleapis_commitish
 
 # In googleapis/WORKSPACE, find http_archive() rule with name = "gapic_generator_java",
 # and replace with local_repository() rule

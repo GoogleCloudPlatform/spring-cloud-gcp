@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 WORKING_DIR=`pwd`
 
 monorepo_commitish="v$(bash compute-monorepo-tag.sh)"
@@ -20,7 +21,20 @@ save_error_info () {
 # repos are downloaded once before all generation jobs and then removed
 
 bash download-repos.sh
+bash setup-googleapis-rules.sh
 libraries=$(cat $WORKING_DIR/library_list.txt | tail -n+2)
+
+while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish monorepo_folder; do
+  echo "preparing bazel rules for $library_name"
+  bash $WORKING_DIR/setup-build-rule.sh \
+    -f $googleapis_location \
+    -x $googleapis_commitish
+done <<< $libraries
+
+cd googleapis
+bazelisk query "attr(name, '.*java_gapic_spring', //...)" | xargs bazelisk build
+cd -
+
 while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish monorepo_folder; do
   echo "processing library $library_name"
   group_id=$(echo $coordinates_version | cut -f1 -d:)
