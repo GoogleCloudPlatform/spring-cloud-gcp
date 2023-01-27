@@ -130,10 +130,10 @@ jobs:
           # commit
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git commit -m "$MESSAGE"
-          # git push --set-upstream origin $NEW_BRANCH_NAME
-          #
+          git push --set-upstream origin $NEW_BRANCH_NAME
+          
           # creates PR
-          # gh pr create --draft -B main -H $NEW_BRANCH_NAME --title "$MESSAGE" --body 'Created by Github action'
+          gh pr create --draft -B main -H $NEW_BRANCH_NAME --title "$MESSAGE" --body 'Created by Github action'
         env:
           NEW_BRANCH_NAME: ${{ steps.create_branch_names.outputs.NEW_BRANCH_NAME }}
           GITHUB_ACTOR_EMAIL: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_EMAIL }}
