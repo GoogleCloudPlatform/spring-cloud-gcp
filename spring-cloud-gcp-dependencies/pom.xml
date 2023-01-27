@@ -17,6 +17,11 @@
 		<tag>HEAD</tag>
 	</scm>
 
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues</url>
+	</issueManagement>
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
