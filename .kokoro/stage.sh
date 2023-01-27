@@ -28,6 +28,9 @@ MAVEN_SETTINGS_FILE=$(realpath .)/settings.xml
 setup_environment_secrets
 create_settings_xml_file $MAVEN_SETTINGS_FILE
 
+# run unit tests
+  mvn verify --show-version --batch-mode
+
 # stage release
   mvn deploy \
   --batch-mode \
