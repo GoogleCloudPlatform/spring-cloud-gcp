@@ -43,7 +43,7 @@ create_settings_xml_file $MAVEN_SETTINGS_FILE
 #./mvnw clean install --batch-mode -DskipTests=true
 
 # stage release
-./mvnw deploy \
+  mvn deploy \
   --batch-mode \
   --settings ${MAVEN_SETTINGS_FILE} \
   -DskipTests=true \
