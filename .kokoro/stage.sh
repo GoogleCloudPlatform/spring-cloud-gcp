@@ -29,10 +29,11 @@ setup_environment_secrets
 create_settings_xml_file $MAVEN_SETTINGS_FILE
 
 # run unit tests
-  mvn verify --show-version --batch-mode
+  mvn verify --show-version --batch-mode -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
 
 # stage release
   mvn deploy \
+  -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
   --batch-mode \
   --settings ${MAVEN_SETTINGS_FILE} \
   -DskipTests=true \
