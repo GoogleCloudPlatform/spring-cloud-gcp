@@ -110,7 +110,7 @@ jobs:
         run: |
           set -x
           # stashes the source branch with generated libs 
-          MESSAGE=`echo "chore(codegen): update starter modules in spring-cloud-preview"`
+          MESSAGE=`echo "chore: update starter modules in spring-cloud-preview"`
           git stash push -- spring-cloud-previews/
           git reset --hard
           git remote update
