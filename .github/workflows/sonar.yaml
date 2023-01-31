@@ -10,6 +10,9 @@ on:
   schedule:
     - cron: '00 6 * * *' # 06:00 UTC every day
 
+env:
+  # Workaround for kotlin sample multithreading issue: https://youtrack.jetbrains.com/issue/KT-43894
+  MAVEN_OPTS: "-Didea.home.path=${{ env.RUNNER_TEMP }} -Didea.ignore.disabled.plugins=true"
 jobs:
   sonar:
     name: Build with Sonar
