@@ -5,7 +5,7 @@ if [[ -z "${CREDENTIALS}" ]]; then
   CREDENTIALS=${KOKORO_KEYSTORE_DIR}/73713_docuploader_service_account
 fi
 
-pyenv -v 
+pyenv versions 
 
 # # Get into the spring-cloud-gcp repo directory
 # dir=$(dirname "$0")
