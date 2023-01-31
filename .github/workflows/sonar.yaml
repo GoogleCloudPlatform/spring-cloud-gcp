@@ -12,7 +12,7 @@ on:
 
 env:
   # Workaround for kotlin sample multithreading issue: https://youtrack.jetbrains.com/issue/KT-43894
-  MAVEN_OPTS: "-Didea.home.path=${{ runner.temp }} -Didea.ignore.disabled.plugins=true"
+  MAVEN_OPTS: "-Didea.home.path=${{ vars.RUNNER_TEMP }} -Didea.ignore.disabled.plugins=true"
 jobs:
   sonar:
     name: Build with Sonar
