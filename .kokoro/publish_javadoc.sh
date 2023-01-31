@@ -10,7 +10,7 @@ dir=$(dirname "$0")
 pushd $dir/../
 
 # Compute the project version.
-PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
 # Install docuploader package
 python3 -m pip install --upgrade six
@@ -18,7 +18,7 @@ python3 -m pip install --upgrade protobuf
 python3 -m pip install gcp-docuploader
 
 # Build the javadocs
-./mvnw clean javadoc:aggregate -Drelease=true
+mvn clean javadoc:aggregate -Drelease=true
 
 ## Move into generated docs directory
 pushd target/site/apidocs/
