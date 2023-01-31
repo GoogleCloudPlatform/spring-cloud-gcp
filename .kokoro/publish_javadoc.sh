@@ -18,19 +18,19 @@ python3 -m pip install --upgrade protobuf
 python3 -m pip install gcp-docuploader
 
 # Build the javadocs
-#./mvnw clean javadoc:aggregate -Drelease=true
-#
+./mvnw clean javadoc:aggregate -Drelease=true
+
 ## Move into generated docs directory
-#pushd target/site/apidocs/
-#
-#python3 -m docuploader create-metadata \
-#     --name spring-cloud-gcp \
-#     --version ${PROJECT_VERSION} \
-#     --language java
-#
-#python3 -m docuploader upload . \
-#     --credentials ${CREDENTIALS} \
-#     --staging-bucket docs-staging
+pushd target/site/apidocs/
+
+python3 -m docuploader create-metadata \
+     --name spring-cloud-gcp \
+     --version ${PROJECT_VERSION} \
+     --language java
+
+python3 -m docuploader upload . \
+     --credentials ${CREDENTIALS} \
+     --staging-bucket docs-staging
 
 popd
 popd
