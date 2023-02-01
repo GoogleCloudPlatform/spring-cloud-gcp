@@ -12,8 +12,11 @@ pushd $dir/../
 # Compute the project version.
 PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
+python3 --version
+
 # install docuploader package
 python3 -m pip install --require-hashes -r .kokoro/requirements.txt
+
 
 python3 -m docuploader create-metadata --help
 
