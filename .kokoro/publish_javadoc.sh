@@ -15,20 +15,22 @@ PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdou
 # install docuploader package
 python3 -m pip install --require-hashes -r .kokoro/requirements.txt
 
+python -m docuploader create-metadata --help
+
 # Build the javadocs
-mvn clean javadoc:aggregate -Drelease=true
-
-## Move into generated docs directory
-pushd target/site/apidocs/
-
-python3 -m docuploader create-metadata \
-     --name spring-cloud-gcp \
-     --version ${PROJECT_VERSION} \
-     --language java
-
-python3 -m docuploader upload . \
-     --credentials ${CREDENTIALS} \
-     --staging-bucket docs-staging
+#mvn clean javadoc:aggregate -Drelease=true
+#
+### Move into generated docs directory
+#pushd target/site/apidocs/
+#
+#python3 -m docuploader create-metadata \
+#     --name spring-cloud-gcp \
+#     --version ${PROJECT_VERSION} \
+#     --language java
+#
+#python3 -m docuploader upload . \
+#     --credentials ${CREDENTIALS} \
+#     --staging-bucket docs-staging
 
 popd
 popd
