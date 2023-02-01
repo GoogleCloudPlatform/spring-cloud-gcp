@@ -15,7 +15,7 @@ PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdou
 # install docuploader package
 python3 -m pip install --require-hashes -r .kokoro/requirements.txt
 
-python -m docuploader create-metadata --help
+python3 -m docuploader create-metadata --help
 
 # Build the javadocs
 #mvn clean javadoc:aggregate -Drelease=true
