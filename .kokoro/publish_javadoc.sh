@@ -21,7 +21,7 @@ mvn clean javadoc:aggregate -Drelease=true
 ## Move into generated docs directory
 pushd target/site/apidocs/
 
-python -m docuploader create-metadata \
+python3 -m docuploader create-metadata \
      --name spring-cloud-gcp \
      --version ${PROJECT_VERSION} \
      --language java
