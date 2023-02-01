@@ -106,6 +106,8 @@ updating, and reading secrets.
 To begin using this class, you may inject an instance of the class using
 `@Autowired` after adding the starter dependency to your project.
 
+Note that you should add `spring.config.import=sm://` in your `application.properties` file to enable `SecretManagerTemplate` bean creation.
+
 ``` java
 @Autowired
 private SecretManagerTemplate secretManagerTemplate;
