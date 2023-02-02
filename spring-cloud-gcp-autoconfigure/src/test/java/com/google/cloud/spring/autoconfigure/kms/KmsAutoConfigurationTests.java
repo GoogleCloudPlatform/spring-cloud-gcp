@@ -35,6 +35,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 /** Unit tests for {@link GcpKmsAutoConfiguration}. */
 class KmsAutoConfigurationTests {
@@ -128,6 +129,7 @@ class KmsAutoConfigurationTests {
       return () -> mockUserCredential;
     }
 
+    @Primary
     @Bean
     public static GcpProjectIdProvider gcpProjectIdProvider() {
       return () -> CORE_PROJECT_NAME;
