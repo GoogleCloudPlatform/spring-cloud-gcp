@@ -16,16 +16,29 @@
 
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
+import static com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolver.PREFIX;
+
 import com.google.protobuf.ByteString;
+import java.util.Map;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcessor;
 import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.core.Ordered;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 
 /**
  * Registers converters used by Spring Cloud GCP Secret Manager.
  */
-public class GcpSecretManagerEnvironmentPostProcessor implements EnvironmentPostProcessor {
+public class GcpSecretManagerEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
+
+  static final String IMPORT_PROPERTY = "spring.config.import";
+
+  @Override
+  public int getOrder() {
+    return ConfigDataEnvironmentPostProcessor.ORDER - 1;
+  }
 
   @Override
   public void postProcessEnvironment(
@@ -35,6 +48,20 @@ public class GcpSecretManagerEnvironmentPostProcessor implements EnvironmentPost
             environment.getProperty("spring.cloud.gcp.secretmanager.enabled", "true"));
 
     if (isSecretManagerEnabled) {
+      // Add a `spring.config.import=sm://` property by default.
+      String externalImport = environment.getProperty(IMPORT_PROPERTY, "");
+      if (!externalImport.contains(PREFIX)) {
+        // If the property key exists, append a separator to the value.
+        if (!externalImport.isEmpty()) {
+          externalImport = externalImport.concat(";");
+        }
+        environment
+            .getPropertySources()
+            .addFirst(
+                new MapPropertySource("secret-manager",
+                    Map.of(IMPORT_PROPERTY, externalImport.concat(PREFIX))));
+      }
+
       // Registers {@link ByteString} type converters to convert to String and byte[].
       environment
           .getConversionService()
