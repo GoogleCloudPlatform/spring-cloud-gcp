@@ -64,7 +64,7 @@ Replaced `ListenableFuture` and `SettableListenableFuture` with `CompletableFutu
 Change to functional model as annotation-based model is removed from Spring Cloud Stream 4.0.0.
 
 ==== Secret Manager
-To enable the application to fetch a secret from SecretManager, add `spring.config.import=sm://` in the `application.properties` or `application.yml` files and inject the secret into the application by adding `application.secret=${sm://your-secret-name}`.
+Inject the secret into the application by adding `application.secret=${sm://your-secret-name}` in the `application.properties` or `application.yml` files.
 Do not write secret values in the file.
 
 Please also remove `spring.cloud.gcp.secretmanager.enabled` and `spring.cloud.gcp.secretmanager.legacy` in `bootstrap.yml` or `bootstrap.properties` files.

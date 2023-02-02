@@ -56,12 +56,6 @@ authentication properties.
 The Spring Framework on Google Cloud integration for Google Cloud Secret Manager enables
 you to use Secret Manager as a bootstrap property source.
 
-This allows you to specify and load secrets from Google Cloud Secret
-Manager as properties into the application context during the [Bootstrap
-Phase](https://cloud.spring.io/spring-cloud-commons/reference/html/#the-bootstrap-application-context),
-which refers to the initial phase when a Spring application is being
-loaded.
-
 The Secret Manager property source uses the following syntax to specify
 secrets:
 
@@ -89,7 +83,6 @@ You can use this syntax in the following places:
 1. In your `application.properties` file:
     
         # Example of the project-secret long-form syntax.
-        spring.config.import=sm://
         spring.datasource.password=${sm://projects/my-gcp-project/secrets/my-secret}
    The former is used to enable [Spring Boot's Config Data API](https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4).
 
@@ -105,8 +98,6 @@ updating, and reading secrets.
 
 To begin using this class, you may inject an instance of the class using
 `@Autowired` after adding the starter dependency to your project.
-
-Note that you should add `spring.config.import=sm://` in your `application.properties` file to enable `SecretManagerTemplate` bean creation.
 
 ``` java
 @Autowired
