@@ -5,22 +5,20 @@ if [[ -z "${CREDENTIALS}" ]]; then
   CREDENTIALS=${KOKORO_KEYSTORE_DIR}/73713_docuploader_service_account
 fi
 
-# Get into the spring-cloud-gcp repo directory
+## Get into the spring-cloud-gcp repo directory
 dir=$(dirname "$0")
 pushd $dir/../
 
 # Compute the project version.
-PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+PROJECT_VERSION=$(grep "^spring-cloud-gcp:" "./versions.txt" | cut -d: -f3)
 
-# Install docuploader package
-python3 -m pip install --upgrade six
-python3 -m pip install --upgrade protobuf
-python3 -m pip install gcp-docuploader
+# install docuploader package
+python3 -m pip install --require-hashes -r .kokoro/requirements.txt
 
 # Build the javadocs
 mvn clean javadoc:aggregate -Drelease=true
 
-## Move into generated docs directory
+# Move into generated docs directory
 pushd target/site/apidocs/
 
 python3 -m docuploader create-metadata \
