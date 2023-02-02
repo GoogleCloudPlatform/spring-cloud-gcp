@@ -263,7 +263,6 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-secretmanager</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <!-- KMS -->
