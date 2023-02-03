@@ -252,7 +252,7 @@ public class StackdriverTraceAutoConfiguration {
     return BaggagePropagation.newFactoryBuilder(StackdriverTracePropagation.newFactory(primary));
   }
 
-  // Add this bean to supress other encoding schema, e.g., JSON.
+  // Add this bean to suppress other encoding schema, e.g., JSON.
   @Bean
   @ConditionalOnMissingBean
   public BytesEncoder<Span> spanBytesEncoder() {
