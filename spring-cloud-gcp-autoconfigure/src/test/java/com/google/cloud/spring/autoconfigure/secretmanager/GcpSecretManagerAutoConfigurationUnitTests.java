@@ -30,7 +30,7 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 
-public class GcpSecretManagerAutoConfigurationUnitTests {
+class GcpSecretManagerAutoConfigurationUnitTests {
   private ApplicationContextRunner contextRunner;
 
   @BeforeEach
