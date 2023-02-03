@@ -50,6 +50,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import zipkin2.CheckResult;
 import zipkin2.Span;
+import zipkin2.codec.BytesEncoder;
+import zipkin2.codec.SpanBytesEncoder;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Reporter;
 import zipkin2.reporter.ReporterMetrics;
@@ -248,6 +250,13 @@ public class StackdriverTraceAutoConfiguration {
     Propagation.Factory primary =
         B3Propagation.newFactoryBuilder().injectFormat(B3Propagation.Format.MULTI).build();
     return BaggagePropagation.newFactoryBuilder(StackdriverTracePropagation.newFactory(primary));
+  }
+
+  // Add this bean to supress other encoding schema, e.g., JSON.
+  @Bean
+  @ConditionalOnMissingBean
+  public BytesEncoder<Span> spanBytesEncoder() {
+    return SpanBytesEncoder.PROTO3;
   }
 
   @PreDestroy
