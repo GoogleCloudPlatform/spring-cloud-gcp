@@ -17,6 +17,7 @@ com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubReactiveAutoConfiguration
 com.google.cloud.spring.autoconfigure.pubsub.health.PubSubHealthIndicatorAutoConfiguration
 com.google.cloud.spring.autoconfigure.pubsub.health.PubSubSubscriptionHealthIndicatorAutoConfiguration
 com.google.cloud.spring.autoconfigure.logging.StackdriverLoggingAutoConfiguration
+com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManagerAutoConfiguration
 com.google.cloud.spring.autoconfigure.security.FirebaseAuthenticationAutoConfiguration
 com.google.cloud.spring.autoconfigure.security.IapAuthenticationAutoConfiguration
 com.google.cloud.spring.autoconfigure.spanner.GcpSpannerAutoConfiguration
