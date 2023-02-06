@@ -1,7 +1,7 @@
 #!/bin/bash
 WORKING_DIR=`pwd`
 
-mkdir -p run-sanity-check
+monorepo_commitish="v$(bash compute-monorepo-tag.sh)"
 
 cd ../
 # Compute the project version.
@@ -22,7 +22,7 @@ save_error_info () {
 bash download-repos.sh
 touch run-sanity-check/generate-all-started
 libraries=$(cat $WORKING_DIR/library_list.txt | tail -n+2)
-while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish; do
+while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish monorepo_folder; do
   echo "processing library $library_name"
   group_id=$(echo $coordinates_version | cut -f1 -d:)
   artifact_id=$(echo $coordinates_version | cut -f2 -d:)
@@ -36,9 +36,12 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
     -g $group_id \
     -p $PROJECT_VERSION \
     -f $googleapis_location \
-    -x $googleapis_commitish 2>&1 | tee tmp-generate-one-output || save_error_info $library_name
+    -m $monorepo_folder \
+    -x $googleapis_commitish \
+    -z $monorepo_commitish 2>&1 | tee tmp-generate-one-output || save_error_info $library_name
   set +o pipefail
 done <<< $libraries
+rm tmp-generate-one-output
 
 echo "run google-java-format on generated code"
 cd ../spring-cloud-previews

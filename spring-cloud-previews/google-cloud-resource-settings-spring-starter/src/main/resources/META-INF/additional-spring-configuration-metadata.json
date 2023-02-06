@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.resourcesettings.v1.resource-settings-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud resourcesettings/ResourceSettingsService components.",
+      "defaultValue": true
+    }
+  ]
+}

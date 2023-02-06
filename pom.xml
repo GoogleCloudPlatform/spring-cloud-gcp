@@ -36,12 +36,12 @@
 	<properties>
 		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
-		<spring-cloud-dependencies.version>2022.0.0</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>3.0.0</spring-boot-dependencies.version>
+		<spring-cloud-dependencies.version>2022.0.1</spring-cloud-dependencies.version>
+		<spring-boot-dependencies.version>3.0.2</spring-boot-dependencies.version>
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.1</java-cfenv.version>
-		<micrometer-tracing.verison>1.0.0</micrometer-tracing.verison>
+		<micrometer-tracing.verison>1.0.1</micrometer-tracing.verison>
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
@@ -591,6 +591,8 @@
 				<module>spring-cloud-gcp-security-firebase</module>
 				<module>spring-cloud-gcp-vision</module>
 				<module>spring-cloud-gcp-kms</module>
+
+				<module>spring-cloud-previews</module>
 			</modules>
 			<build>
 				<pluginManagement>

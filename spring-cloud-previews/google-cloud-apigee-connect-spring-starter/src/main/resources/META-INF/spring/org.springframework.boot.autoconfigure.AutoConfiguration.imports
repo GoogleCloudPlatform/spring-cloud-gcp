@@ -1,0 +1,2 @@
+com.google.cloud.apigeeconnect.v1.spring.ConnectionServiceSpringAutoConfiguration
+com.google.cloud.apigeeconnect.v1.spring.TetherSpringAutoConfiguration

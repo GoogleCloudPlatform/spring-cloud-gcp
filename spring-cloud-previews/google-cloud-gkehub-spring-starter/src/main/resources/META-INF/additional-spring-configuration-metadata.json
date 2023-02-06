@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.gkehub.v1.gke-hub.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud gkehub/GkeHub components.",
+      "defaultValue": true
+    }
+  ]
+}
