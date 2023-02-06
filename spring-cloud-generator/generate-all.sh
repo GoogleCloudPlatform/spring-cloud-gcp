@@ -24,6 +24,8 @@ bash download-repos.sh
 bash setup-googleapis-rules.sh
 libraries=$(cat $WORKING_DIR/library_list.txt | tail -n+2)
 
+
+# modifies the BUILD files of each of the entries in the library list
 while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish monorepo_folder; do
   echo "preparing bazel rules for $library_name"
   bash $WORKING_DIR/setup-build-rule.sh \
@@ -31,6 +33,7 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
     -x $googleapis_commitish
 done <<< $libraries
 
+# fetches all `*java_gapic_spring` build rules and build them at once
 cd googleapis
 bazelisk query "attr(name, '.*java_gapic_spring', //...)" | xargs bazelisk build
 cd -
