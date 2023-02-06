@@ -44,10 +44,10 @@ public class GcpSecretManagerProperties implements CredentialsSupplier {
   private String projectId;
 
   /**
-   * Whether the secret manager will allow a default secret value when accessing a non-existed
+   * Whether the secret manager will allow a default secret value when accessing a non-existing
    * secret.
    *
-   * <p>When set it to false, the secret manager will throw an {@link
+   * <p>When set to false, the secret manager will throw a {@link
    * com.google.api.gax.rpc.NotFoundException}.
    */
   private boolean allowDefaultSecret;
