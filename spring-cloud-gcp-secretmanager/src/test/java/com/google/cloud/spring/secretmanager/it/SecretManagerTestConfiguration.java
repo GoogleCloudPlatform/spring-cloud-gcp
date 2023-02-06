@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,9 @@ import com.google.cloud.spring.core.DefaultGcpEnvironmentProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import com.google.cloud.spring.secretmanager.SecretManagerPropertySourceLocator;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
-import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -93,13 +91,5 @@ public class SecretManagerTestConfiguration {
   @Bean
   public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
     return new SecretManagerTemplate(client, this.projectIdProvider);
-  }
-
-  @Bean
-  public PropertySourceLocator secretManagerPropertySourceLocator(
-      SecretManagerTemplate secretManagerTemplate) {
-    SecretManagerPropertySourceLocator propertySourceLocator =
-        new SecretManagerPropertySourceLocator(secretManagerTemplate, this.projectIdProvider);
-    return propertySourceLocator;
   }
 }
