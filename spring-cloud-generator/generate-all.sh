@@ -20,7 +20,6 @@ save_error_info () {
 # repos are downloaded once before all generation jobs and then removed
 
 bash download-repos.sh
-touch run-sanity-check/generate-all-started
 libraries=$(cat $WORKING_DIR/library_list.txt | tail -n+2)
 while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish monorepo_folder; do
   echo "processing library $library_name"
@@ -50,4 +49,3 @@ cd ../spring-cloud-previews
 cd ../spring-cloud-generator
 rm -rf googleapis
 rm -rf gapic-generator-java
-touch run-sanity-check/generate-all-finished

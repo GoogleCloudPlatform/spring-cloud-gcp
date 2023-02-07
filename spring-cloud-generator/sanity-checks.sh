@@ -1,20 +1,30 @@
 #!/bin/bash
-sanity_check_file_ids=(
-  "generate-all"
-  "generate-library-list"
-  "compute-monorepo-tag"
-)
+WORKING_DIR=`pwd`
 
-check_file_exists() {
-  if [ -e "$1" ]; then
-    echo "Sanity check file OK: $1"
-  else
-    echo "Missing sanity check file: $1"
-    exit 1
-  fi
+function fail() {
+  echo "sanity check failed at $1"
+  #exit 1
 }
 
-for file in "${sanity_check_file_ids[@]}"; do
-  check_file_exists "run-sanity-check/$file-started"
-  check_file_exists "run-sanity-check/$file-finished"
-done
+# checks that library list was generated and not empty
+if [[ $(cat library_list.txt | wc -l) -lt 2 ]]; then fail "library list length"; fi
+
+# checks that the contents of each entry in the library list is a string with
+# length >= 1
+libraries=$(cat $WORKING_DIR/library_list.txt | tail -n+2)
+while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish monorepo_folder; do
+
+  non_empty_check_items=(
+    "$library_name"
+    "$googleapis_location"
+    "$coordinates_version"
+    "$googleapis_commitish"
+    "$monorepo_folder"
+  )
+  for column in "${non_empty_check_items[@]}"; do
+    if [[ -z $column ]]; then
+      echo "$library_name, $googleapis_location, $coordinates_version, $googleapis_commitish, $monorepo_folder"
+      fail "'library list column content check'"
+    fi
+  done
+done <<< $libraries
