@@ -1,4 +1,8 @@
 #!/bin/bash
+# setting pipefail allows to capture the exit code of a command called earlier
+# in a pipe chain. This is necessary since piping to tee will always exit
+# 0 if pipefail is not set
+set -o pipefail
 set -e
 WORKING_DIR=`pwd`
 
@@ -30,22 +34,21 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
   echo "preparing bazel rules for $library_name"
   bash $WORKING_DIR/setup-build-rule.sh \
     -f $googleapis_location \
-    -x $googleapis_commitish
+    -x $googleapis_commitish 2>&1 | tee tmp-output || save_error_info "bazel_build"
+
 done <<< $libraries
 
 # fetches all `*java_gapic_spring` build rules and build them at once
 cd googleapis
-bazelisk query "attr(name, '.*java_gapic_spring', //...)" | xargs bazelisk build
+bazelisk query "attr(name, '.*java_gapic_spring', //...)" | xargs bazelisk build 2>&1 \
+  | tee tmp-output || save_error_info "bazel_build"
+
 cd -
 
 while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish monorepo_folder; do
   echo "processing library $library_name"
   group_id=$(echo $coordinates_version | cut -f1 -d:)
   artifact_id=$(echo $coordinates_version | cut -f2 -d:)
-  # setting pipefail allows to capture the exit code of a command called earlier
-  # in a pipe chain. This is necessary since piping to tee will always exit
-  # 0 if pipefail is not set
-  set -o pipefail
   bash $WORKING_DIR/generate-one.sh \
     -c $library_name \
     -i $artifact_id \
@@ -54,10 +57,10 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
     -f $googleapis_location \
     -m $monorepo_folder \
     -x $googleapis_commitish \
-    -z $monorepo_commitish 2>&1 | tee tmp-generate-one-output || save_error_info $library_name
+    -z $monorepo_commitish 2>&1 | tee tmp-output || save_error_info "GENERATE_ONE_$library_name"
   set +o pipefail
 done <<< $libraries
-rm tmp-generate-one-output
+rm tmp-output
 
 echo "run google-java-format on generated code"
 cd ../spring-cloud-previews
