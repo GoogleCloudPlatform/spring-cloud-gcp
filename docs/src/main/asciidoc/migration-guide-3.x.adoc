@@ -86,8 +86,6 @@ Replaced `ListenableFuture` and `SettableListenableFuture` with `CompletableFutu
 ==== Removed
 The following properties are removed from the codebase thus no longer needed in your application.
 
-* `spring.cloud.gcp.secretmanager.enabled`
-
 * `spring.cloud.gcp.secretmanager.legacy`
 
 See the "SecretManager" section.

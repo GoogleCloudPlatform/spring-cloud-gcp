@@ -59,6 +59,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import zipkin2.Call;
 import zipkin2.CheckResult;
+import zipkin2.codec.BytesEncoder;
 import zipkin2.codec.Encoding;
 import zipkin2.codec.SpanBytesEncoder;
 import zipkin2.reporter.AsyncReporter;
@@ -100,6 +101,15 @@ class StackdriverTraceAutoConfigurationTests {
                   .isNotNull();
               assertThat(context.getBean(ManagedChannel.class)).isNotNull();
             });
+  }
+
+  @Test
+  void testEncodingSchema() {
+    this.contextRunner
+        .run(
+            context -> assertThat(
+                context.getBean(BytesEncoder.class))
+                .isEqualTo(SpanBytesEncoder.PROTO3));
   }
 
   @Test
