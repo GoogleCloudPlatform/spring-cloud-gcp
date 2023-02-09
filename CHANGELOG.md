@@ -14,6 +14,15 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.4.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.3...v3.4.4) (2023-02-09)
+
+
+### Dependencies
+
+* bump libraries-bom from 26.5.0 to 26.7.0 ([#1581](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1581)) ([a751122](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a7511223033c588e8ee745150cd9e51558d9edb9))
+* bump lombok from 1.18.24 to 1.18.26 ([#1566](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1566)) ([1851717](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/18517173f7242f22c7b942c354813c510d793839))
+* bump maven-enforcer-plugin from 3.1.0 to 3.2.1 ([#1558](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1558)) ([432379c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/432379c142f01adc13b557c260300f9c7d7050d7))
+
 ## [3.4.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.2...v3.4.3) (2023-01-27)
 
 
