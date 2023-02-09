@@ -92,9 +92,6 @@ public class TetherSpringAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean(name = "defaultTetherTransportChannelProvider")
   public TransportChannelProvider defaultTetherTransportChannelProvider() {
-    if (this.clientProperties.getUseRest()) {
-      return TetherSettings.defaultHttpJsonTransportProviderBuilder().build();
-    }
     return TetherSettings.defaultTransportChannelProvider();
   }
 
@@ -116,15 +113,7 @@ public class TetherSpringAutoConfiguration {
       @Qualifier("defaultTetherTransportChannelProvider")
           TransportChannelProvider defaultTransportChannelProvider)
       throws IOException {
-    TetherSettings.Builder clientSettingsBuilder;
-    if (this.clientProperties.getUseRest()) {
-      clientSettingsBuilder = TetherSettings.newHttpJsonBuilder();
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Using REST (HTTP/JSON) transport.");
-      }
-    } else {
-      clientSettingsBuilder = TetherSettings.newBuilder();
-    }
+    TetherSettings.Builder clientSettingsBuilder = TetherSettings.newBuilder();
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)

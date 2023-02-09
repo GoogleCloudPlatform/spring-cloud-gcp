@@ -232,6 +232,40 @@ public class JobServiceSpringAutoConfiguration {
           .cancelHyperparameterTuningJobSettings()
           .setRetrySettings(cancelHyperparameterTuningJobRetrySettings);
 
+      RetrySettings createNasJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createNasJobSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.createNasJobSettings().setRetrySettings(createNasJobRetrySettings);
+
+      RetrySettings getNasJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getNasJobSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getNasJobSettings().setRetrySettings(getNasJobRetrySettings);
+
+      RetrySettings listNasJobsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listNasJobsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listNasJobsSettings().setRetrySettings(listNasJobsRetrySettings);
+
+      RetrySettings cancelNasJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.cancelNasJobSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.cancelNasJobSettings().setRetrySettings(cancelNasJobRetrySettings);
+
+      RetrySettings getNasTrialDetailRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getNasTrialDetailSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getNasTrialDetailSettings()
+          .setRetrySettings(getNasTrialDetailRetrySettings);
+
+      RetrySettings listNasTrialDetailsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listNasTrialDetailsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listNasTrialDetailsSettings()
+          .setRetrySettings(listNasTrialDetailsRetrySettings);
+
       RetrySettings createBatchPredictionJobRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.createBatchPredictionJobSettings().getRetrySettings(),
@@ -505,6 +539,74 @@ public class JobServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for cancelHyperparameterTuningJob from properties.");
+      }
+    }
+    Retry createNasJobRetry = clientProperties.getCreateNasJobRetry();
+    if (createNasJobRetry != null) {
+      RetrySettings createNasJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createNasJobSettings().getRetrySettings(), createNasJobRetry);
+      clientSettingsBuilder.createNasJobSettings().setRetrySettings(createNasJobRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for createNasJob from properties.");
+      }
+    }
+    Retry getNasJobRetry = clientProperties.getGetNasJobRetry();
+    if (getNasJobRetry != null) {
+      RetrySettings getNasJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getNasJobSettings().getRetrySettings(), getNasJobRetry);
+      clientSettingsBuilder.getNasJobSettings().setRetrySettings(getNasJobRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getNasJob from properties.");
+      }
+    }
+    Retry listNasJobsRetry = clientProperties.getListNasJobsRetry();
+    if (listNasJobsRetry != null) {
+      RetrySettings listNasJobsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listNasJobsSettings().getRetrySettings(), listNasJobsRetry);
+      clientSettingsBuilder.listNasJobsSettings().setRetrySettings(listNasJobsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listNasJobs from properties.");
+      }
+    }
+    Retry cancelNasJobRetry = clientProperties.getCancelNasJobRetry();
+    if (cancelNasJobRetry != null) {
+      RetrySettings cancelNasJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.cancelNasJobSettings().getRetrySettings(), cancelNasJobRetry);
+      clientSettingsBuilder.cancelNasJobSettings().setRetrySettings(cancelNasJobRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for cancelNasJob from properties.");
+      }
+    }
+    Retry getNasTrialDetailRetry = clientProperties.getGetNasTrialDetailRetry();
+    if (getNasTrialDetailRetry != null) {
+      RetrySettings getNasTrialDetailRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getNasTrialDetailSettings().getRetrySettings(),
+              getNasTrialDetailRetry);
+      clientSettingsBuilder
+          .getNasTrialDetailSettings()
+          .setRetrySettings(getNasTrialDetailRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getNasTrialDetail from properties.");
+      }
+    }
+    Retry listNasTrialDetailsRetry = clientProperties.getListNasTrialDetailsRetry();
+    if (listNasTrialDetailsRetry != null) {
+      RetrySettings listNasTrialDetailsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listNasTrialDetailsSettings().getRetrySettings(),
+              listNasTrialDetailsRetry);
+      clientSettingsBuilder
+          .listNasTrialDetailsSettings()
+          .setRetrySettings(listNasTrialDetailsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listNasTrialDetails from properties.");
       }
     }
     Retry createBatchPredictionJobRetry = clientProperties.getCreateBatchPredictionJobRetry();

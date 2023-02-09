@@ -48,6 +48,11 @@ public class TensorboardServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getTensorboardRetry;
   /**
+   * Allow override of retry settings at method-level for readTensorboardUsage. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry readTensorboardUsageRetry;
+  /**
    * Allow override of retry settings at method-level for listTensorboards. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -208,6 +213,14 @@ public class TensorboardServiceSpringProperties implements CredentialsSupplier {
 
   public void setGetTensorboardRetry(Retry getTensorboardRetry) {
     this.getTensorboardRetry = getTensorboardRetry;
+  }
+
+  public Retry getReadTensorboardUsageRetry() {
+    return this.readTensorboardUsageRetry;
+  }
+
+  public void setReadTensorboardUsageRetry(Retry readTensorboardUsageRetry) {
+    this.readTensorboardUsageRetry = readTensorboardUsageRetry;
   }
 
   public Retry getListTensorboardsRetry() {
