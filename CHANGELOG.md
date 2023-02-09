@@ -14,6 +14,26 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.1.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.0.0...v4.1.0) (2023-02-09)
+
+
+### Features
+
+* add an encoder bean in Trace auto-configuration ([#1568](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1568)) ([deb4239](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/deb4239696360dadfe8ecfcda692adf344938909))
+* remove `SecretManagerPropertySourceLocator` ([#1571](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1571)) ([c80d299](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c80d2998ca71ee65118ae51853d093817fc1bf3d))
+
+
+### Bug Fixes
+
+* create Secret Manager beans even without `spring.config.import=sm://` property ([#1567](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1567)) ([b444fcb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b444fcbbdd57984ac7304263490546219ec41c86))
+* update starter modules in spring-cloud-preview ([033e2ee](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/033e2ee4135f0dc9db2edf0bb046296f8d9f34bd))
+
+
+### Dependencies
+
+* bump libraries-bom from 26.5.0 to 26.7.0 ([033e2ee](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/033e2ee4135f0dc9db2edf0bb046296f8d9f34bd))
+* bump maven-enforcer-plugin from 3.1.0 to 3.2.1 ([#1557](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1557)) ([877d271](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/877d2717bf2dbb66ff04660844cd63b248a3c619))
+
 ## [4.0.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.2...v4.0.0) (2023-01-30)
 
 
