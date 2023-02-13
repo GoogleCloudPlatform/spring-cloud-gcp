@@ -95,7 +95,7 @@
     <!-- Test dependencies -->
     <assertj.version>3.24.2</assertj.version>
     <junit.version>5.9.2</junit.version>
-    <surefire-failsafe.version>3.0.0-M7</surefire-failsafe.version>
+    <surefire-failsafe.version>3.0.0-M8</surefire-failsafe.version>
     <testng.version>7.5</testng.version>
   </properties>
 
