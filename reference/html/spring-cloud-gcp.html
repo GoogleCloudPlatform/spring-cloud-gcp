@@ -350,7 +350,7 @@ window.onload = function() {
 <li><a href="#secret-manager">20. Secret Manager</a>
 <ul class="sectlevel2">
 <li><a href="#dependency-setup-2">20.1. Dependency Setup</a></li>
-<li><a href="#secret-manager-property-source">20.2. Secret Manager Property Source</a></li>
+<li><a href="#secret-manager-config-data-resource">20.2. Secret Manager Config Data Resource</a></li>
 <li><a href="#secret-manager-template">20.3. Secret Manager Template</a></li>
 <li><a href="#refresh-secrets-without-restarting-the-application">20.4. Refresh secrets without restarting the application</a></li>
 <li><a href="#allow-default-secret">20.5. Allow default secret</a></li>
@@ -10920,7 +10920,7 @@ A detailed summary of its features can be found in the <a href="https://cloud.go
 <div class="ulist">
 <ul>
 <li>
-<p>A property source which allows you to specify and load the secrets of your Google Cloud project into your application context as a <a href="https://cloud.spring.io/spring-cloud-commons/multi/multi__spring_cloud_context_application_context_services.html#_the_bootstrap_application_context">Bootstrap Property Source</a>.</p>
+<p>A config data resource which allows you to specify and load the secrets of your Google Cloud project into your application context using <a href="https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4">Spring Boot&#8217;s Config Data API</a>.</p>
 </li>
 <li>
 <p>A <code>SecretManagerTemplate</code> which allows you to read, write, and update secrets in Secret Manager.</p>
@@ -11009,15 +11009,13 @@ If set to <code>true</code>, <code>null</code> will be returned when accessing a
 </div>
 </div>
 <div class="sect2">
-<h3 id="secret-manager-property-source"><a class="anchor" href="#secret-manager-property-source"></a><a class="link" href="#secret-manager-property-source">20.2. Secret Manager Property Source</a></h3>
+<h3 id="secret-manager-config-data-resource"><a class="anchor" href="#secret-manager-config-data-resource"></a><a class="link" href="#secret-manager-config-data-resource">20.2. Secret Manager Config Data Resource</a></h3>
 <div class="paragraph">
-<p>The Spring Framework on Google Cloud integration for Google Cloud Secret Manager enables you to use Secret Manager as a bootstrap property source.</p>
+<p>The Spring Framework on Google Cloud integration for Google Cloud Secret Manager enables you to use Secret Manager as an external config data resource.
+This allows you to specify and load secrets from Google Cloud Secret Manager as properties into the application context using <a href="https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4">Spring Boot&#8217;s Config Data API</a>.</p>
 </div>
 <div class="paragraph">
-<p>This allows you to specify and load secrets from Google Cloud Secret Manager as properties into the application context during the <a href="https://cloud.spring.io/spring-cloud-commons/reference/html/#the-bootstrap-application-context">Bootstrap Phase</a>, which refers to the initial phase when a Spring application is being loaded.</p>
-</div>
-<div class="paragraph">
-<p>The Secret Manager property source uses the following syntax to specify secrets:</p>
+<p>The Secret Manager config data resource uses the following syntax to specify secrets:</p>
 </div>
 <div class="listingblock">
 <div class="content">
