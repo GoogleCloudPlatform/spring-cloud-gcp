@@ -1,0 +1,63 @@
+package com.google.showcase.v1beta1.spring;
+
+import com.google.cloud.spring.core.Credentials;
+import com.google.cloud.spring.core.CredentialsSupplier;
+import com.google.cloud.spring.core.Retry;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/** Provides default property values for Wicked client bean */
+@ConfigurationProperties("com.google.showcase.v1beta1.wicked")
+public class WickedSpringProperties implements CredentialsSupplier {
+  /** OAuth2 credentials to authenticate and authorize calls to Google Cloud Client Libraries. */
+  @NestedConfigurationProperty private final Credentials credentials = new Credentials();
+  /** Quota project to use for billing. */
+  private String quotaProjectId;
+  /** Number of threads used for executors. */
+  private Integer executorThreadCount;
+  /** Allow override of retry settings at service level, applying to all of its RPC methods. */
+  @NestedConfigurationProperty private Retry retry;
+  /**
+   * Allow override of retry settings at method-level for craftEvilPlan. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry craftEvilPlanRetry;
+
+  @Override
+  public Credentials getCredentials() {
+    return this.credentials;
+  }
+
+  public String getQuotaProjectId() {
+    return this.quotaProjectId;
+  }
+
+  public void setQuotaProjectId(String quotaProjectId) {
+    this.quotaProjectId = quotaProjectId;
+  }
+
+  public Integer getExecutorThreadCount() {
+    return this.executorThreadCount;
+  }
+
+  public void setExecutorThreadCount(Integer executorThreadCount) {
+    this.executorThreadCount = executorThreadCount;
+  }
+
+  public Retry getRetry() {
+    return this.retry;
+  }
+
+  public void setRetry(Retry retry) {
+    this.retry = retry;
+  }
+
+  public Retry getCraftEvilPlanRetry() {
+    return this.craftEvilPlanRetry;
+  }
+
+  public void setCraftEvilPlanRetry(Retry craftEvilPlanRetry) {
+    this.craftEvilPlanRetry = craftEvilPlanRetry;
+  }
+}

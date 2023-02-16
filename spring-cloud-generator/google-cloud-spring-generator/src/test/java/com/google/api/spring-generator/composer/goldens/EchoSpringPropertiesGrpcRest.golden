@@ -1,0 +1,127 @@
+package com.google.showcase.v1beta1.spring;
+
+import com.google.cloud.spring.core.Credentials;
+import com.google.cloud.spring.core.CredentialsSupplier;
+import com.google.cloud.spring.core.Retry;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/** Provides default property values for Echo client bean */
+@ConfigurationProperties("com.google.showcase.v1beta1.echo")
+public class EchoSpringProperties implements CredentialsSupplier {
+  /** OAuth2 credentials to authenticate and authorize calls to Google Cloud Client Libraries. */
+  @NestedConfigurationProperty
+  private final Credentials credentials =
+      new Credentials("https://www.googleapis.com/auth/cloud-platform");
+  /** Quota project to use for billing. */
+  private String quotaProjectId;
+  /** Number of threads used for executors. */
+  private Integer executorThreadCount;
+  /** Allow override of default transport channel provider to use REST instead of gRPC. */
+  private boolean useRest = false;
+  /** Allow override of retry settings at service level, applying to all of its RPC methods. */
+  @NestedConfigurationProperty private Retry retry;
+  /**
+   * Allow override of retry settings at method-level for echo. If defined, this takes precedence
+   * over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry echoRetry;
+  /**
+   * Allow override of retry settings at method-level for pagedExpand. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry pagedExpandRetry;
+  /**
+   * Allow override of retry settings at method-level for simplePagedExpand. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry simplePagedExpandRetry;
+  /**
+   * Allow override of retry settings at method-level for block. If defined, this takes precedence
+   * over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry blockRetry;
+  /**
+   * Allow override of retry settings at method-level for collideName. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry collideNameRetry;
+
+  @Override
+  public Credentials getCredentials() {
+    return this.credentials;
+  }
+
+  public String getQuotaProjectId() {
+    return this.quotaProjectId;
+  }
+
+  public void setQuotaProjectId(String quotaProjectId) {
+    this.quotaProjectId = quotaProjectId;
+  }
+
+  public boolean getUseRest() {
+    return this.useRest;
+  }
+
+  public void setUseRest(boolean useRest) {
+    this.useRest = useRest;
+  }
+
+  public Integer getExecutorThreadCount() {
+    return this.executorThreadCount;
+  }
+
+  public void setExecutorThreadCount(Integer executorThreadCount) {
+    this.executorThreadCount = executorThreadCount;
+  }
+
+  public Retry getRetry() {
+    return this.retry;
+  }
+
+  public void setRetry(Retry retry) {
+    this.retry = retry;
+  }
+
+  public Retry getEchoRetry() {
+    return this.echoRetry;
+  }
+
+  public void setEchoRetry(Retry echoRetry) {
+    this.echoRetry = echoRetry;
+  }
+
+  public Retry getPagedExpandRetry() {
+    return this.pagedExpandRetry;
+  }
+
+  public void setPagedExpandRetry(Retry pagedExpandRetry) {
+    this.pagedExpandRetry = pagedExpandRetry;
+  }
+
+  public Retry getSimplePagedExpandRetry() {
+    return this.simplePagedExpandRetry;
+  }
+
+  public void setSimplePagedExpandRetry(Retry simplePagedExpandRetry) {
+    this.simplePagedExpandRetry = simplePagedExpandRetry;
+  }
+
+  public Retry getBlockRetry() {
+    return this.blockRetry;
+  }
+
+  public void setBlockRetry(Retry blockRetry) {
+    this.blockRetry = blockRetry;
+  }
+
+  public Retry getCollideNameRetry() {
+    return this.collideNameRetry;
+  }
+
+  public void setCollideNameRetry(Retry collideNameRetry) {
+    this.collideNameRetry = collideNameRetry;
+  }
+}
