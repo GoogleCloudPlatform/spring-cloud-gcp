@@ -139,7 +139,7 @@ jobs:
           git push --set-upstream origin $NEW_BRANCH_NAME
 
           # creates PR
-          gh pr create --draft -B main -H $NEW_BRANCH_NAME --title "$MESSAGE" --body 'Created by Github action'
+          gh pr create --draft -B main -H $NEW_BRANCH_NAME --title "[do not merge] $MESSAGE" --body 'Created by Github action'
         env:
           BASE_BRANCH_NAME: ${{ steps.get_current_branch.outputs.BASE_BRANCH_NAME }}
           NEW_BRANCH_NAME: ${{ steps.create_branch_names.outputs.NEW_BRANCH_NAME }}
