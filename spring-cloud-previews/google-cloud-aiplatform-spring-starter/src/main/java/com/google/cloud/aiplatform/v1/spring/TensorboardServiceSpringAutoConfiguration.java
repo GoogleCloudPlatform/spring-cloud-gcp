@@ -88,7 +88,7 @@ public class TensorboardServiceSpringAutoConfiguration {
 
   /**
    * Provides a default transport channel provider bean. The default is gRPC and will default to it
-   * unless the useRest option is provided to use HTTP transport instead
+   * unless the useRest option is supported and provided to use HTTP transport instead
    *
    * @return a default transport channel provider.
    */
@@ -152,14 +152,6 @@ public class TensorboardServiceSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getTensorboardSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getTensorboardSettings().setRetrySettings(getTensorboardRetrySettings);
-
-      RetrySettings readTensorboardUsageRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.readTensorboardUsageSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .readTensorboardUsageSettings()
-          .setRetrySettings(readTensorboardUsageRetrySettings);
 
       RetrySettings listTensorboardsRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -358,20 +350,6 @@ public class TensorboardServiceSpringAutoConfiguration {
       clientSettingsBuilder.getTensorboardSettings().setRetrySettings(getTensorboardRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getTensorboard from properties.");
-      }
-    }
-    Retry readTensorboardUsageRetry = clientProperties.getReadTensorboardUsageRetry();
-    if (readTensorboardUsageRetry != null) {
-      RetrySettings readTensorboardUsageRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.readTensorboardUsageSettings().getRetrySettings(),
-              readTensorboardUsageRetry);
-      clientSettingsBuilder
-          .readTensorboardUsageSettings()
-          .setRetrySettings(readTensorboardUsageRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for readTensorboardUsage from properties.");
       }
     }
     Retry listTensorboardsRetry = clientProperties.getListTensorboardsRetry();
