@@ -5,6 +5,19 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+      - name: Get branch name
+        id: get_branch_name
+        continue-on-error: false
+        run: |
+          set -x
+          echo "BASE_BRANCH_NAME=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
+      - name: Fail if not dependabot branch
+        continue-on-error: false
+        if: ${{ !startsWith(steps.get_branch_name.outputs.BASE_BRANCH_NAME, 'dependabot/maven/com.google.cloud-libraries-bom') }}
+        run: |
+          echo "This workflow should only be triggered from a dependabot branch to update libraries-bom"
+          echo "Stopping workflow triggered from branch: ${{ steps.get_branch_name.outputs.BASE_BRANCH_NAME }}"
+          exit 1
       - name: Setup Java 17
         uses: actions/setup-java@v1
         with:
@@ -27,20 +40,6 @@ jobs:
         run: |
           set -x
           bash reset-previews-folder.sh
-      - name: Get current branch name
-        id: get_current_branch
-        continue-on-error: false
-        run: |
-          set -x
-          echo "BASE_BRANCH_NAME=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
-      - name: Create new branch
-        id: create_branch_names
-        continue-on-error: false
-        working-directory: spring-cloud-generator
-        run: |
-          set -x
-          NEW_BRANCH_NAME="generated-autoconfig--$(date '+%Y%m%d%H%M%S')"
-          echo "NEW_BRANCH_NAME=$NEW_BRANCH_NAME" >> $GITHUB_OUTPUT
       - name: Generate library list
         continue-on-error: false
         working-directory: spring-cloud-generator
@@ -50,8 +49,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install libxml2-utils
           bash generate-library-list.sh
-          # trims library list to 4 libraries for testing - will be removed later
-          # echo "$(head -n4 library_list.txt)" > library_list.txt
       - name: Compile non-autogen libraries
         continue-on-error: false
         run: |
@@ -108,25 +105,22 @@ jobs:
 
           echo "$CHANGED_FILES have changed after generation"
           if [[ $CHANGED_FILES -eq 0 ]]; then
-            echo "PR will not be generated"
+            echo "Branch will not be updated"
           fi
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_OUTPUT
-      - name: Generate PR
+      - name: Push commit to branch
         if: steps.detect_changes.outputs.CHANGED_FILES > 0
         run: |
           set -x
           # stashes the source branch with generated libs 
-          MESSAGE=`echo "chore: update starter modules in spring-cloud-preview"`
           git stash push -- spring-cloud-previews/
           git reset --hard
           git remote update
           git fetch
 
           # pops the changes in a new branch from base
-          git checkout $BASE_BRANCH_NAME
-          git checkout -b $NEW_BRANCH_NAME
           git stash pop
-          git add .
+          git add ./spring-cloud-previews
 
           # configure author
           git config --global user.name "Cloud Java Bot"
@@ -134,14 +128,11 @@ jobs:
 
           # commit
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-          git commit -m "$MESSAGE"
-          git push --set-upstream origin $NEW_BRANCH_NAME
+          git commit -m "chore: update starter modules in spring-cloud-previews"
+          git push --set-upstream origin $BASE_BRANCH_NAME
 
-          # creates PR
-          gh pr create --draft -B main -H $NEW_BRANCH_NAME --title "$MESSAGE" --body 'Created by Github action'
         env:
-          BASE_BRANCH_NAME: ${{ steps.get_current_branch.outputs.BASE_BRANCH_NAME }}
-          NEW_BRANCH_NAME: ${{ steps.create_branch_names.outputs.NEW_BRANCH_NAME }}
+          BASE_BRANCH_NAME: ${{ steps.get_branch_name.outputs.BASE_BRANCH_NAME }}
           GITHUB_ACTOR_EMAIL: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_EMAIL }}
           GITHUB_ACTOR_NAME: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_NAME }}
           GITHUB_TOKEN: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
