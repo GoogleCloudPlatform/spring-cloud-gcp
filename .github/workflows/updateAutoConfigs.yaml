@@ -10,7 +10,7 @@ jobs:
         continue-on-error: false
         run: |
           set -x
-          echo "BASE_BRANCH_NAME=$(echo ${GITHUB_REF##*/})" >> $GITHUB_OUTPUT
+          echo "BASE_BRANCH_NAME=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
       - name: Fail if not dependabot branch
         continue-on-error: false
         if: ${{ !startsWith(env.BASE_BRANCH_NAME, 'dependabot/maven/com.google.cloud-libraries-bom') }}
