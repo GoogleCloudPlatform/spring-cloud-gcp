@@ -29,7 +29,7 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>26.7.0</gcp-libraries-bom.version>
+		<gcp-libraries-bom.version>26.9.0</gcp-libraries-bom.version>
 		<cloud-sql-socket-factory.version>1.10.0</cloud-sql-socket-factory.version>
 		<guava.version>31.1-jre</guava.version>
 		<r2dbc-mysql-driver.version>0.8.2.RELEASE</r2dbc-mysql-driver.version>
