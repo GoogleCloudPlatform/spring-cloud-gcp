@@ -128,7 +128,7 @@ jobs:
 
           # commit
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-          git commit -m "chore: update starter modules in spring-cloud-previewE"
+          git commit -m "chore: update starter modules in spring-cloud-previews"
           git push --set-upstream origin $BASE_BRANCH_NAME
 
         env:
