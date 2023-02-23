@@ -125,7 +125,6 @@ jobs:
           # pops the changes in a new branch from base
           git checkout $BASE_BRANCH_NAME
           git checkout -b $NEW_BRANCH_NAME
-          #git checkout stash -- .
           git stash pop
           git add .
 
