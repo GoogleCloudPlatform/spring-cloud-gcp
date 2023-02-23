@@ -119,7 +119,6 @@ jobs:
           # pops the changes in a new branch from main
           git checkout main
           git checkout -b $NEW_BRANCH_NAME
-          #git checkout stash -- .
           git stash pop
           git add .
 
