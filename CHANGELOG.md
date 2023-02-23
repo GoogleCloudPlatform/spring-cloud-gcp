@@ -14,6 +14,17 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.4.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.4...v3.4.5) (2023-02-23)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.9.0 to 1.10.0 ([#1584](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1584)) ([68ce4af](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/68ce4afd1ed2d1bfacdf98a4231a358cca62380e))
+* bump libraries-bom from 26.7.0 to 26.9.0 ([#1613](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1613)) ([3e1ca3b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3e1ca3bbc3d496c2ae50ec5638887faf988b6d8d))
+* bump maven-javadoc-plugin from 3.4.1 to 3.5.0 ([#1597](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1597)) ([95aeac7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/95aeac7bbb34fd03b8ab97d2c7b074d8779e38f1))
+* bump spring-boot-dependencies from 2.7.8 to 2.7.9 ([#1611](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1611)) ([e9e1ba3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e9e1ba302e0a93e110321e7d172d5d12dd914180))
+* bump spring-boot-starter-parent from 2.7.8 to 2.7.9 ([#1615](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1615)) ([6332c92](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6332c920b427cc2c9989ff3dce96d967d240e0f6))
+
 ## [3.4.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.3...v3.4.4) (2023-02-09)
 
 
