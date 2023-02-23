@@ -33,9 +33,7 @@ public class JobServiceSpringProperties implements CredentialsSupplier {
   /** OAuth2 credentials to authenticate and authorize calls to Google Cloud Client Libraries. */
   @NestedConfigurationProperty
   private final Credentials credentials =
-      new Credentials(
-          "https://www.googleapis.com/auth/cloud-platform",
-          "https://www.googleapis.com/auth/cloud-platform.read-only");
+      new Credentials("https://www.googleapis.com/auth/cloud-platform");
   /** Quota project to use for billing. */
   private String quotaProjectId;
   /** Number of threads used for executors. */
@@ -102,36 +100,6 @@ public class JobServiceSpringProperties implements CredentialsSupplier {
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry cancelHyperparameterTuningJobRetry;
-  /**
-   * Allow override of retry settings at method-level for createNasJob. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry createNasJobRetry;
-  /**
-   * Allow override of retry settings at method-level for getNasJob. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry getNasJobRetry;
-  /**
-   * Allow override of retry settings at method-level for listNasJobs. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry listNasJobsRetry;
-  /**
-   * Allow override of retry settings at method-level for cancelNasJob. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry cancelNasJobRetry;
-  /**
-   * Allow override of retry settings at method-level for getNasTrialDetail. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry getNasTrialDetailRetry;
-  /**
-   * Allow override of retry settings at method-level for listNasTrialDetails. If defined, this
-   * takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry listNasTrialDetailsRetry;
   /**
    * Allow override of retry settings at method-level for createBatchPredictionJob. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
@@ -332,54 +300,6 @@ public class JobServiceSpringProperties implements CredentialsSupplier {
 
   public void setCancelHyperparameterTuningJobRetry(Retry cancelHyperparameterTuningJobRetry) {
     this.cancelHyperparameterTuningJobRetry = cancelHyperparameterTuningJobRetry;
-  }
-
-  public Retry getCreateNasJobRetry() {
-    return this.createNasJobRetry;
-  }
-
-  public void setCreateNasJobRetry(Retry createNasJobRetry) {
-    this.createNasJobRetry = createNasJobRetry;
-  }
-
-  public Retry getGetNasJobRetry() {
-    return this.getNasJobRetry;
-  }
-
-  public void setGetNasJobRetry(Retry getNasJobRetry) {
-    this.getNasJobRetry = getNasJobRetry;
-  }
-
-  public Retry getListNasJobsRetry() {
-    return this.listNasJobsRetry;
-  }
-
-  public void setListNasJobsRetry(Retry listNasJobsRetry) {
-    this.listNasJobsRetry = listNasJobsRetry;
-  }
-
-  public Retry getCancelNasJobRetry() {
-    return this.cancelNasJobRetry;
-  }
-
-  public void setCancelNasJobRetry(Retry cancelNasJobRetry) {
-    this.cancelNasJobRetry = cancelNasJobRetry;
-  }
-
-  public Retry getGetNasTrialDetailRetry() {
-    return this.getNasTrialDetailRetry;
-  }
-
-  public void setGetNasTrialDetailRetry(Retry getNasTrialDetailRetry) {
-    this.getNasTrialDetailRetry = getNasTrialDetailRetry;
-  }
-
-  public Retry getListNasTrialDetailsRetry() {
-    return this.listNasTrialDetailsRetry;
-  }
-
-  public void setListNasTrialDetailsRetry(Retry listNasTrialDetailsRetry) {
-    this.listNasTrialDetailsRetry = listNasTrialDetailsRetry;
   }
 
   public Retry getCreateBatchPredictionJobRetry() {
