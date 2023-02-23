@@ -27,7 +27,13 @@ jobs:
         run: |
           set -x
           bash reset-previews-folder.sh
-      - name: Create branch
+      - name: Get current branch name
+        id: get_current_branch
+        continue-on-error: false
+        run: |
+          set -x
+          echo "BASE_BRANCH_NAME=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
+      - name: Create new branch
         id: create_branch_names
         continue-on-error: false
         working-directory: spring-cloud-generator
@@ -116,8 +122,8 @@ jobs:
           git remote update
           git fetch
 
-          # pops the changes in a new branch from main
-          git checkout main
+          # pops the changes in a new branch from base
+          git checkout $BASE_BRANCH_NAME
           git checkout -b $NEW_BRANCH_NAME
           #git checkout stash -- .
           git stash pop
@@ -135,6 +141,7 @@ jobs:
           # creates PR
           gh pr create --draft -B main -H $NEW_BRANCH_NAME --title "$MESSAGE" --body 'Created by Github action'
         env:
+          BASE_BRANCH_NAME: ${{ steps.get_current_branch.outputs.BASE_BRANCH_NAME }}
           NEW_BRANCH_NAME: ${{ steps.create_branch_names.outputs.NEW_BRANCH_NAME }}
           GITHUB_ACTOR_EMAIL: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_EMAIL }}
           GITHUB_ACTOR_NAME: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_NAME }}
