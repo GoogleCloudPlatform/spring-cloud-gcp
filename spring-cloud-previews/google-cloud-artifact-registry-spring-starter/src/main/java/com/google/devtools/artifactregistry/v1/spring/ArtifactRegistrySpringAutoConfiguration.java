@@ -88,7 +88,7 @@ public class ArtifactRegistrySpringAutoConfiguration {
 
   /**
    * Provides a default transport channel provider bean. The default is gRPC and will default to it
-   * unless the useRest option is provided to use HTTP transport instead
+   * unless the useRest option is supported and provided to use HTTP transport instead
    *
    * @return a default transport channel provider.
    */
@@ -169,6 +169,46 @@ public class ArtifactRegistrySpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getDockerImageSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getDockerImageSettings().setRetrySettings(getDockerImageRetrySettings);
+
+      RetrySettings listMavenArtifactsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMavenArtifactsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listMavenArtifactsSettings()
+          .setRetrySettings(listMavenArtifactsRetrySettings);
+
+      RetrySettings getMavenArtifactRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMavenArtifactSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getMavenArtifactSettings()
+          .setRetrySettings(getMavenArtifactRetrySettings);
+
+      RetrySettings listNpmPackagesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listNpmPackagesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listNpmPackagesSettings()
+          .setRetrySettings(listNpmPackagesRetrySettings);
+
+      RetrySettings getNpmPackageRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getNpmPackageSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getNpmPackageSettings().setRetrySettings(getNpmPackageRetrySettings);
+
+      RetrySettings listPythonPackagesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPythonPackagesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listPythonPackagesSettings()
+          .setRetrySettings(listPythonPackagesRetrySettings);
+
+      RetrySettings getPythonPackageRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPythonPackageSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getPythonPackageSettings()
+          .setRetrySettings(getPythonPackageRetrySettings);
 
       RetrySettings listRepositoriesRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -276,6 +316,18 @@ public class ArtifactRegistrySpringAutoConfiguration {
           .updateProjectSettingsSettings()
           .setRetrySettings(updateProjectSettingsRetrySettings);
 
+      RetrySettings getVPCSCConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getVPCSCConfigSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getVPCSCConfigSettings().setRetrySettings(getVPCSCConfigRetrySettings);
+
+      RetrySettings updateVPCSCConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateVPCSCConfigSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .updateVPCSCConfigSettings()
+          .setRetrySettings(updateVPCSCConfigRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -313,6 +365,85 @@ public class ArtifactRegistrySpringAutoConfiguration {
       clientSettingsBuilder.getDockerImageSettings().setRetrySettings(getDockerImageRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getDockerImage from properties.");
+      }
+    }
+    Retry listMavenArtifactsRetry = clientProperties.getListMavenArtifactsRetry();
+    if (listMavenArtifactsRetry != null) {
+      RetrySettings listMavenArtifactsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMavenArtifactsSettings().getRetrySettings(),
+              listMavenArtifactsRetry);
+      clientSettingsBuilder
+          .listMavenArtifactsSettings()
+          .setRetrySettings(listMavenArtifactsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listMavenArtifacts from properties.");
+      }
+    }
+    Retry getMavenArtifactRetry = clientProperties.getGetMavenArtifactRetry();
+    if (getMavenArtifactRetry != null) {
+      RetrySettings getMavenArtifactRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMavenArtifactSettings().getRetrySettings(),
+              getMavenArtifactRetry);
+      clientSettingsBuilder
+          .getMavenArtifactSettings()
+          .setRetrySettings(getMavenArtifactRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getMavenArtifact from properties.");
+      }
+    }
+    Retry listNpmPackagesRetry = clientProperties.getListNpmPackagesRetry();
+    if (listNpmPackagesRetry != null) {
+      RetrySettings listNpmPackagesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listNpmPackagesSettings().getRetrySettings(),
+              listNpmPackagesRetry);
+      clientSettingsBuilder
+          .listNpmPackagesSettings()
+          .setRetrySettings(listNpmPackagesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listNpmPackages from properties.");
+      }
+    }
+    Retry getNpmPackageRetry = clientProperties.getGetNpmPackageRetry();
+    if (getNpmPackageRetry != null) {
+      RetrySettings getNpmPackageRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getNpmPackageSettings().getRetrySettings(), getNpmPackageRetry);
+      clientSettingsBuilder.getNpmPackageSettings().setRetrySettings(getNpmPackageRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getNpmPackage from properties.");
+      }
+    }
+    Retry listPythonPackagesRetry = clientProperties.getListPythonPackagesRetry();
+    if (listPythonPackagesRetry != null) {
+      RetrySettings listPythonPackagesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPythonPackagesSettings().getRetrySettings(),
+              listPythonPackagesRetry);
+      clientSettingsBuilder
+          .listPythonPackagesSettings()
+          .setRetrySettings(listPythonPackagesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listPythonPackages from properties.");
+      }
+    }
+    Retry getPythonPackageRetry = clientProperties.getGetPythonPackageRetry();
+    if (getPythonPackageRetry != null) {
+      RetrySettings getPythonPackageRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPythonPackageSettings().getRetrySettings(),
+              getPythonPackageRetry);
+      clientSettingsBuilder
+          .getPythonPackageSettings()
+          .setRetrySettings(getPythonPackageRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getPythonPackage from properties.");
       }
     }
     Retry listRepositoriesRetry = clientProperties.getListRepositoriesRetry();
@@ -523,6 +654,31 @@ public class ArtifactRegistrySpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for updateProjectSettings from properties.");
+      }
+    }
+    Retry getVPCSCConfigRetry = clientProperties.getGetVPCSCConfigRetry();
+    if (getVPCSCConfigRetry != null) {
+      RetrySettings getVPCSCConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getVPCSCConfigSettings().getRetrySettings(),
+              getVPCSCConfigRetry);
+      clientSettingsBuilder.getVPCSCConfigSettings().setRetrySettings(getVPCSCConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getVPCSCConfig from properties.");
+      }
+    }
+    Retry updateVPCSCConfigRetry = clientProperties.getUpdateVPCSCConfigRetry();
+    if (updateVPCSCConfigRetry != null) {
+      RetrySettings updateVPCSCConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateVPCSCConfigSettings().getRetrySettings(),
+              updateVPCSCConfigRetry);
+      clientSettingsBuilder
+          .updateVPCSCConfigSettings()
+          .setRetrySettings(updateVPCSCConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateVPCSCConfig from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();
