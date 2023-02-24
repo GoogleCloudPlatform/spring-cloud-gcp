@@ -1063,6 +1063,7 @@ class PartTreeDatastoreQueryTests {
       DefaultRepositoryMetadata mockMetadata = mock(DefaultRepositoryMetadata.class);
       doReturn(m.getReturnType()).when(mockMetadata).getReturnedDomainClass(m);
       doReturn(TypeInformation.fromReturnTypeOf(m)).when(mockMetadata).getReturnType(m);
+      doReturn(TypeInformation.fromReturnTypeOf(m)).when(mockMetadata).getDomainTypeInformation();
       DatastoreQueryMethod datastoreQueryMethod =
               new DatastoreQueryMethod(m, mockMetadata, mock(SpelAwareProxyProjectionFactory.class));
       doReturn(datastoreQueryMethod.isOptionalReturnType())
