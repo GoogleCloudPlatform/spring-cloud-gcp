@@ -84,7 +84,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <google-cloud-bom.version>26.7.0</google-cloud-bom.version>
+    <google-cloud-bom.version>26.9.0</google-cloud-bom.version>
 
     <r2dbc.version>0.9.0.RELEASE</r2dbc.version>
     <reactor.version>2022.0.2</reactor.version>
