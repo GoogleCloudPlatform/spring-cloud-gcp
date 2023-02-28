@@ -23,6 +23,7 @@ import org.springframework.boot.autoconfigure.AutoConfigurationMetadata;
 /**
  * Exclude Spring Boot AutoConfiguration classes as they provide incompatible beans
  * when using Cloud Trace.
+ *
  * @since 4.1.2
  */
 public class TraceAutoConfigurationFilter implements AutoConfigurationImportFilter {
