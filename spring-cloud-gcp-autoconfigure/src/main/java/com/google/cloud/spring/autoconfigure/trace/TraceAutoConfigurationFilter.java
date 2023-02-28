@@ -20,6 +20,11 @@ import java.util.Set;
 import org.springframework.boot.autoconfigure.AutoConfigurationImportFilter;
 import org.springframework.boot.autoconfigure.AutoConfigurationMetadata;
 
+/**
+ * Exclude Spring Boot AutoConfiguration classes as they provide incompatible beans
+ * when using Cloud Trace.
+ * @since 4.1.2
+ */
 public class TraceAutoConfigurationFilter implements AutoConfigurationImportFilter {
 
   private static final Set<String> SHOULD_SKIP = Set.of(
