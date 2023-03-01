@@ -19,8 +19,19 @@ set -eov pipefail
 
 dir=$(dirname "$0")
 
-pushd $dir/../
-./mvnw install -B -V -DskipTests
-popd
+source "$dir/common.sh"
 
-source $dir/release_snapshot.sh
+pushd "$dir/../"
+
+MAVEN_SETTINGS_FILE=$(realpath .)/settings.xml
+create_settings_xml_file "$MAVEN_SETTINGS_FILE"
+
+# workaround for nexus maven plugin issue with Java 16+: https://issues.sonatype.org/browse/OSSRH-66257
+export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
+
+mvn install --show-version --batch-mode \
+  -DskipTests \
+  -Dorg.slf4j.simpleLogger.showDateTime=true \
+  -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
+
+popd
