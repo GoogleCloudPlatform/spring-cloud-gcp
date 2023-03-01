@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.trace;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -51,7 +52,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.tracing.zipkin.ZipkinAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
@@ -80,7 +83,8 @@ class StackdriverTraceAutoConfigurationTests {
                 StackdriverTraceAutoConfiguration.class,
                 GcpContextAutoConfiguration.class,
                 BraveAutoConfiguration.class,
-                RefreshAutoConfiguration.class))
+                RefreshAutoConfiguration.class,
+                TraceAutoConfigurationFilter.class))
         .withUserConfiguration(MockConfiguration.class)
         .withPropertyValues(
             "spring.cloud.gcp.project-id=proj");
@@ -101,6 +105,16 @@ class StackdriverTraceAutoConfigurationTests {
                   .isNotNull();
               assertThat(context.getBean(ManagedChannel.class)).isNotNull();
             });
+  }
+
+  @Test
+  void testDisableZipkinAutoConfiguration() {
+    this.contextRunner
+        .run(
+            context ->
+                assertThatThrownBy(() -> context.getBean(ZipkinAutoConfiguration.class))
+                    .isExactlyInstanceOf(NoSuchBeanDefinitionException.class)
+                    .hasMessageContaining("ZipkinAutoConfiguration"));
   }
 
   @Test
