@@ -1,18 +1,21 @@
-{
-	"extends": [
-		"config:base"
+{"extends": [
+	"config:base"
 	],
 	"packageRules": [{
-			"packageNames": [
-				"com.coveo:fmt-maven-plugin",
-				"com.google.googlejavaformat:google-java-format"
-			],
-			"enabled": false
+		"packageNames": [
+			"com.coveo:fmt-maven-plugin",
+			"com.google.googlejavaformat:google-java-format"
+		],
+		"enabled": false
 		},
 		{
-			"major": {
-				"enabled": false
+		"major": {
+			"enabled": false
 			}
 		}
+	],
+	"labels": [
+		"dependencies"
 	]
 }
+
