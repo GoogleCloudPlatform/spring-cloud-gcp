@@ -549,7 +549,7 @@ class DefaultSubscriberFactoryTests {
         new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
 
     when(mockPubSubConfiguration.computeMinDurationPerAckExtension("subscription-name",
-        projectIdProvider.getProjectId())).thenReturn(3l);
+        projectIdProvider.getProjectId())).thenReturn(3L);
 
     // subscription level setting is used when factory-level one is not provided
     assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
@@ -570,7 +570,7 @@ class DefaultSubscriberFactoryTests {
         new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
 
     when(mockPubSubConfiguration.computeMaxDurationPerAckExtension("subscription-name",
-        projectIdProvider.getProjectId())).thenReturn(3l);
+        projectIdProvider.getProjectId())).thenReturn(3L);
 
     // subscription level setting is used when factory-level one is not provided
     assertThat(factory.getMaxDurationPerAckExtension("subscription-name"))
