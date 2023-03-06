@@ -43,9 +43,7 @@ import javax.annotation.Nullable;
 import org.springframework.util.Assert;
 import org.threeten.bp.Duration;
 
-/**
- * The default {@link SubscriberFactory} implementation.
- */
+/** The default {@link SubscriberFactory} implementation. */
 public class DefaultSubscriberFactory implements SubscriberFactory {
 
   private final String projectId;
@@ -98,7 +96,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   /**
    * Default {@link DefaultSubscriberFactory} constructor.
    *
-   * @param projectIdProvider   provides the default GCP project ID for selecting the subscriptions
+   * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
    * @param pubSubConfiguration contains the subscriber properties to configure
    */
   public DefaultSubscriberFactory(
@@ -213,7 +211,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
    * Set the retry settings for the generated subscriber stubs.
    *
    * @param subscriberStubRetrySettings parameters for retrying pull requests when they fail,
-   *                                    including jitter logic, timeout, and exponential backoff
+   *     including jitter logic, timeout, and exponential backoff
    */
   public void setSubscriberStubRetrySettings(RetrySettings subscriberStubRetrySettings) {
     this.subscriberStubRetrySettings = subscriberStubRetrySettings;
@@ -232,7 +230,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
    * Set the health tracker chain for the generated subscriptions.
    *
    * @param healthTrackerRegistry parameter for registering health trackers when creating
-   *                              subscriptions
+   *     subscriptions
    */
   public void setHealthTrackerRegistry(HealthTrackerRegistry healthTrackerRegistry) {
     this.healthTrackerRegistry = healthTrackerRegistry;
@@ -561,8 +559,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     return this.pubSubConfiguration.computeRetryableCodes(subscriptionName, projectId);
   }
 
-  public void setExecutorProviderMap(
-      Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap) {
+  public void setExecutorProviderMap(Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap) {
     this.executorProviderMap = executorProviderMap;
   }
 
