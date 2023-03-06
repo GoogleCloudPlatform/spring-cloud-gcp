@@ -507,6 +507,15 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     return extension == null ? null : Duration.ofSeconds(extension);
   }
 
+  /**
+   * Sets the min duration per ack extension override for all subscriptions.
+   *
+   * @param minDurationPerAckExtension the min duration per ack extension
+   */
+  public void setMinDurationPerAckExtension(@Nullable Duration minDurationPerAckExtension) {
+    this.minDurationPerAckExtension = minDurationPerAckExtension;
+  }
+
   @Nullable
   Duration getMaxDurationPerAckExtension(String subscriptionName) {
     if (this.maxDurationPerAckExtension != null) {
@@ -516,6 +525,15 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
         this.pubSubConfiguration.computeMaxDurationPerAckExtension(subscriptionName, projectId);
 
     return extension == null ? null : Duration.ofSeconds(extension);
+  }
+
+  /**
+   * Sets the max duration per ack extension override for all subscriptions.
+   *
+   * @param maxDurationPerAckExtension the max duration per ack extension
+   */
+  public void setMaxDurationPerAckExtension(@Nullable Duration maxDurationPerAckExtension) {
+    this.maxDurationPerAckExtension = maxDurationPerAckExtension;
   }
 
   Integer getPullCount(String subscriptionName) {
