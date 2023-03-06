@@ -543,6 +543,48 @@ class DefaultSubscriberFactoryTests {
   }
 
   @Test
+  void testGetMinDurationPerAckExtension_factorySetValue() {
+    GcpProjectIdProvider projectIdProvider = () -> "project";
+    DefaultSubscriberFactory factory =
+        new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+
+    when(mockPubSubConfiguration.computeMinDurationPerAckExtension("subscription-name",
+        projectIdProvider.getProjectId())).thenReturn(3L);
+
+    // subscription level setting is used when factory-level one is not provided
+    assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
+        .isEqualTo(Duration.ofSeconds(3));
+
+    // this setting should override the subscription-level one
+    factory.setMinDurationPerAckExtension(Duration.ofSeconds(2));
+
+    // factory-level setting is used even when subscription level one is provided
+    assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
+        .isEqualTo(Duration.ofSeconds(2));
+  }
+
+  @Test
+  void testGetMaxDurationPerAckExtension_factorySetValue() {
+    GcpProjectIdProvider projectIdProvider = () -> "project";
+    DefaultSubscriberFactory factory =
+        new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+
+    when(mockPubSubConfiguration.computeMaxDurationPerAckExtension("subscription-name",
+        projectIdProvider.getProjectId())).thenReturn(3L);
+
+    // subscription level setting is used when factory-level one is not provided
+    assertThat(factory.getMaxDurationPerAckExtension("subscription-name"))
+        .isEqualTo(Duration.ofSeconds(3));
+
+    // this setting should override the subscription-level one
+    factory.setMaxDurationPerAckExtension(Duration.ofSeconds(2));
+
+    // factory-level setting is used even when subscription level one is provided
+    assertThat(factory.getMaxDurationPerAckExtension("subscription-name"))
+        .isEqualTo(Duration.ofSeconds(2));
+  }
+
+  @Test
   void testGetMinDurationPerAckExtension_newConfiguration() {
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
