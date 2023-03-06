@@ -538,9 +538,6 @@ class DefaultSubscriberFactoryTests {
         "subscription-name", projectIdProvider.getProjectId()))
         .thenReturn(1L);
 
-    // this setting should be overridden by subscription-specific one.
-    factory.setMinDurationPerAckExtension(Duration.ofSeconds(2));
-
     assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
         .isEqualTo(Duration.ofSeconds(1));
   }
@@ -554,14 +551,14 @@ class DefaultSubscriberFactoryTests {
     when(mockPubSubConfiguration.computeMinDurationPerAckExtension("subscription-name",
         projectIdProvider.getProjectId())).thenReturn(3l);
 
-    // global setting is used when factory-level on is not provided
+    // subscription level setting is used when factory-level on is not provided
     assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
         .isEqualTo(Duration.ofSeconds(3));
 
-    // this setting should override the global one.
+    // this setting should override the subscription-level one
     factory.setMinDurationPerAckExtension(Duration.ofSeconds(2));
 
-    // factory-level setting is used when subscription level one is not provided
+    // factory-level setting is used even when subscription level one is provided
     assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
         .isEqualTo(Duration.ofSeconds(2));
   }
@@ -575,14 +572,14 @@ class DefaultSubscriberFactoryTests {
     when(mockPubSubConfiguration.computeMaxDurationPerAckExtension("subscription-name",
         projectIdProvider.getProjectId())).thenReturn(3l);
 
-    // global setting is used when factory-level on is not provided
+    // subscription level setting is used when factory-level on is not provided
     assertThat(factory.getMaxDurationPerAckExtension("subscription-name"))
         .isEqualTo(Duration.ofSeconds(3));
 
-    // this setting should override the global one.
+    // this setting should override the subscription-level one
     factory.setMaxDurationPerAckExtension(Duration.ofSeconds(2));
 
-    // factory-level setting is used when subscription level one is not provided
+    // factory-level setting is used even when subscription level one is provided
     assertThat(factory.getMaxDurationPerAckExtension("subscription-name"))
         .isEqualTo(Duration.ofSeconds(2));
   }

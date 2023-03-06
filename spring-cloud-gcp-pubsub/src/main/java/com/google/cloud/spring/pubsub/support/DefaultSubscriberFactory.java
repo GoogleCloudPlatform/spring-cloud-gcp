@@ -508,8 +508,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   }
 
   /**
-   * Sets the default min duration per ack extension that will be used if the setting is not
-   * provided at the subscription level.
+   * Sets the min duration per ack extension override for all subscriptions.
    *
    * @param minDurationPerAckExtension the min duration per ack extension
    */
@@ -529,8 +528,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   }
 
   /**
-   * Sets the default max duration per ack extension that will be used if the setting is not
-   * provided at the subscription level.
+   * Sets the max duration per ack extension override for all subscriptions.
    *
    * @param maxDurationPerAckExtension the max duration per ack extension
    */
