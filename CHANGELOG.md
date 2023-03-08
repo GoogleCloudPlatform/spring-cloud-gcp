@@ -14,6 +14,19 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.4.6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.5...v3.4.6) (2023-03-08)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.10.0 to 1.11.0 ([#1635](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1635)) ([2d101ad](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2d101ad77e2f57022207e43ef1af70c7299e85c0))
+* bump libraries-bom from 26.9.0 to 26.10.0 ([#1648](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1648)) ([dea6d1f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/dea6d1fb8f0a2d384a9a2d4a934e11a190c4b04a))
+* bump maven-compiler-plugin from 3.10.1 to 3.11.0 ([#1633](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1633)) ([94ad677](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/94ad67703b6d05e96e8f5ba4ab87a0eeb3f9627a))
+* bump spring-cloud-build from 3.1.5 to 3.1.6 ([#1626](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1626)) ([8dd7c47](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8dd7c47982d1421287aa28ca1184ba8ee61c4eae))
+* bump spring-cloud-config.version from 3.1.5 to 3.1.6 ([#1623](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1623)) ([e52da8b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e52da8b3d4db4d8aef153a15e9c04bcdbfadf4f7))
+* bump spring-cloud-dependencies from 2021.0.5 to 2021.0.6 ([#1624](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1624)) ([9411fb8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9411fb8fa2fbb4ff9953476ebad4a4df6d070ab1))
+* bump spring-shell-starter from 2.1.6 to 2.1.7 ([#1636](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1636)) ([f5133dd](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f5133dd8d7f27a78c1976c3de0afce79c5f21e5f))
+
 ## [3.4.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.4...v3.4.5) (2023-02-23)
 
 
