@@ -14,6 +14,22 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.1.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.1.1...v4.1.2) (2023-03-08)
+
+
+### Bug Fixes
+
+* provide setters for min/max duration per ack ext ([#1644](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1644)) ([cd3a75c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cd3a75c5cbf6459cbfb46ab72d45b0cca2562109))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.10.0 to 1.11.0 ([#1634](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1634)) ([cf24325](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cf24325fdcbc681bc3544ea8081f45f891ea91fc))
+* bump libraries-bom from 26.9.0 to 26.10.0 ([#1647](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1647)) ([33d131b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/33d131bc1e0799693e6b4052fd78f55483e77fac))
+* bump spring-boot-dependencies from 3.0.3 to 3.0.4 ([#1642](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1642)) ([a9db5bd](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a9db5bdf2b05e35428e897dee1b5c7c3d11ad335))
+* bump spring-boot-starter-parent from 3.0.3 to 3.0.4 ([#1641](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1641)) ([7f89063](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7f89063fe3675be2cffcb4f18d34f595123c7012))
+* bump spring-cloud-build from 3.1.5 to 3.1.6 ([#1625](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1625)) ([f75a8bf](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f75a8bf0f2c87a121fa5091ed6d89b5ca8034f7d))
+
 ## [4.1.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.1.0...v4.1.1) (2023-02-24)
 
 
