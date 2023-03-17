@@ -123,13 +123,13 @@ jobs:
         if: steps.detect_changes.outputs.CHANGED_FILES > 0
         run: |
           set -x
-          # stashes the source branch with generated libs 
+          # stashes the changes from generated libs
           git stash push -- spring-cloud-previews/
           git reset --hard
           git remote update
-          git fetch
 
-          # pops the changes in a new branch from base
+          # pops the changes in branch
+          git checkout $BASE_BRANCH_NAME
           git stash pop
           git add ./spring-cloud-previews
 
