@@ -1,13 +1,11 @@
 name: Generate Spring Auto-Configurations
 on:
-  pull_request_target:
-    types:
-      - opened
+  pull_request:
   workflow_dispatch:
 jobs:
   generateLibraries:
     # Run job if manually triggered, or on PR with matching branch condition
-    if: ${{ (github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request_target' && startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom')) }}
+    if: ${{ (github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request' && startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom') && github.event.action == 'opened') }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -16,7 +14,7 @@ jobs:
         continue-on-error: false
         run: |
           set -x
-          if ${{ github.event_name == 'pull_request_target' }}; then
+          if ${{ github.event_name == 'pull_request' }}; then
             echo "Branch name from PR event: $GITHUB_HEAD_REF"
             echo "BASE_BRANCH_NAME=$GITHUB_HEAD_REF" >> $GITHUB_OUTPUT
           else
