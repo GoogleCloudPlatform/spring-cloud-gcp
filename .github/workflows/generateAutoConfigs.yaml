@@ -7,6 +7,7 @@ on:
 jobs:
   generateLibraries:
     # Run job if manually triggered, or on PR with matching branch condition
+    # Testing with trivial change
     if: ${{ (github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request_target' && startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom')) }}
     runs-on: ubuntu-20.04
     steps:
