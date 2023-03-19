@@ -16,17 +16,17 @@ jobs:
           set -x
           if ${{ github.event_name == 'pull_request' }}; then
             echo "Branch name from PR event: $GITHUB_HEAD_REF"
-            echo "BASE_BRANCH_NAME=$GITHUB_HEAD_REF" >> $GITHUB_OUTPUT
+            echo "BRANCH_NAME=$GITHUB_HEAD_REF" >> $GITHUB_OUTPUT
           else
             echo "Branch name from manual trigger: $GITHUB_REF_NAME"
-            echo "BASE_BRANCH_NAME=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
+            echo "BRANCH_NAME=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
           fi
       - name: Fail if not dependabot branch
         continue-on-error: false
-        if: ${{ !startsWith(steps.get_branch_name.outputs.BASE_BRANCH_NAME, 'dependabot/maven/com.google.cloud-libraries-bom') }}
+        if: ${{ !startsWith(steps.get_branch_name.outputs.BRANCH_NAME, 'dependabot/maven/com.google.cloud-libraries-bom') }}
         run: |
           echo "This workflow should only be triggered from a dependabot branch to update libraries-bom"
-          echo "Stopping workflow triggered from branch: ${{ steps.get_branch_name.outputs.BASE_BRANCH_NAME }}"
+          echo "Stopping workflow triggered from branch: ${{ steps.get_branch_name.outputs.BRANCH_NAME }}"
           exit 1
       - name: Setup Java 17
         uses: actions/setup-java@v1
@@ -128,7 +128,7 @@ jobs:
           git remote update
 
           # pops the changes in branch
-          git checkout $BASE_BRANCH_NAME
+          git checkout $BRANCH_NAME
           git stash pop
           git add ./spring-cloud-previews
 
@@ -139,10 +139,10 @@ jobs:
           # commit
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git commit -m "chore: update starter modules in spring-cloud-previews"
-          git push --set-upstream origin $BASE_BRANCH_NAME
+          git push --set-upstream origin $BRANCH_NAME
 
         env:
-          BASE_BRANCH_NAME: ${{ steps.get_branch_name.outputs.BASE_BRANCH_NAME }}
+          BRANCH_NAME: ${{ steps.get_branch_name.outputs.BRANCH_NAME }}
           GITHUB_ACTOR_EMAIL: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_EMAIL }}
           GITHUB_ACTOR_NAME: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_NAME }}
           GITHUB_TOKEN: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
