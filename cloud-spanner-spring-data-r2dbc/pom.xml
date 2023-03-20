@@ -90,7 +90,7 @@
     <reactor.version>2022.0.4</reactor.version>
 
     <mockito.version>4.9.0</mockito.version>
-    <slf4j.version>2.0.6</slf4j.version>
+    <slf4j.version>2.0.7</slf4j.version>
 
     <!-- Test dependencies -->
     <assertj.version>3.24.2</assertj.version>
