@@ -219,6 +219,18 @@ public class DocumentProcessorServiceSpringAutoConfiguration {
           .createProcessorSettings()
           .setRetrySettings(createProcessorRetrySettings);
 
+      RetrySettings getEvaluationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getEvaluationSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getEvaluationSettings().setRetrySettings(getEvaluationRetrySettings);
+
+      RetrySettings listEvaluationsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listEvaluationsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listEvaluationsSettings()
+          .setRetrySettings(listEvaluationsRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -348,6 +360,29 @@ public class DocumentProcessorServiceSpringAutoConfiguration {
           .setRetrySettings(createProcessorRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for createProcessor from properties.");
+      }
+    }
+    Retry getEvaluationRetry = clientProperties.getGetEvaluationRetry();
+    if (getEvaluationRetry != null) {
+      RetrySettings getEvaluationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getEvaluationSettings().getRetrySettings(), getEvaluationRetry);
+      clientSettingsBuilder.getEvaluationSettings().setRetrySettings(getEvaluationRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getEvaluation from properties.");
+      }
+    }
+    Retry listEvaluationsRetry = clientProperties.getListEvaluationsRetry();
+    if (listEvaluationsRetry != null) {
+      RetrySettings listEvaluationsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listEvaluationsSettings().getRetrySettings(),
+              listEvaluationsRetry);
+      clientSettingsBuilder
+          .listEvaluationsSettings()
+          .setRetrySettings(listEvaluationsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listEvaluations from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

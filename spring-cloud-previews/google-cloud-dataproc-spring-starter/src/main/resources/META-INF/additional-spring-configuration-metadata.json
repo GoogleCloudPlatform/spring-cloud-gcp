@@ -25,15 +25,15 @@
       "defaultValue": true
     },
     {
-      "name": "com.google.cloud.dataproc.v1.workflow-template-service.enabled",
-      "type": "java.lang.Boolean",
-      "description": "Auto-configure Google Cloud dataproc/WorkflowTemplateService components.",
-      "defaultValue": true
-    },
-    {
       "name": "com.google.cloud.dataproc.v1.node-group-controller.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud dataproc/NodeGroupController components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.dataproc.v1.workflow-template-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud dataproc/WorkflowTemplateService components.",
       "defaultValue": true
     }
   ]

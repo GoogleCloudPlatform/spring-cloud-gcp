@@ -76,6 +76,11 @@ public class ModelServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry batchImportModelEvaluationSlicesRetry;
   /**
+   * Allow override of retry settings at method-level for batchImportEvaluatedAnnotations. If
+   * defined, this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry batchImportEvaluatedAnnotationsRetry;
+  /**
    * Allow override of retry settings at method-level for getModelEvaluation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -205,6 +210,14 @@ public class ModelServiceSpringProperties implements CredentialsSupplier {
   public void setBatchImportModelEvaluationSlicesRetry(
       Retry batchImportModelEvaluationSlicesRetry) {
     this.batchImportModelEvaluationSlicesRetry = batchImportModelEvaluationSlicesRetry;
+  }
+
+  public Retry getBatchImportEvaluatedAnnotationsRetry() {
+    return this.batchImportEvaluatedAnnotationsRetry;
+  }
+
+  public void setBatchImportEvaluatedAnnotationsRetry(Retry batchImportEvaluatedAnnotationsRetry) {
+    this.batchImportEvaluatedAnnotationsRetry = batchImportEvaluatedAnnotationsRetry;
   }
 
   public Retry getGetModelEvaluationRetry() {
