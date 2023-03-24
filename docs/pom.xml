@@ -23,7 +23,7 @@
 		<upload-docs-zip.phase>none</upload-docs-zip.phase>
 
 		<!--maven-resources-plugin:3.2.0:copy-resources fails: https://issues.apache.org/jira/browse/MSHARED-966-->
-		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+		<maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
 	</properties>
 
 	<repositories>
