@@ -212,6 +212,11 @@ public class CloudChannelServiceSpringProperties implements CredentialsSupplier 
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listSubscribersRetry;
+  /**
+   * Allow override of retry settings at method-level for listEntitlementChanges. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listEntitlementChangesRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -525,5 +530,13 @@ public class CloudChannelServiceSpringProperties implements CredentialsSupplier 
 
   public void setListSubscribersRetry(Retry listSubscribersRetry) {
     this.listSubscribersRetry = listSubscribersRetry;
+  }
+
+  public Retry getListEntitlementChangesRetry() {
+    return this.listEntitlementChangesRetry;
+  }
+
+  public void setListEntitlementChangesRetry(Retry listEntitlementChangesRetry) {
+    this.listEntitlementChangesRetry = listEntitlementChangesRetry;
   }
 }
