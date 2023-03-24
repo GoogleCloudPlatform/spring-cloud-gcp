@@ -14,6 +14,16 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.4.7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.6...v3.4.7) (2023-03-24)
+
+
+### Dependencies
+
+* bump flatten-maven-plugin from 1.3.0 to 1.4.0 ([#1663](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1663)) ([b5beca2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b5beca218a565ff0d689f1ada84eaec10240244b))
+* bump libraries-bom from 26.10.0 to 26.11.0 ([#1671](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1671)) ([609fa42](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/609fa42a4d5d294b38a3e83fad7010eaaddf66a3))
+* bump spring-boot-dependencies from 2.7.9 to 2.7.10 ([#1670](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1670)) ([96df29e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/96df29e65ec5b97e55be26ec8b949d89666ba236))
+* bump spring-boot-starter-parent from 2.7.9 to 2.7.10 ([#1672](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1672)) ([6b95f93](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6b95f933f7850888f37aaa96ddd8f116be000fb1))
+
 ## [3.4.6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.5...v3.4.6) (2023-03-08)
 
 
