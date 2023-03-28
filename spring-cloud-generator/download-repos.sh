@@ -9,5 +9,8 @@ git clone https://github.com/googleapis/gapic-generator-java.git
 cd gapic-generator-java
 git checkout autoconfig-gen-draft2-migration
 git pull origin autoconfig-gen-draft2-migration
+# install local snapshot version of gapic-generator-java
+mvn -pl '!gapic-generator-java' install -DskipTests
+mvn -pl gapic-generator-java install -DskipTests
 # go back to previous folder
 cd -
