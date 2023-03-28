@@ -9,7 +9,7 @@ buildozer 'delete' WORKSPACE:gapic_generator_java
 buildozer 'new local_repository gapic_generator_java before com_google_api_gax_java' WORKSPACE:__pkg__
 
 # point path to local repo
-buildozer 'set path "../gapic_generator_java"' WORKSPACE:gapic_generator_java
+buildozer 'set path "../gapic-generator-java"' WORKSPACE:gapic_generator_java
 
 # delete http_archive rule by name "com_google_api_gax_java"
 buildozer 'delete' WORKSPACE:com_google_api_gax_java
@@ -18,7 +18,7 @@ buildozer 'delete' WORKSPACE:com_google_api_gax_java
 buildozer 'new local_repository com_google_api_gax_java after apic_generator_java' WORKSPACE:__pkg__
 
 # point path to local repo
-buildozer 'set path "../gapic_generator_java/gax-java"' WORKSPACE:com_google_api_gax_java
+buildozer 'set path "../gapic-generator-java/gax-java"' WORKSPACE:com_google_api_gax_java
 
 # delete existing maven_install rules
 buildozer 'delete' WORKSPACE:%maven_install
