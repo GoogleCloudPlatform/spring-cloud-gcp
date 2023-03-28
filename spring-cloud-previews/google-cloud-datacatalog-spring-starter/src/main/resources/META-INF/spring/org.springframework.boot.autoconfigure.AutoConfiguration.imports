@@ -1,3 +1,0 @@
-com.google.cloud.datacatalog.v1.spring.DataCatalogSpringAutoConfiguration
-com.google.cloud.datacatalog.v1.spring.PolicyTagManagerSpringAutoConfiguration
-com.google.cloud.datacatalog.v1.spring.PolicyTagManagerSerializationSpringAutoConfiguration
