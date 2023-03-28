@@ -2,23 +2,29 @@
 
 cd googleapis
 
-# In googleapis/WORKSPACE, find http_archive() rule with name = "gapic_generator_java",
-# and replace with local_repository() rule
-LOCAL_REPO="local_repository(\n    name = \\\"gapic_generator_java\\\",\n    path = \\\"..\/gapic-generator-java\/\\\",\n)"
-perl -0777 -pi -e "s/http_archive\(\n    name \= \"gapic_generator_java\"(.*?)\)/$LOCAL_REPO/s" WORKSPACE
+# delete http_archive rule by name "gapic_generator_java"
+buildozer 'delete' WORKSPACE:gapic_generator_java
 
-# In googleapis/WORKSPACE, find maven_install() rule with artifacts = PROTOBUF_MAVEN_ARTIFACTS,
-# replace with googleapis-dep-string.txt which adds spring dependencies
-perl -0777 -pi -e "s{maven_install\(\n    artifacts = PROTOBUF_MAVEN_ARTIFACTS(.*?)\)}{$(cat ../googleapis-dep-string.txt)}s" WORKSPACE
+# add local_repository rule with name "gapic_generator_java"
+buildozer 'new local_repository gapic_generator_java before com_google_api_gax_java' WORKSPACE:__pkg__
 
-# In googleapis/WORKSPACE, find maven_install() rule for gapic-generator-java jar, and remove
-perl -0777 -pi -e "s{maven_install\(\n    artifacts = \[(.*?)_gapic_generator_java_version(.*?)\](.*?)\)}{}s" WORKSPACE
+# point path to local repo
+buildozer 'set path "../gapic_generator_java"' WORKSPACE:gapic_generator_java
 
-# In googleapis/WORKSPACE, add back lines for gapic_generator_java_repositories() if not found
-if ! grep -q -F "gapic_generator_java_repositories()" WORKSPACE; then
-  perl -0777 -pi -e "s{(grpc_java_repositories\(\))}{\$1\n\n$(cat ../googleapis-gapic-string.txt)}s" WORKSPACE
-fi
+# delete http_archive rule by name "com_google_api_gax_java"
+buildozer 'delete' WORKSPACE:com_google_api_gax_java
 
+# add local_repository rule with name "com_google_api_gax_java"
+buildozer 'new local_repository com_google_api_gax_java after apic_generator_java' WORKSPACE:__pkg__
+
+# point path to local repo
+buildozer 'set path "../gapic_generator_java/gax-java"' WORKSPACE:com_google_api_gax_java
+
+# delete existing maven_install rules
+buildozer 'delete' WORKSPACE:%maven_install
+
+# add custom maven_install rules
+perl -pi -e "s{(^_gapic_generator_java_version[^\n]*)}{$(cat ../googleapis-dep-string.txt)}" WORKSPACE
 
 # In googleapis/repository_rules.bzl, add switch for new spring rule
 JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"\@gapic_generator_java\/\/rules_java_gapic:java_gapic_spring.bzl\\\",\n    )"

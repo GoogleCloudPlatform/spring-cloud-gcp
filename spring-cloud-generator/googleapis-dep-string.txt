@@ -10,3 +10,15 @@ maven_install(
         "https://repo.maven.apache.org/maven2/",
     ],
 )
+
+maven_install(
+    artifacts = [
+        "com.google.api:gapic-generator-java:2.15.4-SNAPSHOT",
+    ],
+    #Update this False for local development
+    fail_on_missing_checksum = False,
+    repositories = [
+        "m2Local",
+        "https://repo.maven.apache.org/maven2/",
+    ],
+)
