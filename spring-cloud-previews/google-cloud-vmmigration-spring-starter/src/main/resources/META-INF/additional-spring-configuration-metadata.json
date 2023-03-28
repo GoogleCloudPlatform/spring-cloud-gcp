@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.vmmigration.v1.vm-migration.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud vmmigration/VmMigration components.",
+      "defaultValue": true
+    }
+  ]
+}
