@@ -13,7 +13,7 @@ maven_install(
 
 maven_install(
     artifacts = [
-        "com.google.api:gapic-generator-java:2.15.4-SNAPSHOT",
+        "com.google.api:gapic-generator-java:2.16.1-SNAPSHOT",
     ],
     #Update this False for local development
     fail_on_missing_checksum = False,
