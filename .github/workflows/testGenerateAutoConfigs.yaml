@@ -55,6 +55,8 @@ jobs:
         run: |
           set -x
           set -e
+          export PATH=$PATH:$(go env GOPATH)/bin
+          buildozer --version
           bash generate-all.sh
       - name: Check for generation errors
         continue-on-error: false
