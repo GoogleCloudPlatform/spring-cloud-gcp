@@ -30,4 +30,7 @@ perl -pi -e "s{(^_gapic_generator_java_version[^\n]*)}{$(cat ../googleapis-dep-s
 JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"\@gapic_generator_java\/\/rules_java_gapic:java_gapic_spring.bzl\\\",\n    )"
 perl -0777 -pi -e "s/(rules\[\"java_gapic_library\"\] \= _switch\((.*?)\))/\$1\n$JAVA_SPRING_SWITCH/s" repository_rules.bzl
 
+# remove empty package() call added from using target __pkg__
+buildozer 'delete' WORKSPACE:%package
+
 cd -
