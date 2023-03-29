@@ -2,7 +2,6 @@ name: Test Action for Generating Spring Auto-Configurations
 # This is a simplified version of generateAutoConfigs for testing purposes
 on:
   workflow_dispatch:
-  pull_request:
 jobs:
   generateLibraries:
     runs-on: ubuntu-20.04
