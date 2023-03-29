@@ -14,8 +14,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: bazelisk version
+      - uses: actions/setup-go@v3
       - name: Install buildozer
-        uses: actions/setup-go@v3
         run: |
           go install github.com/bazelbuild/buildtools/buildozer@latest
           buildozer --version
