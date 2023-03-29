@@ -18,6 +18,7 @@ jobs:
       - name: Install buildozer
         run: |
           go install github.com/bazelbuild/buildtools/buildozer@latest
+          export PATH=$PATH:$(go env GOPATH)/bin
           buildozer --version
       # This test workflow should only be manually triggered from a branch
       - name: Get branch name
