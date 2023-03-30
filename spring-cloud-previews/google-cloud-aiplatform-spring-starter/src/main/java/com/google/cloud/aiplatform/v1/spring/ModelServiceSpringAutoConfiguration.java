@@ -87,7 +87,7 @@ public class ModelServiceSpringAutoConfiguration {
 
   /**
    * Provides a default transport channel provider bean. The default is gRPC and will default to it
-   * unless the useRest option is provided to use HTTP transport instead
+   * unless the useRest option is supported and provided to use HTTP transport instead
    *
    * @return a default transport channel provider.
    */
@@ -190,6 +190,14 @@ public class ModelServiceSpringAutoConfiguration {
       clientSettingsBuilder
           .batchImportModelEvaluationSlicesSettings()
           .setRetrySettings(batchImportModelEvaluationSlicesRetrySettings);
+
+      RetrySettings batchImportEvaluatedAnnotationsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.batchImportEvaluatedAnnotationsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .batchImportEvaluatedAnnotationsSettings()
+          .setRetrySettings(batchImportEvaluatedAnnotationsRetrySettings);
 
       RetrySettings getModelEvaluationRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -338,6 +346,21 @@ public class ModelServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for batchImportModelEvaluationSlices from properties.");
+      }
+    }
+    Retry batchImportEvaluatedAnnotationsRetry =
+        clientProperties.getBatchImportEvaluatedAnnotationsRetry();
+    if (batchImportEvaluatedAnnotationsRetry != null) {
+      RetrySettings batchImportEvaluatedAnnotationsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.batchImportEvaluatedAnnotationsSettings().getRetrySettings(),
+              batchImportEvaluatedAnnotationsRetry);
+      clientSettingsBuilder
+          .batchImportEvaluatedAnnotationsSettings()
+          .setRetrySettings(batchImportEvaluatedAnnotationsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for batchImportEvaluatedAnnotations from properties.");
       }
     }
     Retry getModelEvaluationRetry = clientProperties.getGetModelEvaluationRetry();

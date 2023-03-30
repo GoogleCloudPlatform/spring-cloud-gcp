@@ -2,5 +2,5 @@ com.google.cloud.dataproc.v1.spring.AutoscalingPolicyServiceSpringAutoConfigurat
 com.google.cloud.dataproc.v1.spring.BatchControllerSpringAutoConfiguration
 com.google.cloud.dataproc.v1.spring.ClusterControllerSpringAutoConfiguration
 com.google.cloud.dataproc.v1.spring.JobControllerSpringAutoConfiguration
-com.google.cloud.dataproc.v1.spring.WorkflowTemplateServiceSpringAutoConfiguration
 com.google.cloud.dataproc.v1.spring.NodeGroupControllerSpringAutoConfiguration
+com.google.cloud.dataproc.v1.spring.WorkflowTemplateServiceSpringAutoConfiguration

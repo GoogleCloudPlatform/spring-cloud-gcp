@@ -88,6 +88,16 @@ public class DocumentProcessorServiceSpringProperties implements CredentialsSupp
    */
   @NestedConfigurationProperty private Retry createProcessorRetry;
   /**
+   * Allow override of retry settings at method-level for getEvaluation. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getEvaluationRetry;
+  /**
+   * Allow override of retry settings at method-level for listEvaluations. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listEvaluationsRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -205,6 +215,22 @@ public class DocumentProcessorServiceSpringProperties implements CredentialsSupp
 
   public void setCreateProcessorRetry(Retry createProcessorRetry) {
     this.createProcessorRetry = createProcessorRetry;
+  }
+
+  public Retry getGetEvaluationRetry() {
+    return this.getEvaluationRetry;
+  }
+
+  public void setGetEvaluationRetry(Retry getEvaluationRetry) {
+    this.getEvaluationRetry = getEvaluationRetry;
+  }
+
+  public Retry getListEvaluationsRetry() {
+    return this.listEvaluationsRetry;
+  }
+
+  public void setListEvaluationsRetry(Retry listEvaluationsRetry) {
+    this.listEvaluationsRetry = listEvaluationsRetry;
   }
 
   public Retry getListLocationsRetry() {
