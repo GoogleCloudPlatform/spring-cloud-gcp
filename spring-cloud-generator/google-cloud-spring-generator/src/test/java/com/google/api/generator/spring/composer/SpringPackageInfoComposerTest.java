@@ -15,13 +15,14 @@
 package com.google.api.generator.spring.composer;
 
 import com.google.api.generator.engine.writer.JavaWriterVisitor;
-import com.google.api.generator.gapic.composer.common.TestProtoLoader;
 import com.google.api.generator.gapic.model.GapicContext;
 import com.google.api.generator.gapic.model.GapicPackageInfo;
-import com.google.api.generator.test.framework.Assert;
-import com.google.api.generator.test.framework.Utils;
+import com.google.api.generator.spring.utils.Assert;
+import com.google.api.generator.spring.utils.TestProtoLoader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import com.google.api.generator.spring.utils.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,8 +41,8 @@ public class SpringPackageInfoComposerTest {
     packageInfo.packageInfo().accept(visitor);
     String fileName = "SpringPackageInfo.golden";
 
-    Utils.saveCodegenToFile(this.getClass(), fileName, visitor.write());
-    Path goldenFilePath = Paths.get(Utils.getGoldenDir(this.getClass()), fileName);
+    TestUtils.saveCodegenToFile(this.getClass(), fileName, visitor.write());
+    Path goldenFilePath = Paths.get(TestUtils.getGoldenDir(this.getClass()), fileName);
     Assert.assertCodeEquals(goldenFilePath, visitor.write());
   }
 }
