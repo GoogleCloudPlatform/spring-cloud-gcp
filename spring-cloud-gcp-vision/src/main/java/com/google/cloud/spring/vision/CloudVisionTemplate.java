@@ -129,6 +129,7 @@ public class CloudVisionTemplate {
   }
 
   /**
+   * TODO (emmwang): unresolved link to external javadocs - previously links via google-cloud-vision redirect
    * Analyze an image and extract the features of the image specified by {@code featureTypes}.
    *
    * <p>A feature describes the kind of Cloud Vision analysis one wishes to perform on an image,
@@ -147,6 +148,7 @@ public class CloudVisionTemplate {
   }
 
   /**
+   * TODO (emmwang): unresolved link to external javadocs - previously links via google-cloud-vision redirect
    * Analyze an image and extract the features of the image specified by {@code featureTypes}.
    *
    * <p>A feature describes the kind of Cloud Vision analysis one wishes to perform on an image,
@@ -198,6 +200,7 @@ public class CloudVisionTemplate {
   }
 
   /**
+   * TODO (emmwang): unresolved link to external javadocs - previously links via google-cloud-vision redirect
    * Analyze a file and extract the features of the image specified by {@code featureTypes}.
    *
    * <p>A feature describes the kind of Cloud Vision analysis one wishes to perform on a file, such

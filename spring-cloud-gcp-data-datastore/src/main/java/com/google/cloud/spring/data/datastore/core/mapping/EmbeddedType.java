@@ -41,6 +41,7 @@ public enum EmbeddedType {
   EMBEDDED_MAP;
 
   /**
+   * TODO (emmwang): unresolved link to external javadocs
    * Get the {@link EmbeddedType} of a given {@link TypeInformation}.
    *
    * @param typeInformation the given type metadata to check for embedded type.

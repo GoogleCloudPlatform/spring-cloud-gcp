@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.util.Assert;
 
 /**
+ * TODO (emmwang): unresolved link to external javadocs
  * {@link HealthContributorAutoConfiguration Auto-configuration} for {@link PubSubHealthIndicator}.
  *
  * @since 1.2.2

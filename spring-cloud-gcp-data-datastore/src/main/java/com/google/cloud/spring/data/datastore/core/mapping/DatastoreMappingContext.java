@@ -122,6 +122,7 @@ public class DatastoreMappingContext
   }
 
   /**
+   * TODO (emmwang): unresolved link to external javadocs
    * A non-null version of the {@link MappingContext#getPersistentEntity(Class)}.
    *
    * @param entityClass the entity type.

@@ -28,6 +28,7 @@ import net.logstash.logback.marker.ObjectAppendingMarker;
 import org.slf4j.Marker;
 
 /**
+ * TODO (emmwang): unresolved link to external javadocs - previously links via google-cloud-clients redirect
  * Logging enhancer which adds Logstash markers to Logging API calls and JSON log entries.
  *
  * <p>Supported Markers: - ObjectAppendingMarker: key-value pairs are added to the log entries.

@@ -20,6 +20,7 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
+ * TODO (emmwang): unresolved link to external javadocs
  * Provides an interface to customize thread name of subscription-specific
  * {@link ThreadPoolTaskScheduler}
  */

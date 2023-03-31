@@ -34,6 +34,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
+ * TODO (emmwang): unresolved link to external javadocs - HealthIndicator, StatusCode
  * Default implementation of {@link org.springframework.boot.actuate.health.HealthIndicator} for
  * Pub/Sub. Validates if connection is successful by pulling messages from the pubSubTemplate using
  * {@link PubSubTemplate#pullAsync(String, Integer, Boolean)}.

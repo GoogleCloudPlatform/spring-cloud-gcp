@@ -25,6 +25,7 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Conditional;
 
 /**
+ * TODO (emmwang): unresolved link to external javadocs
  * {@link Conditional} that matches based on GCP environment in which the application currently
  * runs.
  *

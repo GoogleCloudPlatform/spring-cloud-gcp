@@ -68,6 +68,7 @@ public interface DatastorePersistentEntity<T>
   List<String> getCompatibleDiscriminationValues();
 
   /**
+   * TODO (emmwang): unresolved link to external javadocs
    * Applies the given {@link PropertyHandler} to all {@link DatastorePersistentProperty} contained
    * in this {@link DatastorePersistentEntity} that are stored as columns in the table for this
    * entity. This means properties backed by descendants or references to entities of other Kinds

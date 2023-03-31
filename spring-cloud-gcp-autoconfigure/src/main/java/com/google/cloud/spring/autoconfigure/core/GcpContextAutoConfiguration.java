@@ -32,6 +32,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
+ * TODO (emmwang): unresolved link to external javadocs
  * Base starter for Google Cloud Projects. Provides defaults for {@link
  * com.google.auth.oauth2.GoogleCredentials}. Binds properties from {@link GcpProperties}.
  */

@@ -52,6 +52,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
+ * TODO (emmwang): unresolved link to external javadocs
  * In order to support {@link CustomConversions}, this class applies 2-step conversions. The first
  * step produces one of {@link org.springframework.data.mapping.model.SimpleTypeHolder}'s simple
  * types. The second step converts simple types to Datastore-native types. The second step is

@@ -23,6 +23,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
+ * TODO (emmwang): unresolved link to external javadocs
  * {@link org.springframework.web.servlet.HandlerInterceptor} that extracts the request trace ID
  * from the "x-cloud-trace-context" HTTP header and stores it in a thread-local using {@link
  * TraceIdLoggingEnhancer#setCurrentTraceId}.

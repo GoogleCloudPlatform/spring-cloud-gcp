@@ -21,6 +21,7 @@ import com.google.cloud.logging.LoggingOptions;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 
 /**
+ * TODO (emmwang): unresolved link to external javadocs - previously links via google-cloud-clients redirect
  * A Google Cloud Java Logback {@link com.google.cloud.logging.logback.LoggingAppender} wrapper that
  * configures it for Spring Cloud GCP.
  *

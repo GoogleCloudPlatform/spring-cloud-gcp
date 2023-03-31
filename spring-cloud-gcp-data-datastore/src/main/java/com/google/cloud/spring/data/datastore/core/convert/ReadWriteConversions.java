@@ -54,6 +54,7 @@ public interface ReadWriteConversions {
   <T> T convertOnRead(Object val, EmbeddedType embeddedType, TypeInformation targetTypeInformation);
 
   /**
+   * TODO (emmwang): unresolved link to external javadocs
    * Converts an object to a Cloud Datastore {@link Value}; supports collections.
    *
    * @param obj the objects to convert.
@@ -63,6 +64,7 @@ public interface ReadWriteConversions {
   Value convertOnWrite(Object obj, DatastorePersistentProperty persistentProperty);
 
   /**
+   * TODO (emmwang): unresolved link to external javadocs
    * Converts an object to a Cloud Datastore {@link Value}, for non-collection objects.
    *
    * @param obj the object to convert.

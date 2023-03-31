@@ -38,6 +38,7 @@ public class DatastoreQueryMethod extends QueryMethod {
   private Boolean isNullable = null;
 
   /**
+   * TODO (emmwang): unresolved link to external javadocs
    * Creates a new {@link QueryMethod} from the given parameters. Looks up the correct query to use
    * for following invocations of the method given.
    *

@@ -22,6 +22,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 
 /**
+ * TODO (emmwang): unresolved link to external javadocs
  * A {@link PagingAndSortingRepository} that provides Datastore-specific functionality.
  *
  * @param <T> the type of the domain object

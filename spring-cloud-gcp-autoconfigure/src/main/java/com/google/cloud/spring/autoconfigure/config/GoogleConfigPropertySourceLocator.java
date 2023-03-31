@@ -39,6 +39,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /**
+ * TODO (emmwang): unresolved link to external javadocs
  * Custom {@link PropertySourceLocator} for Google Cloud Runtime Configurator API.
  *
  * @since 1.1

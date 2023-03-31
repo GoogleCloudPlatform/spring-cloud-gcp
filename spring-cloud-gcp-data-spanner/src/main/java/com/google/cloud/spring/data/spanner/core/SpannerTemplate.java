@@ -220,6 +220,7 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
   }
 
   /**
+   * TODO (emmwang): unresolved link to external javadocs - previously links via google-cloud-spanner redirect
    * In many cases {@link KeySet} with {@link SpannerReadOptions} are compatible with {@link
    * SpannerQueryOptions}. The method throws exception when it is impossible.
    *

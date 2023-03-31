@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 /**
+ * TODO (emmwang): unresolved link to external javadocs
  * A pageable implementation for Cloud Datastore that uses the cursor for efficient reads.
  *
  * <p>The static methods can take either paged or unpaged {@link Pageable}, while instance methods
@@ -42,6 +43,7 @@ public class DatastorePageable extends PageRequest {
   }
 
   /**
+   * TODO (emmwang): unresolved link to external javadocs
    * Creates a {@link DatastorePageable} wrapper for a paged request, but passes unpaged requests
    * back unchanged.
    *
@@ -55,6 +57,7 @@ public class DatastorePageable extends PageRequest {
   }
 
   /**
+   * TODO (emmwang): unresolved link to external javadocs
    * Creates a {@link DatastorePageable} wrapper for a paged request, but passes unpaged requests
    * back unchanged.
    *

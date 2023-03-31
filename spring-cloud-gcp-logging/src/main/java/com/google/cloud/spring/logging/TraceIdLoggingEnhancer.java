@@ -83,6 +83,7 @@ public class TraceIdLoggingEnhancer implements LoggingEnhancer, LoggingEventEnha
   }
 
   /**
+   * TODO (emmwang): unresolved link to external javadocs
    * See: {@link TraceIdLoggingEnhancer#enhanceLogEntry(LogEntry.Builder)} This method adds support
    * for {@link AsyncAppender} when retrieving MDC properties.
    *

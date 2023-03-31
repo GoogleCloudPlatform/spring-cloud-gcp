@@ -29,6 +29,7 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.util.Assert;
 
 /**
+ * TODO (emmwang): unresolved link to external javadocs
  * {@link org.springframework.context.annotation.Condition} that determines which GCP environment
  * the application is running on.
  *
