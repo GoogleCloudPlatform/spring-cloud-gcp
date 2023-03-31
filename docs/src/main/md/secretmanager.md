@@ -68,7 +68,7 @@ The Secret Manager config data resource uses the following syntax to specify sec
     # 4. Short form - default project; specify secret + version
     #
     # The project is inferred from the spring.cloud.gcp.secretmanager.project-id setting
-    # in your bootstrap.properties (see Configuration) or from application-default credentials if
+    # in your application.properties (see Configuration) or from application-default credentials if
     # this is not set.
     sm://<secret-id>/<version>
     
