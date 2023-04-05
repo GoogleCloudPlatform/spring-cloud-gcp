@@ -46,7 +46,7 @@ cd ../googleapis
 bazelisk query "attr(name, '.*java_gapic_spring', //...)" | xargs bazelisk build 2>&1 \
   | tee tmp-output || save_error_info "bazel_build"
 
-cd -
+cd $WORKING_DIR
 
 while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish monorepo_folder; do
   echo "processing library $library_name"
