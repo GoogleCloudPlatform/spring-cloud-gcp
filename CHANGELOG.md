@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.4.8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.7...v3.4.8) (2023-04-05)
+
+
+### Dependencies
+
+* bump libraries-bom from 26.11.0 to 26.12.0 ([#1698](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1698)) ([416a843](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/416a8431fdf6259ca661faead4ef18d8eb14b003))
+
 ## [3.4.7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.6...v3.4.7) (2023-03-24)
 
 
