@@ -14,6 +14,19 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.1.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.1.3...v4.1.4) (2023-04-05)
+
+
+### Bug Fixes
+
+* fix secret manager docs ([#1687](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1687)) ([2b7a744](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2b7a7448f6c11f0bfb6358e7fae97cb4ed4ba787))
+
+
+### Dependencies
+
+* bump libraries-bom from 26.11.0 to 26.12.0 ([#1695](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1695)) ([4f5598c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4f5598ca6236724f9e7f718e831f3c11759a2317))
+* bump maven-resources-plugin from 3.1.0 to 3.3.1 ([#1673](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1673)) ([272c68d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/272c68d436aca2fecd85c3033b367d9b9974d9d7))
+
 ## [4.1.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.1.2...v4.1.3) (2023-03-24)
 
 
