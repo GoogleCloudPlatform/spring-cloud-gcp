@@ -4,14 +4,14 @@
 # 0 if pipefail is not set
 set -o pipefail
 set -e
-WORKING_DIR=`pwd`
+WORKING_DIR=`pwd` # spring-cloud-generator
 
-monorepo_commitish="v$(bash compute-monorepo-tag.sh)"
+monorepo_commitish="v$(bash ${WORKING_DIR}/scripts/compute-monorepo-tag.sh)"
 
 cd ../
 # Compute the project version.
 PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
-cd spring-cloud-generator
+cd ${WORKING_DIR}
 
 # When generate-one.sh fails, stores the captured stdout and stderr to a file
 # with the name of the client library
@@ -25,34 +25,34 @@ save_error_info () {
 # repos are downloaded once before all generation jobs and then removed
 
 git clone https://github.com/googleapis/googleapis.git
-bash setup-googleapis-rules.sh
-libraries=$(cat $WORKING_DIR/library_list.txt | tail -n+2)
+bash ${WORKING_DIR}/scripts/setup-googleapis-rules.sh
+libraries=$(cat ${WORKING_DIR}/scripts/resources/library_list.txt | tail -n+2)
 
 
 # modifies the BUILD files of each of the entries in the library list
 while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish monorepo_folder; do
   echo "preparing bazel rules for $library_name"
-  bash $WORKING_DIR/setup-build-rule.sh \
+  bash ${WORKING_DIR}/scripts/setup-build-rule.sh \
     -f $googleapis_location \
     -x $googleapis_commitish 2>&1 | tee tmp-output || save_error_info "bazel_build"
 
 done <<< $libraries
 
 # install local snapshot jar for spring generator
-cd google-cloud-spring-generator && mvn install
+cd ${WORKING_DIR} && mvn install
 
 # fetches all `*java_gapic_spring` build rules and build them at once
-cd ../googleapis
+cd googleapis
 bazelisk query "attr(name, '.*java_gapic_spring', //...)" | xargs bazelisk build 2>&1 \
   | tee tmp-output || save_error_info "bazel_build"
 
-cd $WORKING_DIR
+cd ${WORKING_DIR}
 
 while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish monorepo_folder; do
   echo "processing library $library_name"
   group_id=$(echo $coordinates_version | cut -f1 -d:)
   artifact_id=$(echo $coordinates_version | cut -f2 -d:)
-  bash $WORKING_DIR/generate-one.sh \
+  bash ${WORKING_DIR}/scripts/generate-one.sh \
     -c $library_name \
     -i $artifact_id \
     -g $group_id \
@@ -69,6 +69,5 @@ echo "run google-java-format on generated code"
 cd ../spring-cloud-previews
 ./../mvnw com.coveo:fmt-maven-plugin:format -Dfmt.skip=false
 
-cd ../spring-cloud-generator
+cd ${WORKING_DIR}
 rm -rf googleapis
-rm -rf gapic-generator-java

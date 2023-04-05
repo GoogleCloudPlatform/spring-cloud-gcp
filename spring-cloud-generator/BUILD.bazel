@@ -5,7 +5,7 @@ package(default_visibility = ["//visibility:public"])
 java_binary(
     name = "protoc-gen-java_gapic_spring",
     main_class = "com.google.api.generator.spring.Main",
-    runtime_deps = ["@maven//:com_google_api_google_cloud_spring_generator"],
+    runtime_deps = ["@maven//:com_google_api_spring_cloud_generator"],
 )
 
 # google-java-format

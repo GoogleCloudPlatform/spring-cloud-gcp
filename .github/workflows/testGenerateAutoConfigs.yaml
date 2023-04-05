@@ -28,7 +28,7 @@ jobs:
         working-directory: spring-cloud-generator
         run: |
           set -x
-          bash reset-previews-folder.sh
+          bash scripts/reset-previews-folder.sh
       - name: Generate library list
         continue-on-error: false
         working-directory: spring-cloud-generator
@@ -37,7 +37,7 @@ jobs:
           set -e
           sudo apt-get update
           sudo apt-get install libxml2-utils
-          bash generate-library-list.sh
+          bash scripts/generate-library-list.sh
       - name: Compile non-autogen libraries
         continue-on-error: false
         run: |
@@ -57,7 +57,7 @@ jobs:
           set -e
           export PATH=$PATH:$(go env GOPATH)/bin
           buildozer --version
-          bash generate-all.sh
+          bash scripts/generate-all.sh
       - name: Check for generation errors
         continue-on-error: false
         working-directory: spring-cloud-generator

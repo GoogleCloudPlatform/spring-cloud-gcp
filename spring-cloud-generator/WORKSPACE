@@ -1,4 +1,4 @@
-workspace(name = "google_cloud_spring_generator")
+workspace(name = "spring_cloud_generator")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -39,11 +39,11 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 
 # Spring generator
-_spring_generator_version = "0.0.1-SNAPSHOT"
+_spring_cloud_generator_version = "4.1.4-SNAPSHOT" # {x-version-update:spring-cloud-gcp:current}
 
 maven_install(
     artifacts = [
-        "com.google.api:google-cloud-spring-generator:" + _spring_generator_version,
+        "com.google.api:spring-cloud-generator:" + _spring_cloud_generator_version,
     ],
     fail_on_missing_checksum = False,
     repositories = [

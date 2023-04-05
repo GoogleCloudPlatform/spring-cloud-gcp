@@ -135,7 +135,7 @@ def _java_gapic_spring_srcjar(
     proto_custom_library(
         name = name,
         deps = srcs,
-        plugin = Label("@google_cloud_spring_generator//:protoc-gen-%s" % java_generator_name),
+        plugin = Label("@spring_cloud_generator//:protoc-gen-%s" % java_generator_name),
         plugin_args = plugin_args,
         plugin_file_args = {},
         opt_file_args = file_args_dict,

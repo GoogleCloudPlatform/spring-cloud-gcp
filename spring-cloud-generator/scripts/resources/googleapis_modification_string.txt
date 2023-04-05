@@ -1,9 +1,9 @@
-_spring_generator_version = "0.0.1-SNAPSHOT"
+_spring_cloud_generator_version = "4.1.4-SNAPSHOT" # {x-version-update:spring-cloud-gcp:current}
 
 maven_install(
     artifacts = [
         "com.google.api:gapic-generator-java:" + _gapic_generator_java_version,
-        "com.google.api:google-cloud-spring-generator:" + _spring_generator_version,
+        "com.google.api:spring-cloud-generator:" + _spring_cloud_generator_version,
     ],
     #Update this False for local development
     fail_on_missing_checksum = False,
