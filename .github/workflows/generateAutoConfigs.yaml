@@ -34,16 +34,13 @@ jobs:
           java-version: 17
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install Bazel
-        continue-on-error: false
+      - run: bazelisk version
+      - uses: actions/setup-go@v3
+      - name: Install buildozer
         run: |
-          set -x
-          sudo apt-get install apt-transport-https curl gnupg
-          curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
-          sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
-          sudo apt update && sudo apt install bazel
-      - uses: bazelbuild/setup-bazelisk@v2
+          go install github.com/bazelbuild/buildtools/buildozer@latest
+          export PATH=$PATH:$(go env GOPATH)/bin
+          buildozer --version
       - name: Clean previews folder
         continue-on-error: false
         working-directory: spring-cloud-generator
@@ -76,6 +73,8 @@ jobs:
         run: |
           set -x
           set -e
+          export PATH=$PATH:$(go env GOPATH)/bin
+          buildozer --version
           bash generate-all.sh
       - name: Check for generation errors
         continue-on-error: false
