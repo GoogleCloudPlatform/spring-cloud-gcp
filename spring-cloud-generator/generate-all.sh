@@ -24,7 +24,7 @@ save_error_info () {
 # runs generate-one.sh for each entry in library_list.txt
 # repos are downloaded once before all generation jobs and then removed
 
-bash download-repos.sh
+git clone https://github.com/googleapis/googleapis.git
 bash setup-googleapis-rules.sh
 libraries=$(cat $WORKING_DIR/library_list.txt | tail -n+2)
 
@@ -38,8 +38,11 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
 
 done <<< $libraries
 
+# install local snapshot jar for spring generator
+cd google-cloud-spring-generator && mvn install
+
 # fetches all `*java_gapic_spring` build rules and build them at once
-cd googleapis
+cd ../googleapis
 bazelisk query "attr(name, '.*java_gapic_spring', //...)" | xargs bazelisk build 2>&1 \
   | tee tmp-output || save_error_info "bazel_build"
 

@@ -1,12 +1,14 @@
-SPRING_MAVEN_ARTIFACTS = [
-    "org.springframework.boot:spring-boot-starter:2.7.4",
-    "com.google.cloud:spring-cloud-gcp-autoconfigure:3.4.1",
-]
+_spring_generator_version = "0.0.1-SNAPSHOT"
 
 maven_install(
-    artifacts = PROTOBUF_MAVEN_ARTIFACTS + SPRING_MAVEN_ARTIFACTS,
-    generate_compat_repositories = True,
-    repositories = [
-        "https://repo.maven.apache.org/maven2/",
+    artifacts = [
+        "com.google.api:gapic-generator-java:" + _gapic_generator_java_version,
+        "com.google.api:google-cloud-spring-generator:" + _spring_generator_version,
     ],
+    #Update this False for local development
+    fail_on_missing_checksum = False,
+    repositories = [
+        "m2Local",
+        "https://repo.maven.apache.org/maven2/",
+    ]
 )

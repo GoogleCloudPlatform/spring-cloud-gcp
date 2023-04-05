@@ -2,26 +2,26 @@
 
 cd googleapis
 
-# In googleapis/WORKSPACE, find http_archive() rule with name = "gapic_generator_java",
-# and replace with local_repository() rule
-LOCAL_REPO="local_repository(\n    name = \\\"gapic_generator_java\\\",\n    path = \\\"..\/gapic-generator-java\/\\\",\n)"
-perl -0777 -pi -e "s/http_archive\(\n    name \= \"gapic_generator_java\"(.*?)\)/$LOCAL_REPO/s" WORKSPACE
+# add local_repository rule with name "google_cloud_spring_generator"
+buildozer 'new local_repository google_cloud_spring_generator before gapic_generator_java' WORKSPACE:__pkg__
+# point path to local repo
+buildozer 'set path "../google-cloud-spring-generator"' WORKSPACE:google_cloud_spring_generator
 
-# In googleapis/WORKSPACE, find maven_install() rule with artifacts = PROTOBUF_MAVEN_ARTIFACTS,
-# replace with googleapis-dep-string.txt which adds spring dependencies
-perl -0777 -pi -e "s{maven_install\(\n    artifacts = PROTOBUF_MAVEN_ARTIFACTS(.*?)\)}{$(cat ../googleapis-dep-string.txt)}s" WORKSPACE
+# delete existing maven_install rules
+buildozer 'delete' WORKSPACE:%maven_install
 
 # In googleapis/WORKSPACE, find maven_install() rule for gapic-generator-java jar, and remove
-perl -0777 -pi -e "s{maven_install\(\n    artifacts = \[(.*?)_gapic_generator_java_version(.*?)\](.*?)\)}{}s" WORKSPACE
+# perl -0777 -pi -e "s{maven_install\(\n    artifacts = \[(.*?)_gapic_generator_java_version(.*?)\](.*?)\)}{}s" WORKSPACE
 
-# In googleapis/WORKSPACE, add back lines for gapic_generator_java_repositories() if not found
-if ! grep -q -F "gapic_generator_java_repositories()" WORKSPACE; then
-  perl -0777 -pi -e "s{(grpc_java_repositories\(\))}{\$1\n\n$(cat ../googleapis-gapic-string.txt)}s" WORKSPACE
-fi
-
+# add custom maven_install rules
+perl -pi -e "s{(^_gapic_generator_java_version[^\n]*)}{\$1\n$(cat ../googleapis-dep-string.txt)}" WORKSPACE
 
 # In googleapis/repository_rules.bzl, add switch for new spring rule
-JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"\@gapic_generator_java\/\/rules_java_gapic:java_gapic_spring.bzl\\\",\n    )"
+JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"\@google_cloud_spring_generator\/\/:java_gapic_spring.bzl\\\",\n    )"
 perl -0777 -pi -e "s/(rules\[\"java_gapic_library\"\] \= _switch\((.*?)\))/\$1\n$JAVA_SPRING_SWITCH/s" repository_rules.bzl
+
+
+# remove empty package() call added from using target __pkg__
+buildozer 'delete' WORKSPACE:%package
 
 cd -
