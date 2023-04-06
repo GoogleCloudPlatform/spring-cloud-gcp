@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
@@ -65,6 +66,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
    * @param username expected {@code spring.r2dbc.username} value to verify
    * @param url expected {@code spring.r2dbc.username} value to verify
    */
+  @SuppressWarnings("unchecked")
   private void verifyThatCorrectUrlAndUsernameSet(
       String[] driverPackagesToInclude,
       String username,
@@ -77,7 +79,8 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
     this.contextRunner
         .withPropertyValues(
             "spring.cloud.gcp.sql.databaseName=my-database",
-            "spring.cloud.gcp.sql.instanceConnectionName=my-project:region:my-instance")
+            "spring.cloud.gcp.sql.instanceConnectionName=my-project:region:my-instance",
+            "spring.cloud.gcp.sql.enable-iam-auth=true")
         .withClassLoader(new FilteredClassLoader(driverPackagesToExclude.toArray(new String[0])))
         .run(
             context -> {
@@ -85,6 +88,8 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
                   .isEqualTo(url);
               assertThat(context.getEnvironment().getProperty("spring.r2dbc.username"))
                   .isEqualTo(username);
+              assertThat(context.getEnvironment().getProperty("spring.r2dbc.properties", Map.class, Map.of()))
+                  .isEqualTo(Map.of("ENABLE_IAM_AUTH", "true"));
             });
   }
 
@@ -96,10 +101,8 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
                 "com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql",
                 "com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres"))
         .run(
-            context -> {
-              assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment()))
-                  .isNull();
-            });
+            context -> assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment()))
+                .isNull());
   }
 
   @Test
@@ -107,10 +110,8 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
     this.contextRunner
         .withClassLoader(new FilteredClassLoader("io.r2dbc.spi.ConnectionFactory"))
         .run(
-            context -> {
-              assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment()))
-                  .isNull();
-            });
+            context -> assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment()))
+                .isNull());
   }
 
   @Test
@@ -118,9 +119,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.sql.r2dbc.enabled=false")
         .run(
-            context -> {
-              assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment()))
-                  .isNull();
-            });
+            context -> assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment()))
+                .isNull());
   }
 }
