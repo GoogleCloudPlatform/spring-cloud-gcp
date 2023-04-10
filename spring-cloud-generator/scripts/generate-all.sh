@@ -43,7 +43,7 @@ cd ${WORKING_DIR} && mvn install
 
 # fetches all `*java_gapic_spring` build rules and build them at once
 cd googleapis
-bazelisk query "attr(name, '.*java_gapic_spring', //...)" | xargs bazelisk build 2>&1 \
+bazelisk query "attr(name, '.*java_gapic_spring', //...)" | xargs bazelisk build --tool_java_runtime_version=17 2>&1 \
   | tee tmp-output || save_error_info "bazel_build"
 
 cd ${WORKING_DIR}
