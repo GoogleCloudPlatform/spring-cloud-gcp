@@ -67,6 +67,14 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 
       CredentialsPropertiesSetter.setCredentials(sqlProperties,
           propertiesRetriever.getGcpProperties());
+
+      if (sqlProperties.isEnableIamAuth()) {
+        environment
+            .getPropertySources()
+            .addFirst(
+                new MapPropertySource("CLOUD_SQL_R2DBC_ENABLE_IAM_AUTH",
+                    Map.of("spring.r2dbc.properties", Map.of("ENABLE_IAM_AUTH", "true"))));
+      }
     }
   }
 
