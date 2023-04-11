@@ -20,6 +20,10 @@ jobs:
         working-directory: spring-cloud-generator
         run: |
           echo "Hello world" > test.txt
+          
+          git config user.email ${{ github.actor }}@users.noreply.github.com
+          git config user.name ${{ github.actor }}
+          
           git checkout $GITHUB_REF_NAME
           git add test.txt
           git commit -m "test: add file"
