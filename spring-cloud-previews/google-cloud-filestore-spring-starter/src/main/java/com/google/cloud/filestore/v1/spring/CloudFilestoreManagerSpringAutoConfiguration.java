@@ -169,16 +169,6 @@ public class CloudFilestoreManagerSpringAutoConfiguration {
               clientSettingsBuilder.getInstanceSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getInstanceSettings().setRetrySettings(getInstanceRetrySettings);
 
-      RetrySettings listSnapshotsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listSnapshotsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.listSnapshotsSettings().setRetrySettings(listSnapshotsRetrySettings);
-
-      RetrySettings getSnapshotRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getSnapshotSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.getSnapshotSettings().setRetrySettings(getSnapshotRetrySettings);
-
       RetrySettings listBackupsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listBackupsSettings().getRetrySettings(), serviceRetry);
@@ -211,26 +201,6 @@ public class CloudFilestoreManagerSpringAutoConfiguration {
       clientSettingsBuilder.getInstanceSettings().setRetrySettings(getInstanceRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getInstance from properties.");
-      }
-    }
-    Retry listSnapshotsRetry = clientProperties.getListSnapshotsRetry();
-    if (listSnapshotsRetry != null) {
-      RetrySettings listSnapshotsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listSnapshotsSettings().getRetrySettings(), listSnapshotsRetry);
-      clientSettingsBuilder.listSnapshotsSettings().setRetrySettings(listSnapshotsRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for listSnapshots from properties.");
-      }
-    }
-    Retry getSnapshotRetry = clientProperties.getGetSnapshotRetry();
-    if (getSnapshotRetry != null) {
-      RetrySettings getSnapshotRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getSnapshotSettings().getRetrySettings(), getSnapshotRetry);
-      clientSettingsBuilder.getSnapshotSettings().setRetrySettings(getSnapshotRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for getSnapshot from properties.");
       }
     }
     Retry listBackupsRetry = clientProperties.getListBackupsRetry();
