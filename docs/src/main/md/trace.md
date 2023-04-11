@@ -93,24 +93,25 @@ that sends the Micrometer’s trace information to Cloud Trace.
 
 All configurations are optional:
 
-|                                                     |                                                                                                                                  |          |               |
-| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------- |
-| Name                                                | Description                                                                                                                      | Required | Default value |
-| `spring.cloud.gcp.trace.enabled`                    | Auto-configure Micrometer to send traces to Cloud Trace.                                                                | No       | `true`        |
-| `spring.cloud.gcp.trace.project-id`                 | Overrides the project ID from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)                                              | No       |               |
-| `spring.cloud.gcp.trace.credentials.location`       | Overrides the credentials location from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)                                    | No       |               |
-| `spring.cloud.gcp.trace.credentials.encoded-key`    | Overrides the credentials encoded key from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)                                 | No       |               |
-| `spring.cloud.gcp.trace.credentials.scopes`         | Overrides the credentials scopes from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)                                      | No       |               |
-| `spring.cloud.gcp.trace.num-executor-threads`       | Number of threads used by the Trace executor                                                                                     | No       | 4             |
-| `spring.cloud.gcp.trace.authority`                  | HTTP/2 authority the channel claims to be connecting to.                                                                         | No       |               |
-| `spring.cloud.gcp.trace.compression`                | Name of the compression to use in Trace calls                                                                                    | No       |               |
-| `spring.cloud.gcp.trace.deadline-ms`                | Call deadline in milliseconds                                                                                                    | No       |               |
-| `spring.cloud.gcp.trace.max-inbound-size`           | Maximum size for inbound messages                                                                                                | No       |               |
-| `spring.cloud.gcp.trace.max-outbound-size`          | Maximum size for outbound messages                                                                                               | No       |               |
-| `spring.cloud.gcp.trace.wait-for-ready`             | [Waits for the channel to be ready](https://github.com/grpc/grpc/blob/main/doc/wait-for-ready.md) in case of a transient failure | No       | `false`       |
-| `spring.cloud.gcp.trace.messageTimeout`             | Timeout in seconds before pending spans will be sent in batches to GCP Cloud Trace. (previously `spring.zipkin.messageTimeout`)  | No       | 1             |
-| `spring.cloud.gcp.trace.server-response-timeout-ms` | Server response timeout in millis.                                                                                               | No       | `5000`        |
-| `spring.cloud.gcp.trace.pubsub.enabled`             | (Experimental) Auto-configure Pub/Sub instrumentation for Trace.                                                                 | No       | `false`       |
+|                                                         |                                                                                                                                  |          |               |
+|---------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|----------|---------------|
+| Name                                                    | Description                                                                                                                      | Required | Default value |
+| `spring.cloud.gcp.trace.enabled`                        | Auto-configure Micrometer to send traces to Cloud Trace.                                                                         | No       | `true`        |
+| `spring.cloud.gcp.trace.project-id`                     | Overrides the project ID from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)              | No       |               |
+| `spring.cloud.gcp.trace.credentials.location`           | Overrides the credentials location from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)    | No       |               |
+| `spring.cloud.gcp.trace.credentials.encoded-key`        | Overrides the credentials encoded key from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core) | No       |               |
+| `spring.cloud.gcp.trace.credentials.scopes`             | Overrides the credentials scopes from the [Spring Framework on Google Cloud Module](#spring-framework-on-google-cloud-core)      | No       |               |
+| `spring.cloud.gcp.trace.num-executor-threads`           | Number of threads used by the Trace executor                                                                                     | No       | 4             |
+| `spring.cloud.gcp.trace.authority`                      | HTTP/2 authority the channel claims to be connecting to.                                                                         | No       |               |
+| `spring.cloud.gcp.trace.compression`                    | Name of the compression to use in Trace calls                                                                                    | No       |               |
+| `spring.cloud.gcp.trace.deadline-ms`                    | Call deadline in milliseconds                                                                                                    | No       |               |
+| `spring.cloud.gcp.trace.max-inbound-size`               | Maximum size for inbound messages                                                                                                | No       |               |
+| `spring.cloud.gcp.trace.max-outbound-size`              | Maximum size for outbound messages                                                                                               | No       |               |
+| `spring.cloud.gcp.trace.wait-for-ready`                 | [Waits for the channel to be ready](https://github.com/grpc/grpc/blob/main/doc/wait-for-ready.md) in case of a transient failure | No       | `false`       |
+| `spring.cloud.gcp.trace.messageTimeout`                 | Timeout in seconds before pending spans will be sent in batches to GCP Cloud Trace. (previously `spring.zipkin.messageTimeout`)  | No       | 1             |
+| `spring.cloud.gcp.trace.server-response-timeout-ms`     | Server response timeout in millis.                                                                                               | No       | `5000`        |
+| `spring.cloud.gcp.trace.pubsub.enabled`                 | (Experimental) Auto-configure Pub/Sub instrumentation for Trace.                                                                 | No       | `false`       |
+| `spring.cloud.gcp.trace.disable-spring-boot-autoconfig` | Allows to disable Spring Boot's build-in tracing auto-configuration.                                                             | No       | `true`        |
 
 You can use core Micrometer properties to control Micrometer’s
 sampling rate, etc. Read [Spring Boot Tracing documentation](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#actuator.micrometer-tracing) for more

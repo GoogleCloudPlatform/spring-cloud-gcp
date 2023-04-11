@@ -77,17 +77,17 @@ class StackdriverTraceAutoConfigurationTests {
 
   @BeforeEach
   void init() {
-    contextRunner = new ApplicationContextRunner()
-        .withConfiguration(
-            AutoConfigurations.of(
-                StackdriverTraceAutoConfiguration.class,
-                GcpContextAutoConfiguration.class,
-                BraveAutoConfiguration.class,
-                RefreshAutoConfiguration.class,
-                TraceAutoConfigurationFilter.class))
-        .withUserConfiguration(MockConfiguration.class)
-        .withPropertyValues(
-            "spring.cloud.gcp.project-id=proj");
+    contextRunner =
+        new ApplicationContextRunner()
+            .withConfiguration(
+                AutoConfigurations.of(
+                    StackdriverTraceAutoConfiguration.class,
+                    GcpContextAutoConfiguration.class,
+                    BraveAutoConfiguration.class,
+                    RefreshAutoConfiguration.class,
+                    TraceAutoConfigurationFilter.class))
+            .withUserConfiguration(MockConfiguration.class)
+            .withPropertyValues("spring.cloud.gcp.project-id=proj");
   }
 
   @Test
@@ -109,21 +109,26 @@ class StackdriverTraceAutoConfigurationTests {
 
   @Test
   void testDisableZipkinAutoConfiguration() {
+    this.contextRunner.run(
+        context ->
+            assertThatThrownBy(() -> context.getBean(ZipkinAutoConfiguration.class))
+                .isExactlyInstanceOf(NoSuchBeanDefinitionException.class)
+                .hasMessageContaining("ZipkinAutoConfiguration"));
+  }
+
+  @Test
+  void testEnableZipkinAutoConfigurationWhenTracingIsDisabled() {
     this.contextRunner
-        .run(
-            context ->
-                assertThatThrownBy(() -> context.getBean(ZipkinAutoConfiguration.class))
-                    .isExactlyInstanceOf(NoSuchBeanDefinitionException.class)
-                    .hasMessageContaining("ZipkinAutoConfiguration"));
+        .withPropertyValues("spring.cloud.gcp.trace.disable-spring-boot-autoconfig=false")
+        .withBean(ZipkinAutoConfiguration.class)
+        .run(context -> assertThat(context.getBean(ZipkinAutoConfiguration.class)).isNotNull());
   }
 
   @Test
   void testEncodingSchema() {
-    this.contextRunner
-        .run(
-            context -> assertThat(
-                context.getBean(BytesEncoder.class))
-                .isEqualTo(SpanBytesEncoder.PROTO3));
+    this.contextRunner.run(
+        context ->
+            assertThat(context.getBean(BytesEncoder.class)).isEqualTo(SpanBytesEncoder.PROTO3));
   }
 
   @Test
@@ -200,17 +205,17 @@ class StackdriverTraceAutoConfigurationTests {
               assertThat(context.getBeansOfType(SpanHandler.class))
                   .containsKeys("stackdriverSpanHandler", "otherSpanHandler");
 
-              brave.Span span = context
-                  .getBean(Tracer.class)
-                  // always send the trace
-                  .nextSpan(TraceContextOrSamplingFlags.SAMPLED)
-                  .name("foo")
-                  .tag("foo", "bar")
-                  .start();
+              brave.Span span =
+                  context
+                      .getBean(Tracer.class)
+                      // always send the trace
+                      .nextSpan(TraceContextOrSamplingFlags.SAMPLED)
+                      .name("foo")
+                      .tag("foo", "bar")
+                      .start();
               span.finish();
               String spanId = span.context().spanIdString();
-              GcpTraceService gcpTraceService =
-                  context.getBean(GcpTraceService.class);
+              GcpTraceService gcpTraceService = context.getBean(GcpTraceService.class);
 
               await()
                   .atMost(10, TimeUnit.SECONDS)
@@ -233,8 +238,7 @@ class StackdriverTraceAutoConfigurationTests {
                             .isEqualTo("bar");
                       });
 
-              OtherSender sender =
-                  (OtherSender) context.getBean("otherSender");
+              OtherSender sender = (OtherSender) context.getBean("otherSender");
               await()
                   .atMost(10, TimeUnit.SECONDS)
                   .untilAsserted(() -> assertThat(sender.isSpanSent()).isTrue());

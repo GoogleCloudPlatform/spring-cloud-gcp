@@ -71,31 +71,26 @@ import zipkin2.reporter.stackdriver.StackdriverSender.Builder;
 @AutoConfigureBefore(BraveAutoConfiguration.class)
 public class StackdriverTraceAutoConfiguration {
 
-  private static final Log LOGGER = LogFactory.getLog(StackdriverTraceAutoConfiguration.class);
-
   /**
    * Stackdriver reporter bean name. Name of the bean matters for supporting multiple tracing
    * systems.
    */
   public static final String REPORTER_BEAN_NAME = "stackdriverReporter";
-
   /**
    * Stackdriver sender bean name. Name of the bean matters for supporting multiple tracing systems.
    */
   public static final String SENDER_BEAN_NAME = "stackdriverSender";
-
   /**
    * Stackdriver span handler bean name. Name of the bean matters for supporting multiple tracing
    * systems.
    */
   public static final String SPAN_HANDLER_BEAN_NAME = "stackdriverSpanHandler";
-
   /**
    * Stackdriver customizer bean name. Name of the bean matters for supporting multiple tracing
    * systems.
    */
   public static final String CUSTOMIZER_BEAN_NAME = "stackdriverTracingCustomizer";
-
+  private static final Log LOGGER = LogFactory.getLog(StackdriverTraceAutoConfiguration.class);
   private final GcpProjectIdProvider finalProjectIdProvider;
 
   private final CredentialsProvider finalCredentialsProvider;

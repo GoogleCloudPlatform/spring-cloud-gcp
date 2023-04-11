@@ -109,6 +109,12 @@
       "defaultValue": true
     },
     {
+      "name": "spring.cloud.gcp.trace.disable-spring-boot-autoconfig",
+      "type": "java.lang.Boolean",
+      "description": "Whether to disable Spring Boot's build-in tracing auto-configuration.",
+      "defaultValue": true
+    },
+    {
       "name": "spring.cloud.gcp.trace.pubsub.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure trace instrumentation of Pub/Sub components.",
