@@ -1,0 +1,27 @@
+name: Test Action for Generating Spring Auto-Configurations
+on:
+  workflow_dispatch:
+jobs:
+  testPushToBranch:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Get branch name
+        continue-on-error: false
+        run: |
+          set -x
+          echo "Branch name: $GITHUB_REF_NAME"
+      - name: Setup Java 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Test push new file
+        continue-on-error: false
+        working-directory: spring-cloud-generator
+        run: |
+          echo "Hello world" > test.txt
+          git checkout $GITHUB_REF_NAME
+          git add test.txt
+          git commit -m "test: add file"
+          git push --set-upstream origin $GITHUB_REF_NAME
+          
+          gh pr create --draft -B main -H $GITHUB_REF_NAME --title "[do not merge] testing github action changes" --body 'Created by Github action'
