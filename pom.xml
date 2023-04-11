@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>4.1.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.1.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -677,10 +677,6 @@
 								<!-- Exclude samples and classes in the Firestore Google Client library packages -->
 								com.google.cloud.firestore
 							</excludePackageNames>
-							<links>
-								<link>https://javadoc.io/doc/com.google.cloud/google-cloud-vision/latest/</link>
-								<link>https://javadoc.io/doc/com.google.cloud/google-cloud-spanner/latest/</link>
-							</links>
 						</configuration>
 					</plugin>
 					<plugin>
