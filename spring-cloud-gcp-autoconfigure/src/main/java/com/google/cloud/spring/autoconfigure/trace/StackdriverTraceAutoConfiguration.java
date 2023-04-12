@@ -168,7 +168,7 @@ public class StackdriverTraceAutoConfiguration {
 
   @Bean(REPORTER_BEAN_NAME)
   @ConditionalOnMissingBean(name = REPORTER_BEAN_NAME)
-  public Reporter<Span> stackdriverReporter(
+  public AsyncReporter<Span> stackdriverReporter(
       ReporterMetrics reporterMetrics,
       GcpTraceProperties trace,
       @Qualifier(SENDER_BEAN_NAME) Sender sender) {
