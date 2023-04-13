@@ -40,6 +40,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.tracing.zipkin.ZipkinAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -68,7 +69,7 @@ import zipkin2.reporter.stackdriver.StackdriverSender.Builder;
     value = {"spring.cloud.gcp.trace.enabled"},
     matchIfMissing = true)
 @ConditionalOnClass(StackdriverSender.class)
-@AutoConfigureBefore(BraveAutoConfiguration.class)
+@AutoConfigureBefore({BraveAutoConfiguration.class, ZipkinAutoConfiguration.class})
 public class StackdriverTraceAutoConfiguration {
 
   private static final Log LOGGER = LogFactory.getLog(StackdriverTraceAutoConfiguration.class);
