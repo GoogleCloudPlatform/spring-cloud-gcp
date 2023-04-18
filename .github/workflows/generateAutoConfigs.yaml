@@ -52,7 +52,6 @@ jobs:
             git checkout ${{ github.event.inputs.branch_name }} -- spring-cloud-gcp-dependencies/pom.xml
           fi
           echo "LIBRARIES_BOM_VERSION=$(xmllint --xpath "string(//*[local-name()='gcp-libraries-bom.version'])" spring-cloud-gcp-dependencies/pom.xml)" >> $GITHUB_OUTPUT
-          echo "Libraries BOM version: ${{ steps.get_libraries_bom_version.outputs.LIBRARIES_BOM_VERSION }}"
       - name: Setup Java 17
         uses: actions/setup-java@v1
         with:
@@ -81,8 +80,8 @@ jobs:
         run: |
           set -x
           set -e
+          echo "Libraries BOM version: $LIBRARIES_BOM_VERSION"
           echo "MONOREPO_TAG=v$(bash compute-monorepo-tag.sh -v $LIBRARIES_BOM_VERSION)" >> $GITHUB_OUTPUT
-          echo "Monorepo tag: $MONOREPO_TAG"
           bash generate-library-list.sh -c $MONOREPO_TAG
         env:
           LIBRARIES_BOM_VERSION: ${{ steps.get_libraries_bom_version.outputs.LIBRARIES_BOM_VERSION }}

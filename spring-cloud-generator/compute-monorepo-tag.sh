@@ -6,7 +6,6 @@ do
         v) libraries_bom_version=${OPTARG};;
     esac
 done
-echo "Libraries BOM Version: $libraries_bom_version";
 
 gapic_libraries_groupId='com.google.cloud'
 gapic_libraries_artifactId='gapic-libraries-bom'
