@@ -7,8 +7,8 @@ on:
         required: true
         default: "renovate/main-gcp-libraries-bom.version"
       forked_repo:
-        description: PR repo name (if fork)
-        required: false
+        description: Fork name (enter none if repo branch)
+        required: true
         default: "renovate-bot/GoogleCloudPlatform-_-spring-cloud-gcp"
   pull_request:
     types: [opened]
@@ -45,7 +45,7 @@ jobs:
           set -x
           sudo apt-get update
           sudo apt-get install libxml2-utils
-          if [[ ${{ github.event.inputs.forked_repo }} != "" ]]; then
+          if [[ ${{ github.event.inputs.forked_repo }} != "none" ]]; then
             git fetch https://github.com/${{ github.event.inputs.forked_repo }}.git ${{ github.event.inputs.branch_name }}
             git checkout FETCH_HEAD -- spring-cloud-gcp-dependencies/pom.xml
           else 
@@ -146,7 +146,7 @@ jobs:
           git config --global user.email "cloud-java-bot@google.com"
           
           # push changes to branch
-          if [[ ${{ github.event.inputs.forked_repo }} != "" ]]; then
+          if [[ ${{ github.event.inputs.forked_repo }} != "none" ]]; then
             git fetch https://github.com/${{ github.event.inputs.forked_repo }}.git ${{ github.event.inputs.branch_name }}
             git checkout FETCH_HEAD
             git stash pop
