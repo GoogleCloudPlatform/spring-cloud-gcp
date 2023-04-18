@@ -153,16 +153,15 @@ jobs:
             git stash pop
             git add ./spring-cloud-previews
             git commit -m "chore: update starter modules in spring-cloud-previews"
-            git push https://github.com/${{ github.event.inputs.forked_repo }}.git HEAD:${{ github.event.inputs.branch_name }}
-            # git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.event.inputs.forked_repo }}.git HEAD:${{ github.event.inputs.branch_name }}
+            # git push https://github.com/${{ github.event.inputs.forked_repo }}.git HEAD:${{ github.event.inputs.branch_name }}
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.event.inputs.forked_repo }}.git HEAD:${{ github.event.inputs.branch_name }}
           else
             git fetch origin ${{ github.event.inputs.branch_name }}
-            git checkout origin/${{ github.event.inputs.branch_name }}
+            git checkout ${{ github.event.inputs.branch_name }}
             git reset --hard
             git stash pop
             git add ./spring-cloud-previews
             git commit -m "chore: update starter modules in spring-cloud-previews"
-            # git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
             git push -u origin ${{ github.event.inputs.branch_name }}
           fi
 
