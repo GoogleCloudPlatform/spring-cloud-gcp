@@ -145,21 +145,44 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
   @Override
   public <T> T save(T instance, Key... ancestors) {
     List<T> instances = Collections.singletonList(instance);
-    saveEntities(instances, ancestors);
+    insertOrSaveEntities(instances, ancestors, getDatastoreReadWriter()::put);
     return instance;
   }
 
   @Override
   public <T> Iterable<T> saveAll(Iterable<T> entities, Key... ancestors) {
+    insertOrSaveEntities(entities, ancestors, getDatastoreReadWriter()::put);
+    return entities;
+  }
+
+  @Override
+  public <T> T insert(final T instance, final Key... ancestors) {
+    List<T> instances = Collections.singletonList(instance);
+    insertOrSaveEntities(instances, ancestors, getDatastoreReadWriter()::add);
+    return instance;
+  }
+
+  @Override
+  public <T> Iterable<T> insertAll(final Iterable<T> entities, final Key... ancestors) {
+    insertOrSaveEntities(entities, ancestors, getDatastoreReadWriter()::add);
+    return entities;
+  }
+
+  private <T> void insertOrSaveEntities(Iterable<T> iterable, Key[] ancestors, Consumer<FullEntity<?>[]> consumer) {
     List<T> instances;
-    if (entities instanceof List) {
-      instances = (List<T>) entities;
+    if (iterable instanceof List) {
+      instances = (List<T>) iterable;
     } else {
       instances = new ArrayList<>();
-      entities.forEach(instances::add);
+      iterable.forEach(instances::add);
     }
-    saveEntities(instances, ancestors);
-    return entities;
+
+    if (!instances.isEmpty()) {
+      maybeEmitEvent(new BeforeSaveEvent(instances));
+      List<Entity> entities = getEntitiesForSave(instances, new HashSet<>(), ancestors);
+      SliceUtil.sliceAndExecute(entities.toArray(new Entity[0]), this.maxWriteSize, consumer);
+      maybeEmitEvent(new AfterSaveEvent(entities, instances));
+    }
   }
 
   private <T> List<Entity> getEntitiesForSave(
@@ -175,39 +198,12 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
     return entitiesForSave;
   }
 
-  @Override
-  public <T> T insert(final T instance, final Key... ancestors) {
-    List<T> instances = Collections.singletonList(instance);
-    insertEntities(instances, ancestors);
-    return instance;
-  }
-
-  @Override
-  public <T> Iterable<T> insertAll(final Iterable<T> entities, final Key... ancestors) {
-    List<T> instances;
-    if (entities instanceof List) {
-      instances = (List<T>) entities;
-    } else {
-      instances = new ArrayList<>();
-      entities.forEach(instances::add);
-    }
-    insertEntities(instances, ancestors);
-    return entities;
-  }
-
   private <T> void saveEntities(List<T> instances, Key[] ancestors) {
-    insertOrSaveEntities(instances, ancestors, getDatastoreReadWriter()::put);
-  }
-
-  private <T> void insertEntities(List<T> instances, Key[] ancestors) {
-    insertOrSaveEntities(instances, ancestors, getDatastoreReadWriter()::add);
-  }
-
-  private <T> void insertOrSaveEntities(List<T> instances, Key[] ancestors, Consumer<FullEntity<?>[]> consumer) {
     if (!instances.isEmpty()) {
       maybeEmitEvent(new BeforeSaveEvent(instances));
       List<Entity> entities = getEntitiesForSave(instances, new HashSet<>(), ancestors);
-      SliceUtil.sliceAndExecute(entities.toArray(new Entity[0]), this.maxWriteSize, consumer);
+      SliceUtil.sliceAndExecute(
+          entities.toArray(new Entity[0]), this.maxWriteSize, getDatastoreReadWriter()::put);
       maybeEmitEvent(new AfterSaveEvent(entities, instances));
     }
   }
