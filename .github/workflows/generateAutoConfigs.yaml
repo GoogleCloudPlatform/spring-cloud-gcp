@@ -76,6 +76,7 @@ jobs:
           set -x
           bash reset-previews-folder.sh
       - name: Generate library list
+        id: generate_library_list
         continue-on-error: false
         working-directory: spring-cloud-generator
         run: |
@@ -84,8 +85,10 @@ jobs:
           echo "Libraries BOM version: $LIBRARIES_BOM_VERSION"
           echo "MONOREPO_TAG=v$(bash compute-monorepo-tag.sh -v $LIBRARIES_BOM_VERSION)" >> $GITHUB_OUTPUT
           bash generate-library-list.sh -c $MONOREPO_TAG
+          cat library_list.txt
         env:
           LIBRARIES_BOM_VERSION: ${{ steps.get_libraries_bom_version.outputs.LIBRARIES_BOM_VERSION }}
+          MONOREPO_TAG: ${{ steps.generate_library_list.outputs.MONOREPO_TAG }}
       - name: Compile non-autogen libraries
         continue-on-error: false
         run: |
@@ -103,7 +106,9 @@ jobs:
         run: |
           set -x
           set -e
-          bash generate-all.sh
+          bash generate-all.sh -m $MONOREPO_TAG
+        env:
+          MONOREPO_TAG: ${{ steps.generate_library_list.outputs.MONOREPO_TAG }}
       - name: Check for generation errors
         continue-on-error: false
         working-directory: spring-cloud-generator
@@ -153,8 +158,8 @@ jobs:
             git stash pop
             git add ./spring-cloud-previews
             git commit -m "chore: update starter modules in spring-cloud-previews"
-            # git push https://github.com/${{ github.event.inputs.forked_repo }}.git HEAD:${{ github.event.inputs.branch_name }}
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.event.inputs.forked_repo }}.git HEAD:${{ github.event.inputs.branch_name }}
+            git push https://github.com/${{ github.event.inputs.forked_repo }}.git HEAD:${{ github.event.inputs.branch_name }}
+            # git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.event.inputs.forked_repo }}.git HEAD:${{ github.event.inputs.branch_name }}
           else
             git fetch origin ${{ github.event.inputs.branch_name }}
             git checkout ${{ github.event.inputs.branch_name }}
