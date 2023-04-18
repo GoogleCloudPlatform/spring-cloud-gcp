@@ -16,11 +16,7 @@ git clone https://github.com/googleapis/google-cloud-java.git
 
 # switch to the specified release commitish
 cd ./google-cloud-java
-if [ -z "$commitish" ];
-  then echo "No commitish provided, using HEAD.";
-  else git checkout $commitish;
-fi
-
+git checkout $commitish
 cd -
 
 # start file, always override is present
