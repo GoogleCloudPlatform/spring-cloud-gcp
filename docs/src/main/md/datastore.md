@@ -890,7 +890,8 @@ Trader t = new Trader();
 this.datastoreTemplate.save(t);
 ```
 
-The `save` method behaves as update-or-insert.
+The `save` method behaves as update-or-insert, in contrast the `insert` method will
+fail if an entity already exists.
 
 ##### Partial Update
 

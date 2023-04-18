@@ -587,8 +587,38 @@ class DatastoreTemplateTests {
   }
 
   @Test
+  void insertReferenceLoopTest() {
+    ReferenceTestEntity referenceTestEntity = new ReferenceTestEntity();
+    referenceTestEntity.id = 1L;
+    referenceTestEntity.sibling = referenceTestEntity;
+    when(this.objectToKeyFactory.getKeyFromObject(eq(referenceTestEntity), any()))
+        .thenReturn(this.key1);
+
+    List<Object[]> callsArgs =
+        gatherVarArgCallsArgs(
+            this.datastore.add(ArgumentMatchers.<FullEntity[]>any()),
+            Collections.singletonList(this.e1));
+
+    assertThat(this.datastoreTemplate.insert(referenceTestEntity))
+        .isInstanceOf(ReferenceTestEntity.class);
+
+    Entity writtenEntity = Entity.newBuilder(this.key1).set("sibling", this.key1).build();
+
+    assertArgs(
+        callsArgs,
+        new MapBuilder<List, Integer>()
+            .put(Collections.singletonList(writtenEntity), 1)
+            .buildModifiable());
+  }
+
+  @Test
   void saveTest() {
     saveTestCommon(this.ob1, false);
+  }
+
+  @Test
+  void insertTest() {
+    insertTestCommon(this.ob1, false);
   }
 
   @Test
@@ -602,6 +632,16 @@ class DatastoreTemplateTests {
   }
 
   @Test
+  void insertTestCollectionLazy() {
+    this.ob1.lazyMultipleReference =
+        LazyUtil.wrapSimpleLazyProxy(
+            () -> Collections.singletonList(this.childEntity7),
+            List.class,
+            ListValue.of(KeyValue.of(this.childKey7)));
+    insertTestCommon(this.ob1, true);
+  }
+
+  @Test
   void saveTestNotInterfaceLazy() {
     ArrayList<ChildEntity> arrayList = new ArrayList();
     arrayList.add(this.childEntity7);
@@ -609,6 +649,16 @@ class DatastoreTemplateTests {
         LazyUtil.wrapSimpleLazyProxy(
             () -> arrayList, ArrayList.class, ListValue.of(KeyValue.of(this.childKey7)));
     saveTestCommon(this.ob1, true);
+  }
+
+  @Test
+  void insertTestNotInterfaceLazy() {
+    ArrayList<ChildEntity> arrayList = new ArrayList();
+    arrayList.add(this.childEntity7);
+    this.ob1.lazyMultipleReference =
+        LazyUtil.wrapSimpleLazyProxy(
+            () -> arrayList, ArrayList.class, ListValue.of(KeyValue.of(this.childKey7)));
+    insertTestCommon(this.ob1, true);
   }
 
   void saveTestCommon(TestEntity parent, boolean lazy) {
@@ -664,6 +714,59 @@ class DatastoreTemplateTests {
     }
   }
 
+  void insertTestCommon(TestEntity parent, boolean lazy) {
+    Entity writtenEntity =
+        Entity.newBuilder(this.key1)
+            .set("singularReference", this.childKey4)
+            .set(
+                "multipleReference",
+                Arrays.asList(KeyValue.of(this.childKey5), KeyValue.of(this.childKey6)))
+            .set("lazyMultipleReference", Collections.singletonList(KeyValue.of(this.childKey7)))
+            .build();
+
+    Entity writtenChildEntity2 = Entity.newBuilder(this.childKey2).build();
+    Entity writtenChildEntity3 = Entity.newBuilder(this.childKey3).build();
+    Entity writtenChildEntity4 = Entity.newBuilder(this.childKey4).build();
+    Entity writtenChildEntity5 = Entity.newBuilder(this.childKey5).build();
+    Entity writtenChildEntity6 = Entity.newBuilder(this.childKey6).build();
+    Entity writtenChildEntity7 = Entity.newBuilder(this.childKey7).build();
+
+    doAnswer(
+        invocation -> {
+          Object[] arguments = invocation.getArguments();
+          assertThat(arguments).contains(writtenEntity);
+          assertThat(arguments).contains(writtenChildEntity2);
+          assertThat(arguments).contains(writtenChildEntity3);
+          assertThat(arguments).contains(writtenChildEntity4);
+          assertThat(arguments).contains(writtenChildEntity5);
+          assertThat(arguments).contains(writtenChildEntity6);
+          if (lazy) {
+            assertThat(arguments).hasSize(6);
+          } else {
+            assertThat(arguments).contains(writtenChildEntity7);
+            assertThat(arguments).hasSize(7);
+          }
+
+          return null;
+        })
+        .when(this.datastore)
+        .put(ArgumentMatchers.<FullEntity[]>any());
+
+    assertThat(this.datastoreTemplate.insert(parent)).isInstanceOf(TestEntity.class);
+    verify(this.datastore, times(1)).add(ArgumentMatchers.<FullEntity[]>any());
+    verify(this.datastoreEntityConverter, times(1)).write(same(parent), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity2), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity3), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity4), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity5), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity6), notNull());
+    if (lazy) {
+      verify(this.datastoreEntityConverter, times(0)).write(same(this.childEntity7), notNull());
+    } else {
+      verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity7), notNull());
+    }
+  }
+
   private List<Object[]> gatherVarArgCallsArgs(Object methodCall, List<Entity> returnVal) {
     List<Object[]> callsArgs = new ArrayList<>();
     when(methodCall)
@@ -695,6 +798,16 @@ class DatastoreTemplateTests {
   }
 
   @Test
+  void insertTestNonKeyId() {
+
+    Key testKey = createFakeKey("key0");
+    assertThatThrownBy(() -> this.datastoreTemplate.insert(this.ob1, testKey))
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessage("Only Key types are allowed for descendants id");
+
+  }
+
+  @Test
   void saveTestNullDescendantsAndReferences() {
     // making sure save works when descendants are null
     assertThat(this.ob2.childEntities).isNull();
@@ -716,6 +829,27 @@ class DatastoreTemplateTests {
   }
 
   @Test
+  void insertTestNullDescendantsAndReferences() {
+    // making sure save works when descendants are null
+    assertThat(this.ob2.childEntities).isNull();
+    assertThat(this.ob2.singularReference).isNull();
+    assertThat(this.ob2.multipleReference).isNull();
+
+    List<Object[]> callsArgs =
+        gatherVarArgCallsArgs(
+            this.datastore.add(ArgumentMatchers.<FullEntity[]>any()),
+            Collections.singletonList(this.e1));
+
+    this.datastoreTemplate.insert(this.ob2);
+
+    assertArgs(
+        callsArgs,
+        new MapBuilder<List, Integer>()
+            .put(Collections.singletonList(Entity.newBuilder(this.key2).build()), 1)
+            .buildModifiable());
+  }
+
+  @Test
   void saveTestKeyNoAncestor() {
 
     when(this.objectToKeyFactory.getKeyFromObject(eq(this.childEntity1), any()))
@@ -725,6 +859,18 @@ class DatastoreTemplateTests {
     assertThatThrownBy(() -> this.datastoreTemplate.save(this.childEntity1, testKey))
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("Descendant object has a key without current ancestor");
+  }
+
+  @Test
+  void insertTestKeyNoAncestor() {
+
+    when(this.objectToKeyFactory.getKeyFromObject(eq(this.childEntity1), any()))
+        .thenReturn(this.childEntity1.id);
+
+    Key testKey = createFakeKey("key0");
+    assertThatThrownBy(() -> this.datastoreTemplate.insert(this.childEntity1, testKey))
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessage("Descendant object has a key without current ancestor");
   }
 
   @Test
@@ -744,6 +890,33 @@ class DatastoreTemplateTests {
             Collections.singletonList(this.e1));
 
     this.datastoreTemplate.save(childEntity, key0);
+
+    Entity writtenChildEntity = Entity.newBuilder(keyA).build();
+
+    assertArgs(
+        callsArgs,
+        new MapBuilder<List, Integer>()
+            .put(Collections.singletonList(writtenChildEntity), 1)
+            .buildModifiable());
+  }
+
+  @Test
+  void insertTestKeyWithAncestor() {
+    Key key0 = createFakeKey("key0");
+    Key keyA =
+        Key.newBuilder(key0)
+            .addAncestor(PathElement.of(key0.getKind(), key0.getName()))
+            .setName("keyA")
+            .build();
+    ChildEntity childEntity = new ChildEntity();
+    childEntity.id = keyA;
+    when(this.objectToKeyFactory.getKeyFromObject(eq(childEntity), any())).thenReturn(keyA);
+    List<Object[]> callsArgs =
+        gatherVarArgCallsArgs(
+            this.datastore.add(ArgumentMatchers.<FullEntity[]>any()),
+            Collections.singletonList(this.e1));
+
+    this.datastoreTemplate.insert(childEntity, key0);
 
     Entity writtenChildEntity = Entity.newBuilder(keyA).build();
 
@@ -790,6 +963,46 @@ class DatastoreTemplateTests {
     assertThat(this.datastoreTemplate.save(this.ob1)).isInstanceOf(TestEntity.class);
 
     verify(this.datastore, times(1)).put(ArgumentMatchers.<FullEntity[]>any());
+
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.ob1), notNull());
+  }
+
+  @Test
+  void insertAndAllocateIdTest() {
+    when(this.objectToKeyFactory.allocateKeyForObject(same(this.ob1), any())).thenReturn(this.key1);
+    Entity writtenEntity1 =
+        Entity.newBuilder(this.key1)
+            .set("singularReference", this.childKey4)
+            .set(
+                "multipleReference",
+                Arrays.asList(KeyValue.of(this.childKey5), KeyValue.of(this.childKey6)))
+            .set("lazyMultipleReference", Collections.singletonList(KeyValue.of(this.childKey7)))
+            .build();
+    Entity writtenChildEntity2 = Entity.newBuilder(this.childKey2).build();
+    Entity writtenChildEntity3 = Entity.newBuilder(this.childKey3).build();
+    Entity writtenChildEntity4 = Entity.newBuilder(this.childKey4).build();
+    Entity writtenChildEntity5 = Entity.newBuilder(this.childKey5).build();
+    Entity writtenChildEntity6 = Entity.newBuilder(this.childKey6).build();
+    Entity writtenChildEntity7 = Entity.newBuilder(this.childKey7).build();
+    doAnswer(
+        invocation -> {
+          assertThat(invocation.getArguments())
+              .containsExactlyInAnyOrder(
+                  writtenChildEntity2,
+                  writtenChildEntity3,
+                  writtenChildEntity4,
+                  writtenChildEntity5,
+                  writtenChildEntity6,
+                  writtenEntity1,
+                  writtenChildEntity7);
+          return null;
+        })
+        .when(this.datastore)
+        .put(ArgumentMatchers.<FullEntity[]>any());
+
+    assertThat(this.datastoreTemplate.insert(this.ob1)).isInstanceOf(TestEntity.class);
+
+    verify(this.datastore, times(1)).add(ArgumentMatchers.<FullEntity[]>any());
 
     verify(this.datastoreEntityConverter, times(1)).write(same(this.ob1), notNull());
   }
@@ -857,6 +1070,72 @@ class DatastoreTemplateTests {
     verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity5), notNull());
     verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity6), notNull());
     verify(this.datastore, times(1)).put(ArgumentMatchers.<FullEntity[]>any());
+  }
+
+  @Test
+  void insertAllTest() {
+    when(this.objectToKeyFactory.allocateKeyForObject(same(this.ob1), any())).thenReturn(this.key1);
+    when(this.objectToKeyFactory.getKeyFromObject(same(this.ob2), any())).thenReturn(this.key2);
+    Entity writtenEntity1 =
+        Entity.newBuilder(this.key1)
+            .set("singularReference", this.childKey4)
+            .set(
+                "multipleReference",
+                Arrays.asList(KeyValue.of(this.childKey5), KeyValue.of(this.childKey6)))
+            .set("lazyMultipleReference", Collections.singletonList(KeyValue.of(this.childKey7)))
+            .build();
+
+    Entity writtenEntity2 = Entity.newBuilder(this.key2).build();
+    Entity writtenChildEntity2 = Entity.newBuilder(this.childKey2).build();
+    Entity writtenChildEntity3 = Entity.newBuilder(this.childKey3).build();
+    Entity writtenChildEntity4 = Entity.newBuilder(this.childKey4).build();
+    Entity writtenChildEntity5 = Entity.newBuilder(this.childKey5).build();
+    Entity writtenChildEntity6 = Entity.newBuilder(this.childKey6).build();
+    Entity writtenChildEntity7 = Entity.newBuilder(this.childKey7).build();
+    doAnswer(
+        invocation -> {
+          assertThat(invocation.getArguments())
+              .containsExactlyInAnyOrder(
+                  writtenChildEntity2,
+                  writtenChildEntity3,
+                  writtenChildEntity4,
+                  writtenChildEntity5,
+                  writtenChildEntity6,
+                  writtenEntity1,
+                  writtenEntity2,
+                  writtenChildEntity7);
+          return null;
+        })
+        .when(this.datastore)
+        .put(ArgumentMatchers.<FullEntity[]>any());
+
+    List<Entity> expected =
+        Arrays.asList(
+            writtenChildEntity2,
+            writtenChildEntity3,
+            writtenChildEntity7,
+            writtenChildEntity4,
+            writtenChildEntity5,
+            writtenChildEntity6,
+            writtenEntity1,
+            writtenEntity2);
+    List javaExpected = Arrays.asList(this.ob1, this.ob2);
+
+    verifyBeforeAndAfterEvents(
+        new BeforeSaveEvent(javaExpected),
+        new AfterSaveEvent(expected, javaExpected),
+        () -> this.datastoreTemplate.insertAll(Arrays.asList(this.ob1, this.ob2)),
+        x -> {
+        });
+
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.ob1), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.ob2), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity2), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity3), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity4), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity5), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity6), notNull());
+    verify(this.datastore, times(1)).add(ArgumentMatchers.<FullEntity[]>any());
   }
 
   @Test
@@ -930,6 +1209,80 @@ class DatastoreTemplateTests {
     verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity7), notNull());
 
     verify(this.datastore, times(8)).put(ArgumentMatchers.<FullEntity[]>any());
+  }
+
+  @Test
+  void insertAllMaxWriteSizeTest() {
+    when(this.objectToKeyFactory.allocateKeyForObject(same(this.ob1), any())).thenReturn(this.key1);
+    when(this.objectToKeyFactory.getKeyFromObject(same(this.ob2), any())).thenReturn(this.key2);
+    Entity writtenEntity1 =
+        Entity.newBuilder(this.key1)
+            .set("singularReference", this.childKey4)
+            .set(
+                "multipleReference",
+                Arrays.asList(KeyValue.of(this.childKey5), KeyValue.of(this.childKey6)))
+            .set("lazyMultipleReference", Collections.singletonList(KeyValue.of(this.childKey7)))
+            .build();
+    Entity writtenEntity2 = Entity.newBuilder(this.key2).build();
+    Entity writtenChildEntity2 = Entity.newBuilder(this.childKey2).build();
+    Entity writtenChildEntity3 = Entity.newBuilder(this.childKey3).build();
+    Entity writtenChildEntity4 = Entity.newBuilder(this.childKey4).build();
+    Entity writtenChildEntity5 = Entity.newBuilder(this.childKey5).build();
+    Entity writtenChildEntity6 = Entity.newBuilder(this.childKey6).build();
+    Entity writtenChildEntity7 = Entity.newBuilder(this.childKey7).build();
+    Set<Entity> entities = new HashSet<>();
+    entities.addAll(
+        Arrays.asList(
+            writtenChildEntity2,
+            writtenChildEntity3,
+            writtenChildEntity7,
+            writtenChildEntity4,
+            writtenChildEntity5,
+            writtenChildEntity6,
+            writtenEntity1,
+            writtenEntity2));
+    doAnswer(
+        invocation -> {
+          assertThat(invocation.getArguments()).hasSize(1);
+          assertThat(entities).contains((Entity) invocation.getArguments()[0]);
+          entities.remove(invocation.getArguments()[0]);
+          return null;
+        })
+        .when(this.datastore)
+        .add(ArgumentMatchers.<FullEntity[]>any());
+
+    List<Entity> expected =
+        Arrays.asList(
+            writtenChildEntity2,
+            writtenChildEntity3,
+            writtenChildEntity7,
+            writtenChildEntity4,
+            writtenChildEntity5,
+            writtenChildEntity6,
+            writtenEntity1,
+            writtenEntity2);
+    List javaExpected = Arrays.asList(this.ob1, this.ob2);
+
+    this.datastoreTemplate.setMaxWriteSize(1);
+    verifyBeforeAndAfterEvents(
+        new BeforeSaveEvent(javaExpected),
+        new AfterSaveEvent(expected, javaExpected),
+        () -> this.datastoreTemplate.insertAll(Arrays.asList(this.ob1, this.ob2)),
+        x -> {
+        });
+
+    assertThat(entities).isEmpty();
+
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.ob1), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.ob2), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity2), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity3), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity4), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity5), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity6), notNull());
+    verify(this.datastoreEntityConverter, times(1)).write(same(this.childEntity7), notNull());
+
+    verify(this.datastore, times(8)).add(ArgumentMatchers.<FullEntity[]>any());
   }
 
   @Test

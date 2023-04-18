@@ -72,6 +72,28 @@ public interface DatastoreOperations {
   <T> Iterable<T> saveAll(Iterable<T> entities, Key... ancestors);
 
   /**
+   * Inserts an instance of an object to Cloud Datastore. Throws a DatastoreException if an entry with same ID
+   * already exists. Ancestors can be added only to entries with Key ids.
+   *
+   * @param instance the instance to save.
+   * @param ancestors ancestors that should be added to the entry
+   * @param <T> the type of the object to save
+   * @return the instance that was saved.
+   */
+  <T> T insert(T instance, Key... ancestors);
+
+  /**
+   * Saves multiple instances of objects to Cloud Datastore. Throws a DatastoreException if any entry with one of
+   * the IDs already exists. Ancestors can be added only to entries with Key ids.
+   *
+   * @param entities the objects to save.
+   * @param ancestors ancestors that should be added to each entry
+   * @param <T> the type of entities to save
+   * @return the entities that were saved.
+   */
+  <T> Iterable<T> insertAll(Iterable<T> entities, Key... ancestors);
+
+  /**
    * Delete an entity from Cloud Datastore. Deleting IDs that do not exist in Cloud Datastore will
    * result in no operation.
    *

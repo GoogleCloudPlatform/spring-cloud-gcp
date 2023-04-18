@@ -67,6 +67,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -174,12 +175,39 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
     return entitiesForSave;
   }
 
+  @Override
+  public <T> T insert(final T instance, final Key... ancestors) {
+    List<T> instances = Collections.singletonList(instance);
+    insertEntities(instances, ancestors);
+    return instance;
+  }
+
+  @Override
+  public <T> Iterable<T> insertAll(final Iterable<T> entities, final Key... ancestors) {
+    List<T> instances;
+    if (entities instanceof List) {
+      instances = (List<T>) entities;
+    } else {
+      instances = new ArrayList<>();
+      entities.forEach(instances::add);
+    }
+    insertEntities(instances, ancestors);
+    return entities;
+  }
+
   private <T> void saveEntities(List<T> instances, Key[] ancestors) {
+    insertOrSaveEntities(instances, ancestors, getDatastoreReadWriter()::put);
+  }
+
+  private <T> void insertEntities(List<T> instances, Key[] ancestors) {
+    insertOrSaveEntities(instances, ancestors, getDatastoreReadWriter()::add);
+  }
+
+  private <T> void insertOrSaveEntities(List<T> instances, Key[] ancestors, Consumer<FullEntity<?>[]> consumer) {
     if (!instances.isEmpty()) {
       maybeEmitEvent(new BeforeSaveEvent(instances));
       List<Entity> entities = getEntitiesForSave(instances, new HashSet<>(), ancestors);
-      SliceUtil.sliceAndExecute(
-          entities.toArray(new Entity[0]), this.maxWriteSize, getDatastoreReadWriter()::put);
+      SliceUtil.sliceAndExecute(entities.toArray(new Entity[0]), this.maxWriteSize, consumer);
       maybeEmitEvent(new AfterSaveEvent(entities, instances));
     }
   }
