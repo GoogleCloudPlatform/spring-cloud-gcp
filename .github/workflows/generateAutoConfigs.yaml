@@ -49,7 +49,7 @@ jobs:
             git fetch https://github.com/${{ github.event.inputs.forked_repo }}.git ${{ github.event.inputs.branch_name }}
             git checkout FETCH_HEAD -- spring-cloud-gcp-dependencies/pom.xml
           else 
-            git checkout ${{ github.event.inputs.branch_name }} -- spring-cloud-gcp-dependencies/pom.xml
+            git checkout origin/${{ github.event.inputs.branch_name }} -- spring-cloud-gcp-dependencies/pom.xml
           fi
           echo "LIBRARIES_BOM_VERSION=$(xmllint --xpath "string(//*[local-name()='gcp-libraries-bom.version'])" spring-cloud-gcp-dependencies/pom.xml)" >> $GITHUB_OUTPUT
       - name: Setup Java 17
