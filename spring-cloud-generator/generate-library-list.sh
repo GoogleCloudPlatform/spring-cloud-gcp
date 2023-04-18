@@ -1,9 +1,12 @@
 #!/bin/bash
 
-#cmd line:: ./generate-library-list.sh
-commitish="v$(bash compute-monorepo-tag.sh)"
-echo "monorepo commitish to checkout: $commitish";
-
+while getopts c: flag
+do
+    case "${flag}" in
+        c) commitish=${OPTARG};;
+    esac
+done
+echo "Monorepo tag: $commitish";
 
 # install jq for json parsing if not already installed
 sudo apt-get -y install jq
