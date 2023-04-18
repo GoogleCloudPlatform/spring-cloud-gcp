@@ -43,11 +43,6 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
   /**
-   * Allow override of retry settings at method-level for createSecurityHealthAnalyticsCustomModule.
-   * If defined, this takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry createSecurityHealthAnalyticsCustomModuleRetry;
-  /**
    * Allow override of retry settings at method-level for createSource. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -78,11 +73,6 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry deleteNotificationConfigRetry;
   /**
-   * Allow override of retry settings at method-level for deleteSecurityHealthAnalyticsCustomModule.
-   * If defined, this takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry deleteSecurityHealthAnalyticsCustomModuleRetry;
-  /**
    * Allow override of retry settings at method-level for getBigQueryExport. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -108,17 +98,6 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getOrganizationSettingsRetry;
   /**
-   * Allow override of retry settings at method-level for
-   * getEffectiveSecurityHealthAnalyticsCustomModule. If defined, this takes precedence over
-   * service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry getEffectiveSecurityHealthAnalyticsCustomModuleRetry;
-  /**
-   * Allow override of retry settings at method-level for getSecurityHealthAnalyticsCustomModule. If
-   * defined, this takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry getSecurityHealthAnalyticsCustomModuleRetry;
-  /**
    * Allow override of retry settings at method-level for getSource. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -139,13 +118,6 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry listAssetsRetry;
   /**
-   * Allow override of retry settings at method-level for
-   * listDescendantSecurityHealthAnalyticsCustomModules. If defined, this takes precedence over
-   * service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty
-  private Retry listDescendantSecurityHealthAnalyticsCustomModulesRetry;
-  /**
    * Allow override of retry settings at method-level for listFindings. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -160,17 +132,6 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listNotificationConfigsRetry;
-  /**
-   * Allow override of retry settings at method-level for
-   * listEffectiveSecurityHealthAnalyticsCustomModules. If defined, this takes precedence over
-   * service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry listEffectiveSecurityHealthAnalyticsCustomModulesRetry;
-  /**
-   * Allow override of retry settings at method-level for listSecurityHealthAnalyticsCustomModules.
-   * If defined, this takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry listSecurityHealthAnalyticsCustomModulesRetry;
   /**
    * Allow override of retry settings at method-level for listSources. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -221,11 +182,6 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateOrganizationSettingsRetry;
-  /**
-   * Allow override of retry settings at method-level for updateSecurityHealthAnalyticsCustomModule.
-   * If defined, this takes precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry updateSecurityHealthAnalyticsCustomModuleRetry;
   /**
    * Allow override of retry settings at method-level for updateSource. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -294,16 +250,6 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
     this.retry = retry;
   }
 
-  public Retry getCreateSecurityHealthAnalyticsCustomModuleRetry() {
-    return this.createSecurityHealthAnalyticsCustomModuleRetry;
-  }
-
-  public void setCreateSecurityHealthAnalyticsCustomModuleRetry(
-      Retry createSecurityHealthAnalyticsCustomModuleRetry) {
-    this.createSecurityHealthAnalyticsCustomModuleRetry =
-        createSecurityHealthAnalyticsCustomModuleRetry;
-  }
-
   public Retry getCreateSourceRetry() {
     return this.createSourceRetry;
   }
@@ -352,16 +298,6 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
     this.deleteNotificationConfigRetry = deleteNotificationConfigRetry;
   }
 
-  public Retry getDeleteSecurityHealthAnalyticsCustomModuleRetry() {
-    return this.deleteSecurityHealthAnalyticsCustomModuleRetry;
-  }
-
-  public void setDeleteSecurityHealthAnalyticsCustomModuleRetry(
-      Retry deleteSecurityHealthAnalyticsCustomModuleRetry) {
-    this.deleteSecurityHealthAnalyticsCustomModuleRetry =
-        deleteSecurityHealthAnalyticsCustomModuleRetry;
-  }
-
   public Retry getGetBigQueryExportRetry() {
     return this.getBigQueryExportRetry;
   }
@@ -402,25 +338,6 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
     this.getOrganizationSettingsRetry = getOrganizationSettingsRetry;
   }
 
-  public Retry getGetEffectiveSecurityHealthAnalyticsCustomModuleRetry() {
-    return this.getEffectiveSecurityHealthAnalyticsCustomModuleRetry;
-  }
-
-  public void setGetEffectiveSecurityHealthAnalyticsCustomModuleRetry(
-      Retry getEffectiveSecurityHealthAnalyticsCustomModuleRetry) {
-    this.getEffectiveSecurityHealthAnalyticsCustomModuleRetry =
-        getEffectiveSecurityHealthAnalyticsCustomModuleRetry;
-  }
-
-  public Retry getGetSecurityHealthAnalyticsCustomModuleRetry() {
-    return this.getSecurityHealthAnalyticsCustomModuleRetry;
-  }
-
-  public void setGetSecurityHealthAnalyticsCustomModuleRetry(
-      Retry getSecurityHealthAnalyticsCustomModuleRetry) {
-    this.getSecurityHealthAnalyticsCustomModuleRetry = getSecurityHealthAnalyticsCustomModuleRetry;
-  }
-
   public Retry getGetSourceRetry() {
     return this.getSourceRetry;
   }
@@ -453,16 +370,6 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
     this.listAssetsRetry = listAssetsRetry;
   }
 
-  public Retry getListDescendantSecurityHealthAnalyticsCustomModulesRetry() {
-    return this.listDescendantSecurityHealthAnalyticsCustomModulesRetry;
-  }
-
-  public void setListDescendantSecurityHealthAnalyticsCustomModulesRetry(
-      Retry listDescendantSecurityHealthAnalyticsCustomModulesRetry) {
-    this.listDescendantSecurityHealthAnalyticsCustomModulesRetry =
-        listDescendantSecurityHealthAnalyticsCustomModulesRetry;
-  }
-
   public Retry getListFindingsRetry() {
     return this.listFindingsRetry;
   }
@@ -485,26 +392,6 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
 
   public void setListNotificationConfigsRetry(Retry listNotificationConfigsRetry) {
     this.listNotificationConfigsRetry = listNotificationConfigsRetry;
-  }
-
-  public Retry getListEffectiveSecurityHealthAnalyticsCustomModulesRetry() {
-    return this.listEffectiveSecurityHealthAnalyticsCustomModulesRetry;
-  }
-
-  public void setListEffectiveSecurityHealthAnalyticsCustomModulesRetry(
-      Retry listEffectiveSecurityHealthAnalyticsCustomModulesRetry) {
-    this.listEffectiveSecurityHealthAnalyticsCustomModulesRetry =
-        listEffectiveSecurityHealthAnalyticsCustomModulesRetry;
-  }
-
-  public Retry getListSecurityHealthAnalyticsCustomModulesRetry() {
-    return this.listSecurityHealthAnalyticsCustomModulesRetry;
-  }
-
-  public void setListSecurityHealthAnalyticsCustomModulesRetry(
-      Retry listSecurityHealthAnalyticsCustomModulesRetry) {
-    this.listSecurityHealthAnalyticsCustomModulesRetry =
-        listSecurityHealthAnalyticsCustomModulesRetry;
   }
 
   public Retry getListSourcesRetry() {
@@ -585,16 +472,6 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
 
   public void setUpdateOrganizationSettingsRetry(Retry updateOrganizationSettingsRetry) {
     this.updateOrganizationSettingsRetry = updateOrganizationSettingsRetry;
-  }
-
-  public Retry getUpdateSecurityHealthAnalyticsCustomModuleRetry() {
-    return this.updateSecurityHealthAnalyticsCustomModuleRetry;
-  }
-
-  public void setUpdateSecurityHealthAnalyticsCustomModuleRetry(
-      Retry updateSecurityHealthAnalyticsCustomModuleRetry) {
-    this.updateSecurityHealthAnalyticsCustomModuleRetry =
-        updateSecurityHealthAnalyticsCustomModuleRetry;
   }
 
   public Retry getUpdateSourceRetry() {
