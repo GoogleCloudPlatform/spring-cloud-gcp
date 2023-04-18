@@ -43,6 +43,8 @@ jobs:
         # This step differs slightly depending on whether the workflow is triggered for a forked repo.
         run: |
           set -x
+          sudo apt-get update
+          sudo apt-get install libxml2-utils
           if ${{ github.event.inputs.forked_repo != '' }}; then
             git fetch https://github.com/${{ github.event.inputs.forked_repo }}.git ${{ github.event.inputs.branch_name }}
             git checkout FETCH_HEAD -- spring-cloud-gcp-dependencies/pom.xml
@@ -79,8 +81,6 @@ jobs:
         run: |
           set -x
           set -e
-          sudo apt-get update
-          sudo apt-get install libxml2-utils
           echo "MONOREPO_TAG=v$(bash compute-monorepo-tag.sh -v $LIBRARIES_BOM_VERSION)" >> $GITHUB_OUTPUT
           echo "Monorepo tag: $MONOREPO_TAG"
           bash generate-library-list.sh -c $MONOREPO_TAG
@@ -161,7 +161,7 @@ jobs:
             git commit -m "chore: update starter modules in spring-cloud-previews"
             git push -u origin ${{ github.event.inputs.branch_name }}
           fi
-          
+
         env:
           GITHUB_ACTOR_EMAIL: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_EMAIL }}
           GITHUB_ACTOR_NAME: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_NAME }}
