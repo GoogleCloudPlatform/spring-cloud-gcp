@@ -112,17 +112,9 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
 
     Expr thisExpr = ValueExpr.withValue(ThisObjectValue.withType(dynamicTypes.get(className)));
     Transport transport = context.transport();
-    // TODO(emmwang): this condition is adapted from latest gapic-generator-java changes as part of
-    // https://github.com/googleapis/gapic-generator-java/issues/1117, but should be updated to use
-    // the gapic-implemented helpers once spring generator code is migrated.
-    boolean hasRestSupportedMethod =
-        service.methods().stream()
-            .anyMatch(
-                x ->
-                    x.httpBindings() != null
-                        && x.stream() != Method.Stream.BIDI
-                        && x.stream() != Method.Stream.CLIENT);
-    boolean hasRestOption = transport.equals(Transport.GRPC_REST) && hasRestSupportedMethod;
+    boolean hasRestOption =
+        (transport.equals(Transport.GRPC_REST) || transport.equals(Transport.REST))
+            && service.hasAnyEnabledMethodsForTransport(Transport.REST);
     String serviceSettingsMethodName = JavaStyle.toLowerCamelCase(service.name()) + "Settings";
 
     ClassDefinition classDef =
