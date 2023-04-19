@@ -80,7 +80,7 @@ jobs:
           set -x
           set -e
           echo "Libraries BOM version: $LIBRARIES_BOM_VERSION"
-          MONOREPO_TAG=v$(bash compute-monorepo-tag.sh -v $LIBRARIES_BOM_VERSION)
+          MONOREPO_TAG=v$(bash scripts/compute-monorepo-tag.sh -v $LIBRARIES_BOM_VERSION)
           echo "MONOREPO_COMMITISH=$MONOREPO_TAG" >> $GITHUB_OUTPUT
           bash scripts/generate-library-list.sh -c $MONOREPO_TAG
           cat library_list.txt
