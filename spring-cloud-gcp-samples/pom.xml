@@ -22,7 +22,7 @@
 
 		<!-- Dependency versions -->
 		<google-cloud-graalvm-support.version>0.7.0</google-cloud-graalvm-support.version>
-		<testcontainers.version>1.17.6</testcontainers.version>
+		<testcontainers.version>1.18.0</testcontainers.version>
 
 		<!-- Checkstyle versions. Keep in sync with ../pom.xml -->
 		<maven-checkstyle-plugin.version>3.2.1</maven-checkstyle-plugin.version>

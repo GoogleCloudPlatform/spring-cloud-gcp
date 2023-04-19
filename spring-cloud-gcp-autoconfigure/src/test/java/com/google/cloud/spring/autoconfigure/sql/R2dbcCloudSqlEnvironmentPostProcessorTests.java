@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
@@ -51,41 +52,32 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
 
   @Test
   void testSetR2dbcProperty_postgres() {
-    verifyThatCorrectUrlAndUsernameSet(
-        new String[] {"io.r2dbc.postgresql"},
-        "postgres",
-        "r2dbc:gcp:postgres://my-project:region:my-instance/my-database");
-  }
-
-  /**
-   * Verifies that correct database properties got injected into context, given a passed-in list of
-   * packages to retain on the classpath.
-   *
-   * @param driverPackagesToInclude a list of driver packages to keep on the classpath
-   * @param username expected {@code spring.r2dbc.username} value to verify
-   * @param url expected {@code spring.r2dbc.username} value to verify
-   */
-  private void verifyThatCorrectUrlAndUsernameSet(
-      String[] driverPackagesToInclude,
-      String username,
-      String url) {
-    // Because `FilteredClassLoader` accepts a list of packages to remove from classpath,
-    // `driverPackagesToInclude` is used to calculate the inverse list of packages to _exclude_.
-    Set<String> driverPackagesToExclude = new HashSet<>(List.of("io.r2dbc.postgresql"));
-    Arrays.asList(driverPackagesToInclude).forEach(driverPackagesToExclude::remove);
-
     this.contextRunner
         .withPropertyValues(
             "spring.cloud.gcp.sql.databaseName=my-database",
             "spring.cloud.gcp.sql.instanceConnectionName=my-project:region:my-instance")
-        .withClassLoader(new FilteredClassLoader(driverPackagesToExclude.toArray(new String[0])))
+        .withClassLoader(excludeDriverPackages(new String[] {"io.r2dbc.postgresql"}))
         .run(
             context -> {
               assertThat(context.getEnvironment().getProperty("spring.r2dbc.url"))
-                  .isEqualTo(url);
+                  .isEqualTo("r2dbc:gcp:postgres://my-project:region:my-instance/my-database");
               assertThat(context.getEnvironment().getProperty("spring.r2dbc.username"))
-                  .isEqualTo(username);
+                  .isEqualTo("postgres");
             });
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void testEnableIamAuthPresent() {
+    this.contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.sql.databaseName=my-database",
+            "spring.cloud.gcp.sql.instanceConnectionName=my-project:region:my-instance",
+            "spring.cloud.gcp.sql.enable-iam-auth=true")
+        .withClassLoader(excludeDriverPackages(new String[] {"io.r2dbc.postgresql"}))
+        .run(
+            context -> assertThat(context.getEnvironment().getProperty("spring.r2dbc.properties", Map.class, Map.of()))
+                .isEqualTo(Map.of("ENABLE_IAM_AUTH", "true")));
   }
 
   @Test
@@ -96,10 +88,8 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
                 "com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql",
                 "com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres"))
         .run(
-            context -> {
-              assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment()))
-                  .isNull();
-            });
+            context -> assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment()))
+                .isNull());
   }
 
   @Test
@@ -107,10 +97,8 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
     this.contextRunner
         .withClassLoader(new FilteredClassLoader("io.r2dbc.spi.ConnectionFactory"))
         .run(
-            context -> {
-              assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment()))
-                  .isNull();
-            });
+            context -> assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment()))
+                .isNull());
   }
 
   @Test
@@ -118,9 +106,24 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.sql.r2dbc.enabled=false")
         .run(
-            context -> {
-              assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment()))
-                  .isNull();
-            });
+            context -> assertThat(r2dbcPostProcessor.getEnabledDatabaseType(context.getEnvironment()))
+                .isNull());
+  }
+
+  /**
+   * Returns a class loader which excludes certain driver packages from the classpath
+   * unless they are in {@code driverPackagesToInclude}.
+   *
+   * @param driverPackagesToInclude A list of driver packages to keep on the classpath
+   * @return A class loader with a set of driver packages that are excluded from the classpath
+   */
+  private FilteredClassLoader excludeDriverPackages(String[] driverPackagesToInclude) {
+    // Because `FilteredClassLoader` accepts a list of packages to remove from classpath,
+    // `driverPackagesToInclude` is used to calculate the inverse list of packages to _exclude_.
+    Set<String> driverPackagesToExclude = new HashSet<>(List.of("io.r2dbc.postgresql"));
+    Arrays.stream(driverPackagesToInclude)
+        .forEach(driverPackagesToExclude::remove);
+
+    return new FilteredClassLoader(driverPackagesToExclude.toArray(new String[0]));
   }
 }

@@ -6,7 +6,13 @@ set -o pipefail
 set -e
 WORKING_DIR=`pwd` # spring-cloud-generator
 
-monorepo_commitish="v$(bash ${WORKING_DIR}/scripts/compute-monorepo-tag.sh)"
+while getopts m: flag
+do
+    case "${flag}" in
+        m) monorepo_commitish=${OPTARG};;
+    esac
+done
+echo "Monorepo commitish: $monorepo_commitish";
 
 cd ../
 # Compute the project version.
