@@ -83,7 +83,7 @@ jobs:
           MONOREPO_TAG=v$(bash scripts/compute-monorepo-tag.sh -v $LIBRARIES_BOM_VERSION)
           echo "MONOREPO_COMMITISH=$MONOREPO_TAG" >> $GITHUB_OUTPUT
           bash scripts/generate-library-list.sh -c $MONOREPO_TAG
-          cat library_list.txt
+          cat scripts/resources/library_list.txt
         env:
           LIBRARIES_BOM_VERSION: ${{ steps.get_libraries_bom_version.outputs.LIBRARIES_BOM_VERSION }}
       - name: Compile non-autogen libraries
