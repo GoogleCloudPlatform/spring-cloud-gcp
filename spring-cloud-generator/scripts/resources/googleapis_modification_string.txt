@@ -2,7 +2,7 @@ _spring_cloud_generator_version = "4.1.5-SNAPSHOT" # {x-version-update:spring-cl
 
 maven_install(
     artifacts = [
-        "com.google.api:spring-cloud-generator:" + _spring_cloud_generator_version,
+        "com.google.cloud:spring-cloud-generator:" + _spring_cloud_generator_version,
     ],
     #Update this False for local development
     fail_on_missing_checksum = False,

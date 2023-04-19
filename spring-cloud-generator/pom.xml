@@ -9,7 +9,7 @@
         <version>4.1.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
 
-    <groupId>com.google.api</groupId>
+    <groupId>com.google.cloud</groupId>
     <artifactId>spring-cloud-generator</artifactId>
     <name>Spring Code Generator for Google Cloud</name>
     <description>Spring Code Generator for Google Cloud</description>
