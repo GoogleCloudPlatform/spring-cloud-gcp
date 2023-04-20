@@ -607,11 +607,11 @@ class DatastoreTemplateTests {
 
   @Test
   void saveTestNotInterfaceLazy() {
-    ArrayList<ChildEntity> arrayList = new ArrayList();
+    List<ChildEntity> arrayList = new ArrayList<>();
     arrayList.add(this.childEntity7);
     this.ob1.lazyMultipleReference =
         LazyUtil.wrapSimpleLazyProxy(
-            () -> arrayList, ArrayList.class, ListValue.of(KeyValue.of(this.childKey7)));
+            () -> arrayList, List.class, ListValue.of(KeyValue.of(this.childKey7)));
     saveOrInsertTestCommon(method, this.ob1, true);
   }
 
@@ -1459,7 +1459,8 @@ class DatastoreTemplateTests {
 
     @Reference LinkedList<ChildEntity> multipleReference;
 
-    @LazyReference List<ChildEntity> lazyMultipleReference;
+    @LazyReference
+    List lazyMultipleReference;
 
     @Override
     public boolean equals(Object o) {
