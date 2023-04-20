@@ -28,9 +28,9 @@ gcp-docuploader==0.6.5 \
     --hash=sha256:30221d4ac3e5a2b9c69aa52fdbef68cc3f27d0e6d0d90e220fc024584b8d2318 \
     --hash=sha256:b7458ef93f605b9d46a4bf3a8dc1755dad1f31d030c8679edf304e343b347eea
     # via -r requirements.in
-google-api-core==2.10.2 \
-    --hash=sha256:10c06f7739fe57781f87523375e8e1a3a4674bf6392cd6131a3222182b971320 \
-    --hash=sha256:34f24bd1d5f72a8c4519773d99ca6bf080a6c4e041b4e9f024fe230191dda62e
+google-api-core==2.11.0 \
+    --hash=sha256:4b9bb5d5a380a0befa0573b302651b8a9a89262c1730e37bf423cec511804c22 \
+    --hash=sha256:ce222e27b0de0d7bc63eb043b956996d6dccab14cc3b690aaea91c9cc99dc16e
     # via
     #   google-cloud-core
     #   google-cloud-storage
