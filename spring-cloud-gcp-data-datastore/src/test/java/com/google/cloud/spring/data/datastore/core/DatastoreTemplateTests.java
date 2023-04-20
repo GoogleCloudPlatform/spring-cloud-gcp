@@ -590,13 +590,15 @@ class DatastoreTemplateTests {
             .buildModifiable());
   }
 
-  @Test
-  void saveTest() {
-    saveTestCommon(this.ob1, false);
+  @ParameterizedTest
+  @ValueSource(strings = {"SAVE", "INSERT"})
+  void saveOrInsertTest(String method) {
+    saveOrInsertTestCommon(method, this.ob1, false);
   }
 
-  @Test
-  void saveTestCollectionLazy() {
+  @ParameterizedTest
+  @ValueSource(strings = {"SAVE", "INSERT"})
+  void saveOrInsertTestCollectionLazy(String method) {
     this.ob1.lazyMultipleReference =
         LazyUtil.wrapSimpleLazyProxy(
             () -> Collections.singletonList(this.childEntity7),
@@ -605,8 +607,9 @@ class DatastoreTemplateTests {
     saveOrInsertTestCommon(method, this.ob1, true);
   }
 
-  @Test
-  void saveTestNotInterfaceLazy() {
+  @ParameterizedTest
+  @ValueSource(strings = {"SAVE", "INSERT"})
+  void saveOrInsertTestNotInterfaceLazy(String method) {
     List<ChildEntity> arrayList = new ArrayList<>();
     arrayList.add(this.childEntity7);
     this.ob1.lazyMultipleReference =
@@ -615,7 +618,7 @@ class DatastoreTemplateTests {
     saveOrInsertTestCommon(method, this.ob1, true);
   }
 
-  void saveTestCommon(TestEntity parent, boolean lazy) {
+  void saveOrInsertTestCommon(String method, TestEntity parent, boolean lazy) {
     Entity writtenEntity =
         Entity.newBuilder(this.key1)
             .set("singularReference", this.childKey4)
@@ -696,8 +699,9 @@ class DatastoreTemplateTests {
 
   }
 
-  @Test
-  void saveTestNullDescendantsAndReferences() {
+  @ParameterizedTest
+  @ValueSource(strings = {"SAVE", "INSERT"})
+  void saveOrInsertTestNullDescendantsAndReferences(String method) {
     // making sure save works when descendants are null
     assertThat(this.ob2.childEntities).isNull();
     assertThat(this.ob2.singularReference).isNull();
@@ -729,8 +733,9 @@ class DatastoreTemplateTests {
         .hasMessage("Descendant object has a key without current ancestor");
   }
 
-  @Test
-  void saveTestKeyWithAncestor() {
+  @ParameterizedTest
+  @ValueSource(strings = {"SAVE", "INSERT"})
+  void saveOrInsertTestKeyWithAncestor(String method) {
     Key key0 = createFakeKey("key0");
     Key keyA =
         Key.newBuilder(key0)
@@ -794,8 +799,9 @@ class DatastoreTemplateTests {
     verify(this.datastoreEntityConverter, times(1)).write(same(this.ob1), notNull());
   }
 
-  @Test
-  void saveAllTest() {
+  @ParameterizedTest
+  @ValueSource(strings = {"SAVE", "INSERT"})
+  void saveOrInsertAllTest(String method) {
     when(this.objectToKeyFactory.allocateKeyForObject(same(this.ob1), any())).thenReturn(this.key1);
     when(this.objectToKeyFactory.getKeyFromObject(same(this.ob2), any())).thenReturn(this.key2);
     Entity writtenEntity1 =
@@ -846,8 +852,7 @@ class DatastoreTemplateTests {
         new BeforeSaveEvent(javaExpected),
         new AfterSaveEvent(expected, javaExpected),
         () -> saveOrInsertAll(method, Arrays.asList(this.ob1, this.ob2)),
-        x -> {
-        });
+        x -> {});
 
     verify(this.datastoreEntityConverter, times(1)).write(same(this.ob1), notNull());
     verify(this.datastoreEntityConverter, times(1)).write(same(this.ob2), notNull());
@@ -859,8 +864,9 @@ class DatastoreTemplateTests {
     verifyPutOrAdd(method, times(1));
   }
 
-  @Test
-  void saveAllMaxWriteSizeTest() {
+  @ParameterizedTest
+  @ValueSource(strings = {"SAVE", "INSERT"})
+  void saveOrInsertAllMaxWriteSizeTest(String method) {
     when(this.objectToKeyFactory.allocateKeyForObject(same(this.ob1), any())).thenReturn(this.key1);
     when(this.objectToKeyFactory.getKeyFromObject(same(this.ob2), any())).thenReturn(this.key2);
     Entity writtenEntity1 =
@@ -914,8 +920,7 @@ class DatastoreTemplateTests {
         new BeforeSaveEvent(javaExpected),
         new AfterSaveEvent(expected, javaExpected),
         () -> saveOrInsertAll(method, Arrays.asList(this.ob1, this.ob2)),
-        x -> {
-        });
+        x -> {});
 
     assertThat(entities).isEmpty();
 
