@@ -7,7 +7,7 @@
 		<!-- Your own application should inherit from spring-boot-starter-parent -->
 		<artifactId>spring-cloud-gcp-integration-pubsub-sample</artifactId>
 		<groupId>com.google.cloud</groupId>
-		<version>4.1.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+		<version>4.2.0</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
