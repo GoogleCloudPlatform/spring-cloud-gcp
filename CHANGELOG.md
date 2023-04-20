@@ -14,6 +14,25 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.4.9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.8...v3.4.9) (2023-04-20)
+
+
+### Bug Fixes
+
+* enable-iam-r2dbc in `3.x` ([#1726](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1726)) ([13f64f8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/13f64f82f37c36828e22a34a3d913ac0141ab5ef))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.11.0 to 1.11.1 ([#1724](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1724)) ([82b3bed](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/82b3bed25fe55115796822711a6c97c22530244a))
+* bump flatten-maven-plugin from 1.4.0 to 1.4.1 ([#1679](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1679)) ([16c85a5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/16c85a53cb563359fb579a02fd3871e6b574cb5a))
+* bump libraries-bom from 26.12.0 to 26.13.0 ([#1757](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1757)) ([295c75a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/295c75a662690adf3d9edabeaedfb249fa9715d9))
+* bump maven-enforcer-plugin from 3.2.1 to 3.3.0 ([#1699](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1699)) ([a4d646c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a4d646c36ee7f692ee928fd062c35b8e7c9eb101))
+* bump spring-boot-dependencies from 2.7.10 to 2.7.11 ([#1750](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1750)) ([1244b1c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1244b1c4ea0fc8f826edf5ee3ef6eb9d00ef7a27))
+* bump spring-boot-starter-parent from 2.7.10 to 2.7.11 ([#1748](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1748)) ([4f513bf](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4f513bfa42a4337c9452268de9231c1c82c9e536))
+* bump spring-shell-starter from 2.1.7 to 2.1.8 ([#1725](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1725)) ([c3556a5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c3556a52850ed2be04b6421deb86359240ad8c78))
+* bump testcontainers-bom from 1.17.6 to 1.18.0 ([#1697](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1697)) ([bd906d5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/bd906d5db638226a17d0acf17c6c2ef2f5684b2d))
+
 ## [3.4.8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.7...v3.4.8) (2023-04-05)
 
 

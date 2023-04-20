@@ -11,7 +11,7 @@
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-dependencies</artifactId>
-	<version>3.4.9-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>3.4.9</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 
 	<name>Spring Framework on Google Cloud Dependencies</name>
 	<description>Spring Framework on Google Cloud Dependencies</description>
