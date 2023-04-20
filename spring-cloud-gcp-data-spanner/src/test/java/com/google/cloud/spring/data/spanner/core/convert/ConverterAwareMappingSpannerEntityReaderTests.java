@@ -257,7 +257,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
     assertThatThrownBy(() -> this.spannerEntityReader.read(TestEntity.class, struct))
             .isInstanceOf(ConversionFailedException.class)
             .hasMessage("Failed to convert from type [java.lang.String] to type "
-                    + "[java.lang.Double] for value 'UNCONVERTABLE VALUE'; nested exception is "
+                    + "[java.lang.Double] for value [UNCONVERTABLE VALUE]; nested exception is "
                     + "java.lang.NumberFormatException: For input string: \"UNCONVERTABLEVALUE\"");
   }
 
