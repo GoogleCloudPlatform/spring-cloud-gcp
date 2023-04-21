@@ -84,7 +84,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -565,8 +565,8 @@ class DatastoreTemplateTests {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SAVE", "INSERT"})
-  void saveOrInsertReferenceLoopTest(String method) {
+  @EnumSource(SaveOrInsertMethod.class)
+  void saveOrInsertReferenceLoopTest(SaveOrInsertMethod method) {
     ReferenceTestEntity referenceTestEntity = new ReferenceTestEntity();
     referenceTestEntity.id = 1L;
     referenceTestEntity.sibling = referenceTestEntity;
@@ -591,14 +591,14 @@ class DatastoreTemplateTests {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SAVE", "INSERT"})
-  void saveOrInsertTest(String method) {
+  @EnumSource(SaveOrInsertMethod.class)
+  void saveOrInsertTest(SaveOrInsertMethod method) {
     saveOrInsertTestCommon(method, this.ob1, false);
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SAVE", "INSERT"})
-  void saveOrInsertTestCollectionLazy(String method) {
+  @EnumSource(SaveOrInsertMethod.class)
+  void saveOrInsertTestCollectionLazy(SaveOrInsertMethod method) {
     this.ob1.lazyMultipleReference =
         LazyUtil.wrapSimpleLazyProxy(
             () -> Collections.singletonList(this.childEntity7),
@@ -608,8 +608,8 @@ class DatastoreTemplateTests {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SAVE", "INSERT"})
-  void saveOrInsertTestNotInterfaceLazy(String method) {
+  @EnumSource(SaveOrInsertMethod.class)
+  void saveOrInsertTestNotInterfaceLazy(SaveOrInsertMethod method) {
     List<ChildEntity> arrayList = new ArrayList<>();
     arrayList.add(this.childEntity7);
     this.ob1.lazyMultipleReference =
@@ -618,7 +618,7 @@ class DatastoreTemplateTests {
     saveOrInsertTestCommon(method, this.ob1, true);
   }
 
-  void saveOrInsertTestCommon(String method, TestEntity parent, boolean lazy) {
+  void saveOrInsertTestCommon(SaveOrInsertMethod method, TestEntity parent, boolean lazy) {
     Entity writtenEntity =
         Entity.newBuilder(this.key1)
             .set("singularReference", this.childKey4)
@@ -690,8 +690,8 @@ class DatastoreTemplateTests {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SAVE", "INSERT"})
-  void saveOrInsertTestNonKeyId(String method) {
+  @EnumSource(SaveOrInsertMethod.class)
+  void saveOrInsertTestNonKeyId(SaveOrInsertMethod method) {
     Key testKey = createFakeKey("key0");
     assertThatThrownBy(() -> saveOrInsert(method, this.ob1, testKey))
         .isInstanceOf(DatastoreDataException.class)
@@ -700,8 +700,8 @@ class DatastoreTemplateTests {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SAVE", "INSERT"})
-  void saveOrInsertTestNullDescendantsAndReferences(String method) {
+  @EnumSource(SaveOrInsertMethod.class)
+  void saveOrInsertTestNullDescendantsAndReferences(SaveOrInsertMethod method) {
     // making sure save works when descendants are null
     assertThat(this.ob2.childEntities).isNull();
     assertThat(this.ob2.singularReference).isNull();
@@ -722,8 +722,8 @@ class DatastoreTemplateTests {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SAVE", "INSERT"})
-  void saveOrInsertTestKeyNoAncestor(String method) {
+  @EnumSource(SaveOrInsertMethod.class)
+  void saveOrInsertTestKeyNoAncestor(SaveOrInsertMethod method) {
     when(this.objectToKeyFactory.getKeyFromObject(eq(this.childEntity1), any()))
         .thenReturn(this.childEntity1.id);
 
@@ -734,8 +734,8 @@ class DatastoreTemplateTests {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SAVE", "INSERT"})
-  void saveOrInsertTestKeyWithAncestor(String method) {
+  @EnumSource(SaveOrInsertMethod.class)
+  void saveOrInsertTestKeyWithAncestor(SaveOrInsertMethod method) {
     Key key0 = createFakeKey("key0");
     Key keyA =
         Key.newBuilder(key0)
@@ -762,8 +762,8 @@ class DatastoreTemplateTests {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SAVE", "INSERT"})
-  void saveOrInsertAndAllocateIdTest(String method) {
+  @EnumSource(SaveOrInsertMethod.class)
+  void saveOrInsertAndAllocateIdTest(SaveOrInsertMethod method) {
     when(this.objectToKeyFactory.allocateKeyForObject(same(this.ob1), any())).thenReturn(this.key1);
     Entity writtenEntity1 =
         Entity.newBuilder(this.key1)
@@ -800,8 +800,8 @@ class DatastoreTemplateTests {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SAVE", "INSERT"})
-  void saveOrInsertAllTest(String method) {
+  @EnumSource(SaveOrInsertMethod.class)
+  void saveOrInsertAllTest(SaveOrInsertMethod method) {
     when(this.objectToKeyFactory.allocateKeyForObject(same(this.ob1), any())).thenReturn(this.key1);
     when(this.objectToKeyFactory.getKeyFromObject(same(this.ob2), any())).thenReturn(this.key2);
     Entity writtenEntity1 =
@@ -865,8 +865,8 @@ class DatastoreTemplateTests {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SAVE", "INSERT"})
-  void saveOrInsertAllMaxWriteSizeTest(String method) {
+  @EnumSource(SaveOrInsertMethod.class)
+  void saveOrInsertAllMaxWriteSizeTest(SaveOrInsertMethod method) {
     when(this.objectToKeyFactory.allocateKeyForObject(same(this.ob1), any())).thenReturn(this.key1);
     when(this.objectToKeyFactory.getKeyFromObject(same(this.ob2), any())).thenReturn(this.key2);
     Entity writtenEntity1 =
@@ -935,36 +935,41 @@ class DatastoreTemplateTests {
     verifyPutOrAdd(method, times(8));
   }
 
-  private <T> T saveOrInsert(String method, T instance, Key... ancestors) {
-    if ("SAVE".equals(method)) {
+  private <T> T saveOrInsert(SaveOrInsertMethod method, T instance, Key... ancestors) {
+    if (SaveOrInsertMethod.SAVE == method) {
       return this.datastoreTemplate.save(instance, ancestors);
     } else {
       return this.datastoreTemplate.insert(instance, ancestors);
     }
   }
 
-  private <T> Iterable<T> saveOrInsertAll(String method, Iterable<T> entities, Key... ancestors) {
-    if ("SAVE".equals(method)) {
+  private <T> Iterable<T> saveOrInsertAll(SaveOrInsertMethod method, Iterable<T> entities,
+      Key... ancestors) {
+    if (SaveOrInsertMethod.SAVE == method) {
       return this.datastoreTemplate.saveAll(entities, ancestors);
     } else {
       return this.datastoreTemplate.insertAll(entities, ancestors);
     }
   }
 
-  private List<Entity> datastorePutOrAddAll(String method, FullEntity<?>... entity) {
-    if ("SAVE".equals(method)) {
+  private List<Entity> datastorePutOrAddAll(SaveOrInsertMethod method, FullEntity<?>... entity) {
+    if (SaveOrInsertMethod.SAVE == method) {
       return this.datastore.put(entity);
     } else {
       return this.datastore.add(entity);
     }
   }
 
-  private void verifyPutOrAdd(String method, VerificationMode verification) {
-    if ("SAVE".equals(method)) {
+  private void verifyPutOrAdd(SaveOrInsertMethod method, VerificationMode verification) {
+    if (SaveOrInsertMethod.SAVE == method) {
       verify(this.datastore, verification).put(ArgumentMatchers.<FullEntity[]>any());
     } else {
       verify(this.datastore, verification).add(ArgumentMatchers.<FullEntity[]>any());
     }
+  }
+
+  private enum SaveOrInsertMethod {
+    SAVE, INSERT;
   }
 
   @Test

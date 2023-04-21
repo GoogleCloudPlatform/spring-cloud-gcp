@@ -198,16 +198,6 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
     return entitiesForSave;
   }
 
-  private <T> void saveEntities(List<T> instances, Key[] ancestors) {
-    if (!instances.isEmpty()) {
-      maybeEmitEvent(new BeforeSaveEvent(instances));
-      List<Entity> entities = getEntitiesForSave(instances, new HashSet<>(), ancestors);
-      SliceUtil.sliceAndExecute(
-          entities.toArray(new Entity[0]), this.maxWriteSize, getDatastoreReadWriter()::put);
-      maybeEmitEvent(new AfterSaveEvent(entities, instances));
-    }
-  }
-
   @Override
   public <T> void deleteById(Object id, Class<T> entityClass) {
     performDelete(
