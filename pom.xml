@@ -520,8 +520,8 @@
 					<plugins>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>${maven-compiler-plugin.version}</artifactId>
-							<version>3.10.1</version>
+							<artifactId>maven-compiler-plugin</artifactId>
+							<version>${maven-compiler-plugin.version}</version>
 							<configuration>
 								<source>${maven.compiler.source}</source>
 								<target>${maven.compiler.target}</target>
@@ -529,11 +529,9 @@
 								<fork>true</fork>
 								<compilerArgs>
 									<arg>-XDcompilePolicy=simple</arg>
-									<arg>
-										-Xplugin:ErrorProne \
-										-Xep:UnicodeInCode:OFF \
-										-Xep:CanIgnoreReturnValue:OFF
-									</arg>
+									<arg>-Xplugin:ErrorProne</arg>
+									<arg>-Xep:UnicodeInCode:OFF</arg>
+									<arg>-Xep:CanIgnoreReturnValue:OFF</arg>
 									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
 									<arg>-parameters</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
