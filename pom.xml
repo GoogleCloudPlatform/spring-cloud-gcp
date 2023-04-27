@@ -529,9 +529,7 @@
 								<fork>true</fork>
 								<compilerArgs>
 									<arg>-XDcompilePolicy=simple</arg>
-									<arg>-Xplugin:ErrorProne</arg>
-									<arg>-Xep:UnicodeInCode:OFF</arg>
-									<arg>-Xep:CanIgnoreReturnValue:OFF</arg>
+									<arg>-Xplugin:ErrorProne -Xep:UnicodeInCode:OFF -Xep:CanIgnoreReturnValue:OFF</arg>
 									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
 									<arg>-parameters</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
