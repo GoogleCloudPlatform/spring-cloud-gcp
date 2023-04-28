@@ -1,9 +1,12 @@
 #!/bin/bash
 
-#cmd line:: ./generate-library-list.sh
-commitish="v$(bash compute-monorepo-tag.sh)"
-echo "monorepo commitish to checkout: $commitish";
-
+while getopts c: flag
+do
+    case "${flag}" in
+        c) commitish=${OPTARG};;
+    esac
+done
+echo "Monorepo tag: $commitish";
 
 # install jq for json parsing if not already installed
 sudo apt-get -y install jq
@@ -13,11 +16,7 @@ git clone https://github.com/googleapis/google-cloud-java.git
 
 # switch to the specified release commitish
 cd ./google-cloud-java
-if [ -z "$commitish" ];
-  then echo "No commitish provided, using HEAD.";
-  else git checkout $commitish;
-fi
-
+git checkout $commitish
 cd -
 
 # start file, always override is present

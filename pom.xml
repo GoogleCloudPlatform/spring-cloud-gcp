@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>4.1.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.2.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -36,18 +36,18 @@
 	<properties>
 		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
-		<spring-cloud-dependencies.version>2022.0.1</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>3.0.5</spring-boot-dependencies.version>
+		<spring-cloud-dependencies.version>2022.0.2</spring-cloud-dependencies.version>
+		<spring-boot-dependencies.version>3.0.6</spring-boot-dependencies.version>
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.1</java-cfenv.version>
-		<micrometer-tracing.verison>1.0.3</micrometer-tracing.verison>
+		<micrometer-tracing.verison>1.0.4</micrometer-tracing.verison>
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-		<maven-failsafe-plugin.version>3.0.0-M7</maven-failsafe-plugin.version>
-		<maven-flatten-plugin.version>1.4.0</maven-flatten-plugin.version>
+		<maven-failsafe-plugin.version>3.0.0</maven-failsafe-plugin.version>
+		<maven-flatten-plugin.version>1.4.1</maven-flatten-plugin.version>
 		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
 		<maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
 		<maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
@@ -56,7 +56,7 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
-		<maven-checkstyle-plugin.version>3.2.1</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>3.2.2</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
 		<errorprone.version>2.18.0</errorprone.version>
@@ -452,7 +452,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.8</version>
+						<version>0.8.9</version>
 						<executions>
 							<execution>
 								<goals>
@@ -520,8 +520,8 @@
 					<plugins>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>${maven-compiler-plugin.version}</artifactId>
-							<version>3.10.1</version>
+							<artifactId>maven-compiler-plugin</artifactId>
+							<version>${maven-compiler-plugin.version}</version>
 							<configuration>
 								<source>${maven.compiler.source}</source>
 								<target>${maven.compiler.target}</target>
@@ -529,11 +529,7 @@
 								<fork>true</fork>
 								<compilerArgs>
 									<arg>-XDcompilePolicy=simple</arg>
-									<arg>
-										-Xplugin:ErrorProne \
-										-Xep:UnicodeInCode:OFF \
-										-Xep:CanIgnoreReturnValue:OFF
-									</arg>
+									<arg>-Xplugin:ErrorProne -Xep:UnicodeInCode:OFF</arg>
 									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
 									<arg>-parameters</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
