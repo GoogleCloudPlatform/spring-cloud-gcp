@@ -20,8 +20,8 @@ import static org.junit.Assert.assertEquals;
 
 import com.google.api.generator.gapic.model.GapicContext;
 import com.google.cloud.generator.spring.utils.Assert;
-import com.google.cloud.generator.spring.utils.TestProtoLoader;
 import com.google.cloud.generator.spring.utils.GoldenFileWriter;
+import com.google.cloud.generator.spring.utils.TestProtoLoader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.Before;
