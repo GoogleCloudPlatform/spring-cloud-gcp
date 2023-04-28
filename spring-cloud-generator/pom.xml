@@ -15,15 +15,28 @@
     <description>Spring Code Generator for Google Cloud</description>
 
     <properties>
+        <gapic-generator-java-bom.version>2.18.0</gapic-generator-java-bom.version>
         <!-- [gapic-test]: for compiling test protos -->
         <protobuf.version>3.21.12</protobuf.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- Artifacts from gapic-generator-java monorepo -->
+                <groupId>com.google.api</groupId>
+                <artifactId>gapic-generator-java-bom</artifactId>
+                <version>${gapic-generator-java-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
             <groupId>com.google.api</groupId>
             <artifactId>gapic-generator-java</artifactId>
-            <version>2.17.0</version>
         </dependency>
 
         <dependency>
