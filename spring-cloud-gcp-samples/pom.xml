@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.5</version>
+		<version>3.0.6</version>
 		<relativePath/>
 	</parent>
 
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>4.1.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.2.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -25,14 +25,14 @@
 		<testcontainers.version>1.18.0</testcontainers.version>
 
 		<!-- Checkstyle versions. Keep in sync with ../pom.xml -->
-		<maven-checkstyle-plugin.version>3.2.1</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>3.2.2</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 
 		<!-- App engine plugin version, used to deploy sample apps -->
 		<app-engine-maven-plugin.version>2.4.4</app-engine-maven-plugin.version>
 
 		<!-- Deploy plugin is skipped for all samples but exists -->
-		<maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
+		<maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
 
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
 		<integration-test.tags.include/>
