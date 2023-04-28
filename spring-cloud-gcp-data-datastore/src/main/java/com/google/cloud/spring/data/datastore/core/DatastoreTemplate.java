@@ -16,6 +16,9 @@
 
 package com.google.cloud.spring.data.datastore.core;
 
+import com.google.cloud.datastore.AggregationQuery;
+import com.google.cloud.datastore.AggregationResult;
+import com.google.cloud.datastore.AggregationResults;
 import com.google.cloud.datastore.BaseEntity;
 import com.google.cloud.datastore.BaseKey;
 import com.google.cloud.datastore.Cursor;
@@ -39,6 +42,7 @@ import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.datastore.StructuredQuery.Filter;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.cloud.datastore.Value;
+import com.google.cloud.datastore.aggregation.Aggregation;
 import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
 import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
@@ -71,6 +75,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import com.google.common.collect.Iterables;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -233,7 +239,19 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
   @Override
   public long count(Class<?> entityClass) {
-    return findAllKeys(entityClass).length;
+    KeyQuery baseQuery = Query.newKeyQueryBuilder()
+        .setKind(getPersistentEntity(entityClass).kindName())
+        .build();
+
+    AggregationQuery countAggregationQuery = Query.newAggregationQueryBuilder()
+        .over(baseQuery)
+        .addAggregation(Aggregation.count().as("total_count"))
+        .build();
+
+    AggregationResults aggregationResults = getDatastoreReadWriter().runAggregation(countAggregationQuery);
+    maybeEmitEvent(new AfterQueryEvent(aggregationResults, countAggregationQuery));
+    AggregationResult aggregationResult = Iterables.getOnlyElement(aggregationResults);
+    return aggregationResult.get("total_count");
   }
 
   @Override
