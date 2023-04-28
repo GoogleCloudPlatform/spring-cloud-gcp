@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 import com.google.api.generator.gapic.model.GapicContext;
 import com.google.cloud.generator.spring.utils.Assert;
 import com.google.cloud.generator.spring.utils.TestProtoLoader;
-import com.google.cloud.generator.spring.utils.TestUtils;
+import com.google.cloud.generator.spring.utils.GoldenFileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.Before;
@@ -46,8 +46,8 @@ public class SpringWriterTest {
   public void buildSpringAdditionalMetadataJsonStringTest() {
     String result = SpringWriter.buildSpringAdditionalMetadataJsonString(context);
     String fileName = "SpringAdditionalMetadataJson.golden";
-    TestUtils.saveCodegenToFile(this.getClass(), fileName, result);
-    Path goldenFilePath = Paths.get(TestUtils.getGoldenDir(this.getClass()), fileName);
+    GoldenFileWriter.saveCodegenToFile(this.getClass(), fileName, result);
+    Path goldenFilePath = Paths.get(GoldenFileWriter.getGoldenDir(this.getClass()), fileName);
     Assert.assertCodeEquals(goldenFilePath, result);
   }
 
@@ -55,8 +55,8 @@ public class SpringWriterTest {
   public void buildPomStringTest() {
     String result = SpringWriter.buildPomString(context);
     String fileName = "SpringPackagePom.golden";
-    TestUtils.saveCodegenToFile(this.getClass(), fileName, result);
-    Path goldenFilePath = Paths.get(TestUtils.getGoldenDir(this.getClass()), fileName);
+    GoldenFileWriter.saveCodegenToFile(this.getClass(), fileName, result);
+    Path goldenFilePath = Paths.get(GoldenFileWriter.getGoldenDir(this.getClass()), fileName);
     Assert.assertCodeEquals(goldenFilePath, result);
   }
 }

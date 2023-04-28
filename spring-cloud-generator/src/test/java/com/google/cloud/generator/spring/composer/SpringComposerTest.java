@@ -22,7 +22,7 @@ import com.google.api.generator.gapic.model.GapicContext;
 import com.google.api.generator.gapic.model.GapicPackageInfo;
 import com.google.cloud.generator.spring.utils.Assert;
 import com.google.cloud.generator.spring.utils.TestProtoLoader;
-import com.google.cloud.generator.spring.utils.TestUtils;
+import com.google.cloud.generator.spring.utils.GoldenFileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -52,9 +52,9 @@ public class SpringComposerTest {
     String packageInfoFileName = "SpringPackageInfoFull.golden";
     JavaWriterVisitor visitor = new JavaWriterVisitor();
     packageInfo.packageInfo().accept(visitor);
-    TestUtils.saveCodegenToFile(this.getClass(), packageInfoFileName, visitor.write());
+    GoldenFileWriter.saveCodegenToFile(this.getClass(), packageInfoFileName, visitor.write());
     Path packageInfoGoldenFilePath =
-        Paths.get(TestUtils.getGoldenDir(this.getClass()), packageInfoFileName);
+        Paths.get(GoldenFileWriter.getGoldenDir(this.getClass()), packageInfoFileName);
     Assert.assertCodeEquals(packageInfoGoldenFilePath, visitor.write());
   }
 }

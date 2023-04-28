@@ -21,7 +21,7 @@ import com.google.api.generator.gapic.model.GapicContext;
 import com.google.api.generator.gapic.model.GapicPackageInfo;
 import com.google.cloud.generator.spring.utils.Assert;
 import com.google.cloud.generator.spring.utils.TestProtoLoader;
-import com.google.cloud.generator.spring.utils.TestUtils;
+import com.google.cloud.generator.spring.utils.GoldenFileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.Before;
@@ -42,8 +42,8 @@ public class SpringPackageInfoComposerTest {
     packageInfo.packageInfo().accept(visitor);
     String fileName = "SpringPackageInfo.golden";
 
-    TestUtils.saveCodegenToFile(this.getClass(), fileName, visitor.write());
-    Path goldenFilePath = Paths.get(TestUtils.getGoldenDir(this.getClass()), fileName);
+    GoldenFileWriter.saveCodegenToFile(this.getClass(), fileName, visitor.write());
+    Path goldenFilePath = Paths.get(GoldenFileWriter.getGoldenDir(this.getClass()), fileName);
     Assert.assertCodeEquals(goldenFilePath, visitor.write());
   }
 }

@@ -22,7 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 // Renamed from Utils
-public class TestUtils {
+public class GoldenFileWriter {
 
   /**
    * Save the generated code from JUnit test to a file for updating goldens. The relative path
