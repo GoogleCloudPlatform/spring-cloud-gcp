@@ -88,9 +88,9 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatcher;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -1067,8 +1067,8 @@ class DatastoreTemplateTests {
 
   private ArgumentMatcher<AggregationQuery> equalsTo(AggregationQuery expectedAggregationQuery) {
     return actualAggregationQuery ->
-        expectedAggregationQuery.getAggregations().equals(actualAggregationQuery.getAggregations()) &&
-            expectedAggregationQuery.getNestedStructuredQuery().equals(actualAggregationQuery.getNestedStructuredQuery());
+        expectedAggregationQuery.getAggregations().equals(actualAggregationQuery.getAggregations())
+            && expectedAggregationQuery.getNestedStructuredQuery().equals(actualAggregationQuery.getNestedStructuredQuery());
   }
 
   @Test

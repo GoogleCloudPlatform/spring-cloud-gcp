@@ -59,6 +59,7 @@ import com.google.cloud.spring.data.datastore.core.util.KeyUtil;
 import com.google.cloud.spring.data.datastore.core.util.SliceUtil;
 import com.google.cloud.spring.data.datastore.core.util.ValueUtil;
 import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable;
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -76,8 +77,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import com.google.common.collect.Iterables;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
