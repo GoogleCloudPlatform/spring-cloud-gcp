@@ -16,7 +16,10 @@
 
 package com.google.cloud.spring.core;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import com.google.auth.oauth2.ComputeEngineCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
@@ -29,6 +32,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 class ReactiveTokenProviderTests {
+
+    @Test
+    void testCreateCacheable() throws IOException {
+        ClassPathResource classPathResource = new ClassPathResource("fake-credential-key.json");
+        ServiceAccountCredentials serviceAccountCredentials = ServiceAccountCredentials.fromStream(classPathResource.getInputStream());
+        ReactiveTokenProvider reactiveTokenProvider = ReactiveTokenProvider.createCacheable(serviceAccountCredentials);
+        assertThat(reactiveTokenProvider).isInstanceOf(CacheableTokenProvider.class);
+    }
 
     @Test
     void testCreateUserCredentialsTokenProvider() {
