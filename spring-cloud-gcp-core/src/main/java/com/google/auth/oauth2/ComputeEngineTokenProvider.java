@@ -26,7 +26,6 @@ import com.google.cloud.spring.core.ReactiveTokenProvider;
 
 import static com.google.auth.oauth2.Constants.ACCESS_TOKEN;
 import static com.google.auth.oauth2.Constants.ERROR_PARSING_TOKEN_REFRESH_RESPONSE;
-import static com.google.auth.oauth2.Constants.ERROR_PARSING_TOKEN_REFRESH_RESPONSE1;
 import static com.google.auth.oauth2.Constants.EXPIRES_IN;
 import reactor.core.publisher.Mono;
 
@@ -59,7 +58,7 @@ public class ComputeEngineTokenProvider implements ReactiveTokenProvider {
                         .flatMap(gd -> {
                             try {
                                 String tokenValue = OAuth2Utils.validateString(gd, ACCESS_TOKEN, ERROR_PARSING_TOKEN_REFRESH_RESPONSE);
-                                int expiresInSeconds = OAuth2Utils.validateInt32(gd, EXPIRES_IN, ERROR_PARSING_TOKEN_REFRESH_RESPONSE1);
+                                int expiresInSeconds = OAuth2Utils.validateInt32(gd, EXPIRES_IN, ERROR_PARSING_TOKEN_REFRESH_RESPONSE);
                                 long expiresAtMilliseconds = computeEngineCredentials.clock.currentTimeMillis() + (long) (expiresInSeconds * 1000L);
                                 AccessToken accessToken = new AccessToken(tokenValue, new Date(expiresAtMilliseconds));
                                 return Mono.just(accessToken);
